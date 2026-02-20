@@ -62,7 +62,8 @@ describe("Project Config", () => {
       const defaults = getDefaultConfig();
 
       expect(result.config.shadow.branch).toBe(defaults.shadow.branch);
-      expect(result.config.shadow.remote_url).toBe(defaults.shadow.remote_url);
+      expect(result.config.shadow.directory).toBe(defaults.shadow.directory);
+      expect(result.config.shadow.remote).toBe(defaults.shadow.remote);
       expect(result.config.daemon.port).toBe(defaults.daemon.port);
       expect(result.config.daemon.host).toBe(defaults.daemon.host);
       expect(result.config.validation.strictness).toBe(
@@ -77,7 +78,8 @@ describe("Project Config", () => {
         `
 shadow:
   branch: custom-branch
-  remote_url: https://example.com/specs.git
+  directory: .specs
+  remote: https://example.com/specs.git
 daemon:
   port: 4000
   host: 0.0.0.0
@@ -94,9 +96,11 @@ validation:
       expect(result.configPath).toBe(path.join(tempDir, "kspec.config.yaml"));
       expect(result.warning).toBeNull();
       expect(result.config.shadow.branch).toBe("custom-branch");
-      expect(result.config.shadow.remote_url).toBe(
-        "https://example.com/specs.git"
-      );
+      expect(result.config.shadow.directory).toBe(".specs");
+      expect(result.config.shadow.remote).toEqual({
+        value: "https://example.com/specs.git",
+        type: "url",
+      });
       expect(result.config.daemon.port).toBe(4000);
       expect(result.config.daemon.host).toBe("0.0.0.0");
       expect(result.config.identity.author).toBe("@custom-author");
@@ -286,7 +290,8 @@ daemon:
       const result = KspecConfigSchema.safeParse({
         shadow: {
           branch: "my-branch",
-          remote_url: "https://github.com/org/repo.git",
+          directory: ".specs",
+          remote: "https://github.com/org/repo.git",
         },
         daemon: {
           port: 3000,
@@ -395,7 +400,8 @@ title: Test Project
       const defaults = getDefaultConfig();
 
       expect(defaults.shadow.branch).toBe("kspec-meta");
-      expect(defaults.shadow.remote_url).toBeNull();
+      expect(defaults.shadow.directory).toBe(".kspec");
+      expect(defaults.shadow.remote).toBeNull();
       expect(defaults.identity.author).toBeNull();
       expect(defaults.validation.strictness).toBe("normal");
       expect(defaults.validation.warn_unknown_fields).toBe(true);

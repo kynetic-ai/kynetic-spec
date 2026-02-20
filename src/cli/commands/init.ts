@@ -7,7 +7,12 @@ import {
   initializeShadow,
   isGitRepo,
   SHADOW_WORKTREE_DIR,
+  checkConfigMismatch,
 } from "../../parser/shadow.js";
+import {
+  loadProjectConfig,
+  detectRemoteType,
+} from "../../parser/config.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, success, warn } from "../output.js";
@@ -181,12 +186,47 @@ export function registerInitCommand(program: Command): void {
             return;
           }
 
+          // AC: @config-shadow — load project config for shadow settings
+          const configResult = await loadProjectConfig(gitRoot);
+          const config = configResult.config;
+
+          // Emit warning if config had issues
+          if (configResult.warning) {
+            warn(configResult.warning);
+          }
+
+          // Determine shadow options from config
+          const branchName = config.shadow.branch;
+          const directoryName = config.shadow.directory;
+          const shadowOptions = {
+            branchName,
+            directory: directoryName,
+            remote: config.shadow.remote?.value,
+            remoteType: config.shadow.remote?.type,
+          };
+
+          // AC: @config-shadow ac-9 — check for config mismatch
+          const mismatch = await checkConfigMismatch(
+            gitRoot,
+            branchName,
+            directoryName,
+          );
+          if (mismatch.hasMismatch && !options.force) {
+            warn("Shadow branch settings mismatch detected!");
+            console.log("");
+            console.log(mismatch.guidance);
+            console.log("");
+            console.log("Use --force to reinitialize with configured settings.");
+            process.exit(EXIT_CODES.ERROR);
+          }
+
           info(`Initializing kspec project: ${projectName}`);
-          console.log("  Mode: Shadow branch (kspec-meta → .kspec/)");
+          console.log(`  Mode: Shadow branch (${branchName} → ${directoryName}/)`);
 
           const result = await initializeShadow(gitRoot, {
             projectName,
             force: options.force,
+            shadow: shadowOptions,
           });
 
           if (!result.success) {
@@ -201,17 +241,17 @@ export function registerInitCommand(program: Command): void {
           } else {
             if (result.createdFromRemote) {
               console.log(
-                "  Attached to existing remote branch: origin/kspec-meta",
+                `  Attached to existing remote branch: ${shadowOptions.remote || "origin"}/${branchName}`,
               );
               console.log("  Remote tracking configured");
             } else if (result.branchCreated) {
-              console.log("  Created orphan branch: kspec-meta");
+              console.log(`  Created orphan branch: ${branchName}`);
               if (result.pushedToRemote) {
-                console.log("  Pushed to remote: origin/kspec-meta");
+                console.log(`  Pushed to remote: ${shadowOptions.remote || "origin"}/${branchName}`);
               }
             }
             if (result.worktreeCreated) {
-              console.log(`  Created worktree: ${SHADOW_WORKTREE_DIR}/`);
+              console.log(`  Created worktree: ${directoryName}/`);
             }
             if (result.gitignoreUpdated) {
               console.log("  Updated .gitignore");
@@ -223,10 +263,10 @@ export function registerInitCommand(program: Command): void {
 
           const slug = toSlug(projectName);
 
-          success(`Initialized kspec project in ${SHADOW_WORKTREE_DIR}/`, {
+          success(`Initialized kspec project in ${directoryName}/`, {
             projectName,
             mode: "shadow",
-            branch: "kspec-meta",
+            branch: branchName,
           });
 
           // AC: @init-setup-integration ac-2, ac-3 - Run full setup if --setup flag is passed

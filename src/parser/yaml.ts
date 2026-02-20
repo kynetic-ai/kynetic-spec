@@ -277,7 +277,11 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   }
 
   // Check if running from inside the shadow worktree
-  const mainProjectRoot = await detectRunningFromShadowWorktree(cwd);
+  // AC: @config-shadow ac-8 — pass configured directory for detection
+  const mainProjectRoot = await detectRunningFromShadowWorktree(
+    cwd,
+    config.shadow.directory,
+  );
   if (mainProjectRoot) {
     throw new ShadowError(
       errors.project.runningFromShadow,
@@ -287,7 +291,11 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   }
 
   // Try to detect shadow branch first
-  const shadow = await detectShadow(cwd);
+  // AC: @config-shadow ac-1 ac-2 — use configured branch/directory names
+  const shadow = await detectShadow(cwd, {
+    branchName: config.shadow.branch,
+    directory: config.shadow.directory,
+  });
 
   if (shadow?.enabled) {
     // Shadow mode: use .kspec/ for everything

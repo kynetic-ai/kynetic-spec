@@ -26,9 +26,12 @@ import {
   isDebugMode,
   setVerboseModeGetter,
   shadowAutoCommit,
+  checkConfigMismatch,
+  type ShadowOptions,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 import { kspec as kspecRun } from './helpers/cli.js';
+import { detectRemoteType } from '../src/parser/config.js';
 
 describe('Shadow Branch', () => {
   // Use /tmp to ensure we're outside any git repo for proper isolation
@@ -1285,6 +1288,300 @@ describe('Shadow Branch', () => {
         encoding: 'utf-8',
       }).trim();
       expect(latestCommit).toBe('authorized commit');
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Configurable Shadow Branch Tests
+  // AC: @config-shadow — configurable branch name, directory, and remote
+  // ══════════════════════════════════════════════════════════════════════════
+
+  describe('Configurable Shadow Branch', () => {
+    // AC: @config-shadow ac-7 — backward compat when called without config
+    describe('backward compatibility (ac-7)', () => {
+      it('detectShadow uses defaults when no options provided', async () => {
+        // Initialize git repo
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+
+        // Create initial commit
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with defaults
+        const result = await initializeShadow(testDir);
+        expect(result.success).toBe(true);
+
+        // detectShadow should find it with default options
+        const shadow = await detectShadow(testDir);
+        expect(shadow).not.toBeNull();
+        expect(shadow?.branchName).toBe(SHADOW_BRANCH_NAME);
+        expect(shadow?.worktreeDir).toBe(path.join(testDir, SHADOW_WORKTREE_DIR));
+      });
+
+      it('getShadowStatus uses defaults when no options provided', async () => {
+        // Initialize git repo
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with defaults
+        await initializeShadow(testDir);
+
+        // getShadowStatus should work with defaults
+        const status = await getShadowStatus(testDir);
+        expect(status.healthy).toBe(true);
+        expect(status.branchExists).toBe(true);
+      });
+    });
+
+    // AC: @config-shadow ac-1 — custom branch name
+    describe('custom branch name (ac-1)', () => {
+      it('initializeShadow creates orphan branch with configured name', async () => {
+        // Initialize git repo
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with custom branch name
+        const customBranch = 'specs-meta';
+        const result = await initializeShadow(testDir, {
+          shadow: { branchName: customBranch },
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.branchCreated).toBe(true);
+
+        // Verify branch was created with custom name
+        const hasCustomBranch = await branchExists(testDir, customBranch);
+        expect(hasCustomBranch).toBe(true);
+
+        // Default branch should NOT exist
+        const hasDefaultBranch = await branchExists(testDir, SHADOW_BRANCH_NAME);
+        expect(hasDefaultBranch).toBe(false);
+      });
+
+      it('detectShadow finds shadow with custom branch name when options provided', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        const customBranch = 'my-specs';
+        await initializeShadow(testDir, {
+          shadow: { branchName: customBranch },
+        });
+
+        // detectShadow with same options should find it
+        const shadow = await detectShadow(testDir, { branchName: customBranch });
+        expect(shadow).not.toBeNull();
+        expect(shadow?.branchName).toBe(customBranch);
+      });
+    });
+
+    // AC: @config-shadow ac-2 — custom directory
+    describe('custom worktree directory (ac-2)', () => {
+      it('initializeShadow creates worktree at configured directory', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        const customDir = '.specs';
+        const result = await initializeShadow(testDir, {
+          shadow: { directory: customDir },
+        });
+
+        expect(result.success).toBe(true);
+        expect(result.worktreeCreated).toBe(true);
+
+        // Custom directory should exist
+        const customDirPath = path.join(testDir, customDir);
+        const stat = await fs.stat(customDirPath);
+        expect(stat.isDirectory()).toBe(true);
+
+        // Default directory should NOT exist
+        const defaultDirPath = path.join(testDir, SHADOW_WORKTREE_DIR);
+        await expect(fs.access(defaultDirPath)).rejects.toThrow();
+      });
+
+      it('gitignore is updated with configured directory name', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        const customDir = '.my-specs';
+        await initializeShadow(testDir, {
+          shadow: { directory: customDir },
+        });
+
+        const gitignore = await fs.readFile(path.join(testDir, '.gitignore'), 'utf-8');
+        expect(gitignore).toContain(`${customDir}/`);
+        expect(gitignore).not.toContain(`${SHADOW_WORKTREE_DIR}/`);
+      });
+    });
+
+    // AC: @config-shadow ac-3 ac-4 ac-5 — remote type detection
+    describe('remote type detection (ac-3, ac-4, ac-5)', () => {
+      it('detectRemoteType identifies named remote', () => {
+        expect(detectRemoteType('origin')).toBe('named');
+        expect(detectRemoteType('specs-origin')).toBe('named');
+        expect(detectRemoteType('upstream')).toBe('named');
+      });
+
+      it('detectRemoteType identifies local filesystem path (ac-4)', () => {
+        expect(detectRemoteType('/home/user/specs.git')).toBe('path');
+        expect(detectRemoteType('./local-repo')).toBe('path');
+        expect(detectRemoteType('~/projects/specs')).toBe('path');
+      });
+
+      it('detectRemoteType identifies git URL (ac-5)', () => {
+        expect(detectRemoteType('https://github.com/org/repo.git')).toBe('url');
+        expect(detectRemoteType('git@github.com:org/repo.git')).toBe('url');
+        expect(detectRemoteType('ssh://git@host/repo.git')).toBe('url');
+      });
+    });
+
+    // AC: @config-shadow ac-8 — custom directory detection
+    describe('detectRunningFromShadowWorktree with custom directory (ac-8)', () => {
+      it('detects custom worktree directory using git metadata', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        const customDir = '.my-specs';
+        await initializeShadow(testDir, {
+          shadow: { directory: customDir },
+        });
+
+        // Should detect when running from custom directory
+        const customDirPath = path.join(testDir, customDir);
+        const mainRoot = await detectRunningFromShadowWorktree(customDirPath, customDir);
+        expect(mainRoot).toBe(testDir);
+      });
+
+      it('detects worktree by kspec file structure', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with unusual directory name (no "kspec" in it)
+        const customDir = '.unusual-specs';
+        await initializeShadow(testDir, {
+          shadow: { directory: customDir },
+        });
+
+        // Should still detect it because of file structure (manifest + modules)
+        const customDirPath = path.join(testDir, customDir);
+        const mainRoot = await detectRunningFromShadowWorktree(customDirPath);
+        expect(mainRoot).toBe(testDir);
+      });
+    });
+
+    // AC: @config-shadow ac-9 — config mismatch detection
+    describe('config mismatch detection (ac-9)', () => {
+      it('detects mismatch when default shadow exists but config differs', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with defaults
+        await initializeShadow(testDir);
+
+        // Check for mismatch with different config
+        const mismatch = await checkConfigMismatch(testDir, 'custom-branch', '.custom-dir');
+        expect(mismatch.hasMismatch).toBe(true);
+        expect(mismatch.branchMismatch).toBeDefined();
+        expect(mismatch.branchMismatch?.detected).toBe(SHADOW_BRANCH_NAME);
+        expect(mismatch.branchMismatch?.configured).toBe('custom-branch');
+        expect(mismatch.directoryMismatch).toBeDefined();
+        expect(mismatch.directoryMismatch?.detected).toBe(SHADOW_WORKTREE_DIR);
+        expect(mismatch.directoryMismatch?.configured).toBe('.custom-dir');
+        expect(mismatch.guidance).toContain('migrate');
+      });
+
+      it('returns no mismatch when config matches defaults', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize with defaults
+        await initializeShadow(testDir);
+
+        // Check for mismatch with matching config
+        const mismatch = await checkConfigMismatch(testDir, SHADOW_BRANCH_NAME, SHADOW_WORKTREE_DIR);
+        expect(mismatch.hasMismatch).toBe(false);
+      });
+
+      it('returns no mismatch when no shadow exists', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // No shadow initialized
+        const mismatch = await checkConfigMismatch(testDir, 'custom-branch', '.custom-dir');
+        expect(mismatch.hasMismatch).toBe(false);
+      });
+    });
+
+    // Combined custom branch and directory
+    describe('combined custom branch and directory', () => {
+      it('initializeShadow works with both custom branch and directory', async () => {
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        const customBranch = 'project-specs';
+        const customDir = '.project-specs';
+
+        const result = await initializeShadow(testDir, {
+          shadow: { branchName: customBranch, directory: customDir },
+        });
+
+        expect(result.success).toBe(true);
+
+        // Verify custom branch
+        const hasCustomBranch = await branchExists(testDir, customBranch);
+        expect(hasCustomBranch).toBe(true);
+
+        // Verify custom directory
+        const customDirPath = path.join(testDir, customDir);
+        const stat = await fs.stat(customDirPath);
+        expect(stat.isDirectory()).toBe(true);
+
+        // Verify worktree is valid
+        expect(await isValidWorktree(customDirPath)).toBe(true);
+
+        // detectShadow should find it with matching options
+        const shadow = await detectShadow(testDir, {
+          branchName: customBranch,
+          directory: customDir,
+        });
+        expect(shadow).not.toBeNull();
+        expect(shadow?.branchName).toBe(customBranch);
+        expect(shadow?.worktreeDir).toBe(customDirPath);
+      });
     });
   });
 });
