@@ -706,7 +706,7 @@ features:
         created: 2026-02-19T21:41:10.978Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KHVXK26A6DMJ6NY1610Z40TV
         slugs:
           - config-daemon
