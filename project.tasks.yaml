@@ -51136,10 +51136,18 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T06:50:51.314Z
-  notes: []
+  started_at: 2026-02-20T00:06:17.837Z
+  notes:
+    - _ulid: 01KHW5ZTAB3H8FTE3C1KFYE2SV
+      created_at: 2026-02-20T00:07:57.515Z
+      author: "@claude"
+      content: "Starting implementation. Plan: (1) Add _type: 'skill' literal to SkillSchema, (2) Create
+        isSkill() type guard helper, (3) Update getMetaItemType() to use _type, (4) Update all 6
+        call sites to use isSkill(), (5) Update skill creation code to set _type, (6) Add
+        backward-compat parse logic for skills without _type, (7) Write tests."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T00:06:17.837Z
 - _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
   slugs: []
   title: Consolidate meta ref lookup patterns
