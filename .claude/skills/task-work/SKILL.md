@@ -57,7 +57,7 @@ pending → in_progress → pending_review → completed
 
 ## Workflow Overview
 
-10 steps for full task lifecycle:
+11 steps for full task lifecycle:
 
 1. **Check Existing Work** - Inherit in_progress or pending_review tasks first
 2. **Choose Task** - Select from ready tasks (if no existing work)
@@ -65,10 +65,11 @@ pending → in_progress → pending_review → completed
 4. **Start Task** - Mark in_progress
 5. **Work & Note** - Read all ACs (own + trait), implement, add notes
 6. **Commit** - Ensure changes committed with trailers
-7. **Submit Task** - Mark pending_review
-8. **Create PR** - Use /pr skill
-9. **PR Merged** - Wait for review and merge
-10. **Complete Task** - Mark completed after merge
+7. **Local Review** - Run `/local-review` (required quality gate)
+8. **Submit Task** - Mark pending_review
+9. **Create PR** - Use /pr skill
+10. **PR Merged** - Wait for review and merge
+11. **Complete Task** - Mark completed after merge
 
 ## Key Commands
 
@@ -84,6 +85,9 @@ kspec task start @task-slug
 
 # Add notes as you work
 kspec task note @task-slug "What you're doing..."
+
+# Run local review before submit (required)
+/local-review
 
 # Submit for review (pending_review) - code done, PR ready
 kspec task submit @task-slug
@@ -243,7 +247,7 @@ After completing a task:
 
 ## Integration with Other Workflows
 
-- **Before submit**: Consider `/local-review` for quality check
+- **Before submit**: Run `/local-review` (required quality gate)
 - **After submit**: Use `/pr` to create PR
 - **For merge**: Use `@pr-review-merge` workflow
 - **After merge**: Complete the task
@@ -290,18 +294,21 @@ Loop mode is NOT a free pass to:
    kspec task note @task "What you did..."
    ```
 
-5. **Commit and submit**
+5. **Commit and run local review**
    ```bash
    git add <files> && git commit -m "feat/fix: description
 
    Task: @task-slug"
+   ```
+   Then run `/local-review` to verify AC coverage, test quality, and test isolation.
+
+6. **Submit and create PR**
+   ```bash
    kspec task submit @task
    ```
+   Then run `/pr` to create the pull request.
 
-6. **Create PR and stop responding**
-   ```
-   /pr
-   ```
+7. **Stop responding**
    After PR created, **stop responding** (do NOT call any more commands).
    Ralph automatically:
    1. Sends the reflection prompt to you
