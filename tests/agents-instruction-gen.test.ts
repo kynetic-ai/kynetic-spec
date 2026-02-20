@@ -476,10 +476,15 @@ describe('Agent Instruction Generation', () => {
         const filePath = path.join(tempDir, 'kspec-agents.md');
         const content = await fs.readFile(filePath, 'utf-8');
 
-        // Verify quick-start specific content
-        expect(content).toContain('node scripts/bootstrap.cjs');
+        // Verify quick-start specific content (generic, not kspec-repo-specific)
+        expect(content).toContain('kspec init');
+        expect(content).toContain('kspec setup');
         expect(content).toContain('kspec session start');
+        expect(content).toContain('kspec shadow status');
         expect(content).toContain('Essential Rules');
+        // Should NOT contain kspec-repo-specific commands
+        expect(content).not.toContain('bootstrap.cjs');
+        expect(content).not.toContain('npm run dev');
       });
 
       it('should include shadow-branch template content', async () => {
@@ -526,7 +531,9 @@ describe('Agent Instruction Generation', () => {
         // Verify commit-convention specific content
         expect(content).toContain('Task: @task-slug');
         expect(content).toContain('Spec: @spec-ref');
+        // Language-agnostic AC annotation examples (JavaScript and Python)
         expect(content).toContain('// AC: @spec-item ac-N');
+        expect(content).toContain('# AC: @spec-item ac-N');
       });
 
       it('should include ralph-loop template content', async () => {
