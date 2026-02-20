@@ -51206,6 +51206,22 @@
         resolveMetaRef in parser/meta.ts that returns {item, type, ulid} and use it everywhere,
         eliminating the local resolveMetaRefToUlid and inline lookups."
       supersedes: null
+    - _ulid: 01KHW7PSGVSRHZTG6REPBDV7R5
+      created_at: 2026-02-20T00:37:58.939Z
+      author: "@claude"
+      content: |-
+        Implementation complete. Changes:
+        1. Added resolveMetaRef() in parser/meta.ts - unified resolver returning {item, type, ulid}
+        2. Added MetaItemTypeName and ResolvedMetaRef types
+        3. Refactored findMetaItemByRef to use resolveMetaRef internally
+        4. Updated meta.ts resolveMetaRefToUlid to use resolveMetaRef (now just a thin wrapper)
+        5. Updated meta get command to use resolveMetaRef (removed ~40 lines of inline lookups)
+        6. Updated meta set command to use resolveMetaRef (removed ~30 lines of inline lookups)
+        7. Updated meta delete command to use resolveMetaRef (removed ~40 lines of inline lookups)
+        8. Updated meta promote command to use resolveMetaRef (removed ~10 lines of inline lookups)
+        9. Added 9 new tests for resolveMetaRef in skill-meta-type.test.ts
+        All 2824 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHVJ59J39YXKFWAFTJY10YER
