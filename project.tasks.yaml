@@ -53416,4 +53416,15 @@
         boundary), skills (pr-review review-only, task-work fix cycle, local-review subagent),
         workflows (all 4 updated), session context (needs_work in active tasks/stats)."
       supersedes: null
+    - _ulid: 01KHYQCMW6AJPK608BM0ZZ0BKT
+      created_at: 2026-02-20T23:50:32.582Z
+      author: "@claude"
+      content: "Session pickup review: All code (Phase 4), skill (Phase 3), and workflow (Phase 2) changes
+        are committed on main (d9f10c83). Phase 1 spec updates for @pr-review-loop-workflow,
+        @ralph-subagent-spawning, @task-work-loop-workflow are applied (13/13 batch ops). Remaining:
+        Phase 1c - need to create spec item for needs_work task state (ACs for
+        pending_review→needs_work transition, needs_work→in_progress transition, needs_work
+        visibility in task listings). Also missing: test coverage for needs_work transitions (no
+        tests found in tests/ directory)."
+      supersedes: null
   todos: []
