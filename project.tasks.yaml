@@ -53348,26 +53348,27 @@
       supersedes: null
   todos: []
   automation: manual_only
-- title: Separate worker and reviewer roles in ralph loop
+- _ulid: 01KHYP4CQBQP9ZKKFPNYC3FHG4
+  slugs:
+    - separate-worker-reviewer-roles
+  title: Separate worker and reviewer roles in ralph loop
+  type: task
   description: "Clean role separation: workers implement and fix, reviewers review and merge. Add
     needs_work state, fix cycle, local-review subagent. Never merge as worker, never fix as
     reviewer."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - separate-worker-reviewer-roles
   tags:
     - ralph
     - automation
-  depends_on: []
-  _ulid: 01KHYP4CQBQP9ZKKFPNYC3FHG4
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-20T23:28:33.509Z
   notes: []
   todos: []
+  started_at: 2026-02-20T23:28:39.724Z
