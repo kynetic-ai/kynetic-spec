@@ -78,13 +78,16 @@ codex exec \
   review \
   "$(cat <<'PROMPT'
 Also check for:
-- AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
+- Own AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
+- Trait AC coverage: run `kspec item get @spec-ref` to find inherited trait ACs. Each needs test with `// AC: @trait-slug ac-N` annotation
+- Run `kspec validate` — any trait AC coverage warnings are MUST-FIX
 - Spec alignment: implementation matches spec intent
+- Code quality: duplicated logic, ignored shared utilities, inconsistent patterns
 - Test quality: no fluff tests, prefer E2E over unit
 
 After reviewing, post your review to GitHub using `gh pr review <NUMBER>`.
 For inline comments, write a JSON body to /tmp/codex-pr-review-body.json with this structure:
-  {"event":"REQUEST_CHANGES","body":"summary","comments":[{"path":"src/file.ts","line":42,"body":"comment"}]}
+  {"event":"COMMENT","body":"summary","comments":[{"path":"src/file.ts","line":42,"body":"comment"}]}
 Then post: gh api repos/{owner}/{repo}/pulls/<NUMBER>/reviews --method POST --input /tmp/codex-pr-review-body.json
 
 Also write the full review to /tmp/codex-pr-<NUMBER>-review.md
@@ -111,11 +114,14 @@ Review PR #123 in this repository.
    `kspec task get @task-ref` and check acceptance criteria coverage
 4. Review the code for:
    - Correctness and potential bugs
-   - AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
+   - Own AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
+   - Trait AC coverage: run `kspec item get @spec-ref` to find inherited trait ACs (under "Inherited from @trait-slug" sections). Each needs test with `// AC: @trait-slug ac-N` annotation
+   - Run `kspec validate` — trait AC coverage warnings are MUST-FIX
    - Spec alignment: implementation matches spec intent, not just syntax
+   - Code quality: duplicated logic, ignored shared utilities, inconsistent patterns
    - Test quality: no fluff tests, prefer E2E over unit
 5. Write a review body JSON file to /tmp/codex-pr-review-body.json:
-   {"event":"REQUEST_CHANGES","body":"summary","comments":[{"path":"file","line":N,"body":"comment"}]}
+   {"event":"COMMENT","body":"summary","comments":[{"path":"file","line":N,"body":"comment"}]}
    Then post: gh api repos/{owner}/{repo}/pulls/123/reviews --method POST --input /tmp/codex-pr-review-body.json
 6. Also write the full review to /tmp/codex-pr-123-review.md
 
@@ -129,8 +135,10 @@ PROMPT
 ### AC Coverage Check
 
 When a task ref is provided, Codex is instructed to verify:
-- Every spec AC has test coverage via `// AC: @spec-ref ac-N` annotations
-- Missing coverage is flagged as `MUST-FIX`
+- Every own AC has test coverage via `// AC: @spec-ref ac-N` annotations
+- Every inherited trait AC has test coverage via `// AC: @trait-slug ac-N` annotations
+- `kspec validate` shows no trait AC coverage warnings for the spec
+- Missing coverage (own or trait) is flagged as `MUST-FIX`
 - Spec alignment: implementation matches spec intent, not just syntax
 
 ### Integration with /pr-review
@@ -405,3 +413,4 @@ For simple prompts, heredocs work fine. Use prompt-files when prompts are comple
 - Tell Codex to run `kspec` from the project root, not from inside `.kspec/` (same gotcha agents hit)
 - Use `codex exec review` for straightforward diff reviews (has `--base`, `--commit`, `--uncommitted` flags built in)
 - Do NOT use `--full-auto` — it forces `workspace-write` sandbox, overriding `danger-full-access`
+- Do NOT use `REQUEST_CHANGES` review event — reviews are posted from the repo owner's account, and GitHub prohibits requesting changes on your own PR. Use `COMMENT` for findings or `APPROVE` when clean.

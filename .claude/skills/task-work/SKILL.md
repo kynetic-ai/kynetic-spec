@@ -63,7 +63,7 @@ pending → in_progress → pending_review → completed
 2. **Choose Task** - Select from ready tasks (if no existing work)
 3. **Verify Not Done** - Check git history, existing code
 4. **Start Task** - Mark in_progress
-5. **Work & Note** - Add notes during work
+5. **Work & Note** - Read all ACs (own + trait), implement, add notes
 6. **Commit** - Ensure changes committed with trailers
 7. **Submit Task** - Mark pending_review
 8. **Create PR** - Use /pr skill
@@ -105,6 +105,10 @@ git log --oneline -- path/to/relevant/files
 npm test -- --grep "relevant-tests"
 # Review code against acceptance criteria
 # Check coverage is real, not just test.skip()
+
+# Check trait AC coverage (specs inherit ACs from traits)
+kspec item get @spec-ref          # Shows own ACs AND inherited trait ACs
+kspec validate                    # Reports uncovered trait ACs as warnings
 ```
 
 ### Notes Are Context, Not Proof
@@ -122,10 +126,13 @@ Treat verification like a code review: check the actual code and tests against t
 To mark a task complete as "Already implemented", you must:
 
 1. **Run the tests** and see them pass (not skip)
-2. **Verify AC coverage** - each acceptance criterion has a corresponding test
-3. **Check the implementation** matches what the spec requires
+2. **Verify own AC coverage** — each spec AC has a test annotated `// AC: @spec-ref ac-N`
+3. **Verify trait AC coverage** — run `kspec item get @spec-ref` and check "Inherited from @trait-slug" sections. Each inherited AC needs a test annotated `// AC: @trait-slug ac-N`. If the spec has no traits, skip this step.
+4. **Run `kspec validate`** — any "inherited trait AC(s) without test coverage" warnings for your spec are blockers
+5. **Run the full test suite** (`npm test`) — your changes must not break existing tests
+6. **Check the implementation** matches what the spec requires
 
-If tests are skipped, broken, or missing coverage - the task is NOT done. Fix the gaps.
+If tests are skipped, broken, or missing coverage (own OR trait) — the task is NOT done. Fix the gaps.
 
 ## Scope Expansion During Work
 
@@ -162,6 +169,14 @@ Tasks describe expected outcomes, not rigid boundaries. During work, you may dis
 - **"Skipped in CI" as acceptable**: Tests that skip in CI are gaps, not completed work. Either fix the CI issue or document why it's acceptable (with user approval).
 
 - **Automation mode shortcuts**: Automation mode means "make good decisions autonomously" - the same decisions a skilled human would make. It does NOT mean take shortcuts, skip hard problems, or produce placeholder deliverables.
+
+### Implementation Quality
+
+Before submitting, verify your code follows existing patterns:
+
+- **Search for existing utilities before writing new code** — if a helper, formatter, or validator already exists in `src/`, use it. Duplicating existing logic is a review blocker.
+- **Match the style of neighboring files** — naming conventions, error handling patterns, import organization.
+- **Run `npm test` (full suite)** — not just your new tests. Changes that break existing spec or trait AC tests are not shippable.
 
 ## Notes Best Practices
 
