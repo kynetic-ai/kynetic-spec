@@ -52408,10 +52408,20 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-20T05:13:05.740Z
-  notes: []
+  started_at: 2026-02-20T05:39:31.107Z
+  notes:
+    - _ulid: 01KHWS1EV61C1WEDAVPBHWKCZD
+      created_at: 2026-02-20T05:40:54.246Z
+      author: "@claude"
+      content: Added commentOnPRReviewIncomplete() function that uses 'gh pr list' to find the open PR on
+        the current branch and posts a warning comment when the review subagent times out or fails.
+        Called from both the timeout and failure paths in processPendingReviewTasks. The comment
+        warns that the PR was not fully reviewed and recommends manual review before merging. This
+        creates a visible GitHub-level marker that the check-unresolved-comments CI check can
+        surface.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T05:39:31.107Z
 - _ulid: 01KHWQEJDNM6BA4KMMC9A7CVPY
   slugs: []
   title: Review subagent should post structured GitHub review
