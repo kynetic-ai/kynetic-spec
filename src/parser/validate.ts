@@ -1502,9 +1502,12 @@ export async function validate(
   }
 
   // Find and validate task files
+  // Exclude test fixtures which have their own self-contained references
   const taskFiles = await findTaskFiles(ctx.rootDir);
   const specTaskFiles = await findTaskFiles(path.join(ctx.rootDir, "spec"));
-  const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])];
+  const allTaskFiles = [...new Set([...taskFiles, ...specTaskFiles])].filter(
+    (f) => !f.includes("/fixtures/"),
+  );
 
   for (const taskFile of allTaskFiles) {
     if (runSchema) {
