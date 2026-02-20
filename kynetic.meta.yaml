@@ -254,11 +254,12 @@ workflows:
           Use: gh pr view --comments or GitHub UI
           Check for: automated reviews, human reviews, inline comments.
       - type: check
-        content: All review feedback addressed
+        content: All review feedback addressed (post findings, do NOT fix code)
         on_fail: |
-          Fix each issue raised by reviewers.
-          Push changes and wait for re-review if needed.
-          THEN RETURN TO STEP 1 - re-verify CI complete and passing before continuing.
+          Post each finding as an inline PR comment with severity prefix (MUST-FIX:, SHOULD-FIX:, SUGGESTION:).
+          Do NOT fix code yourself — you are a reviewer, not a fixer.
+          If MUST-FIX or SHOULD-FIX found: transition task to needs_work and exit without merging.
+          Use: kspec task needs-work @task-ref --reason "findings summary"
       - type: action
         content: |
           Check for @claude mentions or other requests in comments.
@@ -284,7 +285,8 @@ workflows:
       - type: decision
         content: Ready to merge?
         options:
-          - Yes - all checks green, all reviews addressed, all threads resolved
+          - Yes - all checks green, no MUST-FIX or SHOULD-FIX, all threads resolved
+          - Issues found - kick back to worker (kspec task needs-work @task --reason "...")
           - No - need user approval to merge with known issues
           - Skip - user explicitly said to merge anyway
       - type: action
