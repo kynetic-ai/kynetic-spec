@@ -51713,7 +51713,7 @@
   type: task
   spec_ref: "@config-shadow"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -51821,6 +51821,26 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T02:20:43.193Z
+  closed_reason: |-
+    Merged in PR #419. Implemented configurable shadow branch settings via kspec.config.yaml:
+
+    - shadow.branch: Custom orphan branch name (default: kspec-meta)
+    - shadow.directory: Custom worktree directory (default: .kspec)
+    - shadow.remote: Flexible remote target (named/path/URL)
+
+    All 9 ACs have test coverage:
+    - ac-1: Custom branch name via shadow.branch config
+    - ac-2: Custom directory via shadow.directory config
+    - ac-3: Named remote (e.g., "specs-origin") support
+    - ac-4: Local filesystem path remote support
+    - ac-5: Git URL remote support
+    - ac-6: Error guidance when named remote doesn't exist (added during review)
+    - ac-7: Backward compat - functions use constants when no options
+    - ac-8: Custom directory detection in detectRunningFromShadowWorktree
+    - ac-9: Mismatch detection between config and existing shadow
+
+    17 total tests added covering all ACs.
 - _ulid: 01KHVXK2ZK5HEG1DSJ9VCAE0BK
   slugs:
     - implement-configurable-author-identity
@@ -51830,6 +51850,10 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #419. Implemented configurable author identity via kspec.config.yaml
+    identity.author field. Priority chain: KSPEC_AUTHOR env var > config author > git user > OS
+    user. All 3 ACs have test coverage (9 tests). Updated getAuthor(), createInboxItem(),
+    createObservation(), and all CLI/daemon call sites."
   depends_on:
     - "@implement-project-config-file"
   context: []
@@ -51838,6 +51862,7 @@
   vcs_refs: []
   created_at: 2026-02-19T21:41:11.795Z
   started_at: 2026-02-20T01:54:41.524Z
+  completed_at: 2026-02-20T02:20:14.885Z
   notes:
     - _ulid: 01KHVXK2ZKY0NJFT6VJHVSH0DQ
       created_at: 2026-02-19T21:41:11.795Z
@@ -51892,11 +51917,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T02:20:14.885Z
-  closed_reason: "Merged in PR #419. Implemented configurable author identity via kspec.config.yaml
-    identity.author field. Priority chain: KSPEC_AUTHOR env var > config author > git user > OS
-    user. All 3 ACs have test coverage (9 tests). Updated getAuthor(), createInboxItem(),
-    createObservation(), and all CLI/daemon call sites."
 - _ulid: 01KHVXK39RHF5J1NQ79AE0BRQF
   slugs:
     - implement-configurable-validation-defaults
