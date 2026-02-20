@@ -52631,10 +52631,17 @@
     - test-gap
   vcs_refs: []
   created_at: 2026-02-20T05:13:10.496Z
-  notes: []
+  started_at: 2026-02-20T11:10:46.271Z
+  notes:
+    - _ulid: 01KHXBXNXMAND6VH89A041H4HK
+      created_at: 2026-02-20T11:10:53.364Z
+      author: "@claude"
+      content: "Investigating: @config-daemon ac-4 deprecation warning IS implemented in
+        maybeAutoStartDaemon(). @config-manifest-cleanup ac-4 says 'debug-level deprecation note is
+        logged' but this is NOT implemented - only backward compat parsing exists."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T11:10:46.271Z
 - _ulid: 01KHWQEPZYTAMJ5AK43ET5PFVJ
   slugs: []
   title: Add spec AC for daemon.host configuration
