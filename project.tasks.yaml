@@ -45128,7 +45128,7 @@
   title: Implement Batch Allowed Commands
   type: task
   spec_ref: "@batch-allowed-commands"
-  plan_ref: "@batch-command-execution-via-json"
+  plan_ref: null
   status: completed
   blocked_by: []
   closed_reason: "Merged in PR #322. Implements WeakMap-based command annotation registry
