@@ -1,11 +1,27 @@
 ---
 name: pr-review
-description: Review and merge a PR with quality gates. Verifies AC coverage and spec alignment before merge. Used in subagent context.
+description: Review a PR linked to a kspec task, post findings as inline comments, and merge only when all quality gates pass. You NEVER fix code — you review and comment. If issues found, kick back to worker.
 ---
 
 # PR Review Skill
 
-Review a PR linked to a kspec task, verify quality gates, and merge only if all gates pass. This skill runs in **subagent context** (spawned by ralph). The goal is to find problems and verify quality — not to rubber-stamp merges.
+Review a PR linked to a kspec task, post findings as inline comments, and merge only when all quality gates pass. This skill runs in **subagent context** (spawned by ralph). The goal is to find problems and verify quality — not to rubber-stamp merges.
+
+## Role Boundary
+
+You are a REVIEWER. Your responsibilities:
+- Review code quality, AC coverage (own + trait), spec alignment
+- Post findings as inline PR comments with severity (MUST-FIX:, SHOULD-FIX:, SUGGESTION:)
+- Merge the PR ONLY when all quality gates pass (no MUST-FIX or SHOULD-FIX)
+- Complete the task after merge
+
+You MUST NOT:
+- Fix code issues
+- Push commits to the PR branch
+- Add or modify tests
+- Make any code changes
+
+If you find issues, post them as inline comments and transition the task to needs_work. The worker agent fixes them in the next iteration.
 
 ## Usage
 
@@ -116,14 +132,15 @@ The workflow handles:
 2. Verify spec alignment (implementation matches spec intent)
 3. Review code quality (DRY, consistency, shared code usage)
 4. Verify no regressions (`npm test` passes fully)
-5. Fix issues if found
-6. Wait for CI to pass
-7. **Post a structured GitHub review** (see below)
-8. Merge only if all quality gates pass
+5. Post all findings as inline PR comments (MUST-FIX:, SHOULD-FIX:, SUGGESTION:)
+6. If MUST-FIX or SHOULD-FIX found: transition task to needs_work, exit without merging
+7. Wait for CI to pass
+8. **Post a structured GitHub review** (see below)
+9. Merge only if all quality gates pass (no MUST-FIX or SHOULD-FIX items)
 
 ### REQUIRED: Post a GitHub Review with Inline Comments
 
-Before merging, you MUST post a GitHub review with **inline comments** on specific findings. This creates an actionable audit trail — reviewers and authors can see exactly which lines have issues.
+You MUST post a GitHub review with **inline comments** on specific findings. This creates an actionable audit trail — reviewers and authors can see exactly which lines have issues.
 
 **Step 1: Build a review JSON file with inline comments.**
 
@@ -159,23 +176,50 @@ gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews \
   --input /tmp/pr-review-body.json
 ```
 
+**Review event decision:**
+- **MUST-FIX or SHOULD-FIX present** → use `"event": "COMMENT"`, do NOT merge, transition task to needs_work
+- **Only SUGGESTION or no findings** → use `"event": "APPROVE"`, proceed to merge
+
 **Inline comment guidelines:**
 - Every MUST-FIX finding gets an inline comment on the relevant line
 - Use severity prefix: `**MUST-FIX**:`, `**SHOULD-FIX**:`, `**SUGGESTION**:`
 - For missing AC coverage, comment on the test file where the annotation should be added
 - For code quality issues, comment on the specific line with the problem
-- If issues are found that can't be auto-fixed, use `"event": "COMMENT"` instead of `"APPROVE"` — do NOT use `REQUEST_CHANGES` since the review is posted from the repo owner's account and GitHub prohibits requesting changes on your own PR
+- Do NOT use `REQUEST_CHANGES` since the review is posted from the repo owner's account
 
 **Never merge without posting a review.** Even a brief APPROVE review with no inline comments is better than no review.
+
+### When Issues Are Found (Kick Back to Worker)
+
+If your review finds MUST-FIX or SHOULD-FIX items:
+
+1. Post the review with `"event": "COMMENT"` and inline comments
+2. Transition task: `kspec task needs-work @task-ref --reason "MUST-FIX: <summary>"`
+3. Exit — do NOT merge, do NOT fix code
+
+The worker agent picks up the `needs_work` task in the next iteration and addresses the findings.
 
 ### CRITICAL: CI Re-verification
 
 **After ANY push, you MUST re-verify CI from the beginning.** Prior CI checks are invalidated by new commits. Never merge without fresh CI verification on the current HEAD.
 
-If you push fixes during review:
-1. Wait for CI to complete on the new commits
-2. Verify CI status shows current HEAD (not stale)
-3. Only then proceed to merge
+## Re-review After Fix Cycle
+
+When reviewing a PR that was previously reviewed and had fixes pushed:
+
+1. Review the FULL PR (not just new commits)
+2. Focus feedback on changes since last review
+3. Verify previous MUST-FIX and SHOULD-FIX findings were addressed
+4. Check for regressions introduced by fixes
+5. If all resolved: APPROVE and merge
+6. If issues remain or new issues: post comments, kick back again
+
+## Unfixed SHOULD-FIX Tracking
+
+If a SHOULD-FIX item persists after re-review (worker chose not to fix):
+- Create an inbox item: `kspec inbox add "SHOULD-FIX from PR #N: <description>"`
+- If the issue is well-defined enough: create a task directly
+- This ensures the finding is tracked even if the PR is merged
 
 ## Subagent Context
 
@@ -185,11 +229,13 @@ This skill runs in **ACP subagent context**:
 - No human interaction expected
 - Auto-resolves decisions based on quality gate outcomes
 
+**Role boundary:** This skill reviews and merges. It NEVER fixes code, adds tests, or pushes commits. If issues are found, they are posted as comments and the task is transitioned to needs_work for the worker.
+
 ## Exit Conditions
 
-- **PR merged** - Success, quality gates passed
-- **Quality gates failed** - AC gaps or spec misalignment that couldn't be auto-fixed
-- **CI failed** - Tests don't pass after fixes
+- **PR merged** - Success, quality gates passed (no MUST-FIX or SHOULD-FIX)
+- **Issues found** - Posted as inline comments, task transitioned to needs_work
+- **CI failed** - Tests don't pass
 - **PR not found** - Validation failed, no PR for task
 
 ## Example
@@ -202,11 +248,9 @@ This skill runs in **ACP subagent context**:
 [Starts @pr-review-loop workflow]
 [Runs local review - checks AC coverage]
 [Verifies spec alignment]
-[Waits for CI]
-[Merges PR]
-
-PR #234 merged successfully.
-Task @task-reflect-loop-skill ready for completion.
+[Posts review with findings]
+[If clean: waits for CI, merges PR, completes task]
+[If issues: posts COMMENT review, transitions to needs_work, exits]
 ```
 
 ## Task Completion

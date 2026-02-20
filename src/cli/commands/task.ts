@@ -1070,7 +1070,7 @@ Examples:
 
   // kspec task start <ref>
   markMutating(task.command("start <ref>"))
-    .description("Start working on a task (pending -> in_progress)")
+    .description("Start working on a task (pending|needs_work -> in_progress)")
     .option("--no-sync", "Skip syncing spec implementation status")
     .action(async (ref: string, options) => {
       try {
@@ -1086,7 +1086,7 @@ Examples:
           return;
         }
 
-        if (foundTask.status !== "pending") {
+        if (foundTask.status !== "pending" && foundTask.status !== "needs_work") {
           error(errors.status.cannotStart(foundTask.status));
           process.exit(EXIT_CODES.VALIDATION_FAILED); // Exit code 4 = invalid state
         }
@@ -1449,6 +1449,62 @@ Examples:
         );
       } catch (err) {
         error(errors.failures.updateTask, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec task needs-work <ref>
+  // Reviewer kicks back a task for worker to fix
+  markMutating(task.command("needs-work <ref>"))
+    .description(
+      "Kick task back to worker for fixes (pending_review -> needs_work)",
+    )
+    .requiredOption("--reason <reason>", "Description of issues found")
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        if (foundTask.status !== "pending_review") {
+          error(
+            `Cannot transition task to needs_work from status: ${foundTask.status}. Task must be pending_review.`,
+          );
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // Track fix cycle count from existing kickback notes
+        const existingKickbacks = foundTask.notes.filter((n) =>
+          n.content.includes("[FIX_CYCLE:"),
+        ).length;
+        const cycleNumber = existingKickbacks + 1;
+
+        const note = createNote(
+          `[FIX_CYCLE: ${cycleNumber}] Review findings: ${options.reason}`,
+          getAuthor(ctx.config?.identity?.author),
+        );
+
+        const updatedTask: Task = {
+          ...foundTask,
+          status: "needs_work",
+          notes: [...foundTask.notes, note],
+        };
+
+        await saveTask(ctx, updatedTask);
+        await commitIfShadow(
+          ctx.shadow,
+          "task-needs-work",
+          foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
+          `cycle ${cycleNumber}`,
+        );
+        success(
+          `Kicked back task: ${index.shortUlid(updatedTask._ulid)} (fix cycle ${cycleNumber})`,
+          { task: updatedTask },
+        );
+      } catch (err) {
+        error("Failed to transition task to needs_work", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
