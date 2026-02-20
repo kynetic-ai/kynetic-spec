@@ -51620,6 +51620,18 @@
 
         - _installClaudeCodeStopHook (lines 573-641) marked @deprecated, never called — will remove
       supersedes: null
+    - _ulid: 01KHW8R5XFRYKQ785PGE4AXHJW
+      created_at: 2026-02-20T00:56:12.975Z
+      author: "@claude"
+      content: >-
+        Removed deprecated _installClaudeCodeStopHook function (69 lines). This function was marked
+        @deprecated and never called - it was superseded by installClaudeCodeHooks which handles all
+        hook types.
+
+
+        All 2824 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this
+        change).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHVXK2CPXY1PSFS975MZY6QC
