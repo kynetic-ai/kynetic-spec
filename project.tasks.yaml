@@ -52100,7 +52100,7 @@
   type: task
   spec_ref: "@config-manifest-cleanup"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -52159,6 +52159,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T03:29:36.697Z
+  closed_reason: "Merged in PR #422. Cleaned up dead manifest config blocks: (1) Removed config block
+    template from generateManifest() in init.ts, (2) Removed config block template from
+    generateShadowManifest() in shadow.ts, (3) Added config field as z.any().optional() to
+    ManifestSchema for backward compat, (4) Added deprecation comments for both config and daemon
+    fields. All 4 ACs covered with 8 tests in manifest-cleanup.test.ts."
 - _ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
   slugs:
     - impl-doctor-command
