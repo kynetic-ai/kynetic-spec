@@ -132,7 +132,13 @@ export const ManifestSchema = z.object({
   // Hooks configuration
   hooks: z.record(z.string()).optional(),
 
-  // Daemon configuration
+  // AC: @config-manifest-cleanup ac-2 — backward compat for existing manifests with config block
+  // This field is DEPRECATED — use kspec.config.yaml instead
+  config: z.any().optional(),
+
+  // AC: @config-manifest-cleanup ac-4 — backward compat for existing manifests with daemon block
+  // DEPRECATED: Use kspec.config.yaml daemon settings instead
+  // Kept as explicit optional for backward compat parsing (do not use .passthrough())
   daemon: z.object({
     auto_start: z.boolean().default(true),
     port: z.number().int().min(1).max(65535).default(3456),

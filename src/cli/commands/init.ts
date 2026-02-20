@@ -46,15 +46,6 @@ function generateManifest(projectName: string, singleFile: boolean): string {
     );
   }
 
-  lines.push(
-    `# Configuration`,
-    `config:`,
-    `  validation:`,
-    `    strict_refs: true`,
-    `    require_acceptance: false`,
-    ``,
-  );
-
   return lines.join("\n");
 }
 
