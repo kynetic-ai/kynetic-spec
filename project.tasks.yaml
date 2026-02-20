@@ -53250,5 +53250,12 @@
     - acp-migration
   vcs_refs: []
   created_at: 2026-02-20T19:55:03.581Z
-  notes: []
+  notes:
+    - _ulid: 01KHYA7WMBVHKDE0B37TFY3ASQ
+      created_at: 2026-02-20T20:00:45.195Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Spikes require interactive runtime testing and human
+        judgment on outcomes"
+      supersedes: null
   todos: []
+  automation: manual_only
