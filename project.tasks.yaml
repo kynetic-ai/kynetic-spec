@@ -52719,10 +52719,19 @@
     - skill
   vcs_refs: []
   created_at: 2026-02-20T05:13:12.346Z
-  notes: []
+  started_at: 2026-02-20T11:49:13.977Z
+  notes:
+    - _ulid: 01KHXE5NQ5K3CYQW9B38RE4M7T
+      created_at: 2026-02-20T11:50:12.453Z
+      author: "@claude"
+      content: "Made /local-review mandatory in task-work skill: (1) Updated Workflow Overview from 10 to
+        11 steps, adding step 7 'Local Review', (2) Changed Integration section from 'Consider' to
+        'Run /local-review (required quality gate)', (3) Added /local-review to Key Commands section
+        with '(required)' note, (4) Updated Loop Mode workflow steps to explicitly include running
+        /local-review after commit and before submit."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T11:49:13.977Z
 - _ulid: 01KHWQERS618ZZVC9908ZDTHGY
   slugs: []
   title: Address systemic trait AC testing gap
