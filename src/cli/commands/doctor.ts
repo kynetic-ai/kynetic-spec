@@ -35,11 +35,12 @@ export function registerDoctorCommand(program: Command): void {
         }
 
         // AC: @doctor-command ac-exit-zero, ac-exit-one
+        // AC: @trait-semantic-exit-codes ac-1, ac-2
         // Exit 0 if healthy (no errors, warnings ok), exit 1 if any errors
         if (report.overall.healthy) {
           process.exit(EXIT_CODES.SUCCESS);
         } else {
-          process.exit(EXIT_CODES.VALIDATION_FAILED);
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         if (isJsonMode()) {
