@@ -53405,4 +53405,15 @@
         priority. local-review SKILL.md has subagent invocation section. subagent.ts has role
         boundary in prompt. ralph.ts has getTaskStatus refactor and needs_work handling."
       supersedes: null
+    - _ulid: 01KHYPTJ2DY0XFVFNSZ0CJ5H1A
+      created_at: 2026-02-20T23:40:39.885Z
+      author: "@claude"
+      content: "All code, skill, and workflow changes complete. Remaining: Phase 1 spec updates (AC
+        modifications via kspec batch - shadow branch changes). All 11 files modified, TypeScript
+        compiles clean, test suite passes (2943 pass, 2 pre-existing failures). Changes: schema
+        (needs_work state), CLI (task needs-work command, task start from needs_work), ralph
+        (getTaskStatus refactor, needs_work handling in post-subagent), subagent prompt (role
+        boundary), skills (pr-review review-only, task-work fix cycle, local-review subagent),
+        workflows (all 4 updated), session context (needs_work in active tasks/stats)."
+      supersedes: null
   todos: []
