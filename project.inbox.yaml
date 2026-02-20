@@ -666,3 +666,10 @@ inbox:
     created_at: 2026-02-20T06:13:40.815Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHWWM9CW2H4F94BXKNJ127EA
+    text: "CLI DX: accept tags as alias for tag in batch commands"
+    created_at: 2026-02-20T06:43:36.989Z
+    tags:
+      - dx
+      - cli
+    added_by: "@claude"
