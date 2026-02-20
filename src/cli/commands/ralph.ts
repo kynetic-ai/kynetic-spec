@@ -757,19 +757,23 @@ async function markTaskNeedsReview(
 }
 
 /**
- * Post a comment on the open PR for a task branch, noting incomplete review.
- * Uses `gh pr comment` to find the PR on the current branch and add a warning.
+ * Post a comment on the open PR for a task's branch, noting incomplete review.
+ * Uses `gh pr list --head <branch>` to find the PR and add a warning.
  */
-async function commentOnPRReviewIncomplete(reason: string): Promise<void> {
+async function commentOnPRReviewIncomplete(branch: string, reason: string): Promise<void> {
+  if (!branch || branch === "unknown") {
+    return;
+  }
+
   const prListResult = spawnSync(
     "gh",
-    ["pr", "list", "--state", "open", "--head", getCurrentBranch(process.cwd()) || "", "--json", "number", "--jq", ".[0].number"],
+    ["pr", "list", "--state", "open", "--head", branch, "--json", "number", "--jq", ".[0].number"],
     { encoding: "utf-8", stdio: "pipe" },
   );
 
   const prNumber = prListResult.stdout?.trim();
   if (!prNumber || prListResult.status !== 0) {
-    // No open PR found — may already be merged or on wrong branch
+    // No open PR found — may already be merged or branch has no PR
     return;
   }
 
@@ -951,14 +955,14 @@ async function processPendingReviewTasks(
           task.ref,
           `Subagent timed out after ${timeoutMinutes} minutes`,
         );
-        await commentOnPRReviewIncomplete(`Review subagent timed out after ${timeoutMinutes} minutes for task ${task.ref}.`);
+        await commentOnPRReviewIncomplete(subagentCtx.gitBranch, `Review subagent timed out after ${timeoutMinutes} minutes for task ${task.ref}.`);
         consecutiveFailures.count++;
       } else if (!result.success) {
         // AC: @ralph-subagent-spawning ac-7
         error(
           `${DEFAULT_SUBAGENT_PREFIX} Subagent failed for ${task.ref}: ${result.error}`,
         );
-        await commentOnPRReviewIncomplete(`Review subagent failed for task ${task.ref}: ${result.error}`);
+        await commentOnPRReviewIncomplete(subagentCtx.gitBranch, `Review subagent failed for task ${task.ref}: ${result.error}`);
         consecutiveFailures.count++;
       } else {
         // AC: @ralph-subagent-spawning ac-12 - Verify task was completed
@@ -1125,6 +1129,12 @@ export function registerRalphCommand(program: Command): void {
 
         if (Number.isNaN(maxFailures) || maxFailures < 1) {
           error(errors.usage.maxFailuresPositive);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        const subagentTimeout = parseInt(options.subagentTimeout, 10);
+        if (Number.isNaN(subagentTimeout) || subagentTimeout < 1) {
+          error("--subagent-timeout must be a positive integer (minutes)");
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1326,7 +1336,7 @@ export function registerRalphCommand(program: Command): void {
                 maxRetries,
                 maxFailures,
                 cwd: process.cwd(),
-                subagentTimeout: parseInt(options.subagentTimeout || "20", 10) * 60 * 1000,
+                subagentTimeout: subagentTimeout * 60 * 1000,
               },
               failureTracker,
             );

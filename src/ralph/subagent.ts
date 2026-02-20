@@ -34,7 +34,7 @@ export interface SubagentContext {
  * Configuration for subagent execution.
  */
 export interface SubagentConfig {
-  /** Timeout in milliseconds (default: 10 minutes) */
+  /** Timeout in milliseconds (default: 20 minutes) */
   timeout: number;
   /** Output prefix for distinguishing subagent output */
   outputPrefix: string;
