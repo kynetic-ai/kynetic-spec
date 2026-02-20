@@ -52759,7 +52759,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -52773,7 +52773,11 @@
   notes: []
   todos: []
   automation: eligible
-- title: Clean up existing kspec validate errors
+  started_at: 2026-02-20T09:46:27.472Z
+- _ulid: 01KHWTXF0QZEZ1QVYFAJ2MYV0E
+  slugs: []
+  title: Clean up existing kspec validate errors
+  type: task
   description: >-
     kspec validate currently reports 35 reference errors, mostly pre-existing dangling references
     (@automation-assess, @ralph-end-iteration, @batch-command-execution-via-json, etc.) and test
@@ -52792,22 +52796,19 @@
 
 
     Goal: kspec validate should be clean (zero errors) so new issues are immediately visible.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cleanup
     - spec-system
-  depends_on: []
-  automation: eligible
-  _ulid: 01KHWTXF0QZEZ1QVYFAJ2MYV0E
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-20T06:13:40.503Z
   notes: []
   todos: []
+  automation: eligible
