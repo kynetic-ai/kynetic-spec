@@ -51828,7 +51828,7 @@
   type: task
   spec_ref: "@config-author"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -51892,6 +51892,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T02:20:14.885Z
+  closed_reason: "Merged in PR #419. Implemented configurable author identity via kspec.config.yaml
+    identity.author field. Priority chain: KSPEC_AUTHOR env var > config author > git user > OS
+    user. All 3 ACs have test coverage (9 tests). Updated getAuthor(), createInboxItem(),
+    createObservation(), and all CLI/daemon call sites."
 - _ulid: 01KHVXK39RHF5J1NQ79AE0BRQF
   slugs:
     - implement-configurable-validation-defaults
