@@ -51130,6 +51130,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #415. Added _type: 'skill' discriminant field to SkillSchema for
+    reliable type discrimination. Created isSkill() type guard and updated 6 call sites across
+    skill-crud.ts, skill-diff.ts, and validate.ts. Backward compatible via .default('skill'). Added
+    5 new tests for isSkill() type guard."
   depends_on: []
   context: []
   priority: 3
@@ -51137,6 +51141,7 @@
   vcs_refs: []
   created_at: 2026-02-19T06:50:51.314Z
   started_at: 2026-02-20T00:06:17.837Z
+  completed_at: 2026-02-20T00:30:14.412Z
   notes:
     - _ulid: 01KHW5ZTAB3H8FTE3C1KFYE2SV
       created_at: 2026-02-20T00:07:57.515Z
@@ -51172,11 +51177,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T00:30:14.412Z
-  closed_reason: "Merged in PR #415. Added _type: 'skill' discriminant field to SkillSchema for
-    reliable type discrimination. Created isSkill() type guard and updated 6 call sites across
-    skill-crud.ts, skill-diff.ts, and validate.ts. Backward compatible via .default('skill'). Added
-    5 new tests for isSkill() type guard."
 - _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
   slugs: []
   title: Consolidate meta ref lookup patterns
@@ -51187,7 +51187,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -51198,6 +51198,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-20T00:30:51.804Z
 - _ulid: 01KHVJ59J39YXKFWAFTJY10YER
   slugs: []
   title: Triage skills for core portability
