@@ -349,8 +349,9 @@ workflows:
   - _ulid: 01KFM9X3C64AHJAD6J2YJZ3YA6
     id: local-review
     trigger: manual
-    description: Quality enforcement for pre-PR review. Verifies AC coverage with annotations, test
-      quality (no fluff), E2E preference, and test isolation. Issues are flagged as MUST-FIX.
+    description: "Quality enforcement for pre-PR review. 8-step gate: own AC coverage, trait AC
+      coverage, test quality, test strategy, test isolation, code quality, regression check, and
+      report. Issues flagged as MUST-FIX. The goal is to find problems, not to approve."
     steps:
       - type: action
         content: |
