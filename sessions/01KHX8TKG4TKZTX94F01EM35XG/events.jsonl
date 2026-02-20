@@ -1,0 +1,1 @@
+{"ts":1771582606856,"seq":0,"type":"session.start","session_id":"01KHX8TKG4TKZTX94F01EM35XG","data":{"adapter":"claude-code-acp","maxLoops":30,"maxRetries":3,"maxFailures":3,"maxTasks":1,"yolo":true,"focus":"Do your best, ensure code is high quality and you follow all ACs both main specs and attached traits. Be thorough."}}

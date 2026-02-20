@@ -52759,7 +52759,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -52781,6 +52781,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T10:17:13.568Z
+  closed_reason: "Merged in PR #425. Updated 4 skill files (task-work, local-review, pr-review, codex)
+    to enforce trait AC coverage: added trait AC discovery step, expanded quality gates from 6 to 8,
+    added inline PR comments, fixed REQUEST_CHANGES→COMMENT for self-review limitation, and added
+    code quality checks with regression verification."
 - _ulid: 01KHWTXF0QZEZ1QVYFAJ2MYV0E
   slugs: []
   title: Clean up existing kspec validate errors
