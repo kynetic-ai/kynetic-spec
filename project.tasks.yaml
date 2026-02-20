@@ -53018,7 +53018,10 @@
   created_at: 2026-02-20T19:54:10.420Z
   notes: []
   todos: []
-- title: Bump @agentclientprotocol/sdk to ^0.14.0
+- _ulid: 01KHY9W8TKBKB13B7X0JMY0D3P
+  slugs: []
+  title: Bump @agentclientprotocol/sdk to ^0.14.0
+  type: task
   description: >-
     Bump the ACP SDK version to match what claude-agent-acp@0.18.0 depends on (0.14.1).
 
@@ -53057,20 +53060,113 @@
     3. tsc --noEmit to verify compilation
 
     4. Run test suite
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
+  tags:
+    - acp-migration
+  vcs_refs: []
+  created_at: 2026-02-20T19:54:24.467Z
+  notes: []
+  todos: []
+- title: "Spike: Validate claude-agent-acp 0.18.0 runtime compatibility"
+  description: >-
+    Cannot determine from code analysis alone whether the _meta.claudeCode.* fields survive the
+    MCP-to-native-tools migration in PR #316. Needs runtime testing.
+
+
+    ## Context
+
+
+    PR zed-industries/claude-agent-acp#316 (merged 2026-02-18) removed the custom MCP server that
+    proxied tools and switched to Claude Code's built-in tools. This changes how tool calls flow
+    internally, which could affect the _meta structure on SessionUpdate events.
+
+
+    ## What to validate
+
+
+    1. Install claude-agent-acp@0.18.0 globally
+
+    2. Run a ralph loop (single iteration, simple task) and capture events.jsonl
+
+    3. Check events for these critical fields:
+
+
+    _meta.claudeCode.toolName:
+
+    - Still present on tool_call and tool_call_update events?
+
+    - Value is bare name ("Bash") not MCP-prefixed ("mcp__acp__Bash")?
+
+    - Our normalizeTool() already strips prefixes, so prefix change is safe — but field absence is
+    NOT safe.
+
+
+    _meta.claudeCode.toolResponse:
+
+    - Still present on tool completion events?
+
+    - Still has stdout/stderr structure?
+
+    - Or has it moved to rawOutput / _meta.terminal_output.data?
+
+
+    --dangerously-skip-permissions:
+
+    - Still accepted as a CLI flag?
+
+    - Still skips permission prompts?
+
+
+    session/request_permission:
+
+    - Still sends option.kind = "allow_always" / "allow_once"?
+
+    - Still sends option.optionId field?
+
+
+    4. Check the 0.14.0, 0.15.0, 0.16.0, 0.17.0 changelogs for any other breaking changes between
+    our 0.13.2 and target 0.18.0.
+
+
+    ## Fallback paths already in our code
+
+
+    extractToolName() has 4-level fallback: _meta.claudeCode.toolName -> _meta.toolName -> name ->
+    title
+
+    extractToolOutput() has 3-level fallback: rawOutput -> _meta.claudeCode.toolResponse -> output
+
+
+    If fields moved but data is still present somewhere in the update, our fallbacks may already
+    handle it. The spike should confirm.
+
+
+    ## Outcome
+
+
+    Document which fields changed (if any) and whether our existing fallback chains handle them. If
+    changes needed, create follow-up tasks with specific field mapping updates.
+  type: spike
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
   slugs: []
   tags:
     - acp-migration
   depends_on: []
-  _ulid: 01KHY9W8TKBKB13B7X0JMY0D3P
+  _ulid: 01KHY9WVP1ZSW3CZA2TNYEAYNT
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-20T19:54:24.467Z
+  created_at: 2026-02-20T19:54:43.776Z
   notes: []
   todos: []
