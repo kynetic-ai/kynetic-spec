@@ -658,3 +658,11 @@ inbox:
       - bug
       - plan-import
     added_by: "@claude"
+  - _ulid: 01KHWTXFAFT10MXMNYS06JJNWV
+    text: "kspec validate @spec or @task — targeted validation that checks a single spec/task's AC
+      coverage against codebase. Not full approval, just verifies each AC has at least one // AC:
+      annotation in test files. Would make trait AC gaps immediately visible during task-work. Could
+      be used by local-review skill as a concrete check instead of relying on agent diligence."
+    created_at: 2026-02-20T06:13:40.815Z
+    tags: []
+    added_by: "@claude"

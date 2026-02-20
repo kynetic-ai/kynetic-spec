@@ -52448,6 +52448,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #424. Simplified subagent prompt to data-only delegation to /pr-review
+    skill. Updated skill to require posting structured GitHub review before merge."
   depends_on: []
   context: []
   priority: 3
@@ -52457,6 +52459,7 @@
   vcs_refs: []
   created_at: 2026-02-20T05:13:06.741Z
   started_at: 2026-02-20T05:41:03.436Z
+  completed_at: 2026-02-20T06:05:25.593Z
   notes:
     - _ulid: 01KHWS7SH5X3PJW1F31ETQHCZF
       created_at: 2026-02-20T05:44:21.797Z
@@ -52469,9 +52472,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T06:05:25.593Z
-  closed_reason: "Merged in PR #424. Simplified subagent prompt to data-only delegation to /pr-review
-    skill. Updated skill to require posting structured GitHub review before merge."
 - _ulid: 01KHWQEKAJ87YAK4SP17Q3XMFM
   slugs: []
   title: Fix sync require('fs').statSync() in setup-status.ts
@@ -52729,3 +52729,85 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KHWTXE0XPV2EW6X1BR1Y87SK
+  slugs: []
+  title: Review task-work and pr-review skills for trait AC coverage enforcement
+  type: task
+  description: >-
+    Agents consistently skip trait ACs during implementation and review — 9% trait AC coverage in
+    the config/doctor feature set vs 94% own-AC coverage.
+
+
+    Review and update these skills to explicitly require trait AC coverage:
+
+
+    1. task-work skill (.claude/skills/task-work.md): When implementing, the agent should check
+    inherited trait ACs and write tests for them. Add explicit step or checklist item.
+
+
+    2. pr-review skill (.claude/skills/pr-review/SKILL.md): The AC coverage check should explicitly
+    call out trait ACs as requiring coverage, not just spec-specific ACs. The review agent should
+    flag uncovered trait ACs as MUST-FIX.
+
+
+    3. local-review workflow (@local-review): The AC coverage step should enumerate trait ACs
+    separately and flag gaps.
+
+
+    The goal is making trait ACs impossible to silently skip during the normal task-work and review
+    flow.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - process
+    - skill
+    - ralph
+  vcs_refs: []
+  created_at: 2026-02-20T06:13:39.484Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Clean up existing kspec validate errors
+  description: >-
+    kspec validate currently reports 35 reference errors, mostly pre-existing dangling references
+    (@automation-assess, @ralph-end-iteration, @batch-command-execution-via-json, etc.) and test
+    fixture refs (@test-feature).
+
+
+    Audit each error:
+
+    - If the reference target was renamed, update the reference
+
+    - If the reference target was removed, remove the reference
+
+    - If it's a test fixture ref that shouldn't be validated, mark appropriately
+
+    - If it's a legitimate gap, create a task or inbox item
+
+
+    Goal: kspec validate should be clean (zero errors) so new issues are immediately visible.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cleanup
+    - spec-system
+  depends_on: []
+  automation: eligible
+  _ulid: 01KHWTXF0QZEZ1QVYFAJ2MYV0E
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-20T06:13:40.503Z
+  notes: []
+  todos: []
