@@ -742,3 +742,13 @@ inbox:
     created_at: 2026-02-20T20:11:19.317Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHYDW52QSMT52EJ6FKBF5TWP
+    text: "Explore CLAUDE_CODE_SIMPLE mode for ralph loops — sets minimal system prompt with only Bash,
+      file read, and file edit tools. Disables MCP tools, attachments, hooks, and CLAUDE.md. Could
+      reduce token overhead and speed up startup, but ralph would need to inject all project context
+      (AGENTS.md rules, spec-first workflow, kspec conventions) into the prompt itself instead of
+      relying on Claude Code's built-in mechanisms. Tradeoff: simpler/faster agent vs ralph becomes
+      responsible for all context bootstrapping. Ref: anthropics/claude-code#27019"
+    created_at: 2026-02-20T21:04:14.935Z
+    tags: []
+    added_by: "@claude"
