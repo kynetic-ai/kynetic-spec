@@ -744,6 +744,10 @@ features:
             given: kspec.config.yaml sets daemon.host to '0.0.0.0'
             when: kspec serve start is run
             then: daemon binds to the configured host address
+          - id: ac-6
+            given: KSPEC_DAEMON_HOST env var is set
+            when: config file also sets daemon.host
+            then: env var value takes precedence
         depends_on: []
         implements: []
         relates_to: []
