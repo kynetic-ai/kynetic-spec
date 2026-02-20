@@ -1353,12 +1353,6 @@ project:
 # Module includes
 includes:
   - modules/main.yaml
-
-# Configuration
-config:
-  validation:
-    strict_refs: true
-    require_acceptance: false
 `;
 }
 
