@@ -603,6 +603,9 @@ async function executeAtomic(
   // Set up atomic context
   const savedChalkLevel = chalk.level;
   const savedSpecDir = process.env.KSPEC_SPEC_DIR;
+  const savedBatchProjectRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
+  // AC: @project-config ac-7 — set real project root before redirecting spec dir
+  process.env.KSPEC_BATCH_PROJECT_ROOT = ctx.rootDir;
   process.env.KSPEC_SPEC_DIR = tempDir;
   setBatchMode(true);
   chalk.level = 0;
@@ -680,6 +683,12 @@ async function executeAtomic(
       process.env.KSPEC_SPEC_DIR = savedSpecDir;
     } else {
       delete process.env.KSPEC_SPEC_DIR;
+    }
+    // AC: @project-config ac-7 — restore batch project root env var
+    if (savedBatchProjectRoot !== undefined) {
+      process.env.KSPEC_BATCH_PROJECT_ROOT = savedBatchProjectRoot;
+    } else {
+      delete process.env.KSPEC_BATCH_PROJECT_ROOT;
     }
     // Only remove temp dir if copy-back succeeded (or commands failed)
     if (!copyBackFailed) {
