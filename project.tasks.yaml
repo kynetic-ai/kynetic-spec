@@ -52640,6 +52640,15 @@
         maybeAutoStartDaemon(). @config-manifest-cleanup ac-4 says 'debug-level deprecation note is
         logged' but this is NOT implemented - only backward compat parsing exists."
       supersedes: null
+    - _ulid: 01KHXC8JR6N2TQK7E8WQ17DBGP
+      created_at: 2026-02-20T11:16:50.567Z
+      author: "@claude"
+      content: "Implemented: (1) Added parseManifestWithWarnings() helper in yaml.ts with debug-level
+        deprecation logging for daemon and config blocks. (2) Added CLI test in
+        daemon-config.test.ts verifying warning to stderr. (3) Added debug log tests in
+        manifest-cleanup.test.ts verifying KSPEC_DEBUG=1 output. All 2944 tests pass (1 pre-existing
+        bun compile failure in daemon-executable.test.ts is unrelated)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHWQEPZYTAMJ5AK43ET5PFVJ
