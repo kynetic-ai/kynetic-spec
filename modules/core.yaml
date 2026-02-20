@@ -785,6 +785,9 @@ features:
         traits: []
         notes: []
         created: 2026-02-19T21:41:10.996Z
+        status:
+          maturity: draft
+          implementation: in_progress
     status:
       maturity: draft
       implementation: implemented
