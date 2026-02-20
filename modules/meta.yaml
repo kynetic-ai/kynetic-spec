@@ -1030,6 +1030,23 @@ features:
                 given: all eligible tasks are blocked by dependencies
                 when: agent attempts selection
                 then: workflow exits cleanly with All eligible tasks blocked message
+              - id: ac-10
+                given: worker completes implementation and commits
+                when: before submitting task
+                then: spawns local-review subagent (via Task tool with /local-review skill) to check quality gates
+              - id: ac-11
+                given: local-review subagent finds MUST-FIX issues
+                when: worker evaluates findings
+                then: fixes MUST-FIX issues before submitting; actionable-but-not-now items captured as inbox
+              - id: ac-12
+                given: worker picks up needs_work task
+                when: fix cycle begins
+                then: reads review comments from task notes, fixes MUST-FIX and SHOULD-FIX issues, pushes to PR
+                  branch
+              - id: ac-13
+                given: worker completes fix cycle push
+                when: task submission
+                then: submits task back to pending_review for reviewer re-review
             status:
               maturity: draft
               implementation: implemented
@@ -1111,9 +1128,10 @@ features:
                 when: subagent verifies
                 then: implementation matches spec requirements (not just tests)
               - id: ac-4
-                given: quality check finds MUST-FIX issues
+                given: quality check finds issues
                 when: subagent evaluates
-                then: attempts to fix issues in-place
+                then: posts findings as inline PR comments with severity prefix (MUST-FIX:, SHOULD-FIX:,
+                  SUGGESTION:); does NOT fix code
               - id: ac-5
                 given: changes are pushed
                 when: subagent proceeds
@@ -1127,9 +1145,9 @@ features:
                 when: subagent finishes
                 then: marks task completed with PR reference in note
               - id: ac-8
-                given: issues cannot be resolved
+                given: MUST-FIX or SHOULD-FIX issues found
                 when: subagent evaluates
-                then: "marks task automation: needs_review with explanation"
+                then: does NOT merge; transitions task to needs_work for worker fix cycle
               - id: ac-9
                 given: subagent crashes or times out
                 when: ralph detects failure
@@ -1143,6 +1161,26 @@ features:
                 when: friction is significant (not one-off)
                 then: searches existing observations first, only captures if unique, uses kspec meta observe with
                   [REVIEW SUBAGENT] prefix
+              - id: ac-12
+                given: MUST-FIX or SHOULD-FIX issues found
+                when: merge decision
+                then: merge is blocked; PR not merged
+              - id: ac-13
+                given: only SUGGESTION-level issues found
+                when: merge decision
+                then: PR may be merged; suggestions posted as comments for visibility
+              - id: ac-14
+                given: SHOULD-FIX items remain unfixed after re-review
+                when: reviewer evaluates
+                then: creates inbox item or task tracking the unfixed issue
+              - id: ac-15
+                given: reviewer posts findings
+                when: comment format
+                then: inline comments on specific files/lines via GitHub review API with severity prefix
+              - id: ac-16
+                given: re-review after worker fix cycle
+                when: reviewer scope
+                then: covers full PR but focuses feedback on changes since last review
             status:
               maturity: draft
               implementation: implemented

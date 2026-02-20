@@ -2852,7 +2852,8 @@ features:
           - id: ac-2
             given: subagent spawned
             when: prompt provided
-            then: prompt includes task ref, skill to invoke (/pr-review @task), and context
+            then: prompt includes task ref, skill to invoke (/pr-review @task), context, and explicit
+              review-only role boundary (never fix code)
           - id: ac-3
             given: subagent running
             when: ralph behavior
@@ -2896,6 +2897,10 @@ features:
             when: workflow completes
             then: subagent must complete the task (kspec task complete) before exiting; ralph verifies task is
               completed after subagent success
+          - id: ac-13
+            given: subagent completes review with blocking findings
+            when: subagent exits
+            then: task transitions to needs_work; worker picks it up in next iteration as fix cycle
         status:
           maturity: draft
           implementation: implemented
