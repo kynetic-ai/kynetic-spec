@@ -53073,7 +53073,34 @@
     - acp-migration
   vcs_refs: []
   created_at: 2026-02-20T19:54:24.467Z
-  notes: []
+  notes:
+    - _ulid: 01KHYAV0VBJ0EQNFTQN3W30HC0
+      created_at: 2026-02-20T20:11:12.107Z
+      author: "@claude"
+      content: >-
+        ACP SDK type diff analysis (0.13.0 → 0.14.1):
+
+
+        Of 23 imported types: 19 identical, 2 additive, 2 have bigint→number on unused fields. Zero
+        breaking changes for our code.
+
+
+        New types available after bump:
+
+        - Usage: token counts (input, output, cached, thought, total)
+
+        - UsageUpdate: context window size/used + Cost
+
+        - Cost: cumulative session cost (amount + currency)
+
+
+        These power the new usage_update SessionUpdate variant and PromptResponse.usage field. Could
+        surface in ralph session stats later (token usage per iteration, cumulative cost). Not
+        needed for migration.
+
+
+        Also stabilized: SessionConfigOption types (were experimental). We don't use these.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHY9WVP1ZSW3CZA2TNYEAYNT
