@@ -52100,7 +52100,7 @@
   type: task
   spec_ref: "@config-manifest-cleanup"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -52124,6 +52124,7 @@
         all config reads go through ctx.config (from kspec.config.yaml).
   todos: []
   automation: eligible
+  started_at: 2026-02-20T03:11:49.094Z
 - _ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
   slugs:
     - impl-doctor-command
