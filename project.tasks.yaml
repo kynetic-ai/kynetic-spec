@@ -53293,5 +53293,31 @@
       content: "Automation status set to manual_only: Spikes require interactive runtime testing and human
         judgment on outcomes"
       supersedes: null
+    - _ulid: 01KHYAGR411TWQZ1GHM6WZF46N
+      created_at: 2026-02-20T20:05:35.489Z
+      author: "@claude"
+      content: >-
+        From changelog review — the mock should be tested against these real adapter behaviors:
+
+
+        1. rawOutput field on tool_call_update events (added v0.14.0)
+
+        2. config_option_update SessionNotification (v0.18.0) — mock doesn't emit this
+
+        3. current_mode_update SessionNotification (v0.14.0) — mock doesn't emit this
+
+        4. Edit tool results with {type: "diff"} content blocks (v0.18.0)
+
+        5. Bash results with {type: "terminal"} content blocks when terminal_output capability
+        enabled (v0.18.0)
+
+        6. configOptions array in NewSessionResponse (v0.18.0)
+
+        7. Code fence language changed from sh to console in Bash formatted output (v0.18.0)
+
+
+        Priority items: #1 and #4 affect tool output extraction. #2, #3, #5 are new event types that
+        should be gracefully ignored.
+      supersedes: null
   todos: []
   automation: manual_only
