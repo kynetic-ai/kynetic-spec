@@ -1,0 +1,341 @@
+{
+  "generated_at": "2026-02-20T12:18:05.101Z",
+  "branch": "fix/cleanup-validate-errors",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHWTXF",
+      "title": "Clean up existing kspec validate errors",
+      "started_at": "2026-02-20T12:02:45.444Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 1,
+      "last_note_at": "2026-02-20T12:11:54.997Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHWTXF",
+      "task_title": "Clean up existing kspec validate errors",
+      "task_status": "pending_review",
+      "note_ulid": "01KHXFDD",
+      "created_at": "2026-02-20T12:11:54.997Z",
+      "author": "@claude",
+      "content": "Fixed 35 reference errors: (1) Updated 2 @ralph-end-iteration refs to @ralph-end-loop (spec was renamed), (2) Cleared 3 @batch-command-execution-via-json plan_refs (plan deleted after implementation), (3) Cleared 4 @session-log-analysis-tooling plan_refs (plan deleted), (4) Updated @inbox-set to @inbox-commands (correct spec), (5) Added automation-assess agent to meta for historical note validation, (6) Fixed validate.ts to exclude test fixtures from task file discovery (they have self-contained references). kspec validate --refs now passes with 0 errors."
+    },
+    {
+      "task_ref": "01KHWQEQ",
+      "task_title": "Make /local-review mandatory in task-work skill",
+      "task_status": "completed",
+      "note_ulid": "01KHXE5N",
+      "created_at": "2026-02-20T11:50:12.453Z",
+      "author": "@claude",
+      "content": "Made /local-review mandatory in task-work skill: (1) Updated Workflow Overview from 10 to 11 steps, adding step 7 'Local Review', (2) Changed Integration section from 'Consider' to 'Run /local-review (required quality gate)', (3) Added /local-review to Key Commands section with '(required)' note, (4) Updated Loop Mode workflow steps to explicitly include running /local-review after commit and before submit."
+    },
+    {
+      "task_ref": "01KHWQES",
+      "task_title": "Fix weak doctor ac-exit-zero test",
+      "task_status": "completed",
+      "note_ulid": "01KHXDC6",
+      "created_at": "2026-02-20T11:36:17.994Z",
+      "author": "@claude",
+      "content": "Fixed weak ac-exit-zero test by adding proper assertions: (1) expect(result.exitCode).toBe(0), (2) expect(report.overall.healthy).toBe(true), (3) expect(report.overall.errorCount).toBe(0). Removed misleading comment that suggested the test might not be healthy. The existing test fixtures are sufficient to produce a healthy report (warnings are acceptable). All 27 doctor tests pass."
+    },
+    {
+      "task_ref": "01KHWQEP3",
+      "task_title": "Add deprecation warning tests for config-daemon and manifest-cleanup",
+      "task_status": "completed",
+      "note_ulid": "01KHXC8J",
+      "created_at": "2026-02-20T11:16:50.567Z",
+      "author": "@claude",
+      "content": "Implemented: (1) Added parseManifestWithWarnings() helper in yaml.ts with debug-level deprecation logging for daemon and config blocks. (2) Added CLI test in daemon-config.test.ts verifying warning to stderr. (3) Added debug log tests in manifest-cleanup.test.ts verifying KSPEC_DEBUG=1 output. All 2944 tests pass (1 pre-existing bun compile failure in daemon-executable.test.ts is unrelated)."
+    },
+    {
+      "task_ref": "01KHWQEP3",
+      "task_title": "Add deprecation warning tests for config-daemon and manifest-cleanup",
+      "task_status": "completed",
+      "note_ulid": "01KHXBXN",
+      "created_at": "2026-02-20T11:10:53.364Z",
+      "author": "@claude",
+      "content": "Investigating: @config-daemon ac-4 deprecation warning IS implemented in maybeAutoStartDaemon(). @config-manifest-cleanup ac-4 says 'debug-level deprecation note is logged' but this is NOT implemented - only backward compat parsing exists."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHWQEPZ",
+      "title": "Add spec AC for daemon.host configuration",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "spec-gap"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHWQEQ",
+      "title": "Make /local-review mandatory in task-work skill",
+      "completed_at": "2026-02-20T12:02:09.010Z",
+      "closed_reason": "Merged in PR #431. Made /local-review mandatory in task-work skill by: (1) updating workflow steps from 10 to 11, adding 'Local Review' as step 7, (2) changing Integration section from 'Consider' to 'Run (required quality gate)', (3) adding /local-review to Key Commands with (required) note, (4) updating Loop Mode workflow to explicitly include /local-review after commit and before submit."
+    },
+    {
+      "ref": "01KHWQES",
+      "title": "Fix weak doctor ac-exit-zero test",
+      "completed_at": "2026-02-20T11:48:20.391Z",
+      "closed_reason": "Merged in PR #430. Fixed weak ac-exit-zero test by adding proper assertions: (1) exit code 0, (2) report.overall.healthy === true, (3) errorCount === 0. Added AC annotations linking to @doctor-command ac-exit-zero and @trait-semantic-exit-codes ac-1. All quality gates passed."
+    },
+    {
+      "ref": "01KHWQEP3",
+      "title": "Add deprecation warning tests for config-daemon and manifest-cleanup",
+      "completed_at": "2026-02-20T11:31:07.212Z",
+      "closed_reason": "Merged in PR #429. Added test coverage for deprecation warnings: (1) @config-daemon ac-4 CLI stderr warning test in daemon-config.test.ts, (2) @config-manifest-cleanup ac-4 debug-level logging tests in manifest-cleanup.test.ts with KSPEC_DEBUG=1 verification. Also implemented missing parseManifestWithWarnings() helper in yaml.ts for debug-level deprecation notes. All ACs verified."
+    },
+    {
+      "ref": "01KHWQEN",
+      "title": "Reconcile doctor command exit code with spec",
+      "completed_at": "2026-02-20T11:09:00.829Z",
+      "closed_reason": "Merged in PR #428. Changed doctor command to exit 1 (EXIT_CODES.ERROR) instead of 4 (EXIT_CODES.VALIDATION_FAILED) when health checks fail. This aligns implementation with @doctor-command ac-exit-one and @trait-semantic-exit-codes ac-2. Added trait AC annotations to exit code tests for coverage tracking."
+    },
+    {
+      "ref": "01KHWQEM",
+      "title": "Fix detectRemoteType() for relative paths",
+      "completed_at": "2026-02-20T10:52:37.706Z",
+      "closed_reason": "Merged in PR #427. Fixed detectRemoteType() to recognize '../' prefix as a filesystem path. Added test case for '../relative/path'. All CI checks passed."
+    },
+    {
+      "ref": "01KHWQEK",
+      "title": "Fix sync require('fs').statSync() in setup-status.ts",
+      "completed_at": "2026-02-20T10:34:39.329Z",
+      "closed_reason": "Merged in PR #426. Converted detectAgent() to async and replaced sync require('fs').statSync() with async fs.stat() from node:fs/promises. The change addresses code consistency (async operations), eliminates a blocking call in async context, and improves ESM compatibility. All 2940 tests pass."
+    },
+    {
+      "ref": "01KHWTXE",
+      "title": "Review task-work and pr-review skills for trait AC coverage enforcement",
+      "completed_at": "2026-02-20T10:17:13.568Z",
+      "closed_reason": "Merged in PR #425. Updated 4 skill files (task-work, local-review, pr-review, codex) to enforce trait AC coverage: added trait AC discovery step, expanded quality gates from 6 to 8, added inline PR comments, fixed REQUEST_CHANGES→COMMENT for self-review limitation, and added code quality checks with regression verification."
+    },
+    {
+      "ref": "01KHWQEJ",
+      "title": "Review subagent should post structured GitHub review",
+      "completed_at": "2026-02-20T06:05:25.593Z",
+      "closed_reason": "Merged in PR #424. Simplified subagent prompt to data-only delegation to /pr-review skill. Updated skill to require posting structured GitHub review before merge."
+    },
+    {
+      "ref": "01KHWQEH",
+      "title": "Add merge blocker when review subagent times out",
+      "completed_at": "2026-02-20T06:05:23.184Z",
+      "closed_reason": "Merged in PR #424. Added commentOnPRReviewIncomplete() that posts warning comment on PR when review subagent times out or fails, using task's branch for correct PR lookup."
+    },
+    {
+      "ref": "01KHWQEG",
+      "title": "Increase ralph review subagent timeout",
+      "completed_at": "2026-02-20T06:05:20.637Z",
+      "closed_reason": "Merged in PR #424. Increased DEFAULT_SUBAGENT_TIMEOUT from 10 to 20 minutes, added --subagent-timeout CLI option for configurability."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "dfa4b95",
+      "full_hash": "dfa4b9522b6500569f1960c12b44fca47cc5f87f",
+      "date": "2026-02-20T12:12:08.000Z",
+      "message": "fix: clean up kspec validate reference errors",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "30c2115",
+      "full_hash": "30c2115df67a60f29186d9e7cda64c55aca725a4",
+      "date": "2026-02-20T12:01:56.000Z",
+      "message": "docs: make /local-review mandatory in task-work skill (#431)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a32ddb2",
+      "full_hash": "a32ddb2e759e14c6b5a5c7746efd12dd519cc15c",
+      "date": "2026-02-20T11:50:22.000Z",
+      "message": "docs: make /local-review mandatory in task-work skill",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8443227",
+      "full_hash": "84432275692688a6a45f34dbd2270b8574d38094",
+      "date": "2026-02-20T11:48:09.000Z",
+      "message": "test: fix weak doctor ac-exit-zero test (#430)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3d31e42",
+      "full_hash": "3d31e42fd2daa0ddda3b104a48bcb61cc2716d44",
+      "date": "2026-02-20T11:37:08.000Z",
+      "message": "test: fix weak doctor ac-exit-zero test",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e33b842",
+      "full_hash": "e33b8420cb7f37adb7dc8401bc1a17b70d6bcc96",
+      "date": "2026-02-20T11:30:52.000Z",
+      "message": "test: add deprecation warning tests for config-daemon and manifest-cleanup (#429)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c1c5686",
+      "full_hash": "c1c5686ae1447c7f912cbbe3bfedabb67826cfed",
+      "date": "2026-02-20T11:18:17.000Z",
+      "message": "test: add deprecation warning tests for config-daemon and manifest-cleanup",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4a9218b",
+      "full_hash": "4a9218ba1f470ac7f2da8c8e9ca67834f30312be",
+      "date": "2026-02-20T11:08:49.000Z",
+      "message": "fix: reconcile doctor command exit code with spec (#428)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "5ce6a9b",
+      "full_hash": "5ce6a9b72a5dc604a08fd35199f4a45b4d160f53",
+      "date": "2026-02-20T10:57:36.000Z",
+      "message": "fix: reconcile doctor command exit code with spec",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "56a822e",
+      "full_hash": "56a822eaf7afdebf31d39ac5f5590e55ceddc08d",
+      "date": "2026-02-20T10:52:31.000Z",
+      "message": "fix: handle relative parent paths (..) in detectRemoteType() (#427)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 554,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 18,
+    "blocked": 0,
+    "completed": 518,
+    "inbox_items": 81
+  }
+}
