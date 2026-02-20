@@ -73,6 +73,8 @@ const ValidationConfigSchema = z
 
 /**
  * Schema for daemon configuration.
+ *
+ * AC: @config-daemon — daemon.port, daemon.auto_start configurable
  */
 const DaemonConfigSchema = z
   .object({
@@ -80,6 +82,11 @@ const DaemonConfigSchema = z
     port: z.number().int().min(1).max(65535).optional(),
     /** Host to bind to (default: localhost) */
     host: z.string().optional(),
+    /**
+     * Whether to auto-start daemon when running kspec commands.
+     * AC: @config-daemon ac-3 — auto_start configurable
+     */
+    auto_start: z.boolean().optional(),
   })
   .strict()
   .optional();
@@ -176,6 +183,11 @@ export interface ResolvedKspecConfig {
   daemon: {
     port: number;
     host: string;
+    /**
+     * Whether to auto-start daemon when running kspec commands.
+     * AC: @config-daemon ac-3
+     */
+    auto_start: boolean;
   };
 }
 
@@ -205,6 +217,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   daemon: {
     port: 3456,
     host: "localhost",
+    auto_start: true, // AC: @config-daemon — default auto-start enabled
   },
 };
 
@@ -381,6 +394,8 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         file.daemon?.port ??
         DEFAULT_CONFIG.daemon.port,
       host: envHost ?? file.daemon?.host ?? DEFAULT_CONFIG.daemon.host,
+      // AC: @config-daemon ac-3 — auto_start from config
+      auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
   };
 }
@@ -402,6 +417,10 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       strict_refs: DEFAULT_CONFIG.validation.strict_refs,
       require_acceptance: DEFAULT_CONFIG.validation.require_acceptance,
     },
-    daemon: { ...DEFAULT_CONFIG.daemon },
+    daemon: {
+      port: DEFAULT_CONFIG.daemon.port,
+      host: DEFAULT_CONFIG.daemon.host,
+      auto_start: DEFAULT_CONFIG.daemon.auto_start,
+    },
   };
 }
