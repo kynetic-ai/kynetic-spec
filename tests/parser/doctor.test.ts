@@ -460,6 +460,7 @@ describe("Doctor Command", () => {
 
   describe("CLI integration", () => {
     // AC: @doctor-command ac-exit-zero
+    // AC: @trait-semantic-exit-codes ac-1
     it("exits with code 0 when healthy (via CLI)", async () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
@@ -491,13 +492,14 @@ describe("Doctor Command", () => {
     });
 
     // AC: @doctor-command ac-exit-one
+    // AC: @trait-semantic-exit-codes ac-2
     it("exits with code 1 when errors exist (via CLI)", async () => {
       initGitRepo(tempDir);
       // Don't initialize - this creates errors
 
       const result = kspec("doctor --json", tempDir, { expectFail: true });
 
-      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+      expect(result.exitCode).toBe(1); // ERROR (health check failed)
       const report = JSON.parse(result.stdout) as DoctorReport;
       expect(report.overall.healthy).toBe(false);
     });
