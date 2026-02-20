@@ -53179,6 +53179,42 @@
       content: "Automation status set to manual_only: Spikes require interactive runtime testing and human
         judgment on outcomes"
       supersedes: null
+    - _ulid: 01KHYAGE5GP1A7Q9GWHBYR58Z7
+      created_at: 2026-02-20T20:05:25.298Z
+      author: "@claude"
+      content: >-
+        Additional validation items discovered from changelog review (v0.13.2 → v0.18.0):
+
+
+        1. rawOutput field (v0.14.0): tool_call_update now includes rawOutput. Our
+        extractToolOutput() already checks rawOutput as priority 1 — verify this works correctly
+        with real adapter output.
+
+
+        2. config_option_update events (v0.18.0): New SessionUpdate discriminator value. Our
+        translator's default case returns null for unknown types — should be safe, but verify no
+        crash.
+
+
+        3. current_mode_update events (v0.14.0): Plan mode transitions now emit notifications.
+        Verify our event translator handles these gracefully (should fall through to null).
+
+
+        4. Edit tool diff content blocks (v0.18.0): Edit results now include {type: "diff"} content
+        blocks. Verify extractToolOutput() still extracts output correctly.
+
+
+        5. Bash code fence language (v0.18.0): Changed from ```sh to ```console in formatted output.
+        Check if any ralph rendering or pattern matching depends on this.
+
+
+        6. disallowedTools merge fix (v0.16.0/v0.18.0): User-provided disallowedTools no longer
+        silently dropped. We don't currently pass disallowedTools, but good to know.
+
+
+        7. configOptions in NewSessionResponse (v0.18.0): Session creation response now has
+        configOptions array. Verify our newSession() handling doesn't choke on extra fields.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
