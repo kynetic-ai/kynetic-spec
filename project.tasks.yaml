@@ -52172,7 +52172,7 @@
   type: task
   spec_ref: "@doctor-command"
   plan_ref: "@plan-unified-health-check-command-kspec-doctor"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -52331,3 +52331,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T03:54:31.134Z
+  closed_reason: "Merged in PR #423. Implemented kspec doctor command with unified health checks for
+    shadow branch, setup (hooks, skills, agents.md), and daemon status. Library layer in
+    src/parser/doctor.ts with CLI command in src/cli/commands/doctor.ts. All 14 ACs covered with 27
+    tests. Fixed ac-daemon-unreachable test coverage during PR review."
