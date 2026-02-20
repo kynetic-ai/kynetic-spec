@@ -723,3 +723,11 @@ inbox:
     created_at: 2026-02-20T20:05:43.175Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHYAV7WNK1PC8WC3AQCJV69X
+    text: Surface ACP usage/cost data in ralph session stats — after SDK bump to 0.14.x, new
+      Usage/UsageUpdate/Cost types are available. Could add token usage per iteration and cumulative
+      cost to session log stats and web UI. The usage_update SessionUpdate variant fires during
+      sessions with context window utilization data.
+    created_at: 2026-02-20T20:11:19.317Z
+    tags: []
+    added_by: "@claude"
