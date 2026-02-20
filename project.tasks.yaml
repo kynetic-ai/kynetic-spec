@@ -52109,6 +52109,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T21:41:12.698Z
+  started_at: 2026-02-20T03:11:49.094Z
   notes:
     - _ulid: 01KHVXK3VTZ1YBQP6TAS3C122X
       created_at: 2026-02-19T21:41:12.698Z
@@ -52122,9 +52123,37 @@
         Add config as z.any().optional() to ManifestSchema for backward compat with
         existing manifests that have it. Neither field should be consumed at runtime —
         all config reads go through ctx.config (from kspec.config.yaml).
+    - _ulid: 01KHWGTGK8PQGSVK5TQJSFMW0Y
+      created_at: 2026-02-20T03:17:18.056Z
+      author: "@claude"
+      content: |-
+        Implementation complete. Changes:
+
+        1. **generateManifest() updated** (src/cli/commands/init.ts):
+           - Removed config block template from non-shadow init
+           - AC-1: No config block in generated manifest
+
+        2. **generateShadowManifest() updated** (src/parser/shadow.ts):
+           - Removed config block template from shadow init
+           - AC-1: No config block in generated manifest
+
+        3. **ManifestSchema updated** (src/schema/spec.ts):
+           - Added config field as z.any().optional() for backward compat (AC-2)
+           - Added deprecation comments for both config and daemon fields
+           - daemon field kept explicit (not .passthrough()) per implementation notes
+
+        4. **Tests added** (tests/parser/manifest-cleanup.test.ts):
+           - 8 tests covering all 4 ACs:
+           - AC-1: kspec init generates manifest without config block
+           - AC-2: existing manifests with config block parse successfully (3 tests)
+           - AC-3: kspec init generates manifest without daemon block  
+           - AC-4: existing manifests with daemon block parse successfully (2 tests)
+           - Combined test for both config and daemon
+
+        All 2913 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T03:11:49.094Z
 - _ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
   slugs:
     - impl-doctor-command
