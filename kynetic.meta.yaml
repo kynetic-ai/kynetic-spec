@@ -5955,8 +5955,42 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHWVQNZV7NDDTQB5ADP4FPCW
+    type: friction
+    content: "GitHub blocks REQUEST_CHANGES on own PR. Ralph review subagents operate under the same
+      GitHub credentials as the PR author, so they cannot post REQUEST_CHANGES reviews — only
+      COMMENT. The pr-review skill instructs posting APPROVE or REQUEST_CHANGES, but REQUEST_CHANGES
+      will always fail in self-authored PRs. Need either: (1) a separate GitHub bot account for
+      review agents, or (2) the skill should use COMMENT event with structured review content
+      instead of REQUEST_CHANGES."
+    created_at: 2026-02-20T06:27:59.612Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHWVQP3NBA0YYME4FY9K2T0W
+    type: success
+    content: "Dual-reviewer pattern (Claude agent + Codex) for PR review. Running both in parallel on PR
+      #424 gave convergent findings on the critical branch-lookup bug (independent discovery by
+      both). Codex also caught input validation gap that Claude missed. Different models find
+      different issues — convergent findings give high confidence, divergent findings expand
+      coverage."
+    created_at: 2026-02-20T06:27:59.733Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHWVQP6YEJ0241DN6F4QA54J
+    type: success
+    content: "Parallel review audit pattern: spawning 4 specialized subagents (worker process adherence,
+      review process adherence, code quality, spec/AC coverage) to evaluate a ralph session. Each
+      agent had a focused lens and found complementary issues. Total wall-clock time ~2 min for what
+      would have been 15+ min of sequential analysis."
+    created_at: 2026-02-20T06:27:59.838Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
+    _type: skill
     id: kspec-help
     name: Kspec Help
     description: Get help with kspec commands and workflows
