@@ -52174,6 +52174,10 @@
   plan_ref: "@plan-unified-health-check-command-kspec-doctor"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #423. Implemented kspec doctor command with unified health checks for
+    shadow branch, setup (hooks, skills, agents.md), and daemon status. Library layer in
+    src/parser/doctor.ts with CLI command in src/cli/commands/doctor.ts. All 14 ACs covered with 27
+    tests. Fixed ac-daemon-unreachable test coverage during PR review."
   depends_on: []
   context: []
   priority: 3
@@ -52183,6 +52187,7 @@
   vcs_refs: []
   created_at: 2026-02-19T23:07:25.407Z
   started_at: 2026-02-20T03:29:58.540Z
+  completed_at: 2026-02-20T03:54:31.134Z
   notes:
     - _ulid: 01KHW2Q8H6Z8BXN6X1V4F9G6EE
       created_at: 2026-02-19T23:10:51.430Z
@@ -52331,8 +52336,357 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T03:54:31.134Z
-  closed_reason: "Merged in PR #423. Implemented kspec doctor command with unified health checks for
-    shadow branch, setup (hooks, skills, agents.md), and daemon status. Library layer in
-    src/parser/doctor.ts with CLI command in src/cli/commands/doctor.ts. All 14 ACs covered with 27
-    tests. Fixed ac-daemon-unreachable test coverage during PR review."
+- _ulid: 01KHWQEGBTTCA712K7SJB7CQ1N
+  slugs: []
+  title: Increase ralph review subagent timeout
+  type: task
+  description: >-
+    The DEFAULT_SUBAGENT_TIMEOUT in src/ralph/subagent.ts is 10 minutes, but CI takes ~10 minutes
+    (2900+ tests). The review subagent cannot wait for CI and complete its review within that budget
+    — 5 of 10 review subagents timed out in session 01KHW4RP.
+
+
+    Increase DEFAULT_SUBAGENT_TIMEOUT to at least 20 minutes. The RALPH_PROMPT_TIMEOUT is already 30
+    minutes, so the subagent timeout should be closer to that. Consider making it configurable via
+    ralph config.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - ralph
+    - infra
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:04.633Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEHECGPFNSCHEWF6AQ5Y3
+  slugs: []
+  title: Add merge blocker when review subagent times out
+  type: task
+  description: >-
+    When a ralph review subagent times out, markTaskNeedsReview is called but the PR itself has no
+    GitHub-level blocker. The next iteration's worker or CI auto-merge can merge the PR without any
+    review having occurred.
+
+
+    When a review subagent times out or fails:
+
+    - Add a 'review-pending' label to the PR, OR
+
+    - Post a comment noting the review was incomplete
+
+    - Do not proceed to merge until a review subagent successfully completes
+
+
+    This prevents the rubber-stamp pattern observed in session 01KHW4RP where all 10 PRs merged with
+    zero reviews.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - ralph
+    - infra
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:05.740Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEJDNM6BA4KMMC9A7CVPY
+  slugs: []
+  title: Review subagent should post structured GitHub review
+  type: task
+  description: >-
+    In session 01KHW4RP, zero GitHub reviews were posted across 10 PRs. The
+    check-unresolved-comments CI check passes vacuously when no review threads exist.
+
+
+    The review subagent should post a structured GitHub review (APPROVE or CHANGES_REQUESTED) with a
+    summary of what was verified (AC coverage, test quality, spec alignment). This creates an audit
+    trail and makes the check-unresolved-comments gate meaningful.
+
+
+    Even a short APPROVE review with a checklist of verified items is better than zero reviews.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - ralph
+    - infra
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:06.741Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEKAJ87YAK4SP17Q3XMFM
+  slugs: []
+  title: Fix sync require('fs').statSync() in setup-status.ts
+  type: task
+  description: |-
+    src/parser/setup-status.ts line 84 uses require('fs').statSync() which is:
+    - Inconsistent with the rest of the file which uses async fs from node:fs/promises
+    - A blocking call in an async function
+    - Fragile ESM compatibility
+
+    Replace with await fs.stat(globalClaudeDir) which is already imported at line 10.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cleanup
+    - code-quality
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:07.666Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEM8AP4RGZHQCESHGB2E9
+  slugs: []
+  title: Fix detectRemoteType() for relative paths
+  type: task
+  description: >-
+    src/parser/config.ts detectRemoteType() classifies '../relative/path' as 'named' (a git remote
+    name) which is incorrect. Relative paths like ../ or ./ should be classified as 'path' type,
+    same as absolute paths.
+
+
+    The current detection at line 143 checks for / ./ or ~ prefixes but misses ../ prefix. Add '../'
+    to the path detection pattern. Add tests for this edge case.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - bugfix
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:08.618Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEN6093VQFZHQXEY9NVRQ
+  slugs: []
+  title: Reconcile doctor command exit code with spec
+  type: task
+  description: >-
+    The @doctor-command spec ac-exit-one says 'exit code is 1' when errors exist. The implementation
+    uses EXIT_CODES.VALIDATION_FAILED which is 4. The test at doctor.test.ts line 500 asserts
+    exitCode === 4.
+
+
+    Also @trait-semantic-exit-codes ac-2 defines exit 1 for validation errors.
+
+
+    Either:
+
+    - Update the spec AC to say 'non-zero exit code' instead of 'exit code is 1', OR
+
+    - Change the implementation to use exit code 1
+
+
+    The spec should match reality. Since doctor is a health check (not a validation command), exit 1
+    is more conventional for CLI health checks. Recommend changing implementation to exit 1.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - spec-gap
+    - bugfix
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:09.568Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEP30P7WWVAEZMRJPY12M
+  slugs: []
+  title: Add deprecation warning tests for config-daemon and manifest-cleanup
+  type: task
+  description: >-
+    @config-daemon ac-4 says 'a deprecation warning is emitted recommending migration to
+    kspec.config.yaml' and @config-manifest-cleanup ac-4 says 'a debug-level deprecation note is
+    logged'. Neither is verified in tests.
+
+
+    tests/parser/daemon-config.test.ts verifies config takes precedence over manifest but does NOT
+    verify warning output on stderr.
+
+    tests/parser/manifest-cleanup.test.ts verifies parsing succeeds but does NOT verify deprecation
+    logging.
+
+
+    Add tests that capture stderr/debug output and verify deprecation messages appear when legacy
+    manifest blocks are encountered.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - test-gap
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:10.496Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEPZYTAMJ5AK43ET5PFVJ
+  slugs: []
+  title: Add spec AC for daemon.host configuration
+  type: task
+  description: >-
+    src/parser/config.ts supports daemon.host configuration with KSPEC_DAEMON_HOST env var override
+    (line 364), but no spec AC covers host configurability. The @config-daemon spec only has ACs for
+    port and auto_start.
+
+
+    Either:
+
+    - Add an AC to @config-daemon for host configuration, OR
+
+    - Remove the host config if it was added speculatively without spec coverage
+
+
+    The host config exists in the implementation and is functional, so adding a spec AC is the right
+    path.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 4
+  tags:
+    - spec-gap
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:11.422Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQEQWT7YM5KM6DZ0A431NF
+  slugs: []
+  title: Make /local-review mandatory in task-work skill
+  type: task
+  description: >-
+    The task-work skill says 'Consider /local-review for quality check' which makes it advisory. In
+    session 01KHW4RP, /local-review was skipped on all 10 PRs.
+
+
+    Change the wording from 'consider' to 'run' and make it a required step before kspec task
+    submit. The local-review checks (AC coverage, test quality, test isolation) are the substance of
+    what the review agent would verify, so doing them pre-submit catches issues earlier.
+
+
+    Update .claude/skills/task-work.md accordingly.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - process
+    - skill
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:12.346Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KHWQERS618ZZVC9908ZDTHGY
+  slugs: []
+  title: Address systemic trait AC testing gap
+  type: task
+  description: >-
+    Trait ACs are inherited by specs but rarely tested. In the config/doctor feature set, only ~4/44
+    trait ACs (9%) had test coverage. Traits like @trait-error-guidance (6 ACs), @trait-json-output
+    (6 ACs), and @trait-semantic-exit-codes (8 ACs) define expectations that inheriting specs
+    silently ignore in tests.
+
+
+    Options:
+
+    1. Add a kspec validate check that warns when a spec inherits trait ACs but no test files
+    contain // AC: @spec ac-N annotations for them
+
+    2. Add guidance to the spec skill and task-work skill about testing trait ACs
+
+    3. Generate a trait AC coverage report in /local-review
+
+
+    This is a systemic issue, not specific to one spec. The trait inheritance model promises
+    coverage that isn't being delivered.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - process
+    - spec-system
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:13.254Z
+  notes: []
+  todos: []
+  automation: manual_only
+- title: Fix weak doctor ac-exit-zero test
+  description: >-
+    tests/parser/doctor.test.ts line 462 tests ac-exit-zero but the test comment says 'May not be
+    healthy due to missing skills, but structure is correct.' It does not actually assert
+    report.overall.healthy === true or exitCode === 0.
+
+
+    The test should create sufficient setup artifacts (or mock appropriately) to guarantee a healthy
+    report, then assert both the healthy boolean and exit code 0.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - test-gap
+  depends_on: []
+  automation: eligible
+  _ulid: 01KHWQESQ29G03V88XAPW3HWMS
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-20T05:13:14.210Z
+  notes: []
+  todos: []
