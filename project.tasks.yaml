@@ -42949,7 +42949,7 @@
   slugs: []
   title: Add signal handlers for ralph marker cleanup on Ctrl+C
   type: task
-  spec_ref: "@ralph-end-iteration"
+  spec_ref: "@ralph-end-loop"
   meta_ref: null
   status: completed
   blocked_by: []
