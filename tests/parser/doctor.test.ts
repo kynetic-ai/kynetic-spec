@@ -485,10 +485,14 @@ describe("Doctor Command", () => {
 
       const result = kspec("doctor --json", tempDir);
 
-      // Parse the JSON to verify structure
+      // Parse the JSON and verify healthy status
       const report = JSON.parse(result.stdout) as DoctorReport;
-      expect(report).toHaveProperty("overall");
-      // Note: May not be healthy due to missing skills, but structure is correct
+
+      // AC: @doctor-command ac-exit-zero — exit code 0 when healthy
+      expect(result.exitCode).toBe(0);
+      // AC: @trait-semantic-exit-codes ac-1 — exit 0 indicates success
+      expect(report.overall.healthy).toBe(true);
+      expect(report.overall.errorCount).toBe(0);
     });
 
     // AC: @doctor-command ac-exit-one
