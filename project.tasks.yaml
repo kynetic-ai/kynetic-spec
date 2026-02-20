@@ -51128,7 +51128,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -51139,6 +51139,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-20T00:06:17.837Z
 - _ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
   slugs: []
   title: Consolidate meta ref lookup patterns
@@ -51275,6 +51276,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #414. Generalized agent template sections for consumer projects: (1)
+    01-quick-start.md now uses generic kspec init/setup pattern instead of kspec-repo-specific
+    bootstrap.cjs, added shadow status tip; (2) 05-commit-convention.md now shows language-agnostic
+    AC annotation examples (JavaScript and Python). Tests updated to verify generic content and
+    reject repo-specific commands."
   depends_on: []
   context: []
   priority: 2
@@ -51282,6 +51288,7 @@
   vcs_refs: []
   created_at: 2026-02-19T18:37:14.758Z
   started_at: 2026-02-19T23:47:16.448Z
+  completed_at: 2026-02-20T00:05:45.857Z
   notes:
     - _ulid: 01KHVMED69PGHF3E49DNHWHSV0
       created_at: 2026-02-19T19:01:21.225Z
@@ -51318,12 +51325,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T00:05:45.857Z
-  closed_reason: "Merged in PR #414. Generalized agent template sections for consumer projects: (1)
-    01-quick-start.md now uses generic kspec init/setup pattern instead of kspec-repo-specific
-    bootstrap.cjs, added shadow status tip; (2) 05-commit-convention.md now shows language-agnostic
-    AC annotation examples (JavaScript and Python). Tests updated to verify generic content and
-    reject repo-specific commands."
 - _ulid: 01KHVMJ5202R7VB7FQ68D127N8
   slugs: []
   title: Unified health check combining shadow status and setup status
