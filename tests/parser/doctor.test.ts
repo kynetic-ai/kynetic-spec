@@ -210,6 +210,49 @@ describe("Doctor Command", () => {
     });
   });
 
+  describe("ac-daemon-unreachable", () => {
+    // AC: @doctor-command ac-daemon-unreachable
+    it("shows warning when daemon running but health endpoint unreachable", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // Mock getDaemonStatus to simulate daemon running but health unreachable
+      const daemonStatusModule = await import("../../src/parser/daemon-status.js");
+      const originalGetDaemonStatus = daemonStatusModule.getDaemonStatus;
+
+      vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
+        running: true,
+        pid: 12345,
+        port: 3456,
+        uptime: null,
+        healthReachable: false,
+      });
+
+      try {
+        const report = await getDoctorReport(tempDir);
+
+        // Should have daemon-running check as ok (process is alive)
+        const runningCheck = report.daemon.checks.find(
+          (c) => c.name === "daemon-running"
+        );
+        expect(runningCheck).toBeDefined();
+        expect(runningCheck!.severity).toBe("ok");
+        expect(runningCheck!.message).toContain("PID: 12345");
+
+        // Should have daemon-health check as warning (unreachable)
+        const healthCheck = report.daemon.checks.find(
+          (c) => c.name === "daemon-health"
+        );
+        expect(healthCheck).toBeDefined();
+        expect(healthCheck!.severity).toBe("warning");
+        expect(healthCheck!.message).toContain("unreachable");
+        expect(healthCheck!.guidance).toBeDefined();
+      } finally {
+        vi.restoreAllMocks();
+      }
+    });
+  });
+
   describe("ac-daemon-not-running", () => {
     // AC: @doctor-command ac-daemon-not-running
     it("daemon not running is warning severity, not error", async () => {
