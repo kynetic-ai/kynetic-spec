@@ -53172,8 +53172,15 @@
     - acp-migration
   vcs_refs: []
   created_at: 2026-02-20T19:54:43.776Z
-  notes: []
+  notes:
+    - _ulid: 01KHYA7W5JQCRRAWQA2GH4AANK
+      created_at: 2026-02-20T20:00:44.722Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Spikes require interactive runtime testing and human
+        judgment on outcomes"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
   slugs: []
   title: "Spike: Audit mock completeness vs real adapter behavior"
