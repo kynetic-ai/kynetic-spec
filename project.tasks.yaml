@@ -46393,7 +46393,7 @@
   type: task
   description: Add update/note capability to inbox items - allow 'inbox update @ref --content' or
     'inbox note @ref' to modify/append to items without delete+re-add cycle
-  spec_ref: "@inbox-set"
+  spec_ref: "@inbox-commands"
   status: completed
   blocked_by: []
   closed_reason: "Merged in PR #343. Added inbox set (content/tags) and inbox note commands with full
