@@ -1441,6 +1441,7 @@ describe('Shadow Branch', () => {
       it('detectRemoteType identifies local filesystem path (ac-4)', () => {
         expect(detectRemoteType('/home/user/specs.git')).toBe('path');
         expect(detectRemoteType('./local-repo')).toBe('path');
+        expect(detectRemoteType('../relative/path')).toBe('path');
         expect(detectRemoteType('~/projects/specs')).toBe('path');
       });
 

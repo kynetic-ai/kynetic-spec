@@ -141,8 +141,13 @@ export interface ResolvedShadowRemote {
  * @returns Detected type: "path" for filesystem, "url" for git URLs, "named" for git remote names
  */
 export function detectRemoteType(remote: string): ShadowRemoteType {
-  // AC: ac-4 — Local filesystem path (starts with /, ./, or ~)
-  if (remote.startsWith("/") || remote.startsWith("./") || remote.startsWith("~")) {
+  // AC: ac-4 — Local filesystem path (starts with /, ./, ../, or ~)
+  if (
+    remote.startsWith("/") ||
+    remote.startsWith("./") ||
+    remote.startsWith("../") ||
+    remote.startsWith("~")
+  ) {
     return "path";
   }
   // AC: ac-5 — Git URL (contains :// or starts with git@)
