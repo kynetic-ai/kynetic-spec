@@ -51982,6 +51982,11 @@
         All 2885 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this
         change).
       supersedes: null
+    - _ulid: 01KHWF6M0FNKWZ1JHGJ5YTP980
+      created_at: 2026-02-20T02:48:57.615Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHVXK3JFEDFG9P3SCJS3J2W8
