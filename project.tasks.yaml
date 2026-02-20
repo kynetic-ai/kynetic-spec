@@ -52440,7 +52440,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -52453,6 +52453,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-20T05:41:03.436Z
 - _ulid: 01KHWQEKAJ87YAK4SP17Q3XMFM
   slugs: []
   title: Fix sync require('fs').statSync() in setup-status.ts
