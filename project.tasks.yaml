@@ -53075,6 +53075,7 @@
   created_at: 2026-02-20T19:54:24.467Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KHY9WVP1ZSW3CZA2TNYEAYNT
   slugs: []
   title: "Spike: Validate claude-agent-acp 0.18.0 runtime compatibility"
