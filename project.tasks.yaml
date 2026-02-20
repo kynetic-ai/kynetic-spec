@@ -45662,7 +45662,7 @@
   title: Implement Session Log Show
   type: task
   spec_ref: "@session-log-show"
-  plan_ref: "@session-log-analysis-tooling"
+  plan_ref: null
   status: completed
   blocked_by: []
   closed_reason: |-
