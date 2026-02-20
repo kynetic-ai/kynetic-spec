@@ -40,6 +40,14 @@ agents:
     capabilities: []
     tools: []
     conventions: []
+  - _ulid: 01KHXF79VB6VHX1QRX9W4EKBY9
+    id: automation-assess
+    name: Automation Assess Agent (Historical)
+    description: Historical agent used for automation assessment. No longer active - kept for reference
+      validation of legacy notes.
+    capabilities: []
+    tools: []
+    conventions: []
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
@@ -455,22 +463,35 @@ workflows:
         execution:
           mode: silent
       - type: check
-        content: |
+        content: >
           Verify work is needed - but VALIDATE, don't trust notes.
+
 
           Notes are context, not proof. If a task is in the queue, there's a reason.
 
+
           To mark "Already implemented" you MUST:
+
           1. RUN the tests (npm test) - they must PASS, not skip
+
           2. VERIFY own AC coverage - each spec AC has a test annotated // AC: @spec-ref ac-N
-          3. VERIFY trait AC coverage - each inherited trait AC has a test annotated // AC: @trait-slug ac-N
+
+          3. VERIFY trait AC coverage - each inherited trait AC has a test annotated // AC:
+          @trait-slug ac-N
+
           4. RUN kspec validate - zero trait AC coverage warnings for your spec
+
           5. CHECK implementation matches spec requirements
 
+
           DO NOT mark complete just because:
+
           - Notes say "already done" (verify yourself)
+
           - Tests exist but skip in CI (that's a gap to fix)
+
           - Someone said it was implemented (run the tests)
+
 
           Treat this like a code review - validate the actual work.
         on_fail: |
