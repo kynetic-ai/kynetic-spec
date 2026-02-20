@@ -52681,6 +52681,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #433. Added ac-5 (host from config) and ac-6 (env var override) to
+    @config-daemon spec. Added AC annotations to existing tests in config.test.ts and implementation
+    in config.ts. All 6 ACs now have test coverage."
   depends_on: []
   context: []
   priority: 4
@@ -52689,6 +52692,7 @@
   vcs_refs: []
   created_at: 2026-02-20T05:13:11.422Z
   started_at: 2026-02-20T12:29:52.599Z
+  completed_at: 2026-02-20T12:54:37.311Z
   notes:
     - _ulid: 01KHXGQFSE040TE9W6CNRPE7RK
       created_at: 2026-02-20T12:34:53.358Z
@@ -52699,10 +52703,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T12:54:37.311Z
-  closed_reason: "Merged in PR #433. Added ac-5 (host from config) and ac-6 (env var override) to
-    @config-daemon spec. Added AC annotations to existing tests in config.test.ts and implementation
-    in config.ts. All 6 ACs now have test coverage."
 - _ulid: 01KHWQEQWT7YM5KM6DZ0A431NF
   slugs: []
   title: Make /local-review mandatory in task-work skill
@@ -52944,3 +52944,77 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Rename adapter from claude-code-acp to claude-agent-acp
+  description: >-
+    Zed rebranded @zed-industries/claude-code-acp to @zed-industries/claude-agent-acp (GitHub repo
+    renamed, npm package deprecated at 0.16.2, new package starts at 0.17.0). Update all references.
+
+
+    ## Source files (2 files, ~6 edits)
+
+
+    src/agents/adapters.ts:
+
+    - Registry key: "claude-code-acp" -> "claude-agent-acp"
+
+    - npm args: ["@zed-industries/claude-code-acp"] -> ["@zed-industries/claude-agent-acp"]
+
+    - JSDoc comment and description string
+
+    - resolveAdapter() default: "claude-code-acp" -> "claude-agent-acp"
+
+
+    src/cli/commands/ralph.ts:
+
+    - Line ~1077: --adapter default value
+
+    - Line ~1175: isDefaultAdapter check
+
+    - Line ~1187: yolo guard (options.adapter === "claude-code-acp")
+
+
+    ## Test fixtures (4 files, ~30+ occurrences)
+
+
+    All agent_type fixture values and assertions — use replace_all:
+
+    - tests/session-log-list.test.ts
+
+    - tests/session-log-show.test.ts
+
+    - tests/session-log-stats.test.ts (~20 occurrences)
+
+    - tests/session-log-search.test.ts
+
+
+    ## Spec files
+
+
+    .kspec/modules/cli.yaml has 4 references in descriptions/ACs. Update via kspec CLI.
+
+
+    ## Validation
+
+
+    - All tests pass after rename
+
+    - kspec ralph --adapter claude-agent-acp --dry-run works
+
+    - Existing session logs with old agent_type are historical — no migration needed
+  type: task
+  spec_ref: "@cli-ralph"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - acp-migration
+  depends_on: []
+  _ulid: 01KHY9VV3M13QKK27GMADSHMAV
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-20T19:54:10.420Z
+  notes: []
+  todos: []
