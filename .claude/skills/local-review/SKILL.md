@@ -86,7 +86,7 @@ If a trait AC genuinely does not apply to this spec, annotate it with a reason: 
 
 If the spec has no traits, skip this step.
 
-### 2. Test Quality (MUST-FIX)
+### 3. Test Quality (MUST-FIX)
 
 All tests must properly validate their intended purpose.
 
@@ -102,7 +102,7 @@ All tests must properly validate their intended purpose.
 
 **Litmus test:** Would this test fail if the feature breaks?
 
-### 3. Test Strategy (Advisory)
+### 4. Test Strategy (SUGGESTION)
 
 Prefer end-to-end tests over unit tests.
 
@@ -125,7 +125,7 @@ it('should format task', () => {
 
 Unit tests are okay for complex logic, but E2E proves the feature works.
 
-### 4. Test Isolation (MUST-FIX)
+### 5. Test Isolation (MUST-FIX)
 
 All tests MUST run in temp directories, not the kspec repo.
 
@@ -157,7 +157,7 @@ it('should work', async () => {
 });
 ```
 
-### 5. Code Quality (MUST-FIX)
+### 6. Code Quality (MUST-FIX)
 
 Review the implementation code, not just tests. Assume there is a problem to find.
 
@@ -169,7 +169,7 @@ Review the implementation code, not just tests. Assume there is a problem to fin
 
 Each finding must include `file:line` and a concrete description of what's wrong.
 
-### 6. Regression Check (MUST-FIX)
+### 7. Regression Check (MUST-FIX)
 
 ```bash
 # Run the full test suite — not just new tests
@@ -206,7 +206,7 @@ Review this implementation against the spec @spec-ref. Assume there are problems
 | Tests not isolated | MUST-FIX | Move to temp dirs |
 | Duplicated or inconsistent code | MUST-FIX | Use existing utilities, match patterns |
 | Regression (existing tests broken) | MUST-FIX | Fix before PR |
-| No E2E tests | Advisory | Consider adding |
+| No E2E tests | SUGGESTION | Consider adding |
 
 ## Integration
 
