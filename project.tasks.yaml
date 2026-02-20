@@ -52019,7 +52019,7 @@
   type: task
   spec_ref: "@config-daemon"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -52083,6 +52083,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T03:11:15.933Z
+  closed_reason: "Merged in PR #421. Implemented configurable daemon settings in kspec.config.yaml:
+    daemon.port (AC-1), CLI --port override (AC-2), daemon.auto_start (AC-3), and deprecation
+    warning for manifest daemon block (AC-4). All 4 acceptance criteria have test coverage in
+    tests/parser/daemon-config.test.ts."
 - _ulid: 01KHVXK3VTPG17V59JV1QZBAVP
   slugs:
     - implement-clean-up-dead-manifest-config
