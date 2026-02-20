@@ -9,6 +9,7 @@ import * as path from "node:path";
 import {
   AgentSchema,
   ConventionSchema,
+  isSkill,
   ManifestSchema,
   MetaManifestSchema,
   ObservationSchema,
@@ -1382,9 +1383,8 @@ function validateSkillDependsOn(
           message: `Skill '${skill.id}' depends_on reference '${depRef}' cannot be resolved`,
         });
       } else {
-        // Check that the resolved item is actually a skill (has origin field)
-        const resolvedItem = result.item as { origin?: string };
-        if (!("origin" in resolvedItem)) {
+        // Check that the resolved item is actually a skill (uses _type discriminant)
+        if (!isSkill(result.item)) {
           warnings.push({
             ref: depRef,
             sourceFile: skill._sourceFile,

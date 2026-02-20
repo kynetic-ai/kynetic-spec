@@ -17,6 +17,7 @@ import {
   type Convention,
   ConventionSchema,
   getMetaItemType,
+  isSkill,
   type MetaItem,
   type MetaManifest,
   MetaManifestSchema,
@@ -714,8 +715,8 @@ export async function listSkillSupportingDirs(
   return dirs;
 }
 
-// Re-export the getMetaItemType function
-export { getMetaItemType };
+// Re-export the getMetaItemType and isSkill functions
+export { getMetaItemType, isSkill };
 export type { Agent, Workflow, Convention, Observation, Skill, MetaItem };
 
 // ============================================================

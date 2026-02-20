@@ -13,7 +13,7 @@ import {
   findMetaItemByRef,
   getSkillContentPath,
 } from '../src/parser/meta';
-import { getMetaItemType, MetaManifestSchema, SkillSchema } from '../src/schema/meta';
+import { getMetaItemType, isSkill, MetaManifestSchema, SkillSchema } from '../src/schema/meta';
 import type { KspecContext } from '../src/parser/yaml';
 
 describe('Skill Meta Type', () => {
@@ -379,6 +379,7 @@ Some usage instructions.
     it('should return skill for item with origin field', () => {
       const skill = {
         _ulid: testUlid('SKTYPE'),
+        _type: 'skill' as const,
         id: 'test-skill',
         name: 'Test Skill',
         origin: 'core' as const,
@@ -423,6 +424,7 @@ Some usage instructions.
 
       const skill = {
         _ulid: testUlid('SKTYPE'),
+        _type: 'skill' as const,
         id: 'test-skill',
         name: 'Test Skill',
         origin: 'core' as const,
@@ -434,6 +436,106 @@ Some usage instructions.
       expect(getMetaItemType(convention)).toBe('convention');
       expect(getMetaItemType(observation)).toBe('observation');
       expect(getMetaItemType(skill)).toBe('skill');
+    });
+  });
+
+  describe('isSkill type guard', () => {
+    // AC: @skill-type-guard ac-1 - isSkill returns true for skill items
+    it('should return true for items with _type: skill', () => {
+      const skill = {
+        _ulid: testUlid('SKGARD'),
+        _type: 'skill' as const,
+        id: 'test-skill',
+        name: 'Test Skill',
+        origin: 'core' as const,
+        tags: [],
+      };
+
+      expect(isSkill(skill)).toBe(true);
+    });
+
+    // AC: @skill-type-guard ac-2 - isSkill returns false for non-skill items
+    it('should return false for items without _type: skill', () => {
+      const agent = {
+        _ulid: testUlid('AGSKIP'),
+        id: 'test-agent',
+        name: 'Test Agent',
+        capabilities: [],
+        tools: [],
+        conventions: [],
+      };
+
+      const workflow = {
+        _ulid: testUlid('WFSKIP'),
+        id: 'test-workflow',
+        trigger: 'on command',
+        steps: [],
+      };
+
+      const convention = {
+        _ulid: testUlid('CVSKIP'),
+        domain: 'test-convention',
+        rules: [],
+        examples: [],
+      };
+
+      const observation = {
+        _ulid: testUlid('OBSKIP'),
+        type: 'friction' as const,
+        content: 'Test observation',
+        created_at: new Date().toISOString(),
+        resolved: false,
+      };
+
+      expect(isSkill(agent)).toBe(false);
+      expect(isSkill(workflow)).toBe(false);
+      expect(isSkill(convention)).toBe(false);
+      expect(isSkill(observation)).toBe(false);
+    });
+
+    // AC: @skill-type-guard ac-3 - isSkill handles edge cases safely
+    it('should handle edge cases safely', () => {
+      expect(isSkill(null)).toBe(false);
+      expect(isSkill(undefined)).toBe(false);
+      expect(isSkill('string')).toBe(false);
+      expect(isSkill(123)).toBe(false);
+      expect(isSkill({})).toBe(false);
+      expect(isSkill({ _type: 'agent' })).toBe(false);
+      expect(isSkill({ _type: 'observation' })).toBe(false);
+    });
+
+    // AC: @skill-type-guard ac-4 - isSkill works with parsed schema data
+    it('should work with SkillSchema.parse() output', () => {
+      const skillData = {
+        _ulid: testUlid('SKSHEM'),
+        id: 'schema-test',
+        name: 'Schema Test Skill',
+        origin: 'project' as const,
+      };
+
+      const parsed = SkillSchema.parse(skillData);
+      expect(isSkill(parsed)).toBe(true);
+      expect(parsed._type).toBe('skill');
+    });
+
+    // AC: @skill-type-guard ac-5 - backward compatibility with origin field
+    it('should correctly identify skill items that have origin but were parsed through schema', () => {
+      // Items without _type but with origin need to be parsed through schema to get _type
+      const rawSkillData = {
+        _ulid: testUlid('SKBACK'),
+        id: 'backward-compat',
+        name: 'Backward Compatible Skill',
+        origin: 'local' as const,
+        // No _type field - simulating old YAML file
+      };
+
+      // Before parsing, isSkill returns false (no _type)
+      expect(isSkill(rawSkillData)).toBe(false);
+
+      // After parsing through schema, isSkill returns true
+      const parsed = SkillSchema.parse(rawSkillData);
+      expect(isSkill(parsed)).toBe(true);
+      expect(parsed._type).toBe('skill');
     });
   });
 });
