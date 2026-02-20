@@ -53074,7 +53074,10 @@
   created_at: 2026-02-20T19:54:24.467Z
   notes: []
   todos: []
-- title: "Spike: Validate claude-agent-acp 0.18.0 runtime compatibility"
+- _ulid: 01KHY9WVP1ZSW3CZA2TNYEAYNT
+  slugs: []
+  title: "Spike: Validate claude-agent-acp 0.18.0 runtime compatibility"
+  type: spike
   description: >-
     Cannot determine from code analysis alone whether the _meta.claudeCode.* fields survive the
     MCP-to-native-tools migration in PR #316. Needs runtime testing.
@@ -53153,20 +53156,87 @@
 
     Document which fields changed (if any) and whether our existing fallback chains handle them. If
     changes needed, create follow-up tasks with specific field mapping updates.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - acp-migration
+  vcs_refs: []
+  created_at: 2026-02-20T19:54:43.776Z
+  notes: []
+  todos: []
+- title: "Spike: Audit mock completeness vs real adapter behavior"
+  description: >-
+    The ACP test mock (tests/mocks/acp-mock.js) is minimal and may not reflect real adapter behavior
+    after the upgrade. Needs assessment.
+
+
+    ## Current mock limitations
+
+
+    1. Only emits agent_message_chunk — never sends tool_call, tool_call_update, agent_thought_chunk
+    events
+
+    2. No empty-string finalization signal (real Claude Code sends content.text === "" to signal
+    stream end)
+
+    3. Permission handling only tested indirectly via mock's mirrored logic
+
+    4. No _meta.claudeCode.* fields in emitted events (tool name/output extraction untested at
+    integration level)
+
+    5. SessionUpdate discriminator values hardcoded as strings, not validated against SDK types
+
+
+    ## What to investigate
+
+
+    1. Run a real ralph session and capture events.jsonl
+
+    2. Compare the real SessionUpdate structures against what the mock emits
+
+    3. Identify gaps: which real event patterns are NOT covered by mock or unit tests?
+
+    4. Specifically check:
+       - tool_call events: do they have _meta.claudeCode.toolName in the real adapter?
+       - tool_call_update events: do they have rawOutput or _meta.claudeCode.toolResponse?
+       - Does the real adapter send duplicate tool_call events (the "alreadyCached" pattern from PR #316)?
+       - Are there new SessionUpdate variants (e.g. usage_update) that the translator should handle?
+
+    ## Outcome
+
+
+    Either:
+
+    - The mock is sufficient and unit tests in ralph.test.ts cover the gaps (likely)
+
+    - Or create tasks to extend the mock and/or add integration test scenarios
+
+
+    ## Note
+
+
+    This can be combined with the runtime compatibility spike if convenient — both require running a
+    real ralph session. But the focus here is on test coverage, not adapter compatibility.
   type: spike
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
+  priority: 3
   slugs: []
   tags:
     - acp-migration
   depends_on: []
-  _ulid: 01KHY9WVP1ZSW3CZA2TNYEAYNT
+  _ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-20T19:54:43.776Z
+  created_at: 2026-02-20T19:55:03.581Z
   notes: []
   todos: []
