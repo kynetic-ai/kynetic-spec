@@ -571,13 +571,12 @@ workflows:
   - _ulid: 01KFRX0S3VBZGV72A17E21AB9E
     id: pr-review-loop
     trigger: loop-pr-review
-    description: |
-      PR review subagent workflow for loop mode. Runs local review, verifies AC coverage
-      and spec alignment, fixes issues, waits for CI, and merges with quality gates.
-      Sequential execution (ralph waits).
-
-      CRITICAL: After ANY push, must re-verify CI passes before merge. Prior CI checks
-      are invalidated by new commits. Never assume prior green CI is still valid.
+    description: "PR review subagent workflow for loop mode. Runs local review (own + trait AC coverage,
+      code quality), verifies spec alignment, reviews code quality, checks for regressions, fixes
+      issues, waits for CI, posts structured GitHub review with inline comments, and merges with
+      quality gates. The goal is to find problems and verify quality — not to rubber-stamp merges.
+      Sequential execution (ralph waits). CRITICAL: After ANY push, must re-verify CI passes before
+      merge."
     steps:
       - type: action
         content: |
