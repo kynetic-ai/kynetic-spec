@@ -52182,6 +52182,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-19T23:07:25.407Z
+  started_at: 2026-02-20T03:29:58.540Z
   notes:
     - _ulid: 01KHW2Q8H6Z8BXN6X1V4F9G6EE
       created_at: 2026-02-19T23:10:51.430Z
@@ -52276,6 +52277,52 @@
 
         - getGitRoot() — src/parser/shadow.ts
       supersedes: null
+    - _ulid: 01KHWJ2G70479CVV6AHSH2F6F4
+      created_at: 2026-02-20T03:39:08.384Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. **src/parser/doctor.ts (NEW)** - Library layer with getDoctorReport() function
+           - DoctorReport type with shadow, setup, daemon, and overall sections
+           - Each check includes severity (ok/warning/error), message, and guidance
+           - AC annotations for all 14 acceptance criteria
+
+        2. **src/parser/daemon-status.ts (NEW)** - Extracted daemon status checking
+           - getDaemonStatus() probes PID file, verifies process, checks health endpoint
+           - AC: ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
+
+        3. **src/parser/setup-status.ts (NEW)** - Extracted setup status checking
+           - getSetupStatus() checks hooks, skills, agents.md, seeding
+           - AC: ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-staleness-unknown
+
+        4. **src/cli/commands/doctor.ts (NEW)** - CLI command wrapper
+           - Formats report for human-readable output
+           - Supports --json flag for JSON output (AC-12)
+           - Exit code 0 when healthy, 1 when errors (AC-13, AC-14)
+
+        5. **src/cli/commands/setup.ts (MODIFIED)**
+           - Added 'unknown' to agentsMd.status type (AC-11)
+           - Fixed false-positive: now returns 'unknown' instead of 'current' when hash cannot be computed
+           - Updated status display to handle 'unknown' status
+
+        6. **src/cli/commands/index.ts** - Added registerDoctorCommand export
+
+        7. **src/cli/index.ts** - Wired registerDoctorCommand registration
+
+
+        8. **tests/parser/doctor.test.ts (NEW)** - 26 tests covering all 14 ACs
+           - Tests for git repo check (AC-1)
+           - Tests for not initialized (AC-2)
+           - Tests for shadow healthy (AC-3)
+           - Tests for setup hooks (AC-4) and skills/agents.md (AC-5)
+           - Tests for daemon running (AC-6), unreachable (AC-7), not running (AC-8)
+           - Tests for overall verdict (AC-9)
+           - Tests for partial init (AC-10) and staleness unknown (AC-11)
+           - Tests for JSON output (AC-12) and exit codes (AC-13, AC-14)
+
+        All 2939 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-20T03:29:58.540Z
