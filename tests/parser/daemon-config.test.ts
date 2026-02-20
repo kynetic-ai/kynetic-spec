@@ -18,7 +18,7 @@ import {
   KspecConfigSchema,
 } from "../../src/parser/config.js";
 import { initContext } from "../../src/parser/yaml.js";
-import { createTempDir, cleanupTempDir, initGitRepo } from "../helpers/cli.js";
+import { createTempDir, cleanupTempDir, initGitRepo, kspec } from "../helpers/cli.js";
 import { stringify } from "yaml";
 
 describe("Daemon Config", () => {
@@ -281,6 +281,32 @@ daemon:
       // manifest.daemon should still have old values (for deprecation warning)
       expect(ctx.manifest?.daemon?.port).toBe(5000);
       expect(ctx.manifest?.daemon?.auto_start).toBe(true);
+    });
+
+    // AC: @config-daemon ac-4 — CLI emits deprecation warning to stderr
+    it("CLI emits deprecation warning when manifest has daemon block", async () => {
+      // Write manifest with daemon block
+      await fs.writeFile(
+        path.join(tempDir, "kynetic.yaml"),
+        stringify({
+          kynetic: "1.0",
+          project: { name: "Test Project" },
+          daemon: {
+            auto_start: false,
+            port: 5000,
+          },
+        })
+      );
+
+      // Run a CLI command that triggers maybeAutoStartDaemon()
+      // Using 'validate' since it doesn't require init and loads context
+      const result = kspec("validate", tempDir, { expectFail: true });
+
+      // Should contain the deprecation warning in stderr
+      expect(result.stderr).toContain('Manifest "daemon" block is deprecated');
+      expect(result.stderr).toContain("Migrate to kspec.config.yaml");
+      expect(result.stderr).toContain("port: 5000");
+      expect(result.stderr).toContain("auto_start: false");
     });
   });
 
