@@ -45009,7 +45009,7 @@
   title: Implement Batch Command Schema
   type: task
   spec_ref: "@batch-command-schema"
-  plan_ref: "@batch-command-execution-via-json"
+  plan_ref: null
   status: completed
   blocked_by: []
   closed_reason: "Merged in PR #321. Implemented batch command schema (Zod schemas for BatchCommand
