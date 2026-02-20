@@ -51926,6 +51926,28 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Merged in PR #420. Implemented configurable validation defaults via kspec.config.yaml:
+
+
+    - validation.strict_refs: When false, dangling refs are warnings instead of errors (default:
+    true)
+
+    - validation.require_acceptance: When true, missing AC is an error instead of warning (default:
+    false)
+
+    - CLI --strict flag continues to override config for orphans/staleness
+
+
+    All 4 ACs covered with annotated tests (7 tests in validate-config.test.ts):
+
+    - ac-1: require_acceptance promotes missing AC to errors
+
+    - ac-2: strict_refs treats dangling refs as errors
+
+    - ac-3: strict_refs: false treats dangling refs as warnings  
+
+    - ac-4: CLI --strict overrides config strict_refs: false
   depends_on:
     - "@implement-project-config-file"
   context: []
@@ -51934,6 +51956,7 @@
   vcs_refs: []
   created_at: 2026-02-19T21:41:12.120Z
   started_at: 2026-02-20T02:21:10.178Z
+  completed_at: 2026-02-20T02:50:02.772Z
   notes:
     - _ulid: 01KHVXK39RNBWJ4C1YJKXGNASB
       created_at: 2026-02-19T21:41:12.121Z
@@ -51989,29 +52012,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T02:50:02.772Z
-  closed_reason: >-
-    Merged in PR #420. Implemented configurable validation defaults via kspec.config.yaml:
-
-
-    - validation.strict_refs: When false, dangling refs are warnings instead of errors (default:
-    true)
-
-    - validation.require_acceptance: When true, missing AC is an error instead of warning (default:
-    false)
-
-    - CLI --strict flag continues to override config for orphans/staleness
-
-
-    All 4 ACs covered with annotated tests (7 tests in validate-config.test.ts):
-
-    - ac-1: require_acceptance promotes missing AC to errors
-
-    - ac-2: strict_refs treats dangling refs as errors
-
-    - ac-3: strict_refs: false treats dangling refs as warnings  
-
-    - ac-4: CLI --strict overrides config strict_refs: false
 - _ulid: 01KHVXK3JFEDFG9P3SCJS3J2W8
   slugs:
     - implement-configurable-daemon-settings
@@ -52019,7 +52019,7 @@
   type: task
   spec_ref: "@config-daemon"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -52043,6 +52043,7 @@
         manages its own daemon and must NOT be changed.
   todos: []
   automation: eligible
+  started_at: 2026-02-20T02:51:22.680Z
 - _ulid: 01KHVXK3VTPG17V59JV1QZBAVP
   slugs:
     - implement-clean-up-dead-manifest-config
