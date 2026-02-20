@@ -51646,7 +51646,7 @@
   type: task
   spec_ref: "@project-config"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -51701,6 +51701,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-20T01:26:49.390Z
+  closed_reason: "Merged in PR #418. Implemented project config file (kspec.config.yaml) with shadow
+    branch settings, identity settings, validation settings, and daemon settings. Config is loaded
+    before shadow detection and available on KspecContext.config. Env vars take precedence over file
+    values. All 7 ACs covered with 24 tests."
 - _ulid: 01KHVXK2PHRWMC9J3BQVRGZTM9
   slugs:
     - implement-configurable-shadow-branch

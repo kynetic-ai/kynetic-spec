@@ -1,0 +1,358 @@
+{
+  "generated_at": "2026-02-20T00:57:42.880Z",
+  "branch": "refactor/setup-tech-debt-cleanup",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHVNNW",
+      "title": "Clean up setup.ts tech debt — dedup, legacy render, error handling",
+      "started_at": "2026-02-20T00:52:22.747Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-02-20T00:56:12.975Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHVNNW",
+      "task_title": "Clean up setup.ts tech debt — dedup, legacy render, error handling",
+      "task_status": "pending_review",
+      "note_ulid": "01KHW8R5",
+      "created_at": "2026-02-20T00:56:12.975Z",
+      "author": "@claude",
+      "content": "Removed deprecated _installClaudeCodeStopHook function (69 lines). This function was marked @deprecated and never called - it was superseded by installClaudeCodeHooks which handles all hook types.\n\nAll 2824 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this change)."
+    },
+    {
+      "task_ref": "01KHVNNW",
+      "task_title": "Clean up setup.ts tech debt — dedup, legacy render, error handling",
+      "task_status": "pending_review",
+      "note_ulid": "01KHW8HH",
+      "created_at": "2026-02-20T00:52:35.775Z",
+      "author": "@claude",
+      "content": "Audit findings: Task description mentions 3 clusters of tech debt. Checking each:\n\n1. **Code duplication in setup pipeline** — ALREADY FIXED in PR #405 (Setup Pipeline Unification):\n   - setup.ts now uses generateAgentsContent() from agents.ts (lines 1273-1280)\n   - Core skill installation imports from skill.ts (lines 1324-1421)\n   - Uses getRenderer() registry, not legacy renderClaudeCodeSkill\n\n2. **Legacy render path** — ALREADY FIXED in PR #405:\n   - renderSkillsForSetup uses getRenderer() (lines 1162-1229)\n   - AC comment at line 1164 confirms: 'uses getRenderer/getAllRenderers, not legacy renderClaudeCodeSkill'\n\n3. **Error handling and staleness** — ALREADY FIXED in PRs #405 and #408:\n   - All 27 catch blocks have debugLog() calls\n   - getSetupStatus properly computes currentHash and compares with stored hash (lines 1079-1115)\n\n**Remaining dead code:**\n- _installClaudeCodeStopHook (lines 573-641) marked @deprecated, never called — will remove"
+    },
+    {
+      "task_ref": "01KHTAMX",
+      "task_title": "Consolidate meta ref lookup patterns",
+      "task_status": "completed",
+      "note_ulid": "01KHW7PS",
+      "created_at": "2026-02-20T00:37:58.939Z",
+      "author": "@claude",
+      "content": "Implementation complete. Changes:\n1. Added resolveMetaRef() in parser/meta.ts - unified resolver returning {item, type, ulid}\n2. Added MetaItemTypeName and ResolvedMetaRef types\n3. Refactored findMetaItemByRef to use resolveMetaRef internally\n4. Updated meta.ts resolveMetaRefToUlid to use resolveMetaRef (now just a thin wrapper)\n5. Updated meta get command to use resolveMetaRef (removed ~40 lines of inline lookups)\n6. Updated meta set command to use resolveMetaRef (removed ~30 lines of inline lookups)\n7. Updated meta delete command to use resolveMetaRef (removed ~40 lines of inline lookups)\n8. Updated meta promote command to use resolveMetaRef (removed ~10 lines of inline lookups)\n9. Added 9 new tests for resolveMetaRef in skill-meta-type.test.ts\nAll 2824 tests pass."
+    },
+    {
+      "task_ref": "01KHTAMX",
+      "task_title": "Consolidate meta ref lookup patterns",
+      "task_status": "completed",
+      "note_ulid": "01KHW7BQ",
+      "created_at": "2026-02-20T00:31:56.577Z",
+      "author": "@claude",
+      "content": "Audit complete. Found: (1) findMetaItemByRef in parser/meta.ts (already exported, returns LoadedMetaItem | undefined); (2) resolveMetaRefToUlid local to meta.ts (returns {ulid, type}); (3) 15+ inline .find() lookups in meta.ts duplicating logic. Solution: Create resolveMetaRef in parser/meta.ts that returns {item, type, ulid} and use it everywhere, eliminating the local resolveMetaRefToUlid and inline lookups."
+    },
+    {
+      "task_ref": "01KHTAMT",
+      "task_title": "Add discriminant field for skill type guards",
+      "task_status": "completed",
+      "note_ulid": "01KHW6JZ",
+      "created_at": "2026-02-20T00:18:25.139Z",
+      "author": "@claude",
+      "content": "Implementation complete. Changes:\n1. Added _type: z.literal('skill').default('skill') to SkillSchema\n2. Created isSkill() type guard function in src/schema/meta.ts\n3. Updated getMetaItemType() to use isSkill() instead of 'origin' in item check\n4. Updated 6 call sites: validate.ts (1), skill-diff.ts (2), skill-crud.ts (3) to use isSkill()\n5. Backward compatibility via .default('skill') - existing YAML without _type gets it added during parse\n6. Added 5 new tests for isSkill() type guard with edge cases\n7. Updated 2 existing tests to include _type in skill test objects\nAll 2814 tests pass."
+    },
+    {
+      "task_ref": "01KHTAMT",
+      "task_title": "Add discriminant field for skill type guards",
+      "task_status": "completed",
+      "note_ulid": "01KHW5ZT",
+      "created_at": "2026-02-20T00:07:57.515Z",
+      "author": "@claude",
+      "content": "Starting implementation. Plan: (1) Add _type: 'skill' literal to SkillSchema, (2) Create isSkill() type guard helper, (3) Update getMetaItemType() to use _type, (4) Update all 6 call sites to use isSkill(), (5) Update skill creation code to set _type, (6) Add backward-compat parse logic for skills without _type, (7) Write tests."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHVXK2C",
+      "title": "Implement Project Config File",
+      "priority": 3,
+      "spec_ref": "@project-config",
+      "tags": []
+    },
+    {
+      "ref": "01KHW2GZA",
+      "title": "Implement kspec doctor command",
+      "priority": 3,
+      "spec_ref": "@doctor-command",
+      "tags": [
+        "cli",
+        "dx"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHTAMX",
+      "title": "Consolidate meta ref lookup patterns",
+      "completed_at": "2026-02-20T00:49:05.659Z",
+      "closed_reason": "Merged in PR #416. Added resolveMetaRef() as unified resolver in parser/meta.ts, consolidating 12+ duplicated inline lookup patterns across meta.ts commands (get, set, delete, promote). Reduced ~120 lines of duplicated code and added 9 tests for the new resolver."
+    },
+    {
+      "ref": "01KHTAMT",
+      "title": "Add discriminant field for skill type guards",
+      "completed_at": "2026-02-20T00:30:14.412Z",
+      "closed_reason": "Merged in PR #415. Added _type: 'skill' discriminant field to SkillSchema for reliable type discrimination. Created isSkill() type guard and updated 6 call sites across skill-crud.ts, skill-diff.ts, and validate.ts. Backward compatible via .default('skill'). Added 5 new tests for isSkill() type guard."
+    },
+    {
+      "ref": "01KHVK28",
+      "title": "Generalize agent template sections for consumer projects",
+      "completed_at": "2026-02-20T00:05:45.857Z",
+      "closed_reason": "Merged in PR #414. Generalized agent template sections for consumer projects: (1) 01-quick-start.md now uses generic kspec init/setup pattern instead of kspec-repo-specific bootstrap.cjs, added shadow status tip; (2) 05-commit-convention.md now shows language-agnostic AC annotation examples (JavaScript and Python). Tests updated to verify generic content and reject repo-specific commands."
+    },
+    {
+      "ref": "01KHQQV7",
+      "title": "Implement: Guard Script and Diff Quality",
+      "completed_at": "2026-02-19T04:51:17.064Z",
+      "closed_reason": "Merged in PR #412. Guard script now uses dual-view matching (UNQUOTED + STRIPPED + FIRST_CMD) to prevent false positives on quoted patterns while blocking split-quote bypass attempts. Hand-rolled diff replaced with 'diff' library. readFileSync converted to async. structuredClone added before skill mutation. All spec ACs covered with annotated tests."
+    },
+    {
+      "ref": "01KHQQV4",
+      "title": "Implement: Skill Module Split",
+      "completed_at": "2026-02-19T00:11:22.366Z",
+      "closed_reason": "Merged in PR #411. Split 2349-line skill.ts into skill-crud.ts (931 lines), skill-install.ts (495 lines), skill-diff.ts (992 lines) with thin orchestrator. Extracted renderSkillBase() in skill-render.ts eliminating ~100 lines of renderer duplication. All 236 tests pass with full AC coverage (15 dedicated tests for ac-1/ac-2/ac-3). Backward API compatibility verified via re-exports."
+    },
+    {
+      "ref": "01KHSC4W",
+      "title": "Implement: Skill Drift Detection Improvements",
+      "completed_at": "2026-02-18T23:02:40.326Z",
+      "closed_reason": "Merged in PR #410. AC-1: sidecar YAML included in codex drift hash. AC-2: kspec skill verify command with actionable guidance. Codex review feedback addressed (hash gating fix, JSON output fix). 7 new tests."
+    },
+    {
+      "ref": "01KHQQV1",
+      "title": "Implement: New Project Bootstrapping",
+      "completed_at": "2026-02-18T22:24:55.304Z",
+      "closed_reason": "Merged in PR #409. Permission and memory seeding added to setup pipeline with cross-platform support, safe JSON handling, and 28 tests."
+    },
+    {
+      "ref": "01KHQQTY",
+      "title": "Implement: Cross-Platform and Version Robustness",
+      "completed_at": "2026-02-18T17:57:07.893Z",
+      "closed_reason": "Merged in PR #408. All 5 ACs implemented: CRLF-safe frontmatter parsing/stripping, null version detection, setup staleness with template hash comparison, case-insensitive base directory matching. 16 tests, all review findings addressed."
+    },
+    {
+      "ref": "01KHQQTV",
+      "title": "Implement: Setup Pipeline Unification",
+      "completed_at": "2026-02-18T14:44:43.592Z",
+      "closed_reason": "Merged in PR #405. Follow-up fixes for Codex review in PR #406. All 5 ACs implemented: setup uses generateAgentsContent from agents.ts, platform renderer registry, single runSetupPipeline code path, debug logging on all catch blocks, init --setup and setup use same pipeline."
+    },
+    {
+      "ref": "01KHQQTR",
+      "title": "Implement: Dead Code and Deduplication Sweep",
+      "completed_at": "2026-02-18T07:35:14.175Z",
+      "closed_reason": "Merged in PR #403. Removed dead code (SkillRenderResult, SkillStatusResult, getSkillSyncStatus, toKebabCase, EXPECTED_TEMPLATES), deduplicated utilities (contentsEqual, directoriesEqual, copyDirectory now imported from skill-render.ts), and removed redundant manual defaults in skill add/import/install. Net -218 lines. All 5 ACs covered with annotated tests."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "770f4f6",
+      "full_hash": "770f4f6a4a5b63397d9cd21b48c2fe9b04ddcd8b",
+      "date": "2026-02-20T00:56:27.000Z",
+      "message": "refactor: remove deprecated _installClaudeCodeStopHook dead code",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4cace5e",
+      "full_hash": "4cace5e5391d31ddf87df9b7bc02b368567968f9",
+      "date": "2026-02-20T00:48:55.000Z",
+      "message": "feat: consolidate meta ref lookup patterns into unified resolver (#416)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fb04a07",
+      "full_hash": "fb04a0725a6bf113f5d7d4b6fcba2212ce68d30b",
+      "date": "2026-02-20T00:38:26.000Z",
+      "message": "feat: consolidate meta ref lookup patterns into unified resolver",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1ad5762",
+      "full_hash": "1ad576259a4e0566113d5e176221f206bada13c9",
+      "date": "2026-02-20T00:30:03.000Z",
+      "message": "feat: add discriminant field for skill type guards (#415)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "55d566d",
+      "full_hash": "55d566d88cb427497dea00d8ddf86be3ea27daba",
+      "date": "2026-02-20T00:18:52.000Z",
+      "message": "feat: add discriminant field for skill type guards",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4caf40d",
+      "full_hash": "4caf40dd323202c7ea3013ca7202cc218fd40602",
+      "date": "2026-02-20T00:05:37.000Z",
+      "message": "feat: generalize agent template sections for consumer projects (#414)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3210379",
+      "full_hash": "3210379ad83a6edbb822c3a616e63f81342c65a3",
+      "date": "2026-02-19T23:54:57.000Z",
+      "message": "feat: generalize agent template sections for consumer projects",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e3c10a7",
+      "full_hash": "e3c10a7a1351ab960fc7c20185842185675800fe",
+      "date": "2026-02-19T17:08:13.000Z",
+      "message": "feat: enrich conventions with intro paragraph and good/bad examples (#413)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "44223d8",
+      "full_hash": "44223d8886b1bbfd9a9eb6a67d4012c2e9c39bb4",
+      "date": "2026-02-19T16:56:54.000Z",
+      "message": "fix: strip existing conventions from fixture before appending test data",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bc3f0a3",
+      "full_hash": "bc3f0a34fd1896a91fb932da2782fd3c3ebcd7e4",
+      "date": "2026-02-19T16:49:05.000Z",
+      "message": "fix: address Codex review — AC annotation, E2E staleness test, hash normalization",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 541,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 18,
+    "blocked": 0,
+    "completed": 500,
+    "inbox_items": 75
+  }
+}
