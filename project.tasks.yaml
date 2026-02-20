@@ -51587,6 +51587,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #417. Removed deprecated _installClaudeCodeStopHook function (70 lines
+    of dead code). The function was marked @deprecated and never called - it was superseded by
+    installClaudeCodeHooks which handles all hook types. Audit confirmed that other tech debt items
+    from the task description were already addressed in previous PRs (#405 and #408)."
   depends_on: []
   context: []
   priority: 3
@@ -51594,6 +51598,7 @@
   vcs_refs: []
   created_at: 2026-02-19T19:22:54.536Z
   started_at: 2026-02-20T00:52:22.747Z
+  completed_at: 2026-02-20T01:07:26.792Z
   notes:
     - _ulid: 01KHW8HHSZX9VS4173J9ZGESAC
       created_at: 2026-02-20T00:52:35.775Z
@@ -51634,11 +51639,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T01:07:26.792Z
-  closed_reason: "Merged in PR #417. Removed deprecated _installClaudeCodeStopHook function (70 lines
-    of dead code). The function was marked @deprecated and never called - it was superseded by
-    installClaudeCodeHooks which handles all hook types. Audit confirmed that other tech debt items
-    from the task description were already addressed in previous PRs (#405 and #408)."
 - _ulid: 01KHVXK2CPXY1PSFS975MZY6QC
   slugs:
     - implement-project-config-file
@@ -51646,7 +51646,7 @@
   type: task
   spec_ref: "@project-config"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -51675,6 +51675,7 @@
         root to config loading before redirecting spec dir.
   todos: []
   automation: eligible
+  started_at: 2026-02-20T01:08:05.836Z
 - _ulid: 01KHVXK2PHRWMC9J3BQVRGZTM9
   slugs:
     - implement-configurable-shadow-branch
