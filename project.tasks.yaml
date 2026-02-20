@@ -51648,6 +51648,10 @@
   plan_ref: "@plan-project-level-configuration-system"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #418. Implemented project config file (kspec.config.yaml) with shadow
+    branch settings, identity settings, validation settings, and daemon settings. Config is loaded
+    before shadow detection and available on KspecContext.config. Env vars take precedence over file
+    values. All 7 ACs covered with 24 tests."
   depends_on: []
   context: []
   priority: 3
@@ -51655,6 +51659,7 @@
   vcs_refs: []
   created_at: 2026-02-19T21:41:11.190Z
   started_at: 2026-02-20T01:08:05.836Z
+  completed_at: 2026-02-20T01:26:49.390Z
   notes:
     - _ulid: 01KHVXK2CPBR3BD8BVHTBPV3AA
       created_at: 2026-02-19T21:41:11.190Z
@@ -51701,11 +51706,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-20T01:26:49.390Z
-  closed_reason: "Merged in PR #418. Implemented project config file (kspec.config.yaml) with shadow
-    branch settings, identity settings, validation settings, and daemon settings. Config is loaded
-    before shadow detection and available on KspecContext.config. Env vars take precedence over file
-    values. All 7 ACs covered with 24 tests."
 - _ulid: 01KHVXK2PHRWMC9J3BQVRGZTM9
   slugs:
     - implement-configurable-shadow-branch
@@ -51713,7 +51713,7 @@
   type: task
   spec_ref: "@config-shadow"
   plan_ref: "@plan-project-level-configuration-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-project-config-file"
@@ -51756,6 +51756,7 @@
         config and warn on mismatch rather than silently using stale settings.
   todos: []
   automation: eligible
+  started_at: 2026-02-20T01:27:46.585Z
 - _ulid: 01KHVXK2ZK5HEG1DSJ9VCAE0BK
   slugs:
     - implement-configurable-author-identity
