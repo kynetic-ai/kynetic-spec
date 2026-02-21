@@ -4663,7 +4663,7 @@ runs:
   - _ulid: 01KHYTAEFK2GS528NHJRFYJ119
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-21T00:41:46.228Z
     step_results:
@@ -4698,5 +4698,10 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-21T00:42:48.723Z
-        completed_at: 2026-02-21T00:42:48.723Z
+        completed_at: 2026-02-21T00:48:00.286Z
+        notes: User approved both. Captured 2 inbox items and 1 success observation via batch.
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-21T00:48:00.286Z
+        completed_at: 2026-02-21T00:48:00.286Z
     initiated_by: "@claude"
