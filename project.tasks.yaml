@@ -54041,3 +54041,22 @@
   created_at: 2026-02-21T07:35:25.659Z
   notes: []
   todos: []
+- title: Whitespace existing
+  description: valid
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - ws
+  tags: []
+  depends_on: []
+  _ulid: 01KHZMQ8YTV97DQ12GGR7SGJQX
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T08:23:09.530Z
+  notes: []
+  todos: []
