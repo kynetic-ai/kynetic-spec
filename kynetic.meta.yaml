@@ -1092,6 +1092,15 @@ conventions:
       - Playwright E2E tests excluded from vitest — run separately with npm run test:e2e
       - E2E fixtures are SEPARATE from unit test fixtures — never mix them
     examples: []
+  - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
+    domain: development
+    rules:
+      - Use node scripts/bootstrap.cjs for first-time setup or any session
+      - Use kspec for all commands; only use npm run dev -- when testing uncommitted code changes
+      - "Daemon default port 3456, health check: GET /api/health"
+      - E2E tests manage their own daemon — do NOT start one manually
+      - Web UI dev server on port 5173, connects to daemon on 3456
+    examples: []
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
     type: idea
