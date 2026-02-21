@@ -53840,9 +53840,11 @@
   slugs: []
   title: "Write core skill: kspec:writing-specs"
   type: task
-  description: Refactor the spec skill into kspec:writing-specs. Covers spec item authoring — modules,
-    features, requirements, acceptance criteria (Given/When/Then), traits. Rewrite from base
-    principles — what does an agent need to write good specs? Update manifest.yaml.
+  description: Refactor the spec skill into kspec:writing-specs. Read current content from
+    .claude/skills/spec/SKILL.md as reference. Covers spec item authoring — modules, features,
+    requirements, acceptance criteria (Given/When/Then), traits. Rewrite from base principles — what
+    does an agent need to write good specs? Write to templates/skills/writing-specs/SKILL.md
+    (rendered to .claude/skills/kspec/writing-specs/). Add entry to manifest.yaml.
   spec_ref: null
   meta_ref: null
   plan_ref: null
