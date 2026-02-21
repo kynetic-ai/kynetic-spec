@@ -6137,18 +6137,5 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
-skills:
-  - _ulid: 01KJ113C2XMKKVWNV2DQFW9JBR
-    _type: skill
-    id: help
-    name: Kspec Help
-    description: Get help with kspec commands and workflows
-    origin: core
-    version: 0.1.2
-    platforms:
-      - claude-code
-    depends_on: []
-    tags:
-      - core
-    allowed_tools: []
+skills: []
 includes: []
