@@ -51352,6 +51352,15 @@
 
         - Next: /spec-plan to spec out namespace support and create the core skills
       supersedes: null
+    - _ulid: 01KHZGQYSH68NZBAQH68MXW1HA
+      created_at: 2026-02-21T07:13:37.585Z
+      author: "@claude"
+      content: "Clarification: namespace support is NOT a code change — Claude Code natively supports
+        nested skill dirs (.claude/skills/kspec/help/SKILL.md → /kspec:help). No schema or parser
+        work needed. Work is: create core SKILL.md files, update kspec setup to install them, purge
+        project-specific refs from shared docs. Awaiting user decision on whether to spec-plan or
+        start writing directly."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVK28M6TAWG0YV55XYMM33D
