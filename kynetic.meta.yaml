@@ -6120,6 +6120,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHZBEEVJXMQ6TYQCP2584JKT
+    type: success
+    content: "Spec-before-implement pattern: adding ac-6 to @agent-instruction-gen before coding the
+      noop behavior made test coverage natural and caught the right contract upfront."
+    created_at: 2026-02-21T05:41:03.474Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     _type: skill
