@@ -814,3 +814,12 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
+  - _ulid: 01KJ11KQKZ9R8NJ64RXH9AVKHV
+    text: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
+      generateSkillsTable() in agent-data-sections.ts doesn't account for namespace rendering of
+      core skills
+    created_at: 2026-02-21T21:27:39.391Z
+    tags:
+      - agents
+      - bug
+    added_by: "@claude"
