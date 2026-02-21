@@ -402,6 +402,8 @@ features:
             given: a task is kicked back to needs_work multiple times
             when: the fix cycle count in notes is tracked
             then: each kickback increments the FIX_CYCLE counter in the task note
+        status:
+          implementation: implemented
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
