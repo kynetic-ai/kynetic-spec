@@ -54001,7 +54001,7 @@
     status, spec context, and notes — but not the description. Critical for triage and automation
     where descriptions carry context that specs/notes do not."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -54022,6 +54022,9 @@
         text output includes/excludes description appropriately."
       supersedes: null
   todos: []
+  completed_at: 2026-02-21T14:43:55.118Z
+  closed_reason: "Merged in PR #439. Added task description display in formatTaskDetails() with
+    whitespace-only guard. Two new AC-annotated tests."
 - _ulid: 01KHZHZW6VKAK6MDAG3BVC10Q5
   slugs: []
   title: Test description display
@@ -54041,21 +54044,21 @@
   created_at: 2026-02-21T07:35:25.659Z
   notes: []
   todos: []
-- title: Whitespace existing
-  description: valid
+- _ulid: 01KHZMQ8YTV97DQ12GGR7SGJQX
+  slugs:
+    - ws
+  title: Whitespace existing
   type: task
+  description: valid
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs:
-    - ws
-  tags: []
-  depends_on: []
-  _ulid: 01KHZMQ8YTV97DQ12GGR7SGJQX
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-21T08:23:09.530Z
   notes: []
