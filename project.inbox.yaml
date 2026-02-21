@@ -805,3 +805,12 @@ inbox:
       - tasks
       - bug
     added_by: "@claude"
+  - _ulid: 01KJ0K9CEX5EJYT9YYA9D04GX7
+    text: "inbox promote missing --slug option: cannot set task slug during promotion, must use default
+      auto-generated slug. Add --slug <slug> option to inbox promote command."
+    created_at: 2026-02-21T17:17:20.221Z
+    tags:
+      - cli
+      - dx
+      - reflection
+    added_by: "@claude"
