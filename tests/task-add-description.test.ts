@@ -82,6 +82,27 @@ describe('Integration: task add --description', () => {
     expect(task.description).toBe(specialDesc);
   });
 
+  it('should display description in text output of task get', () => {
+    kspec(
+      'task add --title "Text Output Task" --description "Visible in text output" --slug text-desc-test',
+      tempDir
+    );
+
+    const output = kspec('task get @text-desc-test', tempDir);
+    expect(output).toContain('Description');
+    expect(output).toContain('Visible in text output');
+  });
+
+  it('should not display description section when description is absent', () => {
+    kspec(
+      'task add --title "No Desc Task" --slug no-desc-text-test',
+      tempDir
+    );
+
+    const output = kspec('task get @no-desc-text-test', tempDir);
+    expect(output).not.toContain('Description');
+  });
+
   // AC: @spec-task-add-description ac-5
   it('should include description in JSON output', () => {
     const desc = 'Test description for JSON';
