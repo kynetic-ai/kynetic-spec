@@ -342,6 +342,24 @@ export function registerAgentsCommands(program: Command): void {
         const outputPath = path.join(ctx.rootDir, GENERATED_FILE_NAME);
         const hashPath = path.join(ctx.rootDir, ".kspec", HASH_FILE_NAME);
 
+        // AC: @agent-instruction-gen ac-6 - skip regeneration when content unchanged
+        if (!dryRun) {
+          const status = await checkAgentStatus(ctx.rootDir, metaHash);
+          if (status.status === "current") {
+            output(
+              {
+                path: outputPath,
+                status: "current",
+                skipped: true,
+              },
+              () => {
+                success(`${GENERATED_FILE_NAME} is already up to date`);
+              },
+            );
+            return;
+          }
+        }
+
         // AC: @trait-dry-run ac-3 - clear indication this is a preview
         if (dryRun) {
           output(
