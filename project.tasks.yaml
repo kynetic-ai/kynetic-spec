@@ -53359,7 +53359,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -53449,3 +53449,8 @@
         PR #434."
       supersedes: null
   todos: []
+  completed_at: 2026-02-21T00:39:59.237Z
+  closed_reason: "Merged in PR #434. Added needs_work task state for review-to-worker fix cycle. All
+    code, spec (including @01KHYRCW needs-work-state with 7 ACs), workflow, skill, template, and
+    test changes complete. 9 integration tests, all passing. Reviewed by both pr-review subagent and
+    Codex."
