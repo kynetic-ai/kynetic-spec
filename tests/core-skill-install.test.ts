@@ -34,7 +34,7 @@ describe('Core Skill Installation', () => {
 
       // Check skill was created
       const skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const coreSkill = skills.find((s) => s.id === 'kspec-help');
 
       expect(coreSkill).toBeDefined();
       expect(coreSkill?.origin).toBe('core');
@@ -44,7 +44,7 @@ describe('Core Skill Installation', () => {
       kspecFull('skill install-core', tempDir);
 
       const skills = kspecJson<{ id: string; tags?: string[] }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const coreSkill = skills.find((s) => s.id === 'kspec-help');
 
       expect(coreSkill?.tags).toContain('core');
     });
@@ -56,18 +56,18 @@ describe('Core Skill Installation', () => {
       kspecFull('skill install-core', tempDir);
 
       // Note: In test fixtures (non-shadow mode), skills are at tempDir/skills/ not tempDir/.kspec/skills/
-      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
+      const skillMdPath = path.join(tempDir, 'skills', 'kspec-help', 'SKILL.md');
       const content = await fs.readFile(skillMdPath, 'utf-8');
 
       // Check content was copied (matches the template content)
-      expect(content).toContain('# kspec CLI Map');
-      expect(content).toContain('kspec help');
+      expect(content).toContain('# kspec Help');
+      expect(content).toContain('Get help with kspec commands');
     });
 
     it('should create skill directory if it does not exist', async () => {
       kspecFull('skill install-core', tempDir);
 
-      const skillDir = path.join(tempDir, 'skills', 'help');
+      const skillDir = path.join(tempDir, 'skills', 'kspec-help');
       const stat = await fs.stat(skillDir);
       expect(stat.isDirectory()).toBe(true);
     });
@@ -78,19 +78,19 @@ describe('Core Skill Installation', () => {
     it('should skip existing custom/project origin skills', async () => {
       // First create a custom skill with the same ID
       kspecFull(
-        'skill add --id help --name "My Custom Help" --description "Custom version" --origin project',
+        'skill add --id kspec-help --name "My Custom Help" --description "Custom version" --origin project',
         tempDir
       );
 
       // Try to install core skills
       const result = kspecFull('skill install-core', tempDir);
       expect(result.stdout).toContain('Skipped');
-      expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain('kspec-help');
       expect(result.stdout).toContain('use --force to overwrite');
 
       // Verify the skill still has project origin
       const skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      const helpSkill = skills.find((s) => s.id === 'help');
+      const helpSkill = skills.find((s) => s.id === 'kspec-help');
       expect(helpSkill?.origin).toBe('project');
     });
 
@@ -103,7 +103,7 @@ describe('Core Skill Installation', () => {
 
       // It should be "Updated" not "Skipped"
       expect(result.stdout).toContain('Updated');
-      expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain('kspec-help');
     });
   });
 
@@ -112,32 +112,32 @@ describe('Core Skill Installation', () => {
     it('should overwrite custom skills when --force is used', async () => {
       // First create a custom skill
       kspecFull(
-        'skill add --id help --name "My Custom Help" --description "Custom version" --origin project',
+        'skill add --id kspec-help --name "My Custom Help" --description "Custom version" --origin project',
         tempDir
       );
 
       // Verify it's project origin
       let skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'help')?.origin).toBe('project');
+      expect(skills.find((s) => s.id === 'kspec-help')?.origin).toBe('project');
 
       // Install with --force
       const result = kspecFull('skill install-core --force', tempDir);
       expect(result.stdout).toContain('Updated');
-      expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain('kspec-help');
 
       // Verify it's now core origin
       skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'help')?.origin).toBe('core');
+      expect(skills.find((s) => s.id === 'kspec-help')?.origin).toBe('core');
     });
 
     it('should update SKILL.md content when --force is used', async () => {
       // Create custom skill with custom content
       kspecFull(
-        'skill add --id help --name "My Custom Help" --description "Custom version" --origin project',
+        'skill add --id kspec-help --name "My Custom Help" --description "Custom version" --origin project',
         tempDir
       );
 
-      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
+      const skillMdPath = path.join(tempDir, 'skills', 'kspec-help', 'SKILL.md');
       await fs.writeFile(skillMdPath, '# Custom Content\n\nThis is my custom content.\n', 'utf-8');
 
       // Install with --force
@@ -145,7 +145,7 @@ describe('Core Skill Installation', () => {
 
       // Verify content was overwritten with core content
       const content = await fs.readFile(skillMdPath, 'utf-8');
-      expect(content).toContain('# kspec CLI Map');
+      expect(content).toContain('# kspec Help');
       expect(content).not.toContain('Custom Content');
     });
   });
@@ -156,7 +156,7 @@ describe('Core Skill Installation', () => {
       kspecFull('skill install-core', tempDir);
 
       const skills = kspecJson<{ id: string; version?: string }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const coreSkill = skills.find((s) => s.id === 'kspec-help');
 
       expect(coreSkill?.version).toBeDefined();
       // Version should be a semver-like string (e.g., "0.1.2")
@@ -181,7 +181,7 @@ describe('Core Skill Installation', () => {
 
       // Verify skill was NOT created
       const skills = kspecJson<{ id: string }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'help');
+      const coreSkill = skills.find((s) => s.id === 'kspec-help');
       expect(coreSkill).toBeUndefined();
     });
 
@@ -189,7 +189,7 @@ describe('Core Skill Installation', () => {
       const result = kspecFull('skill install-core --dry-run', tempDir);
 
       expect(result.stdout).toContain('Created: 1 skill(s)');
-      expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain('kspec-help');
     });
   });
 
@@ -205,7 +205,7 @@ describe('Core Skill Installation', () => {
       expect(Array.isArray(result.results)).toBe(true);
       expect(result.results.length).toBeGreaterThan(0);
 
-      const kspecHelp = result.results.find((r) => r.id === 'help');
+      const kspecHelp = result.results.find((r) => r.id === 'kspec-help');
       expect(kspecHelp).toBeDefined();
       expect(kspecHelp?.action).toBe('created');
     });
@@ -230,7 +230,7 @@ describe('Core Skills Manifest Loading', () => {
 
     expect(skills.length).toBeGreaterThan(0);
 
-    const kspecHelp = skills.find((s) => s.id === 'help');
+    const kspecHelp = skills.find((s) => s.id === 'kspec-help');
     expect(kspecHelp).toBeDefined();
     expect(kspecHelp?.name).toBe('Kspec Help');
     expect(kspecHelp?.description).toContain('help');
@@ -240,10 +240,10 @@ describe('Core Skills Manifest Loading', () => {
   it('should load SKILL.md content for core skills', async () => {
     const { loadCoreSkillContent } = await import('../src/cli/commands/skill.js');
 
-    const content = await loadCoreSkillContent('help');
+    const content = await loadCoreSkillContent('kspec-help');
 
     expect(content).not.toBeNull();
-    expect(content).toContain('# kspec CLI Map');
+    expect(content).toContain('# kspec Help');
   });
 
   it('should return null for non-existent skill content', async () => {
