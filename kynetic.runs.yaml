@@ -4663,7 +4663,7 @@ runs:
   - _ulid: 01KHYTAEFK2GS528NHJRFYJ119
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-21T00:41:46.228Z
     step_results:
@@ -4683,5 +4683,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-21T00:42:12.852Z
-        completed_at: 2026-02-21T00:42:12.852Z
+        completed_at: 2026-02-21T00:42:36.557Z
+        notes: "Searched: template staleness (not tracked), state diagram (only existing tasks), workflow AC
+          coverage (not tracked), behavioral spec/untestable (not tracked). Two items worth
+          capturing: 1) template-AGENTS.md state diagram duplication, 2) workflow AC test coverage
+          false positives in validate."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-21T00:42:36.557Z
+        completed_at: 2026-02-21T00:42:36.557Z
     initiated_by: "@claude"
