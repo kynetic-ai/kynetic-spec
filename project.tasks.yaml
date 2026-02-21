@@ -53941,11 +53941,14 @@
   slugs: []
   title: "Write core skill: kspec:review"
   type: task
-  description: "NEW skill — extract kspec-specific review concerns into a generic review skill.
+  description: "NEW skill — extract kspec-specific review concerns into a generic review skill. No
+    existing skill to refactor from — read .claude/skills/local-review/SKILL.md and
+    .claude/skills/pr-review/SKILL.md as reference for what kspec-specific review patterns exist.
     Covers: spec/AC alignment verification, trait AC coverage, kspec validate integration, general
-    coding best practices in the context of kspec workflow. Should be a building block that projects
+    coding best practices in context of kspec workflow. Should be a building block that projects
     reference in their own review skills/prompts. NOT a full local-review replacement — no
-    project-specific test commands. Update manifest.yaml."
+    project-specific test commands. Write to templates/skills/review/SKILL.md (rendered to
+    .claude/skills/kspec/review/). Add entry to manifest.yaml."
   spec_ref: null
   meta_ref: null
   plan_ref: null
