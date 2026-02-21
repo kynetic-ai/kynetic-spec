@@ -53916,9 +53916,11 @@
   slugs: []
   title: "Write core skill: kspec:create-workflow"
   type: task
-  description: Refactor the create-workflow skill for the kspec/ namespace. Meta-workflow for
-    formalizing repeatable patterns into kspec workflows. Rewrite from base principles. Update
-    manifest.yaml.
+  description: Refactor the create-workflow skill for the kspec/ namespace. Read current content from
+    .claude/skills/create-workflow/SKILL.md as reference. Meta-workflow for formalizing repeatable
+    patterns into kspec workflows. Rewrite from base principles. Write to
+    templates/skills/create-workflow/SKILL.md (rendered to .claude/skills/kspec/create-workflow/).
+    Add entry to manifest.yaml.
   spec_ref: null
   meta_ref: null
   plan_ref: null
