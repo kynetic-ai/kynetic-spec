@@ -78,6 +78,7 @@ describe("Core Skill Namespace", () => {
       await cleanupTempDir(tempDir);
     });
 
+    // AC: @skill-rendering ac-7
     it("should render core skill to .claude/skills/kspec/<id>/SKILL.md", async () => {
       // Create a core skill
       kspecFull(
@@ -231,6 +232,7 @@ describe("Core Skill Namespace", () => {
       expect(await fs.readFile(projPath, "utf-8")).toContain("# Project B");
     });
 
+    // AC: @skill-rendering ac-6
     it("should not delete active namespaced skills when --clean removes orphaned top-level SKILL.md", async () => {
       // Create a core skill and render it
       kspecFull(

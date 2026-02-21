@@ -402,6 +402,7 @@ export function registerSkillDiffCommands(skill: Command): void {
 
             if (isManaged) {
               // AC: @skill-rendering ac-5 - Remove orphaned directory
+              // AC: @skill-rendering ac-6 - Preserve active nested skills in namespace dirs
               if (!dryRun) {
                 if (hasNestedSkills) {
                   // Directory contains nested skills — only remove the SKILL.md,

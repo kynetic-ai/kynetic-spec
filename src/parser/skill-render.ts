@@ -211,6 +211,7 @@ export function generateFrontmatter(skill: LoadedSkill): string {
  * Core skills on claude-code are namespaced under kspec/ so Claude Code
  * discovers them as /kspec:<id> commands. All other combinations use the
  * skill id directly.
+ * AC: @skill-rendering ac-7
  */
 export function getSkillSubdir(skillId: string, origin?: string, platform?: string): string {
   if (origin === "core" && (!platform || platform === "claude-code")) {
