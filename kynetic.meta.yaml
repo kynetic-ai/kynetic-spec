@@ -255,10 +255,14 @@ workflows:
           Check for: automated reviews, human reviews, inline comments.
       - type: check
         content: All review feedback addressed (post findings, do NOT fix code)
-        on_fail: |
-          Post each finding as an inline PR comment with severity prefix (MUST-FIX:, SHOULD-FIX:, SUGGESTION:).
+        on_fail: >
+          Post each finding as an inline PR comment with severity prefix (MUST-FIX:, SHOULD-FIX:,
+          SUGGESTION:).
+
           Do NOT fix code yourself — you are a reviewer, not a fixer.
+
           If MUST-FIX or SHOULD-FIX found: transition task to needs_work and exit without merging.
+
           Use: kspec task needs-work @task-ref --reason "findings summary"
       - type: action
         content: |
@@ -6066,6 +6070,15 @@ observations:
       agent had a focused lens and found complementary issues. Total wall-clock time ~2 min for what
       would have been 15+ min of sequential analysis."
     created_at: 2026-02-20T06:27:59.838Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KHYTNNGG0B44BK1QJMRGNYZA
+    type: success
+    content: "Dual review convergence: running both pr-review subagent and /codex review in parallel
+      catches different issues and convergent findings give high confidence. Both flagged dead
+      verifyTaskCompleted code independently."
+    created_at: 2026-02-21T00:47:53.872Z
     author: "@claude"
     resolved: false
     resolution: null

@@ -771,3 +771,25 @@ inbox:
     created_at: 2026-02-21T00:18:07.217Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KHYTNNF4B67SGERG0WRZ2RBR
+    text: "Single-source task state diagram: currently duplicated in AGENTS.md,
+      templates/agents-sections/03-task-lifecycle.md, and src/cli/help/content.ts. Adding needs_work
+      required updating all three independently. Generate from schema or single template to avoid
+      triple-update when adding states."
+    created_at: 2026-02-21T00:47:53.828Z
+    tags:
+      - reflection
+      - dx
+      - agents
+    added_by: "@claude"
+  - _ulid: 01KHYTNNFYNQ74GHA9PBM31CAF
+    text: "Distinguish behavioral vs testable ACs in kspec validate: workflow ACs (agent behavioral
+      specs enforced by skills/prompts) get flagged as uncovered in test coverage, creating false
+      MUST-FIX findings in reviews. Allow tagging ACs or specs as agent-enforced to report
+      separately from code-testable ACs."
+    created_at: 2026-02-21T00:47:53.854Z
+    tags:
+      - reflection
+      - validate
+      - dx
+    added_by: "@claude"
