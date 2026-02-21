@@ -3399,6 +3399,10 @@ modules:
             given: kspec agents status is run after meta changes
             when: kspec-agents.md has not been regenerated
             then: it reports stale with a recommendation to regenerate
+          - id: ac-6
+            given: meta content has not changed since last generation
+            when: kspec agents generate is run
+            then: no files are written and output indicates kspec-agents.md is already up to date
         depends_on: []
         implements: []
         relates_to: []
