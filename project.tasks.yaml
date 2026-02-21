@@ -51302,6 +51302,56 @@
         - Next steps: decide how to ship core skills (kspec setup installs them? kspec skill install
         --core?), then implement
       supersedes: null
+    - _ulid: 01KHZG0QP9MAF8SV79ZHPVCZ5Z
+      created_at: 2026-02-21T07:00:56.650Z
+      author: "@claude"
+      content: >-
+        Session 2 update - refined triage with user input. Final categorization:
+
+
+        **Core kspec skills (10, namespaced under .claude/skills/kspec/):**
+
+        - /kspec:help — lean CLI map, merge current kspec+kspec-help, instruct agents to use kspec
+        help <cmd>
+
+        - /kspec:observations — renamed from meta, covers friction/success/idea capture and
+        promotion (focus/threads may be purged)
+
+        - /kspec:reflect — session reflection
+
+        - /kspec:triage-inbox — inbox item triage (split from monolithic triage)
+
+        - /kspec:triage-automation — task automation eligibility (split from monolithic triage)
+
+        - /kspec:writing-specs — renamed from spec, AC/trait/module authoring
+
+        - /kspec:plan — renamed from spec-plan, plan-to-spec translation
+
+        - /kspec:task-work — task lifecycle and work loop
+
+        - /kspec:create-workflow — meta-workflow for formalizing patterns
+
+        - /kspec:review — NEW, extracted kspec-specific review: spec/AC alignment, trait AC
+        coverage, kspec validate, coding best practices for kspec workflow
+
+
+        **Project-specific (stay in .claude/skills/ root, NOT core):**
+
+        audit, pr, pr-review, local-review, release, e2e, svelte-5, eval-agents, codex
+
+
+        **Key decisions:**
+
+        - pr, pr-review, local-review must be PURGED from templates/agents-sections and any shared
+        docs — they are project-specific
+
+        - Namespace support needs spec+code work: colon separator, nested dirs, user-installable
+        namespaces
+
+        - kspec setup should install core skills into .claude/skills/kspec/
+
+        - Next: /spec-plan to spec out namespace support and create the core skills
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVK28M6TAWG0YV55XYMM33D
