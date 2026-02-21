@@ -4663,7 +4663,7 @@ runs:
   - _ulid: 01KHYTAEFK2GS528NHJRFYJ119
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-21T00:41:46.228Z
     step_results:
@@ -4676,5 +4676,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-21T00:41:59.955Z
-        completed_at: 2026-02-21T00:41:59.955Z
+        completed_at: 2026-02-21T00:42:12.852Z
+        notes: "Friction: 1) agent template staleness (3 places for state diagram), 2) PR branch creation
+          from unpushed main commits, 3) stale CI check ambiguity, 4) workflow AC test coverage
+          false positives in validate"
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-21T00:42:12.852Z
+        completed_at: 2026-02-21T00:42:12.852Z
     initiated_by: "@claude"
