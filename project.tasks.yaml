@@ -53479,7 +53479,10 @@
   completed_at: 2026-02-21T04:19:16.094Z
   notes: []
   todos: []
-- title: Document agents-sections templates architecture in AGENTS.md
+- _ulid: 01KHZ8C0YDEZP1G4BRH85Q6PBE
+  slugs: []
+  title: Document agents-sections templates architecture in AGENTS.md
+  type: task
   description: "Document what templates/agents-sections/ are, how they relate to kspec agents
     generate, and why they matter. Templates are static markdown sections (quick-start,
     shadow-branch, task-lifecycle, pr-workflow, commit-convention, ralph-loop) that ship with the
@@ -53487,19 +53490,17 @@
     generation. Should explain: (1) what each template covers, (2) when to add/edit a template vs a
     convention/workflow, (3) how ordering works (numeric prefix). Lives in AGENTS.md project
     structure or similar section, not as a convention."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KHZ8C0YDEZP1G4BRH85Q6PBE
-  status: pending
+  status: in_progress
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-21T04:47:17.965Z
   notes: []
   todos: []
+  started_at: 2026-02-21T04:53:55.998Z
