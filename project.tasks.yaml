@@ -53969,11 +53969,14 @@
   slugs: []
   title: Purge project-specific skill references from shared templates and docs
   type: task
-  description: Remove references to /pr, /pr-review, /local-review, /release from
+  description: "Remove references to /pr, /pr-review, /local-review, /release from
     templates/agents-sections/ and any generated docs or code that ships with kspec. These are
-    project-specific skills that should not be in shared/core content. Audit all templates/*.md
-    files, src/ strings, and kspec-agents.md generation for references. Update agents-sections
-    templates to reference /kspec:review instead of /local-review where appropriate.
+    project-specific skills that should not be in shared/core content. Audit: (1)
+    templates/agents-sections/*.md for skill references, (2) src/ for hardcoded skill names in
+    strings or help text, (3) kspec-agents.md generation code for skill assumptions. Replace with
+    /kspec:review where appropriate for review-related references. Ensure the purge does not break
+    this project — the project-specific skills still exist in .claude/skills/, they just should not
+    be referenced by shipped code."
   spec_ref: null
   meta_ref: null
   plan_ref: null
