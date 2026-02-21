@@ -2994,6 +2994,17 @@ modules:
             given: kspec skill render --clean identifies an orphaned managed skill
             when: clean completes
             then: the orphaned .claude/skills/<id>/ directory is removed
+          - id: ac-6
+            given: a namespace directory (e.g., kspec/) contains both an orphaned top-level SKILL.md and active
+              nested skill subdirectories
+            when: kspec skill render --clean is run
+            then: only the orphaned SKILL.md file is removed; nested skill directories that are still active in
+              meta are preserved
+          - id: ac-7
+            given: a core skill with origin core on the claude-code platform
+            when: kspec skill render is run
+            then: the skill is rendered to .claude/skills/kspec/<id>/SKILL.md instead of
+              .claude/skills/<id>/SKILL.md
         depends_on: []
         implements: []
         relates_to: []
