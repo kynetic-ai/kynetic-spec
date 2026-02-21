@@ -6128,6 +6128,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KHZHZAQJE6KF7GHBEK2E79PK
+    type: friction
+    content: task get not showing descriptions meant had to grep raw YAML to verify task content after
+      batch creation. Critical gap for agents working on tasks — they cannot read the description
+      via CLI.
+    created_at: 2026-02-21T07:35:07.762Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KHRK3KTE4W5ZDQM5AJTRH58E
     _type: skill

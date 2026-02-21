@@ -783,3 +783,25 @@ inbox:
       - validate
       - dx
     added_by: "@claude"
+  - _ulid: 01KHZHZAP3P1Y97YF8QSM3KCT0
+    text: "kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
+      stringified as [object Object] instead of being serialized as JSON. Batch args are likely
+      passed through a simple string coercion. Workaround: run task patch commands individually.
+      Fix: batch arg handling should JSON.stringify objects before passing to command handlers."
+    created_at: 2026-02-21T07:35:07.715Z
+    tags:
+      - cli
+      - batch
+      - bug
+    added_by: "@claude"
+  - _ulid: 01KHZHZAQ0YXEN9X6VP205SMPE
+    text: task complete --force should bypass the submit requirement. Currently --force does not skip
+      the in_progress → pending_review transition, making it impossible to complete non-code tasks
+      (design, triage, research) without a meaningless submit step. The --force flag exists but does
+      not actually force completion from in_progress state.
+    created_at: 2026-02-21T07:35:07.744Z
+    tags:
+      - cli
+      - tasks
+      - bug
+    added_by: "@claude"
