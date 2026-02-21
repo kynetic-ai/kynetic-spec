@@ -51361,6 +51361,45 @@
         project-specific refs from shared docs. Awaiting user decision on whether to spec-plan or
         start writing directly."
       supersedes: null
+    - _ulid: 01KHZGVGE76EYG3P1KQ6NG4VYR
+      created_at: 2026-02-21T07:15:33.959Z
+      author: "@claude"
+      content: >-
+        Session 2 continued — investigated existing core skill infrastructure:
+
+
+        **What exists (fully built):**
+
+        - templates/skills/manifest.yaml defines core skills (currently only kspec-help)
+
+        - kspec setup calls installCoreSkillsForSetup() → reads manifest, copies SKILL.md to
+        .kspec/skills/<id>/
+
+        - renderSkillsForSetup() renders to .claude/skills/<id>/SKILL.md
+
+        - kspec skill install-core and kspec skill update commands exist
+
+        - Skill id validated by KEBAB_CASE_REGEX: /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/ — NO slashes or
+        colons
+
+
+        **What needs to change for namespacing:**
+
+        - Claude Code natively handles nested dirs: .claude/skills/kspec/help/SKILL.md → /kspec:help
+
+        - Two approaches: (A) keep flat id in schema, add namespace field that controls render path,
+        or (B) allow slash in id regex so kspec/help naturally creates nested dirs
+
+        - getRenderedSkillPath() currently does: .claude/skills/<id>/ — needs to handle namespace
+
+        - Template structure: templates/skills/kspec-help/ → templates/skills/kspec/help/
+
+        - All 10 core skills need SKILL.md content written
+
+
+        **Next step: /spec-plan to design the namespace schema + render changes + write all 10
+        skills**
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVK28M6TAWG0YV55XYMM33D
