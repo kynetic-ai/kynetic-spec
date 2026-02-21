@@ -54099,24 +54099,114 @@
   created_at: 2026-02-21T08:23:09.530Z
   notes: []
   todos: []
-- title: Migrate skill rendering to Claude Code plugin system
+- _ulid: 01KJ19D0CH3SECG4FT9GQ46S10
+  slugs:
+    - task-plugin-rendering
+  title: Migrate skill rendering to Claude Code plugin system
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - task-plugin-rendering
   tags:
     - core-skills
     - plugins
     - platform
-  depends_on: []
-  _ulid: 01KJ19D0CH3SECG4FT9GQ46S10
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-21T23:43:47.601Z
   notes: []
   todos: []
+  description: >-
+    Claude Code does not support nested skill directories (.claude/skills/kspec/<id>/ is NOT
+    discovered). The official namespacing mechanism is the plugin system.
+
+
+    ## Goal
+
+
+    Render kspec core skills as a Claude Code plugin so they are properly namespaced and discovered.
+    For non-Claude platforms (Codex, etc.), use flat prefix naming since they lack plugins.
+
+
+    ### Claude Code target structure
+
+    .claude/plugins/kspec/.claude-plugin/plugin.json (name, version, description)
+
+    .claude/plugins/kspec/skills/help/SKILL.md -> invoked as /kspec:help
+
+
+    ### Non-Claude target structure
+
+    .agents/skills/kspec-help/SKILL.md (flat prefix)
+
+
+    ## Key Implementation Points
+
+
+    ### Path construction (3 strategic functions in skill-render.ts)
+
+    - getSkillSubdir() - currently adds kspec/ prefix for core skills on claude-code
+
+    - getRenderedSkillPath() - constructs full output path
+
+    - getPlatformDefaultOutputDir() - returns .claude/skills for claude-code
+
+    - claudeCodeRenderer defaultOutputDir needs to change for core skills
+
+
+    ### Plugin manifest generation
+
+    - Generate .claude/plugins/kspec/.claude-plugin/plugin.json during skill render
+
+    - Include kspec version, description
+
+
+    ### Migration
+
+    - Remove old .claude/skills/kspec/ directory (monolithic skill + broken nested renders)
+
+    - skill render --clean needs to handle old to new path transition
+
+    - Similar pattern to PR #440 migration logic
+
+
+    ### Non-Claude platforms
+
+    - Codex renderer uses .agents/skills/ (flat) - use kspec-<id> prefix instead of nesting
+
+    - Other future platforms: same flat prefix approach
+
+
+    ### Files affected (from codebase exploration)
+
+    - src/parser/skill-render.ts - core path logic, PlatformRenderer, claudeCodeRenderer
+
+    - src/cli/commands/skill-diff.ts - render/status/diff/verify commands
+
+    - src/cli/commands/setup.ts - getSetupStatus() directory scanning
+
+    - src/parser/validate-skills.ts - findSkillFiles() directory discovery
+
+    - 14 test suites with path assertions
+
+
+    ### What already exists
+
+    - templates/skills/help/SKILL.md - lean CLI map content ready for plugin rendering
+
+    - templates/skills/manifest.yaml - core skills manifest
+
+    - PlatformRenderer interface is well-abstracted
+
+
+    ### Also resolve
+
+    - Existing monolithic .claude/skills/kspec/SKILL.md (591 lines) replaced by plugin-rendered
+    skills
+
+    - kspec-agents.md Finding Information table should show /kspec:help after migration (fix
+    generateSkillsTable in agent-data-sections.ts)
