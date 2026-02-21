@@ -53530,3 +53530,24 @@
   created_at: 2026-02-21T05:00:24.769Z
   notes: []
   todos: []
+- title: Skip regeneration of skill files when content unchanged
+  description: Same pattern as @01KHZ941 but for other generated files. kspec setup and skill
+    rendering should skip writing files when content hasn't changed, avoiding unnecessary git diffs.
+    Audit all generation paths (skills, setup output) and apply the same hash-check-before-write
+    pattern.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KHZ9WQ6M66651KB998Y49BKM
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T05:13:53.619Z
+  notes: []
+  todos: []
