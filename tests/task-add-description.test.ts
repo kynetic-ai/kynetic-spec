@@ -82,6 +82,7 @@ describe('Integration: task add --description', () => {
     expect(task.description).toBe(specialDesc);
   });
 
+  // AC: @spec-task-add-description ac-5
   it('should display description in text output of task get', () => {
     kspec(
       'task add --title "Text Output Task" --description "Visible in text output" --slug text-desc-test',
@@ -93,6 +94,7 @@ describe('Integration: task add --description', () => {
     expect(output).toContain('Visible in text output');
   });
 
+  // AC: @spec-task-add-description ac-5
   it('should not display description section when description is absent', () => {
     kspec(
       'task add --title "No Desc Task" --slug no-desc-text-test',

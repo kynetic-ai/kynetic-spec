@@ -549,7 +549,7 @@ export function formatTaskDetails(
     `${fieldLabels.automation} ${automationColor(automationDisplay)}`,
   );
 
-  if (task.description) {
+  if (task.description?.trim()) {
     console.log(`\n${sectionHeaders.description}`);
     const desc = task.description.trim();
     for (const line of desc.split("\n")) {
