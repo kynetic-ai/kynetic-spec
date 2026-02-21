@@ -53737,7 +53737,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 2
   tags:
@@ -53760,7 +53761,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53782,7 +53784,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53806,7 +53809,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53828,7 +53832,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53850,7 +53855,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53873,7 +53879,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53895,7 +53902,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53919,7 +53927,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KHZHPG"
   context: []
   priority: 3
   tags:
@@ -53929,26 +53938,27 @@
   created_at: 2026-02-21T07:30:27.534Z
   notes: []
   todos: []
-- title: Purge project-specific skill references from shared templates and docs
+- _ulid: 01KHZHPT0KJ5QKX8A9S9YE8Y57
+  slugs: []
+  title: Purge project-specific skill references from shared templates and docs
+  type: task
   description: Remove references to /pr, /pr-review, /local-review, /release from
     templates/agents-sections/ and any generated docs or code that ships with kspec. These are
     project-specific skills that should not be in shared/core content. Audit all templates/*.md
     files, src/ strings, and kspec-agents.md generation for references. Update agents-sections
     templates to reference /kspec:review instead of /local-review where appropriate.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@01KHZHPG"
+  context: []
   priority: 2
-  slugs: []
   tags:
     - core-skills
     - cleanup
-  depends_on: []
-  _ulid: 01KHZHPT0KJ5QKX8A9S9YE8Y57
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-21T07:30:28.499Z
   notes: []
