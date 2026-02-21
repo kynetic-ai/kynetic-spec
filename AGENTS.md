@@ -21,9 +21,27 @@ kynetic-spec/
 │   ├── schema/               # Zod schemas
 │   ├── parser/               # YAML loading
 │   └── cli/                  # Command handlers
+├── templates/agents-sections/ # Static sections for kspec-agents.md
 ├── packages/web-ui/           # SvelteKit web interface
 └── tests/                     # Vitest tests
 ```
+
+## Agent Instructions Generation
+
+`kspec agents generate` produces `kspec-agents.md` by combining two types of content:
+
+| Source | What it provides | How to change |
+|--------|-----------------|---------------|
+| **Dynamic data** (from `.kspec/`) | Conventions, workflows, skills | `kspec meta set`, `kspec meta add` |
+| **Static templates** (`templates/agents-sections/`) | Quick start, shadow branch, task lifecycle, PR workflow, commit convention, ralph loop | Edit the markdown files directly |
+
+Templates ship with the npm package and provide the structural documentation that doesn't change per-project. Dynamic data is project-specific and lives in the shadow branch.
+
+**When to edit templates vs meta:**
+- New convention rule → `kspec meta set <domain> --add-rule "..."`
+- New workflow → `kspec meta add workflow`
+- Changing how a workflow section is *explained* → edit the template file
+- Adding a new documentation section → create `NN-section-name.md` (numeric prefix controls order)
 
 ## Test Helpers
 
