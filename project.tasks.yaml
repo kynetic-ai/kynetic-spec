@@ -53890,10 +53890,12 @@
   slugs: []
   title: "Write core skill: kspec:task-work"
   type: task
-  description: Refactor the task-work skill for the kspec/ namespace. Task lifecycle — start, work,
-    note, submit, complete. Fix cycle handling. Scope management. Rewrite from base principles —
-    focus on what is universal to any kspec project, strip project-specific commands (npm test,
-    etc). Update manifest.yaml.
+  description: Refactor the task-work skill for the kspec/ namespace. Read current content from
+    .claude/skills/task-work/SKILL.md as reference. Task lifecycle — start, work, note, submit,
+    complete. Fix cycle handling. Scope management. Rewrite from base principles — focus on what is
+    universal to any kspec project, strip project-specific commands (npm test, specific test
+    helpers, etc). Write to templates/skills/task-work/SKILL.md (rendered to
+    .claude/skills/kspec/task-work/). Add entry to manifest.yaml.
   spec_ref: null
   meta_ref: null
   plan_ref: null
