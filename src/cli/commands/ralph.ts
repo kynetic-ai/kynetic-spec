@@ -717,14 +717,6 @@ function getTaskStatus(taskRef: string): string | null {
 }
 
 /**
- * Check if a task was completed by the subagent.
- * AC: @ralph-subagent-spawning ac-12
- */
-function verifyTaskCompleted(taskRef: string): boolean {
-  return getTaskStatus(taskRef) === "completed";
-}
-
-/**
  * Mark a task as needing review due to subagent timeout.
  * AC: @ralph-subagent-spawning ac-9
  */
