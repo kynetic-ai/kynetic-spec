@@ -18,7 +18,7 @@ for each iteration:
 
 ### Task Inheritance
 
-Priority: `pending_review` > `in_progress` > `pending`. Always inherit existing work before starting new tasks.
+Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work before starting new tasks. (`pending_review` tasks are handled by the review subagent, not the worker.)
 
 ### Blocking Rules
 
