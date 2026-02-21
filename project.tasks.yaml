@@ -53504,3 +53504,26 @@
   started_at: 2026-02-21T04:53:55.998Z
   notes: []
   todos: []
+- title: Skip kspec-agents.md regeneration when content unchanged
+  description: kspec agents generate currently always updates the timestamp in kspec-agents.md even
+    when no actual content has changed. This creates unnecessary git diffs. Should compare the
+    generated content (excluding the timestamp comment) against the existing file and skip writing
+    if identical. The hash file (.kspec-agents-hash) already tracks meta hash for staleness — if the
+    meta hash matches, the file content is the same and generation can be skipped entirely with a
+    'kspec-agents.md is already up to date' message.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KHZ941A1ZJRM4JFG0FMCACMD
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T05:00:24.769Z
+  notes: []
+  todos: []
