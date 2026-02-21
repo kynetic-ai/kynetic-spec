@@ -6137,6 +6137,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ1A32GV14R9ZSDBQYCKFW3V
+    type: friction
+    content: "Platform behavior assumption: PR #440 added namespace rendering
+      (.claude/skills/kspec/<id>/) without verifying Claude Code actually discovers nested skill
+      directories. It does not. Future platform integration work should verify discovery behavior
+      (e.g. create a test skill, check if Claude Code lists it) before building rendering pipelines
+      around assumed directory structures."
+    created_at: 2026-02-21T23:55:50.683Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ19B60M1K2YW4ADQ5WMCHD7
     _type: skill

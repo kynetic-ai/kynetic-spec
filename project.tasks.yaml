@@ -54208,5 +54208,12 @@
     - platform
   vcs_refs: []
   created_at: 2026-02-21T23:43:47.601Z
-  notes: []
+  notes:
+    - _ulid: 01KJ1A326HT5QZJ9AVXTGRDH21
+      created_at: 2026-02-21T23:55:50.353Z
+      author: "@claude"
+      content: "NOTE: PR #440 namespace rendering (.claude/skills/kspec/<id>/) is also broken — Claude
+        Code does not discover nested skill dirs. Plugin migration must clean up the merged PR #440
+        output structure too, not just the attempted help skill rename."
+      supersedes: null
   todos: []
