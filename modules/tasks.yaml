@@ -373,6 +373,35 @@ features:
         traits: []
         notes: []
         created: 2026-02-21T00:08:08.873Z
+        acceptance_criteria:
+          - id: ac-1
+            given: TaskStatusSchema in common.ts
+            when: validating a task status value
+            then: needs_work is accepted as a valid enum value
+          - id: ac-2
+            given: a task with status pending_review
+            when: kspec task needs-work is run with --reason flag
+            then: the task transitions to needs_work and a note is added with the reason and fix cycle count
+          - id: ac-3
+            given: a task with status needs_work
+            when: kspec task start is run
+            then: the task transitions to in_progress (needs_work is a valid pre-state for starting)
+          - id: ac-4
+            given: a task with status that is NOT pending_review
+            when: kspec task needs-work is run
+            then: the command rejects the transition with an error (only pending_review -> needs_work is valid)
+          - id: ac-5
+            given: tasks exist with status needs_work
+            when: kspec tasks active is run
+            then: needs_work tasks appear in the active task list alongside in_progress tasks
+          - id: ac-6
+            given: the CLI help content for task commands
+            when: viewing help for task state transitions
+            then: needs_work is documented with its purpose and valid transitions
+          - id: ac-7
+            given: a task is kicked back to needs_work multiple times
+            when: the fix cycle count in notes is tracked
+            then: each kickback increments the FIX_CYCLE counter in the task note
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
