@@ -45,7 +45,7 @@ Three approaches, each for different purposes:
 
 1. **Static analysis** (vitest): Read source files, verify patterns. Fast, no runtime.
 2. **Unit with isolation** (vitest): Test components in temp dirs with `createTempDir()`.
-3. **E2E** (Playwright): Full browser integration. See E2E Tests section above.
+3. **E2E** (Playwright): Full browser integration. See testing and development conventions.
 
 Multi-project tests use `setupMultiDirFixtures()` for isolated project directories.
 
