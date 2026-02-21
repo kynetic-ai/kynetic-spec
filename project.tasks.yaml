@@ -53520,7 +53520,7 @@
   spec_ref: "@agent-instruction-gen"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -53531,6 +53531,9 @@
   started_at: 2026-02-21T05:14:34.256Z
   notes: []
   todos: []
+  completed_at: 2026-02-21T05:35:30.797Z
+  closed_reason: "Merged in PR #438. agents generate now checks stored meta hash before writing —
+    skips with 'already up to date' when content unchanged. 3 tests for ac-6."
 - _ulid: 01KHZ9WQ6M66651KB998Y49BKM
   slugs: []
   title: Skip regeneration of skill files when content unchanged
