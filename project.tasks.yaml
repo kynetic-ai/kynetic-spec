@@ -54013,23 +54013,30 @@
   vcs_refs: []
   created_at: 2026-02-21T07:35:04.464Z
   started_at: 2026-02-21T07:35:09.785Z
-  notes: []
+  notes:
+    - _ulid: 01KHZJ60P7SWM2JR6XDDWMCPWP
+      created_at: 2026-02-21T07:38:46.855Z
+      author: "@claude"
+      content: "Fixed: added task.description display in formatTaskDetails() in output.ts. Shows as a
+        Description section between automation and spec_ref fields. Added 2 test cases verifying
+        text output includes/excludes description appropriately."
+      supersedes: null
   todos: []
-- title: Test description display
-  description: This is a test description to verify the fix works correctly.
+- _ulid: 01KHZHZW6VKAK6MDAG3BVC10Q5
+  slugs: []
+  title: Test description display
   type: task
+  description: This is a test description to verify the fix works correctly.
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs: []
-  tags:
-    - test
-  depends_on: []
-  _ulid: 01KHZHZW6VKAK6MDAG3BVC10Q5
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags:
+    - test
   vcs_refs: []
   created_at: 2026-02-21T07:35:25.659Z
   notes: []
