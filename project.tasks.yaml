@@ -53761,10 +53761,12 @@
   slugs: []
   title: "Write core skill: kspec:observations"
   type: task
-  description: Refactor the meta skill into kspec:observations. Covers friction/success/idea capture
-    and observation promotion. Drop focus/threads coverage (may be purged). Rewrite from base
+  description: Refactor the meta skill into kspec:observations. Read current content from
+    .claude/skills/meta/SKILL.md as reference. Covers friction/success/idea capture and observation
+    promotion. Drop focus/threads coverage (they are unused and may be purged). Rewrite from base
     principles — what does an agent need to know about capturing and using observations effectively?
-    Update manifest.yaml.
+    Write to templates/skills/observations/SKILL.md (rendered to
+    .claude/skills/kspec/observations/). Add entry to manifest.yaml.
   spec_ref: null
   meta_ref: null
   plan_ref: null
