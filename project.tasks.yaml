@@ -53865,9 +53865,11 @@
   slugs: []
   title: "Write core skill: kspec:plan"
   type: task
-  description: Refactor the spec-plan skill into kspec:plan. Covers plan-to-spec translation — both
-    import path (structured markdown document) and manual path (incremental CLI). Rewrite from base
-    principles. Update manifest.yaml.
+  description: Refactor the spec-plan skill into kspec:plan. Read current content from
+    .claude/skills/spec-plan/SKILL.md as reference. Covers plan-to-spec translation — both import
+    path (structured markdown document) and manual path (incremental CLI). Rewrite from base
+    principles. Write to templates/skills/plan/SKILL.md (rendered to .claude/skills/kspec/plan/).
+    Add entry to manifest.yaml.
   spec_ref: null
   meta_ref: null
   plan_ref: null
