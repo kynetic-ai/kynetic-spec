@@ -335,7 +335,7 @@ export function registerSkillDiffCommands(skill: Command): void {
               const renderedPath = path.join(
                 projectRoot,
                 outputDir,
-                skill.id,
+                getSkillSubdir(skill.id, skill.origin, platform),
                 "SKILL.md"
               );
               results.push({
@@ -389,7 +389,8 @@ export function registerSkillDiffCommands(skill: Command): void {
             skillDir: string,
             activeSubdirs: Set<string>,
             subdir: string,
-            platform: string
+            platform: string,
+            hasNestedSkills?: boolean
           ): Promise<void> {
             const skillMdPath = path.join(skillDir, "SKILL.md");
 
@@ -402,11 +403,17 @@ export function registerSkillDiffCommands(skill: Command): void {
             if (isManaged) {
               // AC: @skill-rendering ac-5 - Remove orphaned directory
               if (!dryRun) {
-                await fs.rm(skillDir, { recursive: true, force: true });
+                if (hasNestedSkills) {
+                  // Directory contains nested skills — only remove the SKILL.md,
+                  // not the entire directory tree
+                  await fs.rm(skillMdPath, { force: true });
+                } else {
+                  await fs.rm(skillDir, { recursive: true, force: true });
+                }
               }
               cleanResults.push({
                 id: skillId,
-                path: skillDir,
+                path: hasNestedSkills ? skillMdPath : skillDir,
                 action: "removed",
                 platform,
               });
@@ -438,13 +445,8 @@ export function registerSkillDiffCommands(skill: Command): void {
 
                 const skillDir = path.join(targetSkillsDir, entry.name);
 
-                // Check top-level skill
-                const hasSkillMd = await fs.access(path.join(skillDir, "SKILL.md")).then(() => true, () => false);
-                if (hasSkillMd) {
-                  await cleanSkillDir(entry.name, skillDir, activeSubdirs, entry.name, renderer.platform);
-                }
-
-                // Also check subdirectories for namespaced skills (e.g., kspec/<id>/)
+                // Check subdirectories for namespaced skills (e.g., kspec/<id>/)
+                let hasNestedSkills = false;
                 try {
                   const subEntries = await fs.readdir(skillDir, { withFileTypes: true });
                   for (const subEntry of subEntries) {
@@ -452,12 +454,19 @@ export function registerSkillDiffCommands(skill: Command): void {
                     const nestedDir = path.join(skillDir, subEntry.name);
                     const nestedHasSkillMd = await fs.access(path.join(nestedDir, "SKILL.md")).then(() => true, () => false);
                     if (nestedHasSkillMd) {
+                      hasNestedSkills = true;
                       const subdir = path.join(entry.name, subEntry.name);
                       await cleanSkillDir(subEntry.name, nestedDir, activeSubdirs, subdir, renderer.platform);
                     }
                   }
                 } catch (_notReadable) {
                   // Not a readable directory
+                }
+
+                // Check top-level skill (after nested scan so we know if nested skills exist)
+                const hasSkillMd = await fs.access(path.join(skillDir, "SKILL.md")).then(() => true, () => false);
+                if (hasSkillMd) {
+                  await cleanSkillDir(entry.name, skillDir, activeSubdirs, entry.name, renderer.platform, hasNestedSkills);
                 }
               }
             } catch {

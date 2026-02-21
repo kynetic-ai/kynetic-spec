@@ -230,5 +230,46 @@ describe("Core Skill Namespace", () => {
       );
       expect(await fs.readFile(projPath, "utf-8")).toContain("# Project B");
     });
+
+    it("should not delete active namespaced skills when --clean removes orphaned top-level SKILL.md", async () => {
+      // Create a core skill and render it
+      kspecFull(
+        'skill add --id ns-keep --name "Namespace Keep" --description "Keep me" --origin core --skill-version 0.1.0',
+        tempDir
+      );
+      await fs.writeFile(
+        path.join(tempDir, "skills", "ns-keep", "SKILL.md"),
+        "# Keep Me\n",
+        "utf-8"
+      );
+      kspecFull("skill render", tempDir);
+
+      // Verify namespaced skill exists
+      const namespacedPath = path.join(
+        tempDir, ".claude", "skills", "kspec", "ns-keep", "SKILL.md"
+      );
+      expect(await fs.readFile(namespacedPath, "utf-8")).toContain("# Keep Me");
+
+      // Place a legacy orphaned SKILL.md at the kspec/ namespace root
+      // (simulating a removed project skill that used to live at .claude/skills/kspec/)
+      await fs.writeFile(
+        path.join(tempDir, ".claude", "skills", "kspec", "SKILL.md"),
+        "---\nname: old-kspec\n---\n<!-- kspec-managed -->\n# Old\n",
+        "utf-8"
+      );
+
+      // Run render --clean — should remove the orphaned SKILL.md
+      // but NOT the active namespaced skill inside kspec/
+      kspecFull("skill render --clean", tempDir);
+
+      // Orphaned top-level SKILL.md should be removed
+      await expect(
+        fs.access(path.join(tempDir, ".claude", "skills", "kspec", "SKILL.md"))
+      ).rejects.toThrow();
+
+      // Active namespaced skill should still exist
+      const keptContent = await fs.readFile(namespacedPath, "utf-8");
+      expect(keptContent).toContain("# Keep Me");
+    });
   });
 });
