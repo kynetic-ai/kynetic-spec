@@ -53727,9 +53727,21 @@
     - infrastructure
   vcs_refs: []
   created_at: 2026-02-21T07:30:18.860Z
-  notes: []
-  todos: []
   started_at: 2026-02-21T16:02:25.535Z
+  notes:
+    - _ulid: 01KJ0FX70EPCXSXQ3ZHBWXCZXF
+      created_at: 2026-02-21T16:18:15.695Z
+      author: "@claude"
+      content: "Implemented core skill namespacing. Core skills (origin: core) now render to
+        .claude/skills/kspec/<id>/SKILL.md for Claude Code platform. Key changes: (1) Added
+        getClaudeCodeSkillSubdir() helper and skillSubdir param to renderSkillBase, (2) Updated
+        claudeCodeRenderer with migration cleanup of old flat paths, (3) Updated checkDrift
+        functions with origin param, (4) Fixed findSkillFiles in validate-skills.ts to recurse into
+        namespace dirs, (5) Fixed --clean logic in skill-diff.ts for namespace dirs, (6) Fixed setup
+        status and doctor status checks to find nested skills, (7) Fixed getMultiPlatformSyncStatus
+        paths, (8) Updated supporting-files-convention tests for new paths."
+      supersedes: null
+  todos: []
 - _ulid: 01KHZHPHM9TEFW4SZYXRXAKQMB
   slugs: []
   title: "Write core skill: kspec:help"
