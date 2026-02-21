@@ -54001,7 +54001,7 @@
     status, spec context, and notes — but not the description. Critical for triage and automation
     where descriptions carry context that specs/notes do not."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
