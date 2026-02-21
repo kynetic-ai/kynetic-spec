@@ -53812,11 +53812,14 @@
   slugs: []
   title: "Write core skills: kspec:triage-inbox and kspec:triage-automation"
   type: task
-  description: Split the monolithic triage skill into two focused skills. kspec:triage-inbox covers
-    inbox item processing (categorize, promote to spec/task, merge duplicates, delete stale).
-    kspec:triage-automation covers task automation eligibility assessment. Each should be
-    self-descriptive and simpler than the combined original. Rewrite from base principles. Update
-    manifest.yaml with both entries.
+  description: Split the monolithic triage skill into two focused skills. Read current content from
+    .claude/skills/triage/SKILL.md as reference. kspec:triage-inbox covers inbox item processing
+    (categorize, promote to spec/task, merge duplicates, delete stale). kspec:triage-automation
+    covers task automation eligibility assessment. Each should be self-descriptive and simpler than
+    the combined original. Rewrite from base principles. Write to
+    templates/skills/triage-inbox/SKILL.md and templates/skills/triage-automation/SKILL.md (rendered
+    to .claude/skills/kspec/triage-inbox/ and .claude/skills/kspec/triage-automation/). Add both
+    entries to manifest.yaml.
   spec_ref: null
   meta_ref: null
   plan_ref: null
