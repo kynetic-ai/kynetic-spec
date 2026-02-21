@@ -53361,6 +53361,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #434. Added needs_work task state for review-to-worker fix cycle. All
+    code, spec (including @01KHYRCW needs-work-state with 7 ACs), workflow, skill, template, and
+    test changes complete. 9 integration tests, all passing. Reviewed by both pr-review subagent and
+    Codex."
   depends_on: []
   context: []
   priority: 1
@@ -53370,6 +53374,7 @@
   vcs_refs: []
   created_at: 2026-02-20T23:28:33.509Z
   started_at: 2026-02-21T00:25:06.746Z
+  completed_at: 2026-02-21T00:39:59.237Z
   notes:
     - _ulid: 01KHYPD0FEC8D8BPKXND2VSSV3
       created_at: 2026-02-20T23:33:15.886Z
@@ -53449,8 +53454,23 @@
         PR #434."
       supersedes: null
   todos: []
-  completed_at: 2026-02-21T00:39:59.237Z
-  closed_reason: "Merged in PR #434. Added needs_work task state for review-to-worker fix cycle. All
-    code, spec (including @01KHYRCW needs-work-state with 7 ACs), workflow, skill, template, and
-    test changes complete. 9 integration tests, all passing. Reviewed by both pr-review subagent and
-    Codex."
+- title: "Fix agents generate formatting: missing blank lines before section headings"
+  description: "kspec agents generate omits blank lines before ## Conventions and ## Workflows
+    headings in kspec-agents.md. Markdown spec requires blank line before headings. Fix in
+    src/cli/commands/agents.ts or src/parser/agent-data-sections.ts."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KHZ6CXQH0CFYR2ZPYV0KG66Z
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T04:12:50.286Z
+  notes: []
+  todos: []
