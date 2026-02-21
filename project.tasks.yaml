@@ -53787,8 +53787,10 @@
   slugs: []
   title: "Write core skill: kspec:reflect"
   type: task
-  description: Refactor the reflect skill for the kspec/ namespace. Session reflection workflow —
-    identifying learnings, friction points, improvements. Rewrite from base principles. Update
+  description: Refactor the reflect skill for the kspec/ namespace. Read current content from
+    .claude/skills/reflect/SKILL.md as reference. Session reflection workflow — identifying
+    learnings, friction points, improvements. Rewrite from base principles. Write to
+    templates/skills/reflect/SKILL.md (rendered to .claude/skills/kspec/reflect/). Add entry to
     manifest.yaml.
   spec_ref: null
   meta_ref: null
