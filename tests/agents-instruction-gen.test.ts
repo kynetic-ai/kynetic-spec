@@ -1,6 +1,6 @@
 /**
  * Tests for Agent Instruction Generation
- * AC: @agent-instruction-gen ac-1 through ac-5
+ * AC: @agent-instruction-gen ac-1 through ac-6
  * AC: @agents-cli ac-1 through ac-4
  * AC: @trait-dry-run (dry run support)
  * AC: @agent-templates ac-1 through ac-3
@@ -330,6 +330,59 @@ describe('Agent Instruction Generation', () => {
       // Verify current
       status = kspecFull('agents status', tempDir);
       expect(status.stdout).toContain('up to date');
+    });
+  });
+
+  // AC: @agent-instruction-gen ac-6
+  describe('ac-6: skip regeneration when content unchanged', () => {
+    it('should skip writing and report up to date when meta has not changed', async () => {
+      // First generate
+      kspecFull('agents generate', tempDir);
+
+      const filePath = path.join(tempDir, 'kspec-agents.md');
+      const firstContent = await fs.readFile(filePath, 'utf-8');
+
+      // Second generate without changes
+      const result = kspecFull('agents generate', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('up to date');
+
+      // File should not have been rewritten (timestamp unchanged)
+      const secondContent = await fs.readFile(filePath, 'utf-8');
+      expect(secondContent).toBe(firstContent);
+    });
+
+    it('should return skipped flag in JSON output when unchanged', async () => {
+      kspecFull('agents generate', tempDir);
+
+      const result = kspecJson<{
+        path: string;
+        status: string;
+        skipped: boolean;
+      }>('agents generate', tempDir);
+
+      expect(result.skipped).toBe(true);
+      expect(result.status).toBe('current');
+    });
+
+    it('should regenerate when meta has changed', async () => {
+      kspecFull('agents generate', tempDir);
+
+      // Add a skill to change meta
+      kspecFull(
+        'skill add --id skip-test-skill --name "Skip Test" --description "Test skill for skip"',
+        tempDir,
+      );
+
+      // Should regenerate, not skip
+      const result = kspecFull('agents generate', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).not.toContain('up to date');
+      expect(result.stdout).toContain('Generated');
+
+      const filePath = path.join(tempDir, 'kspec-agents.md');
+      const content = await fs.readFile(filePath, 'utf-8');
+      expect(content).toContain('skip-test-skill');
     });
   });
 
