@@ -53495,6 +53495,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Documented in AGENTS.md, merged in PR #437. Added Agent Instructions Generation
+    section with source table, decision guide, and template ordering."
   depends_on: []
   context: []
   priority: 3
@@ -53502,11 +53504,9 @@
   vcs_refs: []
   created_at: 2026-02-21T04:47:17.965Z
   started_at: 2026-02-21T04:53:55.998Z
+  completed_at: 2026-02-21T05:08:08.417Z
   notes: []
   todos: []
-  completed_at: 2026-02-21T05:08:08.417Z
-  closed_reason: "Documented in AGENTS.md, merged in PR #437. Added Agent Instructions Generation
-    section with source table, decision guide, and template ordering."
 - _ulid: 01KHZ941A1ZJRM4JFG0FMCACMD
   slugs: []
   title: Skip kspec-agents.md regeneration when content unchanged
@@ -53517,7 +53517,7 @@
     if identical. The hash file (.kspec-agents-hash) already tracks meta hash for staleness — if the
     meta hash matches, the file content is the same and generation can be skipped entirely with a
     'kspec-agents.md is already up to date' message.
-  spec_ref: null
+  spec_ref: "@agent-instruction-gen"
   meta_ref: null
   plan_ref: null
   status: pending
