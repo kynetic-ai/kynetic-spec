@@ -15,8 +15,8 @@ Tasks reference specs via `spec_ref`. They don't duplicate spec content.
 pending → in_progress → pending_review → completed
               ↓              ↓
           blocked ←──────────┘
-              ↓
-          cancelled
+              ↓          needs_work
+          cancelled     (fix cycle: → in_progress → pending_review)
 ```
 
 See `kspec help task` for transition commands and options.

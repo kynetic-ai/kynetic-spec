@@ -232,13 +232,16 @@ States:
   pending        → Ready to start (or waiting on dependencies)
   in_progress    → Currently being worked on
   pending_review → Code done, awaiting review/merge
+  needs_work     → Reviewer found issues, kicked back to worker
   completed      → Done (merged/shipped)
   blocked        → Manually blocked (has blocked_by entries)
   cancelled      → Cancelled, won't be done
 
 Transitions:
   pending → in_progress          kspec task start
+  needs_work → in_progress       kspec task start (fix cycle)
   in_progress → pending_review   kspec task submit
+  pending_review → needs_work    kspec task needs-work --reason "..."
   pending_review → completed     kspec task complete
   in_progress → completed        kspec task complete (skip review)
   in_progress → blocked          kspec task block

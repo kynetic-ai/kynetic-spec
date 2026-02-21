@@ -144,7 +144,7 @@ export interface ActiveTaskSummary {
 export interface NoteSummary {
   task_ref: string;
   task_title: string;
-  task_status: "in_progress" | "pending_review" | "completed";
+  task_status: "in_progress" | "pending_review" | "needs_work" | "completed";
   note_ulid: string;
   created_at: string;
   author: string | null;
@@ -194,6 +194,7 @@ export interface CommitSummary {
 export interface SessionStats {
   total_tasks: number;
   in_progress: number;
+  needs_work: number;
   pending_review: number;
   ready: number;
   blocked: number;
@@ -300,8 +301,8 @@ function collectRecentNotes(
 
   for (const task of tasks) {
     // Only include notes from in_progress, pending_review, or completed tasks
-    const taskStatus = task.status as "in_progress" | "pending_review" | "completed";
-    if (!["in_progress", "pending_review", "completed"].includes(taskStatus)) {
+    const taskStatus = task.status as "in_progress" | "pending_review" | "needs_work" | "completed";
+    if (!["in_progress", "pending_review", "needs_work", "completed"].includes(taskStatus)) {
       continue;
     }
 
@@ -391,6 +392,7 @@ export async function gatherSessionContext(
   const stats: SessionStats = {
     total_tasks: allTasks.length,
     in_progress: allTasks.filter((t) => t.status === "in_progress").length,
+    needs_work: allTasks.filter((t) => t.status === "needs_work").length,
     pending_review: allTasks.filter((t) => t.status === "pending_review")
       .length,
     ready: getReadyTasks(allTasks).length,
@@ -399,10 +401,10 @@ export async function gatherSessionContext(
     inbox_items: inboxItems.length,
   };
 
-  // Get active tasks (optionally filtered to automation-eligible only)
+  // Get active tasks (in_progress + needs_work, optionally filtered to automation-eligible only)
   // AC: @cli-ralph ac-16
   const activeTasks = allTasks
-    .filter((t) => t.status === "in_progress")
+    .filter((t) => t.status === "in_progress" || t.status === "needs_work")
     .filter((t) => !options.eligible || t.automation === "eligible")
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
@@ -421,7 +423,7 @@ export async function gatherSessionContext(
   const noteLimitPerStatus = options.full ? limit : Math.ceil(limit / 3);
 
   const inProgressNotes = collectRecentNotes(
-    allTasks.filter((t) => t.status === "in_progress"),
+    allTasks.filter((t) => t.status === "in_progress" || t.status === "needs_work"),
     index,
     { limit: noteLimitPerStatus, since: sinceDate },
   );
@@ -456,7 +458,7 @@ export async function gatherSessionContext(
 
   // Get incomplete todos from active tasks
   const activeTodos = collectIncompleteTodos(
-    allTasks.filter((t) => t.status === "in_progress"),
+    allTasks.filter((t) => t.status === "in_progress" || t.status === "needs_work"),
     index,
     { limit: options.full ? limit * 2 : limit },
   );

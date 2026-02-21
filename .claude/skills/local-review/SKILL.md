@@ -23,6 +23,14 @@ kspec workflow next --input spec_ref="@spec-slug"
 - When spawning a review subagent
 - After completing implementation, before shipping
 
+## Subagent Invocation
+
+When spawned as a subagent by the worker (before PR creation):
+- Return findings to the caller with severity classifications
+- MUST-FIX items block PR creation until resolved
+- The worker fixes issues inline, not a separate cycle
+- Actionable items not worth fixing now: recommend `kspec inbox add`
+
 ## Workflow Overview
 
 8-step quality gate. The goal is to find problems, not to approve.

@@ -25,21 +25,23 @@ kspec workflow next --input task_ref="@task-slug"
 
 ## Inherit Existing Work First
 
-**Before starting new work, check for existing in-progress or pending_review tasks.**
+**Before starting new work, check for existing work that needs attention.**
 
 ```bash
 kspec session start  # Shows active work at the top
 ```
 
 Priority order:
-1. **pending_review** - PR awaiting merge, highest priority
+1. **needs_work** - Fix cycle: address review feedback, highest priority
 2. **in_progress** - Work already started, continue it
 3. **ready (pending)** - New work to start
 
-**Always inherit existing work** unless user explicitly says otherwise. If there's an in_progress task, pick it up and continue. If there's a pending_review task, check the PR status and push it to completion.
+Note: `pending_review` tasks WITHOUT review comments are handled by the review subagent, not the worker. Do not touch them.
+
+**Always inherit existing work** unless user explicitly says otherwise. If there's a `needs_work` task, pick it up and fix the review findings. If there's an `in_progress` task, continue it.
 
 Only start new work when:
-- No in_progress or pending_review tasks exist
+- No needs_work or in_progress tasks exist
 - User explicitly tells you to work on something else
 - User says to ignore the existing work
 
@@ -59,17 +61,50 @@ pending → in_progress → pending_review → completed
 
 11 steps for full task lifecycle:
 
-1. **Check Existing Work** - Inherit in_progress or pending_review tasks first
+1. **Check Existing Work** - Inherit needs_work or in_progress tasks first
 2. **Choose Task** - Select from ready tasks (if no existing work)
 3. **Verify Not Done** - Check git history, existing code
 4. **Start Task** - Mark in_progress
 5. **Work & Note** - Read all ACs (own + trait), implement, add notes
 6. **Commit** - Ensure changes committed with trailers
-7. **Local Review** - Run `/local-review` (required quality gate)
+7. **Local Review** - Spawn local-review subagent (Task tool): "Run /local-review for @spec-ref". Fix any MUST-FIX findings. Inbox actionable-but-not-now items.
 8. **Submit Task** - Mark pending_review
 9. **Create PR** - Use /pr skill
 10. **PR Merged** - Wait for review and merge
 11. **Complete Task** - Mark completed after merge
+
+## Fix Cycle (Handling Review Feedback)
+
+When you inherit a `needs_work` task:
+
+1. **Detect fix cycle** — Check: does this task have a PR? Are there unresolved comments?
+   ```bash
+   # Find PR for this task
+   gh pr list --search "Task: @task-ref" --json number,url
+   # Check for review comments
+   gh api repos/{owner}/{repo}/pulls/{number}/reviews --jq '.[].body'
+   ```
+
+2. **Read review comments** — Understand what the reviewer found
+   ```bash
+   gh api repos/{owner}/{repo}/pulls/{number}/comments --jq '.[] | {path, line, body}'
+   ```
+
+3. **Fix MUST-FIX and SHOULD-FIX items** — Address each finding
+
+4. **Push fixes** — Commit with descriptive message, push to PR branch
+   ```bash
+   git add <files> && git commit -m "fix: address review feedback
+
+   Task: @task-slug"
+   git push
+   ```
+
+5. **Submit task** — `kspec task submit @task-ref` (back to pending_review)
+
+6. **Stop responding** — Reviewer re-reviews in next iteration
+
+You do NOT merge. You do NOT re-review. The reviewer handles merge decisions.
 
 ## Key Commands
 
@@ -94,6 +129,12 @@ kspec task submit @task-slug
 
 # Complete after PR merged (completed)
 kspec task complete @task-slug --reason "Summary of what was done"
+
+# Fix cycle: find PR for task
+gh pr list --search "Task: @task-ref" --json number,url
+
+# Fix cycle: read review comments
+gh api repos/{owner}/{repo}/pulls/{number}/comments
 ```
 
 ## Verification Step
@@ -278,7 +319,8 @@ Loop mode is NOT a free pass to:
    ```
 
 2. **Select task** (priority order):
-   - First: any `in_progress` task (continue existing work)
+   - First: any `needs_work` task (fix cycle — address review feedback)
+   - Then: any `in_progress` task (continue existing work)
    - Then: tasks that unblock others (high impact)
    - Finally: highest priority ready task (lowest number)
 
@@ -300,20 +342,20 @@ Loop mode is NOT a free pass to:
 
    Task: @task-slug"
    ```
-   Then run `/local-review` to verify AC coverage, test quality, and test isolation.
+   Spawn local-review subagent: use Task tool with prompt
+   "Run /local-review for @spec-ref. Report findings with severity."
+   Fix any MUST-FIX findings before proceeding.
 
-6. **Submit and create PR**
-   ```bash
-   kspec task submit @task
-   ```
-   Then run `/pr` to create the pull request.
+6. **Submit and create PR** (or fix cycle)
+   If fix cycle (needs_work task):
+     Fix review findings, push to PR branch, submit task, stop.
+   Otherwise:
+     `kspec task submit @task`
+     Then run `/pr` to create the pull request.
 
 7. **Stop responding**
-   After PR created, **stop responding** (do NOT call any more commands).
-   Ralph automatically:
-   1. Sends the reflection prompt to you
-   2. Processes pending_review tasks via subagent
-   3. Continues to the next iteration with remaining tasks
+   After PR created (or fix cycle push), **stop responding**.
+   Ralph automatically handles review via subagent.
 
    **Do NOT call `end-loop`** - creating a PR completes ONE task, not the loop.
 

@@ -110,6 +110,7 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
     .status-pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
     .status-in_progress { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
     .status-pending_review { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+    .status-needs_work { background: rgba(249, 115, 22, 0.2); color: #f97316; }
     .status-completed { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
     .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
     .status-blocked { background: rgba(239, 68, 68, 0.2); color: #ef4444; }

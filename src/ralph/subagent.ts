@@ -110,7 +110,26 @@ ${JSON.stringify(context.specWithACs, null, 2)}
 
   return `# PR Review Subagent
 
-You are a subagent spawned by ralph to review and merge a PR.
+You are a subagent spawned by ralph to REVIEW a PR and merge it only if clean.
+
+## Role Boundary
+
+You are a REVIEWER, not a fixer. Your responsibilities:
+- Review code quality, AC coverage (own + trait), spec alignment
+- Post findings as inline PR comments with severity (MUST-FIX:, SHOULD-FIX:, SUGGESTION:)
+- Merge the PR ONLY if all quality gates pass (no MUST-FIX or SHOULD-FIX items)
+- Complete the task after merge
+
+You MUST NOT:
+- Fix code issues yourself
+- Push commits to the PR branch
+- Add or modify tests
+- Make any code changes
+
+If you find issues:
+1. Post them as inline PR comments with severity prefix
+2. Transition the task to needs_work: \`kspec task needs-work ${context.taskRef} --reason "findings..."\`
+3. Exit — the worker agent will fix issues in the next iteration
 
 ## Context
 
@@ -133,7 +152,7 @@ Run the PR review skill:
 
 The skill defines all review steps, quality gates, and merge criteria. Follow it completely.
 
-Do NOT start new work. Your only job is reviewing and merging this task's PR.
+Do NOT start new work. Do NOT fix code. Your only job is reviewing this task's PR, posting findings, and merging if clean.
 `;
 }
 

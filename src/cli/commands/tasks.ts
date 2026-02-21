@@ -367,7 +367,9 @@ export function registerTasksCommands(program: Command): void {
         const allTasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(allTasks, items);
-        const activeTasks = allTasks.filter((t) => t.status === "in_progress");
+        const activeTasks = allTasks.filter(
+          (t) => t.status === "in_progress" || t.status === "needs_work",
+        );
 
         output(activeTasks, () =>
           formatTaskList(
