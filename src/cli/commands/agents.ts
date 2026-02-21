@@ -185,21 +185,20 @@ export async function generateAgentsContent(
   );
 
   // AC: @agent-instruction-gen ac-2 - Skills table
-  const skillsTable = generateSkillsTable(skills);
-  if (skillsTable) {
-    sections.push(skillsTable);
-  }
-
   // AC: @agent-instruction-gen ac-3 - Conventions section
-  const conventionsSection = generateConventionsSummary(conventions);
-  if (conventionsSection) {
-    sections.push(conventionsSection);
-  }
+  // Ensure blank line between each data section for valid markdown
+  const dataSections = [
+    generateSkillsTable(skills),
+    generateConventionsSummary(conventions),
+    generateWorkflowsSummary(workflows),
+  ].filter(Boolean);
 
-  // Workflows summary
-  const workflowsSection = generateWorkflowsSummary(workflows);
-  if (workflowsSection) {
-    sections.push(workflowsSection);
+  for (const section of dataSections) {
+    // Ensure each section is preceded by a blank line
+    if (!sections[sections.length - 1]?.endsWith("\n\n")) {
+      sections.push("\n");
+    }
+    sections.push(section);
   }
 
   // AC: @agent-templates ac-1, ac-2 - Include template sections in order

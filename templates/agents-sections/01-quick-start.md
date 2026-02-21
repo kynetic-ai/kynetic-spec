@@ -19,3 +19,4 @@ Verify shadow branch health with `kspec shadow status` if you encounter issues.
 4. **Check dependencies** — Tasks have `depends_on` relationships; complete prerequisites first.
 5. **Always confirm** — Ask before creating or modifying spec items.
 6. **Batch mutations** — Use `kspec batch` for 2+ sequential write operations (one atomic commit).
+7. **Regenerate agent instructions** — Run `kspec agents generate` after changing conventions, workflows, or skills. These are the inputs to `kspec-agents.md`.
