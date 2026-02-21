@@ -54099,3 +54099,24 @@
   created_at: 2026-02-21T08:23:09.530Z
   notes: []
   todos: []
+- title: Migrate skill rendering to Claude Code plugin system
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-plugin-rendering
+  tags:
+    - core-skills
+    - plugins
+    - platform
+  depends_on: []
+  _ulid: 01KJ19D0CH3SECG4FT9GQ46S10
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T23:43:47.601Z
+  notes: []
+  todos: []
