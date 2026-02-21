@@ -51245,6 +51245,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Triage complete. Created 11 follow-up tasks for core skill namespace work.
   depends_on: []
   context: []
   priority: 2
@@ -51252,6 +51253,7 @@
   vcs_refs: []
   created_at: 2026-02-19T18:21:25.437Z
   started_at: 2026-02-21T05:46:58.841Z
+  completed_at: 2026-02-21T07:31:10.039Z
   notes:
     - _ulid: 01KHW11A371KAK7CHYSYQGPYW1
       created_at: 2026-02-19T22:41:23.559Z
@@ -51402,8 +51404,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-21T07:31:10.039Z
-  closed_reason: Triage complete. Created 11 follow-up tasks for core skill namespace work.
 - _ulid: 01KHVK28M6TAWG0YV55XYMM33D
   slugs: []
   title: Generalize agent template sections for consumer projects
@@ -53704,12 +53704,16 @@
   title: Render core skills under kspec/ namespace directory
   type: task
   description: "Update the core skill render pipeline so template skills install to
-    .claude/skills/kspec/<skill-id>/SKILL.md instead of .claude/skills/<skill-id>/SKILL.md. Changes
-    needed: getRenderedSkillPath() adds kspec/ prefix for origin:core skills, template dir structure
-    moves from templates/skills/<id>/ to templates/skills/<id>/ (render handles prefix),
-    loadCoreSkillContent() unchanged, manifest.yaml ids stay kebab-case (no slashes/colons in
-    schema). Also update kspec setup --status to check under kspec/ subdir. Clean up old kspec-help
-    from .claude/skills/kspec-help/ if present."
+    .claude/skills/kspec/<skill-id>/SKILL.md instead of flat .claude/skills/<skill-id>/SKILL.md. Key
+    changes: (1) getRenderedSkillPath() in src/parser/skill-render.ts adds kspec/ prefix for
+    origin:core skills, (2) loadCoreSkillContent() in src/cli/commands/skill-install.ts unchanged —
+    template dir stays templates/skills/<id>/, render path handles the nesting, (3) manifest.yaml
+    skill ids stay kebab-case (no slashes or colons in schema), (4) kspec setup --status checks
+    under .claude/skills/kspec/ subdir for core skills, (5) Clean up old .claude/skills/kspec-help/
+    if present (migrated to .claude/skills/kspec/help/). Project-specific skills in .claude/skills/
+    root are untouched — only origin:core skills get the kspec/ prefix. Test: kspec setup should
+    create .claude/skills/kspec/help/SKILL.md, kspec skill install-core should install under kspec/
+    subdir."
   spec_ref: null
   meta_ref: null
   plan_ref: null
