@@ -53733,11 +53733,14 @@
   slugs: []
   title: "Write core skill: kspec:help"
   type: task
-  description: Rewrite the kspec-help skill as a lean CLI map under the kspec/ namespace. Should be a
-    succinct overview of what commands exist, organized by domain, with instructions to use kspec
-    help <cmd> for details. NOT a full CLI reference — that is the CLI help system. Merge any useful
-    content from the current kspec skill (.claude/skills/kspec/) and kspec-help template. Update
-    manifest.yaml entry. Remove old .claude/skills/kspec/ directory.
+  description: Rewrite the kspec-help skill as a lean CLI map under the kspec/ namespace. Read current
+    content from .claude/skills/kspec/SKILL.md (the monolithic kspec skill) and
+    templates/skills/kspec-help/SKILL.md as reference. New skill should be a succinct overview of
+    what commands exist organized by domain, with strong instruction to use kspec help <cmd> for
+    details. NOT a full CLI reference. Write to templates/skills/help/SKILL.md (rendered to
+    .claude/skills/kspec/help/). Update manifest.yaml entry from id:kspec-help to id:help. Remove
+    the old project-specific .claude/skills/kspec/ directory (the monolithic one) since it is
+    replaced by the namespaced core skills.
   spec_ref: null
   meta_ref: null
   plan_ref: null
