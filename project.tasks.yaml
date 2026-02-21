@@ -53761,8 +53761,10 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Blocked on plugin system migration — Claude Code doesn't discover nested skill directories.
+      Need .claude/plugins/kspec/ support first.
   depends_on:
     - "@01KHZHPG"
   context: []
