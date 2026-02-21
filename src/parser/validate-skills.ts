@@ -48,12 +48,37 @@ export async function findSkillFiles(baseDir: string): Promise<string[]> {
 
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      const skillFile = path.join(skillsDir, entry.name, "SKILL.md");
+      const dirPath = path.join(skillsDir, entry.name);
+
+      // Check for SKILL.md at current level
+      const skillFile = path.join(dirPath, "SKILL.md");
       try {
         await fs.access(skillFile);
         skillFiles.push(skillFile);
       } catch {
-        // SKILL.md doesn't exist in this directory, skip
+        // No SKILL.md at this level
+      }
+
+      // Also check subdirectories for namespaced skills (e.g., kspec/<id>/SKILL.md)
+      try {
+        const subEntries = await fs.readdir(dirPath, { withFileTypes: true });
+        for (const subEntry of subEntries) {
+          if (subEntry.isDirectory()) {
+            const nestedSkillFile = path.join(
+              dirPath,
+              subEntry.name,
+              "SKILL.md"
+            );
+            try {
+              await fs.access(nestedSkillFile);
+              skillFiles.push(nestedSkillFile);
+            } catch {
+              // No SKILL.md in nested directory
+            }
+          }
+        }
+      } catch {
+        // Not a readable directory
       }
     }
   }

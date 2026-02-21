@@ -185,21 +185,47 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     drifted: 0,
   };
 
+  // Helper to check a directory for kspec-managed SKILL.md and nested namespaced skills
+  async function checkSkillDir(dirPath: string, dirName: string): Promise<void> {
+    const skillMdPath = path.join(dirPath, "SKILL.md");
+    try {
+      const content = await fs.readFile(skillMdPath, "utf-8");
+      if (content.includes("<!-- kspec-managed -->")) {
+        skills.total++;
+        skills.rendered++;
+        // TODO: check drift status
+      }
+    } catch (err) {
+      debugLog(`SKILL.md doesn't exist in ${dirName}`, err);
+    }
+
+    // Also check subdirectories for namespaced skills (e.g., kspec/<id>/SKILL.md)
+    try {
+      const subEntries = await fs.readdir(dirPath, { withFileTypes: true });
+      for (const sub of subEntries) {
+        if (sub.isDirectory()) {
+          const nestedMd = path.join(dirPath, sub.name, "SKILL.md");
+          try {
+            const content = await fs.readFile(nestedMd, "utf-8");
+            if (content.includes("<!-- kspec-managed -->")) {
+              skills.total++;
+              skills.rendered++;
+            }
+          } catch (err) {
+            debugLog(`SKILL.md doesn't exist in ${dirName}/${sub.name}`, err);
+          }
+        }
+      }
+    } catch (err) {
+      debugLog(`Cannot read subdirectories of ${dirName}`, err);
+    }
+  }
+
   try {
     const skillDirs = await fs.readdir(skillsDir, { withFileTypes: true });
     for (const dir of skillDirs) {
       if (dir.isDirectory()) {
-        const skillMdPath = path.join(skillsDir, dir.name, "SKILL.md");
-        try {
-          const content = await fs.readFile(skillMdPath, "utf-8");
-          if (content.includes("<!-- kspec-managed -->")) {
-            skills.total++;
-            skills.rendered++;
-            // TODO: check drift status
-          }
-        } catch (err) {
-          debugLog(`SKILL.md doesn't exist in ${dir.name}`, err);
-        }
+        await checkSkillDir(path.join(skillsDir, dir.name), dir.name);
       }
     }
   } catch (err) {

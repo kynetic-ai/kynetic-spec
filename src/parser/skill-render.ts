@@ -108,7 +108,7 @@ export interface PlatformRenderer {
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string }
+    options?: { outputDir?: string; origin?: string }
   ): Promise<DriftStatus>;
 }
 
@@ -207,11 +207,32 @@ export function generateFrontmatter(skill: LoadedSkill): string {
 }
 
 /**
- * Get the target directory for rendered skills on main branch.
- * Returns .claude/skills/<id>/ path.
+ * Get the rendered skill subdirectory segment for a given platform.
+ * Core skills on claude-code are namespaced under kspec/ so Claude Code
+ * discovers them as /kspec:<id> commands. All other combinations use the
+ * skill id directly.
+ * AC: @skill-rendering ac-7
  */
-function getRenderedSkillPath(projectRoot: string, skillId: string): string {
-  return path.join(projectRoot, ".claude", "skills", skillId);
+export function getSkillSubdir(skillId: string, origin?: string, platform?: string): string {
+  if (origin === "core" && (!platform || platform === "claude-code")) {
+    return path.join("kspec", skillId);
+  }
+  return skillId;
+}
+
+/**
+ * Convenience wrapper for LoadedSkill objects (Claude Code platform).
+ */
+export function getClaudeCodeSkillSubdir(skill: LoadedSkill): string {
+  return getSkillSubdir(skill.id, skill.origin, "claude-code");
+}
+
+/**
+ * Get the target directory for rendered skills on main branch.
+ * Returns .claude/skills/<subdir>/ path where subdir accounts for namespacing.
+ */
+function getRenderedSkillPath(projectRoot: string, skillId: string, origin?: string): string {
+  return path.join(projectRoot, ".claude", "skills", getSkillSubdir(skillId, origin, "claude-code"));
 }
 
 /**
@@ -297,9 +318,13 @@ export async function writeRenderHash(specDir: string, skillId: string, hash: st
 export async function checkSkillDrift(
   specDir: string,
   projectRoot: string,
-  skillId: string
+  skillId: string,
+  origin?: string
 ): Promise<"not-rendered" | "in-sync" | "drifted" | "no-hash"> {
-  const renderedPath = path.join(projectRoot, ".claude", "skills", skillId, "SKILL.md");
+  const renderedPath = path.join(
+    projectRoot, ".claude", "skills",
+    getSkillSubdir(skillId, origin, "claude-code"), "SKILL.md"
+  );
 
   // Check if rendered file exists
   let renderedContent: string;
@@ -456,7 +481,7 @@ export async function renderClaudeCodeSkill(
 ): Promise<ClaudeCodeRenderResult> {
   const dryRun = options.dryRun ?? false;
   const storeHash = options.storeHash ?? false;
-  const targetDir = getRenderedSkillPath(projectRoot, skill.id);
+  const targetDir = getRenderedSkillPath(projectRoot, skill.id, skill.origin);
   const targetSkillMd = path.join(targetDir, "SKILL.md");
 
   // AC: @claude-code-renderer ac-3 - Load source content verbatim
@@ -647,11 +672,13 @@ export async function checkPlatformSkillDrift(
   projectRoot: string,
   skillId: string,
   platform: string,
-  outputDir?: string
+  outputDir?: string,
+  origin?: string
 ): Promise<DriftStatus> {
   // Determine the output directory - use custom or platform default
   const platformOutputDir = outputDir || getPlatformDefaultOutputDir(platform);
-  const renderedPath = path.join(projectRoot, platformOutputDir, skillId, "SKILL.md");
+  const subdir = getSkillSubdir(skillId, origin, platform);
+  const renderedPath = path.join(projectRoot, platformOutputDir, subdir, "SKILL.md");
 
   // Check if rendered file exists
   let renderedContent: string;
@@ -731,13 +758,14 @@ export async function renderSkillBase(
   skill: LoadedSkill,
   options: PlatformRenderOptions,
   config: BaseRenderConfig,
-  defaultOutputDir: string
+  defaultOutputDir: string,
+  skillSubdir?: string
 ): Promise<PlatformRenderResult> {
   const dryRun = options.dryRun ?? false;
   const storeHash = options.storeHash ?? false;
   const outputDir = options.outputDir || defaultOutputDir;
 
-  const targetDir = path.join(projectRoot, outputDir, skill.id);
+  const targetDir = path.join(projectRoot, outputDir, skillSubdir || skill.id);
   const targetSkillMd = path.join(targetDir, "SKILL.md");
   const paths: string[] = [];
 
@@ -849,25 +877,41 @@ export const claudeCodeRenderer: PlatformRenderer = {
     skill: LoadedSkill,
     options: PlatformRenderOptions = {}
   ): Promise<PlatformRenderResult> {
+    const dryRun = options.dryRun ?? false;
+
+    // Migrate: clean up old flat path when rendering core skills to namespaced path
+    if (skill.origin === "core" && !dryRun) {
+      const oldPath = path.join(projectRoot, this.defaultOutputDir, skill.id, "SKILL.md");
+      try {
+        const content = await fs.readFile(oldPath, "utf-8");
+        if (content.includes(KSPEC_MANAGED_MARKER)) {
+          await fs.rm(path.join(projectRoot, this.defaultOutputDir, skill.id), { recursive: true, force: true });
+        }
+      } catch {
+        // Old path doesn't exist, nothing to clean
+      }
+    }
+
     return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter,
       writeLegacyHash: true,
-    }, this.defaultOutputDir);
+    }, this.defaultOutputDir, getClaudeCodeSkillSubdir(skill));
   },
 
   async checkDrift(
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string }
+    options?: { outputDir?: string; origin?: string }
   ): Promise<DriftStatus> {
     return checkPlatformSkillDrift(
       specDir,
       projectRoot,
       skillId,
       this.platform,
-      options?.outputDir
+      options?.outputDir,
+      options?.origin
     );
   },
 };
@@ -1014,7 +1058,7 @@ export const codexRenderer: PlatformRenderer = {
     specDir: string,
     projectRoot: string,
     skillId: string,
-    options?: { outputDir?: string }
+    options?: { outputDir?: string; origin?: string }
   ): Promise<DriftStatus> {
     const platformOutputDir = options?.outputDir || this.defaultOutputDir;
     const skillDir = path.join(projectRoot, platformOutputDir, skillId);
