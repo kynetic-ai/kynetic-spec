@@ -53993,3 +53993,24 @@
   created_at: 2026-02-21T07:30:28.499Z
   notes: []
   todos: []
+- title: Fix task get to display description field in text output
+  type: bug
+  priority: 2
+  spec_ref: null
+  tags:
+    - cli
+    - bug
+    - dx
+  description: "Bug: `kspec task get` omits the task description field from output. Shows title,
+    status, spec context, and notes — but not the description. Critical for triage and automation
+    where descriptions carry context that specs/notes do not."
+  _ulid: 01KHZHZ7GGQ6710KHVNVJB3GEB
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T07:35:04.464Z
+  notes: []
+  todos: []
