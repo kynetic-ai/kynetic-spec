@@ -53766,7 +53766,7 @@
     - Blocked on plugin system migration — Claude Code doesn't discover nested skill directories.
       Need .claude/plugins/kspec/ support first.
   depends_on:
-    - "@01KHZHPG"
+    - "@task-plugin-rendering"
   context: []
   priority: 2
   tags:
@@ -54104,22 +54104,6 @@
     - task-plugin-rendering
   title: Migrate skill rendering to Claude Code plugin system
   type: task
-  spec_ref: null
-  meta_ref: null
-  plan_ref: null
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 2
-  tags:
-    - core-skills
-    - plugins
-    - platform
-  vcs_refs: []
-  created_at: 2026-02-21T23:43:47.601Z
-  notes: []
-  todos: []
   description: >-
     Claude Code does not support nested skill directories (.claude/skills/kspec/<id>/ is NOT
     discovered). The official namespacing mechanism is the plugin system.
@@ -54210,3 +54194,19 @@
 
     - kspec-agents.md Finding Information table should show /kspec:help after migration (fix
     generateSkillsTable in agent-data-sections.ts)
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - core-skills
+    - plugins
+    - platform
+  vcs_refs: []
+  created_at: 2026-02-21T23:43:47.601Z
+  notes: []
+  todos: []
