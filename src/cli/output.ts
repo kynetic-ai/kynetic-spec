@@ -549,6 +549,14 @@ export function formatTaskDetails(
     `${fieldLabels.automation} ${automationColor(automationDisplay)}`,
   );
 
+  if (task.description?.trim()) {
+    console.log(`\n${sectionHeaders.description}`);
+    const desc = task.description.trim();
+    for (const line of desc.split("\n")) {
+      console.log(`  ${line}`);
+    }
+  }
+
   if (task.spec_ref) {
     console.log(`${fieldLabels.specRef}  ${task.spec_ref}`);
   }
