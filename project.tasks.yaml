@@ -53427,4 +53427,12 @@
         visibility in task listings). Also missing: test coverage for needs_work transitions (no
         tests found in tests/ directory)."
       supersedes: null
+    - _ulid: 01KHYRH7VD6HTTENV3MP8AJ3B5
+      created_at: 2026-02-21T00:10:31.661Z
+      author: "@claude"
+      content: "Phase 1c complete: Created spec @01KHYRCW (needs-work-state) under @task-states with 7 ACs
+        covering schema validity, transitions, rejection, active listing, help docs, and fix cycle
+        counter. Wrote 9 integration tests in tests/task-needs-work.test.ts — all pass. kspec
+        validate clean."
+      supersedes: null
   todos: []
