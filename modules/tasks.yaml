@@ -356,6 +356,23 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KHYRCWD9CNW9FSGPFNH3NK2Y
+        slugs: []
+        title: Needs Work State
+        type: requirement
+        tags:
+          - tasks
+        description: The needs_work status represents 'reviewer found issues, worker must fix' - enabling a
+          fix cycle between reviewer and worker in the ralph automation loop. Tasks transition to
+          needs_work when a reviewer kicks back findings via kspec task needs-work, then back to
+          in_progress when the worker picks up the fix via kspec task start.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-21T00:08:08.873Z
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
