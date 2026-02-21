@@ -51251,6 +51251,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-19T18:21:25.437Z
+  started_at: 2026-02-21T05:46:58.841Z
   notes:
     - _ulid: 01KHW11A371KAK7CHYSYQGPYW1
       created_at: 2026-02-19T22:41:23.559Z
@@ -51258,9 +51259,51 @@
       content: "Automation status set to manual_only: Spike — output is categorization manifest, requires
         human judgment on core vs project-local"
       supersedes: null
+    - _ulid: 01KHZBXH96AQ3WHJGRS9RYZ554
+      created_at: 2026-02-21T05:49:17.479Z
+      author: "@claude"
+      content: >-
+        Triage completed. Three categories identified:
+
+
+        **Core (ship with kspec) — 13 skills:**
+
+        kspec, meta, reflect, triage, spec, spec-plan, task-work, pr, pr-review, local-review,
+        create-workflow, audit, release
+
+
+        **Project-specific (kynetic-spec only) — 3 skills:**
+
+        e2e (Playwright/SvelteKit web UI), svelte-5 (Svelte 5 patterns), eval-agents (AGENTS.md eval
+        with project-specific scenarios)
+
+
+        **Not kspec-managed — external:**
+
+        codex (Codex CLI integration, SKILL.md but not in kspec skill registry), .claude/hooks/
+        (worktree guard, ralph task limit), .claude/settings*.json
+
+
+        **Key findings:**
+
+        - All 17 skills live in .claude/skills/ as Claude Code native SKILL.md files, NOT
+        kspec-managed skills (kspec skill list shows only 1 core skill: kspec-help)
+
+        - The 13 core skills ARE the kspec agent workflow — without them agents have no
+        task/PR/review guidance
+
+        - codex is an edge case: external tool integration pattern, could be an optional integration
+        template
+
+        - release assumes npm publish but the pattern is broadly applicable
+
+        - Hooks (worktree guard, ralph task limit) are also candidates for shipping with kspec setup
+
+        - Next steps: decide how to ship core skills (kspec setup installs them? kspec skill install
+        --core?), then implement
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-21T05:46:58.841Z
 - _ulid: 01KHVK28M6TAWG0YV55XYMM33D
   slugs: []
   title: Generalize agent template sections for consumer projects
