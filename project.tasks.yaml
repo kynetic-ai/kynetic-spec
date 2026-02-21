@@ -53697,3 +53697,259 @@
   created_at: 2026-02-21T05:13:53.619Z
   notes: []
   todos: []
+- _ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
+  slugs: []
+  title: Render core skills under kspec/ namespace directory
+  type: task
+  description: "Update the core skill render pipeline so template skills install to
+    .claude/skills/kspec/<skill-id>/SKILL.md instead of .claude/skills/<skill-id>/SKILL.md. Changes
+    needed: getRenderedSkillPath() adds kspec/ prefix for origin:core skills, template dir structure
+    moves from templates/skills/<id>/ to templates/skills/<id>/ (render handles prefix),
+    loadCoreSkillContent() unchanged, manifest.yaml ids stay kebab-case (no slashes/colons in
+    schema). Also update kspec setup --status to check under kspec/ subdir. Clean up old kspec-help
+    from .claude/skills/kspec-help/ if present."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - core-skills
+    - infrastructure
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:18.860Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPHM9TEFW4SZYXRXAKQMB
+  slugs: []
+  title: "Write core skill: kspec:help"
+  type: task
+  description: Rewrite the kspec-help skill as a lean CLI map under the kspec/ namespace. Should be a
+    succinct overview of what commands exist, organized by domain, with instructions to use kspec
+    help <cmd> for details. NOT a full CLI reference — that is the CLI help system. Merge any useful
+    content from the current kspec skill (.claude/skills/kspec/) and kspec-help template. Update
+    manifest.yaml entry. Remove old .claude/skills/kspec/ directory.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:19.913Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPJK0BFVACX29XWZRJ19R
+  slugs: []
+  title: "Write core skill: kspec:observations"
+  type: task
+  description: Refactor the meta skill into kspec:observations. Covers friction/success/idea capture
+    and observation promotion. Drop focus/threads coverage (may be purged). Rewrite from base
+    principles — what does an agent need to know about capturing and using observations effectively?
+    Update manifest.yaml.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:20.896Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPKHVT1RFXT0GM33TY288
+  slugs: []
+  title: "Write core skill: kspec:reflect"
+  type: task
+  description: Refactor the reflect skill for the kspec/ namespace. Session reflection workflow —
+    identifying learnings, friction points, improvements. Rewrite from base principles. Update
+    manifest.yaml.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:21.883Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPMFF2TWADJQP6DE38NKS
+  slugs: []
+  title: "Write core skills: kspec:triage-inbox and kspec:triage-automation"
+  type: task
+  description: Split the monolithic triage skill into two focused skills. kspec:triage-inbox covers
+    inbox item processing (categorize, promote to spec/task, merge duplicates, delete stale).
+    kspec:triage-automation covers task automation eligibility assessment. Each should be
+    self-descriptive and simpler than the combined original. Rewrite from base principles. Update
+    manifest.yaml with both entries.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:22.831Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPND968S82HKC1KSVCRRH
+  slugs: []
+  title: "Write core skill: kspec:writing-specs"
+  type: task
+  description: Refactor the spec skill into kspec:writing-specs. Covers spec item authoring — modules,
+    features, requirements, acceptance criteria (Given/When/Then), traits. Rewrite from base
+    principles — what does an agent need to write good specs? Update manifest.yaml.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:23.785Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPPAD2CZ5B8A1GTRJM07Q
+  slugs: []
+  title: "Write core skill: kspec:plan"
+  type: task
+  description: Refactor the spec-plan skill into kspec:plan. Covers plan-to-spec translation — both
+    import path (structured markdown document) and manual path (incremental CLI). Rewrite from base
+    principles. Update manifest.yaml.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:24.717Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPQ81DQRBGC6DZ80BP7S5
+  slugs: []
+  title: "Write core skill: kspec:task-work"
+  type: task
+  description: Refactor the task-work skill for the kspec/ namespace. Task lifecycle — start, work,
+    note, submit, complete. Fix cycle handling. Scope management. Rewrite from base principles —
+    focus on what is universal to any kspec project, strip project-specific commands (npm test,
+    etc). Update manifest.yaml.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:25.665Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPR5FQN7KGF45QP25HT1D
+  slugs: []
+  title: "Write core skill: kspec:create-workflow"
+  type: task
+  description: Refactor the create-workflow skill for the kspec/ namespace. Meta-workflow for
+    formalizing repeatable patterns into kspec workflows. Rewrite from base principles. Update
+    manifest.yaml.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:26.607Z
+  notes: []
+  todos: []
+- _ulid: 01KHZHPS2EYQCYB3065CA27E9F
+  slugs: []
+  title: "Write core skill: kspec:review"
+  type: task
+  description: "NEW skill — extract kspec-specific review concerns into a generic review skill.
+    Covers: spec/AC alignment verification, trait AC coverage, kspec validate integration, general
+    coding best practices in the context of kspec workflow. Should be a building block that projects
+    reference in their own review skills/prompts. NOT a full local-review replacement — no
+    project-specific test commands. Update manifest.yaml."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - core-skills
+    - skill-content
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:27.534Z
+  notes: []
+  todos: []
+- title: Purge project-specific skill references from shared templates and docs
+  description: Remove references to /pr, /pr-review, /local-review, /release from
+    templates/agents-sections/ and any generated docs or code that ships with kspec. These are
+    project-specific skills that should not be in shared/core content. Audit all templates/*.md
+    files, src/ strings, and kspec-agents.md generation for references. Update agents-sections
+    templates to reference /kspec:review instead of /local-review where appropriate.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - core-skills
+    - cleanup
+  depends_on: []
+  _ulid: 01KHZHPT0KJ5QKX8A9S9YE8Y57
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-21T07:30:28.499Z
+  notes: []
+  todos: []
