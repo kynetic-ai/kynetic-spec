@@ -1083,6 +1083,15 @@ conventions:
       - Keep documentation close to code (inline comments for complex logic, README for overview)
       - Update documentation when behavior changes
     examples: []
+  - _ulid: 01KHYXJKYD2HREAGMY9XB9XEEG
+    domain: testing
+    rules:
+      - ULIDs use Crockford base32 (excludes I, L, O, U) — invalid ULIDs cause SILENT test failures
+      - Use testUlid() helper or kspec util ulid for valid test ULIDs
+      - Never use JSON.stringify() for YAML — use template strings or yaml library stringify()
+      - Playwright E2E tests excluded from vitest — run separately with npm run test:e2e
+      - E2E fixtures are SEPARATE from unit test fixtures — never mix them
+    examples: []
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
     type: idea
