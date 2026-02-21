@@ -974,21 +974,48 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     drifted: 0,
   };
 
+  // Helper to check a skill directory for kspec-managed SKILL.md
+  async function checkSkillDir(dirPath: string): Promise<void> {
+    // Check SKILL.md at current level
+    const skillMdPath = path.join(dirPath, "SKILL.md");
+    try {
+      const content = await fs.readFile(skillMdPath, "utf-8");
+      if (content.includes("<!-- kspec-managed -->")) {
+        skills.total++;
+        skills.rendered++;
+        // TODO: check drift status
+      }
+    } catch (_noSkillMd) {
+      // SKILL.md doesn't exist at this level
+    }
+
+    // Also check subdirectories for namespaced skills (e.g., kspec/<id>/SKILL.md)
+    try {
+      const subEntries = await fs.readdir(dirPath, { withFileTypes: true });
+      for (const sub of subEntries) {
+        if (sub.isDirectory()) {
+          const nestedMd = path.join(dirPath, sub.name, "SKILL.md");
+          try {
+            const content = await fs.readFile(nestedMd, "utf-8");
+            if (content.includes("<!-- kspec-managed -->")) {
+              skills.total++;
+              skills.rendered++;
+            }
+          } catch (_noNestedSkillMd) {
+            // No SKILL.md in nested dir
+          }
+        }
+      }
+    } catch (_notReadable) {
+      // Not a readable directory
+    }
+  }
+
   try {
     const skillDirs = await fs.readdir(skillsDir, { withFileTypes: true });
     for (const dir of skillDirs) {
       if (dir.isDirectory()) {
-        const skillMdPath = path.join(skillsDir, dir.name, "SKILL.md");
-        try {
-          const content = await fs.readFile(skillMdPath, "utf-8");
-          if (content.includes("<!-- kspec-managed -->")) {
-            skills.total++;
-            skills.rendered++;
-            // TODO: check drift status
-          }
-        } catch (err) {
-          debugLog(`SKILL.md doesn't exist in ${dir.name}`, err);
-        }
+        await checkSkillDir(path.join(skillsDir, dir.name));
       }
     }
   } catch (err) {

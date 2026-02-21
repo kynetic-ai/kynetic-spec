@@ -29,6 +29,8 @@ import {
   generateFrontmatter,
   getRenderer,
   getAllRenderers,
+  getClaudeCodeSkillSubdir,
+  getSkillSubdir,
   contentsEqual,
   directoriesEqual,
   type PlatformRenderer,
@@ -95,7 +97,7 @@ async function getMultiPlatformSyncStatus(
   renderer: PlatformRenderer
 ): Promise<MultiPlatformStatusResult> {
   // Use the renderer's drift check
-  const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id);
+  const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, { origin: skill.origin });
 
   // Map drift status to sync status
   let status: "in-sync" | "drifted" | "not-rendered";
@@ -114,7 +116,7 @@ async function getMultiPlatformSyncStatus(
       const renderedPath = path.join(
         projectRoot,
         renderer.defaultOutputDir,
-        skill.id,
+        getSkillSubdir(skill.id, skill.origin, renderer.platform),
         "SKILL.md"
       );
       try {
@@ -129,7 +131,10 @@ async function getMultiPlatformSyncStatus(
 
   // Check docs status for this platform
   const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
-  const targetDocsDir = path.join(projectRoot, renderer.defaultOutputDir, skill.id, "docs");
+  const targetDocsDir = path.join(
+    projectRoot, renderer.defaultOutputDir,
+    getSkillSubdir(skill.id, skill.origin, renderer.platform), "docs"
+  );
   let docsStatus: "in-sync" | "drifted" | "not-rendered" | "no-docs" = "no-docs";
 
   try {
@@ -322,7 +327,7 @@ export function registerSkillDiffCommands(skill: Command): void {
               ctx.specDir,
               projectRoot,
               skill.id,
-              { outputDir: customOutputDir }
+              { outputDir: customOutputDir, origin: skill.origin }
             );
 
             // AC: @skill-drift-detection ac-3 - Skip drifted skills without --force
@@ -365,14 +370,54 @@ export function registerSkillDiffCommands(skill: Command): void {
         // AC: @skill-rendering ac-4, ac-5
         // AC: @multi-platform-render-cli ac-5 - Per-platform cleanup
         if (options.clean) {
-          // Build set of active skill IDs per platform
-          const activeSkillIdsByPlatform = new Map<string, Set<string>>();
+          // Build set of active skill subdirs per platform (accounts for namespacing)
+          const activeSubdirsByPlatform = new Map<string, Set<string>>();
           for (const skill of metaCtx.skills) {
             for (const platform of skill.platforms) {
-              if (!activeSkillIdsByPlatform.has(platform)) {
-                activeSkillIdsByPlatform.set(platform, new Set());
+              if (!activeSubdirsByPlatform.has(platform)) {
+                activeSubdirsByPlatform.set(platform, new Set());
               }
-              activeSkillIdsByPlatform.get(platform)!.add(skill.id);
+              activeSubdirsByPlatform.get(platform)!.add(
+                getSkillSubdir(skill.id, skill.origin, platform)
+              );
+            }
+          }
+
+          // Helper to check and clean a skill directory
+          async function cleanSkillDir(
+            skillId: string,
+            skillDir: string,
+            activeSubdirs: Set<string>,
+            subdir: string,
+            platform: string
+          ): Promise<void> {
+            const skillMdPath = path.join(skillDir, "SKILL.md");
+
+            // Skip if skill still exists in meta for this platform
+            if (activeSubdirs.has(subdir)) return;
+
+            // AC: @skill-rendering ac-4 - Only consider kspec-managed skills
+            const isManaged = await isKspecManaged(skillMdPath);
+
+            if (isManaged) {
+              // AC: @skill-rendering ac-5 - Remove orphaned directory
+              if (!dryRun) {
+                await fs.rm(skillDir, { recursive: true, force: true });
+              }
+              cleanResults.push({
+                id: skillId,
+                path: skillDir,
+                action: "removed",
+                platform,
+              });
+            } else {
+              cleanResults.push({
+                id: skillId,
+                path: skillDir,
+                action: "skipped",
+                reason: "Not managed by kspec",
+                platform,
+              });
             }
           }
 
@@ -381,7 +426,7 @@ export function registerSkillDiffCommands(skill: Command): void {
           for (const renderer of renderers) {
             const outputDir = customOutputDir || renderer.defaultOutputDir;
             const targetSkillsDir = path.join(projectRoot, outputDir);
-            const activeIds = activeSkillIdsByPlatform.get(renderer.platform) || new Set();
+            const activeSubdirs = activeSubdirsByPlatform.get(renderer.platform) || new Set();
 
             try {
               const entries = await fs.readdir(targetSkillsDir, {
@@ -391,35 +436,28 @@ export function registerSkillDiffCommands(skill: Command): void {
               for (const entry of entries) {
                 if (!entry.isDirectory()) continue;
 
-                const skillId = entry.name;
-                const skillDir = path.join(targetSkillsDir, skillId);
-                const skillMdPath = path.join(skillDir, "SKILL.md");
+                const skillDir = path.join(targetSkillsDir, entry.name);
 
-                // Skip if skill still exists in meta for this platform
-                if (activeIds.has(skillId)) continue;
+                // Check top-level skill
+                const hasSkillMd = await fs.access(path.join(skillDir, "SKILL.md")).then(() => true, () => false);
+                if (hasSkillMd) {
+                  await cleanSkillDir(entry.name, skillDir, activeSubdirs, entry.name, renderer.platform);
+                }
 
-                // AC: @skill-rendering ac-4 - Only consider kspec-managed skills
-                const isManaged = await isKspecManaged(skillMdPath);
-
-                if (isManaged) {
-                  // AC: @skill-rendering ac-5 - Remove orphaned directory
-                  if (!dryRun) {
-                    await fs.rm(skillDir, { recursive: true, force: true });
+                // Also check subdirectories for namespaced skills (e.g., kspec/<id>/)
+                try {
+                  const subEntries = await fs.readdir(skillDir, { withFileTypes: true });
+                  for (const subEntry of subEntries) {
+                    if (!subEntry.isDirectory()) continue;
+                    const nestedDir = path.join(skillDir, subEntry.name);
+                    const nestedHasSkillMd = await fs.access(path.join(nestedDir, "SKILL.md")).then(() => true, () => false);
+                    if (nestedHasSkillMd) {
+                      const subdir = path.join(entry.name, subEntry.name);
+                      await cleanSkillDir(subEntry.name, nestedDir, activeSubdirs, subdir, renderer.platform);
+                    }
                   }
-                  cleanResults.push({
-                    id: skillId,
-                    path: skillDir,
-                    action: "removed",
-                    platform: renderer.platform,
-                  });
-                } else {
-                  cleanResults.push({
-                    id: skillId,
-                    path: skillDir,
-                    action: "skipped",
-                    reason: "Not managed by kspec",
-                    platform: renderer.platform,
-                  });
+                } catch (_notReadable) {
+                  // Not a readable directory
                 }
               }
             } catch {
@@ -701,12 +739,13 @@ export function registerSkillDiffCommands(skill: Command): void {
         // Get expected rendered content
         const expectedContent = await getExpectedRenderedContent(ctx, skill);
 
-        // Get actual rendered content
+        // Get actual rendered content — core skills are namespaced under kspec/
+        const skillSubdir = getClaudeCodeSkillSubdir(skill);
         const renderedPath = path.join(
           projectRoot,
           ".claude",
           "skills",
-          skill.id,
+          skillSubdir,
           "SKILL.md"
         );
 
@@ -813,7 +852,8 @@ export function registerSkillDiffCommands(skill: Command): void {
             const driftStatus = await renderer.checkDrift(
               ctx.specDir,
               projectRoot,
-              skill.id
+              skill.id,
+              { origin: skill.origin }
             );
 
             switch (driftStatus) {
