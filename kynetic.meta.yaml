@@ -1101,6 +1101,13 @@ conventions:
       - E2E tests manage their own daemon — do NOT start one manually
       - Web UI dev server on port 5173, connects to daemon on 3456
     examples: []
+  - _ulid: 01KHYXJYDW2FWSYRVDR9J5A6XM
+    domain: ci
+    rules:
+      - File watcher tests skip in CI — GitHub Actions does not support recursive fs.watch
+      - E2E port hardcoded at 3456 — tests cannot run in parallel on same machine
+      - GitHub Pages needs BASE_PATH=/kynetic-spec for local static builds; CI handles automatically
+    examples: []
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
     type: idea
