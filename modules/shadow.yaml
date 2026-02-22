@@ -79,6 +79,25 @@ features:
           - modules/*.yaml - spec modules
         implements:
           - "@shadow-concept"
+        requirements:
+          - _ulid: 01KJ37B5DDFRVPC9AFEQJPMX44
+            slugs:
+              - artifacts-directory
+            title: Artifacts Directory Convention
+            type: requirement
+            tags: []
+            description: Convention for .kspec/artifacts/ — an untracked directory within the shadow branch
+              worktree for ephemeral files generated during sessions (reports, exports, generated
+              HTML/JSON). Files are not tracked by the shadow branch. Subdirectories are permitted
+              but flat structure is recommended. No automated cleanup or lifecycle management —
+              files persist until manually removed.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-22T17:46:18.926Z
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
