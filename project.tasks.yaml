@@ -54695,6 +54695,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-22T20:16:09.932Z
+  started_at: 2026-02-22T22:40:22.726Z
   notes:
     - _ulid: 01KJ3FXHPCXKGS393YJ3YK4TDW
       created_at: 2026-02-22T20:16:09.932Z
@@ -54710,9 +54711,54 @@
         Interactive start mode uses readline prompts.
         Override subcommand updates existing record with override fields.
         Export subcommand delegates to shared formatter.
+    - _ulid: 01KJ3S4ERBA3AJ4APZFKPFBYG2
+      created_at: 2026-02-22T22:57:13.483Z
+      author: "@claude"
+      content: >-
+        Implemented all triage CLI commands:
+
+
+        **Commands created (src/cli/commands/triage.ts):**
+
+        - `triage record <inbox-ref>` — Record a triage decision (ac-1, ac-11)
+
+        - `triage list` — List triage records with filters (ac-2, ac-3)
+
+        - `triage act <triage-ref>` — Execute triage decision (ac-4 through ac-8, ac-15, ac-16,
+        ac-17)
+
+        - `triage override <triage-ref>` — Override existing decision (ac-12)
+
+        - `triage export` — Export as context markdown or JSON (ac-13, ac-14)
+
+        - `triage start` — Interactive triage mode (ac-9, ac-10)
+
+        - `triage get <triage-ref>` — Show record details
+
+
+        **Action execution dispatch:**
+
+        - promote: Creates task from item_snapshot
+
+        - delete/duplicate: Deletes inbox item (prior authorization)
+
+        - defer: No-op transition
+
+        - spec-gap: Creates observation with item text + reasoning
+
+
+        **Interactive mode:** Uses line-buffered readline for reliable piped stdin. Single rl
+        interface for entire session.
+
+
+        **Tests (35 passing):** All 17 ACs covered + trait ACs (json-output, error-guidance,
+        filterable-list, shadow-commit, dry-run, semantic-exit-codes)
+
+
+        Full test suite green (2 pre-existing failures unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-22T22:40:22.726Z
 - _ulid: 01KJ3FXJ0DMK8EV8MW00D5PPCS
   slugs:
     - implement-triage-daemon-api
