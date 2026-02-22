@@ -1,7 +1,11 @@
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { stringify as yamlStringify } from "yaml";
 import {
   kspec,
   kspecJson,
+  testUlid,
   setupTempFixtures,
   cleanupTempDir,
 } from "./helpers/cli";
@@ -201,6 +205,37 @@ describe("kspec triage list", () => {
     const result = kspec("triage list", tempDir);
     expect(result.stdout).toContain("No triage records");
   });
+
+  // AC: @trait-filterable-list ac-4
+  it("should support --offset to skip first N results", () => {
+    const ulid1 = addInboxItem("Offset test 1");
+    const ulid2 = addInboxItem("Offset test 2");
+    const ulid3 = addInboxItem("Offset test 3");
+    recordTriage(ulid1, "promote", "first");
+    recordTriage(ulid2, "defer", "second");
+    recordTriage(ulid3, "delete", "third");
+
+    const all = kspecJson<Array<{ _ulid: string }>>("triage list", tempDir);
+    expect(all.length).toBe(3);
+
+    const offset1 = kspecJson<Array<{ _ulid: string }>>("triage list --offset 1", tempDir);
+    expect(offset1.length).toBe(2);
+
+    const offset2 = kspecJson<Array<{ _ulid: string }>>("triage list --offset 2", tempDir);
+    expect(offset2.length).toBe(1);
+  });
+
+  // AC: @trait-filterable-list ac-7
+  it("should show summary with total and filter state", () => {
+    const ulid1 = addInboxItem("Summary test 1");
+    const ulid2 = addInboxItem("Summary test 2");
+    recordTriage(ulid1, "promote", "promote it");
+    recordTriage(ulid2, "defer", "defer it");
+
+    const filtered = kspec("triage list --action promote", tempDir);
+    expect(filtered.stdout).toContain("1 of 2");
+    expect(filtered.stdout).toContain("action=promote");
+  });
 });
 
 describe("kspec triage act", () => {
@@ -331,19 +366,33 @@ describe("kspec triage act", () => {
 
   // AC: @triage-cli-commands ac-16
   // AC: @trait-error-guidance ac-1, ac-2
-  it("should error when acting on pending record with no decision", () => {
-    // Create a pending triage record directly via YAML
-    // Since we can't easily create a pending record through CLI (record always creates triaged),
-    // we verify the error guidance is correct by testing the error message format
-    // The schema test already validates pending→act rejection at the data layer
-    // Here we test that a record without decision rejects act (use non-existent ref to test error path)
+  it("should error when acting on pending record with no decision", async () => {
+    // Create a pending triage record by writing directly to the triage YAML file
+    const pendingUlid = testUlid("PEND", 1);
+    const inboxUlid = testUlid("PEND", 2);
+    const triageData = {
+      kynetic_triage: "1.0",
+      triage: [{
+        _ulid: pendingUlid,
+        inbox_ref: inboxUlid,
+        item_snapshot: "A pending item",
+        status: "pending",
+        created_at: new Date().toISOString(),
+      }],
+    };
+    await fs.writeFile(
+      path.join(tempDir, "project.triage.yaml"),
+      yamlStringify(triageData),
+    );
+
     const result = kspec(
-      "triage act @NOTEXIST",
+      `triage act @${pendingUlid.slice(0, 8)}`,
       tempDir,
       { expectFail: true },
     );
-    expect(result.exitCode).toBe(3); // NOT_FOUND
-    expect(result.stderr).toContain("not found");
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+    expect(result.stderr).toContain("no decision yet");
+    expect(result.stderr).toContain("kspec triage record");
   });
 
   // AC: @triage-cli-commands ac-17

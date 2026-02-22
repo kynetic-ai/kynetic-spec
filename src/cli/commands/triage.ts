@@ -51,23 +51,6 @@ function resolveTriageRef(
 }
 
 /**
- * Simple prompt for user input
- */
-async function prompt(question: string): Promise<string> {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => {
-      rl.close();
-      resolve(answer.trim());
-    });
-  });
-}
-
-/**
  * Truncate text for display
  */
 function truncateText(text: string, maxLen: number = 60): string {
@@ -85,7 +68,7 @@ async function executeTriageAction(
   ctx: Awaited<ReturnType<typeof initContext>>,
   dryRun: boolean = false,
 ): Promise<{ resultRef?: string }> {
-  const action = record.override_reasoning ? (record.action as TriageAction) : record.action;
+  const action = record.action;
   if (!action) {
     error("Record has no action to execute");
     process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -289,21 +272,33 @@ Examples:
     .description("List triage records")
     .option("--status <status>", "Filter by status (pending, triaged, acted_on)")
     .option("--action <action>", "Filter by action")
+    .option("--decided-by <author>", "Filter by decision author")
     .option("--limit <n>", "Limit results")
+    .option("--offset <n>", "Skip first N results")
     .option("--count", "Show only the count")
     .action(async (options) => {
       try {
         const ctx = await initContext();
         let records = await loadTriageRecords(ctx);
+        const totalCount = records.length;
+        const activeFilters: string[] = [];
 
         // AC: @triage-cli-commands ac-3 — status filter
         // AC: @trait-filterable-list ac-1
         if (options.status) {
           records = records.filter((r) => r.status === options.status);
+          activeFilters.push(`status=${options.status}`);
         }
 
+        // AC: @trait-filterable-list ac-5
         if (options.action) {
           records = records.filter((r) => r.action === options.action);
+          activeFilters.push(`action=${options.action}`);
+        }
+
+        if (options.decidedBy) {
+          records = records.filter((r) => r.decided_by === options.decidedBy);
+          activeFilters.push(`decided_by=${options.decidedBy}`);
         }
 
         // Sort by created_at desc (newest first)
@@ -319,6 +314,13 @@ Examples:
           return;
         }
 
+        // AC: @trait-filterable-list ac-4 — offset
+        if (options.offset) {
+          const offset = parseInt(options.offset, 10);
+          records = records.slice(offset);
+        }
+
+        // AC: @trait-filterable-list ac-3 — limit
         if (options.limit) {
           const limit = parseInt(options.limit, 10);
           records = records.slice(0, limit);
@@ -327,12 +329,20 @@ Examples:
         // AC: @trait-json-output ac-1, ac-2
         output(records, () => {
           if (records.length === 0) {
+            // AC: @trait-filterable-list ac-6
             console.log("No triage records");
             return;
           }
 
+          // AC: @trait-filterable-list ac-7 — summary with total and filter state
+          const filterInfo = activeFilters.length > 0
+            ? ` (${activeFilters.join(", ")})`
+            : "";
+          const showing = records.length < totalCount
+            ? `${records.length} of ${totalCount}`
+            : `${records.length}`;
           console.log(
-            `Triage records (${records.length}):\n`,
+            `Triage records (${showing}${filterInfo}):\n`,
           );
 
           // AC: @triage-cli-commands ac-2
