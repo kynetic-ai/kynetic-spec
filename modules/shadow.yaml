@@ -132,6 +132,9 @@ features:
                 given: artifacts/ is empty and the shadow branch worktree is recreated via clone or repair
                 when: the worktree is set up
                 then: the artifacts/ directory exists due to the .gitkeep file being tracked on the shadow branch
+            status:
+              maturity: draft
+              implementation: in_progress
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
