@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+plugin/
 
 # IDE
 .idea/
@@ -35,3 +36,4 @@ coverage/
 bun.lock
 .claude/ralph-task-limit.json
 .claude/ralph-end-loop.json
+.claude/plugins/

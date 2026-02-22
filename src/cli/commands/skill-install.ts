@@ -6,6 +6,9 @@
  * AC: @core-skill-install ac-3 - custom skills skipped with message
  * AC: @core-skill-install ac-4 - --force overwrites custom forks
  * AC: @core-skill-install ac-5 - version matches kspec package version
+ * AC: @core-skill-install ac-6 - marketplace registration in known_marketplaces.json
+ * AC: @core-skill-install ac-7 - plugin enabled in project settings
+ * AC: @core-skill-install ac-8 - idempotent marketplace registration
  *
  * AC: @core-skill-update ac-1 - skill content and version updated when version differs
  * AC: @core-skill-update ac-2 - skill skipped when already at current version
@@ -264,11 +267,20 @@ export function registerSkillInstallCommands(skill: Command): void {
           );
         }
 
+        // AC: @core-skill-install ac-6, ac-7 - Register marketplace and enable plugin
+        const { registerCorePluginMarketplace, enablePluginInProject } = await import(
+          "../../lib/claude-plugin-registry.js"
+        );
+        const marketplaceResult = await registerCorePluginMarketplace({ dryRun });
+        const enableResult = await enablePluginInProject(ctx.rootDir, { dryRun });
+
         // Output results
         output(
           {
             dry_run: dryRun,
             results,
+            marketplace: marketplaceResult,
+            pluginEnabled: enableResult,
           },
           () => {
             if (dryRun) {
@@ -321,6 +333,20 @@ export function registerSkillInstallCommands(skill: Command): void {
               } else if (skipped.length > 0) {
                 console.log(chalk.gray("No skills installed (all skipped or failed)"));
               }
+            }
+
+            // AC: @core-skill-install ac-6 - Report marketplace registration
+            if (marketplaceResult.success && marketplaceResult.action !== "skipped") {
+              console.log(chalk.green(`Plugin marketplace ${marketplaceResult.action}`));
+            } else if (!marketplaceResult.success) {
+              console.log(chalk.red(`Marketplace registration failed: ${marketplaceResult.message}`));
+            }
+
+            // AC: @core-skill-install ac-7 - Report plugin enablement
+            if (enableResult.success && enableResult.action === "enabled") {
+              console.log(chalk.green("Plugin enabled in project settings"));
+            } else if (!enableResult.success) {
+              console.log(chalk.red(`Plugin enablement failed: ${enableResult.message}`));
             }
           }
         );

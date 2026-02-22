@@ -36,5 +36,8 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "kspec@kspec-plugins": true
   }
 }

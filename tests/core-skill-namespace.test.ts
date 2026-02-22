@@ -1,9 +1,11 @@
 /**
  * Tests for core skill namespace rendering.
- * Core skills (origin: "core") render to .claude/plugins/kspec/skills/<id>/
- * (Claude Code plugin directory) while project skills render to .claude/skills/<id>/.
+ * Core skills (origin: "core") on claude-code are now plugin-provided via
+ * the npm package plugin/ directory. They are NOT locally rendered.
+ * Project skills render to .claude/skills/<id>/.
  *
  * Task: @01KHZHPG
+ * AC: @skill-rendering ac-7
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -18,7 +20,6 @@ import {
 import {
   getClaudeCodeSkillSubdir,
   getSkillSubdir,
-  PLUGIN_SKILLS_DIR,
 } from "../src/parser/skill-render";
 import type { LoadedSkill } from "../src/parser/meta";
 
@@ -77,9 +78,8 @@ describe("Core Skill Namespace", () => {
       await cleanupTempDir(tempDir);
     });
 
-    // AC: @skill-rendering ac-7
-    it("should render core skill to .claude/plugins/kspec/skills/<id>/SKILL.md", async () => {
-      // Create a core skill
+    // AC: @skill-rendering ac-7 - Core skills are plugin-provided, not locally rendered
+    it("should skip core skill on claude-code (plugin-provided)", async () => {
       kspecFull(
         'skill add --id core-test --name "Core Test" --description "A core test skill" --origin core --skill-version 0.1.0',
         tempDir
@@ -90,77 +90,31 @@ describe("Core Skill Namespace", () => {
         "utf-8"
       );
 
-      kspecFull("skill render", tempDir);
+      const result = kspecFull("skill render --json", tempDir);
+      const json = JSON.parse(result.stdout);
 
-      // Core skill should be in plugin directory
-      const pluginPath = path.join(
-        tempDir,
-        ".claude",
-        "plugins",
-        "kspec",
-        "skills",
-        "core-test",
-        "SKILL.md"
+      // Core skill should be skipped
+      const coreResult = json.rendered.find(
+        (r: { id: string }) => r.id === "core-test"
       );
-      const content = await fs.readFile(pluginPath, "utf-8");
-      expect(content).toContain("<!-- kspec-managed -->");
-      expect(content).toContain("# Core Test Skill");
+      expect(coreResult).toBeDefined();
+      expect(coreResult.action).toBe("skipped");
+      expect(coreResult.skipReason).toContain("plugin");
+
+      // Should NOT exist at plugin path (not locally rendered anymore)
+      const pluginPath = path.join(
+        tempDir, ".claude", "plugins", "kspec", "skills", "core-test", "SKILL.md"
+      );
+      await expect(fs.access(pluginPath)).rejects.toThrow();
 
       // Should NOT exist at flat path
       const flatPath = path.join(
-        tempDir,
-        ".claude",
-        "skills",
-        "core-test",
-        "SKILL.md"
+        tempDir, ".claude", "skills", "core-test", "SKILL.md"
       );
       await expect(fs.access(flatPath)).rejects.toThrow();
-
-      // Should NOT exist at old namespaced path
-      const oldNamespacedPath = path.join(
-        tempDir,
-        ".claude",
-        "skills",
-        "kspec",
-        "core-test",
-        "SKILL.md"
-      );
-      await expect(fs.access(oldNamespacedPath)).rejects.toThrow();
-    });
-
-    // AC: @skill-rendering ac-7
-    it("should generate plugin manifest", async () => {
-      // Create a core skill
-      kspecFull(
-        'skill add --id manifest-test --name "Manifest Test" --description "Plugin manifest test" --origin core --skill-version 0.1.0',
-        tempDir
-      );
-      await fs.writeFile(
-        path.join(tempDir, "skills", "manifest-test", "SKILL.md"),
-        "# Manifest Test\n",
-        "utf-8"
-      );
-
-      kspecFull("skill render", tempDir);
-
-      // Plugin manifest should exist
-      const manifestPath = path.join(
-        tempDir,
-        ".claude",
-        "plugins",
-        "kspec",
-        ".claude-plugin",
-        "plugin.json"
-      );
-      const manifestContent = await fs.readFile(manifestPath, "utf-8");
-      const manifest = JSON.parse(manifestContent);
-      expect(manifest.name).toBe("kspec");
-      expect(manifest.version).toBe("0.1.0");
-      expect(manifest.description).toBe("kspec agent skills");
     });
 
     it("should render project skill to .claude/skills/<id>/SKILL.md (flat)", async () => {
-      // Create a project skill
       kspecFull(
         'skill add --id proj-test --name "Project Test" --description "A project test skill"',
         tempDir
@@ -175,30 +129,19 @@ describe("Core Skill Namespace", () => {
 
       // Project skill at flat path
       const flatPath = path.join(
-        tempDir,
-        ".claude",
-        "skills",
-        "proj-test",
-        "SKILL.md"
+        tempDir, ".claude", "skills", "proj-test", "SKILL.md"
       );
       const content = await fs.readFile(flatPath, "utf-8");
       expect(content).toContain("<!-- kspec-managed -->");
 
       // Should NOT exist in plugin directory
       const pluginPath = path.join(
-        tempDir,
-        ".claude",
-        "plugins",
-        "kspec",
-        "skills",
-        "proj-test",
-        "SKILL.md"
+        tempDir, ".claude", "plugins", "kspec", "skills", "proj-test", "SKILL.md"
       );
       await expect(fs.access(pluginPath)).rejects.toThrow();
     });
 
     it("should clean up old flat path when rendering core skill", async () => {
-      // Create a core skill
       kspecFull(
         'skill add --id migrated --name "Migrated" --description "Migration test" --origin core --skill-version 0.1.0',
         tempDir
@@ -218,30 +161,16 @@ describe("Core Skill Namespace", () => {
         "utf-8"
       );
 
-      // Render should migrate
+      // Render should clean up old path
       kspecFull("skill render", tempDir);
 
-      // Old flat path should be cleaned up
+      // Old flat path should be cleaned up (migration ran)
       await expect(
         fs.access(path.join(oldPath, "SKILL.md"))
       ).rejects.toThrow();
-
-      // New plugin path should exist
-      const newPath = path.join(
-        tempDir,
-        ".claude",
-        "plugins",
-        "kspec",
-        "skills",
-        "migrated",
-        "SKILL.md"
-      );
-      const content = await fs.readFile(newPath, "utf-8");
-      expect(content).toContain("<!-- kspec-managed -->");
     });
 
     it("should clean up old namespaced path (.claude/skills/kspec/<id>/) when rendering core skill", async () => {
-      // Create a core skill
       kspecFull(
         'skill add --id ns-migrated --name "NS Migrated" --description "Namespace migration test" --origin core --skill-version 0.1.0',
         tempDir
@@ -261,30 +190,15 @@ describe("Core Skill Namespace", () => {
         "utf-8"
       );
 
-      // Render should migrate
       kspecFull("skill render", tempDir);
 
       // Old namespaced path should be cleaned up
       await expect(
         fs.access(path.join(oldPath, "SKILL.md"))
       ).rejects.toThrow();
-
-      // New plugin path should exist
-      const newPath = path.join(
-        tempDir,
-        ".claude",
-        "plugins",
-        "kspec",
-        "skills",
-        "ns-migrated",
-        "SKILL.md"
-      );
-      const content = await fs.readFile(newPath, "utf-8");
-      expect(content).toContain("<!-- kspec-managed -->");
     });
 
     it("should handle both core and project skills in same render", async () => {
-      // Create one core skill and one project skill
       kspecFull(
         'skill add --id core-a --name "Core A" --description "Core" --origin core --skill-version 0.1.0',
         tempDir
@@ -304,63 +218,51 @@ describe("Core Skill Namespace", () => {
         "utf-8"
       );
 
-      kspecFull("skill render", tempDir);
+      const result = kspecFull("skill render --json", tempDir);
+      const json = JSON.parse(result.stdout);
 
-      // Core at plugin path
-      const corePath = path.join(
-        tempDir, ".claude", "plugins", "kspec", "skills", "core-a", "SKILL.md"
+      // Core skill should be skipped (plugin-provided)
+      const coreResult = json.rendered.find(
+        (r: { id: string }) => r.id === "core-a"
       );
-      expect(await fs.readFile(corePath, "utf-8")).toContain("# Core A");
+      expect(coreResult.action).toBe("skipped");
+      expect(coreResult.skipReason).toContain("plugin");
 
-      // Project at flat path
+      // Project at flat path should be rendered
       const projPath = path.join(
         tempDir, ".claude", "skills", "proj-b", "SKILL.md"
       );
       expect(await fs.readFile(projPath, "utf-8")).toContain("# Project B");
     });
 
-    // AC: @skill-rendering ac-6
-    it("should clean orphaned skills in plugin dir with --clean", async () => {
-      // Create and render a core skill
+    it("should clean up old plugin render target when rendering core skill", async () => {
       kspecFull(
-        'skill add --id ns-keep --name "Namespace Keep" --description "Keep me" --origin core --skill-version 0.1.0',
+        'skill add --id cleanup-test --name "Cleanup" --description "Plugin cleanup test" --origin core --skill-version 0.1.0',
         tempDir
       );
       await fs.writeFile(
-        path.join(tempDir, "skills", "ns-keep", "SKILL.md"),
-        "# Keep Me\n",
+        path.join(tempDir, "skills", "cleanup-test", "SKILL.md"),
+        "# Cleanup Test\n",
         "utf-8"
       );
+
+      // Create old plugin render target (the path that was used before this change)
+      const oldPluginPath = path.join(
+        tempDir, ".claude", "plugins", "kspec", "skills", "cleanup-test"
+      );
+      await fs.mkdir(oldPluginPath, { recursive: true });
+      await fs.writeFile(
+        path.join(oldPluginPath, "SKILL.md"),
+        "---\nname: cleanup-test\n---\n<!-- kspec-managed -->\n# Old Plugin Render\n",
+        "utf-8"
+      );
+
       kspecFull("skill render", tempDir);
 
-      // Verify skill exists in plugin dir
-      const pluginPath = path.join(
-        tempDir, ".claude", "plugins", "kspec", "skills", "ns-keep", "SKILL.md"
-      );
-      expect(await fs.readFile(pluginPath, "utf-8")).toContain("# Keep Me");
-
-      // Create an orphaned skill in plugin dir (simulating a removed core skill)
-      const orphanPath = path.join(
-        tempDir, ".claude", "plugins", "kspec", "skills", "orphaned"
-      );
-      await fs.mkdir(orphanPath, { recursive: true });
-      await fs.writeFile(
-        path.join(orphanPath, "SKILL.md"),
-        "---\nname: orphaned\n---\n<!-- kspec-managed -->\n# Orphaned\n",
-        "utf-8"
-      );
-
-      // Run render --clean — should remove orphaned but keep active
-      kspecFull("skill render --clean", tempDir);
-
-      // Orphaned should be removed
+      // Old plugin render target should be cleaned up
       await expect(
-        fs.access(path.join(orphanPath, "SKILL.md"))
+        fs.access(path.join(oldPluginPath, "SKILL.md"))
       ).rejects.toThrow();
-
-      // Active should still exist
-      const keptContent = await fs.readFile(pluginPath, "utf-8");
-      expect(keptContent).toContain("# Keep Me");
     });
   });
 });

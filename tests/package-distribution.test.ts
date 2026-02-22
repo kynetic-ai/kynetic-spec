@@ -110,12 +110,51 @@ describe('Package Distribution', () => {
     });
   });
 
-  describe('package.json files field includes templates', () => {
+  describe('package.json files field includes templates and plugin', () => {
     it('package.json files array includes templates', async () => {
       const packageJsonPath = path.join(PACKAGE_ROOT, 'package.json');
       const content = await fs.readFile(packageJsonPath, 'utf-8');
       const pkg = JSON.parse(content);
       expect(pkg.files).toContain('templates');
+    });
+
+    // AC: @package-distribution ac-5
+    it('package.json files array includes plugin', async () => {
+      const packageJsonPath = path.join(PACKAGE_ROOT, 'package.json');
+      const content = await fs.readFile(packageJsonPath, 'utf-8');
+      const pkg = JSON.parse(content);
+      expect(pkg.files).toContain('plugin');
+    });
+  });
+
+  // AC: @package-distribution ac-5
+  describe('plugin/ directory contains valid plugin structure', () => {
+    it('plugin/.claude-plugin/plugin.json exists with correct version', async () => {
+      const pluginJsonPath = path.join(PACKAGE_ROOT, 'plugin', '.claude-plugin', 'plugin.json');
+      const content = await fs.readFile(pluginJsonPath, 'utf-8');
+      const pluginJson = JSON.parse(content);
+
+      // Version should match package.json
+      const packageJsonPath = path.join(PACKAGE_ROOT, 'package.json');
+      const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
+
+      expect(pluginJson.name).toBe('kspec');
+      expect(pluginJson.version).toBe(pkg.version);
+      expect(pluginJson.description).toBeTruthy();
+    });
+
+    it('plugin/skills/ contains SKILL.md for each core skill', async () => {
+      // Read manifest to know which skills should exist
+      const yaml = await import('yaml');
+      const manifestPath = path.join(PACKAGE_ROOT, 'templates', 'skills', 'manifest.yaml');
+      const manifest = yaml.parse(await fs.readFile(manifestPath, 'utf-8'));
+
+      for (const skill of manifest.skills) {
+        const skillMdPath = path.join(PACKAGE_ROOT, 'plugin', 'skills', skill.id, 'SKILL.md');
+        const content = await fs.readFile(skillMdPath, 'utf-8');
+        expect(content).toContain('---');
+        expect(content).toContain('<!-- kspec-managed -->');
+      }
     });
   });
 });

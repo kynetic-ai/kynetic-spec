@@ -890,6 +890,13 @@ interface SetupStatus {
     rendered: number;
     drifted: number;
   };
+  plugin: {
+    marketplaceRegistered: boolean;
+    marketplaceHealthy: boolean;
+    pluginEnabled: boolean;
+    registeredPath?: string;
+    healthMessage?: string;
+  };
   agentsMd: {
     exists: boolean;
     // AC: @doctor-command ac-staleness-unknown — includes "unknown" for indeterminate cases
@@ -1000,18 +1007,35 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
   // Scan .claude/skills/ (project/local skills)
   await scanForSkills(skillsDir);
 
-  // Scan .claude/plugins/*/skills/ (plugin skills)
-  const pluginsDir = path.join(projectDir, ".claude", "plugins");
+  // Check plugin marketplace health
+  // AC: @enhanced-setup ac-7, ac-8
+  const plugin: SetupStatus["plugin"] = {
+    marketplaceRegistered: false,
+    marketplaceHealthy: false,
+    pluginEnabled: false,
+  };
+
   try {
-    const pluginEntries = await fs.readdir(pluginsDir, { withFileTypes: true });
-    for (const pluginEntry of pluginEntries) {
-      if (pluginEntry.isDirectory()) {
-        const pluginSkillsDir = path.join(pluginsDir, pluginEntry.name, "skills");
-        await scanForSkills(pluginSkillsDir);
-      }
-    }
-  } catch (_noPluginsDir) {
-    // .claude/plugins doesn't exist
+    const { checkMarketplaceHealth } = await import(
+      "../../lib/claude-plugin-registry.js"
+    );
+    const health = await checkMarketplaceHealth();
+    plugin.marketplaceRegistered = health.status !== "missing";
+    plugin.marketplaceHealthy = health.status === "healthy";
+    plugin.registeredPath = health.registeredPath;
+    plugin.healthMessage = health.message;
+  } catch (err) {
+    debugLog("Could not check marketplace health", err);
+    plugin.healthMessage = "Health check unavailable";
+  }
+
+  // Check if plugin is enabled in project settings
+  try {
+    const configContent = await fs.readFile(configPath, "utf-8");
+    const config = JSON.parse(configContent);
+    plugin.pluginEnabled = config.enabledPlugins?.["kspec@kspec-plugins"] === true;
+  } catch (err) {
+    debugLog("Could not check plugin enablement", err);
   }
 
   // Check agents.md
@@ -1106,6 +1130,7 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     },
     hooks,
     skills,
+    plugin,
     agentsMd,
     seeding,
   };
@@ -1119,7 +1144,7 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
 async function renderSkillsForSetup(
   projectDir: string,
   dryRun: boolean,
-): Promise<{ rendered: number; skipped: number; skillIds: string[] }> {
+): Promise<{ rendered: number; skipped: number; pluginProvided: number; skillIds: string[] }> {
   // Dynamically import to avoid circular dependencies
   const { initContext, loadMetaContext } = await import(
     "../../parser/index.js"
@@ -1130,7 +1155,7 @@ async function renderSkillsForSetup(
     const ctx = await initContext();
 
     if (!ctx.manifestPath) {
-      return { rendered: 0, skipped: 0, skillIds: [] };
+      return { rendered: 0, skipped: 0, pluginProvided: 0, skillIds: [] };
     }
 
     const metaCtx = await loadMetaContext(ctx);
@@ -1147,11 +1172,12 @@ async function renderSkillsForSetup(
     }
 
     if (skillsToRender.length === 0) {
-      return { rendered: 0, skipped: 0, skillIds: [] };
+      return { rendered: 0, skipped: 0, pluginProvided: 0, skillIds: [] };
     }
 
     let rendered = 0;
     let skipped = 0;
+    let pluginProvided = 0;
     const skillIds: string[] = [];
 
     for (const { skill, platform } of skillsToRender) {
@@ -1165,6 +1191,8 @@ async function renderSkillsForSetup(
           if (!skillIds.includes(skill.id)) {
             skillIds.push(skill.id);
           }
+        } else if (result.action === "skipped" && result.skipReason?.includes("plugin")) {
+          pluginProvided++;
         } else {
           skipped++;
         }
@@ -1174,10 +1202,10 @@ async function renderSkillsForSetup(
       }
     }
 
-    return { rendered, skipped, skillIds };
+    return { rendered, skipped, pluginProvided, skillIds };
   } catch (err) {
     debugLog("renderSkillsForSetup failed", err);
-    return { rendered: 0, skipped: 0, skillIds: [] };
+    return { rendered: 0, skipped: 0, pluginProvided: 0, skillIds: [] };
   }
 }
 
@@ -1277,7 +1305,14 @@ async function generateAgentInstructions(
 async function installCoreSkillsForSetup(
   projectDir: string,
   dryRun: boolean
-): Promise<{ installed: number; skipped: number }> {
+): Promise<{
+  installed: number;
+  skipped: number;
+  marketplaceRegistered?: boolean;
+  pluginEnabled?: boolean;
+  marketplaceMessage?: string;
+  enableMessage?: string;
+}> {
   // Dynamically import to avoid circular dependencies
   const {
     initContext,
@@ -1365,7 +1400,26 @@ async function installCoreSkillsForSetup(
       );
     }
 
-    return { installed, skipped };
+    // AC: @core-skill-install ac-6, ac-7 - Register marketplace and enable plugin
+    let marketplaceResult;
+    let enableResult;
+    if (!dryRun) {
+      const {
+        registerCorePluginMarketplace,
+        enablePluginInProject,
+      } = await import("../../lib/claude-plugin-registry.js");
+      marketplaceResult = await registerCorePluginMarketplace();
+      enableResult = await enablePluginInProject(projectDir);
+    }
+
+    return {
+      installed,
+      skipped,
+      marketplaceRegistered: marketplaceResult?.success ?? false,
+      pluginEnabled: enableResult?.success ?? false,
+      marketplaceMessage: marketplaceResult?.message,
+      enableMessage: enableResult?.message,
+    };
   } catch (err) {
     debugLog("installCoreSkillsForSetup failed", err);
     return { installed: 0, skipped: 0 };
@@ -1419,6 +1473,25 @@ export async function runSetupPipeline(
         name: "Install core skills",
         status: "skipped",
         message: "No core skills found in package",
+      });
+    }
+
+    // Step 2b: Register plugin marketplace (reports result from installCoreSkillsForSetup)
+    // AC: @core-skill-install ac-6, ac-7
+    if (coreResult.marketplaceRegistered || coreResult.pluginEnabled) {
+      const parts: string[] = [];
+      if (coreResult.marketplaceRegistered) parts.push("marketplace registered");
+      if (coreResult.pluginEnabled) parts.push("plugin enabled");
+      steps.push({
+        name: "Register plugin marketplace",
+        status: "done",
+        message: parts.join(", "),
+      });
+    } else if (!dryRun && (coreResult.installed > 0 || coreResult.skipped > 0)) {
+      steps.push({
+        name: "Register plugin marketplace",
+        status: "failed",
+        message: coreResult.marketplaceMessage || "Registration failed",
       });
     }
 
@@ -1496,11 +1569,15 @@ export async function runSetupPipeline(
       const skillsResult = await renderSkillsForSetup(projectDir, dryRun);
       skillsRendered = skillsResult.rendered;
 
-      if (skillsResult.rendered > 0 || skillsResult.skipped > 0) {
+      if (skillsResult.rendered > 0 || skillsResult.skipped > 0 || skillsResult.pluginProvided > 0) {
+        const parts = [];
+        if (skillsResult.rendered > 0) parts.push(`${skillsResult.rendered} rendered`);
+        if (skillsResult.pluginProvided > 0) parts.push(`${skillsResult.pluginProvided} plugin-provided`);
+        if (skillsResult.skipped > 0) parts.push(`${skillsResult.skipped} unchanged`);
         steps.push({
           name: "Render skills",
           status: "done",
-          message: `${skillsResult.rendered} rendered, ${skillsResult.skipped} unchanged`,
+          message: parts.join(", "),
           details: {
             skillIds: skillsResult.skillIds,
           },
@@ -1695,6 +1772,23 @@ export function registerSetupCommand(program: Command): void {
               console.log(
                 `  Drifted:  ${chalk.yellow(status.skills.drifted.toString())}`,
               );
+            }
+            console.log();
+
+            // Plugin marketplace status
+            // AC: @enhanced-setup ac-7, ac-8
+            console.log(chalk.gray("Plugin:"));
+            console.log(
+              `  Marketplace: ${status.plugin.marketplaceRegistered ? (status.plugin.marketplaceHealthy ? chalk.green("healthy") : chalk.yellow("registered")) : chalk.red("not registered")}`,
+            );
+            console.log(
+              `  Enabled:     ${status.plugin.pluginEnabled ? chalk.green("✓") : chalk.red("✗")}`,
+            );
+            if (status.plugin.registeredPath) {
+              console.log(chalk.gray(`  Path: ${status.plugin.registeredPath}`));
+            }
+            if (status.plugin.healthMessage && !status.plugin.marketplaceHealthy) {
+              console.log(chalk.yellow(`  ${status.plugin.healthMessage}`));
             }
             console.log();
 
