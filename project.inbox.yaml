@@ -844,3 +844,12 @@ inbox:
     created_at: 2026-02-22T06:23:03.679Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ27VRA3ZY55X0JEXV4P06KT
+    text: "Spec and test kspec behavior without git: ensure kspec works in projects without git
+      initialized, and handles git being introduced into an existing project where kspec is already
+      in use. Cover shadow branch initialization, worktree setup on first git init, migration of
+      .kspec/ state when git appears, and graceful degradation of git-dependent features
+      (auto-commit, sync, shadow status)."
+    created_at: 2026-02-22T08:36:08.131Z
+    tags: []
+    added_by: "@claude"
