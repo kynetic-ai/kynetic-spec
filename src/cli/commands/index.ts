@@ -27,6 +27,7 @@ export { registerSkillCommands } from "./skill.js";
 export { registerTaskCommands } from "./task.js";
 export { registerTasksCommands } from "./tasks.js";
 export { registerItemTraitCommands, registerTraitCommands } from "./trait.js";
+export { registerTriageCommands } from "./triage.js";
 export { registerUtilCommands } from "./util.js";
 export { registerValidateCommand } from "./validate.js";
 export { registerWorkflowCommand } from "./workflow.js";
