@@ -37,22 +37,22 @@ describe('Core Skill Update', () => {
       const packageVersion = await getKspecPackageVersion();
 
       // Manually set skill to an older version
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       // Verify version changed
       let skills = kspecJson<{ id: string; version?: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'kspec-help')?.version).toBe('0.0.1');
+      expect(skills.find((s) => s.id === 'help')?.version).toBe('0.0.1');
 
       // Run update
       const result = kspecFull('skill update', tempDir);
       expect(result.stdout).toContain('Updated');
-      expect(result.stdout).toContain('kspec-help');
+      expect(result.stdout).toContain('help');
       expect(result.stdout).toContain('0.0.1');
       expect(result.stdout).toContain(packageVersion);
 
       // Verify version is now package version
       skills = kspecJson<{ id: string; version?: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'kspec-help')?.version).toBe(packageVersion);
+      expect(skills.find((s) => s.id === 'help')?.version).toBe(packageVersion);
     });
 
     it('should update SKILL.md content when version differs', async () => {
@@ -60,10 +60,10 @@ describe('Core Skill Update', () => {
       kspecFull('skill install-core', tempDir);
 
       // Manually set skill to an older version
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       // Modify SKILL.md content
-      const skillMdPath = path.join(tempDir, 'skills', 'kspec-help', 'SKILL.md');
+      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
       await fs.writeFile(skillMdPath, '# Old Content\n\nThis is old content.\n', 'utf-8');
 
       // Run update
@@ -77,7 +77,7 @@ describe('Core Skill Update', () => {
 
     it('should show version transition in output', async () => {
       kspecFull('skill install-core', tempDir);
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       const result = kspecFull('skill update', tempDir);
 
@@ -96,7 +96,7 @@ describe('Core Skill Update', () => {
       const result = kspecFull('skill update', tempDir);
 
       expect(result.stdout).toContain('Skipped');
-      expect(result.stdout).toContain('kspec-help');
+      expect(result.stdout).toContain('help');
       expect(result.stdout).toContain('already at current version');
     });
 
@@ -115,7 +115,7 @@ describe('Core Skill Update', () => {
         results: { id: string; action: string; reason?: string }[];
       }>('skill update', tempDir);
 
-      const kspecHelp = result.results.find((r) => r.id === 'kspec-help');
+      const kspecHelp = result.results.find((r) => r.id === 'help');
       expect(kspecHelp?.action).toBe('skipped');
       expect(kspecHelp?.reason).toContain('already at current version');
     });
@@ -166,13 +166,13 @@ describe('Core Skill Update', () => {
       );
 
       // Set core skill to old version
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       // Run update
       const result = kspecFull('skill update', tempDir);
 
-      // Should only show kspec-help (core) being updated
-      expect(result.stdout).toContain('kspec-help');
+      // Should only show help (core) being updated
+      expect(result.stdout).toContain('help');
       expect(result.stdout).not.toContain('my-helper');
     });
   });
@@ -181,7 +181,7 @@ describe('Core Skill Update', () => {
   describe('dry-run support', () => {
     it('should not make changes with --dry-run', async () => {
       kspecFull('skill install-core', tempDir);
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       const result = kspecFull('skill update --dry-run', tempDir);
 
@@ -190,17 +190,17 @@ describe('Core Skill Update', () => {
 
       // Verify version was NOT updated
       const skills = kspecJson<{ id: string; version?: string }[]>('skill list', tempDir);
-      expect(skills.find((s) => s.id === 'kspec-help')?.version).toBe('0.0.1');
+      expect(skills.find((s) => s.id === 'help')?.version).toBe('0.0.1');
     });
 
     it('should show what would be updated with --dry-run', async () => {
       kspecFull('skill install-core', tempDir);
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       const result = kspecFull('skill update --dry-run', tempDir);
 
       expect(result.stdout).toContain('Updated');
-      expect(result.stdout).toContain('kspec-help');
+      expect(result.stdout).toContain('help');
     });
   });
 
@@ -208,7 +208,7 @@ describe('Core Skill Update', () => {
   describe('JSON output', () => {
     it('should return JSON with results array', async () => {
       kspecFull('skill install-core', tempDir);
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       const result = kspecJson<{ results: { id: string; action: string }[] }>(
         'skill update',
@@ -219,7 +219,7 @@ describe('Core Skill Update', () => {
       expect(Array.isArray(result.results)).toBe(true);
       expect(result.results.length).toBeGreaterThan(0);
 
-      const kspecHelp = result.results.find((r) => r.id === 'kspec-help');
+      const kspecHelp = result.results.find((r) => r.id === 'help');
       expect(kspecHelp?.action).toBe('updated');
     });
 
@@ -248,13 +248,13 @@ describe('Core Skill Update', () => {
 
     it('should include version info in update results', async () => {
       kspecFull('skill install-core', tempDir);
-      kspecFull('skill set @kspec-help --skill-version 0.0.1', tempDir);
+      kspecFull('skill set @help --skill-version 0.0.1', tempDir);
 
       const result = kspecJson<{
         results: { id: string; previousVersion?: string; newVersion?: string }[];
       }>('skill update', tempDir);
 
-      const kspecHelp = result.results.find((r) => r.id === 'kspec-help');
+      const kspecHelp = result.results.find((r) => r.id === 'help');
       expect(kspecHelp?.previousVersion).toBe('0.0.1');
       expect(kspecHelp?.newVersion).toMatch(/^\d+\.\d+\.\d+/);
     });

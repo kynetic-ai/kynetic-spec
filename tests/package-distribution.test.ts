@@ -61,8 +61,8 @@ describe('Package Distribution', () => {
       expect(skillDirs.length).toBeGreaterThan(0);
     });
 
-    it('kspec-help skill has SKILL.md content', async () => {
-      const skillMdPath = path.join(PACKAGE_ROOT, 'templates', 'skills', 'kspec-help', 'SKILL.md');
+    it('help skill has SKILL.md content', async () => {
+      const skillMdPath = path.join(PACKAGE_ROOT, 'templates', 'skills', 'help', 'SKILL.md');
       const content = await fs.readFile(skillMdPath, 'utf-8');
       expect(content.length).toBeGreaterThan(0);
       expect(content).toContain('kspec');
