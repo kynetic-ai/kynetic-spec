@@ -2626,7 +2626,7 @@ features:
       - id: ac-9
         given: --adapter flag is provided
         when: kspec ralph --adapter <id> is run
-        then: uses specified adapter (default claude-code-acp)
+        then: uses specified adapter (default claude-agent-acp)
       - id: ac-10
         given: session starts
         when: agent spawns
