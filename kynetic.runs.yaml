@@ -4711,7 +4711,7 @@ runs:
   - _ulid: 01KJ32V785K92KWYJ78PSVW7FB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-22T16:27:42.214Z
     step_results:
@@ -4745,5 +4745,10 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-22T16:28:51.185Z
-        completed_at: 2026-02-22T16:28:51.185Z
+        completed_at: 2026-02-22T16:30:47.866Z
+        notes: User approved all 3 items for capture
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-22T16:30:47.866Z
+        completed_at: 2026-02-22T16:30:47.866Z
     initiated_by: "@claude"
