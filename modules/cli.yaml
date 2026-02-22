@@ -4567,6 +4567,9 @@ features:
           - "@trait-error-guidance"
         notes: []
         created: 2026-02-22T20:16:08.913Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KJ3FXGR10TKGEC8YFPTE8FH1
         slugs:
           - triage-cli-commands
