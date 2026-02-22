@@ -53761,10 +53761,8 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - Blocked on plugin system migration — Claude Code doesn't discover nested skill directories.
-      Need .claude/plugins/kspec/ support first.
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-plugin-rendering"
   context: []
@@ -54199,6 +54197,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #442. Core skills now render to .claude/plugins/kspec/skills/<id>/ for
+    proper Claude Code plugin discovery as /kspec:<id>."
   depends_on: []
   context: []
   priority: 2
@@ -54209,6 +54209,7 @@
   vcs_refs: []
   created_at: 2026-02-21T23:43:47.601Z
   started_at: 2026-02-21T23:56:39.092Z
+  completed_at: 2026-02-22T01:37:33.612Z
   notes:
     - _ulid: 01KJ1A326HT5QZJ9AVXTGRDH21
       created_at: 2026-02-21T23:55:50.353Z
@@ -54255,6 +54256,3 @@
         kspec-agents.md shows /kspec:kspec-help.
       supersedes: null
   todos: []
-  completed_at: 2026-02-22T01:37:33.612Z
-  closed_reason: "Merged in PR #442. Core skills now render to .claude/plugins/kspec/skills/<id>/ for
-    proper Claude Code plugin discovery as /kspec:<id>."
