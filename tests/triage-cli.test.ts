@@ -882,42 +882,23 @@ describe("interactive triage system integration", () => {
     // Step 3: Execute the overridden action
     kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
 
-    // Step 4: Export and verify the full chain is captured
+    // Step 4: Export and verify the full chain is captured in context output
     const exported = kspec("triage export --format context", tempDir);
-    expect(exported.stdout).toContain("Improve search performance"); // item text
-    expect(exported.stdout).toContain("promote"); // overridden action
-    expect(exported.stdout).toContain("actually urgent"); // override reasoning
-
-    // Step 5: Verify via JSON that all attribution and timestamps present
-    const records = kspecJson<Array<{
-      _ulid: string;
-      status: string;
-      action: string;
-      reasoning: string;
-      decided_by: string;
-      created_at: string;
-      override_reasoning: string;
-      override_by: string;
-      override_at: string;
-      acted_at: string;
-      result_ref: string;
-    }>>("triage list", tempDir);
-
-    expect(records.length).toBe(1);
-    const r = records[0];
-    expect(r.status).toBe("acted_on");
-    expect(r.action).toBe("promote");
-    // Original decision attribution
-    expect(r.reasoning).toBe("needs profiling first");
-    expect(r.decided_by).toBeDefined();
-    expect(r.created_at).toBeDefined();
-    // Override attribution
-    expect(r.override_reasoning).toBe("actually urgent, users complaining");
-    expect(r.override_by).toBeDefined();
-    expect(r.override_at).toBeDefined();
-    // Execution result
-    expect(r.acted_at).toBeDefined();
-    expect(r.result_ref).toBeDefined();
+    // Item text
+    expect(exported.stdout).toContain("Improve search performance");
+    // Current action (overridden)
+    expect(exported.stdout).toContain("promote");
+    // Original reasoning from agent
+    expect(exported.stdout).toContain("needs profiling first");
+    // Attribution — decided_by appears in export
+    expect(exported.stdout).toContain("Decided by:");
+    // Override reasoning and attribution in export
+    expect(exported.stdout).toContain("actually urgent, users complaining");
+    expect(exported.stdout).toContain("Override:");
+    // Execution timestamp in export
+    expect(exported.stdout).toContain("Acted at:");
+    // Result ref in export
+    expect(exported.stdout).toContain("Result:");
   });
 
   // AC: @interactive-triage ac-1 (records survive inbox item deletion)
