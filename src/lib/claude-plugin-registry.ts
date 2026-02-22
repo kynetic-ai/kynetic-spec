@@ -45,7 +45,7 @@ export interface MarketplaceHealth {
 }
 
 interface MarketplaceEntry {
-  source: string;
+  source: { source: string; path?: string; repo?: string };
   installLocation: string;
   lastUpdated: string;
   autoUpdate?: boolean;

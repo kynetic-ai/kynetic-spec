@@ -3,6 +3,7 @@
  *
  * Reads the skill manifest and package.json, then generates:
  * - plugin/.claude-plugin/plugin.json (with version from package.json)
+ * - plugin/.claude-plugin/marketplace.json (marketplace listing for directory source)
  * - plugin/skills/<id>/SKILL.md (with YAML frontmatter prepended)
  *
  * Clean-rebuild: removes plugin/ first to prune stale skills.
@@ -53,7 +54,31 @@ function main() {
     "utf-8"
   );
 
-  // Process each skill
+  // Write marketplace.json (required by Claude Code for directory source marketplaces)
+  const marketplaceJson = {
+    $schema: "https://anthropic.com/claude-code/marketplace.schema.json",
+    name: "kspec-plugins",
+    description: "kspec agent skills for Claude Code",
+    owner: { name: "kynetic-ai" },
+    plugins: [
+      {
+        name: "kspec",
+        description: "kspec agent skills",
+        version,
+        source: "./plugins/kspec",
+        category: "development",
+      },
+    ],
+  };
+  fs.writeFileSync(
+    path.join(pluginMetaDir, "marketplace.json"),
+    JSON.stringify(marketplaceJson, null, 2) + "\n",
+    "utf-8"
+  );
+
+  // Process each skill into plugin/plugins/kspec/skills/<id>/SKILL.md
+  // (marketplace source "./plugins/kspec" points to the plugin content directory)
+  const pluginContentDir = path.join(PLUGIN_DIR, "plugins", "kspec");
   let count = 0;
   for (const skill of manifest.skills) {
     const skillId = skill.id;
@@ -73,8 +98,8 @@ function main() {
     const frontmatter = yaml.stringify({ name: skillId, description: skillDesc }).trim();
     const output = `---\n${frontmatter}\n---\n<!-- kspec-managed -->\n${sourceContent}`;
 
-    // Write to plugin/skills/<id>/SKILL.md
-    const targetDir = path.join(PLUGIN_DIR, "skills", skillId);
+    // Write to plugin/plugins/kspec/skills/<id>/SKILL.md
+    const targetDir = path.join(pluginContentDir, "skills", skillId);
     fs.mkdirSync(targetDir, { recursive: true });
     fs.writeFileSync(path.join(targetDir, "SKILL.md"), output, "utf-8");
 
