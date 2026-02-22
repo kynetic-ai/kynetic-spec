@@ -53151,7 +53151,7 @@
   spec_ref: "@cli-ralph"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -53163,6 +53163,7 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-22T21:46:50.742Z
 - _ulid: 01KHY9W8TKBKB13B7X0JMY0D3P
   slugs: []
   title: Bump @agentclientprotocol/sdk to ^0.14.0
