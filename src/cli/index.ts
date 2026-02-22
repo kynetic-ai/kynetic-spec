@@ -42,6 +42,7 @@ import {
   registerTaskCommands,
   registerTasksCommands,
   registerTraitCommands,
+  registerTriageCommands,
   registerUtilCommands,
   registerValidateCommand,
   registerWorkflowCommand,
@@ -224,6 +225,7 @@ registerHelpCommand(program);
 registerDoctorCommand(program);
 registerDeriveCommand(program);
 registerInboxCommands(program);
+registerTriageCommands(program);
 registerShadowCommands(program);
 registerLogCommand(program);
 registerSearchCommand(program);
