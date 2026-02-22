@@ -253,7 +253,7 @@ export async function registerCorePluginMarketplace(
         ...data,
         [MARKETPLACE_KEY]: {
           ...data[MARKETPLACE_KEY],
-          source: "local",
+          source: { source: "directory", path: pluginDir },
           installLocation: pluginDir,
           lastUpdated: new Date().toISOString(),
           autoUpdate: false,
