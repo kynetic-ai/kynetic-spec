@@ -98,13 +98,29 @@ export const TriageRecordSchema = z
             "Acted-on records require acted_at timestamp. Set acted_at when executing the action.",
         });
       }
-      // acted_on also implies the record was triaged first
+      // acted_on implies the record was triaged first — enforce AC-3 decision metadata
       if (!data.action) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["action"],
           message:
             "Acted-on records require an action. Record must be triaged before acting.",
+        });
+      }
+      if (!data.reasoning) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["reasoning"],
+          message:
+            "Acted-on records require reasoning. Record must be triaged with reasoning before acting.",
+        });
+      }
+      if (!data.decided_by) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["decided_by"],
+          message:
+            "Acted-on records require decided_by. Record must be triaged with attribution before acting.",
         });
       }
     }

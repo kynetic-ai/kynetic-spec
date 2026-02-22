@@ -237,6 +237,29 @@ describe('TriageRecordSchema - execution fields', () => {
     }));
     expect(result.success).toBe(false);
   });
+
+  // AC: @triage-record-schema ac-3, ac-5
+  // acted_on implies prior triaged state — decision metadata must be present
+  it('should reject acted_on record without reasoning', () => {
+    const result = TriageRecordSchema.safeParse(actedOnRecord({
+      reasoning: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some(i => i.path.includes('reasoning'))).toBe(true);
+    }
+  });
+
+  // AC: @triage-record-schema ac-3, ac-5
+  it('should reject acted_on record without decided_by', () => {
+    const result = TriageRecordSchema.safeParse(actedOnRecord({
+      decided_by: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some(i => i.path.includes('decided_by'))).toBe(true);
+    }
+  });
 });
 
 // AC: @triage-record-schema ac-6
