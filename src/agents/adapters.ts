@@ -37,6 +37,18 @@ const ADAPTERS: Record<string, AgentAdapter> = {
   },
 
   /**
+   * @deprecated Alias for backwards compatibility.
+   * The package was renamed from claude-code-acp to claude-agent-acp.
+   * This alias ensures existing scripts with --adapter claude-code-acp continue to work.
+   */
+  "claude-code-acp": {
+    command: "npx",
+    args: ["@zed-industries/claude-agent-acp"],
+    shell: process.platform === "win32",
+    description: "Claude Agent via ACP protocol (deprecated alias)",
+  },
+
+  /**
    * Mock ACP adapter for testing.
    * Uses a local mock script that simulates ACP behavior.
    */

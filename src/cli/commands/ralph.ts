@@ -1180,7 +1180,10 @@ export function registerRalphCommand(program: Command): void {
         // - Non-npx adapters
         // - Dry-run mode with default adapter (doesn't spawn agent, default may not be installed in CI)
         // Note: If user explicitly specifies --adapter, validate even in dry-run to catch typos
-        const isDefaultAdapter = options.adapter === "claude-agent-acp";
+        // Accept both new and deprecated adapter names
+        const isDefaultAdapter =
+          options.adapter === "claude-agent-acp" ||
+          options.adapter === "claude-code-acp";
         const skipValidation =
           options.adapterCmd ||
           adapter.command !== "npx" ||
@@ -1191,8 +1194,8 @@ export function registerRalphCommand(program: Command): void {
           validateAdapter(adapter.args[0]);
         }
 
-        // Add yolo flag to adapter args if needed
-        if (options.yolo && options.adapter === "claude-agent-acp") {
+        // Add yolo flag to adapter args if needed (accept both new and deprecated names)
+        if (options.yolo && isDefaultAdapter) {
           adapter.args = [...adapter.args, "--dangerously-skip-permissions"];
         }
 
