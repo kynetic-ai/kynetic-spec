@@ -53160,10 +53160,29 @@
     - acp-migration
   vcs_refs: []
   created_at: 2026-02-20T19:54:10.420Z
-  notes: []
+  started_at: 2026-02-22T21:46:50.742Z
+  notes:
+    - _ulid: 01KJ3NCPYEH1ZXWPV0NE91G51M
+      created_at: 2026-02-22T21:51:49.710Z
+      author: "@claude"
+      content: >-
+        Completed adapter rename from claude-code-acp to claude-agent-acp:
+
+        - Updated src/agents/adapters.ts: registry key, npm args, JSDoc, resolveAdapter default
+
+        - Updated src/cli/commands/ralph.ts: --adapter default, isDefaultAdapter check, yolo guard
+
+        - Updated 4 test files with replace_all (~40 occurrences): session-log-list,
+        session-log-show, session-log-search, session-log-stats
+
+        - Updated @cli-ralph spec via kspec CLI: description and ac-9 Then clause
+
+
+        All 119 session-log tests pass. Full test suite passes (1 pre-existing unrelated failure in
+        daemon-executable.test.ts).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-22T21:46:50.742Z
 - _ulid: 01KHY9W8TKBKB13B7X0JMY0D3P
   slugs: []
   title: Bump @agentclientprotocol/sdk to ^0.14.0
