@@ -54587,6 +54587,7 @@
       author: "@claude"
       content: See plan @plan-interactive-triage-system for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJ3FXHDH6X85QF35D56P2F69
   slugs:
     - implement-triage-record-schema
@@ -54596,6 +54597,7 @@
   plan_ref: "@plan-interactive-triage-system"
   status: completed
   blocked_by: []
+  closed_reason: Schema and parser implemented with full AC coverage (38 tests). Committed in aac8bc27.
   depends_on: []
   context: []
   priority: 3
@@ -54603,6 +54605,7 @@
   vcs_refs: []
   created_at: 2026-02-22T20:16:09.649Z
   started_at: 2026-02-22T20:16:58.536Z
+  completed_at: 2026-02-22T20:23:31.838Z
   notes:
     - _ulid: 01KJ3FXHDHXHD05K28G8JQXVWX
       created_at: 2026-02-22T20:16:09.649Z
@@ -54643,8 +54646,6 @@
         All ACs covered. Full test suite green (3 pre-existing failures unrelated).
       supersedes: null
   todos: []
-  completed_at: 2026-02-22T20:23:31.838Z
-  closed_reason: Schema and parser implemented with full AC coverage (38 tests). Committed in aac8bc27.
 - _ulid: 01KJ3FXHPC8CMZQFCC7SYGGMF8
   slugs:
     - implement-triage-cli-commands
@@ -54677,6 +54678,7 @@
         Override subcommand updates existing record with override fields.
         Export subcommand delegates to shared formatter.
   todos: []
+  automation: eligible
 - _ulid: 01KJ3FXJ0DMK8EV8MW00D5PPCS
   slugs:
     - implement-triage-daemon-api
@@ -54705,6 +54707,7 @@
         Topic triage:updates, events: triage_created, triage_updated, triage_acted.
         Register in server.ts alongside existing routes.
   todos: []
+  automation: eligible
 - _ulid: 01KJ3FXJ8ZEN8DSP3BD3HKP1SW
   slugs:
     - implement-interactive-triage-ui
@@ -54734,6 +54737,7 @@
         Subscribe to triage:updates WebSocket topic.
         Add fetchTriage, createTriageRecord, updateTriageRecord to api.ts.
   todos: []
+  automation: eligible
 - _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
   slugs:
     - implement-triage-agent-export
@@ -54762,3 +54766,4 @@
         JSON format: raw TriageRecord array.
         Shared by CLI (kspec triage export) and API (GET /api/triage/export).
   todos: []
+  automation: eligible
