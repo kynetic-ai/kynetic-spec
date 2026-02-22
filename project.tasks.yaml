@@ -54374,6 +54374,7 @@
     - convention
   vcs_refs: []
   created_at: 2026-02-22T15:58:53.742Z
+  started_at: 2026-02-22T17:47:04.173Z
   notes:
     - _ulid: 01KJ316VA1XV93XEQH15S54FN5
       created_at: 2026-02-22T15:59:06.049Z
@@ -54427,8 +54428,39 @@
         setup pipeline, doctor checks, and shadow repair to create/check .kspec/artifacts/ with
         .gitkeep."
       supersedes: null
+    - _ulid: 01KJ37TGWDEGXT1KHDRJNNYQVV
+      created_at: 2026-02-22T17:54:42.189Z
+      author: "@claude"
+      content: >-
+        Implementation complete for 6 of 8 ACs:
+
+
+        - ac-init-creates: initializeShadow() creates artifacts/ dir (shadow.ts ~line 1708)
+
+        - ac-gitignore-entry: .gitignore with artifacts/ written during init (shadow.ts ~line 1710)
+
+        - ac-commits-exclude: Covered by gitignore — tested that git add -A doesn't stage artifacts
+
+        - ac-setup-ensures: runSetupPipeline() creates artifacts/ if missing (setup.ts ~line 1542)
+
+        - ac-doctor-checks: buildShadowSection() checks artifactsDirExists (doctor.ts ~line 257)
+
+        - ac-repair-recreates: repairShadow() creates artifacts/ after worktree rebuild (shadow.ts
+        ~line 1818)
+
+
+        Convention-only ACs (no code enforcement):
+
+        - ac-naming-convention: Documented pattern type-YYYY-MM-DD.ext — agents follow by reading
+        spec
+
+        - ac-empty-dir-persistence: Handled by init/setup/repair creating the dir (not via .gitkeep
+        since gitignore excludes artifacts/)
+
+
+        Tests added: 6 new tests across shadow.test.ts and doctor.test.ts. All 112+29 pass.
+      supersedes: null
   todos: []
-  started_at: 2026-02-22T17:47:04.173Z
 - _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
   slugs: []
   title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
