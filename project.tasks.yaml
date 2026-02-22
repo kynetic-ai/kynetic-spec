@@ -54686,7 +54686,7 @@
   type: task
   spec_ref: "@triage-cli-commands"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-triage-record-schema"
@@ -54794,6 +54794,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-22T23:44:27.411Z
+  closed_reason: "Merged in PR #449. Implements all 7 triage CLI commands (record, list, act,
+    override, export, start, get) with full own AC coverage (17/17) and comprehensive trait AC
+    coverage across 6 traits (json-output, error-guidance, semantic-exit-codes, filterable-list,
+    shadow-commit, dry-run). 52 tests passing. Fix cycle 2 resolved all previous review findings."
 - _ulid: 01KJ3FXJ0DMK8EV8MW00D5PPCS
   slugs:
     - implement-triage-daemon-api
