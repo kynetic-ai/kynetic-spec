@@ -54418,3 +54418,23 @@
         - Should kspec generate commands output to artifacts/ by default?
       supersedes: null
   todos: []
+- title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - plugin
+    - bug
+    - cli
+  depends_on: []
+  _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-22T16:21:21.857Z
+  notes: []
+  todos: []
