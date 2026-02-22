@@ -35,6 +35,13 @@ export interface SetupStatus {
     rendered: number;
     drifted: number;
   };
+  plugin: {
+    marketplaceRegistered: boolean;
+    marketplaceHealthy: boolean;
+    pluginEnabled: boolean;
+    registeredPath?: string;
+    healthMessage?: string;
+  };
   agentsMd: {
     exists: boolean;
     status: "current" | "stale" | "missing" | "unknown";
@@ -216,18 +223,37 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
   // Scan .claude/skills/ (project/local skills)
   await scanForSkills(skillsDir, "skills");
 
-  // Scan .claude/plugins/*/skills/ (plugin skills)
-  const pluginsDir = path.join(projectDir, ".claude", "plugins");
+  // Check plugin marketplace health
+  // AC: @enhanced-setup ac-7, ac-8
+  const plugin = {
+    marketplaceRegistered: false,
+    marketplaceHealthy: false,
+    pluginEnabled: false,
+    registeredPath: undefined as string | undefined,
+    healthMessage: undefined as string | undefined,
+  };
+
   try {
-    const pluginEntries = await fs.readdir(pluginsDir, { withFileTypes: true });
-    for (const pluginEntry of pluginEntries) {
-      if (pluginEntry.isDirectory()) {
-        const pluginSkillsDir = path.join(pluginsDir, pluginEntry.name, "skills");
-        await scanForSkills(pluginSkillsDir, `plugins/${pluginEntry.name}/skills`);
-      }
-    }
+    const { checkMarketplaceHealth } = await import(
+      "../lib/claude-plugin-registry.js"
+    );
+    const health = await checkMarketplaceHealth();
+    plugin.marketplaceRegistered = health.status !== "missing";
+    plugin.marketplaceHealthy = health.status === "healthy";
+    plugin.registeredPath = health.registeredPath;
+    plugin.healthMessage = health.message;
   } catch (err) {
-    debugLog("Plugins dir doesn't exist", err);
+    debugLog("Could not check marketplace health", err);
+    plugin.healthMessage = "Health check unavailable";
+  }
+
+  // Check if plugin is enabled in project settings
+  try {
+    const configContent = await fs.readFile(configPath, "utf-8");
+    const config = JSON.parse(configContent);
+    plugin.pluginEnabled = config.enabledPlugins?.["kspec@kspec-plugins"] === true;
+  } catch (err) {
+    debugLog("Could not check plugin enablement", err);
   }
 
   // Check agents.md
@@ -325,6 +351,7 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     },
     hooks,
     skills,
+    plugin,
     agentsMd,
     seeding,
   };

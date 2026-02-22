@@ -47,7 +47,7 @@ import { loadSkillContent, type LoadedSkill } from "./meta.js";
  * Status of drift detection for a rendered skill
  * AC: @platform-renderer-trait ac-2
  */
-export type DriftStatus = "not-rendered" | "in-sync" | "drifted" | "no-hash";
+export type DriftStatus = "not-rendered" | "in-sync" | "drifted" | "no-hash" | "plugin-provided";
 
 /**
  * Result of rendering a skill to a specific platform
@@ -66,6 +66,8 @@ export interface PlatformRenderResult {
   supportingDirsAction?: Record<string, "created" | "updated" | "unchanged" | "skipped">;
   /** Reason if action is skipped */
   skipReason?: string;
+  /** Structured code for skip reason (avoids string matching) */
+  skipCode?: "plugin-provided";
 }
 
 /**
@@ -123,8 +125,8 @@ export interface PlatformRenderer {
 export interface ClaudeCodeRenderResult {
   /** Skill ID */
   id: string;
-  /** Action taken: created, updated, or unchanged */
-  action: "created" | "updated" | "unchanged";
+  /** Action taken: created, updated, unchanged, or skipped (plugin-provided) */
+  action: "created" | "updated" | "unchanged" | "skipped";
   /** Path to the rendered SKILL.md file */
   path: string;
   /** Action taken on docs directory */
@@ -240,12 +242,14 @@ export function getClaudeCodeSkillSubdir(skill: LoadedSkill): string {
 
 /**
  * Get the target directory for rendered skills on main branch.
- * Core skills go to the plugin directory; project/local skills go to .claude/skills/.
+ * Core skills on claude-code are plugin-provided (returns null).
+ * Project/local skills go to .claude/skills/.
  * AC: @skill-rendering ac-7
  */
-function getRenderedSkillPath(projectRoot: string, skillId: string, origin?: string): string {
+function getRenderedSkillPath(projectRoot: string, skillId: string, origin?: string): string | null {
   if (origin === "core") {
-    return path.join(projectRoot, PLUGIN_SKILLS_DIR, skillId);
+    // Core skills are plugin-provided, not locally rendered
+    return null;
   }
   return path.join(projectRoot, ".claude", "skills", skillId);
 }
@@ -335,10 +339,12 @@ export async function checkSkillDrift(
   projectRoot: string,
   skillId: string,
   origin?: string
-): Promise<"not-rendered" | "in-sync" | "drifted" | "no-hash"> {
-  const renderedPath = path.join(
-    getRenderedSkillPath(projectRoot, skillId, origin), "SKILL.md"
-  );
+): Promise<DriftStatus> {
+  const basePath = getRenderedSkillPath(projectRoot, skillId, origin);
+  if (!basePath) {
+    return "plugin-provided"; // Core skills are provided by npm package plugin
+  }
+  const renderedPath = path.join(basePath, "SKILL.md");
 
   // Check if rendered file exists
   let renderedContent: string;
@@ -496,6 +502,16 @@ export async function renderClaudeCodeSkill(
   const dryRun = options.dryRun ?? false;
   const storeHash = options.storeHash ?? false;
   const targetDir = getRenderedSkillPath(projectRoot, skill.id, skill.origin);
+
+  // Core skills are plugin-provided; skip local render
+  if (!targetDir) {
+    return {
+      id: skill.id,
+      action: "skipped",
+      path: "",
+    };
+  }
+
   const targetSkillMd = path.join(targetDir, "SKILL.md");
 
   // AC: @claude-code-renderer ac-3 - Load source content verbatim
@@ -689,13 +705,16 @@ export async function checkPlatformSkillDrift(
   outputDir?: string,
   origin?: string
 ): Promise<DriftStatus> {
-  // Determine the rendered path - core skills on claude-code use plugin dir
+  // Core skills on claude-code are plugin-provided, not locally rendered
+  if (origin === "core" && platform === "claude-code" && !outputDir) {
+    return "plugin-provided";
+  }
+
+  // Determine the rendered path
   let renderedPath: string;
   if (outputDir) {
     const subdir = getSkillSubdir(skillId, origin, platform);
     renderedPath = path.join(projectRoot, outputDir, subdir, "SKILL.md");
-  } else if (origin === "core" && platform === "claude-code") {
-    renderedPath = path.join(projectRoot, PLUGIN_SKILLS_DIR, skillId, "SKILL.md");
   } else {
     const platformOutputDir = getPlatformDefaultOutputDir(platform);
     const subdir = getSkillSubdir(skillId, origin, platform);
@@ -886,6 +905,76 @@ export async function renderSkillBase(
 // ============================================================================
 
 /**
+ * Migrate old plugin paths for core skills.
+ * Cleans up old render targets (.claude/skills/<id>/, .claude/skills/kspec/<id>/,
+ * .claude/plugins/kspec/) when kspec-managed marker is present.
+ * Called from renderer and from CLI after marketplace registration.
+ */
+export async function migrateOldPluginPaths(projectRoot: string, skillId: string): Promise<void> {
+  const defaultOutputDir = ".claude/skills";
+
+  // Old flat path: .claude/skills/<id>/ (pre-#440)
+  const oldFlatPath = path.join(projectRoot, defaultOutputDir, skillId, "SKILL.md");
+  try {
+    const content = await fs.readFile(oldFlatPath, "utf-8");
+    if (content.includes(KSPEC_MANAGED_MARKER)) {
+      await fs.rm(path.join(projectRoot, defaultOutputDir, skillId), { recursive: true, force: true });
+    }
+  } catch {
+    // Old path doesn't exist
+  }
+
+  // Old namespaced path: .claude/skills/kspec/<id>/ (PR #440)
+  const oldNamespacedPath = path.join(projectRoot, defaultOutputDir, "kspec", skillId, "SKILL.md");
+  try {
+    const content = await fs.readFile(oldNamespacedPath, "utf-8");
+    if (content.includes(KSPEC_MANAGED_MARKER)) {
+      await fs.rm(path.join(projectRoot, defaultOutputDir, "kspec", skillId), { recursive: true, force: true });
+    }
+  } catch {
+    // Old path doesn't exist
+  }
+
+  // Old monolithic: .claude/skills/kspec/SKILL.md
+  const oldMonolithicPath = path.join(projectRoot, defaultOutputDir, "kspec", "SKILL.md");
+  try {
+    const content = await fs.readFile(oldMonolithicPath, "utf-8");
+    if (content.includes(KSPEC_MANAGED_MARKER)) {
+      await fs.rm(oldMonolithicPath, { force: true });
+    }
+  } catch {
+    // Old path doesn't exist
+  }
+
+  // Old plugin render target: .claude/plugins/kspec/skills/<id>/
+  const oldPluginPath = path.join(projectRoot, PLUGIN_SKILLS_DIR, skillId, "SKILL.md");
+  try {
+    const content = await fs.readFile(oldPluginPath, "utf-8");
+    if (content.includes(KSPEC_MANAGED_MARKER)) {
+      await fs.rm(path.join(projectRoot, PLUGIN_SKILLS_DIR, skillId), { recursive: true, force: true });
+    }
+  } catch {
+    // Old path doesn't exist
+  }
+
+  // Clean up empty parent directories
+  for (const dir of [
+    path.join(projectRoot, defaultOutputDir, "kspec"),
+    path.join(projectRoot, PLUGIN_SKILLS_DIR),
+    path.join(projectRoot, PLUGIN_DIR),
+  ]) {
+    try {
+      const entries = await fs.readdir(dir);
+      if (entries.length === 0) {
+        await fs.rm(dir, { recursive: true, force: true });
+      }
+    } catch {
+      // Dir doesn't exist or not empty
+    }
+  }
+}
+
+/**
  * Claude Code platform renderer implementation
  * AC: @platform-renderer-trait ac-1 through ac-6
  */
@@ -901,68 +990,30 @@ export const claudeCodeRenderer: PlatformRenderer = {
   ): Promise<PlatformRenderResult> {
     const dryRun = options.dryRun ?? false;
 
-    // Migrate: clean up old paths when rendering core skills to plugin dir
-    if (skill.origin === "core" && !dryRun) {
-      // Old flat path: .claude/skills/<id>/ (pre-#440)
-      const oldFlatPath = path.join(projectRoot, this.defaultOutputDir, skill.id, "SKILL.md");
-      try {
-        const content = await fs.readFile(oldFlatPath, "utf-8");
-        if (content.includes(KSPEC_MANAGED_MARKER)) {
-          await fs.rm(path.join(projectRoot, this.defaultOutputDir, skill.id), { recursive: true, force: true });
-        }
-      } catch {
-        // Old path doesn't exist, nothing to clean
+    // AC: @skill-rendering ac-7 - Core skills are provided by the npm package plugin
+    // directory. Skip local rendering; migration cleanup is handled separately.
+    if (skill.origin === "core" && !options.outputDir) {
+      // Run migration cleanup for old paths
+      if (!dryRun) {
+        await migrateOldPluginPaths(projectRoot, skill.id);
       }
 
-      // Old namespaced path: .claude/skills/kspec/<id>/ (PR #440)
-      const oldNamespacedPath = path.join(projectRoot, this.defaultOutputDir, "kspec", skill.id, "SKILL.md");
-      try {
-        const content = await fs.readFile(oldNamespacedPath, "utf-8");
-        if (content.includes(KSPEC_MANAGED_MARKER)) {
-          await fs.rm(path.join(projectRoot, this.defaultOutputDir, "kspec", skill.id), { recursive: true, force: true });
-        }
-      } catch {
-        // Old path doesn't exist, nothing to clean
-      }
-
-      // Old monolithic: .claude/skills/kspec/SKILL.md
-      const oldMonolithicPath = path.join(projectRoot, this.defaultOutputDir, "kspec", "SKILL.md");
-      try {
-        const content = await fs.readFile(oldMonolithicPath, "utf-8");
-        if (content.includes(KSPEC_MANAGED_MARKER)) {
-          await fs.rm(oldMonolithicPath, { force: true });
-        }
-      } catch {
-        // Old path doesn't exist, nothing to clean
-      }
-
-      // Clean up empty kspec/ namespace dir after migration
-      try {
-        const kspecDir = path.join(projectRoot, this.defaultOutputDir, "kspec");
-        const entries = await fs.readdir(kspecDir);
-        if (entries.length === 0) {
-          await fs.rm(kspecDir, { recursive: true, force: true });
-        }
-      } catch {
-        // Dir doesn't exist or not empty
-      }
+      return {
+        id: skill.id,
+        platform: this.platform,
+        action: "skipped",
+        paths: [],
+        skipReason: "core skill provided by npm package plugin",
+        skipCode: "plugin-provided",
+      };
     }
 
-    // Core skills render to plugin dir, project skills to .claude/skills/
-    const outputDir = skill.origin === "core"
-      ? PLUGIN_SKILLS_DIR
-      : this.defaultOutputDir;
-
+    // Project/local skills render to .claude/skills/
     const result = await renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter,
       writeLegacyHash: true,
-    }, outputDir, skill.id);
-
-    // Generate plugin manifest for core skills
-    if (skill.origin === "core" && !dryRun) {
-      await generatePluginManifest(projectRoot, dryRun);
-    }
+    }, this.defaultOutputDir, skill.id);
 
     return result;
   },
@@ -983,47 +1034,6 @@ export const claudeCodeRenderer: PlatformRenderer = {
     );
   },
 };
-
-// ============================================================================
-// Plugin Manifest Generation (AC: @skill-rendering ac-7)
-// ============================================================================
-
-/**
- * Generate the Claude Code plugin manifest for kspec core skills.
- * Creates .claude/plugins/kspec/.claude-plugin/plugin.json
- * Idempotent: skips write if content is unchanged.
- * AC: @skill-rendering ac-7
- */
-export async function generatePluginManifest(
-  projectRoot: string,
-  dryRun: boolean
-): Promise<void> {
-  const manifestDir = path.join(projectRoot, PLUGIN_DIR, ".claude-plugin");
-  const manifestPath = path.join(manifestDir, "plugin.json");
-
-  const manifest = {
-    name: "kspec",
-    version: "0.1.0",
-    description: "kspec agent skills",
-  };
-
-  const content = JSON.stringify(manifest, null, 2) + "\n";
-
-  // Check if content unchanged (idempotent)
-  try {
-    const existing = await fs.readFile(manifestPath, "utf-8");
-    if (existing === content) {
-      return; // No change needed
-    }
-  } catch {
-    // File doesn't exist, will create
-  }
-
-  if (!dryRun) {
-    await fs.mkdir(manifestDir, { recursive: true });
-    await fs.writeFile(manifestPath, content, "utf-8");
-  }
-}
 
 // ============================================================================
 // Codex Renderer (implements PlatformRenderer)

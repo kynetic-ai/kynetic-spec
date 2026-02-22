@@ -183,6 +183,7 @@ export async function getDoctorReport(
       agent: { detected: "unknown", confidence: "low" },
       hooks: { promptCheck: false, stop: false, preToolUse: false, guardsPresent: [] },
       skills: { total: 0, rendered: 0, drifted: 0 },
+      plugin: { marketplaceRegistered: false, marketplaceHealthy: false, pluginEnabled: false },
       agentsMd: { exists: false, status: "missing" },
       seeding: { permissionsSeeded: false, memorySeeded: false },
       error: err instanceof Error ? err.message : String(err),

@@ -65,9 +65,8 @@ export async function findSkillFiles(baseDir: string): Promise<string[]> {
   const skillsDir = path.join(baseDir, ".claude", "skills");
   skillFiles.push(...await scanSkillDir(skillsDir));
 
-  // Scan .claude/plugins/kspec/skills/ (kspec plugin skills only)
-  const kspecPluginSkillsDir = path.join(baseDir, ".claude", "plugins", "kspec", "skills");
-  skillFiles.push(...await scanSkillDir(kspecPluginSkillsDir));
+  // Core skills are now plugin-provided via npm package; no local render to validate.
+  // Only project/local skills in .claude/skills/ are scanned.
 
   return skillFiles;
 }

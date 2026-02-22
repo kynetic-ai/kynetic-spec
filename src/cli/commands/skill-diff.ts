@@ -33,7 +33,7 @@ import {
   getSkillSubdir,
   contentsEqual,
   directoriesEqual,
-  PLUGIN_SKILLS_DIR,
+  migrateOldPluginPaths,
   type PlatformRenderer,
   type DriftStatus,
 } from "../../parser/skill-render.js";
@@ -56,6 +56,8 @@ interface MultiPlatformRenderResult {
   path: string;
   /** Reason why skill was skipped */
   skipReason?: string;
+  /** Structured code for skip reason */
+  skipCode?: "plugin-provided";
 }
 
 /**
@@ -78,7 +80,7 @@ interface CleanResult {
 interface MultiPlatformStatusResult {
   id: string;
   platform: string;
-  status: "in-sync" | "drifted" | "not-rendered";
+  status: "in-sync" | "drifted" | "not-rendered" | "plugin-provided";
   docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
   warning?: string;
 }
@@ -100,10 +102,18 @@ async function getMultiPlatformSyncStatus(
   // Use the renderer's drift check
   const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, { origin: skill.origin });
 
+  // Core skills on claude-code are plugin-provided, not locally rendered
+  if (driftStatus === "plugin-provided") {
+    return {
+      id: skill.id,
+      platform: renderer.platform,
+      status: "plugin-provided",
+      docsStatus: "no-docs",
+    };
+  }
+
   // Compute the effective output dir for this skill-platform pair
-  const effectiveOutputDir = (skill.origin === "core" && renderer.platform === "claude-code")
-    ? PLUGIN_SKILLS_DIR
-    : renderer.defaultOutputDir;
+  const effectiveOutputDir = renderer.defaultOutputDir;
 
   // Map drift status to sync status
   let status: "in-sync" | "drifted" | "not-rendered";
@@ -318,9 +328,25 @@ export function registerSkillDiffCommands(skill: Command): void {
 
             usedPlatforms.add(platform);
 
-            // Determine output directory — core skills on claude-code use plugin dir
-            const effectiveDir = customOutputDir
-              || (skill.origin === "core" && platform === "claude-code" ? PLUGIN_SKILLS_DIR : renderer.defaultOutputDir);
+            // Core skills on claude-code are plugin-provided, skip local render
+            // But still run migration cleanup for old render paths
+            if (skill.origin === "core" && platform === "claude-code" && !customOutputDir) {
+              if (!dryRun) {
+                await migrateOldPluginPaths(projectRoot, skill.id);
+              }
+              results.push({
+                id: skill.id,
+                platform,
+                action: "skipped",
+                path: "",
+                skipReason: "core skill provided by npm package plugin",
+                skipCode: "plugin-provided",
+              });
+              continue;
+            }
+
+            // Determine output directory
+            const effectiveDir = customOutputDir || renderer.defaultOutputDir;
 
             // Ensure output directory exists
             const targetSkillsDir = path.join(projectRoot, effectiveDir);
@@ -369,6 +395,7 @@ export function registerSkillDiffCommands(skill: Command): void {
               action: result.action,
               path: result.paths[0] || "",
               skipReason: result.skipReason,
+              skipCode: result.skipCode,
             });
           }
         }
@@ -497,14 +524,13 @@ export function registerSkillDiffCommands(skill: Command): void {
               renderer.platform
             );
 
-            // Also clean plugin skills dir for claude-code (core skills)
+            // Core skills on claude-code are now plugin-provided.
+            // Clean old namespaced dirs and legacy plugin-rendered paths.
             if (renderer.platform === "claude-code" && !customOutputDir) {
+              // Clean orphaned legacy plugin-rendered core skills (.claude/plugins/kspec/skills/<id>/)
               const coreActive = coreActiveByPlatform.get(renderer.platform) || new Set();
-              await scanAndClean(
-                path.join(projectRoot, PLUGIN_SKILLS_DIR),
-                coreActive,
-                renderer.platform
-              );
+              const legacyPluginSkillsDir = path.join(projectRoot, ".claude", "plugins", "kspec", "skills");
+              await scanAndClean(legacyPluginSkillsDir, coreActive, renderer.platform);
 
               // Clean old namespaced dirs (.claude/skills/kspec/<id>/) that may remain from PR #440
               const oldNamespaceDir = path.join(projectRoot, renderer.defaultOutputDir, "kspec");
@@ -755,7 +781,9 @@ export function registerSkillDiffCommands(skill: Command): void {
                   ? chalk.green
                   : result.status === "drifted"
                     ? chalk.yellow
-                    : chalk.gray;
+                    : result.status === "plugin-provided"
+                      ? chalk.cyan
+                      : chalk.gray;
 
               const docsStatusColor =
                 result.docsStatus === "in-sync"
@@ -778,6 +806,7 @@ export function registerSkillDiffCommands(skill: Command): void {
             const inSync = statusResults.filter((r) => r.status === "in-sync").length;
             const drifted = statusResults.filter((r) => r.status === "drifted").length;
             const notRendered = statusResults.filter((r) => r.status === "not-rendered").length;
+            const pluginProvided = statusResults.filter((r) => r.status === "plugin-provided").length;
             const warningCount = statusResults.filter((r) => r.warning).length;
 
             console.log();
@@ -787,10 +816,13 @@ export function registerSkillDiffCommands(skill: Command): void {
             if (notRendered > 0) {
               console.log(chalk.gray(`${notRendered} skill(s) not rendered`));
             }
+            if (pluginProvided > 0) {
+              console.log(chalk.cyan(`${pluginProvided} skill(s) plugin-provided`));
+            }
             if (warningCount > 0) {
               console.log(chalk.yellow(`${warningCount} skill(s) with warnings`));
             }
-            if (inSync === statusResults.length) {
+            if (inSync + pluginProvided === statusResults.length) {
               console.log(chalk.green("All skills in sync"));
             }
           }
@@ -835,14 +867,29 @@ export function registerSkillDiffCommands(skill: Command): void {
         const skill = item as LoadedSkill;
         const projectRoot = ctx.rootDir;
 
+        // Core skills on claude-code are plugin-provided
+        if (skill.origin === "core") {
+          output(
+            {
+              id: skill.id,
+              hasDiff: false,
+              diff: [],
+              pluginProvided: true,
+            },
+            () => {
+              console.log(chalk.blue(`${skill.id}: plugin-provided (no local render to diff)`));
+            }
+          );
+          return;
+        }
+
         // Get expected rendered content
         const expectedContent = await getExpectedRenderedContent(ctx, skill);
 
-        // Get actual rendered content — core skills are in plugin dir
-        const baseDir = skill.origin === "core" ? PLUGIN_SKILLS_DIR : ".claude/skills";
+        // Get actual rendered content
         const renderedPath = path.join(
           projectRoot,
-          baseDir,
+          ".claude/skills",
           skill.id,
           "SKILL.md"
         );

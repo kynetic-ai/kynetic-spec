@@ -22,10 +22,12 @@
   "author": "Kynetic AI",
   "scripts": {
     "bootstrap": "node scripts/bootstrap.cjs",
-    "build": "tsc && chmod +x dist/cli/index.js && npm run build:daemon",
+    "build": "tsc && chmod +x dist/cli/index.js && npm run build:daemon && npm run build:plugin",
+    "build:plugin": "node scripts/build-plugin.cjs",
     "build:daemon": "shx rm -rf dist/daemon && shx mkdir -p dist/daemon && shx cp -r packages/daemon/src/* dist/daemon/",
     "dev": "tsx src/cli/index.ts",
     "setup:dev": "npm install && npm run build && npm link",
+    "prepack": "npm run build:plugin",
     "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -68,7 +70,8 @@
   },
   "files": [
     "dist",
-    "templates"
+    "templates",
+    "plugin"
   ],
   "keywords": [
     "specification",
