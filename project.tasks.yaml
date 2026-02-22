@@ -53790,6 +53790,14 @@
         skill. Kept new lean CLI map template at templates/skills/help/SKILL.md for future plugin
         rendering. Task blocked on plugin system migration."
       supersedes: null
+    - _ulid: 01KJ1QEDDWNF72RTPYQCPHD7H0
+      created_at: 2026-02-22T03:49:13.788Z
+      author: "@claude"
+      content: "Completed skill ID rename: kspec-help → help. Manifest updated, template directory renamed
+        (git mv), meta skill entry recreated with new ID, plugin renders to
+        .claude/plugins/kspec/skills/help/. Old monolithic .claude/skills/kspec/SKILL.md removed.
+        kspec-agents.md now shows /kspec:help. All 107 affected tests pass."
+      supersedes: null
   todos: []
 - _ulid: 01KHZHPJK0BFVACX29XWZRJ19R
   slugs: []
