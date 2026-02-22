@@ -54363,7 +54363,7 @@
   spec_ref: "@artifacts-directory"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -54461,6 +54461,12 @@
         Tests added: 6 new tests across shadow.test.ts and doctor.test.ts. All 112+29 pass.
       supersedes: null
   todos: []
+  completed_at: 2026-02-22T18:30:32.817Z
+  closed_reason: "Merged in PR #446. Artifacts directory convention implemented: init/setup/repair
+    create .kspec/artifacts/, doctor health check, .gitignore exclusion, 6 tests. Codex review
+    noted: spec wording re .gitkeep should be updated (intentionally skipped since dir is
+    gitignored), setup hardcodes .kspec path (low-risk), repair doesn't ensure .gitignore for legacy
+    branches."
 - _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
   slugs: []
   title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
