@@ -4758,7 +4758,7 @@ runs:
   - _ulid: 01KJ3A1T2TQ2AV5T8210ZF1DW8
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-22T18:33:38.139Z
     step_results:
@@ -4787,5 +4787,11 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-22T18:34:21.583Z
-        completed_at: 2026-02-22T18:34:21.583Z
+        completed_at: 2026-02-22T18:34:29.438Z
+        notes: "One improvement: capture friction observation about slash commands requiring Skill tool
+          invocation to load SKILL.md context. Prevents wrong flags/delegation patterns."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-22T18:34:29.438Z
+        completed_at: 2026-02-22T18:34:29.438Z
     initiated_by: "@claude"
