@@ -54622,7 +54622,8 @@
   plan_ref: "@plan-interactive-triage-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-triage-record-schema"
   context: []
   priority: 3
   tags: []
@@ -54653,7 +54654,8 @@
   plan_ref: "@plan-interactive-triage-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-triage-record-schema"
   context: []
   priority: 3
   tags: []
@@ -54680,7 +54682,8 @@
   plan_ref: "@plan-interactive-triage-system"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-triage-daemon-api"
   context: []
   priority: 3
   tags: []
@@ -54699,15 +54702,22 @@
         Subscribe to triage:updates WebSocket topic.
         Add fetchTriage, createTriageRecord, updateTriageRecord to api.ts.
   todos: []
-- title: Implement Triage Agent Export
+- _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
+  slugs:
+    - implement-triage-agent-export
+  title: Implement Triage Agent Export
   type: task
   spec_ref: "@triage-agent-export"
   plan_ref: "@plan-interactive-triage-system"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-triage-record-schema"
+  context: []
   priority: 3
-  slugs:
-    - implement-triage-agent-export
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:10.820Z
   notes:
     - _ulid: 01KJ3FXJJ4C37PXQ7074M9R8QS
       created_at: 2026-02-22T20:16:10.820Z
@@ -54719,10 +54729,4 @@
         Context format: markdown template with per-item headers.
         JSON format: raw TriageRecord array.
         Shared by CLI (kspec triage export) and API (GET /api/triage/export).
-  _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-22T20:16:10.820Z
   todos: []
