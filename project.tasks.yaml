@@ -54763,6 +54763,35 @@
       content: "[FIX_CYCLE: 1] Review findings: Reverted submit - task is being handled by ralph loop, not
         this session"
       supersedes: null
+    - _ulid: 01KJ3V419NGM1YF6RF3XADCBBC
+      created_at: 2026-02-22T23:31:56.853Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 2] Addressed all 5 PR review findings:
+
+
+        MUST-FIX resolved:
+
+        1. spec-gap observation: type changed to 'question', content prefixed with [spec-gap]
+        marker. Verified with new test assertion checking observation type and content.
+
+        2. export --json precedence: Wrapped export output in output() function so
+        globalOutputFormat (--json) takes precedence over --format option.
+
+        3. Trait AC coverage: Added 17 new tests covering @trait-filterable-list (ac-3,5,6),
+        @trait-dry-run (ac-2,3,5), @trait-semantic-exit-codes (ac-1,2,5), @trait-error-guidance
+        (ac-2,4,5,6), @trait-shadow-commit (ac-5). Updated annotations on existing tests.
+
+
+        SHOULD-FIX resolved:
+
+        4. ac-10 test annotation clarified as partial (EOF preservation, not SIGINT).
+
+        5. triage list summary now uses post-filter count for accurate 'X of Y' display.
+
+
+        52 tests passing. Full suite green (2 pre-existing failures unrelated).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ3FXJ0DMK8EV8MW00D5PPCS
