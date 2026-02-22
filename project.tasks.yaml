@@ -54436,6 +54436,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-02-22T16:21:21.857Z
+  started_at: 2026-02-22T16:44:02.493Z
   notes:
     - _ulid: 01KJ32G0SA5R029XAKHQSBN9V2
       created_at: 2026-02-22T16:21:35.146Z
@@ -54487,5 +54488,12 @@
 
         - PR #444 shipped the plugin system but missed marketplace.json requirement
       supersedes: null
+    - _ulid: 01KJ34AP3V2JACQ9Z0NHS7FSFK
+      created_at: 2026-02-22T16:53:37.531Z
+      author: "@claude"
+      content: "Added marketplace.json generation to build-plugin.cjs. Fixed MarketplaceEntry type (source
+        was string, now object). Updated test assertion from 'local' to directory source object.
+        Added ac-6 to @package-distribution for marketplace.json coverage. Pre-existing failures:
+        daemon-executable compilation and doctor daemon checks (unrelated)."
+      supersedes: null
   todos: []
-  started_at: 2026-02-22T16:44:02.493Z
