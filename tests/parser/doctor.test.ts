@@ -127,6 +127,42 @@ describe("Doctor Command", () => {
     });
   });
 
+  describe("ac-artifacts-directory", () => {
+    // AC: @artifacts-directory ac-doctor-checks
+    it("shows artifacts directory as ok when it exists", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      const report = await getDoctorReport(tempDir);
+
+      const artifactsCheck = report.shadow.checks.find(
+        (c) => c.name === "artifacts-dir"
+      );
+      expect(artifactsCheck).toBeDefined();
+      expect(artifactsCheck!.severity).toBe("ok");
+      expect(artifactsCheck!.message).toContain("exists");
+    });
+
+    // AC: @artifacts-directory ac-doctor-checks
+    it("shows warning when artifacts directory is missing", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+
+      // Remove artifacts directory
+      const artifactsDir = path.join(tempDir, ".kspec", "artifacts");
+      await fs.rm(artifactsDir, { recursive: true, force: true });
+
+      const report = await getDoctorReport(tempDir);
+
+      const artifactsCheck = report.shadow.checks.find(
+        (c) => c.name === "artifacts-dir"
+      );
+      expect(artifactsCheck).toBeDefined();
+      expect(artifactsCheck!.severity).toBe("warning");
+      expect(artifactsCheck!.guidance).toContain("kspec setup");
+    });
+  });
+
   describe("ac-setup-agent-hooks", () => {
     // AC: @doctor-command ac-setup-agent-hooks
     it("shows agent type in setup section", async () => {

@@ -52,6 +52,7 @@ export interface ShadowStatus {
   branchExists: boolean;
   worktreeExists: boolean;
   worktreeLinked: boolean;
+  artifactsDirExists: boolean;
   error?: string;
 }
 
@@ -371,6 +372,7 @@ export async function getShadowStatus(
     branchExists: false,
     worktreeExists: false,
     worktreeLinked: false,
+    artifactsDirExists: false,
   };
 
   // Check if we're in a git repo
@@ -393,6 +395,14 @@ export async function getShadowStatus(
   // Check if worktree is properly linked
   if (status.worktreeExists) {
     status.worktreeLinked = await isValidWorktree(worktreeDir);
+
+    // AC: @artifacts-directory ac-doctor-checks
+    try {
+      await fs.access(path.join(worktreeDir, "artifacts"));
+      status.artifactsDirExists = true;
+    } catch {
+      status.artifactsDirExists = false;
+    }
   }
 
   // Determine overall status
@@ -1703,6 +1713,16 @@ export async function initializeShadow(
       );
       await fs.writeFile(tasksPath, generateShadowTasks(projectName), "utf-8");
       await fs.writeFile(inboxPath, generateShadowInbox(), "utf-8");
+
+      // AC: @artifacts-directory ac-init-creates, ac-gitignore-entry
+      const artifactsDir = path.join(worktreeDir, "artifacts");
+      await fs.mkdir(artifactsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(worktreeDir, ".gitignore"),
+        "# Ephemeral artifacts - reports, exports, generated files\n# Not tracked in shadow branch\nartifacts/\n",
+        "utf-8",
+      );
+
       filesCreated = true;
     }
 
@@ -1811,6 +1831,10 @@ export async function repairShadow(
 
     // Install pre-commit hook
     await installShadowHook(projectRoot);
+
+    // AC: @artifacts-directory ac-repair-recreates
+    const artifactsDir = path.join(worktreeDir, "artifacts");
+    await fs.mkdir(artifactsDir, { recursive: true });
 
     return {
       success: true,
