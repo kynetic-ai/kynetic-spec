@@ -4758,7 +4758,7 @@ runs:
   - _ulid: 01KJ3A1T2TQ2AV5T8210ZF1DW8
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-22T18:33:38.139Z
     step_results:
@@ -4793,5 +4793,11 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-22T18:34:29.438Z
-        completed_at: 2026-02-22T18:34:29.438Z
+        completed_at: 2026-02-22T18:36:01.827Z
+        notes: "User feedback: slash command → Skill tool invocation is a Claude Code harness behavior, not
+          actionable from kspec side. Nothing to capture."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-22T18:36:01.827Z
+        completed_at: 2026-02-22T18:36:01.827Z
     initiated_by: "@claude"
