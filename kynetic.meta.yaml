@@ -6148,6 +6148,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ1RW3898SCWYZN358637199
+    type: friction
+    content: "Meta vs manifest confusion: skill render reads from meta (shadow branch), not template
+      manifest. Changing manifest ID without updating meta has no effect. Need to delete+re-add
+      skill via CLI."
+    created_at: 2026-02-22T04:14:10.697Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill

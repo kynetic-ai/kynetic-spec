@@ -823,3 +823,11 @@ inbox:
       - agents
       - bug
     added_by: "@claude"
+  - _ulid: 01KJ1RW37A4V1TV1KZK33YS46N
+    text: "CLI gap: kspec skill set should support --id to rename a skill without delete+recreate"
+    created_at: 2026-02-22T04:14:10.666Z
+    tags:
+      - cli
+      - skill
+      - friction
+    added_by: "@claude"
