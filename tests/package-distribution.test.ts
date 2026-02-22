@@ -143,18 +143,44 @@ describe('Package Distribution', () => {
       expect(pluginJson.description).toBeTruthy();
     });
 
-    it('plugin/skills/ contains SKILL.md for each core skill', async () => {
+    it('plugin/plugins/kspec/skills/ contains SKILL.md for each core skill', async () => {
       // Read manifest to know which skills should exist
       const yaml = await import('yaml');
       const manifestPath = path.join(PACKAGE_ROOT, 'templates', 'skills', 'manifest.yaml');
       const manifest = yaml.parse(await fs.readFile(manifestPath, 'utf-8'));
 
       for (const skill of manifest.skills) {
-        const skillMdPath = path.join(PACKAGE_ROOT, 'plugin', 'skills', skill.id, 'SKILL.md');
+        const skillMdPath = path.join(PACKAGE_ROOT, 'plugin', 'plugins', 'kspec', 'skills', skill.id, 'SKILL.md');
         const content = await fs.readFile(skillMdPath, 'utf-8');
         expect(content).toContain('---');
         expect(content).toContain('<!-- kspec-managed -->');
       }
+    });
+  });
+
+  // AC: @package-distribution ac-6
+  describe('plugin/.claude-plugin/marketplace.json is valid', () => {
+    it('marketplace.json exists with valid schema and kspec plugin entry', async () => {
+      const marketplacePath = path.join(PACKAGE_ROOT, 'plugin', '.claude-plugin', 'marketplace.json');
+      const content = await fs.readFile(marketplacePath, 'utf-8');
+      const marketplace = JSON.parse(content);
+
+      expect(marketplace.name).toBe('kspec-plugins');
+      expect(marketplace.description).toBeTruthy();
+      expect(marketplace.owner).toBeDefined();
+      expect(Array.isArray(marketplace.plugins)).toBe(true);
+      expect(marketplace.plugins.length).toBeGreaterThan(0);
+
+      // Verify kspec plugin entry
+      const kspecPlugin = marketplace.plugins.find((p: { name: string }) => p.name === 'kspec');
+      expect(kspecPlugin).toBeDefined();
+      expect(kspecPlugin.source).toMatch(/^\.\//); // relative path starting with ./
+      expect(kspecPlugin.version).toBeTruthy();
+
+      // Version should match package.json
+      const packageJsonPath = path.join(PACKAGE_ROOT, 'package.json');
+      const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
+      expect(kspecPlugin.version).toBe(pkg.version);
     });
   });
 });

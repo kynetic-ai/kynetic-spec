@@ -4,7 +4,7 @@
  * Reads the skill manifest and package.json, then generates:
  * - plugin/.claude-plugin/plugin.json (with version from package.json)
  * - plugin/.claude-plugin/marketplace.json (marketplace listing for directory source)
- * - plugin/skills/<id>/SKILL.md (with YAML frontmatter prepended)
+ * - plugin/plugins/kspec/skills/<id>/SKILL.md (with YAML frontmatter prepended)
  *
  * Clean-rebuild: removes plugin/ first to prune stale skills.
  */
