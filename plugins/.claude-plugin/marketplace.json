@@ -1,0 +1,13 @@
+{
+  "name": "kspec-plugins",
+  "owner": {
+    "name": "kspec"
+  },
+  "plugins": [
+    {
+      "name": "kspec",
+      "source": "./kspec",
+      "description": "kspec agent skills"
+    }
+  ]
+}
