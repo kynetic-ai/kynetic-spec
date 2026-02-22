@@ -4711,7 +4711,7 @@ runs:
   - _ulid: 01KJ32V785K92KWYJ78PSVW7FB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-22T16:27:42.214Z
     step_results:
@@ -4724,5 +4724,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-22T16:27:55.805Z
-        completed_at: 2026-02-22T16:27:55.805Z
+        completed_at: 2026-02-22T16:28:12.694Z
+        notes: "Friction: (1) no triage persistence - already task 01KJ315W, (2) no artifacts dir - already
+          task 01KJ316F, (3) batch silent failures - no error detail on bad JSON, (4) checkpoint
+          hook noise for intentional uncommitted files, (5) plugin marketplace schema undocumented,
+          (6) task add vs inbox add positional arg inconsistency"
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-22T16:28:12.694Z
+        completed_at: 2026-02-22T16:28:12.694Z
     initiated_by: "@claude"
