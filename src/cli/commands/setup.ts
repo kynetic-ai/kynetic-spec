@@ -1543,7 +1543,7 @@ export async function runSetupPipeline(
       let artifactsCreated = false;
       try {
         await fs.access(artifactsDir);
-      } catch {
+      } catch (_e) {
         if (!dryRun) {
           await fs.mkdir(artifactsDir, { recursive: true });
         }
