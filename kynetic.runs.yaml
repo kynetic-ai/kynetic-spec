@@ -4711,7 +4711,7 @@ runs:
   - _ulid: 01KJ32V785K92KWYJ78PSVW7FB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-22T16:27:42.214Z
     step_results:
@@ -4732,5 +4732,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-22T16:28:12.694Z
-        completed_at: 2026-02-22T16:28:12.694Z
+        completed_at: 2026-02-22T16:28:40.780Z
+        notes: Searched all sources. 3 already tracked (01KJ315W, 01KJ316F, 01KJ32FK). 2 partially covered
+          (batch silent failures, checkpoint noise). 1 untracked (task add positional arg
+          inconsistency).
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-22T16:28:40.780Z
+        completed_at: 2026-02-22T16:28:40.780Z
     initiated_by: "@claude"
