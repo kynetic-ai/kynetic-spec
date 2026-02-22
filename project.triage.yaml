@@ -25,3 +25,13 @@ triage:
     evidence_refs: []
     created_at: 2026-02-22T23:17:36.536Z
     updated_at: 2026-02-22T23:17:36.537Z
+  - _ulid: 01KJ3T9VXRARPYJDJDCWTJQAMY
+    inbox_ref: 01KJ3T9TKZDCK7HSEEH6BJQ6KD
+    item_snapshot: Spec gap test
+    status: triaged
+    action: spec-gap
+    reasoning: needs spec
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-22T23:17:39.384Z
+    updated_at: 2026-02-22T23:17:39.386Z
