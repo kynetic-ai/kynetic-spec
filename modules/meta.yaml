@@ -3003,9 +3003,8 @@ modules:
           - id: ac-7
             given: a core skill with origin core on the claude-code platform
             when: kspec skill render is run
-            then: the skill is rendered to .claude/plugins/kspec/skills/<id>/SKILL.md (Claude Code plugin
-              directory) and a plugin manifest is created at
-              .claude/plugins/kspec/.claude-plugin/plugin.json
+            then: the skill render returns action skipped with skipReason plugin-provided because core skills
+              are shipped in the npm package plugin directory
         depends_on: []
         implements: []
         relates_to: []
@@ -3551,8 +3550,9 @@ modules:
             then: all hook entries (UserPromptSubmit, Stop, PreToolUse) are present
           - id: ac-3
             given: kspec setup completes with skills in meta
-            when: .claude/skills/ is inspected
-            then: rendered skill files exist for each skill targeting claude-code
+            when: skill availability is inspected
+            then: rendered skill files exist for project/local skills targeting claude-code and core skills are
+              available via marketplace registration
           - id: ac-4
             given: kspec setup completes
             when: the project root is inspected
@@ -3568,11 +3568,13 @@ modules:
           - id: ac-7
             given: --status flag is provided
             when: kspec setup is run
-            then: current state is reported including agent detected
+            then: current state is reported including agent detected and plugin marketplace status
+              (marketplaceRegistered, marketplaceHealthy, pluginEnabled)
           - id: ac-8
-            given: --status flag is provided
+            given: --status flag is provided with a broken marketplace path
             when: output is inspected
-            then: hooks status, skills rendered count, and agents.md freshness are shown
+            then: hooks status, skills rendered count, agents.md freshness, and plugin health (including
+              path-broken detection) are shown
           - id: ac-9
             given: kspec setup completes in a project configured for ralph loop mode
             when: the installed skills are checked
@@ -3658,6 +3660,19 @@ modules:
                 given: install-core completes
                 when: the installed skills are checked
                 then: each has version matching the installed kspec package version
+              - id: ac-6
+                given: kspec skill install-core is run
+                when: installation completes on claude-code platform
+                then: a kspec-plugins marketplace entry is registered in ~/.claude/plugins/known_marketplaces.json
+                  with the absolute path to the npm package plugin directory
+              - id: ac-7
+                given: kspec skill install-core is run
+                when: installation completes on claude-code platform
+                then: kspec@kspec-plugins is enabled in the project .claude/settings.json enabledPlugins
+              - id: ac-8
+                given: kspec skill install-core is run twice with no path changes
+                when: marketplace registration is checked
+                then: the registration is idempotent and lastUpdated is not changed
             depends_on: []
             implements: []
             relates_to: []
@@ -3727,6 +3742,11 @@ modules:
                 given: npm pack is run
                 when: the package hooks/ contents are inspected
                 then: the pre-commit hook source file is included in the package
+              - id: ac-5
+                given: npm pack is run
+                when: the package contents are inspected
+                then: a plugin/ directory is included containing .claude-plugin/plugin.json with version matching
+                  package.json and skills/<id>/SKILL.md with YAML frontmatter for each core skill
             depends_on: []
             implements: []
             relates_to: []
@@ -3758,7 +3778,8 @@ modules:
               - id: ac-3
                 given: kspec init --setup finishes
                 when: the project is inspected
-                then: rendered skill files, hooks, and kspec-agents.md are all present
+                then: rendered skill files for project/local skills, hooks, kspec-agents.md are present and core
+                  skill availability is verified via marketplace registration
               - id: ac-4
                 given: kspec init is run without --setup
                 when: initialization completes
