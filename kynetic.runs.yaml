@@ -4808,7 +4808,7 @@ runs:
   - _ulid: 01KJ3V4VY9VNHQKFHSW1TVTNJA
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-22T23:32:24.138Z
     step_results:
@@ -4822,5 +4822,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-22T23:32:46.975Z
-        completed_at: 2026-02-22T23:32:46.975Z
+        completed_at: 2026-02-22T23:32:55.407Z
+        notes: "Two friction patterns identified but both already tracked: (1) stale dist/ builds causing
+          test failures - tracked in observation 01KFXVK5, (2) extensive trait AC test requirements
+          - tracked in spec @trait-validation. One success pattern: fix cycle efficiency with
+          parallel reading of all review comments before starting fixes. Already a natural workflow
+          pattern, not worth capturing separately."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-22T23:32:55.407Z
+        completed_at: 2026-02-22T23:32:55.407Z
     initiated_by: "@claude"
