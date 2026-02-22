@@ -54217,4 +54217,41 @@
         Code does not discover nested skill dirs. Plugin migration must clean up the merged PR #440
         output structure too, not just the attempted help skill rename."
       supersedes: null
+    - _ulid: 01KJ1C8WW2YPZGCTMFE3ZKVDMD
+      created_at: 2026-02-22T00:33:58.658Z
+      author: "@claude"
+      content: >-
+        Implementation complete. All code changes done and verified:
+
+
+        1. **skill-render.ts**: Added PLUGIN_DIR/PLUGIN_SKILLS_DIR constants. getSkillSubdir()
+        returns just skillId for core+claude-code (plugin provides namespace), kspec-<id> for
+        core+codex. getRenderedSkillPath() routes core→plugin dir. claudeCodeRenderer renders core
+        to plugin dir, cleans 3 old path formats, generates plugin manifest. codexRenderer uses
+        kspec-<id> subdir. Both drift checkers updated.
+
+
+        2. **agent-data-sections.ts**: Core skills invoked as /kspec:<id>, project as /<id>.
+
+
+        3. **validate-skills.ts**: Scans .claude/plugins/*/skills/ for SKILL.md files.
+
+
+        4. **setup-status.ts & setup.ts**: Both scan plugin dirs for skill counts.
+
+
+        5. **skill-diff.ts**: Status/diff/clean all use correct paths. Clean scans plugin dir +
+        migrates old .claude/skills/kspec/ remnants.
+
+
+        6. **Tests**: core-skill-namespace (15 tests), supporting-files-convention (12),
+        agent-data-sections (28) — all pass. 159 related tests pass total.
+
+
+        7. **Spec**: @skill-rendering ac-7 updated to reference plugin path.
+
+
+        8. **Verified**: kspec skill render/status/clean/validate all work correctly.
+        kspec-agents.md shows /kspec:kspec-help.
+      supersedes: null
   todos: []
