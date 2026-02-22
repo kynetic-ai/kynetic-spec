@@ -3746,7 +3746,8 @@ modules:
                 given: npm pack is run
                 when: the package contents are inspected
                 then: a plugin/ directory is included containing .claude-plugin/plugin.json with version matching
-                  package.json and skills/<id>/SKILL.md with YAML frontmatter for each core skill
+                  package.json and plugins/kspec/skills/<id>/SKILL.md with YAML frontmatter for each
+                  core skill
               - id: ac-6
                 given: npm run build:plugin is run
                 when: the plugin/.claude-plugin/ directory is inspected
