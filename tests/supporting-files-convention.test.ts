@@ -279,9 +279,9 @@ describe('Supporting Files Convention', () => {
       expect(result.supportingDirsAction?.scripts).toBe('created');
       expect(result.supportingDirsAction?.assets).toBe('created');
 
-      // Verify files were copied (core skills render under kspec/ namespace)
-      const targetScriptsPath = path.join(tempDir, '.claude', 'skills', 'kspec', skillId, 'scripts', 'build.sh');
-      const targetAssetsPath = path.join(tempDir, '.claude', 'skills', 'kspec', skillId, 'assets', 'data.json');
+      // Verify files were copied (core skills render to plugin dir)
+      const targetScriptsPath = path.join(tempDir, '.claude', 'plugins', 'kspec', 'skills', skillId, 'scripts', 'build.sh');
+      const targetAssetsPath = path.join(tempDir, '.claude', 'plugins', 'kspec', 'skills', skillId, 'assets', 'data.json');
 
       const scriptsContent = await fs.readFile(targetScriptsPath, 'utf-8');
       const assetsContent = await fs.readFile(targetAssetsPath, 'utf-8');
@@ -327,8 +327,8 @@ describe('Supporting Files Convention', () => {
 
       expect(result.supportingDirsAction?.docs).toBe('created');
 
-      // Verify docs were copied (core skills render under kspec/ namespace)
-      const targetDocsPath = path.join(tempDir, '.claude', 'skills', 'kspec', skillId, 'docs', 'guide.md');
+      // Verify docs were copied (core skills render to plugin dir)
+      const targetDocsPath = path.join(tempDir, '.claude', 'plugins', 'kspec', 'skills', skillId, 'docs', 'guide.md');
       const content = await fs.readFile(targetDocsPath, 'utf-8');
       expect(content).toContain('# Guide');
     });

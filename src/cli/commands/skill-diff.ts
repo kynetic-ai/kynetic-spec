@@ -33,6 +33,7 @@ import {
   getSkillSubdir,
   contentsEqual,
   directoriesEqual,
+  PLUGIN_SKILLS_DIR,
   type PlatformRenderer,
   type DriftStatus,
 } from "../../parser/skill-render.js";
@@ -99,6 +100,11 @@ async function getMultiPlatformSyncStatus(
   // Use the renderer's drift check
   const driftStatus = await renderer.checkDrift(ctx.specDir, projectRoot, skill.id, { origin: skill.origin });
 
+  // Compute the effective output dir for this skill-platform pair
+  const effectiveOutputDir = (skill.origin === "core" && renderer.platform === "claude-code")
+    ? PLUGIN_SKILLS_DIR
+    : renderer.defaultOutputDir;
+
   // Map drift status to sync status
   let status: "in-sync" | "drifted" | "not-rendered";
   switch (driftStatus) {
@@ -115,7 +121,7 @@ async function getMultiPlatformSyncStatus(
       // No hash stored - need to check if content matches expected
       const renderedPath = path.join(
         projectRoot,
-        renderer.defaultOutputDir,
+        effectiveOutputDir,
         getSkillSubdir(skill.id, skill.origin, renderer.platform),
         "SKILL.md"
       );
@@ -132,7 +138,7 @@ async function getMultiPlatformSyncStatus(
   // Check docs status for this platform
   const sourceDocsDir = path.join(ctx.specDir, "skills", skill.id, "docs");
   const targetDocsDir = path.join(
-    projectRoot, renderer.defaultOutputDir,
+    projectRoot, effectiveOutputDir,
     getSkillSubdir(skill.id, skill.origin, renderer.platform), "docs"
   );
   let docsStatus: "in-sync" | "drifted" | "not-rendered" | "no-docs" = "no-docs";
@@ -312,11 +318,12 @@ export function registerSkillDiffCommands(skill: Command): void {
 
             usedPlatforms.add(platform);
 
-            // Determine output directory
-            const outputDir = customOutputDir || renderer.defaultOutputDir;
+            // Determine output directory — core skills on claude-code use plugin dir
+            const effectiveDir = customOutputDir
+              || (skill.origin === "core" && platform === "claude-code" ? PLUGIN_SKILLS_DIR : renderer.defaultOutputDir);
 
             // Ensure output directory exists
-            const targetSkillsDir = path.join(projectRoot, outputDir);
+            const targetSkillsDir = path.join(projectRoot, effectiveDir);
             if (!dryRun) {
               await fs.mkdir(targetSkillsDir, { recursive: true });
             }
@@ -334,7 +341,7 @@ export function registerSkillDiffCommands(skill: Command): void {
             if (driftStatus === "drifted" && !force) {
               const renderedPath = path.join(
                 projectRoot,
-                outputDir,
+                effectiveDir,
                 getSkillSubdir(skill.id, skill.origin, platform),
                 "SKILL.md"
               );
@@ -429,13 +436,12 @@ export function registerSkillDiffCommands(skill: Command): void {
             }
           }
 
-          // Clean each platform's output directory
-          const renderers = getAllRenderers();
-          for (const renderer of renderers) {
-            const outputDir = customOutputDir || renderer.defaultOutputDir;
-            const targetSkillsDir = path.join(projectRoot, outputDir);
-            const activeSubdirs = activeSubdirsByPlatform.get(renderer.platform) || new Set();
-
+          // Helper to scan and clean orphaned skills in a directory
+          async function scanAndClean(
+            targetSkillsDir: string,
+            activeSubdirs: Set<string>,
+            platform: string
+          ): Promise<void> {
             try {
               const entries = await fs.readdir(targetSkillsDir, {
                 withFileTypes: true,
@@ -446,32 +452,115 @@ export function registerSkillDiffCommands(skill: Command): void {
 
                 const skillDir = path.join(targetSkillsDir, entry.name);
 
-                // Check subdirectories for namespaced skills (e.g., kspec/<id>/)
-                let hasNestedSkills = false;
-                try {
-                  const subEntries = await fs.readdir(skillDir, { withFileTypes: true });
-                  for (const subEntry of subEntries) {
-                    if (!subEntry.isDirectory()) continue;
-                    const nestedDir = path.join(skillDir, subEntry.name);
-                    const nestedHasSkillMd = await fs.access(path.join(nestedDir, "SKILL.md")).then(() => true, () => false);
-                    if (nestedHasSkillMd) {
-                      hasNestedSkills = true;
-                      const subdir = path.join(entry.name, subEntry.name);
-                      await cleanSkillDir(subEntry.name, nestedDir, activeSubdirs, subdir, renderer.platform);
-                    }
-                  }
-                } catch (_notReadable) {
-                  // Not a readable directory
-                }
-
-                // Check top-level skill (after nested scan so we know if nested skills exist)
+                // Check for SKILL.md in this directory
                 const hasSkillMd = await fs.access(path.join(skillDir, "SKILL.md")).then(() => true, () => false);
                 if (hasSkillMd) {
-                  await cleanSkillDir(entry.name, skillDir, activeSubdirs, entry.name, renderer.platform, hasNestedSkills);
+                  await cleanSkillDir(entry.name, skillDir, activeSubdirs, entry.name, platform);
                 }
               }
             } catch {
               // Output directory doesn't exist, nothing to clean
+            }
+          }
+
+          // Build separate active sets for default dir vs plugin dir
+          // Core skills on claude-code are active in plugin dir, NOT in .claude/skills/
+          const nonCoreActiveByPlatform = new Map<string, Set<string>>();
+          const coreActiveByPlatform = new Map<string, Set<string>>();
+          for (const skill of metaCtx.skills) {
+            for (const platform of skill.platforms) {
+              if (skill.origin === "core" && platform === "claude-code") {
+                if (!coreActiveByPlatform.has(platform)) {
+                  coreActiveByPlatform.set(platform, new Set());
+                }
+                coreActiveByPlatform.get(platform)!.add(skill.id);
+              } else {
+                if (!nonCoreActiveByPlatform.has(platform)) {
+                  nonCoreActiveByPlatform.set(platform, new Set());
+                }
+                nonCoreActiveByPlatform.get(platform)!.add(
+                  getSkillSubdir(skill.id, skill.origin, platform)
+                );
+              }
+            }
+          }
+
+          // Clean each platform's output directory
+          const renderers = getAllRenderers();
+          for (const renderer of renderers) {
+            // Clean platform default directory (project/local skills only)
+            const nonCoreActive = nonCoreActiveByPlatform.get(renderer.platform) || new Set();
+            const outputDir = customOutputDir || renderer.defaultOutputDir;
+            await scanAndClean(
+              path.join(projectRoot, outputDir),
+              nonCoreActive,
+              renderer.platform
+            );
+
+            // Also clean plugin skills dir for claude-code (core skills)
+            if (renderer.platform === "claude-code" && !customOutputDir) {
+              const coreActive = coreActiveByPlatform.get(renderer.platform) || new Set();
+              await scanAndClean(
+                path.join(projectRoot, PLUGIN_SKILLS_DIR),
+                coreActive,
+                renderer.platform
+              );
+
+              // Clean old namespaced dirs (.claude/skills/kspec/<id>/) that may remain from PR #440
+              const oldNamespaceDir = path.join(projectRoot, renderer.defaultOutputDir, "kspec");
+              try {
+                const entries = await fs.readdir(oldNamespaceDir, { withFileTypes: true });
+                for (const entry of entries) {
+                  if (!entry.isDirectory()) {
+                    // Handle orphaned SKILL.md at namespace root
+                    if (entry.name === "SKILL.md") {
+                      const skillMdPath = path.join(oldNamespaceDir, "SKILL.md");
+                      const isManaged = await isKspecManaged(skillMdPath);
+                      if (isManaged && !dryRun) {
+                        await fs.rm(skillMdPath, { force: true });
+                      }
+                      if (isManaged) {
+                        cleanResults.push({
+                          id: "kspec",
+                          path: skillMdPath,
+                          action: "removed",
+                          platform: renderer.platform,
+                        });
+                      }
+                    }
+                    continue;
+                  }
+                  const nestedDir = path.join(oldNamespaceDir, entry.name);
+                  const nestedHasSkillMd = await fs.access(path.join(nestedDir, "SKILL.md")).then(() => true, () => false);
+                  if (nestedHasSkillMd) {
+                    const isManaged = await isKspecManaged(path.join(nestedDir, "SKILL.md"));
+                    if (isManaged) {
+                      if (!dryRun) {
+                        await fs.rm(nestedDir, { recursive: true, force: true });
+                      }
+                      cleanResults.push({
+                        id: entry.name,
+                        path: nestedDir,
+                        action: "removed",
+                        platform: renderer.platform,
+                      });
+                    }
+                  }
+                }
+                // Clean up empty kspec dir
+                if (!dryRun) {
+                  try {
+                    const remaining = await fs.readdir(oldNamespaceDir);
+                    if (remaining.length === 0) {
+                      await fs.rm(oldNamespaceDir, { recursive: true, force: true });
+                    }
+                  } catch {
+                    // Already removed or doesn't exist
+                  }
+                }
+              } catch {
+                // Old namespace dir doesn't exist
+              }
             }
           }
         }
@@ -749,13 +838,12 @@ export function registerSkillDiffCommands(skill: Command): void {
         // Get expected rendered content
         const expectedContent = await getExpectedRenderedContent(ctx, skill);
 
-        // Get actual rendered content — core skills are namespaced under kspec/
-        const skillSubdir = getClaudeCodeSkillSubdir(skill);
+        // Get actual rendered content — core skills are in plugin dir
+        const baseDir = skill.origin === "core" ? PLUGIN_SKILLS_DIR : ".claude/skills";
         const renderedPath = path.join(
           projectRoot,
-          ".claude",
-          "skills",
-          skillSubdir,
+          baseDir,
+          skill.id,
           "SKILL.md"
         );
 

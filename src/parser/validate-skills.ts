@@ -32,56 +32,42 @@ export interface SkillValidationResult {
 }
 
 /**
- * Find all SKILL.md files in .claude/skills/
+ * Scan a directory for SKILL.md files in immediate subdirectories.
  */
-export async function findSkillFiles(baseDir: string): Promise<string[]> {
-  const skillsDir = path.join(baseDir, ".claude", "skills");
-
-  try {
-    await fs.access(skillsDir);
-  } catch {
-    return []; // .claude/skills doesn't exist
-  }
-
-  const entries = await fs.readdir(skillsDir, { withFileTypes: true });
+async function scanSkillDir(dir: string): Promise<string[]> {
   const skillFiles: string[] = [];
-
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const dirPath = path.join(skillsDir, entry.name);
-
-      // Check for SKILL.md at current level
-      const skillFile = path.join(dirPath, "SKILL.md");
-      try {
-        await fs.access(skillFile);
-        skillFiles.push(skillFile);
-      } catch {
-        // No SKILL.md at this level
-      }
-
-      // Also check subdirectories for namespaced skills (e.g., kspec/<id>/SKILL.md)
-      try {
-        const subEntries = await fs.readdir(dirPath, { withFileTypes: true });
-        for (const subEntry of subEntries) {
-          if (subEntry.isDirectory()) {
-            const nestedSkillFile = path.join(
-              dirPath,
-              subEntry.name,
-              "SKILL.md"
-            );
-            try {
-              await fs.access(nestedSkillFile);
-              skillFiles.push(nestedSkillFile);
-            } catch {
-              // No SKILL.md in nested directory
-            }
-          }
+  try {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        const skillFile = path.join(dir, entry.name, "SKILL.md");
+        try {
+          await fs.access(skillFile);
+          skillFiles.push(skillFile);
+        } catch {
+          // No SKILL.md in this directory
         }
-      } catch {
-        // Not a readable directory
       }
     }
+  } catch {
+    // Directory doesn't exist or not readable
   }
+  return skillFiles;
+}
+
+/**
+ * Find all SKILL.md files in .claude/skills/ and plugin skill directories.
+ */
+export async function findSkillFiles(baseDir: string): Promise<string[]> {
+  const skillFiles: string[] = [];
+
+  // Scan .claude/skills/ (project/local skills)
+  const skillsDir = path.join(baseDir, ".claude", "skills");
+  skillFiles.push(...await scanSkillDir(skillsDir));
+
+  // Scan .claude/plugins/kspec/skills/ (kspec plugin skills only)
+  const kspecPluginSkillsDir = path.join(baseDir, ".claude", "plugins", "kspec", "skills");
+  skillFiles.push(...await scanSkillDir(kspecPluginSkillsDir));
 
   return skillFiles;
 }
@@ -180,9 +166,16 @@ export async function validateSkillFile(
   filePath: string,
 ): Promise<SkillValidationError[]> {
   const errors: SkillValidationError[] = [];
-  const relativePath = filePath.includes(".claude/skills/")
-    ? filePath.split(".claude/skills/")[1]
-    : path.basename(filePath);
+  let relativePath: string;
+  if (filePath.includes(".claude/plugins/")) {
+    // Plugin skills: extract from .claude/plugins/<name>/skills/<id>/SKILL.md
+    const match = filePath.match(/\.claude\/plugins\/(.+)/);
+    relativePath = match ? match[1] : path.basename(filePath);
+  } else if (filePath.includes(".claude/skills/")) {
+    relativePath = filePath.split(".claude/skills/")[1];
+  } else {
+    relativePath = path.basename(filePath);
+  }
 
   try {
     const content = await fs.readFile(filePath, "utf-8");
