@@ -908,3 +908,23 @@ inbox:
     created_at: 2026-02-22T17:12:10.776Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ3QN15VJWAAMPTYT3K06XK3
+    text: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
+      01KJ3N2N8V38823H87PG09V7XR, the worker agent invoked /codex review #448 (per focus
+      instructions). The codex agent (gpt-5.3-codex, danger-full-access sandbox) ran a 'CLI
+      spot-check' that accidentally started a kspec ralph process, then ran pkill -f 'kspec ralph'
+      to clean it up — which killed the actual ralph loop process hosting it. Codex session
+      rollout-2026-02-22T14-02-07 completed normally (703k tokens, clean exit) while ralph died
+      mid-tool-call (session stuck at active, no session.end event, last event seq 963 was the codex
+      exec Bash call). Fix: add context to the codex skill prompt when invoked inside ralph (e.g.
+      'You are running inside a kspec ralph loop. NEVER start kspec ralph, kspec serve, or use
+      pkill/kill on kspec processes.'). Could detect ralph context via KSPEC_SESSION_ID env var or
+      similar. Alternative: restrict sandbox mode when codex is called from ralph. See codex skill
+      at .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
+    created_at: 2026-02-22T22:31:19.483Z
+    tags:
+      - codex
+      - ralph
+      - prompt
+      - safety
+    added_by: "@claude"
