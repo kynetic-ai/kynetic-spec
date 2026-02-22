@@ -524,9 +524,14 @@ export function registerSkillDiffCommands(skill: Command): void {
               renderer.platform
             );
 
-            // Core skills on claude-code are now plugin-provided; skip plugin dir scan.
-            // Only clean old namespaced dirs.
+            // Core skills on claude-code are now plugin-provided.
+            // Clean old namespaced dirs and legacy plugin-rendered paths.
             if (renderer.platform === "claude-code" && !customOutputDir) {
+              // Clean orphaned legacy plugin-rendered core skills (.claude/plugins/kspec/skills/<id>/)
+              const coreActive = coreActiveByPlatform.get(renderer.platform) || new Set();
+              const legacyPluginSkillsDir = path.join(projectRoot, ".claude", "plugins", "kspec", "skills");
+              await scanAndClean(legacyPluginSkillsDir, coreActive, renderer.platform);
+
               // Clean old namespaced dirs (.claude/skills/kspec/<id>/) that may remain from PR #440
               const oldNamespaceDir = path.join(projectRoot, renderer.defaultOutputDir, "kspec");
               try {

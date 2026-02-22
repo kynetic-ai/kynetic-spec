@@ -992,7 +992,7 @@ export const claudeCodeRenderer: PlatformRenderer = {
 
     // AC: @skill-rendering ac-7 - Core skills are provided by the npm package plugin
     // directory. Skip local rendering; migration cleanup is handled separately.
-    if (skill.origin === "core") {
+    if (skill.origin === "core" && !options.outputDir) {
       // Run migration cleanup for old paths
       if (!dryRun) {
         await migrateOldPluginPaths(projectRoot, skill.id);
