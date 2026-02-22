@@ -491,13 +491,6 @@ inbox:
     created_at: 2026-02-16T18:16:11.692Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHKTNTMCYP0S7Y1CNE7P2EZW
-    text: 'Weak AC-3 test for conventions in agents-instruction-gen.test.ts: conditional if
-      (content.includes("## Conventions")) means assertion silently passes when fixtures lack
-      conventions. Should assert unconditionally.'
-    created_at: 2026-02-16T18:16:20.364Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KHKVQGQJKNV5QAKNFC2XJG0T
     text: "Ralph loop consolidation pass: add a cleanup/consolidation iteration every N PRs or at loop
       end. The PR-by-PR review process misses cross-PR duplication accumulation — 32 PRs in last
