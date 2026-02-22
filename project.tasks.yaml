@@ -54425,7 +54425,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -54510,3 +54510,7 @@
         validation vs exact output matching) into this task or capture separately."
       supersedes: null
   todos: []
+  completed_at: 2026-02-22T17:34:56.312Z
+  closed_reason: "Merged in PR #445. Generated marketplace.json for directory source, restructured
+    plugin to plugins/kspec/ matching official pattern, fixed MarketplaceEntry type, added ac-6 test
+    coverage, updated spec ac-5 path."
