@@ -52,7 +52,7 @@ describe('getSessionLogSummary', () => {
 
     await createSession(testDir, {
       id: sessionId,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       started_at: startedAt,
     });
 
@@ -60,7 +60,7 @@ describe('getSessionLogSummary', () => {
     const metaPath = path.join(testDir, 'sessions', sessionId, 'session.yaml');
     await fs.writeFile(metaPath, YAML.stringify({
       id: sessionId,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: startedAt,
       ended_at: endedAt,
@@ -83,7 +83,7 @@ describe('getSessionLogSummary', () => {
     expect(summary).not.toBeNull();
     expect(summary!.id).toBe(sessionId);
     expect(summary!.status).toBe('completed');
-    expect(summary!.agent_type).toBe('claude-code-acp');
+    expect(summary!.agent_type).toBe('claude-agent-acp');
     expect(summary!.started_at).toBe(startedAt);
     expect(summary!.ended_at).toBe(endedAt);
     expect(summary!.duration_ms).toBe(5400000); // 1.5 hours
@@ -110,7 +110,7 @@ describe('getSessionLogSummary', () => {
     const sessionId = testUlid('SESS', 2);
     await createSession(testDir, {
       id: sessionId,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
     });
 
     // Append events including realistic task complete tool calls
@@ -207,7 +207,7 @@ describe('kspec session log list (CLI)', () => {
     await fs.mkdir(s1Dir);
     await fs.writeFile(path.join(s1Dir, 'session.yaml'), YAML.stringify({
       id: s1,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-01-15T10:00:00.000Z',
       ended_at: '2026-01-15T11:30:00.000Z',
@@ -246,7 +246,7 @@ describe('kspec session log list (CLI)', () => {
     await fs.mkdir(s3Dir);
     await fs.writeFile(path.join(s3Dir, 'session.yaml'), YAML.stringify({
       id: s3,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-02-04T14:00:00.000Z',
       ended_at: '2026-02-04T15:00:00.000Z',
@@ -338,11 +338,11 @@ describe('kspec session log list (CLI)', () => {
   });
 
   // AC: @session-log-list ac-4
-  it('should filter by --agent for claude-code-acp', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --agent claude-code-acp', tempDir);
+  it('should filter by --agent for claude-agent-acp', () => {
+    const sessions = kspecJson<SessionLogSummary[]>('session log list --agent claude-agent-acp', tempDir);
     expect(sessions).toHaveLength(2);
     for (const s of sessions) {
-      expect(s.agent_type).toBe('claude-code-acp');
+      expect(s.agent_type).toBe('claude-agent-acp');
     }
   });
 

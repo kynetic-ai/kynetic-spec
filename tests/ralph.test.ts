@@ -288,6 +288,45 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('adapter=custom');
   });
 
+  // AC: @cli-ralph ac-9 - Default adapter
+  it('uses claude-agent-acp as default adapter', async () => {
+    // Use kspec directly (not runRalph) because runRalph always adds --adapter-cmd
+    // which internally sets adapter to "custom", masking the default
+    const result = spawnSync(
+      'node',
+      [CLI_PATH, 'ralph', '--dry-run'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 30000,
+        env: { ...process.env, KSPEC_AUTHOR: '@test' },
+      }
+    );
+
+    // Dry run without --adapter should show the default adapter
+    expect(result.stdout).toContain('adapter=claude-agent-acp');
+  });
+
+  // AC: @cli-ralph ac-9 - Deprecated adapter alias backwards compatibility
+  it('supports deprecated claude-code-acp adapter alias', async () => {
+    // Use kspec directly to test explicit deprecated adapter name
+    const result = spawnSync(
+      'node',
+      [CLI_PATH, 'ralph', '--dry-run', '--adapter', 'claude-code-acp'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 30000,
+        env: { ...process.env, KSPEC_AUTHOR: '@test' },
+      }
+    );
+
+    // Deprecated name should still work and show in output
+    expect(result.stdout).toContain('adapter=claude-code-acp');
+    // Should not fail validation (it's a registered adapter, not ad-hoc)
+    expect(result.status).toBe(0);
+  });
+
   // AC: @cli-ralph ac-10 - Session creation
   it('creates session and logs events', async () => {
     const result = runRalph('--max-loops 1', tempDir, {

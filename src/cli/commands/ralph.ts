@@ -1082,7 +1082,7 @@ export function registerRalphCommand(program: Command): void {
     .option("--yolo", "Use dangerously-skip-permissions (default)", true)
     .option("--no-yolo", "Require normal permission prompts")
     .option("--subagent-timeout <minutes>", "Review subagent timeout in minutes", "20")
-    .option("--adapter <id>", "Agent adapter to use", "claude-code-acp")
+    .option("--adapter <id>", "Agent adapter to use", "claude-agent-acp")
     .option("--adapter-cmd <cmd>", "Custom adapter command (for testing)")
     .option(
       "--restart-every <n>",
@@ -1180,7 +1180,10 @@ export function registerRalphCommand(program: Command): void {
         // - Non-npx adapters
         // - Dry-run mode with default adapter (doesn't spawn agent, default may not be installed in CI)
         // Note: If user explicitly specifies --adapter, validate even in dry-run to catch typos
-        const isDefaultAdapter = options.adapter === "claude-code-acp";
+        // Accept both new and deprecated adapter names
+        const isDefaultAdapter =
+          options.adapter === "claude-agent-acp" ||
+          options.adapter === "claude-code-acp";
         const skipValidation =
           options.adapterCmd ||
           adapter.command !== "npx" ||
@@ -1191,8 +1194,8 @@ export function registerRalphCommand(program: Command): void {
           validateAdapter(adapter.args[0]);
         }
 
-        // Add yolo flag to adapter args if needed
-        if (options.yolo && options.adapter === "claude-code-acp") {
+        // Add yolo flag to adapter args if needed (accept both new and deprecated names)
+        if (options.yolo && isDefaultAdapter) {
           adapter.args = [...adapter.args, "--dangerously-skip-permissions"];
         }
 

@@ -39,7 +39,7 @@ describe('searchSessionEvents', () => {
     await fs.mkdir(s1Dir);
     await fs.writeFile(path.join(s1Dir, 'session.yaml'), YAML.stringify({
       id: s1,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-01-20T10:00:00.000Z',
       ended_at: '2026-01-20T11:00:00.000Z',
@@ -118,7 +118,7 @@ describe('searchSessionEvents', () => {
     await fs.mkdir(s3Dir);
     await fs.writeFile(path.join(s3Dir, 'session.yaml'), YAML.stringify({
       id: s3,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-02-02T10:00:00.000Z',
       ended_at: '2026-02-02T11:00:00.000Z',
@@ -295,7 +295,7 @@ describe('kspec session log search (CLI)', () => {
     await fs.mkdir(s1Dir);
     await fs.writeFile(path.join(s1Dir, 'session.yaml'), YAML.stringify({
       id: s1,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-01-15T10:00:00.000Z',
       ended_at: '2026-01-15T11:30:00.000Z',
@@ -367,7 +367,7 @@ describe('kspec session log search (CLI)', () => {
     await fs.mkdir(s3Dir);
     await fs.writeFile(path.join(s3Dir, 'session.yaml'), YAML.stringify({
       id: s3,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-02-04T14:00:00.000Z',
       ended_at: '2026-02-04T15:00:00.000Z',

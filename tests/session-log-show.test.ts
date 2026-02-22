@@ -115,7 +115,7 @@ describe('getSessionLogDetail', () => {
 
     await createSession(testDir, {
       id: sessionId,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       task_id: '@my-task',
       started_at: startedAt,
     });
@@ -124,7 +124,7 @@ describe('getSessionLogDetail', () => {
     const metaPath = path.join(testDir, 'sessions', sessionId, 'session.yaml');
     await fs.writeFile(metaPath, YAML.stringify({
       id: sessionId,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       task_id: '@my-task',
       status: 'completed',
       started_at: startedAt,
@@ -135,7 +135,7 @@ describe('getSessionLogDetail', () => {
     expect(detail).not.toBeNull();
     expect(detail!.id).toBe(sessionId);
     expect(detail!.status).toBe('completed');
-    expect(detail!.agent_type).toBe('claude-code-acp');
+    expect(detail!.agent_type).toBe('claude-agent-acp');
     expect(detail!.task_id).toBe('@my-task');
     expect(detail!.started_at).toBe(startedAt);
     expect(detail!.ended_at).toBe(endedAt);
@@ -255,7 +255,7 @@ describe('kspec session log show (CLI)', () => {
     await fs.mkdir(s1Dir);
     await fs.writeFile(path.join(s1Dir, 'session.yaml'), YAML.stringify({
       id: sessionId1,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       task_id: '@my-task',
       status: 'completed',
       started_at: '2026-01-15T10:00:00.000Z',
@@ -308,7 +308,7 @@ describe('kspec session log show (CLI)', () => {
     expect(result.stdout).toContain('Started');
     expect(result.stdout).toContain('Ended');
     expect(result.stdout).toContain('Duration');
-    expect(result.stdout).toContain('claude-code-acp');
+    expect(result.stdout).toContain('claude-agent-acp');
   });
 
   // AC: @session-log-show ac-1 - JSON output
@@ -316,7 +316,7 @@ describe('kspec session log show (CLI)', () => {
     const detail = kspecJson<SessionLogDetail>(`session log show ${sessionId1}`, tempDir);
     expect(detail.id).toBe(sessionId1);
     expect(detail.status).toBe('completed');
-    expect(detail.agent_type).toBe('claude-code-acp');
+    expect(detail.agent_type).toBe('claude-agent-acp');
     expect(detail.task_id).toBe('@my-task');
     expect(detail.started_at).toBe('2026-01-15T10:00:00.000Z');
     expect(detail.ended_at).toBe('2026-01-15T11:30:00.000Z');
