@@ -66,6 +66,8 @@ export interface PlatformRenderResult {
   supportingDirsAction?: Record<string, "created" | "updated" | "unchanged" | "skipped">;
   /** Reason if action is skipped */
   skipReason?: string;
+  /** Structured code for skip reason (avoids string matching) */
+  skipCode?: "plugin-provided";
 }
 
 /**
@@ -337,10 +339,10 @@ export async function checkSkillDrift(
   projectRoot: string,
   skillId: string,
   origin?: string
-): Promise<"not-rendered" | "in-sync" | "drifted" | "no-hash"> {
+): Promise<DriftStatus> {
   const basePath = getRenderedSkillPath(projectRoot, skillId, origin);
   if (!basePath) {
-    return "not-rendered"; // Core skills are plugin-provided
+    return "plugin-provided"; // Core skills are provided by npm package plugin
   }
   const renderedPath = path.join(basePath, "SKILL.md");
 
@@ -705,7 +707,7 @@ export async function checkPlatformSkillDrift(
 ): Promise<DriftStatus> {
   // Core skills on claude-code are plugin-provided, not locally rendered
   if (origin === "core" && platform === "claude-code" && !outputDir) {
-    return "plugin-provided" as DriftStatus;
+    return "plugin-provided";
   }
 
   // Determine the rendered path
@@ -1002,6 +1004,7 @@ export const claudeCodeRenderer: PlatformRenderer = {
         action: "skipped",
         paths: [],
         skipReason: "core skill provided by npm package plugin",
+        skipCode: "plugin-provided",
       };
     }
 

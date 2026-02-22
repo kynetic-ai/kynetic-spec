@@ -1191,7 +1191,7 @@ async function renderSkillsForSetup(
           if (!skillIds.includes(skill.id)) {
             skillIds.push(skill.id);
           }
-        } else if (result.action === "skipped" && result.skipReason?.includes("plugin")) {
+        } else if (result.action === "skipped" && result.skipCode === "plugin-provided") {
           pluginProvided++;
         } else {
           skipped++;
@@ -1478,21 +1478,28 @@ export async function runSetupPipeline(
 
     // Step 2b: Register plugin marketplace (reports result from installCoreSkillsForSetup)
     // AC: @core-skill-install ac-6, ac-7
-    if (coreResult.marketplaceRegistered || coreResult.pluginEnabled) {
-      const parts: string[] = [];
-      if (coreResult.marketplaceRegistered) parts.push("marketplace registered");
-      if (coreResult.pluginEnabled) parts.push("plugin enabled");
-      steps.push({
-        name: "Register plugin marketplace",
-        status: "done",
-        message: parts.join(", "),
-      });
-    } else if (!dryRun && (coreResult.installed > 0 || coreResult.skipped > 0)) {
-      steps.push({
-        name: "Register plugin marketplace",
-        status: "failed",
-        message: coreResult.marketplaceMessage || "Registration failed",
-      });
+    if (!dryRun && (coreResult.installed > 0 || coreResult.skipped > 0)) {
+      const bothOk = coreResult.marketplaceRegistered && coreResult.pluginEnabled;
+      if (bothOk) {
+        steps.push({
+          name: "Register plugin marketplace",
+          status: "done",
+          message: "marketplace registered, plugin enabled",
+        });
+      } else {
+        const failures: string[] = [];
+        if (!coreResult.marketplaceRegistered) {
+          failures.push(coreResult.marketplaceMessage || "marketplace registration failed");
+        }
+        if (!coreResult.pluginEnabled) {
+          failures.push(coreResult.enableMessage || "plugin enablement failed");
+        }
+        steps.push({
+          name: "Register plugin marketplace",
+          status: "failed",
+          message: failures.join("; "),
+        });
+      }
     }
 
     // Step 3: Install hooks (Claude Code only)

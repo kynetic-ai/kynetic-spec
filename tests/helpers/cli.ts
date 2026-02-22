@@ -224,31 +224,6 @@ export async function createTempDir(prefix = 'kspec-test-'): Promise<string> {
 }
 
 /**
- * Create a temporary directory for Claude Code plugin home.
- * Sets KSPEC_CLAUDE_HOME env var so registry tests don't touch real ~/.claude/plugins/.
- *
- * @returns Object with dir path and a cleanup function
- */
-export async function setupTempClaudeHome(): Promise<{
-  dir: string;
-  cleanup: () => Promise<void>;
-  env: { KSPEC_CLAUDE_HOME: string };
-}> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-claude-home-'));
-  return {
-    dir,
-    env: { KSPEC_CLAUDE_HOME: dir },
-    cleanup: async () => {
-      try {
-        await fs.rm(dir, { recursive: true, force: true });
-      } catch {
-        // Best effort cleanup
-      }
-    },
-  };
-}
-
-/**
  * Initialize a git repo in a directory (useful for tests that need git)
  *
  * @param dir - Directory to initialize

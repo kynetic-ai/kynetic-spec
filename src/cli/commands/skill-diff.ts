@@ -56,6 +56,8 @@ interface MultiPlatformRenderResult {
   path: string;
   /** Reason why skill was skipped */
   skipReason?: string;
+  /** Structured code for skip reason */
+  skipCode?: "plugin-provided";
 }
 
 /**
@@ -78,7 +80,7 @@ interface CleanResult {
 interface MultiPlatformStatusResult {
   id: string;
   platform: string;
-  status: "in-sync" | "drifted" | "not-rendered";
+  status: "in-sync" | "drifted" | "not-rendered" | "plugin-provided";
   docsStatus?: "in-sync" | "drifted" | "not-rendered" | "no-docs";
   warning?: string;
 }
@@ -105,7 +107,7 @@ async function getMultiPlatformSyncStatus(
     return {
       id: skill.id,
       platform: renderer.platform,
-      status: "plugin-provided" as "in-sync" | "drifted" | "not-rendered",
+      status: "plugin-provided",
       docsStatus: "no-docs",
     };
   }
@@ -338,6 +340,7 @@ export function registerSkillDiffCommands(skill: Command): void {
                 action: "skipped",
                 path: "",
                 skipReason: "core skill provided by npm package plugin",
+                skipCode: "plugin-provided",
               });
               continue;
             }
@@ -392,6 +395,7 @@ export function registerSkillDiffCommands(skill: Command): void {
               action: result.action,
               path: result.paths[0] || "",
               skipReason: result.skipReason,
+              skipCode: result.skipCode,
             });
           }
         }
@@ -772,7 +776,9 @@ export function registerSkillDiffCommands(skill: Command): void {
                   ? chalk.green
                   : result.status === "drifted"
                     ? chalk.yellow
-                    : chalk.gray;
+                    : result.status === "plugin-provided"
+                      ? chalk.cyan
+                      : chalk.gray;
 
               const docsStatusColor =
                 result.docsStatus === "in-sync"
@@ -795,6 +801,7 @@ export function registerSkillDiffCommands(skill: Command): void {
             const inSync = statusResults.filter((r) => r.status === "in-sync").length;
             const drifted = statusResults.filter((r) => r.status === "drifted").length;
             const notRendered = statusResults.filter((r) => r.status === "not-rendered").length;
+            const pluginProvided = statusResults.filter((r) => r.status === "plugin-provided").length;
             const warningCount = statusResults.filter((r) => r.warning).length;
 
             console.log();
@@ -804,10 +811,13 @@ export function registerSkillDiffCommands(skill: Command): void {
             if (notRendered > 0) {
               console.log(chalk.gray(`${notRendered} skill(s) not rendered`));
             }
+            if (pluginProvided > 0) {
+              console.log(chalk.cyan(`${pluginProvided} skill(s) plugin-provided`));
+            }
             if (warningCount > 0) {
               console.log(chalk.yellow(`${warningCount} skill(s) with warnings`));
             }
-            if (inSync === statusResults.length) {
+            if (inSync + pluginProvided === statusResults.length) {
               console.log(chalk.green("All skills in sync"));
             }
           }

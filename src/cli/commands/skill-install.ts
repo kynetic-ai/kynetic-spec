@@ -350,6 +350,11 @@ export function registerSkillInstallCommands(skill: Command): void {
             }
           }
         );
+
+        // Exit non-zero if plugin registration or enablement failed
+        if (!marketplaceResult.success || !enableResult.success) {
+          process.exit(EXIT_CODES.ERROR);
+        }
       } catch (err) {
         error("Failed to install core skills", err);
         process.exit(EXIT_CODES.ERROR);

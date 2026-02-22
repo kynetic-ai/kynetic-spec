@@ -230,6 +230,24 @@ describe("Claude Plugin Registry", () => {
       expect(result.success).toBe(true);
       expect(result.action).toBe("unchanged");
     });
+
+    it("should fail without overwriting when settings.json is invalid JSON", async () => {
+      const { enablePluginInProject } = await import(
+        "../src/lib/claude-plugin-registry"
+      );
+
+      const settingsPath = path.join(tempProject, ".claude", "settings.json");
+      await fs.writeFile(settingsPath, "not valid json{{{", "utf-8");
+
+      const result = await enablePluginInProject(tempProject);
+
+      expect(result.success).toBe(false);
+      expect(result.action).toBe("error");
+
+      // Original corrupt content should be preserved (not overwritten)
+      const content = await fs.readFile(settingsPath, "utf-8");
+      expect(content).toBe("not valid json{{{");
+    });
   });
 
   describe("checkMarketplaceHealth", () => {
@@ -252,6 +270,45 @@ describe("Claude Plugin Registry", () => {
       const health = await checkMarketplaceHealth();
       expect(health.status).toBe("healthy");
       expect(health.registeredPath).toBeDefined();
+    });
+
+    it("should detect version-mismatch when plugin version differs from package", async () => {
+      const { checkMarketplaceHealth, getClaudePluginsDir, getPackagePluginDir } = await import(
+        "../src/lib/claude-plugin-registry"
+      );
+
+      // Register the real marketplace first to get the real path
+      const pluginDir = await getPackagePluginDir();
+      const pluginsDir = getClaudePluginsDir();
+      await fs.mkdir(pluginsDir, { recursive: true });
+
+      // Create a fake plugin manifest with a mismatched version at the real path
+      // We'll register a temp path that has a wrong-version manifest
+      const fakePluginDir = await createTempDir("kspec-fake-plugin-");
+      await fs.mkdir(path.join(fakePluginDir, ".claude-plugin"), { recursive: true });
+      await fs.writeFile(
+        path.join(fakePluginDir, ".claude-plugin", "plugin.json"),
+        JSON.stringify({ version: "0.0.0-fake" }),
+        "utf-8"
+      );
+
+      await fs.writeFile(
+        path.join(pluginsDir, "known_marketplaces.json"),
+        JSON.stringify({
+          "kspec-plugins": {
+            source: "local",
+            installLocation: fakePluginDir,
+            lastUpdated: new Date().toISOString(),
+          },
+        }),
+        "utf-8"
+      );
+
+      const health = await checkMarketplaceHealth();
+      expect(health.status).toBe("version-mismatch");
+      expect(health.pluginVersion).toBe("0.0.0-fake");
+
+      await fs.rm(fakePluginDir, { recursive: true, force: true });
     });
 
     it("should detect path-broken when registered path is invalid", async () => {
