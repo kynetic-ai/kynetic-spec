@@ -15,3 +15,13 @@ triage:
     evidence_refs: []
     created_at: 2026-02-22T22:50:19.918Z
     updated_at: 2026-02-22T22:50:19.918Z
+  - _ulid: 01KJ3T9S4R04XWBGE7DDT5Z8EM
+    inbox_ref: 01KJ3T9QMVRE7PM5AWAE6JG3KG
+    item_snapshot: Export precedence test
+    status: triaged
+    action: defer
+    reasoning: test
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-22T23:17:36.536Z
+    updated_at: 2026-02-22T23:17:36.537Z
