@@ -4758,7 +4758,7 @@ runs:
   - _ulid: 01KJ3A1T2TQ2AV5T8210ZF1DW8
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-22T18:33:38.139Z
     step_results:
@@ -4772,5 +4772,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-22T18:33:48.268Z
-        completed_at: 2026-02-22T18:33:48.268Z
+        completed_at: 2026-02-22T18:34:00.965Z
+        notes: "Friction: (1) Ignored /codex slash command - should invoke Skill tool to load SKILL.md, not
+          improvise, (2) Delegated codex to subagent instead of direct Bash - subagents lack skill
+          context, (3) .gitkeep vs .gitignore conflict caught during implementation not design - ACs
+          mentioned .gitkeep but gitignore excludes the dir"
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-22T18:34:00.965Z
+        completed_at: 2026-02-22T18:34:00.965Z
     initiated_by: "@claude"
