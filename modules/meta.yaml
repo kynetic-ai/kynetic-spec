@@ -2969,10 +2969,10 @@ modules:
         title: Skill Rendering Pipeline
         type: feature
         tags: []
-        description: |
-          Render skill meta items from shadow branch (.kspec/skills/) to platform-specific
-          files on the main branch (.claude/skills/). Includes drift detection and orphan cleanup.
-          Designed for cross-platform extensibility but builds Claude Code renderer first.
+        description: Render skill meta items from shadow branch (.kspec/skills/) to platform-specific files
+          on the main branch. Core skills use the Claude Code plugin system
+          (.claude/plugins/kspec/skills/) for proper namespace discovery as /kspec:<id>. Includes
+          drift detection and orphan cleanup. Designed for cross-platform extensibility.
         acceptance_criteria:
           - id: ac-1
             given: a skill with platforms including claude-code
