@@ -54356,23 +54356,65 @@
         ephemeral output)
       supersedes: null
   todos: []
-- title: Spec and formalize .kspec/artifacts/ directory convention
+- _ulid: 01KJ316F9ESM6V9JBSKEYDA163
+  slugs: []
+  title: Spec and formalize .kspec/artifacts/ directory convention
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - spec
     - dx
     - convention
-  depends_on: []
-  _ulid: 01KJ316F9ESM6V9JBSKEYDA163
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-22T15:58:53.742Z
-  notes: []
+  notes:
+    - _ulid: 01KJ316VA1XV93XEQH15S54FN5
+      created_at: 2026-02-22T15:59:06.049Z
+      author: "@claude"
+      content: >-
+        Directory created and gitignored. Remaining work is spec + documentation.
+
+
+        ## Done
+
+        - Created .kspec/artifacts/ directory
+
+        - Added .kspec/.gitignore to exclude artifacts/ from shadow branch commits
+
+        - Moved first artifact (triage-report-2026-02-22.html) there
+
+
+        ## Remaining (needs spec)
+
+        - Spec the convention: what goes in artifacts, naming patterns, lifecycle
+
+        - Add to kspec setup: create artifacts/ dir during init
+
+        - Document in AGENTS.md or template sections: when to use artifacts/ vs other locations
+
+        - Consider: kspec artifacts list, kspec artifacts clean --older-than Nd
+
+        - Consider: should agents auto-name artifacts with date prefix? (current:
+        triage-report-2026-02-22.html)
+
+        - Add to doctor command: check artifacts/ exists
+
+
+        ## Design Questions
+
+        - Should artifacts be purely ephemeral or optionally tracked?
+
+        - Naming convention: <type>-<date>.ext? <type>-<session-id>.ext?
+
+        - Max size/age policy?
+
+        - Should kspec generate commands output to artifacts/ by default?
+      supersedes: null
   todos: []
