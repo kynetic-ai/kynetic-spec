@@ -4758,8 +4758,19 @@ runs:
   - _ulid: 01KJ3A1T2TQ2AV5T8210ZF1DW8
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-22T18:33:38.139Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-22T18:33:38.139Z
+        completed_at: 2026-02-22T18:33:48.268Z
+        notes: "What worked: (1) Pre-creation spec review agent caught real gaps, (2) Parallel exploration +
+          review agents, (3) Spec-first flow made tests straightforward, (4) kspec batch for AC
+          creation"
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-22T18:33:48.268Z
+        completed_at: 2026-02-22T18:33:48.268Z
     initiated_by: "@claude"
