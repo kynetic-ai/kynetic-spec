@@ -54606,7 +54606,7 @@
   type: task
   spec_ref: "@interactive-triage"
   plan_ref: "@plan-interactive-triage-system"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -54614,6 +54614,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-22T20:16:09.338Z
+  started_at: 2026-02-22T23:46:26.320Z
   notes:
     - _ulid: 01KJ3FXH3T3TDK0K5CAHT2EMCN
       created_at: 2026-02-22T20:16:09.338Z
@@ -54621,7 +54622,6 @@
       content: See plan @plan-interactive-triage-system for implementation notes
   todos: []
   automation: eligible
-  started_at: 2026-02-22T23:46:26.320Z
 - _ulid: 01KJ3FXHDH6X85QF35D56P2F69
   slugs:
     - implement-triage-record-schema
