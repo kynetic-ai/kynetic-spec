@@ -896,3 +896,15 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KJ35CN8RKR2S26MSBB1WK4X0
+    text: "Plugin registry tests: validate structurally instead of exact output matching. Current tests
+      assert exact JSON shapes (e.g. source field structure) which breaks when Claude Code schema
+      evolves. Better: (1) Validate marketplace.json against a Zod schema capturing required fields
+      (plugins array, name, source, version) rather than exact values. (2) Test build output
+      structurally — 'has plugins array with our entry' not exact field matching. (3) For
+      known_marketplaces.json registry, test entry exists with valid path, not exact source object
+      shape. Motivation: the source field assertion broke twice already (local → directory object)
+      because tests coupled to implementation details."
+    created_at: 2026-02-22T17:12:10.776Z
+    tags: []
+    added_by: "@claude"
