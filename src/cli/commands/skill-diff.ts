@@ -463,24 +463,46 @@ export function registerSkillDiffCommands(skill: Command): void {
             }
           }
 
+          // Build separate active sets for default dir vs plugin dir
+          // Core skills on claude-code are active in plugin dir, NOT in .claude/skills/
+          const nonCoreActiveByPlatform = new Map<string, Set<string>>();
+          const coreActiveByPlatform = new Map<string, Set<string>>();
+          for (const skill of metaCtx.skills) {
+            for (const platform of skill.platforms) {
+              if (skill.origin === "core" && platform === "claude-code") {
+                if (!coreActiveByPlatform.has(platform)) {
+                  coreActiveByPlatform.set(platform, new Set());
+                }
+                coreActiveByPlatform.get(platform)!.add(skill.id);
+              } else {
+                if (!nonCoreActiveByPlatform.has(platform)) {
+                  nonCoreActiveByPlatform.set(platform, new Set());
+                }
+                nonCoreActiveByPlatform.get(platform)!.add(
+                  getSkillSubdir(skill.id, skill.origin, platform)
+                );
+              }
+            }
+          }
+
           // Clean each platform's output directory
           const renderers = getAllRenderers();
           for (const renderer of renderers) {
-            const activeSubdirs = activeSubdirsByPlatform.get(renderer.platform) || new Set();
-
-            // Clean platform default directory (project/local skills)
+            // Clean platform default directory (project/local skills only)
+            const nonCoreActive = nonCoreActiveByPlatform.get(renderer.platform) || new Set();
             const outputDir = customOutputDir || renderer.defaultOutputDir;
             await scanAndClean(
               path.join(projectRoot, outputDir),
-              activeSubdirs,
+              nonCoreActive,
               renderer.platform
             );
 
             // Also clean plugin skills dir for claude-code (core skills)
             if (renderer.platform === "claude-code" && !customOutputDir) {
+              const coreActive = coreActiveByPlatform.get(renderer.platform) || new Set();
               await scanAndClean(
                 path.join(projectRoot, PLUGIN_SKILLS_DIR),
-                activeSubdirs,
+                coreActive,
                 renderer.platform
               );
 

@@ -65,19 +65,9 @@ export async function findSkillFiles(baseDir: string): Promise<string[]> {
   const skillsDir = path.join(baseDir, ".claude", "skills");
   skillFiles.push(...await scanSkillDir(skillsDir));
 
-  // Scan .claude/plugins/*/skills/ (plugin skills)
-  const pluginsDir = path.join(baseDir, ".claude", "plugins");
-  try {
-    const pluginEntries = await fs.readdir(pluginsDir, { withFileTypes: true });
-    for (const pluginEntry of pluginEntries) {
-      if (pluginEntry.isDirectory()) {
-        const pluginSkillsDir = path.join(pluginsDir, pluginEntry.name, "skills");
-        skillFiles.push(...await scanSkillDir(pluginSkillsDir));
-      }
-    }
-  } catch {
-    // .claude/plugins doesn't exist
-  }
+  // Scan .claude/plugins/kspec/skills/ (kspec plugin skills only)
+  const kspecPluginSkillsDir = path.join(baseDir, ".claude", "plugins", "kspec", "skills");
+  skillFiles.push(...await scanSkillDir(kspecPluginSkillsDir));
 
   return skillFiles;
 }
