@@ -134,7 +134,7 @@ features:
                 then: the artifacts/ directory exists due to the .gitkeep file being tracked on the shadow branch
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
