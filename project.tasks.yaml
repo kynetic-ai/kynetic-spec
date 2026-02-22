@@ -54594,7 +54594,7 @@
   type: task
   spec_ref: "@triage-record-schema"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -54643,6 +54643,8 @@
         All ACs covered. Full test suite green (3 pre-existing failures unrelated).
       supersedes: null
   todos: []
+  completed_at: 2026-02-22T20:23:31.838Z
+  closed_reason: Schema and parser implemented with full AC coverage (38 tests). Committed in aac8bc27.
 - _ulid: 01KJ3FXHPC8CMZQFCC7SYGGMF8
   slugs:
     - implement-triage-cli-commands
