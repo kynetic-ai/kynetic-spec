@@ -18,6 +18,9 @@ import {
   type TaskInput,
   TaskSchema,
   TasksFileSchema,
+  TriageFileSchema,
+  type TriageRecord,
+  TriageRecordSchema,
   type Todo,
 } from "../schema/index.js";
 import { errors } from "../strings/index.js";
@@ -1842,6 +1845,177 @@ export function findInboxItemByRef(
       return true;
     return false;
   });
+}
+
+// ============================================================
+// TRIAGE SYSTEM
+// ============================================================
+
+/**
+ * Triage record with runtime metadata for source tracking.
+ */
+export interface LoadedTriageRecord extends TriageRecord {
+  _sourceFile?: string;
+}
+
+/**
+ * Get the triage file path.
+ * AC: @triage-record-schema ac-6
+ *
+ * When shadow enabled: .kspec/project.triage.yaml
+ * Otherwise: spec/project.triage.yaml
+ */
+export function getTriageFilePath(ctx: KspecContext): string {
+  return path.join(ctx.specDir, "project.triage.yaml");
+}
+
+/**
+ * Load all triage records from the project.
+ * AC: @triage-record-schema ac-6, ac-7
+ */
+export async function loadTriageRecords(
+  ctx: KspecContext,
+): Promise<LoadedTriageRecord[]> {
+  const triagePath = getTriageFilePath(ctx);
+
+  try {
+    const raw = await readYamlFile<unknown>(triagePath);
+
+    // Handle { kynetic_triage: "1.0", triage: [...] } format
+    if (raw && typeof raw === "object" && "triage" in raw) {
+      const parsed = TriageFileSchema.safeParse(raw);
+      if (parsed.success) {
+        return parsed.data.triage.map((record) => ({
+          ...record,
+          _sourceFile: triagePath,
+        }));
+      }
+    }
+
+    // Handle plain array format
+    if (Array.isArray(raw)) {
+      const records: LoadedTriageRecord[] = [];
+      for (const item of raw) {
+        const result = TriageRecordSchema.safeParse(item);
+        if (result.success) {
+          records.push({ ...result.data, _sourceFile: triagePath });
+        }
+      }
+      return records;
+    }
+
+    return [];
+  } catch {
+    // File doesn't exist or parse error
+    return [];
+  }
+}
+
+/**
+ * Strip runtime metadata before serialization.
+ */
+function stripTriageMetadata(record: LoadedTriageRecord): TriageRecord {
+  const { _sourceFile, ...cleanRecord } = record;
+  return cleanRecord as TriageRecord;
+}
+
+/**
+ * Save a triage record (add or update).
+ * AC: @triage-record-schema ac-8 — upsert on inbox_ref (one record per inbox item)
+ * AC: @triage-record-schema ac-9 — sets updated_at on every mutation
+ */
+export async function saveTriageRecord(
+  ctx: KspecContext,
+  record: LoadedTriageRecord,
+): Promise<void> {
+  const triagePath = getTriageFilePath(ctx);
+
+  // Ensure directory exists
+  const dir = path.dirname(triagePath);
+  await fs.mkdir(dir, { recursive: true });
+
+  // Load existing records
+  let existingRecords: TriageRecord[] = [];
+
+  try {
+    const raw = await readYamlFile<unknown>(triagePath);
+    if (raw && typeof raw === "object" && "triage" in raw) {
+      const parsed = TriageFileSchema.safeParse(raw);
+      if (parsed.success) {
+        existingRecords = parsed.data.triage;
+      }
+    } else if (Array.isArray(raw)) {
+      for (const item of raw) {
+        const result = TriageRecordSchema.safeParse(item);
+        if (result.success) {
+          existingRecords.push(result.data);
+        }
+      }
+    }
+  } catch {
+    // File doesn't exist, start fresh
+  }
+
+  const cleanRecord = stripTriageMetadata(record);
+
+  // AC: ac-9 — set updated_at on every mutation
+  cleanRecord.updated_at = new Date().toISOString();
+
+  // AC: ac-8 — upsert: check for existing record by ULID first, then by inbox_ref
+  const existingByUlid = existingRecords.findIndex(
+    (r) => r._ulid === record._ulid,
+  );
+  if (existingByUlid >= 0) {
+    existingRecords[existingByUlid] = cleanRecord;
+  } else {
+    // Check for existing record with same inbox_ref (uniqueness constraint)
+    const existingByInboxRef = existingRecords.findIndex(
+      (r) => r.inbox_ref === record.inbox_ref,
+    );
+    if (existingByInboxRef >= 0) {
+      existingRecords[existingByInboxRef] = cleanRecord;
+    } else {
+      existingRecords.push(cleanRecord);
+    }
+  }
+
+  // Save with { kynetic_triage: "1.0", triage: [...] } format
+  await writeYamlFilePreserveFormat(triagePath, {
+    kynetic_triage: "1.0",
+    triage: existingRecords,
+  });
+}
+
+/**
+ * Find a triage record by reference (ULID or short ULID).
+ */
+export function findTriageRecordByRef(
+  records: LoadedTriageRecord[],
+  ref: string,
+): LoadedTriageRecord | undefined {
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+
+  return records.find((record) => {
+    // Match full ULID
+    if (record._ulid === cleanRef) return true;
+    // Match short ULID (prefix)
+    if (record._ulid.toLowerCase().startsWith(cleanRef.toLowerCase()))
+      return true;
+    return false;
+  });
+}
+
+/**
+ * Find a triage record by inbox item reference.
+ * AC: @triage-record-schema ac-8 — lookup by inbox_ref for upsert
+ */
+export function findTriageRecordByInboxRef(
+  records: LoadedTriageRecord[],
+  inboxRef: string,
+): LoadedTriageRecord | undefined {
+  const cleanRef = inboxRef.startsWith("@") ? inboxRef.slice(1) : inboxRef;
+
+  return records.find((record) => record.inbox_ref === cleanRef);
 }
 
 // ─── Patch Operations ────────────────────────────────────────────────────────

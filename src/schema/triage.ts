@@ -1,0 +1,88 @@
+import { z } from "zod";
+import { DateTimeSchema, RefSchema, UlidSchema } from "./common.js";
+
+/**
+ * Triage status lifecycle
+ * AC: @triage-record-schema ac-1, ac-5
+ * - pending: Record created, no decision yet
+ * - triaged: Decision recorded (action + reasoning)
+ * - acted_on: Action has been executed
+ */
+export const TriageStatusSchema = z.enum(["pending", "triaged", "acted_on"]);
+
+/**
+ * Triage action types
+ * AC: @triage-record-schema ac-2
+ */
+export const TriageActionSchema = z.enum([
+  "promote",
+  "delete",
+  "defer",
+  "spec-gap",
+  "duplicate",
+]);
+
+/**
+ * Full triage record schema
+ * AC: @triage-record-schema ac-1, ac-2, ac-3, ac-4, ac-5, ac-7, ac-9
+ */
+export const TriageRecordSchema = z.object({
+  // Identity
+  _ulid: UlidSchema,
+
+  // Source reference — AC: ac-1, ac-7
+  inbox_ref: UlidSchema,
+  item_snapshot: z.string().min(1, "Item snapshot is required"),
+
+  // Status — AC: ac-1, ac-5
+  status: TriageStatusSchema,
+
+  // Decision fields — AC: ac-2, ac-3
+  action: TriageActionSchema.optional(),
+  reasoning: z.string().optional(),
+  decided_by: z.string().optional(),
+  evidence_refs: z.array(RefSchema).default([]),
+
+  // Override fields — AC: ac-4
+  override_reasoning: z.string().optional(),
+  override_by: z.string().optional(),
+  override_at: DateTimeSchema.optional(),
+
+  // Execution fields — AC: ac-5
+  acted_at: DateTimeSchema.optional(),
+  result_ref: RefSchema.optional(),
+
+  // Timestamps — AC: ac-1, ac-9
+  created_at: DateTimeSchema,
+  updated_at: DateTimeSchema.optional(),
+});
+
+/**
+ * Triage record input schema (for creating new records)
+ */
+export const TriageRecordInputSchema = z.object({
+  _ulid: UlidSchema.optional(),
+  inbox_ref: UlidSchema,
+  item_snapshot: z.string().min(1, "Item snapshot is required"),
+  status: TriageStatusSchema.optional(),
+  action: TriageActionSchema.optional(),
+  reasoning: z.string().optional(),
+  decided_by: z.string().optional(),
+  evidence_refs: z.array(RefSchema).optional(),
+  created_at: DateTimeSchema.optional(),
+});
+
+/**
+ * Triage file schema (collection of triage records)
+ * AC: @triage-record-schema ac-6
+ */
+export const TriageFileSchema = z.object({
+  kynetic_triage: z.string().default("1.0"),
+  triage: z.array(TriageRecordSchema),
+});
+
+export type TriageStatus = z.infer<typeof TriageStatusSchema>;
+export type TriageAction = z.infer<typeof TriageActionSchema>;
+export type TriageRecord = z.infer<typeof TriageRecordSchema>;
+export type TriageRecordInput = z.infer<typeof TriageRecordInputSchema>;
+export type TriageFile = z.infer<typeof TriageFileSchema>;

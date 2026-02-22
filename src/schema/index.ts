@@ -6,4 +6,5 @@ export * from "./meta.js";
 export * from "./plan.js";
 export * from "./spec.js";
 export * from "./task.js";
+export * from "./triage.js";
 export * from "./batch.js";
