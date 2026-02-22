@@ -3003,8 +3003,9 @@ modules:
           - id: ac-7
             given: a core skill with origin core on the claude-code platform
             when: kspec skill render is run
-            then: the skill is rendered to .claude/skills/kspec/<id>/SKILL.md instead of
-              .claude/skills/<id>/SKILL.md
+            then: the skill is rendered to .claude/plugins/kspec/skills/<id>/SKILL.md (Claude Code plugin
+              directory) and a plugin manifest is created at
+              .claude/plugins/kspec/.claude-plugin/plugin.json
         depends_on: []
         implements: []
         relates_to: []
