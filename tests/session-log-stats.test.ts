@@ -39,7 +39,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-1',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-20T10:00:00.000Z',
         ended_at: '2026-01-20T11:00:00.000Z',
         duration_ms: 3600000,
@@ -50,7 +50,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-2',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-21T10:00:00.000Z',
         ended_at: '2026-01-21T12:00:00.000Z',
         duration_ms: 7200000,
@@ -75,7 +75,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-1',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-20T10:00:00.000Z',
         ended_at: '2026-01-20T11:00:00.000Z',
         duration_ms: 3600000, // 1 hour
@@ -86,7 +86,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-2',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-21T10:00:00.000Z',
         ended_at: '2026-01-21T12:00:00.000Z',
         duration_ms: 7200000, // 2 hours
@@ -109,7 +109,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-1',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-20T10:00:00.000Z',
         ended_at: '2026-01-20T11:00:00.000Z',
         duration_ms: 3600000,
@@ -120,7 +120,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-2',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-21T10:00:00.000Z',
         ended_at: '2026-01-21T12:00:00.000Z',
         duration_ms: 7200000,
@@ -131,7 +131,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-3',
         status: 'active',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-22T10:00:00.000Z',
         duration_ms: 1800000,
         event_count: 50,
@@ -141,7 +141,7 @@ describe('computeSessionLogStats', () => {
       {
         id: 'session-4',
         status: 'abandoned',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-19T10:00:00.000Z',
         duration_ms: 600000,
         event_count: 10,
@@ -188,7 +188,7 @@ describe('computeToolUsageStats', () => {
     const sessionId = testUlid('SESS');
     await createSession(testDir, {
       id: sessionId,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
     });
 
     // Add tool call events
@@ -247,7 +247,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-1',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-20T10:00:00.000Z',
         duration_ms: 3600000,
         event_count: 100,
@@ -257,7 +257,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-2',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-20T14:00:00.000Z',
         duration_ms: 7200000,
         event_count: 200,
@@ -267,7 +267,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-3',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-21T10:00:00.000Z',
         duration_ms: 1800000,
         event_count: 50,
@@ -296,7 +296,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-1',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-20T10:00:00.000Z', // 2026-01-20 is a Tuesday in week 4
         duration_ms: 3600000,
         event_count: 100,
@@ -306,7 +306,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-2',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-27T10:00:00.000Z', // 2026-01-27 is a Tuesday in week 5
         duration_ms: 7200000,
         event_count: 200,
@@ -335,7 +335,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-1',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2025-12-28T10:00:00.000Z', // Sunday - still week 52 of 2025
         duration_ms: 1000,
         event_count: 1,
@@ -345,7 +345,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-2',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2025-12-29T00:00:00.000Z', // Monday - week 1 of 2026 per ISO-8601
         duration_ms: 1000,
         event_count: 1,
@@ -355,7 +355,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-3',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-01T00:00:00.000Z', // Thursday - still week 1 of 2026
         duration_ms: 1000,
         event_count: 1,
@@ -365,7 +365,7 @@ describe('computeTimePeriodStats', () => {
       {
         id: 'session-4',
         status: 'completed',
-        agent_type: 'claude-code-acp',
+        agent_type: 'claude-agent-acp',
         started_at: '2026-01-05T00:00:00.000Z', // Monday - week 2 of 2026
         duration_ms: 1000,
         event_count: 1,
@@ -411,7 +411,7 @@ describe('kspec session log stats (CLI)', () => {
     await fs.mkdir(s1Dir);
     await fs.writeFile(path.join(s1Dir, 'session.yaml'), YAML.stringify({
       id: s1,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-01-15T10:00:00.000Z',
       ended_at: '2026-01-15T11:30:00.000Z',
@@ -450,7 +450,7 @@ describe('kspec session log stats (CLI)', () => {
     await fs.mkdir(s3Dir);
     await fs.writeFile(path.join(s3Dir, 'session.yaml'), YAML.stringify({
       id: s3,
-      agent_type: 'claude-code-acp',
+      agent_type: 'claude-agent-acp',
       status: 'completed',
       started_at: '2026-02-04T14:00:00.000Z',
       ended_at: '2026-02-04T15:00:00.000Z',
@@ -548,8 +548,8 @@ describe('kspec session log stats (CLI)', () => {
   });
 
   // AC: @session-log-stats ac-5
-  it('should filter by --agent for claude-code-acp', () => {
-    const output = kspecJson<{ stats: SessionLogStats }>('session log stats --agent claude-code-acp', tempDir);
+  it('should filter by --agent for claude-agent-acp', () => {
+    const output = kspecJson<{ stats: SessionLogStats }>('session log stats --agent claude-agent-acp', tempDir);
     expect(output.stats.total_sessions).toBe(2);
   });
 
@@ -639,10 +639,10 @@ describe('kspec session log stats (CLI)', () => {
   // Combined filters
   it('should combine --since and --agent filters', () => {
     const output = kspecJson<{ stats: SessionLogStats }>(
-      'session log stats --since 2026-02-01 --agent claude-code-acp',
+      'session log stats --since 2026-02-01 --agent claude-agent-acp',
       tempDir,
     );
-    // Only session 3 is claude-code-acp after Feb 1
+    // Only session 3 is claude-agent-acp after Feb 1
     expect(output.stats.total_sessions).toBe(1);
   });
 

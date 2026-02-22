@@ -26,14 +26,14 @@ export interface AgentAdapter {
  */
 const ADAPTERS: Record<string, AgentAdapter> = {
   /**
-   * Claude Code ACP adapter - the primary production adapter.
-   * Uses @zed-industries/claude-code-acp package.
+   * Claude Agent ACP adapter - the primary production adapter.
+   * Uses @zed-industries/claude-agent-acp package.
    */
-  "claude-code-acp": {
+  "claude-agent-acp": {
     command: "npx",
-    args: ["@zed-industries/claude-code-acp"],
+    args: ["@zed-industries/claude-agent-acp"],
     shell: process.platform === "win32",
-    description: "Claude Code via ACP protocol",
+    description: "Claude Agent via ACP protocol",
   },
 
   /**
@@ -90,7 +90,7 @@ export function registerAdapter(id: string, adapter: AgentAdapter): void {
  * @returns Adapter definition
  */
 export function resolveAdapter(id?: string): AgentAdapter {
-  const adapterId = id ?? "claude-code-acp";
+  const adapterId = id ?? "claude-agent-acp";
   const adapter = getAdapter(adapterId);
 
   if (adapter) {
