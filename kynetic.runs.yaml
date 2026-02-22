@@ -4761,6 +4761,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-22T18:33:38.139Z
+    completed_at: 2026-02-22T18:36:08.510Z
     step_results:
       - step_index: 0
         status: completed
@@ -4804,4 +4805,11 @@ runs:
           behavior, not kspec-actionable. Session successes (pre-creation spec review, parallel
           agents, spec-first flow, kspec batch) are already established patterns.
     initiated_by: "@claude"
-    completed_at: 2026-02-22T18:36:08.510Z
+  - _ulid: 01KJ3V4VY9VNHQKFHSW1TVTNJA
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-22T23:32:24.138Z
+    step_results: []
+    initiated_by: "@claude"
