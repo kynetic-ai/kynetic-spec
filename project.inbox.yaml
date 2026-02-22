@@ -418,9 +418,18 @@ inbox:
     tags: []
     added_by: "@claude"
   - _ulid: 01KHKTNJ0MR0F4NWMWKJAQN0N9
-    text: Codex and Claude Code renderers share ~70% duplicated render logic (content loading,
+    text: >-
+      Codex and Claude Code renderers share ~70% duplicated render logic (content loading,
       frontmatter stripping, idempotency check, file writing, hash storage, dir copying). Extract
       shared base render function with hooks for platform-specific steps.
+
+
+      ---
+
+
+      Triage 2026-02-22: 8/13 sub-items RESOLVED by PRs #408 #412 #403. Remaining: getSetupStatus
+      staleness, skill update mutation, naming inconsistency, redundant defaults, deprecated_target
+      reuse.
     created_at: 2026-02-16T18:16:11.540Z
     tags: []
     added_by: "@claude"
