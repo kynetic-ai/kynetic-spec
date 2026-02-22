@@ -863,3 +863,15 @@ inbox:
     created_at: 2026-02-22T08:36:08.131Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ33138CNS0KEXVTYJM62W45
+    text: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
+      Should print JSON parse error or validation error details. batch has did-you-mean for bad arg
+      keys (PR #440) but nothing for structural JSON errors. Encountered during triage session when
+      batch --commands failed with no diagnostic output."
+    created_at: 2026-02-22T16:30:54.732Z
+    tags:
+      - reflection
+      - batch
+      - dx
+      - bug
+    added_by: "@claude"
