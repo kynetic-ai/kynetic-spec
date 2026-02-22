@@ -863,16 +863,3 @@ inbox:
     created_at: 2026-02-22T08:36:08.131Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KJ32ESEK4BTQ7WY47FXM0Z5K
-    text: "Plugin marketplace missing marketplace.json - directory source type requires
-      .claude-plugin/marketplace.json (not just plugin.json). See official marketplace format at
-      ~/.claude/plugins/marketplaces/claude-plugins-official/.claude-plugin/marketplace.json.
-      Currently only plugin.json exists. Need to generate marketplace.json during build that wraps
-      the kspec plugin entry. Follow-up to fix in commit 47453817 (directory source type fix).
-      Warning: Failed to load marketplace kspec-plugins: marketplace.json not found."
-    created_at: 2026-02-22T16:20:54.867Z
-    tags:
-      - plugin
-      - cli
-      - bug
-    added_by: "@claude"
