@@ -54267,24 +54267,92 @@
         kspec-agents.md shows /kspec:kspec-help.
       supersedes: null
   todos: []
-- title: "Spike: Design interactive triage system with persistent metadata"
+- _ulid: 01KJ315WHBK8887TZQXY8HG9DH
+  slugs: []
+  title: "Spike: Design interactive triage system with persistent metadata"
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - spike
     - design
     - inbox
     - triage
-  depends_on: []
-  _ulid: 01KJ315WHBK8887TZQXY8HG9DH
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-22T15:58:34.538Z
-  notes: []
+  notes:
+    - _ulid: 01KJ3168YTVCBZ7EPD5W213YPA
+      created_at: 2026-02-22T15:58:47.258Z
+      author: "@claude"
+      content: >-
+        Spike to explore design space and produce spec-plan for interactive triage system.
+
+
+        ## Problem
+
+        Inbox triage is currently agent-driven and ephemeral. Triage decisions (reasoning, evidence,
+        actions, user decisions) are lost between sessions. No way for users to interactively
+        review/override agent triage. No way for subsequent agents to act on prior triage work
+        reliably.
+
+
+        ## Design Space
+
+
+        ### 1. Triage Metadata on Inbox Items
+
+        Add structured fields: triage_status, triage_reasoning, triage_evidence, triage_action,
+        user_decision, spec_gap flag, automation_eligible flag. Key question: extend InboxItem
+        schema or separate TriageRecord?
+
+
+        ### 2. Interactive Triage UI (Web UI via Daemon)
+
+        Per-category triage mode with one-by-one item presentation. Shows description, agent
+        reasoning, evidence, recommended action. User chooses from options or overrides. Free-form
+        input for reasoning. Next/previous navigation. Writes through daemon API to shadow branch.
+
+
+        ### 3. Agent Handoff Export
+
+        Context-rich export of triage decisions for fresh agent sessions. Include full item context,
+        triage metadata, user decision, relevant refs. Format must give new agents enough context to
+        act without re-researching. Possibly: kspec inbox export --triaged
+
+
+        ### 4. Daemon API Extensions
+
+        GET/PUT /api/inbox/:ref/triage, filtering by triage_status, bulk updates.
+
+
+        ## Key Questions
+
+        - Schema: inline on inbox items or separate triage records?
+
+        - History: version triage decisions (agent triages, user overrides)?
+
+        - Workflow: integrate with existing /triage skill?
+
+        - Export: what format maximizes agent effectiveness?
+
+
+        ## References
+
+        - Triage skill: .claude/skills/triage/
+
+        - Inbox schema: src/schema/inbox.ts  
+
+        - Daemon API: packages/daemon/src/
+
+        - Web UI inbox: packages/web-ui/src/routes/inbox/
+
+        - Triage report artifact: .kspec/artifacts/triage-report-2026-02-22.html (example of current
+        ephemeral output)
+      supersedes: null
   todos: []
