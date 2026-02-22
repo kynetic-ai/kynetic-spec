@@ -176,9 +176,16 @@ export async function validateSkillFile(
   filePath: string,
 ): Promise<SkillValidationError[]> {
   const errors: SkillValidationError[] = [];
-  const relativePath = filePath.includes(".claude/skills/")
-    ? filePath.split(".claude/skills/")[1]
-    : path.basename(filePath);
+  let relativePath: string;
+  if (filePath.includes(".claude/plugins/")) {
+    // Plugin skills: extract from .claude/plugins/<name>/skills/<id>/SKILL.md
+    const match = filePath.match(/\.claude\/plugins\/(.+)/);
+    relativePath = match ? match[1] : path.basename(filePath);
+  } else if (filePath.includes(".claude/skills/")) {
+    relativePath = filePath.split(".claude/skills/")[1];
+  } else {
+    relativePath = path.basename(filePath);
+  }
 
   try {
     const content = await fs.readFile(filePath, "utf-8");
