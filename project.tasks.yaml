@@ -54365,6 +54365,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #446. Artifacts directory convention implemented: init/setup/repair
+    create .kspec/artifacts/, doctor health check, .gitignore exclusion, 6 tests. Codex review
+    noted: spec wording re .gitkeep should be updated (intentionally skipped since dir is
+    gitignored), setup hardcodes .kspec path (low-risk), repair doesn't ensure .gitignore for legacy
+    branches."
   depends_on: []
   context: []
   priority: 3
@@ -54375,6 +54380,7 @@
   vcs_refs: []
   created_at: 2026-02-22T15:58:53.742Z
   started_at: 2026-02-22T17:47:04.173Z
+  completed_at: 2026-02-22T18:30:32.817Z
   notes:
     - _ulid: 01KJ316VA1XV93XEQH15S54FN5
       created_at: 2026-02-22T15:59:06.049Z
@@ -54461,12 +54467,6 @@
         Tests added: 6 new tests across shadow.test.ts and doctor.test.ts. All 112+29 pass.
       supersedes: null
   todos: []
-  completed_at: 2026-02-22T18:30:32.817Z
-  closed_reason: "Merged in PR #446. Artifacts directory convention implemented: init/setup/repair
-    create .kspec/artifacts/, doctor health check, .gitignore exclusion, 6 tests. Codex review
-    noted: spec wording re .gitkeep should be updated (intentionally skipped since dir is
-    gitignored), setup hardcodes .kspec path (low-risk), repair doesn't ensure .gitignore for legacy
-    branches."
 - _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
   slugs: []
   title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
@@ -54562,4 +54562,167 @@
       content: "Leaving in_progress pending user decision: fold test quality improvement (structural
         validation vs exact output matching) into this task or capture separately."
       supersedes: null
+  todos: []
+- _ulid: 01KJ3FXH3T2RJQSNZAMPPF12ES
+  slugs:
+    - implement-interactive-triage-system
+  title: Implement Interactive Triage System
+  type: task
+  spec_ref: "@interactive-triage"
+  plan_ref: "@plan-interactive-triage-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:09.338Z
+  notes:
+    - _ulid: 01KJ3FXH3T3TDK0K5CAHT2EMCN
+      created_at: 2026-02-22T20:16:09.338Z
+      author: "@claude"
+      content: See plan @plan-interactive-triage-system for implementation notes
+  todos: []
+- _ulid: 01KJ3FXHDH6X85QF35D56P2F69
+  slugs:
+    - implement-triage-record-schema
+  title: Implement Triage Record Schema
+  type: task
+  spec_ref: "@triage-record-schema"
+  plan_ref: "@plan-interactive-triage-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:09.649Z
+  notes:
+    - _ulid: 01KJ3FXHDHXHD05K28G8JQXVWX
+      created_at: 2026-02-22T20:16:09.649Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Create src/schema/triage.ts following plan.ts pattern.
+        TriageStatusSchema = z.enum(["pending", "triaged", "acted_on"]).
+        TriageActionSchema = z.enum(["promote", "delete", "defer", "spec-gap", "duplicate"]).
+        Include updated_at field set on any mutation.
+        Enforce inbox_ref uniqueness in save logic (upsert pattern).
+        Add load/save in src/parser/yaml.ts: getTriageFilePath, loadTriageRecords, saveTriageRecord.
+  todos: []
+- _ulid: 01KJ3FXHPC8CMZQFCC7SYGGMF8
+  slugs:
+    - implement-triage-cli-commands
+  title: Implement Triage CLI Commands
+  type: task
+  spec_ref: "@triage-cli-commands"
+  plan_ref: "@plan-interactive-triage-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:09.932Z
+  notes:
+    - _ulid: 01KJ3FXHPCXKGS393YJ3YK4TDW
+      created_at: 2026-02-22T20:16:09.932Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Create src/cli/commands/triage.ts following inbox.ts pattern.
+        Register via registerTriageCommands(program).
+        The act command dispatches on record.action: promote reuses inbox
+        promote logic, delete reuses inbox delete logic, spec-gap creates
+        observation, duplicate deletes inbox item, defer is a no-op transition.
+        Interactive start mode uses readline prompts.
+        Override subcommand updates existing record with override fields.
+        Export subcommand delegates to shared formatter.
+  todos: []
+- _ulid: 01KJ3FXJ0DMK8EV8MW00D5PPCS
+  slugs:
+    - implement-triage-daemon-api
+  title: Implement Triage Daemon API
+  type: task
+  spec_ref: "@triage-daemon-api"
+  plan_ref: "@plan-interactive-triage-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:10.253Z
+  notes:
+    - _ulid: 01KJ3FXJ0D5HEVXGB714CPV356
+      created_at: 2026-02-22T20:16:10.253Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Create packages/daemon/src/routes/triage.ts.
+        Elysia prefix /api/triage with pubsub injection.
+        Topic triage:updates, events: triage_created, triage_updated, triage_acted.
+        Register in server.ts alongside existing routes.
+  todos: []
+- _ulid: 01KJ3FXJ8ZEN8DSP3BD3HKP1SW
+  slugs:
+    - implement-interactive-triage-ui
+  title: Implement Interactive Triage UI
+  type: task
+  spec_ref: "@interactive-triage-ui"
+  plan_ref: "@plan-interactive-triage-system"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:10.527Z
+  notes:
+    - _ulid: 01KJ3FXJ90D9N8XRR2X7XWA8YF
+      created_at: 2026-02-22T20:16:10.528Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Create packages/web-ui/src/routes/triage/+page.svelte.
+        Card nav with index tracking. Progress bar (triaged/total).
+        Action buttons as button row. Textarea for reasoning.
+        Subscribe to triage:updates WebSocket topic.
+        Add fetchTriage, createTriageRecord, updateTriageRecord to api.ts.
+  todos: []
+- title: Implement Triage Agent Export
+  type: task
+  spec_ref: "@triage-agent-export"
+  plan_ref: "@plan-interactive-triage-system"
+  priority: 3
+  slugs:
+    - implement-triage-agent-export
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KJ3FXJJ4C37PXQ7074M9R8QS
+      created_at: 2026-02-22T20:16:10.820Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Export formatter in src/lib/triage-export.ts or co-located in CLI command.
+        Context format: markdown template with per-item headers.
+        JSON format: raw TriageRecord array.
+        Shared by CLI (kspec triage export) and API (GET /api/triage/export).
+  _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-22T20:16:10.820Z
   todos: []

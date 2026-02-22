@@ -4443,6 +4443,495 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KJ3FXGMW6629PSK4XAAXSKGH
+    slugs:
+      - interactive-triage
+    title: Interactive Triage System
+    type: feature
+    tags: []
+    description: |
+      Persistent triage metadata system with interactive UI. Triage decisions
+      (reasoning, evidence, actions) are stored as TriageRecords in
+      project.triage.yaml, surviving inbox item deletion. Supports agent
+      triage, user override, action execution, and context export for agent handoff.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          the kspec project has inbox items that need triage
+        when: |
+          a user or agent initiates the triage workflow
+        then: |
+          triage decisions are recorded as persistent TriageRecords in
+          project.triage.yaml, surviving inbox item deletion
+      - id: ac-2
+        given: |
+          an agent triages an inbox item, a user overrides the decision,
+          the override is acted on, and the result is exported
+        when: |
+          the export is generated
+        then: |
+          the full decision chain (agent recommendation, user override,
+          action outcome) is captured with attribution and timestamps
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-22T20:16:08.860Z
+    requirements:
+      - _ulid: 01KJ3FXGPH16AXFZXXGXWE7C2H
+        slugs:
+          - triage-record-schema
+        title: Triage Record Schema
+        type: requirement
+        tags: []
+        description: |
+          Zod schema for TriageRecord and TriageFile, stored in
+          project.triage.yaml. Follows plan.ts pattern with status lifecycle
+          and input schema variant.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a triage record is created for an inbox item
+            when: |
+              the record is validated by the Zod schema
+            then: |
+              it requires _ulid, inbox_ref (source item ULID), item_snapshot
+              (text at triage time), status, and created_at
+          - id: ac-2
+            given: |
+              a triage decision is recorded
+            when: |
+              the action field is set
+            then: |
+              action must be one of promote, delete, defer, spec-gap, or duplicate
+          - id: ac-3
+            given: |
+              a triage record includes a decision
+            when: |
+              the record is saved
+            then: |
+              it includes reasoning (string), decided_by (string), and
+              optional evidence_refs (array of ref strings)
+          - id: ac-4
+            given: |
+              a user overrides an agent triage decision
+            when: |
+              the override is recorded
+            then: |
+              the record stores override_reasoning, override_by, and
+              override_at timestamp, preserving the original decision fields
+          - id: ac-5
+            given: |
+              a triage record action is executed
+            when: |
+              the execution completes
+            then: |
+              status transitions to acted_on, acted_at timestamp is set, and
+              result_ref captures the ref of the created item if applicable
+          - id: ac-6
+            given: |
+              a project.triage.yaml file is loaded
+            when: |
+              parsed by the Zod schema
+            then: |
+              it validates as TriageFileSchema with kynetic_triage version
+              string and triage array of TriageRecordSchema items
+          - id: ac-7
+            given: |
+              a triage record references an inbox item that has been deleted
+            when: |
+              the record is loaded
+            then: |
+              item_snapshot provides the original text so context is preserved
+          - id: ac-8
+            given: |
+              a triage record already exists for a given inbox_ref
+            when: |
+              a new triage record is attempted for the same inbox_ref
+            then: |
+              the existing record is updated rather than creating a duplicate
+          - id: ac-9
+            given: |
+              a triage record is mutated (override, act, or update)
+            when: |
+              the mutation is saved
+            then: |
+              the updated_at timestamp is set to the current time
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-02-22T20:16:08.913Z
+      - _ulid: 01KJ3FXGR10TKGEC8YFPTE8FH1
+        slugs:
+          - triage-cli-commands
+        title: Triage CLI Commands
+        type: requirement
+        tags: []
+        description: |
+          CLI commands for recording, listing, acting on, overriding, and
+          exporting triage decisions. Follows inbox.ts command registration pattern.
+        acceptance_criteria:
+          - id: ac-1
+            given: >
+              user runs kspec triage record <inbox-ref> --action promote --reasoning "clear feature
+              request"
+            when: |
+              the inbox item exists
+            then: |
+              creates a TriageRecord with item_snapshot from inbox item,
+              status triaged, the given action and reasoning, and commits
+              to shadow branch
+          - id: ac-2
+            given: |
+              user runs kspec triage list
+            when: |
+              triage records exist
+            then: |
+              displays records with ULID prefix, item snapshot (truncated),
+              status, action, decided_by, and relative time
+          - id: ac-3
+            given: |
+              user runs kspec triage list --status pending
+            when: |
+              records with various statuses exist
+            then: |
+              only records matching the status filter are shown
+          - id: ac-4
+            given: |
+              user runs kspec triage act <triage-ref>
+            when: |
+              the record has status triaged and action promote
+            then: |
+              executes the promote action (creates task from snapshot),
+              transitions record to acted_on with acted_at and result_ref
+          - id: ac-5
+            given: |
+              user runs kspec triage act <triage-ref> on a record with action delete
+            when: |
+              the referenced inbox item still exists
+            then: |
+              deletes the inbox item without additional confirmation (the
+              triage decision serves as prior authorization) and transitions
+              record to acted_on
+          - id: ac-6
+            given: |
+              user runs kspec triage act <triage-ref> on a record with action defer
+            when: |
+              the record is triaged
+            then: |
+              transitions to acted_on with no side effect beyond recording the deferral
+          - id: ac-7
+            given: |
+              user runs kspec triage act <triage-ref> on a record with action spec-gap
+            when: |
+              the record is triaged
+            then: |
+              creates an observation tagged spec-gap with the item snapshot
+              and reasoning, transitions record to acted_on with result_ref
+          - id: ac-8
+            given: |
+              user runs kspec triage act <triage-ref> on a record with action duplicate
+            when: |
+              the record is triaged
+            then: |
+              deletes the inbox item (prior authorization) and transitions
+              record to acted_on
+          - id: ac-9
+            given: |
+              user runs kspec triage start
+            when: |
+              untriaged inbox items exist
+            then: |
+              enters interactive mode presenting items one at a time,
+              prompting for action and reasoning, creating triage records
+              for each, skipping already-triaged items
+          - id: ac-10
+            given: |
+              the user aborts interactive triage mode with Ctrl+C
+            when: |
+              some items have been triaged
+            then: |
+              all previously committed triage records are preserved
+          - id: ac-11
+            given: |
+              user runs kspec triage record <ref> with --json flag
+            when: |
+              the command succeeds
+            then: |
+              outputs the created triage record as structured JSON
+          - id: ac-12
+            given: >
+              user runs kspec triage override <triage-ref> --action defer --reasoning "not ready yet"
+            when: |
+              the triage record exists with an existing decision
+            then: |
+              updates the record with override_reasoning, override_by,
+              override_at, and the new action
+          - id: ac-13
+            given: |
+              user runs kspec triage export --format context
+            when: |
+              triage records exist
+            then: |
+              outputs a markdown context block per record with item text,
+              action, reasoning, decided_by, evidence refs, and outcome
+          - id: ac-14
+            given: |
+              user runs kspec triage export --format json
+            when: |
+              triage records exist
+            then: |
+              outputs a JSON array with full TriageRecord objects
+          - id: ac-15
+            given: |
+              user runs kspec triage act <triage-ref>
+            when: |
+              the record has status acted_on (already executed)
+            then: |
+              returns an error with guidance that the record has already been acted on
+          - id: ac-16
+            given: |
+              user runs kspec triage act <triage-ref>
+            when: |
+              the record has status pending (no decision yet)
+            then: |
+              returns an error with guidance to record a decision first
+          - id: ac-17
+            given: |
+              user runs kspec triage act <triage-ref> with --dry-run flag
+            when: |
+              the record has status triaged
+            then: |
+              shows what action would be taken without executing it
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+          - "@trait-filterable-list"
+          - "@trait-shadow-commit"
+          - "@trait-dry-run"
+        notes: []
+        created: 2026-02-22T20:16:08.961Z
+      - _ulid: 01KJ3FXGSDCFZBW80C762P8FR1
+        slugs:
+          - triage-daemon-api
+        title: Triage Daemon API
+        type: requirement
+        tags: []
+        description: |
+          REST and WebSocket API for triage operations. Elysia routes
+          following inbox.ts pattern with pubsub broadcasts.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a GET request is sent to /api/triage
+            when: |
+              triage records exist
+            then: |
+              returns items array and total count, sorted by created_at desc
+          - id: ac-2
+            given: |
+              a GET request includes status query parameter
+            when: |
+              records with various statuses exist
+            then: |
+              returns only records matching the status filter
+          - id: ac-3
+            given: |
+              a POST request is sent to /api/triage with inbox_ref, action, reasoning
+            when: |
+              the referenced inbox item exists
+            then: |
+              creates a TriageRecord with item_snapshot, returns the record,
+              and broadcasts triage:updates via WebSocket
+          - id: ac-4
+            given: |
+              a PUT request is sent to /api/triage/:ref with override fields
+            when: |
+              the triage record exists
+            then: |
+              stores override_reasoning, override_by, override_at, updates
+              action, and broadcasts triage:updates
+          - id: ac-5
+            given: |
+              a PUT request is sent to /api/triage/:ref with act flag
+            when: |
+              the record has status triaged
+            then: |
+              executes the action, transitions to acted_on, sets result_ref,
+              broadcasts triage:updates
+          - id: ac-6
+            given: |
+              a GET request is sent to /api/triage/export with format parameter
+            when: |
+              triage records exist
+            then: |
+              returns context markdown or structured JSON based on format
+          - id: ac-7
+            given: |
+              a POST request references a nonexistent inbox item
+            when: |
+              the inbox_ref does not resolve
+            then: |
+              returns 404 with error guidance
+          - id: ac-8
+            given: |
+              a PUT request with act flag targets a record with status acted_on
+            when: |
+              the record has already been executed
+            then: |
+              returns 409 conflict with guidance message
+          - id: ac-9
+            given: |
+              a PUT request with act flag targets a record with status pending
+            when: |
+              no decision has been recorded
+            then: |
+              returns 422 with guidance to complete triage first
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-api-endpoint"
+          - "@trait-websocket-protocol"
+        notes: []
+        created: 2026-02-22T20:16:09.005Z
+      - _ulid: 01KJ3FXGTS351B70HBQ44Y744S
+        slugs:
+          - interactive-triage-ui
+        title: Interactive Triage UI
+        type: requirement
+        tags: []
+        description: |
+          Card-based interactive triage mode in the web dashboard.
+          One-at-a-time item presentation with action selection,
+          reasoning input, and real-time updates.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              the user navigates to the triage page
+            when: |
+              untriaged inbox items exist
+            then: |
+              displays a card-based view showing item text, tags, age, and added_by
+          - id: ac-2
+            given: |
+              the user views a triage card for an item with an existing agent triage record
+            when: |
+              the record has status triaged
+            then: |
+              shows the agent recommended action, reasoning, and evidence refs
+          - id: ac-3
+            given: |
+              the user selects an action and enters reasoning
+            when: |
+              they submit the decision
+            then: |
+              creates or updates a triage record via the API and advances to next item
+          - id: ac-4
+            given: |
+              the user disagrees with the agent recommendation
+            when: |
+              they select a different action with override reasoning
+            then: |
+              the triage record captures the override with user attribution
+          - id: ac-5
+            given: |
+              the user is in triage mode
+            when: |
+              they use next/previous navigation
+            then: |
+              they can browse items without committing decisions, and
+              already-triaged items show their decision state
+          - id: ac-6
+            given: |
+              the triage page is open
+            when: |
+              another client creates or updates a triage record
+            then: |
+              the view updates in real-time via WebSocket triage:updates topic
+          - id: ac-7
+            given: |
+              the user wants to filter items
+            when: |
+              they use tag or status filters
+            then: |
+              the card view shows only matching items with updated progress count
+          - id: ac-8
+            given: |
+              the web UI is in static mode
+            when: |
+              the user navigates to triage
+            then: |
+              triage decisions display read-only with action buttons hidden,
+              card navigation still works for browsing
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-websocket-protocol"
+        notes: []
+        created: 2026-02-22T20:16:09.049Z
+      - _ulid: 01KJ3FXGWFG5NHBX2PPSAVBJD7
+        slugs:
+          - triage-agent-export
+        title: Triage Agent Export
+        type: requirement
+        tags: []
+        description: |
+          Context-rich export of triage decisions for agent handoff.
+          Two formats: structured JSON and markdown context block.
+          Shared formatter used by both CLI and daemon API.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              an agent needs context about prior triage decisions
+            when: |
+              triage export is called with format context
+            then: |
+              outputs a markdown block per record with item text, action,
+              reasoning, decided_by, evidence refs, and outcome
+          - id: ac-2
+            given: |
+              triage export is called with format json
+            when: |
+              records exist
+            then: |
+              outputs a JSON array with full TriageRecord objects
+          - id: ac-3
+            given: |
+              triage records include overrides
+            when: |
+              the export is generated
+            then: |
+              both original agent decision and user override are included
+          - id: ac-4
+            given: |
+              no triage records exist
+            when: |
+              export is called
+            then: |
+              outputs empty result with message indicating no decisions recorded
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+        notes: []
+        created: 2026-02-22T20:16:09.103Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
