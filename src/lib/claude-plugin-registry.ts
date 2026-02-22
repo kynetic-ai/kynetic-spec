@@ -45,7 +45,7 @@ export interface MarketplaceHealth {
 }
 
 interface MarketplaceEntry {
-  source: string;
+  source: { source: string; path?: string; repo?: string };
   installLocation: string;
   lastUpdated: string;
   autoUpdate?: boolean;
@@ -253,7 +253,7 @@ export async function registerCorePluginMarketplace(
         ...data,
         [MARKETPLACE_KEY]: {
           ...data[MARKETPLACE_KEY],
-          source: "local",
+          source: { source: "directory", path: pluginDir },
           installLocation: pluginDir,
           lastUpdated: new Date().toISOString(),
           autoUpdate: false,

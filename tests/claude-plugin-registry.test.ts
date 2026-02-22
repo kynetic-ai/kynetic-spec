@@ -54,7 +54,7 @@ describe("Claude Plugin Registry", () => {
       const marketplacesPath = path.join(getClaudePluginsDir(), "known_marketplaces.json");
       const content = JSON.parse(await fs.readFile(marketplacesPath, "utf-8"));
       expect(content["kspec-plugins"]).toBeDefined();
-      expect(content["kspec-plugins"].source).toBe("local");
+      expect(content["kspec-plugins"].source).toEqual({ source: "directory", path: expect.any(String) });
       expect(content["kspec-plugins"].installLocation).toBeTruthy();
       expect(content["kspec-plugins"].lastUpdated).toBeTruthy();
     });
