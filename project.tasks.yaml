@@ -54356,3 +54356,23 @@
         ephemeral output)
       supersedes: null
   todos: []
+- title: Spec and formalize .kspec/artifacts/ directory convention
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - spec
+    - dx
+    - convention
+  depends_on: []
+  _ulid: 01KJ316F9ESM6V9JBSKEYDA163
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-22T15:58:53.742Z
+  notes: []
+  todos: []
