@@ -53761,7 +53761,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-plugin-rendering"
@@ -53799,6 +53799,9 @@
         kspec-agents.md now shows /kspec:help. All 107 affected tests pass."
       supersedes: null
   todos: []
+  completed_at: 2026-02-22T03:49:28.550Z
+  closed_reason: Skill renamed from kspec-help to help. Renders as /kspec:help via plugin system. Old
+    monolithic skill removed. All tests pass.
 - _ulid: 01KHZHPJK0BFVACX29XWZRJ19R
   slugs: []
   title: "Write core skill: kspec:observations"
