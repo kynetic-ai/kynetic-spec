@@ -4710,7 +4710,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KJ32V785K92KWYJ78PSVW7FB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-22T16:27:42.214Z
@@ -4750,5 +4750,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-22T16:30:47.866Z
-        completed_at: 2026-02-22T16:30:47.866Z
+        completed_at: 2026-02-22T16:31:18.815Z
+        notes: "Captured: 3 inbox items (01KJ3313 batch errors, 01KJ3318 checkpoint noise, 01KJ331E task add
+          parity) + 1 success observation (01KJ331N parallel subagent research pattern)"
     initiated_by: "@claude"
+    completed_at: 2026-02-22T16:31:18.816Z
