@@ -933,3 +933,8 @@ inbox:
     created_at: 2026-02-22T23:17:35.003Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ3T9TKZDCK7HSEEH6BJQ6KD
+    text: Spec gap test
+    created_at: 2026-02-22T23:17:38.047Z
+    tags: []
+    added_by: "@claude"
