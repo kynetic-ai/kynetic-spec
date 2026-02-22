@@ -26,6 +26,15 @@ function validRecord(overrides: Record<string, unknown> = {}) {
   };
 }
 
+function actedOnRecord(overrides: Record<string, unknown> = {}) {
+  return validRecord({
+    status: 'acted_on',
+    acted_at: '2026-02-22T02:00:00.000Z',
+    result_ref: '@task-new-feature',
+    ...overrides,
+  });
+}
+
 // AC: @triage-record-schema ac-1
 describe('TriageRecordSchema - required fields', () => {
   it('should accept a valid triage record with all required fields', () => {
@@ -44,7 +53,7 @@ describe('TriageRecordSchema - required fields', () => {
     }
   });
 
-  it('should accept a minimal record with only required fields', () => {
+  it('should accept a minimal pending record with only required fields', () => {
     const result = TriageRecordSchema.safeParse({
       _ulid: VALID_ULID,
       inbox_ref: INBOX_ULID,
@@ -110,6 +119,56 @@ describe('TriageRecordSchema - decision fields', () => {
       expect(result.data.evidence_refs).toEqual([]);
     }
   });
+
+  // AC: @triage-record-schema ac-3
+  // AC: @trait-error-guidance ac-5 — validation error indicates which field failed
+  it('should reject triaged record without reasoning', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({
+      reasoning: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issues = result.error.issues;
+      expect(issues.some(i => i.path.includes('reasoning'))).toBe(true);
+    }
+  });
+
+  // AC: @triage-record-schema ac-3
+  // AC: @trait-error-guidance ac-5 — validation error indicates which field failed
+  it('should reject triaged record without decided_by', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({
+      decided_by: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issues = result.error.issues;
+      expect(issues.some(i => i.path.includes('decided_by'))).toBe(true);
+    }
+  });
+
+  // AC: @triage-record-schema ac-3
+  // AC: @trait-error-guidance ac-5 — validation error indicates which field failed
+  it('should reject triaged record without action', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({
+      action: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issues = result.error.issues;
+      expect(issues.some(i => i.path.includes('action'))).toBe(true);
+    }
+  });
+
+  it('should allow pending record without decision fields', () => {
+    const result = TriageRecordSchema.safeParse({
+      _ulid: VALID_ULID,
+      inbox_ref: INBOX_ULID,
+      item_snapshot: 'Idea without decision',
+      status: 'pending',
+      created_at: '2026-02-22T00:00:00.000Z',
+    });
+    expect(result.success).toBe(true);
+  });
 });
 
 // AC: @triage-record-schema ac-4
@@ -146,17 +205,37 @@ describe('TriageRecordSchema - override fields', () => {
 // AC: @triage-record-schema ac-5
 describe('TriageRecordSchema - execution fields', () => {
   it('should accept acted_at and result_ref for acted_on status', () => {
-    const result = TriageRecordSchema.safeParse(validRecord({
-      status: 'acted_on',
-      acted_at: '2026-02-22T02:00:00.000Z',
-      result_ref: '@task-new-feature',
-    }));
+    const result = TriageRecordSchema.safeParse(actedOnRecord());
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.status).toBe('acted_on');
       expect(result.data.acted_at).toBe('2026-02-22T02:00:00.000Z');
       expect(result.data.result_ref).toBe('@task-new-feature');
     }
+  });
+
+  // AC: @triage-record-schema ac-5
+  // AC: @trait-error-guidance ac-4 — indicates current state and valid next states
+  // AC: @trait-error-guidance ac-5 — validation error indicates which field failed
+  it('should reject acted_on record without acted_at', () => {
+    const result = TriageRecordSchema.safeParse(actedOnRecord({
+      acted_at: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const issues = result.error.issues;
+      expect(issues.some(i => i.path.includes('acted_at'))).toBe(true);
+      const actedAtIssue = issues.find(i => i.path.includes('acted_at'));
+      expect(actedAtIssue?.message).toContain('acted_at');
+    }
+  });
+
+  // AC: @triage-record-schema ac-5
+  it('should reject acted_on record without action', () => {
+    const result = TriageRecordSchema.safeParse(actedOnRecord({
+      action: undefined,
+    }));
+    expect(result.success).toBe(false);
   });
 });
 
@@ -225,6 +304,63 @@ describe('TriageRecordSchema - updated_at field', () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.updated_at).toBeUndefined();
+    }
+  });
+});
+
+// AC: @trait-error-guidance ac-1 — error includes description of what went wrong
+// AC: @trait-error-guidance ac-2 — error includes suggested action to resolve
+describe('TriageRecordSchema - error guidance (trait)', () => {
+  it('should include descriptive error for invalid ULID', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({ _ulid: 'bad' }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const ulidIssue = result.error.issues.find(i => i.path.includes('_ulid'));
+      expect(ulidIssue).toBeDefined();
+      expect(ulidIssue?.message).toBeTruthy();
+    }
+  });
+
+  // AC: @trait-error-guidance ac-5 — validation error indicates which field/value failed
+  it('should include field path in validation errors', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({ status: 'invalid_status' }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const statusIssue = result.error.issues.find(i =>
+        i.path.includes('status')
+      );
+      expect(statusIssue).toBeDefined();
+    }
+  });
+
+  // AC: @trait-error-guidance ac-4 — invalid state transition guidance
+  it('should provide guidance when triaged record missing decision metadata', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({
+      action: undefined,
+      reasoning: undefined,
+      decided_by: undefined,
+    }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      // Should have issues for all three missing fields
+      const paths = result.error.issues.map(i => i.path).flat();
+      expect(paths).toContain('action');
+      expect(paths).toContain('reasoning');
+      expect(paths).toContain('decided_by');
+    }
+  });
+
+  // AC: @trait-error-guidance ac-6 — errors in structured format (Zod issues are JSON-serializable)
+  it('should produce JSON-serializable error objects', () => {
+    const result = TriageRecordSchema.safeParse(validRecord({ _ulid: 'bad' }));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const json = JSON.stringify(result.error.issues);
+      expect(json).toBeTruthy();
+      const parsed = JSON.parse(json);
+      expect(Array.isArray(parsed)).toBe(true);
+      expect(parsed[0]).toHaveProperty('message');
+      expect(parsed[0]).toHaveProperty('path');
     }
   });
 });

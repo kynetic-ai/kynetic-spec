@@ -1969,11 +1969,17 @@ export async function saveTriageRecord(
     existingRecords[existingByUlid] = cleanRecord;
   } else {
     // Check for existing record with same inbox_ref (uniqueness constraint)
+    // Preserve existing identity (_ulid, created_at) when upserting by inbox_ref
     const existingByInboxRef = existingRecords.findIndex(
       (r) => r.inbox_ref === record.inbox_ref,
     );
     if (existingByInboxRef >= 0) {
-      existingRecords[existingByInboxRef] = cleanRecord;
+      const existing = existingRecords[existingByInboxRef];
+      existingRecords[existingByInboxRef] = {
+        ...cleanRecord,
+        _ulid: existing._ulid,
+        created_at: existing.created_at,
+      };
     } else {
       existingRecords.push(cleanRecord);
     }

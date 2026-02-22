@@ -166,6 +166,35 @@ describe('saveTriageRecord', () => {
     expect(records[0].reasoning).toBe('Second assessment');
   });
 
+  // AC: @triage-record-schema ac-8
+  it('should preserve existing _ulid and created_at when upserting by inbox_ref', async () => {
+    const [ulid1, ulid2] = testUlids('TRJAGE', 2);
+    const inboxRef = testUlid('JNBOX', 0);
+    const originalCreatedAt = '2026-01-01T00:00:00.000Z';
+
+    // First record establishes identity
+    await saveTriageRecord(ctx, makeRecord({
+      _ulid: ulid1,
+      inbox_ref: inboxRef,
+      created_at: originalCreatedAt,
+      reasoning: 'First assessment',
+    }));
+
+    // Second record with different ULID but same inbox_ref — identity should be preserved
+    await saveTriageRecord(ctx, makeRecord({
+      _ulid: ulid2,
+      inbox_ref: inboxRef,
+      created_at: '2026-02-22T00:00:00.000Z',
+      reasoning: 'Updated assessment',
+    }));
+
+    const records = await loadTriageRecords(ctx);
+    expect(records).toHaveLength(1);
+    expect(records[0]._ulid).toBe(ulid1); // original identity preserved
+    expect(records[0].created_at).toBe(originalCreatedAt); // original timestamp preserved
+    expect(records[0].reasoning).toBe('Updated assessment'); // content updated
+  });
+
   it('should save multiple records for different inbox items', async () => {
     const [ulid1, ulid2] = testUlids('TRJAGE', 2);
     const [inbox1, inbox2] = testUlids('JNBOX', 2);
