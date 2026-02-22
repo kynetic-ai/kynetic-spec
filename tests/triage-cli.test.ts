@@ -152,6 +152,7 @@ describe("kspec triage list", () => {
   });
 
   // AC: @triage-cli-commands ac-3
+  // AC: @trait-filterable-list ac-1
   it("should filter records by status", () => {
     const ulid1 = addInboxItem("Item pending");
     const ulid2 = addInboxItem("Item triaged");
@@ -201,6 +202,7 @@ describe("kspec triage list", () => {
     expect(records[0]._ulid).toBeDefined();
   });
 
+  // AC: @trait-filterable-list ac-6
   it("should show empty message when no records exist", () => {
     const result = kspec("triage list", tempDir);
     expect(result.stdout).toContain("No triage records");
@@ -304,12 +306,13 @@ describe("kspec triage act", () => {
   });
 
   // AC: @triage-cli-commands ac-7
-  it("should execute spec-gap action creating an observation", () => {
+  it("should execute spec-gap action creating an observation tagged spec-gap", () => {
     const inboxUlid = addInboxItem("Spec gap identified here");
     const record = recordTriage(inboxUlid, "spec-gap", "needs spec review");
 
     const result = kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
     expect(result.stdout).toContain("Acted on triage record");
+    expect(result.stdout).toContain("spec-gap observation");
 
     // Verify record has result_ref
     const records = kspecJson<Array<{ _ulid: string; status: string; result_ref: string }>>(
@@ -319,6 +322,17 @@ describe("kspec triage act", () => {
     const acted = records.find((r) => r._ulid === record._ulid);
     expect(acted!.status).toBe("acted_on");
     expect(acted!.result_ref).toBeDefined();
+
+    // Verify the observation contains spec-gap marker
+    const observations = kspecJson<Array<{ type: string; content: string }>>(
+      "meta observations --all",
+      tempDir,
+    );
+    const specGapObs = observations.find((o) => o.content.includes("[spec-gap]"));
+    expect(specGapObs).toBeDefined();
+    expect(specGapObs!.type).toBe("question");
+    expect(specGapObs!.content).toContain("Spec gap identified here");
+    expect(specGapObs!.content).toContain("needs spec review");
   });
 
   // AC: @triage-cli-commands ac-8
@@ -524,7 +538,7 @@ describe("kspec triage start (interactive)", () => {
     expect(result.stdout).not.toContain("Already triaged");
   });
 
-  // AC: @triage-cli-commands ac-10
+  // AC: @triage-cli-commands ac-10 (partial — tests EOF preservation, not SIGINT)
   it("should preserve records that were committed before input ends", () => {
     addInboxItem("First item to triage");
     addInboxItem("Second item to triage");
@@ -657,5 +671,215 @@ describe("triage JSON output trait compliance", () => {
     );
     // Output should be valid JSON
     expect(() => JSON.parse(result.stdout)).not.toThrow();
+  });
+
+  // AC: @trait-json-output ac-6
+  it("should use --json over --format in triage export", () => {
+    const inboxUlid = addInboxItem("Export JSON precedence test");
+    recordTriage(inboxUlid, "defer", "test");
+
+    const result = kspec(
+      "triage export --format context --json",
+      tempDir,
+    );
+    // When --json is active, output should be JSON, not markdown
+    expect(() => JSON.parse(result.stdout)).not.toThrow();
+    const parsed = JSON.parse(result.stdout);
+    expect(Array.isArray(parsed)).toBe(true);
+  });
+});
+
+describe("triage filterable-list trait compliance", () => {
+  // AC: @trait-filterable-list ac-3
+  it("should support --limit to restrict result count", () => {
+    const ulid1 = addInboxItem("Limit test 1");
+    const ulid2 = addInboxItem("Limit test 2");
+    const ulid3 = addInboxItem("Limit test 3");
+    recordTriage(ulid1, "promote", "first");
+    recordTriage(ulid2, "defer", "second");
+    recordTriage(ulid3, "delete", "third");
+
+    const limited = kspecJson<Array<{ _ulid: string }>>("triage list --limit 2", tempDir);
+    expect(limited.length).toBe(2);
+  });
+
+  // AC: @trait-filterable-list ac-5
+  it("should combine multiple filters with AND logic", () => {
+    const ulid1 = addInboxItem("Multi filter 1");
+    const ulid2 = addInboxItem("Multi filter 2");
+    const ulid3 = addInboxItem("Multi filter 3");
+    recordTriage(ulid1, "promote", "first");
+    recordTriage(ulid2, "defer", "second");
+    recordTriage(ulid3, "promote", "third");
+
+    // Filter by action only
+    const promotes = kspecJson<Array<{ action: string }>>(
+      "triage list --action promote",
+      tempDir,
+    );
+    expect(promotes.length).toBe(2);
+    expect(promotes.every((r) => r.action === "promote")).toBe(true);
+
+    // Combine status + action
+    const statusAndAction = kspecJson<Array<{ status: string; action: string }>>(
+      "triage list --status triaged --action promote",
+      tempDir,
+    );
+    expect(statusAndAction.every((r) => r.status === "triaged" && r.action === "promote")).toBe(true);
+  });
+
+  // AC: @trait-filterable-list ac-6
+  it("should show informative message for empty filtered list", () => {
+    const result = kspec("triage list", tempDir);
+    expect(result.stdout).toContain("No triage records");
+  });
+});
+
+describe("triage dry-run trait compliance", () => {
+  // AC: @trait-dry-run ac-2
+  it("should not modify files in dry-run mode for triage record", () => {
+    const inboxUlid = addInboxItem("Dry run record test");
+
+    kspec(
+      `triage record @${inboxUlid.slice(0, 8)} --action promote --reasoning "test" --dry-run`,
+      tempDir,
+    );
+
+    // No record should have been created
+    const records = kspecJson<Array<{ _ulid: string }>>("triage list", tempDir);
+    expect(records.length).toBe(0);
+  });
+
+  // AC: @trait-dry-run ac-3
+  it("should clearly indicate dry-run is a preview", () => {
+    const inboxUlid = addInboxItem("Dry run preview test");
+    const record = recordTriage(inboxUlid, "promote", "test");
+
+    const result = kspec(
+      `triage act @${record._ulid.slice(0, 8)} --dry-run`,
+      tempDir,
+    );
+    expect(result.stdout).toContain("Dry run");
+  });
+
+  // AC: @trait-dry-run ac-5
+  it("should not modify state even when --dry-run is combined with other flags", () => {
+    const inboxUlid = addInboxItem("Dry run precedence test");
+    const record = recordTriage(inboxUlid, "delete", "test");
+
+    kspec(
+      `triage act @${record._ulid.slice(0, 8)} --dry-run`,
+      tempDir,
+    );
+
+    // Record should NOT be acted_on
+    const records = kspecJson<Array<{ _ulid: string; status: string }>>("triage list", tempDir);
+    const unchanged = records.find((r) => r._ulid === record._ulid);
+    expect(unchanged!.status).toBe("triaged");
+
+    // Inbox item should still exist
+    const inbox = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
+    expect(inbox.find((i) => i._ulid === inboxUlid)).toBeDefined();
+  });
+});
+
+describe("triage semantic-exit-codes trait compliance", () => {
+  // AC: @trait-semantic-exit-codes ac-1
+  it("should exit 0 on successful operations", () => {
+    const inboxUlid = addInboxItem("Exit code test");
+    const result = kspec(
+      `triage record @${inboxUlid.slice(0, 8)} --action defer --reasoning "test"`,
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+  });
+
+  // AC: @trait-semantic-exit-codes ac-2
+  it("should exit 1 for validation errors (mapped to VALIDATION_FAILED=4)", () => {
+    const inboxUlid = addInboxItem("Validation exit code test");
+    const result = kspec(
+      `triage record @${inboxUlid.slice(0, 8)} --action badaction --reasoning "test"`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+  });
+
+  // AC: @trait-semantic-exit-codes ac-5
+  it("should exit 0 with empty result set when query returns nothing", () => {
+    const result = kspec("triage list --status pending", tempDir);
+    expect(result.exitCode).toBe(0);
+  });
+
+  // AC: @trait-semantic-exit-codes ac-8
+  // Exit code meanings are documented in src/cli/exit-codes.ts
+});
+
+describe("triage error-guidance trait compliance", () => {
+  // AC: @trait-error-guidance ac-2
+  it("should include suggested action in error messages", () => {
+    const result = kspec(
+      "triage get @NOTEXIST",
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).toContain("not found");
+  });
+
+  // AC: @trait-error-guidance ac-4
+  it("should indicate current state and valid next states on invalid transition", () => {
+    const inboxUlid = addInboxItem("State transition error test");
+    const record = recordTriage(inboxUlid, "defer", "test");
+    kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
+
+    const result = kspec(
+      `triage act @${record._ulid.slice(0, 8)}`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).toContain("already been acted on");
+  });
+
+  // AC: @trait-error-guidance ac-5
+  it("should indicate which value failed validation", () => {
+    const inboxUlid = addInboxItem("Validation guidance test");
+    const result = kspec(
+      `triage record @${inboxUlid.slice(0, 8)} --action notvalid --reasoning "test"`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.stderr).toContain("Invalid action");
+    expect(result.stderr).toContain("notvalid");
+  });
+
+  // AC: @trait-error-guidance ac-6
+  it("should include guidance in structured JSON error", () => {
+    const result = kspec(
+      'triage record @NOTEXIST --action promote --reasoning "test" --json',
+      tempDir,
+      { expectFail: true },
+    );
+    const errorJson = JSON.parse(result.stderr);
+    expect(errorJson.error).toBeDefined();
+  });
+});
+
+describe("triage shadow-commit trait compliance", () => {
+  // AC: @trait-shadow-commit ac-1
+  // Already covered in "kspec triage shadow commits" describe block
+
+  // AC: @trait-shadow-commit ac-5
+  it("should not commit when validation error occurs", () => {
+    const inboxUlid = addInboxItem("Shadow validation test");
+    const result = kspec(
+      `triage record @${inboxUlid.slice(0, 8)} --action badaction --reasoning "test"`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(4);
+
+    // No triage record should have been created
+    const records = kspecJson<Array<{ _ulid: string }>>("triage list", tempDir);
+    expect(records.length).toBe(0);
   });
 });

@@ -128,8 +128,8 @@ async function executeTriageAction(
         info(`Would create spec-gap observation from: "${truncateText(record.item_snapshot)}"`);
         return {};
       }
-      const content = `${record.item_snapshot}\n\nReasoning: ${record.reasoning || ""}`;
-      const observation = createObservation("idea", content, {
+      const content = `[spec-gap] ${record.item_snapshot}\n\nReasoning: ${record.reasoning || ""}`;
+      const observation = createObservation("question", content, {
         configAuthor: ctx.config?.identity?.author,
       });
       await saveObservation(ctx, observation);
@@ -282,6 +282,7 @@ Examples:
         let records = await loadTriageRecords(ctx);
         const totalCount = records.length;
         const activeFilters: string[] = [];
+        let filteredCount: number;
 
         // AC: @triage-cli-commands ac-3 — status filter
         // AC: @trait-filterable-list ac-1
@@ -305,6 +306,9 @@ Examples:
         records.sort((a, b) => {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         });
+
+        // Capture post-filter count before pagination
+        filteredCount = records.length;
 
         // AC: @trait-filterable-list ac-8
         if (options.count) {
@@ -334,13 +338,13 @@ Examples:
             return;
           }
 
-          // AC: @trait-filterable-list ac-7 — summary with total and filter state
+          // AC: @trait-filterable-list ac-7 — summary with total matching items and filter state
           const filterInfo = activeFilters.length > 0
             ? ` (${activeFilters.join(", ")})`
             : "";
-          const showing = records.length < totalCount
-            ? `${records.length} of ${totalCount}`
-            : `${records.length}`;
+          const showing = filteredCount < totalCount
+            ? `${filteredCount} of ${totalCount}`
+            : `${filteredCount}`;
           console.log(
             `Triage records (${showing}${filterInfo}):\n`,
           );
@@ -484,24 +488,30 @@ Examples:
           records = records.filter((r) => r.status === options.status);
         }
 
-        if (options.format === "json") {
-          // AC: @triage-cli-commands ac-14
-          // AC: @trait-json-output ac-1, ac-2, ac-5
-          console.log(JSON.stringify(records, null, 2));
-        } else if (options.format === "context") {
-          // AC: @triage-cli-commands ac-13
-          if (records.length === 0) {
-            console.log("No triage decisions recorded.");
-            return;
-          }
-          console.log("# Triage Decisions\n");
-          for (const record of records) {
-            console.log(formatTriageContext(record));
-          }
-        } else {
-          error(`Invalid format: ${options.format}. Must be one of: context, json`);
+        const validFormats = ["context", "json"];
+        if (!validFormats.includes(options.format)) {
+          error(`Invalid format: ${options.format}. Must be one of: ${validFormats.join(", ")}`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
+
+        // AC: @trait-json-output ac-6 — --json takes precedence over --format
+        // AC: @triage-cli-commands ac-13, ac-14
+        output(records, () => {
+          if (options.format === "json") {
+            // AC: @triage-cli-commands ac-14
+            console.log(JSON.stringify(records, null, 2));
+          } else {
+            // AC: @triage-cli-commands ac-13 — context format
+            if (records.length === 0) {
+              console.log("No triage decisions recorded.");
+              return;
+            }
+            console.log("# Triage Decisions\n");
+            for (const record of records) {
+              console.log(formatTriageContext(record));
+            }
+          }
+        });
       } catch (err) {
         error("Failed to export triage records", err);
         process.exit(EXIT_CODES.ERROR);
