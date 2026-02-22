@@ -54496,4 +54496,11 @@
         Added ac-6 to @package-distribution for marketplace.json coverage. Pre-existing failures:
         daemon-executable compilation and doctor daemon checks (unrelated)."
       supersedes: null
+    - _ulid: 01KJ355AM9WTD3DGBE63J50ZQV
+      created_at: 2026-02-22T17:08:10.505Z
+      author: "@claude"
+      content: "Verified: Claude Code no longer shows marketplace warning. marketplace.json generated with
+        ./plugins/kspec source path matching official marketplace pattern. Plugin loads
+        successfully."
+      supersedes: null
   todos: []
