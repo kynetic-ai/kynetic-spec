@@ -54274,7 +54274,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -54356,6 +54356,7 @@
         ephemeral output)
       supersedes: null
   todos: []
+  started_at: 2026-02-22T20:16:48.921Z
 - _ulid: 01KJ316F9ESM6V9JBSKEYDA163
   slugs: []
   title: Spec and formalize .kspec/artifacts/ directory convention
