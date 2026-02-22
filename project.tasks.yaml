@@ -54197,7 +54197,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -54255,3 +54255,6 @@
         kspec-agents.md shows /kspec:kspec-help.
       supersedes: null
   todos: []
+  completed_at: 2026-02-22T01:37:33.612Z
+  closed_reason: "Merged in PR #442. Core skills now render to .claude/plugins/kspec/skills/<id>/ for
+    proper Claude Code plugin discovery as /kspec:<id>."
