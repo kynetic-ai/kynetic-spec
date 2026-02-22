@@ -370,9 +370,17 @@ inbox:
       - dx
     added_by: "@claude"
   - _ulid: 01KHJ4RVT8N3Y9S4M357TZMWQD
-    text: "Deduplicate utility functions: contentsEqual(), directoriesEqual(), copyDirectory() exist
+    text: >-
+      Deduplicate utility functions: contentsEqual(), directoriesEqual(), copyDirectory() exist
       identically in both skill.ts and skill-render.ts. Export from skill-render.ts, import in
-      skill.ts. PR #394 consolidated render functions but missed these utilities."
+      skill.ts. PR #394 consolidated render functions but missed these utilities.
+
+
+      ---
+
+
+      Triage 2026-02-22: 3/6 sub-items RESOLVED by PRs #403 #410 #411. Remaining: silent error
+      swallowing, legacy renderClaudeCodeSkill, renderer partial duplication.
     created_at: 2026-02-16T02:34:16.776Z
     tags: []
     added_by: "@claude"
