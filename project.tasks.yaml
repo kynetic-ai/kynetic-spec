@@ -53763,6 +53763,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Skill renamed from kspec-help to help. Renders as /kspec:help via plugin system. Old
+    monolithic skill removed. All tests pass.
   depends_on:
     - "@task-plugin-rendering"
   context: []
@@ -53773,6 +53775,7 @@
   vcs_refs: []
   created_at: 2026-02-21T07:30:19.913Z
   started_at: 2026-02-22T03:49:24.249Z
+  completed_at: 2026-02-22T03:49:28.550Z
   notes:
     - _ulid: 01KJ119NKZJ6EDDMSJ830YA3GY
       created_at: 2026-02-21T21:22:09.664Z
@@ -53799,9 +53802,6 @@
         kspec-agents.md now shows /kspec:help. All 107 affected tests pass."
       supersedes: null
   todos: []
-  completed_at: 2026-02-22T03:49:28.550Z
-  closed_reason: Skill renamed from kspec-help to help. Renders as /kspec:help via plugin system. Old
-    monolithic skill removed. All tests pass.
 - _ulid: 01KHZHPJK0BFVACX29XWZRJ19R
   slugs: []
   title: "Write core skill: kspec:observations"
@@ -54266,4 +54266,25 @@
         8. **Verified**: kspec skill render/status/clean/validate all work correctly.
         kspec-agents.md shows /kspec:kspec-help.
       supersedes: null
+  todos: []
+- title: "Spike: Design interactive triage system with persistent metadata"
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - spike
+    - design
+    - inbox
+    - triage
+  depends_on: []
+  _ulid: 01KJ315WHBK8887TZQXY8HG9DH
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-22T15:58:34.538Z
+  notes: []
   todos: []
