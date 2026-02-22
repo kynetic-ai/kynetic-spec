@@ -38,8 +38,9 @@ export function generateSkillsTable(skills: LoadedSkill[]): string {
 
   for (const skill of skills) {
     const description = skill.description || skill.name;
-    // Use the skill ID as the reference (prefixed with /)
-    lines.push(`| ${description} | \`/${skill.id}\` skill |`);
+    // Core skills in plugin system are invoked as /kspec:<id>, project skills as /<id>
+    const invocation = skill.origin === "core" ? `kspec:${skill.id}` : skill.id;
+    lines.push(`| ${description} | \`/${invocation}\` skill |`);
   }
 
   lines.push("");

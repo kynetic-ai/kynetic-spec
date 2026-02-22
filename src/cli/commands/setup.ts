@@ -974,52 +974,44 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     drifted: 0,
   };
 
-  // Helper to check a skill directory for kspec-managed SKILL.md
-  async function checkSkillDir(dirPath: string): Promise<void> {
-    // Check SKILL.md at current level
-    const skillMdPath = path.join(dirPath, "SKILL.md");
+  // Helper to scan a directory for skill subdirs with kspec-managed SKILL.md
+  async function scanForSkills(baseDir: string): Promise<void> {
     try {
-      const content = await fs.readFile(skillMdPath, "utf-8");
-      if (content.includes("<!-- kspec-managed -->")) {
-        skills.total++;
-        skills.rendered++;
-        // TODO: check drift status
-      }
-    } catch (_noSkillMd) {
-      // SKILL.md doesn't exist at this level
-    }
-
-    // Also check subdirectories for namespaced skills (e.g., kspec/<id>/SKILL.md)
-    try {
-      const subEntries = await fs.readdir(dirPath, { withFileTypes: true });
-      for (const sub of subEntries) {
-        if (sub.isDirectory()) {
-          const nestedMd = path.join(dirPath, sub.name, "SKILL.md");
+      const dirs = await fs.readdir(baseDir, { withFileTypes: true });
+      for (const dir of dirs) {
+        if (dir.isDirectory()) {
+          const skillMdPath = path.join(baseDir, dir.name, "SKILL.md");
           try {
-            const content = await fs.readFile(nestedMd, "utf-8");
+            const content = await fs.readFile(skillMdPath, "utf-8");
             if (content.includes("<!-- kspec-managed -->")) {
               skills.total++;
               skills.rendered++;
             }
-          } catch (_noNestedSkillMd) {
-            // No SKILL.md in nested dir
+          } catch (_noSkillMd) {
+            // No SKILL.md
           }
         }
       }
     } catch (_notReadable) {
-      // Not a readable directory
+      // Directory doesn't exist
     }
   }
 
+  // Scan .claude/skills/ (project/local skills)
+  await scanForSkills(skillsDir);
+
+  // Scan .claude/plugins/*/skills/ (plugin skills)
+  const pluginsDir = path.join(projectDir, ".claude", "plugins");
   try {
-    const skillDirs = await fs.readdir(skillsDir, { withFileTypes: true });
-    for (const dir of skillDirs) {
-      if (dir.isDirectory()) {
-        await checkSkillDir(path.join(skillsDir, dir.name));
+    const pluginEntries = await fs.readdir(pluginsDir, { withFileTypes: true });
+    for (const pluginEntry of pluginEntries) {
+      if (pluginEntry.isDirectory()) {
+        const pluginSkillsDir = path.join(pluginsDir, pluginEntry.name, "skills");
+        await scanForSkills(pluginSkillsDir);
       }
     }
-  } catch (err) {
-    debugLog("Skills dir doesn't exist", err);
+  } catch (_noPluginsDir) {
+    // .claude/plugins doesn't exist
   }
 
   // Check agents.md
