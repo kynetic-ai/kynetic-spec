@@ -54425,7 +54425,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -54488,3 +54488,4 @@
         - PR #444 shipped the plugin system but missed marketplace.json requirement
       supersedes: null
   todos: []
+  started_at: 2026-02-22T16:44:02.493Z
