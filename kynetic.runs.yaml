@@ -4757,7 +4757,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KJ3A1T2TQ2AV5T8210ZF1DW8
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-22T18:33:38.139Z
@@ -4799,5 +4799,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-22T18:36:01.827Z
-        completed_at: 2026-02-22T18:36:01.827Z
+        completed_at: 2026-02-22T18:36:08.510Z
+        notes: No items to capture. Single friction point (slash command handling) is Claude Code harness
+          behavior, not kspec-actionable. Session successes (pre-creation spec review, parallel
+          agents, spec-first flow, kspec batch) are already established patterns.
     initiated_by: "@claude"
+    completed_at: 2026-02-22T18:36:08.510Z
