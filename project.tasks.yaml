@@ -54909,9 +54909,21 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-22T23:06:09.939Z
-  notes: []
+  notes:
+    - _ulid: 01KJ3SS53VD4G4TCCVAS8FJWHF
+      created_at: 2026-02-22T23:08:31.739Z
+      author: "@claude"
+      content: Automation eligible. This should be fixable by an agent — the root cause is well-documented
+        (cross-package relative imports). If no fix is found after multiple attempts, block for
+        manual handling.
+      supersedes: null
   todos: []
-- title: Investigate flaky doctor test failures
+  automation: eligible
+- _ulid: 01KJ3SMVTJC1FFY14RAAA7K2SV
+  slugs:
+    - task-investigate-doctor-flaky-tests
+  title: Investigate flaky doctor test failures
+  type: task
   description: >-
     Doctor tests (tests/parser/doctor.test.ts) have been reported as failing intermittently by
     agents during ralph loop sessions. The 29-test suite passes consistently in isolation but has
@@ -54933,23 +54945,27 @@
 
     The doctor test covers: shadow health, setup status, daemon running/unreachable/not-running,
     overall verdict, JSON output, exit codes. Any of these could have timing sensitivity.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 4
-  slugs:
-    - task-investigate-doctor-flaky-tests
   tags:
     - bug
     - investigation
     - testing
-  depends_on: []
-  _ulid: 01KJ3SMVTJC1FFY14RAAA7K2SV
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-22T23:06:11.154Z
-  notes: []
+  notes:
+    - _ulid: 01KJ3SS75HQBZFV2EWCBSPH7XS
+      created_at: 2026-02-22T23:08:33.841Z
+      author: "@claude"
+      content: Automation eligible. Investigation task — agent should try to reproduce and identify the
+        flaky condition. If unable to reproduce or diagnose after multiple attempts, block for
+        manual handling.
+      supersedes: null
   todos: []
+  automation: eligible
