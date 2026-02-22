@@ -1536,7 +1536,27 @@ export async function runSetupPipeline(
       });
     }
 
-    // Step 3a: Seed permissions (Claude Code only)
+    // Step 3a: Ensure artifacts directory exists
+    // AC: @artifacts-directory ac-setup-ensures
+    {
+      const artifactsDir = path.join(projectDir, ".kspec", "artifacts");
+      let artifactsCreated = false;
+      try {
+        await fs.access(artifactsDir);
+      } catch {
+        if (!dryRun) {
+          await fs.mkdir(artifactsDir, { recursive: true });
+        }
+        artifactsCreated = true;
+      }
+      steps.push({
+        name: "Ensure artifacts directory",
+        status: artifactsCreated ? "done" : "skipped",
+        message: artifactsCreated ? "created .kspec/artifacts/" : "already exists",
+      });
+    }
+
+    // Step 3b: Seed permissions (Claude Code only)
     // AC: @new-project-bootstrapping ac-1
     {
       const { seedPermissions } = await import("./setup-seeding.js");
@@ -1553,7 +1573,7 @@ export async function runSetupPipeline(
       });
     }
 
-    // Step 3b: Seed memory (platform-extensible)
+    // Step 3c: Seed memory (platform-extensible)
     // AC: @new-project-bootstrapping ac-2
     {
       const { seedMemory } = await import("./setup-seeding.js");

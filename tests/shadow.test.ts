@@ -327,6 +327,67 @@ describe('Shadow Branch', () => {
       expect(gitattributesContent).toContain('*.yaml merge=kspec');
       expect(gitattributesContent).toContain('*.yml merge=kspec');
     });
+
+    // AC: @artifacts-directory ac-init-creates
+    it('creates artifacts directory during init', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const artifactsDir = path.join(worktreeDir, 'artifacts');
+      const stat = await fs.stat(artifactsDir);
+      expect(stat.isDirectory()).toBe(true);
+    });
+
+    // AC: @artifacts-directory ac-gitignore-entry
+    it('creates .gitignore with artifacts/ entry during init', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+      expect(result.success).toBe(true);
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const gitignoreContent = await fs.readFile(path.join(worktreeDir, '.gitignore'), 'utf-8');
+      expect(gitignoreContent).toContain('artifacts/');
+    });
+
+    // AC: @artifacts-directory ac-commits-exclude
+    it('does not include artifacts files in shadow branch commits', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      await initializeShadow(testDir, { projectName: 'Test Project' });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const artifactsDir = path.join(worktreeDir, 'artifacts');
+
+      // Create a file in artifacts/
+      await fs.writeFile(path.join(artifactsDir, 'test-report.html'), '<html>test</html>');
+
+      // Stage all and check what would be committed
+      execSync('git add -A', { cwd: worktreeDir, stdio: 'pipe' });
+      const staged = execSync('git diff --cached --name-only', {
+        cwd: worktreeDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim();
+
+      // artifacts/ files should not appear in staged changes
+      expect(staged).not.toContain('artifacts/');
+    });
   });
 
   describe('repairShadow', () => {
@@ -419,6 +480,24 @@ describe('Shadow Branch', () => {
       expect(result.success).toBe(true);
       expect(result.alreadyExists).toBe(true);
       expect(result.worktreeCreated).toBe(false);
+    });
+
+    // AC: @artifacts-directory ac-repair-recreates
+    it('recreates artifacts directory after repair', async () => {
+      await setupHealthyShadow();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Break: delete the worktree directory
+      execSync(`git worktree remove ${SHADOW_WORKTREE_DIR} --force`, { cwd: testDir, stdio: 'pipe' });
+
+      // Repair
+      const result = await repairShadow(testDir);
+      expect(result.success).toBe(true);
+
+      // Verify artifacts directory was recreated
+      const artifactsDir = path.join(worktreeDir, 'artifacts');
+      const stat = await fs.stat(artifactsDir);
+      expect(stat.isDirectory()).toBe(true);
     });
 
     // AC: @shadow-recovery ac-recovery-5 - Healthy → status reports healthy

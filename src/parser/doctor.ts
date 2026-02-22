@@ -254,6 +254,16 @@ function buildShadowSection(section: ShadowSection, status: ShadowStatus): void 
           : "Worktree not properly linked",
         guidance: status.worktreeLinked ? undefined : "Run `kspec shadow repair` to fix worktree link",
       });
+
+      // AC: @artifacts-directory ac-doctor-checks
+      section.checks.push({
+        name: "artifacts-dir",
+        severity: status.artifactsDirExists ? "ok" : "warning",
+        message: status.artifactsDirExists
+          ? "Artifacts directory exists"
+          : "Artifacts directory missing",
+        guidance: status.artifactsDirExists ? undefined : "Run `kspec setup` to create artifacts directory",
+      });
     }
   }
 }
