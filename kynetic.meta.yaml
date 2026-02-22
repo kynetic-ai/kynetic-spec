@@ -6167,6 +6167,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ3M13X05B558KQ58AXRM1K1
+    type: success
+    content: Zod superRefine pattern for status-dependent field requirements (e.g., triaged requires
+      reasoning/decided_by, acted_on requires acted_at). Should be the default approach for any
+      schema with status lifecycle — flat .optional() misses state invariants. First used in
+      triage.ts, should apply to plan.ts and similar.
+    created_at: 2026-02-22T21:28:01.184Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
