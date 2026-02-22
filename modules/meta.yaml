@@ -3747,6 +3747,12 @@ modules:
                 when: the package contents are inspected
                 then: a plugin/ directory is included containing .claude-plugin/plugin.json with version matching
                   package.json and skills/<id>/SKILL.md with YAML frontmatter for each core skill
+              - id: ac-6
+                given: npm run build:plugin is run
+                when: the plugin/.claude-plugin/ directory is inspected
+                then: a marketplace.json file exists with valid marketplace schema including name, description,
+                  owner, and a plugins array containing the kspec plugin entry with version matching
+                  package.json
             depends_on: []
             implements: []
             relates_to: []
