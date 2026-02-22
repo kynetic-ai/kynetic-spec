@@ -4727,7 +4727,7 @@ features:
         created: 2026-02-22T20:16:08.961Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KJ3FXGSDCFZBW80C762P8FR1
         slugs:
           - triage-daemon-api
