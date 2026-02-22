@@ -54418,23 +54418,73 @@
         - Should kspec generate commands output to artifacts/ by default?
       supersedes: null
   todos: []
-- title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
+- _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
+  slugs: []
+  title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - plugin
     - bug
     - cli
-  depends_on: []
-  _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-22T16:21:21.857Z
-  notes: []
+  notes:
+    - _ulid: 01KJ32G0SA5R029XAKHQSBN9V2
+      created_at: 2026-02-22T16:21:35.146Z
+      author: "@claude"
+      content: >-
+        Spec gap: plugin marketplace registration is incomplete.
+
+
+        ## Problem
+
+        kspec setup registers a 'directory' source marketplace but the plugin/ dir only has
+        .claude-plugin/plugin.json (single plugin manifest). Claude Code expects
+        .claude-plugin/marketplace.json (marketplace listing format) for directory sources. Warning:
+        'Failed to load marketplace kspec-plugins: marketplace.json not found'.
+
+
+        ## What Exists
+
+        - plugin/.claude-plugin/plugin.json - single plugin manifest (name, version, description)
+
+        - plugin/skills/help/SKILL.md - one core skill
+
+        - src/lib/claude-plugin-registry.ts - registers marketplace in known_marketplaces.json
+
+        - Build step populates plugin/ from templates/skills/
+
+
+        ## What's Missing
+
+        1. marketplace.json generation: build step should produce .claude-plugin/marketplace.json
+        wrapping the kspec plugin entry in the marketplace plugins array format
+
+        2. Validate against official marketplace schema (see
+        ~/.claude/plugins/marketplaces/claude-plugins-official/.claude-plugin/marketplace.json for
+        reference format)
+
+        3. Spec coverage: review @plugin-rendering and @core-skill-installation specs for
+        marketplace.json AC gaps
+
+        4. Test: verify claude doctor shows no plugin errors after setup
+
+
+        ## Reference
+
+        - Fix commit: 47453817 (directory source type fix)
+
+        - Official marketplace format: { name, description, owner, plugins: [{ name, description,
+        version, source, ... }] }
+
+        - PR #444 shipped the plugin system but missed marketplace.json requirement
+      supersedes: null
   todos: []
