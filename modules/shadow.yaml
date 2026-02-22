@@ -98,6 +98,40 @@ features:
             traits: []
             notes: []
             created: 2026-02-22T17:46:18.926Z
+            acceptance_criteria:
+              - id: ac-init-creates
+                given: a new project is being initialized
+                when: kspec init runs and creates the shadow branch worktree
+                then: .kspec/artifacts/ directory is created with a .gitkeep file
+              - id: ac-gitignore-entry
+                given: .kspec/ worktree exists
+                when: the .gitignore in .kspec/ is examined
+                then: it contains an artifacts/ entry excluding the directory contents from shadow branch tracking
+              - id: ac-commits-exclude
+                given: files exist in .kspec/artifacts/
+                when: any kspec command auto-commits to shadow branch
+                then: artifact files are never included in the commit
+              - id: ac-setup-ensures
+                given: an existing project where .kspec/artifacts/ is missing
+                when: kspec setup runs
+                then: .kspec/artifacts/ directory is created with a .gitkeep file
+              - id: ac-doctor-checks
+                given: .kspec/artifacts/ directory is missing
+                when: kspec doctor runs
+                then: it reports the missing artifacts directory as an issue
+              - id: ac-repair-recreates
+                given: .kspec/artifacts/ is missing
+                when: kspec shadow repair runs and rebuilds the worktree
+                then: .kspec/artifacts/ directory is recreated with a .gitkeep file
+              - id: ac-naming-convention
+                given: a command or agent generates a file for artifacts/
+                when: choosing a filename
+                then: the recommended pattern is type-YYYY-MM-DD.ext with a counter suffix for collisions (e.g.
+                  triage-report-2026-02-22.html, triage-report-2026-02-22-2.html)
+              - id: ac-empty-dir-persistence
+                given: artifacts/ is empty and the shadow branch worktree is recreated via clone or repair
+                when: the worktree is set up
+                then: the artifacts/ directory exists due to the .gitkeep file being tracked on the shadow branch
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
