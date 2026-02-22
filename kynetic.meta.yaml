@@ -6177,6 +6177,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ3T9X36SS737DYRWW9QE9ZV
+    type: idea
+    content: |-
+      Spec gap test
+
+      Reasoning: needs spec
+    created_at: 2026-02-22T23:17:40.582Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
