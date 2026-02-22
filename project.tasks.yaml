@@ -54276,6 +54276,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Spike complete. Plan imported with 6 specs and 6 tasks. Dependencies set.
   depends_on: []
   context: []
   priority: 2
@@ -54287,6 +54288,7 @@
   vcs_refs: []
   created_at: 2026-02-22T15:58:34.538Z
   started_at: 2026-02-22T20:16:48.921Z
+  completed_at: 2026-02-22T20:16:53.170Z
   notes:
     - _ulid: 01KJ3168YTVCBZ7EPD5W213YPA
       created_at: 2026-02-22T15:58:47.258Z
@@ -54357,8 +54359,6 @@
         ephemeral output)
       supersedes: null
   todos: []
-  completed_at: 2026-02-22T20:16:53.170Z
-  closed_reason: Spike complete. Plan imported with 6 specs and 6 tasks. Dependencies set.
 - _ulid: 01KJ316F9ESM6V9JBSKEYDA163
   slugs: []
   title: Spec and formalize .kspec/artifacts/ directory convention
@@ -54594,7 +54594,7 @@
   type: task
   spec_ref: "@triage-record-schema"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -54616,6 +54616,7 @@
         Enforce inbox_ref uniqueness in save logic (upsert pattern).
         Add load/save in src/parser/yaml.ts: getTriageFilePath, loadTriageRecords, saveTriageRecord.
   todos: []
+  started_at: 2026-02-22T20:16:58.536Z
 - _ulid: 01KJ3FXHPC8CMZQFCC7SYGGMF8
   slugs:
     - implement-triage-cli-commands
