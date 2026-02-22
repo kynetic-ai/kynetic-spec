@@ -171,7 +171,7 @@ describe('AC-3: Version detection returns null on failure', () => {
 
       // Verify skills were installed (version field present since package resolves fine)
       const skills = kspecJson<{ id: string; version?: string }[]>('skill list', tempDir);
-      const coreSkill = skills.find((s) => s.id === 'kspec-help');
+      const coreSkill = skills.find((s) => s.id === 'help');
       expect(coreSkill).toBeDefined();
       // In normal operation, version should be set
       expect(coreSkill?.version).toBeDefined();

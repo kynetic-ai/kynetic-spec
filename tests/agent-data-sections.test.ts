@@ -114,7 +114,7 @@ describe("generateSkillsTable", () => {
     it("should use /kspec:<id> invocation for core skills", () => {
       const skills: LoadedSkill[] = [
         {
-          id: "kspec-help",
+          id: "help",
           name: "Kspec Help",
           description: "Get help with kspec commands",
           origin: "core",
@@ -124,8 +124,8 @@ describe("generateSkillsTable", () => {
 
       const result = generateSkillsTable(skills);
 
-      expect(result).toContain("`/kspec:kspec-help` skill");
-      expect(result).not.toContain("`/kspec-help` skill");
+      expect(result).toContain("`/kspec:help` skill");
+      expect(result).not.toContain("`/help` skill");
     });
 
     it("should use /<id> invocation for project skills (no prefix)", () => {
