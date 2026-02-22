@@ -928,3 +928,8 @@ inbox:
       - prompt
       - safety
     added_by: "@claude"
+  - _ulid: 01KJ3T9QMVRE7PM5AWAE6JG3KG
+    text: Export precedence test
+    created_at: 2026-02-22T23:17:35.003Z
+    tags: []
+    added_by: "@claude"
