@@ -6157,6 +6157,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ331N2YAJ66MXHK1W9J9HQX
+    type: success
+    content: "Parallel subagent research pattern: launching 3+ research agents simultaneously to
+      investigate different aspects (code state, git history, task completions) builds comprehensive
+      evidence in ~3 minutes vs 15+ sequentially. Critical for large triage sessions (95 items).
+      Each agent gets a focused investigation scope and returns structured findings."
+    created_at: 2026-02-22T16:31:12.990Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
