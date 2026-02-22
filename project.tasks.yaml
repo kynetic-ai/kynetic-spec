@@ -54363,7 +54363,7 @@
   spec_ref: "@artifacts-directory"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -54428,6 +54428,7 @@
         .gitkeep."
       supersedes: null
   todos: []
+  started_at: 2026-02-22T17:47:04.173Z
 - _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
   slugs: []
   title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
