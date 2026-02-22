@@ -54417,6 +54417,16 @@
 
         - Should kspec generate commands output to artifacts/ by default?
       supersedes: null
+    - _ulid: 01KJ37C8HXX2K25VFZNCKSBWJN
+      created_at: 2026-02-22T17:46:54.909Z
+      author: "@claude"
+      content: "Spec created: @artifacts-directory with 8 ACs covering init, setup, doctor, repair,
+        gitignore, naming convention, and empty dir persistence. Review identified key gaps:
+        .gitkeep for empty dir survival, name collision handling, shadow repair behavior, and AC
+        redundancy — all addressed in final spec. Implementation scope: modify init (shadow.ts),
+        setup pipeline, doctor checks, and shadow repair to create/check .kspec/artifacts/ with
+        .gitkeep."
+      supersedes: null
   todos: []
 - _ulid: 01KJ32FKT1753QRTAPVDGG1KHB
   slugs: []
