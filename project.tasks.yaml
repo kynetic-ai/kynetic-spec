@@ -53775,6 +53775,11 @@
         comparison — only verifies source entries match in dest, ignores extra dest files from
         overlay copy. All 3181 tests pass."
       supersedes: null
+    - _ulid: 01KJ51GXRMHF8B9AWZ1KG1NEGY
+      created_at: 2026-02-23T10:43:05.108Z
+      author: Jacob Chapel
+      content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
