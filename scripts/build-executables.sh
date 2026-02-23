@@ -2,10 +2,16 @@
 set -euo pipefail
 
 # Build kspec-daemon executables for multiple platforms
-# Requires Bun 1.0+ with --compile support
+# Requires: npm run build (to populate dist/daemon/ with correct import paths)
+# Requires: Bun 1.0+ with --compile support
 
-DAEMON_SRC="packages/daemon/src/index.ts"
+DAEMON_SRC="dist/daemon/index.ts"
 DIST_DIR="dist/executables"
+
+if [ ! -f "$DAEMON_SRC" ]; then
+  echo "Error: $DAEMON_SRC not found. Run 'npm run build' first."
+  exit 1
+fi
 
 echo "Building kspec-daemon executables..."
 
