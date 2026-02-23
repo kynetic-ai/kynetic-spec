@@ -4844,7 +4844,7 @@ runs:
   - _ulid: 01KJ3ZM3MXMJ2ZZ9BZ2T0M54W8
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-23T00:50:37.853Z
     step_results:
@@ -4859,5 +4859,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-23T00:51:09.182Z
-        completed_at: 2026-02-23T00:51:09.182Z
+        completed_at: 2026-02-23T00:51:14.834Z
+        notes: No high-confidence friction points or successes identified that aren't already known. Both
+          friction points from step 1 were one-time issues already resolved inline. Skipping
+          capture.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-23T00:51:14.834Z
+        completed_at: 2026-02-23T00:51:14.834Z
     initiated_by: "@claude"
