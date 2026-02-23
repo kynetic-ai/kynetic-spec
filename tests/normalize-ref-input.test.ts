@@ -39,9 +39,11 @@ describe('Static analysis: no inline ref normalization in CLI commands', () => {
   const daemonRoutesDir = path.resolve(__dirname, '../packages/daemon/src/routes');
 
   // Pattern that matches inline ref normalization: x.startsWith("@") ? x : `@${x}`
+  // Uses multiline matching to catch patterns split across lines
   // Catches both simple vars (ref) and dotted access (options.spec)
-  // Excludes schema/common.ts where normalizeRefInput is defined
   const inlineNormalizationPattern = /\.startsWith\(["']@["']\)\s*\?\s*[\w.]+\s*:\s*`@\$\{/;
+  // Multiline version for patterns split across lines (e.g., ternary on separate lines)
+  const multilineNormalizationPattern = /\.startsWith\(["']@["']\)\s*\n\s*\?\s*[\w.]+\s*\n\s*:\s*`@\$\{/;
 
   function getTypeScriptFiles(dir: string): string[] {
     if (!fs.existsSync(dir)) return [];
@@ -56,12 +58,26 @@ describe('Static analysis: no inline ref normalization in CLI commands', () => {
 
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf-8');
+      const basename = path.basename(file);
+
+      // Check single-line patterns
       const lines = content.split('\n');
       lines.forEach((line, i) => {
         if (inlineNormalizationPattern.test(line)) {
-          violations.push(`${path.basename(file)}:${i + 1}: ${line.trim()}`);
+          violations.push(`${basename}:${i + 1}: ${line.trim()}`);
         }
       });
+
+      // Check multiline patterns (ternary split across lines)
+      const multilineMatches = content.match(new RegExp(multilineNormalizationPattern.source, 'g'));
+      if (multilineMatches) {
+        for (const match of multilineMatches) {
+          // Find the line number of the match
+          const idx = content.indexOf(match);
+          const lineNum = content.slice(0, idx).split('\n').length;
+          violations.push(`${basename}:${lineNum}: ${match.split('\n').map(l => l.trim()).join(' ')}`);
+        }
+      }
     }
 
     expect(violations).toEqual([]);
@@ -73,12 +89,25 @@ describe('Static analysis: no inline ref normalization in CLI commands', () => {
 
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf-8');
+      const basename = path.basename(file);
+
+      // Check single-line patterns
       const lines = content.split('\n');
       lines.forEach((line, i) => {
         if (inlineNormalizationPattern.test(line)) {
-          violations.push(`${path.basename(file)}:${i + 1}: ${line.trim()}`);
+          violations.push(`${basename}:${i + 1}: ${line.trim()}`);
         }
       });
+
+      // Check multiline patterns
+      const multilineMatches = content.match(new RegExp(multilineNormalizationPattern.source, 'g'));
+      if (multilineMatches) {
+        for (const match of multilineMatches) {
+          const idx = content.indexOf(match);
+          const lineNum = content.slice(0, idx).split('\n').length;
+          violations.push(`${basename}:${lineNum}: ${match.split('\n').map(l => l.trim()).join(' ')}`);
+        }
+      }
     }
 
     expect(violations).toEqual([]);
@@ -91,6 +120,7 @@ describe('Integration: normalizeRefInput at CLI boundary', () => {
 
   const expectedFiles = [
     'src/cli/commands/task.ts',
+    'src/cli/commands/tasks.ts',
     'src/cli/commands/derive.ts',
     'src/cli/commands/plan-import.ts',
     'src/cli/commands/meta.ts',

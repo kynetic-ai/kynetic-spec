@@ -304,9 +304,7 @@ async function importPlan(
       // AC: @plan-import ac-16, ac-17
       let parent: LoadedSpecItem | null = null;
       if (spec.parent) {
-        const parentRef = spec.parent.startsWith("@")
-          ? spec.parent
-          : `@${spec.parent}`;
+        const parentRef = normalizeRefInput(spec.parent);
 
         // Check if parent was just created in this import
         const parentSlug = parentRef.slice(1);

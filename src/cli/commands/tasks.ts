@@ -29,6 +29,7 @@ import {
 } from "../output.js";
 import { findClosestCommand } from "../suggest.js";
 import {
+  normalizeRefInput,
   TaskStatusSchema,
 } from "../../schema/common.js";
 
@@ -130,9 +131,7 @@ export async function listTasksAction(options: ListTasksOptions): Promise<void> 
         error(errors.reference.metaRefNotFound(options.metaRef));
         process.exit(EXIT_CODES.NOT_FOUND);
       }
-      const targetRef = options.metaRef.startsWith("@")
-        ? options.metaRef
-        : `@${options.metaRef}`;
+      const targetRef = normalizeRefInput(options.metaRef);
       taskList = taskList.filter(
         (t) => t.meta_ref === targetRef || t.meta_ref === options.metaRef,
       );
