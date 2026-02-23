@@ -55863,6 +55863,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #480. Fixed plan import to place type:trait items with no parent in
+    kynetic.yaml project-level traits array instead of module-level traits. Implementation mirrors
+    existing kspec trait add pattern. AC coverage: ac-11 (trait creation), ac-15 (dry-run output).
+    All tests pass."
   depends_on: []
   context: []
   priority: 3
@@ -55870,6 +55874,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:04.021Z
   started_at: 2026-02-23T15:33:53.291Z
+  completed_at: 2026-02-23T15:57:26.853Z
   notes:
     - _ulid: 01KJ4V6QNYAEW0WWCY7KNABP51
       created_at: 2026-02-23T08:52:39.742Z
@@ -55889,11 +55894,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T15:57:26.853Z
-  closed_reason: "Merged in PR #480. Fixed plan import to place type:trait items with no parent in
-    kynetic.yaml project-level traits array instead of module-level traits. Implementation mirrors
-    existing kspec trait add pattern. AC coverage: ac-11 (trait creation), ac-15 (dry-run output).
-    All tests pass."
 - _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
   slugs: []
   title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
@@ -55935,7 +55935,7 @@
     /kspec:help — generateSkillsTable() in agent-data-sections.ts doesn't account for namespace
     rendering of core skills
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -55952,6 +55952,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T15:57:59.979Z
 - _ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
   slugs: []
   title: task complete --force should bypass the submit requirement. Currently --force does not skip
