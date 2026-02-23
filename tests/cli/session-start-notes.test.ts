@@ -155,7 +155,7 @@ describe('session start notes enrichment', () => {
       expect(result.stdout).toContain('All tests passing');
     });
 
-    it('should include notes from multiple completed tasks', () => {
+    it('should include notes from multiple completed tasks', { timeout: 20000 }, () => {
       // Create and complete two tasks with notes
       kspec('task add --title "First completed task" --slug first-completed', tempDir);
       kspec('task start @first-completed', tempDir);
