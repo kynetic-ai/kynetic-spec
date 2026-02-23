@@ -55419,6 +55419,7 @@
     - triage
   vcs_refs: []
   created_at: 2026-02-23T04:53:45.885Z
+  started_at: 2026-02-23T12:37:06.986Z
   notes:
     - _ulid: 01KJ4V6W4E461NJ684CQJK2R19
       created_at: 2026-02-23T08:52:44.302Z
@@ -55426,9 +55427,21 @@
       content: "AUTOMATION: Refactor. Extract shared triage action executor from duplicate switch/case in
         triage.ts and daemon triage.ts. Create src/triage/actions.ts."
       supersedes: null
+    - _ulid: 01KJ58R2377P3FST33TC63R289
+      created_at: 2026-02-23T12:49:18.951Z
+      author: "@claude"
+      content: "Extracted shared triage action executor to src/triage/ module. Created 3 files:
+        constants.ts (VALID_ACTIONS derived from TriageActionSchema), actions.ts
+        (executeTriageAction with options-based logging), index.ts (public exports). Updated CLI
+        (src/cli/commands/triage.ts) to import shared module — removed local executeTriageAction,
+        replaced 3 hardcoded validActions arrays with VALID_ACTIONS. Updated daemon
+        (packages/daemon/src/routes/triage.ts) similarly — removed local VALID_ACTIONS const and
+        executeTriageAction function. Updated static analysis test in daemon-api-triage.test.ts to
+        verify shared module import. Added 11 new tests in triage-actions.test.ts covering
+        constants, all 5 action types, dry-run, and validation. All 3193 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T12:37:06.986Z
 - _ulid: 01KJ4DP400CH23DK5CCMC1ZWF2
   slugs:
     - task-audit-daemon-test-coverage
