@@ -6303,4 +6303,32 @@ skills:
     tags:
       - core
     allowed_tools: []
+  - _ulid: 01KJ51SSZ2NVZGXE32NR5TWPS9
+    _type: skill
+    id: observations
+    name: Observations
+    description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The
+      feedback loop that drives process improvement.
+    origin: core
+    version: 0.3.0
+    platforms:
+      - claude-code
+    depends_on: []
+    tags:
+      - core
+    allowed_tools: []
+  - _ulid: 01KJ51ST2KVBW4GRDRCH1JFM7Z
+    _type: skill
+    id: triage
+    name: Triage
+    description: Triage inbox items systematically. Records decisions with audit trail, then executes
+      actions. Supports inbox, observations, and automation eligibility triage.
+    origin: core
+    version: 0.3.0
+    platforms:
+      - claude-code
+    depends_on: []
+    tags:
+      - core
+    allowed_tools: []
 includes: []
