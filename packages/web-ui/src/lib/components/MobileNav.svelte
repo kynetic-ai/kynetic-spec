@@ -7,7 +7,8 @@
 		{ path: '/', label: 'Dashboard', icon: '🏠' },
 		{ path: '/tasks', label: 'Tasks', icon: '✓' },
 		{ path: '/items', label: 'Items', icon: '📄' },
-		{ path: '/inbox', label: 'Inbox', icon: '📥' }
+		{ path: '/inbox', label: 'Inbox', icon: '📥' },
+		{ path: '/triage', label: 'Triage', icon: '🔍' }
 	];
 </script>
 
