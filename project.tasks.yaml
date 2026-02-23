@@ -55991,6 +55991,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:10.283Z
+  started_at: 2026-02-23T13:31:39.345Z
   notes:
     - _ulid: 01KJ4V6HYH3XMMRRRKMM3S4XX0
       created_at: 2026-02-23T08:52:33.873Z
@@ -55998,9 +55999,17 @@
       content: "AUTOMATION: Bug fix. Route info/sync messages to stderr when --json mode active. Spec
         @cmd-session-start. Check trait @trait-json-output."
       supersedes: null
+    - _ulid: 01KJ5BKAPS3M06XE1YM0BFEF7E
+      created_at: 2026-02-23T13:39:09.657Z
+      author: "@claude"
+      content: "Fixed info/warning messages leaking into stdout in --json mode. Replaced raw console.log()
+        calls in sessionStartAction() with info()/warn() from output.ts which suppress output in
+        structured modes. Added 3 tests: static analysis verifying no raw console.log in action
+        handler, runtime test verifying valid JSON on stdout, and test verifying no info/warning
+        markers in stdout. All 3199 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T13:31:39.345Z
 - _ulid: 01KJ4SNECVEF1DWQTDK9KK5ASN
   slugs: []
   title: task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but
