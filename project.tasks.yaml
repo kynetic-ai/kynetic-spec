@@ -55510,6 +55510,7 @@
     - types
   vcs_refs: []
   created_at: 2026-02-23T05:23:35.534Z
+  started_at: 2026-02-23T13:05:20.590Z
   notes:
     - _ulid: 01KJ4V5EXY9MKMZY4J2EY5RBG8
       created_at: 2026-02-23T08:51:58.014Z
@@ -55517,9 +55518,19 @@
       content: "AUTOMATION: Standalone refactor. Audit packages/web-ui/src/lib/types/ for duplicated
         src/schema/ types. Import from @kynetic-ai/shared instead."
       supersedes: null
+    - _ulid: 01KJ5AASG9GFP45J1HX6PS4N1F
+      created_at: 2026-02-23T13:17:01.321Z
+      author: "@claude"
+      content: Audited packages/web-ui/src/lib/types/ and found 4 clear duplicates (TriageStatus,
+        TriageAction, TriageRecord, Convention) plus 5 types (ExportedTask, ExportedItem,
+        InheritedAC, ExportedValidation, KspecSnapshot) duplicated from src/export/types.ts. Added
+        all missing types to @kynetic-ai/shared api.ts. Replaced both web-ui types files with
+        re-exports from shared. Added static analysis test (web-ui-shared-types.test.ts) that
+        enforces no local interface/type definitions in the types directory. Updated existing
+        web-ui-triage.test.ts to verify re-export pattern. All 3196 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T13:05:20.590Z
 - _ulid: 01KJ4FT9A2KX5103BTEWYT143V
   slugs:
     - task-fix-sidebar-nav-links
