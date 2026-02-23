@@ -54151,6 +54151,7 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Test task artifact — no real work
   depends_on: []
   context: []
   priority: 3
@@ -54159,7 +54160,6 @@
   created_at: 2026-02-21T08:23:09.530Z
   notes: []
   todos: []
-  closed_reason: Test task artifact — no real work
 - _ulid: 01KJ19D0CH3SECG4FT9GQ46S10
   slugs:
     - task-plugin-rendering
@@ -55616,7 +55616,7 @@
     dependencies must be added manually post-import. Add a depends_on param per spec entry in the
     YAML (e.g., depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by
     on import."
-  spec_ref: null
+  spec_ref: "@plan-import"
   status: pending
   blocked_by: []
   depends_on: []
@@ -55635,7 +55635,7 @@
   description: "Plan import should support task priority: plan document specs can specify priority,
     and derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
     content. Workaround: manually batch-set priorities after import."
-  spec_ref: null
+  spec_ref: "@plan-import"
   status: pending
   blocked_by: []
   depends_on: []
