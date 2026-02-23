@@ -23,3 +23,13 @@ skills:
     description: Triage inbox items systematically. Records decisions with audit trail, then executes actions. Supports inbox, observations, and automation eligibility triage.
     platforms:
       - claude-code
+  - id: triage-inbox
+    name: Inbox Triage
+    description: Process inbox items using the record-act pattern. Categorize, promote to spec/task, merge duplicates, defer, or delete stale items with full audit trail.
+    platforms:
+      - claude-code
+  - id: triage-automation
+    name: Automation Triage
+    description: Assess and prepare tasks for automation eligibility. Verify spec coverage, acceptance criteria, and task readiness for automated agents.
+    platforms:
+      - claude-code
