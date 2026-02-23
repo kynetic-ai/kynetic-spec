@@ -55178,7 +55178,11 @@
   created_at: 2026-02-23T04:56:23.808Z
   notes: []
   todos: []
-- title: Eliminate duplicated types in web-ui by importing from shared schema
+- _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
+  slugs:
+    - task-deduplicate-web-ui-types
+  title: Eliminate duplicated types in web-ui by importing from shared schema
+  type: task
   description: "packages/web-ui/src/lib/types/triage.ts manually mirrors types from
     src/schema/triage.ts. If the schema changes, web-ui types silently diverge. The codebase has
     @kynetic-ai/shared for shared types (already imported in api.ts), but triage types bypass this.
@@ -55186,23 +55190,74 @@
     definitions. 2) For each duplicated type, determine if it can be imported from the shared
     package or needs a re-export. 3) Migrate triage types and any other duplicates to use the shared
     source of truth. 4) Add a lint rule or CI check to prevent future type duplication."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-deduplicate-web-ui-types
   tags:
     - refactor
     - web-ui
     - types
+  vcs_refs: []
+  created_at: 2026-02-23T05:23:35.534Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4FT9A2KX5103BTEWYT143V
+  slugs:
+    - task-fix-sidebar-nav-links
+  title: Fix web UI sidebar navigation links not clickable
+  type: bug
+  description: "SidebarMenuButton renders a <button> element, not an <a>. When Sidebar.svelte passes
+    href, the href lands on a button (which browsers ignore). Result: Dashboard, Tasks, Items,
+    Inbox, Triage links are all dead — only Observations works because it uses onclick with goto().
+    Fix: either use the child snippet pattern to render an <a> tag, or add onclick handlers with
+    goto() like Observations does. Also add /triage to the spaRoutes array in
+    packages/daemon/src/server.ts line 338 so the daemon serves index.html for the triage route."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
   depends_on: []
-  _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
+  context: []
+  priority: 1
+  tags:
+    - web-ui
+    - bug
+    - navigation
+  vcs_refs: []
+  created_at: 2026-02-23T05:33:37.467Z
+  notes: []
+  todos: []
+- title: Redesign web UI holistically — interactive spec/design session
+  description: "The current web UI has fundamental issues beyond individual bugs: sidebar nav links
+    are dead buttons, SPA fallback routes must be manually maintained, daemon test coverage is
+    static-only, types are duplicated between web-ui and schema. Before fixing piecemeal, do a
+    holistic redesign session to: 1) Inventory what currently exists and works. 2) Define what the
+    web UI should actually be. 3) Choose a component architecture that works. 4) Spec out the
+    redesigned UI with acceptance criteria. 5) Create a plan with prioritized tasks. This should be
+    an interactive session with the user."
+  type: spike
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-redesign-web-ui
+  tags:
+    - web-ui
+    - design
+    - spike
+  depends_on: []
+  _ulid: 01KJ4FTAE506Y45KTGFMFB57NQ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-23T05:23:35.534Z
+  created_at: 2026-02-23T05:33:38.629Z
   notes: []
   todos: []
