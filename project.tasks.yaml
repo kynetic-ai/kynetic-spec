@@ -53285,6 +53285,14 @@
       content: Task was found in_progress during session 01KJ3QT39N but was not worked on in this session.
         Leaving in_progress for next iteration to pick up.
       supersedes: null
+    - _ulid: 01KJ3XDG0VK47DT55FRH9W7VWN
+      created_at: 2026-02-23T00:12:03.995Z
+      author: "@claude"
+      content: "Bumped @agentclientprotocol/sdk from ^0.13.0 to ^0.14.0 in package.json. npm install
+        succeeded (changed 1 package). tsc --noEmit passed cleanly. Full test suite: 3103 passed, 3
+        failed (pre-existing: daemon-executable build + doctor flaky tests — tracked by separate
+        tasks @01KJ3SMT and @01KJ3SMV). Zero new failures from the SDK bump."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHY9WVP1ZSW3CZA2TNYEAYNT
