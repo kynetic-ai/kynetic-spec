@@ -56996,4 +56996,13 @@
         dedicated skill). Ready to delete the 6 old skills and clean up references, pending user
         confirmation.
       supersedes: null
+    - _ulid: 01KJ6E8A32DZTXNAJNTKNFX1V6
+      created_at: 2026-02-23T23:44:48.738Z
+      author: "@claude"
+      content: "Removed 6 obsolete skills from .claude/skills/: create-workflow, reflect, task-work, meta,
+        spec, spec-plan. Verified no stale references in settings.json or CLAUDE.md. Test files
+        reference .claude/skills/task-work as a core skill install target (correct behavior, not old
+        skill). 9 project-specific skills remain: audit, codex, e2e, eval-agents, local-review, pr,
+        pr-review, release, svelte-5."
+      supersedes: null
   todos: []
