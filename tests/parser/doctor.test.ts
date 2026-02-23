@@ -235,14 +235,14 @@ describe("Doctor Command", () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
 
-      // Mock daemon as not running to isolate from host environment
+      // Mock daemon as running to test the running-with-PID path
       const daemonStatusModule = await import("../../src/parser/daemon-status.js");
       vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
-        running: false,
-        pid: null,
-        port: null,
-        uptime: null,
-        healthReachable: false,
+        running: true,
+        pid: 99999,
+        port: 3456,
+        uptime: 120,
+        healthReachable: true,
       });
 
       try {
@@ -252,7 +252,8 @@ describe("Doctor Command", () => {
           (c) => c.name === "daemon-running"
         );
         expect(daemonCheck).toBeDefined();
-        expect(daemonCheck!.severity).toBe("warning");
+        expect(daemonCheck!.severity).toBe("ok");
+        expect(daemonCheck!.message).toContain("PID: 99999");
       } finally {
         vi.restoreAllMocks();
       }
