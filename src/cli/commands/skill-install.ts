@@ -149,6 +149,24 @@ export async function loadCoreSkillContent(skillId: string): Promise<string | nu
 const SKILL_SUPPORTING_DIRS = ["docs", "references", "scripts", "assets"] as const;
 
 /**
+ * Recursively copy a directory tree.
+ * Only copies files; creates directories as needed.
+ */
+async function copyDirRecursive(src: string, dest: string): Promise<void> {
+  const entries = await fs.readdir(src, { withFileTypes: true });
+  await fs.mkdir(dest, { recursive: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      await copyDirRecursive(srcPath, destPath);
+    } else if (entry.isFile()) {
+      await fs.copyFile(srcPath, destPath);
+    }
+  }
+}
+
+/**
  * Copy all files for a core skill from templates to .kspec/skills/<id>/.
  * Copies SKILL.md and any supporting directories (docs/, references/, etc.).
  * AC: @core-skill-install ac-2
@@ -170,23 +188,19 @@ export async function copyCoreSkillFiles(
     return; // No SKILL.md means nothing to copy
   }
 
-  // Copy supporting directories
+  // Copy supporting directories recursively
   for (const dirName of SKILL_SUPPORTING_DIRS) {
     const srcSubDir = path.join(sourceDir, dirName);
-    const destSubDir = path.join(targetDir, dirName);
     try {
-      const entries = await fs.readdir(srcSubDir, { withFileTypes: true });
-      await fs.mkdir(destSubDir, { recursive: true });
-      for (const entry of entries) {
-        if (entry.isFile()) {
-          const srcFile = path.join(srcSubDir, entry.name);
-          const destFile = path.join(destSubDir, entry.name);
-          await fs.copyFile(srcFile, destFile);
-        }
+      await fs.access(srcSubDir);
+    } catch (err) {
+      // ENOENT: directory doesn't exist in template, skip
+      if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
+        continue;
       }
-    } catch {
-      // Directory doesn't exist in template, skip
+      throw err; // Propagate real I/O errors
     }
+    await copyDirRecursive(srcSubDir, path.join(targetDir, dirName));
   }
 }
 

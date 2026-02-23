@@ -19,6 +19,21 @@ const PLUGIN_DIR = path.join(ROOT, "plugin");
 const MANIFEST_PATH = path.join(TEMPLATES_DIR, "manifest.yaml");
 const PACKAGE_JSON_PATH = path.join(ROOT, "package.json");
 
+/** Recursively copy a directory tree (sync). */
+function copyDirSync(src, dest) {
+  fs.mkdirSync(dest, { recursive: true });
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirSync(srcPath, destPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 function main() {
   // Read package.json for version
   const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf-8"));
@@ -105,21 +120,11 @@ function main() {
     fs.mkdirSync(targetDir, { recursive: true });
     fs.writeFileSync(path.join(targetDir, "SKILL.md"), output, "utf-8");
 
-    // Copy supporting directories (docs/, references/, etc.)
+    // Copy supporting directories recursively (docs/, references/, etc.)
     for (const dirName of SUPPORTING_DIRS) {
       const srcSubDir = path.join(sourceSkillDir, dirName);
       if (!fs.existsSync(srcSubDir)) continue;
-      const destSubDir = path.join(targetDir, dirName);
-      fs.mkdirSync(destSubDir, { recursive: true });
-      const entries = fs.readdirSync(srcSubDir, { withFileTypes: true });
-      for (const entry of entries) {
-        if (entry.isFile()) {
-          fs.copyFileSync(
-            path.join(srcSubDir, entry.name),
-            path.join(destSubDir, entry.name)
-          );
-        }
-      }
+      copyDirSync(srcSubDir, path.join(targetDir, dirName));
     }
 
     count++;

@@ -84,6 +84,25 @@ describe('Core Skill Update', () => {
       // Should show "0.0.1 → X.Y.Z"
       expect(result.stdout).toMatch(/0\.0\.1\s*→\s*\d+\.\d+\.\d+/);
     });
+
+    // AC: @core-skill-update ac-1
+    it('should update supporting directories when version differs', async () => {
+      kspecFull('skill install-core', tempDir);
+
+      // Set triage to older version so update picks it up
+      kspecFull('skill set @triage --skill-version 0.0.1', tempDir);
+
+      // Delete a docs file to simulate stale content
+      const inboxPath = path.join(tempDir, 'skills', 'triage', 'docs', 'inbox.md');
+      await fs.unlink(inboxPath);
+
+      // Run update
+      kspecFull('skill update', tempDir);
+
+      // Verify docs were restored
+      const content = await fs.readFile(inboxPath, 'utf-8');
+      expect(content).toContain('Inbox Triage');
+    });
   });
 
   // AC: @core-skill-update ac-2

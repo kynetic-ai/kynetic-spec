@@ -71,6 +71,25 @@ describe('Core Skill Installation', () => {
       const stat = await fs.stat(skillDir);
       expect(stat.isDirectory()).toBe(true);
     });
+
+    // AC: @core-skill-install ac-2
+    it('should copy supporting directories from templates', async () => {
+      kspecFull('skill install-core', tempDir);
+
+      // Triage skill has docs/ with inbox.md, observations.md, automation.md
+      const triageDocsDir = path.join(tempDir, 'skills', 'triage', 'docs');
+      const stat = await fs.stat(triageDocsDir);
+      expect(stat.isDirectory()).toBe(true);
+
+      const inboxMd = await fs.readFile(path.join(triageDocsDir, 'inbox.md'), 'utf-8');
+      expect(inboxMd).toContain('Inbox Triage');
+
+      const observationsMd = await fs.readFile(path.join(triageDocsDir, 'observations.md'), 'utf-8');
+      expect(observationsMd).toContain('Observations Triage');
+
+      const automationMd = await fs.readFile(path.join(triageDocsDir, 'automation.md'), 'utf-8');
+      expect(automationMd).toContain('Automation Triage');
+    });
   });
 
   // AC: @core-skill-install ac-3
@@ -188,8 +207,9 @@ describe('Core Skill Installation', () => {
     it('should show what would be installed with --dry-run', async () => {
       const result = kspecFull('skill install-core --dry-run', tempDir);
 
-      expect(result.stdout).toContain('Created: 1 skill(s)');
+      expect(result.stdout).toMatch(/Created: \d+ skill\(s\)/);
       expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain('triage');
     });
   });
 
