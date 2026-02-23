@@ -4,6 +4,18 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'packages/**'
+      - 'scripts/**'
+      - 'plugin/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'vitest.config.ts'
+      - 'biome.json'
+      - '.github/workflows/test.yml'
   push:
     branches:
       - main
