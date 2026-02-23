@@ -54153,6 +54153,7 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:25.665Z
+  started_at: 2026-02-23T11:57:13.457Z
   notes:
     - _ulid: 01KJ4V5AKAXQP8TFZ5JC80ZJ0W
       created_at: 2026-02-23T08:51:53.578Z
@@ -54160,9 +54161,18 @@
       content: "AUTOMATION: Content authoring. Write templates/skills/task-work/SKILL.md. Read
         .claude/skills/task-work/SKILL.md as reference."
       supersedes: null
+    - _ulid: 01KJ560AE4DKY1SE1669XVGXQA
+      created_at: 2026-02-23T12:01:23.909Z
+      author: "@claude"
+      content: "Wrote templates/skills/task-work/SKILL.md (198 lines). Covers: inherit-existing-work
+        pattern, full lifecycle (start→work→note→submit→complete), fix cycle handling, scope
+        management (expand vs escalate), AC test annotations, implementation quality checklist, loop
+        mode (selection priority, blocking rules, turn completion), command reference. Stripped all
+        project-specific content (npm test, specific test helpers, model names). Added manifest
+        entry. Installs correctly. All 3181 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T11:57:13.457Z
 - _ulid: 01KHZHPR5FQN7KGF45QP25HT1D
   slugs: []
   title: "Write core skill: kspec:create-workflow"
