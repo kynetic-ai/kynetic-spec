@@ -79,6 +79,23 @@ export const DEFAULT_SUBAGENT_TIMEOUT = 20 * 60 * 1000;
 /** Default output prefix for subagent */
 export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
 
+// ============================================================================
+// Skill Invocation Names
+// ============================================================================
+// Ralph prompts reference skills by invocation name. These are defined as
+// constants so they're easy to update as core skills are created under the
+// kspec: namespace. Projects can also override these via meta configuration
+// in the future.
+
+/** Skill invocation for task-work in ralph worker prompt */
+export const SKILL_TASK_WORK = "/task-work";
+
+/** Skill invocation for reflect in ralph reflect prompt */
+export const SKILL_REFLECT = "/reflect";
+
+/** Skill invocation for PR review in ralph subagent prompt */
+export const SKILL_PR_REVIEW = "/pr-review";
+
 /**
  * Default ACP prompt timeout for ralph agents: 30 minutes.
  * The framing layer default (5 min) is too aggressive — API slowness,
@@ -147,7 +164,7 @@ ${specSection}
 Run the PR review skill:
 
 \`\`\`
-/pr-review ${context.taskRef}
+${SKILL_PR_REVIEW} ${context.taskRef}
 \`\`\`
 
 The skill defines all review steps, quality gates, and merge criteria. Follow it completely.

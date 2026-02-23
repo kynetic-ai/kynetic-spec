@@ -1243,6 +1243,9 @@ import {
   buildSubagentPrompt,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  SKILL_PR_REVIEW,
+  SKILL_REFLECT,
+  SKILL_TASK_WORK,
   type SubagentContext,
 } from '../src/ralph/subagent.js';
 import { createPrefixedRenderer } from '../src/ralph/cli-renderer.js';
@@ -1261,7 +1264,7 @@ describe('subagent module', () => {
       const prompt = buildSubagentPrompt(context);
 
       expect(prompt).toContain('@task-example');
-      expect(prompt).toContain('/pr-review @task-example');
+      expect(prompt).toContain(`${SKILL_PR_REVIEW} @task-example`);
     });
 
     it('includes git branch in prompt', () => {
@@ -1324,7 +1327,7 @@ describe('subagent module', () => {
       expect(prompt).not.toContain('Linked Spec with Acceptance Criteria');
     });
 
-    it('instructs subagent to run /pr-review skill', () => {
+    it('instructs subagent to run PR review skill using constant', () => {
       const context: SubagentContext = {
         taskRef: '@task-my-feature',
         taskDetails: {},
@@ -1334,7 +1337,7 @@ describe('subagent module', () => {
 
       const prompt = buildSubagentPrompt(context);
 
-      expect(prompt).toContain('/pr-review @task-my-feature');
+      expect(prompt).toContain(`${SKILL_PR_REVIEW} @task-my-feature`);
     });
   });
 
@@ -1347,6 +1350,12 @@ describe('subagent module', () => {
     // AC: @ralph-subagent-spawning ac-11
     it('DEFAULT_SUBAGENT_PREFIX is [REVIEW SUBAGENT]', () => {
       expect(DEFAULT_SUBAGENT_PREFIX).toBe('[REVIEW SUBAGENT]');
+    });
+
+    it('skill invocation constants are defined as slash-prefixed names', () => {
+      expect(SKILL_TASK_WORK).toMatch(/^\//);
+      expect(SKILL_REFLECT).toMatch(/^\//);
+      expect(SKILL_PR_REVIEW).toMatch(/^\//);
     });
   });
 

@@ -48,6 +48,8 @@ import {
   RALPH_PROMPT_TIMEOUT,
   runSubagent,
   runWrapUpAgent,
+  SKILL_REFLECT,
+  SKILL_TASK_WORK,
   type SubagentContext,
   WRAPUP_AGENT_PREFIX,
 } from "../../ralph/index.js";
@@ -445,7 +447,7 @@ ${JSON.stringify(sessionCtx, null, 2)}
 Run the task-work skill in loop mode:
 
 \`\`\`
-/task-work loop
+${SKILL_TASK_WORK} loop
 \`\`\`
 
 ${modeDescription}
@@ -480,7 +482,7 @@ function buildReflectPrompt(
 Run the reflect skill in loop mode:
 
 \`\`\`
-/reflect loop
+${SKILL_REFLECT} loop
 \`\`\`
 
 Loop mode means: high-confidence captures only, must search existing before capturing, no user prompts.
