@@ -54185,7 +54185,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -54205,6 +54205,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T12:02:05.245Z
 - _ulid: 01KHZHPS2EYQCYB3065CA27E9F
   slugs: []
   title: "Write core skill: kspec:review"
