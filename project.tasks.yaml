@@ -54142,7 +54142,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -54162,6 +54162,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T11:57:13.457Z
 - _ulid: 01KHZHPR5FQN7KGF45QP25HT1D
   slugs: []
   title: "Write core skill: kspec:create-workflow"
