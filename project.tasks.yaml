@@ -53742,6 +53742,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #464. Applied hash-check-before-write pattern to 3 generation paths:
+    (1) generateAgentInstructions uses metaHash + file-existence check to skip kspec-agents.md
+    regeneration, (2) copyCoreSkillFiles compares SKILL.md content and supporting dirs via
+    sourceMatchesDest before copying, (3) guard script writes check existing content before writing.
+    All previous review findings (MUST-FIX: file existence, SHOULD-FIX: subset comparison)
+    addressed. All 3181 tests pass."
   depends_on: []
   context: []
   priority: 3
@@ -53749,6 +53755,7 @@
   vcs_refs: []
   created_at: 2026-02-21T05:13:53.619Z
   started_at: 2026-02-23T09:55:12.581Z
+  completed_at: 2026-02-23T10:43:38.599Z
   notes:
     - _ulid: 01KJ4V53P2ACDNYCWNHZJPDJM1
       created_at: 2026-02-23T08:51:46.498Z
@@ -53782,13 +53789,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T10:43:38.599Z
-  closed_reason: "Merged in PR #464. Applied hash-check-before-write pattern to 3 generation paths:
-    (1) generateAgentInstructions uses metaHash + file-existence check to skip kspec-agents.md
-    regeneration, (2) copyCoreSkillFiles compares SKILL.md content and supporting dirs via
-    sourceMatchesDest before copying, (3) guard script writes check existing content before writing.
-    All previous review findings (MUST-FIX: file existence, SHOULD-FIX: subset comparison)
-    addressed. All 3181 tests pass."
 - _ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
   slugs: []
   title: Render core skills under kspec/ namespace directory
@@ -53905,7 +53905,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -53925,6 +53925,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T10:46:36.036Z
 - _ulid: 01KHZHPKHVT1RFXT0GM33TY288
   slugs: []
   title: "Write core skill: kspec:reflect"
