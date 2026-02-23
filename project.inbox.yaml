@@ -739,3 +739,22 @@ inbox:
     created_at: 2026-02-23T20:40:49.913Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ63RW5ZEQFM3PMXD224F9VG
+    text: "Plan import --update replaces all ACs instead of merging. When extending an existing spec
+      with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need AC-merge
+      strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for
+      session-log-show ac-10."
+    created_at: 2026-02-23T20:41:37.216Z
+    tags:
+      - reflection
+      - plan-import
+    added_by: "@claude"
+  - _ulid: 01KJ63RW6VJ8K1MTR4VC3GM4AQ
+    text: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
+      warning causes batch atomic rollback even though the task creation succeeded. Warnings should
+      not cause batch failure — only actual errors should.
+    created_at: 2026-02-23T20:41:37.244Z
+    tags:
+      - reflection
+      - batch
+    added_by: "@claude"

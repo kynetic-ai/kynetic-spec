@@ -6299,6 +6299,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ63RW7JFBTJ7FWG6MQR3W71
+    type: success
+    content: "Parallel subagent audit pattern: launching 4+ agents in parallel for deep-dive review of
+      ralph loop work (PR quality, functional verification, loop behavior, process adherence)
+      produced comprehensive results in ~90 seconds. Effective for post-loop quality assessment."
+    created_at: 2026-02-23T20:41:37.266Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJ63RWAKZWYCWNNG68KFBHBX
+    type: success
+    content: Dual review pattern (internal agent + Codex) for plan review catches different issue
+      categories. Internal agent found consistency gaps; Codex found concurrency risks. Convergent
+      findings give high confidence before implementation.
+    created_at: 2026-02-23T20:41:37.364Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
