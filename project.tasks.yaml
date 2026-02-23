@@ -55254,8 +55254,14 @@
     - e2e
   vcs_refs: []
   created_at: 2026-02-23T04:56:23.808Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V7Q7CK4JF2GTV37NGWNQD
+      created_at: 2026-02-23T08:53:12.044Z
+      author: "@claude"
+      content: "MANUAL_ONLY: Spike requiring human investigation and judgment for test migration plan."
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
   slugs:
     - task-deduplicate-web-ui-types
@@ -55359,8 +55365,14 @@
     - spike
   vcs_refs: []
   created_at: 2026-02-23T05:33:38.629Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V7SENBYDYV28R1CT2910G
+      created_at: 2026-02-23T08:53:14.325Z
+      author: "@claude"
+      content: "MANUAL_ONLY: Spike requiring interactive design session with user."
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KJ4HJB047Y2M2NJ54YJBJCJJ
   slugs:
     - task-update-triage-skill
@@ -55599,8 +55611,21 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:05.081Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V7KPFGSXBBGSXS5KP4VCC
+      created_at: 2026-02-23T08:53:08.431Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Spec gap - @item-add has no --root flag AC. Need to
+        update spec before implementing."
+      supersedes: null
+    - _ulid: 01KJ4V7MXQDDPGFQGFCP91VM11
+      created_at: 2026-02-23T08:53:09.687Z
+      author: "@claude"
+      content: "NEEDS_REVIEW: @item-add spec documents --parent and --type but has no --root flag for
+        placing traits in kynetic.yaml. Add AC to @item-add before implementing."
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
   slugs: []
   title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
