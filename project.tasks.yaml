@@ -53740,7 +53740,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -53782,6 +53782,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T10:43:38.599Z
+  closed_reason: "Merged in PR #464. Applied hash-check-before-write pattern to 3 generation paths:
+    (1) generateAgentInstructions uses metaHash + file-existence check to skip kspec-agents.md
+    regeneration, (2) copyCoreSkillFiles compares SKILL.md content and supporting dirs via
+    sourceMatchesDest before copying, (3) guard script writes check existing content before writing.
+    All previous review findings (MUST-FIX: file existence, SHOULD-FIX: subset comparison)
+    addressed. All 3181 tests pass."
 - _ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
   slugs: []
   title: Render core skills under kspec/ namespace directory
