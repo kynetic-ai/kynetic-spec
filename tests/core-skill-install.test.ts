@@ -302,8 +302,9 @@ describe('copyCoreSkillFiles error handling', () => {
     const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
     const targetDir = path.join(tempDir, 'skills', 'nonexistent');
 
-    // Should not throw
-    await copyCoreSkillFiles('nonexistent-skill-id', targetDir);
+    // Should not throw and report no changes
+    const result = await copyCoreSkillFiles('nonexistent-skill-id', targetDir);
+    expect(result.changed).toBe(false);
 
     // Target dir should not have been created
     await expect(fs.access(targetDir)).rejects.toThrow();
@@ -313,7 +314,8 @@ describe('copyCoreSkillFiles error handling', () => {
     const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
     const targetDir = path.join(tempDir, 'skills', 'triage');
 
-    await copyCoreSkillFiles('triage', targetDir);
+    const result = await copyCoreSkillFiles('triage', targetDir);
+    expect(result.changed).toBe(true);
 
     // SKILL.md copied
     const skillMd = await fs.readFile(path.join(targetDir, 'SKILL.md'), 'utf-8');
@@ -322,5 +324,18 @@ describe('copyCoreSkillFiles error handling', () => {
     // docs/ copied
     const inboxMd = await fs.readFile(path.join(targetDir, 'docs', 'inbox.md'), 'utf-8');
     expect(inboxMd).toContain('Inbox Triage');
+  });
+
+  it('should skip writing when content is unchanged (idempotent)', async () => {
+    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
+    const targetDir = path.join(tempDir, 'skills', 'triage');
+
+    // First copy — should report changed
+    const first = await copyCoreSkillFiles('triage', targetDir);
+    expect(first.changed).toBe(true);
+
+    // Second copy with same content — should report unchanged
+    const second = await copyCoreSkillFiles('triage', targetDir);
+    expect(second.changed).toBe(false);
   });
 });

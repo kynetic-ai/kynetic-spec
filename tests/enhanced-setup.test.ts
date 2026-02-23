@@ -413,5 +413,47 @@ describe('kspec setup (enhanced)', () => {
       const promptHooks = settings.hooks.UserPromptSubmit as Array<unknown>;
       expect(promptHooks.length).toBe(1);
     });
+
+    it('should not rewrite guard scripts when content is unchanged', async () => {
+      // First setup
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
+      const stat1 = await fs.stat(guardPath);
+
+      // Wait a small amount so mtime would differ if file is rewritten
+      await new Promise((r) => setTimeout(r, 50));
+
+      // Second setup — guard script should NOT be rewritten
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const stat2 = await fs.stat(guardPath);
+      // mtime should be unchanged since file was not rewritten
+      expect(stat2.mtimeMs).toBe(stat1.mtimeMs);
+    });
+
+    it('should produce identical settings.json content on second run', async () => {
+      // First setup
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const content1 = await fs.readFile(settingsPath, 'utf-8');
+
+      // Second setup
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const content2 = await fs.readFile(settingsPath, 'utf-8');
+
+      // Content should be identical (no unnecessary changes)
+      expect(content2).toBe(content1);
+    });
   });
 });

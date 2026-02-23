@@ -528,13 +528,22 @@ async function installClaudeCodeHooks(
     );
 
     if (!guardsAlreadyInstalled) {
-      // Create guard script files
+      // Create guard script files, skipping when content unchanged
       for (const [name, content] of Object.entries(GUARD_SCRIPTS)) {
         const scriptPath = path.join(hooksDir, name);
-        if (!dryRun) {
-          await fs.writeFile(scriptPath, content, { mode: 0o755 });
+        // Check if existing script already has the same content
+        let existingContent: string | null = null;
+        try {
+          existingContent = await fs.readFile(scriptPath, "utf-8");
+        } catch (_err) {
+          // File doesn't exist yet
         }
-        result.guardsCreated.push(name);
+        if (existingContent !== content) {
+          if (!dryRun) {
+            await fs.writeFile(scriptPath, content, { mode: 0o755 });
+          }
+          result.guardsCreated.push(name);
+        }
       }
 
       // Add PreToolUse hook entry
@@ -1217,7 +1226,7 @@ async function renderSkillsForSetup(
 async function generateAgentInstructions(
   projectDir: string,
   dryRun: boolean,
-): Promise<{ success: boolean; path: string }> {
+): Promise<{ success: boolean; path: string; skipped?: boolean }> {
   const outputPath = path.join(projectDir, "kspec-agents.md");
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
 
@@ -1260,15 +1269,29 @@ async function generateAgentInstructions(
     );
 
     if (!dryRun) {
-      await fs.writeFile(outputPath, content, "utf-8");
-
-      // Write hash for freshness tracking using the canonical hash function
+      // Compute meta hash for freshness tracking
       const metaHash = computeMetaHash(
         metaCtx.skills,
         metaCtx.conventions,
         metaCtx.workflows,
         templateSections,
       );
+
+      // Skip regeneration when content unchanged (same pattern as kspec agents generate)
+      let storedHash: string | undefined;
+      try {
+        const hashContent = await fs.readFile(hashPath, "utf-8");
+        const hashData = JSON.parse(hashContent);
+        storedHash = hashData.metaHash;
+      } catch (_err) {
+        // No hash file or invalid — regenerate
+      }
+
+      if (storedHash === metaHash) {
+        return { success: true, path: outputPath, skipped: true };
+      }
+
+      await fs.writeFile(outputPath, content, "utf-8");
 
       await fs.mkdir(path.dirname(hashPath), { recursive: true });
       // Dynamically import version to avoid top-level require
@@ -1630,7 +1653,9 @@ export async function runSetupPipeline(
       steps.push({
         name: "Generate kspec-agents.md",
         status: "done",
-        message: agentsResult.path,
+        message: agentsResult.skipped
+          ? "already up to date"
+          : agentsResult.path,
       });
     } else {
       steps.push({
