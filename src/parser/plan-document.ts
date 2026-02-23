@@ -38,6 +38,7 @@ export const PlanTaskSchema = z.object({
   priority: z.number().optional(),
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  spec_ref: z.string().optional(),
 });
 
 export type PlanTask = z.infer<typeof PlanTaskSchema>;
