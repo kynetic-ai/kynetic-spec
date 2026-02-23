@@ -54139,7 +54139,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -54150,7 +54150,7 @@
     - cleanup
   vcs_refs: []
   created_at: 2026-02-21T07:30:28.499Z
-  started_at: 2026-02-23T09:01:16.872Z
+  started_at: 2026-02-23T09:41:59.151Z
   notes:
     - _ulid: 01KJ4V5DVM4SAQNNZQ6CXX8FFP
       created_at: 2026-02-23T08:51:56.916Z
