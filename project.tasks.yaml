@@ -55778,7 +55778,7 @@
     centralized error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or similar
     to match cannotStart pattern."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55804,6 +55804,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T14:54:28.132Z
+  closed_reason: "Merged in PR #478. Centralized inline error strings in task needs-work handler to
+    errors.ts: added cannotNeedsWork to statusErrors and needsWorkTask to operationFailures. Also
+    fixed flaky CI test by bumping timeout on full fix cycle round-trip test. All CI checks pass."
 - _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
   slugs: []
   title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
