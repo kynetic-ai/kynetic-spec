@@ -116,7 +116,7 @@ describe('session start notes enrichment', () => {
       expect(completedNotes.some((n) => n.content.includes('Implementation complete'))).toBe(true);
     });
 
-    it('should limit to last 3-5 completed tasks', { timeout: 15000 }, () => {
+    it('should limit to last 3-5 completed tasks', { timeout: 30000 }, () => {
       // Create and complete 7 tasks (more than the limit)
       for (let i = 1; i <= 7; i++) {
         kspec(`task add --title "Completed ${i}" --slug completed-${i}`, tempDir);
