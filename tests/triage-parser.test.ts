@@ -95,6 +95,7 @@ describe('loadTriageRecords', () => {
   });
 
   // AC: @triage-record-schema ac-7
+  // AC: @interactive-triage ac-1 (records survive inbox item deletion)
   it('should preserve item_snapshot even when inbox item no longer exists', async () => {
     const record = makeRecord({ item_snapshot: 'Original idea text that was deleted' });
     const { _sourceFile, ...clean } = record;
@@ -110,6 +111,7 @@ describe('loadTriageRecords', () => {
 
 describe('saveTriageRecord', () => {
   // AC: @triage-record-schema ac-8
+  // AC: @interactive-triage ac-1 (records persist in project.triage.yaml)
   it('should create triage file and save a new record', async () => {
     const record = makeRecord();
     await saveTriageRecord(ctx, record);

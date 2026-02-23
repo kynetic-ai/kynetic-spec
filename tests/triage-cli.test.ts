@@ -434,6 +434,7 @@ describe("kspec triage act", () => {
 
 describe("kspec triage override", () => {
   // AC: @triage-cli-commands ac-12
+  // AC: @interactive-triage ac-2 (override preserves attribution and timestamps)
   it("should update record with override fields", () => {
     const inboxUlid = addInboxItem("Override test item");
     const record = recordTriage(inboxUlid, "promote", "initial decision");
@@ -465,6 +466,7 @@ describe("kspec triage override", () => {
 
 describe("kspec triage export", () => {
   // AC: @triage-cli-commands ac-13
+  // AC: @interactive-triage ac-2 (export captures full decision chain)
   it("should output markdown context blocks with item text, action, reasoning", () => {
     const inboxUlid = addInboxItem("Export context test");
     recordTriage(inboxUlid, "promote", "export reasoning test");
@@ -861,6 +863,64 @@ describe("triage error-guidance trait compliance", () => {
     );
     const errorJson = JSON.parse(result.stderr);
     expect(errorJson.error).toBeDefined();
+  });
+});
+
+// AC: @interactive-triage ac-1, ac-2 (end-to-end decision chain)
+describe("interactive triage system integration", () => {
+  it("should capture full decision chain: agent record → user override → act → export", () => {
+    // Step 1: Agent records initial triage decision
+    const inboxUlid = addInboxItem("Improve search performance");
+    const record = recordTriage(inboxUlid, "defer", "needs profiling first");
+
+    // Step 2: User overrides the agent decision
+    kspec(
+      `triage override @${record._ulid.slice(0, 8)} --action promote --reasoning "actually urgent, users complaining"`,
+      tempDir,
+    );
+
+    // Step 3: Execute the overridden action
+    kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
+
+    // Step 4: Export and verify the full chain is captured in context output
+    const exported = kspec("triage export --format context", tempDir);
+    // Item text
+    expect(exported.stdout).toContain("Improve search performance");
+    // Current action (overridden)
+    expect(exported.stdout).toContain("promote");
+    // Original reasoning from agent
+    expect(exported.stdout).toContain("needs profiling first");
+    // Attribution — decided_by appears in export
+    expect(exported.stdout).toContain("Decided by:");
+    // Override reasoning and attribution in export
+    expect(exported.stdout).toContain("actually urgent, users complaining");
+    expect(exported.stdout).toContain("Override:");
+    // Execution timestamp in export
+    expect(exported.stdout).toContain("Acted at:");
+    // Result ref in export
+    expect(exported.stdout).toContain("Result:");
+  });
+
+  // AC: @interactive-triage ac-1 (records survive inbox item deletion)
+  it("should preserve triage records after inbox item is deleted", () => {
+    const inboxUlid = addInboxItem("Ephemeral item");
+    const record = recordTriage(inboxUlid, "delete", "duplicate content");
+
+    // Act on it (deletes the inbox item)
+    kspec(`triage act @${record._ulid.slice(0, 8)}`, tempDir);
+
+    // Verify inbox item is gone
+    const inbox = kspecJson<Array<{ _ulid: string }>>("inbox list", tempDir);
+    expect(inbox.find((i) => i._ulid === inboxUlid)).toBeUndefined();
+
+    // Verify triage record still exists with snapshot
+    const triageRecord = kspecJson<{
+      _ulid: string;
+      item_snapshot: string;
+      status: string;
+    }>(`triage get @${record._ulid.slice(0, 8)}`, tempDir);
+    expect(triageRecord.item_snapshot).toBe("Ephemeral item");
+    expect(triageRecord.status).toBe("acted_on");
   });
 });
 
