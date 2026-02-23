@@ -5127,7 +5127,7 @@ runs:
   - _ulid: 01KJ5MN5WR5N8938D4X3BYXXDM
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-23T16:17:27.448Z
     step_results:
@@ -5141,5 +5141,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-23T16:17:40.903Z
-        completed_at: 2026-02-23T16:17:40.903Z
+        completed_at: 2026-02-23T16:18:01.276Z
+        notes: Searched existing state. Dual review success already tracked (4 observations).
+          --force/--skip-review overlap is a one-off design observation, not systemic friction —
+          skipping capture. No high-confidence new items to capture.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-23T16:18:01.276Z
+        completed_at: 2026-02-23T16:18:01.276Z
     initiated_by: "@claude"
