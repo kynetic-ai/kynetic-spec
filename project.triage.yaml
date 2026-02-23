@@ -16,10 +16,10 @@ triage:
     override_reasoning: We should bridge this gap
     override_by: Jacob Chapel
     override_at: 2026-02-23T05:58:04.083Z
-    created_at: 2026-02-22T22:50:19.918Z
-    updated_at: 2026-02-23T08:24:14.329Z
     acted_at: 2026-02-23T08:24:14.327Z
     result_ref: "@01KJ4SJP"
+    created_at: 2026-02-22T22:50:19.918Z
+    updated_at: 2026-02-23T08:24:14.329Z
   - _ulid: 01KJ3T9S4R04XWBGE7DDT5Z8EM
     inbox_ref: 01KJ3T9QMVRE7PM5AWAE6JG3KG
     item_snapshot: Export precedence test
@@ -282,3 +282,118 @@ triage:
     acted_at: 2026-02-23T08:24:13.747Z
     created_at: 2026-02-23T08:23:42.026Z
     updated_at: 2026-02-23T08:24:13.751Z
+  - _ulid: 01KJ4SKS8PF99AENFEKM0FDQEM
+    inbox_ref: 01KHW3CC7QPTKBZEHSR8Z55XQF
+    item_snapshot: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ
+      Synced shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to
+      stderr when --json mode is active."
+    status: triaged
+    action: promote
+    reasoning: Clear bug - --json commands mix info lines into stdout, breaks automation
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.198Z
+    updated_at: 2026-02-23T08:24:50.203Z
+  - _ulid: 01KJ4SKS9D1MR3D80Q37GN5QPV
+    inbox_ref: 01KHW3CC8AM42PG3SVH10XKXJK
+    item_snapshot: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27
+      says manual tasks get no spec_ref, but when a task YAML explicitly provides spec_ref pointing
+      to a valid spec, it should be honored. Currently taskDef.spec_ref is never read in the manual
+      task creation path (plan-import.ts:513-523)."
+    status: triaged
+    action: promote
+    reasoning: Clear bug - plan import ignores spec_ref on manual tasks
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.221Z
+    updated_at: 2026-02-23T08:24:50.224Z
+  - _ulid: 01KJ4SKS9XTHP75WC9YYFY0R0Q
+    inbox_ref: 01KHZHZAP3P1Y97YF8QSM3KCT0
+    item_snapshot: "kspec batch cannot handle task patch with nested --data JSON argument. The data
+      object gets stringified as [object Object] instead of being serialized as JSON. Batch args are
+      likely passed through a simple string coercion. Workaround: run task patch commands
+      individually. Fix: batch arg handling should JSON.stringify objects before passing to command
+      handlers."
+    status: triaged
+    action: promote
+    reasoning: Clear bug - batch cannot handle nested JSON args
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.237Z
+    updated_at: 2026-02-23T08:24:50.242Z
+  - _ulid: 01KJ4SKSAHFY4BRDJ80YA297J3
+    inbox_ref: 01KHZHZAQ0YXEN9X6VP205SMPE
+    item_snapshot: task complete --force should bypass the submit requirement. Currently --force does
+      not skip the in_progress → pending_review transition, making it impossible to complete
+      non-code tasks (design, triage, research) without a meaningless submit step. The --force flag
+      exists but does not actually force completion from in_progress state.
+    status: triaged
+    action: promote
+    reasoning: Clear bug - task complete --force should bypass submit requirement
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.257Z
+    updated_at: 2026-02-23T08:24:50.259Z
+  - _ulid: 01KJ4SKSB234N50TF39JBX82A1
+    inbox_ref: 01KJ11KQKZ9R8NJ64RXH9AVKHV
+    item_snapshot: kspec-agents.md Finding Information table shows skill IDs as /help instead of
+      /kspec:help — generateSkillsTable() in agent-data-sections.ts doesn't account for namespace
+      rendering of core skills
+    status: triaged
+    action: promote
+    reasoning: Simple bug - agents table shows /help instead of /kspec:help
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.274Z
+    updated_at: 2026-02-23T08:24:50.277Z
+  - _ulid: 01KJ4SKSBH7C76MHXNBHJRD145
+    inbox_ref: 01KHHR778VGPE2VWEFT7P7FC51
+    item_snapshot: kspec item add needs --root flag for adding traits to project-level kynetic.yaml
+      without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
+      never-edit-manually rule.
+    status: triaged
+    action: promote
+    reasoning: Blocks core workflow - cannot add traits to root manifest via CLI
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.289Z
+    updated_at: 2026-02-23T08:24:50.291Z
+  - _ulid: 01KJ4SKSBYK5QEPSBXZRYPAVPZ
+    inbox_ref: 01KHHR779DJC9QBVJKSBDFMBMW
+    item_snapshot: kspec plan import should place type:trait items with no parent in the project-level
+      traits array (kynetic.yaml), not the module-level traits array. Currently causes schema
+      validation error.
+    status: triaged
+    action: promote
+    reasoning: Clear bug - plan import misplaces type:trait items
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.303Z
+    updated_at: 2026-02-23T08:24:50.306Z
+  - _ulid: 01KJ4SKSCC9XM4X7619E1T59C7
+    inbox_ref: 01KHCVWQ5Q83FACF6TSQDQWT6F
+    item_snapshot: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that
+      ensures @ prefix on ref-like strings. Apply at CLI input boundary (TaskInput construction)
+      instead of per-command handler. Prevents class of bugs where bare refs bypass RefSchema
+      validation and cause silent data loss. Today's depends_on fix (PR #353) patched 3 locations —
+      a shared boundary would prevent recurrence. Related: @merge-ref-normalization (merge layer),
+      @01KG0N4V (silent safeParse drops)."
+    status: triaged
+    action: promote
+    reasoning: Systemic fix - normalizeRefInput prevents recurring @ prefix bugs
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.316Z
+    updated_at: 2026-02-23T08:24:50.319Z
+  - _ulid: 01KJ4SKSCS6GY7151SQEA3B3W8
+    inbox_ref: 01KHYRZ4QGG9XHQMNR6X4N970Q
+    item_snapshot: "Error message consistency: task needs-work uses inline error string instead of
+      centralized error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or
+      similar to match cannotStart pattern."
+    status: triaged
+    action: promote
+    reasoning: Quick win - error message consistency, use centralized error strings
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:24:50.329Z
+    updated_at: 2026-02-23T08:24:50.331Z
