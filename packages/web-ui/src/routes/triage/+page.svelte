@@ -290,9 +290,9 @@
 
 	// AC: @interactive-triage-ui ac-7 - Reset index when filter changes
 	$effect(() => {
-		// Track filter dependencies
-		filterTag;
-		filterStatus;
+		// Reading filterTag and filterStatus creates reactive dependencies
+		const _tag = filterTag;
+		const _status = filterStatus;
 		currentIndex = 0;
 		resetForm();
 	});

@@ -403,16 +403,17 @@ export function searchStatic(query: string): SearchResponse {
 /**
  * Fetch triage records from static snapshot
  * AC: @interactive-triage-ui ac-8
+ *
+ * Triage records are not included in static snapshots, so this always
+ * returns an empty list. Params are accepted for API compatibility.
  */
-export function fetchTriageRecordsStatic(_params?: {
+export function fetchTriageRecordsStatic(params?: {
 	status?: string;
 	action?: string;
 	limit?: number;
 	offset?: number;
-}): PaginatedResponse<any> {
-	// Triage records are not included in static snapshots
-	// Return empty list for read-only browsing
-	return { items: [], total: 0, offset: 0, limit: 50 };
+}): PaginatedResponse<never> {
+	return { items: [], total: 0, offset: params?.offset ?? 0, limit: params?.limit ?? 50 };
 }
 
 // ============================================================
