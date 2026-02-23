@@ -55983,7 +55983,7 @@
     shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when
     --json mode is active."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
