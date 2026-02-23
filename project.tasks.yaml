@@ -55983,7 +55983,7 @@
     shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when
     --json mode is active."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56010,6 +56010,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T14:01:26.928Z
+  closed_reason: "Merged in PR #476. Fixed info/warning messages leaking into stdout in --json mode by
+    routing them through info()/warn() helpers that send to stderr in structured output modes. 5 new
+    tests covering JSON purity, static analysis, and YAML mode. All quality gates passed."
 - _ulid: 01KJ4SNECVEF1DWQTDK9KK5ASN
   slugs: []
   title: task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but
