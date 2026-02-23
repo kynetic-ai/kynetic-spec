@@ -157,7 +157,7 @@ kspec meta promote @ref --title "Add bulk AC command" --priority 2
 
 # Resolve observation
 kspec meta resolve @ref "Resolution notes"
-kspec meta resolve @ref1 @ref2 "Batch resolution"
+kspec meta resolve --refs @ref1 @ref2 --resolution "Batch resolution"
 
 # Convert inbox item to observation (if it's a pattern, not a task)
 kspec meta observe --from-inbox @ref
