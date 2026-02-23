@@ -55778,7 +55778,7 @@
     centralized error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or similar
     to match cannotStart pattern."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -55786,6 +55786,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:01.626Z
+  started_at: 2026-02-23T14:29:16.427Z
   notes:
     - _ulid: 01KJ4V5H9V3JMF85W753X7ZSDF
       created_at: 2026-02-23T08:52:00.443Z
@@ -55795,7 +55796,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T14:29:16.427Z
 - _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
   slugs: []
   title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
