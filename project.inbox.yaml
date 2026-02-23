@@ -758,3 +758,14 @@ inbox:
       - reflection
       - batch
     added_by: "@claude"
+  - _ulid: 01KJ67G4H6EHK6DZCXFM80BTXV
+    text: "Ralph event handler iteration attribution should use session-scoped mapping instead of shared
+      mutable currentIteration. Codex review on PR #484 identified that late updates from a previous
+      ACP session can still be tagged with wrong iteration. Use session_id→iteration map or
+      session-scoped listener. See PR #484 review comment."
+    created_at: 2026-02-23T21:46:45.158Z
+    tags:
+      - ralph
+      - events
+      - bug
+    added_by: "@claude"
