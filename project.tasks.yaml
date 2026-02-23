@@ -56010,7 +56010,7 @@
     passed through a simple string coercion. Workaround: run task patch commands individually. Fix:
     batch arg handling should JSON.stringify objects before passing to command handlers."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56073,6 +56073,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T21:38:31.682Z
+  closed_reason: "Merged in PR #482. Fixed batch arg serialization to JSON.stringify nested objects
+    instead of String() which produced [object Object]. Added toArgString() helper, comprehensive
+    tests including trait AC coverage, and dry_run boolean field to BatchExecResult."
 - _ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
   slugs: []
   title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
@@ -56771,6 +56775,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "PR #485 merged by @chapel. Fix handles phased tool call events from ACP SDK 0.14+:
+    translator extracts summary from tool_call_update, stats deduplicate by toolCallId, session
+    display filters phased duplicates."
   depends_on: []
   context: []
   priority: 2
@@ -56781,6 +56788,7 @@
   vcs_refs: []
   created_at: 2026-02-23T21:12:51.679Z
   started_at: 2026-02-23T21:18:50.746Z
+  completed_at: 2026-02-23T21:37:01.844Z
   notes:
     - _ulid: 01KJ65Y495V3GKE9TKZ3DWCVHD
       created_at: 2026-02-23T21:19:26.501Z
@@ -56799,7 +56807,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T21:37:01.844Z
-  closed_reason: "PR #485 merged by @chapel. Fix handles phased tool call events from ACP SDK 0.14+:
-    translator extracts summary from tool_call_update, stats deduplicate by toolCallId, session
-    display filters phased duplicates."
