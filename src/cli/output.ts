@@ -187,7 +187,8 @@ export function error(message: string, details?: unknown): void {
  */
 export function warn(message: string): void {
   if (isStructuredMode()) {
-    // Warnings are suppressed in structured output modes
+    // Route warnings to stderr in structured output modes to keep stdout pure
+    console.error(chalk.yellow("⚠"), message);
   } else {
     console.warn(chalk.yellow("⚠"), message);
   }
@@ -199,7 +200,8 @@ export function warn(message: string): void {
  */
 export function info(message: string): void {
   if (isStructuredMode()) {
-    // Info messages suppressed in structured output modes
+    // Route info to stderr in structured output modes to keep stdout pure
+    console.error(chalk.blue("ℹ"), message);
   } else {
     console.log(chalk.blue("ℹ"), message);
   }
