@@ -514,9 +514,9 @@ triage:
     reasoning: "Nice-to-have: Reverse spec lookup. Not blocking."
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:31:29.727Z
     created_at: 2026-02-23T08:31:15.780Z
     updated_at: 2026-02-23T08:31:29.737Z
-    acted_at: 2026-02-23T08:31:29.727Z
   - _ulid: 01KJ4SZHVA6Q2R2HAQFCR4EMS8
     inbox_ref: 01KFPDCY6FN46DHZ13E7FMK051
     item_snapshot: "Add cross-platform CI matrix testing - run core functionality tests on Windows,
@@ -1367,3 +1367,138 @@ triage:
     acted_at: 2026-02-23T08:31:27.906Z
     created_at: 2026-02-23T08:31:16.953Z
     updated_at: 2026-02-23T08:31:27.922Z
+  - _ulid: 01KJ4T3YBYSCH0ZQR1QYF783F9
+    inbox_ref: 01KJ33138CNS0KEXVTYJM62W45
+    item_snapshot: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error
+      message. Should print JSON parse error or validation error details. batch has did-you-mean for
+      bad arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage
+      session when batch --commands failed with no diagnostic output."
+    status: triaged
+    action: promote
+    reasoning: Bug - batch silently fails on malformed JSON, no error message
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.710Z
+    updated_at: 2026-02-23T08:33:39.729Z
+  - _ulid: 01KJ4T3YDHBC7YXXJ1JDM9AANQ
+    inbox_ref: 01KJ3318Y1350NCQF6SK9GKHY7
+    item_snapshot: "Session checkpoint hook noise: fires repeatedly for intentionally uncommitted files
+      (e.g. generated reports). No way to suppress for specific paths. Could support
+      .kspec/checkpoint-ignore listing paths to exclude from dirty-tree check, or respect
+      gitignore-like patterns. Fired 6+ times in one session for a triage report artifact."
+    status: triaged
+    action: defer
+    reasoning: Nice-to-have - checkpoint hook noise, not blocking
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.761Z
+    updated_at: 2026-02-23T08:33:39.775Z
+  - _ulid: 01KJ4T3YEJXBE739MMBDKA543P
+    inbox_ref: 01KJ331EH4M78HCKVCABPM26NK
+    item_snapshot: "CLI parity: kspec task add requires --title flag but kspec inbox add accepts
+      positional text argument. task add should accept positional title for consistency. Small
+      change in Commander.js argument definition."
+    status: triaged
+    action: defer
+    reasoning: Nice-to-have DX - task add positional title consistency
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.794Z
+    updated_at: 2026-02-23T08:33:39.807Z
+  - _ulid: 01KJ4T3YFGGTP9NPD336ZC85MZ
+    inbox_ref: 01KJ35CN8RKR2S26MSBB1WK4X0
+    item_snapshot: "Plugin registry tests: validate structurally instead of exact output matching.
+      Current tests assert exact JSON shapes (e.g. source field structure) which breaks when Claude
+      Code schema evolves. Better: (1) Validate marketplace.json against a Zod schema capturing
+      required fields (plugins array, name, source, version) rather than exact values. (2) Test
+      build output structurally — 'has plugins array with our entry' not exact field matching. (3)
+      For known_marketplaces.json registry, test entry exists with valid path, not exact source
+      object shape. Motivation: the source field assertion broke twice already (local → directory
+      object) because tests coupled to implementation details."
+    status: triaged
+    action: defer
+    reasoning: Test improvement - structural validation for plugin registry tests
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.824Z
+    updated_at: 2026-02-23T08:33:39.834Z
+  - _ulid: 01KJ4T3YGA7KQAZTAPPF06ZBH4
+    inbox_ref: 01KJ3QN15VJWAAMPTYT3K06XK3
+    item_snapshot: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
+      01KJ3N2N8V38823H87PG09V7XR, the worker agent invoked /codex review #448 (per focus
+      instructions). The codex agent (gpt-5.3-codex, danger-full-access sandbox) ran a 'CLI
+      spot-check' that accidentally started a kspec ralph process, then ran pkill -f 'kspec ralph'
+      to clean it up — which killed the actual ralph loop process hosting it. Codex session
+      rollout-2026-02-22T14-02-07 completed normally (703k tokens, clean exit) while ralph died
+      mid-tool-call (session stuck at active, no session.end event, last event seq 963 was the codex
+      exec Bash call). Fix: add context to the codex skill prompt when invoked inside ralph (e.g.
+      'You are running inside a kspec ralph loop. NEVER start kspec ralph, kspec serve, or use
+      pkill/kill on kspec processes.'). Could detect ralph context via KSPEC_SESSION_ID env var or
+      similar. Alternative: restrict sandbox mode when codex is called from ralph. See codex skill
+      at .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
+    status: triaged
+    action: promote
+    reasoning: Safety bug - codex killed ralph process during loop, needs safety guard
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.851Z
+    updated_at: 2026-02-23T08:33:39.863Z
+  - _ulid: 01KJ4T3YHENYSJVQDW0VDAWEX3
+    inbox_ref: 01KJ40ESZK9AWPP53D2SQ76M30
+    item_snapshot: "SUGGESTION: Update @triage-daemon-api spec AC-4/AC-5 wording from PUT to POST to
+      match codebase convention. All daemon routes use POST for mutations."
+    status: triaged
+    action: delete
+    reasoning: Trivial spec wording suggestion, not inbox-worthy
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.886Z
+    updated_at: 2026-02-23T08:33:39.900Z
+  - _ulid: 01KJ4T3YJFZ1NVG02QP3RA8JX1
+    inbox_ref: 01KJ4FFAWXJE5STMAAEDH0FG2B
+    item_snapshot: "Web UI list pages hardcode limit: 1000 with no pagination — triage page confirmed,
+      likely affects inbox/tasks pages too. Silent truncation for large datasets. Need pagination or
+      virtual scrolling pattern across all list views."
+    status: triaged
+    action: defer
+    reasoning: Nice-to-have - web UI pagination for large datasets
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.919Z
+    updated_at: 2026-02-23T08:33:39.929Z
+  - _ulid: 01KJ4T3YK6GF4HW45RM3R51456
+    inbox_ref: 01KJ4HNNKRVX2HJHD1SEXZGC6R
+    item_snapshot: "Bug: kspec task add returned OK with ULID but task was not findable via task get or
+      tasks list. Had to retry to get a persistent task. Possible shadow branch commit race
+      condition or ULID issue. Observed during session 2026-02-22."
+    status: triaged
+    action: promote
+    reasoning: Data integrity bug - task add returns OK but task not findable, possible shadow race
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.942Z
+    updated_at: 2026-02-23T08:33:39.952Z
+  - _ulid: 01KJ4T3YKYJ1ZWE1Z4WM92DB6P
+    inbox_ref: 01KJ4HNNN3AJ1CZKMY5487EJJ7
+    item_snapshot: "Feature: add --description flag to kspec task set so task descriptions can be
+      updated after creation. Currently description is set-once at task add time. Workaround is task
+      note but that is not the same as updating the canonical description."
+    status: triaged
+    action: duplicate
+    reasoning: Duplicate of 01KHWWMD - task set --description flag, already deferred
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.966Z
+    updated_at: 2026-02-23T08:33:39.976Z
+  - _ulid: 01KJ4T3YMNHRDC9RR97CDWP7DM
+    inbox_ref: 01KJ4KFAXR94SCYKWQ2KQWXH54
+    item_snapshot: "Trait AC annotation gaps on @triage-cli-commands: @trait-error-guidance ac-3,
+      @trait-semantic-exit-codes ac-3/4/6/7, @trait-filterable-list ac-2, @trait-shadow-commit
+      ac-2/3/4/6/7/8, @trait-dry-run ac-4/6. Pre-existing, not introduced by PR #458."
+    status: triaged
+    action: defer
+    reasoning: Pre-existing trait AC annotation gaps, tracking only
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-23T08:33:39.990Z
+    updated_at: 2026-02-23T08:33:40.000Z
