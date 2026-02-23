@@ -4943,7 +4943,7 @@ features:
         created: 2026-02-22T20:16:09.103Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     status:
       maturity: draft
       implementation: implemented
