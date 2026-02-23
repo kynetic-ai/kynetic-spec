@@ -689,6 +689,31 @@ export function createTranslator(): RalphTranslator {
         const pending = state.pendingTools.get(toolCallId);
         const tool = pending?.tool || extractToolName(u);
 
+        // Check if rawInput arrived with this update (phased event pattern)
+        const newInput = u.rawInput || u.input || u.params;
+        if (newInput && pending) {
+          const oldSummary = getToolSummary(pending.tool, pending.input);
+          const newSummary = getToolSummary(tool, newInput);
+          if (newSummary && !oldSummary) {
+            // Input became available - update pending entry and emit summary
+            pending.input = newInput;
+            pending.tool = tool;
+            return {
+              type: "tool_update",
+              timestamp,
+              data: {
+                kind: "tool_update",
+                toolCallId,
+                tool,
+                status: "pending" as const,
+                summary: newSummary,
+              },
+            };
+          }
+          // Update the pending entry even if summary didn't change
+          pending.input = newInput;
+        }
+
         // Non-terminal status update
         if (
           status === "pending" ||

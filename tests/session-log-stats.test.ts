@@ -17,6 +17,7 @@ import {
   computeSessionLogStats,
   computeToolUsageStats,
   computeTimePeriodStats,
+  deduplicatePhasedToolCalls,
   type SessionLogSummary,
   type SessionLogStats,
   type ToolUsageStats,
@@ -237,6 +238,35 @@ describe('computeToolUsageStats', () => {
     // Custom limit
     const limited = await computeToolUsageStats(testDir, [sessionId], 5);
     expect(limited).toHaveLength(5);
+  });
+
+  it('should deduplicate phased tool_call events by toolCallId', async () => {
+    const sessionId = testUlid('SESS', 2);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'claude-agent-acp',
+    });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      // Phase 1: Bash tool_call with empty rawInput
+      { type: 'session.update', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: {}, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+      // Phase 2: Same Bash tool_call with populated rawInput (phased duplicate)
+      { type: 'session.update', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: { command: 'npm test' }, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+      // Different tool_call (not a duplicate)
+      { type: 'session.update', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_002', rawInput: { file_path: '/src/main.ts' }, _meta: { claudeCode: { toolName: 'Read' } } } } },
+      // Another Bash with no duplicate
+      { type: 'session.update', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_003', rawInput: { command: 'git status' }, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+    ].map((e, i) => JSON.stringify({ ts: Date.now(), seq: i, session_id: sessionId, ...e }));
+    await fs.writeFile(eventsPath, events.join('\n') + '\n');
+
+    const toolUsage = await computeToolUsageStats(testDir, [sessionId]);
+
+    // Should count 3 unique tool calls (not 4 with the phased duplicate)
+    const totalCount = toolUsage.reduce((sum, t) => sum + t.count, 0);
+    expect(totalCount).toBe(3);
+    expect(toolUsage.find(t => t.tool_name === 'Bash')?.count).toBe(2);
+    expect(toolUsage.find(t => t.tool_name === 'Read')?.count).toBe(1);
   });
 });
 
@@ -674,5 +704,46 @@ describe('kspec session log stats (CLI)', () => {
   it('should exit with code 0 when no sessions match', () => {
     const result = kspec('session log stats --agent nonexistent', tempDir);
     expect(result.exitCode).toBe(0);
+  });
+});
+
+describe('deduplicatePhasedToolCalls', () => {
+  it('should remove empty-input duplicates when populated version exists', () => {
+    const events = [
+      // tool_call with empty rawInput
+      { ts: 1000, seq: 0, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: {}, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+      // Same tool_call with populated rawInput
+      { ts: 1001, seq: 1, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: { command: 'npm test' }, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+      // Different tool_call (should be kept)
+      { ts: 1002, seq: 2, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_002', rawInput: { file_path: '/src/main.ts' }, _meta: { claudeCode: { toolName: 'Read' } } } } },
+      // Non tool_call event (should be kept)
+      { ts: 1003, seq: 3, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'agent_thought' } } },
+    ];
+
+    const result = deduplicatePhasedToolCalls(events);
+    expect(result).toHaveLength(3);
+    // The populated version should be kept
+    expect((result[0].data as any).update.rawInput.command).toBe('npm test');
+    // Other events should be unchanged
+    expect((result[1].data as any).update.toolCallId).toBe('toolu_002');
+    expect((result[2].data as any).update.sessionUpdate).toBe('agent_thought');
+  });
+
+  it('should keep single tool_call events (no phased duplicate)', () => {
+    const events = [
+      { ts: 1000, seq: 0, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: { command: 'npm test' }, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+    ];
+
+    const result = deduplicatePhasedToolCalls(events);
+    expect(result).toHaveLength(1);
+  });
+
+  it('should keep empty-input tool_call when no populated version exists', () => {
+    const events = [
+      { ts: 1000, seq: 0, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: {}, _meta: { claudeCode: { toolName: 'Bash' } } } } },
+    ];
+
+    const result = deduplicatePhasedToolCalls(events);
+    expect(result).toHaveLength(1);
   });
 });

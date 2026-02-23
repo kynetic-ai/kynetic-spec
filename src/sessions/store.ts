@@ -342,6 +342,49 @@ export async function readEvents(
 }
 
 /**
+ * Deduplicate phased tool_call events.
+ *
+ * ACP SDK 0.14+ sends tool calls in two phases: first with empty rawInput,
+ * then with populated rawInput. This merges them by keeping only the version
+ * with populated rawInput per toolCallId.
+ */
+export function deduplicatePhasedToolCalls(
+  events: SessionEvent[],
+): SessionEvent[] {
+  // First pass: find toolCallIds that have a populated rawInput version
+  const populatedToolCalls = new Map<string, number>(); // toolCallId → index
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    if (event.type !== "session.update") continue;
+    const data = event.data as { update?: { sessionUpdate?: string; toolCallId?: string; tool_call_id?: string; id?: string; rawInput?: Record<string, unknown> } } | null;
+    const update = data?.update;
+    if (update?.sessionUpdate !== "tool_call") continue;
+    const toolCallId = update.toolCallId || update.tool_call_id || update.id;
+    if (!toolCallId) continue;
+    const rawInput = update.rawInput;
+    const hasContent = rawInput && Object.keys(rawInput).length > 0;
+    if (hasContent) {
+      populatedToolCalls.set(toolCallId, i);
+    } else if (!populatedToolCalls.has(toolCallId)) {
+      // First (empty) version - track it in case no populated version exists
+      populatedToolCalls.set(toolCallId, i);
+    }
+  }
+
+  // Second pass: keep only the best version per toolCallId
+  return events.filter((event, i) => {
+    if (event.type !== "session.update") return true;
+    const data = event.data as { update?: { sessionUpdate?: string; toolCallId?: string; tool_call_id?: string; id?: string; rawInput?: Record<string, unknown> } } | null;
+    const update = data?.update;
+    if (update?.sessionUpdate !== "tool_call") return true;
+    const toolCallId = update.toolCallId || update.tool_call_id || update.id;
+    if (!toolCallId) return true;
+    // Keep this event only if it's the best version (populated or only version)
+    return populatedToolCalls.get(toolCallId) === i;
+  });
+}
+
+/**
  * Read events within a time range.
  *
  * @param specDir - The .kspec directory path
@@ -990,6 +1033,8 @@ export async function computeToolUsageStats(
       const content = await fsPromises.readFile(eventsPath, "utf-8");
       if (!content.trim()) continue;
       const lines = content.trim().split("\n");
+      // Track seen toolCallIds to deduplicate phased events
+      const seenToolCallIds = new Set<string>();
       for (const line of lines) {
         // Quick pre-filter: only parse lines that might be tool_call events
         if (!line.includes('"tool_call"')) continue;
@@ -998,6 +1043,10 @@ export async function computeToolUsageStats(
           if (event?.type === "session.update") {
             const update = event?.data?.update;
             if (update?.sessionUpdate === "tool_call") {
+              // Deduplicate phased tool_call events by toolCallId
+              const toolCallId = update?.toolCallId || update?.tool_call_id || update?.id;
+              if (toolCallId && seenToolCallIds.has(toolCallId)) continue;
+              if (toolCallId) seenToolCallIds.add(toolCallId);
               const toolName = update?._meta?.claudeCode?.toolName || "unknown";
               toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
               totalToolCalls++;
@@ -1258,6 +1307,8 @@ export async function searchSessionEvents(
 
     const matches: SearchMatch[] = [];
     const lines = content.trim().split("\n");
+    // Track seen tool_call IDs to skip phased duplicates
+    const seenToolCallIds = new Set<string>();
 
     for (const line of lines) {
       if (totalMatches >= limit) break;
@@ -1270,6 +1321,18 @@ export async function searchSessionEvents(
 
         // AC: @session-log-search ac-2 - Filter by event type
         if (options.eventType && event.type !== options.eventType) continue;
+
+        // Deduplicate phased tool_call events
+        if (event?.type === "session.update") {
+          const update = event?.data?.update;
+          if (update?.sessionUpdate === "tool_call") {
+            const toolCallId = update?.toolCallId || update?.tool_call_id || update?.id;
+            if (toolCallId) {
+              if (seenToolCallIds.has(toolCallId)) continue;
+              seenToolCallIds.add(toolCallId);
+            }
+          }
+        }
 
         // Verify match in stringified data (not just line, in case pattern appears in metadata)
         const dataStr = JSON.stringify(event.data);
