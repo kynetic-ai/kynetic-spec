@@ -23,6 +23,7 @@ import type {
 	ErrorResponse,
 	SearchResponse
 } from '@kynetic-ai/shared';
+import type { TriageRecord } from './types/triage';
 import {
 	getSelectedProjectPath,
 	clearInvalidSelection,
@@ -39,7 +40,8 @@ import {
 	fetchInboxStatic,
 	fetchSessionContextStatic,
 	fetchObservationsStatic,
-	searchStatic
+	searchStatic,
+	fetchTriageRecordsStatic
 } from './api-static';
 import { DAEMON_API_BASE } from './constants';
 
@@ -436,6 +438,123 @@ export async function search(query: string): Promise<SearchResponse> {
 	url.searchParams.set('q', query);
 
 	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Triage API Functions
+// AC: @interactive-triage-ui ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7
+// ============================================================
+
+/**
+ * Fetch triage records with optional filters
+ * AC: @interactive-triage-ui ac-1, ac-2, ac-7
+ */
+export async function fetchTriageRecords(params?: {
+	status?: string;
+	action?: string;
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<TriageRecord>> {
+	// AC: @interactive-triage-ui ac-8 - Static mode: read-only triage data
+	if (isStaticMode()) {
+		return fetchTriageRecordsStatic(params);
+	}
+
+	const url = new URL(`${API_BASE}/api/triage`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				url.searchParams.set(key, String(value));
+			}
+		});
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Create or update a triage record
+ * AC: @interactive-triage-ui ac-3
+ */
+export async function createTriageRecord(data: {
+	inbox_ref: string;
+	action: string;
+	reasoning: string;
+	decided_by?: string;
+	evidence_refs?: string[];
+}): Promise<{ success: boolean; record: TriageRecord }> {
+	assertWritable('create triage record');
+
+	const response = await fetch(`${API_BASE}/api/triage`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify(data)
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Override a triage decision
+ * AC: @interactive-triage-ui ac-4
+ */
+export async function overrideTriageRecord(
+	ref: string,
+	data: {
+		action: string;
+		reasoning: string;
+		override_by?: string;
+	}
+): Promise<{ success: boolean; record: TriageRecord }> {
+	assertWritable('override triage record');
+
+	const response = await fetch(`${API_BASE}/api/triage/${ref}/override`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify(data)
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Execute a triage action
+ * AC: @interactive-triage-ui ac-3
+ */
+export async function actOnTriageRecord(
+	ref: string
+): Promise<{ success: boolean; record: TriageRecord }> {
+	assertWritable('execute triage action');
+
+	const response = await fetch(`${API_BASE}/api/triage/${ref}/act`, {
+		method: 'POST',
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {

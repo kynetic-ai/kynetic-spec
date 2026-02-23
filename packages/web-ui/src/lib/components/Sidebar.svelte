@@ -27,7 +27,8 @@
 		{ path: '/', label: 'Dashboard' },
 		{ path: '/tasks', label: 'Tasks' },
 		{ path: '/items', label: 'Items' },
-		{ path: '/inbox', label: 'Inbox' }
+		{ path: '/inbox', label: 'Inbox' },
+		{ path: '/triage', label: 'Triage' }
 	];
 
 	// AC: @web-dashboard ac-20, ac-21
