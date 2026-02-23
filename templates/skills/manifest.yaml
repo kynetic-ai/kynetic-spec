@@ -33,3 +33,8 @@ skills:
     description: Assess and prepare tasks for automation eligibility. Verify spec coverage, acceptance criteria, and task readiness for automated agents.
     platforms:
       - claude-code
+  - id: writing-specs
+    name: Writing Specs
+    description: Create and maintain specification items — modules, features, requirements, acceptance criteria, and traits. The source of truth for what to build.
+    platforms:
+      - claude-code
