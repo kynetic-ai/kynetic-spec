@@ -256,3 +256,124 @@ export interface AlignmentStats {
   tasks_without_specs: number;
   warnings: string[];
 }
+
+/**
+ * Convention definition from meta manifest
+ */
+export interface Convention {
+  _ulid: string;
+  domain: string;
+  rules: string[];
+  examples?: Array<{ good: string; bad: string }>;
+  validation?: {
+    type: 'regex' | 'enum' | 'range' | 'prose';
+    pattern?: string;
+    message?: string;
+    allowed?: string[];
+    min?: number;
+    max?: number;
+    unit?: 'words' | 'chars' | 'lines';
+  };
+}
+
+/**
+ * Triage status lifecycle
+ */
+export type TriageStatus = 'pending' | 'triaged' | 'acted_on';
+
+/**
+ * Triage action types
+ */
+export type TriageAction = 'promote' | 'delete' | 'defer' | 'spec-gap' | 'duplicate';
+
+/**
+ * Triage record
+ */
+export interface TriageRecord {
+  _ulid: string;
+  inbox_ref: string;
+  item_snapshot: string;
+  status: TriageStatus;
+  action?: TriageAction;
+  reasoning?: string;
+  decided_by?: string;
+  evidence_refs: string[];
+  override_reasoning?: string;
+  override_by?: string;
+  override_at?: string;
+  acted_at?: string;
+  result_ref?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+/**
+ * Acceptance criterion with inheritance tracking
+ */
+export interface InheritedAC extends AcceptanceCriterion {
+  _inherited_from: string;
+}
+
+/**
+ * Exported task with resolved spec reference title
+ */
+export interface ExportedTask extends TaskDetail {
+  spec_ref_title?: string;
+}
+
+/**
+ * Exported spec item with nested hierarchy and inherited ACs.
+ * Note: extends ItemDetail (acceptance_criteria required) because the JSON
+ * snapshot always includes the field. The core export module uses Omit to
+ * build from parser types where AC may not yet exist, but by the time data
+ * reaches the web-ui via snapshot, AC is always present (at least as []).
+ */
+export interface ExportedItem extends ItemDetail {
+  children?: ExportedItem[];
+  inherited_acs?: InheritedAC[];
+}
+
+/**
+ * Project metadata in a snapshot
+ */
+export interface ExportedProject {
+  name: string;
+  version?: string;
+  description?: string;
+}
+
+/**
+ * Validation result included in a snapshot
+ */
+export interface ExportedValidation {
+  valid: boolean;
+  errorCount: number;
+  warningCount: number;
+  errors: Array<{
+    file: string;
+    message: string;
+    path?: string;
+  }>;
+  warnings: Array<{
+    file: string;
+    message: string;
+  }>;
+}
+
+/**
+ * Full kspec snapshot structure
+ */
+export interface KspecSnapshot {
+  version: string;
+  exported_at: string;
+  project: ExportedProject;
+  tasks: ExportedTask[];
+  items: ExportedItem[];
+  inbox: InboxItem[];
+  session: SessionContext | null;
+  observations: Observation[];
+  agents: Agent[];
+  workflows: Workflow[];
+  conventions: Convention[];
+  validation?: ExportedValidation;
+}

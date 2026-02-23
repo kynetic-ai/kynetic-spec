@@ -227,31 +227,18 @@ describe('Triage API Client', () => {
 });
 
 describe('Triage Types', () => {
-  it('should define TriageRecord, TriageStatus, and TriageAction types', async () => {
+  it('should re-export triage types from @kynetic-ai/shared', async () => {
     const content = await readFile(TYPES_PATH, 'utf-8');
 
-    expect(content).toContain('export type TriageStatus');
-    expect(content).toContain('export type TriageAction');
-    expect(content).toContain('export interface TriageRecord');
+    // Types are re-exported from shared package, not defined locally
+    expect(content).toContain("from '@kynetic-ai/shared'");
+    expect(content).toContain('TriageStatus');
+    expect(content).toContain('TriageAction');
+    expect(content).toContain('TriageRecord');
 
-    // Status values
-    expect(content).toContain("'pending'");
-    expect(content).toContain("'triaged'");
-    expect(content).toContain("'acted_on'");
-
-    // Action values
-    expect(content).toContain("'promote'");
-    expect(content).toContain("'delete'");
-    expect(content).toContain("'defer'");
-    expect(content).toContain("'spec-gap'");
-    expect(content).toContain("'duplicate'");
-
-    // Record fields
-    expect(content).toContain('inbox_ref');
-    expect(content).toContain('item_snapshot');
-    expect(content).toContain('evidence_refs');
-    expect(content).toContain('override_reasoning');
-    expect(content).toContain('override_by');
+    // Should NOT define local interfaces or type aliases
+    expect(content).not.toMatch(/^export interface /m);
+    expect(content).not.toMatch(/^export type \w+ =/m);
   });
 });
 
