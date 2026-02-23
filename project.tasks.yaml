@@ -55121,13 +55121,14 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Extract shared executeTriageAction() from CLI and daemon
+- title: Extract shared triage action executor and deduplicate validActions
   description: "Both src/cli/commands/triage.ts and packages/daemon/src/routes/triage.ts contain
     duplicate switch/case logic for triage action execution
     (promote/delete/defer/spec-gap/duplicate). PR #454 extracted the formatter but not the executor.
     Extract to a shared module (e.g. src/triage/actions.ts), update both consumers to import from
-    it. Ensure tests cover the shared module directly."
-  type: refactor
+    it. Also deduplicate the validActions array (appears 3x in triage.ts plus once with skip).
+    Extract to module-level constant or export from schema."
+  type: task
   spec_ref: "@triage-cli-commands"
   meta_ref: null
   plan_ref: null
@@ -55138,11 +55139,11 @@
     - refactor
     - triage
   depends_on: []
-  _ulid: 01KJ4DERWS1ATB0CDAFSRBZAKN
+  _ulid: 01KJ4DH9RXVD50Q77AY0ADGM9Y
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-23T04:52:23.065Z
+  created_at: 2026-02-23T04:53:45.885Z
   notes: []
   todos: []
