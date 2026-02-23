@@ -56371,6 +56371,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #485. Handles phased tool call events from ACP SDK 0.14+: translator
+    emits summaries when rawInput arrives late, deduplication in session display/stats/search. 7 new
+    tests, all CI green."
   depends_on: []
   context: []
   priority: 1
@@ -56378,6 +56381,7 @@
   vcs_refs: []
   created_at: 2026-02-23T18:40:27.141Z
   started_at: 2026-02-23T18:51:36.061Z
+  completed_at: 2026-02-23T21:36:33.124Z
   notes:
     - _ulid: 01KJ5YP6NKF3TE6KJH7XKTZMXP
       created_at: 2026-02-23T19:12:46.772Z
@@ -56389,10 +56393,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T21:36:33.124Z
-  closed_reason: "Merged in PR #485. Handles phased tool call events from ACP SDK 0.14+: translator
-    emits summaries when rawInput arrives late, deduplication in session display/stats/search. 7 new
-    tests, all CI green."
 - _ulid: 01KJ5X5ZT4V24WYN70DM8XRVYW
   slugs: []
   title: test-ref-output
@@ -56769,7 +56769,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56799,3 +56799,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T21:37:01.844Z
+  closed_reason: "PR #485 merged by @chapel. Fix handles phased tool call events from ACP SDK 0.14+:
+    translator extracts summary from tool_call_update, stats deduplicate by toolCallId, session
+    display filters phased duplicates."
