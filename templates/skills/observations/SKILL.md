@@ -119,6 +119,17 @@ For each pending observation:
 | Session-local question | `meta question --add` | Track during current session |
 | Systemic process question | `meta observe question` | Broader than one session |
 
+## Batch Capture
+
+When capturing multiple observations at once (e.g., during reflection), use `kspec batch`:
+
+```bash
+kspec batch --commands '[
+  {"command":"meta observe","args":{"type":"friction","content":"Bulk updates require too many commands"}},
+  {"command":"meta observe","args":{"type":"success","content":"Dry-run before derive prevented duplicates"}}
+]'
+```
+
 ## Integration
 
 - **`/kspec:triage observations`** — Processes pending observations during triage
