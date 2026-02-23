@@ -55968,7 +55968,7 @@
     tasks (design, triage, research) without a meaningless submit step. The --force flag exists but
     does not actually force completion from in_progress state.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
