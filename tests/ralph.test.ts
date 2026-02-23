@@ -1234,6 +1234,97 @@ describe('ralph event translator', () => {
       expect(data.output).toContain('success');
       expect(data.output).not.toContain('[object Object]');
     });
+
+    it('emits summary when tool_call_update arrives with populated rawInput (phased pattern)', () => {
+      const translator = createTranslator();
+
+      // Phase 1: tool_call with empty rawInput
+      const event1 = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_phased_update',
+        rawInput: {},
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      expect(event1).not.toBeNull();
+      expect(event1!.type).toBe('tool_start');
+      expect((event1!.data as { summary: string }).summary).toBe('');
+
+      // Phase 2: tool_call_update with populated rawInput (the ACP 0.14+ pattern)
+      const event2 = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_phased_update',
+        rawInput: { command: 'git status' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Should emit tool_update with summary from newly-available rawInput
+      expect(event2).not.toBeNull();
+      expect(event2!.type).toBe('tool_update');
+      expect((event2!.data as { summary: string }).summary).toBe('git status');
+    });
+
+    it('does not emit summary from tool_call_update when pending already had summary', () => {
+      const translator = createTranslator();
+
+      // Phase 1: tool_call WITH rawInput (already has summary)
+      translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_already_has',
+        rawInput: { command: 'npm test' },
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Phase 2: tool_call_update with same rawInput
+      const event2 = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_already_has',
+        rawInput: { command: 'npm test' },
+        status: 'running',
+        _meta: { claudeCode: { toolName: 'Bash' } },
+      } as SessionUpdate);
+
+      // Should emit a normal status update, not a summary update
+      expect(event2).not.toBeNull();
+      expect(event2!.type).toBe('tool_update');
+      expect((event2!.data as { summary?: string }).summary).toBeUndefined();
+      expect((event2!.data as { status: string }).status).toBe('running');
+    });
+
+    it('handles full phased lifecycle: empty tool_call → populated tool_call_update → completed', () => {
+      const translator = createTranslator();
+
+      // Phase 1: tool_call with empty rawInput
+      const start = translator.translate({
+        sessionUpdate: 'tool_call',
+        toolCallId: 'toolu_full_lifecycle',
+        rawInput: {},
+        _meta: { claudeCode: { toolName: 'Read' } },
+      } as SessionUpdate);
+      expect(start!.type).toBe('tool_start');
+      expect((start!.data as { summary: string }).summary).toBe('');
+
+      // Phase 2: tool_call_update with populated rawInput
+      const update = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_full_lifecycle',
+        rawInput: { file_path: '/src/main.ts' },
+        _meta: { claudeCode: { toolName: 'Read' } },
+      } as SessionUpdate);
+      expect(update!.type).toBe('tool_update');
+      expect((update!.data as { summary: string }).summary).toBe('main.ts');
+
+      // Phase 3: tool_call_update completed
+      const result = translator.translate({
+        sessionUpdate: 'tool_call_update',
+        toolCallId: 'toolu_full_lifecycle',
+        status: 'completed',
+        rawOutput: [{ type: 'text', text: 'file contents' }],
+        _meta: { claudeCode: { toolName: 'Read' } },
+      } as SessionUpdate);
+      expect(result!.type).toBe('tool_result');
+      expect((result!.data as { output: string }).output).toBe('file contents');
+    });
   });
 });
 

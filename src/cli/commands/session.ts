@@ -42,6 +42,7 @@ import {
   computeTimePeriodStats,
   listSessions,
   searchSessionEvents,
+  deduplicatePhasedToolCalls,
 } from "../../sessions/store.js";
 import type { SessionEvent, SessionStatus } from "../../sessions/types.js";
 import {
@@ -1679,7 +1680,9 @@ async function sessionLogShowAction(
     // AC: @session-log-show ac-3, ac-4, ac-5 - Event timeline
     let events: SessionEvent[] | null = null;
     if (options.events) {
-      let allEvents = await readEvents(ctx.specDir, sessionId);
+      let allEvents = deduplicatePhasedToolCalls(
+        await readEvents(ctx.specDir, sessionId),
+      );
 
       // AC: @session-log-show ac-4 - Filter by type
       if (options.type) {
