@@ -8,6 +8,11 @@ skills:
     description: Get help with kspec commands and workflows
     platforms:
       - claude-code
+  - id: observations
+    name: Observations
+    description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The feedback loop that drives process improvement.
+    platforms:
+      - claude-code
   - id: reflect
     name: Session Reflection
     description: Structured reflection at the end of work sessions. Identifies learnings, friction points, and improvements for system evolution.
