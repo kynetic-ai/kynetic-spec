@@ -53,3 +53,8 @@ skills:
     description: Formalize repeatable patterns into trackable kspec workflows. Design steps, choose triggers, create loop variants, and integrate with skills.
     platforms:
       - claude-code
+  - id: review
+    name: Review
+    description: Kspec-specific review gates — spec alignment, own AC coverage, trait AC coverage, and validation integration. Building block for project-specific review workflows.
+    platforms:
+      - claude-code
