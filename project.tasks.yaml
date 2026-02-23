@@ -54884,7 +54884,7 @@
   type: task
   spec_ref: "@interactive-triage-ui"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-triage-daemon-api"
@@ -54907,6 +54907,7 @@
         Add fetchTriage, createTriageRecord, updateTriageRecord to api.ts.
   todos: []
   automation: eligible
+  started_at: 2026-02-23T01:38:03.792Z
 - _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
   slugs:
     - implement-triage-agent-export
@@ -54916,6 +54917,10 @@
   plan_ref: "@plan-interactive-triage-system"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #454. Shared triage export formatter in src/export/triage.ts extracted
+    from CLI and daemon. Two formats: context (markdown) and JSON. All 4 own ACs and 6 trait ACs
+    (@trait-json-output) covered with 18 dedicated tests. Prior review findings (2 MUST-FIX, 1
+    SHOULD-FIX) addressed in fix cycle."
   depends_on:
     - "@implement-triage-record-schema"
   context: []
@@ -54924,6 +54929,7 @@
   vcs_refs: []
   created_at: 2026-02-22T20:16:10.820Z
   started_at: 2026-02-23T01:05:57.250Z
+  completed_at: 2026-02-23T01:37:07.220Z
   notes:
     - _ulid: 01KJ3FXJJ4C37PXQ7074M9R8QS
       created_at: 2026-02-22T20:16:10.820Z
@@ -54949,11 +54955,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T01:37:07.220Z
-  closed_reason: "Merged in PR #454. Shared triage export formatter in src/export/triage.ts extracted
-    from CLI and daemon. Two formats: context (markdown) and JSON. All 4 own ACs and 6 trait ACs
-    (@trait-json-output) covered with 18 dedicated tests. Prior review findings (2 MUST-FIX, 1
-    SHOULD-FIX) addressed in fix cycle."
 - _ulid: 01KJ3SMTMK0VXV8N9SR3G0BMKT
   slugs:
     - task-fix-daemon-executable-build
