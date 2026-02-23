@@ -549,7 +549,7 @@ async function importPlan(
         info(`Would create manual task: @${uniqueSlug}`);
         result.createdTasks.push(`@${uniqueSlug}`);
       } else {
-        // AC: @plan-import ac-27 - Manual tasks have plan_ref but no spec_ref
+        // AC: @plan-import ac-27 - Manual tasks have plan_ref; spec_ref honored if provided
         const taskInput: TaskInput = {
           title: taskDef.title,
           type: "task",
@@ -559,6 +559,7 @@ async function importPlan(
           tags: taskDef.tags || [],
           depends_on: [],
           notes: [],
+          ...(taskDef.spec_ref ? { spec_ref: normalizeRefInput(taskDef.spec_ref) } : {}),
         };
 
         if (taskDef.description) {

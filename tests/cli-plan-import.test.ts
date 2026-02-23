@@ -776,6 +776,85 @@ derive_from_specs: true
     expect(manualTask!.tags).toContain("manual");
   });
 
+  // AC: @plan-import ac-27 — manual task with explicit spec_ref honors the ref
+  it("should honor spec_ref on manual tasks when explicitly provided", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Spec Ref Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Target Spec
+  slug: target-spec
+\`\`\`
+
+## Tasks
+
+\`\`\`yaml
+- title: Manual With Spec Ref
+  slug: manual-with-ref
+  spec_ref: "@target-spec"
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const tasks = kspecJson<
+      Array<{
+        title: string;
+        spec_ref?: string;
+        plan_ref: string;
+      }>
+    >("task list --json", tempDir);
+
+    const manualTask = tasks.find((t) => t.title === "Manual With Spec Ref");
+    expect(manualTask).toBeDefined();
+    expect(manualTask!.spec_ref).toBe("@target-spec");
+    expect(manualTask!.plan_ref).toBe("@plan-spec-ref-plan");
+  });
+
+  // AC: @plan-import ac-27 — manual task spec_ref is normalized with @ prefix
+  it("should normalize spec_ref on manual tasks (add @ prefix)", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Normalize Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Norm Spec
+  slug: norm-spec
+\`\`\`
+
+## Tasks
+
+\`\`\`yaml
+- title: Manual Bare Ref
+  slug: manual-bare-ref
+  spec_ref: norm-spec
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const tasks = kspecJson<
+      Array<{
+        title: string;
+        spec_ref?: string;
+      }>
+    >("task list --json", tempDir);
+
+    const manualTask = tasks.find((t) => t.title === "Manual Bare Ref");
+    expect(manualTask).toBeDefined();
+    // Should be normalized with @ prefix even though YAML said "norm-spec"
+    expect(manualTask!.spec_ref).toBe("@norm-spec");
+  });
+
   // AC: @plan-import ac-28
   it("should make plan ref resolvable in kspec commands", async () => {
     const planPath = path.join(tempDir, "test-plan.md");
