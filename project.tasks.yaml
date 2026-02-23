@@ -53383,7 +53383,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KHY9VV"
@@ -53526,6 +53526,11 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-23T22:25:56.908Z
+  closed_reason: Spike validated ACP 0.18.0 runtime compatibility against real ralph session (16
+    iterations, 27k events). All critical fields present and working. No code changes needed —
+    existing fallback chains handle everything correctly. Only untested item is permission event
+    fields (low risk, requires non-yolo run).
 - _ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
   slugs: []
   title: "Spike: Audit mock completeness vs real adapter behavior"
