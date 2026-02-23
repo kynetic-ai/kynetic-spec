@@ -130,6 +130,8 @@ export const statusErrors = {
   cannotComplete: (status: string) =>
     `Cannot complete task with status: ${status}`,
   cannotBlock: (status: string) => `Cannot block task with status: ${status}`,
+  cannotNeedsWork: (status: string) =>
+    `Cannot transition task to needs_work from status: ${status}. Task must be pending_review.`,
   // AC: @spec-completion-enforcement ac-2
   completeRequiresReview:
     "Task must be submitted for review first. Use: kspec task submit @ref",
@@ -268,6 +270,7 @@ export const operationFailures = {
   patchTask: "Failed to patch task",
   startTask: "Failed to start task",
   completeTask: "Failed to complete task",
+  needsWorkTask: "Failed to transition task to needs_work",
   blockTask: "Failed to block task",
   unblockTask: "Failed to unblock task",
   cancelTask: "Failed to cancel task",
