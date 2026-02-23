@@ -3,7 +3,7 @@
  * AC: @core-skill-install ac-1 through ac-5
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import {
@@ -11,6 +11,7 @@ import {
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
+  createTempDir,
   initGitRepo,
 } from './helpers/cli';
 
@@ -282,5 +283,44 @@ describe('Core Skills Manifest Loading', () => {
     expect(version).toBeDefined();
     expect(version).not.toBe('unknown');
     expect(version).toMatch(/^\d+\.\d+\.\d+/);
+  });
+});
+
+// AC: @core-skill-install ac-2
+describe('copyCoreSkillFiles error handling', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should silently skip when skill template does not exist (ENOENT)', async () => {
+    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
+    const targetDir = path.join(tempDir, 'skills', 'nonexistent');
+
+    // Should not throw
+    await copyCoreSkillFiles('nonexistent-skill-id', targetDir);
+
+    // Target dir should not have been created
+    await expect(fs.access(targetDir)).rejects.toThrow();
+  });
+
+  it('should copy known core skill with supporting dirs', async () => {
+    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
+    const targetDir = path.join(tempDir, 'skills', 'triage');
+
+    await copyCoreSkillFiles('triage', targetDir);
+
+    // SKILL.md copied
+    const skillMd = await fs.readFile(path.join(targetDir, 'SKILL.md'), 'utf-8');
+    expect(skillMd).toContain('# Triage');
+
+    // docs/ copied
+    const inboxMd = await fs.readFile(path.join(targetDir, 'docs', 'inbox.md'), 'utf-8');
+    expect(inboxMd).toContain('Inbox Triage');
   });
 });
