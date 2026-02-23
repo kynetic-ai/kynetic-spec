@@ -56776,7 +56776,14 @@
     - acp
   vcs_refs: []
   created_at: 2026-02-23T21:12:51.679Z
-  notes: []
+  started_at: 2026-02-23T21:18:50.746Z
+  notes:
+    - _ulid: 01KJ65Y495V3GKE9TKZ3DWCVHD
+      created_at: 2026-02-23T21:19:26.501Z
+      author: "@claude"
+      content: "Starting work. Three areas to fix: (1) translator in events.ts - handle summary in
+        tool_call_update with rawInput, (2) store.ts computeToolUsageStats - dedup by toolCallId,
+        (3) session display/search - dedup phased events at read time."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T21:18:50.746Z
