@@ -658,10 +658,17 @@ describe('kspec session log show (CLI)', () => {
     expect(result.exitCode).toBe(0);
   });
 
-  // AC: @trait-semantic-exit-codes ac-2 (not_found is ac-5 in some traits)
-  it('should exit with error code for not found', () => {
+  // AC: @trait-json-output ac-3
+  it('should return JSON error object for not-found in --json mode', () => {
+    const result = kspec('session log show NONEXISTENT --json', tempDir, { expectFail: true });
+    const output = result.stderr || result.stdout;
+    const parsed = JSON.parse(output);
+    expect(parsed.error).toBeDefined();
+  });
+
+  // AC: @trait-semantic-exit-codes ac-4
+  it('should exit with code 3 (runtime error) for not found', () => {
     const result = kspec('session log show NONEXISTENT', tempDir, { expectFail: true });
-    // Should be NOT_FOUND (3)
     expect(result.exitCode).toBe(3);
   });
 
