@@ -61,7 +61,7 @@ import {
   parseTimeSpec,
 } from "../../utils/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, isJsonMode, isNoteSuperseded, output } from "../output.js";
+import { error, info, isJsonMode, isNoteSuperseded, output, warn } from "../output.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -1163,15 +1163,10 @@ async function sessionStartAction(options: SessionOptions): Promise<void> {
       syncResult = await shadowPull(ctx.shadow.worktreeDir);
       // AC: @shadow-sync ac-3 - Warn about conflicts but continue with local state
       if (syncResult.hadConflict) {
-        console.log(
-          chalk.yellow(
-            "⚠ Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",
-          ),
-        );
-        console.log(chalk.gray("  Continuing with local state..."));
-        console.log("");
+        warn("Shadow sync conflict detected. Run `kspec shadow resolve` to fix.");
+        info("Continuing with local state...");
       } else if (syncResult.pulled) {
-        console.log(chalk.gray("ℹ Synced shadow branch from remote"));
+        info("Synced shadow branch from remote");
       }
     }
 

@@ -2,8 +2,11 @@
  * Tests for session start notes enrichment
  *
  * AC: @cmd-session-start ac-1, ac-2
+ * AC: @trait-json-output ac-1 - Valid JSON output purity
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
 
 interface SessionContext {
@@ -252,6 +255,53 @@ describe('session start notes enrichment', () => {
         expect(note.task_status).toBeDefined();
         expect(['in_progress', 'pending_review', 'completed']).toContain(note.task_status);
       }
+    });
+  });
+
+  // AC: @trait-json-output ac-1 - Valid JSON with no ANSI color codes
+  describe('JSON output purity', () => {
+    it('should not use raw console.log in sessionStartAction handler', async () => {
+      // Static analysis: verify the action handler uses info()/warn() not raw console.log
+      const sessionSrc = await readFile(
+        join(process.cwd(), 'src/cli/commands/session.ts'),
+        'utf-8',
+      );
+
+      // Extract sessionStartAction function body
+      const actionStart = sessionSrc.indexOf('async function sessionStartAction');
+      const actionEnd = sessionSrc.indexOf('\n}\n', actionStart);
+      const actionBody = sessionSrc.slice(actionStart, actionEnd);
+
+      // Should NOT contain raw console.log (info/warn from output.ts handles structured mode)
+      expect(actionBody).not.toContain('console.log');
+      // Should import and use info/warn from output.ts
+      expect(sessionSrc).toContain('info,');
+      expect(sessionSrc).toContain('warn');
+    });
+
+    it('should produce valid JSON on stdout with no extra lines', () => {
+      // Run session start --json and verify stdout is pure JSON
+      const result = kspec('session start --json', tempDir);
+      expect(result.exitCode).toBe(0);
+
+      // stdout should be valid JSON - no info lines mixed in
+      expect(() => JSON.parse(result.stdout)).not.toThrow();
+
+      // Verify it's an object with expected session fields
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toHaveProperty('branch');
+      expect(parsed).toHaveProperty('context');
+    });
+
+    it('should not have info/warning lines on stdout', () => {
+      const result = kspec('session start --json', tempDir);
+
+      // stdout should not contain info markers
+      expect(result.stdout).not.toContain('ℹ');
+      expect(result.stdout).not.toContain('⚠');
+
+      // stdout should start with { (JSON object)
+      expect(result.stdout.trimStart()).toMatch(/^\{/);
     });
   });
 });
