@@ -800,12 +800,6 @@ inbox:
       - prompt
       - safety
     added_by: "@claude"
-  - _ulid: 01KJ40ESZK9AWPP53D2SQ76M30
-    text: "SUGGESTION: Update @triage-daemon-api spec AC-4/AC-5 wording from PUT to POST to match
-      codebase convention. All daemon routes use POST for mutations."
-    created_at: 2026-02-23T01:05:12.691Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KJ43CPCNZZPFGWF6HHP2BJ0H
     text: "Include triage records in static snapshot (kspec-snapshot.json). Currently the snapshot
       format (KspecSnapshot type) doesn't include triage records, so the triage page in
@@ -834,16 +828,6 @@ inbox:
     tags:
       - bug
       - shadow-branch
-      - task
-    added_by: "@claude"
-  - _ulid: 01KJ4HNNN3AJ1CZKMY5487EJJ7
-    text: "Feature: add --description flag to kspec task set so task descriptions can be updated after
-      creation. Currently description is set-once at task add time. Workaround is task note but that
-      is not the same as updating the canonical description."
-    created_at: 2026-02-23T06:06:03.427Z
-    tags:
-      - feature
-      - cli
       - task
     added_by: "@claude"
   - _ulid: 01KJ4KFAXR94SCYKWQ2KQWXH54

@@ -55645,21 +55645,88 @@
   created_at: 2026-02-23T08:25:46.887Z
   notes: []
   todos: []
-- title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
+- _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
+  slugs: []
+  title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
     values) "
+  type: task
+  description: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in
+    then: values) before attempting parse, rather than failing with cryptic nested mapping error."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:48.046Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4T45FMV4TV07MWX7RNA8F8
+  slugs: []
+  title: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks
+    list. Had "
+  type: task
+  description: "Bug: kspec task add returned OK with ULID but task was not findable via task get or
+    tasks list. Had to retry to get a persistent task. Possible shadow branch commit race condition
+    or ULID issue. Observed during session 2026-02-22."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:33:46.996Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
+  slugs: []
+  title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session
+    01KJ3N2N8V38823H87PG09V7
+  type: task
+  description: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
+    01KJ3N2N8V38823H87PG09V7XR, the worker agent invoked /codex review #448 (per focus
+    instructions). The codex agent (gpt-5.3-codex, danger-full-access sandbox) ran a 'CLI
+    spot-check' that accidentally started a kspec ralph process, then ran pkill -f 'kspec ralph' to
+    clean it up — which killed the actual ralph loop process hosting it. Codex session
+    rollout-2026-02-22T14-02-07 completed normally (703k tokens, clean exit) while ralph died
+    mid-tool-call (session stuck at active, no session.end event, last event seq 963 was the codex
+    exec Bash call). Fix: add context to the codex skill prompt when invoked inside ralph (e.g. 'You
+    are running inside a kspec ralph loop. NEVER start kspec ralph, kspec serve, or use pkill/kill
+    on kspec processes.'). Could detect ralph context via KSPEC_SESSION_ID env var or similar.
+    Alternative: restrict sandbox mode when codex is called from ralph. See codex skill at
+    .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:33:48.376Z
+  notes: []
+  todos: []
+- title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
+    Should "
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in
-    then: values) before attempting parse, rather than failing with cryptic nested mapping error."
-  _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
+  description: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error
+    message. Should print JSON parse error or validation error details. batch has did-you-mean for
+    bad arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage session
+    when batch --commands failed with no diagnostic output."
+  _ulid: 01KJ4T480J60WY0ESJWQY08G82
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-23T08:25:48.046Z
+  created_at: 2026-02-23T08:33:49.586Z
   notes: []
   todos: []

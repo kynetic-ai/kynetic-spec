@@ -1373,38 +1373,42 @@ triage:
       message. Should print JSON parse error or validation error details. batch has did-you-mean for
       bad arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage
       session when batch --commands failed with no diagnostic output."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Bug - batch silently fails on malformed JSON, no error message
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-23T08:33:39.710Z
-    updated_at: 2026-02-23T08:33:39.729Z
+    updated_at: 2026-02-23T08:33:50.710Z
+    acted_at: 2026-02-23T08:33:50.700Z
+    result_ref: "@01KJ4T48"
   - _ulid: 01KJ4T3YDHBC7YXXJ1JDM9AANQ
     inbox_ref: 01KJ3318Y1350NCQF6SK9GKHY7
     item_snapshot: "Session checkpoint hook noise: fires repeatedly for intentionally uncommitted files
       (e.g. generated reports). No way to suppress for specific paths. Could support
       .kspec/checkpoint-ignore listing paths to exclude from dirty-tree check, or respect
       gitignore-like patterns. Fired 6+ times in one session for a triage report artifact."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Nice-to-have - checkpoint hook noise, not blocking
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:49.559Z
     created_at: 2026-02-23T08:33:39.761Z
-    updated_at: 2026-02-23T08:33:39.775Z
+    updated_at: 2026-02-23T08:33:49.568Z
   - _ulid: 01KJ4T3YEJXBE739MMBDKA543P
     inbox_ref: 01KJ331EH4M78HCKVCABPM26NK
     item_snapshot: "CLI parity: kspec task add requires --title flag but kspec inbox add accepts
       positional text argument. task add should accept positional title for consistency. Small
       change in Commander.js argument definition."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Nice-to-have DX - task add positional title consistency
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:49.532Z
     created_at: 2026-02-23T08:33:39.794Z
-    updated_at: 2026-02-23T08:33:39.807Z
+    updated_at: 2026-02-23T08:33:49.541Z
   - _ulid: 01KJ4T3YFGGTP9NPD336ZC85MZ
     inbox_ref: 01KJ35CN8RKR2S26MSBB1WK4X0
     item_snapshot: "Plugin registry tests: validate structurally instead of exact output matching.
@@ -1415,13 +1419,14 @@ triage:
       For known_marketplaces.json registry, test entry exists with valid path, not exact source
       object shape. Motivation: the source field assertion broke twice already (local → directory
       object) because tests coupled to implementation details."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Test improvement - structural validation for plugin registry tests
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:49.504Z
     created_at: 2026-02-23T08:33:39.824Z
-    updated_at: 2026-02-23T08:33:39.834Z
+    updated_at: 2026-02-23T08:33:49.513Z
   - _ulid: 01KJ4T3YGA7KQAZTAPPF06ZBH4
     inbox_ref: 01KJ3QN15VJWAAMPTYT3K06XK3
     item_snapshot: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
@@ -1436,69 +1441,77 @@ triage:
       pkill/kill on kspec processes.'). Could detect ralph context via KSPEC_SESSION_ID env var or
       similar. Alternative: restrict sandbox mode when codex is called from ralph. See codex skill
       at .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Safety bug - codex killed ralph process during loop, needs safety guard
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:49.477Z
+    result_ref: "@01KJ4T46"
     created_at: 2026-02-23T08:33:39.851Z
-    updated_at: 2026-02-23T08:33:39.863Z
+    updated_at: 2026-02-23T08:33:49.486Z
   - _ulid: 01KJ4T3YHENYSJVQDW0VDAWEX3
     inbox_ref: 01KJ40ESZK9AWPP53D2SQ76M30
     item_snapshot: "SUGGESTION: Update @triage-daemon-api spec AC-4/AC-5 wording from PUT to POST to
       match codebase convention. All daemon routes use POST for mutations."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Trivial spec wording suggestion, not inbox-worthy
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:48.348Z
     created_at: 2026-02-23T08:33:39.886Z
-    updated_at: 2026-02-23T08:33:39.900Z
+    updated_at: 2026-02-23T08:33:48.357Z
   - _ulid: 01KJ4T3YJFZ1NVG02QP3RA8JX1
     inbox_ref: 01KJ4FFAWXJE5STMAAEDH0FG2B
     item_snapshot: "Web UI list pages hardcode limit: 1000 with no pagination — triage page confirmed,
       likely affects inbox/tasks pages too. Silent truncation for large datasets. Need pagination or
       virtual scrolling pattern across all list views."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Nice-to-have - web UI pagination for large datasets
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:48.309Z
     created_at: 2026-02-23T08:33:39.919Z
-    updated_at: 2026-02-23T08:33:39.929Z
+    updated_at: 2026-02-23T08:33:48.319Z
   - _ulid: 01KJ4T3YK6GF4HW45RM3R51456
     inbox_ref: 01KJ4HNNKRVX2HJHD1SEXZGC6R
     item_snapshot: "Bug: kspec task add returned OK with ULID but task was not findable via task get or
       tasks list. Had to retry to get a persistent task. Possible shadow branch commit race
       condition or ULID issue. Observed during session 2026-02-22."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Data integrity bug - task add returns OK but task not findable, possible shadow race
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:48.278Z
+    result_ref: "@01KJ4T45"
     created_at: 2026-02-23T08:33:39.942Z
-    updated_at: 2026-02-23T08:33:39.952Z
+    updated_at: 2026-02-23T08:33:48.288Z
   - _ulid: 01KJ4T3YKYJ1ZWE1Z4WM92DB6P
     inbox_ref: 01KJ4HNNN3AJ1CZKMY5487EJJ7
     item_snapshot: "Feature: add --description flag to kspec task set so task descriptions can be
       updated after creation. Currently description is set-once at task add time. Workaround is task
       note but that is not the same as updating the canonical description."
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: Duplicate of 01KHWWMD - task set --description flag, already deferred
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:46.957Z
     created_at: 2026-02-23T08:33:39.966Z
-    updated_at: 2026-02-23T08:33:39.976Z
+    updated_at: 2026-02-23T08:33:46.971Z
   - _ulid: 01KJ4T3YMNHRDC9RR97CDWP7DM
     inbox_ref: 01KJ4KFAXR94SCYKWQ2KQWXH54
     item_snapshot: "Trait AC annotation gaps on @triage-cli-commands: @trait-error-guidance ac-3,
       @trait-semantic-exit-codes ac-3/4/6/7, @trait-filterable-list ac-2, @trait-shadow-commit
       ac-2/3/4/6/7/8, @trait-dry-run ac-4/6. Pre-existing, not introduced by PR #458."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Pre-existing trait AC annotation gaps, tracking only
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:33:46.884Z
     created_at: 2026-02-23T08:33:39.990Z
-    updated_at: 2026-02-23T08:33:40.000Z
+    updated_at: 2026-02-23T08:33:46.903Z
