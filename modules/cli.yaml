@@ -1295,9 +1295,10 @@ features:
           implementation: implemented
     acceptance_criteria:
       - id: ac-1
-        given: a task is blocked by dependencies
+        given: a task is in any non-completed state
         when: running 'kspec task complete @ref --force'
-        then: the task is completed despite blocked state, with a warning displayed
+        then: the task is completed from any state (in_progress, pending, blocked, cancelled), bypassing
+          submit/review requirements, with a warning and note documenting the prior state
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
