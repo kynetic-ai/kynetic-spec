@@ -56785,5 +56785,13 @@
         tool_call_update with rawInput, (2) store.ts computeToolUsageStats - dedup by toolCallId,
         (3) session display/search - dedup phased events at read time."
       supersedes: null
+    - _ulid: 01KJ66DC1P1P3AZK08GRXNZDER
+      created_at: 2026-02-23T21:27:45.974Z
+      author: "@claude"
+      content: "Fixed three issues with ACP SDK 0.14+ phased tool call events: (1) translator now extracts
+        summary from tool_call_update with newly-populated rawInput, (2) computeToolUsageStats
+        deduplicates by toolCallId, (3) session show/search filter phased duplicates. 7 new tests,
+        all 3234 tests pass. Local review: PASS, no MUST-FIX items."
+      supersedes: null
   todos: []
   automation: eligible
