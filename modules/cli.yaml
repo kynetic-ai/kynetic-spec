@@ -4813,6 +4813,9 @@ features:
           - "@trait-websocket-protocol"
         notes: []
         created: 2026-02-22T20:16:09.005Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KJ3FXGTS351B70HBQ44Y744S
         slugs:
           - interactive-triage-ui
