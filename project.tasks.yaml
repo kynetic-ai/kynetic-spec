@@ -55389,6 +55389,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #461. Added path-based filtering to CI test workflow."
   depends_on: []
   context: []
   priority: 3
@@ -55399,6 +55400,7 @@
   vcs_refs: []
   created_at: 2026-02-23T07:41:53.997Z
   started_at: 2026-02-23T07:42:24.427Z
+  completed_at: 2026-02-23T08:00:33.185Z
   notes:
     - _ulid: 01KJ4Q8RVED8PFNJV08G63ZGJX
       created_at: 2026-02-23T07:43:52.174Z
@@ -55407,5 +55409,180 @@
         change. Awaiting CI pass and merge."
       supersedes: null
   todos: []
-  completed_at: 2026-02-23T08:00:33.185Z
-  closed_reason: "Merged in PR #461. Added path-based filtering to CI test workflow."
+- _ulid: 01KJ4SM4DTQA7D7GE81GARBBX6
+  slugs: []
+  title: "Error message consistency: task needs-work uses inline error string instead of centralized
+    error str"
+  type: task
+  description: "Error message consistency: task needs-work uses inline error string instead of
+    centralized error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or similar
+    to match cannotStart pattern."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:01.626Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
+  slugs: []
+  title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
+    prefix on "
+  type: task
+  description: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that
+    ensures @ prefix on ref-like strings. Apply at CLI input boundary (TaskInput construction)
+    instead of per-command handler. Prevents class of bugs where bare refs bypass RefSchema
+    validation and cause silent data loss. Today's depends_on fix (PR #353) patched 3 locations — a
+    shared boundary would prevent recurrence. Related: @merge-ref-normalization (merge layer),
+    @01KG0N4V (silent safeParse drops)."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:02.909Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SM6RN06C487QWRWABJ86J
+  slugs: []
+  title: kspec plan import should place type:trait items with no parent in the project-level traits
+    array (ky
+  type: task
+  description: kspec plan import should place type:trait items with no parent in the project-level
+    traits array (kynetic.yaml), not the module-level traits array. Currently causes schema
+    validation error.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:04.021Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
+  slugs: []
+  title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
+    --under. Cu
+  type: task
+  description: kspec item add needs --root flag for adding traits to project-level kynetic.yaml
+    without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
+    never-edit-manually rule.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:05.081Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
+  slugs: []
+  title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
+    generate
+  type: task
+  description: kspec-agents.md Finding Information table shows skill IDs as /help instead of
+    /kspec:help — generateSkillsTable() in agent-data-sections.ts doesn't account for namespace
+    rendering of core skills
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:06.126Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
+  slugs: []
+  title: task complete --force should bypass the submit requirement. Currently --force does not skip
+    the in_p
+  type: task
+  description: task complete --force should bypass the submit requirement. Currently --force does not
+    skip the in_progress → pending_review transition, making it impossible to complete non-code
+    tasks (design, triage, research) without a meaningless submit step. The --force flag exists but
+    does not actually force completion from in_progress state.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:07.159Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
+  slugs: []
+  title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
+    stringif
+  type: task
+  description: "kspec batch cannot handle task patch with nested --data JSON argument. The data object
+    gets stringified as [object Object] instead of being serialized as JSON. Batch args are likely
+    passed through a simple string coercion. Workaround: run task patch commands individually. Fix:
+    batch arg handling should JSON.stringify objects before passing to command handlers."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:08.180Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
+  slugs: []
+  title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
+    tasks g"
+  type: task
+  description: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says
+    manual tasks get no spec_ref, but when a task YAML explicitly provides spec_ref pointing to a
+    valid spec, it should be honored. Currently taskDef.spec_ref is never read in the manual task
+    creation path (plan-import.ts:513-523)."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:09.218Z
+  notes: []
+  todos: []
+- title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
+    shadow branch"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
+    shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when
+    --json mode is active."
+  _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:10.283Z
+  notes: []
+  todos: []
