@@ -23,6 +23,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+
+    name: test (shard ${{ matrix.shard }}/3)
 
     steps:
       - name: Checkout code
@@ -40,15 +46,17 @@ jobs:
         run: npm ci
 
       - name: Run typecheck
+        if: matrix.shard == 1
         run: npm run typecheck
 
       - name: Build
         run: npm run build
 
       - name: Run tests
-        run: npm test
+        run: npx vitest run --shard=${{ matrix.shard }}/3
 
       - name: Verify CLI functionality
+        if: matrix.shard == 1
         run: |
           npm link
           kspec --version
