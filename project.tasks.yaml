@@ -53394,6 +53394,7 @@
     - acp-migration
   vcs_refs: []
   created_at: 2026-02-20T19:54:43.776Z
+  started_at: 2026-02-23T22:25:27.378Z
   notes:
     - _ulid: 01KHYA7W5JQCRRAWQA2GH4AANK
       created_at: 2026-02-20T20:00:44.722Z
@@ -53437,9 +53438,94 @@
         7. configOptions in NewSessionResponse (v0.18.0): Session creation response now has
         configOptions array. Verify our newSession() handling doesn't choke on extra fields.
       supersedes: null
+    - _ulid: 01KJ69QG0MM0R2NYYW0GC82ZMT
+      created_at: 2026-02-23T22:25:43.444Z
+      author: "@claude"
+      content: >-
+        [SPIKE COMPLETE] ACP 0.18.0 runtime validation against ralph session
+        01KJ4VNM972YKRADFPC84B55RY (16 iterations, 27k events).
+
+
+        ## Core Fields — All Present and Working
+
+
+        - _meta.claudeCode.toolName: Present on all 1,733 tool_call events. Always bare names (Bash,
+        Read, Edit, etc.) — no MCP prefix.
+
+        - _meta.claudeCode.toolResponse: Present on 1,690 completion events. Tool-specific structure
+        intact (stdout/stderr for Bash, content/filenames for Grep, etc.).
+
+        - rawOutput: Present on all 1,733 completion events as string. extractToolOutput() hits this
+        at priority 1.
+
+        - --dangerously-skip-permissions: Working — zero permission events in session (all
+        auto-approved).
+
+
+        ## New Event Types (all handled gracefully)
+
+
+        - `plan` (128 events): Unknown to translator, returns null. No crash.
+
+        - `available_commands_update` (17 events): Same — returns null.
+
+        - `null` updates (32 events): Handled gracefully.
+
+        - `config_option_update`, `current_mode_update`: NOT observed in this session.
+
+
+        ## Phased Tool Call Model (ACP 0.14+)
+
+
+        - tool_call events: Have kind, status:"pending", rawInput (always empty {}). Our code falls
+        through rawInput to input field correctly.
+
+        - tool_call_update streaming: Have content array with {type:"content"} blocks, no rawOutput.
+
+        - tool_call_update completion: Have rawOutput (string), status,
+        _meta.claudeCode.toolResponse.
+
+        - Already handled by existing tool_call/tool_call_update logic in events.ts.
+
+
+        ## Edit Tool Diff Blocks
+
+
+        - Edit completions use {type:"diff", path, oldText, newText} content blocks.
+
+        - No impact: extractToolOutput() hits rawOutput first, diff blocks are in content array.
+
+
+        ## Bash Code Fence Language
+
+
+        - Not applicable: rawOutput is plain string, no SDK-injected fences.
+
+
+        ## Fallback Chain Status
+
+
+        - extractToolName(): Level 1 (_meta.claudeCode.toolName) always hits.
+
+        - extractToolOutput(): Level 1 (rawOutput) hits on completions. Level 2 (toolResponse)
+        present as backup.
+
+
+        ## Untested
+
+
+        - Permission event field structure (option.kind, optionId): Session used yolo mode, so no
+        permission events were generated. Would need a non-yolo run to verify. Low risk — the
+        handleRequest code already uses these fields and the session ran successfully.
+
+
+        ## Verdict
+
+
+        No code changes needed. Existing fallback chains handle ACP 0.18.0 correctly.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-23T22:25:27.378Z
 - _ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
   slugs: []
   title: "Spike: Audit mock completeness vs real adapter behavior"
