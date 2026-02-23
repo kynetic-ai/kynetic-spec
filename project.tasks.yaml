@@ -56638,7 +56638,10 @@
   notes: []
   todos: []
   automation: manual_only
-- title: Fix phased tool call event handling for ralph display and session stats
+- _ulid: 01KJ65J2Q0SS2WGYD1P5FZ2C40
+  slugs: []
+  title: Fix phased tool call event handling for ralph display and session stats
+  type: bug
   description: >-
     ## Problem
 
@@ -56759,23 +56762,21 @@
     per tool call with full details
 
     4. **Tests**: Add phased event fixtures and assertions across all affected test files
-  type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - ralph
     - events
     - acp
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJ65J2Q0SS2WGYD1P5FZ2C40
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-23T21:12:51.679Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-02-23T21:18:50.746Z
