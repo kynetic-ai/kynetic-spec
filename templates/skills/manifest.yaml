@@ -13,6 +13,11 @@ skills:
     description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The feedback loop that drives process improvement.
     platforms:
       - claude-code
+  - id: reflect
+    name: Session Reflection
+    description: Structured reflection at the end of work sessions. Identifies learnings, friction points, and improvements for system evolution.
+    platforms:
+      - claude-code
   - id: triage
     name: Triage
     description: Triage inbox items systematically. Records decisions with audit trail, then executes actions. Supports inbox, observations, and automation eligibility triage.
