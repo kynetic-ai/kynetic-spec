@@ -55409,7 +55409,7 @@
   spec_ref: "@triage-cli-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55442,6 +55442,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T13:04:49.134Z
+  closed_reason: "Merged in PR #474. Extracted shared executeTriageAction() and VALID_ACTIONS to
+    src/triage/ module. CLI and daemon now import from shared module instead of maintaining
+    duplicate switch/case logic. VALID_ACTIONS derived from TriageActionSchema (single source of
+    truth). All 17 own ACs and 6 trait ACs verified with test coverage. 3193 tests pass."
 - _ulid: 01KJ4DP400CH23DK5CCMC1ZWF2
   slugs:
     - task-audit-daemon-test-coverage
