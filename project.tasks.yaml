@@ -53385,6 +53385,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Spike validated ACP 0.18.0 runtime compatibility against real ralph session (16
+    iterations, 27k events). All critical fields present and working. No code changes needed —
+    existing fallback chains handle everything correctly. Only untested item is permission event
+    fields (low risk, requires non-yolo run).
   depends_on:
     - "@01KHY9VV"
     - "@01KHY9W8"
@@ -53395,6 +53399,7 @@
   vcs_refs: []
   created_at: 2026-02-20T19:54:43.776Z
   started_at: 2026-02-23T22:25:27.378Z
+  completed_at: 2026-02-23T22:25:56.908Z
   notes:
     - _ulid: 01KHYA7W5JQCRRAWQA2GH4AANK
       created_at: 2026-02-20T20:00:44.722Z
@@ -53526,11 +53531,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-23T22:25:56.908Z
-  closed_reason: Spike validated ACP 0.18.0 runtime compatibility against real ralph session (16
-    iterations, 27k events). All critical fields present and working. No code changes needed —
-    existing fallback chains handle everything correctly. Only untested item is permission event
-    fields (low risk, requires non-yolo run).
 - _ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
   slugs: []
   title: "Spike: Audit mock completeness vs real adapter behavior"
@@ -56513,7 +56513,7 @@
   type: task
   spec_ref: "@session-log-show"
   plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56643,6 +56643,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T22:31:18.626Z
 - _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
   slugs: []
   title: Design native task-limit enforcement for ralph agent iterations
