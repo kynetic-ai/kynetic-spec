@@ -55222,6 +55222,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #457. Fixed sidebar nav links by using shadcn-svelte child snippet
+    pattern to render <a> elements instead of dead <button> elements. Added /triage to daemon SPA
+    fallback routes. User manually verified links work and triage page renders."
   depends_on: []
   context: []
   priority: 1
@@ -55232,6 +55235,7 @@
   vcs_refs: []
   created_at: 2026-02-23T05:33:37.467Z
   started_at: 2026-02-23T05:34:14.754Z
+  completed_at: 2026-02-23T05:59:50.617Z
   notes:
     - _ulid: 01KJ4GA9BVH2M2SSZADS3EP7C3
       created_at: 2026-02-23T05:42:21.819Z
@@ -55244,10 +55248,6 @@
         changes)."
       supersedes: null
   todos: []
-  completed_at: 2026-02-23T05:59:50.617Z
-  closed_reason: "Merged in PR #457. Fixed sidebar nav links by using shadcn-svelte child snippet
-    pattern to render <a> elements instead of dead <button> elements. Added /triage to daemon SPA
-    fallback routes. User manually verified links work and triage page renders."
 - _ulid: 01KJ4FTAE506Y45KTGFMFB57NQ
   slugs:
     - task-redesign-web-ui
@@ -55274,5 +55274,35 @@
     - spike
   vcs_refs: []
   created_at: 2026-02-23T05:33:38.629Z
+  notes: []
+  todos: []
+- title: Update triage skill to use new kspec triage CLI commands
+  description: "The /triage skill (.claude/skills/triage/SKILL.md) predates the triage record system
+    implemented in PRs #449-455. It still references the old manual flow (kspec inbox
+    delete/promote) without mentioning kspec triage record, kspec triage start, kspec triage act,
+    kspec triage export, or the triage record lifecycle. Update the skill to: 1) Incorporate kspec
+    triage start for interactive triage sessions. 2) Replace manual inbox promote/delete flows with
+    kspec triage record + kspec triage act two-step pattern. 3) Document kspec triage export for
+    agent handoff context. 4) Update the inbox sub-doc (docs/inbox.md) accordingly. 5) Ensure the
+    skill teaches agents the full triage record workflow (record → act, override flow, export for
+    context)."
+  type: task
+  spec_ref: "@triage-cli-commands"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-update-triage-skill
+  tags:
+    - skill
+    - triage
+    - docs
+  depends_on: []
+  _ulid: 01KJ4HJB047Y2M2NJ54YJBJCJJ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-23T06:04:14.212Z
   notes: []
   todos: []
