@@ -55220,7 +55220,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55244,6 +55244,10 @@
         changes)."
       supersedes: null
   todos: []
+  completed_at: 2026-02-23T05:59:50.617Z
+  closed_reason: "Merged in PR #457. Fixed sidebar nav links by using shadcn-svelte child snippet
+    pattern to render <a> elements instead of dead <button> elements. Added /triage to daemon SPA
+    fallback routes. User manually verified links work and triage page renders."
 - _ulid: 01KJ4FTAE506Y45KTGFMFB57NQ
   slugs:
     - task-redesign-web-ui
