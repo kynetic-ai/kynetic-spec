@@ -9,7 +9,6 @@ on:
       - 'tests/**'
       - 'packages/**'
       - 'scripts/**'
-      - 'plugin/**'
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
