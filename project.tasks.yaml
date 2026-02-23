@@ -54196,6 +54196,7 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:26.607Z
+  started_at: 2026-02-23T12:02:05.245Z
   notes:
     - _ulid: 01KJ4V5BPT0MYXS1D5APVQZF2E
       created_at: 2026-02-23T08:51:54.714Z
@@ -54203,9 +54204,17 @@
       content: "AUTOMATION: Content authoring. Write templates/skills/create-workflow/SKILL.md. Read
         .claude/skills/create-workflow/SKILL.md as reference."
       supersedes: null
+    - _ulid: 01KJ568FAKYK29TQKWT7DYWFHH
+      created_at: 2026-02-23T12:05:51.059Z
+      author: "@claude"
+      content: "Wrote templates/skills/create-workflow/SKILL.md (175 lines). Covers: identifying good
+        workflow candidates, workflow structure (triggers, step types, modes), step-by-step creation
+        process, step design guidelines (action/check/decision with examples), loop mode variants,
+        skill decision matrix, lifecycle commands, agent instruction regeneration. Added manifest
+        entry. Installs correctly. All 3181 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T12:02:05.245Z
 - _ulid: 01KHZHPS2EYQCYB3065CA27E9F
   slugs: []
   title: "Write core skill: kspec:review"
