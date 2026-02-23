@@ -53959,6 +53959,7 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:21.883Z
+  started_at: 2026-02-23T10:53:44.044Z
   notes:
     - _ulid: 01KJ4V56219MY8QPNJ00RFR0SX
       created_at: 2026-02-23T08:51:48.929Z
@@ -53966,9 +53967,16 @@
       content: "AUTOMATION: Content authoring. Write templates/skills/reflect/SKILL.md. Read
         .claude/skills/reflect/SKILL.md as reference. Add to manifest.yaml."
       supersedes: null
+    - _ulid: 01KJ52BJRYR3H9RJZF4ERTRRPP
+      created_at: 2026-02-23T10:57:38.590Z
+      author: "@claude"
+      content: Wrote templates/skills/reflect/SKILL.md — covers 6-step interactive workflow, loop mode
+        with high-confidence-only filtering, reflection gate (check for meaningful work before
+        starting), item routing table, batch capture, reflection prompts, and integration. Dropped
+        focus/threads from old meta skill. Added manifest entry. All 3181 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T10:53:44.044Z
 - _ulid: 01KHZHPMFF2TWADJQP6DE38NKS
   slugs: []
   title: "Write core skills: kspec:triage-inbox and kspec:triage-automation"
