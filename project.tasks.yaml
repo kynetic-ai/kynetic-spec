@@ -56406,16 +56406,22 @@
   created_at: 2026-02-23T18:46:26.884Z
   notes: []
   todos: []
-- title: Implement index-based iteration boundary counting in computeIterationSummaries
-  type: task
-  plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
-  priority: 2
+- _ulid: 01KJ62NKTRBZZVSW0Y8DAC09YY
   slugs:
     - task-iteration-boundary-counting
+  title: Implement index-based iteration boundary counting in computeIterationSummaries
+  type: task
+  plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
   tags:
     - cli
     - bug
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-23T20:22:21.784Z
   notes:
     - _ulid: 01KJ62NKTRCQXDK9YJ6GJ9H337
       created_at: 2026-02-23T20:22:21.784Z
@@ -56425,10 +56431,6 @@
         prompt.sent event positions as iteration boundaries instead of relying
         on the data.iteration field (which suffers from a closure capture race
         in ralph's fire-and-forget event logging).
-  _ulid: 01KJ62NKTRBZZVSW0Y8DAC09YY
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-23T20:22:21.784Z
   todos: []
+  spec_ref: "@session-log-show"
+  automation: eligible
