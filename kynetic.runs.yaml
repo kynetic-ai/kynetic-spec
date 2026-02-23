@@ -5052,7 +5052,7 @@ runs:
   - _ulid: 01KJ5FXZ0TATEJDPSDWJ6JDTME
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-23T14:54:52.442Z
     step_results:
@@ -5066,5 +5066,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-23T14:55:08.569Z
-        completed_at: 2026-02-23T14:55:08.569Z
+        completed_at: 2026-02-23T14:55:36.574Z
+        notes: "Searched existing state. Two friction points identified: (1) flaky CI test timeout — already
+          fixed with 15s bump, pattern is ad-hoc but manageable. (2) gh API reply path — already
+          documented in session memory. Neither meets high-confidence bar for capture."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-23T14:55:36.574Z
+        completed_at: 2026-02-23T14:55:36.574Z
     initiated_by: "@claude"
