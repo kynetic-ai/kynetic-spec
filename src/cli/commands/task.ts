@@ -1182,7 +1182,7 @@ Examples:
     .option("--skip-review", "Skip review requirement (requires --reason)")
     .option(
       "--force",
-      "Force completion even if blocked (AC: @task-commands ac-1)",
+      "Force completion from any state (bypasses submit requirement)",
     )
     .option("--no-sync", "Skip syncing spec implementation status")
     .addHelpText(
@@ -1190,6 +1190,7 @@ Examples:
       `
 Examples:
   $ kspec task complete @task-slug --reason "Merged in PR #123"
+  $ kspec task complete @task-slug --force --reason "Design task, no code to review"
   $ kspec task complete --refs @task1 @task2 --reason "Batch completion"`,
     )
     .action(async (ref: string | undefined, options) => {
@@ -1229,13 +1230,11 @@ Examples:
                 };
               }
 
-              // AC: @task-commands ac-1 - Allow --force to bypass blocked state
-              // Handle blocked task with --force before other checks
-              const forcingBlockedTask =
-                foundTask.status === "blocked" && options.force;
+              // AC: @task-commands ac-1 - Allow --force to bypass all state checks
+              const forcingCompletion = options.force;
 
               // AC: @spec-completion-enforcement ac-7 - Allow skip-review bypass
-              if (!options.skipReview && !forcingBlockedTask) {
+              if (!options.skipReview && !forcingCompletion) {
                 // AC: @spec-completion-enforcement ac-2
                 if (foundTask.status === "in_progress") {
                   return {
@@ -1290,11 +1289,23 @@ Examples:
                 taskNotes = [...taskNotes, skipNote];
               }
 
-              // AC: @task-commands ac-1 - Document force completion of blocked task
-              if (forcingBlockedTask) {
-                const blockedBy = foundTask.blocked_by.join("; ");
+              // AC: @task-commands ac-1 - Document force completion from non-standard state
+              const forcedFromNonStandard =
+                forcingCompletion &&
+                foundTask.status !== "pending_review";
+              let forceStateDetail: string | undefined;
+              if (forcedFromNonStandard) {
+                forceStateDetail = `from ${foundTask.status} state`;
+                if (foundTask.status === "blocked") {
+                  const blockedBy = foundTask.blocked_by.join("; ");
+                  forceStateDetail += `. Was blocked by: ${blockedBy || "(dependency-blocked)"}`;
+                }
+                let forceMessage = `Completed with --force ${forceStateDetail}`;
+                if (options.reason) {
+                  forceMessage += `. Reason: ${options.reason}`;
+                }
                 const forceNote = createNote(
-                  `Completed with --force despite blocked state. Was blocked by: ${blockedBy || "(dependency-blocked)"}${options.reason ? `. Reason: ${options.reason}` : ""}`,
+                  forceMessage,
                   getAuthor(ctx.config?.identity?.author),
                 );
                 taskNotes = [...taskNotes, forceNote];
@@ -1362,11 +1373,10 @@ Examples:
                 }
               }
 
-              // AC: @task-commands ac-1 - Show warning when force-completing blocked task
+              // AC: @task-commands ac-1 - Show warning when force-completing from non-standard state
               let warningMsg: string | undefined;
-              if (forcingBlockedTask) {
-                const blockedBy = foundTask.blocked_by.join("; ");
-                warningMsg = `Task was blocked by: ${blockedBy || "(dependency-blocked)"}`;
+              if (forcedFromNonStandard) {
+                warningMsg = `Task was force-completed ${forceStateDetail}`;
                 if (!isJsonMode()) {
                   warn(warningMsg);
                 }
@@ -1376,7 +1386,7 @@ Examples:
                 success: true,
                 message: `Completed task: ${index.shortUlid(updatedTask._ulid)}`,
                 data: updatedTask,
-                ...(forcingBlockedTask && { warning: warningMsg }),
+                ...(warningMsg && { warning: warningMsg }),
               };
             } catch (err) {
               return {

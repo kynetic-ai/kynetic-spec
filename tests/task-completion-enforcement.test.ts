@@ -140,7 +140,7 @@ describe('Integration: task completion enforcement', () => {
       n.content.includes('--force')
     );
     expect(forceNote).toBeTruthy();
-    expect(forceNote?.content).toContain('blocked');
+    expect(forceNote?.content).toContain('blocked state');
     expect(forceNote?.content).toContain('Waiting for API');
   });
 
@@ -165,6 +165,159 @@ describe('Integration: task completion enforcement', () => {
     expect(result.success).toBe(true);
     expect(result.results[0].status).toBe('success');
     expect(result.results[0].warning).toContain('Dependency missing');
+  });
+
+  // AC: @task-commands ac-1 - Force from in_progress bypasses submit requirement
+  it('should complete in_progress task with --force flag', () => {
+    // Start a task (in_progress)
+    kspec('task start @test-task-pending', tempDir);
+
+    const taskData = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskData.status).toBe('in_progress');
+
+    // Complete with --force should succeed
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --force --reason "Design task, no code to review"',
+      tempDir
+    );
+    expect(exitCode).toBe(0);
+    const output = stdout + stderr;
+    expect(output).toContain('Completed task');
+    expect(output).toContain('in_progress'); // Warning about prior state
+
+    // Verify completed and note documents force
+    const afterComplete = kspecJson<{
+      status: string;
+      closed_reason: string | null;
+      notes: Array<{ content: string }>;
+    }>('task get @test-task-pending', tempDir);
+    expect(afterComplete.status).toBe('completed');
+    expect(afterComplete.closed_reason).toBe('Design task, no code to review');
+
+    const forceNote = afterComplete.notes.find((n) =>
+      n.content.includes('--force')
+    );
+    expect(forceNote).toBeTruthy();
+    expect(forceNote?.content).toContain('in_progress state');
+  });
+
+  // AC: @task-commands ac-1 - Force from pending bypasses start+submit requirement
+  it('should complete pending task with --force flag', () => {
+    // Task starts in pending
+    const taskData = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskData.status).toBe('pending');
+
+    // Complete with --force should succeed
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --force --reason "Already implemented elsewhere"',
+      tempDir
+    );
+    expect(exitCode).toBe(0);
+    expect(stdout + stderr).toContain('Completed task');
+
+    // Verify completed
+    const afterComplete = kspecJson<{
+      status: string;
+      closed_reason: string | null;
+      notes: Array<{ content: string }>;
+    }>('task get @test-task-pending', tempDir);
+    expect(afterComplete.status).toBe('completed');
+
+    const forceNote = afterComplete.notes.find((n) =>
+      n.content.includes('--force')
+    );
+    expect(forceNote).toBeTruthy();
+    expect(forceNote?.content).toContain('pending state');
+  });
+
+  // AC: @task-commands ac-1 - Force from cancelled bypasses reset requirement
+  it('should complete cancelled task with --force flag', () => {
+    kspec('task cancel @test-task-pending --reason "No longer needed"', tempDir);
+
+    const taskData = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskData.status).toBe('cancelled');
+
+    // Complete with --force should succeed
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --force --reason "Actually done"',
+      tempDir
+    );
+    expect(exitCode).toBe(0);
+    expect(stdout + stderr).toContain('Completed task');
+
+    // Verify completed
+    const afterComplete = kspecJson<{
+      status: string;
+      notes: Array<{ content: string }>;
+    }>('task get @test-task-pending', tempDir);
+    expect(afterComplete.status).toBe('completed');
+
+    const forceNote = afterComplete.notes.find((n) =>
+      n.content.includes('--force')
+    );
+    expect(forceNote).toBeTruthy();
+    expect(forceNote?.content).toContain('cancelled state');
+  });
+
+  // AC: @task-commands ac-1 - Force does NOT bypass already-completed check
+  it('should still error when force-completing already completed task', () => {
+    kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
+    kspec('task complete @test-task-pending --reason "Done"', tempDir);
+
+    const taskData = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskData.status).toBe('completed');
+
+    // --force should NOT bypass already-completed
+    const { stdout, stderr, exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --force --reason "Done again"',
+      tempDir
+    );
+    expect(exitCode).toBe(1);
+    expect(stdout + stderr).toContain('Task is already completed');
+  });
+
+  // AC: @task-commands ac-1 - Force from pending_review adds no extra note
+  it('should not add force note when --force used on pending_review task', () => {
+    kspec('task start @test-task-pending', tempDir);
+    kspec('task submit @test-task-pending', tempDir);
+
+    const taskData = kspecJson<{ status: string }>(
+      'task get @test-task-pending',
+      tempDir
+    );
+    expect(taskData.status).toBe('pending_review');
+
+    // --force on pending_review is a no-op (already valid state)
+    const { exitCode } = kspecWithStatus(
+      'task complete @test-task-pending --force --reason "Reviewed and merged"',
+      tempDir
+    );
+    expect(exitCode).toBe(0);
+
+    const afterComplete = kspecJson<{
+      status: string;
+      notes: Array<{ content: string }>;
+    }>('task get @test-task-pending', tempDir);
+    expect(afterComplete.status).toBe('completed');
+
+    // Should NOT have a force note since pending_review is the normal path
+    const forceNote = afterComplete.notes.find((n) =>
+      n.content.includes('--force')
+    );
+    expect(forceNote).toBeFalsy();
   });
 
   // AC: @spec-completion-enforcement ac-5
