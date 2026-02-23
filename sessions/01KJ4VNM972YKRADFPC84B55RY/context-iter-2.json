@@ -1,0 +1,439 @@
+{
+  "generated_at": "2026-02-23T09:24:50.102Z",
+  "branch": "feat/purge-project-skill-refs",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHZHPT",
+      "title": "Purge project-specific skill references from shared templates and docs",
+      "started_at": "2026-02-23T09:01:16.872Z",
+      "priority": 2,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-02-23T09:13:26.767Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHZHPT",
+      "task_title": "Purge project-specific skill references from shared templates and docs",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ4WCS",
+      "created_at": "2026-02-23T09:13:26.767Z",
+      "author": "@claude",
+      "content": "Audited templates/agents-sections/ and src/ for project-specific skill references. Changes: (1) 04-pr-workflow.md: replaced /local-review, /pr, /pr-review with generic workflow-based language. (2) 03-task-lifecycle.md: /triage → /kspec:triage (core skill), /reflect → generic 'during reflection'. (3) src/ralph/subagent.ts: extracted SKILL_PR_REVIEW, SKILL_REFLECT, SKILL_TASK_WORK constants — skill invocations now use constants instead of hardcoded strings. (4) src/cli/commands/ralph.ts: updated to use constants. (5) Regenerated kspec-agents.md. (6) Updated tests to use constants. All 3173 tests pass."
+    },
+    {
+      "task_ref": "01KHZHPT",
+      "task_title": "Purge project-specific skill references from shared templates and docs",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ4V5D",
+      "created_at": "2026-02-23T08:51:56.916Z",
+      "author": "@claude",
+      "content": "AUTOMATION: Standalone cleanup. Audit templates/agents-sections/*.md for /pr, /pr-review, /local-review, /release refs. Replace with /kspec:review where appropriate."
+    },
+    {
+      "task_ref": "01KJ4Q55",
+      "task_title": "Add path-based CI test filtering",
+      "task_status": "completed",
+      "note_ulid": "01KJ4Q8R",
+      "created_at": "2026-02-23T07:43:52.174Z",
+      "author": "@claude",
+      "content": "PR #461 created with path-based filtering. Tests only run on PRs when code-relevant files change. Awaiting CI pass and merge."
+    },
+    {
+      "task_ref": "01KJ4HJB",
+      "task_title": "Update triage skill to use new kspec triage CLI commands",
+      "task_status": "completed",
+      "note_ulid": "01KJ4K2H",
+      "created_at": "2026-02-23T06:30:34.095Z",
+      "author": "@claude",
+      "content": "PR #458 created (feat/triage-core-skill). Awaiting CI and review. All work complete: skill content updated, core template created, install/update/build extended for supporting dirs, project-level skill removed, specs updated."
+    },
+    {
+      "task_ref": "01KJ4HJB",
+      "task_title": "Update triage skill to use new kspec triage CLI commands",
+      "task_status": "completed",
+      "note_ulid": "01KJ4JEP",
+      "created_at": "2026-02-23T06:19:43.808Z",
+      "author": "@claude",
+      "content": "Reset from completed to pending"
+    },
+    {
+      "task_ref": "01KJ4HJB",
+      "task_title": "Update triage skill to use new kspec triage CLI commands",
+      "task_status": "completed",
+      "note_ulid": "01KJ4JAV",
+      "created_at": "2026-02-23T06:17:37.744Z",
+      "author": "@claude",
+      "content": "Updated triage skill with new record→act workflow. Made it a core skill in templates/skills/triage/ with SKILL.md + docs/ (inbox.md, observations.md, automation.md). Extended core skill install/update/build-plugin to copy supporting directories (docs/, references/, scripts/, assets/) not just SKILL.md. Updated @core-skill-install ac-2 and @core-skill-update ac-1 specs to cover supporting files. All tests pass (182 skill tests + 3 setup tests)."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHZ9WQ",
+      "title": "Skip regeneration of skill files when content unchanged",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHZHPJ",
+      "title": "Write core skill: kspec:observations",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPK",
+      "title": "Write core skill: kspec:reflect",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPM",
+      "title": "Write core skills: kspec:triage-inbox and kspec:triage-automation",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPN",
+      "title": "Write core skill: kspec:writing-specs",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPP",
+      "title": "Write core skill: kspec:plan",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPQ",
+      "title": "Write core skill: kspec:task-work",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPR",
+      "title": "Write core skill: kspec:create-workflow",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KHZHPS",
+      "title": "Write core skill: kspec:review",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "core-skills",
+        "skill-content"
+      ]
+    },
+    {
+      "ref": "01KJ4DH9",
+      "title": "Extract shared triage action executor and deduplicate validActions",
+      "priority": 3,
+      "spec_ref": "@triage-cli-commands",
+      "tags": [
+        "refactor",
+        "triage"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KJ4Q55",
+      "title": "Add path-based CI test filtering",
+      "completed_at": "2026-02-23T08:00:33.185Z",
+      "closed_reason": "Merged in PR #461. Added path-based filtering to CI test workflow."
+    },
+    {
+      "ref": "01KJ4HJB",
+      "title": "Update triage skill to use new kspec triage CLI commands",
+      "completed_at": "2026-02-23T06:59:04.141Z",
+      "closed_reason": "Merged in PR #458. Updated triage skill with record→act workflow, added as core skill in templates/skills/, extended install/update/build to copy supporting dirs recursively with ENOENT-only error handling. Tests added for all new behavior."
+    },
+    {
+      "ref": "01KJ4FT9",
+      "title": "Fix web UI sidebar navigation links not clickable",
+      "completed_at": "2026-02-23T05:59:50.617Z",
+      "closed_reason": "Merged in PR #457. Fixed sidebar nav links by using shadcn-svelte child snippet pattern to render <a> elements instead of dead <button> elements. Added /triage to daemon SPA fallback routes. User manually verified links work and triage page renders."
+    },
+    {
+      "ref": "01KJ3SMV",
+      "title": "Investigate flaky doctor test failures",
+      "completed_at": "2026-02-23T02:41:03.385Z",
+      "closed_reason": "Merged in PR #456. Root cause: getDaemonStatus() checks global PID file, not per-project. Fix: added vi.spyOn mocking in 3 daemon tests to isolate from host environment. Previous SHOULD-FIX (ac-daemon-running not testing running state) addressed. All 3168 tests pass."
+    },
+    {
+      "ref": "01KJ3FXJ8",
+      "title": "Implement Interactive Triage UI",
+      "completed_at": "2026-02-23T02:07:33.821Z",
+      "closed_reason": "Merged in PR #455. Implemented interactive triage UI at /triage with card-based one-at-a-time presentation, action selection (5 actions), reasoning input, next/prev navigation with keyboard arrows, tag/status filters with progress bar, WebSocket triage:updates subscription for real-time updates, and static mode read-only support. All 8 own ACs and relevant trait ACs (ac-1-3) covered with 18 tests."
+    },
+    {
+      "ref": "01KJ3FXJJ",
+      "title": "Implement Triage Agent Export",
+      "completed_at": "2026-02-23T01:37:07.220Z",
+      "closed_reason": "Merged in PR #454. Shared triage export formatter in src/export/triage.ts extracted from CLI and daemon. Two formats: context (markdown) and JSON. All 4 own ACs and 6 trait ACs (@trait-json-output) covered with 18 dedicated tests. Prior review findings (2 MUST-FIX, 1 SHOULD-FIX) addressed in fix cycle."
+    },
+    {
+      "ref": "01KJ3FXJ0",
+      "title": "Implement Triage Daemon API",
+      "completed_at": "2026-02-23T01:05:05.388Z",
+      "closed_reason": "Merged in PR #453. Implemented 6 triage API endpoints (GET list, GET export, POST create, GET single, POST override, POST act) with full own AC coverage (9/9), trait AC coverage (api-endpoint 5/6, websocket-protocol 1/1 route-level), 26 tests passing. Fix commit addressed upsert identity and stale metadata issues from initial review."
+    },
+    {
+      "ref": "01KJ3SMT",
+      "title": "Fix daemon-executable bun build --compile failure",
+      "completed_at": "2026-02-23T00:31:47.028Z",
+      "closed_reason": "Merged in PR #452. Fixed bun build --compile failure by changing the compile source from packages/daemon/src/index.ts to dist/daemon/index.ts where cross-package relative imports resolve correctly. All 3 daemon-executable tests pass. AC @daemon-server ac-16 covered."
+    },
+    {
+      "ref": "01KHY9W8",
+      "title": "Bump @agentclientprotocol/sdk to ^0.14.0",
+      "completed_at": "2026-02-23T00:24:30.815Z",
+      "closed_reason": "Merged in PR #451. Bumped @agentclientprotocol/sdk from ^0.13.0 to ^0.14.0. Types-only devDependency with zero breaking changes. All CI checks passed, 3105 tests green."
+    },
+    {
+      "ref": "01KJ3FXH3",
+      "title": "Implement Interactive Triage System",
+      "completed_at": "2026-02-23T00:07:58.393Z",
+      "closed_reason": "Merged in PR #450. Parent spec @interactive-triage ac-1 and ac-2 proven with integration tests: end-to-end decision chain test (agent record → override → act → export with attribution/timestamp verification in export output) and persistence test (records survive inbox deletion). Codex review caught incomplete ac-2 coverage in export assertions — fixed in follow-up commit. All CI green."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "d0e01fa",
+      "full_hash": "d0e01fa0e9ffcb25727a6ecd6b19187ddccc22a3",
+      "date": "2026-02-23T09:13:48.000Z",
+      "message": "refactor: purge project-specific skill references from shared templates and code",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d5e0d4a",
+      "full_hash": "d5e0d4a68f6d402c1e851f08b7989549df3053cf",
+      "date": "2026-02-23T08:15:06.000Z",
+      "message": "feat: split CI tests into 3 parallel shards (#462)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "294463e",
+      "full_hash": "294463e0dbe9be93566f57b6abe27d337bb55aae",
+      "date": "2026-02-23T08:08:19.000Z",
+      "message": "fix: bump timeout on session-start-notes completed tasks test",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "32509f4",
+      "full_hash": "32509f4664104010d0e4986b9347d7791f13afe0",
+      "date": "2026-02-23T08:01:02.000Z",
+      "message": "feat: split CI tests into 3 parallel shards",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7c81198",
+      "full_hash": "7c81198bb85fd67e4d65c8e3edc690e4df814576",
+      "date": "2026-02-23T08:00:26.000Z",
+      "message": "feat: add path-based filtering to CI test workflow (#461)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0bd0fa0",
+      "full_hash": "0bd0fa0b7677952fdbd89302c79342ee88eb762f",
+      "date": "2026-02-23T07:45:56.000Z",
+      "message": "fix: add templates/ to CI path filter (loaded at runtime by src/)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7b7d729",
+      "full_hash": "7b7d729532d5af9243944c2144dda505f48c1c95",
+      "date": "2026-02-23T07:44:18.000Z",
+      "message": "fix: remove plugin/ from CI path filter (gitignored build artifact)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a5031a8",
+      "full_hash": "a5031a81bbe71f7298ac264e4677114e07037172",
+      "date": "2026-02-23T07:43:27.000Z",
+      "message": "feat: add path-based filtering to CI test workflow",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "66492a8",
+      "full_hash": "66492a836e60945f924142c298d7c5a174a92f5f",
+      "date": "2026-02-23T07:40:41.000Z",
+      "message": "fix: clarify inbox vs task guidance in reflect skill (#460)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "59c942d",
+      "full_hash": "59c942d174a48fcdbe292d5e0f44ac3aad8215ed",
+      "date": "2026-02-23T07:38:44.000Z",
+      "message": "fix: align table wording and add loop mode task creation hedge",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 613,
+    "in_progress": 0,
+    "needs_work": 0,
+    "pending_review": 1,
+    "ready": 48,
+    "blocked": 0,
+    "completed": 545,
+    "inbox_items": 77
+  }
+}
