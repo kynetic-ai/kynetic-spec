@@ -22,6 +22,7 @@ import { createInboxRoutes } from './routes/inbox';
 import { createMetaRoutes } from './routes/meta';
 import { createValidationRoutes } from './routes/validation';
 import { createProjectsRoutes } from './routes/projects';
+import { createTriageRoutes } from './routes/triage';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -211,6 +212,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
     .use(createMetaRoutes())
+
+    // AC: @triage-daemon-api ac-1 through ac-9 - Triage API endpoints
+    .use(createTriageRoutes({ pubsub: pubsubManager }))
 
     // AC: @api-contract ac-19 through ac-21 - Validation and search endpoints
     .use(createValidationRoutes())
