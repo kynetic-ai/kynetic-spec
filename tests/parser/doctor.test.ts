@@ -235,14 +235,28 @@ describe("Doctor Command", () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
 
-      const report = await getDoctorReport(tempDir);
+      // Mock daemon as running to test the running-with-PID path
+      const daemonStatusModule = await import("../../src/parser/daemon-status.js");
+      vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
+        running: true,
+        pid: 99999,
+        port: 3456,
+        uptime: 120,
+        healthReachable: true,
+      });
 
-      const daemonCheck = report.daemon.checks.find(
-        (c) => c.name === "daemon-running"
-      );
-      expect(daemonCheck).toBeDefined();
-      // Daemon won't be running in test
-      expect(daemonCheck!.severity).toBe("warning");
+      try {
+        const report = await getDoctorReport(tempDir);
+
+        const daemonCheck = report.daemon.checks.find(
+          (c) => c.name === "daemon-running"
+        );
+        expect(daemonCheck).toBeDefined();
+        expect(daemonCheck!.severity).toBe("ok");
+        expect(daemonCheck!.message).toContain("PID: 99999");
+      } finally {
+        vi.restoreAllMocks();
+      }
     });
   });
 
@@ -254,7 +268,6 @@ describe("Doctor Command", () => {
 
       // Mock getDaemonStatus to simulate daemon running but health unreachable
       const daemonStatusModule = await import("../../src/parser/daemon-status.js");
-      const originalGetDaemonStatus = daemonStatusModule.getDaemonStatus;
 
       vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
         running: true,
@@ -295,14 +308,29 @@ describe("Doctor Command", () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
 
-      const report = await getDoctorReport(tempDir);
+      // Mock daemon as not running to isolate from host environment
+      // (flaky when real daemon is running, e.g. during ralph loop sessions)
+      const daemonStatusModule = await import("../../src/parser/daemon-status.js");
+      vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
+        running: false,
+        pid: null,
+        port: null,
+        uptime: null,
+        healthReachable: false,
+      });
 
-      const daemonCheck = report.daemon.checks.find(
-        (c) => c.name === "daemon-running"
-      );
-      expect(daemonCheck).toBeDefined();
-      expect(daemonCheck!.severity).toBe("warning");
-      expect(daemonCheck!.message).toContain("not running");
+      try {
+        const report = await getDoctorReport(tempDir);
+
+        const daemonCheck = report.daemon.checks.find(
+          (c) => c.name === "daemon-running"
+        );
+        expect(daemonCheck).toBeDefined();
+        expect(daemonCheck!.severity).toBe("warning");
+        expect(daemonCheck!.message).toContain("not running");
+      } finally {
+        vi.restoreAllMocks();
+      }
     });
 
     // AC: @doctor-command ac-daemon-not-running
@@ -310,13 +338,27 @@ describe("Doctor Command", () => {
       initGitRepo(tempDir);
       await initializeShadow(tempDir, { projectName: "test-project" });
 
-      const report = await getDoctorReport(tempDir);
+      // Mock daemon as not running to isolate from host environment
+      const daemonStatusModule = await import("../../src/parser/daemon-status.js");
+      vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
+        running: false,
+        pid: null,
+        port: null,
+        uptime: null,
+        healthReachable: false,
+      });
 
-      const daemonCheck = report.daemon.checks.find(
-        (c) => c.name === "daemon-running" && c.severity === "warning"
-      );
-      expect(daemonCheck).toBeDefined();
-      expect(daemonCheck!.guidance).toContain("kspec serve");
+      try {
+        const report = await getDoctorReport(tempDir);
+
+        const daemonCheck = report.daemon.checks.find(
+          (c) => c.name === "daemon-running" && c.severity === "warning"
+        );
+        expect(daemonCheck).toBeDefined();
+        expect(daemonCheck!.guidance).toContain("kspec serve");
+      } finally {
+        vi.restoreAllMocks();
+      }
     });
   });
 
