@@ -55293,8 +55293,9 @@
   spec_ref: "@triage-cli-commands"
   meta_ref: null
   plan_ref: null
-  status: completed
+  status: pending
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 2
@@ -55304,7 +55305,8 @@
     - docs
   vcs_refs: []
   created_at: 2026-02-23T06:04:14.212Z
-  started_at: 2026-02-23T06:09:39.393Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KJ4JAVPGR8HX3KYBFX9JDP5N
       created_at: 2026-02-23T06:17:37.744Z
@@ -55316,8 +55318,9 @@
         @core-skill-update ac-1 specs to cover supporting files. All tests pass (182 skill tests + 3
         setup tests).
       supersedes: null
+    - _ulid: 01KJ4JEPSZHR36BAR5K8KZQXF8
+      created_at: 2026-02-23T06:19:43.808Z
+      author: "@claude"
+      content: Reset from completed to pending
+      supersedes: null
   todos: []
-  completed_at: 2026-02-23T06:18:36.670Z
-  closed_reason: Updated triage skill with record→act workflow, added as core skill in
-    templates/skills/triage/ with supporting dirs, extended install/update/build to copy docs
-    directories. Specs updated. All tests pass.
