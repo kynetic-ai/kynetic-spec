@@ -48,8 +48,6 @@ import {
   RALPH_PROMPT_TIMEOUT,
   runSubagent,
   runWrapUpAgent,
-  SKILL_REFLECT,
-  SKILL_TASK_WORK,
   type SubagentContext,
   WRAPUP_AGENT_PREFIX,
 } from "../../ralph/index.js";
@@ -402,6 +400,7 @@ function buildTaskWorkPrompt(
   iteration: number,
   maxLoops: number,
   sessionId: string,
+  skillTaskWork: string,
   focus?: string,
   explicitTaskScope?: ExplicitTaskScope,
 ): string {
@@ -447,7 +446,7 @@ ${JSON.stringify(sessionCtx, null, 2)}
 Run the task-work skill in loop mode:
 
 \`\`\`
-${SKILL_TASK_WORK} loop
+${skillTaskWork} loop
 \`\`\`
 
 ${modeDescription}
@@ -468,6 +467,7 @@ function buildReflectPrompt(
   iteration: number,
   maxLoops: number,
   sessionId: string,
+  skillReflect: string,
 ): string {
   const isFinal = iteration === maxLoops;
 
@@ -482,7 +482,7 @@ function buildReflectPrompt(
 Run the reflect skill in loop mode:
 
 \`\`\`
-${SKILL_REFLECT} loop
+${skillReflect} loop
 \`\`\`
 
 Loop mode means: high-confidence captures only, must search existing before capturing, no user prompts.
@@ -937,6 +937,7 @@ async function processPendingReviewTasks(
         {
           timeout: options.subagentTimeout,
           outputPrefix: DEFAULT_SUBAGENT_PREFIX,
+          skillName: ctx.config.ralph.skills.pr_review,
         },
         {
           yolo: options.yolo,
@@ -1416,6 +1417,7 @@ export function registerRalphCommand(program: Command): void {
               iteration,
               maxLoops,
               sessionId,
+              ctx.config.ralph.skills.task_work,
               options.focus,
               explicitTaskScope,
             );
@@ -1423,6 +1425,7 @@ export function registerRalphCommand(program: Command): void {
               iteration,
               maxLoops,
               sessionId,
+              ctx.config.ralph.skills.reflect,
             );
 
             // AC: @ralph-task-limit ac-dryrun, @cli-ralph ac-21

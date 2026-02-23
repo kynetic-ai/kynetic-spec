@@ -92,6 +92,36 @@ const DaemonConfigSchema = z
   .optional();
 
 /**
+ * Schema for ralph skill name overrides.
+ *
+ * Ralph prompts reference skills by invocation name. These default to
+ * kspec: namespace core skills but can be overridden per-project for
+ * projects that use project-specific skill names.
+ */
+const RalphSkillsSchema = z
+  .object({
+    /** Skill invocation for task-work (default: /kspec:task-work) */
+    task_work: z.string().optional(),
+    /** Skill invocation for reflect (default: /kspec:reflect) */
+    reflect: z.string().optional(),
+    /** Skill invocation for PR review (default: /kspec:review) */
+    pr_review: z.string().optional(),
+  })
+  .strict()
+  .optional();
+
+/**
+ * Schema for ralph configuration.
+ */
+const RalphConfigSchema = z
+  .object({
+    /** Skill invocation name overrides */
+    skills: RalphSkillsSchema,
+  })
+  .strict()
+  .optional();
+
+/**
  * Complete schema for kspec.config.yaml.
  *
  * AC: @project-config ac-4 — unknown fields are ignored via passthrough
@@ -106,6 +136,8 @@ export const KspecConfigSchema = z
     validation: ValidationConfigSchema,
     /** Daemon configuration */
     daemon: DaemonConfigSchema,
+    /** Ralph automation configuration */
+    ralph: RalphConfigSchema,
   })
   .passthrough(); // AC: ac-4 — ignore unknown fields
 
@@ -194,6 +226,16 @@ export interface ResolvedKspecConfig {
      */
     auto_start: boolean;
   };
+  ralph: {
+    skills: {
+      /** Skill invocation for task-work (default: /kspec:task-work) */
+      task_work: string;
+      /** Skill invocation for reflect (default: /kspec:reflect) */
+      reflect: string;
+      /** Skill invocation for PR review (default: /kspec:review) */
+      pr_review: string;
+    };
+  };
 }
 
 // ── Defaults ────────────────────────────────────────────────────────────
@@ -223,6 +265,13 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     port: 3456,
     host: "localhost",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
+  },
+  ralph: {
+    skills: {
+      task_work: "/kspec:task-work",
+      reflect: "/kspec:reflect",
+      pr_review: "/kspec:review",
+    },
   },
 };
 
@@ -403,6 +452,13 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
+    ralph: {
+      skills: {
+        task_work: file.ralph?.skills?.task_work ?? DEFAULT_CONFIG.ralph.skills.task_work,
+        reflect: file.ralph?.skills?.reflect ?? DEFAULT_CONFIG.ralph.skills.reflect,
+        pr_review: file.ralph?.skills?.pr_review ?? DEFAULT_CONFIG.ralph.skills.pr_review,
+      },
+    },
   };
 }
 
@@ -427,6 +483,9 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       port: DEFAULT_CONFIG.daemon.port,
       host: DEFAULT_CONFIG.daemon.host,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,
+    },
+    ralph: {
+      skills: { ...DEFAULT_CONFIG.ralph.skills },
     },
   };
 }
