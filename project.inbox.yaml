@@ -665,3 +665,30 @@ inbox:
     created_at: 2026-02-23T06:37:32.984Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ4TETN5XH8286FWZABW5ZX3
+    text: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
+      investigation into reconnection logic, heartbeat handling, or fallback to polling.
+    created_at: 2026-02-23T08:39:36.357Z
+    tags:
+      - bug
+      - web-ui
+      - daemon
+    added_by: "@claude"
+  - _ulid: 01KJ4TETP5C44S2YDBCR1P3075
+    text: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
+      spec-gap, duplicate). Currently no way to filter triage records by action."
+    created_at: 2026-02-23T08:39:36.389Z
+    tags:
+      - feature
+      - web-ui
+      - triage
+    added_by: "@claude"
+  - _ulid: 01KJ4TETPNXN6GZ4MT53BRZ1KA
+    text: "Web UI: persist all filter state and current view in URL query params so refreshing the page
+      preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
+    created_at: 2026-02-23T08:39:36.406Z
+    tags:
+      - feature
+      - web-ui
+      - dx
+    added_by: "@claude"
