@@ -55121,29 +55121,60 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Extract shared triage action executor and deduplicate validActions
+- _ulid: 01KJ4DH9RXVD50Q77AY0ADGM9Y
+  slugs:
+    - task-extract-triage-action-executor
+  title: Extract shared triage action executor and deduplicate validActions
+  type: task
   description: "Both src/cli/commands/triage.ts and packages/daemon/src/routes/triage.ts contain
     duplicate switch/case logic for triage action execution
     (promote/delete/defer/spec-gap/duplicate). PR #454 extracted the formatter but not the executor.
     Extract to a shared module (e.g. src/triage/actions.ts), update both consumers to import from
     it. Also deduplicate the validActions array (appears 3x in triage.ts plus once with skip).
     Extract to module-level constant or export from schema."
-  type: task
   spec_ref: "@triage-cli-commands"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-extract-triage-action-executor
   tags:
     - refactor
     - triage
+  vcs_refs: []
+  created_at: 2026-02-23T04:53:45.885Z
+  notes: []
+  todos: []
+- title: Audit daemon test suite and plan migration from static analysis to behavioral tests
+  description: "The daemon test suite (tests/daemon-*.test.ts) relies heavily on static analysis
+    patterns — reading source files and checking for string patterns (e.g.
+    expect(content).toContain('errorResponse(409')). This approach cannot catch runtime bugs like
+    the two found in PR #453's fix commit (duplicate POST ULID mismatch, stale metadata leakage).
+    Deep dive: 1) Inventory all daemon-related test files and categorize by test approach (static
+    analysis vs behavioral vs E2E). 2) Identify which static-only tests have the highest risk of
+    missing real bugs. 3) Design a migration plan — options include: unit tests that import route
+    handlers with mocked context, integration tests that spin up the daemon, or Playwright E2E
+    tests. 4) Create follow-up tasks for the actual migration work. Web UI triage page E2E tests
+    should also be scoped as part of this."
+  type: spike
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-audit-daemon-test-coverage
+  tags:
+    - testing
+    - daemon
+    - e2e
   depends_on: []
-  _ulid: 01KJ4DH9RXVD50Q77AY0ADGM9Y
+  _ulid: 01KJ4DP400CH23DK5CCMC1ZWF2
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-23T04:53:45.885Z
+  created_at: 2026-02-23T04:56:23.808Z
   notes: []
   todos: []
