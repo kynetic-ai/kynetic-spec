@@ -55220,7 +55220,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -55233,7 +55233,12 @@
   created_at: 2026-02-23T05:33:37.467Z
   notes: []
   todos: []
-- title: Redesign web UI holistically — interactive spec/design session
+  started_at: 2026-02-23T05:34:14.754Z
+- _ulid: 01KJ4FTAE506Y45KTGFMFB57NQ
+  slugs:
+    - task-redesign-web-ui
+  title: Redesign web UI holistically — interactive spec/design session
+  type: spike
   description: "The current web UI has fundamental issues beyond individual bugs: sidebar nav links
     are dead buttons, SPA fallback routes must be manually maintained, daemon test coverage is
     static-only, types are duplicated between web-ui and schema. Before fixing piecemeal, do a
@@ -55241,22 +55246,18 @@
     web UI should actually be. 3) Choose a component architecture that works. 4) Spec out the
     redesigned UI with acceptance criteria. 5) Create a plan with prioritized tasks. This should be
     an interactive session with the user."
-  type: spike
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - task-redesign-web-ui
   tags:
     - web-ui
     - design
     - spike
-  depends_on: []
-  _ulid: 01KJ4FTAE506Y45KTGFMFB57NQ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-23T05:33:38.629Z
   notes: []
