@@ -13,11 +13,11 @@ triage:
     reasoning: first item reasoning
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-22T22:50:19.918Z
-    updated_at: 2026-02-23T05:58:04.084Z
     override_reasoning: We should bridge this gap
     override_by: Jacob Chapel
     override_at: 2026-02-23T05:58:04.083Z
+    created_at: 2026-02-22T22:50:19.918Z
+    updated_at: 2026-02-23T05:58:04.084Z
   - _ulid: 01KJ3T9S4R04XWBGE7DDT5Z8EM
     inbox_ref: 01KJ3T9QMVRE7PM5AWAE6JG3KG
     item_snapshot: Export precedence test
@@ -44,3 +44,18 @@ triage:
     override_at: 2026-02-23T05:56:25.572Z
     created_at: 2026-02-22T23:17:39.384Z
     updated_at: 2026-02-23T05:56:25.573Z
+  - _ulid: 01KJ4HBF2V4EZE9T92XSXP7DX5
+    inbox_ref: 01KJ43CPCNZZPFGWF6HHP2BJ0H
+    item_snapshot: "Include triage records in static snapshot (kspec-snapshot.json). Currently the
+      snapshot format (KspecSnapshot type) doesn't include triage records, so the triage page in
+      static/GitHub Pages mode shows an empty state with a notice instead of displaying existing
+      triage decisions read-only. AC-8 of @interactive-triage-ui expects read-only display. Needs:
+      add triage records to export snapshot, update KspecSnapshot type, add fetchTriageRecordsStatic
+      to read from snapshot."
+    status: triaged
+    action: spec-gap
+    reasoning: There's a spec gap here
+    decided_by: Jacob Chapel
+    evidence_refs: []
+    created_at: 2026-02-23T06:00:29.019Z
+    updated_at: 2026-02-23T06:00:29.020Z
