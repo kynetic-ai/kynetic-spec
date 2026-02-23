@@ -55937,6 +55937,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Already implemented. generateSkillsTable() in agent-data-sections.ts already handles
+    core skill namespace at line 42: skill.origin === 'core' produces /kspec:<id> invocation. Tests
+    at lines 114-146 verify core vs project skill rendering. kspec agents generate --dry-run
+    confirms all 11 core skills render with /kspec: prefix. 28 tests pass."
   depends_on: []
   context: []
   priority: 3
@@ -55944,6 +55948,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:06.126Z
   started_at: 2026-02-23T15:57:59.979Z
+  completed_at: 2026-02-23T15:59:32.185Z
   notes:
     - _ulid: 01KJ4V6D4491AMKWWJKJX309AS
       created_at: 2026-02-23T08:52:28.933Z
@@ -55953,11 +55958,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T15:59:32.185Z
-  closed_reason: "Already implemented. generateSkillsTable() in agent-data-sections.ts already handles
-    core skill namespace at line 42: skill.origin === 'core' produces /kspec:<id> invocation. Tests
-    at lines 114-146 verify core vs project skill rendering. kspec agents generate --dry-run
-    confirms all 11 core skills render with /kspec: prefix. 28 tests pass."
 - _ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
   slugs: []
   title: task complete --force should bypass the submit requirement. Currently --force does not skip
@@ -55968,7 +55968,7 @@
     tasks (design, triage, research) without a meaningless submit step. The --force flag exists but
     does not actually force completion from in_progress state.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -55985,6 +55985,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T16:01:14.301Z
 - _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
   slugs: []
   title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
