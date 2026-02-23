@@ -731,3 +731,11 @@ inbox:
     created_at: 2026-02-23T09:52:39.594Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ63QDZSHSB8J8BAEEPV4EZQ
+    text: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get
+      @plan-ref to read implementation notes, algorithm details, and context. Update task-work skill
+      and task-work-loop workflow to include this step. Plans are the right place for rich
+      implementation context instead of cramming it into task notes.
+    created_at: 2026-02-23T20:40:49.913Z
+    tags: []
+    added_by: "@claude"
