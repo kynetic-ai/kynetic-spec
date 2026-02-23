@@ -54843,6 +54843,10 @@
   plan_ref: "@plan-interactive-triage-system"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #453. Implemented 6 triage API endpoints (GET list, GET export, POST
+    create, GET single, POST override, POST act) with full own AC coverage (9/9), trait AC coverage
+    (api-endpoint 5/6, websocket-protocol 1/1 route-level), 26 tests passing. Fix commit addressed
+    upsert identity and stale metadata issues from initial review."
   depends_on:
     - "@implement-triage-record-schema"
   context: []
@@ -54851,6 +54855,7 @@
   vcs_refs: []
   created_at: 2026-02-22T20:16:10.253Z
   started_at: 2026-02-23T00:32:22.705Z
+  completed_at: 2026-02-23T01:05:05.388Z
   notes:
     - _ulid: 01KJ3FXJ0D5HEVXGB714CPV356
       created_at: 2026-02-22T20:16:10.253Z
@@ -54872,11 +54877,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T01:05:05.388Z
-  closed_reason: "Merged in PR #453. Implemented 6 triage API endpoints (GET list, GET export, POST
-    create, GET single, POST override, POST act) with full own AC coverage (9/9), trait AC coverage
-    (api-endpoint 5/6, websocket-protocol 1/1 route-level), 26 tests passing. Fix commit addressed
-    upsert identity and stale metadata issues from initial review."
 - _ulid: 01KJ3FXJ8ZEN8DSP3BD3HKP1SW
   slugs:
     - implement-interactive-triage-ui
@@ -54914,7 +54914,7 @@
   type: task
   spec_ref: "@triage-agent-export"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-triage-record-schema"
@@ -54936,6 +54936,7 @@
         Shared by CLI (kspec triage export) and API (GET /api/triage/export).
   todos: []
   automation: eligible
+  started_at: 2026-02-23T01:05:57.250Z
 - _ulid: 01KJ3SMTMK0VXV8N9SR3G0BMKT
   slugs:
     - task-fix-daemon-executable-build
