@@ -55398,6 +55398,12 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-23T07:41:53.997Z
-  notes: []
-  todos: []
   started_at: 2026-02-23T07:42:24.427Z
+  notes:
+    - _ulid: 01KJ4Q8RVED8PFNJV08G63ZGJX
+      created_at: 2026-02-23T07:43:52.174Z
+      author: "@claude"
+      content: "PR #461 created with path-based filtering. Tests only run on PRs when code-relevant files
+        change. Awaiting CI pass and merge."
+      supersedes: null
+  todos: []
