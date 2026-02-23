@@ -56543,3 +56543,98 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Design native task-limit enforcement for ralph agent iterations
+  description: >-
+    ## Problem
+
+
+    Ralph loop agents are not stopping after completing one task per iteration. Evidence from
+    session 01KJ5WZPNDYY68ZX143D06FXCB shows an agent submitted task @01KJ4SMA, then immediately
+    started and completed task @01KJ5WV0 with zero ralph intervention between them. The maxTasks: 1
+    setting was never enforced.
+
+
+    Two root causes:
+
+
+    1. **No event-to-agent tracking**: Ralph has no way to attribute a `kspec task submit` or `kspec
+    task complete` to the currently active agent iteration. The marker file approach is passive —
+    ralph writes it, but only when it detects a complete command in the event stream. Since the
+    agent used `submit` (not `complete`), the marker was never written.
+
+
+    2. **Submit not treated as completion**: `detectTaskCompleteCommand()` in ralph.ts (line 229)
+    explicitly excludes `kspec task submit`. But submit means the agent's work is done — a review
+    agent should take over. Submit should count the same as complete for task-limit purposes.
+
+
+    3. **Shell script hook is fragile**: The current `ralph-task-limit-guard.sh` is a shell script
+    that parses JSON with jq, walks directories to find project root, and reads a marker file. This
+    should be a native kspec command (like `kspec session checkpoint` is for the Stop hook) for
+    reliability and testability.
+
+
+    ## Investigation Goals
+
+
+    - How can ralph reliably track which events belong to the active agent? Options: session
+    scoping, event correlation IDs, agent turn boundaries
+
+    - What's the right enforcement point? PreToolUse hook blocking `task start`, or injecting a stop
+    signal, or both?
+
+    - Should the hook be `kspec ralph guard` or similar native command that reads ralph state
+    directly instead of a marker file?
+
+
+    ## Design Deliverables
+
+
+    - Clear design for native task-limit hook (replacing ralph-task-limit-guard.sh)
+
+    - Updated detection logic: submit counts as completion for limit purposes
+
+    - Event attribution approach so ralph knows what the active agent did
+
+    - Spec updates if the current @ralph-task-limit spec needs changes
+
+    - New task(s) derived from the design for implementation work
+
+
+    ## Key Files
+
+
+    - src/cli/commands/ralph.ts (lines 227-231 detectTaskCompleteCommand, 1520-1557 limit counting,
+    1314-1773 main loop)
+
+    - .claude/hooks/ralph-task-limit-guard.sh (current shell script hook)
+
+    - src/cli/commands/setup.ts (hook installation, GUARD_SCRIPTS)
+
+    - src/cli/commands/session.ts (session checkpoint as model for native hook)
+
+    - .kspec/modules/cli.yaml (@ralph-task-limit spec)
+
+    - templates/agents-sections/06-ralph-loop.md (agent instructions)
+
+    - .claude/skills/task-work/SKILL.md (agent stop instructions)
+  type: spike
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - ralph
+    - hooks
+    - design
+  depends_on: []
+  automation: manual_only
+  _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-23T21:12:16.803Z
+  notes: []
+  todos: []
