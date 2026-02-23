@@ -56523,6 +56523,7 @@
     - bug
   vcs_refs: []
   created_at: 2026-02-23T20:22:21.784Z
+  started_at: 2026-02-23T22:31:18.626Z
   notes:
     - _ulid: 01KJ62NKTRCQXDK9YJ6GJ9H337
       created_at: 2026-02-23T20:22:21.784Z
@@ -56641,9 +56642,20 @@
 
         4. Full suite: npx vitest run
       supersedes: null
+    - _ulid: 01KJ6ABC15HHM9PSNPMETWRDFN
+      created_at: 2026-02-23T22:36:34.725Z
+      author: "@claude"
+      content: "Implemented index-based iteration boundary counting. computeIterationSummaries() now finds
+        prompt.sent events with phase: 'task-work' as boundaries, splits events by array index
+        ranges. Legacy fallback preserved for sessions without boundaries. Added
+        countIterationsBoundaryAware() for getSessionLogSummary() consistency. getSessionLogDetail()
+        now derives iteration_count from summaries.length. 8 new test cases covering: boundary
+        grouping, wrong data.iteration resilience, legacy fallback, pre-boundary merging, single
+        iteration, mixed phases, malformed boundaries, duplicate seq values. All 35 session-log-show
+        tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T22:31:18.626Z
 - _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
   slugs: []
   title: Design native task-limit enforcement for ralph agent iterations
