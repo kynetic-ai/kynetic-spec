@@ -1047,7 +1047,7 @@ Ensure backward compatibility.
     expect(plan2.slugs).toContain("plan-duplicate-import-1");
   });
 
-  // Bug fix: type:trait items with no parent should go to project-level traits (kynetic.yaml)
+  // AC: @plan-import ac-11 - Trait type specs are created correctly in project-level traits
   it("should place parentless trait items in project-level traits array", async () => {
     const planPath = path.join(tempDir, "trait-type-plan.md");
     await fs.writeFile(
@@ -1087,7 +1087,7 @@ Ensure backward compatibility.
     expect(item._sourceFile).toContain("kynetic.yaml");
   });
 
-  // Bug fix: type:trait items WITH a parent should still go under the parent
+  // AC: @plan-import ac-11 - Trait type specs with parent go under parent, not project-level
   it("should place trait items with a parent under the parent (not project-level)", async () => {
     const planPath = path.join(tempDir, "child-trait-plan.md");
     await fs.writeFile(
@@ -1126,7 +1126,7 @@ Ensure backward compatibility.
     expect(trait._sourceFile).not.toContain("kynetic.yaml");
   });
 
-  // Bug fix: dry-run should report project-level trait placement
+  // AC: @plan-import ac-15 - Dry-run reports project-level trait placement
   it("should report project-level trait placement in dry-run mode", async () => {
     const planPath = path.join(tempDir, "dry-trait-type-plan.md");
     await fs.writeFile(
