@@ -51,7 +51,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@agentclientprotocol/sdk": "^0.13.0",
+    "@agentclientprotocol/sdk": "^0.14.0",
     "@biomejs/biome": "2.3.11",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/diff": "^7.0.2",
