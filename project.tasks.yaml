@@ -56377,10 +56377,18 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T18:40:27.141Z
-  notes: []
+  started_at: 2026-02-23T18:51:36.061Z
+  notes:
+    - _ulid: 01KJ5YP6NKF3TE6KJH7XKTZMXP
+      created_at: 2026-02-23T19:12:46.772Z
+      author: "@claude"
+      content: Fixed closure capture bug in ralph event logging. The agent's update event handler
+        persisted across iterations but captured a stale for-loop let binding. Added
+        currentIteration outer mutable variable that gets updated each iteration. 2 static analysis
+        regression tests. All 159 ralph tests + full suite (3227) pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T18:51:36.061Z
 - _ulid: 01KJ5X5ZT4V24WYN70DM8XRVYW
   slugs: []
   title: test-ref-output
