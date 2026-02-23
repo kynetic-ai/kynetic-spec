@@ -55681,7 +55681,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55711,6 +55711,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T14:29:03.740Z
+  closed_reason: "Merged in PR #477. Added kspec agents generate step to release skill Phase 6. After
+    npm version bumps package.json, the skill regenerates kspec-agents.md so the version header
+    stays in sync. Updated dry-run preview and Phase 8 report checklist. Addressed Codex review:
+    added inline comment about using npm run dev -- for self-hosting releases. All CI checks pass."
 - _ulid: 01KJ4Q55END42JJK7TVXP5WT88
   slugs: []
   title: Add path-based CI test filtering
