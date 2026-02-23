@@ -102,17 +102,14 @@ echo '[
 
 | What you found | Where to put it | Why |
 |----------------|-----------------|-----|
-| Clear scope + spec exists | `task add` | Ready to implement — don't use inbox |
-| Clear scope + no spec coverage | Ask user: task or inbox? | May need spec work first |
+| Clear scope (know what to do and where) | `task add` | Ready to implement — don't use inbox |
 | Unclear scope (vague idea, needs triage) | `inbox add` | Will be triaged into a task later |
+| Behavior change needing spec work | Ask user: task or inbox? | May need spec-first workflow |
 | Friction pattern (systemic) | `meta observe friction` | Informs process improvement |
 | Success pattern | `meta observe success` | Worth documenting/replicating |
 | Open question needing research | `meta question add` | Track during session |
 
-**Inbox vs Task decision tree:**
-1. Can you describe the change and where it goes? If no → `inbox add`
-2. Does a spec cover this behavior? If yes → `task add`
-3. Clear scope but no spec? → Ask the user whether to create a task (they'll handle spec) or inbox it for later scoping
+**Inbox vs Task:** Can you describe the change and where it goes? Use `task add`. Many tasks (infra, bug fixes, tooling, skills) don't need specs. Only ask the user when the item involves a behavior change that might need spec coverage first. If you're unsure, ask — don't default to inbox.
 
 ## Reflection Prompts
 
