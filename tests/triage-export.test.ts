@@ -289,4 +289,10 @@ describe("trait: json-output", () => {
       expect(result.items[0].acted_at).toMatch(isoRegex);
     }
   });
+
+  // AC: @trait-json-output ac-3 — N/A: shared formatter receives pre-validated records;
+  // error-as-JSON handling is at the CLI/API layer (see triage-cli.test.ts, daemon-api-triage.test.ts)
+
+  // AC: @trait-json-output ac-6 — N/A: shared formatter receives format parameter directly;
+  // --json flag precedence is handled at the CLI layer (see triage-cli.test.ts)
 });

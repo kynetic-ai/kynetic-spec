@@ -12,7 +12,7 @@ import type { TriageRecord } from "../schema/triage.js";
 /**
  * Truncate text to a maximum length, taking only the first line.
  */
-function truncateText(text: string, maxLen: number = 60): string {
+export function truncateText(text: string, maxLen: number = 60): string {
   const firstLine = text.split("\n")[0].trim();
   if (firstLine.length <= maxLen) return firstLine;
   return `${firstLine.slice(0, maxLen - 3)}...`;

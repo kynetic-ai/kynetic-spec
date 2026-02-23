@@ -23,7 +23,7 @@ import {
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { TriageAction, TriageRecord } from "../../schema/index.js";
-import { exportTriageAsContext } from "../../export/triage.js";
+import { exportTriageAsContext, truncateText } from "../../export/triage.js";
 import { errors } from "../../strings/index.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -51,14 +51,7 @@ function resolveTriageRef(
   return record;
 }
 
-/**
- * Truncate text for display
- */
-function truncateText(text: string, maxLen: number = 60): string {
-  const firstLine = text.split("\n")[0].trim();
-  if (firstLine.length <= maxLen) return firstLine;
-  return `${firstLine.slice(0, maxLen - 3)}...`;
-}
+// truncateText imported from shared export/triage.ts
 
 /**
  * Execute a triage action
