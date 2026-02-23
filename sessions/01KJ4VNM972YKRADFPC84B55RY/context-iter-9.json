@@ -1,0 +1,420 @@
+{
+  "generated_at": "2026-02-23T12:55:20.897Z",
+  "branch": "refactor/extract-triage-action-executor",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KJ4DH9",
+      "title": "Extract shared triage action executor and deduplicate validActions",
+      "started_at": "2026-02-23T12:37:06.986Z",
+      "priority": 3,
+      "spec_ref": "@triage-cli-commands",
+      "note_count": 2,
+      "last_note_at": "2026-02-23T12:49:18.951Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KJ4DH9",
+      "task_title": "Extract shared triage action executor and deduplicate validActions",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ58R2",
+      "created_at": "2026-02-23T12:49:18.951Z",
+      "author": "@claude",
+      "content": "Extracted shared triage action executor to src/triage/ module. Created 3 files: constants.ts (VALID_ACTIONS derived from TriageActionSchema), actions.ts (executeTriageAction with options-based logging), index.ts (public exports). Updated CLI (src/cli/commands/triage.ts) to import shared module — removed local executeTriageAction, replaced 3 hardcoded validActions arrays with VALID_ACTIONS. Updated daemon (packages/daemon/src/routes/triage.ts) similarly — removed local VALID_ACTIONS const and executeTriageAction function. Updated static analysis test in daemon-api-triage.test.ts to verify shared module import. Added 11 new tests in triage-actions.test.ts covering constants, all 5 action types, dry-run, and validation. All 3193 tests pass."
+    },
+    {
+      "task_ref": "01KHZHPS",
+      "task_title": "Write core skill: kspec:review",
+      "task_status": "completed",
+      "note_ulid": "01KJ56GN",
+      "created_at": "2026-02-23T12:10:19.269Z",
+      "author": "@claude",
+      "content": "Wrote templates/skills/review/SKILL.md (168 lines). NEW skill — extracted kspec-specific review concerns into a generic building block. Covers: spec alignment verification, own AC coverage (annotation format, checking), trait AC coverage (inherited ACs, N/A handling), validation integration (exit codes, error vs warning), review checklist (MUST-FIX/SHOULD-FIX/SUGGESTION), severity guide, guidance for wrapping in project-specific reviews. Not a full local-review replacement — no project-specific test commands. Added manifest entry. All 3181 tests pass."
+    },
+    {
+      "task_ref": "01KHZHPR",
+      "task_title": "Write core skill: kspec:create-workflow",
+      "task_status": "completed",
+      "note_ulid": "01KJ568F",
+      "created_at": "2026-02-23T12:05:51.059Z",
+      "author": "@claude",
+      "content": "Wrote templates/skills/create-workflow/SKILL.md (175 lines). Covers: identifying good workflow candidates, workflow structure (triggers, step types, modes), step-by-step creation process, step design guidelines (action/check/decision with examples), loop mode variants, skill decision matrix, lifecycle commands, agent instruction regeneration. Added manifest entry. Installs correctly. All 3181 tests pass."
+    },
+    {
+      "task_ref": "01KHZHPQ",
+      "task_title": "Write core skill: kspec:task-work",
+      "task_status": "completed",
+      "note_ulid": "01KJ560A",
+      "created_at": "2026-02-23T12:01:23.909Z",
+      "author": "@claude",
+      "content": "Wrote templates/skills/task-work/SKILL.md (198 lines). Covers: inherit-existing-work pattern, full lifecycle (start→work→note→submit→complete), fix cycle handling, scope management (expand vs escalate), AC test annotations, implementation quality checklist, loop mode (selection priority, blocking rules, turn completion), command reference. Stripped all project-specific content (npm test, specific test helpers, model names). Added manifest entry. Installs correctly. All 3181 tests pass."
+    },
+    {
+      "task_ref": "01KHZHPP",
+      "task_title": "Write core skill: kspec:plan",
+      "task_status": "completed",
+      "note_ulid": "01KJ55Q9",
+      "created_at": "2026-02-23T11:56:28.062Z",
+      "author": "@claude",
+      "content": "Wrote templates/skills/plan/SKILL.md (225 lines). Covers: two-path approach (import vs manual), three-phase workflow (design→execute→validate), plan document format with full section reference and field table, trait selection guide with common applications table, YAML pitfalls (block scalars, colons), dry-run-first pattern, post-import checklist, plan lifecycle, batch alternative, full command reference. Rewritten from base principles. Added manifest entry. Installs correctly. All 3181 tests pass."
+    },
+    {
+      "task_ref": "01KJ4DH9",
+      "task_title": "Extract shared triage action executor and deduplicate validActions",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ4V6W",
+      "created_at": "2026-02-23T08:52:44.302Z",
+      "author": "@claude",
+      "content": "AUTOMATION: Refactor. Extract shared triage action executor from duplicate switch/case in triage.ts and daemon triage.ts. Create src/triage/actions.ts."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KJ4F7X",
+      "title": "Eliminate duplicated types in web-ui by importing from shared schema",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "refactor",
+        "web-ui",
+        "types"
+      ]
+    },
+    {
+      "ref": "01KJ4PEV",
+      "title": "Regenerate kspec-agents.md after release version bump",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "release",
+        "agents",
+        "improvement"
+      ]
+    },
+    {
+      "ref": "01KJ4SM4",
+      "title": "Error message consistency: task needs-work uses inline error string instead of centralized error str",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SM5",
+      "title": "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @ prefix on ",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SM6",
+      "title": "kspec plan import should place type:trait items with no parent in the project-level traits array (ky",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SM8",
+      "title": "kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help — generate",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SM9",
+      "title": "task complete --force should bypass the submit requirement. Currently --force does not skip the in_p",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SMA",
+      "title": "kspec batch cannot handle task patch with nested --data JSON argument. The data object gets stringif",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SMB",
+      "title": "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual tasks g",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KJ4SMC",
+      "title": "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced shadow branch",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHZHPS",
+      "title": "Write core skill: kspec:review",
+      "completed_at": "2026-02-23T12:36:40.867Z",
+      "closed_reason": "Merged in PR #473. NEW review skill (templates/skills/review/SKILL.md, 186 lines) covering spec alignment, own AC coverage, trait AC coverage, and kspec validate integration. Building block for project-specific review workflows. Manifest entry added. All quality gates passed — 3181 tests, 5/5 CI checks green."
+    },
+    {
+      "ref": "01KHZHPR",
+      "title": "Write core skill: kspec:create-workflow",
+      "completed_at": "2026-02-23T12:31:19.737Z",
+      "closed_reason": "Merged to main (commit 758305d4). Wrote templates/skills/create-workflow/SKILL.md (228 lines) — meta-workflow for formalizing repeatable patterns into kspec workflows. Covers: candidate identification, workflow structure (triggers/step types/modes), 5-step creation process, step design guidelines with examples, loop mode variants, skill decision matrix, lifecycle commands, agent instruction regeneration. Manifest entry added. Installs correctly. PR #472 closed as content already on main."
+    },
+    {
+      "ref": "01KHZHPQ",
+      "title": "Write core skill: kspec:task-work",
+      "completed_at": "2026-02-23T12:26:57.441Z",
+      "closed_reason": "Merged in PR #471. Wrote templates/skills/task-work/SKILL.md (296 lines) covering full task lifecycle, fix cycle handling, scope management, AC annotations, implementation quality, loop mode with blocking rules, and command reference. All project-specific content stripped. Manifest entry added. All 3181 tests pass. Skill installs correctly."
+    },
+    {
+      "ref": "01KHZHPP",
+      "title": "Write core skill: kspec:plan",
+      "completed_at": "2026-02-23T12:21:49.864Z",
+      "closed_reason": "Merged in PR #470. Wrote templates/skills/plan/SKILL.md (336 lines) covering plan-to-spec translation: two-path approach (import vs manual), three-phase workflow, plan document format with full section reference and field table, trait selection guide, YAML pitfalls, dry-run-first pattern, post-import checklist, plan lifecycle, batch alternative, and command reference. Added manifest entry. All quality gates passed."
+    },
+    {
+      "ref": "01KHZHPN",
+      "title": "Write core skill: kspec:writing-specs",
+      "completed_at": "2026-02-23T12:16:17.156Z",
+      "closed_reason": "Merged in PR #469. Wrote templates/skills/writing-specs/SKILL.md (333 lines) covering spec hierarchy, AC writing with patterns and anti-patterns, trait system, creating/updating specs workflow, quality checklist, validation, and command reference. Added manifest entry. All 3181 tests pass, no regressions."
+    },
+    {
+      "ref": "01KHZHPM",
+      "title": "Write core skills: kspec:triage-inbox and kspec:triage-automation",
+      "completed_at": "2026-02-23T11:45:45.183Z",
+      "closed_reason": "Merged in PR #468. Split monolithic triage skill into two focused skills: triage-inbox (225 lines, covers record-act pattern, inbox categorization, interactive/individual triage, spec-first processing, observation processing, batch operations) and triage-automation (134 lines, covers eligibility criteria, per-task assessment, auto mode, commands reference). Both entries added to manifest.yaml and install correctly via skill install-core. All tests pass."
+    },
+    {
+      "ref": "01KHZHPK",
+      "title": "Write core skill: kspec:reflect",
+      "completed_at": "2026-02-23T11:24:50.894Z",
+      "closed_reason": "Merged in PR #467. Wrote templates/skills/reflect/SKILL.md — 155-line structured session reflection skill covering 6-step interactive workflow, loop mode (high-confidence-only), reflection gate, item routing table, batch capture, reflection prompts, and integration. Added manifest entry. Resolved merge conflict with observations skill entry. All tests pass locally (3181). CI shard 1/3 flaky test (task-needs-work.test.ts:180 timeout) is pre-existing on main."
+    },
+    {
+      "ref": "01KHZHPJ",
+      "title": "Write core skill: kspec:observations",
+      "completed_at": "2026-02-23T11:06:38.553Z",
+      "closed_reason": "Merged in PR #466. Wrote core skill kspec:observations covering observation types (friction/success/question/idea), capture commands, review/promote/resolve workflows, decision flows, batch capture, and integration points. All CLI commands verified against source. Previous review findings addressed."
+    },
+    {
+      "ref": "01KHZ9WQ",
+      "title": "Skip regeneration of skill files when content unchanged",
+      "completed_at": "2026-02-23T10:43:38.599Z",
+      "closed_reason": "Merged in PR #464. Applied hash-check-before-write pattern to 3 generation paths: (1) generateAgentInstructions uses metaHash + file-existence check to skip kspec-agents.md regeneration, (2) copyCoreSkillFiles compares SKILL.md content and supporting dirs via sourceMatchesDest before copying, (3) guard script writes check existing content before writing. All previous review findings (MUST-FIX: file existence, SHOULD-FIX: subset comparison) addressed. All 3181 tests pass."
+    },
+    {
+      "ref": "01KHZHPT",
+      "title": "Purge project-specific skill references from shared templates and docs",
+      "completed_at": "2026-02-23T09:52:43.257Z",
+      "closed_reason": "Merged in PR #463. Purged all project-specific skill references (/pr, /pr-review, /local-review, /release, /triage, /reflect, /task-work) from shipped templates and source code. Templates use generic language or kspec: namespace skills. Ralph prompt builders now receive skill names from config (ralph.skills section in kspec.config.yaml) with kspec: namespace defaults. Fix cycle addressed initial review finding that constants still shipped project-specific names. All 3177 tests pass, CI green."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "ecfeb9b",
+      "full_hash": "ecfeb9bebfc62c6b4bf55fea4c98752137ca2c61",
+      "date": "2026-02-23T12:54:02.000Z",
+      "message": "fix: throw error when triage record has no action to execute",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f8d2773",
+      "full_hash": "f8d2773ee1321288d1ed7a3777f015273f204c85",
+      "date": "2026-02-23T12:49:46.000Z",
+      "message": "refactor: extract shared triage action executor and deduplicate validActions",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a8fcedd",
+      "full_hash": "a8fcedd6ed95adb6676034792b8920bbf17773c5",
+      "date": "2026-02-23T12:10:27.000Z",
+      "message": "feat: write core skill kspec:review",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "758305d",
+      "full_hash": "758305d4eb5f8241053083b2357bffdb6e150f3a",
+      "date": "2026-02-23T12:05:59.000Z",
+      "message": "feat: write core skill kspec:create-workflow",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e9b7fe0",
+      "full_hash": "e9b7fe09626436b71dd9cf14ccc1094b7be7c536",
+      "date": "2026-02-23T12:01:33.000Z",
+      "message": "feat: write core skill kspec:task-work",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f1186de",
+      "full_hash": "f1186dea304f73f99dbcc66a23e49873395c8cb3",
+      "date": "2026-02-23T11:56:37.000Z",
+      "message": "feat: write core skill kspec:plan",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9c368fb",
+      "full_hash": "9c368fb8f9df239175421d178f44a948646de3fd",
+      "date": "2026-02-23T11:51:39.000Z",
+      "message": "feat: write core skill kspec:writing-specs",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9f762eb",
+      "full_hash": "9f762eb973e74d173f38c1977f729a099b385000",
+      "date": "2026-02-23T11:45:32.000Z",
+      "message": "feat: write core skills kspec:triage-inbox and kspec:triage-automation (#468)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "6d5687a",
+      "full_hash": "6d5687a7df5216d13e0e83bcf7d0cdb939d0aff2",
+      "date": "2026-02-23T11:33:30.000Z",
+      "message": "feat: write core skills kspec:triage-inbox and kspec:triage-automation",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0d5ca42",
+      "full_hash": "0d5ca427c1d36ca3d639dbc9258c4b73ee84f181",
+      "date": "2026-02-23T11:24:39.000Z",
+      "message": "feat: write core skill kspec:reflect (#467)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 613,
+    "in_progress": 0,
+    "needs_work": 0,
+    "pending_review": 1,
+    "ready": 38,
+    "blocked": 0,
+    "completed": 555,
+    "inbox_items": 78
+  }
+}
