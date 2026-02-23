@@ -55323,4 +55323,11 @@
       author: "@claude"
       content: Reset from completed to pending
       supersedes: null
+    - _ulid: 01KJ4K2HVFYS4M3XQCCP426DTP
+      created_at: 2026-02-23T06:30:34.095Z
+      author: "@claude"
+      content: "PR #458 created (feat/triage-core-skill). Awaiting CI and review. All work complete: skill
+        content updated, core template created, install/update/build extended for supporting dirs,
+        project-level skill removed, specs updated."
+      supersedes: null
   todos: []
