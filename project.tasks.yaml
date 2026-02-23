@@ -56010,7 +56010,7 @@
     passed through a simple string coercion. Workaround: run task patch commands individually. Fix:
     batch arg handling should JSON.stringify objects before passing to command handlers."
   spec_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -56052,6 +56052,15 @@
         @trait-dry-run, @trait-shadow-commit). Added 6 new dedicated trait AC tests covering JSON
         ref prefix, ISO 8601 timestamps, JSON error guidance, runtime exit codes, dry-run error
         handling, and dry-run field. Annotated existing regression test. All 3235 tests pass."
+      supersedes: null
+    - _ulid: 01KJ5WJFJ724ZG9X1V0RHFJMCY
+      created_at: 2026-02-23T18:35:47.655Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 3] Review findings: Audit findings: (1) Unresolved review thread on GitHub
+        blocks check-unresolved-comments CI. (2) Weak trait AC test @trait-json-output ac-4 -
+        assertion checks command name not @ prefix on refs. (3) Weak trait AC test @trait-dry-run
+        ac-6 - checks string 'dry-run' not actual dry_run boolean field. Strengthen or remove those
+        2 annotations, resolve the GH thread, then resubmit."
       supersedes: null
   todos: []
   automation: eligible
