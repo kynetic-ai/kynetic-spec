@@ -55970,6 +55970,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #481. --force flag now bypasses all state checks in task complete,
+    enabling direct completion from in_progress, pending, blocked, and cancelled states. Documents
+    prior state in note and warning. 7 tests cover all force-complete paths. Spec @task-commands
+    ac-1 fully covered."
   depends_on: []
   context: []
   priority: 3
@@ -55977,6 +55981,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:07.159Z
   started_at: 2026-02-23T16:01:14.301Z
+  completed_at: 2026-02-23T16:24:01.884Z
   notes:
     - _ulid: 01KJ4V6E89ZPNTQDCYEM89V20W
       created_at: 2026-02-23T08:52:30.089Z
@@ -55995,11 +56000,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T16:24:01.884Z
-  closed_reason: "Merged in PR #481. --force flag now bypasses all state checks in task complete,
-    enabling direct completion from in_progress, pending, blocked, and cancelled states. Documents
-    prior state in note and warning. 7 tests cover all force-complete paths. Spec @task-commands
-    ac-1 fully covered."
 - _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
   slugs: []
   title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
@@ -56010,7 +56010,7 @@
     passed through a simple string coercion. Workaround: run task patch commands individually. Fix:
     batch arg handling should JSON.stringify objects before passing to command handlers."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56027,6 +56027,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T16:24:48.331Z
 - _ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
   slugs: []
   title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
