@@ -38,3 +38,8 @@ skills:
     description: Create and maintain specification items — modules, features, requirements, acceptance criteria, and traits. The source of truth for what to build.
     platforms:
       - claude-code
+  - id: plan
+    name: Plan to Spec
+    description: Translate approved plans into specs and tasks. Import structured documents or create incrementally. Plans persist as durable artifacts with audit trail.
+    platforms:
+      - claude-code
