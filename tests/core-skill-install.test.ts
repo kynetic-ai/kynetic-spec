@@ -3,7 +3,7 @@
  * AC: @core-skill-install ac-1 through ac-5
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import {
@@ -11,6 +11,7 @@ import {
   kspecJson,
   setupTempFixtures,
   cleanupTempDir,
+  createTempDir,
   initGitRepo,
 } from './helpers/cli';
 
@@ -70,6 +71,25 @@ describe('Core Skill Installation', () => {
       const skillDir = path.join(tempDir, 'skills', 'help');
       const stat = await fs.stat(skillDir);
       expect(stat.isDirectory()).toBe(true);
+    });
+
+    // AC: @core-skill-install ac-2
+    it('should copy supporting directories from templates', async () => {
+      kspecFull('skill install-core', tempDir);
+
+      // Triage skill has docs/ with inbox.md, observations.md, automation.md
+      const triageDocsDir = path.join(tempDir, 'skills', 'triage', 'docs');
+      const stat = await fs.stat(triageDocsDir);
+      expect(stat.isDirectory()).toBe(true);
+
+      const inboxMd = await fs.readFile(path.join(triageDocsDir, 'inbox.md'), 'utf-8');
+      expect(inboxMd).toContain('Inbox Triage');
+
+      const observationsMd = await fs.readFile(path.join(triageDocsDir, 'observations.md'), 'utf-8');
+      expect(observationsMd).toContain('Observations Triage');
+
+      const automationMd = await fs.readFile(path.join(triageDocsDir, 'automation.md'), 'utf-8');
+      expect(automationMd).toContain('Automation Triage');
     });
   });
 
@@ -188,8 +208,9 @@ describe('Core Skill Installation', () => {
     it('should show what would be installed with --dry-run', async () => {
       const result = kspecFull('skill install-core --dry-run', tempDir);
 
-      expect(result.stdout).toContain('Created: 1 skill(s)');
+      expect(result.stdout).toMatch(/Created: \d+ skill\(s\)/);
       expect(result.stdout).toContain('help');
+      expect(result.stdout).toContain('triage');
     });
   });
 
@@ -262,5 +283,44 @@ describe('Core Skills Manifest Loading', () => {
     expect(version).toBeDefined();
     expect(version).not.toBe('unknown');
     expect(version).toMatch(/^\d+\.\d+\.\d+/);
+  });
+});
+
+// AC: @core-skill-install ac-2
+describe('copyCoreSkillFiles error handling', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should silently skip when skill template does not exist (ENOENT)', async () => {
+    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
+    const targetDir = path.join(tempDir, 'skills', 'nonexistent');
+
+    // Should not throw
+    await copyCoreSkillFiles('nonexistent-skill-id', targetDir);
+
+    // Target dir should not have been created
+    await expect(fs.access(targetDir)).rejects.toThrow();
+  });
+
+  it('should copy known core skill with supporting dirs', async () => {
+    const { copyCoreSkillFiles } = await import('../src/cli/commands/skill.js');
+    const targetDir = path.join(tempDir, 'skills', 'triage');
+
+    await copyCoreSkillFiles('triage', targetDir);
+
+    // SKILL.md copied
+    const skillMd = await fs.readFile(path.join(targetDir, 'SKILL.md'), 'utf-8');
+    expect(skillMd).toContain('# Triage');
+
+    // docs/ copied
+    const inboxMd = await fs.readFile(path.join(targetDir, 'docs', 'inbox.md'), 'utf-8');
+    expect(inboxMd).toContain('Inbox Triage');
   });
 });

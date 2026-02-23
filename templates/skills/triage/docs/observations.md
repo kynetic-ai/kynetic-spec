@@ -64,7 +64,7 @@ kspec batch --commands '[
 ]'
 ```
 
-Use `--dry-run` to preview. See `/kspec` for full batch documentation.
+Use `--dry-run` to preview. See `/kspec:help` for full batch documentation.
 
 ## Common Patterns
 

@@ -145,6 +145,69 @@ export async function loadCoreSkillContent(skillId: string): Promise<string | nu
   }
 }
 
+/** Supporting directory names that may accompany a skill template. */
+const SKILL_SUPPORTING_DIRS = ["docs", "references", "scripts", "assets"] as const;
+
+/**
+ * Recursively copy a directory tree.
+ * Only copies files; creates directories as needed.
+ */
+async function copyDirRecursive(src: string, dest: string): Promise<void> {
+  const entries = await fs.readdir(src, { withFileTypes: true });
+  await fs.mkdir(dest, { recursive: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      await copyDirRecursive(srcPath, destPath);
+    } else if (entry.isFile()) {
+      await fs.copyFile(srcPath, destPath);
+    }
+  }
+}
+
+/**
+ * Copy all files for a core skill from templates to .kspec/skills/<id>/.
+ * Copies SKILL.md and any supporting directories (docs/, references/, etc.).
+ * AC: @core-skill-install ac-2
+ */
+export async function copyCoreSkillFiles(
+  skillId: string,
+  targetDir: string
+): Promise<void> {
+  const templatesDir = getTemplatesDir();
+  const sourceDir = path.join(templatesDir, skillId);
+
+  // Copy SKILL.md — skip if template doesn't exist, propagate real errors
+  const skillMdPath = path.join(sourceDir, "SKILL.md");
+  let content: string;
+  try {
+    content = await fs.readFile(skillMdPath, "utf-8");
+  } catch (err) {
+    if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
+      return; // No SKILL.md means nothing to copy
+    }
+    throw err;
+  }
+  await fs.mkdir(targetDir, { recursive: true });
+  await fs.writeFile(path.join(targetDir, "SKILL.md"), content, "utf-8");
+
+  // Copy supporting directories recursively
+  for (const dirName of SKILL_SUPPORTING_DIRS) {
+    const srcSubDir = path.join(sourceDir, dirName);
+    try {
+      await fs.access(srcSubDir);
+    } catch (err) {
+      // ENOENT: directory doesn't exist in template, skip
+      if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
+        continue;
+      }
+      throw err; // Propagate real I/O errors
+    }
+    await copyDirRecursive(srcSubDir, path.join(targetDir, dirName));
+  }
+}
+
 // ============================================================================
 // Command Registration
 // ============================================================================
@@ -243,12 +306,9 @@ export function registerSkillInstallCommands(skill: Command): void {
           if (!dryRun) {
             await saveMetaItem(ctx, skill, "skill");
 
-            // AC: @core-skill-install ac-2 - Copy SKILL.md content
-            const sourceContent = await loadCoreSkillContent(coreSkill.id);
-            if (sourceContent) {
-              const targetPath = getSkillContentPath(ctx, skill.id);
-              await fs.writeFile(targetPath, sourceContent, "utf-8");
-            }
+            // AC: @core-skill-install ac-2 - Copy skill files (SKILL.md + supporting dirs)
+            const targetDir = path.dirname(getSkillContentPath(ctx, skill.id));
+            await copyCoreSkillFiles(coreSkill.id, targetDir);
           }
 
           results.push({
@@ -444,12 +504,9 @@ export function registerSkillInstallCommands(skill: Command): void {
             // Save updated metadata
             await saveMetaItem(ctx, updated, "skill");
 
-            // Update SKILL.md content from templates
-            const sourceContent = await loadCoreSkillContent(skill.id);
-            if (sourceContent) {
-              const targetPath = getSkillContentPath(ctx, skill.id);
-              await fs.writeFile(targetPath, sourceContent, "utf-8");
-            }
+            // Update skill files from templates (SKILL.md + supporting dirs)
+            const targetDir = path.dirname(getSkillContentPath(ctx, skill.id));
+            await copyCoreSkillFiles(skill.id, targetDir);
           }
 
           results.push({

@@ -19,6 +19,21 @@ const PLUGIN_DIR = path.join(ROOT, "plugin");
 const MANIFEST_PATH = path.join(TEMPLATES_DIR, "manifest.yaml");
 const PACKAGE_JSON_PATH = path.join(ROOT, "package.json");
 
+/** Recursively copy a directory tree (sync). */
+function copyDirSync(src, dest) {
+  fs.mkdirSync(dest, { recursive: true });
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirSync(srcPath, destPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 function main() {
   // Read package.json for version
   const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf-8"));
@@ -76,9 +91,10 @@ function main() {
     "utf-8"
   );
 
-  // Process each skill into plugin/plugins/kspec/skills/<id>/SKILL.md
+  // Process each skill into plugin/plugins/kspec/skills/<id>/
   // (marketplace source "./plugins/kspec" points to the plugin content directory)
   const pluginContentDir = path.join(PLUGIN_DIR, "plugins", "kspec");
+  const SUPPORTING_DIRS = ["docs", "references", "scripts", "assets"];
   let count = 0;
   for (const skill of manifest.skills) {
     const skillId = skill.id;
@@ -86,7 +102,8 @@ function main() {
     const skillDesc = skill.description || skillName;
 
     // Read source SKILL.md
-    const sourcePath = path.join(TEMPLATES_DIR, skillId, "SKILL.md");
+    const sourceSkillDir = path.join(TEMPLATES_DIR, skillId);
+    const sourcePath = path.join(sourceSkillDir, "SKILL.md");
     if (!fs.existsSync(sourcePath)) {
       console.warn(`Warning: ${sourcePath} not found, skipping ${skillId}`);
       continue;
@@ -102,6 +119,13 @@ function main() {
     const targetDir = path.join(pluginContentDir, "skills", skillId);
     fs.mkdirSync(targetDir, { recursive: true });
     fs.writeFileSync(path.join(targetDir, "SKILL.md"), output, "utf-8");
+
+    // Copy supporting directories recursively (docs/, references/, etc.)
+    for (const dirName of SUPPORTING_DIRS) {
+      const srcSubDir = path.join(sourceSkillDir, dirName);
+      if (!fs.existsSync(srcSubDir)) continue;
+      copyDirSync(srcSubDir, path.join(targetDir, dirName));
+    }
 
     count++;
   }

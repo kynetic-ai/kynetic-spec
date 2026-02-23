@@ -50,5 +50,6 @@ export {
 export {
   loadCoreSkillsManifest,
   loadCoreSkillContent,
+  copyCoreSkillFiles,
   getKspecPackageVersion,
 } from "./skill-install.js";

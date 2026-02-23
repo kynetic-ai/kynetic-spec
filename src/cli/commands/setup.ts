@@ -1324,7 +1324,7 @@ async function installCoreSkillsForSetup(
   const { SkillSchema } = await import("../../schema/index.js");
   const {
     loadCoreSkillsManifest,
-    loadCoreSkillContent,
+    copyCoreSkillFiles,
     getKspecPackageVersion,
   } = await import("./skill.js");
   const { ulid } = await import("ulid");
@@ -1379,12 +1379,9 @@ async function installCoreSkillsForSetup(
       if (!dryRun) {
         await saveMetaItem(ctx, parsed.data, "skill");
 
-        // Copy SKILL.md content
-        const sourceContent = await loadCoreSkillContent(coreSkill.id);
-        if (sourceContent) {
-          const targetPath = getSkillContentPath(ctx, parsed.data.id);
-          await fs.writeFile(targetPath, sourceContent, "utf-8");
-        }
+        // Copy skill files (SKILL.md + supporting dirs)
+        const targetDir = path.dirname(getSkillContentPath(ctx, parsed.data.id));
+        await copyCoreSkillFiles(coreSkill.id, targetDir);
       }
 
       installed++;
