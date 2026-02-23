@@ -327,10 +327,13 @@ async function importPlan(
         }
       }
 
+      // Determine if this is a root-level trait (type: trait with no parent)
+      const isRootTrait = (spec.type === "trait") && !parent;
+
       if (options.dryRun) {
         // AC: @plan-import ac-15 - Dry run mode
         info(
-          `Would create spec: ${specRef} ${spec.parent ? `under ${spec.parent}` : "(root)"}`,
+          `Would create spec: ${specRef} ${spec.parent ? `under ${spec.parent}` : isRootTrait ? "(project-level trait)" : "(root)"}`,
         );
         result.createdSpecs.push(specRef);
         importReservedSlugs.add(specSlug);
@@ -376,18 +379,55 @@ async function importPlan(
 
         const newSpec = createSpecItem(specInput);
 
-        // Add spec to parent (or module if no parent)
-        const actualParent = parent || moduleItem;
-        const addResult = await addChildItem(ctx, actualParent, newSpec);
+        if (isRootTrait) {
+          // Traits without a parent go to kynetic.yaml project-level traits array,
+          // not the module-level traits array (same logic as `kspec trait add`)
+          if (!ctx.manifestPath) {
+            throw new Error("Could not find kynetic.yaml");
+          }
 
-        // Track the created spec for parent resolution
-        // Need to construct LoadedSpecItem with _sourceFile and _path for nested specs
-        const createdSpec: LoadedSpecItem = {
-          ...(addResult.item as LoadedSpecItem),
-          _sourceFile: actualParent._sourceFile,
-          _path: addResult.path,
-        };
-        createdSpecsMap.set(specSlug, createdSpec);
+          const { readYamlFile, writeYamlFilePreserveFormat } = await import(
+            "../../parser/yaml.js"
+          );
+          const manifest = await readYamlFile<Record<string, unknown>>(
+            ctx.manifestPath,
+          );
+
+          if (!manifest) {
+            throw new Error("Could not load kynetic.yaml");
+          }
+
+          // Ensure traits array exists at root
+          if (!Array.isArray(manifest.traits)) {
+            manifest.traits = [];
+          }
+
+          // Strip metadata from newSpec (_sourceFile, _path)
+          const { _sourceFile, _path, ...cleanItem } = newSpec as LoadedSpecItem;
+          (manifest.traits as unknown[]).push(cleanItem);
+          await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
+
+          const traitIndex = (manifest.traits as unknown[]).length - 1;
+          const createdSpec: LoadedSpecItem = {
+            ...newSpec,
+            _sourceFile: ctx.manifestPath,
+            _path: `traits[${traitIndex}]`,
+          } as LoadedSpecItem;
+          createdSpecsMap.set(specSlug, createdSpec);
+        } else {
+          // Add spec to parent (or module if no parent)
+          const actualParent = parent || moduleItem;
+          const addResult = await addChildItem(ctx, actualParent, newSpec);
+
+          // Track the created spec for parent resolution
+          // Need to construct LoadedSpecItem with _sourceFile and _path for nested specs
+          const createdSpec: LoadedSpecItem = {
+            ...(addResult.item as LoadedSpecItem),
+            _sourceFile: actualParent._sourceFile,
+            _path: addResult.path,
+          };
+          createdSpecsMap.set(specSlug, createdSpec);
+        }
 
         result.createdSpecs.push(specRef);
         importReservedSlugs.add(specSlug);

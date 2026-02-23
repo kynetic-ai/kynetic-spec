@@ -1047,6 +1047,111 @@ Ensure backward compatibility.
     expect(plan2.slugs).toContain("plan-duplicate-import-1");
   });
 
+  // Bug fix: type:trait items with no parent should go to project-level traits (kynetic.yaml)
+  it("should place parentless trait items in project-level traits array", async () => {
+    const planPath = path.join(tempDir, "trait-type-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Trait Type Plan
+
+## Specs
+
+\`\`\`yaml
+- title: JSON Output
+  slug: trait-json-output
+  type: trait
+  description: Cross-cutting trait for JSON output support
+  acceptance_criteria:
+    - id: ac-1
+      given: A command supports --json
+      when: --json flag is passed
+      then: Output is valid JSON
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Verify the trait was created and is retrievable
+    const item = kspecJson<{
+      type: string;
+      description: string;
+      acceptance_criteria: Array<{ id: string }>;
+      _sourceFile: string;
+    }>("item get @trait-json-output --json", tempDir);
+
+    expect(item.type).toBe("trait");
+    expect(item.description).toBe("Cross-cutting trait for JSON output support");
+    expect(item.acceptance_criteria).toHaveLength(1);
+    // Trait should be sourced from kynetic.yaml (project-level), not a module file
+    expect(item._sourceFile).toContain("kynetic.yaml");
+  });
+
+  // Bug fix: type:trait items WITH a parent should still go under the parent
+  it("should place trait items with a parent under the parent (not project-level)", async () => {
+    const planPath = path.join(tempDir, "child-trait-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Child Trait Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Parent Feature
+  slug: parent-for-trait
+  type: feature
+  description: Parent feature
+
+- title: Scoped Trait
+  slug: scoped-trait
+  type: trait
+  parent: parent-for-trait
+  description: Trait scoped under a parent
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Verify both items were created
+    const parent = kspecJson<{ type: string }>("item get @parent-for-trait --json", tempDir);
+    expect(parent.type).toBe("feature");
+
+    const trait = kspecJson<{ type: string; _sourceFile: string }>(
+      "item get @scoped-trait --json",
+      tempDir,
+    );
+    expect(trait.type).toBe("trait");
+    // Trait with parent should NOT be in kynetic.yaml - it should be in the module file
+    expect(trait._sourceFile).not.toContain("kynetic.yaml");
+  });
+
+  // Bug fix: dry-run should report project-level trait placement
+  it("should report project-level trait placement in dry-run mode", async () => {
+    const planPath = path.join(tempDir, "dry-trait-type-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Dry Trait Type Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Dry Run Trait
+  slug: dry-run-trait
+  type: trait
+  description: A trait in dry-run mode
+\`\`\`
+`,
+    );
+
+    const output = kspec(
+      `plan import "${planPath}" --module @test-core --dry-run`,
+      tempDir,
+    );
+    expect(output).toContain("Would create spec: @dry-run-trait");
+    expect(output).toContain("(project-level trait)");
+  });
+
   // Bug fix: dry-run path should also preserve ACs and normalize traits
   it("should normalize traits in dry-run mode (no crash)", async () => {
     const planPath = path.join(tempDir, "dry-trait-plan.md");
