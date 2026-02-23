@@ -56513,7 +56513,7 @@
   type: task
   spec_ref: "@session-log-show"
   plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56656,6 +56656,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T23:02:12.592Z
+  closed_reason: "Merged in PR #486. Implemented index-based iteration boundary counting using
+    prompt.sent events, with legacy fallback for older sessions."
 - _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
   slugs: []
   title: Design native task-limit enforcement for ralph agent iterations
@@ -56912,28 +56915,28 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Add missing trait AC test annotations for session-log-show
+- _ulid: 01KJ6B1E8F4QX8JMBMJ9SC8MCA
+  slugs:
+    - task-session-show-trait-ac-coverage
+  title: Add missing trait AC test annotations for session-log-show
+  type: task
   description: "Audit tests/session-log-show.test.ts for missing trait AC annotations. Codex review of
     PR #486 found gaps: @trait-json-output ac-2, ac-4, ac-6 and @trait-semantic-exit-codes ac-2,
     ac-3, ac-5, ac-6, ac-7, ac-8. Some may be N/A for this command (e.g. user cancellation, batch
     partial failures) — mark those as not applicable in the spec or add tests where applicable."
-  type: task
   spec_ref: "@session-log-show"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-session-show-trait-ac-coverage
   tags:
     - cli
     - testing
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJ6B1E8F4QX8JMBMJ9SC8MCA
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-23T22:48:37.903Z
   notes: []
   todos: []
+  automation: eligible
