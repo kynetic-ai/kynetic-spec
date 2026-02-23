@@ -55356,7 +55356,10 @@
   created_at: 2026-02-23T07:29:42.615Z
   notes: []
   todos: []
-- title: Add path-based CI test filtering
+- _ulid: 01KJ4Q55END42JJK7TVXP5WT88
+  slugs: []
+  title: Add path-based CI test filtering
+  type: task
   description: >-
     Configure CI to only run the test suite when files that affect test outcomes are changed. Use
     GitHub Actions path filters to skip tests for documentation-only, skill-only, or other non-code
@@ -55381,22 +55384,20 @@
 
 
     Consider: GitHub Actions path filtering with paths/paths-ignore on the test job.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - ci
     - improvement
     - infra
-  depends_on: []
-  _ulid: 01KJ4Q55END42JJK7TVXP5WT88
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-23T07:41:53.997Z
   notes: []
   todos: []
+  started_at: 2026-02-23T07:42:24.427Z
