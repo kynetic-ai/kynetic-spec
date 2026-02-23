@@ -54862,6 +54862,14 @@
         Elysia prefix /api/triage with pubsub injection.
         Topic triage:updates, events: triage_created, triage_updated, triage_acted.
         Register in server.ts alongside existing routes.
+    - _ulid: 01KJ3Z6X22H1TRJQ32PDNV2AY9
+      created_at: 2026-02-23T00:43:25.122Z
+      author: "@claude"
+      content: "Implemented triage daemon API routes at packages/daemon/src/routes/triage.ts. 6 endpoints:
+        GET / (list), GET /export, POST / (create), GET /:ref, POST /:ref/override, POST /:ref/act.
+        All 9 own ACs covered. Trait ACs: api-endpoint ac-1-5, websocket-protocol ac-3. Reused
+        executeTriageAction from CLI. 24 tests passing."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ3FXJ8ZEN8DSP3BD3HKP1SW
