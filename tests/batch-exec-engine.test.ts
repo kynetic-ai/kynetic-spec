@@ -754,16 +754,10 @@ describe("batch command integration", () => {
     expect(result.validationFailed).toBeUndefined();
   });
 
-  // AC: @trait-json-output ac-4 — references use @ prefix consistently
-  it("JSON output includes @ prefix on references", () => {
-    const result = kspecJson<BatchExecResult>(
-      `batch --dry-run --commands '[{"command":"inbox add","args":{"text":"ref-check"}}]'`,
-      tempDir,
-    );
-    expect(result.success).toBe(true);
-    // The command field in results preserves the original command string
-    expect(result.results[0].command).toBe("inbox add");
-  });
+  // Note: @trait-json-output ac-4 (references use @ prefix) — batch JSON result
+  // structure does not contain entity references directly. The `output` field holds
+  // captured stdout from subcommands in human-readable format. Ref prefix consistency
+  // is the responsibility of each subcommand, not the batch envelope.
 
   // AC: @trait-json-output ac-5 — timestamps use ISO 8601 format
   it("JSON output timestamps use ISO 8601", () => {
@@ -825,14 +819,15 @@ describe("batch command integration", () => {
   });
 
   // AC: @trait-dry-run ac-6 — --dry-run --json includes dry_run boolean field
-  it("--dry-run JSON output includes dry_run field", () => {
-    const result = kspecJson<BatchExecResult & { dry_run?: boolean }>(
+  it("--dry-run JSON output includes dry_run boolean field", () => {
+    const result = kspecJson<BatchExecResult>(
       `batch --dry-run --commands '[{"command":"inbox add","args":{"text":"dry-run-field"}}]'`,
       tempDir,
     );
     expect(result.success).toBe(true);
-    // Results indicate dry-run mode (output says "dry-run: would execute")
-    expect(result.results[0].output).toContain("dry-run");
+    // dry_run field must be a boolean true, not just a truthy string
+    expect(result.dry_run).toBe(true);
+    expect(typeof result.dry_run).toBe("boolean");
   });
 
   // AC: @batch-exec ac-inline — inline JSON with nested objects processed correctly

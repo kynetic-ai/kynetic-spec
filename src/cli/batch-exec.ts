@@ -564,9 +564,11 @@ export async function executeBatch(
   }
 
   // AC: ac-dry-run — validate without executing
+  // AC: @trait-dry-run ac-6 — include dry_run boolean in JSON output
   if (options.dryRun) {
     return {
       success: true,
+      dry_run: true,
       mode,
       summary: { total: commands.length, succeeded: commands.length, failed: 0 },
       results: commands.map((cmd, i) => ({
