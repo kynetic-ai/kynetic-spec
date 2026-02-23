@@ -56371,3 +56371,20 @@
   notes: []
   todos: []
   automation: eligible
+- title: test-ref-output
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KJ5X5ZT4V24WYN70DM8XRVYW
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-23T18:46:26.884Z
+  notes: []
+  todos: []
