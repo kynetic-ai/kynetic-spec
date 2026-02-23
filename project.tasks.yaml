@@ -55293,7 +55293,7 @@
   spec_ref: "@triage-cli-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55317,3 +55317,7 @@
         setup tests).
       supersedes: null
   todos: []
+  completed_at: 2026-02-23T06:18:36.670Z
+  closed_reason: Updated triage skill with record→act workflow, added as core skill in
+    templates/skills/triage/ with supporting dirs, extended install/update/build to copy docs
+    directories. Specs updated. All tests pass.
