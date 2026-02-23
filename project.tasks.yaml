@@ -54841,7 +54841,7 @@
   type: task
   spec_ref: "@triage-daemon-api"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-triage-record-schema"
@@ -54872,6 +54872,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T01:05:05.388Z
+  closed_reason: "Merged in PR #453. Implemented 6 triage API endpoints (GET list, GET export, POST
+    create, GET single, POST override, POST act) with full own AC coverage (9/9), trait AC coverage
+    (api-endpoint 5/6, websocket-protocol 1/1 route-level), 26 tests passing. Fix commit addressed
+    upsert identity and stale metadata issues from initial review."
 - _ulid: 01KJ3FXJ8ZEN8DSP3BD3HKP1SW
   slugs:
     - implement-interactive-triage-ui

@@ -1,0 +1,396 @@
+{
+  "generated_at": "2026-02-23T00:20:02.993Z",
+  "branch": "fix/daemon-executable-build",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHY9W8",
+      "title": "Bump @agentclientprotocol/sdk to ^0.14.0",
+      "started_at": "2026-02-23T00:08:31.298Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 3,
+      "last_note_at": "2026-02-23T00:12:03.995Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    },
+    {
+      "ref": "01KJ3SMT",
+      "title": "Fix daemon-executable bun build --compile failure",
+      "started_at": "2026-02-23T00:12:45.839Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 2,
+      "last_note_at": "2026-02-23T00:19:07.954Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KJ3SMT",
+      "task_title": "Fix daemon-executable bun build --compile failure",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ3XTE",
+      "created_at": "2026-02-23T00:19:07.954Z",
+      "author": "@claude",
+      "content": "Root cause: bun build --compile was running from packages/daemon/ and trying to resolve relative imports (../../parser/index.js) which pointed outside the package to non-existent paths. Fix: Changed build:compile to compile from dist/daemon/index.ts (populated by npm run build:daemon) where the relative import paths correctly resolve to dist/parser/ and dist/utils/. Updated daemon package.json, build-executables.sh, and test. All 3 daemon-executable tests now pass. Full suite: 3105 passed, 1 failed (pre-existing doctor flaky test)."
+    },
+    {
+      "task_ref": "01KHY9W8",
+      "task_title": "Bump @agentclientprotocol/sdk to ^0.14.0",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ3XDG",
+      "created_at": "2026-02-23T00:12:03.995Z",
+      "author": "@claude",
+      "content": "Bumped @agentclientprotocol/sdk from ^0.13.0 to ^0.14.0 in package.json. npm install succeeded (changed 1 package). tsc --noEmit passed cleanly. Full test suite: 3103 passed, 3 failed (pre-existing: daemon-executable build + doctor flaky tests — tracked by separate tasks @01KJ3SMT and @01KJ3SMV). Zero new failures from the SDK bump."
+    },
+    {
+      "task_ref": "01KHY9W8",
+      "task_title": "Bump @agentclientprotocol/sdk to ^0.14.0",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ3X7X",
+      "created_at": "2026-02-23T00:09:00.734Z",
+      "author": "@claude",
+      "content": "Task was found in_progress during session 01KJ3QT39N but was not worked on in this session. Leaving in_progress for next iteration to pick up."
+    },
+    {
+      "task_ref": "01KJ3FXH3",
+      "task_title": "Implement Interactive Triage System",
+      "task_status": "completed",
+      "note_ulid": "01KJ3W27",
+      "created_at": "2026-02-22T23:48:26.182Z",
+      "author": "@claude",
+      "content": "Parent spec @interactive-triage has 2 high-level ACs that were already fully satisfied by child implementations (triage record schema + CLI commands). Added AC annotations to existing tests and 2 new integration tests: (1) end-to-end decision chain test exercising agent record → user override → act → export with full attribution verification, (2) record persistence test verifying triage records survive inbox item deletion. All 72 triage tests passing."
+    },
+    {
+      "task_ref": "01KJ3FXHP",
+      "task_title": "Implement Triage CLI Commands",
+      "task_status": "completed",
+      "note_ulid": "01KJ3V41",
+      "created_at": "2026-02-22T23:31:56.853Z",
+      "author": "@claude",
+      "content": "[FIX_CYCLE: 2] Addressed all 5 PR review findings:\n\nMUST-FIX resolved:\n1. spec-gap observation: type changed to 'question', content prefixed with [spec-gap] marker. Verified with new test assertion checking observation type and content.\n2. export --json precedence: Wrapped export output in output() function so globalOutputFormat (--json) takes precedence over --format option.\n3. Trait AC coverage: Added 17 new tests covering @trait-filterable-list (ac-3,5,6), @trait-dry-run (ac-2,3,5), @trait-semantic-exit-codes (ac-1,2,5), @trait-error-guidance (ac-2,4,5,6), @trait-shadow-commit (ac-5). Updated annotations on existing tests.\n\nSHOULD-FIX resolved:\n4. ac-10 test annotation clarified as partial (EOF preservation, not SIGINT).\n5. triage list summary now uses post-filter count for accurate 'X of Y' display.\n\n52 tests passing. Full suite green (2 pre-existing failures unrelated)."
+    },
+    {
+      "task_ref": "01KJ3SMT",
+      "task_title": "Fix daemon-executable bun build --compile failure",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ3SS5",
+      "created_at": "2026-02-22T23:08:31.739Z",
+      "author": "@claude",
+      "content": "Automation eligible. This should be fixable by an agent — the root cause is well-documented (cross-package relative imports). If no fix is found after multiple attempts, block for manual handling."
+    },
+    {
+      "task_ref": "01KJ3FXHP",
+      "task_title": "Implement Triage CLI Commands",
+      "task_status": "completed",
+      "note_ulid": "01KJ3SAW",
+      "created_at": "2026-02-22T23:00:44.519Z",
+      "author": "@claude",
+      "content": "[FIX_CYCLE: 1] Review findings: Reverted submit - task is being handled by ralph loop, not this session"
+    },
+    {
+      "task_ref": "01KJ3FXHP",
+      "task_title": "Implement Triage CLI Commands",
+      "task_status": "completed",
+      "note_ulid": "01KJ3S4E",
+      "created_at": "2026-02-22T22:57:13.483Z",
+      "author": "@claude",
+      "content": "Implemented all triage CLI commands:\n\n**Commands created (src/cli/commands/triage.ts):**\n- `triage record <inbox-ref>` — Record a triage decision (ac-1, ac-11)\n- `triage list` — List triage records with filters (ac-2, ac-3)\n- `triage act <triage-ref>` — Execute triage decision (ac-4 through ac-8, ac-15, ac-16, ac-17)\n- `triage override <triage-ref>` — Override existing decision (ac-12)\n- `triage export` — Export as context markdown or JSON (ac-13, ac-14)\n- `triage start` — Interactive triage mode (ac-9, ac-10)\n- `triage get <triage-ref>` — Show record details\n\n**Action execution dispatch:**\n- promote: Creates task from item_snapshot\n- delete/duplicate: Deletes inbox item (prior authorization)\n- defer: No-op transition\n- spec-gap: Creates observation with item text + reasoning\n\n**Interactive mode:** Uses line-buffered readline for reliable piped stdin. Single rl interface for entire session.\n\n**Tests (35 passing):** All 17 ACs covered + trait ACs (json-output, error-guidance, filterable-list, shadow-commit, dry-run, semantic-exit-codes)\n\nFull test suite green (2 pre-existing failures unrelated)."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KJ3FXJ0",
+      "title": "Implement Triage Daemon API",
+      "priority": 3,
+      "spec_ref": "@triage-daemon-api",
+      "tags": []
+    },
+    {
+      "ref": "01KJ3FXJJ",
+      "title": "Implement Triage Agent Export",
+      "priority": 3,
+      "spec_ref": "@triage-agent-export",
+      "tags": []
+    },
+    {
+      "ref": "01KJ3SMV",
+      "title": "Investigate flaky doctor test failures",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "bug",
+        "investigation",
+        "testing"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KJ3FXH3",
+      "title": "Implement Interactive Triage System",
+      "completed_at": "2026-02-23T00:07:58.393Z",
+      "closed_reason": "Merged in PR #450. Parent spec @interactive-triage ac-1 and ac-2 proven with integration tests: end-to-end decision chain test (agent record → override → act → export with attribution/timestamp verification in export output) and persistence test (records survive inbox deletion). Codex review caught incomplete ac-2 coverage in export assertions — fixed in follow-up commit. All CI green."
+    },
+    {
+      "ref": "01KJ3FXHP",
+      "title": "Implement Triage CLI Commands",
+      "completed_at": "2026-02-22T23:44:27.411Z",
+      "closed_reason": "Merged in PR #449. Implements all 7 triage CLI commands (record, list, act, override, export, start, get) with full own AC coverage (17/17) and comprehensive trait AC coverage across 6 traits (json-output, error-guidance, semantic-exit-codes, filterable-list, shadow-commit, dry-run). 52 tests passing. Fix cycle 2 resolved all previous review findings."
+    },
+    {
+      "ref": "01KHY9VV",
+      "title": "Rename adapter from claude-code-acp to claude-agent-acp",
+      "completed_at": "2026-02-22T22:39:23.237Z",
+      "closed_reason": "Merged in PR #448. Renamed adapter from claude-code-acp to claude-agent-acp with backwards-compatible deprecated alias. Updated source files, tests, and spec references. All quality gates passed."
+    },
+    {
+      "ref": "01KJ3FXHD",
+      "title": "Implement Triage Record Schema",
+      "completed_at": "2026-02-22T20:23:31.838Z",
+      "closed_reason": "Schema and parser implemented with full AC coverage (38 tests). Committed in aac8bc27."
+    },
+    {
+      "ref": "01KJ315W",
+      "title": "Spike: Design interactive triage system with persistent metadata",
+      "completed_at": "2026-02-22T20:16:53.170Z",
+      "closed_reason": "Spike complete. Plan imported with 6 specs and 6 tasks. Dependencies set."
+    },
+    {
+      "ref": "01KJ316F",
+      "title": "Spec and formalize .kspec/artifacts/ directory convention",
+      "completed_at": "2026-02-22T18:30:32.817Z",
+      "closed_reason": "Merged in PR #446. Artifacts directory convention implemented: init/setup/repair create .kspec/artifacts/, doctor health check, .gitignore exclusion, 6 tests. Codex review noted: spec wording re .gitkeep should be updated (intentionally skipped since dir is gitignored), setup hardcodes .kspec path (low-risk), repair doesn't ensure .gitignore for legacy branches."
+    },
+    {
+      "ref": "01KJ32FK",
+      "title": "Fix plugin marketplace: add marketplace.json and validate directory source setup",
+      "completed_at": "2026-02-22T17:34:56.312Z",
+      "closed_reason": "Merged in PR #445. Generated marketplace.json for directory source, restructured plugin to plugins/kspec/ matching official pattern, fixed MarketplaceEntry type, added ac-6 test coverage, updated spec ac-5 path."
+    },
+    {
+      "ref": "01KHZHPH",
+      "title": "Write core skill: kspec:help",
+      "completed_at": "2026-02-22T03:49:28.550Z",
+      "closed_reason": "Skill renamed from kspec-help to help. Renders as /kspec:help via plugin system. Old monolithic skill removed. All tests pass."
+    },
+    {
+      "ref": "01KJ19D0",
+      "title": "Migrate skill rendering to Claude Code plugin system",
+      "completed_at": "2026-02-22T01:37:33.612Z",
+      "closed_reason": "Merged in PR #442. Core skills now render to .claude/plugins/kspec/skills/<id>/ for proper Claude Code plugin discovery as /kspec:<id>."
+    },
+    {
+      "ref": "01KHZHPG",
+      "title": "Render core skills under kspec/ namespace directory",
+      "completed_at": "2026-02-21T17:45:51.292Z",
+      "closed_reason": "Merged in PR #440. Core skills now render under .claude/skills/kspec/<id>/ namespace. Includes migration cleanup, namespace-aware drift detection, safe --clean for nested directories, and spec coverage (ac-6, ac-7 on @skill-rendering). 13 new tests."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "059389e",
+      "full_hash": "059389ee0d609a248b7a1191126d472282380e01",
+      "date": "2026-02-23T00:19:23.000Z",
+      "message": "fix: resolve bun build --compile failure for daemon executable",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "59a19c5",
+      "full_hash": "59a19c50c260c2e271a4e56708e83b6df01d3183",
+      "date": "2026-02-23T00:07:40.000Z",
+      "message": "test: add integration tests for interactive triage system (#450)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4fee804",
+      "full_hash": "4fee804dbbc3cc72569eedd2c0d73ac18a81a678",
+      "date": "2026-02-22T23:56:16.000Z",
+      "message": "fix: assert attribution/timestamps in export output for ac-2",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e45df22",
+      "full_hash": "e45df22e14399096c062e55ee1c0d07cd94470e1",
+      "date": "2026-02-22T23:48:14.000Z",
+      "message": "test: add integration tests for interactive triage system parent spec",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "af5ad61",
+      "full_hash": "af5ad6101076b683dcce0494c5e627439a244146",
+      "date": "2026-02-22T23:44:21.000Z",
+      "message": "feat: implement triage CLI commands (#449)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1ba6b0e",
+      "full_hash": "1ba6b0ea2dddc1afeac3758d0c58023690836a23",
+      "date": "2026-02-22T23:31:15.000Z",
+      "message": "fix: address PR review findings for triage CLI",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f226cc8",
+      "full_hash": "f226cc86213f757aaf47da30b81f543a940d320b",
+      "date": "2026-02-22T23:06:58.000Z",
+      "message": "fix: address local review findings for triage CLI",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "76c8efa",
+      "full_hash": "76c8efa54f2e4f206bf082ec61870081e0782a5f",
+      "date": "2026-02-22T22:57:27.000Z",
+      "message": "feat: add triage CLI commands",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7fc478e",
+      "full_hash": "7fc478e5ecdbb831bff4315e025367e20780c7b6",
+      "date": "2026-02-22T22:39:15.000Z",
+      "message": "refactor: rename adapter from claude-code-acp to claude-agent-acp (#448)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f51a355",
+      "full_hash": "f51a35502b6e67b2d1578197f8d5af1a121c0134",
+      "date": "2026-02-22T22:06:48.000Z",
+      "message": "fix: add deprecated alias for claude-code-acp adapter",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 589,
+    "in_progress": 0,
+    "needs_work": 0,
+    "pending_review": 2,
+    "ready": 31,
+    "blocked": 0,
+    "completed": 536,
+    "inbox_items": 101
+  }
+}
