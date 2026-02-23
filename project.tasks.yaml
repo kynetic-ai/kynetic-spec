@@ -54179,6 +54179,14 @@
         kspec: namespace skills or pull skill names from project meta config. Templates were cleaned
         correctly."
       supersedes: null
+    - _ulid: 01KJ4Y0RJRKX4Z5TJ0HHRTM17E
+      created_at: 2026-02-23T09:41:49.784Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Fixed: Replaced project-specific skill names (/task-work, /reflect,
+        /pr-review) with kspec: namespace defaults (/kspec:task-work, /kspec:reflect,
+        /kspec:review). Added ralph.skills config section to kspec.config.yaml for project-level
+        overrides. Threaded config through prompt builders. All 3177 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHZ7GGQ6710KHVNVJB3GEB
