@@ -76,9 +76,10 @@ function main() {
     "utf-8"
   );
 
-  // Process each skill into plugin/plugins/kspec/skills/<id>/SKILL.md
+  // Process each skill into plugin/plugins/kspec/skills/<id>/
   // (marketplace source "./plugins/kspec" points to the plugin content directory)
   const pluginContentDir = path.join(PLUGIN_DIR, "plugins", "kspec");
+  const SUPPORTING_DIRS = ["docs", "references", "scripts", "assets"];
   let count = 0;
   for (const skill of manifest.skills) {
     const skillId = skill.id;
@@ -86,7 +87,8 @@ function main() {
     const skillDesc = skill.description || skillName;
 
     // Read source SKILL.md
-    const sourcePath = path.join(TEMPLATES_DIR, skillId, "SKILL.md");
+    const sourceSkillDir = path.join(TEMPLATES_DIR, skillId);
+    const sourcePath = path.join(sourceSkillDir, "SKILL.md");
     if (!fs.existsSync(sourcePath)) {
       console.warn(`Warning: ${sourcePath} not found, skipping ${skillId}`);
       continue;
@@ -102,6 +104,23 @@ function main() {
     const targetDir = path.join(pluginContentDir, "skills", skillId);
     fs.mkdirSync(targetDir, { recursive: true });
     fs.writeFileSync(path.join(targetDir, "SKILL.md"), output, "utf-8");
+
+    // Copy supporting directories (docs/, references/, etc.)
+    for (const dirName of SUPPORTING_DIRS) {
+      const srcSubDir = path.join(sourceSkillDir, dirName);
+      if (!fs.existsSync(srcSubDir)) continue;
+      const destSubDir = path.join(targetDir, dirName);
+      fs.mkdirSync(destSubDir, { recursive: true });
+      const entries = fs.readdirSync(srcSubDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isFile()) {
+          fs.copyFileSync(
+            path.join(srcSubDir, entry.name),
+            path.join(destSubDir, entry.name)
+          );
+        }
+      }
+    }
 
     count++;
   }

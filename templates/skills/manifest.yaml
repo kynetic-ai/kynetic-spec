@@ -8,3 +8,8 @@ skills:
     description: Get help with kspec commands and workflows
     platforms:
       - claude-code
+  - id: triage
+    name: Triage
+    description: Triage inbox items systematically. Records decisions with audit trail, then executes actions. Supports inbox, observations, and automation eligibility triage.
+    platforms:
+      - claude-code
