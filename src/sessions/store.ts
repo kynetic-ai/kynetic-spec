@@ -860,8 +860,11 @@ function legacyIterationGrouping(
     }
   }
 
-  // If no iterations found anywhere, create a single iteration-0 summary
+  // If no iterations found anywhere, synthesize iteration-0 only if events exist
   if (allIterations.size === 0) {
+    if (events.length === 0) {
+      return [];
+    }
     const { tasksStarted, tasksCompleted } = extractTaskTransitions(events);
     return [
       {
