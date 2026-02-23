@@ -6373,4 +6373,18 @@ skills:
     tags:
       - core
     allowed_tools: []
+  - _ulid: 01KJ558NBQW0EPYRPVM3EH3E7W
+    _type: skill
+    id: writing-specs
+    name: Writing Specs
+    description: Create and maintain specification items — modules, features, requirements, acceptance
+      criteria, and traits. The source of truth for what to build.
+    origin: core
+    version: 0.3.0
+    platforms:
+      - claude-code
+    depends_on: []
+    tags:
+      - core
+    allowed_tools: []
 includes: []
