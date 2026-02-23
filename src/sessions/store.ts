@@ -544,7 +544,7 @@ export async function getSessionLogSummary(
 
   const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
     countEventLines(specDir, sessionId),
-    countIterations(specDir, sessionId),
+    countIterationsBoundaryAware(specDir, sessionId),
     countTaskCompletions(specDir, sessionId),
   ]);
 
@@ -750,21 +750,107 @@ function extractTaskRef(command: string): string | null {
 }
 
 /**
- * Compute per-iteration summaries from events.
+ * Iteration boundary: a prompt.sent event with phase "task-work" that marks
+ * the start of a new iteration in a ralph session.
+ */
+interface IterationBoundary {
+  /** Array index in the events list */
+  index: number;
+  /** Iteration number from the event data */
+  iteration: number;
+}
+
+/**
+ * Find iteration boundaries from prompt.sent events with phase "task-work".
  *
- * Dynamically creates iteration buckets based on both context snapshot files
- * AND event data to handle cases where events are logged before context
- * snapshots exist (e.g., active sessions).
+ * Ralph emits these synchronously at the start of each iteration, so their
+ * array positions are reliable even when concurrent fire-and-forget events
+ * produce duplicate seq numbers.
+ *
+ * Returns validated, monotonically increasing boundaries.
+ */
+function findIterationBoundaries(events: SessionEvent[]): IterationBoundary[] {
+  const raw: IterationBoundary[] = [];
+
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    if (event.type !== "prompt.sent") continue;
+
+    const data = event.data as {
+      phase?: string;
+      iteration?: number;
+    } | null;
+
+    if (
+      data?.phase !== "task-work" ||
+      typeof data?.iteration !== "number"
+    ) {
+      continue;
+    }
+
+    raw.push({ index: i, iteration: data.iteration });
+  }
+
+  // Validate: filter to monotonically increasing iteration numbers, deduplicate
+  const validated: IterationBoundary[] = [];
+  let lastIter = -Infinity;
+
+  for (const b of raw) {
+    if (b.iteration > lastIter) {
+      validated.push(b);
+      lastIter = b.iteration;
+    }
+  }
+
+  return validated;
+}
+
+/**
+ * Extract task start/complete refs from a slice of events.
+ */
+function extractTaskTransitions(events: SessionEvent[]): {
+  tasksStarted: string[];
+  tasksCompleted: string[];
+} {
+  const tasksStarted: string[] = [];
+  const tasksCompleted: string[] = [];
+
+  for (const event of events) {
+    if (event.type === "session.update") {
+      const data = event.data as {
+        update?: {
+          sessionUpdate?: string;
+          rawInput?: { command?: string };
+        };
+      } | null;
+      const command = data?.update?.rawInput?.command;
+      if (typeof command === "string") {
+        if (/\btask start\b/.test(command)) {
+          const ref = extractTaskRef(command);
+          if (ref) tasksStarted.push(ref);
+        } else if (/\btask complete\b/.test(command)) {
+          const ref = extractTaskRef(command);
+          if (ref) tasksCompleted.push(ref);
+        }
+      }
+    }
+  }
+
+  return { tasksStarted, tasksCompleted };
+}
+
+/**
+ * Legacy iteration grouping: groups events by their data.iteration field.
+ *
+ * Used as fallback for sessions that don't have prompt.sent boundary events
+ * with phase "task-work" (pre-boundary sessions or non-ralph sessions).
  *
  * AC: @session-log-show ac-2
  */
-async function computeIterationSummaries(
-  specDir: string,
-  sessionId: string,
-): Promise<IterationSummary[]> {
-  const events = await readEvents(specDir, sessionId);
-  const snapshotIterations = await getIterationNumbers(specDir, sessionId);
-
+function legacyIterationGrouping(
+  events: SessionEvent[],
+  snapshotIterations: number[],
+): IterationSummary[] {
   // Collect all iteration numbers from both snapshots and events
   const allIterations = new Set<number>(snapshotIterations);
   for (const event of events) {
@@ -776,12 +862,13 @@ async function computeIterationSummaries(
 
   // If no iterations found anywhere, create a single iteration-0 summary
   if (allIterations.size === 0) {
+    const { tasksStarted, tasksCompleted } = extractTaskTransitions(events);
     return [
       {
         iteration: 0,
         event_count: events.length,
-        tasks_started: [],
-        tasks_completed: [],
+        tasks_started: tasksStarted,
+        tasks_completed: tasksCompleted,
       },
     ];
   }
@@ -794,14 +881,11 @@ async function computeIterationSummaries(
   }
 
   for (const event of events) {
-    // Try to get iteration from event data
     const data = event.data as { iteration?: number } | null;
     const iter = data?.iteration;
     if (typeof iter === "number" && iterationMap.has(iter)) {
       iterationMap.get(iter)!.push(event);
     } else {
-      // Events without iteration info (lifecycle events) go to iteration 0
-      // or the first known iteration if 0 doesn't exist
       const fallbackIter = iterationMap.has(0) ? 0 : iterations[0];
       iterationMap.get(fallbackIter)!.push(event);
     }
@@ -809,30 +893,7 @@ async function computeIterationSummaries(
 
   const summaries: IterationSummary[] = [];
   for (const [iterNum, iterEvents] of iterationMap) {
-    const tasksStarted: string[] = [];
-    const tasksCompleted: string[] = [];
-
-    for (const event of iterEvents) {
-      if (event.type === "session.update") {
-        const data = event.data as {
-          update?: {
-            sessionUpdate?: string;
-            rawInput?: { command?: string };
-          };
-        } | null;
-        const command = data?.update?.rawInput?.command;
-        if (typeof command === "string") {
-          if (/\btask start\b/.test(command)) {
-            const ref = extractTaskRef(command);
-            if (ref) tasksStarted.push(ref);
-          } else if (/\btask complete\b/.test(command)) {
-            const ref = extractTaskRef(command);
-            if (ref) tasksCompleted.push(ref);
-          }
-        }
-      }
-    }
-
+    const { tasksStarted, tasksCompleted } = extractTaskTransitions(iterEvents);
     summaries.push({
       iteration: iterNum,
       event_count: iterEvents.length,
@@ -842,6 +903,104 @@ async function computeIterationSummaries(
   }
 
   return summaries.sort((a, b) => a.iteration - b.iteration);
+}
+
+/**
+ * Boundary-based iteration grouping: splits events by prompt.sent boundary
+ * positions (array indices) instead of trusting data.iteration fields.
+ *
+ * This is resilient to producer-side bugs where concurrent fire-and-forget
+ * event logging captures the wrong iteration number.
+ *
+ * AC: @session-log-show ac-10
+ */
+function boundaryIterationGrouping(
+  events: SessionEvent[],
+  boundaries: IterationBoundary[],
+): IterationSummary[] {
+  const summaries: IterationSummary[] = [];
+
+  for (let b = 0; b < boundaries.length; b++) {
+    const startIdx = boundaries[b].index;
+    const endIdx = b + 1 < boundaries.length ? boundaries[b + 1].index : events.length;
+    const iterEvents = events.slice(startIdx, endIdx);
+    const { tasksStarted, tasksCompleted } = extractTaskTransitions(iterEvents);
+
+    summaries.push({
+      iteration: boundaries[b].iteration,
+      event_count: iterEvents.length,
+      tasks_started: tasksStarted,
+      tasks_completed: tasksCompleted,
+    });
+  }
+
+  // Pre-boundary events (before the first prompt.sent) merge into first iteration
+  if (boundaries.length > 0 && boundaries[0].index > 0) {
+    const preBoundaryEvents = events.slice(0, boundaries[0].index);
+    const { tasksStarted, tasksCompleted } = extractTaskTransitions(preBoundaryEvents);
+    summaries[0].event_count += preBoundaryEvents.length;
+    summaries[0].tasks_started = [...tasksStarted, ...summaries[0].tasks_started];
+    summaries[0].tasks_completed = [...tasksCompleted, ...summaries[0].tasks_completed];
+  }
+
+  return summaries;
+}
+
+/**
+ * Compute per-iteration summaries from events.
+ *
+ * Uses prompt.sent boundary events (phase: "task-work") when available for
+ * accurate index-based grouping. Falls back to legacy data.iteration grouping
+ * for sessions without boundaries.
+ *
+ * AC: @session-log-show ac-2, ac-10
+ */
+async function computeIterationSummaries(
+  specDir: string,
+  sessionId: string,
+): Promise<IterationSummary[]> {
+  const events = await readEvents(specDir, sessionId);
+  const boundaries = findIterationBoundaries(events);
+
+  if (boundaries.length > 0) {
+    return boundaryIterationGrouping(events, boundaries);
+  }
+
+  // Legacy fallback: no prompt.sent boundaries with phase "task-work"
+  const snapshotIterations = await getIterationNumbers(specDir, sessionId);
+  return legacyIterationGrouping(events, snapshotIterations);
+}
+
+/**
+ * Count iterations using boundary-aware logic, without computing full summaries.
+ *
+ * For use in getSessionLogSummary() (session log list, session log stats) to
+ * ensure iteration_count agrees with session log show.
+ *
+ * Falls back to counting context-iter-*.json files when no boundaries exist.
+ */
+async function countIterationsBoundaryAware(
+  specDir: string,
+  sessionId: string,
+): Promise<number> {
+  const events = await readEvents(specDir, sessionId);
+  const boundaries = findIterationBoundaries(events);
+
+  if (boundaries.length > 0) {
+    return boundaries.length;
+  }
+
+  // Legacy fallback: count from context snapshots and event data
+  const snapshotIterations = await getIterationNumbers(specDir, sessionId);
+  const allIterations = new Set<number>(snapshotIterations);
+  for (const event of events) {
+    const data = event.data as { iteration?: number } | null;
+    if (typeof data?.iteration === "number") {
+      allIterations.add(data.iteration);
+    }
+  }
+
+  return allIterations.size || (events.length > 0 ? 1 : 0);
 }
 
 /**
@@ -858,9 +1017,8 @@ export async function getSessionLogDetail(
   const metadata = await getSession(specDir, sessionId);
   if (!metadata) return null;
 
-  const [eventCount, iterationCount, iterations] = await Promise.all([
+  const [eventCount, iterations] = await Promise.all([
     countEventLines(specDir, sessionId),
-    countIterations(specDir, sessionId),
     computeIterationSummaries(specDir, sessionId),
   ]);
 
@@ -879,7 +1037,7 @@ export async function getSessionLogDetail(
     ended_at: metadata.ended_at,
     duration_ms: durationMs,
     event_count: eventCount,
-    iteration_count: iterationCount,
+    iteration_count: iterations.length,
     iterations,
   };
 }

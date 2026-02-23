@@ -143,7 +143,7 @@ describe('getSessionLogDetail', () => {
   });
 
   // AC: @session-log-show ac-2
-  it('should compute per-iteration summaries', async () => {
+  it('should compute per-iteration summaries with boundaries', async () => {
     const sessionId = testUlid('SESS', 1);
     await createSession(testDir, {
       id: sessionId,
@@ -154,10 +154,10 @@ describe('getSessionLogDetail', () => {
     await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
     await saveSessionContext(testDir, sessionId, 2, { iteration: 2 });
 
-    // Add events with iteration info
+    // Add events with prompt.sent boundaries (phase: task-work)
     const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
     const events = [
-      { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: { iteration: 1 } },
+      { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
       {
         ts: 2000, seq: 1, type: 'session.update', session_id: sessionId,
         data: {
@@ -168,7 +168,7 @@ describe('getSessionLogDetail', () => {
           },
         },
       },
-      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { iteration: 2 } },
+      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 2 } },
       {
         ts: 4000, seq: 3, type: 'session.update', session_id: sessionId,
         data: {
@@ -195,44 +195,207 @@ describe('getSessionLogDetail', () => {
     expect(iter2!.tasks_completed).toContain('@task-1');
   });
 
-  // Regression: events may exist for iterations before context snapshots are created
-  it('should handle events for iterations without context snapshots', async () => {
+  // AC: @session-log-show ac-10 — wrong data.iteration on streaming events, still grouped correctly
+  it('should group by boundary position even when data.iteration is wrong', async () => {
     const sessionId = testUlid('SESS', 2);
     await createSession(testDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    // Only create context snapshot for iteration 1
-    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
-
-    // But include events for iterations 1, 2, and 3
     const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
     const events = [
-      { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }, // No iteration
-      { ts: 2000, seq: 1, type: 'prompt.sent', session_id: sessionId, data: { iteration: 1 } },
-      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { iteration: 2 } },
-      { ts: 4000, seq: 3, type: 'prompt.sent', session_id: sessionId, data: { iteration: 3 } },
+      // Iteration 1 boundary
+      { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
+      // These events have WRONG data.iteration (race condition bug)
+      { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 4, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
+      { ts: 3000, seq: 2, type: 'session.update', session_id: sessionId, data: { iteration: 4, update: { sessionUpdate: 'tool_call', rawInput: { command: 'cat file' } } } },
+      // Iteration 2 boundary
+      { ts: 4000, seq: 3, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 2 } },
+      // More events with wrong iteration
+      { ts: 5000, seq: 4, type: 'session.update', session_id: sessionId, data: { iteration: 4, update: { sessionUpdate: 'tool_call', rawInput: { command: 'echo hi' } } } },
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
     const detail = await getSessionLogDetail(testDir, sessionId);
     expect(detail).not.toBeNull();
-    // Should have 3 iterations (from events), not just 1 (from context)
-    expect(detail!.iterations).toHaveLength(3);
+    expect(detail!.iterations).toHaveLength(2);
+
+    // Boundary-based: iter 1 gets events at indices 0,1,2 (3 events)
+    // iter 2 gets events at indices 3,4 (2 events)
+    const iter1 = detail!.iterations.find(i => i.iteration === 1);
+    const iter2 = detail!.iterations.find(i => i.iteration === 2);
+    expect(iter1!.event_count).toBe(3);
+    expect(iter2!.event_count).toBe(2);
+  });
+
+  // AC: @session-log-show ac-10 — legacy fallback when no prompt.sent boundaries exist
+  it('should fall back to legacy data.iteration grouping without boundaries', async () => {
+    const sessionId = testUlid('SESS', 3);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
+
+    // Events with data.iteration but NO prompt.sent with phase: task-work
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: { iteration: 1 } },
+      { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
+      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { iteration: 2 } }, // No phase field
+      { ts: 4000, seq: 3, type: 'session.update', session_id: sessionId, data: { iteration: 2, update: { sessionUpdate: 'tool_call', rawInput: { command: 'cat' } } } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    expect(detail!.iterations).toHaveLength(2);
 
     const iter1 = detail!.iterations.find(i => i.iteration === 1);
     const iter2 = detail!.iterations.find(i => i.iteration === 2);
-    const iter3 = detail!.iterations.find(i => i.iteration === 3);
-    expect(iter1).toBeDefined();
-    expect(iter2).toBeDefined();
-    expect(iter3).toBeDefined();
-
-    // Events should be correctly bucketed - iter 1 gets 2 events (session.start + prompt.sent)
-    // Lifecycle events without iteration go to first known iteration
     expect(iter1!.event_count).toBe(2);
-    expect(iter2!.event_count).toBe(1);
-    expect(iter3!.event_count).toBe(1);
+    expect(iter2!.event_count).toBe(2);
+  });
+
+  // AC: @session-log-show ac-10 — pre-boundary events merge into first iteration
+  it('should merge pre-boundary events into first iteration', async () => {
+    const sessionId = testUlid('SESS', 4);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      // Pre-boundary events (session.start before any prompt.sent)
+      { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null },
+      { ts: 1500, seq: 1, type: 'session.update', session_id: sessionId, data: { update: { sessionUpdate: 'tool_call', rawInput: { command: 'kspec task start @task-1' } } } },
+      // First boundary
+      { ts: 2000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
+      { ts: 3000, seq: 3, type: 'session.update', session_id: sessionId, data: { iteration: 1, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    expect(detail!.iterations).toHaveLength(1);
+    // All 4 events in iteration 1 (2 pre-boundary + 2 from boundary range)
+    expect(detail!.iterations[0].event_count).toBe(4);
+    // Pre-boundary task start should be captured
+    expect(detail!.iterations[0].tasks_started).toContain('@task-1');
+  });
+
+  // AC: @session-log-show ac-10 — single iteration captures all events
+  it('should handle single iteration with one boundary', async () => {
+    const sessionId = testUlid('SESS', 5);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
+      { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
+      { ts: 3000, seq: 2, type: 'session.end', session_id: sessionId, data: { reason: 'completed' } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    expect(detail!.iterations).toHaveLength(1);
+    expect(detail!.iterations[0].event_count).toBe(3);
+    expect(detail!.iteration_count).toBe(1);
+  });
+
+  // AC: @session-log-show ac-10 — mixed phase prompt.sent (only task-work used as boundaries)
+  it('should only use task-work phase prompt.sent as boundaries', async () => {
+    const sessionId = testUlid('SESS', 6);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
+      { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1 } },
+      // Reflect prompt.sent — NOT a boundary
+      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { phase: 'reflect', iteration: 1 } },
+      { ts: 4000, seq: 3, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 2 } },
+      { ts: 5000, seq: 4, type: 'session.update', session_id: sessionId, data: { iteration: 2 } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    // Only 2 iterations (task-work boundaries), not 3
+    expect(detail!.iterations).toHaveLength(2);
+
+    const iter1 = detail!.iterations.find(i => i.iteration === 1);
+    const iter2 = detail!.iterations.find(i => i.iteration === 2);
+    // Iter 1: events at indices 0,1,2 (prompt.sent task-work, update, reflect)
+    expect(iter1!.event_count).toBe(3);
+    // Iter 2: events at indices 3,4
+    expect(iter2!.event_count).toBe(2);
+  });
+
+  // AC: @session-log-show ac-10 — malformed boundaries gracefully fall back
+  it('should fall back to legacy when prompt.sent has missing phase/iteration', async () => {
+    const sessionId = testUlid('SESS', 7);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const events = [
+      // prompt.sent without phase field — not a valid boundary
+      { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { iteration: 1 } },
+      { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
+      // prompt.sent with phase but missing iteration — not a valid boundary
+      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work' } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    // Falls back to legacy: iteration 1 from data.iteration
+    expect(detail!.iterations.length).toBeGreaterThan(0);
+    expect(detail!.iterations[0].iteration).toBe(1);
+  });
+
+  // AC: @session-log-show ac-10 — duplicate seq values don't affect boundary math
+  it('should handle duplicate seq values with correct boundary grouping', async () => {
+    const sessionId = testUlid('SESS', 8);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    // Simulate concurrent appends producing duplicate seq numbers
+    const events = [
+      { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
+      { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1 } },
+      { ts: 2001, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1 } }, // Duplicate seq!
+      { ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 2 } },
+      { ts: 4000, seq: 3, type: 'session.update', session_id: sessionId, data: { iteration: 2 } },
+    ];
+    await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
+
+    const detail = await getSessionLogDetail(testDir, sessionId);
+    expect(detail).not.toBeNull();
+    expect(detail!.iterations).toHaveLength(2);
+    // readEvents sorts by seq, so duplicate seq events are adjacent.
+    // Boundary at index of first prompt.sent, second boundary at index of second prompt.sent.
+    // The exact counts depend on sort stability, but total should be 5
+    const totalEvents = detail!.iterations.reduce((sum, i) => sum + i.event_count, 0);
+    expect(totalEvents).toBe(5);
   });
 });
 
@@ -274,7 +437,7 @@ describe('kspec session log show (CLI)', () => {
           },
         },
       }),
-      JSON.stringify({ ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId1, data: { iteration: 1, prompt: 'Continue the task' } }),
+      JSON.stringify({ ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId1, data: { phase: 'task-work', iteration: 1, prompt: 'Continue the task' } }),
       JSON.stringify({ ts: 4000, seq: 3, type: 'tool.call', session_id: sessionId1, data: { iteration: 1, tool: 'Read' } }),
       JSON.stringify({ ts: 5000, seq: 4, type: 'session.end', session_id: sessionId1, data: { reason: 'completed' } }),
     ].join('\n') + '\n');
