@@ -54139,7 +54139,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -54159,6 +54159,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T09:01:16.872Z
 - _ulid: 01KHZHZ7GGQ6710KHVNVJB3GEB
   slugs: []
   title: Fix task get to display description field in text output
