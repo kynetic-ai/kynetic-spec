@@ -56065,7 +56065,7 @@
     valid spec, it should be honored. Currently taskDef.spec_ref is never read in the manual task
     creation path (plan-import.ts:513-523)."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56073,6 +56073,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:09.218Z
+  started_at: 2026-02-23T16:52:10.116Z
   notes:
     - _ulid: 01KJ4V6GP4P30YKMGXRHV7KN5N
       created_at: 2026-02-23T08:52:32.580Z
@@ -56082,7 +56083,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T16:52:10.116Z
 - _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
   slugs: []
   title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
