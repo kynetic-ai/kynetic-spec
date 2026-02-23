@@ -957,3 +957,10 @@ inbox:
       - web-ui
       - static-mode
     added_by: "@claude"
+  - _ulid: 01KJ4FFAWXJE5STMAAEDH0FG2B
+    text: "Web UI list pages hardcode limit: 1000 with no pagination — triage page confirmed, likely
+      affects inbox/tasks pages too. Silent truncation for large datasets. Need pagination or
+      virtual scrolling pattern across all list views."
+    created_at: 2026-02-23T05:27:38.653Z
+    tags: []
+    added_by: "@claude"
