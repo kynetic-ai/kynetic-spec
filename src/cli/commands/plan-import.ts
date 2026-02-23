@@ -29,6 +29,7 @@ import {
   type PlanSpec,
 } from "../../parser/plan-document.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { normalizeRefInput } from "../../schema/index.js";
 import type { PlanInput, SpecItemInput, TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -286,7 +287,7 @@ async function importPlan(
             updates.type = spec.type as SpecItemInput["type"];
           }
           if (spec.traits !== undefined) {
-            updates.traits = spec.traits.map(t => t.startsWith('@') ? t : `@${t}`);
+            updates.traits = spec.traits.map(normalizeRefInput);
           }
           if (spec.acceptance_criteria !== undefined) {
             updates.acceptance_criteria = spec.acceptance_criteria;
@@ -349,7 +350,7 @@ async function importPlan(
           implements: [],
           relates_to: [],
           tests: [],
-          traits: (spec.traits || []).map(t => t.startsWith('@') ? t : `@${t}`),
+          traits: (spec.traits || []).map(normalizeRefInput),
           notes: [],
         }) as LoadedSpecItem;
         createdSpecsMap.set(specSlug, dryRunSpec);
@@ -366,7 +367,7 @@ async function importPlan(
           implements: [],
           relates_to: [],
           tests: [],
-          traits: (spec.traits || []).map(t => t.startsWith('@') ? t : `@${t}`),
+          traits: (spec.traits || []).map(normalizeRefInput),
           notes: [],
         };
 

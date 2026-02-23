@@ -35,6 +35,7 @@ import {
   type LoadedTriageRecord,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
+import { normalizeRefInput } from '../../schema/index.js';
 import type { TriageAction } from '../../schema/index.js';
 import { exportTriageRecords } from '../../export/triage.js';
 import { executeTriageAction, VALID_ACTIONS } from '../../triage/index.js';
@@ -167,7 +168,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
         const author = body.decided_by || getAuthor(ctx.config?.identity?.author);
         const evidenceRefs = body.evidence_refs
-          ? body.evidence_refs.map((r: string) => r.startsWith('@') ? r : `@${r}`)
+          ? body.evidence_refs.map(normalizeRefInput)
           : [];
 
         // Check if a record already exists for this inbox item (upsert case)

@@ -40,6 +40,7 @@ import {
   type Workflow,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { normalizeRefInput } from "../../schema/index.js";
 import { z } from "zod";
 import {
   type ObservationType,
@@ -1645,7 +1646,7 @@ Examples:
         }
 
         // Set focus to ref
-        sessionCtx.focus = ref.startsWith("@") ? ref : `@${ref}`;
+        sessionCtx.focus = normalizeRefInput(ref);
         await saveSessionContext(ctx, sessionCtx);
 
         output({ focus: sessionCtx.focus }, () =>

@@ -20,6 +20,7 @@ import {
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { normalizeRefInput } from "../../schema/index.js";
 import type { Task, TaskInput } from "../../schema/index.js";
 import { alignmentCheck, errors } from "../../strings/index.js";
 import {
@@ -193,7 +194,7 @@ async function setTaskFields(
           error: errors.reference.specRefIsTask(options.specRef),
         };
       }
-      updatedTask.spec_ref = options.specRef;
+      updatedTask.spec_ref = normalizeRefInput(options.specRef);
       changes.push("spec_ref");
     }
 
@@ -218,7 +219,7 @@ async function setTaskFields(
         };
       }
 
-      updatedTask.meta_ref = options.metaRef;
+      updatedTask.meta_ref = normalizeRefInput(options.metaRef);
       changes.push("meta_ref");
     }
 
@@ -264,7 +265,7 @@ async function setTaskFields(
           };
         }
 
-        updatedTask.plan_ref = options.planRef;
+        updatedTask.plan_ref = normalizeRefInput(options.planRef);
         changes.push("plan_ref");
       }
     }
@@ -319,9 +320,7 @@ async function setTaskFields(
           };
         }
       }
-      updatedTask.depends_on = options.dependsOn.map((ref: string) =>
-        ref.startsWith("@") ? ref : `@${ref}`,
-      );
+      updatedTask.depends_on = options.dependsOn.map(normalizeRefInput);
       changes.push("depends_on");
     }
 
@@ -764,15 +763,13 @@ Examples:
           title: options.title,
           description: descriptionValue,
           type: options.type,
-          spec_ref: options.specRef || null,
-          meta_ref: options.metaRef || null,
-          plan_ref: options.planRef || null,
+          spec_ref: options.specRef ? normalizeRefInput(options.specRef) : null,
+          meta_ref: options.metaRef ? normalizeRefInput(options.metaRef) : null,
+          plan_ref: options.planRef ? normalizeRefInput(options.planRef) : null,
           priority: priorityResult.value,
           slugs: options.slug ? [options.slug] : [],
           tags: parseTagsArray(options.tag),
-          depends_on: (options.dependsOn || []).map((ref: string) =>
-            ref.startsWith("@") ? ref : `@${ref}`,
-          ),
+          depends_on: (options.dependsOn || []).map(normalizeRefInput),
           automation: automationValue,
         };
 

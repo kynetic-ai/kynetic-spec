@@ -15,6 +15,7 @@ import {
   saveTask,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { normalizeRefInput } from "../../schema/index.js";
 import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -332,9 +333,7 @@ async function deriveTaskFromSpec(
     priority: options.priority ?? normalizePriority(specItem.priority),
     slugs: [slug],
     tags: [...(specItem.tags || [])],
-    depends_on: (options.dependsOn || []).map((ref: string) =>
-      ref.startsWith("@") ? ref : `@${ref}`,
-    ),
+    depends_on: (options.dependsOn || []).map(normalizeRefInput),
     notes: initialNotes,
   };
 
