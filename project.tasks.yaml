@@ -55869,6 +55869,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:04.021Z
+  started_at: 2026-02-23T15:33:53.291Z
   notes:
     - _ulid: 01KJ4V6QNYAEW0WWCY7KNABP51
       created_at: 2026-02-23T08:52:39.742Z
@@ -55876,9 +55877,18 @@
       content: "AUTOMATION: Enhancement. Traits without parent go to kynetic.yaml project-level traits
         array, not module-level. Spec @plan-import."
       supersedes: null
+    - _ulid: 01KJ5JDY5RRD251M1BVMQ7E434
+      created_at: 2026-02-23T15:38:33.017Z
+      author: "@claude"
+      content: "Fixed trait placement in plan import. When a spec has type:trait and no parent, it now
+        writes directly to kynetic.yaml project-level traits array (same path as kspec trait add)
+        instead of going through addChildItem which placed it in the module-level traits array.
+        Added 3 tests: parentless trait goes to kynetic.yaml, trait with parent stays in module
+        file, dry-run reports project-level trait placement. All 3222 tests pass (1 pre-existing
+        timeout in cli-serve unrelated)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T15:33:53.291Z
 - _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
   slugs: []
   title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
