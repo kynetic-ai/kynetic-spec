@@ -54841,7 +54841,7 @@
   type: task
   spec_ref: "@triage-daemon-api"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-triage-record-schema"
@@ -54863,6 +54863,7 @@
         Register in server.ts alongside existing routes.
   todos: []
   automation: eligible
+  started_at: 2026-02-23T00:32:22.705Z
 - _ulid: 01KJ3FXJ8ZEN8DSP3BD3HKP1SW
   slugs:
     - implement-interactive-triage-ui
@@ -54969,6 +54970,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #452. Fixed bun build --compile failure by changing the compile source
+    from packages/daemon/src/index.ts to dist/daemon/index.ts where cross-package relative imports
+    resolve correctly. All 3 daemon-executable tests pass. AC @daemon-server ac-16 covered."
   depends_on: []
   context: []
   priority: 3
@@ -54979,6 +54983,7 @@
   vcs_refs: []
   created_at: 2026-02-22T23:06:09.939Z
   started_at: 2026-02-23T00:12:45.839Z
+  completed_at: 2026-02-23T00:31:47.028Z
   notes:
     - _ulid: 01KJ3SS53VD4G4TCCVAS8FJWHF
       created_at: 2026-02-22T23:08:31.739Z
@@ -55000,10 +55005,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T00:31:47.028Z
-  closed_reason: "Merged in PR #452. Fixed bun build --compile failure by changing the compile source
-    from packages/daemon/src/index.ts to dist/daemon/index.ts where cross-package relative imports
-    resolve correctly. All 3 daemon-executable tests pass. AC @daemon-server ac-16 covered."
 - _ulid: 01KJ3SMVTJC1FFY14RAAA7K2SV
   slugs:
     - task-investigate-doctor-flaky-tests
