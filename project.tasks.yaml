@@ -56018,6 +56018,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:08.180Z
+  started_at: 2026-02-23T16:24:48.331Z
   notes:
     - _ulid: 01KJ4V6FEHNKAMR2A4CFZ6WQ6W
       created_at: 2026-02-23T08:52:31.313Z
@@ -56025,9 +56026,17 @@
       content: "AUTOMATION: Bug fix. Batch arg handling should JSON.stringify objects before passing to
         handlers. Spec @batch-exec."
       supersedes: null
+    - _ulid: 01KJ5NG687NCF4GAAGASEY2PDK
+      created_at: 2026-02-23T16:32:12.551Z
+      author: "@claude"
+      content: Added toArgString() helper in batch-exec.ts that JSON.stringify objects instead of using
+        String() which produces [object Object]. Fix applied to all 4 value-serialization paths in
+        buildCommandArgv (positional scalars, positional array items, option scalars, option array
+        items). 3 unit tests + 1 integration test with real task patch through batch. All 3229 tests
+        pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T16:24:48.331Z
 - _ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
   slugs: []
   title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
