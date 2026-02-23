@@ -55968,7 +55968,7 @@
     tasks (design, triage, research) without a meaningless submit step. The --force flag exists but
     does not actually force completion from in_progress state.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55995,6 +55995,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T16:24:01.884Z
+  closed_reason: "Merged in PR #481. --force flag now bypasses all state checks in task complete,
+    enabling direct completion from in_progress, pending, blocked, and cancelled states. Documents
+    prior state in note and warning. 7 tests cover all force-complete paths. Spec @task-commands
+    ac-1 fully covered."
 - _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
   slugs: []
   title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
