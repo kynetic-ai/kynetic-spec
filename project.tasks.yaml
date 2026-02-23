@@ -55700,6 +55700,15 @@
       content: "AUTOMATION: Standalone chore. Add kspec agents generate as post-release step in release
         skill. Keeps kspec-agents.md version in sync."
       supersedes: null
+    - _ulid: 01KJ5D53YVAXNVW861FVN8X0NF
+      created_at: 2026-02-23T14:06:21.148Z
+      author: "@claude"
+      content: Added kspec agents generate step to release skill Phase 6. After npm version bumps
+        package.json, the skill now regenerates kspec-agents.md before committing — so the tagged
+        commit includes the updated version header. Also updated the dry-run preview actions list
+        and Phase 8 report checklist to include the regeneration step. Added note about self-hosting
+        projects needing npm run dev -- agents generate. All 3201 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4Q55END42JJK7TVXP5WT88
