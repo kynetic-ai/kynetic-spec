@@ -54923,6 +54923,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-22T20:16:10.820Z
+  started_at: 2026-02-23T01:05:57.250Z
   notes:
     - _ulid: 01KJ3FXJJ4C37PXQ7074M9R8QS
       created_at: 2026-02-22T20:16:10.820Z
@@ -54934,9 +54935,20 @@
         Context format: markdown template with per-item headers.
         JSON format: raw TriageRecord array.
         Shared by CLI (kspec triage export) and API (GET /api/triage/export).
+    - _ulid: 01KJ40YMEJKK4PDZ96Q312ZBVP
+      created_at: 2026-02-23T01:13:51.315Z
+      author: "@claude"
+      content: "Implemented shared triage export formatter in src/export/triage.ts. Extracted duplicated
+        formatTriageContext() from both CLI (src/cli/commands/triage.ts) and daemon
+        (packages/daemon/src/routes/triage.ts) into shared module. Two export formats: context
+        (markdown) and JSON. exportTriageRecords() returns typed union. 18 dedicated tests covering
+        all 4 own ACs (context format, JSON format, overrides, empty state) plus trait-json-output
+        ACs (no ANSI, all data included, @ prefix refs, ISO timestamps). Updated daemon static
+        analysis tests to verify shared formatter integration. Full suite: 3148 passed, 2 failed
+        (pre-existing doctor flaky)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T01:05:57.250Z
 - _ulid: 01KJ3SMTMK0VXV8N9SR3G0BMKT
   slugs:
     - task-fix-daemon-executable-build
