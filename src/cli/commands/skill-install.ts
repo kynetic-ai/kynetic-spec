@@ -178,15 +178,19 @@ export async function copyCoreSkillFiles(
   const templatesDir = getTemplatesDir();
   const sourceDir = path.join(templatesDir, skillId);
 
-  // Copy SKILL.md
+  // Copy SKILL.md — skip if template doesn't exist, propagate real errors
   const skillMdPath = path.join(sourceDir, "SKILL.md");
+  let content: string;
   try {
-    const content = await fs.readFile(skillMdPath, "utf-8");
-    await fs.mkdir(targetDir, { recursive: true });
-    await fs.writeFile(path.join(targetDir, "SKILL.md"), content, "utf-8");
-  } catch {
-    return; // No SKILL.md means nothing to copy
+    content = await fs.readFile(skillMdPath, "utf-8");
+  } catch (err) {
+    if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
+      return; // No SKILL.md means nothing to copy
+    }
+    throw err;
   }
+  await fs.mkdir(targetDir, { recursive: true });
+  await fs.writeFile(path.join(targetDir, "SKILL.md"), content, "utf-8");
 
   // Copy supporting directories recursively
   for (const dirName of SKILL_SUPPORTING_DIRS) {
