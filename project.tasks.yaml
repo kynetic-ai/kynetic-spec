@@ -56940,7 +56940,11 @@
   notes: []
   todos: []
   automation: eligible
-- title: Clean up obsolete project skills superseded by core skills
+- _ulid: 01KJ6CJC3TDT5PG0E6YV184MVJ
+  slugs:
+    - task-cleanup-obsolete-skills
+  title: Clean up obsolete project skills superseded by core skills
+  type: task
   description: >-
     After the skill porting effort, .claude/skills/ still contains old versions of skills that were
     rewritten as core skills in templates/skills/. These should be removed.
@@ -56967,22 +56971,19 @@
     Action: Remove the 6 obsolete skills from .claude/skills/. Verify no references remain in
     settings.json, CLAUDE.md, or other config. Confirm core versions fully cover functionality
     before deleting.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-cleanup-obsolete-skills
   tags:
     - cli
     - skills
-  depends_on: []
-  _ulid: 01KJ6CJC3TDT5PG0E6YV184MVJ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-23T23:15:21.338Z
   notes: []
   todos: []
+  started_at: 2026-02-23T23:38:36.688Z
