@@ -55567,22 +55567,99 @@
   created_at: 2026-02-23T08:25:09.218Z
   notes: []
   todos: []
-- title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
+- _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
+  slugs: []
+  title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
     shadow branch"
+  type: task
+  description: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
+    shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when
+    --json mode is active."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:10.283Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SNECVEF1DWQTDK9KK5ASN
+  slugs: []
+  title: task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but
+    --spec-re
+  type: task
+  description: "task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear
+    but --spec-ref tries to resolve 'null' as a reference. Should support same 'null' pattern for
+    consistency. Workaround: find an alternative valid spec reference to link to."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:44.603Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
+  slugs: []
+  title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
+    dependencie"
+  type: task
+  description: "plan import: add depends_on field to plan YAML spec format so specs/tasks get
+    structural dependencies on import. Currently plan import creates specs and tasks but
+    dependencies must be added manually post-import. Add a depends_on param per spec entry in the
+    YAML (e.g., depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by
+    on import."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:45.835Z
+  notes: []
+  todos: []
+- _ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
+  slugs: []
+  title: "Plan import should support task priority: plan document specs can specify priority, and
+    derived task"
+  type: task
+  description: "Plan import should support task priority: plan document specs can specify priority,
+    and derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
+    content. Workaround: manually batch-set priorities after import."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-23T08:25:46.887Z
+  notes: []
+  todos: []
+- title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
+    values) "
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
-    shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when
-    --json mode is active."
-  _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
+  description: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in
+    then: values) before attempting parse, rather than failing with cryptic nested mapping error."
+  _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-23T08:25:10.283Z
+  created_at: 2026-02-23T08:25:48.046Z
   notes: []
   todos: []

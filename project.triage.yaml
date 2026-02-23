@@ -420,25 +420,29 @@ triage:
     item_snapshot: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons
       in then: values) before attempting parse, rather than failing with cryptic nested mapping
       error."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Must-have - plan import YAML-unsafe value detection, complements auto-quoting
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-23T08:25:37.380Z
-    updated_at: 2026-02-23T08:25:37.388Z
+    updated_at: 2026-02-23T08:25:49.122Z
+    acted_at: 2026-02-23T08:25:49.119Z
+    result_ref: "@01KJ4SNH"
   - _ulid: 01KJ4SN7C4RVPNY38FQ6S5SDSG
     inbox_ref: 01KHVCPEVTKV48MV2WFCYRSNYB
     item_snapshot: "Plan import should support task priority: plan document specs can specify priority,
       and derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
       content. Workaround: manually batch-set priorities after import."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Must-have - plan import should support task priority, common friction
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:25:48.033Z
+    result_ref: "@01KJ4SNG"
     created_at: 2026-02-23T08:25:37.412Z
-    updated_at: 2026-02-23T08:25:37.417Z
+    updated_at: 2026-02-23T08:25:48.036Z
   - _ulid: 01KJ4SN7CZ4HHT9HWVHDNST68S
     inbox_ref: 01KHCK3K4B5YCCYYCMXJYERY09
     item_snapshot: "plan import: add depends_on field to plan YAML spec format so specs/tasks get
@@ -446,48 +450,56 @@ triage:
       dependencies must be added manually post-import. Add a depends_on param per spec entry in the
       YAML (e.g., depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by
       on import."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Must-have - plan import depends_on field, high friction post-import
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:25:46.871Z
+    result_ref: "@01KJ4SNF"
     created_at: 2026-02-23T08:25:37.439Z
-    updated_at: 2026-02-23T08:25:37.446Z
+    updated_at: 2026-02-23T08:25:46.875Z
   - _ulid: 01KJ4SN7DJ17DJKGNAPSTQA569
     inbox_ref: 01KHV3EX6G0G425ZX1JVF4RRX1
     item_snapshot: "Design section configuration for agents generate — allow projects to control which
       sections appear (skills table, conventions, workflows, static templates). Key questions: where
       does config live, include vs exclude list, defaults, custom sections, ordering, data vs
       template distinction, migration path. See plan doc for full requirements."
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: Must-have but needs spec design - section configuration for agents generate
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:25:45.823Z
+    result_ref: "@01KJ4SNF"
     created_at: 2026-02-23T08:25:37.458Z
-    updated_at: 2026-02-23T08:25:37.463Z
+    updated_at: 2026-02-23T08:25:45.826Z
   - _ulid: 01KJ4SN7EBE3FPFC19ZPP5HQ7T
     inbox_ref: 01KHXFRF9CF4WG4HJ8BDYXTCA9
     item_snapshot: "task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to
       clear but --spec-ref tries to resolve 'null' as a reference. Should support same 'null'
       pattern for consistency. Workaround: find an alternative valid spec reference to link to."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Must-have - task set --spec-ref clearing inconsistency, simple fix
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:25:45.763Z
+    result_ref: "@01KJ4SNE"
     created_at: 2026-02-23T08:25:37.483Z
-    updated_at: 2026-02-23T08:25:37.488Z
+    updated_at: 2026-02-23T08:25:45.766Z
   - _ulid: 01KJ4SN7EX1RGB817DHV0AXW61
     inbox_ref: 01KHWTXFAFT10MXMNYS06JJNWV
     item_snapshot: "kspec validate @spec or @task — targeted validation that checks a single spec/task's
       AC coverage against codebase. Not full approval, just verifies each AC has at least one // AC:
       annotation in test files. Would make trait AC gaps immediately visible during task-work. Could
       be used by local-review skill as a concrete check instead of relying on agent diligence."
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: Must-have but needs spec design - targeted kspec validate for single item
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:25:44.582Z
+    result_ref: "@01KJ4SNE"
     created_at: 2026-02-23T08:25:37.501Z
-    updated_at: 2026-02-23T08:25:37.505Z
+    updated_at: 2026-02-23T08:25:44.589Z

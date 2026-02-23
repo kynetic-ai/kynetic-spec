@@ -6230,6 +6230,35 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ4SNE9GHZMFEE49D3P4CKJZ
+    type: question
+    content: >-
+      [spec-gap] kspec validate @spec or @task — targeted validation that checks a single
+      spec/task's AC coverage against codebase. Not full approval, just verifies each AC has at
+      least one // AC: annotation in test files. Would make trait AC gaps immediately visible during
+      task-work. Could be used by local-review skill as a concrete check instead of relying on agent
+      diligence.
+
+
+      Reasoning: Must-have but needs spec design - targeted kspec validate for single item
+    created_at: 2026-02-23T08:25:44.496Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJ4SNFHF46MCSST52ZMWXJ1R
+    type: question
+    content: >-
+      [spec-gap] Design section configuration for agents generate — allow projects to control which
+      sections appear (skills table, conventions, workflows, static templates). Key questions: where
+      does config live, include vs exclude list, defaults, custom sections, ordering, data vs
+      template distinction, migration path. See plan doc for full requirements.
+
+
+      Reasoning: Must-have but needs spec design - section configuration for agents generate
+    created_at: 2026-02-23T08:25:45.775Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
