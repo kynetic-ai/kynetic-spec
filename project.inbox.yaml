@@ -692,3 +692,23 @@ inbox:
       - web-ui
       - dx
     added_by: "@claude"
+  - _ulid: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
+    text: Triage promote action should optionally delete the inbox item after creating the task.
+      Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag or
+      making deletion the default for promote (with snapshot preserved in triage record).
+    created_at: 2026-02-23T08:56:24.534Z
+    tags:
+      - triage
+      - dx
+      - reflection
+    added_by: "@claude"
+  - _ulid: 01KJ4VDK7KWD0TZWCYBWXDABHT
+    text: "Batch arg name discoverability: kspec batch commands shows CLI signatures but batch JSON uses
+      different arg names (e.g. inbox-ref not ref, message not text). Add a batch-specific help that
+      shows the JSON arg names, or accept both forms."
+    created_at: 2026-02-23T08:56:24.563Z
+    tags:
+      - batch
+      - dx
+      - reflection
+    added_by: "@claude"
