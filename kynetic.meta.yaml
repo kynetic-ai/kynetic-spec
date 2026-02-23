@@ -6187,6 +6187,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ3X7D52RR2R6N3MS45Y7EE6
+    type: friction
+    content: "CI timing race: when Codex posts a review comment after CI check-unresolved-comments has
+      already run, the check fails because the new thread is unresolved. Requires manual re-run
+      after resolving. Consider: (1) make check-unresolved-comments a required-last check, (2) have
+      the review workflow auto-re-run the check after resolving threads, or (3) add a gh run rerun
+      step to the codex review skill."
+    created_at: 2026-02-23T00:08:44.450Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
