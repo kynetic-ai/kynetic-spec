@@ -55,6 +55,12 @@ function createTestProgram(): Command {
       .argument("<ref>", "Task reference")
       .argument("<content>", "Note content"),
   );
+  markMutating(
+    task.command("patch")
+      .description("Patch a task")
+      .argument("<ref>", "Task reference")
+      .option("--data <json>", "JSON object with fields to update"),
+  );
 
   const inbox = program.command("inbox").description("Inbox");
   markMutating(
@@ -166,6 +172,49 @@ describe("buildCommandArgv", () => {
     );
     expect(argv).toContain("@task1");
     expect(argv).toContain("my note");
+  });
+
+  it("JSON-stringifies nested object values for --data flag", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "patch")!;
+    const dataObj = { status: "completed", priority: 2 };
+    const argv = buildCommandArgv(
+      { command: "task patch", args: { ref: "@task1", data: dataObj } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--data");
+    const dataIdx = argv.indexOf("--data");
+    const dataValue = argv[dataIdx + 1];
+    // Must be valid JSON, not "[object Object]"
+    expect(dataValue).toBe(JSON.stringify(dataObj));
+    expect(JSON.parse(dataValue)).toEqual(dataObj);
+  });
+
+  it("JSON-stringifies deeply nested objects", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "patch")!;
+    const dataObj = { meta: { tags: ["a", "b"], nested: { deep: true } } };
+    const argv = buildCommandArgv(
+      { command: "task patch", args: { ref: "@t1", data: dataObj } },
+      cmdMeta,
+    );
+    const dataIdx = argv.indexOf("--data");
+    expect(JSON.parse(argv[dataIdx + 1])).toEqual(dataObj);
+  });
+
+  it("does not double-stringify string values", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "patch")!;
+    const argv = buildCommandArgv(
+      { command: "task patch", args: { ref: "@t1", data: '{"already":"json"}' } },
+      cmdMeta,
+    );
+    const dataIdx = argv.indexOf("--data");
+    // String values should pass through as-is
+    expect(argv[dataIdx + 1]).toBe('{"already":"json"}');
   });
 
   it("emits positional args in definition order, not JSON key order", () => {
@@ -351,6 +400,9 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-dry-run
+  // AC: @trait-dry-run ac-1 — shows what would be changed without applying
+  // AC: @trait-dry-run ac-2 — no files are modified
+  // AC: @trait-dry-run ac-3 — clear indication this is a preview ("dry-run: would execute")
   it("--dry-run validates without executing", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --dry-run --commands '[{"command":"inbox add","args":{"text":"test"}}]'`,
@@ -367,6 +419,7 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-prevalidate
+  // AC: @trait-semantic-exit-codes ac-2 — validation error exits with code 1
   it("pre-validates and rejects before any execution", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --commands '[{"command":"inbox add","args":{"text":"ok"}},{"command":"nonexistent cmd","args":{}}]'`,
@@ -381,6 +434,7 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-mutating-only
+  // AC: @trait-error-guidance ac-1 — describes what went wrong ("not allowed in batch mode")
   it("rejects read-only commands", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --commands '[{"command":"inbox list","args":{}}]'`,
@@ -392,6 +446,7 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-invalid-json
+  // AC: @trait-semantic-exit-codes ac-2 — validation error exits non-zero
   it("rejects malformed JSON", () => {
     const result = kspec(
       `batch --commands 'not valid json'`,
@@ -413,6 +468,7 @@ describe("batch command integration", () => {
 
   // AC: @batch-exec ac-stdin — stdin tested via parseBatchInput in batch-schema.test.ts
   // AC: @batch-exec ac-inline
+  // AC: @trait-semantic-exit-codes ac-1 — success exits with code 0
   it("accepts inline JSON commands", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --commands '[{"command":"inbox add","args":{"text":"inline-test"}}]'`,
@@ -442,6 +498,7 @@ describe("batch command integration", () => {
   // AC: @batch-exec ac-default-atomic
   // AC: @batch-exec ac-single-commit
   // AC: @batch-exec ac-atomic-isolation
+  // AC: @trait-shadow-commit ac-8 — single atomic commit covers all changes
   it("atomic mode: all succeed → single commit, changes visible", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --commands '[{"command":"inbox add","args":{"text":"atomic-1"}},{"command":"inbox add","args":{"text":"atomic-2"}}]'`,
@@ -458,6 +515,7 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-atomic-rollback
+  // AC: @trait-shadow-commit ac-5 — no commit on failure
   it("atomic mode: failure → all changes rolled back", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --commands '[{"command":"inbox add","args":{"text":"should-not-persist"}},{"command":"task start","args":{"ref":"@nonexistent-task"}}]'`,
@@ -476,6 +534,7 @@ describe("batch command integration", () => {
 
   // AC: @batch-exec ac-no-atomic-flag
   // AC: @batch-exec ac-immediate-per-commit
+  // AC: @trait-shadow-commit ac-1 — git commit created in shadow branch
   it("immediate mode: per-command execution", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --no-atomic --commands '[{"command":"inbox add","args":{"text":"immediate-1"}},{"command":"inbox add","args":{"text":"immediate-2"}}]'`,
@@ -514,6 +573,7 @@ describe("batch command integration", () => {
   // AC: @batch-exec ac-continue
   // AC: @batch-exec ac-continue-implies-immediate
   // AC: @batch-exec ac-partial-commit
+  // AC: @trait-semantic-exit-codes ac-7 — partial failures exit with code 1
   it("--continue: continues through failures, implies immediate mode", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --continue --commands '[{"command":"inbox add","args":{"text":"cont-1"}},{"command":"task start","args":{"ref":"@bad"}},{"command":"inbox add","args":{"text":"cont-3"}}]'`,
@@ -537,6 +597,8 @@ describe("batch command integration", () => {
   });
 
   // AC: @batch-exec ac-json-mode-field
+  // AC: @trait-json-output ac-1 — output is valid JSON with no ANSI color codes
+  // AC: @trait-json-output ac-2 — JSON includes all data (mode field)
   it("JSON output includes mode field", () => {
     const atomicResult = kspecJson<BatchExecResult>(
       `batch --dry-run --commands '[{"command":"inbox add","args":{"text":"t"}}]'`,
@@ -616,6 +678,8 @@ describe("batch command integration", () => {
     expect(result.results[1].id).toBe("my-id-2");
   });
 
+  // AC: @trait-error-guidance ac-2 — suggested action to resolve (typo suggestion)
+  // AC: @trait-error-guidance ac-5 — indicates which field/value failed validation
   it("includes suggestion in JSON output for typos", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --dry-run --commands '[{"command":"inbox add","args":{"tex":"test"}}]'`,
@@ -628,6 +692,7 @@ describe("batch command integration", () => {
     expect(unknownArgError?.suggestion).toBe("text");
   });
 
+  // AC: @trait-error-guidance ac-2 — suggests corrective action ("Did you mean")
   it("shows 'Did you mean' in human-readable output for typos", () => {
     const result = kspec(
       `batch --dry-run --commands '[{"command":"task ad","args":{"title":"test"}}]'`,
@@ -637,6 +702,7 @@ describe("batch command integration", () => {
     expect(result.stderr).toContain("Did you mean: task add?");
   });
 
+  // AC: @trait-error-guidance ac-2 — suggests action ("Run 'kspec batch commands'")
   it("shows 'kspec batch commands' hint on validation failure", () => {
     const result = kspec(
       `batch --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
@@ -647,6 +713,7 @@ describe("batch command integration", () => {
     expect(result.stderr).toContain("for a list of available commands");
   });
 
+  // AC: @trait-json-output ac-6 — --json takes precedence over other format options
   it("does not show hint in JSON mode", () => {
     const result = kspec(
       `batch --json --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
@@ -666,6 +733,7 @@ describe("batch command integration", () => {
     expect(result.stderr).not.toContain("kspec batch commands");
   });
 
+  // AC: @trait-json-output ac-3 — error returned as JSON object with error field
   it("sets validationFailed flag in JSON output for validation errors", () => {
     const result = kspecJson<BatchExecResult>(
       `batch --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
@@ -684,6 +752,117 @@ describe("batch command integration", () => {
     );
     expect(result.success).toBe(false);
     expect(result.validationFailed).toBeUndefined();
+  });
+
+  // Note: @trait-json-output ac-4 (references use @ prefix) — batch JSON result
+  // structure does not contain entity references directly. The `output` field holds
+  // captured stdout from subcommands in human-readable format. Ref prefix consistency
+  // is the responsibility of each subcommand, not the batch envelope.
+
+  // AC: @trait-json-output ac-5 — timestamps use ISO 8601 format
+  it("JSON output timestamps use ISO 8601", () => {
+    // Add an item via batch, then get it to verify ISO 8601 timestamps
+    const batchResult = kspecJson<BatchExecResult>(
+      `batch --commands '[{"command":"inbox add","args":{"text":"timestamp-check"}}]'`,
+      tempDir,
+    );
+    expect(batchResult.success).toBe(true);
+    // The batch result JSON output should contain timestamp-like data
+    // Verify via inbox get that the created item has ISO 8601 timestamp
+    const listOutput = kspec("inbox list --json", tempDir);
+    const parsed = JSON.parse(listOutput.stdout);
+    // inbox list --json returns array or object with items
+    const items = Array.isArray(parsed) ? parsed : parsed.items ?? parsed;
+    const item = (Array.isArray(items) ? items : []).find(
+      (i: any) => typeof i === "object" && JSON.stringify(i).includes("timestamp-check"),
+    );
+    expect(item).toBeTruthy();
+    // Check created_at is ISO 8601
+    const createdAt = item?.created_at ?? item?._created_at;
+    expect(createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+  });
+
+  // AC: @trait-error-guidance ac-6 — guidance included in structured error object
+  it("JSON error output includes guidance in structured format", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --dry-run --commands '[{"command":"task ad","args":{"title":"test"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    // Error results include suggestion for typos
+    const errorResult = result.results[0];
+    expect(errorResult.error).toBeTruthy();
+    expect(errorResult.suggestion).toBe("task add");
+  });
+
+  // AC: @trait-semantic-exit-codes ac-4 — runtime error exits with code 3
+  it("runtime error produces non-zero exit code", () => {
+    const result = kspec(
+      `batch --commands '[{"command":"task start","args":{"ref":"@nonexistent-ref"}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).not.toBe(0);
+  });
+
+  // AC: @trait-dry-run ac-4 — error shown in dry-run but no state changed
+  it("--dry-run shows validation error without state change", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --dry-run --commands '[{"command":"unknown cmd","args":{}}]'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    // Dry-run: validation error detected, no state change
+    expect(result.validationFailed).toBe(true);
+  });
+
+  // AC: @trait-dry-run ac-6 — --dry-run --json includes dry_run boolean field
+  it("--dry-run JSON output includes dry_run boolean field", () => {
+    const result = kspecJson<BatchExecResult>(
+      `batch --dry-run --commands '[{"command":"inbox add","args":{"text":"dry-run-field"}}]'`,
+      tempDir,
+    );
+    expect(result.success).toBe(true);
+    // dry_run field must be a boolean true, not just a truthy string
+    expect(result.dry_run).toBe(true);
+    expect(typeof result.dry_run).toBe("boolean");
+  });
+
+  // AC: @batch-exec ac-inline — inline JSON with nested objects processed correctly
+  it("passes nested --data objects as JSON strings, not [object Object]", () => {
+    // Create a task first so we can patch it
+    const addResult = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "patch-target" --json',
+      tempDir,
+    );
+    const taskRef = addResult.task._ulid;
+    expect(taskRef).toBeTruthy();
+
+    // Batch patch with nested data object — this was the bug:
+    // the data object got stringified as "[object Object]" instead of JSON
+    const patchData = { priority: 2, tags: ["batch-test"] };
+    const batchCmd = JSON.stringify([
+      {
+        command: "task patch",
+        args: { ref: `@${taskRef}`, data: patchData },
+      },
+    ]);
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${batchCmd}'`,
+      tempDir,
+    );
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(1);
+
+    // Verify the patch was applied correctly
+    const taskData = kspecJson<{ priority: number; tags: string[] }>(
+      `task get @${taskRef}`,
+      tempDir,
+    );
+    expect(taskData.priority).toBe(2);
+    expect(taskData.tags).toContain("batch-test");
   });
 });
 

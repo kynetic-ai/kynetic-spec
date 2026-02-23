@@ -420,6 +420,17 @@ export interface ExecuteBatchOptions {
  * Positional args are emitted in Commander definition order (not JSON key order)
  * to ensure correct argument mapping regardless of how the JSON was serialized.
  */
+/**
+ * Serialize a value for CLI argv. Plain objects are JSON-stringified
+ * so that flags like --data receive valid JSON instead of "[object Object]".
+ */
+function toArgString(value: unknown): string {
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+
 export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): string[] {
   const argv: string[] = [...cmd.command.trim().split(/\s+/)];
 
@@ -448,9 +459,9 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
     if (value === undefined) continue;
 
     if (Array.isArray(value)) {
-      for (const v of value) argv.push(String(v));
+      for (const v of value) argv.push(toArgString(v));
     } else {
-      argv.push(String(value));
+      argv.push(toArgString(value));
     }
   }
 
@@ -474,10 +485,10 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
     } else if (Array.isArray(value)) {
       // Variadic or repeated options
       for (const v of value) {
-        argv.push(flagName, String(v));
+        argv.push(flagName, toArgString(v));
       }
     } else if (value !== null && value !== undefined) {
-      argv.push(flagName, String(value));
+      argv.push(flagName, toArgString(value));
     }
   }
 
@@ -553,9 +564,11 @@ export async function executeBatch(
   }
 
   // AC: ac-dry-run — validate without executing
+  // AC: @trait-dry-run ac-6 — include dry_run boolean in JSON output
   if (options.dryRun) {
     return {
       success: true,
+      dry_run: true,
       mode,
       summary: { total: commands.length, succeeded: commands.length, failed: 0 },
       results: commands.map((cmd, i) => ({

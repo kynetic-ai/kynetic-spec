@@ -78,4 +78,6 @@ export interface BatchExecResult {
   results: BatchCommandResult[];
   /** True if failure was due to pre-validation errors (unknown command, unknown arg, etc.) */
   validationFailed?: boolean;
+  /** True when result is from --dry-run (no changes applied) */
+  dry_run?: boolean;
 }
