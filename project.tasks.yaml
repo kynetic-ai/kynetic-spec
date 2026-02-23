@@ -55683,6 +55683,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #477. Added kspec agents generate step to release skill Phase 6. After
+    npm version bumps package.json, the skill regenerates kspec-agents.md so the version header
+    stays in sync. Updated dry-run preview and Phase 8 report checklist. Addressed Codex review:
+    added inline comment about using npm run dev -- for self-hosting releases. All CI checks pass."
   depends_on: []
   context: []
   priority: 3
@@ -55693,6 +55697,7 @@
   vcs_refs: []
   created_at: 2026-02-23T07:29:42.615Z
   started_at: 2026-02-23T14:01:56.972Z
+  completed_at: 2026-02-23T14:29:03.740Z
   notes:
     - _ulid: 01KJ4V5G3FFRM227ADDRT8JJZX
       created_at: 2026-02-23T08:51:59.215Z
@@ -55711,11 +55716,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T14:29:03.740Z
-  closed_reason: "Merged in PR #477. Added kspec agents generate step to release skill Phase 6. After
-    npm version bumps package.json, the skill regenerates kspec-agents.md so the version header
-    stays in sync. Updated dry-run preview and Phase 8 report checklist. Addressed Codex review:
-    added inline comment about using npm run dev -- for self-hosting releases. All CI checks pass."
 - _ulid: 01KJ4Q55END42JJK7TVXP5WT88
   slugs: []
   title: Add path-based CI test filtering
@@ -55778,7 +55778,7 @@
     centralized error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or similar
     to match cannotStart pattern."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -55795,6 +55795,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T14:29:16.427Z
 - _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
   slugs: []
   title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
