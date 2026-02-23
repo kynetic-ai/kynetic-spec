@@ -56513,7 +56513,7 @@
   type: task
   spec_ref: "@session-log-show"
   plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
