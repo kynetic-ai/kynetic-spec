@@ -113,11 +113,14 @@
 					{#each navItems as item}
 						<SidebarMenuItem>
 							<SidebarMenuButton
-								href="{base}{item.path}"
 								isActive={$page.url.pathname === `${base}${item.path}` || $page.url.pathname === item.path}
 								data-testid="nav-link-{item.label.toLowerCase()}"
 							>
-								<span>{item.label}</span>
+								{#snippet child({ props })}
+									<a href="{base}{item.path}" {...props}>
+										<span>{item.label}</span>
+									</a>
+								{/snippet}
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					{/each}

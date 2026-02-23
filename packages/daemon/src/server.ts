@@ -335,7 +335,7 @@ export async function createServer(options: ServerOptions) {
 
     // SPA fallback routes for client-side routing
     // These catch paths like /tasks, /items, /inbox that don't have static files
-    const spaRoutes = ['/tasks', '/tasks/*', '/items', '/items/*', '/inbox', '/observations'];
+    const spaRoutes = ['/tasks', '/tasks/*', '/items', '/items/*', '/inbox', '/observations', '/triage'];
     for (const route of spaRoutes) {
       app.get(route, () => Bun.file(indexHtmlPath));
     }
