@@ -56076,6 +56076,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #483. Honors spec_ref on manual tasks in plan import. All CI green,
+    audit confirmed clean."
   depends_on: []
   context: []
   priority: 3
@@ -56083,6 +56085,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:09.218Z
   started_at: 2026-02-23T16:52:10.116Z
+  completed_at: 2026-02-23T18:35:59.940Z
   notes:
     - _ulid: 01KJ4V6GP4P30YKMGXRHV7KN5N
       created_at: 2026-02-23T08:52:32.580Z
@@ -56099,9 +56102,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T18:35:59.940Z
-  closed_reason: "Merged in PR #483. Honors spec_ref on manual tasks in plan import. All CI green,
-    audit confirmed clean."
 - _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
   slugs: []
   title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
@@ -56348,3 +56348,25 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix ralph event logging iteration capture-by-value bug
+  description: "In ralph.ts:1573-1579, the streaming update event handler fires appendEvent() without
+    await (fire-and-forget). The iteration variable is captured by closure reference, not by value.
+    By the time the async callback executes, iteration has already been incremented in the for loop
+    — so hundreds of tool_call events get tagged with the wrong iteration number. Fix: snapshot
+    iteration into a const before the closure. One-line fix."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KJ5WV0G52E3BZA5W3VPW22J1
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-23T18:40:27.141Z
+  notes: []
+  todos: []
