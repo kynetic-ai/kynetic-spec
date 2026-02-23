@@ -114,6 +114,26 @@ describe('Output Format Option', () => {
     });
   });
 
+  // AC: @output-format-option ac-yaml-no-ansi - info/warn routed to stderr in structured modes
+  describe('info/warn stderr routing in structured modes', () => {
+    it('should not have info lines on stdout in --json mode', () => {
+      const result = kspec('session start --json', tempDir);
+      expect(result.exitCode).toBe(0);
+      // stdout should be pure JSON - no info/warning markers
+      expect(result.stdout).not.toContain('ℹ');
+      expect(result.stdout).not.toContain('⚠');
+      expect(() => JSON.parse(result.stdout)).not.toThrow();
+    });
+
+    it('should not have info lines on stdout in --yaml mode', () => {
+      const result = kspec('session start --yaml', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).not.toContain('ℹ');
+      expect(result.stdout).not.toContain('⚠');
+      expect(() => yaml.parse(result.stdout)).not.toThrow();
+    });
+  });
+
   describe('global scope (ac-global-scope)', () => {
     // AC: @output-format-option ac-global-scope
     it('--yaml works on item list', () => {
