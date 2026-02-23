@@ -267,7 +267,6 @@ describe("Doctor Command", () => {
 
       // Mock getDaemonStatus to simulate daemon running but health unreachable
       const daemonStatusModule = await import("../../src/parser/daemon-status.js");
-      const originalGetDaemonStatus = daemonStatusModule.getDaemonStatus;
 
       vi.spyOn(daemonStatusModule, "getDaemonStatus").mockResolvedValue({
         running: true,
