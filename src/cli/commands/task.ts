@@ -1469,9 +1469,7 @@ Examples:
         const foundTask = resolveTaskRef(ref, tasks, index);
 
         if (foundTask.status !== "pending_review") {
-          error(
-            `Cannot transition task to needs_work from status: ${foundTask.status}. Task must be pending_review.`,
-          );
+          error(errors.status.cannotNeedsWork(foundTask.status));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -1504,7 +1502,7 @@ Examples:
           { task: updatedTask },
         );
       } catch (err) {
-        error("Failed to transition task to needs_work", err);
+        error(errors.failures.needsWorkTask, err);
         process.exit(EXIT_CODES.ERROR);
       }
     });

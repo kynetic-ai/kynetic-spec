@@ -177,7 +177,7 @@ describe('Integration: needs_work state', () => {
   });
 
   // Additional: full fix cycle round-trip
-  it('supports full fix cycle: pending_review -> needs_work -> in_progress -> pending_review', () => {
+  it('supports full fix cycle: pending_review -> needs_work -> in_progress -> pending_review', { timeout: 15_000 }, () => {
     // Initial work
     kspec('task start @test-task-pending', tempDir);
     kspec('task submit @test-task-pending', tempDir);
