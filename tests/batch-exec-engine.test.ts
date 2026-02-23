@@ -55,6 +55,12 @@ function createTestProgram(): Command {
       .argument("<ref>", "Task reference")
       .argument("<content>", "Note content"),
   );
+  markMutating(
+    task.command("patch")
+      .description("Patch a task")
+      .argument("<ref>", "Task reference")
+      .option("--data <json>", "JSON object with fields to update"),
+  );
 
   const inbox = program.command("inbox").description("Inbox");
   markMutating(
@@ -166,6 +172,49 @@ describe("buildCommandArgv", () => {
     );
     expect(argv).toContain("@task1");
     expect(argv).toContain("my note");
+  });
+
+  it("JSON-stringifies nested object values for --data flag", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "patch")!;
+    const dataObj = { status: "completed", priority: 2 };
+    const argv = buildCommandArgv(
+      { command: "task patch", args: { ref: "@task1", data: dataObj } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--data");
+    const dataIdx = argv.indexOf("--data");
+    const dataValue = argv[dataIdx + 1];
+    // Must be valid JSON, not "[object Object]"
+    expect(dataValue).toBe(JSON.stringify(dataObj));
+    expect(JSON.parse(dataValue)).toEqual(dataObj);
+  });
+
+  it("JSON-stringifies deeply nested objects", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "patch")!;
+    const dataObj = { meta: { tags: ["a", "b"], nested: { deep: true } } };
+    const argv = buildCommandArgv(
+      { command: "task patch", args: { ref: "@t1", data: dataObj } },
+      cmdMeta,
+    );
+    const dataIdx = argv.indexOf("--data");
+    expect(JSON.parse(argv[dataIdx + 1])).toEqual(dataObj);
+  });
+
+  it("does not double-stringify string values", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "patch")!;
+    const argv = buildCommandArgv(
+      { command: "task patch", args: { ref: "@t1", data: '{"already":"json"}' } },
+      cmdMeta,
+    );
+    const dataIdx = argv.indexOf("--data");
+    // String values should pass through as-is
+    expect(argv[dataIdx + 1]).toBe('{"already":"json"}');
   });
 
   it("emits positional args in definition order, not JSON key order", () => {
@@ -684,6 +733,40 @@ describe("batch command integration", () => {
     );
     expect(result.success).toBe(false);
     expect(result.validationFailed).toBeUndefined();
+  });
+
+  it("passes nested --data objects as JSON strings, not [object Object]", () => {
+    // Create a task first so we can patch it
+    const addResult = kspecJson<{ task: { _ulid: string } }>(
+      'task add --title "patch-target" --json',
+      tempDir,
+    );
+    const taskRef = addResult.task._ulid;
+    expect(taskRef).toBeTruthy();
+
+    // Batch patch with nested data object — this was the bug:
+    // the data object got stringified as "[object Object]" instead of JSON
+    const patchData = { priority: 2, tags: ["batch-test"] };
+    const batchCmd = JSON.stringify([
+      {
+        command: "task patch",
+        args: { ref: `@${taskRef}`, data: patchData },
+      },
+    ]);
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${batchCmd}'`,
+      tempDir,
+    );
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(1);
+
+    // Verify the patch was applied correctly
+    const taskData = kspecJson<{ priority: number; tags: string[] }>(
+      `task get @${taskRef}`,
+      tempDir,
+    );
+    expect(taskData.priority).toBe(2);
+    expect(taskData.tags).toContain("batch-test");
   });
 });
 
