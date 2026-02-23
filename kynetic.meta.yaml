@@ -6198,6 +6198,38 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ4SJP2673H5V8NHJPMNNN7X
+    type: question
+    content: >-
+      [spec-gap] Include triage records in static snapshot (kspec-snapshot.json). Currently the
+      snapshot format (KspecSnapshot type) doesn't include triage records, so the triage page in
+      static/GitHub Pages mode shows an empty state with a notice instead of displaying existing
+      triage decisions read-only. AC-8 of @interactive-triage-ui expects read-only display. Needs:
+      add triage records to export snapshot, update KspecSnapshot type, add fetchTriageRecordsStatic
+      to read from snapshot.
+
+
+      Reasoning: There's a spec gap here
+    created_at: 2026-02-23T08:24:14.150Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJ4SJP5TREMPX687MHBW8Y2Q
+    type: question
+    content: >-
+      [spec-gap] Cross-feature requirement pattern: How to express that core features (search,
+      validate, export) must support all entity types. When new entity type added, should
+      automatically imply tasks for core features. Options: (1) applies_to field on feature specs,
+      (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage,
+      (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover
+      inbox.
+
+
+      Reasoning: first item reasoning
+    created_at: 2026-02-23T08:24:14.266Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill

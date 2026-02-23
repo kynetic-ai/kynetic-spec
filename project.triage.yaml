@@ -8,7 +8,7 @@ triage:
       (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage,
       (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover
       inbox."
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: first item reasoning
     decided_by: "@claude"
@@ -17,11 +17,13 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-23T05:58:04.083Z
     created_at: 2026-02-22T22:50:19.918Z
-    updated_at: 2026-02-23T05:58:04.084Z
+    updated_at: 2026-02-23T08:24:14.329Z
+    acted_at: 2026-02-23T08:24:14.327Z
+    result_ref: "@01KJ4SJP"
   - _ulid: 01KJ3T9S4R04XWBGE7DDT5Z8EM
     inbox_ref: 01KJ3T9QMVRE7PM5AWAE6JG3KG
     item_snapshot: Export precedence test
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: test
     decided_by: "@claude"
@@ -29,12 +31,13 @@ triage:
     override_reasoning: Its a test
     override_by: Jacob Chapel
     override_at: 2026-02-23T05:52:02.067Z
+    acted_at: 2026-02-23T08:24:14.257Z
     created_at: 2026-02-22T23:17:36.536Z
-    updated_at: 2026-02-23T05:52:02.068Z
+    updated_at: 2026-02-23T08:24:14.259Z
   - _ulid: 01KJ3T9VXRARPYJDJDCWTJQAMY
     inbox_ref: 01KJ3T9TKZDCK7HSEEH6BJQ6KD
     item_snapshot: Spec gap test
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: needs spec
     decided_by: "@claude"
@@ -42,8 +45,9 @@ triage:
     override_reasoning: It's a test
     override_by: Jacob Chapel
     override_at: 2026-02-23T05:56:25.572Z
+    acted_at: 2026-02-23T08:24:14.236Z
     created_at: 2026-02-22T23:17:39.384Z
-    updated_at: 2026-02-23T05:56:25.573Z
+    updated_at: 2026-02-23T08:24:14.238Z
   - _ulid: 01KJ4HBF2V4EZE9T92XSXP7DX5
     inbox_ref: 01KJ43CPCNZZPFGWF6HHP2BJ0H
     item_snapshot: "Include triage records in static snapshot (kspec-snapshot.json). Currently the
@@ -52,47 +56,52 @@ triage:
       triage decisions read-only. AC-8 of @interactive-triage-ui expects read-only display. Needs:
       add triage records to export snapshot, update KspecSnapshot type, add fetchTriageRecordsStatic
       to read from snapshot."
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: There's a spec gap here
     decided_by: Jacob Chapel
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.209Z
+    result_ref: "@01KJ4SJP"
     created_at: 2026-02-23T06:00:29.019Z
-    updated_at: 2026-02-23T06:00:29.020Z
+    updated_at: 2026-02-23T08:24:14.214Z
   - _ulid: 01KJ4SHPFWX5GQ6DQ62SZ474B1
     inbox_ref: 01KGVC4ZYF62SY94YC4H8ER51E
     item_snapshot: "Add regression test asserting ralph spawn sites pass methodTimeouts for
       session/prompt and session/resume (from Codex review of PR #328, task @01KGVB8X)"
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Stale - ralph timeout architecture reworked
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.141Z
     created_at: 2026-02-23T08:23:41.820Z
-    updated_at: 2026-02-23T08:23:41.822Z
+    updated_at: 2026-02-23T08:24:14.142Z
   - _ulid: 01KJ4SHPGKWWS6SP66KZBP7TN4
     inbox_ref: 01KGVD9Z9Z8FM94FKXGBYDDQS3
     item_snapshot: Add regression test for non-text content blocks (e.g. image blocks) in ralph
       stringify() to lock rendering behavior for that payload shape
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Stale - low value, no incidents
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.116Z
     created_at: 2026-02-23T08:23:41.843Z
-    updated_at: 2026-02-23T08:23:41.845Z
+    updated_at: 2026-02-23T08:24:14.118Z
   - _ulid: 01KJ4SHPH3TVXKQS4M40633Q3W
     inbox_ref: 01KGWM89MZCZ35WZF3G32BXPVK
     item_snapshot: "Add integration-level regression tests for malformed priority values on derive and
       plan derive (e.g. --priority 3abc, --priority 1.9) to lock in the Commander pre-parse fix from
       PR #347"
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Stale - fix stable since PR #347"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.095Z
     created_at: 2026-02-23T08:23:41.859Z
-    updated_at: 2026-02-23T08:23:41.861Z
+    updated_at: 2026-02-23T08:24:14.097Z
   - _ulid: 01KJ4SHPHK977ZXD7SP436G9D3
     inbox_ref: 01KJ2082ZYZ3HGBSGJMTYBRDAE
     item_snapshot: "Core skill plugin discovery: ship pre-built plugin in npm package, auto-register
@@ -104,24 +113,26 @@ triage:
       ~/.claude/plugins/known_marketplaces.json kspec-plugins entry,
       ~/.claude/plugins/installed_plugins.json kspec entry, ~/.claude/plugins/cache/kspec-plugins/
       cache."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - shipped in PR #444"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.072Z
     created_at: 2026-02-23T08:23:41.875Z
-    updated_at: 2026-02-23T08:23:41.876Z
+    updated_at: 2026-02-23T08:24:14.075Z
   - _ulid: 01KJ4SHPJ1R7DZK96M0ZX6RMRD
     inbox_ref: 01KHKTNJ156YKJ74RN1J0EH40Q
     item_snapshot: generateUnifiedDiff is hand-rolled 80-line diff that only handles substitutions, not
       insertions/deletions. Replace with diff npm package for correctness.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - uses diff npm package since PR #412"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.042Z
     created_at: 2026-02-23T08:23:41.889Z
-    updated_at: 2026-02-23T08:23:41.890Z
+    updated_at: 2026-02-23T08:24:14.044Z
   - _ulid: 01KJ4SHPJFXH9RZHS76PADZ77F
     inbox_ref: 01KHKTNJ1MM6G3QC3KDYB52W9K
     item_snapshot: "parseFrontmatter regex /^---
@@ -129,68 +140,74 @@ triage:
       / fails silently on Windows CRLF line endings. Should handle \r
 
       \ for cross-platform correctness."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - CRLF regex fixed in PR #408"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:14.020Z
     created_at: 2026-02-23T08:23:41.903Z
-    updated_at: 2026-02-23T08:23:41.905Z
+    updated_at: 2026-02-23T08:24:14.022Z
   - _ulid: 01KJ4SHPJXMDZKSMCJQ4G3R9KF
     inbox_ref: 01KHKTNJ20S0TR3PB3BGDF678H
     item_snapshot: normalizeBaseDirectory only matches exact pattern "Base directory for this skill:".
       Any variation (caps, hyphens, rewording) is silently missed. Make more robust.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - case-insensitive regex in PR #408"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.998Z
     created_at: 2026-02-23T08:23:41.917Z
-    updated_at: 2026-02-23T08:23:41.918Z
+    updated_at: 2026-02-23T08:24:14.000Z
   - _ulid: 01KJ4SHPK8E08M2R5VYA0WG25R
     inbox_ref: 01KHKTNJ2C5M049ER00C5AEZYT
     item_snapshot: 'Guard script substring matching is brittle: echo "git reset" would be blocked.
       Should check word boundaries or command position rather than simple substring contains.'
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - guard script word boundaries in PR #412"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.976Z
     created_at: 2026-02-23T08:23:41.928Z
-    updated_at: 2026-02-23T08:23:41.930Z
+    updated_at: 2026-02-23T08:24:13.977Z
   - _ulid: 01KJ4SHPKNVGKQ8T3B1WRQAAQ3
     inbox_ref: 01KHKTNJ3HE5YVRH82GWRCN2XF
     item_snapshot: "EXPECTED_TEMPLATES constant in agents.ts is defined but never referenced. Dead code
       from PR #386 template system."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - dead code removed in PR #403"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.949Z
     created_at: 2026-02-23T08:23:41.941Z
-    updated_at: 2026-02-23T08:23:41.942Z
+    updated_at: 2026-02-23T08:24:13.952Z
   - _ulid: 01KJ4SHPM1WFM89TJQ1S5T5TGG
     inbox_ref: 01KHKTNJ4A656881SF7K8XPZZV
     item_snapshot: readFileSync in loadCoreSkillsManifest and loadCoreSkillContent inconsistent with
       async codebase. Should use fs.readFile for consistency.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Resolved - now uses async fs.readFile
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.916Z
     created_at: 2026-02-23T08:23:41.953Z
-    updated_at: 2026-02-23T08:23:41.954Z
+    updated_at: 2026-02-23T08:24:13.918Z
   - _ulid: 01KJ4SHPMC72TMA1DZ4W2AB97J
     inbox_ref: 01KHKTNJ4MRPJ5851FJFJZ7TK6
     item_snapshot: getKspecPackageVersion returns "unknown" on failure, silently preventing skill update
       detection ("unknown" === "unknown" = skip). Should warn or error instead.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Resolved - returns null not unknown, callers check
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.889Z
     created_at: 2026-02-23T08:23:41.965Z
-    updated_at: 2026-02-23T08:23:41.966Z
+    updated_at: 2026-02-23T08:24:13.890Z
   - _ulid: 01KJ4SHPMSGMJVPABK75WEBPD1
     inbox_ref: 01KHJ4RVT8N3Y9S4M357TZMWQD
     item_snapshot: >-
@@ -204,48 +221,52 @@ triage:
 
       Triage 2026-02-22: 3/6 sub-items RESOLVED by PRs #403 #410 #411. Remaining: silent error
       swallowing, legacy renderClaudeCodeSkill, renderer partial duplication.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - deduplicated in PR #411"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.864Z
     created_at: 2026-02-23T08:23:41.977Z
-    updated_at: 2026-02-23T08:23:41.978Z
+    updated_at: 2026-02-23T08:24:13.866Z
   - _ulid: 01KJ4SHPN6T751YQWM0RDS9PZF
     inbox_ref: 01KHJ4RVTPGWASH9AZR6WHXHCT
     item_snapshot: "Codex drift detection ignores sidecar file: checkPlatformSkillDrift only hashes
       SKILL.md content, so manual edits to agents/openai.yaml go undetected. Should include sidecar
       content in hash or check it separately."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - sidecar included in hash per PR #410"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.841Z
     created_at: 2026-02-23T08:23:41.990Z
-    updated_at: 2026-02-23T08:23:41.992Z
+    updated_at: 2026-02-23T08:24:13.843Z
   - _ulid: 01KJ4SHPNKWRNYRMA8JGXT55VK
     inbox_ref: 01KHJ4RVV1DMCHPAB2TFQCKTMJ
     item_snapshot: Setup.ts reimplements agent instruction generation instead of calling agents.ts
       generateAgentsContent(). Also duplicates core skill installation logic from skill.ts. Two code
       paths that will drift over time.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - setup calls generateAgentsContent per PR #405-406"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.815Z
     created_at: 2026-02-23T08:23:42.003Z
-    updated_at: 2026-02-23T08:23:42.004Z
+    updated_at: 2026-02-23T08:24:13.817Z
   - _ulid: 01KJ4SHPNZN2V7ACT55XTDP7QA
     inbox_ref: 01KHJ4RVVREK1CH7DCAGR8JW58
     item_snapshot: "Dead code: toKebabCase function defined at skill-render.ts:156 but never called.
       Frontmatter keys use hardcoded strings instead. Either remove or wire it in."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: "Resolved - toKebabCase removed in PR #403"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.788Z
     created_at: 2026-02-23T08:23:42.015Z
-    updated_at: 2026-02-23T08:23:42.016Z
+    updated_at: 2026-02-23T08:24:13.790Z
   - _ulid: 01KJ4SHPPA9K4JTGY4R33WEBN2
     inbox_ref: 01KHVQTX1J9FXA3GFAY2711E1J
     item_snapshot: "Version pinning for consumer projects: add optional kspec_version field to manifest
@@ -253,10 +274,11 @@ triage:
       (kynetic-bot, imgen, comfy-ecaj-nodes) use global kspec with no version constraint — breaking
       changes propagate silently. Lightweight approach: warn, don't block. Could also surface in
       'kspec setup --status' health check."
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: Duplicate of 01KHFCDS - version pinning
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-23T08:24:13.747Z
     created_at: 2026-02-23T08:23:42.026Z
-    updated_at: 2026-02-23T08:23:42.028Z
+    updated_at: 2026-02-23T08:24:13.751Z

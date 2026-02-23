@@ -174,20 +174,6 @@ inbox:
       - dx
       - deferred
     added_by: "@claude"
-  - _ulid: 01KGVC4ZYF62SY94YC4H8ER51E
-    text: "Add regression test asserting ralph spawn sites pass methodTimeouts for session/prompt and
-      session/resume (from Codex review of PR #328, task @01KGVB8X)"
-    created_at: 2026-02-07T06:20:42.319Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KGVD9Z9Z8FM94FKXGBYDDQS3
-    text: Add regression test for non-text content blocks (e.g. image blocks) in ralph stringify() to
-      lock rendering behavior for that payload shape
-    created_at: 2026-02-07T06:40:54.079Z
-    tags:
-      - testing
-      - ralph
-    added_by: "@claude"
   - _ulid: 01KGVK8R6J950C8Q6KVPY4K3Z0
     text: "Item list --module flag and tree view: kspec item list --module cli to scope output to a
       specific module. kspec item tree @module for hierarchical view (features -> requirements).
@@ -209,15 +195,6 @@ inbox:
       - reflection
       - sessions
       - schema
-    added_by: "@claude"
-  - _ulid: 01KGWM89MZCZ35WZF3G32BXPVK
-    text: "Add integration-level regression tests for malformed priority values on derive and plan
-      derive (e.g. --priority 3abc, --priority 1.9) to lock in the Commander pre-parse fix from PR
-      #347"
-    created_at: 2026-02-07T18:01:33.599Z
-    tags:
-      - cli
-      - testing
     added_by: "@claude"
   - _ulid: 01KGWQ2TS3KG96KCB3P3R6Q477
     text: "Session log compaction: at end of each ralph loop, replace raw events.jsonl with a compiled
@@ -369,45 +346,10 @@ inbox:
       - plan-import
       - dx
     added_by: "@claude"
-  - _ulid: 01KHJ4RVT8N3Y9S4M357TZMWQD
-    text: >-
-      Deduplicate utility functions: contentsEqual(), directoriesEqual(), copyDirectory() exist
-      identically in both skill.ts and skill-render.ts. Export from skill-render.ts, import in
-      skill.ts. PR #394 consolidated render functions but missed these utilities.
-
-
-      ---
-
-
-      Triage 2026-02-22: 3/6 sub-items RESOLVED by PRs #403 #410 #411. Remaining: silent error
-      swallowing, legacy renderClaudeCodeSkill, renderer partial duplication.
-    created_at: 2026-02-16T02:34:16.776Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHJ4RVTPGWASH9AZR6WHXHCT
-    text: "Codex drift detection ignores sidecar file: checkPlatformSkillDrift only hashes SKILL.md
-      content, so manual edits to agents/openai.yaml go undetected. Should include sidecar content
-      in hash or check it separately."
-    created_at: 2026-02-16T02:34:16.790Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHJ4RVV1DMCHPAB2TFQCKTMJ
-    text: Setup.ts reimplements agent instruction generation instead of calling agents.ts
-      generateAgentsContent(). Also duplicates core skill installation logic from skill.ts. Two code
-      paths that will drift over time.
-    created_at: 2026-02-16T02:34:16.801Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KHJ4RVVDYD0Y7NNAGA58RNYW
     text: "Silent error swallowing in setup pipeline: multiple bare catch {} blocks in setup.ts lose
       diagnostic info. At minimum should log at debug/verbose level for troubleshooting."
     created_at: 2026-02-16T02:34:16.813Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHJ4RVVREK1CH7DCAGR8JW58
-    text: "Dead code: toKebabCase function defined at skill-render.ts:156 but never called. Frontmatter
-      keys use hardcoded strings instead. Either remove or wire it in."
-    created_at: 2026-02-16T02:34:16.824Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KHJ4RVW38FP7HFAMQ4R0D8YB
@@ -433,33 +375,6 @@ inbox:
     created_at: 2026-02-16T18:16:11.540Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHKTNJ156YKJ74RN1J0EH40Q
-    text: generateUnifiedDiff is hand-rolled 80-line diff that only handles substitutions, not
-      insertions/deletions. Replace with diff npm package for correctness.
-    created_at: 2026-02-16T18:16:11.557Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHKTNJ1MM6G3QC3KDYB52W9K
-    text: "parseFrontmatter regex /^---
-
-      / fails silently on Windows CRLF line endings. Should handle \r
-
-      \ for cross-platform correctness."
-    created_at: 2026-02-16T18:16:11.572Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHKTNJ20S0TR3PB3BGDF678H
-    text: normalizeBaseDirectory only matches exact pattern "Base directory for this skill:". Any
-      variation (caps, hyphens, rewording) is silently missed. Make more robust.
-    created_at: 2026-02-16T18:16:11.584Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHKTNJ2C5M049ER00C5AEZYT
-    text: 'Guard script substring matching is brittle: echo "git reset" would be blocked. Should check
-      word boundaries or command position rather than simple substring contains.'
-    created_at: 2026-02-16T18:16:11.596Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KHKTNJ2NTJ1C037GHF573AHR
     text: getSetupStatus always reports "current" if hash file exists, cannot detect staleness. Should
       load meta context and compare hash to detect when agents.md needs regeneration.
@@ -472,28 +387,10 @@ inbox:
     created_at: 2026-02-16T18:16:11.623Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHKTNJ3HE5YVRH82GWRCN2XF
-    text: "EXPECTED_TEMPLATES constant in agents.ts is defined but never referenced. Dead code from PR
-      #386 template system."
-    created_at: 2026-02-16T18:16:11.633Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KHKTNJ3WV66HWCJ76QXCRM3P
     text: "Naming inconsistency: isKspecManagedSkill (skill-render.ts) vs isKspecManaged (skill.ts) for
       same logic. Standardize to one name."
     created_at: 2026-02-16T18:16:11.644Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHKTNJ4A656881SF7K8XPZZV
-    text: readFileSync in loadCoreSkillsManifest and loadCoreSkillContent inconsistent with async
-      codebase. Should use fs.readFile for consistency.
-    created_at: 2026-02-16T18:16:11.658Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KHKTNJ4MRPJ5851FJFJZ7TK6
-    text: getKspecPackageVersion returns "unknown" on failure, silently preventing skill update
-      detection ("unknown" === "unknown" = skip). Should warn or error instead.
-    created_at: 2026-02-16T18:16:11.668Z
     tags: []
     added_by: "@claude"
   - _ulid: 01KHKTNJ4YJEM1WJ0AWE8GHKXF
@@ -599,18 +496,6 @@ inbox:
       reviews complete. Update /pr-review skill or add a --no-merge flag.
     created_at: 2026-02-19T17:10:56.412Z
     tags: []
-    added_by: "@claude"
-  - _ulid: 01KHVQTX1J9FXA3GFAY2711E1J
-    text: "Version pinning for consumer projects: add optional kspec_version field to manifest (e.g.
-      kspec_version: '>=0.2.0') and have CLI warn on mismatch. Currently all consumers (kynetic-bot,
-      imgen, comfy-ecaj-nodes) use global kspec with no version constraint — breaking changes
-      propagate silently. Lightweight approach: warn, don't block. Could also surface in 'kspec
-      setup --status' health check."
-    created_at: 2026-02-19T20:00:36.402Z
-    tags:
-      - dx
-      - config
-      - external
     added_by: "@claude"
   - _ulid: 01KHVQVVVMCVA1WKPB1H880YD4
     text: "Template/example repo for new kspec consumers: either a GitHub template repo or 'kspec
@@ -841,19 +726,6 @@ inbox:
       - skill
       - friction
     added_by: "@claude"
-  - _ulid: 01KJ2082ZYZ3HGBSGJMTYBRDAE
-    text: "Core skill plugin discovery: ship pre-built plugin in npm package, auto-register marketplace.
-      Plan at ~/.claude/plans/sharded-gliding-catmull.md. Codex review at /tmp/codex-plan-review.md.
-      Key issues to address: build step for plugin/ from templates/, skip (not redirect)
-      core+claude-code rendering, atomic global state writes, setup --status regression, test
-      restructuring for core-skill-namespace.test.ts. Prototype artifacts to clean up:
-      .kspec/plugins/ dir, .claude/settings.json extraKnownMarketplaces/enabledPlugins entries,
-      ~/.claude/plugins/known_marketplaces.json kspec-plugins entry,
-      ~/.claude/plugins/installed_plugins.json kspec entry, ~/.claude/plugins/cache/kspec-plugins/
-      cache."
-    created_at: 2026-02-22T06:23:03.679Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KJ27VRA3ZY55X0JEXV4P06KT
     text: "Spec and test kspec behavior without git: ensure kspec works in projects without git
       initialized, and handles git being introduced into an existing project where kspec is already
@@ -927,16 +799,6 @@ inbox:
       - ralph
       - prompt
       - safety
-    added_by: "@claude"
-  - _ulid: 01KJ3T9QMVRE7PM5AWAE6JG3KG
-    text: Export precedence test
-    created_at: 2026-02-22T23:17:35.003Z
-    tags: []
-    added_by: "@claude"
-  - _ulid: 01KJ3T9TKZDCK7HSEEH6BJQ6KD
-    text: Spec gap test
-    created_at: 2026-02-22T23:17:38.047Z
-    tags: []
     added_by: "@claude"
   - _ulid: 01KJ40ESZK9AWPP53D2SQ76M30
     text: "SUGGESTION: Update @triage-daemon-api spec AC-4/AC-5 wording from PUT to POST to match
