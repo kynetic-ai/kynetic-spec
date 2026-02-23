@@ -53916,6 +53916,7 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:20.896Z
+  started_at: 2026-02-23T10:46:36.036Z
   notes:
     - _ulid: 01KJ4V54W3TABFWQ012GER0Q1G
       created_at: 2026-02-23T08:51:47.715Z
@@ -53923,9 +53924,18 @@
       content: "AUTOMATION: Content authoring. Write templates/skills/observations/SKILL.md. Read
         .claude/skills/meta/SKILL.md as reference. Add to manifest.yaml."
       supersedes: null
+    - _ulid: 01KJ5208RQ0XRWCTS7DNT12PNT
+      created_at: 2026-02-23T10:51:27.895Z
+      author: "@claude"
+      content: Wrote templates/skills/observations/SKILL.md — focused skill covering observation types
+        (friction/success/question/idea), capture commands, review/promote/resolve workflows,
+        decision flows for what-goes-where, and integration points. Dropped focus/threads/questions
+        coverage per task description. Added manifest.yaml entry. Installed and verified via skill
+        install-core and skill status (plugin-provided). All 3180 tests pass (1 pre-existing flaky
+        daemon SIGTERM test unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T10:46:36.036Z
 - _ulid: 01KHZHPKHVT1RFXT0GM33TY288
   slugs: []
   title: "Write core skill: kspec:reflect"
