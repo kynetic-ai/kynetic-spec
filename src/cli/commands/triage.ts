@@ -13,6 +13,7 @@ import {
   findTriageRecordByRef,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { normalizeRefInput } from "../../schema/index.js";
 import type { TriageAction } from "../../schema/index.js";
 import { exportTriageAsContext, truncateText } from "../../export/triage.js";
 import { errors } from "../../strings/index.js";
@@ -96,7 +97,7 @@ Examples:
 
         const author = options.decidedBy || getAuthor(ctx.config?.identity?.author);
         const evidenceRefs = options.evidence
-          ? options.evidence.map((r: string) => r.startsWith("@") ? r : `@${r}`)
+          ? options.evidence.map(normalizeRefInput)
           : [];
 
         const record: LoadedTriageRecord = {

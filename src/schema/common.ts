@@ -96,3 +96,12 @@ export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 export type TaskType = z.infer<typeof TaskTypeSchema>;
 export type ItemType = z.infer<typeof ItemTypeSchema>;
 export type VcsRef = z.infer<typeof VcsRefSchema>;
+
+/**
+ * Normalize a reference string to ensure @ prefix.
+ * Apply at CLI input boundaries before constructing TaskInput/SpecItemInput.
+ * Prevents bare refs from failing RefSchema validation and causing silent data loss.
+ */
+export function normalizeRefInput(ref: string): string {
+  return ref.startsWith("@") ? ref : `@${ref}`;
+}

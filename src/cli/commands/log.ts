@@ -11,6 +11,7 @@ import {
   loadAllTasks,
   ReferenceIndex,
 } from "../../parser/index.js";
+import { normalizeRefInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { isGitRepo } from "../../utils/git.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -231,7 +232,7 @@ export function registerLogCommand(program: Command): void {
 
             // Determine if it's a task or spec
             const isTask = tasks.some((t) => t._ulid === result.ulid);
-            const refString = ref.startsWith("@") ? ref : `@${ref}`;
+            const refString = normalizeRefInput(ref);
 
             if (isTask) {
               patterns.push(`Task: ${refString}`);
@@ -250,15 +251,11 @@ export function registerLogCommand(program: Command): void {
           }
 
           if (options.spec) {
-            patterns.push(
-              `Spec: ${options.spec.startsWith("@") ? options.spec : `@${options.spec}`}`,
-            );
+            patterns.push(`Spec: ${normalizeRefInput(options.spec)}`);
           }
 
           if (options.task) {
-            patterns.push(
-              `Task: ${options.task.startsWith("@") ? options.task : `@${options.task}`}`,
-            );
+            patterns.push(`Task: ${normalizeRefInput(options.task)}`);
           }
 
           // AC: @cmd-log list-all-tracked
@@ -341,7 +338,7 @@ export function registerLogCommand(program: Command): void {
             } else {
               // AC: @spec-log-empty-repo ac-3 - existing behavior for no matches
               const refStr = ref
-                ? ` for ${ref.startsWith("@") ? ref : `@${ref}`}`
+                ? ` for ${normalizeRefInput(ref)}`
                 : "";
               output({ commits: [] }, () => {
                 info(`No commits found${refStr}`);
