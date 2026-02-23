@@ -167,16 +167,53 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
 }
 
 /**
+ * Check if all source entries exist in dest with identical content.
+ * Uses subset comparison: extra files in dest are ignored since
+ * copyDirRecursive is an overlay copy that doesn't delete extra files.
+ */
+async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
+  try {
+    const srcEntries = await fs.readdir(src);
+    const destEntries = new Set(await fs.readdir(dest));
+
+    for (const name of srcEntries) {
+      if (!destEntries.has(name)) return false;
+
+      const srcPath = path.join(src, name);
+      const destPath = path.join(dest, name);
+      const srcStat = await fs.stat(srcPath);
+      const destStat = await fs.stat(destPath);
+
+      if (srcStat.isDirectory() && destStat.isDirectory()) {
+        if (!(await sourceMatchesDest(srcPath, destPath))) return false;
+      } else if (srcStat.isFile() && destStat.isFile()) {
+        // Use Buffer comparison for binary safety (assets/ may contain images)
+        const srcBuf = await fs.readFile(srcPath);
+        const destBuf = await fs.readFile(destPath);
+        if (!srcBuf.equals(destBuf)) return false;
+      } else {
+        return false; // Type mismatch
+      }
+    }
+    return true;
+  } catch (_err) {
+    return false;
+  }
+}
+
+/**
  * Copy all files for a core skill from templates to .kspec/skills/<id>/.
  * Copies SKILL.md and any supporting directories (docs/, references/, etc.).
+ * Skips writing files when content is unchanged to avoid unnecessary git diffs.
  * AC: @core-skill-install ac-2
  */
 export async function copyCoreSkillFiles(
   skillId: string,
   targetDir: string
-): Promise<void> {
+): Promise<{ changed: boolean }> {
   const templatesDir = getTemplatesDir();
   const sourceDir = path.join(templatesDir, skillId);
+  let changed = false;
 
   // Copy SKILL.md — skip if template doesn't exist, propagate real errors
   const skillMdPath = path.join(sourceDir, "SKILL.md");
@@ -185,14 +222,27 @@ export async function copyCoreSkillFiles(
     content = await fs.readFile(skillMdPath, "utf-8");
   } catch (err) {
     if (err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT") {
-      return; // No SKILL.md means nothing to copy
+      return { changed: false }; // No SKILL.md means nothing to copy
     }
     throw err;
   }
-  await fs.mkdir(targetDir, { recursive: true });
-  await fs.writeFile(path.join(targetDir, "SKILL.md"), content, "utf-8");
 
-  // Copy supporting directories recursively
+  // Compare before writing to avoid unnecessary git diffs
+  const targetSkillMd = path.join(targetDir, "SKILL.md");
+  let existingContent: string | null = null;
+  try {
+    existingContent = await fs.readFile(targetSkillMd, "utf-8");
+  } catch {
+    // Target doesn't exist yet
+  }
+
+  if (existingContent !== content) {
+    await fs.mkdir(targetDir, { recursive: true });
+    await fs.writeFile(targetSkillMd, content, "utf-8");
+    changed = true;
+  }
+
+  // Copy supporting directories recursively, skipping when unchanged
   for (const dirName of SKILL_SUPPORTING_DIRS) {
     const srcSubDir = path.join(sourceDir, dirName);
     try {
@@ -204,8 +254,17 @@ export async function copyCoreSkillFiles(
       }
       throw err; // Propagate real I/O errors
     }
-    await copyDirRecursive(srcSubDir, path.join(targetDir, dirName));
+
+    const destSubDir = path.join(targetDir, dirName);
+    if (await sourceMatchesDest(srcSubDir, destSubDir)) {
+      continue; // Content unchanged, skip copy
+    }
+
+    await copyDirRecursive(srcSubDir, destSubDir);
+    changed = true;
   }
+
+  return { changed };
 }
 
 // ============================================================================

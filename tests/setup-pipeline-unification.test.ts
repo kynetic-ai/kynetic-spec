@@ -101,6 +101,33 @@ describe('Setup Pipeline Unification', () => {
       // metaHash should be a hex string (SHA256)
       expect(hashData.metaHash).toMatch(/^[a-f0-9]{64}$/);
     });
+
+    it('should skip kspec-agents.md regeneration when content unchanged', async () => {
+      await setupKspecProject(tempDir);
+
+      // First setup — generates kspec-agents.md and hash
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1', KSPEC_AUTHOR: '@test' },
+      });
+
+      const agentsMdPath = path.join(tempDir, 'kspec-agents.md');
+      const stat1 = await fs.stat(agentsMdPath);
+
+      // Wait a bit so mtime would differ if file were rewritten
+      await new Promise((r) => setTimeout(r, 50));
+
+      // Second setup — hash matches, should skip writing
+      const result = kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1', KSPEC_AUTHOR: '@test' },
+      });
+      expect(result.exitCode).toBe(0);
+      // Step message should say "already up to date"
+      expect(result.stdout).toContain('already up to date');
+
+      const stat2 = await fs.stat(agentsMdPath);
+      // File should not have been rewritten
+      expect(stat2.mtimeMs).toBe(stat1.mtimeMs);
+    });
   });
 
   // AC: @setup-pipeline-unification ac-2
