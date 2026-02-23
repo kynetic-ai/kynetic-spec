@@ -4368,3 +4368,258 @@ plans:
           to use kspec triage record + kspec triage act instead of directly calling
           kspec inbox promote/delete. The skill becomes the orchestrator that creates
           persistent triage records, and the user can review/override via web UI.
+  - _ulid: 01KJ62NKM8X5S5TQ3GYQNNB1KV
+    slugs:
+      - plan-sequence-based-iteration-counting-for-session-anal
+    title: Sequence-Based Iteration Counting for Session Analytics
+    content: >
+      # Sequence-Based Iteration Counting for Session Analytics
+
+
+      ## Specs
+
+
+      (No new specs — AC added to existing @session-log-show via kspec item ac add after import)
+
+
+      Post-import step:
+
+      ```bash
+
+      kspec item ac add @session-log-show \
+        --id ac-10 \
+        --given "A ralph session with multiple iterations where prompt.sent events with phase task-work exist in the event log" \
+        --when "kspec session log show is run for that session" \
+        --then "Per-iteration event counts are determined by prompt.sent boundary positions (array indices), not data.iteration fields on individual events. Legacy sessions without prompt.sent boundaries fall back to data.iteration grouping."
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: false
+
+
+      ```yaml
+
+      - title: "Implement index-based iteration boundary counting in computeIterationSummaries"
+        slug: task-iteration-boundary-counting
+        priority: 2
+        spec_ref: "@session-log-show"
+        tags:
+          - cli
+          - bug
+        description: |
+          Rewrite computeIterationSummaries() in src/sessions/store.ts to use
+          prompt.sent event positions as iteration boundaries instead of relying
+          on the data.iteration field (which suffers from a closure capture race
+          in ralph's fire-and-forget event logging).
+      ```
+
+
+      ## Implementation Notes
+
+
+      ### Problem
+
+
+      `computeIterationSummaries()` in `src/sessions/store.ts:718-802` groups events by
+
+      `data.iteration` field. Ralph's fire-and-forget `appendEvent()` call at
+
+      `src/cli/commands/ralph.ts:1573-1579` captures the loop `iteration` variable by
+
+      closure reference. By the time the async callback executes, `iteration` has
+
+      advanced, so streaming events get tagged with wrong iteration numbers. Result:
+
+      `kspec session log show` reports most iterations as "4 events" when they had hundreds.
+
+
+      A separate task (@01KJ5WV0) fixes the capture-by-value bug in ralph.ts. This task
+
+      makes the counting system resilient to producer-side data errors.
+
+
+      ### Approach: Index-Based Boundary Splitting
+
+
+      Ralph emits awaited `prompt.sent` events with `{ phase: "task-work", iteration: N }`
+
+      at `ralph.ts:1463` at the start of each iteration. Use these as authoritative
+
+      iteration boundaries.
+
+
+      **Critical:** Use **array indices** from `readEvents()` output, NOT `seq` values.
+
+      `appendEvent()` is explicitly not concurrency-safe (`store.ts:260`) — concurrent
+
+      fire-and-forget calls can produce duplicate seq numbers. Array indices provide
+
+      deterministic splitting immune to seq races.
+
+
+      ### Algorithm
+
+
+      1. Read all events via `readEvents()` (returns sorted array)
+
+      2. Find boundary events: `type === "prompt.sent"` AND `data?.phase === "task-work"`
+         AND `typeof data?.iteration === "number"` — record their **array index** and
+         iteration number
+      3. Validate: filter out non-monotonic iteration numbers, deduplicate
+
+      4. If no valid boundaries → legacy fallback (current `data.iteration` grouping,
+         extracted into helper function)
+      5. Build index ranges: `[0, boundary1.idx)`, `[boundary1.idx, boundary2.idx)`, etc.
+
+      6. Pre-boundary events merge into first iteration
+
+      7. Extract tasks_started/tasks_completed per iteration (unchanged logic)
+
+
+      ### Files to Modify
+
+
+      **`src/sessions/store.ts`:**
+
+      - Rewrite `computeIterationSummaries()` (lines 718-802) with boundary algorithm
+
+      - Extract current logic into `legacyIterationGrouping()` helper for fallback
+
+      - Update `getSessionLogDetail()` (~line 820) to derive `iteration_count` from
+        `summaries.length` instead of calling `countIterations()` separately
+      - Add `countIterationsBoundaryAware()` — lightweight boundary counter for
+        `getSessionLogSummary()` (used by `session log list` and `session log stats`)
+        to prevent iteration_count disagreements between list and show views
+
+      **`tests/session-log-show.test.ts`:**
+
+      - Update existing fixtures (~line 171) to include `phase: "task-work"` field
+
+      - Add tests:
+        1. Multi-iteration with prompt.sent boundaries (index-based grouping)
+        2. Wrong data.iteration on streaming events (still grouped correctly)
+        3. Legacy fallback — no prompt.sent events with phase field
+        4. Malformed boundaries — prompt.sent with missing phase/iteration (graceful fallback)
+        5. Single iteration — one boundary captures all events
+        6. Pre-loop events — session.start before first prompt.sent merged into iteration 1
+        7. Mixed phase prompt.sent — both task-work and reflect present, only task-work used
+        8. Duplicate seq values — concurrent events with same seq, boundary math correct
+
+      ### Key Implementation Details
+
+
+      - `SessionEvent.data` is typed as `unknown` (`types.ts:105`) — treat boundary data
+        as untrusted, validate phase and iteration fields before use
+      - `readEvents()` at `store.ts:320-340` sorts by seq — index order follows seq order
+
+      - Reflect prompt.sent uses `phase: "reflect"` (ralph.ts:1648) — safely excluded
+
+      - Subagents and wrap-up agents don't emit prompt.sent to parent session (confirmed
+        in `src/ralph/subagent.ts:229`)
+      - No changes needed to `types.ts`, `ralph.ts`, or `session.ts`
+
+
+      ### Verification
+
+
+      1. `npx vitest run tests/session-log-show.test.ts`
+
+      2. `npm run dev -- session log show 01KJ4VNM` — verify accurate counts across all
+         iterations (not "4 events" for most)
+      3. Cross-check: `session log list` iteration counts match `session log show`
+
+      4. Full suite: `npx vitest run`
+    status: active
+    derived_tasks:
+      - "@task-iteration-boundary-counting"
+    derived_specs: []
+    source_path: /home/chapel/.claude/plans/refactored-sauteeing-frog.md
+    created_at: 2026-02-23T20:22:21.576Z
+    approved_at: null
+    completed_at: null
+    notes:
+      - _ulid: 01KJ62NKM853RHMGMD1SSNYEZA
+        created_at: 2026-02-23T20:22:21.576Z
+        author: "@claude"
+        content: |-
+          Implementation notes:
+
+          ### Problem
+
+          `computeIterationSummaries()` in `src/sessions/store.ts:718-802` groups events by
+          `data.iteration` field. Ralph's fire-and-forget `appendEvent()` call at
+          `src/cli/commands/ralph.ts:1573-1579` captures the loop `iteration` variable by
+          closure reference. By the time the async callback executes, `iteration` has
+          advanced, so streaming events get tagged with wrong iteration numbers. Result:
+          `kspec session log show` reports most iterations as "4 events" when they had hundreds.
+
+          A separate task (@01KJ5WV0) fixes the capture-by-value bug in ralph.ts. This task
+          makes the counting system resilient to producer-side data errors.
+
+          ### Approach: Index-Based Boundary Splitting
+
+          Ralph emits awaited `prompt.sent` events with `{ phase: "task-work", iteration: N }`
+          at `ralph.ts:1463` at the start of each iteration. Use these as authoritative
+          iteration boundaries.
+
+          **Critical:** Use **array indices** from `readEvents()` output, NOT `seq` values.
+          `appendEvent()` is explicitly not concurrency-safe (`store.ts:260`) — concurrent
+          fire-and-forget calls can produce duplicate seq numbers. Array indices provide
+          deterministic splitting immune to seq races.
+
+          ### Algorithm
+
+          1. Read all events via `readEvents()` (returns sorted array)
+          2. Find boundary events: `type === "prompt.sent"` AND `data?.phase === "task-work"`
+             AND `typeof data?.iteration === "number"` — record their **array index** and
+             iteration number
+          3. Validate: filter out non-monotonic iteration numbers, deduplicate
+          4. If no valid boundaries → legacy fallback (current `data.iteration` grouping,
+             extracted into helper function)
+          5. Build index ranges: `[0, boundary1.idx)`, `[boundary1.idx, boundary2.idx)`, etc.
+          6. Pre-boundary events merge into first iteration
+          7. Extract tasks_started/tasks_completed per iteration (unchanged logic)
+
+          ### Files to Modify
+
+          **`src/sessions/store.ts`:**
+          - Rewrite `computeIterationSummaries()` (lines 718-802) with boundary algorithm
+          - Extract current logic into `legacyIterationGrouping()` helper for fallback
+          - Update `getSessionLogDetail()` (~line 820) to derive `iteration_count` from
+            `summaries.length` instead of calling `countIterations()` separately
+          - Add `countIterationsBoundaryAware()` — lightweight boundary counter for
+            `getSessionLogSummary()` (used by `session log list` and `session log stats`)
+            to prevent iteration_count disagreements between list and show views
+
+          **`tests/session-log-show.test.ts`:**
+          - Update existing fixtures (~line 171) to include `phase: "task-work"` field
+          - Add tests:
+            1. Multi-iteration with prompt.sent boundaries (index-based grouping)
+            2. Wrong data.iteration on streaming events (still grouped correctly)
+            3. Legacy fallback — no prompt.sent events with phase field
+            4. Malformed boundaries — prompt.sent with missing phase/iteration (graceful fallback)
+            5. Single iteration — one boundary captures all events
+            6. Pre-loop events — session.start before first prompt.sent merged into iteration 1
+            7. Mixed phase prompt.sent — both task-work and reflect present, only task-work used
+            8. Duplicate seq values — concurrent events with same seq, boundary math correct
+
+          ### Key Implementation Details
+
+          - `SessionEvent.data` is typed as `unknown` (`types.ts:105`) — treat boundary data
+            as untrusted, validate phase and iteration fields before use
+          - `readEvents()` at `store.ts:320-340` sorts by seq — index order follows seq order
+          - Reflect prompt.sent uses `phase: "reflect"` (ralph.ts:1648) — safely excluded
+          - Subagents and wrap-up agents don't emit prompt.sent to parent session (confirmed
+            in `src/ralph/subagent.ts:229`)
+          - No changes needed to `types.ts`, `ralph.ts`, or `session.ts`
+
+          ### Verification
+
+          1. `npx vitest run tests/session-log-show.test.ts`
+          2. `npm run dev -- session log show 01KJ4VNM` — verify accurate counts across all
+             iterations (not "4 events" for most)
+          3. Cross-check: `session log list` iteration counts match `session log show`
+          4. Full suite: `npx vitest run`
