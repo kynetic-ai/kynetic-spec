@@ -54014,6 +54014,7 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:22.831Z
+  started_at: 2026-02-23T11:25:27.574Z
   notes:
     - _ulid: 01KJ4V577KTRBV81VNEBNWYC07
       created_at: 2026-02-23T08:51:50.131Z
@@ -54021,9 +54022,20 @@
       content: "AUTOMATION: Content authoring. Split into templates/skills/triage-inbox/SKILL.md and
         triage-automation/SKILL.md. Read .claude/skills/triage/SKILL.md as reference."
       supersedes: null
+    - _ulid: 01KJ548VK5KER759E9NEM1ZX3Z
+      created_at: 2026-02-23T11:31:06.470Z
+      author: "@claude"
+      content: "Wrote templates/skills/triage-inbox/SKILL.md (173 lines) and
+        templates/skills/triage-automation/SKILL.md (130 lines). triage-inbox covers: record→act
+        pattern, inbox categorization, interactive/individual triage, review/execute/override,
+        spec-first processing, plan mode for larger items, observation processing during triage,
+        export, batch operations, common patterns. triage-automation covers: eligibility criteria
+        (spec_ref + ACs + non-spike), per-task assessment workflow, auto mode batch processing,
+        commands reference, assessment output format. Added both entries to manifest.yaml. Both
+        install successfully via skill install-core. All 3181 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T11:25:27.574Z
 - _ulid: 01KHZHPND968S82HKC1KSVCRRH
   slugs: []
   title: "Write core skill: kspec:writing-specs"
