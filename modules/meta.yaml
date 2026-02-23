@@ -3699,7 +3699,8 @@ modules:
               - id: ac-1
                 given: a core skill with version 0.1.0 and kspec package at version 0.2.0
                 when: kspec skill update is run
-                then: the skill content and version are updated to match the package
+                then: the skill content (SKILL.md and supporting directories) and version are updated to match the
+                  package
               - id: ac-2
                 given: a core skill already at the current kspec version
                 when: kspec skill update is run
