@@ -521,7 +521,7 @@ describe('kspec session log stats (CLI)', () => {
     const output = kspecJson<{ stats: SessionLogStats }>('session log stats', tempDir);
     expect(output.stats.total_sessions).toBe(3);
     expect(output.stats.total_events).toBe(10);
-    expect(output.stats.total_iterations).toBe(4); // 1 + 3 + 0
+    expect(output.stats.total_iterations).toBe(5); // 1 + 3 + 1 (boundary-aware counts from events + snapshots)
     expect(output.stats.total_tasks_completed).toBe(1);
     expect(output.stats.total_duration_ms).toBeGreaterThan(0);
   });
