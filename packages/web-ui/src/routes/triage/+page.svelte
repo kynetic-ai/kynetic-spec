@@ -188,8 +188,12 @@
 		error = '';
 	}
 
-	// Keyboard navigation
+	// Keyboard navigation - skip when focus is on input/textarea elements
 	function handleKeydown(e: KeyboardEvent) {
+		const target = e.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+			return;
+		}
 		if (e.key === 'ArrowLeft') {
 			goPrevious();
 		} else if (e.key === 'ArrowRight') {
@@ -356,6 +360,13 @@
 	{#if error}
 		<div class="rounded-md bg-red-50 p-4 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-200" data-testid="triage-error" role="alert">
 			{error}
+		</div>
+	{/if}
+
+	<!-- AC: @interactive-triage-ui ac-8 - Static mode notice -->
+	{#if isStaticMode() && !loading}
+		<div class="rounded-md bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-200" data-testid="triage-static-notice">
+			Triage decisions are not included in static snapshots. Browse inbox items below; use the daemon for full triage functionality.
 		</div>
 	{/if}
 

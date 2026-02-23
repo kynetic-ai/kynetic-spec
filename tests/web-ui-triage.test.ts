@@ -116,9 +116,13 @@ describe('Interactive Triage UI', () => {
     expect(content).toContain('goPrevious');
     expect(content).toContain('currentIndex');
 
-    // Keyboard navigation
+    // Keyboard navigation with input guard
     expect(content).toContain('ArrowLeft');
     expect(content).toContain('ArrowRight');
+    // Should skip navigation when focus is on input/textarea
+    expect(content).toContain('TEXTAREA');
+    expect(content).toContain('INPUT');
+    expect(content).toContain('isContentEditable');
 
     // Decision state display on already-triaged items
     expect(content).toContain('data-testid="triage-card-status"');
@@ -175,7 +179,11 @@ describe('Interactive Triage UI', () => {
     // Static mode fallback message
     expect(content).toContain('Use the CLI or daemon to triage items');
 
-    // Card navigation still works
+    // Static mode notice about snapshot limitation
+    expect(content).toContain('data-testid="triage-static-notice"');
+    expect(content).toContain('not included in static snapshots');
+
+    // Card navigation still works in static mode
     expect(content).toContain('goPrevious');
     expect(content).toContain('goNext');
   });
