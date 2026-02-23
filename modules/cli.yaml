@@ -3257,6 +3257,13 @@ features:
             given: session ID does not match any session
             when: ID is provided
             then: displays Session not found error with exit code 1
+          - id: ac-10
+            given: A ralph session with multiple iterations where prompt.sent events with phase task-work exist
+              in the event log
+            when: kspec session log show is run for that session
+            then: Per-iteration event counts are determined by prompt.sent boundary positions (array indices),
+              not data.iteration fields on individual events. Legacy sessions without prompt.sent
+              boundaries fall back to data.iteration grouping.
         depends_on: []
         implements: []
         relates_to: []
