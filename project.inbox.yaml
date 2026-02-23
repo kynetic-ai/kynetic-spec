@@ -944,3 +944,16 @@ inbox:
     created_at: 2026-02-23T01:05:12.691Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ43CPCNZZPFGWF6HHP2BJ0H
+    text: "Include triage records in static snapshot (kspec-snapshot.json). Currently the snapshot
+      format (KspecSnapshot type) doesn't include triage records, so the triage page in
+      static/GitHub Pages mode shows an empty state with a notice instead of displaying existing
+      triage decisions read-only. AC-8 of @interactive-triage-ui expects read-only display. Needs:
+      add triage records to export snapshot, update KspecSnapshot type, add fetchTriageRecordsStatic
+      to read from snapshot."
+    created_at: 2026-02-23T01:56:29.205Z
+    tags:
+      - feature
+      - web-ui
+      - static-mode
+    added_by: "@claude"
