@@ -54150,6 +54150,7 @@
     - cleanup
   vcs_refs: []
   created_at: 2026-02-21T07:30:28.499Z
+  started_at: 2026-02-23T09:01:16.872Z
   notes:
     - _ulid: 01KJ4V5DVM4SAQNNZQ6CXX8FFP
       created_at: 2026-02-23T08:51:56.916Z
@@ -54157,9 +54158,20 @@
       content: "AUTOMATION: Standalone cleanup. Audit templates/agents-sections/*.md for /pr, /pr-review,
         /local-review, /release refs. Replace with /kspec:review where appropriate."
       supersedes: null
+    - _ulid: 01KJ4WCSFEX47F26NEQKBE5FDH
+      created_at: 2026-02-23T09:13:26.767Z
+      author: "@claude"
+      content: "Audited templates/agents-sections/ and src/ for project-specific skill references.
+        Changes: (1) 04-pr-workflow.md: replaced /local-review, /pr, /pr-review with generic
+        workflow-based language. (2) 03-task-lifecycle.md: /triage → /kspec:triage (core skill),
+        /reflect → generic 'during reflection'. (3) src/ralph/subagent.ts: extracted
+        SKILL_PR_REVIEW, SKILL_REFLECT, SKILL_TASK_WORK constants — skill invocations now use
+        constants instead of hardcoded strings. (4) src/cli/commands/ralph.ts: updated to use
+        constants. (5) Regenerated kspec-agents.md. (6) Updated tests to use constants. All 3173
+        tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T09:01:16.872Z
 - _ulid: 01KHZHZ7GGQ6710KHVNVJB3GEB
   slugs: []
   title: Fix task get to display description field in text output
