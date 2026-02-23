@@ -54098,7 +54098,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -54118,6 +54118,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T11:52:19.534Z
 - _ulid: 01KHZHPQ81DQRBGC6DZ80BP7S5
   slugs: []
   title: "Write core skill: kspec:task-work"
