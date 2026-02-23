@@ -1621,4 +1621,37 @@ describe('subagent module', () => {
       expect(result.output).toMatch(/cannot resolve|not a task/i);
     });
   });
+
+  describe('event logging iteration capture (static analysis)', () => {
+    it('should use currentIteration in appendEvent closure, not for-loop iteration variable', async () => {
+      const source = await fs.readFile(
+        path.join(__dirname, '..', 'src', 'cli', 'commands', 'ralph.ts'),
+        'utf-8',
+      );
+
+      // The appendEvent call inside the "update" handler must reference
+      // currentIteration (outer mutable) instead of iteration (for-loop let binding).
+      // The handler persists across iterations, so capturing the for-loop variable
+      // would tag events with a stale iteration number.
+      const appendEventBlock = source.match(
+        /appendEvent\(specDir,\s*\{[^}]*iteration:\s*(\w+)/s,
+      );
+      expect(appendEventBlock).toBeTruthy();
+      expect(appendEventBlock![1]).toBe('currentIteration');
+    });
+
+    it('should declare currentIteration outside the for loop', async () => {
+      const source = await fs.readFile(
+        path.join(__dirname, '..', 'src', 'cli', 'commands', 'ralph.ts'),
+        'utf-8',
+      );
+
+      // currentIteration must be declared before the for loop
+      const declIndex = source.indexOf('let currentIteration');
+      const forIndex = source.indexOf('for (let iteration = 1;');
+      expect(declIndex).toBeGreaterThan(-1);
+      expect(forIndex).toBeGreaterThan(-1);
+      expect(declIndex).toBeLessThan(forIndex);
+    });
+  });
 });

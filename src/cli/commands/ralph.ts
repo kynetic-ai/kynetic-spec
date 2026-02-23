@@ -1303,8 +1303,16 @@ export function registerRalphCommand(program: Command): void {
         let lastErrorMessage: string | undefined;
         const recentTaskRefs: string[] = [];
 
+        // Mutable iteration counter visible to event handler closures.
+        // The agent's "update" handler persists across iterations but `let`
+        // in a for-loop creates a new binding per iteration — so closures
+        // inside the loop body capture a stale value once the loop advances.
+        // This variable is updated each iteration and read by the handler.
+        let currentIteration = 0;
+
         try {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
+            currentIteration = iteration;
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
             // AC: @ralph-task-limit ac-reset - Reset counter and clear stale markers at iteration start
@@ -1570,10 +1578,12 @@ export function registerRalphCommand(program: Command): void {
                       }
 
                       // Log raw update event (async, non-blocking)
+                      // Use currentIteration (outer mutable) instead of iteration
+                      // (for-loop let binding) — handler persists across iterations
                       appendEvent(specDir, {
                         session_id: sessionId,
                         type: "session.update",
-                        data: { iteration, update },
+                        data: { iteration: currentIteration, update },
                       }).catch(() => {
                         // Ignore logging errors during streaming
                       });
