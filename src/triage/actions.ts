@@ -46,7 +46,9 @@ export async function executeTriageAction(
 ): Promise<TriageActionResult> {
   const { dryRun = false, onInfo } = options;
   const action = record.action;
-  if (!action) return {};
+  if (!action) {
+    throw new Error("Record has no action to execute");
+  }
 
   switch (action) {
     case "promote": {
