@@ -56139,7 +56139,7 @@
     but --spec-ref tries to resolve 'null' as a reference. Should support same 'null' pattern for
     consistency. Workaround: find an alternative valid spec reference to link to."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56156,6 +56156,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T17:02:21.658Z
 - _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
   slugs: []
   title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
