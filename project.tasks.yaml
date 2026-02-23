@@ -55216,7 +55216,13 @@
     - triage
   vcs_refs: []
   created_at: 2026-02-23T04:53:45.885Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6W4E461NJ684CQJK2R19
+      created_at: 2026-02-23T08:52:44.302Z
+      author: "@claude"
+      content: "AUTOMATION: Refactor. Extract shared triage action executor from duplicate switch/case in
+        triage.ts and daemon triage.ts. Create src/triage/actions.ts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4DP400CH23DK5CCMC1ZWF2
@@ -55541,7 +55547,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:02.909Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6BYWSR59V1DADTDGHMSR
+      created_at: 2026-02-23T08:52:27.740Z
+      author: "@claude"
+      content: "AUTOMATION: Standalone refactor. Add normalizeRefInput() in schema/common.ts ensuring @
+        prefix at CLI boundary. Prevents recurring bare ref bugs."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SM6RN06C487QWRWABJ86J
@@ -55561,7 +55573,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:04.021Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6QNYAEW0WWCY7KNABP51
+      created_at: 2026-02-23T08:52:39.742Z
+      author: "@claude"
+      content: "AUTOMATION: Enhancement. Traits without parent go to kynetic.yaml project-level traits
+        array, not module-level. Spec @plan-import."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
@@ -55600,7 +55618,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:06.126Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6D4491AMKWWJKJX309AS
+      created_at: 2026-02-23T08:52:28.933Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Fix generateSkillsTable() in agent-data-sections.ts to render core
+        skill IDs with kspec: namespace prefix. Spec @agent-instruction-gen."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
@@ -55621,7 +55645,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:07.159Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6E89ZPNTQDCYEM89V20W
+      created_at: 2026-02-23T08:52:30.089Z
+      author: "@claude"
+      content: "AUTOMATION: Enhancement. --force flag should bypass submit requirement for direct
+        completion from in_progress. Spec @task-complete."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
@@ -55642,7 +55672,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:08.180Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6FEHNKAMR2A4CFZ6WQ6W
+      created_at: 2026-02-23T08:52:31.313Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Batch arg handling should JSON.stringify objects before passing to
+        handlers. Spec @batch-exec."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
@@ -55663,7 +55699,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:09.218Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6GP4P30YKMGXRHV7KN5N
+      created_at: 2026-02-23T08:52:32.580Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Fix plan-import.ts:513-523 to read taskDef.spec_ref in manual task
+        creation path. Spec @plan-import."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
@@ -55683,7 +55725,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:10.283Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6HYH3XMMRRRKMM3S4XX0
+      created_at: 2026-02-23T08:52:33.873Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Route info/sync messages to stderr when --json mode active. Spec
+        @cmd-session-start. Check trait @trait-json-output."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SNECVEF1DWQTDK9KK5ASN
@@ -55703,7 +55751,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:44.603Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6K555PGCK411D7FGZRNP
+      created_at: 2026-02-23T08:52:35.109Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Support null value for --spec-ref to clear field, matching --plan-ref
+        behavior. Spec @task-set."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
@@ -55725,7 +55779,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:45.835Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6M9EBMSQ6M9FY6B8H7HD
+      created_at: 2026-02-23T08:52:36.270Z
+      author: "@claude"
+      content: "AUTOMATION: Enhancement. Add depends_on to plan YAML spec format. Parse per spec entry,
+        map to spec depends_on and task blocked_by. Spec @plan-import."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
@@ -55745,7 +55805,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:46.887Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6NCVG3QRN04CBACDYRWE
+      created_at: 2026-02-23T08:52:37.404Z
+      author: "@claude"
+      content: "AUTOMATION: Enhancement. Plan specs specify priority, derived tasks inherit instead of
+        defaulting P3. Spec @plan-import."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
@@ -55764,7 +55830,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:48.046Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6PJ0QZ0F1XQ9MNAKRAVV
+      created_at: 2026-02-23T08:52:38.592Z
+      author: "@claude"
+      content: "AUTOMATION: Improvement. Detect YAML-unsafe values in AC fields before parse. Provide
+        clear diagnostic instead of cryptic error. Spec @plan-import."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4T45FMV4TV07MWX7RNA8F8
@@ -55784,7 +55856,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:33:46.996Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6RRKKPMW0A8VY6MHGFYX
+      created_at: 2026-02-23T08:52:40.851Z
+      author: "@claude"
+      content: "AUTOMATION: Bug investigation. task add returned OK but task not findable. Investigate
+        shadow branch commit race condition or ULID collision."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
@@ -55813,7 +55891,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:33:48.376Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6SVB6VCEA2G1YK0FFET2
+      created_at: 2026-02-23T08:52:41.963Z
+      author: "@claude"
+      content: "AUTOMATION: Safety chore. Add ralph-loop context to codex skill prompt. Detect via
+        KSPEC_SESSION_ID env var. Prevent kspec ralph/serve/pkill from inside codex."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4T480J60WY0ESJWQY08G82
@@ -55834,6 +55918,12 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:33:49.586Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V6V0HXEDTJM35H285YYMG
+      created_at: 2026-02-23T08:52:43.153Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Surface JSON parse error details on malformed input. AC @batch-exec
+        ac-invalid-json requires error with line/position info. Currently silent."
+      supersedes: null
   todos: []
   automation: eligible
