@@ -56081,6 +56081,13 @@
       content: "AUTOMATION: Bug fix. Fix plan-import.ts:513-523 to read taskDef.spec_ref in manual task
         creation path. Spec @plan-import."
       supersedes: null
+    - _ulid: 01KJ5Q6CN255BB7VBYHJ4VY2EH
+      created_at: 2026-02-23T17:01:48.578Z
+      author: "@claude"
+      content: "Added spec_ref field to PlanTaskSchema and honored it in plan-import manual task creation
+        path. Uses normalizeRefInput for @ prefix normalization. Updated AC ac-27 to reflect the new
+        behavior. 2 new tests: explicit spec_ref honored, bare ref normalized. All 3227 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
