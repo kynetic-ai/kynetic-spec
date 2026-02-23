@@ -6279,6 +6279,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ51NBSJR7R8ZRT4RM8Q26DT
+    type: friction
+    content: "Post-merge branch state: When inheriting a session where a PR was already merged, the
+      working directory may be on main. Always check branch (git branch --show-current) before
+      committing, and create a feature branch first. Recovering from an accidental main commit
+      requires creating a branch from HEAD and resetting main."
+    created_at: 2026-02-23T10:45:30.546Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
