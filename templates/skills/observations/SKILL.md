@@ -50,8 +50,8 @@ kspec meta observations
 # Only those awaiting resolution
 kspec meta observations --pending-resolution
 
-# Verbose output with full details
-kspec meta observations -v
+# Filter by type
+kspec meta observations --type friction
 ```
 
 ## Acting on Observations
@@ -73,7 +73,7 @@ When addressed, documented, or no longer relevant:
 kspec meta resolve @ref "Fixed in PR #123"
 
 # Batch resolve related observations
-kspec meta resolve @ref1 @ref2 @ref3 "All addressed by new workflow"
+kspec meta resolve --refs @ref1 @ref2 @ref3 --resolution "All addressed by new workflow"
 ```
 
 ### Convert from Inbox
@@ -116,7 +116,7 @@ For each pending observation:
 | Clear actionable work | `task add` | Ready to implement |
 | Something was hard | `meta observe friction` | Informs process improvement |
 | Something worked well | `meta observe success` | Worth replicating |
-| Session-local question | `meta question --add` | Track during current session |
+| Session-local question | `meta question add` | Track during current session |
 | Systemic process question | `meta observe question` | Broader than one session |
 
 ## Batch Capture
