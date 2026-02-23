@@ -102,11 +102,17 @@ echo '[
 
 | What you found | Where to put it | Why |
 |----------------|-----------------|-----|
-| Actionable improvement idea | `inbox add` | Will become a task eventually |
+| Clear scope + spec exists | `task add` | Ready to implement — don't use inbox |
+| Clear scope + no spec coverage | Ask user: task or inbox? | May need spec work first |
+| Unclear scope (vague idea, needs triage) | `inbox add` | Will be triaged into a task later |
 | Friction pattern (systemic) | `meta observe friction` | Informs process improvement |
 | Success pattern | `meta observe success` | Worth documenting/replicating |
 | Open question needing research | `meta question add` | Track during session |
-| Bug or specific fix needed | `task add` | Ready to implement |
+
+**Inbox vs Task decision tree:**
+1. Can you describe the change and where it goes? If no → `inbox add`
+2. Does a spec cover this behavior? If yes → `task add`
+3. Clear scope but no spec? → Ask the user whether to create a task (they'll handle spec) or inbox it for later scoping
 
 ## Reflection Prompts
 
