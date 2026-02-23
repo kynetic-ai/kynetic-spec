@@ -53748,7 +53748,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-21T05:13:53.619Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V53P2ACDNYCWNHZJPDJM1
+      created_at: 2026-02-23T08:51:46.498Z
+      author: "@claude"
+      content: "AUTOMATION: Standalone optimization. Apply hash-check-before-write pattern to skill
+        rendering paths. No spec needed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
@@ -53878,7 +53884,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:20.896Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V54W3TABFWQ012GER0Q1G
+      created_at: 2026-02-23T08:51:47.715Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Write templates/skills/observations/SKILL.md. Read
+        .claude/skills/meta/SKILL.md as reference. Add to manifest.yaml."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPKHVT1RFXT0GM33TY288
@@ -53904,7 +53916,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:21.883Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V56219MY8QPNJ00RFR0SX
+      created_at: 2026-02-23T08:51:48.929Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Write templates/skills/reflect/SKILL.md. Read
+        .claude/skills/reflect/SKILL.md as reference. Add to manifest.yaml."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPMFF2TWADJQP6DE38NKS
@@ -53933,7 +53951,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:22.831Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V577KTRBV81VNEBNWYC07
+      created_at: 2026-02-23T08:51:50.131Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Split into templates/skills/triage-inbox/SKILL.md and
+        triage-automation/SKILL.md. Read .claude/skills/triage/SKILL.md as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPND968S82HKC1KSVCRRH
@@ -53959,7 +53983,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:23.785Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V58A9HYR209RN94S4B37Q
+      created_at: 2026-02-23T08:51:51.241Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Write templates/skills/writing-specs/SKILL.md. Read
+        .claude/skills/spec/SKILL.md as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPPAD2CZ5B8A1GTRJM07Q
@@ -53985,7 +54015,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:24.717Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V59EWTD9J8F12HB8Y15T1
+      created_at: 2026-02-23T08:51:52.412Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Write templates/skills/plan/SKILL.md. Read
+        .claude/skills/spec-plan/SKILL.md as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPQ81DQRBGC6DZ80BP7S5
@@ -54012,7 +54048,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:25.665Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5AKAXQP8TFZ5JC80ZJ0W
+      created_at: 2026-02-23T08:51:53.578Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Write templates/skills/task-work/SKILL.md. Read
+        .claude/skills/task-work/SKILL.md as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPR5FQN7KGF45QP25HT1D
@@ -54038,7 +54080,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:26.607Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5BPT0MYXS1D5APVQZF2E
+      created_at: 2026-02-23T08:51:54.714Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. Write templates/skills/create-workflow/SKILL.md. Read
+        .claude/skills/create-workflow/SKILL.md as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPS2EYQCYB3065CA27E9F
@@ -54067,7 +54115,13 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:27.534Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5CSV3YRBDDWNSESBJZ10
+      created_at: 2026-02-23T08:51:55.835Z
+      author: "@claude"
+      content: "AUTOMATION: Content authoring. NEW skill - write templates/skills/review/SKILL.md. Read
+        .claude/skills/local-review/SKILL.md and pr-review/SKILL.md as reference."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHPT0KJ5QKX8A9S9YE8Y57
@@ -54096,7 +54150,13 @@
     - cleanup
   vcs_refs: []
   created_at: 2026-02-21T07:30:28.499Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5DVM4SAQNNZQ6CXX8FFP
+      created_at: 2026-02-23T08:51:56.916Z
+      author: "@claude"
+      content: "AUTOMATION: Standalone cleanup. Audit templates/agents-sections/*.md for /pr, /pr-review,
+        /local-review, /release refs. Replace with /kspec:review where appropriate."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KHZHZ7GGQ6710KHVNVJB3GEB
@@ -55216,7 +55276,13 @@
     - types
   vcs_refs: []
   created_at: 2026-02-23T05:23:35.534Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5EXY9MKMZY4J2EY5RBG8
+      created_at: 2026-02-23T08:51:58.014Z
+      author: "@claude"
+      content: "AUTOMATION: Standalone refactor. Audit packages/web-ui/src/lib/types/ for duplicated
+        src/schema/ types. Import from @kynetic-ai/shared instead."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4FT9A2KX5103BTEWYT143V
@@ -55367,7 +55433,13 @@
     - improvement
   vcs_refs: []
   created_at: 2026-02-23T07:29:42.615Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5G3FFRM227ADDRT8JJZX
+      created_at: 2026-02-23T08:51:59.215Z
+      author: "@claude"
+      content: "AUTOMATION: Standalone chore. Add kspec agents generate as post-release step in release
+        skill. Keeps kspec-agents.md version in sync."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4Q55END42JJK7TVXP5WT88
@@ -55440,7 +55512,13 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:01.626Z
-  notes: []
+  notes:
+    - _ulid: 01KJ4V5H9V3JMF85W753X7ZSDF
+      created_at: 2026-02-23T08:52:00.443Z
+      author: "@claude"
+      content: "AUTOMATION: Bug fix. Move inline error string to src/strings/errors.ts following
+        cannotStart pattern. Update task needs-work handler."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
