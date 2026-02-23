@@ -54241,6 +54241,7 @@
     - skill-content
   vcs_refs: []
   created_at: 2026-02-21T07:30:27.534Z
+  started_at: 2026-02-23T12:06:27.351Z
   notes:
     - _ulid: 01KJ4V5CSV3YRBDDWNSESBJZ10
       created_at: 2026-02-23T08:51:55.835Z
@@ -54248,9 +54249,19 @@
       content: "AUTOMATION: Content authoring. NEW skill - write templates/skills/review/SKILL.md. Read
         .claude/skills/local-review/SKILL.md and pr-review/SKILL.md as reference."
       supersedes: null
+    - _ulid: 01KJ56GN85EQE03SZAEPK19DNQ
+      created_at: 2026-02-23T12:10:19.269Z
+      author: "@claude"
+      content: "Wrote templates/skills/review/SKILL.md (168 lines). NEW skill — extracted kspec-specific
+        review concerns into a generic building block. Covers: spec alignment verification, own AC
+        coverage (annotation format, checking), trait AC coverage (inherited ACs, N/A handling),
+        validation integration (exit codes, error vs warning), review checklist
+        (MUST-FIX/SHOULD-FIX/SUGGESTION), severity guide, guidance for wrapping in project-specific
+        reviews. Not a full local-review replacement — no project-specific test commands. Added
+        manifest entry. All 3181 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T12:06:27.351Z
 - _ulid: 01KHZHPT0KJ5QKX8A9S9YE8Y57
   slugs: []
   title: Purge project-specific skill references from shared templates and docs
