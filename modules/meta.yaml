@@ -3635,10 +3635,10 @@ modules:
             title: Core Skill Installation
             type: requirement
             tags: []
-            description: |
-              kspec skill install-core copies core skill definitions from the kspec npm package
-              templates/ directory into the project. Creates meta entries with origin core
-              and version matching kspec version.
+            description: kspec skill install-core copies core skill definitions from the kspec npm package
+              templates/ directory into the project. Creates meta entries with origin core and
+              version matching kspec version. Copies the full skill directory including SKILL.md and
+              supporting directories (docs/, references/, scripts/, assets/).
             acceptance_criteria:
               - id: ac-1
                 given: kspec skill install-core is run
