@@ -238,29 +238,6 @@ inbox:
     created_at: 2026-02-13T01:18:34.385Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHCK3K4B5YCCYYCMXJYERY09
-    text: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
-      dependencies on import. Currently plan import creates specs and tasks but dependencies must be
-      added manually post-import. Add a depends_on param per spec entry in the YAML (e.g.,
-      depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by on import."
-    created_at: 2026-02-13T22:49:21.803Z
-    tags:
-      - reflection
-      - plan-import
-    added_by: "@claude"
-  - _ulid: 01KHCVWQ5Q83FACF6TSQDQWT6F
-    text: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
-      prefix on ref-like strings. Apply at CLI input boundary (TaskInput construction) instead of
-      per-command handler. Prevents class of bugs where bare refs bypass RefSchema validation and
-      cause silent data loss. Today's depends_on fix (PR #353) patched 3 locations — a shared
-      boundary would prevent recurrence. Related: @merge-ref-normalization (merge layer), @01KG0N4V
-      (silent safeParse drops)."
-    created_at: 2026-02-14T01:22:53.751Z
-    tags:
-      - reflection
-      - schema
-      - dx
-    added_by: "@claude"
   - _ulid: 01KHCYW7JZX2AAKDTBQPB3RRZZ
     text: "Add repeated-flag support to --status filter (ac-repeated-flag gap from PR #354).
       Commander.js .option() needs a collect function to accumulate repeated --status flags into an
@@ -316,35 +293,6 @@ inbox:
     tags:
       - kspec-cli
       - reflection
-    added_by: "@claude"
-  - _ulid: 01KHHR778VGPE2VWEFT7P7FC51
-    text: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
-      --under. Currently impossible via CLI, requiring manual YAML edits that violate the
-      never-edit-manually rule.
-    created_at: 2026-02-15T22:54:55.772Z
-    tags:
-      - reflection
-      - cli
-      - trait
-    added_by: "@claude"
-  - _ulid: 01KHHR779DJC9QBVJKSBDFMBMW
-    text: kspec plan import should place type:trait items with no parent in the project-level traits
-      array (kynetic.yaml), not the module-level traits array. Currently causes schema validation
-      error.
-    created_at: 2026-02-15T22:54:55.789Z
-    tags:
-      - reflection
-      - plan-import
-      - bug
-    added_by: "@claude"
-  - _ulid: 01KHHR779RG1QG6DGK99P5NAXY
-    text: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
-      values) before attempting parse, rather than failing with cryptic nested mapping error."
-    created_at: 2026-02-15T22:54:55.800Z
-    tags:
-      - reflection
-      - plan-import
-      - dx
     added_by: "@claude"
   - _ulid: 01KHJ4RVVDYD0Y7NNAGA58RNYW
     text: "Silent error swallowing in setup pipeline: multiple bare catch {} blocks in setup.ts lose
@@ -454,15 +402,6 @@ inbox:
     created_at: 2026-02-19T14:04:31.825Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHVCPEVTKV48MV2WFCYRSNYB
-    text: "Plan import should support task priority: plan document specs can specify priority, and
-      derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
-      content. Workaround: manually batch-set priorities after import."
-    created_at: 2026-02-19T16:45:56.474Z
-    tags:
-      - plan-import
-      - dx
-    added_by: "@claude"
   - _ulid: 01KHVCPEWG9XDW4NH17850SFJR
     text: "Inbox tag management: no way to add/remove tags on existing inbox items. Only settable at
       creation via inbox add --tag. Need: kspec inbox tag add @ref <tag> and kspec inbox tag remove
@@ -522,27 +461,6 @@ inbox:
       - tasks
       - scaling
     added_by: "@claude"
-  - _ulid: 01KHW3CC7QPTKBZEHSR8Z55XQF
-    text: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced shadow
-      branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when --json
-      mode is active."
-    created_at: 2026-02-19T23:22:23.351Z
-    tags:
-      - reflection
-      - bug
-      - cli
-    added_by: "@claude"
-  - _ulid: 01KHW3CC8AM42PG3SVH10XKXJK
-    text: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
-      tasks get no spec_ref, but when a task YAML explicitly provides spec_ref pointing to a valid
-      spec, it should be honored. Currently taskDef.spec_ref is never read in the manual task
-      creation path (plan-import.ts:513-523)."
-    created_at: 2026-02-19T23:22:23.370Z
-    tags:
-      - reflection
-      - bug
-      - plan-import
-    added_by: "@claude"
   - _ulid: 01KHWTXFAFT10MXMNYS06JJNWV
     text: "kspec validate @spec or @task — targeted validation that checks a single spec/task's AC
       coverage against codebase. Not full approval, just verifies each AC has at least one // AC:
@@ -578,16 +496,6 @@ inbox:
     tags:
       - dx
       - cli
-    added_by: "@claude"
-  - _ulid: 01KHXFRF9CF4WG4HJ8BDYXTCA9
-    text: "task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but
-      --spec-ref tries to resolve 'null' as a reference. Should support same 'null' pattern for
-      consistency. Workaround: find an alternative valid spec reference to link to."
-    created_at: 2026-02-20T12:17:57.036Z
-    tags:
-      - cli
-      - dx
-      - reflection
     added_by: "@claude"
   - _ulid: 01KHY9YB0NKASBKAEMRKKC7C0Y
     text: "Terminal exit code display in ralph CLI renderer — claude-agent-acp PR #316 adds
@@ -649,13 +557,6 @@ inbox:
     created_at: 2026-02-20T21:31:05.321Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KHYRZ4QGG9XHQMNR6X4N970Q
-    text: "Error message consistency: task needs-work uses inline error string instead of centralized
-      error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or similar to match
-      cannotStart pattern."
-    created_at: 2026-02-21T00:18:07.217Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KHYTNNF4B67SGERG0WRZ2RBR
     text: "Single-source task state diagram: currently duplicated in AGENTS.md,
       templates/agents-sections/03-task-lifecycle.md, and src/cli/help/content.ts. Adding needs_work
@@ -678,28 +579,6 @@ inbox:
       - validate
       - dx
     added_by: "@claude"
-  - _ulid: 01KHZHZAP3P1Y97YF8QSM3KCT0
-    text: "kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
-      stringified as [object Object] instead of being serialized as JSON. Batch args are likely
-      passed through a simple string coercion. Workaround: run task patch commands individually.
-      Fix: batch arg handling should JSON.stringify objects before passing to command handlers."
-    created_at: 2026-02-21T07:35:07.715Z
-    tags:
-      - cli
-      - batch
-      - bug
-    added_by: "@claude"
-  - _ulid: 01KHZHZAQ0YXEN9X6VP205SMPE
-    text: task complete --force should bypass the submit requirement. Currently --force does not skip
-      the in_progress → pending_review transition, making it impossible to complete non-code tasks
-      (design, triage, research) without a meaningless submit step. The --force flag exists but does
-      not actually force completion from in_progress state.
-    created_at: 2026-02-21T07:35:07.744Z
-    tags:
-      - cli
-      - tasks
-      - bug
-    added_by: "@claude"
   - _ulid: 01KJ0K9CEX5EJYT9YYA9D04GX7
     text: "inbox promote missing --slug option: cannot set task slug during promotion, must use default
       auto-generated slug. Add --slug <slug> option to inbox promote command."
@@ -708,15 +587,6 @@ inbox:
       - cli
       - dx
       - reflection
-    added_by: "@claude"
-  - _ulid: 01KJ11KQKZ9R8NJ64RXH9AVKHV
-    text: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
-      generateSkillsTable() in agent-data-sections.ts doesn't account for namespace rendering of
-      core skills
-    created_at: 2026-02-21T21:27:39.391Z
-    tags:
-      - agents
-      - bug
     added_by: "@claude"
   - _ulid: 01KJ1RW37A4V1TV1KZK33YS46N
     text: "CLI gap: kspec skill set should support --id to rename a skill without delete+recreate"
@@ -734,18 +604,6 @@ inbox:
       (auto-commit, sync, shadow status)."
     created_at: 2026-02-22T08:36:08.131Z
     tags: []
-    added_by: "@claude"
-  - _ulid: 01KJ33138CNS0KEXVTYJM62W45
-    text: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
-      Should print JSON parse error or validation error details. batch has did-you-mean for bad arg
-      keys (PR #440) but nothing for structural JSON errors. Encountered during triage session when
-      batch --commands failed with no diagnostic output."
-    created_at: 2026-02-22T16:30:54.732Z
-    tags:
-      - reflection
-      - batch
-      - dx
-      - bug
     added_by: "@claude"
   - _ulid: 01KJ3318Y1350NCQF6SK9GKHY7
     text: "Session checkpoint hook noise: fires repeatedly for intentionally uncommitted files (e.g.
@@ -780,26 +638,6 @@ inbox:
     created_at: 2026-02-22T17:12:10.776Z
     tags: []
     added_by: "@claude"
-  - _ulid: 01KJ3QN15VJWAAMPTYT3K06XK3
-    text: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
-      01KJ3N2N8V38823H87PG09V7XR, the worker agent invoked /codex review #448 (per focus
-      instructions). The codex agent (gpt-5.3-codex, danger-full-access sandbox) ran a 'CLI
-      spot-check' that accidentally started a kspec ralph process, then ran pkill -f 'kspec ralph'
-      to clean it up — which killed the actual ralph loop process hosting it. Codex session
-      rollout-2026-02-22T14-02-07 completed normally (703k tokens, clean exit) while ralph died
-      mid-tool-call (session stuck at active, no session.end event, last event seq 963 was the codex
-      exec Bash call). Fix: add context to the codex skill prompt when invoked inside ralph (e.g.
-      'You are running inside a kspec ralph loop. NEVER start kspec ralph, kspec serve, or use
-      pkill/kill on kspec processes.'). Could detect ralph context via KSPEC_SESSION_ID env var or
-      similar. Alternative: restrict sandbox mode when codex is called from ralph. See codex skill
-      at .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
-    created_at: 2026-02-22T22:31:19.483Z
-    tags:
-      - codex
-      - ralph
-      - prompt
-      - safety
-    added_by: "@claude"
   - _ulid: 01KJ43CPCNZZPFGWF6HHP2BJ0H
     text: "Include triage records in static snapshot (kspec-snapshot.json). Currently the snapshot
       format (KspecSnapshot type) doesn't include triage records, so the triage page in
@@ -819,16 +657,6 @@ inbox:
       virtual scrolling pattern across all list views."
     created_at: 2026-02-23T05:27:38.653Z
     tags: []
-    added_by: "@claude"
-  - _ulid: 01KJ4HNNKRVX2HJHD1SEXZGC6R
-    text: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks
-      list. Had to retry to get a persistent task. Possible shadow branch commit race condition or
-      ULID issue. Observed during session 2026-02-22."
-    created_at: 2026-02-23T06:06:03.385Z
-    tags:
-      - bug
-      - shadow-branch
-      - task
     added_by: "@claude"
   - _ulid: 01KJ4KFAXR94SCYKWQ2KQWXH54
     text: "Trait AC annotation gaps on @triage-cli-commands: @trait-error-guidance ac-3,
