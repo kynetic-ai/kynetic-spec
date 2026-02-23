@@ -54975,6 +54975,7 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-22T23:06:09.939Z
+  started_at: 2026-02-23T00:12:45.839Z
   notes:
     - _ulid: 01KJ3SS53VD4G4TCCVAS8FJWHF
       created_at: 2026-02-22T23:08:31.739Z
@@ -54983,9 +54984,19 @@
         (cross-package relative imports). If no fix is found after multiple attempts, block for
         manual handling.
       supersedes: null
+    - _ulid: 01KJ3XTE1JQSJ5KGM5TEG8X1E1
+      created_at: 2026-02-23T00:19:07.954Z
+      author: "@claude"
+      content: "Root cause: bun build --compile was running from packages/daemon/ and trying to resolve
+        relative imports (../../parser/index.js) which pointed outside the package to non-existent
+        paths. Fix: Changed build:compile to compile from dist/daemon/index.ts (populated by npm run
+        build:daemon) where the relative import paths correctly resolve to dist/parser/ and
+        dist/utils/. Updated daemon package.json, build-executables.sh, and test. All 3
+        daemon-executable tests now pass. Full suite: 3105 passed, 1 failed (pre-existing doctor
+        flaky test)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T00:12:45.839Z
 - _ulid: 01KJ3SMVTJC1FFY14RAAA7K2SV
   slugs:
     - task-investigate-doctor-flaky-tests
