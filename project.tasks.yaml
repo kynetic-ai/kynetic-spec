@@ -55822,6 +55822,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #479. Added normalizeRefInput() in schema/common.ts, replaced 10 inline
+    ref normalization patterns across 8 files. Added 13 tests (6 unit, 2 static analysis regression
+    guards, 5 integration). All quality gates passed."
   depends_on: []
   context: []
   priority: 3
@@ -55829,6 +55832,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:02.909Z
   started_at: 2026-02-23T14:56:25.606Z
+  completed_at: 2026-02-23T15:31:15.039Z
   notes:
     - _ulid: 01KJ4V6BYWSR59V1DADTDGHMSR
       created_at: 2026-02-23T08:52:27.740Z
@@ -55848,10 +55852,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T15:31:15.039Z
-  closed_reason: "Merged in PR #479. Added normalizeRefInput() in schema/common.ts, replaced 10 inline
-    ref normalization patterns across 8 files. Added 13 tests (6 unit, 2 static analysis regression
-    guards, 5 integration). All quality gates passed."
 - _ulid: 01KJ4SM6RN06C487QWRWABJ86J
   slugs: []
   title: kspec plan import should place type:trait items with no parent in the project-level traits
@@ -55861,7 +55861,7 @@
     traits array (kynetic.yaml), not the module-level traits array. Currently causes schema
     validation error.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -55878,6 +55878,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T15:33:53.291Z
 - _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
   slugs: []
   title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
