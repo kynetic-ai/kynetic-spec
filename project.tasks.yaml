@@ -54057,6 +54057,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #469. Wrote templates/skills/writing-specs/SKILL.md (333 lines)
+    covering spec hierarchy, AC writing with patterns and anti-patterns, trait system,
+    creating/updating specs workflow, quality checklist, validation, and command reference. Added
+    manifest entry. All 3181 tests pass, no regressions."
   depends_on:
     - "@01KHZHPG"
   context: []
@@ -54067,6 +54071,7 @@
   vcs_refs: []
   created_at: 2026-02-21T07:30:23.785Z
   started_at: 2026-02-23T11:46:23.299Z
+  completed_at: 2026-02-23T12:16:17.156Z
   notes:
     - _ulid: 01KJ4V58A9HYR209RN94S4B37Q
       created_at: 2026-02-23T08:51:51.241Z
@@ -54086,11 +54091,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T12:16:17.156Z
-  closed_reason: "Merged in PR #469. Wrote templates/skills/writing-specs/SKILL.md (333 lines)
-    covering spec hierarchy, AC writing with patterns and anti-patterns, trait system,
-    creating/updating specs workflow, quality checklist, validation, and command reference. Added
-    manifest entry. All 3181 tests pass, no regressions."
 - _ulid: 01KHZHPPAD2CZ5B8A1GTRJM07Q
   slugs: []
   title: "Write core skill: kspec:plan"
@@ -54103,7 +54103,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KHZHPG"
@@ -54134,6 +54134,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T12:21:49.864Z
+  closed_reason: "Merged in PR #470. Wrote templates/skills/plan/SKILL.md (336 lines) covering
+    plan-to-spec translation: two-path approach (import vs manual), three-phase workflow, plan
+    document format with full section reference and field table, trait selection guide, YAML
+    pitfalls, dry-run-first pattern, post-import checklist, plan lifecycle, batch alternative, and
+    command reference. Added manifest entry. All quality gates passed."
 - _ulid: 01KHZHPQ81DQRBGC6DZ80BP7S5
   slugs: []
   title: "Write core skill: kspec:task-work"
