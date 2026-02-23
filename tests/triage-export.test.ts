@@ -164,15 +164,24 @@ describe("exportTriageRecords", () => {
   });
 
   // AC: @triage-agent-export ac-2
-  it("returns json format with full TriageRecord objects", () => {
+  // The shared formatter returns an envelope { format, items, total } for API consumers.
+  // CLI extracts `items` and outputs as raw JSON array via JSON.stringify(result.items).
+  // The `items` field IS the JSON array of full TriageRecord objects per ac-2.
+  it("returns json format with full TriageRecord objects in items array", () => {
     const records = [makeRecord(), makeRecord({ _ulid: "01TESTUL1D000000000000002" })];
     const result = exportTriageRecords(records, "json");
 
     expect(result.format).toBe("json");
     if (result.format === "json") {
+      // items is the JSON array per ac-2
       expect(result.items).toHaveLength(2);
       expect(result.total).toBe(2);
-      // Full object fields present
+      // Verify items array is directly serializable as JSON array
+      const jsonArray = JSON.stringify(result.items, null, 2);
+      const parsed = JSON.parse(jsonArray);
+      expect(Array.isArray(parsed)).toBe(true);
+      expect(parsed).toHaveLength(2);
+      // Full object fields present per ac-2
       expect(result.items[0]).toHaveProperty("_ulid");
       expect(result.items[0]).toHaveProperty("inbox_ref");
       expect(result.items[0]).toHaveProperty("item_snapshot");
@@ -284,7 +293,7 @@ describe("trait: json-output", () => {
     const result = exportTriageRecords([record], "json");
 
     if (result.format === "json") {
-      const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+      const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
       expect(result.items[0].created_at).toMatch(isoRegex);
       expect(result.items[0].acted_at).toMatch(isoRegex);
     }
