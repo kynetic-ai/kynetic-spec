@@ -10,21 +10,15 @@ import { join } from 'path';
 
 describe('Daemon Executable Compilation', () => {
   const daemonDir = join(process.cwd(), 'packages/daemon');
-  // When running from packages/daemon, outfile is relative to that directory
-  // But bun seems to resolve it from the repo root. Let's check both.
-  const possiblePaths = [
-    join(process.cwd(), 'dist/kspec-daemon'),
-    join(daemonDir, 'dist/kspec-daemon'),
-  ];
+  // build:compile outputs to ../../dist/kspec-daemon (relative to daemon dir = project root dist/)
+  const executablePath = join(process.cwd(), 'dist/kspec-daemon');
 
   afterEach(async () => {
-    // Clean up compiled executables if they exist
-    for (const path of possiblePaths) {
-      try {
-        await rm(path, { force: true });
-      } catch {
-        // Ignore cleanup errors
-      }
+    // Clean up compiled executable if it exists
+    try {
+      await rm(executablePath, { force: true });
+    } catch {
+      // Ignore cleanup errors
     }
   });
 
@@ -50,25 +44,7 @@ describe('Daemon Executable Compilation', () => {
     }
     expect(buildResult.status).toBe(0);
 
-    // Find which path the executable was created at
-    let executablePath: string | undefined;
-    for (const path of possiblePaths) {
-      try {
-        const stats = await stat(path);
-        if (stats.isFile()) {
-          executablePath = path;
-          break;
-        }
-      } catch {
-        // Try next path
-      }
-    }
-
-    if (!executablePath) {
-      throw new Error(`Executable not found at any of: ${possiblePaths.join(', ')}`);
-    }
-
-    // Verify executable exists
+    // Verify executable exists at expected path
     const stats = await stat(executablePath);
     expect(stats.isFile()).toBe(true);
 

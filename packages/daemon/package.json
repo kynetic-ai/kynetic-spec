@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:compile": "bun build --compile --minify src/index.ts --outfile dist/kspec-daemon",
+    "build:compile": "bun build --compile --minify ../../dist/daemon/index.ts --outfile ../../dist/kspec-daemon",
     "dev": "bun --watch src/index.ts",
     "start": "bun dist/index.js"
   },
