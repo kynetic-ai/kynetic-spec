@@ -8,14 +8,16 @@ triage:
       (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage,
       (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover
       inbox."
-    status: acted_on
-    action: defer
+    status: triaged
+    action: spec-gap
     reasoning: first item reasoning
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T05:52:36.973Z
     created_at: 2026-02-22T22:50:19.918Z
-    updated_at: 2026-02-23T05:52:36.974Z
+    updated_at: 2026-02-23T05:58:04.084Z
+    override_reasoning: We should bridge this gap
+    override_by: Jacob Chapel
+    override_at: 2026-02-23T05:58:04.083Z
   - _ulid: 01KJ3T9S4R04XWBGE7DDT5Z8EM
     inbox_ref: 01KJ3T9QMVRE7PM5AWAE6JG3KG
     item_snapshot: Export precedence test
@@ -37,8 +39,8 @@ triage:
     reasoning: needs spec
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-22T23:17:39.384Z
-    updated_at: 2026-02-23T05:56:25.573Z
     override_reasoning: It's a test
     override_by: Jacob Chapel
     override_at: 2026-02-23T05:56:25.572Z
+    created_at: 2026-02-22T23:17:39.384Z
+    updated_at: 2026-02-23T05:56:25.573Z
