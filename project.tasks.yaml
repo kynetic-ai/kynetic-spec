@@ -55780,6 +55780,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #478. Centralized inline error strings in task needs-work handler to
+    errors.ts: added cannotNeedsWork to statusErrors and needsWorkTask to operationFailures. Also
+    fixed flaky CI test by bumping timeout on full fix cycle round-trip test. All CI checks pass."
   depends_on: []
   context: []
   priority: 3
@@ -55787,6 +55790,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:01.626Z
   started_at: 2026-02-23T14:29:16.427Z
+  completed_at: 2026-02-23T14:54:28.132Z
   notes:
     - _ulid: 01KJ4V5H9V3JMF85W753X7ZSDF
       created_at: 2026-02-23T08:52:00.443Z
@@ -55804,10 +55808,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T14:54:28.132Z
-  closed_reason: "Merged in PR #478. Centralized inline error strings in task needs-work handler to
-    errors.ts: added cannotNeedsWork to statusErrors and needsWorkTask to operationFailures. Also
-    fixed flaky CI test by bumping timeout on full fix cycle round-trip test. All CI checks pass."
 - _ulid: 01KJ4SM5NXME299C3KB4FG7J0A
   slugs: []
   title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
@@ -55820,7 +55820,7 @@
     shared boundary would prevent recurrence. Related: @merge-ref-normalization (merge layer),
     @01KG0N4V (silent safeParse drops)."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -55837,6 +55837,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T14:56:25.606Z
 - _ulid: 01KJ4SM6RN06C487QWRWABJ86J
   slugs: []
   title: kspec plan import should place type:trait items with no parent in the project-level traits
