@@ -3645,9 +3645,11 @@ modules:
                 when: the kspec package has templates/skills/ with core skill files
                 then: meta entries are created with origin core
               - id: ac-2
-                given: install-core completes
-                when: .kspec/skills/ is inspected
-                then: content files are copied from templates to .kspec/skills/<id>/
+                given: install-core completes for a skill with SKILL.md and supporting directories (docs/,
+                  references/, scripts/, assets/)
+                when: .kspec/skills/<id>/ is inspected
+                then: SKILL.md and all supporting directories with their files are copied from templates to
+                  .kspec/skills/<id>/
               - id: ac-3
                 given: a skill already exists with origin custom (forked)
                 when: install-core is run
