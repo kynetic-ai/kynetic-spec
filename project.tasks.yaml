@@ -56348,25 +56348,26 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix ralph event logging iteration capture-by-value bug
+- _ulid: 01KJ5WV0G52E3BZA5W3VPW22J1
+  slugs: []
+  title: Fix ralph event logging iteration capture-by-value bug
+  type: task
   description: "In ralph.ts:1573-1579, the streaming update event handler fires appendEvent() without
     await (fire-and-forget). The iteration variable is captured by closure reference, not by value.
     By the time the async callback executes, iteration has already been incremented in the for loop
     — so hundreds of tool_call events get tagged with the wrong iteration number. Fix: snapshot
     iteration into a const before the closure. One-line fix."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs: []
-  tags: []
-  depends_on: []
-  _ulid: 01KJ5WV0G52E3BZA5W3VPW22J1
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 1
+  tags: []
   vcs_refs: []
   created_at: 2026-02-23T18:40:27.141Z
   notes: []
   todos: []
+  automation: eligible
