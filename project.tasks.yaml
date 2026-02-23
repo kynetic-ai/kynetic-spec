@@ -55861,7 +55861,7 @@
     traits array (kynetic.yaml), not the module-level traits array. Currently causes schema
     validation error.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55889,6 +55889,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T15:57:26.853Z
+  closed_reason: "Merged in PR #480. Fixed plan import to place type:trait items with no parent in
+    kynetic.yaml project-level traits array instead of module-level traits. Implementation mirrors
+    existing kspec trait add pattern. AC coverage: ac-11 (trait creation), ac-15 (dry-run output).
+    All tests pass."
 - _ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
   slugs: []
   title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
