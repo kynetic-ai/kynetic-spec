@@ -104,7 +104,7 @@ echo '[
 |----------------|-----------------|-----|
 | Clear scope (know what to do and where) | `task add` | Ready to implement — don't use inbox |
 | Unclear scope (vague idea, needs triage) | `inbox add` | Will be triaged into a task later |
-| Behavior change needing spec work | Ask user: task or inbox? | May need spec-first workflow |
+| Behavior change that may need spec work | Ask user: task or inbox? | May need spec-first workflow |
 | Friction pattern (systemic) | `meta observe friction` | Informs process improvement |
 | Success pattern | `meta observe success` | Worth documenting/replicating |
 | Open question needing research | `meta question add` | Track during session |
@@ -196,6 +196,7 @@ kspec workflow start @session-reflect-loop
 2. **Search first** - MUST search existing specs/tasks/inbox before capturing anything
 3. **No user prompts** - Skip discussion step, auto-resolve decisions
 4. **Lower volume** - Better to capture nothing than capture noise
+5. **Higher bar for tasks** - In loop mode, prefer `inbox add` over `task add` unless the task is clearly scoped and obviously needed. Creating tasks has a higher bar without user confirmation — when in doubt, use inbox so the user can triage later
 
 ### Workflow Steps
 
