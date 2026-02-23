@@ -56984,6 +56984,16 @@
     - skills
   vcs_refs: []
   created_at: 2026-02-23T23:15:21.338Z
-  notes: []
-  todos: []
   started_at: 2026-02-23T23:38:36.688Z
+  notes:
+    - _ulid: 01KJ6DYTXTSDVD3X12DWH2NZ76
+      created_at: 2026-02-23T23:39:38.299Z
+      author: "@claude"
+      content: Completed full comparison of all 6 old skills vs core replacements. All content is covered
+        by core skills. The one notable difference is meta→observations (old covered
+        focus/threads/questions/observations, core covers observations only — but
+        focus/threads/questions are lightweight CLI features in kspec help meta, not needing a
+        dedicated skill). Ready to delete the 6 old skills and clean up references, pending user
+        confirmation.
+      supersedes: null
+  todos: []
