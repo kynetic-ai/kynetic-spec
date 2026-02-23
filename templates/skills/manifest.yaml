@@ -43,3 +43,8 @@ skills:
     description: Translate approved plans into specs and tasks. Import structured documents or create incrementally. Plans persist as durable artifacts with audit trail.
     platforms:
       - claude-code
+  - id: task-work
+    name: Task Work
+    description: Structured task lifecycle — start, work, note, submit, complete. Fix cycle handling, scope management, loop mode for automation, and quality gates.
+    platforms:
+      - claude-code
