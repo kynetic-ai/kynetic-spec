@@ -54884,7 +54884,7 @@
   type: task
   spec_ref: "@interactive-triage-ui"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-triage-daemon-api"
@@ -54920,6 +54920,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T02:07:33.821Z
+  closed_reason: "Merged in PR #455. Implemented interactive triage UI at /triage with card-based
+    one-at-a-time presentation, action selection (5 actions), reasoning input, next/prev navigation
+    with keyboard arrows, tag/status filters with progress bar, WebSocket triage:updates
+    subscription for real-time updates, and static mode read-only support. All 8 own ACs and
+    relevant trait ACs (ac-1-3) covered with 18 tests."
 - _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
   slugs:
     - implement-triage-agent-export
