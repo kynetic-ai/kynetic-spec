@@ -54964,7 +54964,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -54985,6 +54985,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T00:12:45.839Z
 - _ulid: 01KJ3SMVTJC1FFY14RAAA7K2SV
   slugs:
     - task-investigate-doctor-flaky-tests
