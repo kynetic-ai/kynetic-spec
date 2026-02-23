@@ -53740,7 +53740,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -53757,6 +53757,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-23T09:55:12.581Z
 - _ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
   slugs: []
   title: Render core skills under kspec/ namespace directory
@@ -54141,6 +54142,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #463. Purged all project-specific skill references (/pr, /pr-review,
+    /local-review, /release, /triage, /reflect, /task-work) from shipped templates and source code.
+    Templates use generic language or kspec: namespace skills. Ralph prompt builders now receive
+    skill names from config (ralph.skills section in kspec.config.yaml) with kspec: namespace
+    defaults. Fix cycle addressed initial review finding that constants still shipped
+    project-specific names. All 3177 tests pass, CI green."
   depends_on:
     - "@01KHZHPG"
   context: []
@@ -54151,6 +54158,7 @@
   vcs_refs: []
   created_at: 2026-02-21T07:30:28.499Z
   started_at: 2026-02-23T09:41:59.151Z
+  completed_at: 2026-02-23T09:52:43.257Z
   notes:
     - _ulid: 01KJ4V5DVM4SAQNNZQ6CXX8FFP
       created_at: 2026-02-23T08:51:56.916Z
@@ -54189,13 +54197,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T09:52:43.257Z
-  closed_reason: "Merged in PR #463. Purged all project-specific skill references (/pr, /pr-review,
-    /local-review, /release, /triage, /reflect, /task-work) from shipped templates and source code.
-    Templates use generic language or kspec: namespace skills. Ralph prompt builders now receive
-    skill names from config (ralph.skills section in kspec.config.yaml) with kspec: namespace
-    defaults. Fix cycle addressed initial review finding that constants still shipped
-    project-specific names. All 3177 tests pass, CI green."
 - _ulid: 01KHZHZ7GGQ6710KHVNVJB3GEB
   slugs: []
   title: Fix task get to display description field in text output
