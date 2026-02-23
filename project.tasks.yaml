@@ -56543,7 +56543,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Design native task-limit enforcement for ralph agent iterations
+- _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
+  slugs: []
+  title: Design native task-limit enforcement for ralph agent iterations
+  type: spike
   description: >-
     ## Problem
 
@@ -56618,23 +56621,161 @@
     - templates/agents-sections/06-ralph-loop.md (agent instructions)
 
     - .claude/skills/task-work/SKILL.md (agent stop instructions)
-  type: spike
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - ralph
     - hooks
     - design
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-23T21:12:16.803Z
+  notes: []
+  todos: []
   automation: manual_only
-  _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
+- title: Fix phased tool call event handling for ralph display and session stats
+  description: >-
+    ## Problem
+
+
+    After upgrading to @agentclientprotocol/sdk@0.14.x, tool call info (command names, file paths,
+    etc.) is no longer displayed in ralph loop output. Only the tool result/output is shown.
+
+
+    ## Root Cause
+
+
+    The ACP SDK now sends tool calls in two phases:
+
+    1. `tool_call` event with `rawInput: {}` (empty) and `status: pending`
+
+    2. `tool_call_update` event moments later with populated `rawInput: { command: "...",
+    description: "..." }`
+
+
+    The event translator in events.ts extracts the summary on the first event (gets empty string
+    from empty rawInput), then when the second event arrives with populated input, the logic at line
+    648 doesn't always re-emit a tool_update with the now-available summary.
+
+
+    ## Affected Code (comprehensive list)
+
+
+    ### Core translator (primary fix)
+
+    - **src/ralph/events.ts lines 632-683** (`tool_call` case): Summary extraction from empty
+    rawInput yields "". Need to handle phased arrival — when tool_call_update arrives with populated
+    rawInput and existing summary was empty, emit a tool_update event with the summary.
+
+    - **src/ralph/events.ts line 648**: The check `if (summary && !hadSummary)` — needs to correctly
+    detect "summary was empty before, now has content"
+
+    - **src/ralph/events.ts lines 685-738** (`tool_call_update` case): May need to also check for
+    newly-available summary here, not just in the tool_call case
+
+
+    ### CLI renderer (may need adjustment)
+
+    - **src/ralph/cli-renderer.ts lines 175-198** (`renderToolStart`): Currently shows empty summary
+    on first event. Should either defer display until summary available, or update display when
+    summary arrives via tool_update
+
+    - **src/ralph/cli-renderer.ts lines 200-211** (`renderToolUpdate`): Should display summary when
+    it arrives in the update phase
+
+
+    ### Session stats (double-counting bug)
+
+    - **src/sessions/store.ts lines 979-1028** (`computeToolUsageStats`): Counts BOTH phased events
+    as separate tool calls, leading to doubled tool usage stats. Must deduplicate by toolCallId —
+    only count unique tool calls, not phased updates
+
+    - **src/sessions/store.ts lines 455-484** (`countTaskCompletions`): Accesses `rawInput.command`
+    — safe since first event has empty rawInput (won't false-match), but should be verified
+
+
+    ### Session display
+
+    - **src/cli/commands/session.ts lines 1508-1556** (`summarizeEventData`): Shows tool_call events
+    — first phased event will show only tool name without command details. Should either skip events
+    with empty rawInput or prefer the populated version
+
+    - **src/cli/commands/session.ts lines 1646-1737** (`sessionLogShowAction`): Displays events, may
+    show tool twice (once per phase)
+
+    - **src/cli/commands/session.ts lines 1856-1924** (`sessionLogStatsAction`): Uses
+    computeToolUsageStats — inherits double-counting bug
+
+    - **src/cli/commands/session.ts lines 1992-2027** (`sessionLogSearchAction`): Searches events,
+    may find duplicate matches for phased events
+
+
+    ### Iteration summaries
+
+    - **src/sessions/store.ts lines 718-802** (`computeIterationSummaries`): Extracts task
+    start/complete refs from rawInput.command at lines 780-789 — only works when rawInput populated
+    (second event), which is correct but should be documented
+
+
+    ## Test Coverage Needed
+
+
+    ### Existing tests to update
+
+    - **tests/session-log-stats.test.ts lines 187-210**: Tests computeToolUsageStats with single
+    events only — need phased event pair tests to verify no double-counting
+
+    - **tests/ralph.test.ts**: Tests event translation — need phased tool_call event pairs
+
+
+    ### New tests needed
+
+    - Phased tool_call → tool_call (with input) → tool_call_update (completed) flow through
+    translator
+
+    - Tool usage stats with phased events (verify count = 1, not 2)
+
+    - CLI renderer output for phased events (summary appears on update, not on empty start)
+
+    - Session log show/search with phased events (no duplicates)
+
+
+    ## Fix Approach
+
+
+    1. **Translator (events.ts)**: When a tool_call or tool_call_update arrives with populated
+    rawInput for a toolCallId whose existing summary is empty, extract the new summary and emit a
+    tool_update event
+
+    2. **Stats (store.ts)**: Deduplicate tool_call events by toolCallId — track seen IDs and only
+    count first occurrence
+
+    3. **Session display (session.ts)**: Filter or merge phased events so display shows one entry
+    per tool call with full details
+
+    4. **Tests**: Add phased event fixtures and assertions across all affected test files
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - ralph
+    - events
+    - acp
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJ65J2Q0SS2WGYD1P5FZ2C40
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-23T21:12:16.803Z
+  created_at: 2026-02-23T21:12:51.679Z
   notes: []
   todos: []
