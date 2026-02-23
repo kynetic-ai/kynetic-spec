@@ -6387,4 +6387,18 @@ skills:
     tags:
       - core
     allowed_tools: []
+  - _ulid: 01KJ55J4TWZ9PVWXMJRBKX2EDD
+    _type: skill
+    id: plan
+    name: Plan to Spec
+    description: Translate approved plans into specs and tasks. Import structured documents or create
+      incrementally. Plans persist as durable artifacts with audit trail.
+    origin: core
+    version: 0.3.0
+    platforms:
+      - claude-code
+    depends_on: []
+    tags:
+      - core
+    allowed_tools: []
 includes: []
