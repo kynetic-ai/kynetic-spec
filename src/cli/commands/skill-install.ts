@@ -167,20 +167,17 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
 }
 
 /**
- * Compare two directory trees recursively for equality.
- * Returns true if all files have identical content and structure matches.
+ * Check if all source entries exist in dest with identical content.
+ * Uses subset comparison: extra files in dest are ignored since
+ * copyDirRecursive is an overlay copy that doesn't delete extra files.
  */
-async function dirsEqual(src: string, dest: string): Promise<boolean> {
+async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src);
-    const destEntries = await fs.readdir(dest);
-
-    if (srcEntries.length !== destEntries.length) return false;
-
-    const destSet = new Set(destEntries);
+    const destEntries = new Set(await fs.readdir(dest));
 
     for (const name of srcEntries) {
-      if (!destSet.has(name)) return false;
+      if (!destEntries.has(name)) return false;
 
       const srcPath = path.join(src, name);
       const destPath = path.join(dest, name);
@@ -188,7 +185,7 @@ async function dirsEqual(src: string, dest: string): Promise<boolean> {
       const destStat = await fs.stat(destPath);
 
       if (srcStat.isDirectory() && destStat.isDirectory()) {
-        if (!(await dirsEqual(srcPath, destPath))) return false;
+        if (!(await sourceMatchesDest(srcPath, destPath))) return false;
       } else if (srcStat.isFile() && destStat.isFile()) {
         // Use Buffer comparison for binary safety (assets/ may contain images)
         const srcBuf = await fs.readFile(srcPath);
@@ -259,7 +256,7 @@ export async function copyCoreSkillFiles(
     }
 
     const destSubDir = path.join(targetDir, dirName);
-    if (await dirsEqual(srcSubDir, destSubDir)) {
+    if (await sourceMatchesDest(srcSubDir, destSubDir)) {
       continue; // Content unchanged, skip copy
     }
 

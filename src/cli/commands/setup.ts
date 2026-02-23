@@ -1287,7 +1287,16 @@ async function generateAgentInstructions(
         // No hash file or invalid — regenerate
       }
 
-      if (storedHash === metaHash) {
+      // Only skip if hash matches AND the output file actually exists
+      let outputExists = false;
+      try {
+        await fs.access(outputPath);
+        outputExists = true;
+      } catch (_e) {
+        // File missing — must regenerate even if hash matches
+      }
+
+      if (storedHash === metaHash && outputExists) {
         return { success: true, path: outputPath, skipped: true };
       }
 
