@@ -4174,7 +4174,8 @@ features:
           - id: ac-27
             given: A plan with additional tasks array in Tasks section (tasks without specs)
             when: kspec plan import <path> is run
-            then: Manual tasks are created without spec_ref, only with plan_ref
+            then: Manual tasks are created with plan_ref. If spec_ref is explicitly provided in the task YAML,
+              it is honored and normalized; otherwise no spec_ref is set
           - id: ac-28
             given: A plan has been imported with slug auth-redesign
             when: "@auth-redesign is used in any kspec command"
