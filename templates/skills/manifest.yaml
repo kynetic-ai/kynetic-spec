@@ -48,3 +48,8 @@ skills:
     description: Structured task lifecycle — start, work, note, submit, complete. Fix cycle handling, scope management, loop mode for automation, and quality gates.
     platforms:
       - claude-code
+  - id: create-workflow
+    name: Create Workflow
+    description: Formalize repeatable patterns into trackable kspec workflows. Design steps, choose triggers, create loop variants, and integrate with skills.
+    platforms:
+      - claude-code
