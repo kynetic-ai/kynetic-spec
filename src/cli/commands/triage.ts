@@ -23,6 +23,7 @@ import {
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { TriageAction, TriageRecord } from "../../schema/index.js";
+import { exportTriageAsContext, truncateText } from "../../export/triage.js";
 import { errors } from "../../strings/index.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -50,14 +51,7 @@ function resolveTriageRef(
   return record;
 }
 
-/**
- * Truncate text for display
- */
-function truncateText(text: string, maxLen: number = 60): string {
-  const firstLine = text.split("\n")[0].trim();
-  if (firstLine.length <= maxLen) return firstLine;
-  return `${firstLine.slice(0, maxLen - 3)}...`;
-}
+// truncateText imported from shared export/triage.ts
 
 /**
  * Execute a triage action
@@ -155,32 +149,7 @@ async function executeTriageAction(
   }
 }
 
-/**
- * Format a triage record for context export
- * AC: @triage-cli-commands ac-13
- */
-function formatTriageContext(record: TriageRecord): string {
-  const lines: string[] = [];
-  lines.push(`### ${record._ulid.slice(0, 8)} — ${truncateText(record.item_snapshot, 80)}`);
-  lines.push("");
-  lines.push(`**Item:** ${record.item_snapshot}`);
-  lines.push(`**Status:** ${record.status}`);
-  if (record.action) lines.push(`**Action:** ${record.action}`);
-  if (record.reasoning) lines.push(`**Reasoning:** ${record.reasoning}`);
-  if (record.decided_by) lines.push(`**Decided by:** ${record.decided_by}`);
-  if (record.evidence_refs.length > 0) {
-    lines.push(`**Evidence:** ${record.evidence_refs.join(", ")}`);
-  }
-  if (record.override_reasoning) {
-    lines.push(`**Override:** ${record.override_reasoning} (by ${record.override_by || "unknown"})`);
-  }
-  if (record.acted_at) {
-    lines.push(`**Acted at:** ${record.acted_at}`);
-    if (record.result_ref) lines.push(`**Result:** ${record.result_ref}`);
-  }
-  lines.push("");
-  return lines.join("\n");
-}
+// formatTriageContext moved to shared export/triage.ts (formatTriageRecordContext)
 
 /**
  * Register the 'triage' command group
@@ -496,20 +465,14 @@ Examples:
 
         // AC: @trait-json-output ac-6 — --json takes precedence over --format
         // AC: @triage-cli-commands ac-13, ac-14
+        // AC: @triage-agent-export ac-1, ac-2, ac-3, ac-4 — shared formatter
         output(records, () => {
           if (options.format === "json") {
             // AC: @triage-cli-commands ac-14
             console.log(JSON.stringify(records, null, 2));
           } else {
-            // AC: @triage-cli-commands ac-13 — context format
-            if (records.length === 0) {
-              console.log("No triage decisions recorded.");
-              return;
-            }
-            console.log("# Triage Decisions\n");
-            for (const record of records) {
-              console.log(formatTriageContext(record));
-            }
+            // AC: @triage-cli-commands ac-13 — context format via shared formatter
+            console.log(exportTriageAsContext(records));
           }
         });
       } catch (err) {

@@ -136,12 +136,12 @@ describe('Triage API Endpoints', () => {
     // AC: @triage-daemon-api ac-6 - Format parameter
     expect(content).toContain('query.format');
 
-    // AC: @triage-daemon-api ac-6 - Context markdown format
-    expect(content).toContain("format === 'context'");
-    expect(content).toContain('formatTriageContext');
+    // AC: @triage-daemon-api ac-6 - Uses shared export formatter
+    // AC: @triage-agent-export ac-1, ac-2 - Shared formatter for both CLI and daemon
+    expect(content).toContain('exportTriageRecords');
 
-    // AC: @triage-daemon-api ac-6 - JSON format
-    expect(content).toContain("format: 'json'");
+    // AC: @triage-daemon-api ac-6 - Supports both json and context formats
+    expect(content).toContain("'json' | 'context'");
   });
 
   // AC: @triage-daemon-api ac-7
@@ -331,24 +331,40 @@ describe('Triage API Endpoints', () => {
   });
 
   describe('Export format', () => {
-    it('should support context markdown format with structured output', async () => {
+    it('should support context markdown format via shared formatter', async () => {
       const content = await readFile(ROUTES_PATH, 'utf-8');
 
-      // AC: @triage-daemon-api ac-6 - Context format
-      expect(content).toContain('formatTriageContext');
-      expect(content).toContain('**Item:**');
-      expect(content).toContain('**Status:**');
-      expect(content).toContain('**Action:**');
-      expect(content).toContain('**Reasoning:**');
-      expect(content).toContain('**Decided by:**');
+      // AC: @triage-daemon-api ac-6 - Uses shared export formatter
+      // AC: @triage-agent-export ac-1 - Shared formatter for context format
+      expect(content).toContain('exportTriageRecords');
+
+      // Verify the shared formatter produces the expected markdown fields
+      const { exportTriageAsContext } = await import('../src/export/triage.js');
+      const mockRecord = {
+        _ulid: '01TESTUL1D000000000000000',
+        inbox_ref: '01INBOXRE000000000000000F',
+        item_snapshot: 'Test item',
+        status: 'triaged' as const,
+        action: 'promote' as const,
+        reasoning: 'Test reasoning',
+        decided_by: '@claude',
+        evidence_refs: [],
+        created_at: '2026-02-22T20:00:00.000Z',
+      };
+      const output = exportTriageAsContext([mockRecord]);
+      expect(output).toContain('**Item:**');
+      expect(output).toContain('**Status:**');
+      expect(output).toContain('**Action:**');
+      expect(output).toContain('**Reasoning:**');
+      expect(output).toContain('**Decided by:**');
     });
 
-    it('should handle empty records in export', async () => {
-      const content = await readFile(ROUTES_PATH, 'utf-8');
-
+    it('should handle empty records in export via shared formatter', async () => {
       // AC: @triage-daemon-api ac-6 - Empty case
-      expect(content).toContain('records.length === 0');
-      expect(content).toContain('No triage decisions recorded');
+      // AC: @triage-agent-export ac-4 - Empty result message
+      const { exportTriageAsContext } = await import('../src/export/triage.js');
+      const output = exportTriageAsContext([]);
+      expect(output).toBe('No triage decisions recorded.');
     });
   });
 
