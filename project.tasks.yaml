@@ -54906,6 +54906,18 @@
         Action buttons as button row. Textarea for reasoning.
         Subscribe to triage:updates WebSocket topic.
         Add fetchTriage, createTriageRecord, updateTriageRecord to api.ts.
+    - _ulid: 01KJ432P0000E3EPD0N8EEG508
+      created_at: 2026-02-23T01:51:01.120Z
+      author: "@claude"
+      content: "Implemented interactive triage UI at packages/web-ui/src/routes/triage/+page.svelte.
+        Card-based one-at-a-time presentation with: action selection (5 actions), reasoning
+        textarea, next/prev navigation (keyboard arrows), tag/status filters with progress bar,
+        WebSocket triage:updates subscription for real-time updates, static mode read-only support.
+        API client adds fetchTriageRecords, createTriageRecord, overrideTriageRecord,
+        actOnTriageRecord. Types in lib/types/triage.ts. Nav links in Sidebar and MobileNav. 18
+        tests covering all 8 own ACs + 3 trait ACs. Local review findings addressed (typed return,
+        params consistency, effect cleanup). PR #455."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
