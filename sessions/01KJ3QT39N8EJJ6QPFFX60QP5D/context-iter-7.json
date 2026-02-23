@@ -1,0 +1,353 @@
+{
+  "generated_at": "2026-02-23T01:56:38.285Z",
+  "branch": "feat/interactive-triage-ui",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KJ3FXJ8",
+      "title": "Implement Interactive Triage UI",
+      "started_at": "2026-02-23T01:38:03.792Z",
+      "priority": 3,
+      "spec_ref": "@interactive-triage-ui",
+      "note_count": 2,
+      "last_note_at": "2026-02-23T01:51:01.120Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KJ3FXJ8",
+      "task_title": "Implement Interactive Triage UI",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ432P",
+      "created_at": "2026-02-23T01:51:01.120Z",
+      "author": "@claude",
+      "content": "Implemented interactive triage UI at packages/web-ui/src/routes/triage/+page.svelte. Card-based one-at-a-time presentation with: action selection (5 actions), reasoning textarea, next/prev navigation (keyboard arrows), tag/status filters with progress bar, WebSocket triage:updates subscription for real-time updates, static mode read-only support. API client adds fetchTriageRecords, createTriageRecord, overrideTriageRecord, actOnTriageRecord. Types in lib/types/triage.ts. Nav links in Sidebar and MobileNav. 18 tests covering all 8 own ACs + 3 trait ACs. Local review findings addressed (typed return, params consistency, effect cleanup). PR #455."
+    },
+    {
+      "task_ref": "01KJ3FXJJ",
+      "task_title": "Implement Triage Agent Export",
+      "task_status": "completed",
+      "note_ulid": "01KJ40YM",
+      "created_at": "2026-02-23T01:13:51.315Z",
+      "author": "@claude",
+      "content": "Implemented shared triage export formatter in src/export/triage.ts. Extracted duplicated formatTriageContext() from both CLI (src/cli/commands/triage.ts) and daemon (packages/daemon/src/routes/triage.ts) into shared module. Two export formats: context (markdown) and JSON. exportTriageRecords() returns typed union. 18 dedicated tests covering all 4 own ACs (context format, JSON format, overrides, empty state) plus trait-json-output ACs (no ANSI, all data included, @ prefix refs, ISO timestamps). Updated daemon static analysis tests to verify shared formatter integration. Full suite: 3148 passed, 2 failed (pre-existing doctor flaky)."
+    },
+    {
+      "task_ref": "01KJ3FXJ0",
+      "task_title": "Implement Triage Daemon API",
+      "task_status": "completed",
+      "note_ulid": "01KJ3Z6X",
+      "created_at": "2026-02-23T00:43:25.122Z",
+      "author": "@claude",
+      "content": "Implemented triage daemon API routes at packages/daemon/src/routes/triage.ts. 6 endpoints: GET / (list), GET /export, POST / (create), GET /:ref, POST /:ref/override, POST /:ref/act. All 9 own ACs covered. Trait ACs: api-endpoint ac-1-5, websocket-protocol ac-3. Reused executeTriageAction from CLI. 24 tests passing."
+    },
+    {
+      "task_ref": "01KJ3SMT",
+      "task_title": "Fix daemon-executable bun build --compile failure",
+      "task_status": "completed",
+      "note_ulid": "01KJ3XTE",
+      "created_at": "2026-02-23T00:19:07.954Z",
+      "author": "@claude",
+      "content": "Root cause: bun build --compile was running from packages/daemon/ and trying to resolve relative imports (../../parser/index.js) which pointed outside the package to non-existent paths. Fix: Changed build:compile to compile from dist/daemon/index.ts (populated by npm run build:daemon) where the relative import paths correctly resolve to dist/parser/ and dist/utils/. Updated daemon package.json, build-executables.sh, and test. All 3 daemon-executable tests now pass. Full suite: 3105 passed, 1 failed (pre-existing doctor flaky test)."
+    },
+    {
+      "task_ref": "01KHY9W8",
+      "task_title": "Bump @agentclientprotocol/sdk to ^0.14.0",
+      "task_status": "completed",
+      "note_ulid": "01KJ3XDG",
+      "created_at": "2026-02-23T00:12:03.995Z",
+      "author": "@claude",
+      "content": "Bumped @agentclientprotocol/sdk from ^0.13.0 to ^0.14.0 in package.json. npm install succeeded (changed 1 package). tsc --noEmit passed cleanly. Full test suite: 3103 passed, 3 failed (pre-existing: daemon-executable build + doctor flaky tests — tracked by separate tasks @01KJ3SMT and @01KJ3SMV). Zero new failures from the SDK bump."
+    },
+    {
+      "task_ref": "01KJ3FXJ8",
+      "task_title": "Implement Interactive Triage UI",
+      "task_status": "pending_review",
+      "note_ulid": "01KJ3FXJ",
+      "created_at": "2026-02-22T20:16:10.528Z",
+      "author": "@claude",
+      "content": "Implementation notes:\n\nCreate packages/web-ui/src/routes/triage/+page.svelte.\nCard nav with index tracking. Progress bar (triaged/total).\nAction buttons as button row. Textarea for reasoning.\nSubscribe to triage:updates WebSocket topic.\nAdd fetchTriage, createTriageRecord, updateTriageRecord to api.ts.\n"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KJ3SMV",
+      "title": "Investigate flaky doctor test failures",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "bug",
+        "investigation",
+        "testing"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KJ3FXJJ",
+      "title": "Implement Triage Agent Export",
+      "completed_at": "2026-02-23T01:37:07.220Z",
+      "closed_reason": "Merged in PR #454. Shared triage export formatter in src/export/triage.ts extracted from CLI and daemon. Two formats: context (markdown) and JSON. All 4 own ACs and 6 trait ACs (@trait-json-output) covered with 18 dedicated tests. Prior review findings (2 MUST-FIX, 1 SHOULD-FIX) addressed in fix cycle."
+    },
+    {
+      "ref": "01KJ3FXJ0",
+      "title": "Implement Triage Daemon API",
+      "completed_at": "2026-02-23T01:05:05.388Z",
+      "closed_reason": "Merged in PR #453. Implemented 6 triage API endpoints (GET list, GET export, POST create, GET single, POST override, POST act) with full own AC coverage (9/9), trait AC coverage (api-endpoint 5/6, websocket-protocol 1/1 route-level), 26 tests passing. Fix commit addressed upsert identity and stale metadata issues from initial review."
+    },
+    {
+      "ref": "01KJ3SMT",
+      "title": "Fix daemon-executable bun build --compile failure",
+      "completed_at": "2026-02-23T00:31:47.028Z",
+      "closed_reason": "Merged in PR #452. Fixed bun build --compile failure by changing the compile source from packages/daemon/src/index.ts to dist/daemon/index.ts where cross-package relative imports resolve correctly. All 3 daemon-executable tests pass. AC @daemon-server ac-16 covered."
+    },
+    {
+      "ref": "01KHY9W8",
+      "title": "Bump @agentclientprotocol/sdk to ^0.14.0",
+      "completed_at": "2026-02-23T00:24:30.815Z",
+      "closed_reason": "Merged in PR #451. Bumped @agentclientprotocol/sdk from ^0.13.0 to ^0.14.0. Types-only devDependency with zero breaking changes. All CI checks passed, 3105 tests green."
+    },
+    {
+      "ref": "01KJ3FXH3",
+      "title": "Implement Interactive Triage System",
+      "completed_at": "2026-02-23T00:07:58.393Z",
+      "closed_reason": "Merged in PR #450. Parent spec @interactive-triage ac-1 and ac-2 proven with integration tests: end-to-end decision chain test (agent record → override → act → export with attribution/timestamp verification in export output) and persistence test (records survive inbox deletion). Codex review caught incomplete ac-2 coverage in export assertions — fixed in follow-up commit. All CI green."
+    },
+    {
+      "ref": "01KJ3FXHP",
+      "title": "Implement Triage CLI Commands",
+      "completed_at": "2026-02-22T23:44:27.411Z",
+      "closed_reason": "Merged in PR #449. Implements all 7 triage CLI commands (record, list, act, override, export, start, get) with full own AC coverage (17/17) and comprehensive trait AC coverage across 6 traits (json-output, error-guidance, semantic-exit-codes, filterable-list, shadow-commit, dry-run). 52 tests passing. Fix cycle 2 resolved all previous review findings."
+    },
+    {
+      "ref": "01KHY9VV",
+      "title": "Rename adapter from claude-code-acp to claude-agent-acp",
+      "completed_at": "2026-02-22T22:39:23.237Z",
+      "closed_reason": "Merged in PR #448. Renamed adapter from claude-code-acp to claude-agent-acp with backwards-compatible deprecated alias. Updated source files, tests, and spec references. All quality gates passed."
+    },
+    {
+      "ref": "01KJ3FXHD",
+      "title": "Implement Triage Record Schema",
+      "completed_at": "2026-02-22T20:23:31.838Z",
+      "closed_reason": "Schema and parser implemented with full AC coverage (38 tests). Committed in aac8bc27."
+    },
+    {
+      "ref": "01KJ315W",
+      "title": "Spike: Design interactive triage system with persistent metadata",
+      "completed_at": "2026-02-22T20:16:53.170Z",
+      "closed_reason": "Spike complete. Plan imported with 6 specs and 6 tasks. Dependencies set."
+    },
+    {
+      "ref": "01KJ316F",
+      "title": "Spec and formalize .kspec/artifacts/ directory convention",
+      "completed_at": "2026-02-22T18:30:32.817Z",
+      "closed_reason": "Merged in PR #446. Artifacts directory convention implemented: init/setup/repair create .kspec/artifacts/, doctor health check, .gitignore exclusion, 6 tests. Codex review noted: spec wording re .gitkeep should be updated (intentionally skipped since dir is gitignored), setup hardcodes .kspec path (low-risk), repair doesn't ensure .gitignore for legacy branches."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "318cc2a",
+      "full_hash": "318cc2aaa637337fe9a3d874ef1ef440a2ba15f6",
+      "date": "2026-02-23T01:55:30.000Z",
+      "message": "fix: address codex review findings for triage UI",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d2296a6",
+      "full_hash": "d2296a6ce881b3c0df4563ef4eb5ea4dfb07494e",
+      "date": "2026-02-23T01:50:25.000Z",
+      "message": "fix: address local review findings for triage UI",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1f143a2",
+      "full_hash": "1f143a232773405417435301611af6d237c33e30",
+      "date": "2026-02-23T01:48:20.000Z",
+      "message": "feat: implement interactive triage UI for web dashboard",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "21497cf",
+      "full_hash": "21497cf6a68e17ee087557fb8bc0909e9d126a67",
+      "date": "2026-02-23T01:37:00.000Z",
+      "message": "feat: implement shared triage export formatter (#454)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "32c6a6f",
+      "full_hash": "32c6a6f3cb56d91bdb6a81bb528519b9950362fa",
+      "date": "2026-02-23T01:24:31.000Z",
+      "message": "fix: address codex review findings for triage export",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "341c060",
+      "full_hash": "341c060fc3a09e30b45f2d19df60ff9aa9d250ae",
+      "date": "2026-02-23T01:19:44.000Z",
+      "message": "fix: address local review findings for triage export",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8e3eaf2",
+      "full_hash": "8e3eaf20a801553dfd3ef19c63983f8441aa2e6a",
+      "date": "2026-02-23T01:13:44.000Z",
+      "message": "feat: implement shared triage export formatter",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ec9b116",
+      "full_hash": "ec9b1169475864c950ff53e2e8be935f3f49cafa",
+      "date": "2026-02-23T01:04:58.000Z",
+      "message": "feat: implement triage daemon API routes (#453)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1413873",
+      "full_hash": "1413873c9c51783f15ab05b06b143141633c4e5d",
+      "date": "2026-02-23T00:50:07.000Z",
+      "message": "fix: address codex review findings for triage daemon API",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bb77566",
+      "full_hash": "bb77566742c8ad5cdbd184fe62f5335d3b35abc8",
+      "date": "2026-02-23T00:43:46.000Z",
+      "message": "feat: implement triage daemon API routes",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 589,
+    "in_progress": 0,
+    "needs_work": 0,
+    "pending_review": 1,
+    "ready": 30,
+    "blocked": 0,
+    "completed": 540,
+    "inbox_items": 103
+  }
+}

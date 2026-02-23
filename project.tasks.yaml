@@ -55084,7 +55084,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55116,3 +55116,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T02:41:03.385Z
+  closed_reason: "Merged in PR #456. Root cause: getDaemonStatus() checks global PID file, not
+    per-project. Fix: added vi.spyOn mocking in 3 daemon tests to isolate from host environment.
+    Previous SHOULD-FIX (ac-daemon-running not testing running state) addressed. All 3168 tests
+    pass."
