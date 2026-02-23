@@ -55976,6 +55976,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:07.159Z
+  started_at: 2026-02-23T16:01:14.301Z
   notes:
     - _ulid: 01KJ4V6E89ZPNTQDCYEM89V20W
       created_at: 2026-02-23T08:52:30.089Z
@@ -55983,9 +55984,17 @@
       content: "AUTOMATION: Enhancement. --force flag should bypass submit requirement for direct
         completion from in_progress. Spec @task-complete."
       supersedes: null
+    - _ulid: 01KJ5M15A7AYHWWY32A14NC2QH
+      created_at: 2026-02-23T16:06:31.495Z
+      author: "@claude"
+      content: "Fixed --force to bypass ALL state checks in task complete, not just blocked. Changed
+        forcingBlockedTask to forcingCompletion (options.force). Updated note generation to document
+        prior state for any non-pending_review force completion. Updated warning output similarly.
+        Added 5 new tests: force from in_progress, pending, cancelled, already-completed guard, and
+        pending_review no-op. All 3225 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-23T16:01:14.301Z
 - _ulid: 01KJ4SMATMC7TD3H0C2S5K9W4T
   slugs: []
   title: kspec batch cannot handle task patch with nested --data JSON argument. The data object gets
