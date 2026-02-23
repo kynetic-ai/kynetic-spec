@@ -54606,7 +54606,7 @@
   type: task
   spec_ref: "@interactive-triage"
   plan_ref: "@plan-interactive-triage-system"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -54632,6 +54632,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T00:07:58.393Z
+  closed_reason: "Merged in PR #450. Parent spec @interactive-triage ac-1 and ac-2 proven with
+    integration tests: end-to-end decision chain test (agent record → override → act → export with
+    attribution/timestamp verification in export output) and persistence test (records survive inbox
+    deletion). Codex review caught incomplete ac-2 coverage in export assertions — fixed in
+    follow-up commit. All CI green."
 - _ulid: 01KJ3FXHDH6X85QF35D56P2F69
   slugs:
     - implement-triage-record-schema
