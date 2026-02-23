@@ -54914,7 +54914,7 @@
   type: task
   spec_ref: "@triage-agent-export"
   plan_ref: "@plan-interactive-triage-system"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-triage-record-schema"
