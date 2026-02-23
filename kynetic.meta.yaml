@@ -6331,4 +6331,18 @@ skills:
     tags:
       - core
     allowed_tools: []
+  - _ulid: 01KJ5262GTNAS1ZN9FR4RA68BV
+    _type: skill
+    id: reflect
+    name: Session Reflection
+    description: Structured reflection at the end of work sessions. Identifies learnings, friction
+      points, and improvements for system evolution.
+    origin: core
+    version: 0.3.0
+    platforms:
+      - claude-code
+    depends_on: []
+    tags:
+      - core
+    allowed_tools: []
 includes: []
