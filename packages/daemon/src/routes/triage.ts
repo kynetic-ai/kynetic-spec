@@ -28,6 +28,7 @@ import {
   loadTriageRecords,
   saveTriageRecord,
   findTriageRecordByRef,
+  findTriageRecordByInboxRef,
   loadInboxItems,
   findInboxItemByRef,
   loadAllTasks,
@@ -284,9 +285,13 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           ? body.evidence_refs.map((r: string) => r.startsWith('@') ? r : `@${r}`)
           : [];
 
+        // Check if a record already exists for this inbox item (upsert case)
+        const existingRecords = await loadTriageRecords(ctx);
+        const existing = findTriageRecordByInboxRef(existingRecords, inboxItem._ulid);
+
         // AC: @triage-daemon-api ac-3 - Create record with item_snapshot
         const record: LoadedTriageRecord = {
-          _ulid: ulid(),
+          _ulid: existing?._ulid || ulid(),
           inbox_ref: inboxItem._ulid,
           item_snapshot: inboxItem.text,
           status: 'triaged',
@@ -294,26 +299,30 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           reasoning: body.reasoning,
           decided_by: author,
           evidence_refs: evidenceRefs,
-          created_at: new Date().toISOString(),
+          created_at: existing?.created_at || new Date().toISOString(),
         };
 
         await saveTriageRecord(ctx, record);
 
+        // Reload to get the persisted record (saveTriageRecord may upsert by inbox_ref)
+        const savedRecords = await loadTriageRecords(ctx);
+        const savedRecord = findTriageRecordByInboxRef(savedRecords, inboxItem._ulid) || record;
+
         // AC: @trait-api-endpoint ac-5 - Shadow commit
-        await commitIfShadow(ctx.shadow, `triage: record ${record._ulid.slice(0, 8)} as ${record.action}`);
+        await commitIfShadow(ctx.shadow, `triage: record ${savedRecord._ulid.slice(0, 8)} as ${savedRecord.action}`);
 
         // AC: @triage-daemon-api ac-3 - Broadcast triage:updates via WebSocket
         // AC: @trait-websocket-protocol ac-3 - Broadcast event
         pubsub.broadcast('triage:updates', 'triage_record_created', {
-          ulid: record._ulid,
-          inbox_ref: record.inbox_ref,
-          action: record.action,
+          ulid: savedRecord._ulid,
+          inbox_ref: savedRecord.inbox_ref,
+          action: savedRecord.action,
         }, projectContext.path);
 
         // AC: @trait-api-endpoint ac-1 - Return 2xx with JSON body
         return {
           success: true,
-          record,
+          record: savedRecord,
         };
       },
       {
@@ -396,8 +405,11 @@ export function createTriageRoutes(options: TriageRouteOptions) {
         record.updated_at = new Date().toISOString();
 
         // Re-triage if already acted on (allows re-acting with new action)
+        // Clear stale execution metadata to avoid leaking previous action results
         if (record.status === 'acted_on') {
           record.status = 'triaged';
+          record.acted_at = undefined;
+          record.result_ref = undefined;
         }
 
         await saveTriageRecord(ctx, record);

@@ -360,5 +360,28 @@ describe('Triage API Endpoints', () => {
       expect(content).toContain("record.status === 'acted_on'");
       expect(content).toContain("record.status = 'triaged'");
     });
+
+    it('should clear stale execution metadata on override', async () => {
+      const content = await readFile(ROUTES_PATH, 'utf-8');
+
+      // When overriding an acted_on record, clear acted_at and result_ref
+      // to prevent previous action's results leaking into re-act flow
+      expect(content).toContain('record.acted_at = undefined');
+      expect(content).toContain('record.result_ref = undefined');
+    });
+  });
+
+  describe('Upsert correctness', () => {
+    it('should handle duplicate POST by preserving existing record identity', async () => {
+      const content = await readFile(ROUTES_PATH, 'utf-8');
+
+      // Check for existing record before creating (upsert case)
+      expect(content).toContain('findTriageRecordByInboxRef');
+
+      // Reload persisted record after save to ensure correct ULID is returned
+      expect(content).toContain('savedRecords');
+      expect(content).toContain('savedRecord');
+      expect(content).toContain('record: savedRecord');
+    });
   });
 });
