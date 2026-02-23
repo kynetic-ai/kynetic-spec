@@ -489,6 +489,83 @@ describe('ralph command', () => {
     const sessions = await fs.readdir(sessionsDir).catch(() => []);
     expect(sessions.length).toBe(0);
   });
+
+  // ─── Event Logging Iteration Attribution ──────────────────────────────────
+
+  describe('event logging iteration attribution', () => {
+    it('tags streaming update events with the correct iteration number', async () => {
+      // Run 2 iterations — the update handler persists across both.
+      // Each iteration creates a fresh ACP session; the handler must attribute
+      // updates to the iteration that owns that ACP session, not a stale counter.
+      const result = runRalph('--max-loops 2', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      const sessionsDir = path.join(tempDir, 'sessions');
+      const sessions = await fs.readdir(sessionsDir).catch(() => []);
+      expect(sessions.length).toBeGreaterThan(0);
+
+      const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+      const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
+      const events = eventsRaw
+        .trim()
+        .split('\n')
+        .map((line) => JSON.parse(line));
+
+      // Find streaming update events (contain an "update" object in data)
+      const streamingUpdates = events.filter(
+        (e: { type: string; data?: { update?: unknown; iteration?: number } }) =>
+          e.type === 'session.update' && e.data?.update != null,
+      );
+
+      // We expect at least one streaming update per iteration
+      expect(streamingUpdates.length).toBeGreaterThanOrEqual(2);
+
+      // Verify iteration numbers are present and valid (1 or 2, never 0)
+      for (const ev of streamingUpdates) {
+        expect(ev.data.iteration).toBeGreaterThanOrEqual(1);
+        expect(ev.data.iteration).toBeLessThanOrEqual(2);
+      }
+
+      // Both iterations should be represented
+      const iterationNumbers = new Set(
+        streamingUpdates.map((e: { data: { iteration: number } }) => e.data.iteration),
+      );
+      expect(iterationNumbers.has(1)).toBe(true);
+      expect(iterationNumbers.has(2)).toBe(true);
+    });
+
+    it('never tags events with iteration 0 (stale/unmapped fallback)', async () => {
+      const result = runRalph('--max-loops 1', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      const sessionsDir = path.join(tempDir, 'sessions');
+      const sessions = await fs.readdir(sessionsDir).catch(() => []);
+      expect(sessions.length).toBeGreaterThan(0);
+
+      const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+      const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
+      const events = eventsRaw
+        .trim()
+        .split('\n')
+        .map((line) => JSON.parse(line));
+
+      const streamingUpdates = events.filter(
+        (e: { type: string; data?: { update?: unknown; iteration?: number } }) =>
+          e.type === 'session.update' && e.data?.update != null,
+      );
+
+      // Every streaming update should have iteration >= 1 (0 means unmapped session)
+      for (const ev of streamingUpdates) {
+        expect(ev.data.iteration).toBeGreaterThanOrEqual(1);
+      }
+    });
+  });
 });
 
 // ─── Event Translator Unit Tests ────────────────────────────────────────────
@@ -1712,4 +1789,5 @@ describe('subagent module', () => {
       expect(result.output).toMatch(/cannot resolve|not a task/i);
     });
   });
+
 });

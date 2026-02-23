@@ -1303,6 +1303,13 @@ export function registerRalphCommand(program: Command): void {
         let lastErrorMessage: string | undefined;
         const recentTaskRefs: string[] = [];
 
+        // Map ACP session IDs to their iteration number.
+        // The agent's "update" handler persists across iterations and receives
+        // the ACP session ID (_sid) on each event. By looking up the iteration
+        // from this map, late updates from a previous ACP session are correctly
+        // attributed even after the loop has advanced to the next iteration.
+        const sessionIterationMap = new Map<string, number>();
+
         try {
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
@@ -1570,10 +1577,13 @@ export function registerRalphCommand(program: Command): void {
                       }
 
                       // Log raw update event (async, non-blocking)
+                      // Look up iteration by ACP session ID so late updates from
+                      // a previous session are attributed to the correct iteration
+                      const eventIteration = sessionIterationMap.get(_sid) ?? 0;
                       appendEvent(specDir, {
                         session_id: sessionId,
                         type: "session.update",
-                        data: { iteration, update },
+                        data: { iteration: eventIteration, update },
                       }).catch(() => {
                         // Ignore logging errors during streaming
                       });
@@ -1609,6 +1619,7 @@ export function registerRalphCommand(program: Command): void {
                   cwd: process.cwd(),
                   mcpServers: [], // No MCP servers for now
                 });
+                sessionIterationMap.set(acpSessionId, iteration);
 
                 // Phase 1: Task Work
                 info("Sending task-work prompt to agent...");
