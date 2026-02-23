@@ -489,6 +489,83 @@ describe('ralph command', () => {
     const sessions = await fs.readdir(sessionsDir).catch(() => []);
     expect(sessions.length).toBe(0);
   });
+
+  // ─── Event Logging Iteration Attribution ──────────────────────────────────
+
+  describe('event logging iteration attribution', () => {
+    it('tags streaming update events with the correct iteration number', async () => {
+      // Run 2 iterations — the update handler persists across both.
+      // Each iteration creates a fresh ACP session; the handler must attribute
+      // updates to the iteration that owns that ACP session, not a stale counter.
+      const result = runRalph('--max-loops 2', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      const sessionsDir = path.join(tempDir, 'sessions');
+      const sessions = await fs.readdir(sessionsDir).catch(() => []);
+      expect(sessions.length).toBeGreaterThan(0);
+
+      const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+      const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
+      const events = eventsRaw
+        .trim()
+        .split('\n')
+        .map((line) => JSON.parse(line));
+
+      // Find streaming update events (contain an "update" object in data)
+      const streamingUpdates = events.filter(
+        (e: { type: string; data?: { update?: unknown; iteration?: number } }) =>
+          e.type === 'session.update' && e.data?.update != null,
+      );
+
+      // We expect at least one streaming update per iteration
+      expect(streamingUpdates.length).toBeGreaterThanOrEqual(2);
+
+      // Verify iteration numbers are present and valid (1 or 2, never 0)
+      for (const ev of streamingUpdates) {
+        expect(ev.data.iteration).toBeGreaterThanOrEqual(1);
+        expect(ev.data.iteration).toBeLessThanOrEqual(2);
+      }
+
+      // Both iterations should be represented
+      const iterationNumbers = new Set(
+        streamingUpdates.map((e: { data: { iteration: number } }) => e.data.iteration),
+      );
+      expect(iterationNumbers.has(1)).toBe(true);
+      expect(iterationNumbers.has(2)).toBe(true);
+    });
+
+    it('never tags events with iteration 0 (stale/unmapped fallback)', async () => {
+      const result = runRalph('--max-loops 1', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      const sessionsDir = path.join(tempDir, 'sessions');
+      const sessions = await fs.readdir(sessionsDir).catch(() => []);
+      expect(sessions.length).toBeGreaterThan(0);
+
+      const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+      const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
+      const events = eventsRaw
+        .trim()
+        .split('\n')
+        .map((line) => JSON.parse(line));
+
+      const streamingUpdates = events.filter(
+        (e: { type: string; data?: { update?: unknown; iteration?: number } }) =>
+          e.type === 'session.update' && e.data?.update != null,
+      );
+
+      // Every streaming update should have iteration >= 1 (0 means unmapped session)
+      for (const ev of streamingUpdates) {
+        expect(ev.data.iteration).toBeGreaterThanOrEqual(1);
+      }
+    });
+  });
 });
 
 // ─── Event Translator Unit Tests ────────────────────────────────────────────
@@ -1622,36 +1699,4 @@ describe('subagent module', () => {
     });
   });
 
-  describe('event logging iteration capture (static analysis)', () => {
-    it('should use currentIteration in appendEvent closure, not for-loop iteration variable', async () => {
-      const source = await fs.readFile(
-        path.join(__dirname, '..', 'src', 'cli', 'commands', 'ralph.ts'),
-        'utf-8',
-      );
-
-      // The appendEvent call inside the "update" handler must reference
-      // currentIteration (outer mutable) instead of iteration (for-loop let binding).
-      // The handler persists across iterations, so capturing the for-loop variable
-      // would tag events with a stale iteration number.
-      const appendEventBlock = source.match(
-        /appendEvent\(specDir,\s*\{[^}]*iteration:\s*(\w+)/s,
-      );
-      expect(appendEventBlock).toBeTruthy();
-      expect(appendEventBlock![1]).toBe('currentIteration');
-    });
-
-    it('should declare currentIteration outside the for loop', async () => {
-      const source = await fs.readFile(
-        path.join(__dirname, '..', 'src', 'cli', 'commands', 'ralph.ts'),
-        'utf-8',
-      );
-
-      // currentIteration must be declared before the for loop
-      const declIndex = source.indexOf('let currentIteration');
-      const forIndex = source.indexOf('for (let iteration = 1;');
-      expect(declIndex).toBeGreaterThan(-1);
-      expect(forIndex).toBeGreaterThan(-1);
-      expect(declIndex).toBeLessThan(forIndex);
-    });
-  });
 });
