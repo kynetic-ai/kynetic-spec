@@ -31,87 +31,20 @@ import {
   findTriageRecordByInboxRef,
   loadInboxItems,
   findInboxItemByRef,
-  loadAllTasks,
-  loadAllItems,
-  ReferenceIndex,
   getAuthor,
-  createObservation,
-  saveObservation,
-  createTask,
-  saveTask,
-  deleteInboxItem,
   type LoadedTriageRecord,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { TriageAction } from '../../schema/index.js';
 import { exportTriageRecords } from '../../export/triage.js';
+import { executeTriageAction, VALID_ACTIONS } from '../../triage/index.js';
 import type { PubSubManager } from '../websocket/pubsub';
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
 }
 
-const VALID_ACTIONS = ['promote', 'delete', 'defer', 'spec-gap', 'duplicate'];
-
-// formatTriageContext moved to shared export/triage.ts (exportTriageRecords)
-
-/**
- * Execute a triage action (reused from CLI logic)
- * AC: @triage-daemon-api ac-5
- */
-async function executeTriageAction(
-  record: LoadedTriageRecord,
-  ctx: Awaited<ReturnType<typeof initContext>>,
-): Promise<{ resultRef?: string }> {
-  const action = record.action;
-  if (!action) return {};
-
-  switch (action) {
-    case 'promote': {
-      const task = createTask({
-        title: record.item_snapshot.split('\n')[0].slice(0, 100),
-        type: 'task',
-        priority: 3,
-        spec_ref: null,
-        tags: [],
-        description: record.item_snapshot,
-      });
-      await saveTask(ctx, task);
-      const tasks = await loadAllTasks(ctx);
-      const items = await loadAllItems(ctx);
-      const index = new ReferenceIndex(tasks, items);
-      const taskRef = `@${index.shortUlid(task._ulid)}`;
-      return { resultRef: taskRef };
-    }
-
-    case 'delete':
-    case 'duplicate': {
-      const inboxItems = await loadInboxItems(ctx);
-      const inboxItem = findInboxItemByRef(inboxItems, record.inbox_ref);
-      if (inboxItem) {
-        await deleteInboxItem(ctx, inboxItem._ulid);
-      }
-      return {};
-    }
-
-    case 'defer': {
-      return {};
-    }
-
-    case 'spec-gap': {
-      const content = `[spec-gap] ${record.item_snapshot}\n\nReasoning: ${record.reasoning || ''}`;
-      const observation = createObservation('question', content, {
-        configAuthor: ctx.config?.identity?.author,
-      });
-      await saveObservation(ctx, observation);
-      const obsRef = `@${observation._ulid.slice(0, 8)}`;
-      return { resultRef: obsRef };
-    }
-
-    default:
-      return {};
-  }
-}
+// VALID_ACTIONS and executeTriageAction imported from shared triage module
 
 export function createTriageRoutes(options: TriageRouteOptions) {
   const { pubsub } = options;

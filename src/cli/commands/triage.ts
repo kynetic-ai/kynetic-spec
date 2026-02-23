@@ -3,31 +3,23 @@ import { ulid } from "ulid";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
-  createObservation,
-  createTask,
-  deleteInboxItem,
-  findInboxItemByRef,
   getAuthor,
   initContext,
-  type LoadedInboxItem,
   type LoadedTriageRecord,
-  loadAllItems,
-  loadAllTasks,
   loadInboxItems,
   loadTriageRecords,
-  ReferenceIndex,
-  saveObservation,
-  saveTask,
   saveTriageRecord,
+  findInboxItemByRef,
   findTriageRecordByRef,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { TriageAction, TriageRecord } from "../../schema/index.js";
+import type { TriageAction } from "../../schema/index.js";
 import { exportTriageAsContext, truncateText } from "../../export/triage.js";
 import { errors } from "../../strings/index.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
+import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
 
 /**
  * Format relative time for display
@@ -52,104 +44,7 @@ function resolveTriageRef(
 }
 
 // truncateText imported from shared export/triage.ts
-
-/**
- * Execute a triage action
- * AC: @triage-cli-commands ac-4, ac-5, ac-6, ac-7, ac-8
- */
-async function executeTriageAction(
-  record: LoadedTriageRecord,
-  ctx: Awaited<ReturnType<typeof initContext>>,
-  dryRun: boolean = false,
-): Promise<{ resultRef?: string }> {
-  const action = record.action;
-  if (!action) {
-    error("Record has no action to execute");
-    process.exit(EXIT_CODES.VALIDATION_FAILED);
-  }
-
-  switch (action) {
-    case "promote": {
-      // AC: @triage-cli-commands ac-4
-      if (dryRun) {
-        info(`Would create task from inbox item snapshot: "${truncateText(record.item_snapshot)}"`);
-        return {};
-      }
-      const task = createTask({
-        title: record.item_snapshot.split("\n")[0].slice(0, 100),
-        type: "task",
-        priority: 3,
-        spec_ref: null,
-        tags: [],
-        description: record.item_snapshot,
-      });
-      await saveTask(ctx, task);
-      const tasks = await loadAllTasks(ctx);
-      const items = await loadAllItems(ctx);
-      const index = new ReferenceIndex(tasks, items);
-      const taskRef = `@${index.shortUlid(task._ulid)}`;
-      info(`Created task: ${taskRef} - ${task.title}`);
-      return { resultRef: taskRef };
-    }
-
-    case "delete": {
-      // AC: @triage-cli-commands ac-5
-      if (dryRun) {
-        info(`Would delete inbox item: ${record.inbox_ref.slice(0, 8)}`);
-        return {};
-      }
-      const inboxItems = await loadInboxItems(ctx);
-      const inboxItem = findInboxItemByRef(inboxItems, record.inbox_ref);
-      if (inboxItem) {
-        await deleteInboxItem(ctx, inboxItem._ulid);
-        info(`Deleted inbox item: ${record.inbox_ref.slice(0, 8)}`);
-      }
-      return {};
-    }
-
-    case "defer": {
-      // AC: @triage-cli-commands ac-6
-      if (dryRun) {
-        info(`Would defer: no side effects beyond recording the deferral`);
-        return {};
-      }
-      return {};
-    }
-
-    case "spec-gap": {
-      // AC: @triage-cli-commands ac-7
-      if (dryRun) {
-        info(`Would create spec-gap observation from: "${truncateText(record.item_snapshot)}"`);
-        return {};
-      }
-      const content = `[spec-gap] ${record.item_snapshot}\n\nReasoning: ${record.reasoning || ""}`;
-      const observation = createObservation("question", content, {
-        configAuthor: ctx.config?.identity?.author,
-      });
-      await saveObservation(ctx, observation);
-      const obsRef = `@${observation._ulid.slice(0, 8)}`;
-      info(`Created spec-gap observation: ${obsRef}`);
-      return { resultRef: obsRef };
-    }
-
-    case "duplicate": {
-      // AC: @triage-cli-commands ac-8
-      if (dryRun) {
-        info(`Would delete duplicate inbox item: ${record.inbox_ref.slice(0, 8)}`);
-        return {};
-      }
-      const dupItems = await loadInboxItems(ctx);
-      const dupItem = findInboxItemByRef(dupItems, record.inbox_ref);
-      if (dupItem) {
-        await deleteInboxItem(ctx, dupItem._ulid);
-        info(`Deleted duplicate inbox item: ${record.inbox_ref.slice(0, 8)}`);
-      }
-      return {};
-    }
-  }
-}
-
-// formatTriageContext moved to shared export/triage.ts (formatTriageRecordContext)
+// executeTriageAction and VALID_ACTIONS imported from shared triage module
 
 /**
  * Register the 'triage' command group
@@ -181,9 +76,8 @@ Examples:
         const ctx = await initContext();
 
         // Validate action
-        const validActions = ["promote", "delete", "defer", "spec-gap", "duplicate"];
-        if (!validActions.includes(options.action)) {
-          error(`Invalid action: ${options.action}. Must be one of: ${validActions.join(", ")}`);
+        if (!VALID_ACTIONS.includes(options.action)) {
+          error(`Invalid action: ${options.action}. Must be one of: ${VALID_ACTIONS.join(", ")}`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -363,12 +257,12 @@ Examples:
         // AC: @triage-cli-commands ac-17 — dry run
         if (options.dryRun) {
           info(`Dry run for triage record ${record._ulid.slice(0, 8)}:`);
-          await executeTriageAction(record, ctx, true);
+          await executeTriageAction(record, ctx, { dryRun: true, onInfo: info });
           return;
         }
 
         // Execute the action
-        const result = await executeTriageAction(record, ctx, false);
+        const result = await executeTriageAction(record, ctx, { onInfo: info });
 
         // Transition to acted_on
         record.status = "acted_on";
@@ -407,9 +301,8 @@ Examples:
         const record = resolveTriageRef(triageRef, records);
 
         // Validate action
-        const validActions = ["promote", "delete", "defer", "spec-gap", "duplicate"];
-        if (!validActions.includes(options.action)) {
-          error(`Invalid action: ${options.action}. Must be one of: ${validActions.join(", ")}`);
+        if (!VALID_ACTIONS.includes(options.action)) {
+          error(`Invalid action: ${options.action}. Must be one of: ${VALID_ACTIONS.join(", ")}`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
@@ -503,7 +396,7 @@ Examples:
         console.log(`\nInteractive triage: ${untriaged.length} item(s) to review\n`);
         console.log("Actions: promote, delete, defer, spec-gap, duplicate, skip\n");
 
-        const validActions = ["promote", "delete", "defer", "spec-gap", "duplicate", "skip"];
+        const validActions = [...VALID_ACTIONS, "skip"];
         let triaged = 0;
 
         // Use a line-buffering approach for interactive prompts.
