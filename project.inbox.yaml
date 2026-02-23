@@ -964,3 +964,23 @@ inbox:
     created_at: 2026-02-23T05:27:38.653Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ4HNNKRVX2HJHD1SEXZGC6R
+    text: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks
+      list. Had to retry to get a persistent task. Possible shadow branch commit race condition or
+      ULID issue. Observed during session 2026-02-22."
+    created_at: 2026-02-23T06:06:03.385Z
+    tags:
+      - bug
+      - shadow-branch
+      - task
+    added_by: "@claude"
+  - _ulid: 01KJ4HNNN3AJ1CZKMY5487EJJ7
+    text: "Feature: add --description flag to kspec task set so task descriptions can be updated after
+      creation. Currently description is set-once at task add time. Workaround is task note but that
+      is not the same as updating the canonical description."
+    created_at: 2026-02-23T06:06:03.427Z
+    tags:
+      - feature
+      - cli
+      - task
+    added_by: "@claude"
