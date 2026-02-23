@@ -6289,6 +6289,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ5B3SSRXMPW76HE43H15EKS
+    type: success
+    content: "Codex PR review caught a real type drift bug (Convention.validation schema mismatch)
+      during web-ui type deduplication PR. The shared-type approach works well: define in
+      @kynetic-ai/shared, re-export from web-ui, enforce with static analysis test. Dual review
+      (Codex + CI) catches complementary issues."
+    created_at: 2026-02-23T13:30:40.824Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
