@@ -55935,7 +55935,7 @@
     /kspec:help — generateSkillsTable() in agent-data-sections.ts doesn't account for namespace
     rendering of core skills
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55953,6 +55953,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-23T15:59:32.185Z
+  closed_reason: "Already implemented. generateSkillsTable() in agent-data-sections.ts already handles
+    core skill namespace at line 42: skill.origin === 'core' produces /kspec:<id> invocation. Tests
+    at lines 114-146 verify core vs project skill rendering. kspec agents generate --dry-run
+    confirms all 11 core skills render with /kspec: prefix. 28 tests pass."
 - _ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
   slugs: []
   title: task complete --force should bypass the submit requirement. Currently --force does not skip
