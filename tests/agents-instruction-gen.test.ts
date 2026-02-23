@@ -569,10 +569,10 @@ describe('Agent Instruction Generation', () => {
         const filePath = path.join(tempDir, 'kspec-agents.md');
         const content = await fs.readFile(filePath, 'utf-8');
 
-        // Verify pr-workflow specific content
+        // Verify pr-workflow specific content (generic, not project-specific skill references)
         expect(content).toContain('kspec task submit');
-        expect(content).toContain('/local-review');
-        expect(content).toContain('/pr');
+        expect(content).toContain('Local review');
+        expect(content).toContain('Create PR');
       });
 
       it('should include commit-convention template content', async () => {

@@ -203,11 +203,11 @@ describe('ralph command', () => {
   });
 
   // AC: @ralph-skill-delegation ac-3
-  it('contains literal /task-work loop and /reflect loop skill invocations', async () => {
+  it('contains kspec: namespace skill invocations by default', async () => {
     const result = runRalph('--dry-run', tempDir);
 
-    expect(result.stdout).toContain('/task-work loop');
-    expect(result.stdout).toContain('/reflect loop');
+    expect(result.stdout).toContain('/kspec:task-work loop');
+    expect(result.stdout).toContain('/kspec:reflect loop');
   });
 
   // AC: @ralph-skill-delegation ac-4
@@ -1243,6 +1243,9 @@ import {
   buildSubagentPrompt,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  SKILL_PR_REVIEW,
+  SKILL_REFLECT,
+  SKILL_TASK_WORK,
   type SubagentContext,
 } from '../src/ralph/subagent.js';
 import { createPrefixedRenderer } from '../src/ralph/cli-renderer.js';
@@ -1261,7 +1264,7 @@ describe('subagent module', () => {
       const prompt = buildSubagentPrompt(context);
 
       expect(prompt).toContain('@task-example');
-      expect(prompt).toContain('/pr-review @task-example');
+      expect(prompt).toContain(`${SKILL_PR_REVIEW} @task-example`);
     });
 
     it('includes git branch in prompt', () => {
@@ -1324,7 +1327,7 @@ describe('subagent module', () => {
       expect(prompt).not.toContain('Linked Spec with Acceptance Criteria');
     });
 
-    it('instructs subagent to run /pr-review skill', () => {
+    it('instructs subagent to run PR review skill using default constant', () => {
       const context: SubagentContext = {
         taskRef: '@task-my-feature',
         taskDetails: {},
@@ -1334,7 +1337,21 @@ describe('subagent module', () => {
 
       const prompt = buildSubagentPrompt(context);
 
-      expect(prompt).toContain('/pr-review @task-my-feature');
+      expect(prompt).toContain(`${SKILL_PR_REVIEW} @task-my-feature`);
+    });
+
+    it('accepts custom skill name for PR review', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-my-feature',
+        taskDetails: {},
+        specWithACs: null,
+        gitBranch: 'main',
+      };
+
+      const prompt = buildSubagentPrompt(context, '/my-custom-review');
+
+      expect(prompt).toContain('/my-custom-review @task-my-feature');
+      expect(prompt).not.toContain(SKILL_PR_REVIEW);
     });
   });
 
@@ -1347,6 +1364,12 @@ describe('subagent module', () => {
     // AC: @ralph-subagent-spawning ac-11
     it('DEFAULT_SUBAGENT_PREFIX is [REVIEW SUBAGENT]', () => {
       expect(DEFAULT_SUBAGENT_PREFIX).toBe('[REVIEW SUBAGENT]');
+    });
+
+    it('skill invocation constants use kspec: namespace by default', () => {
+      expect(SKILL_TASK_WORK).toBe('/kspec:task-work');
+      expect(SKILL_REFLECT).toBe('/kspec:reflect');
+      expect(SKILL_PR_REVIEW).toBe('/kspec:review');
     });
   });
 

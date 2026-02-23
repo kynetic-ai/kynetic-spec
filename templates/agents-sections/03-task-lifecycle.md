@@ -35,8 +35,8 @@ See `kspec help task` for transition commands and options.
 ### Creating Work
 
 - **Clear scope?** → Create task directly
-- **Unclear scope?** → `kspec inbox add "idea"` → triage later with `/triage`
-- **Learning/friction?** → `kspec meta observe friction "..."` → review with `/reflect`
+- **Unclear scope?** → `kspec inbox add "idea"` → triage later with `/kspec:triage`
+- **Learning/friction?** → `kspec meta observe friction "..."` → review during reflection
 
 ### Staying Aligned During Work
 

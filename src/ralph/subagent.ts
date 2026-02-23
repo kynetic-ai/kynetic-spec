@@ -38,6 +38,8 @@ export interface SubagentConfig {
   timeout: number;
   /** Output prefix for distinguishing subagent output */
   outputPrefix: string;
+  /** Skill invocation name for PR review (from config, defaults to SKILL_PR_REVIEW) */
+  skillName?: string;
 }
 
 /**
@@ -79,6 +81,26 @@ export const DEFAULT_SUBAGENT_TIMEOUT = 20 * 60 * 1000;
 /** Default output prefix for subagent */
 export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
 
+// ============================================================================
+// Skill Invocation Names (Defaults)
+// ============================================================================
+// Ralph prompts reference skills by invocation name. Defaults use the kspec:
+// namespace (core skills). Projects can override via kspec.config.yaml:
+//   ralph:
+//     skills:
+//       task_work: "/my-task-work"
+//       reflect: "/my-reflect"
+//       pr_review: "/my-review"
+
+/** Default skill invocation for task-work in ralph worker prompt */
+export const SKILL_TASK_WORK = "/kspec:task-work";
+
+/** Default skill invocation for reflect in ralph reflect prompt */
+export const SKILL_REFLECT = "/kspec:reflect";
+
+/** Default skill invocation for PR review in ralph subagent prompt */
+export const SKILL_PR_REVIEW = "/kspec:review";
+
 /**
  * Default ACP prompt timeout for ralph agents: 30 minutes.
  * The framing layer default (5 min) is too aggressive — API slowness,
@@ -94,8 +116,11 @@ export const RALPH_PROMPT_TIMEOUT = 30 * 60 * 1000;
 /**
  * Build the prompt for a PR review subagent.
  * AC: @ralph-subagent-spawning ac-2, ac-10, ac-12
+ *
+ * @param context - Task context for the subagent
+ * @param skillName - Skill invocation name for PR review (from config or default)
  */
-export function buildSubagentPrompt(context: SubagentContext): string {
+export function buildSubagentPrompt(context: SubagentContext, skillName: string = SKILL_PR_REVIEW): string {
   const specSection = context.specWithACs
     ? `
 ## Linked Spec with Acceptance Criteria
@@ -147,7 +172,7 @@ ${specSection}
 Run the PR review skill:
 
 \`\`\`
-/pr-review ${context.taskRef}
+${skillName} ${context.taskRef}
 \`\`\`
 
 The skill defines all review steps, quality gates, and merge criteria. Follow it completely.
@@ -178,7 +203,7 @@ export async function runSubagent(
   config: SubagentConfig,
   options: SubagentOptions,
 ): Promise<SubagentResult> {
-  const prompt = buildSubagentPrompt(context);
+  const prompt = buildSubagentPrompt(context, config.skillName);
   let agent: SpawnedAgent | null = null;
 
   try {

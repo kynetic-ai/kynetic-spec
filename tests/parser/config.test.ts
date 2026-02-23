@@ -173,6 +173,59 @@ another_unknown:
       expect(result.config.shadow.branch).toBe("kspec-meta");
     });
 
+    it("parses ralph skill overrides from config file", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+ralph:
+  skills:
+    task_work: "/task-work"
+    reflect: "/reflect"
+    pr_review: "/pr-review"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.ralph.skills.task_work).toBe("/task-work");
+      expect(result.config.ralph.skills.reflect).toBe("/reflect");
+      expect(result.config.ralph.skills.pr_review).toBe("/pr-review");
+    });
+
+    it("uses kspec: namespace defaults when ralph config omitted", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  port: 5000
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.ralph.skills.task_work).toBe("/kspec:task-work");
+      expect(result.config.ralph.skills.reflect).toBe("/kspec:reflect");
+      expect(result.config.ralph.skills.pr_review).toBe("/kspec:review");
+    });
+
+    it("allows partial ralph skill overrides", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+ralph:
+  skills:
+    pr_review: "/my-review"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.ralph.skills.task_work).toBe("/kspec:task-work");
+      expect(result.config.ralph.skills.reflect).toBe("/kspec:reflect");
+      expect(result.config.ralph.skills.pr_review).toBe("/my-review");
+    });
+
     // AC: @project-config ac-5
     // AC: @config-daemon ac-6 — env var overrides config host
     it("env vars take precedence over config file values", async () => {
@@ -422,6 +475,9 @@ title: Test Project
       expect(defaults.validation.require_acceptance).toBe(false);
       expect(defaults.daemon.port).toBe(3456);
       expect(defaults.daemon.host).toBe("localhost");
+      expect(defaults.ralph.skills.task_work).toBe("/kspec:task-work");
+      expect(defaults.ralph.skills.reflect).toBe("/kspec:reflect");
+      expect(defaults.ralph.skills.pr_review).toBe("/kspec:review");
     });
 
     it("returns independent objects", () => {
