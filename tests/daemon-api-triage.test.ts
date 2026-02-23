@@ -307,15 +307,26 @@ describe('Triage API Endpoints', () => {
   });
 
   describe('Action execution', () => {
-    it('should implement executeTriageAction for all 5 action types', async () => {
+    // AC: @triage-daemon-api ac-5 - All action types handled via shared module
+    it('should import executeTriageAction from shared triage module', async () => {
       const content = await readFile(ROUTES_PATH, 'utf-8');
 
+      // Daemon imports shared executor and constants
+      expect(content).toContain('executeTriageAction');
+      expect(content).toContain('VALID_ACTIONS');
+      expect(content).toContain("from '../../triage/index.js'");
+    });
+
+    it('shared triage module should handle all 5 action types', async () => {
+      const actionsPath = join(process.cwd(), 'src/triage/actions.ts');
+      const content = await readFile(actionsPath, 'utf-8');
+
       // AC: @triage-daemon-api ac-5 - All action types handled
-      expect(content).toContain("case 'promote':");
-      expect(content).toContain("case 'delete':");
-      expect(content).toContain("case 'defer':");
-      expect(content).toContain("case 'spec-gap':");
-      expect(content).toContain("case 'duplicate':");
+      expect(content).toContain('case "promote"');
+      expect(content).toContain('case "delete"');
+      expect(content).toContain('case "defer"');
+      expect(content).toContain('case "spec-gap"');
+      expect(content).toContain('case "duplicate"');
 
       // Promote creates task
       expect(content).toContain('createTask');
