@@ -56515,6 +56515,8 @@
   plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #486. Implemented index-based iteration boundary counting using
+    prompt.sent events, with legacy fallback for older sessions."
   depends_on: []
   context: []
   priority: 2
@@ -56524,6 +56526,7 @@
   vcs_refs: []
   created_at: 2026-02-23T20:22:21.784Z
   started_at: 2026-02-23T22:31:18.626Z
+  completed_at: 2026-02-23T23:02:12.592Z
   notes:
     - _ulid: 01KJ62NKTRCQXDK9YJ6GJ9H337
       created_at: 2026-02-23T20:22:21.784Z
@@ -56656,9 +56659,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-23T23:02:12.592Z
-  closed_reason: "Merged in PR #486. Implemented index-based iteration boundary counting using
-    prompt.sent events, with legacy fallback for older sessions."
 - _ulid: 01KJ65H0N4F3TK1A9EZRSZAHBT
   slugs: []
   title: Design native task-limit enforcement for ralph agent iterations
@@ -56940,3 +56940,49 @@
   notes: []
   todos: []
   automation: eligible
+- title: Clean up obsolete project skills superseded by core skills
+  description: >-
+    After the skill porting effort, .claude/skills/ still contains old versions of skills that were
+    rewritten as core skills in templates/skills/. These should be removed.
+
+
+    Duplicates (exist in both .claude/skills/ and templates/skills/):
+
+    - create-workflow — ported to kspec:create-workflow
+
+    - reflect — ported to kspec:reflect
+
+    - task-work — ported to kspec:task-work
+
+
+    Renamed/replaced (old name in .claude/skills/, new core version in templates/skills/):
+
+    - meta → kspec:observations
+
+    - spec → kspec:writing-specs
+
+    - spec-plan → kspec:plan
+
+
+    Action: Remove the 6 obsolete skills from .claude/skills/. Verify no references remain in
+    settings.json, CLAUDE.md, or other config. Confirm core versions fully cover functionality
+    before deleting.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-cleanup-obsolete-skills
+  tags:
+    - cli
+    - skills
+  depends_on: []
+  _ulid: 01KJ6CJC3TDT5PG0E6YV184MVJ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-23T23:15:21.338Z
+  notes: []
+  todos: []
