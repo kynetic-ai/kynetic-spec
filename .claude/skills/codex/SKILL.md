@@ -78,6 +78,7 @@ codex exec \
   review \
   "$(cat <<'PROMPT'
 Also check for:
+- Spec context discovery: check PR body, commit messages, and changed file `// AC:` annotations for Task:/Spec: references. If found, validate AC coverage below. Only skip AC checks if genuinely no spec exists.
 - Own AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
 - Trait AC coverage: run `kspec item get @spec-ref` to find inherited trait ACs. Each needs test with `// AC: @trait-slug ac-N` annotation
 - Run `kspec validate` — any trait AC coverage warnings are MUST-FIX
@@ -125,7 +126,12 @@ Review PR #123 in this repository.
    Then post: gh api repos/{owner}/{repo}/pulls/123/reviews --method POST --input /tmp/codex-pr-review-body.json
 6. Also write the full review to /tmp/codex-pr-123-review.md
 
-If no Task trailer exists, proceed with pure code review (skip AC checks).
+If no Task trailer exists in the PR body, dig deeper before skipping AC checks:
+   a. Check commit messages for Task: or Spec: trailers
+   b. Search recent tasks: run `kspec tasks list` and match by title/description to PR scope
+   c. Check if changed files have `// AC: @spec-ref` annotations pointing to specs
+   d. If a spec is found through any of these methods, validate AC coverage identically to the trailer-present case
+   e. Only fall back to pure code review if genuinely no spec exists for the changed behavior
 
 Severity levels: MUST-FIX, SHOULD-FIX, SUGGESTION.
 PROMPT

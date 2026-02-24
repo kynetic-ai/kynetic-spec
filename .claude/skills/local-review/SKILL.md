@@ -33,8 +33,9 @@ When spawned as a subagent by the worker (before PR creation):
 
 ## Workflow Overview
 
-8-step quality gate. The goal is to find problems, not to approve.
+9-step quality gate. The goal is to find problems, not to approve.
 
+0. **Discover Spec Context** — If `spec_ref` is not provided, discover it (see below)
 1. **Get Spec & ACs** — Run `kspec item get @spec-ref` to read own ACs and inherited trait ACs
 2. **Own AC Coverage** — Every own AC must have test (MUST-FIX)
 3. **Trait AC Coverage** — Every inherited trait AC must have test (MUST-FIX)
@@ -43,6 +44,24 @@ When spawned as a subagent by the worker (before PR creation):
 6. **Test Isolation** — Tests in temp dirs (MUST-FIX)
 7. **Code Quality** — Duplicated logic, ignored shared code, inconsistent patterns (MUST-FIX)
 8. **Regression Check** — `npm test` passes fully, no broken existing tests (MUST-FIX)
+
+### Step 0: Discover Spec Context
+
+If `spec_ref` is not explicitly provided, discover it before proceeding:
+
+```bash
+# 1. Check git log for Task: or Spec: trailers in recent commits on this branch
+git log --format='%B' main..HEAD | grep -E '^(Task|Spec):'
+
+# 2. Check changed files for // AC: annotations pointing to specs
+git diff main..HEAD | grep '// AC: @'
+
+# 3. Search recent tasks matching the scope of changed files
+kspec tasks list | grep -i "<keywords from changed files>"
+```
+
+If a spec is found through any method, use it for full AC validation (steps 1-3).
+If no spec context is found after all discovery steps, skip AC coverage checks (steps 1-3) and proceed with steps 4-8 (test quality, isolation, code quality, regression).
 
 ## Review Criteria
 

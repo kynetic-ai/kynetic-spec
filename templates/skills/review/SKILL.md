@@ -10,6 +10,29 @@ Kspec-specific review concerns for verifying spec alignment, AC coverage, and tr
 
 **This is NOT a complete review workflow.** It covers kspec-specific quality gates (spec alignment, AC coverage, trait coverage, validation). Projects should wrap this in their own review skill that adds project-specific concerns (test commands, E2E patterns, coding standards).
 
+## Spec Context Discovery
+
+If a spec ref is not explicitly provided, discover it before proceeding with AC checks:
+
+```bash
+# 1. Check commit messages for Task: or Spec: trailers
+git log --format='%B' main..HEAD | grep -E '^(Task|Spec):'
+
+# 2. Check changed files for // AC: annotations pointing to specs
+git diff main..HEAD | grep '// AC: @'
+
+# 3. If a task ref is found, get its spec_ref
+kspec task get @task-ref --json | jq '.spec_ref'
+
+# 4. Search recent tasks matching the scope of changes
+kspec tasks list | grep -i "<keywords from changed files>"
+```
+
+If a spec is found through any method, proceed with full AC validation below.
+If no spec context is found after all discovery steps, skip AC coverage checks and focus on code quality and regression checks.
+
+**Principle:** The absence of a trailer is a signal to look harder, not permission to skip validation.
+
 ## Spec Alignment
 
 Implementation must match spec intent, not just pass tests.

@@ -27,16 +27,20 @@ If you find issues, post them as inline comments and transition the task to need
 
 ```
 /pr-review @task-ref
+/pr-review #123
 ```
 
-**Task reference is required.** This skill needs to know which task's PR to review.
+**Task reference is preferred** but not a hard gate. If a PR number is provided instead, the reviewer discovers spec context from the PR.
 
 ## Quick Start
 
 ```bash
-# Validate inputs first
+# With task ref (preferred)
 kspec task get @task-ref           # Verify task exists
 gh pr list --search "Task: @task-ref"  # Find linked PR
+
+# With PR number (discovery mode)
+gh pr view 123 --json title,body,commits
 
 # Start the workflow
 kspec workflow start @pr-review-loop
@@ -44,28 +48,36 @@ kspec workflow start @pr-review-loop
 
 ## Validation (Before Starting)
 
-### 1. Task Reference Required
+### 1. Resolve Task and PR Context
 
-If no task ref provided, error immediately:
+**If task ref provided:**
+```bash
+kspec task get @task-ref           # Verify task exists, get spec_ref
+gh pr list --search "Task: @task-ref" --json number,url,title  # Find linked PR
+```
 
+**If PR number provided (or no task ref):**
+Discover spec context using the dig-deeper pattern:
+```bash
+# 1. Check PR body for Task: or Spec: trailers
+gh pr view <NUMBER> --json body | jq -r '.body'
+
+# 2. Check commit messages for Task: or Spec: trailers
+gh pr view <NUMBER> --json commits --jq '.commits[].messageHeadline,.commits[].messageBody' | grep -E '^(Task|Spec):'
+
+# 3. Check changed files for // AC: annotations pointing to specs
+gh pr diff <NUMBER> | grep '// AC: @'
+
+# 4. Search recent tasks matching PR scope
+kspec tasks list | grep -i "<keywords from PR title>"
 ```
-Error: Task reference required.
-Usage: /pr-review @task-ref
-```
+
+If a task is found through any method, proceed with full AC validation.
+If no task or spec context is found after all discovery steps, proceed with pure code review (skip AC checks).
 
 ### 2. PR Must Exist
 
-Find the PR linked to this task:
-
-```bash
-# Check task for vcs_refs
-kspec task get @task-ref --json | jq '.vcs_refs'
-
-# Or search PR body/commits for task reference
-gh pr list --search "Task: @task-ref" --json number,url,title
-```
-
-If no PR found:
+If reviewing by task ref and no PR is found:
 
 ```
 Error: No PR found for task @task-ref.
