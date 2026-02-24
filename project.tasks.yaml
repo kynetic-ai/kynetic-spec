@@ -56510,7 +56510,7 @@
     bad arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage session
     when batch --commands failed with no diagnostic output."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56540,6 +56540,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T04:57:45.459Z
 - _ulid: 01KJ5WV0G52E3BZA5W3VPW22J1
   slugs: []
   title: Fix ralph event logging iteration capture-by-value bug
