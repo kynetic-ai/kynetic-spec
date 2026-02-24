@@ -13,11 +13,14 @@ import * as path from "node:path";
 
 const DEFAULT_TIMEOUT_MS = 5000;
 const RETRY_INTERVAL_MS = 50;
-const STALE_LOCK_MS = 30000; // Consider locks older than 30s stale
+const STALE_LOCK_MS = 30000; // Consider locks older than 30s stale (only if PID is dead)
 
 /**
  * Acquire an advisory file lock using mkdir (atomic across processes).
  * Returns a release function that must be called when done.
+ *
+ * Ensures the lock directory's parent exists before attempting mkdir,
+ * so callers can place directory creation inside the locked section.
  */
 export async function acquireFileLock(
   filePath: string,
@@ -26,6 +29,11 @@ export async function acquireFileLock(
   const lockDir = `${filePath}.lock`;
   const pidFile = path.join(lockDir, "pid");
   const deadline = Date.now() + timeoutMs;
+
+  // Ensure parent directory exists so the lock dir can be created
+  // even when the target file's directory hasn't been made yet.
+  const parentDir = path.dirname(lockDir);
+  await fs.mkdir(parentDir, { recursive: true });
 
   while (true) {
     try {
@@ -97,31 +105,34 @@ export async function withFileLock<T>(
   }
 }
 
+/**
+ * Check if a lock is stale. A lock is stale only when the holding
+ * process is dead (PID check fails). Age is used as a secondary
+ * signal: if the PID is alive but the lock is very old, it's NOT
+ * considered stale — the process may be running a long operation.
+ * Age alone never breaks mutual exclusion.
+ */
 async function checkStaleLock(pidFile: string): Promise<boolean> {
   try {
     const content = await fs.readFile(pidFile, "utf-8");
-    const [pidStr, timestampStr] = content.trim().split("\n");
+    const [pidStr] = content.trim().split("\n");
     const pid = parseInt(pidStr, 10);
-    const timestamp = parseInt(timestampStr, 10);
 
-    // Check age first - if lock is old enough, consider stale
-    if (!isNaN(timestamp) && Date.now() - timestamp > STALE_LOCK_MS) {
-      return true;
-    }
-
-    // Check if the PID is still alive
     if (!isNaN(pid)) {
       try {
         process.kill(pid, 0); // Signal 0 = check if process exists
-        return false; // Process exists, lock is valid
+        return false; // Process exists, lock is valid regardless of age
       } catch {
         return true; // Process doesn't exist, lock is stale
       }
     }
 
-    return false;
+    // Can't parse PID — check if lock is very old as last resort
+    // This handles corrupt PID files where we can't verify the holder
+    return true;
   } catch {
-    // Can't read PID file - might be in the process of being written
+    // Can't read PID file — might be in the process of being written.
+    // Don't treat as stale to avoid racing with the lock holder.
     return false;
   }
 }

@@ -90,13 +90,13 @@ describe("File Lock", () => {
 
     // Create a fake stale lock with a non-existent PID
     await fs.mkdir(lockDir);
-    // PID 999999 almost certainly doesn't exist, and timestamp is old
+    // PID 999999 almost certainly doesn't exist
     await fs.writeFile(
       path.join(lockDir, "pid"),
-      `999999\n${Date.now() - 60000}`,
+      `999999\n${Date.now()}`,
     );
 
-    // Should be able to acquire despite stale lock
+    // Should be able to acquire despite stale lock (dead PID)
     const release = await acquireFileLock(lockTarget, 1000);
 
     // Verify we own the lock
@@ -105,6 +105,44 @@ describe("File Lock", () => {
       "utf-8",
     );
     expect(pidContent).toContain(String(process.pid));
+
+    await release();
+  });
+
+  it("should NOT treat lock as stale when PID is alive even if old", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+
+    // Acquire lock normally
+    const release = await acquireFileLock(lockTarget);
+
+    // Overwrite the PID file with an old timestamp but our (alive) PID
+    await fs.writeFile(
+      path.join(lockDir, "pid"),
+      `${process.pid}\n${Date.now() - 60000}`,
+    );
+
+    // Second acquire should still timeout (lock is held by live process)
+    await expect(
+      acquireFileLock(lockTarget, 200),
+    ).rejects.toThrow(/Timed out waiting for file lock/);
+
+    await release();
+  });
+
+  it("should create parent directories for lock when they don't exist", async () => {
+    tempDir = await createTempDir();
+    // Target file is in a nested directory that doesn't exist yet
+    const lockTarget = path.join(tempDir, "nested", "deep", "test.yaml");
+
+    // Should succeed — acquireFileLock creates parent dirs
+    const release = await acquireFileLock(lockTarget);
+
+    // Verify the nested lock dir was created
+    const lockDir = `${lockTarget}.lock`;
+    const stat = await fs.stat(lockDir);
+    expect(stat.isDirectory()).toBe(true);
 
     await release();
   });
@@ -149,7 +187,7 @@ describe("File Lock", () => {
     await fs.writeFile(targetFile, "count: 0\n");
 
     // Simulate 5 concurrent read-modify-write operations
-    const promises = Array.from({ length: 5 }, (_, i) =>
+    const promises = Array.from({ length: 5 }, (_, _i) =>
       withFileLock(targetFile, async () => {
         const content = await fs.readFile(targetFile, "utf-8");
         const match = content.match(/count: (\d+)/);
