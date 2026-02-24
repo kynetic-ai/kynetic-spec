@@ -6329,6 +6329,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ731A1QK5ZZG40DNSERD1MD
+    type: success
+    content: "Codex review caught fail-open bug in getBudget() — corrupt budget.json was silently
+      treated as 'no budget', effectively disabling enforcement. Changed to fail closed (only ENOENT
+      returns null, parse/validation errors propagate). Pattern: for security/enforcement code,
+      always default to the restrictive path. Codex consistently catches error-handling path issues
+      that internal review misses."
+    created_at: 2026-02-24T05:47:59.416Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
