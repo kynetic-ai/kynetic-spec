@@ -757,8 +757,10 @@ describe('kspec session log show (CLI)', () => {
   // ─── Trait AC: @trait-semantic-exit-codes ───────────────────────────────────
 
   // AC: @trait-semantic-exit-codes ac-2
-  it('should exit with code 4 (VALIDATION_FAILED) for ambiguous prefix', async () => {
-    // Create two sessions with same prefix to trigger ambiguity
+  // Note: Trait says "exit code 1" but kspec uses a richer exit code scheme
+  // (EXIT_CODES in src/cli/exit-codes.ts). Validation errors map to
+  // VALIDATION_FAILED (4). This is consistent with other commands (e.g. cli-serve.test.ts).
+  it('should exit with VALIDATION_FAILED (4) for ambiguous prefix', async () => {
     const ambig1 = '01XTEST0000000000000000001';
     const ambig2 = '01XTEST0000000000000000002';
     const sessionsDir = path.join(tempDir, 'sessions');
@@ -779,30 +781,29 @@ describe('kspec session log show (CLI)', () => {
   });
 
   // AC: @trait-semantic-exit-codes ac-6
-  it('should exit with non-zero code and usage info for invalid flags', () => {
+  // Commander handles invalid flags/missing args before our code runs, exits with code 1.
+  it('should exit with code 1 for unknown flags', () => {
     const result = kspec(`session log show ${sessionId1} --bogus-flag`, tempDir, { expectFail: true });
-    expect(result.exitCode).not.toBe(0);
+    expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('unknown option');
   });
 
   // AC: @trait-semantic-exit-codes ac-6
-  it('should exit with non-zero code for missing required argument', () => {
+  it('should exit with code 1 for missing required argument', () => {
     const result = kspec('session log show', tempDir, { expectFail: true });
-    expect(result.exitCode).not.toBe(0);
+    expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('missing required argument');
   });
 
   // AC: @trait-semantic-exit-codes ac-8
-  // Exit code meanings are documented in src/cli/exit-codes.ts via EXIT_CODE_METADATA
-  // and used via named constants (EXIT_CODES.NOT_FOUND, EXIT_CODES.VALIDATION_FAILED, etc.)
-  // in src/cli/commands/session.ts sessionLogShowAction.
-  // This test verifies the session log show command uses named exit code constants.
-  it('should use documented exit codes consistently', () => {
-    // not_found → EXIT_CODES.NOT_FOUND (3)
+  // Verifies that distinct error conditions produce distinct, documented exit codes
+  // matching the constants defined in src/cli/exit-codes.ts (EXIT_CODE_METADATA).
+  it('should produce distinct documented exit codes for each error class', () => {
+    // NOT_FOUND (3) — nonexistent session
     const notFound = kspec('session log show NONEXISTENT', tempDir, { expectFail: true });
     expect(notFound.exitCode).toBe(3);
 
-    // invalid context arg → EXIT_CODES.USAGE_ERROR (2)
+    // USAGE_ERROR (2) — invalid argument value
     const usageErr = kspec(`session log show ${sessionId1} --context abc`, tempDir, { expectFail: true });
     expect(usageErr.exitCode).toBe(2);
   });
