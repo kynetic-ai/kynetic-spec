@@ -57140,6 +57140,7 @@
         resetBudget(), checkBudget() functions to src/sessions/store.ts. Atomic writes
         via write-to-temp-then-rename pattern. Single-writer guarantee documented.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKQA3E86SF0YNDS2R705X
   slugs:
     - add-session-id-to-task-schema
