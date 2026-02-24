@@ -5283,6 +5283,9 @@ features:
       - "@trait-error-guidance"
     notes: []
     created: 2026-02-24T01:18:24.887Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KJ6KKPNBR288DG8JXXK589XP
     slugs:
       - native-guard-commands
