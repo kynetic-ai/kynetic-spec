@@ -78,7 +78,7 @@ codex exec \
   review \
   "$(cat <<'PROMPT'
 Also check for:
-- Spec context discovery: check PR body, commit messages, and changed file `// AC:` annotations for Task:/Spec: references. If found, validate AC coverage below. Only skip AC checks if genuinely no spec exists.
+- Spec context discovery: check PR body, commit messages, and changed file `// AC:` annotations for Task:/Spec: references. Also run `kspec tasks list` and match by title/description to PR scope. If a task ref is found, resolve to spec via `kspec task get @task-ref`. If any spec is found, validate AC coverage below. Only skip AC checks if genuinely no spec exists.
 - Own AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
 - Trait AC coverage: run `kspec item get @spec-ref` to find inherited trait ACs. Each needs test with `// AC: @trait-slug ac-N` annotation
 - Run `kspec validate` — any trait AC coverage warnings are MUST-FIX
@@ -111,8 +111,10 @@ Review PR #123 in this repository.
 
 1. Get the PR diff: `gh pr diff 123`
 2. Get PR details: `gh pr view 123 --json title,body,files`
-3. If the PR body contains a `Task: @task-ref` trailer, get the linked spec:
-   `kspec task get @task-ref` and check acceptance criteria coverage
+3. Check the PR body for `Task: @task-ref` or `Spec: @spec-ref` trailers:
+   - If `Task:` found: `kspec task get @task-ref` to get spec_ref, then `kspec item get @spec-ref`
+   - If `Spec:` found: `kspec item get @spec-ref` directly
+   - Either way, check acceptance criteria coverage
 4. Review the code for:
    - Correctness and potential bugs
    - Own AC coverage: every spec AC should have test with `// AC: @spec-ref ac-N` annotation
@@ -126,12 +128,13 @@ Review PR #123 in this repository.
    Then post: gh api repos/{owner}/{repo}/pulls/123/reviews --method POST --input /tmp/codex-pr-review-body.json
 6. Also write the full review to /tmp/codex-pr-123-review.md
 
-If no Task trailer exists in the PR body, dig deeper before skipping AC checks:
+If no Task or Spec trailer exists in the PR body, dig deeper before skipping AC checks:
    a. Check commit messages for Task: or Spec: trailers
    b. Search recent tasks: run `kspec tasks list` and match by title/description to PR scope
    c. Check if changed files have `// AC: @spec-ref` annotations pointing to specs
-   d. If a spec is found through any of these methods, validate AC coverage identically to the trailer-present case
-   e. Only fall back to pure code review if genuinely no spec exists for the changed behavior
+   d. If a task ref is found, resolve to spec: `kspec task get @task-ref --json | jq '.spec_ref'`
+   e. If a spec is found through any of these methods, validate AC coverage identically to the trailer-present case
+   f. Only fall back to pure code review if genuinely no spec exists for the changed behavior
 
 Severity levels: MUST-FIX, SHOULD-FIX, SUGGESTION.
 PROMPT

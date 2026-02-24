@@ -70,9 +70,15 @@ gh pr diff <NUMBER> | grep '// AC: @'
 
 # 4. Search recent tasks matching PR scope
 kspec tasks list | grep -i "<keywords from PR title>"
+
+# 5. If a task ref is found, resolve to spec_ref
+kspec task get @task-ref --json | jq '.spec_ref'
+# Then get the spec with ACs
+kspec item get @spec-ref
 ```
 
-If a task is found through any method, proceed with full AC validation.
+If a spec is found through any method, proceed with full AC validation.
+If only a task ref is found (no spec_ref on it), the task is infra/internal — skip AC checks.
 If no task or spec context is found after all discovery steps, proceed with pure code review (skip AC checks).
 
 ### 2. PR Must Exist

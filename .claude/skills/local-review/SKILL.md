@@ -58,9 +58,15 @@ git diff main..HEAD | grep '// AC: @'
 
 # 3. Search recent tasks matching the scope of changed files
 kspec tasks list | grep -i "<keywords from changed files>"
+
+# 4. If a task ref is found, resolve to spec_ref
+kspec task get @task-ref --json | jq '.spec_ref'
+# Then get the spec with ACs
+kspec item get @spec-ref
 ```
 
 If a spec is found through any method, use it for full AC validation (steps 1-3).
+If only a task ref is found (no spec_ref on it), the task is infra/internal — skip AC checks.
 If no spec context is found after all discovery steps, skip AC coverage checks (steps 1-3) and proceed with steps 4-8 (test quality, isolation, code quality, regression).
 
 ## Review Criteria
