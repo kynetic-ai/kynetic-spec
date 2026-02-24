@@ -1713,11 +1713,50 @@ export interface EnvInjectionResult {
   /** Whether injection was performed */
   injected: boolean;
   /** Method used for injection */
-  method: "claude_env_file" | "claude_settings" | "codex_config" | "fallback";
+  method:
+    | "claude_env_file"
+    | "claude_settings"
+    | "codex_config"
+    | "gemini_dotenv"
+    | "opencode_dotenv"
+    | "fallback";
   /** Human-readable description of what was done */
   description: string;
   /** Path to file modified (if applicable) */
   path?: string;
+}
+
+/**
+ * Write or update KSPEC_SESSION_ID in a dotenv-style file.
+ * Replaces an existing KSPEC_SESSION_ID line or appends a new one.
+ */
+async function upsertDotenvSessionId(
+  filePath: string,
+  sessionId: string,
+): Promise<void> {
+  let content = "";
+  try {
+    content = await fsPromises.readFile(filePath, "utf-8");
+  } catch {
+    // File doesn't exist yet, start fresh
+  }
+
+  const lines = content.split("\n");
+  const existingIdx = lines.findIndex((l) =>
+    l.startsWith("KSPEC_SESSION_ID="),
+  );
+  if (existingIdx >= 0) {
+    lines[existingIdx] = `KSPEC_SESSION_ID=${sessionId}`;
+  } else {
+    // Append before final empty line if present
+    if (lines.length > 0 && lines[lines.length - 1] === "") {
+      lines.splice(lines.length - 1, 0, `KSPEC_SESSION_ID=${sessionId}`);
+    } else {
+      lines.push(`KSPEC_SESSION_ID=${sessionId}`);
+    }
+  }
+
+  await fsPromises.writeFile(filePath, lines.join("\n"), "utf-8");
 }
 
 /**
@@ -1735,33 +1774,7 @@ export async function injectClaudeCodeEnv(
   const envFile = process.env.CLAUDE_ENV_FILE;
 
   if (envFile) {
-    // Write to CLAUDE_ENV_FILE
-    const line = `KSPEC_SESSION_ID=${sessionId}\n`;
-    // Read existing content and append/replace
-    let content = "";
-    try {
-      content = await fsPromises.readFile(envFile, "utf-8");
-    } catch {
-      // File doesn't exist yet, that's fine
-    }
-
-    // Replace existing KSPEC_SESSION_ID line or append
-    const lines = content.split("\n");
-    const existingIdx = lines.findIndex((l) =>
-      l.startsWith("KSPEC_SESSION_ID="),
-    );
-    if (existingIdx >= 0) {
-      lines[existingIdx] = `KSPEC_SESSION_ID=${sessionId}`;
-    } else {
-      // Append before final empty line if present
-      if (lines.length > 0 && lines[lines.length - 1] === "") {
-        lines.splice(lines.length - 1, 0, `KSPEC_SESSION_ID=${sessionId}`);
-      } else {
-        lines.push(`KSPEC_SESSION_ID=${sessionId}`);
-      }
-    }
-
-    await fsPromises.writeFile(envFile, lines.join("\n"), "utf-8");
+    await upsertDotenvSessionId(envFile, sessionId);
     return {
       injected: true,
       method: "claude_env_file",
@@ -1870,6 +1883,49 @@ export async function injectCodexEnv(
     method: "codex_config",
     description: `Added KSPEC_SESSION_ID to Codex config shell_environment_policy.set`,
     path: configPath,
+  };
+}
+
+/**
+ * Inject KSPEC_SESSION_ID into Gemini CLI environment.
+ *
+ * Writes to .gemini/.env in project root (auto-loaded by Gemini CLI).
+ */
+export async function injectGeminiEnv(
+  sessionId: string,
+): Promise<EnvInjectionResult> {
+  const dotenvDir = path.join(process.cwd(), ".gemini");
+  const dotenvPath = path.join(dotenvDir, ".env");
+
+  await fsPromises.mkdir(dotenvDir, { recursive: true });
+  await upsertDotenvSessionId(dotenvPath, sessionId);
+
+  return {
+    injected: true,
+    method: "gemini_dotenv",
+    description: `Wrote KSPEC_SESSION_ID=${sessionId} to .gemini/.env`,
+    path: dotenvPath,
+  };
+}
+
+/**
+ * Inject KSPEC_SESSION_ID into OpenCode environment.
+ *
+ * Writes to project root .env file (auto-loaded by OpenCode via Bun runtime).
+ * Uses the same dotenv append/replace pattern as other injectors.
+ */
+export async function injectOpenCodeEnv(
+  sessionId: string,
+): Promise<EnvInjectionResult> {
+  const dotenvPath = path.join(process.cwd(), ".env");
+
+  await upsertDotenvSessionId(dotenvPath, sessionId);
+
+  return {
+    injected: true,
+    method: "opencode_dotenv",
+    description: `Wrote KSPEC_SESSION_ID=${sessionId} to .env`,
+    path: dotenvPath,
   };
 }
 

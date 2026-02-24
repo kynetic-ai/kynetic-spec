@@ -49,6 +49,8 @@ import {
   validateSessionId,
   injectClaudeCodeEnv,
   injectCodexEnv,
+  injectGeminiEnv,
+  injectOpenCodeEnv,
   getFallbackInjectionInstructions,
 } from "../../sessions/store.js";
 import type { SessionEvent, SessionStatus } from "../../sessions/types.js";
@@ -2199,6 +2201,16 @@ async function performEnvInjection(
   // Detect Codex CLI
   if (process.env.CODEX_SANDBOX) {
     return injectCodexEnv(sessionId);
+  }
+
+  // Detect Gemini CLI
+  if (process.env.GEMINI_CLI === "1") {
+    return injectGeminiEnv(sessionId);
+  }
+
+  // Detect OpenCode
+  if (process.env.OPENCODE_CONFIG_DIR || process.env.OPENCODE_CONFIG) {
+    return injectOpenCodeEnv(sessionId);
   }
 
   // Fallback for unknown harnesses
