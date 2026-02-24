@@ -57740,7 +57740,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-create-command"
@@ -57780,6 +57780,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T21:40:11.396Z
+  closed_reason: "Merged in PR #507. Added multi-harness env injection for Gemini CLI (.gemini/.env)
+    and OpenCode (project root .env). Extracted shared upsertDotenvSessionId() helper. Updated
+    performEnvInjection() routing. 8 new tests. All Codex review findings addressed."
 - _ulid: 01KJ6M7SAA32AW07BJ2CGVP5G5
   slugs: []
   title: "Fix: detectTaskCompleteCommand should match task submit"
