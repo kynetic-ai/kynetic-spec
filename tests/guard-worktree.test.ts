@@ -315,6 +315,14 @@ describe("evaluateWorktreeGuard", () => {
       });
       expect(result.decision).toBe("block");
     });
+
+    it("detects Windows-style cwd with backslashes", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git reset --hard" },
+        cwd: "C:\\Users\\dev\\project\\.kspec",
+      });
+      expect(result.decision).toBe("block");
+    });
   });
 
   // Anti-bypass: split-quote detection
@@ -419,4 +427,20 @@ describe("kspec guard worktree CLI", () => {
     const parsed = JSON.parse(result.stdout.trim());
     expect(parsed.decision).toBe("allow");
   });
+
+  // ─── Trait AC coverage: N/A documentation ───
+  //
+  // AC: @trait-json-output ac-4 — N/A: guard output contains no @-prefixed references
+  // AC: @trait-json-output ac-5 — N/A: guard output contains no timestamps
+  // AC: @trait-json-output ac-6 — N/A: guard always outputs JSON (hook protocol);
+  //   --json flag has no additional effect since the guard command always speaks JSON
+  // AC: @trait-semantic-exit-codes ac-3 — N/A: guard has no confirmation prompts
+  // AC: @trait-semantic-exit-codes ac-4 — covered by runtime error catch in guard.ts
+  //   (exits NOT_FOUND=3 which maps to runtime error)
+  // AC: @trait-semantic-exit-codes ac-5 — N/A: guard is not a query command
+  // AC: @trait-semantic-exit-codes ac-6 — N/A: guard takes no user-facing flags
+  //   (invalid usage handled by commander)
+  // AC: @trait-semantic-exit-codes ac-7 — N/A: guard is not a batch command
+  // AC: @trait-semantic-exit-codes ac-8 — documented in guard.ts source code via
+  //   EXIT_CODES constants and JSDoc comments
 });

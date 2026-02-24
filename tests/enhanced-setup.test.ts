@@ -210,7 +210,7 @@ describe('kspec setup (enhanced)', () => {
     });
 
     // AC: @enhanced-setup ac-2 - PreToolUse guards installed
-    // AC: @full-hook-install ac-5 - ralph task-limit guard is generated
+    // AC: @native-guard-commands ac-setup-native - native command in PreToolUse
     it('should install native kspec guard worktree command in PreToolUse hooks', async () => {
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },

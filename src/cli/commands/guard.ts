@@ -65,8 +65,12 @@ const DANGEROUS_PATTERNS: readonly string[] = [
  * Check if a command targets the .kspec directory, either via cwd or cd commands.
  */
 function isInKspec(command: string, cwd: string | undefined): boolean {
-  if (cwd && (cwd.includes("/.kspec") || cwd.endsWith("/.kspec"))) {
-    return true;
+  if (cwd) {
+    // Normalize path separators for cross-platform support
+    const normalizedCwd = cwd.replace(/\\/g, "/");
+    if (normalizedCwd.includes("/.kspec") || normalizedCwd.endsWith("/.kspec")) {
+      return true;
+    }
   }
   if (command.includes("cd .kspec") || /cd\s+.*\.kspec/.test(command)) {
     return true;
