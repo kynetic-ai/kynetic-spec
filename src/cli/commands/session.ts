@@ -130,6 +130,9 @@ export interface SessionContext {
   /** Recent git commits */
   recent_commits: CommitSummary[];
 
+  /** Unified activity timeline (merged tasks + commits, deduplicated) */
+  activity_timeline: ActivityItem[];
+
   /** Working tree status */
   working_tree: GitWorkingTree | null;
 
@@ -202,7 +205,23 @@ export interface CommitSummary {
   date: string;
   message: string;
   author: string;
+  task_refs: string[];
 }
+
+/**
+ * A single entry in the unified activity timeline.
+ * Merges completed tasks and git commits into a chronological view.
+ * Commits linked to tasks via Task: @slug trailer are deduplicated into combined entries.
+ */
+export type ActivityItem =
+  | { type: "task_completion"; date: string; task: CompletedTaskSummary }
+  | { type: "commit"; date: string; commit: CommitSummary }
+  | {
+      type: "linked_commit";
+      date: string;
+      commit: CommitSummary;
+      task: CompletedTaskSummary;
+    };
 
 export interface SessionStats {
   total_tasks: number;
@@ -414,6 +433,88 @@ function collectIncompleteTodos(
 }
 
 /**
+ * Build a unified activity timeline from completed tasks and git commits.
+ *
+ * - Commits with Task: @slug trailers are matched to completed tasks and shown
+ *   as combined "linked_commit" entries (AC: ac-activity-trailer-link, ac-activity-dedup)
+ * - Unlinked commits appear as standalone "commit" entries
+ * - Tasks not linked to any commit appear as standalone "task_completion" entries
+ * - All items sorted most recent first (AC: ac-activity-sort)
+ *
+ * @param completedTasks - Completed task summaries
+ * @param commits - Recent commit summaries (with task_refs parsed from trailers)
+ * @param taskRefResolver - Maps a trailer ref (slug or ULID prefix) to a completed task's ref (short ULID)
+ */
+function buildActivityTimeline(
+  completedTasks: CompletedTaskSummary[],
+  commits: CommitSummary[],
+  taskRefResolver: Map<string, string>,
+): ActivityItem[] {
+  const items: ActivityItem[] = [];
+
+  // Build lookup from short ULID ref to CompletedTaskSummary
+  const taskByRef = new Map<string, CompletedTaskSummary>();
+  for (const task of completedTasks) {
+    taskByRef.set(task.ref, task);
+  }
+
+  // Track which tasks have been linked to a commit (for dedup)
+  const linkedTaskRefs = new Set<string>();
+
+  for (const commit of commits) {
+    if (commit.task_refs.length > 0) {
+      let linkedTask: CompletedTaskSummary | undefined;
+      for (const trailerRef of commit.task_refs) {
+        // Resolve the trailer ref (slug or ULID) to the short ULID ref
+        const resolvedRef = taskRefResolver.get(trailerRef);
+        if (resolvedRef) {
+          linkedTask = taskByRef.get(resolvedRef);
+        }
+        // Also try direct match on short ULID ref
+        if (!linkedTask) {
+          linkedTask = taskByRef.get(trailerRef);
+        }
+        if (linkedTask) {
+          linkedTaskRefs.add(linkedTask.ref);
+          items.push({
+            type: "linked_commit",
+            date: commit.date,
+            commit,
+            task: linkedTask,
+          });
+          break; // One linked entry per commit
+        }
+      }
+      if (!linkedTask) {
+        // Task ref in trailer but no matching completed task found
+        items.push({ type: "commit", date: commit.date, commit });
+      }
+    } else {
+      items.push({ type: "commit", date: commit.date, commit });
+    }
+  }
+
+  // Add task completions not already linked to a commit
+  for (const task of completedTasks) {
+    if (!linkedTaskRefs.has(task.ref)) {
+      items.push({
+        type: "task_completion",
+        date: task.completed_at,
+        task,
+      });
+    }
+  }
+
+  // AC: @session-start-activity-timeline ac-activity-sort
+  // Sort most recent first
+  items.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+
+  return items;
+}
+
+/**
  * Gather session context data
  */
 export async function gatherSessionContext(
@@ -557,6 +658,7 @@ export async function gatherSessionContext(
       date: c.date.toISOString(),
       message: c.message,
       author: c.author,
+      task_refs: c.taskRefs,
     }));
 
     workingTree = getWorkingTreeStatus(ctx.rootDir);
@@ -580,6 +682,29 @@ export async function gatherSessionContext(
   // Load session context (focus, threads, questions)
   const sessionContext = await loadSessionContext(ctx);
 
+  // Build task ref resolver for activity timeline: maps slug/ULID to short ref
+  // This allows commits with Task: @task-slug trailers to match completed tasks
+  const taskRefResolver = new Map<string, string>();
+  for (const task of allTasks) {
+    if (task.status !== "completed") continue;
+    const shortRef = index.shortUlid(task._ulid);
+    // Map each slug to the short ref
+    for (const slug of task.slugs) {
+      taskRefResolver.set(slug, shortRef);
+    }
+    // Also map the full ULID and short ULID to itself
+    taskRefResolver.set(task._ulid, shortRef);
+    taskRefResolver.set(shortRef, shortRef);
+  }
+
+  // Build unified activity timeline
+  // AC: @session-start-activity-timeline ac-activity-merge
+  const activityTimeline = buildActivityTimeline(
+    recentlyCompleted,
+    recentCommits,
+    taskRefResolver,
+  );
+
   return {
     generated_at: new Date().toISOString(),
     branch,
@@ -592,6 +717,7 @@ export async function gatherSessionContext(
     blocked_tasks: blockedTasks,
     recently_completed: recentlyCompleted,
     recent_commits: recentCommits,
+    activity_timeline: activityTimeline,
     working_tree: workingTree,
     inbox_items: inboxSummaries,
     stats,
@@ -947,28 +1073,42 @@ function formatSessionContext(
     }
   }
 
-  // Recently completed section
-  if (ctx.recently_completed.length > 0) {
-    console.log(`\n${sessionHeaders.recentlyCompleted}`);
+  // Recent Activity timeline (unified view of completed tasks + commits)
+  // AC: @session-start-activity-timeline ac-activity-merge
+  if (ctx.activity_timeline.length > 0) {
+    console.log(`\n${sessionHeaders.recentActivity}`);
     const observationPromotedTasks: string[] = [];
-    for (const task of ctx.recently_completed) {
-      const completedAge = formatRelativeTime(new Date(task.completed_at));
-      let reason = "";
-      if (task.closed_reason) {
-        const maxLen = isBrief ? 60 : 120;
-        const truncated =
-          task.closed_reason.length > maxLen
-            ? `${task.closed_reason.slice(0, maxLen).trim()}...`
-            : task.closed_reason;
-        reason = chalk.gray(` - ${truncated}`);
-      }
-      console.log(
-        `  ${chalk.green("[completed]")} ${task.ref} ${task.title} ${chalk.gray(`(${completedAge})`)}${reason}`,
-      );
-
-      // Track tasks that came from observations
-      if (task.origin === "observation_promotion") {
-        observationPromotedTasks.push(task.ref);
+    for (const item of ctx.activity_timeline) {
+      const age = formatRelativeTime(new Date(item.date));
+      if (item.type === "task_completion") {
+        let reason = "";
+        if (item.task.closed_reason) {
+          const maxLen = isBrief ? 60 : 120;
+          const truncated =
+            item.task.closed_reason.length > maxLen
+              ? `${item.task.closed_reason.slice(0, maxLen).trim()}...`
+              : item.task.closed_reason;
+          reason = chalk.gray(` - ${truncated}`);
+        }
+        console.log(
+          `  ${chalk.green("[completed]")} ${item.task.ref} ${item.task.title} ${chalk.gray(`(${age})`)}${reason}`,
+        );
+        if (item.task.origin === "observation_promotion") {
+          observationPromotedTasks.push(item.task.ref);
+        }
+      } else if (item.type === "commit") {
+        console.log(
+          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${age}, ${item.commit.author})`)}`,
+        );
+      } else if (item.type === "linked_commit") {
+        // AC: @session-start-activity-timeline ac-activity-dedup, ac-activity-trailer-link
+        // Combined entry: show commit with linked task info
+        console.log(
+          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${age}, ${item.commit.author})`)} ${chalk.green(`→ ${item.task.ref} ${item.task.title}`)}`,
+        );
+        if (item.task.origin === "observation_promotion") {
+          observationPromotedTasks.push(item.task.ref);
+        }
       }
     }
 
@@ -1099,16 +1239,7 @@ function formatSessionContext(
     }
   }
 
-  // Git commits section
-  if (ctx.recent_commits.length > 0) {
-    console.log(`\n${sessionHeaders.recentCommits}`);
-    for (const commit of ctx.recent_commits) {
-      const age = formatRelativeTime(new Date(commit.date));
-      console.log(
-        `  ${chalk.yellow(commit.hash)} ${commit.message} ${chalk.gray(`(${age}, ${commit.author})`)}`,
-      );
-    }
-  }
+  // Note: Recent Commits section replaced by unified activity timeline above
 
   // Inbox section (oldest first to encourage triage)
   if (ctx.inbox_items.length > 0) {
