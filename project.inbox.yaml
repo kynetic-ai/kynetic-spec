@@ -850,3 +850,11 @@ inbox:
       - ralph
       - environment
     added_by: "@claude"
+  - _ulid: 01KJ8X526K52BVBGYENJKFFSM8
+    text: "Session event log tool-level filtering: kspec session log show <id> --tool Read would avoid
+      grep/python one-liners when debugging ralph event issues"
+    created_at: 2026-02-24T22:43:39.859Z
+    tags:
+      - cli
+      - ralph
+    added_by: "@claude"
