@@ -57167,6 +57167,7 @@
         src/schema/task.ts. Single line addition: session_id: z.string().optional().
         Clear session_id on status transitions back to pending or needs_work.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKQM5WQKJKP7B1BAY0RB2
   slugs:
     - implement-session-create-command
