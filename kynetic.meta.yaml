@@ -6399,6 +6399,25 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ8J44C5EXHEAAPHTVC71R0B
+    type: success
+    content: "Mock ACP agent pattern (tests/fixtures/mock-acp-agent.mjs) enables fast behavioral testing
+      of ralph subprocess orchestration. Tests real env injection, budget cleanup, and signal
+      handling in ~2s each. Key enabler: --adapter-cmd flag + spawnRalphUntil helper that watches
+      output markers then kills the process."
+    created_at: 2026-02-24T19:30:54.981Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJ8J44G2VMVX31VYM83FP9TN
+    type: friction
+    content: "Ralph CLI uses --max-loops but internal variables and log messages say iterations. Minor
+      naming inconsistency that causes confusion when writing tests or debugging. Example:
+      --max-loops 1 but logs Starting ralph loop (max 1 iterations)."
+    created_at: 2026-02-24T19:30:55.106Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
