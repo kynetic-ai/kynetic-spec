@@ -5064,6 +5064,9 @@ features:
       - "@trait-error-guidance"
     notes: []
     created: 2026-02-24T01:18:24.705Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KJ6KKPG73VK2TG853QBZ4TC4
     slugs:
       - session-scoped-task-claiming
