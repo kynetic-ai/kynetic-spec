@@ -57708,23 +57708,21 @@
         Deferred = triage record exists with action=defer.
         Add triaged (boolean) and triage_action (string|null) to InboxSummary.
   todos: []
-- title: Implement Session Start Computed JSON Fields
+- _ulid: 01KJ74TA85JD401Z4DH8H2V6HN
+  slugs:
+    - implement-session-start-computed-json-fields
+  title: Implement Session Start Computed JSON Fields
   type: task
   spec_ref: "@session-start-computed-json"
   plan_ref: "@plan-session-start-output-redesign"
-  priority: 3
-  slugs:
-    - implement-session-start-computed-json-fields
-  tags: []
-  depends_on:
-    - "@implement-session-start-dependency-display"
-    - "@implement-session-start-activity-timeline"
-    - "@implement-session-start-inbox-triage-awareness"
-  notes: []
-  _ulid: 01KJ74TA85JD401Z4DH8H2V6HN
   status: pending
   blocked_by: []
+  depends_on:
+    - "@implement-session-start-inbox-triage-awareness"
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-24T06:19:07.397Z
+  notes: []
   todos: []
