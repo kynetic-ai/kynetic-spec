@@ -1462,4 +1462,54 @@ derive_from_specs: true
     expect(output).toContain("Would create spec: @feature-y");
     expect(output).toContain("Would derive task:");
   });
+
+  // AC: @plan-import ac-35 - mixed import: new spec depends on existing spec with existing task
+  it("should resolve depends_on to existing task ref when spec already exists", async () => {
+    // Create an existing spec and derive a task from it
+    kspec('item add --under @test-core --title "Existing Base" --slug existing-base', tempDir);
+    kspec("derive @existing-base", tempDir);
+
+    // Find the derived task slug
+    const allTasks = kspecJson<Array<{ title: string; spec_ref: string; slugs: string[] }>>(
+      "task list --json",
+      tempDir,
+    );
+    const existingTask = allTasks.find(t => t.spec_ref === "@existing-base");
+    expect(existingTask).toBeDefined();
+    const existingTaskSlug = existingTask!.slugs[0];
+
+    // Import a plan with a new spec that depends on the existing spec
+    const planPath = path.join(tempDir, "mixed-depends-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Mixed Depends Plan
+
+## Specs
+
+\`\`\`yaml
+- title: New Feature
+  slug: new-feature
+  type: feature
+  depends_on:
+    - existing-base
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // The derived task for new-feature should depend on the existing task, not the spec
+    const updatedTasks = kspecJson<
+      Array<{ title: string; depends_on: string[]; plan_ref: string }>
+    >("task list --json", tempDir);
+    const newTask = updatedTasks.find(t => t.title === "Implement New Feature");
+
+    expect(newTask).toBeDefined();
+    expect(newTask!.depends_on.length).toBe(1);
+    expect(newTask!.depends_on[0]).toBe(`@${existingTaskSlug}`);
+  });
 });

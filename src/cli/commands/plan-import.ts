@@ -504,8 +504,15 @@ async function importPlan(
               // Dependency spec was in this import — link to its derived task
               taskDependsOn.push(`@${depTaskSlug}`);
             } else {
-              // Dependency spec already existed — pass through as spec ref on task
-              taskDependsOn.push(normalizeRefInput(depRef));
+              // Dependency spec already existed — find an existing task with that spec_ref
+              const normalizedDepRef = normalizeRefInput(depRef);
+              const existingTask = tasks.find(t => t.spec_ref === normalizedDepRef);
+              if (existingTask && existingTask.slugs.length > 0) {
+                taskDependsOn.push(`@${existingTask.slugs[0]}`);
+              } else {
+                // No task found for this spec — pass the spec ref as-is
+                taskDependsOn.push(normalizedDepRef);
+              }
             }
           }
         }
