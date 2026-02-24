@@ -5205,6 +5205,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-24T05:18:11.013Z
+    completed_at: 2026-02-24T05:19:25.384Z
     step_results:
       - step_index: 0
         status: completed
@@ -5237,4 +5238,11 @@ runs:
         notes: "Captured 1 friction observation (01KJ71CS): trait exit code mismatch. No other items met the
           high-confidence bar for this iteration."
     initiated_by: "@claude"
-    completed_at: 2026-02-24T05:19:25.384Z
+  - _ulid: 01KJ767SCS6TSQ202DQGAD9ZRQ
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-24T06:43:57.465Z
+    step_results: []
+    initiated_by: "@claude"
