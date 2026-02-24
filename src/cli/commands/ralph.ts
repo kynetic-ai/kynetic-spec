@@ -1714,6 +1714,12 @@ export function registerRalphCommand(program: Command): void {
           if (exitReason === null) {
             exitReason = "max_iterations";
           }
+        } catch (loopErr) {
+          // AC: @session-end-loop-signal ac-session-close-error
+          // Unrecoverable error during loop execution
+          exitReason = exitReason ?? "error";
+          lastErrorMessage = (loopErr as Error).message;
+          error("Unrecoverable error in ralph loop", loopErr);
         } finally {
           // Remove signal handlers to avoid double cleanup
           process.off("SIGINT", sigintHandler);
@@ -1799,19 +1805,24 @@ export function registerRalphCommand(program: Command): void {
 
           // Log session end and close session with appropriate status/reason
           // AC: @session-end-loop-signal ac-session-close-normal, ac-session-close-error
-          const status =
-            consecutiveFailures >= maxFailures ? "abandoned" : "completed";
+          const isErrorExit =
+            consecutiveFailures >= maxFailures ||
+            exitReason === "max_failures" ||
+            exitReason === "error";
+          const status = isErrorExit ? "abandoned" : "completed";
           const closeReason = exitReason === "max_failures"
             ? `Max failures reached (${consecutiveFailures}/${maxFailures})${lastErrorMessage ? `: ${lastErrorMessage}` : ""}`
-            : exitReason === "end_loop_signal"
-              ? "Agent requested end of loop"
-              : exitReason === "max_iterations"
-                ? `Completed all ${maxLoops} iterations`
-                : exitReason === "no_tasks"
-                  ? "No eligible tasks remaining"
-                  : exitReason === "explicit_tasks_done"
-                    ? "All explicit tasks completed"
-                    : `Loop ended: ${exitReason}`;
+            : exitReason === "error"
+              ? `Unrecoverable error${lastErrorMessage ? `: ${lastErrorMessage}` : ""}`
+              : exitReason === "end_loop_signal"
+                ? "Agent requested end of loop"
+                : exitReason === "max_iterations"
+                  ? `Completed all ${maxLoops} iterations`
+                  : exitReason === "no_tasks"
+                    ? "No eligible tasks remaining"
+                    : exitReason === "explicit_tasks_done"
+                      ? "All explicit tasks completed"
+                      : `Loop ended: ${exitReason}`;
           await appendEvent(specDir, {
             session_id: sessionId,
             type: "session.end",

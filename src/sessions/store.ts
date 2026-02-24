@@ -281,6 +281,10 @@ export async function requestEndLoop(
 /**
  * Check if end-loop has been requested for a session.
  *
+ * Only returns requested=true for active sessions. If the session is
+ * completed or abandoned, the end-loop signal is no longer relevant
+ * (prevents stale KSPEC_SESSION_ID from blocking task starts).
+ *
  * AC: @session-end-loop-signal ac-detect
  *
  * @param specDir - The .kspec directory path
@@ -297,7 +301,7 @@ export async function isEndLoopRequested(
   }
 
   return {
-    requested: metadata.end_requested === true,
+    requested: metadata.end_requested === true && metadata.status === "active",
     reason: metadata.end_reason,
   };
 }

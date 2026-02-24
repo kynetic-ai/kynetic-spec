@@ -216,6 +216,41 @@ describe("Session-scoped end-loop signal", () => {
 
       expect(result.exitCode).toBe(0);
     });
+
+    it("should allow task start when session is completed even with end_requested", async () => {
+      // Stale session: completed but end_requested is still true
+      await createTestSession(tempDir, SESSION_ID, {
+        end_requested: true,
+        end_reason: "Previous loop ended",
+        status: "completed",
+        ended_at: new Date().toISOString(),
+        close_reason: "No eligible tasks remaining",
+      });
+
+      const result = kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      // Should succeed — completed sessions don't block task starts
+      expect(result.exitCode).toBe(0);
+    });
+
+    it("should allow task start when session is abandoned even with end_requested", async () => {
+      // Stale session: abandoned but end_requested is still true
+      await createTestSession(tempDir, SESSION_ID, {
+        end_requested: true,
+        status: "abandoned",
+        ended_at: new Date().toISOString(),
+        close_reason: "Received SIGINT",
+      });
+
+      const result = kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      // Should succeed — abandoned sessions don't block task starts
+      expect(result.exitCode).toBe(0);
+    });
   });
 
   // AC: @session-end-loop-signal ac-detect
@@ -311,6 +346,25 @@ describe("Session-scoped end-loop signal", () => {
       // Verify max_failures exit sets abandoned status
       expect(ralphContent).toContain("max_failures");
       expect(ralphContent).toContain("Max failures reached");
+    });
+
+    it("should close session with abandoned status on unrecoverable error", async () => {
+      // AC: @session-end-loop-signal ac-session-close-error
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // Verify unrecoverable errors are caught and set error exit reason
+      expect(ralphContent).toContain("} catch (loopErr)");
+      expect(ralphContent).toContain('exitReason = exitReason ?? "error"');
+      expect(ralphContent).toContain("Unrecoverable error in ralph loop");
+
+      // Verify error exit reason leads to abandoned status
+      expect(ralphContent).toContain('exitReason === "error"');
+      expect(ralphContent).toContain("const isErrorExit");
+      // Verify the close reason includes the error message
+      expect(ralphContent).toContain("Unrecoverable error");
     });
   });
 
@@ -425,6 +479,21 @@ describe("Session store: requestEndLoop and isEndLoopRequested", () => {
     await createTestSession(tempDir, SESSION_ID);
 
     // Task start should succeed (no end-loop requested)
+    const result = kspec("task start @test-task-pending", tempDir, {
+      env: { KSPEC_SESSION_ID: SESSION_ID },
+    });
+    expect(result.exitCode).toBe(0);
+  });
+
+  it("should ignore end_requested for non-active sessions", async () => {
+    // end_requested=true but session is completed — should not block
+    await createTestSession(tempDir, SESSION_ID, {
+      end_requested: true,
+      end_reason: "Old reason",
+      status: "completed",
+    });
+
+    // Verify at the CLI level: task start should succeed
     const result = kspec("task start @test-task-pending", tempDir, {
       env: { KSPEC_SESSION_ID: SESSION_ID },
     });
