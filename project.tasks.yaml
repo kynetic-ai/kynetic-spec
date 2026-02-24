@@ -57654,7 +57654,7 @@
   type: task
   spec_ref: "@ralph-session-budget-integration"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-create-command"
@@ -57668,6 +57668,7 @@
   vcs_refs: []
   created_at: 2026-02-24T01:18:27.940Z
   started_at: 2026-02-24T17:16:09.552Z
+  submitted_at: 2026-02-24T17:39:43.112Z
   notes:
     - _ulid: 01KJ6KKSK4GHPXAX5GY0B00DNQ
       created_at: 2026-02-24T01:18:27.940Z
@@ -57692,7 +57693,10 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T17:39:43.112Z
+  completed_at: 2026-02-24T20:14:32.554Z
+  closed_reason: "Merged in PR #504. Replaced all marker file code with session budget APIs in ralph
+    loop. 5 commits addressed all review findings across 4 review rounds. All CI checks passed. All
+    5 ACs covered with behavioral tests."
 - _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
   slugs:
     - add-multi-harness-env-injection
