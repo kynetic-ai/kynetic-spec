@@ -769,3 +769,13 @@ inbox:
       - events
       - bug
     added_by: "@claude"
+  - _ulid: 01KJ6KTDE6ADT92WQ0CXYF9NZG
+    text: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
+      depends_on). Currently batch commands reject underscore variants even though the error message
+      suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
+      generating JSON batch payloads where underscore is the natural convention.
+    created_at: 2026-02-24T01:22:04.870Z
+    tags:
+      - cli
+      - dx
+    added_by: "@claude"
