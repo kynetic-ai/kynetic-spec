@@ -57667,6 +57667,7 @@
     - sessions
   vcs_refs: []
   created_at: 2026-02-24T01:18:27.940Z
+  started_at: 2026-02-24T17:16:09.552Z
   notes:
     - _ulid: 01KJ6KKSK4GHPXAX5GY0B00DNQ
       created_at: 2026-02-24T01:18:27.940Z
@@ -57678,9 +57679,19 @@
         task-limit and end-loop), detectTaskCompleteCommand, ACP prompt injection block
         (lines 1517-1557), stale marker cleanup, and marker-related signal handler
         cleanup. Ensure session close in ALL exit paths including signal handlers.
+    - _ulid: 01KJ8BRAJ9QHSSY5Q7BGFQPGCX
+      created_at: 2026-02-24T17:39:36.649Z
+      author: "@claude"
+      content: "Implementation complete. Removed all marker file code (TaskLimitMarker,
+        detectTaskCompleteCommand, extractBashCommand, ACP prompt injection), replaced with session
+        budget APIs (createSessionWithBudget, resetBudget, getSessionBudgetPath). Added
+        KSPEC_SESSION_ID env injection to spawned agents. Budget cleanup in both signal handler and
+        finally block. Updated tests (24 new static analysis tests, removed obsolete
+        marker/detection tests). Cleaned up .gitignore and codex skill marker file references. Full
+        suite: 3432 pass (1 pre-existing flaky timeout)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T17:16:09.552Z
 - _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
   slugs:
     - add-multi-harness-env-injection
