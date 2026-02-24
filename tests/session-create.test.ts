@@ -441,8 +441,7 @@ describe("Environment Injection", () => {
   });
 
   describe("injectGeminiEnv", () => {
-    // AC: @session-creation-and-env-injection ac-inject-fallback
-    // (Gemini CLI is a named harness — tests verify .gemini/.env injection)
+    // Spec: @session-creation-and-env-injection (harness-specific injection for Gemini CLI)
     it("should write KSPEC_SESSION_ID to .gemini/.env", async () => {
       const originalCwd = process.cwd();
 
@@ -509,8 +508,7 @@ describe("Environment Injection", () => {
   });
 
   describe("injectOpenCodeEnv", () => {
-    // AC: @session-creation-and-env-injection ac-inject-fallback
-    // (OpenCode is a named harness — tests verify .env injection)
+    // Spec: @session-creation-and-env-injection (harness-specific injection for OpenCode)
     it("should write KSPEC_SESSION_ID to project .env file", async () => {
       const originalCwd = process.cwd();
 
@@ -718,7 +716,7 @@ describe("session create CLI", () => {
     expect(result.stdout).toContain("export KSPEC_SESSION_ID=");
   });
 
-  // Task: @add-multi-harness-env-injection
+  // Spec: @session-creation-and-env-injection (harness-specific injection for Gemini CLI)
   it("should inject via .gemini/.env when GEMINI_CLI=1", () => {
     const result = kspecJson<Record<string, unknown>>(
       "session create --agent-type gemini-cli --inject",
@@ -741,7 +739,7 @@ describe("session create CLI", () => {
     expect(injection.injected).toBe(true);
   });
 
-  // Task: @add-multi-harness-env-injection
+  // Spec: @session-creation-and-env-injection (harness-specific injection for OpenCode)
   it("should inject via .env when OpenCode detected", () => {
     const result = kspecJson<Record<string, unknown>>(
       "session create --agent-type opencode --inject",

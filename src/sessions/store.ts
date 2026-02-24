@@ -1737,8 +1737,12 @@ async function upsertDotenvSessionId(
   let content = "";
   try {
     content = await fsPromises.readFile(filePath, "utf-8");
-  } catch {
-    // File doesn't exist yet, start fresh
+  } catch (err: unknown) {
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      // File doesn't exist yet, start fresh
+    } else {
+      throw err;
+    }
   }
 
   const lines = content.split("\n");
