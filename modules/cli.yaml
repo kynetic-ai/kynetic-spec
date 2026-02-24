@@ -4211,6 +4211,11 @@ features:
             when: kspec plan import <path> is run
             then: warns 'Specs section found but no YAML code block detected — wrap specs in triple-backtick
               yaml block' and exits with 0 specs 0 tasks
+          - id: ac-35
+            given: A plan file with specs that include depends_on arrays referencing other specs
+            when: kspec plan import <path> is run
+            then: Specs are created with depends_on populated; derived tasks inherit depends_on mapped from spec
+              slugs to their corresponding task slugs; manual tasks honor depends_on directly
         status:
           maturity: draft
           implementation: in_progress
