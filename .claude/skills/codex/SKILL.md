@@ -405,6 +405,69 @@ Quoted heredocs (`<<'DELIM'...DELIM`) handle quotes, backticks, and `$` literall
 
 For simple prompts, heredocs work fine. Use prompt-files when prompts are complex, generated dynamically, or need inspection before use.
 
+## Ralph Loop Safety Guard
+
+When invoking Codex from inside a ralph loop session, you **MUST** inject safety constraints into every codex prompt. Codex runs with `danger-full-access` and has no awareness of the ralph process hosting it.
+
+### Detection
+
+Before running any `codex exec` command, check for ralph loop context:
+
+```bash
+# Primary: env var set by ralph on spawned agent processes
+if [ -n "$KSPEC_RALPH_SESSION" ]; then
+  # We're inside a ralph loop — inject safety guard
+fi
+
+# Fallback: check for ralph marker files (written during active sessions)
+if [ -f ".claude/ralph-task-limit.json" ] || [ -f ".claude/ralph-end-loop.json" ]; then
+  # We're inside a ralph loop — inject safety guard
+fi
+```
+
+### Required Safety Preamble
+
+When ralph markers are detected, **prepend** this safety block to every codex prompt:
+
+```
+SAFETY CONSTRAINTS (you are running inside a kspec ralph automation loop):
+- NEVER start kspec ralph, kspec serve, or any long-running kspec process
+- NEVER use pkill, kill, killall, or any process-killing command targeting kspec processes
+- NEVER run commands that would terminate or interfere with the parent ralph session
+- Do NOT run CLI spot-checks that start background services
+- If you need to verify CLI behavior, use non-destructive read-only commands only
+Violating these constraints will kill the automation session hosting you.
+```
+
+### Example (PR review with safety guard)
+
+```bash
+# Detect ralph context
+RALPH_GUARD=""
+if [ -n "$KSPEC_RALPH_SESSION" ] || [ -f ".claude/ralph-task-limit.json" ] || [ -f ".claude/ralph-end-loop.json" ]; then
+  RALPH_GUARD="SAFETY CONSTRAINTS (you are running inside a kspec ralph automation loop):
+- NEVER start kspec ralph, kspec serve, or any long-running kspec process
+- NEVER use pkill, kill, killall, or any process-killing command targeting kspec processes
+- NEVER run commands that would terminate or interfere with the parent ralph session
+- Do NOT run CLI spot-checks that start background services
+- If you need to verify CLI behavior, use non-destructive read-only commands only
+Violating these constraints will kill the automation session hosting you.
+
+"
+fi
+
+codex exec \
+  -m gpt-5.3-codex \
+  -c model_reasoning_effort="high" \
+  -s danger-full-access \
+  --skip-git-repo-check \
+  "${RALPH_GUARD}Review PR #123 in this repository. ..."
+```
+
+### Why This Matters
+
+In a previous ralph loop session, Codex ran a "CLI spot-check" that accidentally started `kspec ralph`, then ran `pkill -f 'kspec ralph'` to clean up — which killed the actual ralph loop process hosting it. The ralph session died mid-tool-call with no clean exit.
+
 ## Tips
 
 - Always use `--skip-git-repo-check` — this project uses a shadow branch worktree that confuses Codex's git detection

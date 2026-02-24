@@ -1235,6 +1235,12 @@ export function registerRalphCommand(program: Command): void {
 
         // Create session for event tracking
         const sessionId = ulid();
+
+        // Set KSPEC_RALPH_SESSION on this process so all spawned agents
+        // (main worker, subagent, wrap-up) inherit it via process.env.
+        // Used by the codex skill safety guard to detect ralph context.
+        process.env.KSPEC_RALPH_SESSION = sessionId;
+
         await createSession(specDir, {
           id: sessionId,
           agent_type: options.adapter,
@@ -1792,6 +1798,9 @@ export function registerRalphCommand(program: Command): void {
 
           // AC: @ralph-end-loop ac-cleanup - Clear end-loop marker when session ends
           await clearEndLoopMarker(ctx.rootDir);
+
+          // Clean up ralph session env var
+          delete process.env.KSPEC_RALPH_SESSION;
 
           // AC: @ralph-wrap-up-agent-on-loop-exit ac-1, ac-2, ac-3, ac-4, ac-5
           // Spawn wrap-up agent if not dry-run and we have an exit reason
