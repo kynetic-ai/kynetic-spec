@@ -236,7 +236,7 @@ export interface SessionOptions {
 
 /**
  * Build a reverse dependency map: for each task ULID, count how many
- * non-completed tasks depend on it. Unresolvable refs are silently skipped.
+ * pending tasks depend on it. Unresolvable refs are silently skipped.
  */
 function computeUnlocksMap(
   allTasks: LoadedTask[],
@@ -245,8 +245,8 @@ function computeUnlocksMap(
   const counts = new Map<string, number>();
 
   for (const task of allTasks) {
-    // Only count pending tasks as "unlockable" downstream work
-    if (task.status === "completed" || task.status === "cancelled") continue;
+    // Only count pending tasks as "unlockable" downstream work per spec
+    if (task.status !== "pending") continue;
 
     for (const depRef of task.depends_on) {
       const result = index.resolve(depRef);

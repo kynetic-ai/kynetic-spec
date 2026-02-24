@@ -132,8 +132,7 @@ describe('session start dependency display', () => {
       kspec('task add --title "Done parent" --slug task-done-parent', tempDir);
       kspec('task add --title "Done child" --slug task-done-child --depends-on @task-done-parent', tempDir);
 
-      // Complete the child task (dependency won't keep it from counting - but it should not count
-      // because completed/cancelled tasks are excluded from unlocks)
+      // Complete the child task — completed tasks should not count
       kspec('task start @task-done-child', tempDir);
       kspec('task submit @task-done-child', tempDir);
       kspec('task complete @task-done-child --reason "Finished"', tempDir);
@@ -141,6 +140,37 @@ describe('session start dependency display', () => {
       const session = kspecJson<SessionContext>('session start --json', tempDir);
 
       const parentTask = session.ready_tasks.find((t) => t.title === 'Done parent');
+      expect(parentTask).toBeDefined();
+      expect(parentTask!.unlocks).toBe(0);
+    });
+
+    it('should not count in_progress dependents as unlockable', () => {
+      // Only pending tasks count — in_progress tasks are already being worked on
+      kspec('task add --title "IP parent" --slug task-ip-parent', tempDir);
+      kspec('task add --title "IP child" --slug task-ip-child --depends-on @task-ip-parent', tempDir);
+
+      // Start the child so it becomes in_progress
+      kspec('task start @task-ip-child', tempDir);
+
+      const session = kspecJson<SessionContext>('session start --json', tempDir);
+
+      const parentTask = session.ready_tasks.find((t) => t.title === 'IP parent');
+      expect(parentTask).toBeDefined();
+      expect(parentTask!.unlocks).toBe(0);
+    });
+
+    it('should not count blocked dependents as unlockable', () => {
+      // Blocked tasks are not pending work waiting to be unblocked by this task
+      kspec('task add --title "Blocked dep parent" --slug task-bdp', tempDir);
+      kspec('task add --title "Blocked dep child" --slug task-bdc --depends-on @task-bdp', tempDir);
+
+      // Block the child
+      kspec('task start @task-bdc', tempDir);
+      kspec('task block @task-bdc --reason "External"', tempDir);
+
+      const session = kspecJson<SessionContext>('session start --json', tempDir);
+
+      const parentTask = session.ready_tasks.find((t) => t.title === 'Blocked dep parent');
       expect(parentTask).toBeDefined();
       expect(parentTask!.unlocks).toBe(0);
     });
