@@ -6317,6 +6317,18 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ71CSSQNCH8KAP3YRSQT4GY
+    type: friction
+    content: "@trait-semantic-exit-codes ACs hardcode exit code numbers (ac-2: 'exit code 1', ac-3:
+      'exit code 2', ac-4: 'exit code 3') that don't match kspec's actual EXIT_CODES scheme
+      (ERROR=1, USAGE_ERROR=2, NOT_FOUND=3, VALIDATION_FAILED=4). Every command adding trait AC test
+      coverage needs clarifying comments explaining the mapping. Fix: update trait ACs to use
+      semantic descriptions ('non-zero exit code indicating validation failure') instead of
+      hardcoded numbers, or update to match kspec's actual codes."
+    created_at: 2026-02-24T05:19:18.839Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
