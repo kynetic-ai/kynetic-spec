@@ -57196,6 +57196,7 @@
         createSessionWithBudget() library function for ralph to call directly.
         Include validation for invalid/stale KSPEC_SESSION_ID with clear error messages.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
   slugs:
     - add-budget-enforcement-to-task-start
