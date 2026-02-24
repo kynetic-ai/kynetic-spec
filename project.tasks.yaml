@@ -54486,25 +54486,6 @@
         text output includes/excludes description appropriately."
       supersedes: null
   todos: []
-- _ulid: 01KHZHZW6VKAK6MDAG3BVC10Q5
-  slugs: []
-  title: Test description display
-  type: task
-  description: This is a test description to verify the fix works correctly.
-  spec_ref: null
-  meta_ref: null
-  plan_ref: null
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags:
-    - test
-  vcs_refs: []
-  created_at: 2026-02-21T07:35:25.659Z
-  notes: []
-  todos: []
 - _ulid: 01KHZMQ8YTV97DQ12GGR7SGJQX
   slugs:
     - ws
@@ -56742,6 +56723,28 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: >-
+    Spike complete. Investigated session scoping approach for kspec, including:
+
+    - Cross-harness env var research (Claude Code, Codex, OpenCode, Gemini CLI)
+
+    - Current session/ralph/hook architecture analysis
+
+    - Design of session-scoped budget enforcement replacing marker files + bash hooks
+
+    - Dual review (internal + Codex) with all MUST-FIX findings addressed
+
+
+    Deliverables:
+
+    - Plan @plan-session-scoping-for-kspec imported with 6 specs, 10 tasks
+
+    - Dependencies set between tasks
+
+    - Specs have traits: @trait-json-output, @trait-semantic-exit-codes, @trait-error-guidance
+
+    - Key design decisions: budget on local filesystem (not shadow branch), single-writer guarantee,
+    cooperative enforcement, end-loop migrated to session state, sessions always closed
   depends_on: []
   context: []
   priority: 1
@@ -56752,6 +56755,7 @@
   vcs_refs: []
   created_at: 2026-02-23T21:12:16.803Z
   started_at: 2026-02-24T00:42:18.887Z
+  completed_at: 2026-02-24T01:19:28.006Z
   notes:
     - _ulid: 01KJ6JZEJADFS9RJ2EVEW27WWQ
       created_at: 2026-02-24T01:07:21.290Z
@@ -56863,29 +56867,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-24T01:19:28.006Z
-  closed_reason: >-
-    Spike complete. Investigated session scoping approach for kspec, including:
-
-    - Cross-harness env var research (Claude Code, Codex, OpenCode, Gemini CLI)
-
-    - Current session/ralph/hook architecture analysis
-
-    - Design of session-scoped budget enforcement replacing marker files + bash hooks
-
-    - Dual review (internal + Codex) with all MUST-FIX findings addressed
-
-
-    Deliverables:
-
-    - Plan @plan-session-scoping-for-kspec imported with 6 specs, 10 tasks
-
-    - Dependencies set between tasks
-
-    - Specs have traits: @trait-json-output, @trait-semantic-exit-codes, @trait-error-guidance
-
-    - Key design decisions: budget on local filesystem (not shadow branch), single-writer guarantee,
-    cooperative enforcement, end-loop migrated to session state, sessions always closed
 - _ulid: 01KJ65J2Q0SS2WGYD1P5FZ2C40
   slugs: []
   title: Fix phased tool call event handling for ralph display and session stats
