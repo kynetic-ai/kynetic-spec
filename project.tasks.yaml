@@ -57245,7 +57245,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -57255,6 +57255,7 @@
     - sessions
   vcs_refs: []
   created_at: 2026-02-24T01:18:25.264Z
+  started_at: 2026-02-24T05:25:39.126Z
   notes:
     - _ulid: 01KJ6KKPZGVX8AHJHP2CHZPQTP
       created_at: 2026-02-24T01:18:25.264Z
@@ -57266,7 +57267,7 @@
         via write-to-temp-then-rename pattern. Single-writer guarantee documented.
   todos: []
   automation: eligible
-  started_at: 2026-02-24T05:25:39.126Z
+  submitted_at: 2026-02-24T05:35:40.060Z
 - _ulid: 01KJ6KKQA3E86SF0YNDS2R705X
   slugs:
     - add-session-id-to-task-schema
