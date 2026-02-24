@@ -57400,6 +57400,7 @@
     - enforcement
   vcs_refs: []
   created_at: 2026-02-24T01:18:26.296Z
+  started_at: 2026-02-24T06:55:48.106Z
   notes:
     - _ulid: 01KJ6KKQZRCB3WS60T0K0JWYGM
       created_at: 2026-02-24T01:18:26.296Z
@@ -57411,9 +57412,17 @@
         counter. Error message must include budget counts AND wrap-up instructions
         (replaces both hook block message and ralph prompt injection). Skip increment
         when task is already in_progress (resume case). Also stamp session_id on task.
+    - _ulid: 01KJ77AZ5MTXNPH6R32MSKNNK5
+      created_at: 2026-02-24T07:03:10.260Z
+      author: "@claude"
+      content: Implemented budget enforcement in task start handler. Added checkBudget() call before task
+        transition (blocks with exit 4 + error guidance when exhausted). Added incrementBudget()
+        call after successful start (skipped for resume case since already in_progress returns
+        early). 17 integration tests covering all 7 own ACs and 6 trait ACs (semantic-exit-codes
+        ac-1/ac-4, error-guidance ac-1/ac-2/ac-5/ac-6).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T06:55:48.106Z
 - _ulid: 01KJ6KKR9V3XCVTJ18ACTY2SXH
   slugs:
     - add-session-indicator-to-tasks-ready
