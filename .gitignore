@@ -35,5 +35,4 @@ coverage/
 .kspec-session
 bun.lock
 .claude/ralph-task-limit.json
-.claude/ralph-end-loop.json
 .claude/plugins/

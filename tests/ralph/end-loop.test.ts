@@ -5,12 +5,10 @@
  * AC: @session-end-loop-signal ac-signal, ac-block-task, ac-detect, ac-session-close-normal,
  *     ac-session-close-signal, ac-session-close-error, ac-remove-markers
  * AC: @trait-error-guidance ac-1, ac-2
- *
- * Trait ACs documented as N/A for this feature:
- * - @trait-error-guidance ac-3: N/A — no ref resolution in end-loop command
- * - @trait-error-guidance ac-4: N/A — no state transitions in end-loop command
- * - @trait-error-guidance ac-5: N/A — no field-level validation in end-loop command
- * - @trait-error-guidance ac-6: N/A — ralph end-loop does not support --json output mode
+ * AC: @trait-error-guidance ac-3 N/A — no ref resolution in end-loop command
+ * AC: @trait-error-guidance ac-4 N/A — no state transitions in end-loop command
+ * AC: @trait-error-guidance ac-5 N/A — no field-level validation in end-loop command
+ * AC: @trait-error-guidance ac-6 N/A — ralph end-loop does not support --json output mode
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -419,7 +417,7 @@ describe("Session-scoped end-loop signal", () => {
     });
   });
 
-  // @trait-error-guidance ac-6: N/A — ralph end-loop does not support --json output mode
+  // AC: @trait-error-guidance ac-6 N/A — ralph end-loop does not support --json output mode
 });
 
 describe("Session store: requestEndLoop and isEndLoopRequested", () => {

@@ -58,7 +58,6 @@ import {
   isEndLoopRequested,
   requestEndLoop,
   saveSessionContext,
-  updateSessionStatus,
 } from "../../sessions/index.js";
 import { errors } from "../../strings/index.js";
 import { getCurrentBranch } from "../../utils/git.js";
