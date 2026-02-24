@@ -5354,6 +5354,9 @@ features:
       - "@trait-semantic-exit-codes"
     notes: []
     created: 2026-02-24T01:18:24.939Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KJ6KKPPYCDDBPV7MZZ9P21ZF
     slugs:
       - ralph-session-budget-integration
