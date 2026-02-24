@@ -55523,7 +55523,8 @@
 - _ulid: 01KJ4DP400CH23DK5CCMC1ZWF2
   slugs:
     - task-audit-daemon-test-coverage
-  title: Audit daemon test suite and plan migration from static analysis to behavioral tests
+    - task-audit-static-analysis-tests
+  title: Audit test suite and plan migration from static analysis to behavioral tests
   type: spike
   description: "The daemon test suite (tests/daemon-*.test.ts) relies heavily on static analysis
     patterns — reading source files and checking for string patterns (e.g.
