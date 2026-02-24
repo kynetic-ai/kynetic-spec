@@ -58184,4 +58184,4 @@
         once content is approved.
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
