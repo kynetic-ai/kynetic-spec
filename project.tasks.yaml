@@ -58647,9 +58647,20 @@
     - testing
     - ralph
   vcs_refs: []
+  session_id: 01KJ8MK2C4KQE66RNWZXW1TBT1
   created_at: 2026-02-24T22:51:55.176Z
-  notes: []
+  started_at: 2026-02-24T23:02:51.713Z
+  notes:
+    - _ulid: 01KJ8YPSVS98VXZ2F396JFT7Y7
+      created_at: 2026-02-24T23:10:49.721Z
+      author: "@claude"
+      content: "Root cause: spawnRalphUntil and testSignalCleanup helpers used cwd: process.cwd() (real
+        project root). When the real working tree had uncommitted changes, getWorkingTreeStatus()
+        returned dirty, causing runWrapUpAgent() to spawn a wrap-up agent with a 2-minute timeout —
+        well exceeding the test's 25s safety timeout. Fix: (1) Changed cwd to tempDir (in /tmp,
+        outside any git repo), (2) Initialize a clean git repo in tempDir with initial commit so
+        getWorkingTreeStatus() reliably returns clean, (3) This ensures isWrapUpNeeded() returns
+        false and wrap-up is skipped. All 3513 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T23:02:51.713Z
-  session_id: 01KJ8MK2C4KQE66RNWZXW1TBT1
