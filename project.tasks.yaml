@@ -57424,7 +57424,7 @@
   spec_ref: "@ralph-task-limit"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -57438,3 +57438,4 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-24T01:29:51.113Z
