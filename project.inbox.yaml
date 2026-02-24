@@ -808,3 +808,15 @@ inbox:
       - dx
       - cli
     added_by: "@claude"
+  - _ulid: 01KJ77S4BZYW0CYX68JHNAQ31X
+    text: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
+      hanging on stdin), ralph has no mechanism to detect or recover. A configurable per-iteration
+      timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would prevent
+      indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't prevent
+      the kspec batch stdin hang.
+    created_at: 2026-02-24T07:10:54.335Z
+    tags:
+      - ralph
+      - reliability
+      - dx
+    added_by: "@claude"
