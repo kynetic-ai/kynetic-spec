@@ -57411,3 +57411,4 @@
         to export instructions for unknown harnesses. Start with Claude Code (best
         documented), add others incrementally.
   todos: []
+  automation: eligible
