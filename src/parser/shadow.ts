@@ -9,7 +9,7 @@
  * - Changes auto-commit to shadow branch
  */
 
-import { exec, execSync } from "node:child_process";
+import { exec, execSync, spawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { promisify } from "node:util";
@@ -1105,13 +1105,17 @@ export async function shadowPushAsync(
       console.error(`[DEBUG] Shadow push: git push (cwd: ${worktreeDir})`);
     }
 
-    // Don't await - fire and forget
-    execAsync("git push", { cwd: worktreeDir }).catch((err) => {
-      if (debug) {
-        console.error("[DEBUG] Shadow push failed:", err);
-      }
-      // Silently ignore push failures - local state is correct
+    // Fire and forget: spawn with stdio ignored so no pipes keep the event loop alive.
+    // detached + unref lets Node exit without waiting for git push to complete.
+    const child = spawn("git", ["push"], {
+      cwd: worktreeDir,
+      stdio: "ignore",
+      detached: true,
     });
+    child.unref();
+    if (debug) {
+      console.error("[DEBUG] Shadow push: spawned background git push");
+    }
   } catch (err) {
     if (debug) {
       console.error("[DEBUG] Shadow push error:", err);

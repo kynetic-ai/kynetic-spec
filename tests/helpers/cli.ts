@@ -91,9 +91,15 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   const result = spawnSync('/bin/sh', ['-c', `node ${CLI_PATH} ${args}`], {
     cwd,
     encoding: 'utf-8',
+    timeout: 30_000,
     env: { ...process.env, KSPEC_AUTHOR: '@test', ...env },
     input: stdin !== undefined ? (stdin.endsWith('\n') ? stdin : stdin + '\n') : undefined,
   });
+
+  // Detect timeout (spawnSync kills the process and sets signal)
+  if (result.signal === 'SIGTERM' && result.error?.message?.includes('ETIMEDOUT')) {
+    throw new Error(`Command timed out after 30s: node ${CLI_PATH} ${args}`);
+  }
 
   const kspecResult: KspecResult = {
     exitCode: result.status ?? 1,
