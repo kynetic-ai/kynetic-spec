@@ -57654,7 +57654,7 @@
   type: task
   spec_ref: "@ralph-session-budget-integration"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-create-command"
@@ -57692,6 +57692,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T17:39:43.112Z
 - _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
   slugs:
     - add-multi-harness-env-injection
