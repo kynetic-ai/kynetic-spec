@@ -56412,7 +56412,7 @@
     tasks list. Had to retry to get a persistent task. Possible shadow branch commit race condition
     or ULID issue. Observed during session 2026-02-22."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56441,6 +56441,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T03:45:02.544Z
 - _ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
   slugs: []
   title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session
