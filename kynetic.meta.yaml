@@ -6340,6 +6340,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ73MEZ9BFMX73JFB0ZDSJVM
+    type: friction
+    content: "Ralph task-limit-guard hook blocks gh pr create even when finishing current task work. The
+      guard treats all Bash commands equally — it can't distinguish 'creating a PR for completed
+      work' from 'starting new task work'. Result: branch pushed but PR not created, requiring next
+      iteration to finish. Consider whitelisting gh pr create or detecting PR creation context in
+      the guard."
+    created_at: 2026-02-24T05:58:27.050Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
