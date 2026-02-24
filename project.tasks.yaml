@@ -57742,6 +57742,9 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #507. Added multi-harness env injection for Gemini CLI (.gemini/.env)
+    and OpenCode (project root .env). Extracted shared upsertDotenvSessionId() helper. Updated
+    performEnvInjection() routing. 8 new tests. All Codex review findings addressed."
   depends_on:
     - "@implement-session-create-command"
   context: []
@@ -57755,6 +57758,7 @@
   created_at: 2026-02-24T01:18:28.275Z
   started_at: 2026-02-24T21:14:51.499Z
   submitted_at: 2026-02-24T21:25:26.036Z
+  completed_at: 2026-02-24T21:40:11.396Z
   notes:
     - _ulid: 01KJ6KKSXKXXMJH8SVZN2GEJCD
       created_at: 2026-02-24T01:18:28.275Z
@@ -57780,10 +57784,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-24T21:40:11.396Z
-  closed_reason: "Merged in PR #507. Added multi-harness env injection for Gemini CLI (.gemini/.env)
-    and OpenCode (project root .env). Extracted shared upsertDotenvSessionId() helper. Updated
-    performEnvInjection() routing. 8 new tests. All Codex review findings addressed."
 - _ulid: 01KJ6M7SAA32AW07BJ2CGVP5G5
   slugs: []
   title: "Fix: detectTaskCompleteCommand should match task submit"
@@ -57837,7 +57837,7 @@
   type: task
   spec_ref: "@session-start-unlocks"
   plan_ref: "@plan-session-start-output-redesign"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -57857,6 +57857,8 @@
         Store in computed.task_unlocks as Record<string, number> keyed by ref (short ULID).
   todos: []
   automation: eligible
+  started_at: 2026-02-24T21:40:55.134Z
+  session_id: 01KJ8MK2C4KQE66RNWZXW1TBT1
 - _ulid: 01KJ74T98AACTTMCHS0ZTVJPK0
   slugs:
     - implement-session-start-activity-timeline
