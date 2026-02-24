@@ -6390,6 +6390,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ8EE76AQYX301F9A34XXPWK
+    type: friction
+    content: setupTempFixtures() returns a flat dir where tempDir IS the specDir — no .kspec/ wrapper.
+      Agents that assume nested structure (path.join(tempDir, ".kspec")) get silent test failures.
+      AGENTS.md test helpers table should note this.
+    created_at: 2026-02-24T18:26:31.242Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
