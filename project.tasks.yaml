@@ -58532,6 +58532,7 @@
   session_id: null
   created_at: 2026-02-24T22:37:16.338Z
   started_at: 2026-02-24T22:45:45.844Z
+  submitted_at: 2026-02-24T22:47:48.693Z
   notes:
     - _ulid: 01KJ8WSSCFT27761HWH249M888
       created_at: 2026-02-24T22:37:30.383Z
@@ -58617,4 +58618,30 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T22:47:48.693Z
+- title: Fix flaky ralph session-budget-integration timeout test
+  description: "The test 'should clean up budget.json after normal exit (max-iterations reached)' in
+    tests/ralph/session-budget-integration.test.ts times out intermittently. The spawnRalphUntil
+    helper has a 25s safety timeout that races against ralph completing a full iteration with the
+    mock agent. Under CI load or during ralph loop, this timeout fires before ralph finishes.
+    Possible approaches: increase timeout, optimize mock agent response time, or restructure to test
+    cleanup without spawning full ralph subprocess."
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-fix-flaky-ralph-budget-test
+  tags:
+    - bug
+    - testing
+    - ralph
+  depends_on: []
+  _ulid: 01KJ8XM5X8S04X7DSDP9TQQ9XR
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-24T22:51:55.176Z
+  notes: []
+  todos: []
