@@ -57932,7 +57932,7 @@
   type: task
   spec_ref: "@session-start-inbox-triage"
   plan_ref: "@plan-session-start-output-redesign"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -57968,6 +57968,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T23:39:48.167Z
 - _ulid: 01KJ74TA85JD401Z4DH8H2V6HN
   slugs:
     - implement-session-start-computed-json-fields
