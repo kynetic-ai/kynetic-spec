@@ -40,6 +40,9 @@ const stopReason = process.env.MOCK_ACP_STOP_REASON || 'end_turn';
 const completeTask = process.env.MOCK_ACP_COMPLETE_TASK;
 const projectDir = process.env.MOCK_ACP_PROJECT_DIR;
 const cliPath = process.env.MOCK_ACP_CLI_PATH || 'kspec';
+// Write specified env var values to a file for test verification
+const verifyEnvFile = process.env.MOCK_ACP_VERIFY_ENV_FILE;
+const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated var names
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -89,6 +92,17 @@ function shouldFail() {
 
 async function handleInitialize(id, _params) {
   initialized = true;
+
+  // Write requested env var values to file for test verification
+  if (verifyEnvFile && verifyEnvVars) {
+    const vars = verifyEnvVars.split(',').map(v => v.trim());
+    const result = {};
+    for (const name of vars) {
+      result[name] = process.env[name] || null;
+    }
+    fs.writeFileSync(verifyEnvFile, JSON.stringify(result, null, 2));
+  }
+
   sendResponse(id, {
     protocolVersion: 1,
     agentCapabilities: {},

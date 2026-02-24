@@ -1492,6 +1492,9 @@ export function registerRalphCommand(program: Command): void {
                   info("Spawning ACP agent...");
                   agent = await spawnAndInitialize(adapter, {
                     cwd: process.cwd(),
+                    env: {
+                      KSPEC_RALPH_SESSION: sessionId,
+                    },
                     clientOptions: {
                       clientInfo: {
                         name: "kspec-ralph",

@@ -566,6 +566,33 @@ describe('ralph command', () => {
       }
     });
   });
+
+  describe('ralph-loop safety: KSPEC_RALPH_SESSION env var', () => {
+    // Verify ralph propagates KSPEC_RALPH_SESSION to spawned agent processes
+    it('sets KSPEC_RALPH_SESSION env var on spawned agent', async () => {
+      const envVerifyFile = path.join(tempDir, 'env-verify.json');
+
+      const result = runRalph('--max-loops 1', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+        MOCK_ACP_VERIFY_ENV_FILE: envVerifyFile,
+        MOCK_ACP_VERIFY_ENV_VARS: 'KSPEC_RALPH_SESSION',
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Completed iteration 1');
+
+      // Mock ACP should have written the env vars it received
+      const envData = JSON.parse(await fs.readFile(envVerifyFile, 'utf-8'));
+      expect(envData.KSPEC_RALPH_SESSION).toBeTruthy();
+      // Should be a valid ULID (26 chars, uppercase alphanumeric)
+      expect(envData.KSPEC_RALPH_SESSION).toMatch(/^[0-9A-Z]{26}$/);
+    });
+
+    it('does not set KSPEC_RALPH_SESSION when running outside ralph', async () => {
+      // When not run via ralph, the env var should not be present
+      expect(process.env.KSPEC_RALPH_SESSION).toBeUndefined();
+    });
+  });
 });
 
 // ─── Event Translator Unit Tests ────────────────────────────────────────────
