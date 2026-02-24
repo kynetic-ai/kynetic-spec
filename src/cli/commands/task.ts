@@ -47,6 +47,7 @@ import {
 } from "../validators.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
+import { checkBudget, incrementBudget } from "../../sessions/store.js";
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -1112,6 +1113,17 @@ Examples:
           );
         }
 
+        // AC: @task-budget-enforcement ac-block-start, ac-no-session, ac-no-budget
+        // Check budget before starting — only when session is set
+        const budgetCheck = await checkBudget(
+          ctx.specDir,
+          sessionId || undefined,
+        );
+        if (!budgetCheck.allowed) {
+          error(budgetCheck.reason!);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // Update status
         // AC: @session-scoped-task-claiming ac-stamp, ac-no-env
         const updatedTask: Task = {
@@ -1127,6 +1139,15 @@ Examples:
           "task-start",
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
+
+        // AC: @task-budget-enforcement ac-increment, ac-resume-no-increment
+        // Increment budget counter after successful start.
+        // Resume case (already in_progress) returns early above, so this only
+        // runs for genuine pending→in_progress or needs_work→in_progress transitions.
+        if (sessionId) {
+          await incrementBudget(ctx.specDir, sessionId);
+        }
+
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, {
           task: updatedTask,
         });
