@@ -5,7 +5,6 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
-import { writeFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { execSync } from 'node:child_process';
 import {
@@ -211,79 +210,62 @@ describe('kspec setup (enhanced)', () => {
     });
 
     // AC: @enhanced-setup ac-2 - PreToolUse guards installed
-    // AC: @full-hook-install ac-5 - ralph task-limit guard is generated
-    it('should create guard scripts in .claude/hooks/', async () => {
+    // AC: @native-guard-commands ac-setup-native - native command in PreToolUse
+    it('should install native kspec guard worktree command in PreToolUse hooks', async () => {
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },
       });
 
-      // Check for guard scripts
+      // Check settings.json for native guard command
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+      const preToolUse = settings.hooks?.PreToolUse || [];
+
+      const hasNativeGuard = preToolUse.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h: { command?: string }) => h.command === 'kspec guard worktree'),
+      );
+      expect(hasNativeGuard).toBe(true);
+    });
+
+    // AC: @native-guard-commands ac-setup-native - no bash scripts, native command
+    it('should not create bash guard scripts (uses native kspec guard command)', async () => {
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      // No bash scripts should be created in .claude/hooks/
       const hooksDir = path.join(tempDir, '.claude', 'hooks');
-      const guards = await fs.readdir(hooksDir);
-
-      expect(guards).toContain('kspec-worktree-guard.sh');
-
-      // Check scripts are executable
-      const guardPath = path.join(hooksDir, 'kspec-worktree-guard.sh');
-      const stats = await fs.stat(guardPath);
-      expect((stats.mode & 0o111) !== 0).toBe(true); // Has execute permission
+      let files: string[] = [];
+      try {
+        files = await fs.readdir(hooksDir);
+      } catch {
+        // hooks dir might not exist — that's acceptable
+      }
+      expect(files).not.toContain('kspec-worktree-guard.sh');
+      expect(files).not.toContain('ralph-task-limit-guard.sh');
     });
 
-    // AC: @full-hook-install ac-4 - worktree guard uses dynamic path detection
-    it('should use dynamic path detection in worktree guard', async () => {
-      kspec('setup', tempDir, {
-        env: { CLAUDECODE: '1' },
-      });
-
-      // Read the worktree guard script
-      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
-      const content = await fs.readFile(guardPath, 'utf-8');
-
-      // Should use dynamic CWD from hook input, not hardcoded paths
-      expect(content).toContain('CWD=$(echo "$INPUT" | jq -r');
-      expect(content).toContain('.cwd');
-      // Should not contain hardcoded absolute paths like /home/user/project
-      expect(content).not.toMatch(/\/home\/[a-zA-Z]+\/[^\s"']*/);
-      expect(content).not.toMatch(/\/Users\/[a-zA-Z]+\/[^\s"']*/);
-    });
-
-    // AC: @guard-script-and-diff-quality ac-1
-    it('should not block commands where dangerous patterns appear only inside quotes', async () => {
-      kspec('setup', tempDir, {
-        env: { CLAUDECODE: '1' },
-      });
-
-      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
-
-      // Helper to run guard script with a command, simulating being inside .kspec.
-      // Uses a temp file to avoid shell quoting issues with single/double quotes.
-      const inputFile = path.join(tempDir, '.guard-test-input.json');
-      const runGuard = (command: string) => {
-        const input = JSON.stringify({
-          tool_input: { command },
-          cwd: path.join(tempDir, '.kspec'),
-        });
-        writeFileSync(inputFile, input, 'utf-8');
-        const result = execSync(
-          `bash "${guardPath}" < "${inputFile}"`,
-          { encoding: 'utf-8', cwd: tempDir }
-        );
-        return JSON.parse(result);
+    // AC: @native-guard-commands ac-worktree-guard, ac-worktree-allow
+    // Guard logic tested via kspec guard worktree CLI in guard-worktree.test.ts
+    it('should test guard logic via native kspec guard worktree command', () => {
+      // Run guard command with various inputs to test allow/block behavior
+      const runGuard = (command: string, cwd: string) => {
+        const input = JSON.stringify({ tool_input: { command }, cwd });
+        const result = kspec('guard worktree', tempDir, { stdin: input });
+        return JSON.parse(result.stdout.trim());
       };
 
       // These should be ALLOWED — dangerous patterns are inside quotes
-      expect(runGuard('echo "git reset"')).toEqual({ decision: 'allow' });
-      expect(runGuard("grep 'git stash' README.md")).toEqual({ decision: 'allow' });
-      expect(runGuard('echo "testing git rebase command"')).toEqual({ decision: 'allow' });
+      expect(runGuard('echo "git reset"', path.join(tempDir, '.kspec'))).toEqual({ decision: 'allow' });
+      expect(runGuard("grep 'git stash' README.md", path.join(tempDir, '.kspec'))).toEqual({ decision: 'allow' });
 
       // These should still be BLOCKED — actual dangerous commands
-      expect(runGuard('git reset --hard')).toHaveProperty('decision', 'block');
-      expect(runGuard('git stash')).toHaveProperty('decision', 'block');
-      expect(runGuard('git rebase main')).toHaveProperty('decision', 'block');
+      expect(runGuard('git reset --hard', path.join(tempDir, '.kspec'))).toHaveProperty('decision', 'block');
+      expect(runGuard('git stash', path.join(tempDir, '.kspec'))).toHaveProperty('decision', 'block');
 
       // These should be BLOCKED — split-quote bypass attempts
-      expect(runGuard('git "reset" --hard')).toHaveProperty('decision', 'block');
-      expect(runGuard("git st'ash'")).toHaveProperty('decision', 'block');
+      expect(runGuard('git "reset" --hard', path.join(tempDir, '.kspec'))).toHaveProperty('decision', 'block');
     });
 
     // AC: @enhanced-setup ac-4 - kspec-agents.md exists
@@ -412,26 +394,32 @@ describe('kspec setup (enhanced)', () => {
       expect(promptHooks.length).toBe(1);
     });
 
-    it('should not rewrite guard scripts when content is unchanged', async () => {
+    // AC: @native-guard-commands ac-idempotent - no duplicates on repeated setup
+    it('should not create duplicate guard entries on repeated setup', async () => {
       // First setup
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },
       });
 
-      const guardPath = path.join(tempDir, '.claude', 'hooks', 'kspec-worktree-guard.sh');
-      const stat1 = await fs.stat(guardPath);
-
-      // Wait a small amount so mtime would differ if file is rewritten
-      await new Promise((r) => setTimeout(r, 50));
-
-      // Second setup — guard script should NOT be rewritten
+      // Second setup
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },
       });
 
-      const stat2 = await fs.stat(guardPath);
-      // mtime should be unchanged since file was not rewritten
-      expect(stat2.mtimeMs).toBe(stat1.mtimeMs);
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+      const preToolUse = settings.hooks?.PreToolUse || [];
+
+      // Count native guard entries
+      let guardCount = 0;
+      for (const entry of preToolUse) {
+        for (const hook of entry.hooks || []) {
+          if (hook.command === 'kspec guard worktree') {
+            guardCount++;
+          }
+        }
+      }
+      expect(guardCount).toBe(1);
     });
 
     it('should produce identical settings.json content on second run', async () => {

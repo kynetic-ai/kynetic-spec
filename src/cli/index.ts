@@ -20,6 +20,7 @@ import {
   registerDeriveCommand,
   registerDoctorCommand,
   registerExportCommand,
+  registerGuardCommand,
   registerHelpCommand,
   registerInboxCommands,
   registerInitCommand,
@@ -240,6 +241,7 @@ registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 registerMergeDriverCommand(program);
 registerExportCommand(program);
+registerGuardCommand(program);
 registerUtilCommands(program);
 registerBatchCommand(program);
 registerSkillCommands(program);
