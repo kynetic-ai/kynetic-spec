@@ -252,6 +252,35 @@ derive_from_specs: true
     });
   });
 
+  // AC: @plan-import ac-36 - Parse priority on specs
+  it("should parse priority field on specs", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: High Priority Feature
+  slug: high-priority
+  priority: 1
+
+- title: Low Priority Feature
+  slug: low-priority
+  priority: 5
+
+- title: Default Priority Feature
+  slug: default-priority
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(3);
+    expect(result.specs[0].priority).toBe(1);
+    expect(result.specs[1].priority).toBe(5);
+    expect(result.specs[2].priority).toBeUndefined();
+  });
+
   // AC: @plan-import ac-35 - Parse depends_on on specs
   it("should parse depends_on array on specs", () => {
     const plan = `

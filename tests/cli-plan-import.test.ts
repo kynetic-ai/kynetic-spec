@@ -1512,4 +1512,188 @@ derive_from_specs: true
     expect(newTask!.depends_on.length).toBe(1);
     expect(newTask!.depends_on[0]).toBe(`@${existingTaskSlug}`);
   });
+
+  // AC: @plan-import ac-36 - Derived tasks inherit priority from spec
+  it("should inherit priority from spec to derived task", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Priority Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Urgent Feature
+  slug: urgent-feature
+  type: feature
+  priority: 1
+
+- title: Normal Feature
+  slug: normal-feature
+  type: feature
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const tasks = kspecJson<
+      Array<{
+        title: string;
+        priority: number;
+        plan_ref: string;
+      }>
+    >("task list --json", tempDir);
+
+    const urgentTask = tasks.find(
+      (t) => t.title === "Implement Urgent Feature",
+    );
+    const normalTask = tasks.find(
+      (t) => t.title === "Implement Normal Feature",
+    );
+
+    expect(urgentTask).toBeDefined();
+    expect(urgentTask!.priority).toBe(1);
+
+    expect(normalTask).toBeDefined();
+    expect(normalTask!.priority).toBe(3); // Default when spec has no priority
+  });
+
+  // AC: @plan-import ac-36 - Spec priority values across full range
+  it("should support priority values 1 through 5 on specs", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Priority Range Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Priority One
+  slug: priority-one
+  type: feature
+  priority: 1
+
+- title: Priority Two
+  slug: priority-two
+  type: feature
+  priority: 2
+
+- title: Priority Five
+  slug: priority-five
+  type: feature
+  priority: 5
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const tasks = kspecJson<
+      Array<{
+        title: string;
+        priority: number;
+      }>
+    >("task list --json", tempDir);
+
+    const p1Task = tasks.find((t) => t.title === "Implement Priority One");
+    const p2Task = tasks.find((t) => t.title === "Implement Priority Two");
+    const p5Task = tasks.find((t) => t.title === "Implement Priority Five");
+
+    expect(p1Task!.priority).toBe(1);
+    expect(p2Task!.priority).toBe(2);
+    expect(p5Task!.priority).toBe(5);
+  });
+
+  // AC: @plan-import ac-36 - Manual tasks still use their own priority
+  it("should use manual task priority independently of spec priority", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Mixed Priority Plan
+
+## Specs
+
+\`\`\`yaml
+- title: High Priority Spec
+  slug: high-priority-spec
+  type: feature
+  priority: 1
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+
+\`\`\`yaml
+- title: Manual Low Priority
+  slug: manual-low
+  priority: 5
+
+- title: Manual Default Priority
+  slug: manual-default
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const tasks = kspecJson<
+      Array<{
+        title: string;
+        priority: number;
+      }>
+    >("task list --json", tempDir);
+
+    const derivedTask = tasks.find(
+      (t) => t.title === "Implement High Priority Spec",
+    );
+    const manualLow = tasks.find((t) => t.title === "Manual Low Priority");
+    const manualDefault = tasks.find(
+      (t) => t.title === "Manual Default Priority",
+    );
+
+    expect(derivedTask!.priority).toBe(1); // Inherited from spec
+    expect(manualLow!.priority).toBe(5); // Explicit manual priority
+    expect(manualDefault!.priority).toBe(3); // Default when no priority
+  });
+
+  // AC: @plan-import ac-36 - Invalid priority rejected by schema
+  it("should reject spec with out-of-range priority", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Invalid Priority Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Invalid Feature
+  slug: invalid-feature
+  type: feature
+  priority: 10
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    const output = kspec(
+      `plan import "${planPath}" --module @test-core`,
+      tempDir,
+    );
+
+    // Schema validation should catch the invalid priority
+    expect(output).toMatch(/error|skip|invalid/i);
+  });
 });

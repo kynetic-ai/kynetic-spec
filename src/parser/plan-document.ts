@@ -22,6 +22,7 @@ export const PlanSpecSchema = z.object({
   type: z.string().optional(),
   parent: z.string().optional(),
   description: z.string().optional(),
+  priority: z.number().int().min(1).max(5).optional(),
   acceptance_criteria: z.array(AcceptanceCriterionSchema).optional(),
   traits: z.array(z.string()).optional(),
   depends_on: z.array(z.string()).optional(),
