@@ -15,6 +15,7 @@ import {
   loadAllTasks,
   loadInboxItems,
   loadSessionContext,
+  loadTriageRecords,
   ReferenceIndex,
 } from "../../parser/index.js";
 import {
@@ -139,6 +140,9 @@ export interface SessionContext {
   /** Inbox items awaiting triage (oldest first) */
   inbox_items: InboxSummary[];
 
+  /** Inbox triage statistics */
+  inbox_stats: InboxStats;
+
   /** Summary statistics */
   stats: SessionStats;
 }
@@ -240,6 +244,15 @@ export interface InboxSummary {
   created_at: string;
   tags: string[];
   added_by: string | null;
+  triaged: boolean;
+  triage_action: string | null;
+}
+
+export interface InboxStats {
+  total: number;
+  untriaged: number;
+  deferred: number;
+  triaged: number;
 }
 
 export interface SessionOptions {
@@ -534,7 +547,15 @@ export async function gatherSessionContext(
   const allTasks = await loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
   const inboxItems = await loadInboxItems(ctx);
+  const triageRecords = await loadTriageRecords(ctx);
   const index = new ReferenceIndex(allTasks, items);
+
+  // AC: @session-start-inbox-triage ac-inbox-untriaged-def
+  // Build lookup: inbox ULID → triage record (most recent if multiple)
+  const triageByInboxRef = new Map<string, { action?: string }>();
+  for (const record of triageRecords) {
+    triageByInboxRef.set(record.inbox_ref, { action: record.action });
+  }
 
   // Compute stats
   const stats: SessionStats = {
@@ -669,20 +690,37 @@ export async function gatherSessionContext(
     workingTree = getWorkingTreeStatus(ctx.rootDir);
   }
 
-  // Get inbox items (oldest first to encourage triage)
-  const inboxSummaries: InboxSummary[] = inboxItems
+  // Get inbox items with triage status (oldest first to encourage triage)
+  // AC: @session-start-inbox-triage ac-inbox-untriaged-def
+  const allInboxSummaries: InboxSummary[] = inboxItems
     .sort(
       (a, b) =>
         new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
     )
-    .slice(0, options.full ? undefined : limit)
-    .map((item) => ({
-      ref: item._ulid.slice(0, 8),
-      text: item.text,
-      created_at: item.created_at,
-      tags: item.tags,
-      added_by: item.added_by || null,
-    }));
+    .map((item) => {
+      const triageInfo = triageByInboxRef.get(item._ulid);
+      return {
+        ref: item._ulid.slice(0, 8),
+        text: item.text,
+        created_at: item.created_at,
+        tags: item.tags,
+        added_by: item.added_by || null,
+        triaged: !!triageInfo,
+        triage_action: triageInfo?.action ?? null,
+      };
+    });
+
+  // AC: @session-start-inbox-triage ac-inbox-stat-line, ac-inbox-all-triaged
+  const inboxStats: InboxStats = {
+    total: allInboxSummaries.length,
+    untriaged: allInboxSummaries.filter((i) => !i.triaged).length,
+    deferred: allInboxSummaries.filter((i) => i.triage_action === "defer")
+      .length,
+    triaged: allInboxSummaries.filter((i) => i.triaged).length,
+  };
+
+  // JSON always gets full list with triage status; human display filters in formatSessionContext
+  const inboxSummaries: InboxSummary[] = allInboxSummaries;
 
   // Load session context (focus, threads, questions)
   const sessionContext = await loadSessionContext(ctx);
@@ -725,6 +763,7 @@ export async function gatherSessionContext(
     activity_timeline: activityTimeline,
     working_tree: workingTree,
     inbox_items: inboxSummaries,
+    inbox_stats: inboxStats,
     stats,
   };
 }
@@ -1246,25 +1285,41 @@ function formatSessionContext(
 
   // Note: Recent Commits section replaced by unified activity timeline above
 
-  // Inbox section (oldest first to encourage triage)
-  if (ctx.inbox_items.length > 0) {
+  // AC: @session-start-inbox-triage ac-inbox-stat-line, ac-inbox-full-list, ac-inbox-all-triaged
+  // Inbox section with triage-aware statistics
+  if (ctx.inbox_stats.total > 0) {
     console.log(`\n${sessionHeaders.inbox}`);
-    for (const item of ctx.inbox_items) {
-      const age = formatRelativeTime(new Date(item.created_at));
-      const author = item.added_by ? ` by ${item.added_by}` : "";
-      const tags =
-        item.tags.length > 0 ? chalk.cyan(` [${item.tags.join(", ")}]`) : "";
-      // Truncate text in brief mode
-      let text = item.text;
-      if (isBrief && text.length > 60) {
-        text = `${text.slice(0, 60).trim()}...`;
+    // Stat line always shown
+    const statParts = [
+      `${ctx.inbox_stats.untriaged} untriaged`,
+      `${ctx.inbox_stats.deferred} deferred`,
+      `${ctx.inbox_stats.total} total`,
+    ];
+    console.log(`  ${statParts.join(" | ")}`);
+
+    // AC: @session-start-inbox-triage ac-inbox-full-list
+    // Full mode: list untriaged items (up to 20)
+    const untriagedItems = ctx.inbox_items
+      .filter((i) => !i.triaged)
+      .slice(0, 20);
+    if (!isBrief && untriagedItems.length > 0) {
+      console.log("");
+      for (const item of untriagedItems) {
+        const age = formatRelativeTime(new Date(item.created_at));
+        const author = item.added_by ? ` by ${item.added_by}` : "";
+        const tags =
+          item.tags.length > 0
+            ? chalk.cyan(` [${item.tags.join(", ")}]`)
+            : "";
+        console.log(
+          `  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`,
+        );
+        console.log(`    ${item.text}`);
       }
-      console.log(
-        `  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`,
-      );
-      console.log(`    ${text}`);
     }
-    console.log(`  ${hints.inboxPromote}`);
+    if (ctx.inbox_stats.untriaged > 0) {
+      console.log(`  ${hints.inboxTriage}`);
+    }
   }
 
   // Working tree section
@@ -1325,10 +1380,9 @@ function formatSessionContext(
     );
   }
 
-  if (ctx.inbox_items.length > 0) {
-    const ref = ctx.inbox_items[0].ref;
+  if (ctx.inbox_stats.untriaged > 0) {
     quickCommands.push(
-      `kspec inbox promote @${ref} --title "..."  ${chalk.gray("# convert to task")}`,
+      `kspec triage inbox  ${chalk.gray("# triage untriaged inbox items")}`,
     );
   }
 
