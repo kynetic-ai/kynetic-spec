@@ -102,9 +102,9 @@ export function getRecentCommits(options: {
           record.split("\x00");
         const body = bodyParts.join("\x00").trim();
 
-        // Parse Task: @slug trailers from body
+        // Parse Task: @slug trailers from body (anchored to line start per git trailer convention)
         const taskRefs: string[] = [];
-        const trailerPattern = /Task:\s*@([\w-]+)/g;
+        const trailerPattern = /^Task:\s*@([\w-]+)/gm;
         let match;
         while ((match = trailerPattern.exec(body)) !== null) {
           taskRefs.push(match[1]);

@@ -476,9 +476,14 @@ function buildActivityTimeline(
         }
         if (linkedTask) {
           linkedTaskRefs.add(linkedTask.ref);
+          // Use the later of commit date and task completion date for sort accuracy
+          const commitTime = new Date(commit.date).getTime();
+          const taskTime = new Date(linkedTask.completed_at).getTime();
+          const laterDate =
+            taskTime > commitTime ? linkedTask.completed_at : commit.date;
           items.push({
             type: "linked_commit",
-            date: commit.date,
+            date: laterDate,
             commit,
             task: linkedTask,
           });

@@ -201,13 +201,16 @@ describe('session start activity timeline', () => {
       kspec('task submit @task-earlier', tempDir);
       kspec('task complete @task-earlier --reason "Done first"', tempDir);
 
-      // Small delay to ensure different timestamps
-      // Create a commit "later"
+      // Create a commit with a future date to guarantee different timestamps
+      // Git --date flag sets the author date, ensuring it sorts after the task completion
       writeFileSync(join(tempDir, 'later.ts'), 'export const later = 1;\n');
       git('add later.ts', tempDir);
-      git('commit -m "feat: later commit"', tempDir);
+      git('commit -m "feat: later commit" --date="2099-01-01T00:00:00Z"', tempDir);
 
       const session = kspecJson<SessionContext>('session start --json', tempDir);
+
+      // Should have at least 2 items (task + commit)
+      expect(session.activity_timeline.length).toBeGreaterThanOrEqual(2);
 
       // Verify sorted most recent first
       for (let i = 1; i < session.activity_timeline.length; i++) {
@@ -215,6 +218,10 @@ describe('session start activity timeline', () => {
         const currDate = new Date(session.activity_timeline[i].date).getTime();
         expect(prevDate).toBeGreaterThanOrEqual(currDate);
       }
+
+      // The commit with future date should be first
+      expect(session.activity_timeline[0].type).toBe('commit');
+      expect(session.activity_timeline[0].commit!.message).toBe('feat: later commit');
     });
   });
 
