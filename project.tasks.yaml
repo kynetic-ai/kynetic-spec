@@ -56412,7 +56412,7 @@
     tasks list. Had to retry to get a persistent task. Possible shadow branch commit race condition
     or ULID issue. Observed during session 2026-02-22."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56421,6 +56421,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:33:46.996Z
   started_at: 2026-02-24T03:22:46.028Z
+  submitted_at: 2026-02-24T03:45:02.544Z
   notes:
     - _ulid: 01KJ4V6RRKKPMW0A8VY6MHGFYX
       created_at: 2026-02-23T08:52:40.851Z
@@ -56441,7 +56442,10 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T03:45:02.544Z
+  completed_at: 2026-02-24T04:04:07.417Z
+  closed_reason: "Merged in PR #494. Added advisory file locking (mkdir-based) to all 10 YAML mutation
+    functions to prevent concurrent write data loss. Consolidated duplicate lock from plans.ts. 9
+    tests covering lock mechanics and concurrent safety."
 - _ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
   slugs: []
   title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session
