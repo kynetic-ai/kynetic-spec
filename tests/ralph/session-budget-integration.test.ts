@@ -13,7 +13,7 @@
  *     ac-env-inject, ac-remove-marker-code, ac-session-close-all-paths
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { spawn as nodeSpawn } from "node:child_process";
+import { execSync, spawn as nodeSpawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
@@ -32,6 +32,7 @@ import {
   testUlid,
   CLI_PATH,
   FIXTURES_DIR,
+  initGitRepo,
 } from "../helpers/cli";
 
 /** Path to the mock ACP agent script */
@@ -344,18 +345,17 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
+    // Initialize a clean git repo so getWorkingTreeStatus() returns clean.
+    // This prevents the wrap-up agent from spawning (2-min timeout) and
+    // causing flaky test timeouts.
+    initGitRepo(tempDir);
+    execSync("git add -A && git commit -m 'init'", { cwd: tempDir, stdio: "pipe" });
   });
 
   afterEach(async () => {
     await cleanupTempDir(tempDir);
   });
 
-  /**
-   * Helper: spawn kspec ralph as a subprocess.
-   * Watches stderr for a marker string, then resolves.
-   * Ralph may not exit cleanly due to open Node handles, so we
-   * kill the process after the marker is seen and cleanup has occurred.
-   */
   /**
    * Helper: spawn kspec ralph as a subprocess.
    * Watches combined output for a marker string, then resolves.
@@ -369,7 +369,7 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
   ): Promise<{ output: string }> {
     return new Promise((resolve, reject) => {
       const child = nodeSpawn("node", [CLI_PATH, "ralph", ...args], {
-        cwd: process.cwd(),
+        cwd: tempDir,
         env: {
           ...process.env,
           KSPEC_SPEC_DIR: tempDir,
@@ -451,7 +451,7 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
       "node",
       [CLI_PATH, "ralph", "--adapter-cmd", `node ${MOCK_AGENT_PATH}`, "--max-loops", "999", "--max-tasks", "2"],
       {
-        cwd: process.cwd(),
+        cwd: tempDir,
         env: {
           ...process.env,
           KSPEC_SPEC_DIR: tempDir,
