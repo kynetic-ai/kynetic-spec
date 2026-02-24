@@ -57342,7 +57342,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57376,6 +57376,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T06:54:59.114Z
+  closed_reason: "Merged in PR #500. Implements session create CLI command and
+    createSessionWithBudget() library function with env injection for Claude Code, Codex CLI, and
+    fallback. All 8 spec ACs covered, trait ACs tested. Fix commit addressed all 7 review findings."
 - _ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
   slugs:
     - add-budget-enforcement-to-task-start
