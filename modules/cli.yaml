@@ -5503,10 +5503,11 @@ requirements:
     title: kspec session start
     type: requirement
     tags: []
-    description: "Display session context for starting work. Shows: active tasks, recently completed,
-      ready tasks, inbox items, recent commits, working tree status. Options: --brief (default),
-      --full, --since <time>, --no-git, -n <limit>. Output is human-readable with sections for each
-      context type. Designed as the first command agents run to orient themselves."
+    description: "Display session context for starting work. Two output modes: primer (default) shows
+      curated actionable data; full (--full) shows same structure with more items and additional
+      sections. Sections ordered by actionability. Empty sections omitted. Task refs display as
+      @slug in human output (fallback to @short-ulid). Timestamps relative in human output, ISO 8601
+      in JSON."
     depends_on: []
     implements: []
     relates_to: []
@@ -5543,6 +5544,74 @@ requirements:
             then: Quick Commands section shows task note and complete hints
     status:
       implementation: implemented
+    traits:
+      - "@trait-json-output"
+      - "@trait-semantic-exit-codes"
+    acceptance_criteria:
+      - id: ac-primer-default
+        given: no format flags specified
+        when: kspec session start runs
+        then: "primer mode renders: header, active tasks, pending review, blocked, ready (top 5), recent
+          activity (10 items), inbox stat line, working tree (if dirty), quick commands"
+      - id: ac-full-sections
+        given: --full flag passed
+        when: output renders
+        then: "same section ordering as primer plus: all ready tasks, 20 activity items, up to 20 untriaged
+          inbox items, observations section, session metadata (if populated)"
+      - id: ac-brief-alias
+        given: --brief flag passed
+        when: output renders
+        then: behaves identically to primer (backward-compat no-op alias)
+      - id: ac-section-order
+        given: multiple sections have data
+        when: output renders
+        then: "rendered sections appear in order: active tasks, pending review, blocked, ready, recent
+          activity, inbox, working tree, quick commands"
+      - id: ac-empty-skip
+        given: a section has zero items
+        when: output renders
+        then: that section is omitted entirely (no header, no placeholder message)
+      - id: ac-slug-display
+        given: task has slugs
+        when: human output renders
+        then: task ref displays as @slug
+      - id: ac-slug-fallback
+        given: task has no slugs or item is inbox (no slug schema)
+        when: human output renders
+        then: ref displays as @short-ulid
+      - id: ac-relative-time-human
+        given: items have timestamps
+        when: human output renders
+        then: all times shown as relative (2h ago, 3d ago)
+      - id: ac-iso-time-json
+        given: --json flag used
+        when: JSON output renders
+        then: all timestamps remain ISO 8601
+      - id: ac-dirty-tree-only
+        given: working tree is clean
+        when: output renders
+        then: working tree section omitted
+      - id: ac-active-detail
+        given: tasks are in_progress or needs_work
+        when: primer or full renders
+        then: shows title, description, and recent notes (richest detail level)
+      - id: ac-needs-work-indicator
+        given: task status is needs_work
+        when: output renders
+        then: visually distinguished from in_progress with status label
+      - id: ac-review-detail
+        given: tasks are pending_review
+        when: primer or full renders
+        then: shows title and recent notes
+      - id: ac-notes-starvation
+        given: tasks in multiple statuses have notes
+        when: notes render
+        then: notes split across statuses to prevent starvation (in_progress, pending_review, completed each
+          get fair share)
+      - id: ac-json-raw-preserved
+        given: --json flag used
+        when: JSON output renders
+        then: existing recently_completed and recent_commits arrays present and unchanged
   - _ulid: 01KFFG8XS20YMJR11CA4YZNX9N
     slugs:
       - spec-log-empty-repo

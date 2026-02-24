@@ -57293,10 +57293,6 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: completed
   blocked_by: []
-  closed_reason: "Merged in PR #499. Added session_id field to TaskSchema/TaskInputSchema, session
-    stamping on task start, warning for cross-session claiming, session indicator in output, and
-    session_id clearing on status transitions. All 6 ACs covered with 13 integration tests. CI
-    green."
   depends_on: []
   context: []
   priority: 3
@@ -57307,7 +57303,6 @@
   created_at: 2026-02-24T01:18:25.603Z
   started_at: 2026-02-24T05:48:02.012Z
   submitted_at: 2026-02-24T05:57:12.209Z
-  completed_at: 2026-02-24T06:16:49.002Z
   notes:
     - _ulid: 01KJ6KKQA3JTQGS8FWWKWTBYVK
       created_at: 2026-02-24T01:18:25.603Z
@@ -57335,6 +57330,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T06:16:49.002Z
+  closed_reason: "Merged in PR #499. Added session_id field to TaskSchema/TaskInputSchema, session
+    stamping on task start, warning for cross-session claiming, session indicator in output, and
+    session_id clearing on status transitions. All 6 ACs covered with 13 integration tests. CI
+    green."
 - _ulid: 01KJ6KKQM5WQKJKP7B1BAY0RB2
   slugs:
     - implement-session-create-command
@@ -57342,7 +57342,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57364,7 +57364,6 @@
         Include validation for invalid/stale KSPEC_SESSION_ID with clear error messages.
   todos: []
   automation: eligible
-  started_at: 2026-02-24T06:17:31.839Z
 - _ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
   slugs:
     - add-budget-enforcement-to-task-start
