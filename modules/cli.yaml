@@ -2929,10 +2929,10 @@ features:
             then: Parses N as positive integer (1-999) or 0 for unlimited; default is 1; invalid values exit
               with code 2
           - id: ac-detection
-            given: Agent completes a task (kspec task complete)
-            when: ACP update handler receives Bash tool call containing kspec task complete
-            then: Ralph queries kspec for actual completion count since iteration start, not relying on pattern
-              alone
+            given: Agent completes or submits a task (kspec task complete or kspec task submit)
+            when: ACP update handler receives Bash tool call containing kspec task complete or kspec task submit
+            then: Ralph queries kspec for actual completion count since iteration start, counting both completed
+              and pending_review tasks, not relying on pattern alone
           - id: ac-wrapup
             given: N tasks completed this iteration (N equals max-tasks)
             when: Detection triggers and count verified via kspec query
