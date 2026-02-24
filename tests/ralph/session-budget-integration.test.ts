@@ -6,10 +6,14 @@
  * create session with budget → reset at iteration boundary →
  * budget enforcement via task start → cleanup on exit.
  *
+ * Producer-side tests use a mock ACP agent (tests/fixtures/mock-acp-agent.mjs)
+ * to verify env injection and cleanup through the real ralph code paths.
+ *
  * AC: @ralph-session-budget-integration ac-create-budget, ac-reset-iteration,
  *     ac-env-inject, ac-remove-marker-code, ac-session-close-all-paths
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { spawn as nodeSpawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
@@ -19,15 +23,19 @@ import {
   getBudget,
   incrementBudget,
   getSessionBudgetPath,
-  closeSession,
 } from "../../src/sessions/store.js";
-import type { SessionMetadataInput } from "../../src/sessions/types.js";
+import { spawnAgent } from "../../src/agents/spawner.js";
 import {
   kspec,
   setupTempFixtures,
   cleanupTempDir,
   testUlid,
+  CLI_PATH,
+  FIXTURES_DIR,
 } from "../helpers/cli";
+
+/** Path to the mock ACP agent script */
+const MOCK_AGENT_PATH = path.join(FIXTURES_DIR, "mock-acp-agent.mjs");
 
 // ─── Budget Creation (ac-create-budget) ─────────────────────────────────────
 
@@ -146,7 +154,7 @@ describe("ac-reset-iteration: budget reset at iteration boundary", () => {
   });
 });
 
-// ─── Env Injection (ac-env-inject) ──────────────────────────────────────────
+// ─── Env Injection — Consumer Side (ac-env-inject) ──────────────────────────
 
 describe("ac-env-inject: KSPEC_SESSION_ID budget enforcement via task start", () => {
   let tempDir: string;
@@ -207,6 +215,80 @@ describe("ac-env-inject: KSPEC_SESSION_ID budget enforcement via task start", ()
   });
 });
 
+// ─── Env Injection — Producer Side (ac-env-inject) ──────────────────────────
+
+describe("ac-env-inject: spawnAgent passes KSPEC_SESSION_ID to child process", () => {
+  let tempDir: string;
+  let envFile: string;
+
+  beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-ralph-spawn-"));
+    envFile = path.join(tempDir, "agent-env.json");
+  });
+
+  afterEach(async () => {
+    await fs.rm(tempDir, { recursive: true });
+  });
+
+  // AC: @ralph-session-budget-integration ac-env-inject
+  it("should pass KSPEC_SESSION_ID to spawned agent via env", async () => {
+    const sessionId = testUlid("RSPAWN", 1);
+
+    // Spawn mock agent with the same env pattern ralph uses
+    const agent = spawnAgent(
+      { command: "node", args: [MOCK_AGENT_PATH], description: "mock" },
+      {
+        cwd: tempDir,
+        env: {
+          KSPEC_SESSION_ID: sessionId,
+          MOCK_ACP_ENV_FILE: envFile,
+        },
+      },
+    );
+
+    try {
+      // Initialize to prove the agent is alive and responding
+      await agent.client.initialize();
+
+      // Mock agent writes env to file on startup — verify it received the session ID
+      const envData = JSON.parse(await fs.readFile(envFile, "utf-8"));
+      expect(envData.KSPEC_SESSION_ID).toBe(sessionId);
+    } finally {
+      agent.kill();
+    }
+  });
+
+  // AC: @ralph-session-budget-integration ac-env-inject
+  it("should not leak KSPEC_SESSION_ID when env is not provided", async () => {
+    // Ensure KSPEC_SESSION_ID is NOT in the current process env for this test
+    const originalValue = process.env.KSPEC_SESSION_ID;
+    delete process.env.KSPEC_SESSION_ID;
+
+    try {
+      const agent = spawnAgent(
+        { command: "node", args: [MOCK_AGENT_PATH], description: "mock" },
+        {
+          cwd: tempDir,
+          env: { MOCK_ACP_ENV_FILE: envFile },
+        },
+      );
+
+      try {
+        await agent.client.initialize();
+        const envData = JSON.parse(await fs.readFile(envFile, "utf-8"));
+        expect(envData.KSPEC_SESSION_ID).toBeNull();
+      } finally {
+        agent.kill();
+      }
+    } finally {
+      // Restore original value
+      if (originalValue !== undefined) {
+        process.env.KSPEC_SESSION_ID = originalValue;
+      }
+    }
+  });
+});
+
 // ─── Marker Code Removal (ac-remove-marker-code) ────────────────────────────
 
 describe("ac-remove-marker-code: no marker file code in ralph.ts", () => {
@@ -250,106 +332,178 @@ describe("ac-remove-marker-code: no marker file code in ralph.ts", () => {
 
 // ─── Session Close All Paths (ac-session-close-all-paths) ───────────────────
 
-describe("ac-session-close-all-paths: budget cleanup on session end", () => {
-  let specDir: string;
+describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
+  let tempDir: string;
 
   beforeEach(async () => {
-    specDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "kspec-ralph-cleanup-"),
-    );
+    tempDir = await setupTempFixtures();
   });
 
   afterEach(async () => {
-    await fs.rm(specDir, { recursive: true });
+    await cleanupTempDir(tempDir);
   });
 
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  it("should delete budget.json when cleaned up (normal exit)", async () => {
-    const sessionId = testUlid("RCLOSE", 1);
-    await createSessionWithBudget(specDir, {
-      id: sessionId,
-      agent_type: "claude-code",
-      budget: 3,
+  /**
+   * Helper: spawn kspec ralph as a subprocess.
+   * Watches stderr for a marker string, then resolves.
+   * Ralph may not exit cleanly due to open Node handles, so we
+   * kill the process after the marker is seen and cleanup has occurred.
+   */
+  /**
+   * Helper: spawn kspec ralph as a subprocess.
+   * Watches combined output for a marker string, then resolves.
+   * Ralph may not exit cleanly due to open Node handles, so we
+   * kill the process after the marker is seen and cleanup has occurred.
+   */
+  function spawnRalphUntil(
+    args: string[],
+    marker: string,
+    env: Record<string, string> = {},
+  ): Promise<{ output: string }> {
+    return new Promise((resolve, reject) => {
+      const child = nodeSpawn("node", [CLI_PATH, "ralph", ...args], {
+        cwd: process.cwd(),
+        env: {
+          ...process.env,
+          KSPEC_SPEC_DIR: tempDir,
+          KSPEC_AUTHOR: "@test",
+          ...env,
+        },
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+
+      let output = "";
+      let resolved = false;
+
+      const onData = (d: Buffer) => {
+        output += d.toString();
+        // Once we see the marker, cleanup is done — give a small grace period then kill
+        if (!resolved && output.includes(marker)) {
+          resolved = true;
+          setTimeout(() => {
+            child.kill("SIGKILL");
+            resolve({ output });
+          }, 500);
+        }
+      };
+      child.stdout!.on("data", onData);
+      child.stderr!.on("data", onData);
+
+      child.on("close", () => {
+        if (!resolved) {
+          resolved = true;
+          resolve({ output });
+        }
+      });
+
+      // Safety timeout
+      setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          child.kill("SIGKILL");
+          reject(new Error(`Timed out waiting for marker "${marker}"\noutput: ${output}`));
+        }
+      }, 25_000);
     });
-
-    // Verify budget exists
-    const budgetPath = getSessionBudgetPath(specDir, sessionId);
-    await expect(fs.access(budgetPath)).resolves.toBeUndefined();
-
-    // Simulate ralph's cleanup: unlink budget + close session
-    await fs.unlink(budgetPath).catch(() => {});
-    await closeSession(specDir, sessionId, "completed", "All iterations done");
-
-    // Budget file should be gone
-    await expect(fs.access(budgetPath)).rejects.toThrow();
-  });
+  }
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  it("should handle cleanup when no budget exists (maxTasks=0)", async () => {
-    const sessionId = testUlid("RCLOSE", 2);
-    await createSessionWithBudget(specDir, {
-      id: sessionId,
-      agent_type: "claude-code",
-      budget: 0,
-    });
-
-    // No budget file — cleanup should not throw
-    const budgetPath = getSessionBudgetPath(specDir, sessionId);
-    await expect(
-      fs.unlink(budgetPath).catch(() => {}),
-    ).resolves.toBeUndefined();
-
-    await closeSession(specDir, sessionId, "completed", "No budget scenario");
-  });
-
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  it("should close session as abandoned on error exit", async () => {
-    const sessionId = testUlid("RCLOSE", 3);
-    await createSessionWithBudget(specDir, {
-      id: sessionId,
-      agent_type: "claude-code",
-      budget: 2,
-    });
-
-    // Simulate error exit: clean up budget and close as abandoned
-    const budgetPath = getSessionBudgetPath(specDir, sessionId);
-    await fs.unlink(budgetPath).catch(() => {});
-    await closeSession(specDir, sessionId, "abandoned", "Max failures reached");
-
-    // Verify session is closed as abandoned
-    const sessionPath = path.join(
-      specDir,
-      "sessions",
-      sessionId,
-      "session.yaml",
+  it("should clean up budget.json after normal exit (max-iterations reached)", async () => {
+    // Run ralph with mock agent for 1 iteration.
+    // Wait for "Ralph loop completed" which appears after all cleanup.
+    const result = await spawnRalphUntil(
+      ["--adapter-cmd", `node ${MOCK_AGENT_PATH}`, "--max-loops", "1", "--max-tasks", "2"],
+      "Ralph loop completed",
     );
+
+    expect(result.output).toContain("Completed iteration 1");
+
+    // Find the session directory ralph created
+    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionDirs = await fs.readdir(sessionsDir);
+
+    // Ralph should have created exactly one session
+    expect(sessionDirs.length).toBe(1);
+
+    // Budget.json should NOT exist after ralph cleanup
+    const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
+    const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
+    expect(budgetExists).toBe(false);
+
+    // Session should be closed as completed
+    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
+    const content = await fs.readFile(sessionPath, "utf-8");
+    expect(content).toContain("status: completed");
+  }, 30_000);
+
+  // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  it("should clean up budget.json after signal (SIGINT)", async () => {
+    // Spawn ralph with many iterations so it doesn't exit naturally.
+    const child = nodeSpawn(
+      "node",
+      [CLI_PATH, "ralph", "--adapter-cmd", `node ${MOCK_AGENT_PATH}`, "--max-loops", "999", "--max-tasks", "2"],
+      {
+        cwd: process.cwd(),
+        env: {
+          ...process.env,
+          KSPEC_SPEC_DIR: tempDir,
+          KSPEC_AUTHOR: "@test",
+        },
+        stdio: ["pipe", "pipe", "pipe"],
+      },
+    );
+
+    let output = "";
+    const onData = (d: Buffer) => { output += d.toString(); };
+    child.stdout!.on("data", onData);
+    child.stderr!.on("data", onData);
+
+    // Wait for ralph to create the session and start working
+    await new Promise<void>((resolve) => {
+      const check = () => {
+        if (output.includes("Creating ACP session")) {
+          resolve();
+        } else {
+          setTimeout(check, 50);
+        }
+      };
+      check();
+      setTimeout(resolve, 5_000);
+    });
+
+    // Send SIGINT (same as Ctrl+C)
+    child.kill("SIGINT");
+
+    // Wait for process to exit
+    await new Promise<void>((resolve) => {
+      child.on("close", () => resolve());
+      setTimeout(() => {
+        child.kill("SIGKILL");
+        resolve();
+      }, 10_000);
+    });
+
+    // Verify budget.json was cleaned up
+    const sessionsDir = path.join(tempDir, "sessions");
+    let sessionDirs: string[] = [];
+    try {
+      sessionDirs = await fs.readdir(sessionsDir);
+    } catch {
+      // No sessions dir = nothing to check (ralph failed very early)
+    }
+
+    // Ralph should have created a session
+    expect(sessionDirs.length).toBe(1);
+
+    // Budget.json should be cleaned up by signal handler
+    const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
+    const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
+    expect(budgetExists).toBe(false);
+
+    // Session should be closed as abandoned
+    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
     const content = await fs.readFile(sessionPath, "utf-8");
     expect(content).toContain("status: abandoned");
-    expect(content).toContain("Max failures reached");
-  });
-
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  it("should close session as abandoned on signal (SIGINT/SIGTERM)", async () => {
-    const sessionId = testUlid("RCLOSE", 4);
-    await createSessionWithBudget(specDir, {
-      id: sessionId,
-      agent_type: "claude-code",
-      budget: 1,
-    });
-
-    // Simulate signal handler: same cleanup pattern as error
-    const budgetPath = getSessionBudgetPath(specDir, sessionId);
-    await fs.unlink(budgetPath).catch(() => {});
-    await closeSession(specDir, sessionId, "abandoned", "Received SIGINT");
-
-    const sessionPath = path.join(
-      specDir,
-      "sessions",
-      sessionId,
-      "session.yaml",
-    );
-    const content = await fs.readFile(sessionPath, "utf-8");
-    expect(content).toContain("status: abandoned");
-    expect(content).toContain("Received SIGINT");
-  });
+    expect(content).toContain("SIGINT");
+  }, 30_000);
 });
