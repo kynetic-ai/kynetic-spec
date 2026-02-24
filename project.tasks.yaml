@@ -57098,3 +57098,282 @@
         content verified covered by core skills. Committed in 91e26c52."
       supersedes: null
   todos: []
+- _ulid: 01KJ6KKPZGG5ZWXJHEC69CYPZK
+  slugs:
+    - extend-session-schema-with-task-budget
+  title: Extend session schema with task budget
+  type: task
+  spec_ref: "@session-creation-and-env-injection"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - sessions
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:25.264Z
+  notes:
+    - _ulid: 01KJ6KKPZGVX8AHJHP2CHZPQTP
+      created_at: 2026-02-24T01:18:25.264Z
+      author: "@claude"
+      content: |
+        Add TaskBudgetSchema to src/sessions/types.ts. Budget stored in local filesystem
+        at .kspec/sessions/{id}/budget.json (NOT shadow branch). Add incrementBudget(),
+        resetBudget(), checkBudget() functions to src/sessions/store.ts. Atomic writes
+        via write-to-temp-then-rename pattern. Single-writer guarantee documented.
+  todos: []
+- _ulid: 01KJ6KKQA3E86SF0YNDS2R705X
+  slugs:
+    - add-session-id-to-task-schema
+  title: Add session_id to task schema
+  type: task
+  spec_ref: "@session-scoped-task-claiming"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - tasks
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:25.603Z
+  notes:
+    - _ulid: 01KJ6KKQA3JTQGS8FWWKWTBYVK
+      created_at: 2026-02-24T01:18:25.603Z
+      author: "@claude"
+      content: |
+        Add optional session_id field to TaskSchema and TaskInputSchema in
+        src/schema/task.ts. Single line addition: session_id: z.string().optional().
+        Clear session_id on status transitions back to pending or needs_work.
+  todos: []
+- _ulid: 01KJ6KKQM5WQKJKP7B1BAY0RB2
+  slugs:
+    - implement-session-create-command
+  title: Implement session create command
+  type: task
+  spec_ref: "@session-creation-and-env-injection"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - sessions
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:25.925Z
+  notes:
+    - _ulid: 01KJ6KKQM59XEDXGADGFGMCB65
+      created_at: 2026-02-24T01:18:25.925Z
+      author: "@claude"
+      content: |
+        Add session create subcommand to src/cli/commands/session.ts. Creates session
+        with optional --budget flag. Returns session ID on stdout. Also exposes
+        createSessionWithBudget() library function for ralph to call directly.
+        Include validation for invalid/stale KSPEC_SESSION_ID with clear error messages.
+  todos: []
+- _ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
+  slugs:
+    - add-budget-enforcement-to-task-start
+  title: Add budget enforcement to task start
+  type: task
+  spec_ref: "@task-budget-enforcement"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - tasks
+    - enforcement
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:26.296Z
+  notes:
+    - _ulid: 01KJ6KKQZRCB3WS60T0K0JWYGM
+      created_at: 2026-02-24T01:18:26.296Z
+      author: "@claude"
+      content: |
+        Modify task start handler (~line 1068 in src/cli/commands/task.ts) to check
+        session budget before proceeding. Read KSPEC_SESSION_ID from process.env, read
+        budget.json, check started_this_cycle vs max_per_cycle. On success increment
+        counter. Error message must include budget counts AND wrap-up instructions
+        (replaces both hook block message and ralph prompt injection). Skip increment
+        when task is already in_progress (resume case). Also stamp session_id on task.
+  todos: []
+- _ulid: 01KJ6KKR9V3XCVTJ18ACTY2SXH
+  slugs:
+    - add-session-indicator-to-tasks-ready
+  title: Add session indicator to tasks ready
+  type: task
+  spec_ref: "@session-scoped-task-claiming"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - tasks
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:26.619Z
+  notes:
+    - _ulid: 01KJ6KKR9VN2HPV14CPPTY512Q
+      created_at: 2026-02-24T01:18:26.619Z
+      author: "@claude"
+      content: |
+        Modify tasks ready output in src/cli/commands/tasks.ts (~line 234) and session
+        context in src/cli/commands/session.ts to show session indicator when tasks have
+        session_id from another active session. Tasks remain visible and startable.
+  todos: []
+- _ulid: 01KJ6KKRKH11RPZF37CXH5KR2Q
+  slugs:
+    - migrate-end-loop-to-session-state
+  title: Migrate end-loop to session state
+  type: task
+  spec_ref: "@session-end-loop-signal"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - ralph
+    - sessions
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:26.929Z
+  notes:
+    - _ulid: 01KJ6KKRKHQE5FW1GRYKWMGCG1
+      created_at: 2026-02-24T01:18:26.929Z
+      author: "@claude"
+      content: |
+        Replace end-loop marker file (.claude/ralph-end-loop.json) with session-scoped
+        state. Modify kspec ralph end-loop to write to session state. Modify kspec task
+        start to also check end-loop signal. Ensure sessions are always closed on exit
+        including SIGINT/SIGTERM — signal handlers must update session status to abandoned.
+        Remove END_LOOP_MARKER_PATH, readEndLoopMarker, clearEndLoopMarker,
+        clearStaleEndLoopMarker from ralph.ts.
+  todos: []
+- _ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
+  slugs:
+    - implement-native-worktree-guard
+  title: Implement native worktree guard
+  type: task
+  spec_ref: "@native-guard-commands"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - guards
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:27.267Z
+  notes:
+    - _ulid: 01KJ6KKRY3C5AGBKFYKJDFEGZ6
+      created_at: 2026-02-24T01:18:27.267Z
+      author: "@claude"
+      content: |
+        Port kspec-worktree-guard.sh logic to TypeScript as kspec guard worktree command.
+        New file: src/cli/commands/guard.ts. Register in src/cli/index.ts. Reads
+        PreToolUse hook JSON from stdin. Blocks: kspec-meta branch deletion,
+        branch creation/checkout in .kspec/, dangerous git ops (reset, rebase, stash,
+        clean) in .kspec/. Allows everything else.
+  todos: []
+- _ulid: 01KJ6KKS95CX6F438FC2997R2R
+  slugs:
+    - update-setup-with-migration-cleanup
+  title: Update setup with migration cleanup
+  type: task
+  spec_ref: "@native-guard-commands"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - setup
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:27.621Z
+  notes:
+    - _ulid: 01KJ6KKS95WFBFJGR4JH73R1RT
+      created_at: 2026-02-24T01:18:27.621Z
+      author: "@claude"
+      content: |
+        Update GUARD_SCRIPTS in src/cli/commands/setup.ts to use kspec guard worktree
+        instead of bash scripts. Remove ralph-task-limit-guard.sh from installation.
+        Add migration logic: detect old PreToolUse entries in .claude/settings.json
+        referencing bash scripts, replace with native commands, delete old script files.
+        Ensure idempotent — no duplicate entries on re-run.
+  todos: []
+- _ulid: 01KJ6KKSK4GG98DYK4AS66JY24
+  slugs:
+    - simplify-ralph-with-session-budget
+  title: Simplify ralph with session budget
+  type: task
+  spec_ref: "@ralph-session-budget-integration"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - ralph
+    - sessions
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:27.940Z
+  notes:
+    - _ulid: 01KJ6KKSK4GHPXAX5GY0B00DNQ
+      created_at: 2026-02-24T01:18:27.940Z
+      author: "@claude"
+      content: |
+        Major refactor of src/cli/commands/ralph.ts. Create session with budget at loop
+        start (~line 1237). Reset budget at each iteration start (~line 1317). Pass
+        KSPEC_SESSION_ID to spawned agents via env. Remove ALL marker file code (both
+        task-limit and end-loop), detectTaskCompleteCommand, ACP prompt injection block
+        (lines 1517-1557), stale marker cleanup, and marker-related signal handler
+        cleanup. Ensure session close in ALL exit paths including signal handlers.
+  todos: []
+- title: Add multi-harness env injection
+  type: task
+  plan_ref: "@plan-session-scoping-for-kspec"
+  priority: 3
+  slugs:
+    - add-multi-harness-env-injection
+  tags:
+    - cli
+    - sessions
+    - multi-harness
+  depends_on: []
+  notes:
+    - _ulid: 01KJ6KKSXKXXMJH8SVZN2GEJCD
+      created_at: 2026-02-24T01:18:28.275Z
+      author: "@claude"
+      content: |
+        Implement --inject flag for kspec session create with per-harness environment
+        variable injection. Reuse detectAgent() from src/cli/commands/setup.ts. Claude
+        Code via CLAUDE_ENV_FILE or settings.json env. Codex via config.toml. Fallback
+        to export instructions for unknown harnesses. Start with Claude Code (best
+        documented), add others incrementally.
+  spec_ref: "@session-creation-and-env-injection"
+  _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:28.275Z
+  todos: []

@@ -4962,6 +4962,426 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KJ6KKPE1QMS1488JGB9RN22M
+    slugs:
+      - session-creation-and-env-injection
+    title: Session creation and env injection
+    type: feature
+    tags: []
+    description: |
+      CLI command and library function to create a kspec session with an optional
+      task budget and inject the session ID into the agent's environment via
+      KSPEC_SESSION_ID. Harness-specific injection for Claude Code, Codex, OpenCode,
+      and Gemini CLI. Fallback to export instructions for unknown harnesses.
+      Budget state stored in local filesystem (.kspec/sessions/{id}/budget.json),
+      not on shadow branch, to avoid contention between ralph and spawned agents.
+    acceptance_criteria:
+      - id: ac-create
+        given: |
+          kspec session create --agent-type <type> is run
+        when: |
+          the command executes
+        then: |
+          a session is created in .kspec/sessions/{id}/ with status active and the
+          session ID is printed to stdout
+      - id: ac-budget
+        given: |
+          --budget N flag is provided
+        when: |
+          the session is created
+        then: |
+          budget.json is written with max_per_cycle=N, started_this_cycle=0
+      - id: ac-budget-local
+        given: |
+          budget state is written
+        when: |
+          budget.json is created or updated
+        then: |
+          it lives in .kspec/sessions/{id}/budget.json on local filesystem and is
+          NOT committed to the shadow branch
+      - id: ac-inject-claude
+        given: |
+          --inject flag with Claude Code detected (CLAUDECODE=1)
+        when: |
+          the session is created
+        then: |
+          KSPEC_SESSION_ID=<id> is written to CLAUDE_ENV_FILE if set, or appended to
+          project .claude/settings.json env section
+      - id: ac-inject-codex
+        given: |
+          --inject flag with Codex CLI detected (CODEX_SANDBOX)
+        when: |
+          the session is created
+        then: |
+          KSPEC_SESSION_ID is added to shell_environment_policy.set in codex config
+      - id: ac-inject-fallback
+        given: |
+          --inject flag with unknown agent harness
+        when: |
+          the session is created
+        then: |
+          the command prints export KSPEC_SESSION_ID=<id> for manual sourcing
+      - id: ac-library
+        given: |
+          the library function createSessionWithBudget() is called directly
+        when: |
+          the function returns
+        then: |
+          it returns session metadata including the ID without console output
+      - id: ac-invalid-session
+        given: |
+          KSPEC_SESSION_ID is set but points to a nonexistent or corrupt session
+        when: |
+          any kspec command reads the session
+        then: |
+          a clear error is shown with the invalid session ID and suggestion to
+          unset the env var or create a new session
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-semantic-exit-codes"
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-02-24T01:18:24.705Z
+  - _ulid: 01KJ6KKPG73VK2TG853QBZ4TC4
+    slugs:
+      - session-scoped-task-claiming
+    title: Session-scoped task claiming
+    type: feature
+    tags: []
+    description: |
+      Soft advisory session scoping for task operations. When KSPEC_SESSION_ID is set,
+      task start stamps the task with the session ID. Other sessions see claimed tasks
+      but can still operate on them. No hard isolation — crashed sessions don't orphan
+      tasks. Enforcement is cooperative — agents that bypass kspec task start are not
+      gated.
+    acceptance_criteria:
+      - id: ac-stamp
+        given: |
+          KSPEC_SESSION_ID is set in the environment
+        when: |
+          kspec task start @ref is run
+        then: |
+          the task's session_id field is set to the session ID value
+      - id: ac-display
+        given: |
+          a task has session_id set to another active session
+        when: |
+          kspec tasks ready is run
+        then: |
+          the task shows a visual indicator like [session 01KH...] but remains
+          listed in the output
+      - id: ac-startable
+        given: |
+          a task has session_id set to another session
+        when: |
+          kspec task start @ref is run
+        then: |
+          the task is started with a warning that it was claimed by another session
+      - id: ac-no-env
+        given: |
+          KSPEC_SESSION_ID is not set
+        when: |
+          kspec task start @ref is run
+        then: |
+          behavior is unchanged from current — no session_id stamped on the task
+      - id: ac-schema
+        given: |
+          session_id is added as an optional field to TaskSchema
+        when: |
+          existing tasks without session_id are loaded
+        then: |
+          they pass validation without changes (backward compatible)
+      - id: ac-claim-clear
+        given: |
+          a task with session_id returns to pending or needs_work status
+        when: |
+          the status transition occurs
+        then: |
+          session_id is cleared so the task is unencumbered for other sessions
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-24T01:18:24.775Z
+  - _ulid: 01KJ6KKPHYRHHZSWQ8SF17RGJW
+    slugs:
+      - task-budget-enforcement
+    title: Task budget enforcement
+    type: feature
+    tags: []
+    description: |
+      Replaces the marker file + PreToolUse bash hook with enforcement built into kspec
+      task start. When a session has a budget configured, kspec task start checks the
+      budget before proceeding and increments the counter on success. Ralph resets the
+      budget at each iteration boundary. Single-writer guarantee: ralph resets only
+      between iterations (agent not running), agent is only writer during its turn.
+      Budget only gates task start — review subagents that call task complete do not
+      trigger budget logic since they don't start new work.
+    acceptance_criteria:
+      - id: ac-block-start
+        given: |
+          session has budget with started_this_cycle >= max_per_cycle
+        when: |
+          kspec task start is run with KSPEC_SESSION_ID set
+        then: |
+          the command exits with nonzero code and error message including the budget
+          counts (e.g. 1/1 tasks started) and instructions to wrap up current work
+          and let the iteration end naturally without starting new tasks
+      - id: ac-reset
+        given: |
+          ralph calls resetBudget() at iteration start
+        when: |
+          the agent is not running (between iterations)
+        then: |
+          started_this_cycle is set to 0 in budget.json
+      - id: ac-no-session
+        given: |
+          KSPEC_SESSION_ID is not set
+        when: |
+          kspec task start is run
+        then: |
+          no budget check occurs — backward compatible
+      - id: ac-no-budget
+        given: |
+          session exists but has no budget.json
+        when: |
+          kspec task start is run with KSPEC_SESSION_ID set
+        then: |
+          no budget check occurs — budget is opt-in (interactive sessions have no
+          budget by default)
+      - id: ac-increment
+        given: |
+          kspec task start succeeds with KSPEC_SESSION_ID set and budget configured
+        when: |
+          the task transitions to in_progress
+        then: |
+          started_this_cycle is incremented by 1 in budget.json
+      - id: ac-atomic-write
+        given: |
+          budget.json is updated (increment or reset)
+        when: |
+          the write completes
+        then: |
+          the file is written atomically (write to temp then rename) to prevent
+          corruption on crash
+      - id: ac-resume-no-increment
+        given: |
+          a task is already in_progress and kspec task start is called on it
+        when: |
+          the task start returns early (already in progress)
+        then: |
+          budget is not incremented since no new task was started
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-semantic-exit-codes"
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-02-24T01:18:24.830Z
+  - _ulid: 01KJ6KKPKQT22PY4B9MDDZM7K2
+    slugs:
+      - session-end-loop-signal
+    title: Session end-loop signal
+    type: feature
+    tags: []
+    description: |
+      Migrate end-loop signaling from marker file (.claude/ralph-end-loop.json) to
+      session state. kspec ralph end-loop writes to the session instead of a marker
+      file. kspec task start also checks for end-loop signal. Sessions are always
+      closed properly on exit, including SIGINT/SIGTERM.
+    acceptance_criteria:
+      - id: ac-signal
+        given: |
+          agent runs kspec ralph end-loop --reason "..." with KSPEC_SESSION_ID set
+        when: |
+          the command executes
+        then: |
+          end-loop state is written to the session (not a marker file)
+      - id: ac-block-task
+        given: |
+          end-loop has been signaled for the current session
+        when: |
+          kspec task start is run with that KSPEC_SESSION_ID
+        then: |
+          the command exits with error explaining the loop is ending
+      - id: ac-detect
+        given: |
+          ralph checks for end-loop signal
+        when: |
+          it reads session state between iterations
+        then: |
+          it detects end_requested and exits the loop gracefully
+      - id: ac-session-close-normal
+        given: |
+          the ralph loop ends normally (no tasks, all done, max iterations)
+        when: |
+          cleanup runs
+        then: |
+          session status is updated to completed with reason
+      - id: ac-session-close-signal
+        given: |
+          ralph receives SIGINT or SIGTERM
+        when: |
+          the signal handler runs
+        then: |
+          session status is updated to abandoned and process exits
+      - id: ac-session-close-error
+        given: |
+          ralph exits due to max failures or unrecoverable error
+        when: |
+          cleanup runs
+        then: |
+          session status is updated to abandoned with error reason
+      - id: ac-remove-markers
+        given: |
+          end-loop is session-scoped
+        when: |
+          ralph runs
+        then: |
+          END_LOOP_MARKER_PATH, readEndLoopMarker, clearEndLoopMarker, and
+          clearStaleEndLoopMarker are removed from ralph.ts
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-02-24T01:18:24.887Z
+  - _ulid: 01KJ6KKPNBR288DG8JXXK589XP
+    slugs:
+      - native-guard-commands
+    title: Native guard commands
+    type: feature
+    tags: []
+    description: |
+      Replace bash shell script hooks with native kspec CLI commands. kspec guard
+      worktree replaces kspec-worktree-guard.sh. The task-limit guard hook is removed
+      entirely since budget enforcement is now in kspec task start. kspec setup installs
+      native commands instead of bash scripts and cleans up old hook entries.
+    acceptance_criteria:
+      - id: ac-worktree-guard
+        given: |
+          kspec guard worktree is called with PreToolUse hook JSON on stdin
+        when: |
+          the command reads tool_input.command and cwd
+        then: |
+          it blocks commands that delete kspec-meta branch, create/checkout branches
+          in .kspec/, or run dangerous git operations (reset, rebase, stash, clean)
+          in .kspec/ — same patterns as kspec-worktree-guard.sh
+      - id: ac-worktree-allow
+        given: |
+          kspec guard worktree receives a non-git or safe command
+        when: |
+          the command processes the input
+        then: |
+          it outputs {"decision": "allow"} and exits 0
+      - id: ac-setup-native
+        given: |
+          kspec setup is run on a project
+        when: |
+          hooks are installed to .claude/settings.json
+        then: |
+          PreToolUse references kspec guard worktree command (not bash scripts)
+      - id: ac-no-task-limit-hook
+        given: |
+          kspec setup is run after this change
+        when: |
+          hooks are installed
+        then: |
+          no task-limit guard hook is installed (enforcement is in kspec task start)
+      - id: ac-migrate-hooks
+        given: |
+          existing .claude/settings.json has PreToolUse entries referencing old
+          bash scripts (.claude/hooks/ralph-task-limit-guard.sh or
+          .claude/hooks/kspec-worktree-guard.sh)
+        when: |
+          kspec setup is run
+        then: |
+          old entries are replaced with native command entries and old bash script
+          files in .claude/hooks/ are deleted
+      - id: ac-idempotent
+        given: |
+          kspec setup is run multiple times
+        when: |
+          hooks are already installed with native commands
+        then: |
+          no duplicate PreToolUse entries are created
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-json-output"
+      - "@trait-semantic-exit-codes"
+    notes: []
+    created: 2026-02-24T01:18:24.939Z
+  - _ulid: 01KJ6KKPPYCDDBPV7MZZ9P21ZF
+    slugs:
+      - ralph-session-budget-integration
+    title: Ralph session budget integration
+    type: feature
+    tags: []
+    description: |
+      Integrate session budget into the ralph loop, replacing marker file management
+      and ACP output parsing for task completion detection. Ralph creates sessions with
+      budget, resets budget per iteration, and passes KSPEC_SESSION_ID to spawned agents.
+      Major simplification of the ralph main loop. Also removes end-loop marker logic
+      in favor of session-scoped end-loop signal.
+    acceptance_criteria:
+      - id: ac-create-budget
+        given: |
+          ralph starts a loop with --max-tasks N
+        when: |
+          it creates the session
+        then: |
+          budget.json is written with max_per_cycle=N in the session directory
+      - id: ac-reset-iteration
+        given: |
+          ralph starts a new iteration
+        when: |
+          it prepares the iteration context (agent is not running)
+        then: |
+          it calls resetBudget() to set started_this_cycle=0
+      - id: ac-env-inject
+        given: |
+          ralph spawns an agent for an iteration
+        when: |
+          the agent process starts
+        then: |
+          KSPEC_SESSION_ID is set in the agent's environment variables
+      - id: ac-remove-marker-code
+        given: |
+          budget and end-loop enforcement is session-scoped
+        when: |
+          ralph runs
+        then: |
+          all marker file code (task-limit and end-loop), detectTaskCompleteCommand,
+          and ACP prompt injection for task limits are removed from ralph.ts
+      - id: ac-session-close-all-paths
+        given: |
+          the ralph loop ends for any reason (normal exit, no tasks, max failures,
+          SIGINT, SIGTERM, uncaught error)
+        when: |
+          cleanup runs
+        then: |
+          session status is updated (completed for normal, abandoned for error/signal)
+          and budget.json is cleaned up
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-02-24T01:18:24.990Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
