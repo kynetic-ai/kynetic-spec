@@ -4220,6 +4220,11 @@ features:
             given: A plan file with specs that include a priority field (1-5)
             when: "kspec plan import <path> is run with derive_from_specs: true"
             then: Derived tasks inherit the priority from their source spec; specs without priority default to 3
+          - id: ac-37
+            given: "A plan file with AC fields containing unquoted colons (e.g. then: User sees error: Invalid)"
+            when: kspec plan import <path> is run and YAML parsing fails
+            then: Error message includes diagnostic hints identifying the specific field and line with the
+              unquoted colon, plus a fix suggestion to use YAML block scalars
         status:
           maturity: draft
           implementation: implemented
