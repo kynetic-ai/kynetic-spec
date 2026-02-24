@@ -57291,7 +57291,7 @@
   type: task
   spec_ref: "@session-scoped-task-claiming"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -57321,6 +57321,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T05:57:12.209Z
 - _ulid: 01KJ6KKQM5WQKJKP7B1BAY0RB2
   slugs:
     - implement-session-create-command
