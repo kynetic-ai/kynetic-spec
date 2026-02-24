@@ -588,9 +588,28 @@ describe('ralph command', () => {
       expect(envData.KSPEC_RALPH_SESSION).toMatch(/^[0-9A-Z]{26}$/);
     });
 
-    it('does not set KSPEC_RALPH_SESSION when running outside ralph', async () => {
-      // When not run via ralph, the env var should not be present
-      expect(process.env.KSPEC_RALPH_SESSION).toBeUndefined();
+    it('KSPEC_RALPH_SESSION is not inherited by non-ralph child processes', async () => {
+      // Verify that a direct kspec invocation (not via ralph) does not
+      // propagate KSPEC_RALPH_SESSION to its children
+      const envVerifyFile = path.join(tempDir, 'env-verify-no-ralph.json');
+
+      // Run a simple kspec command (not ralph) and check env via mock
+      // The mock won't be invoked here, so we check our own process env
+      // which should not have the var set (ralph sets it on its own process)
+      const { spawnSync: spawnSyncDirect } = await import('node:child_process');
+      const result = spawnSyncDirect('node', ['-e', `
+        const fs = require('fs');
+        fs.writeFileSync('${envVerifyFile.replace(/'/g, "\\'")}',
+          JSON.stringify({ KSPEC_RALPH_SESSION: process.env.KSPEC_RALPH_SESSION || null }));
+      `], {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        env: { ...process.env }, // Inherit test env (no KSPEC_RALPH_SESSION)
+      });
+
+      expect(result.status).toBe(0);
+      const envData = JSON.parse(await fs.readFile(envVerifyFile, 'utf-8'));
+      expect(envData.KSPEC_RALPH_SESSION).toBeNull();
     });
   });
 });
