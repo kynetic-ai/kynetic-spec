@@ -13,6 +13,7 @@ export const sessionHeaders = {
   noActiveWork: chalk.gray("--- No Active Work ---"),
   awaitingReview: chalk.yellow.bold("--- Awaiting Review ---"),
   recentlyCompleted: chalk.green.bold("--- Recently Completed ---"),
+  recentActivity: chalk.cyan.bold("--- Recent Activity ---"),
   recentNotes: chalk.cyan.bold("--- Recent Notes ---"),
   incompleteTodos: chalk.yellow.bold("--- Incomplete Todos ---"),
   readyTasks: chalk.cyan.bold("--- Ready to Pick Up ---"),

@@ -10,6 +10,8 @@ export interface GitCommit {
   date: Date;
   message: string;
   author: string;
+  body: string;
+  taskRefs: string[];
 }
 
 export interface GitFileStatus {
@@ -73,9 +75,10 @@ export function getRecentCommits(options: {
   const { limit = 10, since, cwd } = options;
 
   try {
-    // Format: hash|ISO date|subject|author name
-    // Using %aI for ISO 8601 author date
-    let cmd = `git log --format="%H|%aI|%s|%an" -n ${limit}`;
+    // Format: hash, ISO date, subject, author name, body — NUL-delimited records
+    // %x00 separates fields within a record, %x01 separates records
+    // Body (%b) may contain newlines and pipes, so we use NUL delimiters
+    let cmd = `git log --format="%H%x00%aI%x00%s%x00%an%x00%b%x01" -n ${limit}`;
 
     if (since) {
       cmd += ` --since="${since.toISOString()}"`;
@@ -89,16 +92,34 @@ export function getRecentCommits(options: {
 
     if (!output) return [];
 
-    return output.split("\n").map((line) => {
-      const [fullHash, dateStr, message, author] = line.split("|");
-      return {
-        hash: fullHash.slice(0, 7),
-        fullHash,
-        date: new Date(dateStr),
-        message,
-        author,
-      };
-    });
+    // Split records by \x01, filter empty entries
+    return output
+      .split("\x01")
+      .map((record) => record.trim())
+      .filter(Boolean)
+      .map((record) => {
+        const [fullHash, dateStr, message, author, ...bodyParts] =
+          record.split("\x00");
+        const body = bodyParts.join("\x00").trim();
+
+        // Parse Task: @slug trailers from body (anchored to line start per git trailer convention)
+        const taskRefs: string[] = [];
+        const trailerPattern = /^Task:\s*@([\w-]+)/gm;
+        let match;
+        while ((match = trailerPattern.exec(body)) !== null) {
+          taskRefs.push(match[1]);
+        }
+
+        return {
+          hash: fullHash.slice(0, 7),
+          fullHash,
+          date: new Date(dateStr),
+          message,
+          author,
+          body,
+          taskRefs,
+        };
+      });
   } catch {
     return [];
   }
