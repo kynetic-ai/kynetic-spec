@@ -256,7 +256,12 @@ export function formatTask(
       ? chalk.red(`P${task.priority}`)
       : chalk.gray(`P${task.priority}`);
 
-  let line = `${ref} ${status} ${priority} ${task.title}`;
+  // AC: @session-scoped-task-claiming ac-display
+  const sessionLabel = task.session_id
+    ? chalk.yellow(`[session ${task.session_id.slice(0, 8)}...]`)
+    : "";
+
+  let line = `${ref} ${status} ${priority}${sessionLabel ? ` ${sessionLabel}` : ""} ${task.title}`;
 
   if (verbose && !full) {
     // AC: @task-list-verbose ac-2 - Single verbose (-v) shows current behavior
@@ -422,8 +427,12 @@ export function formatTaskListWithAutomation(
         ? chalk.red(`P${task.priority}`)
         : chalk.gray(`P${task.priority}`);
     const automationLabel = formatAutomationStatus(task.automation);
+    // AC: @session-scoped-task-claiming ac-display
+    const sessionLabel = task.session_id
+      ? chalk.yellow(`[session ${task.session_id.slice(0, 8)}...]`)
+      : "";
 
-    let line = `${ref} ${status} ${priority} ${automationLabel} ${task.title}`;
+    let line = `${ref} ${status} ${priority} ${automationLabel}${sessionLabel ? ` ${sessionLabel}` : ""} ${task.title}`;
 
     if (verbose && !full) {
       if (task.spec_ref) {
@@ -550,6 +559,11 @@ export function formatTaskDetails(
   console.log(
     `${fieldLabels.automation} ${automationColor(automationDisplay)}`,
   );
+
+  // AC: @session-scoped-task-claiming ac-display
+  if (task.session_id) {
+    console.log(`Session:   ${chalk.yellow(task.session_id)}`);
+  }
 
   if (task.description?.trim()) {
     console.log(`\n${sectionHeaders.description}`);
