@@ -56337,6 +56337,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:46.887Z
+  started_at: 2026-02-24T02:43:57.817Z
   notes:
     - _ulid: 01KJ4V6NCVG3QRN04CBACDYRWE
       created_at: 2026-02-23T08:52:37.404Z
@@ -56344,9 +56345,17 @@
       content: "AUTOMATION: Enhancement. Plan specs specify priority, derived tasks inherit instead of
         defaulting P3. Spec @plan-import."
       supersedes: null
+    - _ulid: 01KJ6RSB1074YK4MTQAXK041YQ
+      created_at: 2026-02-24T02:48:52.512Z
+      author: "@claude"
+      content: "Added priority field to PlanSpecSchema (int 1-5, optional). Derived tasks now inherit
+        priority from their source plan spec (planSpec?.priority ?? 3) instead of hardcoded 3.
+        Manual tasks already supported priority. Added ac-36 to @plan-import. 1 new parser test + 4
+        new CLI integration tests covering: inheritance, range support, manual task independence,
+        and schema validation of out-of-range values."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T02:43:57.817Z
 - _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
   slugs: []
   title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
