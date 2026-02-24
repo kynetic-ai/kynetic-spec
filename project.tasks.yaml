@@ -56329,7 +56329,7 @@
     and derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
     content. Workaround: manually batch-set priorities after import."
   spec_ref: "@plan-import"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56356,6 +56356,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T02:51:44.308Z
 - _ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
   slugs: []
   title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
