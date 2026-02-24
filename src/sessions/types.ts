@@ -120,3 +120,27 @@ export const SessionEventInputSchema = SessionEventSchema.omit({
 });
 
 export type SessionEventInput = z.infer<typeof SessionEventInputSchema>;
+
+// ─── Task Budget ────────────────────────────────────────────────────────────
+
+/**
+ * Task budget state stored in .kspec/sessions/{id}/budget.json.
+ *
+ * Budget lives on LOCAL filesystem (not shadow branch) to avoid contention
+ * between ralph and spawned agents. Single-writer guarantee: ralph resets
+ * only between iterations (agent not running), agent is only writer during
+ * its turn.
+ *
+ * AC: @session-creation-and-env-injection ac-budget
+ * AC: @session-creation-and-env-injection ac-budget-local
+ * AC: @task-budget-enforcement ac-atomic-write
+ */
+export const TaskBudgetSchema = z.object({
+  /** Maximum tasks that can be started per cycle/iteration */
+  max_per_cycle: z.number().int().positive(),
+
+  /** Number of tasks started in current cycle */
+  started_this_cycle: z.number().int().nonnegative(),
+});
+
+export type TaskBudget = z.infer<typeof TaskBudgetSchema>;
