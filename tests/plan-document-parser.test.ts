@@ -252,6 +252,65 @@ derive_from_specs: true
     });
   });
 
+  // AC: @plan-import ac-35 - Parse depends_on on specs
+  it("should parse depends_on array on specs", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Base Feature
+  slug: base-feature
+  type: feature
+
+- title: Dependent Feature
+  slug: dependent-feature
+  type: feature
+  depends_on:
+    - base-feature
+    - "@external-spec"
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(2);
+    expect(result.specs[0].depends_on).toBeUndefined();
+    expect(result.specs[1].depends_on).toEqual(["base-feature", "@external-spec"]);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  // AC: @plan-import ac-35 - Parse depends_on on manual tasks
+  it("should parse depends_on array on additional tasks", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+\`\`\`
+
+## Tasks
+
+\`\`\`yaml
+- title: Manual Task
+  depends_on:
+    - "@task-something"
+    - other-task
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.tasks.additional_tasks).toHaveLength(1);
+    expect(result.tasks.additional_tasks?.[0].depends_on).toEqual([
+      "@task-something",
+      "other-task",
+    ]);
+  });
+
   it("should parse implementation_notes on some specs and not others", () => {
     const plan = `
 # Test Plan

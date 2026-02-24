@@ -24,6 +24,7 @@ export const PlanSpecSchema = z.object({
   description: z.string().optional(),
   acceptance_criteria: z.array(AcceptanceCriterionSchema).optional(),
   traits: z.array(z.string()).optional(),
+  depends_on: z.array(z.string()).optional(),
   implementation_notes: z.string().min(1).optional(),
 });
 
@@ -39,6 +40,7 @@ export const PlanTaskSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
   spec_ref: z.string().optional(),
+  depends_on: z.array(z.string()).optional(),
 });
 
 export type PlanTask = z.infer<typeof PlanTaskSchema>;
