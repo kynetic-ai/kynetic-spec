@@ -58072,7 +58072,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -58096,6 +58096,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T20:35:30.750Z
+  closed_reason: "Merged in PR #505. Three fixes: spawnSync 30s timeout, shadowPushAsync
+    spawn+detached+unref pattern, vitest testTimeout 15s. All CI green."
 - _ulid: 01KJ7CMRMFCXY6V5H8K8VMR5YQ
   slugs: []
   title: Remove dead marker file code from ralph.ts
