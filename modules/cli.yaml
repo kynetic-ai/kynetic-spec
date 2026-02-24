@@ -5212,7 +5212,7 @@ features:
     created: 2026-02-24T01:18:24.830Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KJ6KKPKQT22PY4B9MDDZM7K2
     slugs:
       - session-end-loop-signal
