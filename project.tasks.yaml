@@ -57347,6 +57347,7 @@
         referencing bash scripts, replace with native commands, delete old script files.
         Ensure idempotent — no duplicate entries on re-run.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKSK4GG98DYK4AS66JY24
   slugs:
     - simplify-ralph-with-session-budget
