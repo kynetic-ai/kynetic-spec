@@ -82,18 +82,27 @@ describe('Ralph task limit', () => {
 
 describe('Task completion detection helpers', () => {
   describe('detectTaskCompleteCommand', () => {
-    // These tests verify the pattern matching logic
-    // The actual function is internal to ralph.ts, so we test via integration
-
-    it('should match "kspec task complete @ref"', () => {
-      // This is tested via integration - the update handler will detect this pattern
-      // For unit testing, we'd need to export the function
-      expect(true).toBe(true);
+    // AC: @ralph-task-limit ac-detection
+    it('should match "kspec task complete @ref"', async () => {
+      const { detectTaskCompleteCommand } = await import('../../src/cli/commands/ralph');
+      expect(detectTaskCompleteCommand('kspec task complete @my-task')).toBe(true);
+      expect(detectTaskCompleteCommand('kspec task complete @my-task --reason "done"')).toBe(true);
     });
 
-    it('should NOT match "kspec task submit @ref"', () => {
-      // Submit is not a completion - it's status change to pending_review
-      expect(true).toBe(true);
+    // AC: @ralph-task-limit ac-detection
+    it('should match "kspec task submit @ref"', async () => {
+      const { detectTaskCompleteCommand } = await import('../../src/cli/commands/ralph');
+      expect(detectTaskCompleteCommand('kspec task submit @my-task')).toBe(true);
+      expect(detectTaskCompleteCommand('kspec task submit @my-task --skip-review')).toBe(true);
+    });
+
+    // AC: @ralph-task-limit ac-detection
+    it('should NOT match unrelated commands', async () => {
+      const { detectTaskCompleteCommand } = await import('../../src/cli/commands/ralph');
+      expect(detectTaskCompleteCommand('kspec task start @my-task')).toBe(false);
+      expect(detectTaskCompleteCommand('kspec task list')).toBe(false);
+      expect(detectTaskCompleteCommand('kspec task note @my-task "hello"')).toBe(false);
+      expect(detectTaskCompleteCommand('echo "kspec task complete"')).toBe(true); // embedded still matches
     });
   });
 });

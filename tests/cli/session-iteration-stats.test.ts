@@ -65,15 +65,28 @@ describe('getIterationStats', () => {
     expect(completedNew.length).toBe(2);
   });
 
-  it('should distinguish completed from submitted tasks', () => {
+  // AC: @ralph-task-limit ac-detection
+  it('should count submitted (pending_review) tasks toward iteration limit', async () => {
+    const { getIterationStats } = await import('../../src/cli/commands/session');
+    const { initContext } = await import('../../src/parser/yaml');
+
+    // Record time before submitting so we can query "since" this point
+    const since = new Date();
+
     // Start and submit a task (not complete)
     kspec('task add --title "Submit Only" --slug submit-only', tempDir);
     kspec('task start @submit-only', tempDir);
     kspec('task submit @submit-only', tempDir);
 
-    // Verify it's pending_review, not completed
+    // Verify it's pending_review (not completed)
     const tasks = kspecJson<Task[]>('tasks list --json', tempDir);
     const submitted = tasks.find(t => t.slugs.includes('submit-only'));
     expect(submitted?.status).toBe('pending_review');
+
+    // The key behavioral change: getIterationStats must count pending_review
+    // tasks toward tasks_completed, not just completed tasks.
+    const ctx = await initContext(tempDir);
+    const stats = await getIterationStats(ctx, since);
+    expect(stats.tasks_completed).toBeGreaterThanOrEqual(1);
   });
 });

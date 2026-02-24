@@ -96,6 +96,7 @@ export const TaskSchema = z.object({
   // Timestamps (auto-populated if not provided)
   created_at: DateTimeSchema.default(() => new Date().toISOString()),
   started_at: DateTimeSchema.nullable().optional(),
+  submitted_at: DateTimeSchema.nullable().optional(),
   completed_at: DateTimeSchema.nullable().optional(),
 
   // Notes (work log)
@@ -157,6 +158,7 @@ export const TaskInputSchema = z.object({
   // Timestamps
   created_at: DateTimeSchema.optional(),
   started_at: DateTimeSchema.nullable().optional(),
+  submitted_at: DateTimeSchema.nullable().optional(),
   completed_at: DateTimeSchema.nullable().optional(),
 
   // Notes (work log)
