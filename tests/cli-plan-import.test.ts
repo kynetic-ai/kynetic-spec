@@ -1262,4 +1262,254 @@ Ensure backward compatibility.
     );
     expect(output).toContain("Would create spec: @dry-feature");
   });
+
+  // AC: @plan-import ac-35 - depends_on on specs
+  it("should populate depends_on on created specs", async () => {
+    const planPath = path.join(tempDir, "depends-on-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Depends On Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Base Feature
+  slug: base-feature
+  type: feature
+
+- title: Dependent Feature
+  slug: dependent-feature
+  type: feature
+  depends_on:
+    - base-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // Base spec should have no depends_on
+    const baseSpec = kspecJson<{ depends_on: string[] }>(
+      "item get @base-feature --json",
+      tempDir,
+    );
+    expect(baseSpec.depends_on).toEqual([]);
+
+    // Dependent spec should have depends_on populated
+    const depSpec = kspecJson<{ depends_on: string[] }>(
+      "item get @dependent-feature --json",
+      tempDir,
+    );
+    expect(depSpec.depends_on).toContain("@base-feature");
+  });
+
+  // AC: @plan-import ac-35 - derived tasks inherit depends_on mapped from spec slugs to task slugs
+  it("should map spec depends_on to derived task depends_on using task slugs", async () => {
+    const planPath = path.join(tempDir, "task-depends-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Task Depends Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Foundation
+  slug: foundation
+  type: feature
+
+- title: Building Block
+  slug: building-block
+  type: feature
+  depends_on:
+    - foundation
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const allTasks = kspecJson<
+      Array<{ title: string; depends_on: string[]; plan_ref: string }>
+    >("task list --json", tempDir);
+    const tasks = allTasks.filter(t => t.plan_ref === "@plan-task-depends-plan");
+
+    expect(tasks).toHaveLength(2);
+
+    const foundationTask = tasks.find(t => t.title === "Implement Foundation");
+    const buildingTask = tasks.find(t => t.title === "Implement Building Block");
+
+    expect(foundationTask).toBeDefined();
+    expect(foundationTask!.depends_on).toEqual([]);
+
+    expect(buildingTask).toBeDefined();
+    // The depends_on should reference the derived task slug, not the spec slug
+    expect(buildingTask!.depends_on.length).toBe(1);
+    expect(buildingTask!.depends_on[0]).toContain("implement-foundation");
+  });
+
+  // AC: @plan-import ac-35 - manual tasks honor depends_on directly
+  it("should honor depends_on on manual tasks", async () => {
+    const planPath = path.join(tempDir, "manual-depends-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Manual Depends Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Some Feature
+  slug: some-feature
+  type: feature
+\`\`\`
+
+## Tasks
+
+\`\`\`yaml
+- title: Setup Task
+  slug: setup-task
+
+- title: Dependent Task
+  slug: dependent-task
+  depends_on:
+    - setup-task
+    - some-feature
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const allTasks = kspecJson<
+      Array<{ title: string; depends_on: string[]; plan_ref: string }>
+    >("task list --json", tempDir);
+    const depTask = allTasks.find(t => t.title === "Dependent Task");
+
+    expect(depTask).toBeDefined();
+    expect(depTask!.depends_on).toContain("@setup-task");
+    expect(depTask!.depends_on).toContain("@some-feature");
+  });
+
+  // AC: @plan-import ac-35 - depends_on refs are normalized with @ prefix
+  it("should normalize depends_on refs with @ prefix", async () => {
+    const planPath = path.join(tempDir, "normalize-depends-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Normalize Depends Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Spec Alpha
+  slug: spec-alpha
+  type: feature
+
+- title: Spec Beta
+  slug: spec-beta
+  type: feature
+  depends_on:
+    - spec-alpha
+    - "@already-prefixed"
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    const spec = kspecJson<{ depends_on: string[] }>(
+      "item get @spec-beta --json",
+      tempDir,
+    );
+    expect(spec.depends_on).toContain("@spec-alpha");
+    expect(spec.depends_on).toContain("@already-prefixed");
+  });
+
+  // AC: @plan-import ac-35 - dry-run with depends_on should not crash
+  it("should handle depends_on in dry-run mode", async () => {
+    const planPath = path.join(tempDir, "dry-depends-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Dry Depends Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature X
+  slug: feature-x
+  type: feature
+
+- title: Feature Y
+  slug: feature-y
+  type: feature
+  depends_on:
+    - feature-x
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    const output = kspec(
+      `plan import "${planPath}" --module @test-core --dry-run`,
+      tempDir,
+    );
+    expect(output).toContain("Would create spec: @feature-x");
+    expect(output).toContain("Would create spec: @feature-y");
+    expect(output).toContain("Would derive task:");
+  });
+
+  // AC: @plan-import ac-35 - mixed import: new spec depends on existing spec with existing task
+  it("should resolve depends_on to existing task ref when spec already exists", async () => {
+    // Create an existing spec and derive a task from it
+    kspec('item add --under @test-core --title "Existing Base" --slug existing-base', tempDir);
+    kspec("derive @existing-base", tempDir);
+
+    // Find the derived task slug
+    const allTasks = kspecJson<Array<{ title: string; spec_ref: string; slugs: string[] }>>(
+      "task list --json",
+      tempDir,
+    );
+    const existingTask = allTasks.find(t => t.spec_ref === "@existing-base");
+    expect(existingTask).toBeDefined();
+    const existingTaskSlug = existingTask!.slugs[0];
+
+    // Import a plan with a new spec that depends on the existing spec
+    const planPath = path.join(tempDir, "mixed-depends-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Mixed Depends Plan
+
+## Specs
+
+\`\`\`yaml
+- title: New Feature
+  slug: new-feature
+  type: feature
+  depends_on:
+    - existing-base
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+`,
+    );
+
+    kspec(`plan import "${planPath}" --module @test-core`, tempDir);
+
+    // The derived task for new-feature should depend on the existing task, not the spec
+    const updatedTasks = kspecJson<
+      Array<{ title: string; depends_on: string[]; plan_ref: string }>
+    >("task list --json", tempDir);
+    const newTask = updatedTasks.find(t => t.title === "Implement New Feature");
+
+    expect(newTask).toBeDefined();
+    expect(newTask!.depends_on.length).toBe(1);
+    expect(newTask!.depends_on[0]).toBe(`@${existingTaskSlug}`);
+  });
 });

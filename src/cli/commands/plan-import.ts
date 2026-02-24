@@ -289,6 +289,9 @@ async function importPlan(
           if (spec.traits !== undefined) {
             updates.traits = spec.traits.map(normalizeRefInput);
           }
+          if (spec.depends_on !== undefined) {
+            updates.depends_on = spec.depends_on.map(normalizeRefInput);
+          }
           if (spec.acceptance_criteria !== undefined) {
             updates.acceptance_criteria = spec.acceptance_criteria;
           }
@@ -339,6 +342,7 @@ async function importPlan(
         importReservedSlugs.add(specSlug);
 
         // Track would-be created spec for parent resolution in dry-run
+        // AC: @plan-import ac-35 - Map depends_on in dry-run too
         const dryRunSpec = createSpecItem({
           title: spec.title,
           type: (spec.type as any) || "feature",
@@ -347,7 +351,7 @@ async function importPlan(
           ...(spec.acceptance_criteria ? { acceptance_criteria: spec.acceptance_criteria } : {}),
           priority: undefined,
           tags: [],
-          depends_on: [],
+          depends_on: (spec.depends_on || []).map(normalizeRefInput),
           implements: [],
           relates_to: [],
           tests: [],
@@ -357,6 +361,7 @@ async function importPlan(
         createdSpecsMap.set(specSlug, dryRunSpec);
       } else {
         // Create spec item
+        // AC: @plan-import ac-35 - Map depends_on to spec depends_on
         const specInput: SpecItemInput = {
           title: spec.title,
           type: (spec.type as any) || "feature",
@@ -364,7 +369,7 @@ async function importPlan(
           description: spec.description,
           priority: undefined,
           tags: [],
-          depends_on: [],
+          depends_on: (spec.depends_on || []).map(normalizeRefInput),
           implements: [],
           relates_to: [],
           tests: [],
@@ -443,7 +448,7 @@ async function importPlan(
   }
 
   // Derive tasks from specs
-  // AC: @plan-import ac-12, ac-13, ac-19, ac-20
+  // AC: @plan-import ac-12, ac-13, ac-19, ac-20, ac-35
   if (parsed.tasks.derive_from_specs && result.createdSpecs.length > 0) {
     const tasks = await loadAllTasks(ctx);
     // Combine existing task slugs + all slugs reserved during this import (plan + specs)
@@ -452,17 +457,17 @@ async function importPlan(
       ...importReservedSlugs,
     ]);
 
+    // AC: @plan-import ac-35 - Build spec→task slug mapping for depends_on resolution
+    // First pass: generate all task slugs so we can resolve spec depends_on → task depends_on
+    const specToTaskSlug = new Map<string, string>();
     for (const specRef of result.createdSpecs) {
-      // Get spec from createdSpecsMap (works in both dry-run and real mode)
       const specSlug = specRef.slice(1);
       const spec = createdSpecsMap.get(specSlug);
       if (!spec) continue;
 
-      // AC: @plan-import ac-20 - Task title follows "Implement X" pattern
       const taskTitle = `Implement ${spec.title}`;
       const taskSlug = generateSlug(taskTitle);
 
-      // Ensure slug uniqueness across all namespaces + this import's slugs
       let uniqueSlug = taskSlug;
       let counter = 1;
       while (importSlugs.has(uniqueSlug) || !refIndex.isSlugAvailable(uniqueSlug)) {
@@ -471,30 +476,63 @@ async function importPlan(
       }
       importSlugs.add(uniqueSlug);
       importReservedSlugs.add(uniqueSlug);
+      specToTaskSlug.set(specSlug, uniqueSlug);
+    }
+
+    for (const specRef of result.createdSpecs) {
+      // Get spec from createdSpecsMap (works in both dry-run and real mode)
+      const specSlug = specRef.slice(1);
+      const spec = createdSpecsMap.get(specSlug);
+      if (!spec) continue;
+
+      const uniqueSlug = specToTaskSlug.get(specSlug)!;
 
       if (options.dryRun) {
         info(`Would derive task: @${uniqueSlug} from ${specRef}`);
         result.createdTasks.push(`@${uniqueSlug}`);
       } else {
+        // AC: @plan-import ac-35 - Resolve spec depends_on to task depends_on
+        const planSpec = parsed.specs.find(s =>
+          (s.slug || generateSlug(s.title)) === specSlug
+        );
+        const taskDependsOn: string[] = [];
+        if (planSpec?.depends_on) {
+          for (const depRef of planSpec.depends_on) {
+            const depSlug = depRef.startsWith("@") ? depRef.slice(1) : depRef;
+            const depTaskSlug = specToTaskSlug.get(depSlug);
+            if (depTaskSlug) {
+              // Dependency spec was in this import — link to its derived task
+              taskDependsOn.push(`@${depTaskSlug}`);
+            } else {
+              // Dependency spec already existed — find an existing task with that spec_ref
+              const normalizedDepRef = normalizeRefInput(depRef);
+              const existingTask = tasks.find(t => t.spec_ref === normalizedDepRef);
+              if (existingTask && existingTask.slugs.length > 0) {
+                taskDependsOn.push(`@${existingTask.slugs[0]}`);
+              } else {
+                // No task found for this spec — pass the spec ref as-is
+                taskDependsOn.push(normalizedDepRef);
+              }
+            }
+          }
+        }
+
         // AC: @plan-import ac-19 - Task has both spec_ref and plan_ref
         const taskInput: TaskInput = {
-          title: taskTitle,
+          title: `Implement ${spec.title}`,
           type: "task",
           spec_ref: specRef,
           plan_ref: planRef,
           priority: 3,
           slugs: [uniqueSlug],
           tags: [],
-          depends_on: [],
+          depends_on: taskDependsOn,
           notes: [],
         };
 
         const newTask = createTask(taskInput);
 
         // AC: @plan-import ac-13 - Scoped implementation notes
-        const planSpec = parsed.specs.find(s =>
-          (s.slug || generateSlug(s.title)) === specSlug
-        );
         if (planSpec?.implementation_notes) {
           // Per-spec notes go directly to this task
           newTask.notes.push({
@@ -549,7 +587,7 @@ async function importPlan(
         info(`Would create manual task: @${uniqueSlug}`);
         result.createdTasks.push(`@${uniqueSlug}`);
       } else {
-        // AC: @plan-import ac-27 - Manual tasks have plan_ref; spec_ref honored if provided
+        // AC: @plan-import ac-27, ac-35 - Manual tasks have plan_ref; spec_ref and depends_on honored
         const taskInput: TaskInput = {
           title: taskDef.title,
           type: "task",
@@ -557,7 +595,7 @@ async function importPlan(
           priority: taskDef.priority || 3,
           slugs: [uniqueSlug],
           tags: taskDef.tags || [],
-          depends_on: [],
+          depends_on: (taskDef.depends_on || []).map(normalizeRefInput),
           notes: [],
           ...(taskDef.spec_ref ? { spec_ref: normalizeRefInput(taskDef.spec_ref) } : {}),
         };
