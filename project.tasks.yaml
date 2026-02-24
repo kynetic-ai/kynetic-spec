@@ -57257,6 +57257,7 @@
         context in src/cli/commands/session.ts to show session indicator when tasks have
         session_id from another active session. Tasks remain visible and startable.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKRKH11RPZF37CXH5KR2Q
   slugs:
     - migrate-end-loop-to-session-state
