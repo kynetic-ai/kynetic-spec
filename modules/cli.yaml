@@ -2963,7 +2963,7 @@ features:
             then: The marker file is cleaned up before the process exits, cross-platform
         status:
           maturity: draft
-          implementation: verified
+          implementation: in_progress
       - _ulid: 01KHAP9PZ2WEMV9PRV037MC5Y8
         slugs: []
         title: Ralph wrap-up agent on loop exit
