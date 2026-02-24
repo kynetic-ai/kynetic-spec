@@ -1693,7 +1693,17 @@ derive_from_specs: true
       tempDir,
     );
 
-    // Schema validation should catch the invalid priority
-    expect(output).toMatch(/error|skip|invalid/i);
+    // Schema validation should catch the invalid priority and skip the spec
+    expect(output).toContain("validation failed");
+
+    // No task should be derived for the invalid spec
+    const tasks = kspecJson<Array<{ title: string }>>(
+      "task list --json",
+      tempDir,
+    );
+    const invalidTask = tasks.find(
+      (t) => t.title === "Implement Invalid Feature",
+    );
+    expect(invalidTask).toBeUndefined();
   });
 });
