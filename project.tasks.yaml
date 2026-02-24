@@ -56288,7 +56288,7 @@
     YAML (e.g., depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by
     on import."
   spec_ref: "@plan-import"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56296,6 +56296,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-23T08:25:45.835Z
+  started_at: 2026-02-24T02:13:12.913Z
   notes:
     - _ulid: 01KJ4V6M9EBMSQ6M9FY6B8H7HD
       created_at: 2026-02-23T08:52:36.270Z
@@ -56305,7 +56306,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T02:13:12.913Z
+  submitted_at: 2026-02-24T02:22:38.143Z
 - _ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
   slugs: []
   title: "Plan import should support task priority: plan document specs can specify priority, and
