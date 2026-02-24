@@ -57932,7 +57932,7 @@
   type: task
   spec_ref: "@session-start-inbox-triage"
   plan_ref: "@plan-session-start-output-redesign"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -57942,6 +57942,7 @@
   session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T06:19:06.872Z
   started_at: 2026-02-24T23:30:33.068Z
+  submitted_at: 2026-02-24T23:39:48.167Z
   notes:
     - _ulid: 01KJ74T9QR9HQRR1FM5E1527XN
       created_at: 2026-02-24T06:19:06.872Z
@@ -57968,7 +57969,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T23:39:48.167Z
+  completed_at: 2026-02-24T23:55:52.728Z
+  closed_reason: "Merged in PR #513. Implemented triage-aware inbox statistics for session start:
+    inbox section now cross-references with triage records to show untriaged/deferred/total counts.
+    JSON includes all items with triaged/triage_action fields. Human display: primer shows stat line
+    only, full mode shows untriaged items up to 20. 13 integration tests covering all 4 ACs. Codex
+    review finding addressed (JSON stability)."
 - _ulid: 01KJ74TA85JD401Z4DH8H2V6HN
   slugs:
     - implement-session-start-computed-json-fields
