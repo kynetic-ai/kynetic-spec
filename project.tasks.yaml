@@ -57342,7 +57342,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57353,6 +57353,7 @@
     - sessions
   vcs_refs: []
   created_at: 2026-02-24T01:18:25.925Z
+  started_at: 2026-02-24T06:27:32.561Z
   notes:
     - _ulid: 01KJ6KKQM59XEDXGADGFGMCB65
       created_at: 2026-02-24T01:18:25.925Z
@@ -57374,7 +57375,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T06:27:32.561Z
+  submitted_at: 2026-02-24T06:27:37.007Z
 - _ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
   slugs:
     - add-budget-enforcement-to-task-start
