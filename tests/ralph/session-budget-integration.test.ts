@@ -347,8 +347,10 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     tempDir = await setupTempFixtures();
     // Initialize a clean git repo so getWorkingTreeStatus() returns clean.
     // This prevents the wrap-up agent from spawning (2-min timeout) and
-    // causing flaky test timeouts.
+    // causing flaky test timeouts. The .gitignore ensures session artifacts
+    // created by ralph during the test don't dirty the working tree.
     initGitRepo(tempDir);
+    await fs.writeFile(path.join(tempDir, ".gitignore"), "sessions/\n");
     execSync("git add -A && git commit -m 'init'", { cwd: tempDir, stdio: "pipe" });
   });
 
