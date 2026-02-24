@@ -86,13 +86,23 @@ export interface KspecResult {
 export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
   const { stdin, expectFail = false, env = {} } = options;
 
+  // Build clean env: strip ralph-specific vars that pollute tests when running
+  // inside a ralph loop. Tests that need these vars pass them explicitly via env.
+  const cleanEnv = { ...process.env };
+  const RALPH_ENV_VARS = ['KSPEC_RALPH_SESSION', 'KSPEC_SESSION_ID'];
+  for (const key of RALPH_ENV_VARS) {
+    if (!(key in env)) {
+      delete cleanEnv[key];
+    }
+  }
+
   // Use spawnSync with shell to capture both stdout and stderr
   // Always use shell mode to properly handle argument parsing and quoting
   const result = spawnSync('/bin/sh', ['-c', `node ${CLI_PATH} ${args}`], {
     cwd,
     encoding: 'utf-8',
     timeout: 30_000,
-    env: { ...process.env, KSPEC_AUTHOR: '@test', ...env },
+    env: { ...cleanEnv, KSPEC_AUTHOR: '@test', ...env },
     input: stdin !== undefined ? (stdin.endsWith('\n') ? stdin : stdin + '\n') : undefined,
   });
 
