@@ -10,6 +10,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { ulid } from "ulid";
+import { withFileLock } from "./file-lock.js";
 import {
   type Plan,
   type PlanInput,
@@ -112,77 +113,6 @@ export function createPlan(input: PlanInput, author?: string): Plan {
 }
 
 /**
- * Acquire a simple mkdir-based file lock. Returns a release function.
- * Uses mkdir atomicity on POSIX filesystems to prevent concurrent writes.
- * Writes PID to a file inside the lock dir for staleness detection.
- */
-async function acquireLock(
-  lockPath: string,
-  timeoutMs = 5000,
-): Promise<() => Promise<void>> {
-  const pidFile = path.join(lockPath, "pid");
-  const start = Date.now();
-
-  while (true) {
-    try {
-      await fs.mkdir(lockPath);
-      // Write our PID for staleness detection
-      await fs.writeFile(pidFile, String(process.pid));
-      return async () => {
-        try {
-          await fs.rm(lockPath, { recursive: true });
-        } catch {
-          // Lock already released
-        }
-      };
-    } catch {
-      if (Date.now() - start > timeoutMs) {
-        // Check if lock holder is still alive before force-removing
-        let isStale = false;
-        try {
-          const holderPid = parseInt(await fs.readFile(pidFile, "utf-8"), 10);
-          if (!isNaN(holderPid)) {
-            try {
-              process.kill(holderPid, 0); // signal 0 = check existence
-            } catch {
-              isStale = true; // Process doesn't exist — lock is stale
-            }
-          } else {
-            isStale = true; // Corrupt PID file
-          }
-        } catch {
-          isStale = true; // No PID file — assume stale
-        }
-
-        if (isStale) {
-          try {
-            await fs.rm(lockPath, { recursive: true });
-          } catch {
-            // ignore
-          }
-          // Retry once after stale lock removal
-          try {
-            await fs.mkdir(lockPath);
-            await fs.writeFile(pidFile, String(process.pid));
-            return async () => {
-              try {
-                await fs.rm(lockPath, { recursive: true });
-              } catch {
-                // Lock already released
-              }
-            };
-          } catch {
-            throw new Error(`Failed to acquire lock: ${lockPath}`);
-          }
-        }
-        throw new Error(`Lock held by active process, timeout after ${timeoutMs}ms: ${lockPath}`);
-      }
-      await new Promise((r) => setTimeout(r, 50));
-    }
-  }
-}
-
-/**
  * Save a single plan (create or update)
  * AC: @plan-crud ac-1, ac-3 - save plan changes
  * Uses file lock to prevent TOCTOU race on concurrent writes.
@@ -192,15 +122,13 @@ export async function savePlan(
   plan: LoadedPlan,
 ): Promise<void> {
   const plansPath = getPlansFilePath(ctx);
-  const lockPath = `${plansPath}.lock`;
 
-  // Ensure directory exists
-  const dir = path.dirname(plansPath);
-  await fs.mkdir(dir, { recursive: true });
+  // Lock the file to prevent concurrent read-modify-write races
+  await withFileLock(plansPath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(plansPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Acquire lock for atomic read-modify-write
-  const releaseLock = await acquireLock(lockPath);
-  try {
     // Load existing plans (inside lock to prevent TOCTOU)
     const plans = await loadPlans(ctx);
 
@@ -222,9 +150,7 @@ export async function savePlan(
     };
 
     await writeYamlFilePreserveFormat(plansPath, plansFile);
-  } finally {
-    await releaseLock();
-  }
+  });
 }
 
 /**
@@ -236,29 +162,32 @@ export async function deletePlan(
 ): Promise<boolean> {
   const plansPath = getPlansFilePath(ctx);
 
-  try {
-    const plans = await loadPlans(ctx);
+  // Lock the file to prevent concurrent read-modify-write races
+  return withFileLock(plansPath, async () => {
+    try {
+      const plans = await loadPlans(ctx);
 
-    // Find plan to delete
-    const index = plans.findIndex((p) => p._ulid === planUlid);
-    if (index < 0) {
+      // Find plan to delete
+      const index = plans.findIndex((p) => p._ulid === planUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      // Remove plan
+      plans.splice(index, 1);
+
+      // Save back
+      const plansFile: PlansFile = {
+        kynetic_plans: "1.0",
+        plans: plans.map(({ _sourceFile, ...p }) => p as Plan),
+      };
+
+      await writeYamlFilePreserveFormat(plansPath, plansFile);
+      return true;
+    } catch {
       return false;
     }
-
-    // Remove plan
-    plans.splice(index, 1);
-
-    // Save back
-    const plansFile: PlansFile = {
-      kynetic_plans: "1.0",
-      plans: plans.map(({ _sourceFile, ...p }) => p as Plan),
-    };
-
-    await writeYamlFilePreserveFormat(plansPath, plansFile);
-    return true;
-  } catch {
-    return false;
-  }
+  });
 }
 
 /**

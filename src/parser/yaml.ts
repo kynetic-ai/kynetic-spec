@@ -3,6 +3,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
+import { withFileLock } from "./file-lock.js";
 import {
   InboxFileSchema,
   type InboxItem,
@@ -640,77 +641,80 @@ export async function saveTask(
   // Determine target file: use _sourceFile if present, otherwise default
   const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(taskFilePath);
-  await fs.mkdir(dir, { recursive: true });
+  // Lock the file to prevent concurrent read-modify-write races
+  await withFileLock(taskFilePath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(taskFilePath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing tasks from the target file
-  let existingRaw: unknown = null;
-  let useTasksWrapper = false;
+    // Load existing tasks from the target file
+    let existingRaw: unknown = null;
+    let useTasksWrapper = false;
 
-  try {
-    existingRaw = await readYamlFile<unknown>(taskFilePath);
-    // Detect if file uses { tasks: [...] } format
-    if (
-      existingRaw &&
-      typeof existingRaw === "object" &&
-      "tasks" in existingRaw
-    ) {
-      useTasksWrapper = true;
-    }
-  } catch {
-    // File doesn't exist, start fresh
-  }
-
-  // Parse existing tasks from file
-  let fileTasks: Task[] = [];
-
-  if (existingRaw) {
-    if (Array.isArray(existingRaw)) {
-      for (const t of existingRaw) {
-        const result = TaskSchema.safeParse(t);
-        if (result.success) {
-          fileTasks.push(result.data);
-        }
+    try {
+      existingRaw = await readYamlFile<unknown>(taskFilePath);
+      // Detect if file uses { tasks: [...] } format
+      if (
+        existingRaw &&
+        typeof existingRaw === "object" &&
+        "tasks" in existingRaw
+      ) {
+        useTasksWrapper = true;
       }
-    } else if (useTasksWrapper) {
-      // Try TasksFileSchema first (has kynetic_tasks version)
-      const parsed = TasksFileSchema.safeParse(existingRaw);
-      if (parsed.success) {
-        fileTasks = parsed.data.tasks;
-      } else {
-        // Fall back to raw tasks array (common format without version field)
-        const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
-        if (Array.isArray(rawTasks)) {
-          for (const t of rawTasks) {
-            const result = TaskSchema.safeParse(t);
-            if (result.success) {
-              fileTasks.push(result.data);
+    } catch {
+      // File doesn't exist, start fresh
+    }
+
+    // Parse existing tasks from file
+    let fileTasks: Task[] = [];
+
+    if (existingRaw) {
+      if (Array.isArray(existingRaw)) {
+        for (const t of existingRaw) {
+          const result = TaskSchema.safeParse(t);
+          if (result.success) {
+            fileTasks.push(result.data);
+          }
+        }
+      } else if (useTasksWrapper) {
+        // Try TasksFileSchema first (has kynetic_tasks version)
+        const parsed = TasksFileSchema.safeParse(existingRaw);
+        if (parsed.success) {
+          fileTasks = parsed.data.tasks;
+        } else {
+          // Fall back to raw tasks array (common format without version field)
+          const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
+          if (Array.isArray(rawTasks)) {
+            for (const t of rawTasks) {
+              const result = TaskSchema.safeParse(t);
+              if (result.success) {
+                fileTasks.push(result.data);
+              }
             }
           }
         }
       }
     }
-  }
 
-  // Strip runtime metadata before saving
-  const cleanTask = stripRuntimeMetadata(task);
+    // Strip runtime metadata before saving
+    const cleanTask = stripRuntimeMetadata(task);
 
-  // Update existing or add new
-  const existingIndex = fileTasks.findIndex((t) => t._ulid === task._ulid);
-  if (existingIndex >= 0) {
-    fileTasks[existingIndex] = cleanTask;
-  } else {
-    fileTasks.push(cleanTask);
-  }
+    // Update existing or add new
+    const existingIndex = fileTasks.findIndex((t) => t._ulid === task._ulid);
+    if (existingIndex >= 0) {
+      fileTasks[existingIndex] = cleanTask;
+    } else {
+      fileTasks.push(cleanTask);
+    }
 
-  // Save in the same format as original (or tasks: wrapper for new files)
-  // Use format-preserving write to maintain formatting and comments
-  if (useTasksWrapper) {
-    await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
-  } else {
-    await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
-  }
+    // Save in the same format as original (or tasks: wrapper for new files)
+    // Use format-preserving write to maintain formatting and comments
+    if (useTasksWrapper) {
+      await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
+    } else {
+      await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
+    }
+  });
 }
 
 /**
@@ -727,66 +731,69 @@ export async function deleteTask(
 
   const taskFilePath = task._sourceFile;
 
-  // Load existing file
-  let existingRaw: unknown = null;
-  let useTasksWrapper = false;
+  // Lock the file to prevent concurrent read-modify-write races
+  await withFileLock(taskFilePath, async () => {
+    // Load existing file
+    let existingRaw: unknown = null;
+    let useTasksWrapper = false;
 
-  try {
-    existingRaw = await readYamlFile<unknown>(taskFilePath);
-    if (
-      existingRaw &&
-      typeof existingRaw === "object" &&
-      "tasks" in existingRaw
-    ) {
-      useTasksWrapper = true;
-    }
-  } catch {
-    throw new Error(`Task file not found: ${taskFilePath}`);
-  }
-
-  // Parse existing tasks
-  let fileTasks: Task[] = [];
-
-  if (existingRaw) {
-    if (Array.isArray(existingRaw)) {
-      for (const t of existingRaw) {
-        const result = TaskSchema.safeParse(t);
-        if (result.success) {
-          fileTasks.push(result.data);
-        }
+    try {
+      existingRaw = await readYamlFile<unknown>(taskFilePath);
+      if (
+        existingRaw &&
+        typeof existingRaw === "object" &&
+        "tasks" in existingRaw
+      ) {
+        useTasksWrapper = true;
       }
-    } else if (useTasksWrapper) {
-      const parsed = TasksFileSchema.safeParse(existingRaw);
-      if (parsed.success) {
-        fileTasks = parsed.data.tasks;
-      } else {
-        const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
-        if (Array.isArray(rawTasks)) {
-          for (const t of rawTasks) {
-            const result = TaskSchema.safeParse(t);
-            if (result.success) {
-              fileTasks.push(result.data);
+    } catch {
+      throw new Error(`Task file not found: ${taskFilePath}`);
+    }
+
+    // Parse existing tasks
+    let fileTasks: Task[] = [];
+
+    if (existingRaw) {
+      if (Array.isArray(existingRaw)) {
+        for (const t of existingRaw) {
+          const result = TaskSchema.safeParse(t);
+          if (result.success) {
+            fileTasks.push(result.data);
+          }
+        }
+      } else if (useTasksWrapper) {
+        const parsed = TasksFileSchema.safeParse(existingRaw);
+        if (parsed.success) {
+          fileTasks = parsed.data.tasks;
+        } else {
+          const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
+          if (Array.isArray(rawTasks)) {
+            for (const t of rawTasks) {
+              const result = TaskSchema.safeParse(t);
+              if (result.success) {
+                fileTasks.push(result.data);
+              }
             }
           }
         }
       }
     }
-  }
 
-  // Remove the task
-  const originalCount = fileTasks.length;
-  fileTasks = fileTasks.filter((t) => t._ulid !== task._ulid);
+    // Remove the task
+    const originalCount = fileTasks.length;
+    fileTasks = fileTasks.filter((t) => t._ulid !== task._ulid);
 
-  if (fileTasks.length === originalCount) {
-    throw new Error(`Task not found in file: ${task._ulid}`);
-  }
+    if (fileTasks.length === originalCount) {
+      throw new Error(`Task not found in file: ${task._ulid}`);
+    }
 
-  // Save the modified file with format preservation
-  if (useTasksWrapper) {
-    await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
-  } else {
-    await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
-  }
+    // Save the modified file with format preservation
+    if (useTasksWrapper) {
+      await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
+    } else {
+      await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
+    }
+  });
 }
 
 /**
@@ -1463,46 +1470,49 @@ export async function addChildItem(
   const field =
     childField || TYPE_TO_CHILD_FIELD[child.type || "feature"] || "features";
 
-  // Load the raw YAML
-  const raw = await readYamlFile<unknown>(parent._sourceFile);
+  // Lock the file to prevent concurrent read-modify-write races
+  return withFileLock(parent._sourceFile, async () => {
+    // Load the raw YAML
+    const raw = await readYamlFile<unknown>(parent._sourceFile!);
 
-  // Find the parent in the structure
-  let parentObj: Record<string, unknown>;
-  let parentPath: string;
+    // Find the parent in the structure
+    let parentObj: Record<string, unknown>;
+    let parentPath: string;
 
-  if (parent._path) {
-    const nav = navigateToPath(raw, parent._path);
-    if (!nav) {
-      throw new Error(`Could not navigate to parent path: ${parent._path}`);
+    if (parent._path) {
+      const nav = navigateToPath(raw, parent._path);
+      if (!nav) {
+        throw new Error(`Could not navigate to parent path: ${parent._path}`);
+      }
+      parentObj = nav.array[nav.index] as Record<string, unknown>;
+      parentPath = parent._path;
+    } else {
+      // Parent is the root item
+      parentObj = raw as Record<string, unknown>;
+      parentPath = "";
     }
-    parentObj = nav.array[nav.index] as Record<string, unknown>;
-    parentPath = parent._path;
-  } else {
-    // Parent is the root item
-    parentObj = raw as Record<string, unknown>;
-    parentPath = "";
-  }
 
-  // Ensure the child field array exists
-  if (!Array.isArray(parentObj[field])) {
-    parentObj[field] = [];
-  }
+    // Ensure the child field array exists
+    if (!Array.isArray(parentObj[field])) {
+      parentObj[field] = [];
+    }
 
-  // Add the child
-  const childArray = parentObj[field] as unknown[];
-  const cleanChild = stripSpecItemMetadata(child as LoadedSpecItem);
-  childArray.push(cleanChild);
+    // Add the child
+    const childArray = parentObj[field] as unknown[];
+    const cleanChild = stripSpecItemMetadata(child as LoadedSpecItem);
+    childArray.push(cleanChild);
 
-  // Calculate the new child's path
-  const childIndex = childArray.length - 1;
-  const childPath = parentPath
-    ? `${parentPath}.${field}[${childIndex}]`
-    : `${field}[${childIndex}]`;
+    // Calculate the new child's path
+    const childIndex = childArray.length - 1;
+    const childPath = parentPath
+      ? `${parentPath}.${field}[${childIndex}]`
+      : `${field}[${childIndex}]`;
 
-  // Write back with format preservation
-  await writeYamlFilePreserveFormat(parent._sourceFile, raw);
+    // Write back with format preservation
+    await writeYamlFilePreserveFormat(parent._sourceFile!, raw);
 
-  return { item: cleanChild, path: childPath };
+    return { item: cleanChild, path: childPath };
+  });
 }
 
 /**
@@ -1518,41 +1528,44 @@ export async function updateSpecItem(
     throw new Error("Item has no source file");
   }
 
-  // Load the raw YAML
-  const raw = await readYamlFile<unknown>(item._sourceFile);
+  // Lock the file to prevent concurrent read-modify-write races
+  return withFileLock(item._sourceFile, async () => {
+    // Load the raw YAML
+    const raw = await readYamlFile<unknown>(item._sourceFile!);
 
-  // Find the item in the structure (use stored path or search by ULID)
-  let targetObj: Record<string, unknown>;
+    // Find the item in the structure (use stored path or search by ULID)
+    let targetObj: Record<string, unknown>;
 
-  if (item._path) {
-    const nav = navigateToPath(raw, item._path);
-    if (!nav) {
-      throw new Error(`Could not navigate to path: ${item._path}`);
-    }
-    targetObj = nav.array[nav.index] as Record<string, unknown>;
-  } else {
-    // Item might be the root, or we need to find it
-    const found = findItemInStructure(raw, item._ulid);
-    if (found) {
-      targetObj = found.item;
-    } else if ((raw as Record<string, unknown>)._ulid === item._ulid) {
-      targetObj = raw as Record<string, unknown>;
+    if (item._path) {
+      const nav = navigateToPath(raw, item._path);
+      if (!nav) {
+        throw new Error(`Could not navigate to path: ${item._path}`);
+      }
+      targetObj = nav.array[nav.index] as Record<string, unknown>;
     } else {
-      throw new Error(`Could not find item ${item._ulid} in structure`);
+      // Item might be the root, or we need to find it
+      const found = findItemInStructure(raw, item._ulid);
+      if (found) {
+        targetObj = found.item;
+      } else if ((raw as Record<string, unknown>)._ulid === item._ulid) {
+        targetObj = raw as Record<string, unknown>;
+      } else {
+        throw new Error(`Could not find item ${item._ulid} in structure`);
+      }
     }
-  }
 
-  // Apply updates (but never change _ulid)
-  for (const [key, value] of Object.entries(updates)) {
-    if (key !== "_ulid" && key !== "_sourceFile" && key !== "_path") {
-      targetObj[key] = value;
+    // Apply updates (but never change _ulid)
+    for (const [key, value] of Object.entries(updates)) {
+      if (key !== "_ulid" && key !== "_sourceFile" && key !== "_path") {
+        targetObj[key] = value;
+      }
     }
-  }
 
-  // Write back with format preservation
-  await writeYamlFilePreserveFormat(item._sourceFile, raw);
+    // Write back with format preservation
+    await writeYamlFilePreserveFormat(item._sourceFile!, raw);
 
-  return { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+    return { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+  });
 }
 
 /**
@@ -1588,51 +1601,54 @@ export async function deleteSpecItem(
     return false;
   }
 
-  try {
-    const raw = await readYamlFile<unknown>(item._sourceFile);
+  // Lock the file to prevent concurrent read-modify-write races
+  return withFileLock(item._sourceFile, async () => {
+    try {
+      const raw = await readYamlFile<unknown>(item._sourceFile!);
 
-    // If item has a path, navigate to it and remove from parent array
-    if (item._path) {
-      const nav = navigateToPath(raw, item._path);
-      if (!nav) {
-        return false;
-      }
-      // Remove the item from the array
-      nav.array.splice(nav.index, 1);
-      await writeYamlFilePreserveFormat(item._sourceFile, raw);
-      return true;
-    }
-
-    // No path - try to find it by ULID
-    const found = findItemInStructure(raw, item._ulid);
-    if (found?.path) {
-      const nav = navigateToPath(raw, found.path);
-      if (nav) {
+      // If item has a path, navigate to it and remove from parent array
+      if (item._path) {
+        const nav = navigateToPath(raw, item._path);
+        if (!nav) {
+          return false;
+        }
+        // Remove the item from the array
         nav.array.splice(nav.index, 1);
-        await writeYamlFilePreserveFormat(item._sourceFile, raw);
+        await writeYamlFilePreserveFormat(item._sourceFile!, raw);
         return true;
       }
-    }
 
-    // Maybe it's a root-level array item
-    if (Array.isArray(raw)) {
-      const index = raw.findIndex(
-        (i: unknown) =>
-          typeof i === "object" &&
-          i !== null &&
-          (i as Record<string, unknown>)._ulid === item._ulid,
-      );
-      if (index >= 0) {
-        raw.splice(index, 1);
-        await writeYamlFilePreserveFormat(item._sourceFile, raw);
-        return true;
+      // No path - try to find it by ULID
+      const found = findItemInStructure(raw, item._ulid);
+      if (found?.path) {
+        const nav = navigateToPath(raw, found.path);
+        if (nav) {
+          nav.array.splice(nav.index, 1);
+          await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+          return true;
+        }
       }
-    }
 
-    return false;
-  } catch {
-    return false;
-  }
+      // Maybe it's a root-level array item
+      if (Array.isArray(raw)) {
+        const index = raw.findIndex(
+          (i: unknown) =>
+            typeof i === "object" &&
+            i !== null &&
+            (i as Record<string, unknown>)._ulid === item._ulid,
+        );
+        if (index >= 0) {
+          raw.splice(index, 1);
+          await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+          return true;
+        }
+      }
+
+      return false;
+    } catch {
+      return false;
+    }
+  });
 }
 
 /**
@@ -1755,44 +1771,49 @@ export async function saveInboxItem(
 ): Promise<void> {
   const inboxPath = getInboxFilePath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(inboxPath);
-  await fs.mkdir(dir, { recursive: true });
+  // Lock the file to prevent concurrent read-modify-write races
+  await withFileLock(inboxPath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(inboxPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing items
-  let existingItems: InboxItem[] = [];
+    // Load existing items
+    let existingItems: InboxItem[] = [];
 
-  try {
-    const raw = await readYamlFile<unknown>(inboxPath);
-    if (raw && typeof raw === "object" && "inbox" in raw) {
-      const parsed = InboxFileSchema.safeParse(raw);
-      if (parsed.success) {
-        existingItems = parsed.data.inbox;
-      }
-    } else if (Array.isArray(raw)) {
-      for (const i of raw) {
-        const result = InboxItemSchema.safeParse(i);
-        if (result.success) {
-          existingItems.push(result.data);
+    try {
+      const raw = await readYamlFile<unknown>(inboxPath);
+      if (raw && typeof raw === "object" && "inbox" in raw) {
+        const parsed = InboxFileSchema.safeParse(raw);
+        if (parsed.success) {
+          existingItems = parsed.data.inbox;
+        }
+      } else if (Array.isArray(raw)) {
+        for (const i of raw) {
+          const result = InboxItemSchema.safeParse(i);
+          if (result.success) {
+            existingItems.push(result.data);
+          }
         }
       }
+    } catch {
+      // File doesn't exist, start fresh
     }
-  } catch {
-    // File doesn't exist, start fresh
-  }
 
-  const cleanItem = stripInboxMetadata(item);
+    const cleanItem = stripInboxMetadata(item);
 
-  // Update existing or add new
-  const existingIndex = existingItems.findIndex((i) => i._ulid === item._ulid);
-  if (existingIndex >= 0) {
-    existingItems[existingIndex] = cleanItem;
-  } else {
-    existingItems.push(cleanItem);
-  }
+    // Update existing or add new
+    const existingIndex = existingItems.findIndex(
+      (i) => i._ulid === item._ulid,
+    );
+    if (existingIndex >= 0) {
+      existingItems[existingIndex] = cleanItem;
+    } else {
+      existingItems.push(cleanItem);
+    }
 
-  // Save with { inbox: [...] } format and format preservation
-  await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+    // Save with { inbox: [...] } format and format preservation
+    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+  });
 }
 
 /**
@@ -1804,28 +1825,31 @@ export async function deleteInboxItem(
 ): Promise<boolean> {
   const inboxPath = getInboxFilePath(ctx);
 
-  try {
-    const raw = await readYamlFile<unknown>(inboxPath);
-    let existingItems: InboxItem[] = [];
+  // Lock the file to prevent concurrent read-modify-write races
+  return withFileLock(inboxPath, async () => {
+    try {
+      const raw = await readYamlFile<unknown>(inboxPath);
+      let existingItems: InboxItem[] = [];
 
-    if (raw && typeof raw === "object" && "inbox" in raw) {
-      const parsed = InboxFileSchema.safeParse(raw);
-      if (parsed.success) {
-        existingItems = parsed.data.inbox;
+      if (raw && typeof raw === "object" && "inbox" in raw) {
+        const parsed = InboxFileSchema.safeParse(raw);
+        if (parsed.success) {
+          existingItems = parsed.data.inbox;
+        }
       }
-    }
 
-    const index = existingItems.findIndex((i) => i._ulid === ulid);
-    if (index < 0) {
+      const index = existingItems.findIndex((i) => i._ulid === ulid);
+      if (index < 0) {
+        return false;
+      }
+
+      existingItems.splice(index, 1);
+      await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+      return true;
+    } catch {
       return false;
     }
-
-    existingItems.splice(index, 1);
-    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
-    return true;
-  } catch {
-    return false;
-  }
+  });
 }
 
 /**
@@ -1930,65 +1954,68 @@ export async function saveTriageRecord(
 ): Promise<void> {
   const triagePath = getTriageFilePath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(triagePath);
-  await fs.mkdir(dir, { recursive: true });
+  // Lock the file to prevent concurrent read-modify-write races
+  await withFileLock(triagePath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(triagePath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing records
-  let existingRecords: TriageRecord[] = [];
+    // Load existing records
+    let existingRecords: TriageRecord[] = [];
 
-  try {
-    const raw = await readYamlFile<unknown>(triagePath);
-    if (raw && typeof raw === "object" && "triage" in raw) {
-      const parsed = TriageFileSchema.safeParse(raw);
-      if (parsed.success) {
-        existingRecords = parsed.data.triage;
-      }
-    } else if (Array.isArray(raw)) {
-      for (const item of raw) {
-        const result = TriageRecordSchema.safeParse(item);
-        if (result.success) {
-          existingRecords.push(result.data);
+    try {
+      const raw = await readYamlFile<unknown>(triagePath);
+      if (raw && typeof raw === "object" && "triage" in raw) {
+        const parsed = TriageFileSchema.safeParse(raw);
+        if (parsed.success) {
+          existingRecords = parsed.data.triage;
+        }
+      } else if (Array.isArray(raw)) {
+        for (const item of raw) {
+          const result = TriageRecordSchema.safeParse(item);
+          if (result.success) {
+            existingRecords.push(result.data);
+          }
         }
       }
+    } catch {
+      // File doesn't exist, start fresh
     }
-  } catch {
-    // File doesn't exist, start fresh
-  }
 
-  const cleanRecord = stripTriageMetadata(record);
+    const cleanRecord = stripTriageMetadata(record);
 
-  // AC: ac-9 — set updated_at on every mutation
-  cleanRecord.updated_at = new Date().toISOString();
+    // AC: ac-9 — set updated_at on every mutation
+    cleanRecord.updated_at = new Date().toISOString();
 
-  // AC: ac-8 — upsert: check for existing record by ULID first, then by inbox_ref
-  const existingByUlid = existingRecords.findIndex(
-    (r) => r._ulid === record._ulid,
-  );
-  if (existingByUlid >= 0) {
-    existingRecords[existingByUlid] = cleanRecord;
-  } else {
-    // Check for existing record with same inbox_ref (uniqueness constraint)
-    // Preserve existing identity (_ulid, created_at) when upserting by inbox_ref
-    const existingByInboxRef = existingRecords.findIndex(
-      (r) => r.inbox_ref === record.inbox_ref,
+    // AC: ac-8 — upsert: check for existing record by ULID first, then by inbox_ref
+    const existingByUlid = existingRecords.findIndex(
+      (r) => r._ulid === record._ulid,
     );
-    if (existingByInboxRef >= 0) {
-      const existing = existingRecords[existingByInboxRef];
-      existingRecords[existingByInboxRef] = {
-        ...cleanRecord,
-        _ulid: existing._ulid,
-        created_at: existing.created_at,
-      };
+    if (existingByUlid >= 0) {
+      existingRecords[existingByUlid] = cleanRecord;
     } else {
-      existingRecords.push(cleanRecord);
+      // Check for existing record with same inbox_ref (uniqueness constraint)
+      // Preserve existing identity (_ulid, created_at) when upserting by inbox_ref
+      const existingByInboxRef = existingRecords.findIndex(
+        (r) => r.inbox_ref === record.inbox_ref,
+      );
+      if (existingByInboxRef >= 0) {
+        const existing = existingRecords[existingByInboxRef];
+        existingRecords[existingByInboxRef] = {
+          ...cleanRecord,
+          _ulid: existing._ulid,
+          created_at: existing.created_at,
+        };
+      } else {
+        existingRecords.push(cleanRecord);
+      }
     }
-  }
 
-  // Save with { kynetic_triage: "1.0", triage: [...] } format
-  await writeYamlFilePreserveFormat(triagePath, {
-    kynetic_triage: "1.0",
-    triage: existingRecords,
+    // Save with { kynetic_triage: "1.0", triage: [...] } format
+    await writeYamlFilePreserveFormat(triagePath, {
+      kynetic_triage: "1.0",
+      triage: existingRecords,
+    });
   });
 }
 

@@ -6,6 +6,7 @@ export * from "./config.js";
 export * from "./assess.js";
 export * from "./convention-validation.js";
 export * from "./coverage-cache.js";
+export * from "./file-lock.js";
 export * from "./fix.js";
 export * from "./items.js";
 export * from "./meta.js";
