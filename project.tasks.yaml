@@ -57301,6 +57301,7 @@
     - tasks
   vcs_refs: []
   created_at: 2026-02-24T01:18:25.603Z
+  started_at: 2026-02-24T05:48:02.012Z
   notes:
     - _ulid: 01KJ6KKQA3JTQGS8FWWKWTBYVK
       created_at: 2026-02-24T01:18:25.603Z
@@ -57309,9 +57310,17 @@
         Add optional session_id field to TaskSchema and TaskInputSchema in
         src/schema/task.ts. Single line addition: session_id: z.string().optional().
         Clear session_id on status transitions back to pending or needs_work.
+    - _ulid: 01KJ73HYFTGFD97X3VSDSY5VGC
+      created_at: 2026-02-24T05:57:04.635Z
+      author: "@claude"
+      content: Implemented session-scoped task claiming. Added session_id field to TaskSchema and
+        TaskInputSchema (optional, nullable, backward compatible). Task start reads KSPEC_SESSION_ID
+        env var and stamps task. Warns when task is claimed by another session. Session indicator
+        shown in task list and details. session_id cleared on transitions to pending (unblock,
+        reset) and needs_work. 13 integration tests covering all 6 ACs.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T05:48:02.012Z
 - _ulid: 01KJ6KKQM5WQKJKP7B1BAY0RB2
   slugs:
     - implement-session-create-command
