@@ -57136,6 +57136,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #497. Added 10 trait AC tests for session-log-show: @trait-json-output
+    (ac-2, ac-4, ac-6) and @trait-semantic-exit-codes (ac-2, ac-6, ac-8). Documented 3 N/A cases
+    (ac-3, ac-5, ac-7). All review findings addressed in fix commit."
   depends_on: []
   context: []
   priority: 3
@@ -57146,6 +57149,7 @@
   created_at: 2026-02-23T22:48:37.903Z
   started_at: 2026-02-24T05:06:52.800Z
   submitted_at: 2026-02-24T05:13:08.766Z
+  completed_at: 2026-02-24T05:25:17.958Z
   notes:
     - _ulid: 01KJ719YVQ849FGY56NAV6NEF7
       created_at: 2026-02-24T05:17:45.719Z
@@ -57157,10 +57161,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-24T05:25:17.958Z
-  closed_reason: "Merged in PR #497. Added 10 trait AC tests for session-log-show: @trait-json-output
-    (ac-2, ac-4, ac-6) and @trait-semantic-exit-codes (ac-2, ac-6, ac-8). Documented 3 N/A cases
-    (ac-3, ac-5, ac-7). All review findings addressed in fix commit."
 - _ulid: 01KJ6CJC3TDT5PG0E6YV184MVJ
   slugs:
     - task-cleanup-obsolete-skills
@@ -57245,7 +57245,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -57266,6 +57266,7 @@
         via write-to-temp-then-rename pattern. Single-writer guarantee documented.
   todos: []
   automation: eligible
+  started_at: 2026-02-24T05:25:39.126Z
 - _ulid: 01KJ6KKQA3E86SF0YNDS2R705X
   slugs:
     - add-session-id-to-task-schema
