@@ -829,3 +829,11 @@ inbox:
       - shadow-branch
       - bug
     added_by: "@claude"
+  - _ulid: 01KJ8N6842MXY0QBV3VPZGTAY1
+    text: "Ralph CLI renderer: parallel tool calls produce confusing output. tool_result events render
+      sequentially with no association to their tool_start, so when multiple tools run in parallel,
+      results appear under the wrong header. Fix: include tool summary (e.g. filename) in the
+      completed/failed status line so each result is self-identifying regardless of interleaving."
+    created_at: 2026-02-24T20:24:30.082Z
+    tags: []
+    added_by: "@claude"
