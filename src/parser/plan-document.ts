@@ -492,7 +492,8 @@ export function detectYamlUnsafeValues(yamlText: string): YamlUnsafeDiagnostic[]
   const lines = yamlText.split("\n");
 
   // AC fields and other prose fields where colons commonly appear
-  const proseFields = /^\s+(given|when|then|description|title|implementation_notes):\s+(.+)$/;
+  // Allow optional YAML list marker (- ) before field name
+  const proseFields = /^\s*(?:-\s+)?(given|when|then|description|title|implementation_notes):\s+(.+)$/;
 
   for (let i = 0; i < lines.length; i++) {
     const match = lines[i].match(proseFields);

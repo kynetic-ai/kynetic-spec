@@ -769,6 +769,18 @@ describe("detectYamlUnsafeValues", () => {
     expect(diagnostics[0].value).toMatch(/\.\.\.$/);
   });
 
+  it("should detect unquoted colons in title with list marker prefix", () => {
+    const yaml = `
+- title: Error: invalid input format
+  slug: error-handling`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].field).toBe("title");
+    expect(diagnostics[0].value).toContain("Error:");
+  });
+
   it("should detect multiple unsafe values in same spec", () => {
     const yaml = `
 - title: Test
