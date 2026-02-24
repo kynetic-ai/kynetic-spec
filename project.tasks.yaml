@@ -56297,6 +56297,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:45.835Z
   started_at: 2026-02-24T02:13:12.913Z
+  submitted_at: 2026-02-24T02:22:38.143Z
   notes:
     - _ulid: 01KJ4V6M9EBMSQ6M9FY6B8H7HD
       created_at: 2026-02-23T08:52:36.270Z
@@ -56304,9 +56305,17 @@
       content: "AUTOMATION: Enhancement. Add depends_on to plan YAML spec format. Parse per spec entry,
         map to spec depends_on and task blocked_by. Spec @plan-import."
       supersedes: null
+    - _ulid: 01KJ6Q9HNNJ8YV0Y51J9NYY776
+      created_at: 2026-02-24T02:22:46.453Z
+      author: "@claude"
+      content: "Added depends_on field to PlanSpecSchema and PlanTaskSchema. Plan import now: (1) maps
+        spec depends_on to created spec depends_on fields with @ normalization, (2) resolves spec
+        depends_on to derived task depends_on using spec→task slug mapping, (3) passes depends_on
+        through on manual tasks. Added ac-35 to @plan-import. 7 new tests (2 parser, 5 CLI
+        integration). All 3262 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T02:22:38.143Z
 - _ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
   slugs: []
   title: "Plan import should support task priority: plan document specs can specify priority, and
