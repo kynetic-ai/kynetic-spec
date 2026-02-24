@@ -58472,5 +58472,15 @@
         pick this up: strip KSPEC_RALPH_SESSION and KSPEC_SESSION_ID from child env in
         tests/helpers/cli.ts spawnSync, and fix ralph.test.ts line 607."
       supersedes: null
+    - _ulid: 01KJ8TZTR93MC3PAT139KDE0Y3
+      created_at: 2026-02-24T22:05:51.241Z
+      author: "@claude"
+      content: "Fixed env pollution by stripping KSPEC_RALPH_SESSION and KSPEC_SESSION_ID from child
+        process env in two places: (1) tests/helpers/cli.ts kspec() helper — builds cleanEnv from
+        process.env with ralph vars deleted unless explicitly passed via opts.env, (2)
+        tests/ralph.test.ts line 607 — direct spawnSync call now strips ralph vars to simulate
+        non-ralph child. All 3513 tests pass including the 4 previously-failing ones in
+        session-create.test.ts, ralph.test.ts, and session-budget-integration.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
