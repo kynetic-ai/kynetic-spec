@@ -56464,7 +56464,7 @@
     Alternative: restrict sandbox mode when codex is called from ralph. See codex skill at
     .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56473,6 +56473,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:33:48.376Z
   started_at: 2026-02-24T04:04:39.622Z
+  submitted_at: 2026-02-24T04:12:52.906Z
   notes:
     - _ulid: 01KJ4V6SVB6VCEA2G1YK0FFET2
       created_at: 2026-02-23T08:52:41.963Z
@@ -56492,7 +56493,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T04:12:52.906Z
+  completed_at: 2026-02-24T04:26:47.848Z
+  closed_reason: "Merged in PR #495. Added ralph-loop safety guard to codex skill: (1) ralph sets
+    KSPEC_RALPH_SESSION env var on process.env so all spawned agents (worker, subagent, wrap-up)
+    inherit it, (2) codex SKILL.md has new safety guard section with detection and preamble
+    instructions preventing Codex from starting/killing kspec processes. Mock ACP extended with env
+    verification. 2 tests. Codex review findings addressed (env propagation to subagents, improved
+    negative test)."
 - _ulid: 01KJ4T480J60WY0ESJWQY08G82
   slugs: []
   title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
