@@ -58671,5 +58671,13 @@
         repo dirty again despite the initial commit. The local uncommitted fix (adding .gitignore
         for sessions/) looks correct but needs to be committed and pushed to the PR branch."
       supersedes: null
+    - _ulid: 01KJ8ZCY5NG9XRFY994NHAPT80
+      created_at: 2026-02-24T23:22:55.029Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Addressed MUST-FIX: Added .gitignore with 'sessions/' in temp repo's
+        initial setup. This ensures ralph's session artifacts (sessions/<id>/session.yaml) don't
+        make the repo dirty, preventing isWrapUpNeeded() from spawning the 2-minute wrap-up agent.
+        All 3513 tests pass. Pushed to PR #512."
+      supersedes: null
   todos: []
   automation: eligible
