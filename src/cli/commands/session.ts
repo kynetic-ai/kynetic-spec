@@ -177,6 +177,7 @@ export interface ReadyTaskSummary {
   priority: number;
   spec_ref: string | null;
   tags: string[];
+  unlocks: number;
 }
 
 export interface BlockedTaskSummary {
@@ -184,6 +185,7 @@ export interface BlockedTaskSummary {
   title: string;
   blocked_by: string[];
   unmet_deps: string[];
+  unlocks: number;
 }
 
 export interface CompletedTaskSummary {
@@ -232,6 +234,31 @@ export interface SessionOptions {
 
 // ─── Data Gathering ──────────────────────────────────────────────────────────
 
+/**
+ * Build a reverse dependency map: for each task ULID, count how many
+ * non-completed tasks depend on it. Unresolvable refs are silently skipped.
+ */
+function computeUnlocksMap(
+  allTasks: LoadedTask[],
+  index: ReferenceIndex,
+): Map<string, number> {
+  const counts = new Map<string, number>();
+
+  for (const task of allTasks) {
+    // Only count pending tasks as "unlockable" downstream work
+    if (task.status === "completed" || task.status === "cancelled") continue;
+
+    for (const depRef of task.depends_on) {
+      const result = index.resolve(depRef);
+      if (!result.ok) continue; // AC: unresolvable refs silently skipped
+      const depUlid = result.item._ulid;
+      counts.set(depUlid, (counts.get(depUlid) || 0) + 1);
+    }
+  }
+
+  return counts;
+}
+
 function toActiveTaskSummary(
   task: LoadedTask,
   index: ReferenceIndex,
@@ -255,6 +282,7 @@ function toActiveTaskSummary(
 function toReadyTaskSummary(
   task: LoadedTask,
   index: ReferenceIndex,
+  unlocksMap: Map<string, number>,
 ): ReadyTaskSummary {
   return {
     ref: index.shortUlid(task._ulid),
@@ -262,6 +290,7 @@ function toReadyTaskSummary(
     priority: task.priority,
     spec_ref: task.spec_ref || null,
     tags: task.tags,
+    unlocks: unlocksMap.get(task._ulid) || 0,
   };
 }
 
@@ -269,6 +298,7 @@ function toBlockedTaskSummary(
   task: LoadedTask,
   _allTasks: LoadedTask[],
   index: ReferenceIndex,
+  unlocksMap: Map<string, number>,
 ): BlockedTaskSummary {
   // Find unmet dependencies
   const unmetDeps: string[] = [];
@@ -287,6 +317,7 @@ function toBlockedTaskSummary(
     title: task.title,
     blocked_by: task.blocked_by,
     unmet_deps: unmetDeps,
+    unlocks: unlocksMap.get(task._ulid) || 0,
   };
 }
 
@@ -474,17 +505,20 @@ export async function gatherSessionContext(
     { limit: options.full ? limit * 2 : limit },
   );
 
+  // Compute reverse dependency map for "unlocks N" annotations
+  const unlocksMap = computeUnlocksMap(allTasks, index);
+
   // Get ready tasks (optionally filtered to automation-eligible only)
   const readyTasks = getReadyTasks(allTasks)
     .filter((t) => !options.eligible || t.automation === "eligible")
     .slice(0, options.full ? undefined : limit)
-    .map((t) => toReadyTaskSummary(t, index));
+    .map((t) => toReadyTaskSummary(t, index, unlocksMap));
 
   // Get blocked tasks
   const blockedTasks = allTasks
     .filter((t) => t.status === "blocked")
     .slice(0, options.full ? undefined : limit)
-    .map((t) => toBlockedTaskSummary(t, allTasks, index));
+    .map((t) => toBlockedTaskSummary(t, allTasks, index, unlocksMap));
 
   // Get recently completed tasks
   const recentlyCompleted = allTasks
@@ -1037,7 +1071,11 @@ function formatSessionContext(
           : chalk.gray(`P${task.priority}`);
       const tags =
         task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(" #")}`) : "";
-      console.log(`  ${priority} ${task.ref} ${task.title}${tags}`);
+      const unlocks =
+        task.unlocks > 0
+          ? chalk.green(` unlocks ${task.unlocks}`)
+          : "";
+      console.log(`  ${priority} ${task.ref} ${task.title}${unlocks}${tags}`);
     }
   }
 
@@ -1045,7 +1083,11 @@ function formatSessionContext(
   if (ctx.blocked_tasks.length > 0) {
     console.log(`\n${sessionHeaders.blocked}`);
     for (const task of ctx.blocked_tasks) {
-      console.log(`  ${chalk.red("[blocked]")} ${task.ref} ${task.title}`);
+      const unlocks =
+        task.unlocks > 0
+          ? chalk.green(` unlocks ${task.unlocks}`)
+          : "";
+      console.log(`  ${chalk.red("[blocked]")} ${task.ref} ${task.title}${unlocks}`);
       if (task.blocked_by.length > 0) {
         console.log(chalk.gray(`    Blockers: ${task.blocked_by.join(", ")}`));
       }
