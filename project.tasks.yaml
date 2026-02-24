@@ -58520,7 +58520,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -58618,6 +58618,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T23:02:18.028Z
+  closed_reason: "Merged in PR #511. Updated 4 skill files (codex, pr-review, local-review, review
+    template) with dig-deeper spec context discovery pattern. Reviewers now check commit trailers,
+    task list search, and AC annotations before falling back to pure code review. All codex review
+    findings addressed."
 - _ulid: 01KJ8XM5X8S04X7DSDP9TQQ9XR
   slugs:
     - task-fix-flaky-ralph-budget-test
