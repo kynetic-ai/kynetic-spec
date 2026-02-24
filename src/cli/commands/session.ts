@@ -719,12 +719,8 @@ export async function gatherSessionContext(
     triaged: allInboxSummaries.filter((i) => i.triaged).length,
   };
 
-  // AC: @session-start-inbox-triage ac-inbox-full-list
-  // In full mode, show untriaged items (up to 20); in primer mode, no item list
-  const untriagedItems = allInboxSummaries.filter((i) => !i.triaged);
-  const inboxSummaries: InboxSummary[] = options.full
-    ? untriagedItems.slice(0, 20)
-    : [];
+  // JSON always gets full list with triage status; human display filters in formatSessionContext
+  const inboxSummaries: InboxSummary[] = allInboxSummaries;
 
   // Load session context (focus, threads, questions)
   const sessionContext = await loadSessionContext(ctx);
@@ -1301,10 +1297,14 @@ function formatSessionContext(
     ];
     console.log(`  ${statParts.join(" | ")}`);
 
-    // Full mode: list untriaged items
-    if (!isBrief && ctx.inbox_items.length > 0) {
+    // AC: @session-start-inbox-triage ac-inbox-full-list
+    // Full mode: list untriaged items (up to 20)
+    const untriagedItems = ctx.inbox_items
+      .filter((i) => !i.triaged)
+      .slice(0, 20);
+    if (!isBrief && untriagedItems.length > 0) {
       console.log("");
-      for (const item of ctx.inbox_items) {
+      for (const item of untriagedItems) {
         const age = formatRelativeTime(new Date(item.created_at));
         const author = item.added_by ? ` by ${item.added_by}` : "";
         const tags =

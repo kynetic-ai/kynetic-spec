@@ -118,7 +118,7 @@ describe("stat line with triage counts", () => {
 
 // AC: @session-start-inbox-triage ac-inbox-full-list
 describe("full mode lists untriaged items", () => {
-  it("should list untriaged items in full mode", () => {
+  it("should include all items in JSON with triage status", () => {
     addInboxItem("Untriaged feature request");
     const ulid2 = addInboxItem("Already triaged item");
     triageItem(ulid2, "promote", "good idea");
@@ -128,10 +128,14 @@ describe("full mode lists untriaged items", () => {
       tempDir,
     );
 
-    // Only untriaged items should be in the list
-    expect(session.inbox_items.length).toBe(1);
-    expect(session.inbox_items[0].text).toBe("Untriaged feature request");
-    expect(session.inbox_items[0].triaged).toBe(false);
+    // JSON includes ALL items with triage status
+    expect(session.inbox_items.length).toBe(2);
+    const untriaged = session.inbox_items.filter((i) => !i.triaged);
+    expect(untriaged.length).toBe(1);
+    expect(untriaged[0].text).toBe("Untriaged feature request");
+    const triaged = session.inbox_items.filter((i) => i.triaged);
+    expect(triaged.length).toBe(1);
+    expect(triaged[0].triage_action).toBe("promote");
   });
 
   it("should show untriaged items plus stat line in human full output", () => {
@@ -150,7 +154,7 @@ describe("full mode lists untriaged items", () => {
     expect(result.stdout).not.toContain("Already handled");
   });
 
-  it("should limit untriaged items to 20 in full mode", () => {
+  it("should limit displayed untriaged items to 20 in human full mode", () => {
     // Add 22 inbox items (all untriaged)
     for (let i = 0; i < 22; i++) {
       addInboxItem(`Item number ${i}`);
@@ -161,11 +165,19 @@ describe("full mode lists untriaged items", () => {
       tempDir,
     );
 
-    // Should be capped at 20
-    expect(session.inbox_items.length).toBe(20);
+    // JSON includes all 22 items
+    expect(session.inbox_items.length).toBe(22);
     // Stats should reflect all 22
     expect(session.inbox_stats.total).toBe(22);
     expect(session.inbox_stats.untriaged).toBe(22);
+
+    // Human output should cap displayed untriaged at 20
+    const result = kspec("session start --full", tempDir);
+    // Count displayed item refs (8-char ULID prefix lines)
+    const itemLines = result.stdout
+      .split("\n")
+      .filter((l: string) => l.match(/^\s+[0-9A-Z]{8}\s/));
+    expect(itemLines.length).toBeLessThanOrEqual(20);
   });
 });
 
@@ -194,7 +206,7 @@ describe("all items triaged", () => {
     expect(result.stdout).toContain("0 untriaged");
   });
 
-  it("should show empty inbox_items list when all triaged in full mode", () => {
+  it("should mark all items as triaged in JSON when all have records", () => {
     const ulid1 = addInboxItem("All done");
     triageItem(ulid1, "promote", "shipped");
 
@@ -203,7 +215,9 @@ describe("all items triaged", () => {
       tempDir,
     );
 
-    expect(session.inbox_items.length).toBe(0);
+    // JSON still includes the item, but marked as triaged
+    expect(session.inbox_items.length).toBe(1);
+    expect(session.inbox_items[0].triaged).toBe(true);
     expect(session.inbox_stats.untriaged).toBe(0);
   });
 });
@@ -216,7 +230,9 @@ describe("untriaged definition", () => {
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     expect(session.inbox_stats.untriaged).toBe(1);
-    expect(session.inbox_items.length).toBe(0); // primer mode = no list
+    // JSON always includes all items
+    expect(session.inbox_items.length).toBe(1);
+    expect(session.inbox_items[0].triaged).toBe(false);
   });
 
   it("should mark item as triaged when triage record exists", () => {
@@ -228,8 +244,10 @@ describe("untriaged definition", () => {
       tempDir,
     );
 
-    // Item should not appear in inbox_items (only untriaged shown)
-    expect(session.inbox_items.length).toBe(0);
+    // JSON includes the item, marked as triaged
+    expect(session.inbox_items.length).toBe(1);
+    expect(session.inbox_items[0].triaged).toBe(true);
+    expect(session.inbox_items[0].triage_action).toBe("defer");
     expect(session.inbox_stats.untriaged).toBe(0);
     expect(session.inbox_stats.triaged).toBe(1);
   });
@@ -244,10 +262,16 @@ describe("untriaged definition", () => {
       tempDir,
     );
 
-    // Only untriaged item appears in full mode
-    expect(session.inbox_items.length).toBe(1);
-    expect(session.inbox_items[0].triaged).toBe(false);
-    expect(session.inbox_items[0].triage_action).toBeNull();
+    // JSON includes both items with correct triage status
+    expect(session.inbox_items.length).toBe(2);
+    const untriaged = session.inbox_items.find((i) => !i.triaged);
+    const deferred = session.inbox_items.find(
+      (i) => i.triage_action === "defer",
+    );
+    expect(untriaged).toBeDefined();
+    expect(untriaged!.triage_action).toBeNull();
+    expect(deferred).toBeDefined();
+    expect(deferred!.triaged).toBe(true);
   });
 
   it("should handle empty inbox gracefully", () => {
