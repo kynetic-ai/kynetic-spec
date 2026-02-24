@@ -17,10 +17,6 @@
           {
             "type": "command",
             "command": ".claude/hooks/kspec-worktree-guard.sh"
-          },
-          {
-            "type": "command",
-            "command": ".claude/hooks/ralph-task-limit-guard.sh"
           }
         ]
       }
