@@ -57533,7 +57533,7 @@
   type: task
   spec_ref: "@session-end-loop-signal"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57586,6 +57586,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T17:16:03.481Z
+  closed_reason: "Merged in PR #503. Migrated end-loop signal from marker file to session state."
 - _ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
   slugs:
     - implement-native-worktree-guard
@@ -58216,7 +58218,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Document N/A trait AC annotation format in testing convention
+- _ulid: 01KJ88CMZ0WETQKBZXTJJ28EDK
+  slugs: []
+  title: Document N/A trait AC annotation format in testing convention
+  type: task
   description: >-
     When a trait AC doesn't apply to a spec, the correct annotation format is:
 
@@ -58236,21 +58241,18 @@
     - templates/agents-sections/ testing section to include N/A annotation format
 
     - Regenerate kspec-agents.md after
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - convention
     - testing
     - documentation
-  depends_on: []
-  _ulid: 01KJ88CMZ0WETQKBZXTJJ28EDK
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-24T16:40:48.352Z
   notes: []
