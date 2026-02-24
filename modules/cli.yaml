@@ -2913,8 +2913,8 @@ features:
         tags: []
         description: Limits how many tasks can be completed per iteration via --max-tasks flag. Default is 1
           (conservative), 0 means unlimited. Enforcement is soft (message injection) then hard
-          (PreToolUse hook blocking task start). Counts only kspec task complete commands (not
-          submit, which is status change to pending_review).
+          (PreToolUse hook blocking task start). Counts kspec task complete AND kspec task submit
+          commands (submit transitions to pending_review, meaning the agent's work is done).
         depends_on: []
         implements: []
         relates_to: []
