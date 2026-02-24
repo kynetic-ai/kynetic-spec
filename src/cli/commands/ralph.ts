@@ -1071,6 +1071,13 @@ export function registerRalphCommand(program: Command): void {
         const sigtermHandler = () => { signalCleanup("SIGTERM"); };
 
         try {
+          // AC: @session-end-loop-signal ac-session-close-signal
+          // Install signal handlers FIRST, before any async work, so signals
+          // during startup (e.g. during appendEvent) still trigger cleanup.
+          // AC: @ralph-session-budget-integration ac-session-close-all-paths
+          process.on("SIGINT", sigintHandler);
+          process.on("SIGTERM", sigtermHandler);
+
           // Log session start
           await appendEvent(specDir, {
             session_id: sessionId,
@@ -1086,11 +1093,6 @@ export function registerRalphCommand(program: Command): void {
               explicitTasks: explicitTaskScope?.refs,
             },
           });
-
-          // AC: @session-end-loop-signal ac-session-close-signal
-          // Signal handlers for cleanup on Ctrl+C or kill
-          process.on("SIGINT", sigintHandler);
-          process.on("SIGTERM", sigtermHandler);
 
           // Create translator and renderer for this session
           const translator = createTranslator();
