@@ -596,6 +596,12 @@ describe('ralph command', () => {
       // Run a simple kspec command (not ralph) and check env via mock
       // The mock won't be invoked here, so we check our own process env
       // which should not have the var set (ralph sets it on its own process)
+      // Build clean env: strip ralph vars that would be inherited when running
+      // inside a ralph loop, simulating a non-ralph child process
+      const cleanEnv = { ...process.env };
+      delete cleanEnv.KSPEC_RALPH_SESSION;
+      delete cleanEnv.KSPEC_SESSION_ID;
+
       const { spawnSync: spawnSyncDirect } = await import('node:child_process');
       const result = spawnSyncDirect('node', ['-e', `
         const fs = require('fs');
@@ -604,7 +610,7 @@ describe('ralph command', () => {
       `], {
         cwd: tempDir,
         encoding: 'utf-8',
-        env: { ...process.env }, // Inherit test env (no KSPEC_RALPH_SESSION)
+        env: cleanEnv, // Clean env without ralph vars
       });
 
       expect(result.status).toBe(0);
