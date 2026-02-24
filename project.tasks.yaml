@@ -56464,7 +56464,7 @@
     Alternative: restrict sandbox mode when codex is called from ralph. See codex skill at
     .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56492,6 +56492,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T04:12:52.906Z
 - _ulid: 01KJ4T480J60WY0ESJWQY08G82
   slugs: []
   title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
