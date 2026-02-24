@@ -301,6 +301,7 @@ describe("ac-remove-marker-code: no marker file code in ralph.ts", () => {
     );
   });
 
+  // Task-limit marker artifacts
   const removedPatterns = [
     "TaskLimitMarker",
     "TASK_LIMIT_MARKER",
@@ -315,6 +316,12 @@ describe("ac-remove-marker-code: no marker file code in ralph.ts", () => {
     "STALE_MARKER_THRESHOLD",
     "taskLimitReached",
     "tasksCompletedThisIteration",
+    // End-loop marker artifacts (removed in end-loop migration)
+    "END_LOOP_MARKER_PATH",
+    "ralph-end-loop.json",
+    "writeEndLoopMarker",
+    "readEndLoopMarker",
+    "clearEndLoopMarker",
   ];
 
   // AC: @ralph-session-budget-integration ac-remove-marker-code
@@ -436,9 +443,10 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     expect(content).toContain("status: completed");
   }, 30_000);
 
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  it("should clean up budget.json after signal (SIGINT)", async () => {
-    // Spawn ralph with many iterations so it doesn't exit naturally.
+  /**
+   * Helper: spawn ralph, wait for it to start, send a signal, verify cleanup.
+   */
+  async function testSignalCleanup(signal: "SIGINT" | "SIGTERM") {
     const child = nodeSpawn(
       "node",
       [CLI_PATH, "ralph", "--adapter-cmd", `node ${MOCK_AGENT_PATH}`, "--max-loops", "999", "--max-tasks", "2"],
@@ -471,8 +479,8 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
       setTimeout(resolve, 5_000);
     });
 
-    // Send SIGINT (same as Ctrl+C)
-    child.kill("SIGINT");
+    // Send the signal
+    child.kill(signal);
 
     // Wait for process to exit
     await new Promise<void>((resolve) => {
@@ -485,25 +493,52 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
 
     // Verify budget.json was cleaned up
     const sessionsDir = path.join(tempDir, "sessions");
-    let sessionDirs: string[] = [];
-    try {
-      sessionDirs = await fs.readdir(sessionsDir);
-    } catch {
-      // No sessions dir = nothing to check (ralph failed very early)
-    }
-
-    // Ralph should have created a session
+    const sessionDirs = await fs.readdir(sessionsDir);
     expect(sessionDirs.length).toBe(1);
 
-    // Budget.json should be cleaned up by signal handler
     const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
     const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
     expect(budgetExists).toBe(false);
 
-    // Session should be closed as abandoned
+    // Session should be closed as abandoned with signal name
     const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
     const content = await fs.readFile(sessionPath, "utf-8");
     expect(content).toContain("status: abandoned");
-    expect(content).toContain("SIGINT");
+    expect(content).toContain(signal);
+  }
+
+  // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  it("should clean up budget.json after signal (SIGINT)", async () => {
+    await testSignalCleanup("SIGINT");
+  }, 30_000);
+
+  // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  it("should clean up budget.json after signal (SIGTERM)", async () => {
+    await testSignalCleanup("SIGTERM");
+  }, 30_000);
+
+  // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  it("should clean up budget.json after agent crash (error path)", async () => {
+    const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
+
+    // Ralph with a crashing agent — retries exhaust, then finally block cleans up.
+    // Wait for "Ralph loop completed" (capital R) which appears after all cleanup.
+    const result = await spawnRalphUntil(
+      ["--adapter-cmd", `node ${crashAgent}`, "--max-loops", "1", "--max-tasks", "2"],
+      "Ralph loop completed",
+    );
+
+    // Ralph should have logged iteration failures
+    expect(result.output).toContain("Iteration failed");
+
+    // Find the session directory ralph created
+    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionDirs = await fs.readdir(sessionsDir);
+    expect(sessionDirs.length).toBe(1);
+
+    // Budget.json should be cleaned up by finally block
+    const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
+    const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
+    expect(budgetExists).toBe(false);
   }, 30_000);
 });

@@ -1041,37 +1041,24 @@ export function registerRalphCommand(program: Command): void {
           budget: maxTasks,
         });
 
-        // Log session start
-        await appendEvent(specDir, {
-          session_id: sessionId,
-          type: "session.start",
-          data: {
-            adapter: options.adapter,
-            maxLoops,
-            maxRetries,
-            maxFailures,
-            maxTasks,
-            yolo: options.yolo,
-            focus: options.focus,
-            explicitTasks: explicitTaskScope?.refs,
-          },
-        });
-
+        // Everything after session creation is wrapped in try/finally to guarantee
+        // budget cleanup even if pre-loop setup (event logging, signal handlers) throws.
+        // AC: @ralph-session-budget-integration ac-session-close-all-paths
         let consecutiveFailures = 0;
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
+        let exitReason: ExitReason | null = null;
+        let lastIterationCtx: SessionContext | null = null;
+        let lastErrorMessage: string | undefined;
+        const recentTaskRefs: string[] = [];
+        const sessionIterationMap = new Map<string, number>();
 
-        // AC: @session-end-loop-signal ac-session-close-signal
-        // Signal handlers for cleanup on Ctrl+C or kill
-        // Note: Signal handlers must be synchronous, so we use Promise.finally()
-        // to ensure cleanup completes before exit
+        // Signal handler refs — declared here so finally can remove them
         const signalCleanup = (signal: string) => {
           info(`Received ${signal}, cleaning up...`);
-          // Kill agent if running
           if (agent) {
             agent.kill();
           }
-          // Close session as abandoned with signal reason, clean up budget file
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
           Promise.all([
             fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
@@ -1082,27 +1069,33 @@ export function registerRalphCommand(program: Command): void {
         };
         const sigintHandler = () => { signalCleanup("SIGINT"); };
         const sigtermHandler = () => { signalCleanup("SIGTERM"); };
-        process.on("SIGINT", sigintHandler);
-        process.on("SIGTERM", sigtermHandler);
-
-        // Create translator and renderer for this session
-        const translator = createTranslator();
-        const renderer = createCliRenderer();
-
-        // AC: @ralph-wrap-up-agent-on-loop-exit ac-1 - Track exit reason for wrap-up
-        let exitReason: ExitReason | null = null;
-        let lastIterationCtx: SessionContext | null = null;
-        let lastErrorMessage: string | undefined;
-        const recentTaskRefs: string[] = [];
-
-        // Map ACP session IDs to their iteration number.
-        // The agent's "update" handler persists across iterations and receives
-        // the ACP session ID (_sid) on each event. By looking up the iteration
-        // from this map, late updates from a previous ACP session are correctly
-        // attributed even after the loop has advanced to the next iteration.
-        const sessionIterationMap = new Map<string, number>();
 
         try {
+          // Log session start
+          await appendEvent(specDir, {
+            session_id: sessionId,
+            type: "session.start",
+            data: {
+              adapter: options.adapter,
+              maxLoops,
+              maxRetries,
+              maxFailures,
+              maxTasks,
+              yolo: options.yolo,
+              focus: options.focus,
+              explicitTasks: explicitTaskScope?.refs,
+            },
+          });
+
+          // AC: @session-end-loop-signal ac-session-close-signal
+          // Signal handlers for cleanup on Ctrl+C or kill
+          process.on("SIGINT", sigintHandler);
+          process.on("SIGTERM", sigtermHandler);
+
+          // Create translator and renderer for this session
+          const translator = createTranslator();
+          const renderer = createCliRenderer();
+
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
