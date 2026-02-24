@@ -230,117 +230,21 @@ export interface HooksInstallResult {
 }
 
 /**
- * PreToolUse guard hook scripts
- * These are the shell scripts that will be installed to .claude/hooks/
+ * Native guard command for PreToolUse hooks.
+ * Replaces bash shell scripts with `kspec guard worktree`.
+ *
+ * AC: @native-guard-commands ac-setup-native - references kspec guard worktree
  */
-const GUARD_SCRIPTS: Record<string, string> = {
-  "kspec-worktree-guard.sh": `#!/bin/bash
-# Guard against dangerous git operations in .kspec worktree
-#
-# This hook prevents accidentally creating branches or switching
-# branches in the .kspec worktree, which should always stay on kspec-meta.
+const NATIVE_GUARD_COMMAND = "kspec guard worktree";
 
-# Read the tool input from stdin
-INPUT=$(cat)
-
-# Extract the command from the JSON input
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
-
-# If no command, allow (not a Bash tool call)
-if [ -z "$COMMAND" ]; then
-  echo '{"decision": "allow"}'
-  exit 0
-fi
-
-# Two views of the command for safe matching:
-# 1. UNQUOTED: remove quote chars (keeps content) to catch split-quote
-#    bypasses like: git "reset" --hard → git reset --hard
-# 2. STRIPPED: remove entire quoted strings to ignore patterns in args
-#    like: echo "git reset" → echo
-UNQUOTED=$(echo "$COMMAND" | sed 's/["\\x27]//g')
-STRIPPED=$(echo "$COMMAND" | sed -e "s/\\x27[^\\x27]*\\x27//g" -e 's/"[^"]*"//g')
-# First command word (handles leading whitespace)
-FIRST_CMD=$(echo "$COMMAND" | sed 's/^[[:space:]]*//' | cut -d' ' -f1)
-
-# Block deleting kspec-meta from anywhere (check unquoted to catch bypasses)
-if [[ "$UNQUOTED" == *"git branch -d kspec-meta"* || "$UNQUOTED" == *"git branch -D kspec-meta"* ]]; then
-  cat <<EOF
-{
-  "decision": "block",
-  "reason": "[kspec-worktree-guard] BLOCKED: Cannot delete kspec-meta branch. This is the main branch for the .kspec worktree."
-}
-EOF
-  exit 0
-fi
-
-# Get cwd from hook input (not pwd - hook runs in different context)
-CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
-IN_KSPEC=false
-
-if [[ "$CWD" == *"/.kspec"* || "$CWD" == *"/.kspec" ]]; then
-  IN_KSPEC=true
-fi
-
-# Also check if command contains cd to .kspec
-if [[ "$COMMAND" == *"cd "*".kspec"* || "$COMMAND" == *"cd .kspec"* ]]; then
-  IN_KSPEC=true
-fi
-
-if [ "$IN_KSPEC" = false ]; then
-  echo '{"decision": "allow"}'
-  exit 0
-fi
-
-# Dangerous patterns in .kspec (branch creation/modification/history rewriting)
-# Note: "git checkout kspec-meta" is safe and allowed
-DANGEROUS_PATTERNS=(
-  # Branch creation
-  "git checkout -b"
-  "git checkout -B"
-  "git branch -c"
-  "git branch -C"
-  "git branch -m"
-  "git branch -M"
-  "git switch -c"
-  "git switch -C"
-  "git switch --create"
-  # History rewriting - these can cause conflicts with active sessions
-  "git reset"
-  "git rebase"
-  "git cherry-pick"
-  "git commit --amend"
-  # Force push
-  "git push --force"
-  "git push -f"
-  # Discarding changes
-  "git stash"
-  "git clean"
-  "git checkout -- "
-  "git restore"
-)
-
-for pattern in "\${DANGEROUS_PATTERNS[@]}"; do
-  # Block if:
-  # - Pattern matches UNQUOTED AND first command is "git" (catches split-quote bypasses), OR
-  # - Pattern matches STRIPPED (actual command outside any quotes)
-  # This allows: echo "git reset", grep "git stash" (first cmd is echo/grep, pattern not in STRIPPED)
-  # This blocks: git reset, git "reset" --hard, git st'ash' (first cmd is git OR pattern in STRIPPED)
-  if [[ "$STRIPPED" == *"$pattern"* ]] || { [[ "$UNQUOTED" == *"$pattern"* ]] && [[ "$FIRST_CMD" == "git" ]]; }; then
-    cat <<EOF
-{
-  "decision": "block",
-  "reason": "[kspec-worktree-guard] BLOCKED: Dangerous git operation in .kspec worktree. This worktree contains active session data and must stay on kspec-meta. Operations like reset, rebase, stash, and clean can corrupt session files."
-}
-EOF
-    exit 0
-  fi
-done
-
-# Allow all other commands
-echo '{"decision": "allow"}'
-`,
-
-};
+/**
+ * Old bash script filenames that should be migrated to native commands.
+ * AC: @native-guard-commands ac-migrate-hooks
+ */
+const OLD_GUARD_SCRIPTS = [
+  "kspec-worktree-guard.sh",
+  "ralph-task-limit-guard.sh",
+];
 
 /**
  * Install hooks to project-level Claude Code settings (.claude/settings.json)
@@ -436,53 +340,74 @@ async function installClaudeCodeHooks(
     }
 
     // AC: @enhanced-setup ac-2 - Install PreToolUse hooks with guards
+    // AC: @native-guard-commands ac-setup-native - use native kspec guard worktree
+    // AC: @native-guard-commands ac-no-task-limit-hook - no task-limit guard
+    // AC: @native-guard-commands ac-migrate-hooks - replace old bash script entries
+    // AC: @native-guard-commands ac-idempotent - no duplicate entries
     const existingPreToolUseHooks = hooks.PreToolUse as
-      | Array<{ matcher?: string; hooks?: Array<{ command?: string }> }>
+      | Array<{ matcher?: string; hooks?: Array<{ type?: string; command?: string }> }>
       | undefined;
 
-    // Check if our guards are already installed
-    const guardHookCommands = Object.keys(GUARD_SCRIPTS).map(
-      (name) => `.claude/hooks/${name}`,
+    // Check if native guard command is already installed
+    const nativeAlreadyInstalled = existingPreToolUseHooks?.some((entry) =>
+      entry.hooks?.some((hook) => hook.command === NATIVE_GUARD_COMMAND),
     );
-    const guardsAlreadyInstalled = existingPreToolUseHooks?.some((entry) =>
+
+    // Check for old bash script entries that need migration
+    const hasOldScripts = existingPreToolUseHooks?.some((entry) =>
       entry.hooks?.some((hook) =>
-        guardHookCommands.some((cmd) => hook.command?.includes(cmd)),
+        OLD_GUARD_SCRIPTS.some(
+          (name) => hook.command?.includes(name),
+        ),
       ),
     );
 
-    if (!guardsAlreadyInstalled) {
-      // Create guard script files, skipping when content unchanged
-      for (const [name, content] of Object.entries(GUARD_SCRIPTS)) {
-        const scriptPath = path.join(hooksDir, name);
-        // Check if existing script already has the same content
-        let existingContent: string | null = null;
-        try {
-          existingContent = await fs.readFile(scriptPath, "utf-8");
-        } catch (_err) {
-          // File doesn't exist yet
-        }
-        if (existingContent !== content) {
-          if (!dryRun) {
-            await fs.writeFile(scriptPath, content, { mode: 0o755 });
-          }
-          result.guardsCreated.push(name);
-        }
+    if (hasOldScripts || !nativeAlreadyInstalled) {
+      // Remove any PreToolUse entries that reference old bash scripts
+      // AC: @native-guard-commands ac-migrate-hooks
+      let filteredPreToolUse = (existingPreToolUseHooks || []).map((entry) => ({
+        ...entry,
+        hooks: entry.hooks?.filter(
+          (hook) =>
+            !OLD_GUARD_SCRIPTS.some((name) => hook.command?.includes(name)),
+        ),
+      }));
+      // Remove entries with empty hooks arrays
+      filteredPreToolUse = filteredPreToolUse.filter(
+        (entry) => entry.hooks && entry.hooks.length > 0,
+      );
+
+      // Add native guard command if not already present
+      if (!nativeAlreadyInstalled) {
+        filteredPreToolUse.push({
+          matcher: "Bash",
+          hooks: [
+            {
+              type: "command",
+              command: NATIVE_GUARD_COMMAND,
+            },
+          ],
+        });
       }
 
-      // Add PreToolUse hook entry
-      hooks.PreToolUse = [
-        ...(existingPreToolUseHooks || []),
-        {
-          matcher: "Bash",
-          hooks: Object.keys(GUARD_SCRIPTS).map((name) => ({
-            type: "command",
-            command: `.claude/hooks/${name}`,
-          })),
-        },
-      ];
+      hooks.PreToolUse = filteredPreToolUse;
       result.preToolUse = true;
+
+      // Delete old bash script files
+      // AC: @native-guard-commands ac-migrate-hooks - delete old files
+      if (!dryRun) {
+        for (const name of OLD_GUARD_SCRIPTS) {
+          const scriptPath = path.join(hooksDir, name);
+          try {
+            await fs.unlink(scriptPath);
+            result.guardsCreated.push(`deleted:${name}`);
+          } catch (err) {
+            debugLog(`Could not delete old guard script ${name}`, err);
+          }
+        }
+      }
     } else {
-      result.preToolUse = true; // Already configured
+      result.preToolUse = true; // Already configured with native command
     }
 
     config.hooks = hooks;
@@ -883,23 +808,40 @@ async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
       entry.hooks?.some((h) => h.command?.includes("checkpoint")),
     ) ?? false;
 
-    // Check PreToolUse
+    // Check PreToolUse — look for native kspec guard worktree command
     const preToolUseHooks = hooksConfig.PreToolUse as Array<{
       hooks?: Array<{ command?: string }>;
     }> | undefined;
     hooks.preToolUse = preToolUseHooks?.some((entry) =>
-      entry.hooks?.some((h) => h.command?.includes(".claude/hooks/")),
+      entry.hooks?.some((h) =>
+        h.command === NATIVE_GUARD_COMMAND || h.command?.includes(".claude/hooks/"),
+      ),
     ) ?? false;
+
+    // Check for native guard command
+    if (preToolUseHooks?.some((entry) =>
+      entry.hooks?.some((h) => h.command === NATIVE_GUARD_COMMAND),
+    )) {
+      hooks.guardsPresent.push("kspec guard worktree");
+    }
+    // Check for legacy bash scripts still present
+    if (preToolUseHooks?.some((entry) =>
+      entry.hooks?.some((h) =>
+        OLD_GUARD_SCRIPTS.some((name) => h.command?.includes(name)),
+      ),
+    )) {
+      hooks.guardsPresent.push("legacy:bash-scripts");
+    }
   } catch (err) {
     debugLog("Failed to read hooks config for status", err);
   }
 
-  // Check guard scripts
+  // Check for legacy guard script files on disk
   try {
     const guardFiles = await fs.readdir(hooksDir);
-    for (const name of Object.keys(GUARD_SCRIPTS)) {
+    for (const name of OLD_GUARD_SCRIPTS) {
       if (guardFiles.includes(name)) {
-        hooks.guardsPresent.push(name);
+        hooks.guardsPresent.push(`legacy-file:${name}`);
       }
     }
   } catch (err) {
