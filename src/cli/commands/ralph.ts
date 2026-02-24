@@ -54,9 +54,11 @@ import {
 import {
   appendEvent,
   closeSession,
-  createSession,
+  createSessionWithBudget,
+  getSessionBudgetPath,
   isEndLoopRequested,
   requestEndLoop,
+  resetBudget,
   saveSessionContext,
 } from "../../sessions/index.js";
 import { errors } from "../../strings/index.js";
@@ -65,145 +67,10 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, success, warn } from "../output.js";
 import {
   gatherSessionContext,
-  getIterationStats,
   type ActiveTaskSummary,
   type SessionContext,
 } from "./session.js";
 
-// ─── Task Limit Marker ──────────────────────────────────────────────────────
-
-/**
- * Marker file schema for task limit enforcement.
- * AC: @ralph-task-limit ac-marker-format
- */
-interface TaskLimitMarker {
-  active: boolean;
-  since: string; // ISO8601
-  max: number;
-  completed: number;
-  sessionId: string;
-}
-
-const TASK_LIMIT_MARKER_PATH = ".claude/ralph-task-limit.json";
-const STALE_MARKER_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
-
-/**
- * Write task limit marker file.
- * AC: @ralph-task-limit ac-wrapup, ac-marker-format
- */
-async function writeTaskLimitMarker(
-  rootDir: string,
-  marker: TaskLimitMarker,
-): Promise<void> {
-  const markerPath = path.join(rootDir, TASK_LIMIT_MARKER_PATH);
-  const dir = path.dirname(markerPath);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(markerPath, JSON.stringify(marker, null, 2));
-}
-
-/**
- * Read task limit marker file if it exists.
- */
-async function readTaskLimitMarker(
-  rootDir: string,
-): Promise<TaskLimitMarker | null> {
-  const markerPath = path.join(rootDir, TASK_LIMIT_MARKER_PATH);
-  try {
-    const content = await fs.readFile(markerPath, "utf-8");
-    return JSON.parse(content) as TaskLimitMarker;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Clear task limit marker file.
- * AC: @ralph-task-limit ac-reset
- */
-async function clearTaskLimitMarker(rootDir: string): Promise<void> {
-  const markerPath = path.join(rootDir, TASK_LIMIT_MARKER_PATH);
-  try {
-    await fs.unlink(markerPath);
-  } catch {
-    // Ignore if file doesn't exist
-  }
-}
-
-/**
- * Clear stale marker files (older than 1 hour).
- * AC: @ralph-task-limit ac-reset
- */
-async function clearStaleMarker(rootDir: string): Promise<boolean> {
-  const marker = await readTaskLimitMarker(rootDir);
-  if (!marker) return false;
-
-  const markerAge = Date.now() - new Date(marker.since).getTime();
-  if (markerAge > STALE_MARKER_THRESHOLD_MS) {
-    await clearTaskLimitMarker(rootDir);
-    return true;
-  }
-  return false;
-}
-
-/**
- * Detect if a Bash command is a task complete or submit command.
- * AC: @ralph-task-limit ac-detection
- */
-export function detectTaskCompleteCommand(command: string): boolean {
-  // Match "kspec task complete" and "kspec task submit"
-  // Submit means agent's work is done (pending_review) — counts toward limit
-  return /\bkspec\s+task\s+(?:complete|submit)\b/.test(command);
-}
-
-
-/**
- * Extract Bash command from SessionUpdate if it's a tool_call or tool_call_update event.
- * Returns null if not a Bash tool call.
- */
-function extractBashCommand(update: SessionUpdate): string | null {
-  const u = update as Record<string, unknown>;
-
-  // Check if this is a tool call event
-  if (u.sessionUpdate !== "tool_call" && u.sessionUpdate !== "tool_call_update") {
-    return null;
-  }
-
-  // Extract tool name - check various locations Claude Code uses
-  let toolName: string | undefined;
-
-  // Try _meta.claudeCode.toolName first (Claude Code pattern)
-  const meta = u._meta as Record<string, unknown> | undefined;
-  if (meta) {
-    const claudeCode = meta.claudeCode as Record<string, unknown> | undefined;
-    if (claudeCode?.toolName) {
-      toolName = String(claudeCode.toolName);
-    } else if (meta.toolName) {
-      toolName = String(meta.toolName);
-    }
-  }
-
-  // Fall back to name or title field
-  if (!toolName && u.name) {
-    toolName = String(u.name);
-  }
-  if (!toolName && u.title) {
-    toolName = String(u.title);
-  }
-
-  // Check if it's a Bash tool (handle MCP prefix variations)
-  if (!toolName) return null;
-  const isBash = toolName === "Bash" || toolName.endsWith("__Bash");
-  if (!isBash) return null;
-
-  // Extract command from input
-  const input = (u.rawInput || u.input || u.params) as Record<string, unknown> | undefined;
-  if (!input) return null;
-
-  const command = input.command;
-  if (typeof command !== "string") return null;
-
-  return command;
-}
 
 // ─── Explicit Task Scope ─────────────────────────────────────────────────────
 
@@ -1077,7 +944,7 @@ export function registerRalphCommand(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        // AC: @ralph-task-limit ac-flag
+        // AC: @ralph-session-budget-integration ac-create-budget
         const maxTasks = parseInt(options.maxTasks, 10);
         if (Number.isNaN(maxTasks) || maxTasks < 0 || maxTasks > 999) {
           error("--max-tasks must be 0 (unlimited) or a positive integer up to 999");
@@ -1158,50 +1025,43 @@ export function registerRalphCommand(program: Command): void {
         // Create session for event tracking
         const sessionId = ulid();
 
-        // Set KSPEC_RALPH_SESSION on this process so all spawned agents
-        // (main worker, subagent, wrap-up) inherit it via process.env.
-        // Used by the codex skill safety guard to detect ralph context.
+        // Set session env vars on this process so all spawned agents
+        // (main worker, subagent, wrap-up) inherit them via process.env.
+        // KSPEC_RALPH_SESSION: Used by codex skill safety guard to detect ralph context.
+        // KSPEC_SESSION_ID: Used by kspec task start for budget enforcement.
+        // AC: @ralph-session-budget-integration ac-env-inject
         process.env.KSPEC_RALPH_SESSION = sessionId;
+        process.env.KSPEC_SESSION_ID = sessionId;
 
-        await createSession(specDir, {
+        // AC: @ralph-session-budget-integration ac-create-budget
+        // Create session with budget. When maxTasks=0 (unlimited), no budget.json is created.
+        await createSessionWithBudget(specDir, {
           id: sessionId,
           agent_type: options.adapter,
-          task_id: undefined, // Will be determined per iteration
+          budget: maxTasks,
         });
 
-        // Log session start
-        await appendEvent(specDir, {
-          session_id: sessionId,
-          type: "session.start",
-          data: {
-            adapter: options.adapter,
-            maxLoops,
-            maxRetries,
-            maxFailures,
-            maxTasks,
-            yolo: options.yolo,
-            focus: options.focus,
-            explicitTasks: explicitTaskScope?.refs,
-          },
-        });
-
+        // Everything after session creation is wrapped in try/finally to guarantee
+        // budget cleanup even if pre-loop setup (event logging, signal handlers) throws.
+        // AC: @ralph-session-budget-integration ac-session-close-all-paths
         let consecutiveFailures = 0;
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
+        let exitReason: ExitReason | null = null;
+        let lastIterationCtx: SessionContext | null = null;
+        let lastErrorMessage: string | undefined;
+        const recentTaskRefs: string[] = [];
+        const sessionIterationMap = new Map<string, number>();
 
-        // AC: @session-end-loop-signal ac-session-close-signal
-        // Signal handlers for cleanup on Ctrl+C or kill
-        // Note: Signal handlers must be synchronous, so we use Promise.finally()
-        // to ensure cleanup completes before exit
+        // Signal handler refs — declared here so finally can remove them
         const signalCleanup = (signal: string) => {
           info(`Received ${signal}, cleaning up...`);
-          // Kill agent if running
           if (agent) {
             agent.kill();
           }
-          // Close session as abandoned with signal reason, clean up marker files
+          // AC: @ralph-session-budget-integration ac-session-close-all-paths
           Promise.all([
-            clearTaskLimitMarker(ctx.rootDir),
+            fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
             closeSession(specDir, sessionId, "abandoned", `Received ${signal}`),
           ]).finally(() => {
             process.exit(0);
@@ -1209,45 +1069,41 @@ export function registerRalphCommand(program: Command): void {
         };
         const sigintHandler = () => { signalCleanup("SIGINT"); };
         const sigtermHandler = () => { signalCleanup("SIGTERM"); };
-        process.on("SIGINT", sigintHandler);
-        process.on("SIGTERM", sigtermHandler);
-
-        // Create translator and renderer for this session
-        const translator = createTranslator();
-        const renderer = createCliRenderer();
-
-        // Task limit state - tracks completions per iteration
-        // AC: @ralph-task-limit ac-reset, ac-wrapup
-        let taskLimitReached = false;
-        let tasksCompletedThisIteration = 0;
-
-
-        // AC: @ralph-wrap-up-agent-on-loop-exit ac-1 - Track exit reason for wrap-up
-        let exitReason: ExitReason | null = null;
-        let lastIterationCtx: SessionContext | null = null;
-        let lastErrorMessage: string | undefined;
-        const recentTaskRefs: string[] = [];
-
-        // Map ACP session IDs to their iteration number.
-        // The agent's "update" handler persists across iterations and receives
-        // the ACP session ID (_sid) on each event. By looking up the iteration
-        // from this map, late updates from a previous ACP session are correctly
-        // attributed even after the loop has advanced to the next iteration.
-        const sessionIterationMap = new Map<string, number>();
 
         try {
+          // AC: @session-end-loop-signal ac-session-close-signal
+          // Install signal handlers FIRST, before any async work, so signals
+          // during startup (e.g. during appendEvent) still trigger cleanup.
+          // AC: @ralph-session-budget-integration ac-session-close-all-paths
+          process.on("SIGINT", sigintHandler);
+          process.on("SIGTERM", sigtermHandler);
+
+          // Log session start
+          await appendEvent(specDir, {
+            session_id: sessionId,
+            type: "session.start",
+            data: {
+              adapter: options.adapter,
+              maxLoops,
+              maxRetries,
+              maxFailures,
+              maxTasks,
+              yolo: options.yolo,
+              focus: options.focus,
+              explicitTasks: explicitTaskScope?.refs,
+            },
+          });
+
+          // Create translator and renderer for this session
+          const translator = createTranslator();
+          const renderer = createCliRenderer();
+
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
-            // AC: @ralph-task-limit ac-reset - Reset counter and clear stale markers at iteration start
-            taskLimitReached = false;
-            tasksCompletedThisIteration = 0;
-            const wasStale = await clearStaleMarker(ctx.rootDir);
-            if (wasStale) {
-              info("Cleared stale task limit marker from previous session");
-            }
-            // Also clear any marker from previous iteration of this session
-            await clearTaskLimitMarker(ctx.rootDir);
+            // AC: @ralph-session-budget-integration ac-reset-iteration
+            // Reset budget counter at iteration start (no-op when no budget exists)
+            await resetBudget(specDir, sessionId);
 
             // AC: @session-end-loop-signal ac-detect - Check session state for end-loop
             const endLoopState = await isEndLoopRequested(specDir, sessionId);
@@ -1360,7 +1216,7 @@ export function registerRalphCommand(program: Command): void {
               ctx.config.ralph.skills.reflect,
             );
 
-            // AC: @ralph-task-limit ac-dryrun, @cli-ralph ac-21
+            // AC: @cli-ralph ac-21
             if (options.dryRun) {
               console.log(
                 chalk.yellow("=== DRY RUN - Configuration ===\n"),
@@ -1415,8 +1271,10 @@ export function registerRalphCommand(program: Command): void {
                 // Spawn agent if not already running
                 if (!agent) {
                   info("Spawning ACP agent...");
+                  // AC: @ralph-session-budget-integration ac-env-inject
                   agent = await spawnAndInitialize(adapter, {
                     cwd: process.cwd(),
+                    env: { KSPEC_SESSION_ID: sessionId },
                     clientOptions: {
                       clientInfo: {
                         name: "kspec-ralph",
@@ -1438,49 +1296,6 @@ export function registerRalphCommand(program: Command): void {
                       if (event) {
                         renderer.render(event);
                       }
-
-                      // AC: @ralph-task-limit ac-detection, ac-wrapup
-                      // Detect task completions for limit enforcement
-                      if (maxTasks > 0 && !taskLimitReached) {
-                        const bashCmd = extractBashCommand(update);
-                        if (bashCmd && detectTaskCompleteCommand(bashCmd)) {
-                          // Pattern matched - verify via kspec query
-                          getIterationStats(ctx, iterationStartTime)
-                            .then(async (stats) => {
-                              if (stats.tasks_completed >= maxTasks && !taskLimitReached) {
-                                taskLimitReached = true;
-                                tasksCompletedThisIteration = stats.tasks_completed;
-                                info(`Task limit reached (${stats.tasks_completed}/${maxTasks})`);
-
-                                // AC: @ralph-task-limit ac-marker-format, ac-wrapup
-                                // Write marker file for hook enforcement
-                                const marker: TaskLimitMarker = {
-                                  active: true,
-                                  since: iterationStartTime.toISOString(),
-                                  max: maxTasks,
-                                  completed: stats.tasks_completed,
-                                  sessionId,
-                                };
-                                await writeTaskLimitMarker(ctx.rootDir, marker);
-
-                                // Inject wrap-up message to agent
-                                if (agent && acpSessionId) {
-                                  const wrapUpMsg = `\n\n**TASK LIMIT REACHED** - ${stats.tasks_completed} task(s) completed this iteration (limit: ${maxTasks}).\n\nPlease wrap up your current work and exit cleanly. Do not start new tasks.\n\nCompleted tasks this iteration: ${stats.completed_refs.join(", ")}`;
-                                  agent.client.prompt({
-                                    sessionId: acpSessionId,
-                                    prompt: [{ type: "text", text: wrapUpMsg }],
-                                  }).catch(() => {
-                                    // Ignore if message injection fails
-                                  });
-                                }
-                              }
-                            })
-                            .catch(() => {
-                              // Ignore query failures - detection is best-effort
-                            });
-                        }
-                      }
-
 
                       // Log raw update event (async, non-blocking)
                       // Look up iteration by ACP session ID so late updates from
@@ -1693,11 +1508,13 @@ export function registerRalphCommand(program: Command): void {
             agent = null;
           }
 
-          // AC: @ralph-task-limit ac-reset - Clear marker file when session ends
-          await clearTaskLimitMarker(ctx.rootDir);
+          // AC: @ralph-session-budget-integration ac-session-close-all-paths
+          // Clean up budget file when session ends
+          await fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {});
 
-          // Clean up ralph session env var
+          // Clean up session env vars
           delete process.env.KSPEC_RALPH_SESSION;
+          delete process.env.KSPEC_SESSION_ID;
 
           // AC: @ralph-wrap-up-agent-on-loop-exit ac-1, ac-2, ac-3, ac-4, ac-5
           // Spawn wrap-up agent if not dry-run and we have an exit reason

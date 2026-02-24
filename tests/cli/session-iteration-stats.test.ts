@@ -1,7 +1,7 @@
 /**
  * Tests for getIterationStats function
  *
- * AC: @ralph-task-limit ac-detection
+ * AC: @cli-session-context ac-iteration-stats
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
@@ -22,7 +22,7 @@ describe('getIterationStats', () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @ralph-task-limit ac-detection
+  // AC: @cli-session-context ac-iteration-stats
   it('should count tasks completed since a given time', () => {
     // Start a task and complete it
     kspec('task start @test-task-pending', tempDir);
@@ -65,7 +65,7 @@ describe('getIterationStats', () => {
     expect(completedNew.length).toBe(2);
   });
 
-  // AC: @ralph-task-limit ac-detection
+  // AC: @cli-session-context ac-iteration-stats
   it('should count submitted (pending_review) tasks toward iteration limit', async () => {
     const { getIterationStats } = await import('../../src/cli/commands/session');
     const { initContext } = await import('../../src/parser/yaml');

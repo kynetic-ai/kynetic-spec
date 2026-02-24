@@ -414,20 +414,15 @@ When invoking Codex from inside a ralph loop session, you **MUST** inject safety
 Before running any `codex exec` command, check for ralph loop context:
 
 ```bash
-# Primary: env var set by ralph on spawned agent processes
+# Env var set by ralph on spawned agent processes
 if [ -n "$KSPEC_RALPH_SESSION" ]; then
-  # We're inside a ralph loop — inject safety guard
-fi
-
-# Fallback: check for ralph marker files (written during active sessions)
-if [ -f ".claude/ralph-task-limit.json" ] || [ -f ".claude/ralph-end-loop.json" ]; then
   # We're inside a ralph loop — inject safety guard
 fi
 ```
 
 ### Required Safety Preamble
 
-When ralph markers are detected, **prepend** this safety block to every codex prompt:
+When ralph context is detected, **prepend** this safety block to every codex prompt:
 
 ```
 SAFETY CONSTRAINTS (you are running inside a kspec ralph automation loop):
@@ -444,7 +439,7 @@ Violating these constraints will kill the automation session hosting you.
 ```bash
 # Detect ralph context
 RALPH_GUARD=""
-if [ -n "$KSPEC_RALPH_SESSION" ] || [ -f ".claude/ralph-task-limit.json" ] || [ -f ".claude/ralph-end-loop.json" ]; then
+if [ -n "$KSPEC_RALPH_SESSION" ]; then
   RALPH_GUARD="SAFETY CONSTRAINTS (you are running inside a kspec ralph automation loop):
 - NEVER start kspec ralph, kspec serve, or any long-running kspec process
 - NEVER use pkill, kill, killall, or any process-killing command targeting kspec processes
