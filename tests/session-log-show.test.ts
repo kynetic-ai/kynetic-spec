@@ -689,4 +689,125 @@ describe('kspec session log show (CLI)', () => {
     expect(detail.ended_at).toBeUndefined();
     expect(detail.duration_ms).toBeGreaterThan(0);
   });
+
+  // ─── Trait AC: @trait-json-output ──────────────────────────────────────────
+
+  // AC: @trait-json-output ac-2
+  it('should include all human-readable data in JSON output', () => {
+    const detail = kspecJson<SessionLogDetail>(`session log show ${sessionId1}`, tempDir);
+    // JSON must include all fields shown in human-readable: id, status, agent_type, task_id,
+    // started_at, ended_at, duration_ms, event_count, iteration_count, iterations
+    expect(detail.id).toBe(sessionId1);
+    expect(detail.status).toBe('completed');
+    expect(detail.agent_type).toBe('claude-agent-acp');
+    expect(detail.task_id).toBe('@my-task');
+    expect(detail.started_at).toBeDefined();
+    expect(detail.ended_at).toBeDefined();
+    expect(detail.duration_ms).toBeGreaterThan(0);
+    expect(detail.event_count).toBeGreaterThan(0);
+    expect(detail.iteration_count).toBeGreaterThanOrEqual(1);
+    expect(detail.iterations).toBeDefined();
+    expect(detail.iterations.length).toBeGreaterThan(0);
+    // Each iteration has all fields shown in human-readable output
+    const iter = detail.iterations[0];
+    expect(iter.iteration).toBeDefined();
+    expect(iter.event_count).toBeDefined();
+    expect(iter.tasks_started).toBeDefined();
+    expect(iter.tasks_completed).toBeDefined();
+  });
+
+  // AC: @trait-json-output ac-4
+  it('should use @ prefix for references in JSON output', () => {
+    const detail = kspecJson<SessionLogDetail>(`session log show ${sessionId1}`, tempDir);
+    // task_id should have @ prefix
+    expect(detail.task_id).toMatch(/^@/);
+    // task refs in iteration summaries should have @ prefix
+    for (const iter of detail.iterations) {
+      for (const ref of iter.tasks_started) {
+        expect(ref).toMatch(/^@/);
+      }
+      for (const ref of iter.tasks_completed) {
+        expect(ref).toMatch(/^@/);
+      }
+    }
+  });
+
+  // AC: @trait-json-output ac-6
+  it('should use JSON output when --json is combined with --events', () => {
+    const result = kspec(`session log show ${sessionId1} --json --events`, tempDir);
+    expect(result.exitCode).toBe(0);
+    // Should be valid JSON, not human-readable text
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.id).toBe(sessionId1);
+    expect(parsed.events).toBeDefined();
+    // Should have no ANSI escape codes
+    // eslint-disable-next-line no-control-regex
+    expect(result.stdout).not.toMatch(/\x1b\[\d+m/);
+  });
+
+  // AC: @trait-json-output ac-6
+  it('should use JSON output when --json is combined with --context', () => {
+    const result = kspec(`session log show ${sessionId1} --json --context 1`, tempDir);
+    expect(result.exitCode).toBe(0);
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.id).toBe(sessionId1);
+    expect(parsed.context).toBeDefined();
+  });
+
+  // ─── Trait AC: @trait-semantic-exit-codes ───────────────────────────────────
+
+  // AC: @trait-semantic-exit-codes ac-2
+  it('should exit with code 4 (VALIDATION_FAILED) for ambiguous prefix', async () => {
+    // Create two sessions with same prefix to trigger ambiguity
+    const ambig1 = '01XTEST0000000000000000001';
+    const ambig2 = '01XTEST0000000000000000002';
+    const sessionsDir = path.join(tempDir, 'sessions');
+
+    const a1Dir = path.join(sessionsDir, ambig1);
+    await fs.mkdir(a1Dir);
+    await fs.writeFile(path.join(a1Dir, 'session.yaml'), YAML.stringify({
+      id: ambig1, agent_type: 'test', status: 'active', started_at: '2026-01-01T00:00:00.000Z',
+    }));
+    const a2Dir = path.join(sessionsDir, ambig2);
+    await fs.mkdir(a2Dir);
+    await fs.writeFile(path.join(a2Dir, 'session.yaml'), YAML.stringify({
+      id: ambig2, agent_type: 'test', status: 'active', started_at: '2026-01-01T00:00:00.000Z',
+    }));
+
+    const result = kspec('session log show 01XTEST', tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+  });
+
+  // AC: @trait-semantic-exit-codes ac-6
+  it('should exit with non-zero code and usage info for invalid flags', () => {
+    const result = kspec(`session log show ${sessionId1} --bogus-flag`, tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('unknown option');
+  });
+
+  // AC: @trait-semantic-exit-codes ac-6
+  it('should exit with non-zero code for missing required argument', () => {
+    const result = kspec('session log show', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('missing required argument');
+  });
+
+  // AC: @trait-semantic-exit-codes ac-8
+  // Exit code meanings are documented in src/cli/exit-codes.ts via EXIT_CODE_METADATA
+  // and used via named constants (EXIT_CODES.NOT_FOUND, EXIT_CODES.VALIDATION_FAILED, etc.)
+  // in src/cli/commands/session.ts sessionLogShowAction.
+  // This test verifies the session log show command uses named exit code constants.
+  it('should use documented exit codes consistently', () => {
+    // not_found → EXIT_CODES.NOT_FOUND (3)
+    const notFound = kspec('session log show NONEXISTENT', tempDir, { expectFail: true });
+    expect(notFound.exitCode).toBe(3);
+
+    // invalid context arg → EXIT_CODES.USAGE_ERROR (2)
+    const usageErr = kspec(`session log show ${sessionId1} --context abc`, tempDir, { expectFail: true });
+    expect(usageErr.exitCode).toBe(2);
+  });
+
+  // @trait-semantic-exit-codes ac-3 — N/A: session log show is read-only with no confirmation prompts
+  // @trait-semantic-exit-codes ac-5 — N/A: command either finds a session or returns not_found; no empty result set
+  // @trait-semantic-exit-codes ac-7 — N/A: not a batch command
 });
