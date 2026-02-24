@@ -57535,6 +57535,7 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #503. Migrated end-loop signal from marker file to session state."
   depends_on:
     - "@extend-session-schema-with-task-budget"
   context: []
@@ -57547,6 +57548,7 @@
   created_at: 2026-02-24T01:18:26.929Z
   started_at: 2026-02-24T08:52:40.186Z
   submitted_at: 2026-02-24T08:52:47.173Z
+  completed_at: 2026-02-24T17:16:03.481Z
   notes:
     - _ulid: 01KJ6KKRKHQE5FW1GRYKWMGCG1
       created_at: 2026-02-24T01:18:26.929Z
@@ -57586,8 +57588,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-24T17:16:03.481Z
-  closed_reason: "Merged in PR #503. Migrated end-loop signal from marker file to session state."
 - _ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
   slugs:
     - implement-native-worktree-guard
@@ -57654,7 +57654,7 @@
   type: task
   spec_ref: "@ralph-session-budget-integration"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-session-create-command"
@@ -57680,6 +57680,7 @@
         cleanup. Ensure session close in ALL exit paths including signal handlers.
   todos: []
   automation: eligible
+  started_at: 2026-02-24T17:16:09.552Z
 - _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
   slugs:
     - add-multi-harness-env-injection
