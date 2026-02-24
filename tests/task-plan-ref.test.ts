@@ -84,6 +84,7 @@ describe("Integration: task plan_ref field", () => {
     expect(task.plan_ref).toBe("@test-plan-3");
   });
 
+  // AC: @task-set ac-clear-ref
   it("should allow clearing plan_ref", () => {
     // Create plan and task with plan_ref
     kspec(

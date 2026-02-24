@@ -177,50 +177,62 @@ async function setTaskFields(
       changes.push("title");
     }
 
-    if (options.specRef) {
-      // Validate the spec ref exists and is a spec item
-      const specResult = index.resolve(options.specRef);
-      if (!specResult.ok) {
-        return {
-          success: false,
-          error: errors.reference.specRefNotFound(options.specRef),
-        };
+    if (options.specRef !== undefined) {
+      // Handle 'null' string to clear spec_ref
+      if (options.specRef === "null") {
+        updatedTask.spec_ref = null;
+        changes.push("spec_ref: cleared");
+      } else {
+        // Validate the spec ref exists and is a spec item
+        const specResult = index.resolve(options.specRef);
+        if (!specResult.ok) {
+          return {
+            success: false,
+            error: errors.reference.specRefNotFound(options.specRef),
+          };
+        }
+        // Check it's not a task
+        const isTask = tasks.some((t) => t._ulid === specResult.ulid);
+        if (isTask) {
+          return {
+            success: false,
+            error: errors.reference.specRefIsTask(options.specRef),
+          };
+        }
+        updatedTask.spec_ref = normalizeRefInput(options.specRef);
+        changes.push("spec_ref");
       }
-      // Check it's not a task
-      const isTask = tasks.some((t) => t._ulid === specResult.ulid);
-      if (isTask) {
-        return {
-          success: false,
-          error: errors.reference.specRefIsTask(options.specRef),
-        };
-      }
-      updatedTask.spec_ref = normalizeRefInput(options.specRef);
-      changes.push("spec_ref");
     }
 
-    if (options.metaRef) {
-      // Validate the meta ref exists and is a meta item
-      const metaRefResult = index.resolve(options.metaRef);
-      if (!metaRefResult.ok) {
-        return {
-          success: false,
-          error: errors.reference.metaRefNotFound(options.metaRef),
-        };
+    if (options.metaRef !== undefined) {
+      // Handle 'null' string to clear meta_ref
+      if (options.metaRef === "null") {
+        updatedTask.meta_ref = null;
+        changes.push("meta_ref: cleared");
+      } else {
+        // Validate the meta ref exists and is a meta item
+        const metaRefResult = index.resolve(options.metaRef);
+        if (!metaRefResult.ok) {
+          return {
+            success: false,
+            error: errors.reference.metaRefNotFound(options.metaRef),
+          };
+        }
+
+        // Check if the resolved item is a meta item (not a spec item or task)
+        const isTask = tasks.some((t) => t._ulid === metaRefResult.ulid);
+        const isSpecItem = items.some((i) => i._ulid === metaRefResult.ulid);
+
+        if (isTask || isSpecItem) {
+          return {
+            success: false,
+            error: errors.reference.metaRefPointsToSpec(options.metaRef),
+          };
+        }
+
+        updatedTask.meta_ref = normalizeRefInput(options.metaRef);
+        changes.push("meta_ref");
       }
-
-      // Check if the resolved item is a meta item (not a spec item or task)
-      const isTask = tasks.some((t) => t._ulid === metaRefResult.ulid);
-      const isSpecItem = items.some((i) => i._ulid === metaRefResult.ulid);
-
-      if (isTask || isSpecItem) {
-        return {
-          success: false,
-          error: errors.reference.metaRefPointsToSpec(options.metaRef),
-        };
-      }
-
-      updatedTask.meta_ref = normalizeRefInput(options.metaRef);
-      changes.push("meta_ref");
     }
 
     if (options.planRef !== undefined) {
@@ -805,10 +817,10 @@ Examples:
       "Update multiple tasks (AC: @spec-task-set-batch ac-1)",
     )
     .option("--title <title>", "Update task title")
-    .option("--spec-ref <ref>", "Link to spec item")
+    .option("--spec-ref <ref>", "Link to spec item (use 'null' to clear)")
     .option(
       "--meta-ref <ref>",
-      "Link to meta item (workflow, agent, or convention)",
+      "Link to meta item (use 'null' to clear)",
     )
     .option("--plan-ref <ref>", "Link to plan (use 'null' to clear)")
     .option("--priority <n>", "Set priority (1-5)")

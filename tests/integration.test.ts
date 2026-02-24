@@ -353,6 +353,40 @@ describe('Integration: task set', () => {
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @task-set ac-clear-ref
+  it('should clear spec_ref with null', () => {
+    // First set a spec_ref
+    kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);
+    const before = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(before.spec_ref).toBe('@test-feature');
+
+    // Clear it with 'null'
+    const output = kspec('task set @test-task-pending --spec-ref null', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('spec_ref: cleared');
+
+    // Verify it was cleared
+    const after = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(after.spec_ref).toBeNull();
+  });
+
+  // AC: @task-set ac-clear-ref
+  it('should clear meta_ref with null', () => {
+    // Set a meta_ref first using workflow from fixtures
+    kspec('task set @test-task-pending --meta-ref @task-start', tempDir);
+    const before = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(before.meta_ref).toBe('@task-start');
+
+    // Clear it with 'null'
+    const output = kspec('task set @test-task-pending --meta-ref null', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('meta_ref: cleared');
+
+    // Verify it was cleared
+    const after = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(after.meta_ref).toBeNull();
+  });
+
   it('should update priority', () => {
     kspec('task set @test-task-pending --priority 1', tempDir);
 
