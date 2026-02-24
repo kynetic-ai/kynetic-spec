@@ -820,3 +820,12 @@ inbox:
       - reliability
       - dx
     added_by: "@claude"
+  - _ulid: 01KJ7CNAZQRSSS2BH4KWXT9G0R
+    text: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
+      failed on kspec item get. Possible write conflict or index corruption during ralph loop
+      session. Investigate shadow branch integrity."
+    created_at: 2026-02-24T08:36:12.919Z
+    tags:
+      - shadow-branch
+      - bug
+    added_by: "@claude"
