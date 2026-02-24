@@ -57245,7 +57245,7 @@
   type: task
   spec_ref: "@session-creation-and-env-injection"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -57278,6 +57278,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T05:47:29.345Z
+  closed_reason: "Merged in PR #498. Added TaskBudgetSchema and 5 budget CRUD functions (createBudget,
+    getBudget, checkBudget, incrementBudget, resetBudget) to sessions module. Budget stored at
+    .kspec/sessions/{id}/budget.json (local FS, not shadow branch) with atomic writes. getBudget
+    fails closed on corruption (only ENOENT returns null). 32 tests. Codex review finding
+    addressed."
 - _ulid: 01KJ6KKQA3E86SF0YNDS2R705X
   slugs:
     - add-session-id-to-task-schema
