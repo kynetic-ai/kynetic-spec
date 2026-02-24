@@ -56510,7 +56510,7 @@
     bad arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage session
     when batch --commands failed with no diagnostic output."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56519,6 +56519,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:33:49.586Z
   started_at: 2026-02-24T04:27:39.693Z
+  submitted_at: 2026-02-24T04:57:45.459Z
   notes:
     - _ulid: 01KJ4V6V0HXEDTJM35H285YYMG
       created_at: 2026-02-23T08:52:43.153Z
@@ -56540,7 +56541,10 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T04:57:45.459Z
+  completed_at: 2026-02-24T05:06:20.414Z
+  closed_reason: "Merged in PR #496. Test-only changes: strengthened batch malformed JSON error tests
+    to verify error message content (position info) not just exit codes, added JSON-mode structured
+    error test, added non-array valid JSON schema validation test, fixed AC annotation prefixes."
 - _ulid: 01KJ5WV0G52E3BZA5W3VPW22J1
   slugs: []
   title: Fix ralph event logging iteration capture-by-value bug
