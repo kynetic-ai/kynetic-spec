@@ -6371,6 +6371,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ77DA9VYBRRT8BCTVGAJC0T
+    type: success
+    content: "Budget enforcement in task start integrates cleanly: check before transition, increment
+      after save, resume case handled by existing early return. The library functions
+      (checkBudget/incrementBudget) do the heavy lifting — CLI handler just wires them together.
+      Good separation of concerns between store.ts and task.ts."
+    created_at: 2026-02-24T07:04:27.195Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
