@@ -1666,8 +1666,16 @@ export async function injectClaudeCodeEnv(
   try {
     const content = await fsPromises.readFile(settingsPath, "utf-8");
     settings = JSON.parse(content);
-  } catch {
-    // File doesn't exist or is invalid, start fresh
+  } catch (err: unknown) {
+    // Only start fresh for ENOENT; throw on parse errors to avoid overwriting
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      // File doesn't exist, start fresh
+    } else {
+      throw new Error(
+        `Cannot inject env: .claude/settings.json exists but is not valid JSON. ` +
+        `Fix the file manually or remove it, then retry.`,
+      );
+    }
   }
 
   // Ensure env section exists
@@ -1712,8 +1720,16 @@ export async function injectCodexEnv(
   try {
     const content = await fsPromises.readFile(configPath, "utf-8");
     config = JSON.parse(content);
-  } catch {
-    // File doesn't exist or is invalid, start fresh
+  } catch (err: unknown) {
+    // Only start fresh for ENOENT; throw on parse errors to avoid overwriting
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      // File doesn't exist, start fresh
+    } else {
+      throw new Error(
+        `Cannot inject env: ~/.codex/config.json exists but is not valid JSON. ` +
+        `Fix the file manually or remove it, then retry.`,
+      );
+    }
   }
 
   // Ensure shell_environment_policy.set exists

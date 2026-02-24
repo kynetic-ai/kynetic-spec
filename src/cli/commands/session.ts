@@ -2073,12 +2073,26 @@ async function sessionCreateAction(options: {
   try {
     const ctx = await initContext();
 
+    // AC: @session-creation-and-env-injection ac-invalid-session
+    // Validate existing KSPEC_SESSION_ID if set — warn user if it's stale/corrupt
+    const existingSessionId = process.env.KSPEC_SESSION_ID;
+    if (existingSessionId) {
+      const validation = await validateSessionId(ctx.specDir, existingSessionId);
+      if (!validation.valid) {
+        warn(
+          `Current KSPEC_SESSION_ID (${existingSessionId}) is invalid: ${validation.error}`,
+        );
+        info(validation.suggestion || "Creating a new session will generate a fresh ID.");
+      }
+    }
+
     // Validate budget if provided
     // AC: @trait-error-guidance ac-5 - indicate which field/value failed
     let budgetNum: number | undefined;
     if (options.budget !== undefined) {
-      budgetNum = parseInt(options.budget, 10);
-      if (isNaN(budgetNum) || budgetNum <= 0 || !Number.isInteger(budgetNum)) {
+      // Use Number() instead of parseInt to reject "3.5", "3abc", "1e2" etc.
+      budgetNum = Number(options.budget);
+      if (isNaN(budgetNum) || budgetNum <= 0 || !Number.isInteger(budgetNum) || !/^\d+$/.test(options.budget)) {
         // AC: @trait-error-guidance ac-2, ac-5 - include suggested action and field info
         // AC: @trait-error-guidance ac-6 - guidance included in structured error
         error(
