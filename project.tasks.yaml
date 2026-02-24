@@ -56237,7 +56237,7 @@
     but --spec-ref tries to resolve 'null' as a reference. Should support same 'null' pattern for
     consistency. Workaround: find an alternative valid spec reference to link to."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56246,6 +56246,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:44.603Z
   started_at: 2026-02-24T01:51:33.450Z
+  submitted_at: 2026-02-24T01:58:57.639Z
   notes:
     - _ulid: 01KJ4V6K555PGCK411D7FGZRNP
       created_at: 2026-02-23T08:52:35.109Z
@@ -56273,7 +56274,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T01:58:57.639Z
+  completed_at: 2026-02-24T02:12:44.599Z
+  closed_reason: "Merged in PR #490. Added null clearing support for --spec-ref and --meta-ref in task
+    set, matching existing --plan-ref behavior. All ACs covered with annotated tests, CI green."
 - _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
   slugs: []
   title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
