@@ -16,6 +16,7 @@ import {
   parsePlanDocument,
   topologicalSort,
   validateParentRefs,
+  detectYamlUnsafeValues,
   type PlanSpec,
 } from "../src/parser/plan-document.js";
 import { createSpecItem } from "../src/parser/yaml.js";
@@ -654,5 +655,221 @@ describe("createSpecItem", () => {
     });
 
     expect(item.acceptance_criteria).toBeUndefined();
+  });
+});
+
+describe("detectYamlUnsafeValues", () => {
+  it("should detect unquoted colons in then field", () => {
+    const yaml = `
+- title: Test
+  acceptance_criteria:
+    - id: ac-1
+      given: Something
+      when: Something else
+      then: User sees error: something bad`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].field).toBe("then");
+    expect(diagnostics[0].value).toContain("User sees error:");
+    expect(diagnostics[0].line).toBe(7);
+  });
+
+  it("should detect unquoted colons in given and when fields", () => {
+    const yaml = `
+    - id: ac-1
+      given: State: user is logged in
+      when: Action: submit form
+      then: Result`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(2);
+    expect(diagnostics[0].field).toBe("given");
+    expect(diagnostics[1].field).toBe("when");
+  });
+
+  it("should detect unquoted colons in description field", () => {
+    const yaml = `
+- title: Test
+  description: Note: this is important`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].field).toBe("description");
+  });
+
+  it("should skip already-quoted values", () => {
+    const yaml = `
+    - id: ac-1
+      given: "State: user is logged in"
+      when: 'Action: submit form'
+      then: Result`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it("should skip block scalar indicators", () => {
+    const yaml = `
+    - id: ac-1
+      given: |
+        State: user is logged in
+      when: >
+        Action: submit form
+      then: Result`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it("should not flag values without colon-space pattern", () => {
+    const yaml = `
+    - id: ac-1
+      given: Something with a URL http://example.com
+      when: User clicks submit
+      then: Success message appears`;
+
+    // http://example.com has colon but not "colon space" after the key-value split
+    // Actually http: does have colon-space... let me check
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    // "Something with a URL http://example.com" — "http:" has colon followed by //
+    // not "colon space" so should not be flagged
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it("should return empty for clean YAML", () => {
+    const yaml = `
+- title: Feature A
+  slug: feature-a
+  acceptance_criteria:
+    - id: ac-1
+      given: User is on login page
+      when: User enters valid credentials
+      then: User is redirected to dashboard`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  it("should truncate long values in diagnostic", () => {
+    const longValue = "This is a very long error message that goes on and on and on: with a colon somewhere in it";
+    const yaml = `      then: ${longValue}`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].value.length).toBeLessThanOrEqual(60);
+    expect(diagnostics[0].value).toMatch(/\.\.\.$/);
+  });
+
+  it("should detect unquoted colons in title with list marker prefix", () => {
+    const yaml = `
+- title: Error: invalid input format
+  slug: error-handling`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0].field).toBe("title");
+    expect(diagnostics[0].value).toContain("Error:");
+  });
+
+  it("should detect multiple unsafe values in same spec", () => {
+    const yaml = `
+- title: Test
+  acceptance_criteria:
+    - id: ac-1
+      given: Precondition
+      when: Action
+      then: Error: bad input
+    - id: ac-2
+      given: State: logged in
+      when: Submit
+      then: Warning: data loss`;
+
+    const diagnostics = detectYamlUnsafeValues(yaml);
+
+    expect(diagnostics).toHaveLength(3);
+  });
+});
+
+describe("parsePlanDocument - YAML-unsafe diagnostics", () => {
+  it("should include diagnostic hints when YAML parse fails due to unquoted colons", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Input Validation
+  acceptance_criteria:
+    - id: ac-1
+      given: User enters data
+      when: Form is submitted
+      then: User sees error: Invalid input
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(0);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].type).toBe("yaml");
+    expect(result.errors[0].message).toContain("Hint:");
+    expect(result.errors[0].message).toContain("then");
+    expect(result.errors[0].message).toContain("unquoted colon");
+    expect(result.errors[0].message).toContain("block scalars");
+  });
+
+  it("should not include hints when YAML fails for non-colon reasons", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature A
+  invalid yaml: [unclosed
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(0);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].type).toBe("yaml");
+    expect(result.errors[0].message).toContain("Malformed YAML");
+    expect(result.errors[0].message).not.toContain("Hint:");
+  });
+
+  it("should parse successfully when block scalars are used for colon values", () => {
+    const plan = `
+# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Input Validation
+  acceptance_criteria:
+    - id: ac-1
+      given: User enters data
+      when: Form is submitted
+      then: |
+        User sees error: Invalid input
+\`\`\`
+`;
+
+    const result = parsePlanDocument(plan);
+
+    expect(result.specs).toHaveLength(1);
+    expect(result.errors).toHaveLength(0);
+    expect(result.specs[0].acceptance_criteria?.[0].then).toContain("User sees error: Invalid input");
   });
 });
