@@ -57642,7 +57642,7 @@
   type: task
   spec_ref: "@native-guard-commands"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-native-worktree-guard"
@@ -57655,6 +57655,7 @@
   session_id: 01KJ8MK2C4KQE66RNWZXW1TBT1
   created_at: 2026-02-24T01:18:27.621Z
   started_at: 2026-02-24T21:11:23.357Z
+  submitted_at: 2026-02-24T21:11:43.175Z
   notes:
     - _ulid: 01KJ6KKS95WFBFJGR4JH73R1RT
       created_at: 2026-02-24T01:18:27.621Z
@@ -57677,7 +57678,11 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T21:11:43.175Z
+  completed_at: 2026-02-24T21:11:44.250Z
+  closed_reason: "All work was already completed in dependency task @implement-native-worktree-guard
+    (PR #506). Setup.ts already installs native kspec guard worktree, migrates old bash script
+    entries, deletes old script files, and handles idempotency. All 6 spec ACs have test coverage in
+    native-guard-setup.test.ts. No additional code changes needed."
 - _ulid: 01KJ6KKSK4GG98DYK4AS66JY24
   slugs:
     - simplify-ralph-with-session-budget
