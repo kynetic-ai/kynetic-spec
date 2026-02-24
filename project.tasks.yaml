@@ -57288,6 +57288,7 @@
         Remove END_LOOP_MARKER_PATH, readEndLoopMarker, clearEndLoopMarker,
         clearStaleEndLoopMarker from ralph.ts.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
   slugs:
     - implement-native-worktree-guard
