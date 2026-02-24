@@ -246,9 +246,12 @@ describe("Integration: task budget enforcement", () => {
 
   // Trait: @trait-semantic-exit-codes
   describe("trait: semantic exit codes", () => {
-    // AC: @trait-semantic-exit-codes ac-2 — validation error = exit 1
-    // Note: budget exhaustion uses EXIT_CODES.VALIDATION_FAILED = 4
-    // which maps to "invalid state / business rule violation"
+    // Budget exhaustion uses EXIT_CODES.VALIDATION_FAILED = 4
+    // (business rule violation), covered by ac-4 annotation below.
+    // N/A for this feature: ac-2 (validation=exit 1, not applicable — budget uses exit 4),
+    //   ac-3 (user cancellation — no confirmation prompt), ac-5 (empty result — not a query),
+    //   ac-6 (invalid flags — handled by base command, not budget-specific),
+    //   ac-7 (batch partial failure — not a batch op), ac-8 (documentation — not testable)
     it("should exit with validation failed code (4) on budget exceeded", async () => {
       await createTestBudget(tempDir, SESSION_ID, 1, 1);
 
@@ -275,6 +278,9 @@ describe("Integration: task budget enforcement", () => {
 
   // Trait: @trait-error-guidance
   describe("trait: error guidance", () => {
+    // N/A for this feature: ac-3 (ref not found — budget errors don't involve ref lookup),
+    //   ac-4 (invalid state transition — budget exhaustion is not a state transition error)
+
     // AC: @trait-error-guidance ac-1 — error includes what went wrong
     it("should describe budget exhaustion in error message", async () => {
       await createTestBudget(tempDir, SESSION_ID, 1, 1);
