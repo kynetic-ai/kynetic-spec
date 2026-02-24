@@ -149,10 +149,27 @@ function extractSpecsSection(content: string, errors: ParseError[]): PlanSpec[] 
   try {
     parsed = parseYaml(yamlContent);
   } catch (err) {
-    errors.push({
-      type: "yaml",
-      message: `Malformed YAML in Specs section: ${err instanceof Error ? err.message : String(err)}`,
-    });
+    const yamlError = err instanceof Error ? err.message : String(err);
+    const diagnostics = detectYamlUnsafeValues(yamlContent);
+
+    if (diagnostics.length > 0) {
+      const hints = diagnostics
+        .map(d => `  Line ${d.line}: ${d.field} value contains unquoted colon: "${d.value}"`)
+        .join("\n");
+      errors.push({
+        type: "yaml",
+        message:
+          `Malformed YAML in Specs section: ${yamlError}\n\n` +
+          `Hint: Found YAML-unsafe values (unquoted colons in text):\n${hints}\n` +
+          `Fix: Use YAML block scalars (|) for values containing colons:\n` +
+          `  then: |\n    User sees error: Invalid input`,
+      });
+    } else {
+      errors.push({
+        type: "yaml",
+        message: `Malformed YAML in Specs section: ${yamlError}`,
+      });
+    }
     return [];
   }
 
@@ -244,10 +261,27 @@ function extractTasksSection(content: string, errors: ParseError[]): TasksSectio
         }
       }
     } catch (err) {
-      errors.push({
-        type: "yaml",
-        message: `Malformed YAML in Tasks section: ${err instanceof Error ? err.message : String(err)}`,
-      });
+      const yamlError = err instanceof Error ? err.message : String(err);
+      const diagnostics = detectYamlUnsafeValues(yamlContent);
+
+      if (diagnostics.length > 0) {
+        const hints = diagnostics
+          .map(d => `  Line ${d.line}: ${d.field} value contains unquoted colon: "${d.value}"`)
+          .join("\n");
+        errors.push({
+          type: "yaml",
+          message:
+            `Malformed YAML in Tasks section: ${yamlError}\n\n` +
+            `Hint: Found YAML-unsafe values (unquoted colons in text):\n${hints}\n` +
+            `Fix: Use YAML block scalars (|) for values containing colons:\n` +
+            `  then: |\n    User sees error: Invalid input`,
+        });
+      } else {
+        errors.push({
+          type: "yaml",
+          message: `Malformed YAML in Tasks section: ${yamlError}`,
+        });
+      }
     }
   }
 
@@ -429,4 +463,56 @@ export function validateParentRefs(
   }
 
   return errors;
+}
+
+/**
+ * Diagnostic for YAML-unsafe values in plan document YAML.
+ *
+ * Scans raw YAML text for unquoted values that contain colons (the most common
+ * cause of "Nested mappings are not allowed in compact mappings" errors).
+ * Used to enrich error messages when YAML parsing fails.
+ *
+ * Only flags lines where a known AC field (given, when, then, description, title)
+ * has an unquoted value containing a subsequent colon.
+ */
+export interface YamlUnsafeDiagnostic {
+  line: number;
+  field: string;
+  value: string;
+}
+
+/**
+ * Detect YAML-unsafe values in raw YAML text.
+ *
+ * Looks for lines matching `key: value` where value contains an unquoted colon.
+ * This pattern causes YAML to interpret the second colon as a nested mapping key.
+ */
+export function detectYamlUnsafeValues(yamlText: string): YamlUnsafeDiagnostic[] {
+  const diagnostics: YamlUnsafeDiagnostic[] = [];
+  const lines = yamlText.split("\n");
+
+  // AC fields and other prose fields where colons commonly appear
+  const proseFields = /^\s+(given|when|then|description|title|implementation_notes):\s+(.+)$/;
+
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(proseFields);
+    if (!match) continue;
+
+    const field = match[1];
+    const value = match[2];
+
+    // Skip values that are already quoted or use block scalar indicators
+    if (/^["']/.test(value) || /^\|/.test(value) || /^>/.test(value)) continue;
+
+    // Check if value contains a colon followed by a space (YAML mapping indicator)
+    if (/:\s/.test(value)) {
+      diagnostics.push({
+        line: i + 1,
+        field,
+        value: value.length > 60 ? value.slice(0, 57) + "..." : value,
+      });
+    }
+  }
+
+  return diagnostics;
 }

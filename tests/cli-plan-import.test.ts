@@ -521,6 +521,35 @@ derive_from_specs: true
     expect(result.stderr).toContain("Malformed YAML");
   });
 
+  // AC: @plan-import ac-21 - YAML-unsafe diagnostic for unquoted colons
+  it("should provide diagnostic hints when AC values contain unquoted colons", async () => {
+    const planPath = path.join(tempDir, "test-plan.md");
+    await fs.writeFile(
+      planPath,
+      `# Test Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Input Validation
+  acceptance_criteria:
+    - id: ac-1
+      given: User enters data
+      when: Form is submitted
+      then: User sees error: Invalid input
+\`\`\`
+`,
+    );
+
+    const result = kspecRun(`plan import "${planPath}" --module @test-core`, tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(2); // USAGE_ERROR
+    expect(result.stderr).toContain("Malformed YAML");
+    expect(result.stderr).toContain("Hint:");
+    expect(result.stderr).toContain("then");
+    expect(result.stderr).toContain("unquoted colon");
+    expect(result.stderr).toContain("block scalars");
+  });
+
   // AC: @plan-import ac-22
   it("should error on spec missing required title field", async () => {
     const planPath = path.join(tempDir, "test-plan.md");
