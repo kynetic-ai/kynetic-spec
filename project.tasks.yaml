@@ -58503,29 +58503,91 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Review skills should always dig for task/spec context, never skip AC checks
+- _ulid: 01KJ8WSBNJJ21TNJVQVN66D8KS
+  slugs: []
+  title: Review skills should always dig for task/spec context, never skip AC checks
+  type: task
   description: "PR reviewers (codex, pr-review, local-review) should never skip AC/spec validation
     just because a PR lacks a Task trailer. They should dig deeper: check commit messages for
     Task:/Spec: trailers, search recent tasks matching PR scope, check AC annotations in changed
     files, and validate against found specs. Currently codex SKILL.md line 128 explicitly says to
     skip AC checks when no trailer exists. pr-review requires a task ref as a hard gate. Both need
     updating to always pursue spec context."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - review
     - skills
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJ8WSBNJJ21TNJVQVN66D8KS
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-24T22:37:16.338Z
-  notes: []
+  notes:
+    - _ulid: 01KJ8WSSCFT27761HWH249M888
+      created_at: 2026-02-24T22:37:30.383Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        Codex PR review said 'No PR Task trailer was present, so spec/trait AC coverage checks were
+        skipped per instructions' on PR #510. This defeats the purpose of spec-first development —
+        reviewers should always validate against specs.
+
+
+        ## Affected Skills
+
+
+        ### 1. .claude/skills/codex/SKILL.md (line 128)
+
+        Current: 'If no Task trailer exists, proceed with pure code review (skip AC checks).'
+
+        Fix: Replace with instructions to dig deeper — check commit trailers, search tasks list,
+        check AC annotations in changed files, then validate against found specs. Only fall back to
+        pure code review if genuinely no spec coverage exists for the change.
+
+
+        ### 2. .claude/skills/pr-review/SKILL.md
+
+        Current: Requires task ref as a hard validation gate ('Task reference required. Error
+        immediately.')
+
+        Fix: Instead of erroring, dig for context the same way — commit trailers, task list search,
+        AC annotations. The PR body trailer is a convenience, not a prerequisite.
+
+
+        ### 3. .claude/skills/local-review/SKILL.md
+
+        Current: AC coverage checks are unconditional (good), but only when spec context is already
+        known.
+
+        Fix: Add step to discover spec context if not explicitly provided — same dig-deeper pattern.
+
+
+        ## Dig-Deeper Pattern (apply to all three)
+
+
+        When no Task trailer in PR body:
+
+        1. Check commit messages for Task: or Spec: trailers
+
+        2. Search recent tasks: kspec tasks list — match by title/description to PR scope
+
+        3. Check if changed files have // AC: @spec-ref annotations pointing to specs
+
+        4. If a spec is found, validate AC coverage identically to trailer-present case
+
+        5. Only skip AC validation if genuinely no spec exists for the changed behavior
+
+
+        ## Principle
+
+        Reviewers should be investigators, not form-checkers. The absence of a trailer is a signal
+        to look harder, not permission to skip validation.
+      supersedes: null
   todos: []
+  automation: eligible
