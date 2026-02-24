@@ -57718,7 +57718,9 @@
   status: pending
   blocked_by: []
   depends_on:
+    - "@implement-session-start-dependency-display"
     - "@implement-session-start-activity-timeline"
+    - "@implement-session-start-inbox-triage-awareness"
   context: []
   priority: 3
   tags: []
