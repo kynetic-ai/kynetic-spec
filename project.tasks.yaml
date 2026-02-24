@@ -58360,25 +58360,101 @@
   created_at: 2026-02-24T16:40:48.352Z
   notes: []
   todos: []
-- title: Fix test failures when running inside ralph loop (env pollution)
+- _ulid: 01KJ8T2N7APYPYDEHM2WVP7ZTX
+  slugs: []
+  title: Fix test failures when running inside ralph loop (env pollution)
+  type: bug
   description: 4 tests fail when vitest runs inside a ralph loop because ralph sets
     KSPEC_RALPH_SESSION and KSPEC_SESSION_ID on process.env, and child processes inherit them.
-  type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - testing
     - ralph
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJ8T2N7APYPYDEHM2WVP7ZTX
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-24T21:49:55.305Z
-  notes: []
+  notes:
+    - _ulid: 01KJ8T35W8Q3AJRFJD4DJBARNM
+      created_at: 2026-02-24T21:50:12.360Z
+      author: "@claude"
+      content: >-
+        ## Failing Tests (4 total, 3 files)
+
+
+        ### 1-2. session-create.test.ts — JSON parse errors (lines 774, 860)
+
+        Tests: 'should return error as JSON when --json is active and validation fails' and 'should
+        include guidance in JSON error object'
+
+        - Run: kspec session create --budget abc --json (expectFail)
+
+        - Then: JSON.parse(result.stderr)
+
+        - Fails because: KSPEC_SESSION_ID is set in env (inherited from ralph), pointing to ralph's
+        session. session create validates this env var (src/cli/commands/session.ts:2080-2088) and
+        calls warn() which writes '⚠ Current KSPEC_SESSION_ID (...) is invalid: ...' to stderr
+        BEFORE the JSON error object. JSON.parse fails on the warning prefix.
+
+
+        ### 3. session-create.test.ts — env injection method (line 740)
+
+        Test: 'should inject via .env when OpenCode detected'
+
+        - Expects injection.method === 'opencode_dotenv' but gets 'fallback'
+
+        - Ralph env vars interfere with harness detection logic
+
+
+        ### 4. ralph.test.ts — KSPEC_RALPH_SESSION inheritance (line 612)
+
+        Test: 'KSPEC_RALPH_SESSION is not inherited by non-ralph child processes'
+
+        - Spawns child with { ...process.env } expecting KSPEC_RALPH_SESSION absent
+
+        - Running inside ralph means process.env.KSPEC_RALPH_SESSION IS set
+
+        - Gets '01KJ8MK...' instead of null
+
+
+        ### 5. session-budget-integration.test.ts (intermittent)
+
+        Test: 'should clean up budget.json after normal exit'
+
+        - Similar env pollution from ralph session vars
+
+
+        ## Root Cause
+
+        Ralph sets KSPEC_RALPH_SESSION and KSPEC_SESSION_ID on process.env. The kspec() test helper
+        in tests/helpers/cli.ts uses spawnSync which inherits process.env. Tests that expect clean
+        env get ralph's vars instead.
+
+
+        ## Fix Approach
+
+        In tests/helpers/cli.ts, the kspec() helper should strip ralph-specific env vars
+        (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID) from the spawned process env by default. Tests that
+        explicitly need these vars already pass them via the env option.
+
+
+        Specifically in cli.ts around the spawnSync call: build the child env from process.env but
+        delete KSPEC_RALPH_SESSION and KSPEC_SESSION_ID unless the test explicitly provides them via
+        opts.env.
+
+
+        The ralph.test.ts line 607 also needs fixing: it uses { ...process.env } directly in its own
+        spawnSync (not via the helper), so it needs the same treatment.
+
+
+        ## Verification
+
+        Run tests both standalone (npx vitest run) and inside ralph loop to confirm both pass.
+      supersedes: null
   todos: []
+  automation: eligible
