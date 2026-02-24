@@ -151,15 +151,26 @@ describe("parseBatchInput", () => {
     expect(result[1].id).toBe("b");
   });
 
-  // AC: parent ac-invalid-json — invalid JSON throws with position info
+  // AC: @batch-exec ac-invalid-json — invalid JSON throws with position info
   it("throws BatchParseError on invalid JSON with position info", async () => {
     await expect(
       parseBatchInput({ type: "inline", json: "{bad json" }),
     ).rejects.toThrow(BatchParseError);
 
+    // Must include "Invalid JSON" label and position info from native parser
     await expect(
       parseBatchInput({ type: "inline", json: "{bad json" }),
-    ).rejects.toThrow(/Invalid JSON/);
+    ).rejects.toThrow(/Invalid JSON.*position \d+/i);
+  });
+
+  // AC: @batch-exec ac-invalid-json — non-array valid JSON is rejected with schema error
+  it("throws BatchParseError on valid JSON that is not an array", async () => {
+    await expect(
+      parseBatchInput({ type: "inline", json: '{"command":"test"}' }),
+    ).rejects.toThrow(BatchParseError);
+    await expect(
+      parseBatchInput({ type: "inline", json: '{"command":"test"}' }),
+    ).rejects.toThrow(/Expected array/);
   });
 
   // AC: parent ac-empty-batch — empty array rejected
