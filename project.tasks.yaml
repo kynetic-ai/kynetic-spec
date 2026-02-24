@@ -57837,14 +57837,16 @@
   type: task
   spec_ref: "@session-start-unlocks"
   plan_ref: "@plan-session-start-output-redesign"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJ8MK2C4KQE66RNWZXW1TBT1
   created_at: 2026-02-24T06:19:05.899Z
+  started_at: 2026-02-24T21:40:55.134Z
   notes:
     - _ulid: 01KJ74T8SBYPVEJWW687NGC388
       created_at: 2026-02-24T06:19:05.899Z
@@ -57857,8 +57859,7 @@
         Store in computed.task_unlocks as Record<string, number> keyed by ref (short ULID).
   todos: []
   automation: eligible
-  started_at: 2026-02-24T21:40:55.134Z
-  session_id: 01KJ8MK2C4KQE66RNWZXW1TBT1
+  submitted_at: 2026-02-24T21:48:58.123Z
 - _ulid: 01KJ74T98AACTTMCHS0ZTVJPK0
   slugs:
     - implement-session-start-activity-timeline
