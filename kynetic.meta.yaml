@@ -6351,6 +6351,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ75K21W6FB80AB5567TBKAX
+    type: friction
+    content: task set --depends-on replaces all deps rather than appending. When setting multiple deps
+      in separate batch commands, only the last one survives. Must provide all deps in a single
+      call. Consider adding --add-depends-on for append semantics (similar to --relates-to on item
+      set which appends).
+    created_at: 2026-02-24T06:32:38.204Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
