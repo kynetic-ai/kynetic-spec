@@ -863,3 +863,8 @@ inbox:
     created_at: 2026-02-24T23:36:15.982Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ905CK3H9P9QMY8DYXF3JSS
+    text: Second item
+    created_at: 2026-02-24T23:36:16.227Z
+    tags: []
+    added_by: "@claude"
