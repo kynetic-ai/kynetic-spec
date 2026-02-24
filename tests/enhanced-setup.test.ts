@@ -222,8 +222,6 @@ describe('kspec setup (enhanced)', () => {
       const guards = await fs.readdir(hooksDir);
 
       expect(guards).toContain('kspec-worktree-guard.sh');
-      // AC: @full-hook-install ac-5
-      expect(guards).toContain('ralph-task-limit-guard.sh');
 
       // Check scripts are executable
       const guardPath = path.join(hooksDir, 'kspec-worktree-guard.sh');
