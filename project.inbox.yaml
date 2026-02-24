@@ -858,3 +858,14 @@ inbox:
       - cli
       - ralph
     added_by: "@claude"
+  - _ulid: 01KJ8XJX181KDFD44MG1MKW2A2
+    text: "Flaky test: ralph session-budget-integration 'should clean up budget.json after normal exit'
+      times out intermittently. The spawnRalphUntil helper has a 25s timeout that races against
+      ralph completing a full iteration with mock agent. Possible fixes: increase timeout, make mock
+      agent faster, or restructure to not need full ralph subprocess."
+    created_at: 2026-02-24T22:51:13.320Z
+    tags:
+      - bug
+      - testing
+      - ralph
+    added_by: "@claude"
