@@ -57884,7 +57884,7 @@
   type: task
   spec_ref: "@session-start-activity-timeline"
   plan_ref: "@plan-session-start-output-redesign"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-start-dependency-display"
@@ -57920,6 +57920,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T22:25:43.050Z
 - _ulid: 01KJ74T9QRZK5NKK1R5VJWGZ54
   slugs:
     - implement-session-start-inbox-triage-awareness
