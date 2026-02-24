@@ -57512,7 +57512,7 @@
   type: task
   spec_ref: "@session-end-loop-signal"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57523,6 +57523,7 @@
     - sessions
   vcs_refs: []
   created_at: 2026-02-24T01:18:26.929Z
+  started_at: 2026-02-24T07:33:05.462Z
   notes:
     - _ulid: 01KJ6KKRKHQE5FW1GRYKWMGCG1
       created_at: 2026-02-24T01:18:26.929Z
@@ -57536,7 +57537,7 @@
         clearStaleEndLoopMarker from ralph.ts.
   todos: []
   automation: eligible
-  started_at: 2026-02-24T07:33:05.462Z
+  submitted_at: 2026-02-24T07:45:00.571Z
 - _ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
   slugs:
     - implement-native-worktree-guard
