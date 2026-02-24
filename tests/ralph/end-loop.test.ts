@@ -256,13 +256,17 @@ describe("Session-scoped end-loop signal", () => {
   // AC: @session-end-loop-signal ac-detect
   describe("ac-detect: ralph detects end-loop from session state", () => {
     it("should still detect end-loop command pattern", () => {
-      // detectEndLoopCommand is internal; verify the pattern works
-      const pattern = /\bkspec\s+ralph\s+end-loop\b/;
+      // detectEndLoopCommand is internal; verify the anchored pattern works
+      const pattern = /^\s*kspec\s+ralph\s+end-loop\b/;
       expect(pattern.test("kspec ralph end-loop")).toBe(true);
       expect(pattern.test('kspec ralph end-loop --reason "done"')).toBe(true);
+      expect(pattern.test("  kspec ralph end-loop")).toBe(true);
       expect(pattern.test("kspec ralph")).toBe(false);
       expect(pattern.test("kspec ralph run")).toBe(false);
       expect(pattern.test("ralph end-loop")).toBe(false);
+      // Must NOT match when "kspec ralph end-loop" appears in arguments (e.g. PR descriptions)
+      expect(pattern.test('gh pr create --body "kspec ralph end-loop now writes..."')).toBe(false);
+      expect(pattern.test("echo 'kspec ralph end-loop'")).toBe(false);
     });
 
     it("should read session state instead of marker file between iterations", async () => {

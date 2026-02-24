@@ -161,8 +161,10 @@ export function detectTaskCompleteCommand(command: string): boolean {
  * AC: @ralph-end-loop ac-detect
  */
 function detectEndLoopCommand(command: string): boolean {
-  // Match "kspec ralph end-loop" with any arguments
-  return /\bkspec\s+ralph\s+end-loop\b/.test(command);
+  // Match "kspec ralph end-loop" only at the start of the command.
+  // Must be anchored to avoid false positives from commands that mention
+  // "kspec ralph end-loop" in arguments (e.g., PR descriptions, heredocs).
+  return /^\s*kspec\s+ralph\s+end-loop\b/.test(command);
 }
 
 /**
