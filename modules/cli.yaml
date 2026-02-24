@@ -5542,6 +5542,192 @@ requirements:
             given: a task is in progress
             when: kspec session start runs
             then: Quick Commands section shows task note and complete hints
+      - _ulid: 01KJ74T828FK1YK7JQ17NFMXM8
+        slugs:
+          - session-start-unlocks
+        title: Session Start Dependency Display
+        type: requirement
+        tags: []
+        description: |
+          Ready and blocked tasks show how many other tasks depend on them via
+          an "unlocks N" annotation. Helps prioritize work that unblocks the most
+          downstream tasks. Only shown when N > 0.
+        acceptance_criteria:
+          - id: ac-unlocks-shown
+            given: |
+              a ready or blocked task has N>0 pending tasks in its dependents
+            when: |
+              that task renders in session output
+            then: |
+              shows "unlocks N" annotation next to the task
+          - id: ac-unlocks-omit-zero
+            given: |
+              a task has zero dependents
+            when: |
+              that task renders in session output
+            then: |
+              no unlocks annotation shown
+          - id: ac-unlocks-unresolvable
+            given: |
+              a depends_on ref cannot be resolved by ReferenceIndex
+            when: |
+              unlocks count is computed
+            then: |
+              unresolvable ref is silently skipped without error
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-24T06:19:05.160Z
+      - _ulid: 01KJ74T85REJ1B436WE944N061
+        slugs:
+          - session-start-activity-timeline
+        title: Session Start Activity Timeline
+        type: requirement
+        tags: []
+        description: |
+          Merge recently completed tasks and git commits into a single
+          chronological "Recent Activity" timeline. Commits matched to tasks
+          via Task: @slug trailer in commit body. Deduplicates linked entries.
+          Replaces separate "Recently Completed" and "Recent Commits" sections
+          in human output. Raw arrays preserved in JSON.
+        acceptance_criteria:
+          - id: ac-activity-merge
+            given: |
+              completed tasks and git commits exist
+            when: |
+              recent activity section renders
+            then: |
+              both sources appear in a single chronological list
+          - id: ac-activity-trailer-link
+            given: |
+              a commit has Task: @slug trailer in its body
+            when: |
+              recent activity renders
+            then: |
+              that commit shows linked task info alongside it
+          - id: ac-activity-sort
+            given: |
+              activity items have mixed timestamps
+            when: |
+              timeline renders
+            then: |
+              items sorted most recent first
+          - id: ac-activity-dedup
+            given: |
+              a commit is linked to a completed task via trailer
+            when: |
+              timeline renders
+            then: |
+              shown as single combined entry, not two separate entries
+          - id: ac-activity-no-git
+            given: |
+              --no-git flag is passed
+            when: |
+              activity timeline renders
+            then: |
+              only task completions shown, no commit entries
+        depends_on:
+          - "@session-start-unlocks"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-24T06:19:05.272Z
+      - _ulid: 01KJ74T891RXXWJMVM5WZN5FQ5
+        slugs:
+          - session-start-inbox-triage
+        title: Session Start Inbox Triage Awareness
+        type: requirement
+        tags: []
+        description: |
+          Inbox section shows triage-aware statistics instead of raw item count.
+          Cross-references inbox items with triage records to distinguish
+          untriaged items from deferred/acted-on items. Primer shows stat line,
+          full mode shows untriaged items.
+        acceptance_criteria:
+          - id: ac-inbox-stat-line
+            given: |
+              primer mode and inbox has items with mixed triage status
+            when: |
+              inbox section renders
+            then: |
+              shows stat line with untriaged count, deferred count, and total
+          - id: ac-inbox-full-list
+            given: |
+              --full mode and untriaged items exist
+            when: |
+              inbox section renders
+            then: |
+              up to 20 untriaged items listed plus stat line
+          - id: ac-inbox-all-triaged
+            given: |
+              all inbox items have triage records
+            when: |
+              primer renders
+            then: |
+              stat line shows 0 untriaged
+          - id: ac-inbox-untriaged-def
+            given: |
+              an inbox item has no triage record in project.triage.yaml
+            when: |
+              triage status computed
+            then: |
+              item is counted as untriaged
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-24T06:19:05.377Z
+      - _ulid: 01KJ74T8C9CHXCAT6FRW3DDRF5
+        slugs:
+          - session-start-computed-json
+        title: Session Start Computed JSON Fields
+        type: requirement
+        tags: []
+        description: |
+          JSON output includes a computed key with derived data: inbox triage
+          counts, task unlocks map, and merged activity timeline. Raw source
+          arrays (recently_completed, recent_commits) preserved unchanged.
+          Computed fields are additive - no existing JSON fields modified.
+        acceptance_criteria:
+          - id: ac-computed-inbox
+            given: |
+              --json flag used
+            when: |
+              JSON output renders
+            then: >
+              computed.inbox_untriaged_count, computed.inbox_deferred_count, and
+              computed.inbox_total are present
+          - id: ac-computed-unlocks
+            given: |
+              --json flag used
+            when: |
+              JSON output renders
+            then: |
+              computed.task_unlocks map (ref to count) present for tasks with dependents
+          - id: ac-computed-activity
+            given: |
+              --json flag used
+            when: |
+              JSON output renders
+            then: |
+              computed.recent_activity timeline array present with merged entries
+        depends_on:
+          - "@session-start-unlocks"
+          - "@session-start-activity-timeline"
+          - "@session-start-inbox-triage"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-24T06:19:05.481Z
     status:
       implementation: implemented
     traits:
