@@ -200,22 +200,20 @@ describe("Budget CRUD", () => {
       expect(budget).toBeNull();
     });
 
-    it("should return null for corrupt budget.json (intentional: treated as no budget)", async () => {
-      // Write invalid JSON to budget.json
+    it("should throw on corrupt budget.json (fail closed, not open)", async () => {
+      // Write invalid JSON to budget.json — should throw, not silently disable enforcement
       const budgetPath = getSessionBudgetPath(testDir, sessionId);
       await fs.writeFile(budgetPath, "not valid json{{{", "utf-8");
 
-      const budget = await getBudget(testDir, sessionId);
-      expect(budget).toBeNull();
+      await expect(getBudget(testDir, sessionId)).rejects.toThrow();
     });
 
-    it("should return null for budget.json with invalid schema", async () => {
-      // Write valid JSON but wrong schema
+    it("should throw on budget.json with invalid schema", async () => {
+      // Write valid JSON but wrong schema — should throw, not silently disable enforcement
       const budgetPath = getSessionBudgetPath(testDir, sessionId);
       await fs.writeFile(budgetPath, JSON.stringify({ wrong: "shape" }), "utf-8");
 
-      const budget = await getBudget(testDir, sessionId);
-      expect(budget).toBeNull();
+      await expect(getBudget(testDir, sessionId)).rejects.toThrow();
     });
   });
 

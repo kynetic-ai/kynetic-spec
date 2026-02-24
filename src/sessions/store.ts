@@ -1601,13 +1601,19 @@ export async function getBudget(
   sessionId: string,
 ): Promise<TaskBudget | null> {
   const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  let content: string;
   try {
-    const content = await fsPromises.readFile(budgetPath, "utf-8");
-    const raw = JSON.parse(content);
-    return TaskBudgetSchema.parse(raw);
-  } catch {
-    return null;
+    content = await fsPromises.readFile(budgetPath, "utf-8");
+  } catch (err: unknown) {
+    // File doesn't exist = no budget configured (opt-in)
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      return null;
+    }
+    throw err;
   }
+  // File exists — parse errors are real failures, not "no budget"
+  const raw = JSON.parse(content);
+  return TaskBudgetSchema.parse(raw);
 }
 
 /**
