@@ -57160,7 +57160,8 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@extend-session-schema-with-task-budget"
   context: []
   priority: 3
   tags:
@@ -57187,7 +57188,9 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@extend-session-schema-with-task-budget"
+    - "@add-session-id-to-task-schema"
   context: []
   priority: 3
   tags:
@@ -57217,7 +57220,8 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@add-session-id-to-task-schema"
   context: []
   priority: 3
   tags:
@@ -57243,7 +57247,8 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@extend-session-schema-with-task-budget"
   context: []
   priority: 3
   tags:
@@ -57300,7 +57305,8 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-native-worktree-guard"
   context: []
   priority: 3
   tags:
@@ -57328,7 +57334,10 @@
   plan_ref: "@plan-session-scoping-for-kspec"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-session-create-command"
+    - "@add-budget-enforcement-to-task-start"
+    - "@migrate-end-loop-to-session-state"
   context: []
   priority: 3
   tags:
@@ -57348,17 +57357,25 @@
         (lines 1517-1557), stale marker cleanup, and marker-related signal handler
         cleanup. Ensure session close in ALL exit paths including signal handlers.
   todos: []
-- title: Add multi-harness env injection
-  type: task
-  plan_ref: "@plan-session-scoping-for-kspec"
-  priority: 3
+- _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
   slugs:
     - add-multi-harness-env-injection
+  title: Add multi-harness env injection
+  type: task
+  spec_ref: "@session-creation-and-env-injection"
+  plan_ref: "@plan-session-scoping-for-kspec"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-session-create-command"
+  context: []
+  priority: 3
   tags:
     - cli
     - sessions
     - multi-harness
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-02-24T01:18:28.275Z
   notes:
     - _ulid: 01KJ6KKSXKXXMJH8SVZN2GEJCD
       created_at: 2026-02-24T01:18:28.275Z
@@ -57369,11 +57386,4 @@
         Code via CLAUDE_ENV_FILE or settings.json env. Codex via config.toml. Fallback
         to export instructions for unknown harnesses. Start with Claude Code (best
         documented), add others incrementally.
-  spec_ref: "@session-creation-and-env-injection"
-  _ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-24T01:18:28.275Z
   todos: []
