@@ -1105,13 +1105,14 @@ export async function shadowPushAsync(
       console.error(`[DEBUG] Shadow push: git push (cwd: ${worktreeDir})`);
     }
 
-    // Don't await - fire and forget
-    execAsync("git push", { cwd: worktreeDir }).catch((err) => {
-      if (debug) {
+    // Fire and forget: use exec directly to get ChildProcess handle for .unref()
+    const child = exec("git push", { cwd: worktreeDir }, (err) => {
+      if (err && debug) {
         console.error("[DEBUG] Shadow push failed:", err);
       }
       // Silently ignore push failures - local state is correct
     });
+    child.unref();
   } catch (err) {
     if (debug) {
       console.error("[DEBUG] Shadow push error:", err);
