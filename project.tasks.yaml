@@ -56740,7 +56740,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56754,6 +56754,7 @@
   notes: []
   todos: []
   automation: manual_only
+  started_at: 2026-02-24T00:42:18.887Z
 - _ulid: 01KJ65J2Q0SS2WGYD1P5FZ2C40
   slugs: []
   title: Fix phased tool call event handling for ralph display and session stats
@@ -56976,6 +56977,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Removed 6 obsolete project skills (create-workflow, reflect, task-work, meta, spec,
+    spec-plan) from .claude/skills/. All content verified covered by core skills. Committed in
+    91e26c52.
   depends_on: []
   context: []
   priority: 3
@@ -56985,6 +56989,7 @@
   vcs_refs: []
   created_at: 2026-02-23T23:15:21.338Z
   started_at: 2026-02-23T23:38:36.688Z
+  completed_at: 2026-02-23T23:45:15.063Z
   notes:
     - _ulid: 01KJ6DYTXTSDVD3X12DWH2NZ76
       created_at: 2026-02-23T23:39:38.299Z
@@ -57013,7 +57018,3 @@
         content verified covered by core skills. Committed in 91e26c52."
       supersedes: null
   todos: []
-  completed_at: 2026-02-23T23:45:15.063Z
-  closed_reason: Removed 6 obsolete project skills (create-workflow, reflect, task-work, meta, spec,
-    spec-plan) from .claude/skills/. All content verified covered by core skills. Committed in
-    91e26c52.
