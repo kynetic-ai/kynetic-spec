@@ -447,23 +447,42 @@ describe("batch command integration", () => {
 
   // AC: @batch-exec ac-invalid-json
   // AC: @trait-semantic-exit-codes ac-2 — validation error exits non-zero
-  it("rejects malformed JSON", () => {
+  it("rejects malformed JSON with error details including position info", () => {
     const result = kspec(
-      `batch --commands 'not valid json'`,
+      `batch --commands '{bad json}'`,
       tempDir,
       { expectFail: true },
     );
-    expect(result.exitCode).not.toBe(0);
+    expect(result.exitCode).toBe(1);
+    // Must surface error message (not silent), including position info
+    expect(result.stderr).toContain("Invalid JSON");
+    expect(result.stderr).toMatch(/position \d+/i);
+  });
+
+  // AC: @batch-exec ac-invalid-json — JSON mode returns structured error
+  // AC: @trait-json-output ac-3 — error returned as JSON with error field
+  it("returns structured JSON error for malformed JSON in --json mode", () => {
+    const result = kspec(
+      `batch --json --commands '{bad json}'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toContain("Invalid JSON");
+    expect(parsed.error).toMatch(/position \d+/i);
   });
 
   // AC: @batch-exec ac-empty-batch
-  it("rejects empty batch", () => {
+  it("rejects empty batch with descriptive error", () => {
     const result = kspec(
       `batch --commands '[]'`,
       tempDir,
       { expectFail: true },
     );
-    expect(result.exitCode).not.toBe(0);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toMatch(/at least one command|no commands/i);
   });
 
   // AC: @batch-exec ac-stdin — stdin tested via parseBatchInput in batch-schema.test.ts
