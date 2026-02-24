@@ -56470,23 +56470,6 @@
       supersedes: null
   todos: []
   automation: eligible
-- _ulid: 01KJ5X5ZT4V24WYN70DM8XRVYW
-  slugs: []
-  title: test-ref-output
-  type: task
-  spec_ref: null
-  meta_ref: null
-  plan_ref: null
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: 2026-02-23T18:46:26.884Z
-  notes: []
-  todos: []
 - _ulid: 01KJ62NKTRBZZVSW0Y8DAC09YY
   slugs:
     - task-iteration-boundary-counting
