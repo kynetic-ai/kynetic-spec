@@ -323,6 +323,7 @@ describe('Integration: task set', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @task-set ac-task-set-1
   it('should update task title', () => {
     const output = kspec('task set @test-task-pending --title "Updated Title"', tempDir);
     expect(output).toContain('Updated task');
@@ -333,6 +334,7 @@ describe('Integration: task set', () => {
     expect(task.title).toBe('Updated Title');
   });
 
+  // AC: @task-set ac-task-set-2
   it('should set spec_ref on task', () => {
     const output = kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);
     expect(output).toContain('Updated task');
@@ -343,16 +345,53 @@ describe('Integration: task set', () => {
     expect(task.spec_ref).toBe('@test-feature');
   });
 
+  // AC: @task-set ac-task-set-3
   it('should reject nonexistent spec ref', () => {
     const result = kspecRun('task set @test-task-pending --spec-ref @nonexistent', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @task-set ac-task-set-4
   it('should reject task as spec ref', () => {
     const result = kspecRun('task set @test-task-pending --spec-ref @test-task-blocked', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @task-set ac-clear-ref
+  it('should clear spec_ref with null', () => {
+    // First set a spec_ref
+    kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);
+    const before = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(before.spec_ref).toBe('@test-feature');
+
+    // Clear it with 'null'
+    const output = kspec('task set @test-task-pending --spec-ref null', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('spec_ref: cleared');
+
+    // Verify it was cleared
+    const after = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(after.spec_ref).toBeNull();
+  });
+
+  // AC: @task-set ac-clear-ref
+  it('should clear meta_ref with null', () => {
+    // Set a meta_ref first using workflow from fixtures
+    kspec('task set @test-task-pending --meta-ref @task-start', tempDir);
+    const before = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(before.meta_ref).toBe('@task-start');
+
+    // Clear it with 'null'
+    const output = kspec('task set @test-task-pending --meta-ref null', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('meta_ref: cleared');
+
+    // Verify it was cleared
+    const after = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
+    expect(after.meta_ref).toBeNull();
+  });
+
+  // AC: @task-set ac-task-set-5
   it('should update priority', () => {
     kspec('task set @test-task-pending --priority 1', tempDir);
 
@@ -360,6 +399,7 @@ describe('Integration: task set', () => {
     expect(task.priority).toBe(1);
   });
 
+  // AC: @task-set ac-task-set-6
   it('should reject invalid priority', () => {
     const result = kspecRun('task set @test-task-pending --priority 6', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
@@ -380,6 +420,7 @@ describe('Integration: task set', () => {
     expect(task.tags).toContain('newtag2');
   });
 
+  // AC: @task-set ac-task-set-7
   it('should not change task when no options specified', () => {
     // Get original task state
     const before = kspecJson<{ title: string; priority: number }>('task get @test-task-pending', tempDir);
