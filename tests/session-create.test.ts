@@ -17,6 +17,8 @@ import {
   validateSessionId,
   injectClaudeCodeEnv,
   injectCodexEnv,
+  injectGeminiEnv,
+  injectOpenCodeEnv,
   getFallbackInjectionInstructions,
   getSession,
   getBudget,
@@ -438,6 +440,138 @@ describe("Environment Injection", () => {
     });
   });
 
+  describe("injectGeminiEnv", () => {
+    // Spec: @session-creation-and-env-injection (harness-specific injection for Gemini CLI)
+    it("should write KSPEC_SESSION_ID to .gemini/.env", async () => {
+      const originalCwd = process.cwd();
+
+      try {
+        process.chdir(testDir);
+        const sessionId = testUlid("GEMI", 1);
+        const result = await injectGeminiEnv(sessionId);
+
+        expect(result.injected).toBe(true);
+        expect(result.method).toBe("gemini_dotenv");
+
+        const dotenvPath = path.join(testDir, ".gemini", ".env");
+        const content = await fs.readFile(dotenvPath, "utf-8");
+        expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it("should replace existing KSPEC_SESSION_ID in .gemini/.env", async () => {
+      const originalCwd = process.cwd();
+
+      try {
+        process.chdir(testDir);
+        const dotenvDir = path.join(testDir, ".gemini");
+        await fs.mkdir(dotenvDir, { recursive: true });
+        await fs.writeFile(
+          path.join(dotenvDir, ".env"),
+          "GEMINI_API_KEY=abc123\nKSPEC_SESSION_ID=old-session\nGEMINI_MODEL=gemini-pro\n",
+          "utf-8",
+        );
+
+        const sessionId = testUlid("GEMI", 2);
+        await injectGeminiEnv(sessionId);
+
+        const content = await fs.readFile(
+          path.join(dotenvDir, ".env"),
+          "utf-8",
+        );
+        expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
+        expect(content).not.toContain("old-session");
+        expect(content).toContain("GEMINI_API_KEY=abc123");
+        expect(content).toContain("GEMINI_MODEL=gemini-pro");
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it("should create .gemini directory if it doesn't exist", async () => {
+      const originalCwd = process.cwd();
+
+      try {
+        process.chdir(testDir);
+        const sessionId = testUlid("GEMI", 3);
+        await injectGeminiEnv(sessionId);
+
+        const dotenvDir = path.join(testDir, ".gemini");
+        const stat = await fs.stat(dotenvDir);
+        expect(stat.isDirectory()).toBe(true);
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+  });
+
+  describe("injectOpenCodeEnv", () => {
+    // Spec: @session-creation-and-env-injection (harness-specific injection for OpenCode)
+    it("should write KSPEC_SESSION_ID to project .env file", async () => {
+      const originalCwd = process.cwd();
+
+      try {
+        process.chdir(testDir);
+        const sessionId = testUlid("OPEN", 1);
+        const result = await injectOpenCodeEnv(sessionId);
+
+        expect(result.injected).toBe(true);
+        expect(result.method).toBe("opencode_dotenv");
+
+        const dotenvPath = path.join(testDir, ".env");
+        const content = await fs.readFile(dotenvPath, "utf-8");
+        expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it("should replace existing KSPEC_SESSION_ID in .env", async () => {
+      const originalCwd = process.cwd();
+
+      try {
+        process.chdir(testDir);
+        await fs.writeFile(
+          path.join(testDir, ".env"),
+          "API_KEY=secret\nKSPEC_SESSION_ID=old-session\nDEBUG=true\n",
+          "utf-8",
+        );
+
+        const sessionId = testUlid("OPEN", 2);
+        await injectOpenCodeEnv(sessionId);
+
+        const content = await fs.readFile(
+          path.join(testDir, ".env"),
+          "utf-8",
+        );
+        expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
+        expect(content).not.toContain("old-session");
+        expect(content).toContain("API_KEY=secret");
+        expect(content).toContain("DEBUG=true");
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+
+    it("should create .env file if it doesn't exist", async () => {
+      const originalCwd = process.cwd();
+
+      try {
+        process.chdir(testDir);
+        const sessionId = testUlid("OPEN", 3);
+        await injectOpenCodeEnv(sessionId);
+
+        const dotenvPath = path.join(testDir, ".env");
+        const stat = await fs.stat(dotenvPath);
+        expect(stat.isFile()).toBe(true);
+      } finally {
+        process.chdir(originalCwd);
+      }
+    });
+  });
+
   describe("getFallbackInjectionInstructions", () => {
     // AC: @session-creation-and-env-injection ac-inject-fallback
     it("should return export command for manual sourcing", () => {
@@ -572,11 +706,60 @@ describe("session create CLI", () => {
           CLAUDE_CODE_ENTRYPOINT: "",
           CLAUDE_PROJECT_DIR: "",
           CODEX_SANDBOX: "",
+          GEMINI_CLI: "",
+          OPENCODE_CONFIG_DIR: "",
+          OPENCODE_CONFIG: "",
         },
       },
     );
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("export KSPEC_SESSION_ID=");
+  });
+
+  // Spec: @session-creation-and-env-injection (harness-specific injection for Gemini CLI)
+  it("should inject via .gemini/.env when GEMINI_CLI=1", () => {
+    const result = kspecJson<Record<string, unknown>>(
+      "session create --agent-type gemini-cli --inject",
+      testDir,
+      {
+        env: {
+          CLAUDECODE: "",
+          CLAUDE_CODE_ENTRYPOINT: "",
+          CLAUDE_PROJECT_DIR: "",
+          CODEX_SANDBOX: "",
+          GEMINI_CLI: "1",
+          OPENCODE_CONFIG_DIR: "",
+          OPENCODE_CONFIG: "",
+        },
+      },
+    );
+    expect(result.env_injection).toBeDefined();
+    const injection = result.env_injection as Record<string, unknown>;
+    expect(injection.method).toBe("gemini_dotenv");
+    expect(injection.injected).toBe(true);
+  });
+
+  // Spec: @session-creation-and-env-injection (harness-specific injection for OpenCode)
+  it("should inject via .env when OpenCode detected", () => {
+    const result = kspecJson<Record<string, unknown>>(
+      "session create --agent-type opencode --inject",
+      testDir,
+      {
+        env: {
+          CLAUDECODE: "",
+          CLAUDE_CODE_ENTRYPOINT: "",
+          CLAUDE_PROJECT_DIR: "",
+          CODEX_SANDBOX: "",
+          GEMINI_CLI: "",
+          OPENCODE_CONFIG_DIR: "/tmp/opencode-test",
+          OPENCODE_CONFIG: "",
+        },
+      },
+    );
+    expect(result.env_injection).toBeDefined();
+    const injection = result.env_injection as Record<string, unknown>;
+    expect(injection.method).toBe("opencode_dotenv");
+    expect(injection.injected).toBe(true);
   });
 
   // AC: @trait-json-output ac-3 - error as JSON object
@@ -689,6 +872,9 @@ describe("session create CLI", () => {
           CLAUDE_CODE_ENTRYPOINT: "",
           CLAUDE_PROJECT_DIR: "",
           CODEX_SANDBOX: "",
+          GEMINI_CLI: "",
+          OPENCODE_CONFIG_DIR: "",
+          OPENCODE_CONFIG: "",
         },
       },
     );
