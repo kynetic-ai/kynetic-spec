@@ -58520,7 +58520,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -58617,3 +58617,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T22:47:48.693Z
