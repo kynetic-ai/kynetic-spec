@@ -5169,8 +5169,18 @@ runs:
   - _ulid: 01KJ6TQ3E1MBEH1QPARNFZMC13
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-24T03:22:36.354Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-24T03:22:36.354Z
+        completed_at: 2026-02-24T03:22:44.252Z
+        notes: "Iteration 4: Completed task 01KJ4SNH - YAML-unsafe value detection for plan import. PR #493
+          merged. Codex review caught regex gap (list marker prefix), fixed before merge."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-24T03:22:44.252Z
+        completed_at: 2026-02-24T03:22:44.252Z
     initiated_by: "@claude"
