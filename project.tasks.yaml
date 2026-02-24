@@ -57229,6 +57229,7 @@
         (replaces both hook block message and ralph prompt injection). Skip increment
         when task is already in_progress (resume case). Also stamp session_id on task.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKR9V3XCVTJ18ACTY2SXH
   slugs:
     - add-session-indicator-to-tasks-ready
