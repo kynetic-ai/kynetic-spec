@@ -5593,6 +5593,9 @@ requirements:
         traits: []
         notes: []
         created: 2026-02-24T06:19:05.160Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KJ74T85REJ1B436WE944N061
         slugs:
           - session-start-activity-timeline
