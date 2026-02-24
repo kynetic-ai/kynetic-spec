@@ -1100,11 +1100,25 @@ Examples:
           process.exit(EXIT_CODES.VALIDATION_FAILED); // Exit code 4 = invalid state
         }
 
+        // AC: @session-scoped-task-claiming ac-startable - warn if claimed by another session
+        const sessionId = process.env.KSPEC_SESSION_ID || null;
+        if (
+          foundTask.session_id &&
+          sessionId &&
+          foundTask.session_id !== sessionId
+        ) {
+          warn(
+            `Task was claimed by session ${foundTask.session_id.slice(0, 8)}...`,
+          );
+        }
+
         // Update status
+        // AC: @session-scoped-task-claiming ac-stamp, ac-no-env
         const updatedTask: Task = {
           ...foundTask,
           status: "in_progress",
           started_at: new Date().toISOString(),
+          ...(sessionId ? { session_id: sessionId } : {}),
         };
 
         await saveTask(ctx, updatedTask);
@@ -1504,9 +1518,11 @@ Examples:
           getAuthor(ctx.config?.identity?.author),
         );
 
+        // AC: @session-scoped-task-claiming ac-claim-clear
         const updatedTask: Task = {
           ...foundTask,
           status: "needs_work",
+          session_id: null,
           notes: [...foundTask.notes, note],
         };
 
@@ -1584,10 +1600,12 @@ Examples:
           return;
         }
 
+        // AC: @session-scoped-task-claiming ac-claim-clear
         const updatedTask: Task = {
           ...foundTask,
           status: "pending",
           blocked_by: [],
+          session_id: null,
         };
 
         await saveTask(ctx, updatedTask);
@@ -1740,6 +1758,11 @@ Examples:
         if (foundTask.blocked_by.length > 0) {
           updatedTask.blocked_by = [];
           clearedFields.push("blocked_by");
+        }
+        // AC: @session-scoped-task-claiming ac-claim-clear
+        if (foundTask.session_id) {
+          updatedTask.session_id = null;
+          clearedFields.push("session_id");
         }
 
         // AC: @spec-task-reset ac-4 - Add note documenting the reset

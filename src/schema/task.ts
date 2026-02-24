@@ -93,6 +93,10 @@ export const TaskSchema = z.object({
   // VCS references
   vcs_refs: z.array(VcsRefSchema).default([]),
 
+  // Session scoping (advisory, not enforced)
+  // AC: @session-scoped-task-claiming ac-schema
+  session_id: z.string().nullable().optional(),
+
   // Timestamps (auto-populated if not provided)
   created_at: DateTimeSchema.default(() => new Date().toISOString()),
   started_at: DateTimeSchema.nullable().optional(),
@@ -154,6 +158,9 @@ export const TaskInputSchema = z.object({
 
   // VCS references
   vcs_refs: z.array(VcsRefSchema).optional(),
+
+  // Session scoping
+  session_id: z.string().nullable().optional(),
 
   // Timestamps
   created_at: DateTimeSchema.optional(),
