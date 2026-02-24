@@ -57762,7 +57762,8 @@
       supersedes: null
   todos: []
 - _ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
-  slugs: []
+  slugs:
+    - task-rewrite-formatsessioncontext
   title: Rewrite formatSessionContext() for primer/full modes
   type: task
   description: "Replace current brief/full formatting with new primer (default) and full modes.
@@ -57843,7 +57844,8 @@
       supersedes: null
   todos: []
 - _ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
-  slugs: []
+  slugs:
+    - task-session-start-output-tests
   title: Add session start output tests
   type: task
   description: "Tests covering all new ACs: slug display + fallback, unlocks computation and display,
