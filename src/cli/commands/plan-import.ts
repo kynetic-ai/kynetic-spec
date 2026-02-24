@@ -518,12 +518,13 @@ async function importPlan(
         }
 
         // AC: @plan-import ac-19 - Task has both spec_ref and plan_ref
+        // AC: @plan-import ac-36 - Derived task inherits priority from plan spec
         const taskInput: TaskInput = {
           title: `Implement ${spec.title}`,
           type: "task",
           spec_ref: specRef,
           plan_ref: planRef,
-          priority: 3,
+          priority: planSpec?.priority ?? 3,
           slugs: [uniqueSlug],
           tags: [],
           depends_on: taskDependsOn,
