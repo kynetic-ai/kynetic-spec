@@ -56368,7 +56368,7 @@
   description: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in
     then: values) before attempting parse, rather than failing with cryptic nested mapping error."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56377,6 +56377,7 @@
   vcs_refs: []
   created_at: 2026-02-23T08:25:48.046Z
   started_at: 2026-02-24T03:03:26.638Z
+  submitted_at: 2026-02-24T03:10:34.584Z
   notes:
     - _ulid: 01KJ4V6PJ0QZ0F1XQ9MNAKRAVV
       created_at: 2026-02-23T08:52:38.592Z
@@ -56396,7 +56397,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T03:10:34.584Z
+  completed_at: 2026-02-24T03:22:16.157Z
+  closed_reason: "Merged in PR #493. Plan import now detects YAML-unsafe values (unquoted colons) in
+    AC fields and provides diagnostic hints with field name, line number, and fix suggestion (use
+    block scalars). Applied to both Specs and Tasks YAML parsing. Added detectYamlUnsafeValues()
+    utility, ac-37 to @plan-import. 9 unit tests + 1 CLI integration test. Codex review finding
+    (list marker prefix) addressed."
 - _ulid: 01KJ4T45FMV4TV07MWX7RNA8F8
   slugs: []
   title: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks
