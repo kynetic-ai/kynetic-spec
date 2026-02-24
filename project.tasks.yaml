@@ -57884,7 +57884,7 @@
   type: task
   spec_ref: "@session-start-activity-timeline"
   plan_ref: "@plan-session-start-output-redesign"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-start-dependency-display"
@@ -57921,6 +57921,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T22:39:58.686Z
+  closed_reason: "Merged in PR #510. Implements unified activity timeline for session start: merges
+    completed tasks and git commits into chronological view, deduplicates linked entries via Task:
+    @slug trailers, preserves raw arrays in JSON. All 5 ACs covered by 11 integration tests."
 - _ulid: 01KJ74T9QRZK5NKK1R5VJWGZ54
   slugs:
     - implement-session-start-inbox-triage-awareness
