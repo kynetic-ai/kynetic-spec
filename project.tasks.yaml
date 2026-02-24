@@ -57461,7 +57461,7 @@
   type: task
   spec_ref: "@session-scoped-task-claiming"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - "@add-session-id-to-task-schema"
@@ -57490,8 +57490,21 @@
         indicator. Tests: tests/session-scoped-task-claiming.test.ts has 13 tests covering all 6
         ACs, all passing. No new code changes needed."
       supersedes: null
+    - _ulid: 01KJ78W90C7PKMPJRBBNFWNAFC
+      created_at: 2026-02-24T07:30:05.964Z
+      author: "@claude"
+      content: "Completed with --skip-review: Already fully implemented in @01KJ6KKQA (PR #499). Session
+        indicator [session 01KJ...] shows in formatTask() and formatTaskListWithAutomation() in
+        src/cli/output.ts. 13 integration tests in tests/session-scoped-task-claiming.test.ts cover
+        all 6 ACs including ac-display. No new code needed."
+      supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T07:30:05.964Z
+  closed_reason: "Already fully implemented in @01KJ6KKQA (PR #499). Session indicator [session
+    01KJ...] shows in formatTask() and formatTaskListWithAutomation() in src/cli/output.ts. 13
+    integration tests in tests/session-scoped-task-claiming.test.ts cover all 6 ACs including
+    ac-display. No new code needed."
 - _ulid: 01KJ6KKRKH11RPZF37CXH5KR2Q
   slugs:
     - migrate-end-loop-to-session-state
