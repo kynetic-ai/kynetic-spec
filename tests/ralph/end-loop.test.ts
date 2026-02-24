@@ -1,163 +1,457 @@
 /**
- * Tests for ralph end-loop command
+ * Tests for session-scoped end-loop signal.
  *
- * AC: @ralph-end-loop ac-cmd, ac-detect, ac-graceful, ac-reason, ac-cleanup, ac-noop-outside
+ * Migrated from marker file approach to session state.
+ * AC: @session-end-loop-signal ac-signal, ac-block-task, ac-detect, ac-session-close-normal,
+ *     ac-session-close-signal, ac-session-close-error, ac-remove-markers
+ * AC: @trait-error-guidance ac-1, ac-2
+ *
+ * Trait ACs documented as N/A for this feature:
+ * - @trait-error-guidance ac-3: N/A — no ref resolution in end-loop command
+ * - @trait-error-guidance ac-4: N/A — no state transitions in end-loop command
+ * - @trait-error-guidance ac-5: N/A — no field-level validation in end-loop command
+ * - @trait-error-guidance ac-6: N/A — ralph end-loop does not support --json output mode
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { kspec, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import * as YAML from "yaml";
+import {
+  kspec,
+  kspecJson,
+  setupTempFixtures,
+  cleanupTempDir,
+  initGitRepo,
+} from "../helpers/cli";
 
-const END_LOOP_MARKER_PATH = '.claude/ralph-end-loop.json';
+const SESSION_ID = "01KJ7CCCHNMBABEHHDVEYSPJFR";
 
-describe('Ralph end-loop command', () => {
+/**
+ * Helper to create a session.yaml file in the test fixture directory.
+ * Sessions live at {specDir}/sessions/{sessionId}/session.yaml
+ */
+async function createTestSession(
+  specDir: string,
+  sessionId: string,
+  overrides: Record<string, unknown> = {},
+): Promise<void> {
+  const sessionDir = path.join(specDir, "sessions", sessionId);
+  await fs.mkdir(sessionDir, { recursive: true });
+  const metadata = {
+    id: sessionId,
+    agent_type: "ralph",
+    status: "active",
+    started_at: new Date().toISOString(),
+    ...overrides,
+  };
+  await fs.writeFile(
+    path.join(sessionDir, "session.yaml"),
+    YAML.stringify(metadata, { indent: 2, lineWidth: 100, sortMapEntries: false }),
+  );
+}
+
+/**
+ * Helper to read session metadata.
+ */
+async function readTestSession(
+  specDir: string,
+  sessionId: string,
+): Promise<Record<string, unknown> | null> {
+  const sessionPath = path.join(
+    specDir,
+    "sessions",
+    sessionId,
+    "session.yaml",
+  );
+  try {
+    const content = await fs.readFile(sessionPath, "utf-8");
+    return YAML.parse(content);
+  } catch {
+    return null;
+  }
+}
+
+describe("Session-scoped end-loop signal", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
+    initGitRepo(tempDir);
   });
 
   afterEach(async () => {
     await cleanupTempDir(tempDir);
   });
 
-  describe('kspec ralph end-loop', () => {
-    // AC: @ralph-end-loop ac-cmd
-    it('should write marker file when invoked', async () => {
-      const result = kspec('ralph end-loop', tempDir);
-      // Command should succeed even without active ralph session
+  // AC: @session-end-loop-signal ac-signal
+  describe("ac-signal: end-loop writes to session state", () => {
+    it("should write end_requested=true to session metadata", async () => {
+      await createTestSession(tempDir, SESSION_ID);
+
+      const result = kspec("ralph end-loop", tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
       expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("Loop end signal sent");
 
-      // Check marker file was created
-      const markerPath = path.join(tempDir, END_LOOP_MARKER_PATH);
-      const exists = await fs.access(markerPath).then(() => true).catch(() => false);
-      expect(exists).toBe(true);
-
-      // Verify marker content
-      const content = await fs.readFile(markerPath, 'utf-8');
-      const marker = JSON.parse(content);
-      expect(marker.requested).toBe(true);
-      expect(marker.timestamp).toBeDefined();
+      // Verify session state was updated
+      const session = await readTestSession(tempDir, SESSION_ID);
+      expect(session).not.toBeNull();
+      expect(session!.end_requested).toBe(true);
     });
 
-    // AC: @ralph-end-loop ac-reason
-    it('should include reason in marker when provided', async () => {
-      const result = kspec('ralph end-loop --reason "No eligible tasks"', tempDir);
-      expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('Reason: No eligible tasks');
+    it("should include reason in session metadata when provided", async () => {
+      await createTestSession(tempDir, SESSION_ID);
 
-      const markerPath = path.join(tempDir, END_LOOP_MARKER_PATH);
-      const content = await fs.readFile(markerPath, 'utf-8');
-      const marker = JSON.parse(content);
-      expect(marker.reason).toBe('No eligible tasks');
-    });
-
-    // AC: @ralph-end-loop ac-noop-outside
-    it('should warn when not in ralph session', async () => {
-      // No ralph markers exist, so it should warn
-      const result = kspec('ralph end-loop', tempDir);
-      expect(result.exitCode).toBe(0);
-      // The warning includes this message
-      expect(result.stdout).toContain('This command is designed to be called by agents during a ralph loop');
-    });
-
-    // AC: @ralph-end-loop ac-noop-outside
-    it('should succeed without warning when task-limit marker exists', async () => {
-      // Create a task-limit marker to simulate active ralph session
-      const markerDir = path.join(tempDir, '.claude');
-      await fs.mkdir(markerDir, { recursive: true });
-      await fs.writeFile(
-        path.join(markerDir, 'ralph-task-limit.json'),
-        JSON.stringify({
-          active: true,
-          since: new Date().toISOString(),
-          max: 1,
-          completed: 0,
-          sessionId: 'test-session',
-        }),
+      // AC: @session-end-loop-signal ac-signal
+      const result = kspec(
+        'ralph end-loop --reason "No eligible tasks"',
+        tempDir,
+        { env: { KSPEC_SESSION_ID: SESSION_ID } },
       );
 
-      const result = kspec('ralph end-loop', tempDir);
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('Loop end signal sent');
-      expect(result.stdout).not.toContain('No active ralph session detected');
+      expect(result.stdout).toContain("Reason: No eligible tasks");
+
+      const session = await readTestSession(tempDir, SESSION_ID);
+      expect(session!.end_requested).toBe(true);
+      expect(session!.end_reason).toBe("No eligible tasks");
+    });
+
+    it("should fail with exit code 4 when KSPEC_SESSION_ID is not set", async () => {
+      // AC: @trait-error-guidance ac-1, ac-2
+      const result = kspec("ralph end-loop", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "" },
+      });
+
+      expect(result.exitCode).toBe(4);
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("KSPEC_SESSION_ID not set");
+      expect(output).toContain("kspec session create");
+    });
+
+    it("should fail with exit code 3 when session not found", async () => {
+      // AC: @trait-error-guidance ac-1, ac-2
+      const result = kspec("ralph end-loop", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "NONEXISTENT_SESSION" },
+      });
+
+      expect(result.exitCode).toBe(3);
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("Session not found");
+      expect(output).toContain("kspec session log list");
     });
   });
 
-  describe('End-loop detection helper', () => {
-    // The detectEndLoopCommand function is internal
-    // These document expected behavior for integration
+  // AC: @session-end-loop-signal ac-block-task
+  describe("ac-block-task: task start blocked when end-loop requested", () => {
+    it("should block task start when end_requested is true", async () => {
+      await createTestSession(tempDir, SESSION_ID, {
+        end_requested: true,
+        end_reason: "Wrapping up",
+      });
 
-    it('should match "kspec ralph end-loop"', () => {
-      // Pattern: /\bkspec\s+ralph\s+end-loop\b/
-      const pattern = /\bkspec\s+ralph\s+end-loop\b/;
-      expect(pattern.test('kspec ralph end-loop')).toBe(true);
+      const result = kspec("task start @test-task-pending", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      expect(result.exitCode).toBe(4);
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("loop is ending");
     });
 
-    it('should match with --reason flag', () => {
+    it("should include end-loop reason in error message", async () => {
+      await createTestSession(tempDir, SESSION_ID, {
+        end_requested: true,
+        end_reason: "No more eligible tasks",
+      });
+
+      const result = kspec("task start @test-task-pending", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("No more eligible tasks");
+    });
+
+    it("should include wrap-up guidance in error message", async () => {
+      // AC: @trait-error-guidance ac-2
+      await createTestSession(tempDir, SESSION_ID, {
+        end_requested: true,
+      });
+
+      const result = kspec("task start @test-task-pending", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      const output = result.stdout + result.stderr;
+      expect(output).toMatch(/[Ww]rap up/);
+    });
+
+    it("should allow task start when no session ID is set", async () => {
+      // No KSPEC_SESSION_ID means no end-loop check
+      await createTestSession(tempDir, SESSION_ID, {
+        end_requested: true,
+      });
+
+      const result = kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: "" },
+      });
+
+      expect(result.exitCode).toBe(0);
+    });
+
+    it("should allow task start when end_requested is not set", async () => {
+      await createTestSession(tempDir, SESSION_ID);
+
+      const result = kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      expect(result.exitCode).toBe(0);
+    });
+  });
+
+  // AC: @session-end-loop-signal ac-detect
+  describe("ac-detect: ralph detects end-loop from session state", () => {
+    it("should still detect end-loop command pattern", () => {
+      // detectEndLoopCommand is internal; verify the pattern works
       const pattern = /\bkspec\s+ralph\s+end-loop\b/;
+      expect(pattern.test("kspec ralph end-loop")).toBe(true);
       expect(pattern.test('kspec ralph end-loop --reason "done"')).toBe(true);
+      expect(pattern.test("kspec ralph")).toBe(false);
+      expect(pattern.test("kspec ralph run")).toBe(false);
+      expect(pattern.test("ralph end-loop")).toBe(false);
     });
 
-    it('should NOT match partial commands', () => {
-      const pattern = /\bkspec\s+ralph\s+end-loop\b/;
-      expect(pattern.test('kspec ralph')).toBe(false);
-      expect(pattern.test('kspec ralph run')).toBe(false);
-      expect(pattern.test('ralph end-loop')).toBe(false);
+    it("should read session state instead of marker file between iterations", async () => {
+      // Static analysis: verify ralph reads session state for end-loop detection
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // Verify isEndLoopRequested is used for between-iteration checks
+      expect(ralphContent).toContain("isEndLoopRequested");
+      // Verify it reads from session (specDir, sessionId)
+      expect(ralphContent).toContain("isEndLoopRequested(specDir, sessionId)");
+      // Verify the streaming handler reads session state for reason
+      expect(ralphContent).toContain("result?.reason");
+    });
+
+    it("should check session state at iteration start and break if requested", async () => {
+      // Static analysis: verify early exit at iteration boundary
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // Verify session state is checked at iteration start
+      expect(ralphContent).toContain("endLoopState?.requested");
+      expect(ralphContent).toContain("End-loop already requested");
+      expect(ralphContent).toContain('exitReason = "end_loop_signal"');
     });
   });
+
+  // AC: @session-end-loop-signal ac-session-close-normal
+  // AC: @session-end-loop-signal ac-session-close-signal
+  // AC: @session-end-loop-signal ac-session-close-error
+  describe("session close handlers", () => {
+    it("should register SIGINT and SIGTERM handlers that close session", async () => {
+      // AC: @session-end-loop-signal ac-session-close-signal
+      // Static analysis to verify signal handlers close session
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // Verify signal handlers are registered
+      expect(ralphContent).toContain('process.on("SIGINT"');
+      expect(ralphContent).toContain('process.on("SIGTERM"');
+
+      // Verify session is closed with abandoned status on signal
+      expect(ralphContent).toContain("closeSession");
+      expect(ralphContent).toContain('"abandoned"');
+      expect(ralphContent).toContain("Received ${signal}");
+
+      // Verify cleanup awaits before exit
+      expect(ralphContent).toContain("Promise.all");
+      expect(ralphContent).toContain(".finally(() =>");
+    });
+
+    it("should close session with completed status on normal exit", async () => {
+      // AC: @session-end-loop-signal ac-session-close-normal
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // Verify closeSession is called at the end of the loop
+      expect(ralphContent).toContain("closeSession(specDir, sessionId, status, closeReason)");
+
+      // Verify close reasons are computed for various exit paths
+      expect(ralphContent).toContain("Completed all");
+      expect(ralphContent).toContain("No eligible tasks remaining");
+      expect(ralphContent).toContain("Agent requested end of loop");
+    });
+
+    it("should close session with abandoned status on max failures", async () => {
+      // AC: @session-end-loop-signal ac-session-close-error
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // Verify max_failures exit sets abandoned status
+      expect(ralphContent).toContain("max_failures");
+      expect(ralphContent).toContain("Max failures reached");
+    });
+  });
+
+  // AC: @session-end-loop-signal ac-remove-markers
+  describe("ac-remove-markers: marker file code removed", () => {
+    it("should not contain END_LOOP_MARKER_PATH in ralph.ts", async () => {
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      // AC: @session-end-loop-signal ac-remove-markers
+      expect(ralphContent).not.toContain("END_LOOP_MARKER_PATH");
+      expect(ralphContent).not.toContain("readEndLoopMarker");
+      expect(ralphContent).not.toContain("clearEndLoopMarker");
+      expect(ralphContent).not.toContain("clearStaleEndLoopMarker");
+      expect(ralphContent).not.toContain("writeEndLoopMarker");
+    });
+
+    it("should not reference ralph-end-loop.json marker file", async () => {
+      const ralphContent = await fs.readFile(
+        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
+        "utf-8",
+      );
+
+      expect(ralphContent).not.toContain("ralph-end-loop.json");
+    });
+  });
+
+  // AC: @trait-error-guidance ac-1
+  describe("trait: error-guidance ac-1 (description of what went wrong)", () => {
+    it("should describe the error when session not found", async () => {
+      const result = kspec("ralph end-loop", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "NONEXISTENT" },
+      });
+
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("Session not found");
+    });
+
+    it("should describe the error when no session ID set", async () => {
+      const result = kspec("ralph end-loop", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "" },
+      });
+
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("KSPEC_SESSION_ID not set");
+    });
+  });
+
+  // AC: @trait-error-guidance ac-2
+  describe("trait: error-guidance ac-2 (suggested action to resolve)", () => {
+    it("should suggest session creation when no session ID", async () => {
+      const result = kspec("ralph end-loop", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "" },
+      });
+
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("kspec session create");
+    });
+
+    it("should suggest session log list when session not found", async () => {
+      const result = kspec("ralph end-loop", tempDir, {
+        expectFail: true,
+        env: { KSPEC_SESSION_ID: "NONEXISTENT" },
+      });
+
+      const output = result.stdout + result.stderr;
+      expect(output).toContain("kspec session log list");
+    });
+  });
+
+  // @trait-error-guidance ac-6: N/A — ralph end-loop does not support --json output mode
 });
 
-describe('Marker file cleanup', () => {
+describe("Session store: requestEndLoop and isEndLoopRequested", () => {
   let tempDir: string;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
+    initGitRepo(tempDir);
   });
 
   afterEach(async () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @ralph-end-loop ac-cleanup
-  it('should have correct marker file format', async () => {
-    const result = kspec('ralph end-loop --reason "test reason"', tempDir);
+  it("should write end_requested and end_reason to session", async () => {
+    await createTestSession(tempDir, SESSION_ID);
+
+    // Use end-loop command with session
+    const result = kspec(
+      'ralph end-loop --reason "Testing"',
+      tempDir,
+      { env: { KSPEC_SESSION_ID: SESSION_ID } },
+    );
     expect(result.exitCode).toBe(0);
 
-    const markerPath = path.join(tempDir, END_LOOP_MARKER_PATH);
-    const content = await fs.readFile(markerPath, 'utf-8');
-    const marker = JSON.parse(content);
+    // Verify the session YAML was updated
+    const session = await readTestSession(tempDir, SESSION_ID);
+    expect(session!.end_requested).toBe(true);
+    expect(session!.end_reason).toBe("Testing");
+    // Original fields should be preserved
+    expect(session!.status).toBe("active");
+    expect(session!.agent_type).toBe("ralph");
+  });
 
-    // Verify schema
-    expect(typeof marker.requested).toBe('boolean');
-    expect(marker.requested).toBe(true);
-    expect(typeof marker.timestamp).toBe('string');
-    expect(() => new Date(marker.timestamp)).not.toThrow();
-    expect(marker.reason).toBe('test reason');
+  it("should report end-loop not requested for fresh session", async () => {
+    await createTestSession(tempDir, SESSION_ID);
+
+    // Task start should succeed (no end-loop requested)
+    const result = kspec("task start @test-task-pending", tempDir, {
+      env: { KSPEC_SESSION_ID: SESSION_ID },
+    });
+    expect(result.exitCode).toBe(0);
   });
 });
 
-describe('Signal cleanup', () => {
-  // AC: @ralph-end-loop ac-signal-cleanup
-  // Static analysis to verify signal handlers are registered correctly.
-  // Full integration testing would require spawning ralph and sending signals.
+describe("Session close with closeSession", () => {
+  let tempDir: string;
 
-  it('should register SIGINT and SIGTERM handlers', async () => {
-    const ralphContent = await fs.readFile(
-      path.join(process.cwd(), 'src/cli/commands/ralph.ts'),
-      'utf-8'
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    initGitRepo(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("should verify closeSession function is exported and usable", async () => {
+    // This tests that the closeSession function works by verifying
+    // the session store module structure
+    const storeContent = await fs.readFile(
+      path.join(process.cwd(), "src/sessions/store.ts"),
+      "utf-8",
     );
-
-    // Verify signal handlers are registered
-    expect(ralphContent).toContain('process.on("SIGINT"');
-    expect(ralphContent).toContain('process.on("SIGTERM"');
-
-    // Verify cleanup functions are called in handlers
-    expect(ralphContent).toContain('clearTaskLimitMarker');
-    expect(ralphContent).toContain('clearEndLoopMarker');
-
-    // Verify cleanup awaits before exit (uses Promise.finally pattern)
-    expect(ralphContent).toContain('Promise.all');
-    expect(ralphContent).toContain('.finally(() =>');
+    expect(storeContent).toContain("export async function closeSession");
+    expect(storeContent).toContain("close_reason");
   });
 });

@@ -44,6 +44,15 @@ export const SessionMetadataSchema = z.object({
 
   /** When session ended (ISO 8601) - only set when status != 'active' */
   ended_at: z.string().datetime().optional(),
+
+  /** Whether end-loop has been requested for this session */
+  end_requested: z.boolean().optional(),
+
+  /** Reason for end-loop request */
+  end_reason: z.string().optional(),
+
+  /** Reason for session close (normal exit, signal, error) */
+  close_reason: z.string().optional(),
 });
 
 export type SessionMetadata = z.infer<typeof SessionMetadataSchema>;

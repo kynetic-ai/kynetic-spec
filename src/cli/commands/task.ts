@@ -47,7 +47,7 @@ import {
 } from "../validators.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
-import { checkBudget, incrementBudget } from "../../sessions/store.js";
+import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -1111,6 +1111,19 @@ Examples:
           warn(
             `Task was claimed by session ${foundTask.session_id.slice(0, 8)}...`,
           );
+        }
+
+        // AC: @session-end-loop-signal ac-block-task - Block if end-loop requested
+        if (sessionId) {
+          const endLoopState = await isEndLoopRequested(ctx.specDir, sessionId);
+          if (endLoopState?.requested) {
+            error(
+              `Cannot start task: loop is ending for session ${sessionId.slice(0, 8)}...` +
+              (endLoopState.reason ? ` Reason: ${endLoopState.reason}` : ""),
+            );
+            info("The current session has been signaled to end. Wrap up current work instead of starting new tasks.");
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
         }
 
         // AC: @task-budget-enforcement ac-block-start, ac-no-session, ac-no-budget

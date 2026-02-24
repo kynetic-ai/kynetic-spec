@@ -236,6 +236,116 @@ export async function sessionExists(
   }
 }
 
+// ─── End-Loop Signal ────────────────────────────────────────────────────────
+
+/**
+ * Request end-loop for a session.
+ *
+ * Writes end_requested=true and optional end_reason to the session metadata.
+ * This is the session-scoped replacement for the marker file approach.
+ *
+ * AC: @session-end-loop-signal ac-signal
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @param reason - Optional reason for ending the loop
+ * @returns Updated metadata or null if session not found
+ */
+export async function requestEndLoop(
+  specDir: string,
+  sessionId: string,
+  reason?: string,
+): Promise<SessionMetadata | null> {
+  const metadata = await getSession(specDir, sessionId);
+  if (!metadata) {
+    return null;
+  }
+
+  const updated: SessionMetadata = {
+    ...metadata,
+    end_requested: true,
+    end_reason: reason,
+  };
+
+  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const content = YAML.stringify(updated, {
+    indent: 2,
+    lineWidth: 100,
+    sortMapEntries: false,
+  });
+  await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+  return updated;
+}
+
+/**
+ * Check if end-loop has been requested for a session.
+ *
+ * AC: @session-end-loop-signal ac-detect
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @returns Object with requested flag and optional reason, or null if session not found
+ */
+export async function isEndLoopRequested(
+  specDir: string,
+  sessionId: string,
+): Promise<{ requested: boolean; reason?: string } | null> {
+  const metadata = await getSession(specDir, sessionId);
+  if (!metadata) {
+    return null;
+  }
+
+  return {
+    requested: metadata.end_requested === true,
+    reason: metadata.end_reason,
+  };
+}
+
+/**
+ * Close a session with a specific status and reason.
+ *
+ * Used for all session close paths: normal exit, signal, error.
+ *
+ * AC: @session-end-loop-signal ac-session-close-normal
+ * AC: @session-end-loop-signal ac-session-close-signal
+ * AC: @session-end-loop-signal ac-session-close-error
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @param status - New status (completed or abandoned)
+ * @param reason - Reason for closing
+ * @returns Updated metadata or null if session not found
+ */
+export async function closeSession(
+  specDir: string,
+  sessionId: string,
+  status: SessionStatus,
+  reason: string,
+): Promise<SessionMetadata | null> {
+  const metadata = await getSession(specDir, sessionId);
+  if (!metadata) {
+    return null;
+  }
+
+  const updated: SessionMetadata = {
+    ...metadata,
+    status,
+    ended_at: new Date().toISOString(),
+    close_reason: reason,
+  };
+
+  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const content = YAML.stringify(updated, {
+    indent: 2,
+    lineWidth: 100,
+    sortMapEntries: false,
+  });
+  await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+  return updated;
+}
+
 // ─── Event Storage ───────────────────────────────────────────────────────────
 
 /**
