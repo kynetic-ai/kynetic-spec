@@ -6426,6 +6426,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ8QR2WD5BSVEMKJ4R4K0JET
+    type: success
+    content: "Pure function pattern for hook/guard commands: exporting the core logic as a testable pure
+      function (e.g. evaluateWorktreeGuard) with stdin/process handling in the CLI layer enables
+      fast unit testing (44 tests, no I/O) while keeping the CLI integration tests minimal (7 tests
+      for protocol compliance). Replicate this pattern for future hook commands."
+    created_at: 2026-02-24T21:09:11.693Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
