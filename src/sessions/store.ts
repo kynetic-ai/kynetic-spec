@@ -1539,6 +1539,284 @@ export async function searchSessionEvents(
   return results;
 }
 
+// ─── Session Creation with Budget ─────────────────────────────────────────────
+
+/**
+ * Create a session with an optional task budget in one call.
+ *
+ * This is the library-level entry point for session creation. It creates
+ * the session directory, writes session.yaml, and optionally writes budget.json.
+ * Returns metadata without any console output.
+ *
+ * AC: @session-creation-and-env-injection ac-create
+ * AC: @session-creation-and-env-injection ac-budget
+ * AC: @session-creation-and-env-injection ac-budget-local
+ * AC: @session-creation-and-env-injection ac-library
+ *
+ * @param specDir - The .kspec directory path
+ * @param input - Session creation parameters
+ * @returns Session metadata and optional budget (no console output)
+ */
+export async function createSessionWithBudget(
+  specDir: string,
+  input: {
+    id: string;
+    agent_type: string;
+    task_id?: string;
+    budget?: number;
+  },
+): Promise<{
+  session_id: string;
+  session: SessionMetadata;
+  budget: TaskBudget | null;
+}> {
+  // Create session
+  const session = await createSession(specDir, {
+    id: input.id,
+    agent_type: input.agent_type,
+    task_id: input.task_id,
+  });
+
+  // Optionally create budget
+  let budget: TaskBudget | null = null;
+  if (input.budget !== undefined && input.budget > 0) {
+    budget = await createBudget(specDir, input.id, input.budget);
+  }
+
+  return {
+    session_id: input.id,
+    session,
+    budget,
+  };
+}
+
+// ─── Environment Injection ────────────────────────────────────────────────────
+
+/**
+ * Result of environment injection attempt.
+ */
+export interface EnvInjectionResult {
+  /** Whether injection was performed */
+  injected: boolean;
+  /** Method used for injection */
+  method: "claude_env_file" | "claude_settings" | "codex_config" | "fallback";
+  /** Human-readable description of what was done */
+  description: string;
+  /** Path to file modified (if applicable) */
+  path?: string;
+}
+
+/**
+ * Inject KSPEC_SESSION_ID into Claude Code environment.
+ *
+ * Strategy:
+ * 1. If CLAUDE_ENV_FILE is set, write to that file
+ * 2. Otherwise, append to project .claude/settings.json env section
+ *
+ * AC: @session-creation-and-env-injection ac-inject-claude
+ */
+export async function injectClaudeCodeEnv(
+  sessionId: string,
+): Promise<EnvInjectionResult> {
+  const envFile = process.env.CLAUDE_ENV_FILE;
+
+  if (envFile) {
+    // Write to CLAUDE_ENV_FILE
+    const line = `KSPEC_SESSION_ID=${sessionId}\n`;
+    // Read existing content and append/replace
+    let content = "";
+    try {
+      content = await fsPromises.readFile(envFile, "utf-8");
+    } catch {
+      // File doesn't exist yet, that's fine
+    }
+
+    // Replace existing KSPEC_SESSION_ID line or append
+    const lines = content.split("\n");
+    const existingIdx = lines.findIndex((l) =>
+      l.startsWith("KSPEC_SESSION_ID="),
+    );
+    if (existingIdx >= 0) {
+      lines[existingIdx] = `KSPEC_SESSION_ID=${sessionId}`;
+    } else {
+      // Append before final empty line if present
+      if (lines.length > 0 && lines[lines.length - 1] === "") {
+        lines.splice(lines.length - 1, 0, `KSPEC_SESSION_ID=${sessionId}`);
+      } else {
+        lines.push(`KSPEC_SESSION_ID=${sessionId}`);
+      }
+    }
+
+    await fsPromises.writeFile(envFile, lines.join("\n"), "utf-8");
+    return {
+      injected: true,
+      method: "claude_env_file",
+      description: `Wrote KSPEC_SESSION_ID=${sessionId} to CLAUDE_ENV_FILE`,
+      path: envFile,
+    };
+  }
+
+  // Fallback: write to project .claude/settings.json
+  const settingsDir = path.join(process.cwd(), ".claude");
+  const settingsPath = path.join(settingsDir, "settings.json");
+
+  await fsPromises.mkdir(settingsDir, { recursive: true });
+
+  let settings: Record<string, unknown> = {};
+  try {
+    const content = await fsPromises.readFile(settingsPath, "utf-8");
+    settings = JSON.parse(content);
+  } catch (err: unknown) {
+    // Only start fresh for ENOENT; throw on parse errors to avoid overwriting
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      // File doesn't exist, start fresh
+    } else {
+      throw new Error(
+        `Cannot inject env: .claude/settings.json exists but is not valid JSON. ` +
+        `Fix the file manually or remove it, then retry.`,
+      );
+    }
+  }
+
+  // Ensure env section exists
+  if (!settings.env || typeof settings.env !== "object") {
+    settings.env = {};
+  }
+  (settings.env as Record<string, string>).KSPEC_SESSION_ID = sessionId;
+
+  await fsPromises.writeFile(
+    settingsPath,
+    JSON.stringify(settings, null, 2) + "\n",
+    "utf-8",
+  );
+
+  return {
+    injected: true,
+    method: "claude_settings",
+    description: `Added KSPEC_SESSION_ID to .claude/settings.json env section`,
+    path: settingsPath,
+  };
+}
+
+/**
+ * Inject KSPEC_SESSION_ID into Codex CLI environment.
+ *
+ * Adds to shell_environment_policy.set in codex config.
+ *
+ * AC: @session-creation-and-env-injection ac-inject-codex
+ */
+export async function injectCodexEnv(
+  sessionId: string,
+): Promise<EnvInjectionResult> {
+  const configDir = path.join(
+    process.env.HOME || process.env.USERPROFILE || "",
+    ".codex",
+  );
+  const configPath = path.join(configDir, "config.json");
+
+  await fsPromises.mkdir(configDir, { recursive: true });
+
+  let config: Record<string, unknown> = {};
+  try {
+    const content = await fsPromises.readFile(configPath, "utf-8");
+    config = JSON.parse(content);
+  } catch (err: unknown) {
+    // Only start fresh for ENOENT; throw on parse errors to avoid overwriting
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      // File doesn't exist, start fresh
+    } else {
+      throw new Error(
+        `Cannot inject env: ~/.codex/config.json exists but is not valid JSON. ` +
+        `Fix the file manually or remove it, then retry.`,
+      );
+    }
+  }
+
+  // Ensure shell_environment_policy.set exists
+  if (
+    !config.shell_environment_policy ||
+    typeof config.shell_environment_policy !== "object"
+  ) {
+    config.shell_environment_policy = {};
+  }
+  const policy = config.shell_environment_policy as Record<string, unknown>;
+  if (!policy.set || typeof policy.set !== "object") {
+    policy.set = {};
+  }
+  (policy.set as Record<string, string>).KSPEC_SESSION_ID = sessionId;
+
+  await fsPromises.writeFile(
+    configPath,
+    JSON.stringify(config, null, 2) + "\n",
+    "utf-8",
+  );
+
+  return {
+    injected: true,
+    method: "codex_config",
+    description: `Added KSPEC_SESSION_ID to Codex config shell_environment_policy.set`,
+    path: configPath,
+  };
+}
+
+/**
+ * Get fallback injection instructions for unknown agent harnesses.
+ *
+ * AC: @session-creation-and-env-injection ac-inject-fallback
+ */
+export function getFallbackInjectionInstructions(
+  sessionId: string,
+): EnvInjectionResult {
+  return {
+    injected: false,
+    method: "fallback",
+    description: `export KSPEC_SESSION_ID=${sessionId}`,
+  };
+}
+
+// ─── Session Validation ───────────────────────────────────────────────────────
+
+/**
+ * Validate that the current KSPEC_SESSION_ID points to a valid session.
+ *
+ * AC: @session-creation-and-env-injection ac-invalid-session
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - The session ID to validate
+ * @returns Validation result with error details if invalid
+ */
+export async function validateSessionId(
+  specDir: string,
+  sessionId: string,
+): Promise<{
+  valid: boolean;
+  session?: SessionMetadata;
+  error?: string;
+  suggestion?: string;
+}> {
+  // Check if session directory exists
+  const exists = await sessionExists(specDir, sessionId);
+  if (!exists) {
+    return {
+      valid: false,
+      error: `Session not found: ${sessionId}`,
+      suggestion: `Unset KSPEC_SESSION_ID or create a new session with: kspec session create --agent-type <type>`,
+    };
+  }
+
+  // Try to read and validate session metadata
+  const session = await getSession(specDir, sessionId);
+  if (!session) {
+    return {
+      valid: false,
+      error: `Session metadata is corrupt or unreadable: ${sessionId}`,
+      suggestion: `Unset KSPEC_SESSION_ID or create a new session with: kspec session create --agent-type <type>`,
+    };
+  }
+
+  return { valid: true, session };
+}
+
 // ─── Task Budget ──────────────────────────────────────────────────────────────
 
 /**
