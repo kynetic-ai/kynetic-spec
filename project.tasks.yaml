@@ -57387,7 +57387,7 @@
   type: task
   spec_ref: "@task-budget-enforcement"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57423,6 +57423,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T07:03:17.964Z
 - _ulid: 01KJ6KKR9V3XCVTJ18ACTY2SXH
   slugs:
     - add-session-indicator-to-tasks-ready
