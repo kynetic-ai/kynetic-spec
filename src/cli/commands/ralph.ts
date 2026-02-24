@@ -156,16 +156,6 @@ export function detectTaskCompleteCommand(command: string): boolean {
   return /\bkspec\s+task\s+(?:complete|submit)\b/.test(command);
 }
 
-/**
- * Detect if a Bash command is an end-loop command.
- * AC: @ralph-end-loop ac-detect
- */
-function detectEndLoopCommand(command: string): boolean {
-  // Match "kspec ralph end-loop" only at the start of the command.
-  // Must be anchored to avoid false positives from commands that mention
-  // "kspec ralph end-loop" in arguments (e.g., PR descriptions, heredocs).
-  return /^\s*kspec\s+ralph\s+end-loop\b/.test(command);
-}
 
 /**
  * Extract Bash command from SessionUpdate if it's a tool_call or tool_call_update event.
@@ -1232,9 +1222,6 @@ export function registerRalphCommand(program: Command): void {
         let taskLimitReached = false;
         let tasksCompletedThisIteration = 0;
 
-        // End-loop signal state
-        // AC: @ralph-end-loop ac-detect, ac-graceful
-        let endLoopRequested = false;
 
         // AC: @ralph-wrap-up-agent-on-loop-exit ac-1 - Track exit reason for wrap-up
         let exitReason: ExitReason | null = null;
@@ -1264,7 +1251,6 @@ export function registerRalphCommand(program: Command): void {
             await clearTaskLimitMarker(ctx.rootDir);
 
             // AC: @session-end-loop-signal ac-detect - Check session state for end-loop
-            endLoopRequested = false;
             const endLoopState = await isEndLoopRequested(specDir, sessionId);
             if (endLoopState?.requested) {
               info(`End-loop already requested for this session. Exiting.`);
@@ -1496,25 +1482,6 @@ export function registerRalphCommand(program: Command): void {
                         }
                       }
 
-                      // AC: @session-end-loop-signal ac-detect
-                      // Detect explicit end-loop command
-                      if (!endLoopRequested) {
-                        const bashCmd = extractBashCommand(update);
-                        if (bashCmd && detectEndLoopCommand(bashCmd)) {
-                          endLoopRequested = true;
-                          // Read session state for reason
-                          isEndLoopRequested(specDir, sessionId)
-                            .then((result) => {
-                              const reason = result?.reason
-                                ? ` (${result.reason})`
-                                : "";
-                              info(`End-loop signal received${reason}`);
-                            })
-                            .catch(() => {
-                              info("End-loop signal received");
-                            });
-                        }
-                      }
 
                       // Log raw update event (async, non-blocking)
                       // Look up iteration by ACP session ID so late updates from
@@ -1654,12 +1621,6 @@ export function registerRalphCommand(program: Command): void {
               }
               lastIterationCtx = sessionCtx;
 
-              // AC: @ralph-end-loop ac-graceful - Check for end-loop signal
-              if (endLoopRequested) {
-                info("Agent requested end of loop. Exiting gracefully.");
-                exitReason = "end_loop_signal";
-                break;
-              }
 
               // Periodic agent restart to prevent OOM
               // AC: @cli-ralph ac-restart-periodic

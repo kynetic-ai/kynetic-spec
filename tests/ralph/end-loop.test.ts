@@ -255,46 +255,21 @@ describe("Session-scoped end-loop signal", () => {
 
   // AC: @session-end-loop-signal ac-detect
   describe("ac-detect: ralph detects end-loop from session state", () => {
-    it("should still detect end-loop command pattern", () => {
-      // detectEndLoopCommand is internal; verify the anchored pattern works
-      const pattern = /^\s*kspec\s+ralph\s+end-loop\b/;
-      expect(pattern.test("kspec ralph end-loop")).toBe(true);
-      expect(pattern.test('kspec ralph end-loop --reason "done"')).toBe(true);
-      expect(pattern.test("  kspec ralph end-loop")).toBe(true);
-      expect(pattern.test("kspec ralph")).toBe(false);
-      expect(pattern.test("kspec ralph run")).toBe(false);
-      expect(pattern.test("ralph end-loop")).toBe(false);
-      // Must NOT match when "kspec ralph end-loop" appears in arguments (e.g. PR descriptions)
-      expect(pattern.test('gh pr create --body "kspec ralph end-loop now writes..."')).toBe(false);
-      expect(pattern.test("echo 'kspec ralph end-loop'")).toBe(false);
-    });
-
-    it("should read session state instead of marker file between iterations", async () => {
-      // Static analysis: verify ralph reads session state for end-loop detection
+    it("should detect end-loop purely via session state between iterations", async () => {
+      // The CLI writes end_requested to session state; ralph checks it
+      // between iterations via isEndLoopRequested — no bash command sniffing needed
       const ralphContent = await fs.readFile(
         path.join(process.cwd(), "src/cli/commands/ralph.ts"),
         "utf-8",
       );
 
-      // Verify isEndLoopRequested is used for between-iteration checks
-      expect(ralphContent).toContain("isEndLoopRequested");
-      // Verify it reads from session (specDir, sessionId)
+      // Session state check exists between iterations
       expect(ralphContent).toContain("isEndLoopRequested(specDir, sessionId)");
-      // Verify the streaming handler reads session state for reason
-      expect(ralphContent).toContain("result?.reason");
-    });
-
-    it("should check session state at iteration start and break if requested", async () => {
-      // Static analysis: verify early exit at iteration boundary
-      const ralphContent = await fs.readFile(
-        path.join(process.cwd(), "src/cli/commands/ralph.ts"),
-        "utf-8",
-      );
-
-      // Verify session state is checked at iteration start
       expect(ralphContent).toContain("endLoopState?.requested");
-      expect(ralphContent).toContain("End-loop already requested");
       expect(ralphContent).toContain('exitReason = "end_loop_signal"');
+
+      // No bash command detection for end-loop (removed to avoid false positives)
+      expect(ralphContent).not.toContain("detectEndLoopCommand");
     });
   });
 
