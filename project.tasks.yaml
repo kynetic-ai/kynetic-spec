@@ -57524,6 +57524,7 @@
   vcs_refs: []
   created_at: 2026-02-24T01:18:26.929Z
   started_at: 2026-02-24T07:33:05.462Z
+  submitted_at: 2026-02-24T07:45:00.571Z
   notes:
     - _ulid: 01KJ6KKRKHQE5FW1GRYKWMGCG1
       created_at: 2026-02-24T01:18:26.929Z
@@ -57535,9 +57536,17 @@
         including SIGINT/SIGTERM — signal handlers must update session status to abandoned.
         Remove END_LOOP_MARKER_PATH, readEndLoopMarker, clearEndLoopMarker,
         clearStaleEndLoopMarker from ralph.ts.
+    - _ulid: 01KJ79SA05VWTRTVAB0H21RN7G
+      created_at: 2026-02-24T07:45:57.253Z
+      author: "@claude"
+      content: "Implementation complete, all 24 tests passing, full suite green (3417 pass, 2 pre-existing
+        flaky batch-exec timeouts). Changes staged on branch feat/migrate-end-loop-to-session but
+        commit blocked by ralph-task-limit-guard hook. Needs commit, push, and PR creation in next
+        iteration. Files changed: src/sessions/types.ts, src/sessions/store.ts,
+        src/cli/commands/ralph.ts, src/cli/commands/task.ts, tests/ralph/end-loop.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T07:45:00.571Z
 - _ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
   slugs:
     - implement-native-worktree-guard
