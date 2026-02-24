@@ -57472,6 +57472,7 @@
     - tasks
   vcs_refs: []
   created_at: 2026-02-24T01:18:26.619Z
+  started_at: 2026-02-24T07:29:46.724Z
   notes:
     - _ulid: 01KJ6KKR9VN2HPV14CPPTY512Q
       created_at: 2026-02-24T01:18:26.619Z
@@ -57480,9 +57481,17 @@
         Modify tasks ready output in src/cli/commands/tasks.ts (~line 234) and session
         context in src/cli/commands/session.ts to show session indicator when tasks have
         session_id from another active session. Tasks remain visible and startable.
+    - _ulid: 01KJ78W0EAQ8XQXE3BSEPCW4NS
+      created_at: 2026-02-24T07:29:57.195Z
+      author: "@claude"
+      content: "All 6 ACs for @session-scoped-task-claiming were already implemented and tested in the
+        prior task @01KJ6KKQA (Add session_id to task schema, PR #499). Implementation: formatTask()
+        and formatTaskListWithAutomation() in src/cli/output.ts show [session 01KJ6NFB...]
+        indicator. Tests: tests/session-scoped-task-claiming.test.ts has 13 tests covering all 6
+        ACs, all passing. No new code changes needed."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T07:29:46.724Z
 - _ulid: 01KJ6KKRKH11RPZF37CXH5KR2Q
   slugs:
     - migrate-end-loop-to-session-state
