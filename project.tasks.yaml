@@ -58360,3 +58360,25 @@
   created_at: 2026-02-24T16:40:48.352Z
   notes: []
   todos: []
+- title: Fix test failures when running inside ralph loop (env pollution)
+  description: 4 tests fail when vitest runs inside a ralph loop because ralph sets
+    KSPEC_RALPH_SESSION and KSPEC_SESSION_ID on process.env, and child processes inherit them.
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - testing
+    - ralph
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJ8T2N7APYPYDEHM2WVP7ZTX
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-24T21:49:55.305Z
+  notes: []
+  todos: []
