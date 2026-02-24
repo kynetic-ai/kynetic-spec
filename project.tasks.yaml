@@ -57595,7 +57595,7 @@
   type: task
   spec_ref: "@native-guard-commands"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -57631,6 +57631,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T20:53:35.501Z
 - _ulid: 01KJ6KKS95CX6F438FC2997R2R
   slugs:
     - update-setup-with-migration-cleanup
