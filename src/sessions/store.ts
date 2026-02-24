@@ -24,6 +24,8 @@ import {
   type SessionMetadataInput,
   SessionMetadataSchema,
   type SessionStatus,
+  type TaskBudget,
+  TaskBudgetSchema,
 } from "./types.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -31,6 +33,7 @@ import {
 const SESSIONS_DIR = "sessions";
 const METADATA_FILE = "session.yaml";
 const EVENTS_FILE = "events.jsonl";
+const BUDGET_FILE = "budget.json";
 
 // ─── Path Helpers ────────────────────────────────────────────────────────────
 
@@ -80,6 +83,17 @@ export function getSessionContextPath(
     getSessionDir(specDir, sessionId),
     `context-iter-${iteration}.json`,
   );
+}
+
+/**
+ * Get the path to a session's budget file.
+ * AC: @session-creation-and-env-injection ac-budget-local
+ */
+export function getSessionBudgetPath(
+  specDir: string,
+  sessionId: string,
+): string {
+  return path.join(getSessionDir(specDir, sessionId), BUDGET_FILE);
 }
 
 // ─── Session CRUD ────────────────────────────────────────────────────────────
@@ -1523,4 +1537,192 @@ export async function searchSessionEvents(
   }
 
   return results;
+}
+
+// ─── Task Budget ──────────────────────────────────────────────────────────────
+
+/**
+ * Atomic JSON write — write to temp file then rename in same directory.
+ * Prevents corruption on crash.
+ * AC: @task-budget-enforcement ac-atomic-write
+ */
+async function writeBudgetAtomic(
+  filePath: string,
+  budget: TaskBudget,
+): Promise<void> {
+  const dir = path.dirname(filePath);
+  await fsPromises.mkdir(dir, { recursive: true });
+  const tmpPath = `${filePath}.${process.pid}.tmp`;
+  const content = JSON.stringify(budget, null, 2) + "\n";
+  await fsPromises.writeFile(tmpPath, content, "utf-8");
+  await fsPromises.rename(tmpPath, filePath);
+}
+
+/**
+ * Create a budget for a session.
+ *
+ * Writes budget.json to .kspec/sessions/{id}/ on the local filesystem
+ * (NOT committed to shadow branch).
+ *
+ * AC: @session-creation-and-env-injection ac-budget
+ * AC: @session-creation-and-env-injection ac-budget-local
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @param maxPerCycle - Maximum tasks allowed per cycle
+ * @returns The created budget
+ */
+export async function createBudget(
+  specDir: string,
+  sessionId: string,
+  maxPerCycle: number,
+): Promise<TaskBudget> {
+  const budget: TaskBudget = {
+    max_per_cycle: maxPerCycle,
+    started_this_cycle: 0,
+  };
+  const validated = TaskBudgetSchema.parse(budget);
+  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  await writeBudgetAtomic(budgetPath, validated);
+  return validated;
+}
+
+/**
+ * Read budget for a session.
+ *
+ * AC: @task-budget-enforcement ac-no-budget
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @returns Budget or null if no budget configured (opt-in)
+ */
+export async function getBudget(
+  specDir: string,
+  sessionId: string,
+): Promise<TaskBudget | null> {
+  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  let content: string;
+  try {
+    content = await fsPromises.readFile(budgetPath, "utf-8");
+  } catch (err: unknown) {
+    // File doesn't exist = no budget configured (opt-in)
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      return null;
+    }
+    throw err;
+  }
+  // File exists — parse errors are real failures, not "no budget"
+  const raw = JSON.parse(content);
+  return TaskBudgetSchema.parse(raw);
+}
+
+/**
+ * Check whether the budget allows starting a new task.
+ *
+ * Returns an object with `allowed` boolean and context about the budget.
+ * When no budget is configured, always allows (opt-in behavior).
+ *
+ * AC: @task-budget-enforcement ac-block-start
+ * AC: @task-budget-enforcement ac-no-budget
+ * AC: @task-budget-enforcement ac-no-session
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID, or undefined if KSPEC_SESSION_ID not set
+ * @returns Budget check result
+ */
+export async function checkBudget(
+  specDir: string,
+  sessionId: string | undefined,
+): Promise<{
+  allowed: boolean;
+  reason?: string;
+  budget?: TaskBudget;
+}> {
+  // AC: @task-budget-enforcement ac-no-session — no session means no check
+  if (!sessionId) {
+    return { allowed: true };
+  }
+
+  const budget = await getBudget(specDir, sessionId);
+
+  // AC: @task-budget-enforcement ac-no-budget — no budget means no check
+  if (!budget) {
+    return { allowed: true };
+  }
+
+  if (budget.started_this_cycle >= budget.max_per_cycle) {
+    return {
+      allowed: false,
+      reason: `Task budget exhausted: ${budget.started_this_cycle}/${budget.max_per_cycle} tasks started this cycle. Wrap up current work and let the iteration end naturally without starting new tasks.`,
+      budget,
+    };
+  }
+
+  return { allowed: true, budget };
+}
+
+/**
+ * Increment the budget counter after a task is successfully started.
+ *
+ * IMPORTANT: Callers must NOT call this for resume cases (task already
+ * in_progress). The budget should only be incremented when a new task
+ * transitions to in_progress, not when resuming an existing one.
+ * See AC: @task-budget-enforcement ac-resume-no-increment
+ *
+ * AC: @task-budget-enforcement ac-increment
+ * AC: @task-budget-enforcement ac-atomic-write
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @returns Updated budget, or null if no budget configured
+ */
+export async function incrementBudget(
+  specDir: string,
+  sessionId: string,
+): Promise<TaskBudget | null> {
+  const budget = await getBudget(specDir, sessionId);
+  if (!budget) {
+    return null;
+  }
+
+  const updated: TaskBudget = {
+    ...budget,
+    started_this_cycle: budget.started_this_cycle + 1,
+  };
+  const validated = TaskBudgetSchema.parse(updated);
+  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  await writeBudgetAtomic(budgetPath, validated);
+  return validated;
+}
+
+/**
+ * Reset the budget counter to 0 for a new cycle/iteration.
+ *
+ * Called by ralph at iteration boundaries. Single-writer guarantee:
+ * ralph only resets between iterations when the agent is not running.
+ *
+ * AC: @task-budget-enforcement ac-reset
+ * AC: @task-budget-enforcement ac-atomic-write
+ *
+ * @param specDir - The .kspec directory path
+ * @param sessionId - Session ID
+ * @returns Updated budget, or null if no budget configured
+ */
+export async function resetBudget(
+  specDir: string,
+  sessionId: string,
+): Promise<TaskBudget | null> {
+  const budget = await getBudget(specDir, sessionId);
+  if (!budget) {
+    return null;
+  }
+
+  const updated: TaskBudget = {
+    ...budget,
+    started_this_cycle: 0,
+  };
+  const validated = TaskBudgetSchema.parse(updated);
+  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  await writeBudgetAtomic(budgetPath, validated);
+  return validated;
 }
