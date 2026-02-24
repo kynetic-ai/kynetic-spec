@@ -4216,6 +4216,10 @@ features:
             when: kspec plan import <path> is run
             then: Specs are created with depends_on populated; derived tasks inherit depends_on mapped from spec
               slugs to their corresponding task slugs; manual tasks honor depends_on directly
+          - id: ac-36
+            given: A plan file with specs that include a priority field (1-5)
+            when: "kspec plan import <path> is run with derive_from_specs: true"
+            then: Derived tasks inherit the priority from their source spec; specs without priority default to 3
         status:
           maturity: draft
           implementation: in_progress
