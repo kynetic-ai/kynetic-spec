@@ -56239,6 +56239,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #490. Added null clearing support for --spec-ref and --meta-ref in task
+    set, matching existing --plan-ref behavior. All ACs covered with annotated tests, CI green."
   depends_on: []
   context: []
   priority: 3
@@ -56247,6 +56249,7 @@
   created_at: 2026-02-23T08:25:44.603Z
   started_at: 2026-02-24T01:51:33.450Z
   submitted_at: 2026-02-24T01:58:57.639Z
+  completed_at: 2026-02-24T02:12:44.599Z
   notes:
     - _ulid: 01KJ4V6K555PGCK411D7FGZRNP
       created_at: 2026-02-23T08:52:35.109Z
@@ -56274,9 +56277,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-24T02:12:44.599Z
-  closed_reason: "Merged in PR #490. Added null clearing support for --spec-ref and --meta-ref in task
-    set, matching existing --plan-ref behavior. All ACs covered with annotated tests, CI green."
 - _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
   slugs: []
   title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
@@ -56288,7 +56288,7 @@
     YAML (e.g., depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by
     on import."
   spec_ref: "@plan-import"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56305,6 +56305,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-24T02:13:12.913Z
 - _ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
   slugs: []
   title: "Plan import should support task priority: plan document specs can specify priority, and
