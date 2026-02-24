@@ -1442,6 +1442,7 @@ Examples:
         const updatedTask: Task = {
           ...foundTask,
           status: "pending_review",
+          submitted_at: new Date().toISOString(),
         };
 
         await saveTask(ctx, updatedTask);

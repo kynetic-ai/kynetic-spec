@@ -586,8 +586,8 @@ export async function getIterationStats(
     if (t.status === "completed" && t.completed_at) {
       return new Date(t.completed_at) >= since;
     }
-    if (t.status === "pending_review" && t.started_at) {
-      return new Date(t.started_at) >= since;
+    if (t.status === "pending_review" && t.submitted_at) {
+      return new Date(t.submitted_at) >= since;
     }
     return false;
   });
