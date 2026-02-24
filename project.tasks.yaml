@@ -57317,6 +57317,7 @@
         branch creation/checkout in .kspec/, dangerous git ops (reset, rebase, stash,
         clean) in .kspec/. Allows everything else.
   todos: []
+  automation: eligible
 - _ulid: 01KJ6KKS95CX6F438FC2997R2R
   slugs:
     - update-setup-with-migration-cleanup
