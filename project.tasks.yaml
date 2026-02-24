@@ -56414,6 +56414,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #494. Added advisory file locking (mkdir-based) to all 10 YAML mutation
+    functions to prevent concurrent write data loss. Consolidated duplicate lock from plans.ts. 9
+    tests covering lock mechanics and concurrent safety."
   depends_on: []
   context: []
   priority: 3
@@ -56422,6 +56425,7 @@
   created_at: 2026-02-23T08:33:46.996Z
   started_at: 2026-02-24T03:22:46.028Z
   submitted_at: 2026-02-24T03:45:02.544Z
+  completed_at: 2026-02-24T04:04:07.417Z
   notes:
     - _ulid: 01KJ4V6RRKKPMW0A8VY6MHGFYX
       created_at: 2026-02-23T08:52:40.851Z
@@ -56442,10 +56446,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-24T04:04:07.417Z
-  closed_reason: "Merged in PR #494. Added advisory file locking (mkdir-based) to all 10 YAML mutation
-    functions to prevent concurrent write data loss. Consolidated duplicate lock from plans.ts. 9
-    tests covering lock mechanics and concurrent safety."
 - _ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
   slugs: []
   title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session
@@ -56464,7 +56464,7 @@
     Alternative: restrict sandbox mode when codex is called from ralph. See codex skill at
     .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56481,6 +56481,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-24T04:04:39.622Z
 - _ulid: 01KJ4T480J60WY0ESJWQY08G82
   slugs: []
   title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
