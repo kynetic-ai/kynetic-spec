@@ -221,13 +221,13 @@ async function clearStaleEndLoopMarker(rootDir: string): Promise<boolean> {
 }
 
 /**
- * Detect if a Bash command is a task complete command.
+ * Detect if a Bash command is a task complete or submit command.
  * AC: @ralph-task-limit ac-detection
  */
-function detectTaskCompleteCommand(command: string): boolean {
-  // Match variations of "kspec task complete"
-  // Don't match "kspec task submit" - that's just status change to pending_review
-  return /\bkspec\s+task\s+complete\b/.test(command);
+export function detectTaskCompleteCommand(command: string): boolean {
+  // Match "kspec task complete" and "kspec task submit"
+  // Submit means agent's work is done (pending_review) — counts toward limit
+  return /\bkspec\s+task\s+(?:complete|submit)\b/.test(command);
 }
 
 /**

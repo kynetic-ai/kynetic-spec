@@ -579,9 +579,17 @@ export async function getIterationStats(
 ): Promise<IterationStats> {
   const allTasks = await loadAllTasks(ctx);
 
+  // Count both completed and pending_review (submitted) tasks toward the limit.
+  // Submit means the agent's work is done — it should count the same as complete.
+  // AC: @ralph-task-limit ac-detection
   const completedSince = allTasks.filter((t) => {
-    if (t.status !== "completed" || !t.completed_at) return false;
-    return new Date(t.completed_at) >= since;
+    if (t.status === "completed" && t.completed_at) {
+      return new Date(t.completed_at) >= since;
+    }
+    if (t.status === "pending_review" && t.started_at) {
+      return new Date(t.started_at) >= since;
+    }
+    return false;
   });
 
   const startedSince = allTasks.filter((t) => {
