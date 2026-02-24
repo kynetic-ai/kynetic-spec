@@ -6436,6 +6436,19 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ8R05R2GJBCGFQHY966GDD8
+    type: friction
+    content: "Plan-derived tasks with depends_on sometimes become no-ops because the dependency task
+      already implements all shared spec ACs. Seen in iteration 3:
+      @update-setup-with-migration-cleanup (all 6 ACs done by @implement-native-worktree-guard) and
+      @add-multi-harness-env-injection (all injection ACs done by
+      @implement-session-create-command). Wastes budget starts and discovery time. Potential fix:
+      plan import could warn when multiple tasks share a spec and one depends on the other, or task
+      start could auto-detect 'AC already covered' and offer to close."
+    created_at: 2026-02-24T21:13:36.770Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
