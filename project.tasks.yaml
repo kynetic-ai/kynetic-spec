@@ -57724,7 +57724,42 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-24T06:19:07.397Z
-  notes: []
+  notes:
+    - _ulid: 01KJ75580X522543JHKECYFPWH
+      created_at: 2026-02-24T06:25:05.566Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+
+        Add computed key to SessionContext interface:
+
+        interface SessionContextComputed {
+          inbox_untriaged_count: number;
+          inbox_deferred_count: number;
+          inbox_total: number;
+          task_unlocks: Record<string, number>;
+          recent_activity: ActivityItem[];
+        }
+
+        interface ActivityItem {
+          type: "task_completed" | "commit";
+          timestamp: string;
+          task_ref?: string;
+          task_slug?: string | null;
+          task_title?: string;
+          close_reason?: string;
+          commit_hash?: string;
+          commit_message?: string;
+          commit_author?: string;
+          linked_task_ref?: string;
+        }
+
+        Wire into gatherSessionContext() after unlocks, activity, and triage data are gathered.
+        Raw arrays (recently_completed, recent_commits) stay unchanged.
+        computed is additive — no existing JSON fields modified.
+
+        Key file: src/cli/commands/session.ts
+      supersedes: null
   todos: []
 - _ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
   slugs: []
@@ -57749,7 +57784,63 @@
     - session
   vcs_refs: []
   created_at: 2026-02-24T06:20:05.088Z
-  notes: []
+  notes:
+    - _ulid: 01KJ7559QEJ2JZCNHXYR2V5CPF
+      created_at: 2026-02-24T06:25:07.310Z
+      author: "@claude"
+      content: >-
+        Implementation notes:
+
+
+        Key file: src/cli/commands/session.ts (formatSessionContext() starting ~line 814)
+
+        Also update: src/strings/labels.ts (sessionHeaders)
+
+
+        Data model changes (additive only on existing interfaces):
+
+
+        ActiveTaskSummary — add: slug: string | null, description: string | null
+
+        ReadyTaskSummary — add: slug: string | null, description: string | null, unlocks: number
+
+        BlockedTaskSummary — add: slug: string | null, description: string | null, unlocks: number
+
+        CompletedTaskSummary — add: slug: string | null
+
+        InboxSummary — add: triaged: boolean, triage_action: string | null
+
+        CommitSummary — add: body: string | null, task_ref: string | null
+
+
+        ref stays as short ULID — no breaking change. Slug display is human output only.
+
+
+        Section ordering: active → review → blocked → ready → activity → inbox → working tree →
+        quick commands
+
+        Empty sections: skip entirely (no header, no placeholder)
+
+        Primer (default): top 5 ready, 10 activity items, inbox stat line only
+
+        Full (--full): all ready, 20 activity, up to 20 untriaged inbox items, observations, session
+        metadata
+
+        --brief: alias for primer (no-op backward compat)
+
+        needs_work: visually distinct from in_progress (different status label/color)
+
+        Active tasks: show title, description, recent notes (richest detail)
+
+        Review tasks: show title and recent notes
+
+        Slug display: @slug when available, @short-ulid fallback. Inbox always @short-ulid.
+
+        Timestamps: relative in human output (2h ago), ISO 8601 in JSON.
+
+
+        Verify ralph filterByExplicitTasks() unchanged (ref is still short ULID).
+      supersedes: null
   todos: []
 - _ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
   slugs: []
@@ -57774,7 +57865,40 @@
     - testing
   vcs_refs: []
   created_at: 2026-02-24T06:20:07.277Z
-  notes: []
+  notes:
+    - _ulid: 01KJ755BA7F3ZWTE6JWJTN9S40
+      created_at: 2026-02-24T06:25:08.935Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+
+        Key file: tests/cli/session-start-*.test.ts (new or extend existing)
+        Existing test pattern: tests/cli/session-start-notes.test.ts
+
+        Test coverage needed for all new ACs:
+        - ac-primer-default: default output has correct sections
+        - ac-full-sections: --full adds observations, metadata, more items
+        - ac-brief-alias: --brief behaves same as no flags
+        - ac-section-order: sections appear in defined order
+        - ac-empty-skip: empty sections omitted entirely
+        - ac-slug-display: tasks with slugs show @slug
+        - ac-slug-fallback: tasks without slugs show @short-ulid, inbox always @short-ulid
+        - ac-relative-time-human: human output uses relative times
+        - ac-iso-time-json: JSON output uses ISO 8601
+        - ac-dirty-tree-only: clean working tree omits section
+        - ac-active-detail: in_progress/needs_work show title+description+notes
+        - ac-needs-work-indicator: needs_work visually distinct from in_progress
+        - ac-review-detail: pending_review shows title+notes
+        - ac-notes-starvation: notes split fairly across statuses
+        - ac-json-raw-preserved: JSON has recently_completed and recent_commits unchanged
+        - ac-unlocks-shown/omit-zero/unresolvable: from @session-start-unlocks
+        - ac-activity-merge/trailer-link/sort/dedup/no-git: from @session-start-activity-timeline
+        - ac-inbox-stat-line/full-list/all-triaged/untriaged-def: from @session-start-inbox-triage
+        - ac-computed-inbox/unlocks/activity: from @session-start-computed-json
+
+        Use setupTempFixtures(), kspec(), kspecJson<SessionContext>() helpers.
+        Annotate tests with // AC: @spec-ref ac-id comments.
+      supersedes: null
   todos: []
 - _ulid: 01KJ752D9H9HV3E5EXTFFSNSN5
   slugs: []
