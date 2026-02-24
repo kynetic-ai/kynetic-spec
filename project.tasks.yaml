@@ -57932,7 +57932,7 @@
   type: task
   spec_ref: "@session-start-inbox-triage"
   plan_ref: "@plan-session-start-output-redesign"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -57954,6 +57954,8 @@
         Add triaged (boolean) and triage_action (string|null) to InboxSummary.
   todos: []
   automation: eligible
+  started_at: 2026-02-24T23:30:33.068Z
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ74TA85JD401Z4DH8H2V6HN
   slugs:
     - implement-session-start-computed-json-fields
@@ -58639,6 +58641,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #512. Fixed flaky ralph session-budget-integration test by isolating
+    subprocess cwd to tempDir with clean git repo and .gitignore for sessions/. All CI checks
+    passed, review thread resolved."
   depends_on: []
   context: []
   priority: 2
@@ -58651,6 +58656,7 @@
   created_at: 2026-02-24T22:51:55.176Z
   started_at: 2026-02-24T23:22:48.146Z
   submitted_at: 2026-02-24T23:22:49.169Z
+  completed_at: 2026-02-24T23:30:02.922Z
   notes:
     - _ulid: 01KJ8YPSVS98VXZ2F396JFT7Y7
       created_at: 2026-02-24T23:10:49.721Z
@@ -58681,7 +58687,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-24T23:30:02.922Z
-  closed_reason: "Merged in PR #512. Fixed flaky ralph session-budget-integration test by isolating
-    subprocess cwd to tempDir with clean git repo and .gitignore for sessions/. All CI checks
-    passed, review thread resolved."
