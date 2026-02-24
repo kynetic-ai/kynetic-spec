@@ -6458,6 +6458,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ8XQFTK1B2Y3CVE6XBQ2WP0
+    type: friction
+    content: "Cross-cutting skill updates need checklist: When a concept spans multiple skills (e.g.,
+      spec context discovery in codex, pr-review, local-review, review template), updating one skill
+      without checking all related ones leads to inconsistency. Codex review on PR #511 found 4
+      findings where the dig-deeper pattern wasn't applied uniformly. Consider: a way to tag related
+      skills, or a pre-commit check that flags partial updates to skill groups."
+    created_at: 2026-02-24T22:53:43.636Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
