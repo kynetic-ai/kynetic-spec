@@ -55526,16 +55526,36 @@
     - task-audit-static-analysis-tests
   title: Audit test suite and plan migration from static analysis to behavioral tests
   type: spike
-  description: "The daemon test suite (tests/daemon-*.test.ts) relies heavily on static analysis
-    patterns — reading source files and checking for string patterns (e.g.
-    expect(content).toContain('errorResponse(409')). This approach cannot catch runtime bugs like
-    the two found in PR #453's fix commit (duplicate POST ULID mismatch, stale metadata leakage).
-    Deep dive: 1) Inventory all daemon-related test files and categorize by test approach (static
-    analysis vs behavioral vs E2E). 2) Identify which static-only tests have the highest risk of
-    missing real bugs. 3) Design a migration plan — options include: unit tests that import route
-    handlers with mocked context, integration tests that spin up the daemon, or Playwright E2E
-    tests. 4) Create follow-up tasks for the actual migration work. Web UI triage page E2E tests
-    should also be scoped as part of this."
+  description: >-
+    The test suite relies heavily on static analysis patterns — reading source files and checking
+    for string patterns (e.g. expect(content).toContain(...)). This approach cannot catch runtime
+    bugs and breaks on refactors (e.g. end-loop.test.ts had regex pattern tests that could not
+    detect the false-positive bug that caused a real ralph loop exit).
+
+
+    Deep dive:
+
+    1) Inventory ALL test files repo-wide and categorize by test approach (static analysis vs
+    behavioral vs E2E).
+
+    2) Identify which static-only tests have the highest risk of missing real bugs.
+
+    3) Design a migration plan — options include: unit tests that import functions directly,
+    integration tests with fixtures, CLI behavioral tests, or Playwright E2E tests.
+
+    4) Create follow-up tasks for the actual migration work.
+
+
+    Known areas with static analysis tests:
+
+    - Daemon tests (tests/daemon-*.test.ts)
+
+    - Ralph end-loop tests (tests/ralph/end-loop.test.ts) — session close handlers, marker removal
+
+    - Likely others across the test suite
+
+
+    The pattern to eliminate: reading source with fs.readFile then expect(content).toContain(...)
   spec_ref: null
   meta_ref: null
   plan_ref: null
