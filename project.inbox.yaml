@@ -837,3 +837,16 @@ inbox:
     created_at: 2026-02-24T20:24:30.082Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ8NDTW6M80T7T07SACEP7F8
+    text: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
+      KSPEC_RALPH_SESSION assertion expects null but env var is inherited from ralph process, (2)
+      session-create.test.ts active session warning in stderr breaks JSON parsing, (3)
+      session-budget-integration.test.ts references nonexistent task set-automation command. Tests
+      should isolate from parent process env vars (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID) to be
+      reliable in all contexts."
+    created_at: 2026-02-24T20:28:38.662Z
+    tags:
+      - testing
+      - ralph
+      - environment
+    added_by: "@claude"

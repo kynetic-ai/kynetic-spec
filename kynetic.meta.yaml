@@ -6418,6 +6418,14 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJ8NDTX3WCBCC198CJAQQSZN
+    type: success
+    content: Codex PR review caught exec()+unref() not actually preventing event loop hang (stdio pipes
+      still buffered). Validated that /codex review-pr adds real value beyond rubber-stamping.
+    created_at: 2026-02-24T20:28:38.691Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
