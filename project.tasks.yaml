@@ -56265,6 +56265,12 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KJ6NXS5CQY86VP9QTMPTD8XC
+      created_at: 2026-02-24T01:58:52.332Z
+      author: "@claude"
+      content: Implemented null clearing for --spec-ref and --meta-ref in task set command, matching
+        existing --plan-ref behavior. Added ac-clear-ref to @task-set spec. All 3255 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
