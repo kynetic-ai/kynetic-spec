@@ -57145,10 +57145,18 @@
   vcs_refs: []
   created_at: 2026-02-23T22:48:37.903Z
   started_at: 2026-02-24T05:06:52.800Z
-  notes: []
+  submitted_at: 2026-02-24T05:13:08.766Z
+  notes:
+    - _ulid: 01KJ719YVQ849FGY56NAV6NEF7
+      created_at: 2026-02-24T05:17:45.719Z
+      author: "@claude"
+      content: "Added 10 new trait AC tests for session-log-show: @trait-json-output (ac-2, ac-4, ac-6)
+        and @trait-semantic-exit-codes (ac-2, ac-6, ac-8). Documented N/A cases for ac-3/ac-5/ac-7.
+        Codex review raised 3 findings (exit code assertions too weak, trait spec mismatch, test
+        naming) — all addressed in fix commit. PR #497."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T05:13:08.766Z
 - _ulid: 01KJ6CJC3TDT5PG0E6YV184MVJ
   slugs:
     - task-cleanup-obsolete-skills
