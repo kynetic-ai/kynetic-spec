@@ -57387,7 +57387,7 @@
   type: task
   spec_ref: "@task-budget-enforcement"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@extend-session-schema-with-task-budget"
@@ -57449,6 +57449,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-24T07:27:52.352Z
+  closed_reason: "Merged PR #501. Budget enforcement added to task start — checks session budget
+    before allowing start, increments counter after successful transition, skips for
+    resume/no-session/no-budget cases. 17 tests covering all 7 own ACs and 8 trait ACs (with N/A
+    documented for non-applicable ones). All review threads resolved, CI green."
 - _ulid: 01KJ6KKR9V3XCVTJ18ACTY2SXH
   slugs:
     - add-session-indicator-to-tasks-ready
