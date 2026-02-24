@@ -57354,6 +57354,7 @@
   vcs_refs: []
   created_at: 2026-02-24T01:18:25.925Z
   started_at: 2026-02-24T06:27:32.561Z
+  submitted_at: 2026-02-24T06:27:37.007Z
   notes:
     - _ulid: 01KJ6KKQM59XEDXGADGFGMCB65
       created_at: 2026-02-24T01:18:25.925Z
@@ -57375,7 +57376,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-24T06:27:37.007Z
 - _ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
   slugs:
     - add-budget-enforcement-to-task-start
@@ -57663,6 +57663,7 @@
         Use pattern from ralph.ts:601 for slug resolution: task.slugs[0] fallback to short ULID.
         Store in computed.task_unlocks as Record<string, number> keyed by ref (short ULID).
   todos: []
+  automation: eligible
 - _ulid: 01KJ74T98AACTTMCHS0ZTVJPK0
   slugs:
     - implement-session-start-activity-timeline
@@ -57692,6 +57693,7 @@
         Parse Task: @slug trailer with regex: /Task:\s*@([\w-]+)/
         Add body and task_ref fields to CommitSummary interface.
   todos: []
+  automation: eligible
 - _ulid: 01KJ74T9QRZK5NKK1R5VJWGZ54
   slugs:
     - implement-session-start-inbox-triage-awareness
@@ -57720,6 +57722,7 @@
         Deferred = triage record exists with action=defer.
         Add triaged (boolean) and triage_action (string|null) to InboxSummary.
   todos: []
+  automation: eligible
 - _ulid: 01KJ74TA85JD401Z4DH8H2V6HN
   slugs:
     - implement-session-start-computed-json-fields
@@ -57775,6 +57778,7 @@
         Key file: src/cli/commands/session.ts
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
   slugs:
     - task-rewrite-formatsessioncontext
@@ -57857,6 +57861,7 @@
         Verify ralph filterByExplicitTasks() unchanged (ref is still short ULID).
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
   slugs:
     - task-session-start-output-tests
@@ -57916,6 +57921,7 @@
         Annotate tests with // AC: @spec-ref ac-id comments.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJ752D9H9HV3E5EXTFFSNSN5
   slugs: []
   title: Fix batch-exec-engine test timeout flakes
