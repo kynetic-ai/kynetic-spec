@@ -5654,7 +5654,7 @@ requirements:
         created: 2026-02-24T06:19:05.272Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KJ74T891RXXWJMVM5WZN5FQ5
         slugs:
           - session-start-inbox-triage
