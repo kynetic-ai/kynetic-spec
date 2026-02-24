@@ -57642,7 +57642,7 @@
   type: task
   spec_ref: "@native-guard-commands"
   plan_ref: "@plan-session-scoping-for-kspec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-native-worktree-guard"
@@ -57677,6 +57677,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-24T21:11:43.175Z
 - _ulid: 01KJ6KKSK4GG98DYK4AS66JY24
   slugs:
     - simplify-ralph-with-session-budget
