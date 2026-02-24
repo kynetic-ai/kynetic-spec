@@ -5241,8 +5241,19 @@ runs:
   - _ulid: 01KJ767SCS6TSQ202DQGAD9ZRQ
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-24T06:43:57.465Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-24T06:43:57.465Z
+        completed_at: 2026-02-24T06:44:36.195Z
+        notes: "Session completed implement-session-create-command (PR #500). Codex review caught real
+          issues. Existing observation @01KJ71CS tracks trait exit code mismatch. No new captures
+          needed - all friction already tracked."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-24T06:44:36.195Z
+        completed_at: 2026-02-24T06:44:36.195Z
     initiated_by: "@claude"
