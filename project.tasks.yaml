@@ -59694,7 +59694,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@01KJ9ZBT"
@@ -59717,6 +59717,15 @@
         for event.data and nested fields, (3) cosmetic fix: unknown|null simplified to unknown. 14
         new tests covering invalid status, malformed event data shapes (null, string, array, missing
         nested fields). All 152 session log tests pass."
+      supersedes: null
+    - _ulid: 01KJANNSED9JJPA12CTX57H6EQ
+      created_at: 2026-02-25T15:11:28.206Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: summarizeEventData() repeats the same
+        null/typeof/Array.isArray type guard pattern 5 times inline. An existing isObject() utility
+        at src/acp/types.ts:118 does exactly this check and provides a type predicate, eliminating
+        the need for 'as Record<string, unknown>' casts. Refactor to use isObject() for readability
+        and consistency. See PR #534 inline review comment."
       supersedes: null
   todos: []
   automation: eligible
