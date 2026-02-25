@@ -5317,6 +5317,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-24T21:08:29.627Z
+    completed_at: 2026-02-24T21:09:16.236Z
     step_results:
       - step_index: 0
         status: completed
@@ -5352,4 +5353,11 @@ runs:
         notes: "Captured 1 success observation (@01KJ8QR2): pure function pattern for hook commands. Skipped
           1 friction item (bare catch static analysis — already tracked as @01KHJ4RV)."
     initiated_by: "@claude"
-    completed_at: 2026-02-24T21:09:16.236Z
+  - _ulid: 01KJ95X0V4PHH9B62Q4813AFD5
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-25T01:16:33.509Z
+    step_results: []
+    initiated_by: "@claude"
