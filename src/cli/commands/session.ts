@@ -1350,44 +1350,123 @@ function formatSessionContext(
   if (ctx.activity_timeline.length > 0) {
     console.log(`\n${sessionHeaders.recentActivity}`);
     const observationPromotedTasks: string[] = [];
+
+    // AC: @session-start-activity-timeline ac-activity-hierarchy, ac-activity-dedup
+    // Group linked commits by task, then interleave with standalone entries
+    type ActivityGroup =
+      | {
+          kind: "task_group";
+          task: CompletedTaskSummary;
+          commits: Array<{ commit: CommitSummary; date: string }>;
+          sortDate: string;
+        }
+      | { kind: "task_completion"; task: CompletedTaskSummary; date: string }
+      | { kind: "orphan_commit"; commit: CommitSummary; date: string };
+
+    const taskGroups = new Map<
+      string,
+      {
+        task: CompletedTaskSummary;
+        commits: Array<{ commit: CommitSummary; date: string }>;
+        sortDate: string;
+      }
+    >();
+    const groups: ActivityGroup[] = [];
+
     for (const item of ctx.activity_timeline) {
-      // AC: @cmd-session-start ac-relative-time-human
-      const itemAge = formatRelativeTime(new Date(item.date));
-      if (item.type === "task_completion") {
+      if (item.type === "linked_commit") {
+        const key = item.task.ref;
+        let group = taskGroups.get(key);
+        if (!group) {
+          group = { task: item.task, commits: [], sortDate: item.date };
+          taskGroups.set(key, group);
+        }
+        group.commits.push({ commit: item.commit, date: item.date });
+        // Update sortDate to the most recent event in the group
+        if (
+          new Date(item.date).getTime() > new Date(group.sortDate).getTime()
+        ) {
+          group.sortDate = item.date;
+        }
+      } else if (item.type === "task_completion") {
+        groups.push({ kind: "task_completion", task: item.task, date: item.date });
+      } else if (item.type === "commit") {
+        groups.push({ kind: "orphan_commit", commit: item.commit, date: item.date });
+      }
+    }
+
+    // Add task groups to the groups array
+    for (const group of taskGroups.values()) {
+      // AC: @session-start-activity-timeline ac-activity-sort
+      // Sort commits within a group chronologically (oldest first)
+      group.commits.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
+      groups.push({ kind: "task_group", ...group });
+    }
+
+    // AC: @session-start-activity-timeline ac-activity-sort
+    // Sort groups by most recent event, most recent first
+    groups.sort(
+      (a, b) =>
+        new Date(b.kind === "task_group" ? b.sortDate : b.date).getTime() -
+        new Date(a.kind === "task_group" ? a.sortDate : a.date).getTime(),
+    );
+
+    for (const group of groups) {
+      if (group.kind === "task_completion") {
+        // Standalone completed task (not linked to any commit)
         let reason = "";
-        if (item.task.closed_reason) {
+        if (group.task.closed_reason) {
           const maxLen = isFull ? 120 : 60;
           const truncated =
-            item.task.closed_reason.length > maxLen
-              ? `${item.task.closed_reason.slice(0, maxLen).trim()}...`
-              : item.task.closed_reason;
+            group.task.closed_reason.length > maxLen
+              ? `${group.task.closed_reason.slice(0, maxLen).trim()}...`
+              : group.task.closed_reason;
           reason = chalk.gray(` - ${truncated}`);
         }
         // AC: @cmd-session-start ac-slug-display
-        const taskDisplay = item.task.slug
-          ? `@${item.task.slug}`
-          : `@${item.task.ref}`;
+        const taskDisplay = group.task.slug
+          ? `@${group.task.slug}`
+          : `@${group.task.ref}`;
+        // AC: @cmd-session-start ac-relative-time-human
+        const itemAge = formatRelativeTime(new Date(group.date));
         console.log(
-          `  ${chalk.green("[completed]")} ${taskDisplay} ${item.task.title} ${chalk.gray(`(${itemAge})`)}${reason}`,
+          `  ${chalk.green("✓")} ${taskDisplay} ${group.task.title} ${chalk.gray(`(${itemAge})`)}${reason}`,
         );
-        if (item.task.origin === "observation_promotion") {
+        if (group.task.origin === "observation_promotion") {
           observationPromotedTasks.push(taskDisplay);
         }
-      } else if (item.type === "commit") {
+      } else if (group.kind === "task_group") {
+        // AC: @session-start-activity-timeline ac-activity-hierarchy, ac-activity-trailer-link
+        // Task as top-level entry with linked commits nested beneath
+        const taskDisplay = group.task.slug
+          ? `@${group.task.slug}`
+          : `@${group.task.ref}`;
+        const groupAge = formatRelativeTime(new Date(group.sortDate));
         console.log(
-          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${itemAge}, ${item.commit.author})`)}`,
+          `  ${chalk.green("✓")} ${taskDisplay} ${group.task.title} ${chalk.gray(`(${groupAge})`)}`,
         );
-      } else if (item.type === "linked_commit") {
-        // AC: @session-start-activity-timeline ac-activity-dedup, ac-activity-trailer-link
-        const taskDisplay = item.task.slug
-          ? `@${item.task.slug}`
-          : `@${item.task.ref}`;
-        console.log(
-          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${itemAge}, ${item.commit.author})`)} ${chalk.green(`→ ${taskDisplay} ${item.task.title}`)}`,
-        );
-        if (item.task.origin === "observation_promotion") {
+        if (group.task.origin === "observation_promotion") {
           observationPromotedTasks.push(taskDisplay);
         }
+        // Render nested commits with visual connectors
+        for (let i = 0; i < group.commits.length; i++) {
+          const { commit, date } = group.commits[i];
+          const isLast = i === group.commits.length - 1;
+          const connector = isLast ? "└─" : "├─";
+          const commitAge = formatRelativeTime(new Date(date));
+          console.log(
+            `    ${chalk.gray(connector)} ${chalk.yellow(commit.hash)} ${commit.message} ${chalk.gray(`(${commitAge}, ${commit.author})`)}`,
+          );
+        }
+      } else if (group.kind === "orphan_commit") {
+        // AC: @session-start-activity-timeline ac-activity-orphan
+        // Orphan commit: visually distinct from task entries
+        const commitAge = formatRelativeTime(new Date(group.date));
+        console.log(
+          `  ${chalk.gray("○")} ${chalk.yellow(group.commit.hash)} ${group.commit.message} ${chalk.gray(`(${commitAge}, ${group.commit.author})`)}`,
+        );
       }
     }
 

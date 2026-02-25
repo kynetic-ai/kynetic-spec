@@ -155,7 +155,7 @@ describe('session start notes enrichment', () => {
       // Completed tasks appear in the activity timeline, not a separate notes section
       // AC: @cmd-session-start ac-section-order — activity timeline shows completed tasks
       expect(result.stdout).toContain('Recent Activity');
-      expect(result.stdout).toContain('[completed]');
+      expect(result.stdout).toContain('✓');
       expect(result.stdout).toContain('Done task');
     });
 
