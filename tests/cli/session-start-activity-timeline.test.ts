@@ -6,6 +6,8 @@
  * AC: @session-start-activity-timeline ac-activity-sort
  * AC: @session-start-activity-timeline ac-activity-dedup
  * AC: @session-start-activity-timeline ac-activity-no-git
+ * AC: @session-start-activity-timeline ac-activity-hierarchy
+ * AC: @session-start-activity-timeline ac-activity-orphan
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, initGitRepo, git } from '../helpers/cli';
@@ -327,6 +329,115 @@ describe('session start activity timeline', () => {
       expect(result.stdout).toContain('Visible task');
       // Commit should not be visible
       expect(result.stdout).not.toContain('invisible commit');
+    });
+  });
+
+  // AC: @session-start-activity-timeline ac-activity-hierarchy
+  describe('hierarchical display (ac-activity-hierarchy)', () => {
+    it('should show linked commits associated with their task entry', () => {
+      // Create and complete a task
+      kspec('task add --title "Hierarchy task" --slug task-hier', tempDir);
+      kspec('task start @task-hier', tempDir);
+      kspec('task submit @task-hier', tempDir);
+      kspec('task complete @task-hier --reason "Shipped"', tempDir);
+
+      // Create a commit linked to the task
+      writeFileSync(join(tempDir, 'hier.ts'), 'export const h = 1;\n');
+      git('add hier.ts', tempDir);
+      git('commit -m "feat: hierarchy feature" -m "Task: @task-hier"', tempDir);
+
+      const result = kspec('session start', tempDir);
+
+      // Linked commit should display with task reference (→ arrow links them)
+      expect(result.stdout).toContain('hierarchy feature');
+      expect(result.stdout).toContain('Hierarchy task');
+
+      // In JSON, the linked_commit type carries both commit and task data
+      const session = kspecJson<SessionContext>('session start --json', tempDir);
+      const linked = session.activity_timeline.filter(
+        (i) => i.type === 'linked_commit' && i.task?.title === 'Hierarchy task',
+      );
+      expect(linked.length).toBe(1);
+      expect(linked[0].commit!.message).toBe('feat: hierarchy feature');
+      expect(linked[0].task!.title).toBe('Hierarchy task');
+    });
+
+    it('should show task completion entries distinctly from commit entries', () => {
+      // Complete a task without linked commits
+      kspec('task add --title "Task only" --slug task-only', tempDir);
+      kspec('task start @task-only', tempDir);
+      kspec('task submit @task-only', tempDir);
+      kspec('task complete @task-only --reason "Done"', tempDir);
+
+      const result = kspec('session start', tempDir);
+
+      // Task completion should show [completed] badge
+      expect(result.stdout).toContain('[completed]');
+      expect(result.stdout).toContain('Task only');
+    });
+  });
+
+  // AC: @session-start-activity-timeline ac-activity-orphan
+  describe('orphan commit display (ac-activity-orphan)', () => {
+    it('should show orphan commits as standalone entries without task reference', () => {
+      // Create a commit without Task: trailer (orphan)
+      writeFileSync(join(tempDir, 'orphan.ts'), 'export const orphan = 1;\n');
+      git('add orphan.ts', tempDir);
+      git('commit -m "chore: standalone cleanup"', tempDir);
+
+      const result = kspec('session start', tempDir);
+
+      // Orphan commit should appear in output with its hash and message
+      expect(result.stdout).toContain('standalone cleanup');
+    });
+
+    it('should classify orphan commits as type "commit" in JSON', () => {
+      // Create an orphan commit
+      writeFileSync(join(tempDir, 'orphan2.ts'), 'export const orphan2 = 1;\n');
+      git('add orphan2.ts', tempDir);
+      git('commit -m "chore: orphan commit"', tempDir);
+
+      const session = kspecJson<SessionContext>('session start --json', tempDir);
+
+      const orphans = session.activity_timeline.filter(
+        (i) => i.type === 'commit' && i.commit?.message === 'chore: orphan commit',
+      );
+      expect(orphans.length).toBe(1);
+      // Orphan commits have no task association
+      expect(orphans[0]).not.toHaveProperty('task');
+    });
+
+    it('should visually distinguish orphan commits from linked commits in human output', () => {
+      // Create a linked commit
+      kspec('task add --title "Linked task" --slug task-linked', tempDir);
+      kspec('task start @task-linked', tempDir);
+      kspec('task submit @task-linked', tempDir);
+      kspec('task complete @task-linked --reason "Done"', tempDir);
+
+      writeFileSync(join(tempDir, 'linked.ts'), 'export const linked = 1;\n');
+      git('add linked.ts', tempDir);
+      git('commit -m "feat: linked work" -m "Task: @task-linked"', tempDir);
+
+      // Create an orphan commit
+      writeFileSync(join(tempDir, 'orphan3.ts'), 'export const o = 1;\n');
+      git('add orphan3.ts', tempDir);
+      git('commit -m "chore: orphan work"', tempDir);
+
+      const result = kspec('session start', tempDir);
+
+      // Linked commit should show task reference with arrow
+      expect(result.stdout).toContain('Linked task');
+      // Orphan commit should appear without task reference
+      expect(result.stdout).toContain('orphan work');
+      // The linked commit has the → arrow to task; orphan does not
+      const lines = result.stdout.split('\n');
+      const linkedLine = lines.find((l) => l.includes('linked work'));
+      const orphanLine = lines.find((l) => l.includes('orphan work'));
+      expect(linkedLine).toBeDefined();
+      expect(orphanLine).toBeDefined();
+      // Linked line references the task, orphan line does not
+      expect(linkedLine).toContain('Linked task');
+      expect(orphanLine).not.toContain('Linked task');
     });
   });
 });

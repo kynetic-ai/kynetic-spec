@@ -1,12 +1,11 @@
 /**
  * Tests for session start notes enrichment
  *
- * AC: @cmd-session-start ac-1, ac-2
+ * AC: @cmd-session-start ac-review-detail
+ * AC: @cmd-session-start ac-notes-starvation
  * AC: @trait-json-output ac-1 - Valid JSON output purity
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
 
 interface SessionContext {
@@ -32,7 +31,7 @@ describe('session start notes enrichment', () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @cmd-session-start ac-1
+  // AC: @cmd-session-start ac-review-detail
   describe('pending_review task notes', () => {
     it('should include notes from pending_review tasks', () => {
       // Create a task with notes and submit it to pending_review
@@ -98,7 +97,7 @@ describe('session start notes enrichment', () => {
     });
   });
 
-  // AC: @cmd-session-start ac-2
+  // AC: @cmd-session-start ac-notes-starvation
   describe('recently completed task notes', () => {
     it('should include notes from recently completed tasks', () => {
       // Create and complete a task with notes
@@ -194,7 +193,7 @@ describe('session start notes enrichment', () => {
     });
   });
 
-  // AC: @cmd-session-start ac-1, ac-2
+  // AC: @cmd-session-start ac-notes-starvation
   describe('mixed-status note starvation prevention', () => {
     it('should include pending_review and completed notes even with many in_progress notes', { timeout: 20000 }, () => {
       // Create many in_progress tasks with notes (potential starvation scenario)
@@ -262,25 +261,6 @@ describe('session start notes enrichment', () => {
 
   // AC: @trait-json-output ac-1 - Valid JSON with no ANSI color codes
   describe('JSON output purity', () => {
-    it('should not use raw console.log in sessionStartAction handler', async () => {
-      // Static analysis: verify the action handler uses info()/warn() not raw console.log
-      const sessionSrc = await readFile(
-        join(process.cwd(), 'src/cli/commands/session.ts'),
-        'utf-8',
-      );
-
-      // Extract sessionStartAction function body
-      const actionStart = sessionSrc.indexOf('async function sessionStartAction');
-      const actionEnd = sessionSrc.indexOf('\n}\n', actionStart);
-      const actionBody = sessionSrc.slice(actionStart, actionEnd);
-
-      // Should NOT contain raw console.log (info/warn from output.ts handles structured mode)
-      expect(actionBody).not.toContain('console.log');
-      // Should import and use info/warn from output.ts
-      expect(sessionSrc).toContain('info,');
-      expect(sessionSrc).toContain('warn');
-    });
-
     it('should produce valid JSON on stdout with no extra lines', () => {
       // Run session start --json and verify stdout is pure JSON
       const result = kspec('session start --json', tempDir);
@@ -293,6 +273,18 @@ describe('session start notes enrichment', () => {
       const parsed = JSON.parse(result.stdout);
       expect(parsed).toHaveProperty('branch');
       expect(parsed).toHaveProperty('context');
+    });
+
+    it('should not contain ANSI color codes in JSON output', () => {
+      // Create some data to ensure output has content
+      kspec('task add --title "Color check" --slug color-check', tempDir);
+      kspec('task start @color-check', tempDir);
+
+      const result = kspec('session start --json', tempDir);
+
+      // ANSI escape sequences start with \x1b[ or \u001b[
+      // eslint-disable-next-line no-control-regex
+      expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 
     it('should not have info/warning lines on stdout', () => {
