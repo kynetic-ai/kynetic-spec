@@ -8,6 +8,7 @@ import {
   type KspecContext,
   loadAllTasks,
 } from "../../../parser/index.js";
+import { getSession } from "../../../sessions/store.js";
 import {
   formatCommitGuidance,
   getWorkingTreeStatus,
@@ -40,8 +41,36 @@ export async function performCheckpoint(
   // Load tasks
   const allTasks = await loadAllTasks(ctx);
 
-  // Check for in-progress tasks
-  const inProgressTasks = allTasks.filter((t) => t.status === "in_progress");
+  // Filter in-progress tasks by session scope
+  // AC: @cmd-session-checkpoint ac-session-scope
+  // AC: @cmd-session-checkpoint ac-no-session-scope
+  // AC: @cmd-session-checkpoint ac-session-failsafe
+  const sessionId = process.env.KSPEC_SESSION_ID || null;
+  const sessionActiveCache = new Map<string, boolean>();
+  async function isSessionActive(sid: string): Promise<boolean> {
+    if (sessionActiveCache.has(sid)) return sessionActiveCache.get(sid)!;
+    const session = await getSession(ctx.specDir, sid);
+    // Fail-safe: if lookup fails (null), treat as NOT active → include task
+    const active = session?.status === "active";
+    sessionActiveCache.set(sid, active);
+    return active;
+  }
+
+  const inProgressTasks = [];
+  for (const t of allTasks) {
+    if (t.status !== "in_progress") continue;
+    if (!t.session_id) {
+      // Unclaimed — always include
+      inProgressTasks.push(t);
+    } else if (t.session_id === sessionId) {
+      // Mine — always include
+      inProgressTasks.push(t);
+    } else if (!(await isSessionActive(t.session_id))) {
+      // Owning session is gone/closed/corrupt — include (orphaned)
+      inProgressTasks.push(t);
+    }
+    // else: active other session — skip
+  }
   for (const task of inProgressTasks) {
     const ref = getDisplayRef({ ref: task._ulid.slice(0, 8), slug: task.slugs[0] || null });
     issues.push({
