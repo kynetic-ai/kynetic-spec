@@ -5397,6 +5397,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-25T02:33:41.207Z
+    completed_at: 2026-02-25T02:34:14.986Z
     step_results:
       - step_index: 0
         status: completed
@@ -5422,4 +5423,11 @@ runs:
         completed_at: 2026-02-25T02:34:14.985Z
         notes: Nothing to capture this iteration. Clean docs-only task with no systemic friction.
     initiated_by: "@claude"
-    completed_at: 2026-02-25T02:34:14.986Z
+  - _ulid: 01KJA6MBHTHMS618Q9MK4GDPEZ
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-25T10:48:32.571Z
+    step_results: []
+    initiated_by: "@claude"
