@@ -5560,6 +5560,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-25T11:35:55.562Z
+    completed_at: 2026-02-25T11:36:34.900Z
     step_results:
       - step_index: 0
         status: completed
@@ -5583,4 +5584,11 @@ runs:
         completed_at: 2026-02-25T11:36:34.899Z
         notes: Complete. Minimal iteration, minimal reflection.
     initiated_by: "@claude"
-    completed_at: 2026-02-25T11:36:34.900Z
+  - _ulid: 01KJABDP1G5E22DJTQ0858SS88
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-25T12:12:16.816Z
+    step_results: []
+    initiated_by: "@claude"
