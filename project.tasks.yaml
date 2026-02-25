@@ -58130,6 +58130,20 @@
 
         Verify ralph filterByExplicitTasks() unchanged (ref is still short ULID).
       supersedes: null
+    - _ulid: 01KJ93K7RS2JHR3R6DXYWH4JJC
+      created_at: 2026-02-25T00:36:15.769Z
+      author: "@claude"
+      content: "Rewrote formatSessionContext() for primer/full modes. Changes: (1) Added slug,
+        description, status fields to ActiveTaskSummary, ReadyTaskSummary, BlockedTaskSummary,
+        CompletedTaskSummary. (2) New section ordering: active → review → blocked → ready → activity
+        → inbox → observations (full) → session metadata (full) → working tree → quick commands. (3)
+        Primer: top 5 ready, 10 activity items, inbox stat line only. Full: all ready, 20 activity,
+        20 untriaged inbox, observations section, metadata. (4) @slug display with @short-ulid
+        fallback. (5) Empty sections omitted entirely. (6) needs_work visually distinct from
+        in_progress. (7) Notes shown inline under active/review tasks. (8) Observations loaded from
+        meta context in full mode. (9) 37 new tests + 2 updated tests covering all 15 ACs. All 3571
+        tests pass (3 known flaky ralph)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
