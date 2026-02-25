@@ -58723,7 +58723,7 @@
     - task-hierarchical-activity-timeline
   title: Implement hierarchical activity timeline display
   type: task
-  spec_ref: null
+  spec_ref: "@session-start-activity-timeline"
   meta_ref: null
   plan_ref: null
   status: pending
