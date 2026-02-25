@@ -47208,7 +47208,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -47340,6 +47340,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  closed_reason: Task is for external project (imgen), not kynetic-spec. Doesn't belong in this task tracker.
 - _ulid: 01KHA83P0VX36G2QWJ2FH10N4B
   slugs:
     - implement-command-group-default-actions
@@ -60129,6 +60130,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #540. Updated checkpoint and session start to use task submit instead
+    of task complete. Fixed 2 tests that asserted on old text."
   depends_on: []
   context: []
   priority: 3
@@ -60139,6 +60142,7 @@
   created_at: 2026-02-25T18:01:52.459Z
   started_at: 2026-02-25T22:19:13.756Z
   submitted_at: 2026-02-25T22:19:49.339Z
+  completed_at: 2026-02-25T22:40:32.110Z
   notes:
     - _ulid: 01KJBE631TKNBVDKKQ92ZV56J1
       created_at: 2026-02-25T22:19:48.154Z
@@ -60149,6 +60153,3 @@
         instruction text."
       supersedes: null
   todos: []
-  completed_at: 2026-02-25T22:40:32.110Z
-  closed_reason: "Merged in PR #540. Updated checkpoint and session start to use task submit instead
-    of task complete. Fixed 2 tests that asserted on old text."
