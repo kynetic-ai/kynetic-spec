@@ -5557,8 +5557,18 @@ runs:
   - _ulid: 01KJA9B3X9MPVECMKNA8RMEBYR
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-25T11:35:55.562Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-25T11:35:55.562Z
+        completed_at: 2026-02-25T11:36:29.782Z
+        notes: "Lightweight iteration — fix cycle resolution only. One friction captured: codex silent
+          failure without API key (obs @01KJA9BT). No other systemic issues."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-25T11:36:29.782Z
+        completed_at: 2026-02-25T11:36:29.782Z
     initiated_by: "@claude"
