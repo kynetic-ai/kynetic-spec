@@ -246,6 +246,11 @@ features:
           This is informational; tasks track actual work.
         implements:
           - "@status-lifecycle"
+        acceptance_criteria:
+          - id: ac-reject-invalid
+            given: a user sets implementation status via CLI to an invalid value (e.g. 'specified')
+            when: the command executes
+            then: the command fails with a clear error listing valid values and no changes are written
       - _ulid: 01KF3H95B873EP62X4A2GBD5FC
         slugs:
           - status-cascade
