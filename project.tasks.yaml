@@ -60297,3 +60297,104 @@
       supersedes: null
   todos: []
   automation: eligible
+- _ulid: 01KJBK3V52ATSHDATM21GGMWQ9
+  slugs:
+    - task-migrate-daemon-server-tests
+  title: Migrate daemon-server static analysis tests to E2E
+  type: task
+  description: "daemon-server.test.ts has ~13 tests that read packages/daemon/src/server.ts and check
+    string patterns (port parsing, hostname binding, health endpoint, signal handlers, CORS,
+    WebSocket). These cannot catch runtime bugs. Migrate to E2E Playwright tests hitting actual
+    daemon endpoints. The localhost middleware tests (lines 59-188) are already behavioral and can
+    serve as a model. Spec ref: @daemon-server."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-25T23:45:57.410Z
+  notes: []
+  todos: []
+- _ulid: 01KJBK3XJF3X1PX2Q9204H7JN1
+  slugs:
+    - task-migrate-ralph-endloop-tests
+  title: Migrate ralph end-loop static analysis tests to behavioral
+  type: task
+  description: "ralph/end-loop.test.ts lines 254-372 and 493-502 have 8 tests reading
+    src/cli/commands/ralph.ts and checking string patterns for session state detection, signal
+    handlers, session close paths, and marker removal. These missed a real false-positive bug.
+    Migrate to: (1) import ralph functions directly for unit testing session close logic, (2)
+    process-level integration tests for signal handlers. The behavioral tests in lines 1-252 of the
+    same file are good and should be preserved."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - ralph
+  vcs_refs: []
+  created_at: 2026-02-25T23:45:59.887Z
+  notes: []
+  todos: []
+- _ulid: 01KJBK3ZWA9HHCRR7A5A7GXNDQ
+  slugs:
+    - task-migrate-budget-marker-tests
+  title: Migrate ralph session-budget marker removal tests
+  type: task
+  description: "ralph/session-budget-integration.test.ts lines 293-339 have 13 tests checking that
+    marker code patterns are absent from ralph.ts. Options: (1) convert to import-based checks
+    verifying removed functions don't exist, (2) delete entirely since reintroduction of removed
+    code is low-probability, (3) keep as-is since they're absence tests with lower bug-miss risk."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - testing
+    - ralph
+  vcs_refs: []
+  created_at: 2026-02-25T23:46:02.250Z
+  notes: []
+  todos: []
+- title: Migrate remaining static analysis tests (normalize-ref, skill-split, web-ui-types)
+  description: "Lower-risk static analysis tests to migrate: (1) normalize-ref-input.test.ts lines
+    55-139: 8 lint-style anti-pattern tests — consider ESLint custom rule. (2)
+    skill-module-split.test.ts lines 18-69: 6 file existence/string pattern tests — convert to
+    import-based checks (lines 74-120 already use imports). (3) web-ui-shared-types.test.ts: 5
+    re-export pattern checks — convert to TypeScript import verification. (4)
+    package-distribution.test.ts: 6 template content checks — consider npm pack --dry-run approach."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-migrate-remaining-static-tests
+  tags:
+    - testing
+  depends_on: []
+  _ulid: 01KJBK428WJZA8ZRRSA7D4ZF88
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T23:46:04.700Z
+  notes: []
+  todos: []
