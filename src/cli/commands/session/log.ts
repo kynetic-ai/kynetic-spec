@@ -678,13 +678,6 @@ interface SessionLogSearchOptions {
 }
 
 /**
- * Format relative timestamp from event timestamp (Unix ms) to session start.
- */
-function formatSearchTimestamp(eventTs: number): string {
-  return new Date(eventTs).toISOString();
-}
-
-/**
  * Format the session log search output.
  *
  * AC: @session-log-search ac-1, ac-4
@@ -713,7 +706,7 @@ function formatSessionLogSearch(results: SessionSearchResult[]): void {
 
     // AC: @session-log-search ac-4 - Show matches with session ID, timestamp, type, excerpt
     for (const match of session.matches) {
-      const ts = formatSearchTimestamp(match.timestamp);
+      const ts = new Date(match.timestamp).toISOString();
       const typeColor =
         match.event_type === "session.start" || match.event_type === "session.end"
           ? chalk.green
