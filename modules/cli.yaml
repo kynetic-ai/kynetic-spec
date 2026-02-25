@@ -5628,8 +5628,8 @@ requirements:
               activity items have mixed timestamps
             when: |
               timeline renders
-            then: |
-              items sorted most recent first
+            then: task groups sorted by most recent event (completion or latest commit); commits within a group
+              sorted chronologically
           - id: ac-activity-dedup
             given: "multiple commits are linked to the same task via Task: @slug trailers"
             when: |
