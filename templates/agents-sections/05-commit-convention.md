@@ -34,4 +34,8 @@ When a trait AC doesn't apply to a specific spec, annotate it as N/A with a reas
 // AC: @trait-slug ac-N — N/A: reason why it doesn't apply
 ```
 
-Group N/A annotations together in a dedicated test or at the top of the test file. The `// AC:` prefix is required — do not use prose comments or bullet lists. The annotation must be machine-parseable.
+```python
+# AC: @trait-slug ac-N — N/A: reason why it doesn't apply
+```
+
+Group N/A annotations together in a dedicated test or at the top of the test file. The `AC:` annotation marker with language-appropriate comment prefix is required — do not use prose comments or bullet lists. The annotation must be machine-parseable.
