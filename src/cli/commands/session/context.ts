@@ -329,6 +329,11 @@ export async function gatherSessionContext(
   options: SessionOptions,
 ): Promise<SessionContext> {
   const limit = parseInt(options.limit || "10", 10);
+  if (Number.isNaN(limit) || limit <= 0) {
+    throw new RangeError(
+      `Invalid limit: "${options.limit}". Must be a positive integer.`,
+    );
+  }
   const sinceDate = options.since ? parseTimeSpec(options.since) : null;
   const showGit = options.git !== false; // default true
 
