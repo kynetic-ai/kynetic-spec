@@ -55572,6 +55572,7 @@
   vcs_refs: []
   created_at: 2026-02-23T04:56:23.808Z
   started_at: 2026-02-25T23:43:23.129Z
+  submitted_at: 2026-02-25T23:46:10.108Z
   notes:
     - _ulid: 01KJ4V7Q7CK4JF2GTV37NGWNQD
       created_at: 2026-02-23T08:53:12.044Z
@@ -55647,7 +55648,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  submitted_at: 2026-02-25T23:46:10.108Z
 - _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
   slugs:
     - task-deduplicate-web-ui-types
@@ -60303,11 +60303,28 @@
     - task-migrate-daemon-server-tests
   title: Migrate daemon-server static analysis tests to E2E
   type: task
-  description: "daemon-server.test.ts has ~13 tests that read packages/daemon/src/server.ts and check
-    string patterns (port parsing, hostname binding, health endpoint, signal handlers, CORS,
-    WebSocket). These cannot catch runtime bugs. Migrate to E2E Playwright tests hitting actual
-    daemon endpoints. The localhost middleware tests (lines 59-188) are already behavioral and can
-    serve as a model. Spec ref: @daemon-server."
+  description: >-
+    Migrate static analysis tests in tests/daemon-server.test.ts that read packages/daemon/src/*.ts
+    and check string patterns.
+
+
+    Actions:
+
+    1. DELETE these tests (covered elsewhere or low value): Elysia dependency (line 27), --port flag
+    parsing (line 37), localhost hostname binding (line 49), /api/health endpoint (line 191),
+    SIGTERM handler (line 205), SIGINT handler (line 216), stop server on shutdown (line 226), CORS
+    plugin middleware (line 236), CORS plugin dependency (line 248), CORS localhost:5173 (line 257),
+    chokidar dependency (line 269), WebSocket endpoint (line 278), isDaemon true (line 289),
+    createServer export (line 299). Signal handlers covered by cli-serve.test.ts. WebSocket covered
+    by E2E connection.spec.ts.
+
+    2. KEEP the localhost-only middleware unit tests (lines 59-188) — these are already behavioral.
+
+    3. After deletion, verify full test suite passes: npm test.
+
+
+    Expected result: daemon-server.test.ts shrinks to ~130 lines containing only the behavioral
+    middleware tests.
   spec_ref: null
   meta_ref: null
   plan_ref: null
