@@ -15,6 +15,7 @@ import {
   type ShadowSyncResult,
   shadowPull,
 } from "../../../parser/shadow.js";
+import { isObject } from "../../../acp/types.js";
 import {
   errors,
   sessionPrompt,
@@ -33,6 +34,18 @@ import {
   sessionLogStatsAction,
 } from "./log.js";
 import type { CheckpointOptions, SessionOptions, StopHookInput } from "./types.js";
+
+// ─── Debug Logging ──────────────────────────────────────────────────────────
+
+function debugLog(message: string, detail?: unknown): void {
+  if (process.env.KSPEC_DEBUG === "1") {
+    if (detail) {
+      console.error(`[DEBUG] session/commands: ${message}`, detail);
+    } else {
+      console.error(`[DEBUG] session/commands: ${message}`);
+    }
+  }
+}
 
 // ─── Action Handlers ────────────────────────────────────────────────────────
 
@@ -107,13 +120,20 @@ async function readStdinIfAvailable(): Promise<string | null> {
 }
 
 /**
- * Parse Claude Code hook input from stdin
+ * Parse Claude Code hook input from stdin.
+ * Returns null (with debug log) if input is missing, not valid JSON, or not an object.
  */
-function parseHookInput(stdin: string | null): StopHookInput | null {
+export function parseHookInput(stdin: string | null): StopHookInput | null {
   if (!stdin) return null;
   try {
-    return JSON.parse(stdin.trim()) as StopHookInput;
-  } catch {
+    const parsed: unknown = JSON.parse(stdin.trim());
+    if (!isObject(parsed)) {
+      debugLog("parseHookInput: parsed value is not an object");
+      return null;
+    }
+    return parsed as StopHookInput;
+  } catch (err) {
+    debugLog("parseHookInput: failed to parse stdin as JSON", err);
     return null;
   }
 }
