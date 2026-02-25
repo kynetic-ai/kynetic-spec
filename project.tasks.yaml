@@ -59261,7 +59261,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KJ9ZBT"
   context: []
   priority: 2
   tags:
@@ -59394,7 +59395,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KJ9ZBT"
   context: []
   priority: 2
   tags:
@@ -59561,7 +59563,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KJ9ZBT"
   context: []
   priority: 3
   tags:
@@ -59602,7 +59605,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KJ9ZBT"
   context: []
   priority: 3
   tags:
