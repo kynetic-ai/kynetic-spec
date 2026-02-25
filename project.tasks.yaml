@@ -59992,7 +59992,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-25T10:41:13.855Z
-  notes: []
+  started_at: 2026-02-25T15:44:00.621Z
+  notes:
+    - _ulid: 01KJAQQBC9H8YYB0PCFEH74K53
+      created_at: 2026-02-25T15:47:16.489Z
+      author: "@claude"
+      content: Added test:shard1, test:shard2, test:shard3 npm scripts matching CI's 3-way shard
+        configuration. Also added testing convention rule documenting shard usage for faster dev
+        iteration. Verified shard1 runs successfully (~70s vs ~150s full suite).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T15:44:00.621Z
