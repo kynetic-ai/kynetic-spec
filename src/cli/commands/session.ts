@@ -145,6 +145,9 @@ export interface SessionContext {
 
   /** Summary statistics */
   stats: SessionStats;
+
+  /** Computed/derived fields aggregating other context data */
+  computed: SessionContextComputed;
 }
 
 export interface ActiveTaskSummary {
@@ -236,6 +239,24 @@ export interface SessionStats {
   blocked: number;
   completed: number;
   inbox_items: number;
+}
+
+/**
+ * Computed/derived fields for JSON consumers.
+ * Aggregates data from other session context fields into a single
+ * convenient object. Raw source arrays are preserved unchanged.
+ */
+export interface SessionContextComputed {
+  /** Count of inbox items with no triage record */
+  inbox_untriaged_count: number;
+  /** Count of inbox items triaged with 'defer' action */
+  inbox_deferred_count: number;
+  /** Total inbox item count */
+  inbox_total: number;
+  /** Map of task ref (short ULID) to count of pending tasks it unblocks */
+  task_unlocks: Record<string, number>;
+  /** Unified activity timeline (same as activity_timeline, for computed namespace) */
+  recent_activity: ActivityItem[];
 }
 
 export interface InboxSummary {
@@ -748,6 +769,24 @@ export async function gatherSessionContext(
     taskRefResolver,
   );
 
+  // AC: @session-start-computed-json ac-computed-unlocks
+  // Build task_unlocks map: short ULID ref → count of pending dependents
+  const taskUnlocks: Record<string, number> = {};
+  for (const [taskUlid, count] of unlocksMap) {
+    if (count > 0) {
+      taskUnlocks[index.shortUlid(taskUlid)] = count;
+    }
+  }
+
+  // AC: @session-start-computed-json ac-computed-inbox, ac-computed-unlocks, ac-computed-activity
+  const computed: SessionContextComputed = {
+    inbox_untriaged_count: inboxStats.untriaged,
+    inbox_deferred_count: inboxStats.deferred,
+    inbox_total: inboxStats.total,
+    task_unlocks: taskUnlocks,
+    recent_activity: activityTimeline,
+  };
+
   return {
     generated_at: new Date().toISOString(),
     branch,
@@ -765,6 +804,7 @@ export async function gatherSessionContext(
     inbox_items: inboxSummaries,
     inbox_stats: inboxStats,
     stats,
+    computed,
   };
 }
 
