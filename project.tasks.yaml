@@ -58969,10 +58969,18 @@
     - bug
   vcs_refs: []
   created_at: 2026-02-25T08:39:02.011Z
-  notes: []
+  started_at: 2026-02-25T11:23:12.379Z
+  notes:
+    - _ulid: 01KJA8Q7HPYMCJN7M6MCY8JJR0
+      created_at: 2026-02-25T11:25:03.927Z
+      author: "@claude"
+      content: "Fixed two no-op conditional assertions in session-start-format.test.ts. Both tests had
+        if-guards that made assertions pass vacuously when the condition was false (no inbox items
+        in fixture). Fix: added explicit inbox items via kspec inbox add before asserting, and
+        removed the if-guards so assertions always run. All 43 tests in the file pass."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T11:23:12.379Z
 - _ulid: 01KJ9ZBT1MNTKB05SYK8K243CM
   slugs: []
   title: Refactor session.ts — split into focused modules
