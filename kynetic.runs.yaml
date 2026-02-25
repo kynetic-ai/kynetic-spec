@@ -5426,7 +5426,7 @@ runs:
   - _ulid: 01KJA6MBHTHMS618Q9MK4GDPEZ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-25T10:48:32.571Z
     step_results:
@@ -5462,5 +5462,35 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-25T10:48:47.284Z
-        completed_at: 2026-02-25T10:48:47.284Z
+        completed_at: 2026-02-25T10:49:00.105Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **kspec agents generate skip-logic blocks version bumps** — During release, `kspec
+          agents generate` skipped because content was unchanged, but the version header comment
+          needed updating. Had to manually edit the version line. The skip check compares a content
+          hash but the version comment is metadata that should update even when content is
+          identical. A `--force` flag would help, or the hash should include the version.
+
+
+          2. **No automated branch cleanup after PR merge** — 13 merged remote branches accumulated
+          from the ralph session. This is a known gap — ralph merges PRs but doesn't delete
+          branches. Had to manually prune and delete.
+
+
+          3. **kspec task get --json outputs info lines on stderr that break piping** — When trying
+          to pipe `kspec task get @ref --json` through python3 for parsing, the info lines (like
+          shadow branch sync messages) pollute stderr and cause confusion. The `2>&1` redirect
+          captures both, making JSON parsing fail.
+
+
+          4. **Session events.jsonl is hard to analyze** — 14k lines of granular streaming events.
+          Had to write custom python scripts to extract meaningful summaries (iteration counts, task
+          transitions, PR data). A `kspec session stats @id` or `kspec session summary @id` command
+          would be valuable.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-25T10:49:00.105Z
+        completed_at: 2026-02-25T10:49:00.105Z
     initiated_by: "@claude"
