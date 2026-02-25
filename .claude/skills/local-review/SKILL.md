@@ -69,6 +69,20 @@ If a spec is found through any method, use it for full AC validation (steps 1-3)
 If only a task ref is found (no spec_ref on it), the task is infra/internal — skip AC checks.
 If no spec context is found after all discovery steps, skip AC coverage checks (steps 1-3) and proceed with steps 4-8 (test quality, isolation, code quality, regression).
 
+## CLI Lookups
+
+Use CLI commands to resolve specs and traits. **Do NOT search `.kspec/` YAML files manually.**
+
+| Need | Command |
+|------|---------|
+| Spec + all ACs (own + inherited) | `kspec item get @spec-ref` |
+| Trait definition + ACs | `kspec item get @trait-slug` |
+| Task's linked spec | `kspec task get @ref` → read `spec_ref` field |
+| Search by keyword | `kspec search "keyword"` |
+| All traits | `kspec trait list` |
+
+**Resolving inherited traits:** When `kspec item get` shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the full trait ACs. This is one command — never grep through `.kspec/modules/*.yaml` files.
+
 ## Review Criteria
 
 ### 1. Own AC Coverage (MUST-FIX)

@@ -12,6 +12,20 @@ Create and maintain specification items — the source of truth for what to buil
 
 **Not for:** Task management (use `/kspec:task-work`), plan-to-spec translation (use `/kspec:plan`), or triage (use `/kspec:triage`).
 
+## Finding Things
+
+Use CLI commands to discover and inspect specs. **Do NOT search `.kspec/` YAML files manually.**
+
+| Need | Command |
+|------|---------|
+| View spec + all ACs | `kspec item get @ref` |
+| Search by keyword | `kspec search "keyword"` |
+| List by type | `kspec item list --type feature` |
+| All modules | `kspec item list --type module` |
+| All traits | `kspec trait list` |
+| Trait details + ACs | `kspec item get @trait-slug` |
+| Items under a parent | `kspec item list --under @parent` |
+
 ## Core Principles
 
 1. **Spec defines WHAT, not HOW** — Describe the desired behavior, not the implementation
