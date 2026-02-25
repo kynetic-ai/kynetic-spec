@@ -49,6 +49,41 @@ describe('Item Set Enum Validation', () => {
         expect(item.status.implementation).toBe(status);
       }
     });
+
+    // AC: @implementation-states ac-reject-invalid
+    it('should reject case-insensitive variants of valid statuses', () => {
+      const casedVariants = ['In_Progress', 'IN_PROGRESS', 'Not_Started', 'IMPLEMENTED', 'Verified'];
+      for (const status of casedVariants) {
+        const result = kspec(`item set @enum-test --status ${status}`, tempDir, { expectFail: true });
+        expect(result.exitCode).not.toBe(0);
+        expect(result.stderr).toContain('Invalid implementation status');
+        expect(result.stderr).toContain(status);
+      }
+    });
+
+    // AC: @implementation-states ac-reject-invalid
+    it('should reject partial matches of valid statuses', () => {
+      const partials = ['in_prog', 'not_start', 'impl', 'verif'];
+      for (const status of partials) {
+        const result = kspec(`item set @enum-test --status ${status}`, tempDir, { expectFail: true });
+        expect(result.exitCode).not.toBe(0);
+        expect(result.stderr).toContain('Invalid implementation status');
+      }
+    });
+
+    // AC: @implementation-states ac-reject-invalid
+    it('should treat empty string status as no-op (no changes written)', () => {
+      // Set a known status first
+      kspec('item set @enum-test --status in_progress', tempDir);
+
+      // Empty string is falsy — Commander may not pass it through,
+      // but if it does, the validation guard `if (options.status)` skips it
+      const result = kspec('item set @enum-test --status ""', tempDir);
+
+      // Verify original status is preserved regardless
+      const item = kspecJson<{ status: { implementation?: string } }>('item get @enum-test', tempDir);
+      expect(item.status.implementation).toBe('in_progress');
+    });
   });
 
   describe('--maturity validation', () => {
@@ -86,6 +121,40 @@ describe('Item Set Enum Validation', () => {
         const item = kspecJson<{ status: { maturity?: string } }>('item get @enum-test', tempDir);
         expect(item.status.maturity).toBe(maturity);
       }
+    });
+
+    // AC: @maturity-states ac-reject-invalid
+    it('should reject case-insensitive variants of valid maturity values', () => {
+      const casedVariants = ['Draft', 'PROPOSED', 'Stable', 'DEFERRED', 'Deprecated'];
+      for (const maturity of casedVariants) {
+        const result = kspec(`item set @enum-test --maturity ${maturity}`, tempDir, { expectFail: true });
+        expect(result.exitCode).not.toBe(0);
+        expect(result.stderr).toContain('Invalid maturity');
+        expect(result.stderr).toContain(maturity);
+      }
+    });
+
+    // AC: @maturity-states ac-reject-invalid
+    it('should reject partial matches of valid maturity values', () => {
+      const partials = ['dra', 'prop', 'stab', 'defer', 'deprec'];
+      for (const maturity of partials) {
+        const result = kspec(`item set @enum-test --maturity ${maturity}`, tempDir, { expectFail: true });
+        expect(result.exitCode).not.toBe(0);
+        expect(result.stderr).toContain('Invalid maturity');
+      }
+    });
+
+    // AC: @maturity-states ac-reject-invalid
+    it('should treat empty string maturity as no-op (no changes written)', () => {
+      // Set a known maturity first
+      kspec('item set @enum-test --maturity proposed', tempDir);
+
+      // Empty string should not alter the maturity
+      const result = kspec('item set @enum-test --maturity ""', tempDir);
+
+      // Verify original maturity is preserved
+      const item = kspecJson<{ status: { maturity?: string } }>('item get @enum-test', tempDir);
+      expect(item.status.maturity).toBe('proposed');
     });
   });
 });
