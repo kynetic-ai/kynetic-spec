@@ -58986,6 +58986,13 @@
         split session.ts, task @01KJ9ZBT) with the assertion fix. Must split into separate PRs. The
         test fix itself (commit 85a371b9) is correct."
       supersedes: null
+    - _ulid: 01KJA97G3MRS5KJ40C0VS27DAY
+      created_at: 2026-02-25T11:33:56.981Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1 RESOLVED] Rebased branch onto origin/main to drop the unrelated refactor
+        commit (f461447c, already merged via PR #523). PR #524 now contains only the assertion fix
+        commit (3ea4616f). All 43 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ9ZBT1MNTKB05SYK8K243CM
