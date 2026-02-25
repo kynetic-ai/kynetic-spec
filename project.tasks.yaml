@@ -60176,7 +60176,11 @@
         instruction text."
       supersedes: null
   todos: []
-- title: Validate KSPEC_SESSION_ID env injection in ralph loop
+- _ulid: 01KJBGSF8EVHC4W69FN0SVD1N1
+  slugs:
+    - task-validate-session-inject
+  title: Validate KSPEC_SESSION_ID env injection in ralph loop
+  type: task
   description: >-
     Self-validating task: when ralph starts this task, verify that session_id was stamped on it.
 
@@ -60196,23 +60200,21 @@
 
     This validates that ralph's harness-specific env injection (via .claude/settings.json) correctly
     propagates KSPEC_SESSION_ID to kspec subprocesses.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-validate-session-inject
   tags:
     - sessions
     - validation
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJBGSF8EVHC4W69FN0SVD1N1
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-25T23:05:20.398Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-02-25T23:07:05.634Z
+  session_id: 01KJBGWBP73H0ERJ7GHR9164EA
