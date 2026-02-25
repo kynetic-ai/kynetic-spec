@@ -1110,18 +1110,6 @@ conventions:
       - E2E port hardcoded at 3456 — tests cannot run in parallel on same machine
       - GitHub Pages needs BASE_PATH=/kynetic-spec for local static builds; CI handles automatically
     examples: []
-  - _ulid: 01KJ9AY1XGMQKT4ZKP16PZE9Q6
-    domain: cli-lookups
-    rules:
-      - Use kspec CLI commands (item get, task get, search, trait list) instead of manually
-        searching .kspec/ YAML files
-      - When item get shows 'Inherited from @trait-slug', run kspec item get @trait-slug to resolve
-        — do NOT grep YAML files
-      - Use kspec search for keyword lookups instead of piping kspec item list through grep
-      - Every skill includes a CLI Lookups table — use it as the quick-reference for finding
-        spec/task/trait information
-      - placeholder
-    examples: []
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
     type: idea
