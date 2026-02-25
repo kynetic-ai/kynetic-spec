@@ -227,6 +227,10 @@ features:
             given: creating or updating a spec item
             when: setting maturity to deferred
             then: the value is accepted and persisted
+          - id: ac-reject-invalid
+            given: a user sets maturity status via CLI to an invalid value
+            when: the command executes
+            then: the command fails with a clear error listing valid values and no changes are written
       - _ulid: 01JHNKA2W2STAT200000000000
         slugs:
           - implementation-states
