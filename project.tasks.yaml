@@ -59473,7 +59473,14 @@
     - session
   vcs_refs: []
   created_at: 2026-02-25T09:28:30.917Z
-  notes: []
+  notes:
+    - _ulid: 01KJA300NF628EA8P1ZBK9NRAS
+      created_at: 2026-02-25T09:45:00.335Z
+      author: "@claude"
+      content: "Also fix: local SessionContext interface shadows imported StoredSessionContext (aliased on
+        import). During types extraction, rename the local one to something like SessionStartContext
+        or ComputedSessionContext to avoid the collision."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJA2FAHZBWGKS0HXH9MW79Q0
@@ -59518,7 +59525,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Add runtime validation for unsafe type casts in session log commands
+- _ulid: 01KJA2YQKPNQVN2MK74RANWHB0
+  slugs: []
+  title: Add runtime validation for unsafe type casts in session log commands
+  type: bug
   description: >-
     Several places in session log code use unsafe `as` casts without runtime validation:
 
@@ -59539,23 +59549,20 @@
 
 
     These are in the session log section which after refactor will be in session/log.ts.
-  type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - cli
     - session
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJA2YQKPNQVN2MK74RANWHB0
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-25T09:44:18.290Z
   notes: []
   todos: []
+  automation: eligible
