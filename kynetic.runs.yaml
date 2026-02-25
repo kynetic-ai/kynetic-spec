@@ -5557,7 +5557,7 @@ runs:
   - _ulid: 01KJA9B3X9MPVECMKNA8RMEBYR
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-25T11:35:55.562Z
     step_results:
@@ -5570,5 +5570,10 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-25T11:36:29.782Z
-        completed_at: 2026-02-25T11:36:29.782Z
+        completed_at: 2026-02-25T11:36:31.613Z
+        notes: "Searched: OPENAI_API_KEY, codex, preflight — no existing tracking. Captured as observation."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-25T11:36:31.613Z
+        completed_at: 2026-02-25T11:36:31.613Z
     initiated_by: "@claude"
