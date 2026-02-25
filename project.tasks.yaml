@@ -59263,10 +59263,21 @@
     - refactor
   vcs_refs: []
   created_at: 2026-02-25T08:42:25.776Z
-  notes: []
+  started_at: 2026-02-25T11:42:47.102Z
+  notes:
+    - _ulid: 01KJAAD2Z1C3E3M11G6HTR76QG
+      created_at: 2026-02-25T11:54:28.705Z
+      author: "@claude"
+      content: Extracted shared test helpers and interfaces for session start tests. Created
+        tests/helpers/session-types.ts with comprehensive SessionContext (all fields optional) plus
+        all sub-interfaces (ActiveTaskSummary, ReadyTaskSummary, BlockedTaskSummary,
+        CompletedTaskSummary, CommitSummary, ActivityItem, NoteSummary, InboxSummary, InboxStats,
+        SessionContextComputed, SessionStats, WorkingTree). Created tests/helpers/inbox.ts with
+        addInboxItem() and triageItem() helpers. Updated all 6 session-start test files to import
+        from shared locations. All 109 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T11:42:47.102Z
 - _ulid: 01KJ9ZJPKKHWSJZT2E289J9B1Z
   slugs: []
   title: Fix removeAllListeners() in readStdinIfAvailable to use named handlers
