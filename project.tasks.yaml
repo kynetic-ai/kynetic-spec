@@ -59400,6 +59400,7 @@
     - session
   vcs_refs: []
   created_at: 2026-02-25T08:53:18.892Z
+  started_at: 2026-02-25T13:20:58.612Z
   notes:
     - _ulid: 01KJA3KSP7VK52BSE86SBECM4H
       created_at: 2026-02-25T09:55:48.552Z
@@ -59408,9 +59409,17 @@
         .slice(0,5), once for completed list with .slice(0,limit)). Cache the sorted result and
         reuse."
       supersedes: null
+    - _ulid: 01KJAFXVYSMDHSP0XAFB21QEPB
+      created_at: 2026-02-25T13:31:01.465Z
+      author: "@claude"
+      content: Replaced 14+ separate .filter() passes over allTasks with single-pass Map<status,
+        LoadedTask[]> bucketing. Cached getReadyTasks() result (called once, used for stats +
+        readyTasks list). Cached sorted completed tasks (used for notes + recentlyCompleted).
+        Combined in_progress + needs_work into activeStatusTasks variable reused 3 times. All 163
+        session tests pass, no behavioral changes.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T13:20:58.612Z
 - _ulid: 01KJA02KF199EP7QVGBMS9A28C
   slugs: []
   title: Add edge case tests for item set enum validation
