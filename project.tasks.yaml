@@ -58777,7 +58777,7 @@
   spec_ref: "@session-start-activity-timeline"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -58799,6 +58799,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-25T01:58:11.607Z
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ923HBYQ3475W2NB1AJH0D9
   slugs:
     - task-validate-status-enum
@@ -58859,6 +58861,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #518. Fixed unawaited async cleanup in ralph signal handler — changed
+    fire-and-forget Promise.all().finally() to properly awaited async IIFE pattern. Budget.json now
+    reliably cleaned up on SIGINT/SIGTERM. Updated static analysis test in end-loop.test.ts. Added
+    @ralph-task-limit ac-signal-cleanup AC annotations to signal tests. Codex review clean."
   depends_on: []
   context: []
   priority: 2
@@ -58870,6 +58876,7 @@
   created_at: 2026-02-25T00:35:53.978Z
   started_at: 2026-02-25T01:40:10.257Z
   submitted_at: 2026-02-25T01:49:04.093Z
+  completed_at: 2026-02-25T01:57:06.152Z
   notes:
     - _ulid: 01KJ93JT319K06HE6MY2271F7H
       created_at: 2026-02-25T00:36:01.762Z
@@ -58906,8 +58913,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-25T01:57:06.152Z
-  closed_reason: "Merged in PR #518. Fixed unawaited async cleanup in ralph signal handler — changed
-    fire-and-forget Promise.all().finally() to properly awaited async IIFE pattern. Budget.json now
-    reliably cleaned up on SIGINT/SIGTERM. Updated static analysis test in end-loop.test.ts. Added
-    @ralph-task-limit ac-signal-cleanup AC annotations to signal tests. Codex review clean."
