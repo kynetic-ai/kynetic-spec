@@ -897,3 +897,12 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KJ9NJC7QK6F0SAB11PNN3798
+    text: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add a
+      --agent flag (e.g. kspec setup --agent claude-code) to explicitly specify the agent type, or
+      detect based on installed tooling (~/.claude exists) rather than requiring runtime env vars.
+      Discovered while building containerized ralph runner — entrypoint bash script can't set
+      CLAUDECODE=1 globally because claude blocks nested sessions.
+    created_at: 2026-02-25T05:50:21.943Z
+    tags: []
+    added_by: "@claude"
