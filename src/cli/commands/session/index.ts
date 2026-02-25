@@ -38,5 +38,8 @@ export { performCheckpoint } from "./checkpoint.js";
 // Formatting helpers (used by tests)
 export { getDisplayRef, formatPriority, statusColor } from "./format.js";
 
+// Hook input parsing
+export { parseHookInput } from "./commands.js";
+
 // Command registration
 export { registerSessionCommands } from "./commands.js";
