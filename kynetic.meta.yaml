@@ -1091,6 +1091,8 @@ conventions:
       - Never use JSON.stringify() for YAML — use template strings or yaml library stringify()
       - Playwright E2E tests excluded from vitest — run separately with npm run test:e2e
       - E2E fixtures are SEPARATE from unit test fixtures — never mix them
+      - Use npm run test:shard1/shard2/shard3 for faster local dev runs (~50s vs ~150s). Full suite
+        still required before PR.
     examples: []
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
