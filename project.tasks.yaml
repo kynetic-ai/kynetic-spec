@@ -58168,6 +58168,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #516. Added 6 tests for ac-activity-hierarchy/ac-activity-orphan,
+    explicit trait tests for @trait-json-output ac-4 and @trait-semantic-exit-codes ac-5 (N/A),
+    fixed stale AC numbering in notes tests, replaced static analysis with behavioral ANSI check.
+    All 72 session-start tests pass."
   depends_on:
     - "@01KJ74W2"
   context: []
@@ -58181,6 +58185,7 @@
   created_at: 2026-02-24T06:20:07.277Z
   started_at: 2026-02-25T01:00:40.031Z
   submitted_at: 2026-02-25T01:08:56.446Z
+  completed_at: 2026-02-25T01:24:55.217Z
   notes:
     - _ulid: 01KJ755BA7F3ZWTE6JWJTN9S40
       created_at: 2026-02-24T06:25:08.935Z
@@ -58230,11 +58235,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-25T01:24:55.217Z
-  closed_reason: "Merged in PR #516. Added 6 tests for ac-activity-hierarchy/ac-activity-orphan,
-    explicit trait tests for @trait-json-output ac-4 and @trait-semantic-exit-codes ac-5 (N/A),
-    fixed stale AC numbering in notes tests, replaced static analysis with behavioral ANSI check.
-    All 72 session-start tests pass."
 - _ulid: 01KJ752D9H9HV3E5EXTFFSNSN5
   slugs: []
   title: Fix batch-exec-engine test timeout flakes
@@ -58807,7 +58807,7 @@
   spec_ref: "@implementation-states"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -58831,6 +58831,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-25T01:25:25.255Z
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ93JJFTXFE4F8084NAXMHG3
   slugs:
     - task-fix-ralph-signal-cleanup
