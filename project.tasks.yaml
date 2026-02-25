@@ -55571,6 +55571,7 @@
     - e2e
   vcs_refs: []
   created_at: 2026-02-23T04:56:23.808Z
+  started_at: 2026-02-25T23:43:23.129Z
   notes:
     - _ulid: 01KJ4V7Q7CK4JF2GTV37NGWNQD
       created_at: 2026-02-23T08:53:12.044Z
@@ -55587,9 +55588,65 @@
         ralph.ts source. Both files already have behavioral equivalents alongside the static ones,
         so migration = delete static tests after confirming behavioral coverage."
       supersedes: null
+    - _ulid: 01KJBK313W12Q9TCXPF8X620QH
+      created_at: 2026-02-25T23:45:30.749Z
+      author: "@claude"
+      content: >-
+        AUDIT COMPLETE — Inventory of static analysis tests across the repo:
+
+
+        **7 files with static analysis patterns, ~59 total tests.**
+
+
+        HIGH RISK (P1):
+
+        - daemon-server.test.ts: ~13 tests read packages/daemon/src/server.ts and check string
+        patterns for port, hostname, health, CORS, signals, WebSocket. Zero runtime verification of
+        daemon behavior.
+
+        - ralph/end-loop.test.ts lines 254-372: 8 tests read src/cli/commands/ralph.ts checking
+        session state detection, signal handlers, session close paths, marker removal. Already known
+        to miss real bugs (false-positive end-loop exit bug).
+
+
+        MEDIUM RISK (P2):
+
+        - ralph/session-budget-integration.test.ts lines 293-339: 13 tests checking marker code
+        removal (26 patterns). Absence tests.
+
+        - normalize-ref-input.test.ts lines 55-139: 8 tests doing lint-style anti-pattern detection
+        on CLI commands and daemon routes.
+
+        - skill-module-split.test.ts lines 18-69: 6 tests checking file existence and string
+        patterns. Same file has good behavioral tests on lines 74-120.
+
+        - web-ui-shared-types.test.ts: 5 tests checking re-export patterns in type files.
+
+
+        LOW RISK (P3):
+
+        - package-distribution.test.ts: 6 tests checking template file content patterns.
+
+
+        MIGRATION APPROACHES:
+
+        1. daemon-server → E2E Playwright tests hitting actual endpoints
+
+        2. ralph end-loop/session-budget → Import functions directly, unit test logic
+
+        3. normalize-ref-input → ESLint custom rule or keep as lint-like
+
+        4. skill-module-split → Convert to import-based checks (already partially done)
+
+        5. web-ui-shared-types → TypeScript import verification
+
+        6. package-distribution → npm pack --dry-run for realistic verification
+
+
+        ~40+ other files use readFile legitimately (reading test output, YAML fixtures, etc.)
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-02-25T23:43:23.129Z
 - _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
   slugs:
     - task-deduplicate-web-ui-types
