@@ -200,16 +200,16 @@ async function bootstrap() {
   } else {
     status = needsInit && !dirStatus.exists ? 'fresh_setup' : 'repaired';
 
-    // Step 2: npm install (if needed)
+    // Step 2: npm ci (if needed) — use ci to avoid modifying package-lock.json
     if (needsInstall) {
-      logStep('Installing dependencies (npm install)...');
-      const result = run('npm install');
+      logStep('Installing dependencies (npm ci)...');
+      const result = run('npm ci');
       if (!result.success) {
-        logError('npm install failed');
+        logError('npm ci failed');
         process.exit(1);
       }
       logSuccess('Dependencies installed');
-      actions.push('Installed dependencies (npm install)');
+      actions.push('Installed dependencies (npm ci)');
     } else {
       logSkip('Dependencies already installed');
     }

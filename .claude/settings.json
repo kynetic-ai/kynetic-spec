@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/kspec-worktree-guard.sh"
+            "command": "kspec guard worktree"
           }
         ]
       }
@@ -35,5 +35,17 @@
   },
   "enabledPlugins": {
     "kspec@kspec-plugins": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(kspec:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ]
   }
 }
