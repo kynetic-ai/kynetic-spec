@@ -58482,10 +58482,19 @@
   session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T16:40:48.352Z
   started_at: 2026-02-25T02:25:09.340Z
-  notes: []
+  submitted_at: 2026-02-25T02:29:16.206Z
+  notes:
+    - _ulid: 01KJ9A2C9VQVZRCBZQCGY01X2Z
+      created_at: 2026-02-25T02:29:23.387Z
+      author: "@claude"
+      content: "Added N/A trait AC annotation format to templates/agents-sections/05-commit-convention.md
+        under a new '### N/A Trait ACs' subsection. Documents the required format: `// AC:
+        @trait-slug ac-N — N/A: reason`. Emphasizes the // AC: prefix is required (not prose),
+        annotations should be grouped, and must be machine-parseable. Regenerated kspec-agents.md.
+        All 3604 tests pass (1 known flaky ralph test)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-25T02:29:16.206Z
 - _ulid: 01KJ8T2N7APYPYDEHM2WVP7ZTX
   slugs: []
   title: Fix test failures when running inside ralph loop (env pollution)
