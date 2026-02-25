@@ -58815,7 +58815,9 @@
   tags:
     - cli
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-25T00:10:12.733Z
+  started_at: 2026-02-25T01:25:25.255Z
   notes:
     - _ulid: 01KJ923S3EFT5SFD6G0Z04HX8W
       created_at: 2026-02-25T00:10:20.655Z
@@ -58829,10 +58831,18 @@
         clear error listing valid values. Applies to both kspec item set --status and kspec item set
         --maturity if that exists. Also covers @maturity-states ac-reject-invalid."
       supersedes: null
+    - _ulid: 01KJ96Q18B55492DY3NJXYV8V9
+      created_at: 2026-02-25T01:30:45.899Z
+      author: "@claude"
+      content: "Added enum validation for --status and --maturity flags in item set command. Validates
+        against ImplementationStatusSchema.options and MaturitySchema.options before writing. On
+        invalid input, fails with clear error listing valid values and exits with USAGE_ERROR code.
+        6 integration tests covering both @implementation-states ac-reject-invalid and
+        @maturity-states ac-reject-invalid: invalid value rejection, no-write verification, and all
+        valid values acceptance. All 3592 tests pass (2 known flaky ralph signal tests)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T01:25:25.255Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ93JJFTXFE4F8084NAXMHG3
   slugs:
     - task-fix-ralph-signal-cleanup
