@@ -59398,7 +59398,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Consolidate naming inconsistencies in session modules
+- _ulid: 01KJA21TE7JMYSEQ3G0VZ9AKWE
+  slugs: []
+  title: Consolidate naming inconsistencies in session modules
+  type: task
   description: >-
     After the session.ts split (depends on @01KJ9ZBT), consolidate naming inconsistencies across the
     new modules.
@@ -59455,23 +59458,21 @@
 
 
     Depends on: @01KJ9ZBT (session.ts refactor)
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@01KJ9ZBT"
+  context: []
   priority: 3
-  slugs: []
   tags:
     - refactor
     - cli
     - session
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJA21TE7JMYSEQ3G0VZ9AKWE
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-25T09:28:30.917Z
   notes: []
   todos: []
+  automation: eligible
