@@ -333,10 +333,8 @@ describe('session start activity timeline', () => {
   });
 
   // AC: @session-start-activity-timeline ac-activity-hierarchy
-  // Note: visual nesting with connectors is tracked by @01KJ91Q8 (not yet implemented).
-  // These tests verify the current data model linking commits to tasks.
   describe('hierarchical display (ac-activity-hierarchy)', () => {
-    it('should show linked commits associated with their task entry', () => {
+    it('should show task as top-level entry with linked commits nested beneath using visual connectors', () => {
       // Create and complete a task
       kspec('task add --title "Hierarchy task" --slug task-hier', tempDir);
       kspec('task start @task-hier', tempDir);
@@ -350,9 +348,14 @@ describe('session start activity timeline', () => {
 
       const result = kspec('session start', tempDir);
 
-      // Linked commit should display with task reference (→ arrow links them)
-      expect(result.stdout).toContain('hierarchy feature');
+      // Task should appear as top-level entry with ✓ marker
+      expect(result.stdout).toContain('✓');
+      expect(result.stdout).toContain('@task-hier');
       expect(result.stdout).toContain('Hierarchy task');
+
+      // Linked commit should be nested beneath with a visual connector (└─ for single commit)
+      expect(result.stdout).toContain('└─');
+      expect(result.stdout).toContain('hierarchy feature');
 
       // In JSON, the linked_commit type carries both commit and task data
       const session = kspecJson<SessionContext>('session start --json', tempDir);
@@ -364,7 +367,43 @@ describe('session start activity timeline', () => {
       expect(linked[0].task!.title).toBe('Hierarchy task');
     });
 
-    it('should show task completion entries distinctly from commit entries', () => {
+    it('should nest multiple commits under the same task with ├─ and └─ connectors', () => {
+      // Create and complete a task
+      kspec('task add --title "Multi commit task" --slug task-multi', tempDir);
+      kspec('task start @task-multi', tempDir);
+      kspec('task submit @task-multi', tempDir);
+      kspec('task complete @task-multi --reason "Shipped"', tempDir);
+
+      // Create two commits linked to the same task
+      writeFileSync(join(tempDir, 'multi1.ts'), 'export const m1 = 1;\n');
+      git('add multi1.ts', tempDir);
+      git('commit -m "feat: first commit" -m "Task: @task-multi"', tempDir);
+
+      writeFileSync(join(tempDir, 'multi2.ts'), 'export const m2 = 1;\n');
+      git('add multi2.ts', tempDir);
+      git('commit -m "feat: second commit" -m "Task: @task-multi"', tempDir);
+
+      const result = kspec('session start', tempDir);
+
+      // Task should appear as top-level entry
+      expect(result.stdout).toContain('@task-multi');
+      expect(result.stdout).toContain('Multi commit task');
+
+      // Should have ├─ for non-last and └─ for last commit
+      expect(result.stdout).toContain('├─');
+      expect(result.stdout).toContain('└─');
+
+      // Both commits should appear
+      expect(result.stdout).toContain('first commit');
+      expect(result.stdout).toContain('second commit');
+
+      // Task should appear only once (not repeated per commit)
+      const lines = result.stdout.split('\n');
+      const taskLines = lines.filter((l) => l.includes('Multi commit task'));
+      expect(taskLines.length).toBe(1);
+    });
+
+    it('should show standalone task completions with ✓ marker', () => {
       // Complete a task without linked commits
       kspec('task add --title "Task only" --slug task-only', tempDir);
       kspec('task start @task-only', tempDir);
@@ -373,17 +412,36 @@ describe('session start activity timeline', () => {
 
       const result = kspec('session start', tempDir);
 
-      // Task completion should show [completed] badge
-      expect(result.stdout).toContain('[completed]');
+      // Task completion should show ✓ marker
+      expect(result.stdout).toContain('✓');
       expect(result.stdout).toContain('Task only');
+    });
+
+    it('should show task on its own line, commit on separate nested line', () => {
+      kspec('task add --title "Separate lines" --slug task-sep', tempDir);
+      kspec('task start @task-sep', tempDir);
+      kspec('task submit @task-sep', tempDir);
+      kspec('task complete @task-sep --reason "Done"', tempDir);
+
+      writeFileSync(join(tempDir, 'sep.ts'), 'export const s = 1;\n');
+      git('add sep.ts', tempDir);
+      git('commit -m "feat: sep commit" -m "Task: @task-sep"', tempDir);
+
+      const result = kspec('session start', tempDir);
+      const lines = result.stdout.split('\n');
+
+      // Task and commit should be on different lines
+      const taskLine = lines.find((l) => l.includes('Separate lines'));
+      const commitLine = lines.find((l) => l.includes('sep commit'));
+      expect(taskLine).toBeDefined();
+      expect(commitLine).toBeDefined();
+      expect(taskLine).not.toBe(commitLine);
     });
   });
 
   // AC: @session-start-activity-timeline ac-activity-orphan
-  // Note: visual indentation distinction tracked by @01KJ91Q8 (not yet implemented).
-  // These tests verify orphan commits are classified correctly and rendered distinctly from linked commits.
   describe('orphan commit display (ac-activity-orphan)', () => {
-    it('should show orphan commits as standalone entries without task reference', () => {
+    it('should show orphan commits with ○ marker as standalone indented entries', () => {
       // Create a commit without Task: trailer (orphan)
       writeFileSync(join(tempDir, 'orphan.ts'), 'export const orphan = 1;\n');
       git('add orphan.ts', tempDir);
@@ -391,7 +449,8 @@ describe('session start activity timeline', () => {
 
       const result = kspec('session start', tempDir);
 
-      // Orphan commit should appear in output with its hash and message
+      // Orphan commit should appear with ○ marker
+      expect(result.stdout).toContain('○');
       expect(result.stdout).toContain('standalone cleanup');
     });
 
@@ -411,8 +470,8 @@ describe('session start activity timeline', () => {
       expect(orphans[0]).not.toHaveProperty('task');
     });
 
-    it('should visually distinguish orphan commits from linked commits in human output', () => {
-      // Create a linked commit
+    it('should use different visual markers for orphan commits vs task entries', () => {
+      // Create a linked commit (task entry uses ✓)
       kspec('task add --title "Linked task" --slug task-linked', tempDir);
       kspec('task start @task-linked', tempDir);
       kspec('task submit @task-linked', tempDir);
@@ -422,26 +481,44 @@ describe('session start activity timeline', () => {
       git('add linked.ts', tempDir);
       git('commit -m "feat: linked work" -m "Task: @task-linked"', tempDir);
 
-      // Create an orphan commit
+      // Create an orphan commit (uses ○)
       writeFileSync(join(tempDir, 'orphan3.ts'), 'export const o = 1;\n');
       git('add orphan3.ts', tempDir);
       git('commit -m "chore: orphan work"', tempDir);
 
       const result = kspec('session start', tempDir);
-
-      // Linked commit should show task reference with arrow
-      expect(result.stdout).toContain('Linked task');
-      // Orphan commit should appear without task reference
-      expect(result.stdout).toContain('orphan work');
-      // The linked commit has the → arrow to task; orphan does not
       const lines = result.stdout.split('\n');
-      const linkedLine = lines.find((l) => l.includes('linked work'));
+
+      // Task entry line should have ✓ marker
+      const taskLine = lines.find((l) => l.includes('Linked task'));
+      expect(taskLine).toBeDefined();
+      expect(taskLine).toContain('✓');
+
+      // Orphan commit line should have ○ marker
       const orphanLine = lines.find((l) => l.includes('orphan work'));
-      expect(linkedLine).toBeDefined();
       expect(orphanLine).toBeDefined();
-      // Linked line references the task, orphan line does not
-      expect(linkedLine).toContain('Linked task');
-      expect(orphanLine).not.toContain('Linked task');
+      expect(orphanLine).toContain('○');
+
+      // Linked commit should be nested (not on the task line)
+      const commitLine = lines.find((l) => l.includes('linked work'));
+      expect(commitLine).toBeDefined();
+      expect(commitLine).not.toContain('Linked task');
+      // Linked commit should have a connector
+      expect(commitLine).toContain('└─');
+    });
+
+    it('should not show orphan commits with tree connectors', () => {
+      // Orphan commits use ○, not ├─ or └─
+      writeFileSync(join(tempDir, 'orphan4.ts'), 'export const o4 = 1;\n');
+      git('add orphan4.ts', tempDir);
+      git('commit -m "chore: orphan no tree"', tempDir);
+
+      const result = kspec('session start', tempDir);
+      const lines = result.stdout.split('\n');
+      const orphanLine = lines.find((l) => l.includes('orphan no tree'));
+      expect(orphanLine).toBeDefined();
+      expect(orphanLine).not.toContain('├─');
+      expect(orphanLine).not.toContain('└─');
     });
   });
 });
