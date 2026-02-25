@@ -58286,7 +58286,7 @@
   spec_ref: "@ralph-task-limit"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -58295,12 +58295,13 @@
     - cleanup
     - ralph
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T08:35:54.127Z
+  started_at: 2026-02-25T02:21:32.277Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-02-25T02:21:32.277Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
+  submitted_at: 2026-02-25T02:23:54.064Z
 - _ulid: 01KJ7CN8XG3BCY10C2Z91VB5AX
   slugs: []
   title: Free budget for no-op task completions in ralph loop
