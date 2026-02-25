@@ -5762,7 +5762,7 @@ requirements:
           implementation: implemented
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     traits:
       - "@trait-json-output"
       - "@trait-semantic-exit-codes"
