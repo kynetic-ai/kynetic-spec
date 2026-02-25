@@ -510,11 +510,13 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
   }
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  // AC: @ralph-task-limit ac-signal-cleanup
   it("should clean up budget.json after signal (SIGINT)", async () => {
     await testSignalCleanup("SIGINT");
   }, 30_000);
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  // AC: @ralph-task-limit ac-signal-cleanup
   it("should clean up budget.json after signal (SIGTERM)", async () => {
     await testSignalCleanup("SIGTERM");
   }, 30_000);

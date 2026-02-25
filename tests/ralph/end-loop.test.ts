@@ -292,9 +292,9 @@ describe("Session-scoped end-loop signal", () => {
       expect(ralphContent).toContain('"abandoned"');
       expect(ralphContent).toContain("Received ${signal}");
 
-      // Verify cleanup awaits before exit
-      expect(ralphContent).toContain("Promise.all");
-      expect(ralphContent).toContain(".finally(() =>");
+      // Verify cleanup awaits before exit (async IIFE pattern)
+      expect(ralphContent).toContain("await Promise.all");
+      expect(ralphContent).toContain("process.exit(0)");
     });
 
     it("should close session with completed status on normal exit", async () => {
