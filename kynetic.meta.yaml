@@ -6510,6 +6510,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJB02BPX9CYWJV8MKWKAG10R
+    type: friction
+    content: "testUlid('PREFIX') returns identical values across calls without explicit sequence
+      argument — deterministic with default sequence=0. Caused false-positive test pass in
+      session-checkpoint-scoping tests where mySession and otherSession were identical. Fix options:
+      auto-incrementing counter, require sequence param, or rename to testUlidDeterministic to make
+      behavior obvious. testUlids() works correctly but is easy to overlook."
+    created_at: 2026-02-25T18:13:05.885Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
