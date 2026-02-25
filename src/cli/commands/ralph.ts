@@ -1043,13 +1043,9 @@ export function registerRalphCommand(program: Command): void {
           budget: maxTasks,
         });
 
-        // Inject KSPEC_SESSION_ID into agent harness config so it reaches child processes.
-        // Process env alone is insufficient — some harnesses (e.g., Claude Code) sandbox
-        // child processes and don't forward arbitrary parent env vars. Harness-specific
-        // injection writes to the config location each harness knows to read from.
-        // AC: @ralph-session-budget-integration ac-env-inject
+        // Adapter ID for harness-specific env injection/cleanup.
+        // Declared before try/finally so signal handlers and finally block can access it.
         const adapterId = options.adapter || "claude-agent-acp";
-        await injectEnvForAdapter(adapterId, sessionId);
 
         // Everything after session creation is wrapped in try/finally to guarantee
         // budget cleanup even if pre-loop setup (event logging, signal handlers) throws.
@@ -1060,6 +1056,7 @@ export function registerRalphCommand(program: Command): void {
         let exitReason: ExitReason | null = null;
         let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
+        let previousEnvValue: string | null | undefined; // For restoring pre-existing KSPEC_SESSION_ID
         const recentTaskRefs: string[] = [];
         const sessionIterationMap = new Map<string, number>();
 
@@ -1079,7 +1076,7 @@ export function registerRalphCommand(program: Command): void {
               await Promise.all([
                 fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
                 closeSession(specDir, sessionId, "abandoned", `Received ${signal}`),
-                removeEnvForAdapter(adapterId),
+                removeEnvForAdapter(adapterId, previousEnvValue),
               ]);
             } catch {
               // Best-effort cleanup — don't let errors prevent exit
@@ -1098,6 +1095,14 @@ export function registerRalphCommand(program: Command): void {
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
           process.on("SIGINT", sigintHandler);
           process.on("SIGTERM", sigtermHandler);
+
+          // Inject KSPEC_SESSION_ID into agent harness config so it reaches child
+          // processes. Inside try/finally so cleanup runs even if injection fails.
+          // Process env alone is insufficient — some harnesses (e.g., Claude Code)
+          // sandbox child processes and don't forward arbitrary parent env vars.
+          // AC: @ralph-session-budget-integration ac-env-inject
+          const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
+          previousEnvValue = injectionResult?.previousValue;
 
           // Log session start
           await appendEvent(specDir, {
@@ -1532,7 +1537,7 @@ export function registerRalphCommand(program: Command): void {
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
           // Clean up budget file and harness env injection when session ends
           await fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {});
-          await removeEnvForAdapter(adapterId);
+          await removeEnvForAdapter(adapterId, previousEnvValue);
 
           // Clean up session env vars
           delete process.env.KSPEC_RALPH_SESSION;

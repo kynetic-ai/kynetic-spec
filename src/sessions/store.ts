@@ -1724,6 +1724,8 @@ export interface EnvInjectionResult {
   description: string;
   /** Path to file modified (if applicable) */
   path?: string;
+  /** Previous KSPEC_SESSION_ID value before injection (for restore on cleanup) */
+  previousValue?: string | null;
 }
 
 /**
@@ -1778,12 +1780,14 @@ export async function injectClaudeCodeEnv(
   const envFile = process.env.CLAUDE_ENV_FILE;
 
   if (envFile) {
+    const previousValue = await readDotenvSessionId(envFile);
     await upsertDotenvSessionId(envFile, sessionId);
     return {
       injected: true,
       method: "claude_env_file",
       description: `Wrote KSPEC_SESSION_ID=${sessionId} to CLAUDE_ENV_FILE`,
       path: envFile,
+      previousValue,
     };
   }
 
@@ -1809,6 +1813,12 @@ export async function injectClaudeCodeEnv(
     }
   }
 
+  // Capture previous value before overwriting
+  const previousValue =
+    settings.env && typeof settings.env === "object"
+      ? ((settings.env as Record<string, string>).KSPEC_SESSION_ID ?? null)
+      : null;
+
   // Ensure env section exists
   if (!settings.env || typeof settings.env !== "object") {
     settings.env = {};
@@ -1826,25 +1836,34 @@ export async function injectClaudeCodeEnv(
     method: "claude_settings",
     description: `Added KSPEC_SESSION_ID to .claude/settings.json env section`,
     path: settingsPath,
+    previousValue,
   };
 }
 
 /**
- * Remove KSPEC_SESSION_ID from Claude Code environment.
+ * Remove or restore KSPEC_SESSION_ID in Claude Code environment.
  *
  * Reverses the injection performed by injectClaudeCodeEnv().
- * Removes from CLAUDE_ENV_FILE if set, otherwise from .claude/settings.json.
+ * If previousValue is provided, restores it instead of deleting.
  * Best-effort: silently ignores missing files or missing keys.
+ *
+ * @param previousValue - Value to restore, or null/undefined to delete
  */
-export async function removeClaudeCodeEnv(): Promise<void> {
+export async function removeClaudeCodeEnv(
+  previousValue?: string | null,
+): Promise<void> {
   const envFile = process.env.CLAUDE_ENV_FILE;
 
   if (envFile) {
-    await removeDotenvSessionId(envFile);
+    if (previousValue) {
+      await upsertDotenvSessionId(envFile, previousValue);
+    } else {
+      await removeDotenvSessionId(envFile);
+    }
     return;
   }
 
-  // Remove from project .claude/settings.json
+  // Remove/restore in project .claude/settings.json
   const settingsPath = path.join(process.cwd(), ".claude", "settings.json");
 
   try {
@@ -1852,11 +1871,15 @@ export async function removeClaudeCodeEnv(): Promise<void> {
     const settings = JSON.parse(content);
 
     if (settings.env && typeof settings.env === "object") {
-      delete (settings.env as Record<string, unknown>).KSPEC_SESSION_ID;
+      if (previousValue) {
+        (settings.env as Record<string, string>).KSPEC_SESSION_ID = previousValue;
+      } else {
+        delete (settings.env as Record<string, unknown>).KSPEC_SESSION_ID;
 
-      // Remove env section entirely if empty
-      if (Object.keys(settings.env as Record<string, unknown>).length === 0) {
-        delete settings.env;
+        // Remove env section entirely if empty
+        if (Object.keys(settings.env as Record<string, unknown>).length === 0) {
+          delete settings.env;
+        }
       }
 
       await fsPromises.writeFile(
@@ -1867,6 +1890,20 @@ export async function removeClaudeCodeEnv(): Promise<void> {
     }
   } catch {
     // Best-effort cleanup — file may not exist or may not be valid JSON
+  }
+}
+
+/**
+ * Read existing KSPEC_SESSION_ID from a dotenv-style file.
+ * Returns the value or null if not found.
+ */
+async function readDotenvSessionId(filePath: string): Promise<string | null> {
+  try {
+    const content = await fsPromises.readFile(filePath, "utf-8");
+    const match = content.match(/^KSPEC_SESSION_ID=(.+)$/m);
+    return match ? match[1] : null;
+  } catch {
+    return null;
   }
 }
 
@@ -2041,17 +2078,20 @@ export async function injectEnvForAdapter(
  * Remove KSPEC_SESSION_ID from the harness config for the given adapter.
  *
  * Reverses the injection performed by injectEnvForAdapter().
+ * If previousValue is provided, restores it instead of deleting.
  * Best-effort: silently ignores errors.
  *
  * @param adapterId - The adapter identifier
+ * @param previousValue - Value to restore, or null/undefined to delete
  */
 export async function removeEnvForAdapter(
   adapterId: string,
+  previousValue?: string | null,
 ): Promise<void> {
   switch (adapterId) {
     case "claude-agent-acp":
     case "claude-code-acp":
-      await removeClaudeCodeEnv();
+      await removeClaudeCodeEnv(previousValue);
       break;
     // Future harnesses can be added here
   }

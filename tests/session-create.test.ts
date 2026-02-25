@@ -300,6 +300,47 @@ describe("Environment Injection", () => {
       }
     });
 
+    it("should capture previous value from CLAUDE_ENV_FILE", async () => {
+      const envFile = path.join(testDir, "claude-env-prev");
+      await fs.writeFile(envFile, "KSPEC_SESSION_ID=old-value\n", "utf-8");
+
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        const sessionId = testUlid("CLDE", 4);
+        const result = await injectClaudeCodeEnv(sessionId);
+
+        expect(result.previousValue).toBe("old-value");
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
+    it("should return null previousValue when no prior value exists", async () => {
+      const envFile = path.join(testDir, "claude-env-noprev");
+
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        const sessionId = testUlid("CLDE", 5);
+        const result = await injectClaudeCodeEnv(sessionId);
+
+        expect(result.previousValue).toBeNull();
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
     // AC: @session-creation-and-env-injection ac-inject-claude
     it("should write to .claude/settings.json when CLAUDE_ENV_FILE not set", async () => {
       const originalEnv = process.env.CLAUDE_ENV_FILE;
@@ -697,6 +738,66 @@ describe("Environment Injection", () => {
         process.chdir(testDir);
         // No settings.json exists — should not throw
         await expect(removeClaudeCodeEnv()).resolves.toBeUndefined();
+      } finally {
+        process.chdir(originalCwd);
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        }
+      }
+    });
+
+    it("should restore previous value in CLAUDE_ENV_FILE when provided", async () => {
+      const envFile = path.join(testDir, "claude-env-restore");
+      await fs.writeFile(
+        envFile,
+        "OTHER_VAR=foo\nKSPEC_SESSION_ID=ralph-session\n",
+        "utf-8",
+      );
+
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        await removeClaudeCodeEnv("previous-user-session");
+
+        const content = await fs.readFile(envFile, "utf-8");
+        expect(content).toContain("KSPEC_SESSION_ID=previous-user-session");
+        expect(content).not.toContain("ralph-session");
+        expect(content).toContain("OTHER_VAR=foo");
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
+    it("should restore previous value in settings.json when provided", async () => {
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      const originalCwd = process.cwd();
+      delete process.env.CLAUDE_ENV_FILE;
+
+      try {
+        process.chdir(testDir);
+        const settingsDir = path.join(testDir, ".claude");
+        await fs.mkdir(settingsDir, { recursive: true });
+        await fs.writeFile(
+          path.join(settingsDir, "settings.json"),
+          JSON.stringify({
+            env: { KSPEC_SESSION_ID: "ralph-session" },
+          }),
+          "utf-8",
+        );
+
+        await removeClaudeCodeEnv("original-user-session");
+
+        const content = await fs.readFile(
+          path.join(settingsDir, "settings.json"),
+          "utf-8",
+        );
+        const settings = JSON.parse(content);
+        expect(settings.env.KSPEC_SESSION_ID).toBe("original-user-session");
       } finally {
         process.chdir(originalCwd);
         if (originalEnv !== undefined) {
