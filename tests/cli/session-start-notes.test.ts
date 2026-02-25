@@ -7,18 +7,7 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
-
-interface SessionContext {
-  recent_notes: Array<{
-    task_ref: string;
-    task_title: string;
-    task_status: 'in_progress' | 'pending_review' | 'completed';
-    note_ulid: string;
-    created_at: string;
-    author: string | null;
-    content: string;
-  }>;
-}
+import type { SessionContext } from '../helpers/session-types';
 
 describe('session start notes enrichment', () => {
   let tempDir: string;

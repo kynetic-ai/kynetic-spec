@@ -8,39 +8,12 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   kspec,
-  kspecJson,
   setupTempFixtures,
   cleanupTempDir,
+  kspecJson,
 } from "../helpers/cli";
-
-interface ActivityItem {
-  type: "task_completion" | "commit" | "linked_commit";
-  date: string;
-  task?: { ref: string; title: string };
-  commit?: { hash: string; message: string };
-}
-
-interface SessionContextComputed {
-  inbox_untriaged_count: number;
-  inbox_deferred_count: number;
-  inbox_total: number;
-  task_unlocks: Record<string, number>;
-  recent_activity: ActivityItem[];
-}
-
-interface SessionContext {
-  inbox_stats: {
-    total: number;
-    untriaged: number;
-    deferred: number;
-    triaged: number;
-  };
-  activity_timeline: ActivityItem[];
-  recently_completed: Array<{ ref: string; title: string }>;
-  recent_commits: Array<{ hash: string; message: string }>;
-  ready_tasks: Array<{ ref: string; title: string; unlocks: number }>;
-  computed: SessionContextComputed;
-}
+import type { SessionContext } from "../helpers/session-types";
+import { addInboxItem, triageItem } from "../helpers/inbox";
 
 let tempDir: string;
 
@@ -52,40 +25,15 @@ afterEach(async () => {
   await cleanupTempDir(tempDir);
 });
 
-/**
- * Helper: add an inbox item and return its full ULID
- */
-function addInboxItem(text: string): string {
-  const result = kspecJson<{ item: { _ulid: string } }>(
-    `inbox add "${text}"`,
-    tempDir,
-  );
-  return result.item._ulid;
-}
-
-/**
- * Helper: create a triage record for an inbox item.
- */
-function triageItem(
-  inboxUlid: string,
-  action: string,
-  reasoning: string,
-): void {
-  kspec(
-    `triage record @${inboxUlid} --action ${action} --reasoning "${reasoning}"`,
-    tempDir,
-  );
-}
-
 // AC: @session-start-computed-json ac-computed-inbox
 describe("computed.inbox fields", () => {
   it("should include inbox_untriaged_count, inbox_deferred_count, and inbox_total", () => {
-    addInboxItem("Untriaged item one");
-    const ulid2 = addInboxItem("Item to defer");
-    const ulid3 = addInboxItem("Item to promote");
+    addInboxItem(tempDir, "Untriaged item one");
+    const ulid2 = addInboxItem(tempDir, "Item to defer");
+    const ulid3 = addInboxItem(tempDir, "Item to promote");
 
-    triageItem(ulid2, "defer", "needs thought");
-    triageItem(ulid3, "promote", "good idea");
+    triageItem(tempDir, ulid2, "defer", "needs thought");
+    triageItem(tempDir, ulid3, "promote", "good idea");
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
@@ -96,12 +44,12 @@ describe("computed.inbox fields", () => {
   });
 
   it("should mirror inbox_stats values", () => {
-    const ulid1 = addInboxItem("Deferred A");
-    const ulid2 = addInboxItem("Deferred B");
-    addInboxItem("Untriaged C");
+    const ulid1 = addInboxItem(tempDir, "Deferred A");
+    const ulid2 = addInboxItem(tempDir, "Deferred B");
+    addInboxItem(tempDir, "Untriaged C");
 
-    triageItem(ulid1, "defer", "later");
-    triageItem(ulid2, "defer", "later too");
+    triageItem(tempDir, ulid1, "defer", "later");
+    triageItem(tempDir, ulid2, "defer", "later too");
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
@@ -279,7 +227,7 @@ describe("computed.recent_activity", () => {
 
 describe("computed field is additive", () => {
   it("should not modify existing JSON fields", () => {
-    addInboxItem("Test item");
+    addInboxItem(tempDir, "Test item");
     kspec('task add --title "Additive test" --slug task-additive', tempDir);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);

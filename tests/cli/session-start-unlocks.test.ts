@@ -9,28 +9,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlid } from '../helpers/cli';
-
-interface ReadyTaskSummary {
-  ref: string;
-  title: string;
-  priority: number;
-  spec_ref: string | null;
-  tags: string[];
-  unlocks: number;
-}
-
-interface BlockedTaskSummary {
-  ref: string;
-  title: string;
-  blocked_by: string[];
-  unmet_deps: string[];
-  unlocks: number;
-}
-
-interface SessionContext {
-  ready_tasks: ReadyTaskSummary[];
-  blocked_tasks: BlockedTaskSummary[];
-}
+import type { SessionContext } from '../helpers/session-types';
 
 describe('session start dependency display', () => {
   let tempDir: string;
