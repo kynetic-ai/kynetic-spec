@@ -59333,7 +59333,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Add edge case tests for item set enum validation
+- _ulid: 01KJA02KF199EP7QVGBMS9A28C
+  slugs: []
+  title: Add edge case tests for item set enum validation
+  type: task
   description: >-
     tests/item-set-enum-validation.test.ts covers happy/sad paths for --status and --maturity
     validation but is missing edge cases:
@@ -59348,21 +59351,50 @@
 
 
     Add these as additional test cases in the existing file.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - testing
+  vcs_refs: []
+  created_at: 2026-02-25T08:53:59.393Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Validate --limit option in gatherSessionContext to reject NaN
+  description: >-
+    In session.ts gatherSessionContext(), the --limit option is parsed with parseInt without NaN
+    validation:
+
+      const limit = parseInt(options.limit || "10", 10);
+
+    If options.limit is "abc", limit becomes NaN which silently breaks downstream .slice(0, NaN)
+    calls (returns empty arrays). Other handlers in the same file validate this properly.
+
+
+    Fix: Add validation after parseInt. If NaN, either error with a helpful message or fall back to
+    the default (10). Match the pattern used by sessionLogSearchAction which already validates this.
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - bug
+    - cli
   depends_on: []
   automation: eligible
-  _ulid: 01KJA02KF199EP7QVGBMS9A28C
+  _ulid: 01KJA1MFY3T29RTS57CGWBCXDY
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-25T08:53:59.393Z
+  created_at: 2026-02-25T09:21:14.179Z
   notes: []
   todos: []
