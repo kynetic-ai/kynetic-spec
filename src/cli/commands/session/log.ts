@@ -26,11 +26,13 @@ import {
   searchSessionEvents,
   deduplicatePhasedToolCalls,
 } from "../../../sessions/store.js";
-import type { SessionEvent, SessionStatus } from "../../../sessions/types.js";
+import type { SessionEvent } from "../../../sessions/types.js";
+import { SessionStatusSchema } from "../../../sessions/types.js";
 import {
   formatRelativeTime,
   parseTimeSpec,
 } from "../../../utils/index.js";
+import { isObject } from "../../../acp/types.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, output } from "../../output.js";
 
@@ -205,7 +207,13 @@ export async function sessionLogListAction(
 
     // AC: @session-log-list ac-2 - Filter by status
     if (options.status) {
-      const statusFilter = options.status as SessionStatus;
+      const parsed = SessionStatusSchema.safeParse(options.status);
+      if (!parsed.success) {
+        const valid = SessionStatusSchema.options.join(", ");
+        error(`Invalid status: '${options.status}'. Valid values: ${valid}`);
+        process.exit(EXIT_CODES.USAGE_ERROR);
+      }
+      const statusFilter = parsed.data;
       sessions = sessions.filter((s) => s.status === statusFilter);
     }
 
@@ -287,20 +295,24 @@ function formatEventTimestamp(
  * Returns a short string describing the event payload.
  */
 function summarizeEventData(event: SessionEvent): string {
-  const data = event.data as Record<string, unknown> | null;
-  if (!data) return "";
+  const data = event.data;
+  if (!isObject(data)) return "";
 
   // Handle tool_call events
   if (event.type === "session.update") {
-    const update = data.update as {
-      sessionUpdate?: string;
-      rawInput?: { command?: string };
-      _meta?: { claudeCode?: { toolName?: string } };
-    } | null;
-    if (update?.sessionUpdate === "tool_call") {
-      const toolName = update._meta?.claudeCode?.toolName || "unknown";
-      const command = update.rawInput?.command;
-      if (command) {
+    const update = data.update;
+    if (isObject(update) && update.sessionUpdate === "tool_call") {
+      const meta = update._meta;
+      let toolName = "unknown";
+      if (isObject(meta)) {
+        const claudeCode = meta.claudeCode;
+        if (isObject(claudeCode) && typeof claudeCode.toolName === "string") {
+          toolName = claudeCode.toolName;
+        }
+      }
+      const rawInput = update.rawInput;
+      if (isObject(rawInput) && typeof rawInput.command === "string") {
+        const command = rawInput.command;
         const truncated =
           command.length > 60 ? command.slice(0, 57) + "..." : command;
         return `${toolName}: ${truncated}`;
@@ -311,8 +323,8 @@ function summarizeEventData(event: SessionEvent): string {
 
   // Handle prompt.sent events
   if (event.type === "prompt.sent") {
-    const prompt = data.prompt as string | null;
-    if (prompt) {
+    const prompt = data.prompt;
+    if (typeof prompt === "string" && prompt.length > 0) {
       const truncated =
         prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
       return truncated;
@@ -324,8 +336,8 @@ function summarizeEventData(event: SessionEvent): string {
     return "Session started";
   }
   if (event.type === "session.end") {
-    const reason = data.reason as string | null;
-    return reason ? `Session ended: ${reason}` : "Session ended";
+    const reason = data.reason;
+    return typeof reason === "string" ? `Session ended: ${reason}` : "Session ended";
   }
 
   // Default: show first key
@@ -344,7 +356,7 @@ function summarizeEventData(event: SessionEvent): string {
 function formatSessionLogShow(
   detail: SessionLogDetail,
   events: SessionEvent[] | null,
-  contextSnapshot: unknown | null,
+  contextSnapshot: unknown,
   sessionStartTs: number,
 ): void {
   // AC: @session-log-show ac-1 - Session metadata
@@ -476,7 +488,7 @@ export async function sessionLogShowAction(
     }
 
     // AC: @session-log-show ac-6 - Context snapshot
-    let contextSnapshot: unknown | null = null;
+    let contextSnapshot: unknown = null;
     if (options.context) {
       const iterNum = parseInt(options.context, 10);
       if (!Number.isNaN(iterNum) && iterNum > 0) {
