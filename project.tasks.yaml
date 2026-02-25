@@ -60114,9 +60114,19 @@
     - sessions
   vcs_refs: []
   created_at: 2026-02-25T18:00:12.538Z
-  notes: []
-  todos: []
   started_at: 2026-02-25T22:44:35.669Z
+  notes:
+    - _ulid: 01KJBFYQ65G9BKAW9WEBTRKT1D
+      created_at: 2026-02-25T22:50:43.782Z
+      author: "@claude"
+      content: "Root cause: Ralph passes KSPEC_SESSION_ID via spawner env (process env inheritance), but
+        Claude Code sandboxes child processes and doesn't forward arbitrary parent env vars to
+        commands run via Bash tool. The injection mechanism (injectClaudeCodeEnv →
+        .claude/settings.json env section) exists but ralph doesn't call it. Fix: call
+        injectClaudeCodeEnv() after session creation when adapter is claude-agent-acp, and clean up
+        on session end."
+      supersedes: null
+  todos: []
 - _ulid: 01KJAZDT2CHZKAWGWAA5CJ8913
   slugs:
     - task-checkpoint-submit-guidance
