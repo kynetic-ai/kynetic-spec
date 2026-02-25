@@ -58959,7 +58959,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -58978,6 +58978,13 @@
         if-guards that made assertions pass vacuously when the condition was false (no inbox items
         in fixture). Fix: added explicit inbox items via kspec inbox add before asserting, and
         removed the if-guards so assertions always run. All 43 tests in the file pass."
+      supersedes: null
+    - _ulid: 01KJA93KN8ESW0A38EBWMHAM0A
+      created_at: 2026-02-25T11:31:49.544Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: PR #524 bundles unrelated refactor commit (f461447c -
+        split session.ts, task @01KJ9ZBT) with the assertion fix. Must split into separate PRs. The
+        test fix itself (commit 85a371b9) is correct."
       supersedes: null
   todos: []
   automation: eligible
