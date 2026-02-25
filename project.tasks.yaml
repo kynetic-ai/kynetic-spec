@@ -59613,3 +59613,38 @@
   notes: []
   todos: []
   automation: eligible
+- title: Consolidate dual import of ImplementationStatusSchema in item.ts
+  description: >-
+    src/cli/commands/item.ts imports ImplementationStatusSchema two ways:
+
+    1. Static import at top (line 36-37): import { ImplementationStatusSchema } from
+    "../../schema/common.js"
+
+    2. Dynamic import at line 328: const { ImplementationStatusSchema } = await
+    import("../../schema/common.js")
+
+
+    The dynamic import in the item list handler is unnecessary since the schema is already
+    statically imported. Replace the dynamic import with a reference to the existing static import.
+
+
+    Small cleanup, preexisting tech debt.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 4
+  slugs: []
+  tags:
+    - refactor
+    - cli
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJA3RQ2NH1ZN3ZANGZCD8S60
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T09:58:29.717Z
+  notes: []
+  todos: []
