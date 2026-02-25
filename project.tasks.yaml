@@ -60137,6 +60137,14 @@
     - sessions
   vcs_refs: []
   created_at: 2026-02-25T18:01:52.459Z
-  notes: []
-  todos: []
   started_at: 2026-02-25T22:19:13.756Z
+  notes:
+    - _ulid: 01KJBE631TKNBVDKKQ92ZV56J1
+      created_at: 2026-02-25T22:19:48.154Z
+      author: "@claude"
+      content: "Changed two instruction strings in checkpoint.ts: (1) step 3 'Complete the task' → 'Submit
+        the task', (2) footer 'kspec task complete @task --reason \"Summary\" if task is done' →
+        'kspec task submit @task if task is done'. No test changes needed — no tests assert on
+        instruction text."
+      supersedes: null
+  todos: []
