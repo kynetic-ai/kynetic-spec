@@ -26,7 +26,8 @@ import {
   searchSessionEvents,
   deduplicatePhasedToolCalls,
 } from "../../../sessions/store.js";
-import type { SessionEvent, SessionStatus } from "../../../sessions/types.js";
+import type { SessionEvent } from "../../../sessions/types.js";
+import { SessionStatusSchema } from "../../../sessions/types.js";
 import {
   formatRelativeTime,
   parseTimeSpec,
@@ -189,7 +190,13 @@ export async function sessionLogListAction(
 
     // AC: @session-log-list ac-2 - Filter by status
     if (options.status) {
-      const statusFilter = options.status as SessionStatus;
+      const parsed = SessionStatusSchema.safeParse(options.status);
+      if (!parsed.success) {
+        const valid = SessionStatusSchema.options.join(", ");
+        error(`Invalid status: '${options.status}'. Valid values: ${valid}`);
+        process.exit(EXIT_CODES.USAGE_ERROR);
+      }
+      const statusFilter = parsed.data;
       sessions = sessions.filter((s) => s.status === statusFilter);
     }
 
@@ -271,32 +278,43 @@ function formatEventTimestamp(
  * Returns a short string describing the event payload.
  */
 function summarizeEventData(event: SessionEvent): string {
-  const data = event.data as Record<string, unknown> | null;
-  if (!data) return "";
+  const data = event.data;
+  if (data == null || typeof data !== "object" || Array.isArray(data)) return "";
+  const record = data as Record<string, unknown>;
 
   // Handle tool_call events
   if (event.type === "session.update") {
-    const update = data.update as {
-      sessionUpdate?: string;
-      rawInput?: { command?: string };
-      _meta?: { claudeCode?: { toolName?: string } };
-    } | null;
-    if (update?.sessionUpdate === "tool_call") {
-      const toolName = update._meta?.claudeCode?.toolName || "unknown";
-      const command = update.rawInput?.command;
-      if (command) {
-        const truncated =
-          command.length > 60 ? command.slice(0, 57) + "..." : command;
-        return `${toolName}: ${truncated}`;
+    const update = record.update;
+    if (update != null && typeof update === "object" && !Array.isArray(update)) {
+      const u = update as Record<string, unknown>;
+      if (u.sessionUpdate === "tool_call") {
+        const meta = u._meta;
+        let toolName = "unknown";
+        if (meta != null && typeof meta === "object" && !Array.isArray(meta)) {
+          const claudeCode = (meta as Record<string, unknown>).claudeCode;
+          if (claudeCode != null && typeof claudeCode === "object" && !Array.isArray(claudeCode)) {
+            const name = (claudeCode as Record<string, unknown>).toolName;
+            if (typeof name === "string") toolName = name;
+          }
+        }
+        const rawInput = u.rawInput;
+        if (rawInput != null && typeof rawInput === "object" && !Array.isArray(rawInput)) {
+          const command = (rawInput as Record<string, unknown>).command;
+          if (typeof command === "string") {
+            const truncated =
+              command.length > 60 ? command.slice(0, 57) + "..." : command;
+            return `${toolName}: ${truncated}`;
+          }
+        }
+        return toolName;
       }
-      return toolName;
     }
   }
 
   // Handle prompt.sent events
   if (event.type === "prompt.sent") {
-    const prompt = data.prompt as string | null;
-    if (prompt) {
+    const prompt = record.prompt;
+    if (typeof prompt === "string" && prompt.length > 0) {
       const truncated =
         prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
       return truncated;
@@ -308,12 +326,12 @@ function summarizeEventData(event: SessionEvent): string {
     return "Session started";
   }
   if (event.type === "session.end") {
-    const reason = data.reason as string | null;
-    return reason ? `Session ended: ${reason}` : "Session ended";
+    const reason = record.reason;
+    return typeof reason === "string" ? `Session ended: ${reason}` : "Session ended";
   }
 
   // Default: show first key
-  const keys = Object.keys(data);
+  const keys = Object.keys(record);
   if (keys.length > 0) {
     return `{${keys.slice(0, 3).join(", ")}${keys.length > 3 ? ", ..." : ""}}`;
   }
@@ -328,7 +346,7 @@ function summarizeEventData(event: SessionEvent): string {
 function formatSessionLogShow(
   detail: SessionLogDetail,
   events: SessionEvent[] | null,
-  contextSnapshot: unknown | null,
+  contextSnapshot: unknown,
   sessionStartTs: number,
 ): void {
   // AC: @session-log-show ac-1 - Session metadata
@@ -466,7 +484,7 @@ export async function sessionLogShowAction(
     }
 
     // AC: @session-log-show ac-6 - Context snapshot
-    let contextSnapshot: unknown | null = null;
+    let contextSnapshot: unknown = null;
     if (options.context) {
       const iterNum = parseInt(options.context, 10);
       if (!Number.isNaN(iterNum) && iterNum > 0) {
