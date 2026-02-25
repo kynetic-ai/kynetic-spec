@@ -59727,6 +59727,14 @@
         the need for 'as Record<string, unknown>' casts. Refactor to use isObject() for readability
         and consistency. See PR #534 inline review comment."
       supersedes: null
+    - _ulid: 01KJANTGH2SMP8E65Y8T6XVD50
+      created_at: 2026-02-25T15:14:02.915Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1 COMPLETE] Refactored summarizeEventData() to use existing isObject() utility
+        from src/acp/types.ts. Replaced 5 inline null/typeof/Array.isArray guards and eliminated all
+        'as Record<string, unknown>' casts. The isObject() type predicate handles narrowing
+        automatically. All 152 session log tests pass, clean build."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJA3CRB5APPY0D3YA94WVWDP
