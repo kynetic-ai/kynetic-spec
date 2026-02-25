@@ -58362,7 +58362,9 @@
     - skills
     - agent-quality
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T08:36:17.130Z
+  started_at: 2026-02-25T02:41:55.317Z
   notes:
     - _ulid: 01KJ7D1FTMGBZ3STQN8ZZCF9M7
       created_at: 2026-02-24T08:42:51.092Z
@@ -58441,10 +58443,20 @@
         Straightforward text additions to skill markdown files. No code changes. Can be automated
         once content is approved.
       supersedes: null
+    - _ulid: 01KJ9B43F8ETD86JSQT440JXYQ
+      created_at: 2026-02-25T02:47:48.456Z
+      author: "@claude"
+      content: "Updated 6 skill files with CLI lookup tables and anti-patterns. Changes: (1) task-work:
+        added CLI Lookups section with lookup table + key pattern for resolving inherited traits,
+        (2) review: added CLI Lookups section with trait resolution guidance, (3) writing-specs:
+        added Finding Things section with discovery commands, (4) triage-inbox: replaced 'kspec item
+        list | grep' with 'kspec search', (5) local-review: added CLI Lookups section, (6)
+        pr-review: added CLI Lookups section. Also added 'cli-lookups' convention via kspec meta (4
+        rules) which now appears in kspec-agents.md for all agents. Rebuilt plugin. All 3603 tests
+        pass (2 known flaky ralph signal tests)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T02:41:55.317Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ88CMZ0WETQKBZXTJJ28EDK
   slugs: []
   title: Document N/A trait AC annotation format in testing convention
