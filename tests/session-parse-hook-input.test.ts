@@ -8,19 +8,13 @@
  * Task: @task-add-debug-logging-hook-input
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { parseHookInput } from "../src/cli/commands/session/index.js";
 
 describe("parseHookInput", () => {
-  let stderrSpy: ReturnType<typeof vi.spyOn>;
-
-  beforeEach(() => {
-    stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
-  });
-
   afterEach(() => {
-    stderrSpy.mockRestore();
     delete process.env.KSPEC_DEBUG;
+    vi.restoreAllMocks();
   });
 
   // ─── Null/Empty Input ──────────────────────────────────────────────────────
@@ -108,10 +102,9 @@ describe("parseHookInput", () => {
     parseHookInput("{not json}");
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining("parseHookInput: failed to parse stdin as JSON:"),
+      expect.stringContaining("parseHookInput: failed to parse stdin as JSON"),
       expect.anything(),
     );
-    consoleSpy.mockRestore();
   });
 
   it("logs debug message for non-object JSON when KSPEC_DEBUG=1", () => {
@@ -123,7 +116,6 @@ describe("parseHookInput", () => {
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining("parseHookInput: parsed value is not an object"),
     );
-    consoleSpy.mockRestore();
   });
 
   it("does not log when KSPEC_DEBUG is not set", () => {
@@ -133,6 +125,5 @@ describe("parseHookInput", () => {
     parseHookInput("[1, 2]");
 
     expect(consoleSpy).not.toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 });

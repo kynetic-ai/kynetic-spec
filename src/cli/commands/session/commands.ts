@@ -39,10 +39,11 @@ import type { CheckpointOptions, SessionOptions, StopHookInput } from "./types.j
 
 function debugLog(message: string, detail?: unknown): void {
   if (process.env.KSPEC_DEBUG === "1") {
-    console.error(
-      `[DEBUG] session/commands: ${message}`,
-      ...(detail !== undefined ? [detail] : []),
-    );
+    if (detail) {
+      console.error(`[DEBUG] session/commands: ${message}`, detail);
+    } else {
+      console.error(`[DEBUG] session/commands: ${message}`);
+    }
   }
 }
 
@@ -132,7 +133,7 @@ export function parseHookInput(stdin: string | null): StopHookInput | null {
     }
     return parsed as StopHookInput;
   } catch (err) {
-    debugLog("parseHookInput: failed to parse stdin as JSON:", err);
+    debugLog("parseHookInput: failed to parse stdin as JSON", err);
     return null;
   }
 }
