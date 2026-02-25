@@ -60072,3 +60072,27 @@
   created_at: 2026-02-25T18:00:12.538Z
   notes: []
   todos: []
+- title: Update checkpoint hook guidance to use task submit instead of task complete
+  description: The checkpoint stop hook instructions say 'kspec task complete @task --reason "Summary"
+    if task is done' but should say 'kspec task submit @task' instead. Tasks should go through
+    pending_review via submit, not directly to completed. The complete command is for after PR
+    merge. Update the instruction text in src/cli/commands/session/checkpoint.ts.
+  type: task
+  spec_ref: "@cmd-session-checkpoint"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-checkpoint-submit-guidance
+  tags:
+    - cli
+    - sessions
+  depends_on: []
+  _ulid: 01KJAZDT2CHZKAWGWAA5CJ8913
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T18:01:52.459Z
+  notes: []
+  todos: []
