@@ -797,7 +797,7 @@ describe("session create CLI", () => {
   // This is a structural test — verifying the code has proper comments
   it("should have exit code documentation in action handler", async () => {
     const content = await fs.readFile(
-      path.join(__dirname, "..", "src", "cli", "commands", "session.ts"),
+      path.join(__dirname, "..", "src", "cli", "commands", "session", "create.ts"),
       "utf-8",
     );
     // Verify exit code documentation comment exists
