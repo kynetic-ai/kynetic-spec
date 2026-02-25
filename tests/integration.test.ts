@@ -1152,7 +1152,7 @@ describe('Integration: session', () => {
     const output = kspec('session start', tempDir);
     expect(output).toContain('Quick Commands');
     expect(output).toContain('kspec task note');
-    expect(output).toContain('kspec task complete');
+    expect(output).toContain('kspec task submit');
   });
 });
 
