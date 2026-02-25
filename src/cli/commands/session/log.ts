@@ -32,6 +32,7 @@ import {
   formatRelativeTime,
   parseTimeSpec,
 } from "../../../utils/index.js";
+import { isObject } from "../../../acp/types.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, output } from "../../output.js";
 
@@ -279,41 +280,34 @@ function formatEventTimestamp(
  */
 function summarizeEventData(event: SessionEvent): string {
   const data = event.data;
-  if (data == null || typeof data !== "object" || Array.isArray(data)) return "";
-  const record = data as Record<string, unknown>;
+  if (!isObject(data)) return "";
 
   // Handle tool_call events
   if (event.type === "session.update") {
-    const update = record.update;
-    if (update != null && typeof update === "object" && !Array.isArray(update)) {
-      const u = update as Record<string, unknown>;
-      if (u.sessionUpdate === "tool_call") {
-        const meta = u._meta;
-        let toolName = "unknown";
-        if (meta != null && typeof meta === "object" && !Array.isArray(meta)) {
-          const claudeCode = (meta as Record<string, unknown>).claudeCode;
-          if (claudeCode != null && typeof claudeCode === "object" && !Array.isArray(claudeCode)) {
-            const name = (claudeCode as Record<string, unknown>).toolName;
-            if (typeof name === "string") toolName = name;
-          }
+    const update = data.update;
+    if (isObject(update) && update.sessionUpdate === "tool_call") {
+      const meta = update._meta;
+      let toolName = "unknown";
+      if (isObject(meta)) {
+        const claudeCode = meta.claudeCode;
+        if (isObject(claudeCode) && typeof claudeCode.toolName === "string") {
+          toolName = claudeCode.toolName;
         }
-        const rawInput = u.rawInput;
-        if (rawInput != null && typeof rawInput === "object" && !Array.isArray(rawInput)) {
-          const command = (rawInput as Record<string, unknown>).command;
-          if (typeof command === "string") {
-            const truncated =
-              command.length > 60 ? command.slice(0, 57) + "..." : command;
-            return `${toolName}: ${truncated}`;
-          }
-        }
-        return toolName;
       }
+      const rawInput = update.rawInput;
+      if (isObject(rawInput) && typeof rawInput.command === "string") {
+        const command = rawInput.command;
+        const truncated =
+          command.length > 60 ? command.slice(0, 57) + "..." : command;
+        return `${toolName}: ${truncated}`;
+      }
+      return toolName;
     }
   }
 
   // Handle prompt.sent events
   if (event.type === "prompt.sent") {
-    const prompt = record.prompt;
+    const prompt = data.prompt;
     if (typeof prompt === "string" && prompt.length > 0) {
       const truncated =
         prompt.length > 60 ? prompt.slice(0, 57) + "..." : prompt;
@@ -326,12 +320,12 @@ function summarizeEventData(event: SessionEvent): string {
     return "Session started";
   }
   if (event.type === "session.end") {
-    const reason = record.reason;
+    const reason = data.reason;
     return typeof reason === "string" ? `Session ended: ${reason}` : "Session ended";
   }
 
   // Default: show first key
-  const keys = Object.keys(record);
+  const keys = Object.keys(data);
   if (keys.length > 0) {
     return `{${keys.slice(0, 3).join(", ")}${keys.length > 3 ? ", ..." : ""}}`;
   }
