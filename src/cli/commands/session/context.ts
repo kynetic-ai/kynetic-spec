@@ -156,7 +156,7 @@ function toCompletedTaskSummary(
 function collectRecentNotes(
   tasks: LoadedTask[],
   index: ReferenceIndex,
-  options: { limit: number; since: Date | null },
+  options: { limit: number | undefined; since: Date | null },
 ): NoteSummary[] {
   const allNotes: NoteSummary[] = [];
 
@@ -383,7 +383,9 @@ export async function gatherSessionContext(
   // Get recent notes from active, pending_review, and recently completed tasks
   // AC: @cmd-session-start ac-1, ac-2
   // Collect notes per-status first to prevent one status from starving others
-  const noteLimitPerStatus = options.full ? limit : Math.ceil(limit / 3);
+  // In full mode, uncap notes (consistent with other sections that use undefined in full mode).
+  // In non-full mode, split limit across 3 status buckets to prevent starvation.
+  const noteLimitPerStatus = options.full ? undefined : Math.ceil(limit / 3);
 
   const inProgressNotes = collectRecentNotes(
     allTasks.filter((t) => t.status === "in_progress" || t.status === "needs_work"),
@@ -412,12 +414,15 @@ export async function gatherSessionContext(
     { limit: noteLimitPerStatus, since: sinceDate },
   );
 
-  // Combine notes from all statuses, preserving representation from each
+  // Combine notes from all statuses, preserving representation from each.
+  // In non-full mode, apply final cap to handle ceil() rounding across 3 buckets.
+  const noteLimit = options.full ? undefined : limit;
   const recentNotes = [...inProgressNotes, ...pendingReviewNotes, ...completedNotes]
     .sort(
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    );
+    )
+    .slice(0, noteLimit);
 
   // Get incomplete todos from active tasks
   const activeTodos = collectIncompleteTodos(
