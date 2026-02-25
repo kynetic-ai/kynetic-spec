@@ -58177,7 +58177,9 @@
     - session
     - testing
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T06:20:07.277Z
+  started_at: 2026-02-25T01:00:40.031Z
   notes:
     - _ulid: 01KJ755BA7F3ZWTE6JWJTN9S40
       created_at: 2026-02-24T06:25:08.935Z
@@ -58212,10 +58214,21 @@
         Use setupTempFixtures(), kspec(), kspecJson<SessionContext>() helpers.
         Annotate tests with // AC: @spec-ref ac-id comments.
       supersedes: null
+    - _ulid: 01KJ95EYXMSQASZC3B85KFWEF9
+      created_at: 2026-02-25T01:08:52.788Z
+      author: "@claude"
+      content: "Analyzed all 6 session-start test files. Found 3 gaps: (1) ac-activity-hierarchy and
+        ac-activity-orphan had no tests — added 6 new tests to
+        session-start-activity-timeline.test.ts covering linked commit hierarchy display and orphan
+        commit distinction. (2) session-start-notes.test.ts used stale ac-1/ac-2 numbering — updated
+        to ac-review-detail/ac-notes-starvation. (3) Replaced static source analysis test with
+        behavioral ANSI color code check per project testing preferences. Added explicit trait tests
+        for @trait-json-output ac-4 (ref prefix consistency) and @trait-semantic-exit-codes ac-5
+        (exit 0 with minimal data). All 72 session-start tests pass. Full suite passes (3584 passed,
+        only known flaky ralph signal tests)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T01:00:40.031Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ752D9H9HV3E5EXTFFSNSN5
   slugs: []
   title: Fix batch-exec-engine test timeout flakes
