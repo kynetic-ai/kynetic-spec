@@ -351,31 +351,59 @@ export async function gatherSessionContext(
     triageByInboxRef.set(record.inbox_ref, { action: record.action });
   }
 
-  // Compute stats
+  // ── Single-pass task bucketing ──────────────────────────────────────────
+  // Bucket all tasks by status in one pass instead of 14+ separate .filter() calls.
+  const tasksByStatus = new Map<string, LoadedTask[]>();
+  for (const task of allTasks) {
+    const existing = tasksByStatus.get(task.status);
+    if (existing) {
+      existing.push(task);
+    } else {
+      tasksByStatus.set(task.status, [task]);
+    }
+  }
+
+  // Helper to get a status bucket (returns empty array if none)
+  const bucket = (status: string): LoadedTask[] =>
+    tasksByStatus.get(status) || [];
+
+  // Cache getReadyTasks (expensive: checks dependencies for every pending task)
+  const allReadyTasks = getReadyTasks(allTasks);
+
+  // Cache sorted completed tasks (used for notes and recentlyCompleted list)
+  const completedWithDate = bucket("completed")
+    .filter((t) => t.completed_at)
+    .sort((a, b) => {
+      const aDate = new Date(a.completed_at || 0);
+      const bDate = new Date(b.completed_at || 0);
+      return bDate.getTime() - aDate.getTime();
+    });
+
+  // Active tasks = in_progress + needs_work
+  const activeStatusTasks = [...bucket("in_progress"), ...bucket("needs_work")];
+
+  // Compute stats from buckets
   const stats: SessionStats = {
     total_tasks: allTasks.length,
-    in_progress: allTasks.filter((t) => t.status === "in_progress").length,
-    needs_work: allTasks.filter((t) => t.status === "needs_work").length,
-    pending_review: allTasks.filter((t) => t.status === "pending_review")
-      .length,
-    ready: getReadyTasks(allTasks).length,
-    blocked: allTasks.filter((t) => t.status === "blocked").length,
-    completed: allTasks.filter((t) => t.status === "completed").length,
+    in_progress: bucket("in_progress").length,
+    needs_work: bucket("needs_work").length,
+    pending_review: bucket("pending_review").length,
+    ready: allReadyTasks.length,
+    blocked: bucket("blocked").length,
+    completed: bucket("completed").length,
     inbox_items: inboxItems.length,
   };
 
   // Get active tasks (in_progress + needs_work, optionally filtered to automation-eligible only)
   // AC: @cli-ralph ac-16
-  const activeTasks = allTasks
-    .filter((t) => t.status === "in_progress" || t.status === "needs_work")
+  const activeTasks = activeStatusTasks
     .filter((t) => !options.eligible || t.automation === "eligible")
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
 
   // Get pending review tasks
-  const pendingReviewTasks = allTasks
-    .filter((t) => t.status === "pending_review")
+  const pendingReviewTasks = bucket("pending_review")
     .sort((a, b) => a.priority - b.priority)
     .slice(0, options.full ? undefined : limit)
     .map((t) => toActiveTaskSummary(t, index));
@@ -388,24 +416,18 @@ export async function gatherSessionContext(
   const noteLimitPerStatus = options.full ? undefined : Math.ceil(limit / 3);
 
   const inProgressNotes = collectRecentNotes(
-    allTasks.filter((t) => t.status === "in_progress" || t.status === "needs_work"),
+    activeStatusTasks,
     index,
     { limit: noteLimitPerStatus, since: sinceDate },
   );
 
   const pendingReviewNotes = collectRecentNotes(
-    allTasks.filter((t) => t.status === "pending_review"),
+    bucket("pending_review"),
     index,
     { limit: noteLimitPerStatus, since: sinceDate },
   );
 
-  const recentlyCompletedForNotes = allTasks
-    .filter((t) => t.status === "completed" && t.completed_at)
-    .sort((a, b) => {
-      const aDate = new Date(a.completed_at || 0);
-      const bDate = new Date(b.completed_at || 0);
-      return bDate.getTime() - aDate.getTime();
-    })
+  const recentlyCompletedForNotes = completedWithDate
     .slice(0, 5); // Last 3-5 completed tasks per AC-2
 
   const completedNotes = collectRecentNotes(
@@ -426,7 +448,7 @@ export async function gatherSessionContext(
 
   // Get incomplete todos from active tasks
   const activeTodos = collectIncompleteTodos(
-    allTasks.filter((t) => t.status === "in_progress" || t.status === "needs_work"),
+    activeStatusTasks,
     index,
     { limit: options.full ? limit * 2 : limit },
   );
@@ -438,30 +460,22 @@ export async function gatherSessionContext(
   // Primer: top 5 ready tasks; Full: all ready tasks
   // Respect --limit as upper bound when provided
   const readyLimit = options.full ? undefined : Math.min(limit, 5);
-  const readyTasks = getReadyTasks(allTasks)
+  const readyTasks = allReadyTasks
     .filter((t) => !options.eligible || t.automation === "eligible")
     .slice(0, readyLimit)
     .map((t) => toReadyTaskSummary(t, index, unlocksMap));
 
   // Get blocked tasks
-  const blockedTasks = allTasks
-    .filter((t) => t.status === "blocked")
+  const blockedTasks = bucket("blocked")
     .slice(0, options.full ? undefined : limit)
     .map((t) => toBlockedTaskSummary(t, index, unlocksMap));
 
-  // Get recently completed tasks
-  const recentlyCompleted = allTasks
+  // Get recently completed tasks (reuse cached sorted list)
+  const recentlyCompleted = completedWithDate
     .filter((t) => {
-      if (t.status !== "completed" || !t.completed_at) return false;
-      const completedDate = new Date(t.completed_at);
-      if (sinceDate && completedDate < sinceDate) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      // Sort by completed_at descending (most recent first)
-      const aDate = new Date(a.completed_at || 0);
-      const bDate = new Date(b.completed_at || 0);
-      return bDate.getTime() - aDate.getTime();
+      if (!sinceDate) return true;
+      const completedDate = new Date(t.completed_at || 0);
+      return completedDate >= sinceDate;
     })
     .slice(0, options.full ? undefined : limit)
     .map((t) => toCompletedTaskSummary(t, index));
