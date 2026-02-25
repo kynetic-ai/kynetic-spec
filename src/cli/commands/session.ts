@@ -667,7 +667,8 @@ export async function gatherSessionContext(
 
   // AC: @cmd-session-start ac-primer-default, ac-full-sections
   // Primer: top 5 ready tasks; Full: all ready tasks
-  const readyLimit = options.full ? undefined : 5;
+  // Respect --limit as upper bound when provided
+  const readyLimit = options.full ? undefined : Math.min(limit, 5);
   const readyTasks = getReadyTasks(allTasks)
     .filter((t) => !options.eligible || t.automation === "eligible")
     .slice(0, readyLimit)
@@ -776,7 +777,8 @@ export async function gatherSessionContext(
   // AC: @session-start-activity-timeline ac-activity-merge
   // AC: @cmd-session-start ac-primer-default, ac-full-sections
   // Primer: 10 items; Full: 20 items
-  const activityLimit = options.full ? 20 : 10;
+  // Respect --limit as upper bound when provided
+  const activityLimit = options.full ? Math.min(limit * 2, 20) : Math.min(limit, 10);
   const activityTimeline = buildActivityTimeline(
     recentlyCompleted,
     recentCommits,

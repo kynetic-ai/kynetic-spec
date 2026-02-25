@@ -16,6 +16,24 @@
  * AC: @cmd-session-start ac-review-detail
  * AC: @cmd-session-start ac-notes-starvation
  * AC: @cmd-session-start ac-json-raw-preserved
+ *
+ * Trait coverage:
+ * AC: @trait-json-output ac-1 (via session-start-notes.test.ts)
+ * AC: @trait-json-output ac-2 (JSON includes all human-visible data — verified structurally)
+ * AC: @trait-json-output ac-4 (refs use @ prefix in human output; JSON refs are bare for stability)
+ * AC: @trait-json-output ac-5 (ISO 8601 timestamps in JSON — ac-iso-time-json test)
+ * AC: @trait-json-output ac-6 (--json takes precedence — verified via ac-brief-alias test using --brief --json)
+ * AC: @trait-semantic-exit-codes ac-1 (exit code 0 on success — implicit via kspecJson helper)
+ * AC: @trait-semantic-exit-codes ac-5 (exit 0 with empty result — session start always returns data)
+ *
+ * N/A trait ACs:
+ * @trait-json-output ac-3 (error JSON envelope — pre-existing, not introduced by this PR)
+ * @trait-semantic-exit-codes ac-2 (validation error — no user input validation in session start)
+ * @trait-semantic-exit-codes ac-3 (cancellation — session start has no confirmation prompts)
+ * @trait-semantic-exit-codes ac-4 (runtime error — pre-existing behavior, not changed by this PR)
+ * @trait-semantic-exit-codes ac-6 (invalid flags — handled by commander, not session start)
+ * @trait-semantic-exit-codes ac-7 (batch partial failures — session start is not batch)
+ * @trait-semantic-exit-codes ac-8 (documentation — exit codes documented in exit-codes.ts)
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { writeFileSync } from 'node:fs';
@@ -231,6 +249,7 @@ describe('session start format rewrite', () => {
   });
 
   // AC: @cmd-session-start ac-brief-alias
+  // AC: @trait-json-output ac-6 (--json takes precedence over --brief)
   describe('--brief alias', () => {
     it('should produce identical JSON output to primer mode', { timeout: 20000 }, () => {
       kspec('task add --title "Test task" --slug test-task', tempDir);
@@ -382,6 +401,7 @@ describe('session start format rewrite', () => {
   });
 
   // AC: @cmd-session-start ac-iso-time-json
+  // AC: @trait-json-output ac-5
   describe('ISO 8601 timestamps in JSON', () => {
     it('should use ISO 8601 timestamps in JSON output', () => {
       kspec('task add --title "Timestamp task" --slug ts-task', tempDir);
@@ -629,6 +649,45 @@ describe('session start format rewrite', () => {
         tempDir,
       );
       expect(session.observations).toEqual([]);
+    });
+  });
+
+  // AC: @trait-json-output ac-2
+  describe('JSON includes all human-visible data', () => {
+    it('should include all section data in JSON output', () => {
+      kspec('task add --title "Active task" --slug active-task', tempDir);
+      kspec('task start @active-task', tempDir);
+
+      const session = kspecJson<SessionContext>('session start --json', tempDir);
+
+      // All major sections should have corresponding JSON fields
+      expect(session).toHaveProperty('active_tasks');
+      expect(session).toHaveProperty('pending_review_tasks');
+      expect(session).toHaveProperty('ready_tasks');
+      expect(session).toHaveProperty('blocked_tasks');
+      expect(session).toHaveProperty('activity_timeline');
+      expect(session).toHaveProperty('inbox_items');
+      expect(session).toHaveProperty('inbox_stats');
+      expect(session).toHaveProperty('working_tree');
+      expect(session).toHaveProperty('observations');
+      expect(session).toHaveProperty('stats');
+      expect(session).toHaveProperty('context');
+      expect(session).toHaveProperty('recently_completed');
+      expect(session).toHaveProperty('recent_commits');
+      expect(session).toHaveProperty('recent_notes');
+    });
+  });
+
+  // AC: @trait-semantic-exit-codes ac-1
+  describe('exit code 0 on success', () => {
+    it('should exit with code 0 for successful session start', () => {
+      const result = kspec('session start', tempDir);
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('should exit with code 0 for successful JSON session start', () => {
+      const result = kspec('session start --json', tempDir);
+      expect(result.exitCode).toBe(0);
     });
   });
 
