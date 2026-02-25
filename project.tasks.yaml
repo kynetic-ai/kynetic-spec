@@ -58253,6 +58253,7 @@
   created_at: 2026-02-24T08:35:54.127Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJ7CN8XG3BCY10C2Z91VB5AX
   slugs: []
   title: Free budget for no-op task completions in ralph loop
