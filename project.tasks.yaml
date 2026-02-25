@@ -58070,7 +58070,9 @@
     - cli
     - session
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T06:20:05.088Z
+  started_at: 2026-02-25T00:16:09.276Z
   notes:
     - _ulid: 01KJ7559QEJ2JZCNHXYR2V5CPF
       created_at: 2026-02-24T06:25:07.310Z
@@ -58130,8 +58132,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T00:16:09.276Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
   slugs:
     - task-session-start-output-tests
@@ -58788,3 +58788,24 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix unawaited async cleanup in ralph signal handler
+  type: bug
+  spec_ref: "@ralph-task-limit"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-fix-ralph-signal-cleanup
+  tags:
+    - ralph
+    - testing
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJ93JJFTXFE4F8084NAXMHG3
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T00:35:53.978Z
+  notes: []
+  todos: []
