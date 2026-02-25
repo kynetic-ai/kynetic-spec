@@ -58777,7 +58777,7 @@
   spec_ref: "@session-start-activity-timeline"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -58785,7 +58785,9 @@
   tags:
     - cli
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-25T00:03:30.299Z
+  started_at: 2026-02-25T01:58:11.607Z
   notes:
     - _ulid: 01KJ91QE80ERB3RT5FS62TPRT1
       created_at: 2026-02-25T00:03:36.320Z
@@ -58799,8 +58801,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T01:58:11.607Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
+  submitted_at: 2026-02-25T02:07:43.988Z
 - _ulid: 01KJ923HBYQ3475W2NB1AJH0D9
   slugs:
     - task-validate-status-enum
