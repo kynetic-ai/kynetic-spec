@@ -59016,7 +59016,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Refactor session.ts — split into focused modules
+- _ulid: 01KJ9ZBT1MNTKB05SYK8K243CM
+  slugs: []
+  title: Refactor session.ts — split into focused modules
+  type: task
   description: >-
     session.ts is 2806 lines with 6 distinct concerns crammed into one file. Split it into focused
     modules to improve maintainability before further changes cause drift.
@@ -59131,23 +59134,90 @@
     3. `kspec session start` — works correctly (manual smoke test)
 
     4. `git diff --stat` should show session.ts shrinking to <200 lines
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - refactor
     - cli
     - session
+  vcs_refs: []
+  created_at: 2026-02-25T08:41:32.467Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Extract shared test helpers and interfaces for session start tests
+  description: >-
+    Multiple session start test files duplicate the same interfaces and helpers. Extract them to
+    shared locations.
+
+
+    ## Duplicated Interfaces (extract to tests/helpers/session-types.ts)
+
+
+    | Interface | Files where duplicated |
+
+    |-----------|----------------------|
+
+    | ActivityItem | session-start-activity-timeline, session-start-format,
+    session-start-computed-json |
+
+    | SessionContext | session-start-activity-timeline, session-start-format,
+    session-start-computed-json, session-start-notes, session-start-inbox-triage (5 copies, varying
+    shapes) |
+
+    | CommitSummary | session-start-activity-timeline, session-start-format |
+
+    | CompletedTaskSummary | session-start-activity-timeline, session-start-format |
+
+    | InboxStats | session-start-format, session-start-inbox-triage |
+
+
+    For SessionContext: create a single comprehensive interface with all fields optional
+    (Partial-like), so each test can use the subset it needs without maintaining separate copies.
+
+
+    ## Duplicated Helpers (extract to tests/helpers/inbox.ts)
+
+
+    | Helper | Files where duplicated |
+
+    |--------|----------------------|
+
+    | addInboxItem(tempDir, text, tags?) | session-start-computed-json, session-start-inbox-triage
+    (identical) |
+
+    | triageItem(tempDir, ref, decision, reason) | session-start-computed-json,
+    session-start-inbox-triage (identical) |
+
+
+    ## Verification
+
+
+    - All existing tests pass without modification to test logic (only imports change)
+
+    - No new test files needed — just move types/helpers and update imports
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - testing
+    - refactor
   depends_on: []
   automation: eligible
-  _ulid: 01KJ9ZBT1MNTKB05SYK8K243CM
+  _ulid: 01KJ9ZDE3G8TRFQB9YD0E2B04D
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-25T08:41:32.467Z
+  created_at: 2026-02-25T08:42:25.776Z
   notes: []
   todos: []
