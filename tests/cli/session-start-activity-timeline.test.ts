@@ -11,37 +11,9 @@
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, initGitRepo, git } from '../helpers/cli';
+import type { SessionContext } from '../helpers/session-types';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-
-interface CommitSummary {
-  hash: string;
-  full_hash: string;
-  date: string;
-  message: string;
-  author: string;
-  task_refs: string[];
-}
-
-interface CompletedTaskSummary {
-  ref: string;
-  title: string;
-  completed_at: string;
-  closed_reason: string | null;
-}
-
-interface ActivityItem {
-  type: 'task_completion' | 'commit' | 'linked_commit';
-  date: string;
-  commit?: CommitSummary;
-  task?: CompletedTaskSummary;
-}
-
-interface SessionContext {
-  recently_completed: CompletedTaskSummary[];
-  recent_commits: CommitSummary[];
-  activity_timeline: ActivityItem[];
-}
 
 describe('session start activity timeline', () => {
   let tempDir: string;
