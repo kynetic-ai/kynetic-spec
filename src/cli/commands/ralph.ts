@@ -1054,18 +1054,28 @@ export function registerRalphCommand(program: Command): void {
         const sessionIterationMap = new Map<string, number>();
 
         // Signal handler refs — declared here so finally can remove them
+        // AC: @ralph-task-limit ac-signal-cleanup
         const signalCleanup = (signal: string) => {
           info(`Received ${signal}, cleaning up...`);
           if (agent) {
             agent.kill();
           }
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
-          Promise.all([
-            fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
-            closeSession(specDir, sessionId, "abandoned", `Received ${signal}`),
-          ]).finally(() => {
-            process.exit(0);
-          });
+          // Must use async IIFE — signal handlers are called synchronously,
+          // but cleanup needs async I/O. The IIFE keeps the event loop alive
+          // until cleanup completes, then exits explicitly.
+          void (async () => {
+            try {
+              await Promise.all([
+                fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
+                closeSession(specDir, sessionId, "abandoned", `Received ${signal}`),
+              ]);
+            } catch {
+              // Best-effort cleanup — don't let errors prevent exit
+            } finally {
+              process.exit(0);
+            }
+          })();
         };
         const sigintHandler = () => { signalCleanup("SIGINT"); };
         const sigtermHandler = () => { signalCleanup("SIGTERM"); };
