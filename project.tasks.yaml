@@ -60346,12 +60346,33 @@
     - task-migrate-ralph-endloop-tests
   title: Migrate ralph end-loop static analysis tests to behavioral
   type: task
-  description: "ralph/end-loop.test.ts lines 254-372 and 493-502 have 8 tests reading
-    src/cli/commands/ralph.ts and checking string patterns for session state detection, signal
-    handlers, session close paths, and marker removal. These missed a real false-positive bug.
-    Migrate to: (1) import ralph functions directly for unit testing session close logic, (2)
-    process-level integration tests for signal handlers. The behavioral tests in lines 1-252 of the
-    same file are good and should be preserved."
+  description: >-
+    Delete static analysis tests in tests/ralph/end-loop.test.ts that read src/cli/commands/ralph.ts
+    and check string patterns.
+
+
+    Actions:
+
+    1. DELETE ac-detect block (lines 254-272) — behavioral tests in lines 1-252 already verify
+    end-loop detection via CLI.
+
+    2. DELETE session close handlers block (lines 277-346) — 4 tests checking signal handler
+    strings. Session close is tested behaviorally in session-budget-integration.test.ts lines 420+.
+
+    3. KEEP ac-remove-markers block (lines 348-372) — absence tests verifying removed code stays
+    removed. Static scanning is correct for this.
+
+    4. DELETE trait error-guidance blocks (lines 374-418) — duplicate of behavioral coverage in
+    lines 1-252.
+
+    5. DELETE Session store and Session close with closeSession blocks (lines 423-502) — functions
+    tested behaviorally elsewhere.
+
+    6. Run npm test to verify no regressions.
+
+
+    Expected result: end-loop.test.ts shrinks from ~503 to ~375 lines. Lines 1-252 (behavioral) +
+    348-372 (absence) remain.
   spec_ref: null
   meta_ref: null
   plan_ref: null
