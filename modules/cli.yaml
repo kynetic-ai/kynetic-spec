@@ -5631,12 +5631,11 @@ requirements:
             then: |
               items sorted most recent first
           - id: ac-activity-dedup
-            given: |
-              a commit is linked to a completed task via trailer
+            given: "multiple commits are linked to the same task via Task: @slug trailers"
             when: |
               timeline renders
-            then: |
-              shown as single combined entry, not two separate entries
+            then: commits are grouped under a single task entry as nested children, not shown as separate
+              top-level entries
           - id: ac-activity-no-git
             given: |
               --no-git flag is passed
