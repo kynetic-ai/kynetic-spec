@@ -59994,7 +59994,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -60006,6 +60006,7 @@
   session_id: 01KJB841ZBR4KTKGGQJT4QEPT7
   created_at: 2026-02-25T10:41:13.855Z
   started_at: 2026-02-25T20:42:08.558Z
+  submitted_at: 2026-02-25T20:42:09.611Z
   notes:
     - _ulid: 01KJAQQBC9H8YYB0PCFEH74K53
       created_at: 2026-02-25T15:47:16.489Z
@@ -60033,7 +60034,11 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-25T20:42:09.611Z
+  completed_at: 2026-02-25T20:51:20.935Z
+  closed_reason: "Merged in PR #536. Added test:shard1/2/3 npm scripts matching CI configuration for
+    faster local dev runs (~50s vs ~150s). Added testing convention documenting shard usage. Fixed
+    kspec-agents.md regeneration: v0.5.0 header restored and N/A Trait ACs section reinstated (root
+    cause: stale hash file causing false idempotency skip)."
 - _ulid: 01KJAYAWPF5EH4E4VG9C4BFN6F
   slugs:
     - task-checkpoint-session-scope
