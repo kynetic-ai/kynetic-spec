@@ -1883,23 +1883,35 @@ async function readStdinFully(): Promise<string | null> {
 
   return new Promise((resolve) => {
     let data = "";
+
+    const onData = (chunk: string) => {
+      data += chunk;
+    };
+    const onEnd = () => {
+      clearTimeout(timeout);
+      cleanup();
+      resolve(data || null);
+    };
+    const onError = () => {
+      clearTimeout(timeout);
+      cleanup();
+      resolve(null);
+    };
+    const cleanup = () => {
+      process.stdin.removeListener("data", onData);
+      process.stdin.removeListener("end", onEnd);
+      process.stdin.removeListener("error", onError);
+    };
+
     const timeout = setTimeout(() => {
-      process.stdin.removeAllListeners();
+      cleanup();
       resolve(data || null);
     }, 5000); // 5 second timeout for bulk input
 
     process.stdin.setEncoding("utf8");
-    process.stdin.on("data", (chunk) => {
-      data += chunk;
-    });
-    process.stdin.on("end", () => {
-      clearTimeout(timeout);
-      resolve(data || null);
-    });
-    process.stdin.on("error", () => {
-      clearTimeout(timeout);
-      resolve(null);
-    });
+    process.stdin.on("data", onData);
+    process.stdin.on("end", onEnd);
+    process.stdin.on("error", onError);
     process.stdin.resume();
   });
 }
@@ -1915,23 +1927,35 @@ async function readStdinIfAvailable(): Promise<string | null> {
 
   return new Promise((resolve) => {
     let data = "";
+
+    const onData = (chunk: string) => {
+      data += chunk;
+    };
+    const onEnd = () => {
+      clearTimeout(timeout);
+      cleanup();
+      resolve(data || null);
+    };
+    const onError = () => {
+      clearTimeout(timeout);
+      cleanup();
+      resolve(null);
+    };
+    const cleanup = () => {
+      process.stdin.removeListener("data", onData);
+      process.stdin.removeListener("end", onEnd);
+      process.stdin.removeListener("error", onError);
+    };
+
     const timeout = setTimeout(() => {
-      process.stdin.removeAllListeners();
+      cleanup();
       resolve(data || null);
     }, 100); // 100ms timeout for quick check
 
     process.stdin.setEncoding("utf8");
-    process.stdin.on("data", (chunk) => {
-      data += chunk;
-    });
-    process.stdin.on("end", () => {
-      clearTimeout(timeout);
-      resolve(data || null);
-    });
-    process.stdin.on("error", () => {
-      clearTimeout(timeout);
-      resolve(null);
-    });
+    process.stdin.on("data", onData);
+    process.stdin.on("end", onEnd);
+    process.stdin.on("error", onError);
     process.stdin.resume();
   });
 }
