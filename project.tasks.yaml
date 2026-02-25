@@ -59328,7 +59328,14 @@
   vcs_refs: []
   created_at: 2026-02-25T08:45:18.323Z
   started_at: 2026-02-25T12:04:01.500Z
-  notes: []
+  notes:
+    - _ulid: 01KJABCXBZRC4FW42ZNQE1H7Z6
+      created_at: 2026-02-25T12:11:51.551Z
+      author: "@claude"
+      content: "Fixed removeAllListeners() in both readStdinIfAvailable() and readStdinFully() in item.ts.
+        Replaced with named handlers + cleanup() pattern matching session/commands.ts. Added static
+        analysis test (4 assertions) to prevent regression. PR #526 created."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJA01BXDN6M8EFJNJT8JNJSZ
