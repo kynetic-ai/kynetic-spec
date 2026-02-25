@@ -32,6 +32,10 @@ import type {
   SpecItemInput,
 } from "../../schema/index.js";
 import { SpecItemPatchSchema } from "../../schema/index.js";
+import {
+  ImplementationStatusSchema,
+  MaturitySchema,
+} from "../../schema/common.js";
 import { errors } from "../../strings/errors.js";
 import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
@@ -964,6 +968,24 @@ Examples:
         if (options.tag) updates.tags = parseTagsArray(options.tag);
         if (options.trait) updates.traits = options.trait;
         if (options.description) updates.description = options.description;
+
+        // AC: @implementation-states ac-reject-invalid
+        // AC: @maturity-states ac-reject-invalid
+        // Validate enum values before writing
+        if (options.status) {
+          const valid = ImplementationStatusSchema.options as readonly string[];
+          if (!valid.includes(options.status)) {
+            error(`Invalid implementation status: '${options.status}'. Valid values: ${valid.join(", ")}`);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+        }
+        if (options.maturity) {
+          const valid = MaturitySchema.options as readonly string[];
+          if (!valid.includes(options.maturity)) {
+            error(`Invalid maturity: '${options.maturity}'. Valid values: ${valid.join(", ")}`);
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+        }
 
         // Handle status updates
         if (options.status || options.maturity) {
