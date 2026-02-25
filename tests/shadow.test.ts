@@ -30,8 +30,25 @@ import {
   type ShadowOptions,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
+import { existsSync } from 'node:fs';
 import { kspec as kspecRun } from './helpers/cli.js';
 import { detectRemoteType } from '../src/parser/config.js';
+
+// Check if git supports --orphan worktree (requires >= 2.42) and built CLI exists.
+// initializeShadow needs both to work.
+const projectCli = path.resolve(__dirname, '..', 'dist', 'cli', 'index.js');
+const canRunShadowInitTests = (() => {
+  try {
+    const version = execSync('git --version', { encoding: 'utf-8' }).trim();
+    const match = version.match(/(\d+)\.(\d+)/);
+    if (!match) return false;
+    const [, major, minor] = match.map(Number);
+    const gitSupportsOrphan = major > 2 || (major === 2 && minor >= 42);
+    return gitSupportsOrphan && existsSync(projectCli);
+  } catch {
+    return false;
+  }
+})();
 
 describe('Shadow Branch', () => {
   // Use /tmp to ensure we're outside any git repo for proper isolation
@@ -278,55 +295,65 @@ describe('Shadow Branch', () => {
     });
 
     // AC: @yaml-merge-driver ac-12
-    it('configures merge driver during initialization when kspec is in PATH', async () => {
-      // Initialize git repo with an initial commit
-      execSync('git init', { cwd: testDir, stdio: 'pipe' });
-      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
-      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
-      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
-      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+    // Uses a temporary kspec wrapper in PATH pointing to the project's built CLI,
+    // so the test works without a global kspec install (e.g. in CI).
+    // Requires git >= 2.42 for --orphan worktree support used by initializeShadow.
+    it.skipIf(!canRunShadowInitTests)(
+      'configures merge driver during initialization',
+      async () => {
+        // Initialize git repo with an initial commit
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
 
-      // Check if kspec is in PATH (it won't be in CI test runs)
-      let kspecAvailable = false;
-      try {
-        execSync('which kspec', { stdio: 'pipe' });
-        kspecAvailable = true;
-      } catch {
-        // kspec not in PATH - skip this test
-      }
+        // Create a temporary bin directory with a kspec wrapper that delegates
+        // to the project's built CLI, so `which kspec` succeeds without a global install
+        const binDir = path.join(testDir, '_bin');
+        await fs.mkdir(binDir, { recursive: true });
+        await fs.writeFile(
+          path.join(binDir, 'kspec'),
+          `#!/bin/sh\nexec node "${projectCli}" "$@"\n`,
+          { mode: 0o755 },
+        );
 
-      if (!kspecAvailable) {
-        console.log('  ⊘ Skipping merge driver config test (kspec not in PATH)');
-        return;
-      }
+        // Prepend our bin dir to PATH so configureMergeDriver finds it
+        const originalPath = process.env.PATH;
+        process.env.PATH = `${binDir}:${originalPath}`;
+        try {
+          const result = await initializeShadow(testDir, { projectName: 'Test Project' });
 
-      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+          expect(result.success).toBe(true);
 
-      expect(result.success).toBe(true);
+          // Verify merge driver is configured in .git/config
+          const mergeDriverName = execSync('git config merge.kspec.name', {
+            cwd: testDir,
+            encoding: 'utf-8',
+            stdio: ['pipe', 'pipe', 'pipe'],
+          }).trim();
+          expect(mergeDriverName).toBe('Kspec YAML semantic merge driver');
 
-      // Verify merge driver is configured in .git/config
-      const mergeDriverName = execSync('git config merge.kspec.name', {
-        cwd: testDir,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
-      }).trim();
-      expect(mergeDriverName).toBe('Kspec YAML semantic merge driver');
+          const mergeDriverCmd = execSync('git config merge.kspec.driver', {
+            cwd: testDir,
+            encoding: 'utf-8',
+            stdio: ['pipe', 'pipe', 'pipe'],
+          }).trim();
+          expect(mergeDriverCmd).toContain('kspec merge-driver');
+          expect(mergeDriverCmd).toContain('--non-interactive');
 
-      const mergeDriverCmd = execSync('git config merge.kspec.driver', {
-        cwd: testDir,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
-      }).trim();
-      expect(mergeDriverCmd).toContain('kspec merge-driver');
-      expect(mergeDriverCmd).toContain('--non-interactive');
-
-      // Verify .gitattributes exists in shadow branch
-      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
-      const gitattributesPath = path.join(worktreeDir, '.gitattributes');
-      const gitattributesContent = await fs.readFile(gitattributesPath, 'utf-8');
-      expect(gitattributesContent).toContain('*.yaml merge=kspec');
-      expect(gitattributesContent).toContain('*.yml merge=kspec');
-    });
+          // Verify .gitattributes exists in shadow branch
+          const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+          const gitattributesPath = path.join(worktreeDir, '.gitattributes');
+          const gitattributesContent = await fs.readFile(gitattributesPath, 'utf-8');
+          expect(gitattributesContent).toContain('*.yaml merge=kspec');
+          expect(gitattributesContent).toContain('*.yml merge=kspec');
+        } finally {
+          // Restore original PATH
+          process.env.PATH = originalPath;
+        }
+      },
+    );
 
     // AC: @artifacts-directory ac-init-creates
     it('creates artifacts directory during init', async () => {
