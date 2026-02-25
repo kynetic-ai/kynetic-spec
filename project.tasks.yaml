@@ -57995,6 +57995,7 @@
   session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T06:19:07.397Z
   started_at: 2026-02-24T23:57:02.445Z
+  submitted_at: 2026-02-25T00:02:44.347Z
   notes:
     - _ulid: 01KJ75580X522543JHKECYFPWH
       created_at: 2026-02-24T06:25:05.566Z
@@ -58042,7 +58043,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-25T00:02:44.347Z
 - _ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
   slugs:
     - task-rewrite-formatsessioncontext
@@ -58718,3 +58718,23 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Implement hierarchical activity timeline display
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-hierarchical-activity-timeline
+  tags:
+    - cli
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJ91Q8BVDS75TV60KVRX5EKC
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T00:03:30.299Z
+  notes: []
+  todos: []
