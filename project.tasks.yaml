@@ -59994,7 +59994,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -60013,8 +60013,17 @@
         configuration. Also added testing convention rule documenting shard usage for faster dev
         iteration. Verified shard1 runs successfully (~70s vs ~150s full suite).
       supersedes: null
+    - _ulid: 01KJB87CPSEPM0K1QRCB15KKQD
+      created_at: 2026-02-25T20:35:39.353Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: kspec-agents.md was regenerated using kspec v0.4.0 instead
+        of v0.5.0, causing: (1) version header downgraded, (2) '### N/A Trait ACs' section removed
+        from Code Annotations. The package.json shard scripts are correct. Fix: regenerate
+        kspec-agents.md with the project-local kspec CLI (v0.5.0) using 'kspec agents generate'."
+      supersedes: null
   todos: []
   automation: eligible
+  session_id: null
 - _ulid: 01KJAYAWPF5EH4E4VG9C4BFN6F
   slugs:
     - task-checkpoint-session-scope
@@ -60025,6 +60034,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #537. Checkpoint hook now filters in-progress tasks by session
+    ownership. Tasks claimed by other active sessions are excluded. Orphaned tasks included via
+    fail-safe. 11 integration tests added, all CI passing."
   depends_on: []
   context: []
   priority: 2
@@ -60035,6 +60047,7 @@
   created_at: 2026-02-25T17:42:48.267Z
   started_at: 2026-02-25T17:43:17.540Z
   submitted_at: 2026-02-25T17:51:36.836Z
+  completed_at: 2026-02-25T18:09:43.303Z
   notes:
     - _ulid: 01KJAYTVN52T2MZW7R9RNAQPG9
       created_at: 2026-02-25T17:51:31.494Z
@@ -60048,10 +60061,6 @@
         no regressions.
       supersedes: null
   todos: []
-  completed_at: 2026-02-25T18:09:43.303Z
-  closed_reason: "Merged in PR #537. Checkpoint hook now filters in-progress tasks by session
-    ownership. Tasks claimed by other active sessions are excluded. Orphaned tasks included via
-    fail-safe. 11 integration tests added, all CI passing."
 - _ulid: 01KJAZARFTD5RQVVXM8430WZ6A
   slugs:
     - task-ralph-missing-session-stamp
