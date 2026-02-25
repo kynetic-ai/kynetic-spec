@@ -59330,7 +59330,14 @@
     - session
   vcs_refs: []
   created_at: 2026-02-25T08:53:18.892Z
-  notes: []
+  notes:
+    - _ulid: 01KJA3KSP7VK52BSE86SBECM4H
+      created_at: 2026-02-25T09:55:48.552Z
+      author: "@claude"
+      content: "Also fix: completed tasks are sorted by completed_at twice (once for notes with
+        .slice(0,5), once for completed list with .slice(0,limit)). Cache the sorted result and
+        reuse."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJA02KF199EP7QVGBMS9A28C
@@ -59566,7 +59573,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Investigate and fix note limit 3x multiplier in gatherSessionContext
+- _ulid: 01KJA3CRB5APPY0D3YA94WVWDP
+  slugs: []
+  title: Investigate and fix note limit 3x multiplier in gatherSessionContext
+  type: bug
   description: >-
     In gatherSessionContext(), the note limit calculation has a potential bug:
 
@@ -59587,22 +59597,19 @@
 
     If it's a bug: apply .slice(0, limit) to the concatenated notes array. If intentional: add a
     comment explaining why notes get 3x the limit.
-  type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - cli
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJA3CRB5APPY0D3YA94WVWDP
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-25T09:51:57.795Z
   notes: []
   todos: []
+  automation: eligible
