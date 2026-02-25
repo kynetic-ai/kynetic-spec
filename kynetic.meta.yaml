@@ -1120,6 +1120,7 @@ conventions:
       - Use kspec search for keyword lookups instead of piping kspec item list through grep
       - Every skill includes a CLI Lookups table — use it as the quick-reference for finding
         spec/task/trait information
+      - placeholder
     examples: []
 observations:
   - _ulid: 01KF89NXNJVRJQ6RTHJ310SHXC
