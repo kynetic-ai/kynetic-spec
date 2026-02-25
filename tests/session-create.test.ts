@@ -342,7 +342,7 @@ describe("Environment Injection", () => {
     });
 
     // AC: @session-creation-and-env-injection ac-inject-claude
-    it("should write to .claude/settings.json when CLAUDE_ENV_FILE not set", async () => {
+    it("should write to .claude/settings.local.json when CLAUDE_ENV_FILE not set", async () => {
       const originalEnv = process.env.CLAUDE_ENV_FILE;
       const originalCwd = process.cwd();
       delete process.env.CLAUDE_ENV_FILE;
@@ -355,7 +355,7 @@ describe("Environment Injection", () => {
         expect(result.injected).toBe(true);
         expect(result.method).toBe("claude_settings");
 
-        const settingsPath = path.join(testDir, ".claude", "settings.json");
+        const settingsPath = path.join(testDir, ".claude", "settings.local.json");
         const content = await fs.readFile(settingsPath, "utf-8");
         const settings = JSON.parse(content);
         expect(settings.env.KSPEC_SESSION_ID).toBe(sessionId);
@@ -434,7 +434,7 @@ describe("Environment Injection", () => {
   });
 
   describe("config file safety", () => {
-    it("should throw on corrupt .claude/settings.json instead of overwriting", async () => {
+    it("should throw on corrupt .claude/settings.local.json instead of overwriting", async () => {
       const originalEnv = process.env.CLAUDE_ENV_FILE;
       const originalCwd = process.cwd();
       delete process.env.CLAUDE_ENV_FILE;
@@ -444,7 +444,7 @@ describe("Environment Injection", () => {
         const settingsDir = path.join(testDir, ".claude");
         await fs.mkdir(settingsDir, { recursive: true });
         await fs.writeFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           "this is not valid json {{{",
           "utf-8",
         );
@@ -658,7 +658,7 @@ describe("Environment Injection", () => {
       }
     });
 
-    it("should remove KSPEC_SESSION_ID from .claude/settings.json", async () => {
+    it("should remove KSPEC_SESSION_ID from .claude/settings.local.json", async () => {
       const originalEnv = process.env.CLAUDE_ENV_FILE;
       const originalCwd = process.cwd();
       delete process.env.CLAUDE_ENV_FILE;
@@ -668,7 +668,7 @@ describe("Environment Injection", () => {
         const settingsDir = path.join(testDir, ".claude");
         await fs.mkdir(settingsDir, { recursive: true });
         await fs.writeFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           JSON.stringify({
             hooks: {},
             env: { KSPEC_SESSION_ID: "old-session", OTHER: "keep" },
@@ -679,7 +679,7 @@ describe("Environment Injection", () => {
         await removeClaudeCodeEnv();
 
         const content = await fs.readFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           "utf-8",
         );
         const settings = JSON.parse(content);
@@ -704,7 +704,7 @@ describe("Environment Injection", () => {
         const settingsDir = path.join(testDir, ".claude");
         await fs.mkdir(settingsDir, { recursive: true });
         await fs.writeFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           JSON.stringify({
             hooks: {},
             env: { KSPEC_SESSION_ID: "only-key" },
@@ -715,7 +715,7 @@ describe("Environment Injection", () => {
         await removeClaudeCodeEnv();
 
         const content = await fs.readFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           "utf-8",
         );
         const settings = JSON.parse(content);
@@ -736,7 +736,7 @@ describe("Environment Injection", () => {
 
       try {
         process.chdir(testDir);
-        // No settings.json exists — should not throw
+        // No settings.local.json exists — should not throw
         await expect(removeClaudeCodeEnv()).resolves.toBeUndefined();
       } finally {
         process.chdir(originalCwd);
@@ -773,7 +773,7 @@ describe("Environment Injection", () => {
       }
     });
 
-    it("should restore previous value in settings.json when provided", async () => {
+    it("should restore previous value in settings.local.json when provided", async () => {
       const originalEnv = process.env.CLAUDE_ENV_FILE;
       const originalCwd = process.cwd();
       delete process.env.CLAUDE_ENV_FILE;
@@ -783,7 +783,7 @@ describe("Environment Injection", () => {
         const settingsDir = path.join(testDir, ".claude");
         await fs.mkdir(settingsDir, { recursive: true });
         await fs.writeFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           JSON.stringify({
             env: { KSPEC_SESSION_ID: "ralph-session" },
           }),
@@ -793,7 +793,7 @@ describe("Environment Injection", () => {
         await removeClaudeCodeEnv("original-user-session");
 
         const content = await fs.readFile(
-          path.join(settingsDir, "settings.json"),
+          path.join(settingsDir, "settings.local.json"),
           "utf-8",
         );
         const settings = JSON.parse(content);

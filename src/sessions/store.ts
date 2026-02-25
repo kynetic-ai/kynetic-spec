@@ -1770,7 +1770,7 @@ async function upsertDotenvSessionId(
  *
  * Strategy:
  * 1. If CLAUDE_ENV_FILE is set, write to that file
- * 2. Otherwise, append to project .claude/settings.json env section
+ * 2. Otherwise, append to project .claude/settings.local.json env section
  *
  * AC: @session-creation-and-env-injection ac-inject-claude
  */
@@ -1791,9 +1791,11 @@ export async function injectClaudeCodeEnv(
     };
   }
 
-  // Fallback: write to project .claude/settings.json
+  // Fallback: write to project .claude/settings.local.json (gitignored, user-local)
+  // Using settings.local.json avoids dirtying the working tree — settings.json
+  // is checked into the repo. Claude Code merges both, with local taking precedence.
   const settingsDir = path.join(process.cwd(), ".claude");
-  const settingsPath = path.join(settingsDir, "settings.json");
+  const settingsPath = path.join(settingsDir, "settings.local.json");
 
   await fsPromises.mkdir(settingsDir, { recursive: true });
 
@@ -1807,7 +1809,7 @@ export async function injectClaudeCodeEnv(
       // File doesn't exist, start fresh
     } else {
       throw new Error(
-        `Cannot inject env: .claude/settings.json exists but is not valid JSON. ` +
+        `Cannot inject env: .claude/settings.local.json exists but is not valid JSON. ` +
         `Fix the file manually or remove it, then retry.`,
       );
     }
@@ -1834,7 +1836,7 @@ export async function injectClaudeCodeEnv(
   return {
     injected: true,
     method: "claude_settings",
-    description: `Added KSPEC_SESSION_ID to .claude/settings.json env section`,
+    description: `Added KSPEC_SESSION_ID to .claude/settings.local.json env section`,
     path: settingsPath,
     previousValue,
   };
@@ -1863,8 +1865,8 @@ export async function removeClaudeCodeEnv(
     return;
   }
 
-  // Remove/restore in project .claude/settings.json
-  const settingsPath = path.join(process.cwd(), ".claude", "settings.json");
+  // Remove/restore in project .claude/settings.local.json
+  const settingsPath = path.join(process.cwd(), ".claude", "settings.local.json");
 
   try {
     const content = await fsPromises.readFile(settingsPath, "utf-8");
