@@ -59695,3 +59695,83 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KJA66XG2XWAYMJF3BK4NX3N8
+  slugs: []
+  title: Fix shadow merge driver test to use project binary instead of global kspec
+  type: bug
+  description: >-
+    tests/shadow.test.ts line 280-329 (AC: @yaml-merge-driver ac-12) silently skips when kspec isn't
+    in PATH. It uses `execSync('which kspec')` to check, but in CI publish runs (and any env without
+    global install), kspec isn't in PATH even though the project binary is available.
+
+
+    Fix: Use the project's own binary instead of requiring a global install. Options:
+
+    1. Use `path.resolve('node_modules/.bin/kspec')` to get the local binary path
+
+    2. Or call initializeShadow with a kspecPath option if available
+
+    3. Or use `npx kspec` which resolves the local binary
+
+
+    The test should also use vitest `test.skipIf()` or `test.runIf()` instead of a silent early
+    return — the current pattern makes it invisible in test output that coverage is being skipped.
+
+
+    File: tests/shadow.test.ts:280-329
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - bug
+  vcs_refs: []
+  created_at: 2026-02-25T10:41:12.193Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Add local test sharding support for faster dev runs
+  description: >-
+    CI already shards tests into 3 with `npx vitest run --shard=N/3`. Add npm scripts so developers
+    can do the same locally for faster feedback:
+
+
+    Add to package.json scripts:
+      "test:shard1": "vitest run --shard=1/3",
+      "test:shard2": "vitest run --shard=2/3",
+      "test:shard3": "vitest run --shard=3/3"
+
+    Or a single parameterized script:
+      "test:shard": "vitest run --shard"
+      Usage: npm run test:shard -- --shard=1/3
+
+    Also consider documenting this in the testing convention (kspec meta) so agents know they can
+    run a subset of tests for faster iteration during development. Full suite is still required
+    before PR.
+
+
+    Current full suite time: ~150s. Each shard would be ~50s.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - testing
+    - dx
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJA66Z3ZKKZQN6HMZTTQEQ7E
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T10:41:13.855Z
+  notes: []
+  todos: []
