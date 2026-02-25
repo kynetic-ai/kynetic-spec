@@ -58355,6 +58355,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #521. Added CLI lookup tables to 6 skills (task-work, review,
+    writing-specs, triage-inbox, local-review, pr-review) and a cli-lookups convention to
+    kspec-agents.md. Addresses root cause of agents wasting 139+ messages searching YAML files
+    instead of using kspec item get."
   depends_on: []
   context: []
   priority: 3
@@ -58366,6 +58370,7 @@
   created_at: 2026-02-24T08:36:17.130Z
   started_at: 2026-02-25T02:41:55.317Z
   submitted_at: 2026-02-25T02:47:51.569Z
+  completed_at: 2026-02-25T03:01:45.161Z
   notes:
     - _ulid: 01KJ7D1FTMGBZ3STQN8ZZCF9M7
       created_at: 2026-02-24T08:42:51.092Z
@@ -58458,11 +58463,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-25T03:01:45.161Z
-  closed_reason: "Merged in PR #521. Added CLI lookup tables to 6 skills (task-work, review,
-    writing-specs, triage-inbox, local-review, pr-review) and a cli-lookups convention to
-    kspec-agents.md. Addresses root cause of agents wasting 139+ messages searching YAML files
-    instead of using kspec item get."
 - _ulid: 01KJ88CMZ0WETQKBZXTJJ28EDK
   slugs: []
   title: Document N/A trait AC annotation format in testing convention
@@ -58982,3 +58982,37 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix no-op conditional assertions in session-start-format.test.ts
+  description: >-
+    Two assertions in tests/cli/session-start-format.test.ts are wrapped in `if
+    (result.stdout.includes(...))` guards, making them pass vacuously when the condition is false:
+
+
+    1. ~Line 203: `if (result.stdout.includes('untriaged'))` — the assertion for primer inbox stat
+    line only runs when the section is present. Should unconditionally assert the section appears.
+
+
+    2. ~Line 245: `if (result.stdout.includes('Inbox'))` — same pattern for full mode inbox section.
+
+
+    Fix: Remove the if-guards so the assertions always run. If the test then fails, the underlying
+    output is wrong and needs fixing in session.ts.
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - testing
+    - bug
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJ9Z773XGGSAK2FJDD7P5K6B
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T08:39:02.011Z
+  notes: []
+  todos: []
