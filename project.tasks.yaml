@@ -59863,6 +59863,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #535. Added debug logging to parseHookInput() for malformed JSON and
+    non-object values using KSPEC_DEBUG pattern. 16 unit tests covering all cases."
   depends_on:
     - "@01KJ9ZBT"
   context: []
@@ -59873,6 +59875,7 @@
   vcs_refs: []
   created_at: 2026-02-25T10:19:37.319Z
   started_at: 2026-02-25T15:23:02.782Z
+  completed_at: 2026-02-25T15:43:22.231Z
   notes:
     - _ulid: 01KJAPT36KYR8DCQ31FQCBY389
       created_at: 2026-02-25T15:31:17.843Z
@@ -59884,9 +59887,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-25T15:43:22.231Z
-  closed_reason: "Merged in PR #535. Added debug logging to parseHookInput() for malformed JSON and
-    non-object values using KSPEC_DEBUG pattern. 16 unit tests covering all cases."
 - _ulid: 01KJA66XG2XWAYMJF3BK4NX3N8
   slugs: []
   title: Fix shadow merge driver test to use project binary instead of global kspec
@@ -59982,7 +59982,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -59995,3 +59995,4 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-25T15:44:00.621Z
