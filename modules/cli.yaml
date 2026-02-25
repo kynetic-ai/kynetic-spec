@@ -5648,6 +5648,10 @@ requirements:
             when: human-readable timeline renders
             then: tasks are top-level entries and linked commits appear nested beneath their task with a visual
               connector
+          - id: ac-activity-orphan
+            given: "a commit has no Task: @slug trailer"
+            when: human-readable timeline renders
+            then: the commit appears as a standalone indented entry visually distinct from task entries
         depends_on:
           - "@session-start-unlocks"
         implements: []
