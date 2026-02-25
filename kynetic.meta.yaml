@@ -6521,6 +6521,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJBJX00DRJV7AG07Q57HQY2Y
+    type: success
+    content: "Self-validating task pattern: created a P1 automation-eligible task whose acceptance
+      criteria IS verifying the fix works. Ralph picks it up, the task checks its own session_id
+      stamp, and the result documents whether the fix works end-to-end. Useful for testing
+      harness-level integration that can't be verified from inside an active session."
+    created_at: 2026-02-25T23:42:13.006Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
