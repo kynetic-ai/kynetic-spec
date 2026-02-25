@@ -906,3 +906,34 @@ inbox:
     created_at: 2026-02-25T05:50:21.943Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJA6SXTB3DG19YC17E604J7X
+    text: "kspec agents generate should include package version in content hash (or add --force flag) so
+      version bumps during releases automatically trigger regeneration. Currently skips because
+      content is identical, but the version comment in the header is stale. Workaround: manually
+      edit the version line."
+    created_at: 2026-02-25T10:51:35.115Z
+    tags:
+      - cli
+      - dx
+      - release
+    added_by: "@claude"
+  - _ulid: 01KJA6SXVCSYQT1X48341636SC
+    text: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
+      branches (found 13 after one session). The gh pr merge command supports --delete-branch. Add
+      to pr-review-loop workflow merge step.
+    created_at: 2026-02-25T10:51:35.149Z
+    tags:
+      - ralph
+      - dx
+    added_by: "@claude"
+  - _ulid: 01KJA6SXW5DHXFFJHH6DYQYBVJ
+    text: "Session summary/stats command — kspec session stats @id or kspec session show @id --summary.
+      Parse events.jsonl to show: iteration count, tasks started/completed/blocked, PRs
+      created/merged, total duration, exit reason. Currently requires custom python scripts to
+      extract from 14k+ line event logs."
+    created_at: 2026-02-25T10:51:35.173Z
+    tags:
+      - cli
+      - session
+      - dx
+    added_by: "@claude"

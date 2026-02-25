@@ -6479,6 +6479,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJA6SXWS8W28JRSS5B1D227N
+    type: success
+    content: "Parallel audit agents pattern: spawning 4 specialized agents (code quality, test quality,
+      non-test code, process quality) in parallel gives comprehensive coverage in ~2 min wall clock.
+      Each agent needs clear scope boundaries and structured output format."
+    created_at: 2026-02-25T10:51:35.193Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
