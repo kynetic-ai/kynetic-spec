@@ -55560,7 +55560,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -55647,6 +55647,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  submitted_at: 2026-02-25T23:46:10.108Z
 - _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
   slugs:
     - task-deduplicate-web-ui-types
@@ -60373,27 +60374,27 @@
   created_at: 2026-02-25T23:46:02.250Z
   notes: []
   todos: []
-- title: Migrate remaining static analysis tests (normalize-ref, skill-split, web-ui-types)
+- _ulid: 01KJBK428WJZA8ZRRSA7D4ZF88
+  slugs:
+    - task-migrate-remaining-static-tests
+  title: Migrate remaining static analysis tests (normalize-ref, skill-split, web-ui-types)
+  type: task
   description: "Lower-risk static analysis tests to migrate: (1) normalize-ref-input.test.ts lines
     55-139: 8 lint-style anti-pattern tests — consider ESLint custom rule. (2)
     skill-module-split.test.ts lines 18-69: 6 file existence/string pattern tests — convert to
     import-based checks (lines 74-120 already use imports). (3) web-ui-shared-types.test.ts: 5
     re-export pattern checks — convert to TypeScript import verification. (4)
     package-distribution.test.ts: 6 template content checks — consider npm pack --dry-run approach."
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
-  slugs:
-    - task-migrate-remaining-static-tests
-  tags:
-    - testing
-  depends_on: []
-  _ulid: 01KJBK428WJZA8ZRRSA7D4ZF88
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags:
+    - testing
   vcs_refs: []
   created_at: 2026-02-25T23:46:04.700Z
   notes: []
