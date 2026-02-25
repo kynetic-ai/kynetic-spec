@@ -58298,10 +58298,20 @@
   session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T08:35:54.127Z
   started_at: 2026-02-25T02:21:32.277Z
-  notes: []
+  submitted_at: 2026-02-25T02:23:54.064Z
+  notes:
+    - _ulid: 01KJ99RF0PKTR4P5P3PYRFGM4E
+      created_at: 2026-02-25T02:23:58.486Z
+      author: "@claude"
+      content: "Dead marker file code was already removed from ralph.ts in PR #502. Verified: no
+        references to writeTaskLimitMarker, clearTaskLimitMarker, readTaskLimitMarker,
+        clearStaleMarker, TaskLimitMarker, or TASK_LIMIT_MARKER_PATH remain in src/. Static analysis
+        tests in session-budget-integration.test.ts (ac-remove-marker-code) confirm removal and all
+        33 tests pass. task-limit.test.ts tests --max-tasks flag parsing which is still active
+        functionality. No code changes needed — task already complete."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-25T02:23:54.064Z
 - _ulid: 01KJ7CN8XG3BCY10C2Z91VB5AX
   slugs: []
   title: Free budget for no-op task completions in ralph loop
