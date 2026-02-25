@@ -16,10 +16,13 @@ import {
   createSessionWithBudget,
   validateSessionId,
   injectClaudeCodeEnv,
+  removeClaudeCodeEnv,
   injectCodexEnv,
   injectGeminiEnv,
   injectOpenCodeEnv,
   getFallbackInjectionInstructions,
+  injectEnvForAdapter,
+  removeEnvForAdapter,
   getSession,
   getBudget,
   getSessionBudgetPath,
@@ -583,6 +586,199 @@ describe("Environment Injection", () => {
       expect(result.description).toBe(
         `export KSPEC_SESSION_ID=${sessionId}`,
       );
+    });
+  });
+
+  describe("removeClaudeCodeEnv", () => {
+    it("should remove KSPEC_SESSION_ID from CLAUDE_ENV_FILE", async () => {
+      const envFile = path.join(testDir, "claude-env-remove");
+      await fs.writeFile(
+        envFile,
+        "OTHER_VAR=foo\nKSPEC_SESSION_ID=some-session\nANOTHER=bar\n",
+        "utf-8",
+      );
+
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        await removeClaudeCodeEnv();
+
+        const content = await fs.readFile(envFile, "utf-8");
+        expect(content).not.toContain("KSPEC_SESSION_ID");
+        expect(content).toContain("OTHER_VAR=foo");
+        expect(content).toContain("ANOTHER=bar");
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
+    it("should remove KSPEC_SESSION_ID from .claude/settings.json", async () => {
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      const originalCwd = process.cwd();
+      delete process.env.CLAUDE_ENV_FILE;
+
+      try {
+        process.chdir(testDir);
+        const settingsDir = path.join(testDir, ".claude");
+        await fs.mkdir(settingsDir, { recursive: true });
+        await fs.writeFile(
+          path.join(settingsDir, "settings.json"),
+          JSON.stringify({
+            hooks: {},
+            env: { KSPEC_SESSION_ID: "old-session", OTHER: "keep" },
+          }),
+          "utf-8",
+        );
+
+        await removeClaudeCodeEnv();
+
+        const content = await fs.readFile(
+          path.join(settingsDir, "settings.json"),
+          "utf-8",
+        );
+        const settings = JSON.parse(content);
+        expect(settings.env.KSPEC_SESSION_ID).toBeUndefined();
+        expect(settings.env.OTHER).toBe("keep");
+        expect(settings.hooks).toBeDefined();
+      } finally {
+        process.chdir(originalCwd);
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        }
+      }
+    });
+
+    it("should remove env section entirely when it becomes empty", async () => {
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      const originalCwd = process.cwd();
+      delete process.env.CLAUDE_ENV_FILE;
+
+      try {
+        process.chdir(testDir);
+        const settingsDir = path.join(testDir, ".claude");
+        await fs.mkdir(settingsDir, { recursive: true });
+        await fs.writeFile(
+          path.join(settingsDir, "settings.json"),
+          JSON.stringify({
+            hooks: {},
+            env: { KSPEC_SESSION_ID: "only-key" },
+          }),
+          "utf-8",
+        );
+
+        await removeClaudeCodeEnv();
+
+        const content = await fs.readFile(
+          path.join(settingsDir, "settings.json"),
+          "utf-8",
+        );
+        const settings = JSON.parse(content);
+        expect(settings.env).toBeUndefined();
+        expect(settings.hooks).toBeDefined();
+      } finally {
+        process.chdir(originalCwd);
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        }
+      }
+    });
+
+    it("should silently handle missing settings file", async () => {
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      const originalCwd = process.cwd();
+      delete process.env.CLAUDE_ENV_FILE;
+
+      try {
+        process.chdir(testDir);
+        // No settings.json exists — should not throw
+        await expect(removeClaudeCodeEnv()).resolves.toBeUndefined();
+      } finally {
+        process.chdir(originalCwd);
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        }
+      }
+    });
+  });
+
+  describe("injectEnvForAdapter / removeEnvForAdapter", () => {
+    it("should inject for claude-agent-acp adapter", async () => {
+      const envFile = path.join(testDir, "adapter-claude-env");
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        const sessionId = testUlid("ADPT", 1);
+        const result = await injectEnvForAdapter("claude-agent-acp", sessionId);
+
+        expect(result).not.toBeNull();
+        expect(result!.injected).toBe(true);
+
+        const content = await fs.readFile(envFile, "utf-8");
+        expect(content).toContain(`KSPEC_SESSION_ID=${sessionId}`);
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
+    it("should inject for claude-code-acp adapter (deprecated alias)", async () => {
+      const envFile = path.join(testDir, "adapter-claude-env-2");
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        const sessionId = testUlid("ADPT", 2);
+        const result = await injectEnvForAdapter("claude-code-acp", sessionId);
+
+        expect(result).not.toBeNull();
+        expect(result!.injected).toBe(true);
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
+    it("should return null for unknown adapter", async () => {
+      const result = await injectEnvForAdapter("some-custom-adapter", "session-id");
+      expect(result).toBeNull();
+    });
+
+    it("should clean up for claude-agent-acp adapter", async () => {
+      const envFile = path.join(testDir, "adapter-cleanup-env");
+      await fs.writeFile(envFile, "KSPEC_SESSION_ID=to-remove\n", "utf-8");
+
+      const originalEnv = process.env.CLAUDE_ENV_FILE;
+      process.env.CLAUDE_ENV_FILE = envFile;
+
+      try {
+        await removeEnvForAdapter("claude-agent-acp");
+
+        const content = await fs.readFile(envFile, "utf-8");
+        expect(content).not.toContain("KSPEC_SESSION_ID");
+      } finally {
+        if (originalEnv !== undefined) {
+          process.env.CLAUDE_ENV_FILE = originalEnv;
+        } else {
+          delete process.env.CLAUDE_ENV_FILE;
+        }
+      }
+    });
+
+    it("should be a no-op for unknown adapter", async () => {
+      // Should not throw
+      await expect(removeEnvForAdapter("unknown-adapter")).resolves.toBeUndefined();
     });
   });
 });

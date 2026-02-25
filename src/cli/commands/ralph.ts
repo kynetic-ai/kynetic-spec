@@ -56,7 +56,9 @@ import {
   closeSession,
   createSessionWithBudget,
   getSessionBudgetPath,
+  injectEnvForAdapter,
   isEndLoopRequested,
+  removeEnvForAdapter,
   requestEndLoop,
   resetBudget,
   saveSessionContext,
@@ -1041,6 +1043,14 @@ export function registerRalphCommand(program: Command): void {
           budget: maxTasks,
         });
 
+        // Inject KSPEC_SESSION_ID into agent harness config so it reaches child processes.
+        // Process env alone is insufficient — some harnesses (e.g., Claude Code) sandbox
+        // child processes and don't forward arbitrary parent env vars. Harness-specific
+        // injection writes to the config location each harness knows to read from.
+        // AC: @ralph-session-budget-integration ac-env-inject
+        const adapterId = options.adapter || "claude-agent-acp";
+        await injectEnvForAdapter(adapterId, sessionId);
+
         // Everything after session creation is wrapped in try/finally to guarantee
         // budget cleanup even if pre-loop setup (event logging, signal handlers) throws.
         // AC: @ralph-session-budget-integration ac-session-close-all-paths
@@ -1069,6 +1079,7 @@ export function registerRalphCommand(program: Command): void {
               await Promise.all([
                 fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
                 closeSession(specDir, sessionId, "abandoned", `Received ${signal}`),
+                removeEnvForAdapter(adapterId),
               ]);
             } catch {
               // Best-effort cleanup — don't let errors prevent exit
@@ -1519,8 +1530,9 @@ export function registerRalphCommand(program: Command): void {
           }
 
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
-          // Clean up budget file when session ends
+          // Clean up budget file and harness env injection when session ends
           await fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {});
+          await removeEnvForAdapter(adapterId);
 
           // Clean up session env vars
           delete process.env.KSPEC_RALPH_SESSION;

@@ -1830,6 +1830,63 @@ export async function injectClaudeCodeEnv(
 }
 
 /**
+ * Remove KSPEC_SESSION_ID from Claude Code environment.
+ *
+ * Reverses the injection performed by injectClaudeCodeEnv().
+ * Removes from CLAUDE_ENV_FILE if set, otherwise from .claude/settings.json.
+ * Best-effort: silently ignores missing files or missing keys.
+ */
+export async function removeClaudeCodeEnv(): Promise<void> {
+  const envFile = process.env.CLAUDE_ENV_FILE;
+
+  if (envFile) {
+    await removeDotenvSessionId(envFile);
+    return;
+  }
+
+  // Remove from project .claude/settings.json
+  const settingsPath = path.join(process.cwd(), ".claude", "settings.json");
+
+  try {
+    const content = await fsPromises.readFile(settingsPath, "utf-8");
+    const settings = JSON.parse(content);
+
+    if (settings.env && typeof settings.env === "object") {
+      delete (settings.env as Record<string, unknown>).KSPEC_SESSION_ID;
+
+      // Remove env section entirely if empty
+      if (Object.keys(settings.env as Record<string, unknown>).length === 0) {
+        delete settings.env;
+      }
+
+      await fsPromises.writeFile(
+        settingsPath,
+        JSON.stringify(settings, null, 2) + "\n",
+        "utf-8",
+      );
+    }
+  } catch {
+    // Best-effort cleanup — file may not exist or may not be valid JSON
+  }
+}
+
+/**
+ * Remove KSPEC_SESSION_ID line from a dotenv-style file.
+ */
+async function removeDotenvSessionId(filePath: string): Promise<void> {
+  try {
+    const content = await fsPromises.readFile(filePath, "utf-8");
+    const lines = content.split("\n");
+    const filtered = lines.filter((l) => !l.startsWith("KSPEC_SESSION_ID="));
+    if (filtered.length !== lines.length) {
+      await fsPromises.writeFile(filePath, filtered.join("\n"), "utf-8");
+    }
+  } catch {
+    // Best-effort cleanup
+  }
+}
+
+/**
  * Inject KSPEC_SESSION_ID into Codex CLI environment.
  *
  * Adds to shell_environment_policy.set in codex config.
@@ -1946,6 +2003,58 @@ export function getFallbackInjectionInstructions(
     method: "fallback",
     description: `export KSPEC_SESSION_ID=${sessionId}`,
   };
+}
+
+// ─── Adapter-based Env Injection ──────────────────────────────────────────────
+
+/**
+ * Inject KSPEC_SESSION_ID via the appropriate mechanism for the given adapter.
+ *
+ * Ralph passes env vars to spawned agents via process environment, but some
+ * harnesses (Claude Code, Codex, etc.) sandbox child processes and don't
+ * forward arbitrary parent env vars. This function writes the session ID to
+ * the harness-specific config location so it reaches kspec subprocesses.
+ *
+ * @param adapterId - The adapter identifier (e.g., "claude-agent-acp")
+ * @param sessionId - The session ID to inject
+ * @returns Injection result, or null if no harness-specific injection is needed
+ */
+export async function injectEnvForAdapter(
+  adapterId: string,
+  sessionId: string,
+): Promise<EnvInjectionResult | null> {
+  switch (adapterId) {
+    case "claude-agent-acp":
+    case "claude-code-acp":
+      return injectClaudeCodeEnv(sessionId);
+    // Future harnesses can be added here:
+    // case "codex-acp":
+    //   return injectCodexEnv(sessionId);
+    // case "gemini-acp":
+    //   return injectGeminiEnv(sessionId);
+    default:
+      return null; // Unknown adapter — rely on process env inheritance
+  }
+}
+
+/**
+ * Remove KSPEC_SESSION_ID from the harness config for the given adapter.
+ *
+ * Reverses the injection performed by injectEnvForAdapter().
+ * Best-effort: silently ignores errors.
+ *
+ * @param adapterId - The adapter identifier
+ */
+export async function removeEnvForAdapter(
+  adapterId: string,
+): Promise<void> {
+  switch (adapterId) {
+    case "claude-agent-acp":
+    case "claude-code-acp":
+      await removeClaudeCodeEnv();
+      break;
+    // Future harnesses can be added here
+  }
 }
 
 // ─── Session Validation ───────────────────────────────────────────────────────
