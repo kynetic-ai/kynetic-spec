@@ -888,3 +888,12 @@ inbox:
       - dx
       - docs
     added_by: "@claude"
+  - _ulid: 01KJ9BENECYW9DP5FP6Y5EJSVM
+    text: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the only way
+      to fix a rule is to delete the entire convention and recreate it. Surfaced during skill CLI
+      lookups task when codex review caught a wording issue in one rule."
+    created_at: 2026-02-25T02:53:34.540Z
+    tags:
+      - cli
+      - dx
+    added_by: "@claude"
