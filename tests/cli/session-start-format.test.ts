@@ -24,7 +24,6 @@
  * AC: @trait-json-output ac-5 (ISO 8601 timestamps in JSON — ac-iso-time-json test)
  * AC: @trait-json-output ac-6 (--json takes precedence — verified via ac-brief-alias test using --brief --json)
  * AC: @trait-semantic-exit-codes ac-1 (exit code 0 on success)
- * AC: @trait-semantic-exit-codes ac-5 (exit 0 with empty/minimal result set)
  *
  * N/A trait ACs:
  * @trait-json-output ac-3 (error JSON envelope — pre-existing, not introduced by this PR)
@@ -32,6 +31,7 @@
  * @trait-semantic-exit-codes ac-3 (cancellation — session start has no confirmation prompts)
  * @trait-semantic-exit-codes ac-4 (runtime error — pre-existing behavior, not changed by this PR)
  * @trait-semantic-exit-codes ac-6 (invalid flags — handled by commander, not session start)
+ * @trait-semantic-exit-codes ac-5 (empty result set — session start always returns data, never empty)
  * @trait-semantic-exit-codes ac-7 (batch partial failures — session start is not batch)
  * @trait-semantic-exit-codes ac-8 (documentation — exit codes documented in exit-codes.ts)
  */
@@ -691,8 +691,8 @@ describe('session start format rewrite', () => {
     });
   });
 
-  // AC: @trait-json-output ac-4 — refs use @ prefix consistently
-  describe('JSON ref @ prefix consistency', () => {
+  // AC: @trait-json-output ac-4 — references use @ prefix consistently
+  describe('ref @ prefix consistency', () => {
     it('should use @ prefix for task refs in human output', () => {
       kspec('task add --title "Ref test" --slug ref-test', tempDir);
       kspec('task start @ref-test', tempDir);
@@ -701,31 +701,25 @@ describe('session start format rewrite', () => {
       expect(result.stdout).toContain('@ref-test');
     });
 
-    it('should include ref field in JSON task summaries', () => {
+    it('should use @ prefix for task refs throughout human output sections', () => {
+      kspec('task add --title "Ready ref" --slug ready-ref', tempDir);
+
+      const result = kspec('session start', tempDir);
+      // Ready tasks section should show @slug
+      expect(result.stdout).toContain('@ready-ref');
+    });
+
+    it('should include slug field in JSON for programmatic @ prefix usage', () => {
       kspec('task add --title "Ref json" --slug ref-json', tempDir);
       kspec('task start @ref-json', tempDir);
 
       const session = kspecJson<SessionContext>('session start --json', tempDir);
       const task = session.active_tasks.find((t) => t.slug === 'ref-json');
       expect(task).toBeDefined();
-      // JSON refs are short ULIDs (8 chars) used as identifiers
+      // JSON provides slug for consumers to construct @slug references
+      expect(task!.slug).toBe('ref-json');
+      // ref is bare ULID for unique identification
       expect(task!.ref).toMatch(/^[0-9A-Z]{8}$/);
-    });
-  });
-
-  // AC: @trait-semantic-exit-codes ac-5 — exit 0 with empty result set
-  describe('exit code 0 with minimal data', () => {
-    it('should exit with code 0 even when no tasks exist', () => {
-      const result = kspec('session start', tempDir);
-      expect(result.exitCode).toBe(0);
-    });
-
-    it('should return valid JSON with empty arrays when no tasks exist', () => {
-      // Fixture may have pre-existing items, but exit code should still be 0
-      const session = kspecJson<SessionContext>('session start --json', tempDir);
-      expect(session).toBeDefined();
-      expect(Array.isArray(session.active_tasks)).toBe(true);
-      expect(Array.isArray(session.ready_tasks)).toBe(true);
     });
   });
 

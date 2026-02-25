@@ -333,6 +333,8 @@ describe('session start activity timeline', () => {
   });
 
   // AC: @session-start-activity-timeline ac-activity-hierarchy
+  // Note: visual nesting with connectors is tracked by @01KJ91Q8 (not yet implemented).
+  // These tests verify the current data model linking commits to tasks.
   describe('hierarchical display (ac-activity-hierarchy)', () => {
     it('should show linked commits associated with their task entry', () => {
       // Create and complete a task
@@ -378,6 +380,8 @@ describe('session start activity timeline', () => {
   });
 
   // AC: @session-start-activity-timeline ac-activity-orphan
+  // Note: visual indentation distinction tracked by @01KJ91Q8 (not yet implemented).
+  // These tests verify orphan commits are classified correctly and rendered distinctly from linked commits.
   describe('orphan commit display (ac-activity-orphan)', () => {
     it('should show orphan commits as standalone entries without task reference', () => {
       // Create a commit without Task: trailer (orphan)
