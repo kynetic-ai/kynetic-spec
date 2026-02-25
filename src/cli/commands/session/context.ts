@@ -537,7 +537,6 @@ export async function gatherSessionContext(
   };
 
   // JSON always gets full list with triage status; human display filters in formatSessionContext
-  const inboxSummaries: InboxSummary[] = allInboxSummaries;
 
   // Load session context (focus, threads, questions)
   const sessionContext = await loadSessionContext(ctx);
@@ -622,7 +621,7 @@ export async function gatherSessionContext(
     recent_commits: recentCommits,
     activity_timeline: activityTimeline,
     working_tree: workingTree,
-    inbox_items: inboxSummaries,
+    inbox_items: allInboxSummaries,
     inbox_stats: inboxStats,
     observations,
     stats,
