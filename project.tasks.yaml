@@ -60417,12 +60417,24 @@
     - task-migrate-remaining-static-tests
   title: Migrate remaining static analysis tests (normalize-ref, skill-split, web-ui-types)
   type: task
-  description: "Lower-risk static analysis tests to migrate: (1) normalize-ref-input.test.ts lines
-    55-139: 8 lint-style anti-pattern tests — consider ESLint custom rule. (2)
-    skill-module-split.test.ts lines 18-69: 6 file existence/string pattern tests — convert to
-    import-based checks (lines 74-120 already use imports). (3) web-ui-shared-types.test.ts: 5
-    re-export pattern checks — convert to TypeScript import verification. (4)
-    package-distribution.test.ts: 6 template content checks — consider npm pack --dry-run approach."
+  description: >-
+    Migrate 3 files with static analysis tests. Each is independent.
+
+
+    1. tests/skill-module-split.test.ts:
+       - DELETE lines 18-34 (file existence via fs.stat — imports fail naturally if files missing).
+       - CONVERT lines 36-50 to import-based: import skill.ts module, verify registerSkillCrudCommands/registerSkillInstallCommands/registerSkillDiffCommands are exported functions (typeof check).
+       - KEEP lines 54-69 and 74-120 (already behavioral or low risk).
+
+    2. tests/web-ui-shared-types.test.ts:
+       - CONVERT all 5 tests to TypeScript import checks. Instead of readFile + toContain, import the types directly and verify they exist. If re-exports break, TypeScript import fails.
+
+    3. tests/package-distribution.test.ts:
+       - DELETE lines 20-46 (directory existence via fs.stat — superseded by content checks).
+       - DELETE lines 57-62 (directory count check — superseded by manifest-driven checks in lines 146-158).
+       - KEEP lines 50-55, 64-91, 113-185 (content validation, npm packaging, plugin version sync).
+
+    4. Run npm test after all changes to verify no regressions.
   spec_ref: null
   meta_ref: null
   plan_ref: null
