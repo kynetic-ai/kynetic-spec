@@ -868,3 +868,13 @@ inbox:
     created_at: 2026-02-24T23:36:16.227Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJ93VXC8AJHN546JBKV9SJ8W
+    text: kspec batch command JSON format is undocumented — the shape {command, ref, ...options} is
+      discoverable only through trial-and-error. Tried array format, args array, and string format
+      before finding the correct object format. Help output shows allowed commands but not the JSON
+      schema for batch payloads.
+    created_at: 2026-02-25T00:41:00.041Z
+    tags:
+      - dx
+      - docs
+    added_by: "@claude"
