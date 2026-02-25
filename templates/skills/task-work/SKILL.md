@@ -41,6 +41,22 @@ pending → in_progress → pending_review → completed
 | `kspec task complete @ref --reason "..."` | → completed | PR merged |
 | `kspec task block @ref --reason "..."` | → blocked | External blocker |
 
+## CLI Lookups
+
+Use CLI commands to find information. **Do NOT search `.kspec/` YAML files manually** — it wastes time and misses context that CLI commands provide (like inherited trait ACs).
+
+| Need | Command |
+|------|---------|
+| Task details | `kspec task get @ref` |
+| Spec + all ACs (own + inherited) | `kspec item get @ref` |
+| Trait definition + ACs | `kspec item get @trait-slug` |
+| Search by keyword | `kspec search "keyword"` |
+| List by type | `kspec item list --type feature` |
+| All traits | `kspec trait list` |
+| Task's linked spec | `kspec task get @ref` → read `spec_ref` field |
+
+**Key pattern:** When `kspec item get` output shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the trait's ACs. One command — do not grep YAML files.
+
 ## Workflow Steps
 
 ### 1. Choose Task

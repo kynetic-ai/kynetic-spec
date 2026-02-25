@@ -33,6 +33,20 @@ If no spec context is found after all discovery steps, skip AC coverage checks a
 
 **Principle:** The absence of a trailer is a signal to look harder, not permission to skip validation.
 
+## CLI Lookups
+
+Use CLI commands to resolve specs and traits. **Do NOT search `.kspec/` YAML files manually.**
+
+| Need | Command |
+|------|---------|
+| Spec + all ACs (own + inherited) | `kspec item get @spec-ref` |
+| Trait definition + ACs | `kspec item get @trait-slug` |
+| All traits on a spec | shown in `kspec item get @spec-ref` output |
+| Search by keyword | `kspec search "keyword"` |
+| All traits | `kspec trait list` |
+
+**Resolving inherited traits:** When `kspec item get` shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the full trait ACs. This is one command — never grep through `.kspec/modules/*.yaml` files.
+
 ## Spec Alignment
 
 Implementation must match spec intent, not just pass tests.

@@ -32,6 +32,20 @@ If you find issues, post them as inline comments and transition the task to need
 
 **Task reference is preferred** but not a hard gate. If a PR number is provided instead, the reviewer discovers spec context from the PR.
 
+## CLI Lookups
+
+Use CLI commands to resolve specs and traits. **Do NOT search `.kspec/` YAML files manually.**
+
+| Need | Command |
+|------|---------|
+| Spec + all ACs (own + inherited) | `kspec item get @spec-ref` |
+| Trait definition + ACs | `kspec item get @trait-slug` |
+| Task details + spec_ref | `kspec task get @ref` |
+| Search by keyword | `kspec search "keyword"` |
+| All traits | `kspec trait list` |
+
+**Resolving inherited traits:** When `kspec item get` shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the full trait ACs. One command — never grep `.kspec/modules/*.yaml`.
+
 ## Quick Start
 
 ```bash
