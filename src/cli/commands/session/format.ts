@@ -15,7 +15,7 @@ import type {
   CompletedTaskSummary,
   CommitSummary,
   NoteSummary,
-  SessionContext,
+  SessionStartContext,
   SessionOptions,
 } from "./types.js";
 
@@ -121,7 +121,7 @@ export function formatCheckpointResult(result: CheckpointResult): void {
 // ─── Session Context Formatting ─────────────────────────────────────────────
 
 export function formatSessionContext(
-  ctx: SessionContext,
+  ctx: SessionStartContext,
   options: SessionOptions,
 ): void {
   const isFull = !!options.full;
@@ -442,7 +442,7 @@ export function formatSessionContext(
  * AC: @session-start-activity-timeline ac-activity-hierarchy, ac-activity-dedup
  */
 function formatActivityTimeline(
-  timeline: SessionContext["activity_timeline"],
+  timeline: SessionStartContext["activity_timeline"],
   isFull: boolean,
 ): void {
   console.log(`\n${sessionHeaders.recentActivity}`);

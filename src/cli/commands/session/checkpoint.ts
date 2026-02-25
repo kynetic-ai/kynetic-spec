@@ -18,6 +18,7 @@ import type {
   CheckpointOptions,
   CheckpointResult,
 } from "./types.js";
+import { getDisplayRef } from "./format.js";
 
 /**
  * Perform session checkpoint - check for uncommitted work before ending session.
@@ -42,9 +43,7 @@ export async function performCheckpoint(
   // Check for in-progress tasks
   const inProgressTasks = allTasks.filter((t) => t.status === "in_progress");
   for (const task of inProgressTasks) {
-    const ref = task.slugs[0]
-      ? `@${task.slugs[0]}`
-      : `@${task._ulid.slice(0, 8)}`;
+    const ref = getDisplayRef({ ref: task._ulid.slice(0, 8), slug: task.slugs[0] || null });
     issues.push({
       type: "in_progress_task",
       description: `Task ${ref} is still in progress: ${task.title}`,
