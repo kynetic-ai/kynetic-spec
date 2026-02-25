@@ -5643,6 +5643,11 @@ requirements:
               activity timeline renders
             then: |
               only task completions shown, no commit entries
+          - id: ac-activity-hierarchy
+            given: linked commits and completed tasks exist
+            when: human-readable timeline renders
+            then: tasks are top-level entries and linked commits appear nested beneath their task with a visual
+              connector
         depends_on:
           - "@session-start-unlocks"
         implements: []
