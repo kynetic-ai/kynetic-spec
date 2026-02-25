@@ -404,7 +404,7 @@ export function formatSessionContext(
       `kspec task note ${ref} "Progress..."  ${chalk.gray("# document work")}`,
     );
     quickCommands.push(
-      `kspec task complete ${ref} --reason "..."  ${chalk.gray("# finish task")}`,
+      `kspec task submit ${ref}  ${chalk.gray("# submit for review")}`,
     );
   } else if (ctx.ready_tasks.length > 0) {
     const ref = getDisplayRef(ctx.ready_tasks[0]);

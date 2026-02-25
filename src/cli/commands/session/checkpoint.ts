@@ -143,7 +143,7 @@ export async function performCheckpoint(
         `${step++}. Add notes documenting current state if any context is missing from this session`,
       );
       instructions.push(
-        `${step++}. Complete the task if you've completed the objectives and no AC are left uncovered\notherwise leave it in progress for a future session`,
+        `${step++}. Submit the task if you've completed the objectives and no AC are left uncovered\notherwise leave it in progress for a future session`,
       );
     }
 
@@ -178,7 +178,7 @@ export async function performCheckpoint(
       'Use: kspec task note @task "Progress notes..." to document state',
     );
     instructions.push(
-      'Use: kspec task complete @task --reason "Summary" if task is done',
+      "Use: kspec task submit @task if task is done",
     );
   }
 

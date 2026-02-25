@@ -625,7 +625,7 @@ describe('session start format rewrite', () => {
 
       const result = kspec('session start', tempDir);
       expect(result.stdout).toContain('kspec task note @work-item');
-      expect(result.stdout).toContain('kspec task complete @work-item');
+      expect(result.stdout).toContain('kspec task submit @work-item');
     });
 
     it('should use @slug in quick commands for ready tasks with slugs', () => {
