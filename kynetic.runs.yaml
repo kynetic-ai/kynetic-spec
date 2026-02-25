@@ -5764,7 +5764,7 @@ runs:
   - _ulid: 01KJBC2TJ5NJEA2CDPQRPGVBKT
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-25T21:43:04.005Z
     step_results:
@@ -5779,5 +5779,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-25T21:43:47.475Z
-        completed_at: 2026-02-25T21:43:47.475Z
+        completed_at: 2026-02-25T21:44:02.040Z
+        notes: No new friction or success patterns identified. Session was minimal (1-line refactor).
+          Checkpoint noise for pre-existing changes already tracked as known issue. Skipping capture
+          step - nothing meets high-confidence bar.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-25T21:44:02.040Z
+        completed_at: 2026-02-25T21:44:02.040Z
     initiated_by: "@claude"
