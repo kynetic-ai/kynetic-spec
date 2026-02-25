@@ -60029,6 +60029,7 @@
   vcs_refs: []
   created_at: 2026-02-25T17:42:48.267Z
   started_at: 2026-02-25T17:43:17.540Z
+  submitted_at: 2026-02-25T17:51:36.836Z
   notes:
     - _ulid: 01KJAYTVN52T2MZW7R9RNAQPG9
       created_at: 2026-02-25T17:51:31.494Z
@@ -60042,4 +60043,27 @@
         no regressions.
       supersedes: null
   todos: []
-  submitted_at: 2026-02-25T17:51:36.836Z
+- title: Investigate why ralph loop did not stamp session_id on task @01KJA3RQ
+  description: During a ralph loop session, task @01KJA3RQ was started in_progress but has no
+    session_id. Ralph's session failed with an auth error (LOOP-FAIL:1). Either KSPEC_SESSION_ID was
+    not injected before task start, or the failure happened before the stamp. Investigate the ralph
+    task-start flow to ensure session_id is always stamped when running in a loop session.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-ralph-missing-session-stamp
+  tags:
+    - bug
+    - sessions
+  depends_on: []
+  _ulid: 01KJAZARFTD5RQVVXM8430WZ6A
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T18:00:12.538Z
+  notes: []
+  todos: []
