@@ -878,3 +878,13 @@ inbox:
       - dx
       - docs
     added_by: "@claude"
+  - _ulid: 01KJ93W2PWGATM2YVHQRBSSVK5
+    text: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
+      documents use P1/P2/P3 notation. Error message says 'Priority must be a number between 1 and
+      5' which is confusing when you've been writing P1 everywhere. Should either accept both
+      formats or align documentation with the numeric API.
+    created_at: 2026-02-25T00:41:05.500Z
+    tags:
+      - dx
+      - docs
+    added_by: "@claude"
