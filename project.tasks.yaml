@@ -57992,7 +57992,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
   created_at: 2026-02-24T06:19:07.397Z
+  started_at: 2026-02-24T23:57:02.445Z
   notes:
     - _ulid: 01KJ75580X522543JHKECYFPWH
       created_at: 2026-02-24T06:25:05.566Z
@@ -58029,10 +58031,17 @@
 
         Key file: src/cli/commands/session.ts
       supersedes: null
+    - _ulid: 01KJ91NQTA5N7XYJ7ZJ39HX928
+      created_at: 2026-02-25T00:02:40.586Z
+      author: "@claude"
+      content: Implemented computed JSON fields for session start. Added SessionContextComputed interface
+        with inbox_untriaged_count, inbox_deferred_count, inbox_total, task_unlocks (ref-to-count
+        map), and recent_activity (mirrors activity_timeline). Wired into gatherSessionContext()
+        after existing data is gathered. 11 integration tests covering all 3 ACs. All 3547 tests
+        pass (1 known flaky ralph timeout).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-24T23:57:02.445Z
-  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
   slugs:
     - task-rewrite-formatsessioncontext
