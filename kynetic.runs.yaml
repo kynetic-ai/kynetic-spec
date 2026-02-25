@@ -5425,7 +5425,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KJA6MBHTHMS618Q9MK4GDPEZ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-25T10:48:32.571Z
@@ -5549,5 +5549,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-25T10:51:42.278Z
-        completed_at: 2026-02-25T10:51:42.278Z
+        completed_at: 2026-02-25T10:51:46.864Z
+        notes: "Already captured in step 5. All items routed: 3 inbox items for triage, 1 success
+          observation."
     initiated_by: "@claude"
+    completed_at: 2026-02-25T10:51:46.864Z
