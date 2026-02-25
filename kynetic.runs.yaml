@@ -5587,8 +5587,19 @@ runs:
   - _ulid: 01KJABDP1G5E22DJTQ0858SS88
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-25T12:12:16.816Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: skipped
+        started_at: 2026-02-25T12:12:16.816Z
+        completed_at: 2026-02-25T12:12:52.798Z
+        notes: "Step 1-2: Clean iteration, no high-confidence friction. Pre-existing test failures (92 in
+          setup/init/ralph) noted but not confident enough to capture — may be
+          environment-specific."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-25T12:12:52.798Z
+        completed_at: 2026-02-25T12:12:52.798Z
     initiated_by: "@claude"
