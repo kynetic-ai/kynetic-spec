@@ -5587,7 +5587,7 @@ runs:
   - _ulid: 01KJABDP1G5E22DJTQ0858SS88
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-25T12:12:16.816Z
     step_results:
@@ -5599,7 +5599,13 @@ runs:
           setup/init/ralph) noted but not confident enough to capture — may be
           environment-specific."
       - step_index: 1
-        status: completed
+        status: skipped
         started_at: 2026-02-25T12:12:52.798Z
-        completed_at: 2026-02-25T12:12:52.798Z
+        completed_at: 2026-02-25T12:12:58.363Z
+        notes: No high-confidence friction or success patterns this iteration. Small, clean bug fix.
+          Pre-existing test failures not confident enough to capture.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-25T12:12:58.363Z
+        completed_at: 2026-02-25T12:12:58.363Z
     initiated_by: "@claude"
