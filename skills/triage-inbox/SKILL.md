@@ -111,7 +111,7 @@ kspec triage act @triage-ref
 
 For behavior changes, check spec coverage before promoting:
 
-1. **Check coverage**: `kspec item list | grep <relevant>`
+1. **Check coverage**: `kspec search "<relevant keyword>"` or `kspec item get @ref`
 2. **Identify gaps**: Does spec have description AND acceptance criteria?
 3. **Update spec**:
    ```bash
