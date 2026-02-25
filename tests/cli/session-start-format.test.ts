@@ -195,15 +195,15 @@ describe('session start format rewrite', () => {
       expect(session.activity_timeline.length).toBeLessThanOrEqual(10);
     });
 
-    it('should show inbox stat line only in primer mode', () => {
-      // Fixture already has inbox items
+    it('should show inbox stat line in primer mode', () => {
+      // Add inbox items so stat line appears
+      kspec('inbox add "Test inbox item for primer"', tempDir);
+
       const result = kspec('session start', tempDir);
 
-      // Should show stat line
-      if (result.stdout.includes('untriaged')) {
-        expect(result.stdout).toContain('untriaged');
-        expect(result.stdout).toContain('total');
-      }
+      // Stat line should unconditionally appear when inbox has items
+      expect(result.stdout).toContain('untriaged');
+      expect(result.stdout).toContain('total');
     });
   });
 
@@ -238,13 +238,14 @@ describe('session start format rewrite', () => {
     });
 
     it('should show untriaged inbox items in full mode human output', () => {
+      // Add inbox items so the section appears
+      kspec('inbox add "Untriaged item for full mode"', tempDir);
+
       const result = kspec('session start --full', tempDir);
 
-      // Full mode should show inbox items if they exist
-      // The output should at least contain the inbox header
-      if (result.stdout.includes('Inbox')) {
-        expect(result.stdout).toContain('untriaged');
-      }
+      // Full mode should show inbox header and untriaged items
+      expect(result.stdout).toContain('Inbox');
+      expect(result.stdout).toContain('untriaged');
     });
   });
 
