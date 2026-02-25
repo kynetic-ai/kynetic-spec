@@ -38,6 +38,7 @@ interface SessionContext {
   activity_timeline: ActivityItem[];
   recently_completed: Array<{ ref: string; title: string }>;
   recent_commits: Array<{ hash: string; message: string }>;
+  ready_tasks: Array<{ ref: string; title: string; unlocks: number }>;
   computed: SessionContextComputed;
 }
 
@@ -142,11 +143,12 @@ describe("computed.task_unlocks", () => {
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     expect(session.computed.task_unlocks).toBeDefined();
-    // Find the parent task ref from ready_tasks
-    const parentRef = Object.keys(session.computed.task_unlocks).find(
-      (ref) => session.computed.task_unlocks[ref] === 2,
+    // Resolve the parent task's short ULID ref from ready_tasks
+    const parentTask = session.ready_tasks.find(
+      (t) => t.title === "Parent task",
     );
-    expect(parentRef).toBeDefined();
+    expect(parentTask).toBeDefined();
+    expect(session.computed.task_unlocks[parentTask!.ref]).toBe(2);
   });
 
   it("should omit tasks with zero dependents from the map", () => {
@@ -172,6 +174,10 @@ describe("computed.task_unlocks", () => {
       tempDir,
     );
     kspec(
+      'task add --title "Dep child in progress" --slug task-dep-child-ip-c --depends-on @task-dep-parent-c',
+      tempDir,
+    );
+    kspec(
       'task add --title "Dep child pending" --slug task-dep-child-pending-c --depends-on @task-dep-parent-c',
       tempDir,
     );
@@ -184,24 +190,36 @@ describe("computed.task_unlocks", () => {
       tempDir,
     );
 
+    // Start another child (in_progress should not count)
+    kspec("task start @task-dep-child-ip-c", tempDir);
+
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
-    // Parent should unlock 1 (only the pending child)
-    const parentUnlocks = Object.values(session.computed.task_unlocks);
-    // There should be exactly one entry with value 1 (the parent unlocking the pending child)
-    const hasOne = parentUnlocks.some((v) => v === 1);
-    expect(hasOne).toBe(true);
+    // Resolve parent ref and assert only the pending child counts
+    const parentTask = session.ready_tasks.find(
+      (t) => t.title === "Dep parent",
+    );
+    expect(parentTask).toBeDefined();
+    expect(session.computed.task_unlocks[parentTask!.ref]).toBe(1);
   });
 
-  it("should be an empty object when no tasks have dependents", () => {
-    // Default fixtures may have no dependencies
-    // Add a standalone task to ensure clean state
+  it("should not include standalone tasks in the unlocks map", () => {
+    // Add a standalone task with no dependents
     kspec('task add --title "No deps" --slug task-no-deps-c', tempDir);
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
-    // Should be an object (possibly empty)
-    expect(typeof session.computed.task_unlocks).toBe("object");
+    // The standalone task should NOT appear in task_unlocks
+    const standaloneTask = session.ready_tasks.find(
+      (t) => t.title === "No deps",
+    );
+    expect(standaloneTask).toBeDefined();
+    expect(session.computed.task_unlocks[standaloneTask!.ref]).toBeUndefined();
+
+    // All entries in the map must have count > 0
+    for (const count of Object.values(session.computed.task_unlocks)) {
+      expect(count).toBeGreaterThan(0);
+    }
   });
 });
 
