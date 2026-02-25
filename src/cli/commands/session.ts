@@ -1381,7 +1381,7 @@ function formatSessionContext(
           group = { task: item.task, commits: [], sortDate: item.date };
           taskGroups.set(key, group);
         }
-        group.commits.push({ commit: item.commit, date: item.date });
+        group.commits.push({ commit: item.commit, date: item.commit.date });
         // Update sortDate to the most recent event in the group
         if (
           new Date(item.date).getTime() > new Date(group.sortDate).getTime()
