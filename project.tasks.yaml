@@ -59802,7 +59802,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -59839,6 +59839,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-25T12:54:51.562Z
+  closed_reason: "Merged in PR #528. Shadow merge driver test now uses project binary via temp wrapper
+    script instead of requiring global kspec install. Silent skip replaced with it.skipIf for test
+    visibility."
 - _ulid: 01KJA66Z3ZKKZQN6HMZTTQEQ7E
   slugs: []
   title: Add local test sharding support for faster dev runs
