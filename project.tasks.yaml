@@ -59276,6 +59276,13 @@
         addInboxItem() and triageItem() helpers. Updated all 6 session-start test files to import
         from shared locations. All 109 tests pass.
       supersedes: null
+    - _ulid: 01KJAAF09TG970T71ZTMX03VGY
+      created_at: 2026-02-25T11:55:31.514Z
+      author: "@claude"
+      content: "Codex review skipped — codex CLI not installed and OPENAI_API_KEY not available. Manual
+        review confirms: shared types match source types, all 109 tests pass, all 6 files updated
+        correctly. No spec_ref on task (pure refactor)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJ9ZJPKKHWSJZT2E289J9B1Z
