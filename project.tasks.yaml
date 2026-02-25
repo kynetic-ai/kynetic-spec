@@ -59518,3 +59518,44 @@
   notes: []
   todos: []
   automation: eligible
+- title: Add runtime validation for unsafe type casts in session log commands
+  description: >-
+    Several places in session log code use unsafe `as` casts without runtime validation:
+
+
+    1. options.status as SessionStatus (~line 1911) — no validation that the string is actually a
+    valid session status. Invalid value silently returns zero results instead of an error message.
+    Fix: validate against SessionStatusSchema or a valid values set, exit with error if invalid.
+
+
+    2. event.data as Record<string, unknown> (~line 1993), data.update as { sessionUpdate?: string;
+    ... } (~line 1998-2001), data.prompt as string (~line 2017) — multiple casts on event data
+    without runtime checks. Fix: use Zod parsing or at minimum null/type guards before accessing
+    nested properties.
+
+
+    3. unknown | null type annotation (~line 2188) — `unknown | null` is just `unknown`. Cosmetic
+    but misleading. Fix: use `unknown` or a proper type.
+
+
+    These are in the session log section which after refactor will be in session/log.ts.
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - cli
+    - session
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJA2YQKPNQVN2MK74RANWHB0
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-25T09:44:18.290Z
+  notes: []
+  todos: []
