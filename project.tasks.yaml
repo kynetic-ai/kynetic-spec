@@ -59798,7 +59798,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -59808,10 +59808,10 @@
     - bug
   vcs_refs: []
   created_at: 2026-02-25T10:41:12.193Z
+  started_at: 2026-02-25T12:31:27.001Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-02-25T12:31:27.001Z
 - _ulid: 01KJA66Z3ZKKZQN6HMZTTQEQ7E
   slugs: []
   title: Add local test sharding support for faster dev runs
