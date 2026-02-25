@@ -59872,10 +59872,18 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-25T10:19:37.319Z
-  notes: []
+  started_at: 2026-02-25T15:23:02.782Z
+  notes:
+    - _ulid: 01KJAPT36KYR8DCQ31FQCBY389
+      created_at: 2026-02-25T15:31:17.843Z
+      author: "@claude"
+      content: Added debug logging to parseHookInput() for malformed JSON and non-object values using
+        KSPEC_DEBUG pattern. Also added isObject() validation to reject non-object JSON (arrays,
+        strings, numbers, booleans, null). Exported parseHookInput for testability. 16 unit tests
+        covering null/empty input, valid parsing, non-object rejection, and debug logging behavior.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T15:23:02.782Z
 - _ulid: 01KJA66XG2XWAYMJF3BK4NX3N8
   slugs: []
   title: Fix shadow merge driver test to use project binary instead of global kspec
