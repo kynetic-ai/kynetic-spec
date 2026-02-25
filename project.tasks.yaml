@@ -59151,7 +59151,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Extract shared test helpers and interfaces for session start tests
+- _ulid: 01KJ9ZDE3G8TRFQB9YD0E2B04D
+  slugs: []
+  title: Extract shared test helpers and interfaces for session start tests
+  type: task
   description: >-
     Multiple session start test files duplicate the same interfaces and helpers. Extract them to
     shared locations.
@@ -59202,22 +59205,60 @@
     - All existing tests pass without modification to test logic (only imports change)
 
     - No new test files needed — just move types/helpers and update imports
-  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - refactor
+  vcs_refs: []
+  created_at: 2026-02-25T08:42:25.776Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Fix removeAllListeners() in readStdinIfAvailable to use named handlers
+  description: >-
+    In src/cli/commands/session.ts, the readStdinIfAvailable() function (~line 1669-1696) calls
+    process.stdin.removeAllListeners() in its timeout handler. This removes ALL stdin listeners, not
+    just the ones this function added, which could break other code with stdin listeners.
+
+
+    Fix: Replace with named handler functions and use process.stdin.removeListener(event, handler)
+    to only clean up the specific handlers this function registered.
+
+
+    Current pattern:
+      process.stdin.removeAllListeners()
+
+    Should be:
+      const onData = (chunk) => { ... };
+      const onEnd = () => { ... };
+      process.stdin.on('data', onData);
+      process.stdin.on('end', onEnd);
+      // In cleanup:
+      process.stdin.removeListener('data', onData);
+      process.stdin.removeListener('end', onEnd);
+  type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
   priority: 2
   slugs: []
   tags:
-    - testing
-    - refactor
+    - bug
+    - cli
   depends_on: []
   automation: eligible
-  _ulid: 01KJ9ZDE3G8TRFQB9YD0E2B04D
+  _ulid: 01KJ9ZJPKKHWSJZT2E289J9B1Z
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-25T08:42:25.776Z
+  created_at: 2026-02-25T08:45:18.323Z
   notes: []
   todos: []
