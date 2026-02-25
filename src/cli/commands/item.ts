@@ -325,7 +325,6 @@ export function registerItemCommands(program: Command): void {
         // AC: @multi-value-status-filter ac-item-list-parity, ac-invalid-item-status
         if (options.status) {
           const { parseMultiStatus } = await import("./tasks.js");
-          const { ImplementationStatusSchema } = await import("../../schema/common.js");
           const statuses = parseMultiStatus(
             options.status,
             ImplementationStatusSchema.options,
