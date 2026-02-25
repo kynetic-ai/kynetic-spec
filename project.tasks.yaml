@@ -57982,7 +57982,7 @@
   type: task
   spec_ref: "@session-start-computed-json"
   plan_ref: "@plan-session-start-output-redesign"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-start-dependency-display"
@@ -58042,6 +58042,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-25T00:02:44.347Z
 - _ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
   slugs:
     - task-rewrite-formatsessioncontext
