@@ -10,7 +10,7 @@ import type { SessionContext as StoredSessionContext } from "../../../schema/ind
 
 // ─── Session Start Types ────────────────────────────────────────────────────
 
-export interface SessionContext {
+export interface SessionStartContext {
   /** When this context was generated */
   generated_at: string;
 

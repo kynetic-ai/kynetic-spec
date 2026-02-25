@@ -37,9 +37,10 @@ import { error, output } from "../../output.js";
 // ─── Shared Helpers ─────────────────────────────────────────────────────────
 
 /**
- * Format a duration in milliseconds to a human-readable string.
+ * Format a duration in milliseconds to a compact human-readable string.
+ * Omits seconds when minutes are present (e.g., "5m" not "5m 30s").
  */
-function formatDuration(ms: number): string {
+function formatDurationCompact(ms: number): string {
   if (ms < 0) return "—";
   const totalSec = Math.floor(ms / 1000);
   const hours = Math.floor(totalSec / 3600);
@@ -54,10 +55,10 @@ function formatDuration(ms: number): string {
 }
 
 /**
- * Format a duration in milliseconds to human-readable format (long form).
- * Handles hours/minutes/seconds.
+ * Format a duration in milliseconds to a verbose human-readable string.
+ * Shows seconds when minutes are present (e.g., "5m 30s" not "5m").
  */
-function formatDurationLong(ms: number): string {
+function formatDurationVerbose(ms: number): string {
   if (ms < 0) return "—";
   const totalSec = Math.floor(ms / 1000);
   const hours = Math.floor(totalSec / 3600);
@@ -73,6 +74,26 @@ function formatDurationLong(ms: number): string {
     return `${minutes}m ${seconds}s`;
   }
   return `${seconds}s`;
+}
+
+/**
+ * Map session status to chalk color function.
+ * Unlike statusColor() in format.ts (which handles task statuses),
+ * this handles session lifecycle statuses: completed, active, abandoned.
+ */
+function sessionStatusColor(
+  status: string,
+): typeof chalk.green {
+  switch (status) {
+    case "completed":
+      return chalk.green;
+    case "active":
+      return chalk.blue;
+    case "abandoned":
+      return chalk.yellow;
+    default:
+      return chalk.gray;
+  }
 }
 
 // ─── Session Log List ───────────────────────────────────────────────────────
@@ -155,16 +176,11 @@ function formatSessionLogList(sessions: SessionLogSummary[]): void {
 
   for (const s of sessions) {
     const id = s.id.slice(0, 8);
-    const statusColor =
-      s.status === "completed"
-        ? chalk.green
-        : s.status === "active"
-          ? chalk.blue
-          : chalk.yellow;
-    const status = statusColor(s.status.padEnd(11));
+    const colorFn = sessionStatusColor(s.status);
+    const status = colorFn(s.status.padEnd(11));
     const agent = s.agent_type.slice(0, 20).padEnd(20);
     const started = formatRelativeTime(new Date(s.started_at)).padEnd(16);
-    const duration = formatDuration(s.duration_ms).padEnd(10);
+    const duration = formatDurationCompact(s.duration_ms).padEnd(10);
     const events = String(s.event_count).padEnd(8);
     const iters = String(s.iteration_count).padEnd(7);
     const tasks = String(s.tasks_completed);
@@ -336,13 +352,7 @@ function formatSessionLogShow(
   console.log(chalk.gray("─".repeat(60)));
   console.log(`  ID:        ${detail.id}`);
 
-  const statusColor =
-    detail.status === "completed"
-      ? chalk.green
-      : detail.status === "active"
-        ? chalk.blue
-        : chalk.yellow;
-  console.log(`  Status:    ${statusColor(detail.status)}`);
+  console.log(`  Status:    ${sessionStatusColor(detail.status)(detail.status)}`);
   console.log(`  Agent:     ${detail.agent_type}`);
   if (detail.task_id) {
     console.log(`  Task:      ${detail.task_id}`);
@@ -351,7 +361,7 @@ function formatSessionLogShow(
   if (detail.ended_at) {
     console.log(`  Ended:     ${detail.ended_at}`);
   }
-  console.log(`  Duration:  ${formatDuration(detail.duration_ms)}`);
+  console.log(`  Duration:  ${formatDurationCompact(detail.duration_ms)}`);
   console.log(`  Events:    ${detail.event_count}`);
   console.log(`  Iterations: ${detail.iteration_count}`);
 
@@ -540,12 +550,12 @@ function formatSessionLogStats(
   console.log(`  Total Events:       ${stats.total_events}`);
   console.log(`  Total Iterations:   ${stats.total_iterations}`);
   console.log(`  Tasks Completed:    ${stats.total_tasks_completed}`);
-  console.log(`  Total Duration:     ${formatDurationLong(stats.total_duration_ms)}`);
+  console.log(`  Total Duration:     ${formatDurationVerbose(stats.total_duration_ms)}`);
 
   // AC: @session-log-stats ac-2 - Averages
   console.log("\n" + chalk.bold("Averages"));
   console.log(chalk.gray("─".repeat(50)));
-  console.log(`  Avg Duration/Session:     ${formatDurationLong(stats.avg_duration_ms)}`);
+  console.log(`  Avg Duration/Session:     ${formatDurationVerbose(stats.avg_duration_ms)}`);
   console.log(`  Avg Iterations/Session:   ${stats.avg_iterations_per_session}`);
   console.log(`  Avg Tasks/Session:        ${stats.avg_tasks_per_session}`);
 
@@ -554,14 +564,8 @@ function formatSessionLogStats(
     console.log("\n" + chalk.bold("Status Breakdown"));
     console.log(chalk.gray("─".repeat(50)));
     for (const item of stats.status_breakdown) {
-      const statusColor =
-        item.status === "completed"
-          ? chalk.green
-          : item.status === "active"
-            ? chalk.blue
-            : chalk.yellow;
       console.log(
-        `  ${statusColor(item.status.padEnd(12))} ${String(item.count).padEnd(6)} ${item.percentage}%`,
+        `  ${sessionStatusColor(item.status)(item.status.padEnd(12))} ${String(item.count).padEnd(6)} ${item.percentage}%`,
       );
     }
   }
@@ -589,7 +593,7 @@ function formatSessionLogStats(
     );
     for (const period of timePeriods) {
       console.log(
-        `  ${period.period.padEnd(14)} ${String(period.sessions_count).padEnd(10)} ${String(period.tasks_completed).padEnd(8)} ${formatDurationLong(period.total_duration_ms)}`,
+        `  ${period.period.padEnd(14)} ${String(period.sessions_count).padEnd(10)} ${String(period.tasks_completed).padEnd(8)} ${formatDurationVerbose(period.total_duration_ms)}`,
       );
     }
   }

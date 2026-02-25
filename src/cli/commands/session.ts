@@ -21,7 +21,7 @@ export {
   type NoteSummary,
   type ObservationSummary,
   type ReadyTaskSummary,
-  type SessionContext,
+  type SessionStartContext,
   type SessionContextComputed,
   type SessionOptions,
   type SessionStats,

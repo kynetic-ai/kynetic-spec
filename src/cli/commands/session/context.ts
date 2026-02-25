@@ -37,12 +37,13 @@ import type {
   NoteSummary,
   ObservationSummary,
   ReadyTaskSummary,
-  SessionContext,
+  SessionStartContext,
   SessionContextComputed,
   SessionOptions,
   SessionStats,
   TodoSummary,
 } from "./types.js";
+import { getDisplayRef } from "./format.js";
 
 // ─── Mapper Functions ───────────────────────────────────────────────────────
 
@@ -327,7 +328,7 @@ function buildActivityTimeline(
 export async function gatherSessionContext(
   ctx: KspecContext,
   options: SessionOptions,
-): Promise<SessionContext> {
+): Promise<SessionStartContext> {
   const limit = parseInt(options.limit || "10", 10);
   if (Number.isNaN(limit) || limit <= 0) {
     throw new RangeError(
@@ -659,13 +660,11 @@ export async function getIterationStats(
     return new Date(t.started_at) >= since;
   });
 
-  // Use first slug or ULID prefix as ref
-  const getRef = (t: LoadedTask) =>
-    t.slugs.length > 0 ? `@${t.slugs[0]}` : `@${t._ulid.slice(0, 8)}`;
-
   return {
     tasks_completed: completedSince.length,
     tasks_started: startedSince.length,
-    completed_refs: completedSince.map(getRef),
+    completed_refs: completedSince.map((t) =>
+      getDisplayRef({ ref: t._ulid.slice(0, 8), slug: t.slugs[0] || null }),
+    ),
   };
 }

@@ -68,7 +68,7 @@ import { error, info, success, warn } from "../output.js";
 import {
   gatherSessionContext,
   type ActiveTaskSummary,
-  type SessionContext,
+  type SessionStartContext,
 } from "./session.js";
 
 
@@ -132,9 +132,9 @@ async function parseExplicitTasks(
  * AC: @cli-ralph ac-21
  */
 function filterByExplicitTasks(
-  ctx: SessionContext,
+  ctx: SessionStartContext,
   scope: ExplicitTaskScope,
-): SessionContext {
+): SessionStartContext {
   // Task refs in context are short ULIDs (variable length from shortUlid())
   // Check if the context ref is a prefix of any explicit ULID
   const matchesScope = (taskRef: string) => {
@@ -180,7 +180,7 @@ async function allExplicitTasksDone(
 
 // AC: @ralph-skill-delegation ac-1, ac-2, ac-3
 function buildTaskWorkPrompt(
-  sessionCtx: SessionContext,
+  sessionCtx: SessionStartContext,
   iteration: number,
   maxLoops: number,
   sessionId: string,
@@ -1048,7 +1048,7 @@ export function registerRalphCommand(program: Command): void {
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
         let exitReason: ExitReason | null = null;
-        let lastIterationCtx: SessionContext | null = null;
+        let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
         const recentTaskRefs: string[] = [];
         const sessionIterationMap = new Map<string, number>();
