@@ -6488,6 +6488,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJA9BTHR62240G32RM5P0VBP
+    type: friction
+    content: Codex skill silently exits with no output when OPENAI_API_KEY is not set. The skill
+      documents gh auth preflight but not API key validation. Agents waste time discovering this.
+      Skill should check for API key and fail fast with clear message.
+    created_at: 2026-02-25T11:36:18.744Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
