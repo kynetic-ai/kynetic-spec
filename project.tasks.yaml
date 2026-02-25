@@ -58062,6 +58062,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #515. Rewrote formatSessionContext() with primer/full modes: new
+    section ordering
+    (active→review→blocked→ready→activity→inbox→observations→metadata→tree→commands), slug display,
+    empty section skipping, needs_work visual distinction, inline notes under active/review tasks,
+    observations section in full mode. 39 new tests + 2 updated tests covering all 15 spec ACs plus
+    trait AC coverage. Codex review findings addressed."
   depends_on:
     - "@implement-session-start-computed-json-fields"
   context: []
@@ -58074,6 +58080,7 @@
   created_at: 2026-02-24T06:20:05.088Z
   started_at: 2026-02-25T00:16:09.276Z
   submitted_at: 2026-02-25T00:36:19.477Z
+  completed_at: 2026-02-25T00:56:52.185Z
   notes:
     - _ulid: 01KJ7559QEJ2JZCNHXYR2V5CPF
       created_at: 2026-02-24T06:25:07.310Z
@@ -58147,13 +58154,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-25T00:56:52.185Z
-  closed_reason: "Merged in PR #515. Rewrote formatSessionContext() with primer/full modes: new
-    section ordering
-    (active→review→blocked→ready→activity→inbox→observations→metadata→tree→commands), slug display,
-    empty section skipping, needs_work visual distinction, inline notes under active/review tasks,
-    observations section in full mode. 39 new tests + 2 updated tests covering all 15 spec ACs plus
-    trait AC coverage. Codex review findings addressed."
 - _ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
   slugs:
     - task-session-start-output-tests
@@ -58166,7 +58166,7 @@
   spec_ref: "@cmd-session-start"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@01KJ74W2"
@@ -58214,6 +58214,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-25T01:00:40.031Z
+  session_id: 01KJ8Z3Q4E9VDAF133VNS7YC9Q
 - _ulid: 01KJ752D9H9HV3E5EXTFFSNSN5
   slugs: []
   title: Fix batch-exec-engine test timeout flakes
