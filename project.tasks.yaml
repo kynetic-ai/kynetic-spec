@@ -59694,10 +59694,19 @@
     - cli
   vcs_refs: []
   created_at: 2026-02-25T09:51:57.795Z
-  notes: []
+  started_at: 2026-02-25T12:55:30.329Z
+  notes:
+    - _ulid: 01KJAEGQKVYQSF5KS9G2J98M5Q
+      created_at: 2026-02-25T13:06:22.459Z
+      author: "@claude"
+      content: "Fixed 3x multiplier bug: In full mode, changed noteLimitPerStatus from limit to undefined
+        (uncapped, consistent with other sections). In non-full mode, added .slice(0, noteLimit)
+        after concatenation to cap total notes at limit. Updated collectRecentNotes to accept
+        undefined limit. 4 new tests in session-note-limit.test.ts covering cap, rounding, full mode
+        uncap, and starvation prevention."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-25T12:55:30.329Z
 - _ulid: 01KJA3RQ2NH1ZN3ZANGZCD8S60
   slugs: []
   title: Consolidate dual import of ImplementationStatusSchema in item.ts
