@@ -92,8 +92,8 @@ describe('session start notes enrichment', () => {
       // Get human-readable output
       const result = kspec('session start', tempDir);
 
-      // Should have Pending Review section in output
-      expect(result.stdout).toContain('Pending Review:');
+      // AC: @cmd-session-start ac-review-detail — notes shown inline under review tasks
+      expect(result.stdout).toContain('Awaiting Review');
       expect(result.stdout).toContain('Ready for merge');
     });
   });
@@ -143,7 +143,7 @@ describe('session start notes enrichment', () => {
       expect(uniqueCompletedTasks.size).toBeGreaterThan(0);
     });
 
-    it('should show recently completed notes in human-readable output', () => {
+    it('should show recently completed tasks in activity timeline', () => {
       // Create and complete a task with notes
       kspec('task add --title "Done task" --slug done-task', tempDir);
       kspec('task start @done-task', tempDir);
@@ -153,9 +153,11 @@ describe('session start notes enrichment', () => {
       // Get human-readable output
       const result = kspec('session start', tempDir);
 
-      // Should have Recently Completed section in output
-      expect(result.stdout).toContain('Recently Completed:');
-      expect(result.stdout).toContain('All tests passing');
+      // Completed tasks appear in the activity timeline, not a separate notes section
+      // AC: @cmd-session-start ac-section-order — activity timeline shows completed tasks
+      expect(result.stdout).toContain('Recent Activity');
+      expect(result.stdout).toContain('[completed]');
+      expect(result.stdout).toContain('Done task');
     });
 
     it('should include notes from multiple completed tasks', { timeout: 20000 }, () => {

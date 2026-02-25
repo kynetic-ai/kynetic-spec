@@ -23,7 +23,8 @@ import {
   type ShadowSyncResult,
   shadowPull,
 } from "../../parser/shadow.js";
-import type { SessionContext as StoredSessionContext } from "../../schema/index.js";
+import type { SessionContext as StoredSessionContext, ObservationType } from "../../schema/index.js";
+import { loadMetaContext } from "../../parser/meta.js";
 import { ulid } from "ulid";
 import {
   type SessionLogSummary,
@@ -143,13 +144,19 @@ export interface SessionContext {
   /** Inbox triage statistics */
   inbox_stats: InboxStats;
 
+  /** Unresolved observations (full mode only) */
+  observations: ObservationSummary[];
+
   /** Summary statistics */
   stats: SessionStats;
 }
 
 export interface ActiveTaskSummary {
   ref: string;
+  slug: string | null;
   title: string;
+  description: string | null;
+  status: "in_progress" | "needs_work" | "pending_review";
   started_at: string | null;
   priority: number;
   spec_ref: string | null;
@@ -180,7 +187,9 @@ export interface TodoSummary {
 
 export interface ReadyTaskSummary {
   ref: string;
+  slug: string | null;
   title: string;
+  description: string | null;
   priority: number;
   spec_ref: string | null;
   tags: string[];
@@ -189,7 +198,9 @@ export interface ReadyTaskSummary {
 
 export interface BlockedTaskSummary {
   ref: string;
+  slug: string | null;
   title: string;
+  description: string | null;
   blocked_by: string[];
   unmet_deps: string[];
   unlocks: number;
@@ -197,6 +208,7 @@ export interface BlockedTaskSummary {
 
 export interface CompletedTaskSummary {
   ref: string;
+  slug: string | null;
   title: string;
   completed_at: string;
   closed_reason: string | null;
@@ -255,6 +267,16 @@ export interface InboxStats {
   triaged: number;
 }
 
+export interface ObservationSummary {
+  ref: string;
+  type: ObservationType;
+  content: string;
+  created_at: string;
+  author: string | null;
+  resolved: boolean;
+  workflow_ref: string | null;
+}
+
 export interface SessionOptions {
   brief?: boolean;
   full?: boolean;
@@ -300,7 +322,10 @@ function toActiveTaskSummary(
   const incompleteTodos = task.todos.filter((t) => !t.done).length;
   return {
     ref: index.shortUlid(task._ulid),
+    slug: task.slugs.length > 0 ? task.slugs[0] : null,
     title: task.title,
+    description: task.description || null,
+    status: task.status as "in_progress" | "needs_work" | "pending_review",
     started_at: task.started_at || null,
     priority: task.priority,
     spec_ref: task.spec_ref || null,
@@ -318,7 +343,9 @@ function toReadyTaskSummary(
 ): ReadyTaskSummary {
   return {
     ref: index.shortUlid(task._ulid),
+    slug: task.slugs.length > 0 ? task.slugs[0] : null,
     title: task.title,
+    description: task.description || null,
     priority: task.priority,
     spec_ref: task.spec_ref || null,
     tags: task.tags,
@@ -346,7 +373,9 @@ function toBlockedTaskSummary(
 
   return {
     ref: index.shortUlid(task._ulid),
+    slug: task.slugs.length > 0 ? task.slugs[0] : null,
     title: task.title,
+    description: task.description || null,
     blocked_by: task.blocked_by,
     unmet_deps: unmetDeps,
     unlocks: unlocksMap.get(task._ulid) || 0,
@@ -359,6 +388,7 @@ function toCompletedTaskSummary(
 ): CompletedTaskSummary {
   return {
     ref: index.shortUlid(task._ulid),
+    slug: task.slugs.length > 0 ? task.slugs[0] : null,
     title: task.title,
     completed_at: task.completed_at || "",
     closed_reason: task.closed_reason || null,
@@ -635,10 +665,12 @@ export async function gatherSessionContext(
   // Compute reverse dependency map for "unlocks N" annotations
   const unlocksMap = computeUnlocksMap(allTasks, index);
 
-  // Get ready tasks (optionally filtered to automation-eligible only)
+  // AC: @cmd-session-start ac-primer-default, ac-full-sections
+  // Primer: top 5 ready tasks; Full: all ready tasks
+  const readyLimit = options.full ? undefined : 5;
   const readyTasks = getReadyTasks(allTasks)
     .filter((t) => !options.eligible || t.automation === "eligible")
-    .slice(0, options.full ? undefined : limit)
+    .slice(0, readyLimit)
     .map((t) => toReadyTaskSummary(t, index, unlocksMap));
 
   // Get blocked tasks
@@ -742,11 +774,35 @@ export async function gatherSessionContext(
 
   // Build unified activity timeline
   // AC: @session-start-activity-timeline ac-activity-merge
+  // AC: @cmd-session-start ac-primer-default, ac-full-sections
+  // Primer: 10 items; Full: 20 items
+  const activityLimit = options.full ? 20 : 10;
   const activityTimeline = buildActivityTimeline(
     recentlyCompleted,
     recentCommits,
     taskRefResolver,
-  );
+  ).slice(0, activityLimit);
+
+  // AC: @cmd-session-start ac-full-sections — observations section (full mode only)
+  let observations: ObservationSummary[] = [];
+  if (options.full) {
+    const metaCtx = await loadMetaContext(ctx);
+    observations = metaCtx.observations
+      .filter((o) => !o.resolved)
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
+      .map((o) => ({
+        ref: o._ulid.slice(0, 8),
+        type: o.type,
+        content: o.content,
+        created_at: o.created_at,
+        author: o.author || null,
+        resolved: o.resolved,
+        workflow_ref: o.workflow_ref || null,
+      }));
+  }
 
   return {
     generated_at: new Date().toISOString(),
@@ -764,6 +820,7 @@ export async function gatherSessionContext(
     working_tree: workingTree,
     inbox_items: inboxSummaries,
     inbox_stats: inboxStats,
+    observations,
     stats,
   };
 }
@@ -1029,7 +1086,12 @@ function formatSessionContext(
   ctx: SessionContext,
   options: SessionOptions,
 ): void {
-  const isBrief = !options.full;
+  const isFull = !!options.full;
+
+  // AC: @cmd-session-start ac-slug-display, ac-slug-fallback
+  // Display ref as @slug when available, @short-ulid when not
+  const displayRef = (task: { ref: string; slug?: string | null }) =>
+    task.slug ? `@${task.slug}` : `@${task.ref}`;
 
   // Header
   console.log(`\n${sessionHeaders.title}`);
@@ -1082,9 +1144,21 @@ function formatSessionContext(
     }
   }
 
-  // Active tasks section
+  // ── Section ordering per AC: @cmd-session-start ac-section-order ──
+  // active tasks → pending review → blocked → ready → recent activity → inbox → working tree → quick commands
+  // AC: @cmd-session-start ac-empty-skip — empty sections omitted entirely
+
+  // ── Active tasks section ──
+  // AC: @cmd-session-start ac-active-detail, ac-needs-work-indicator
   if (ctx.active_tasks.length > 0) {
     console.log(`\n${sessionHeaders.activeWork}`);
+
+    // Collect notes relevant to active tasks for inline display
+    const activeTaskNotes = ctx.recent_notes.filter(
+      (n) =>
+        n.task_status === "in_progress" || n.task_status === "needs_work",
+    );
+
     for (const task of ctx.active_tasks) {
       const started = task.started_at
         ? chalk.gray(
@@ -1095,63 +1169,182 @@ function formatSessionContext(
         task.priority <= 2
           ? chalk.red(`P${task.priority}`)
           : chalk.gray(`P${task.priority}`);
+
+      // AC: @cmd-session-start ac-needs-work-indicator
+      const statusLabel =
+        task.status === "needs_work"
+          ? chalk.red("[needs_work]")
+          : chalk.blue("[in_progress]");
+
       console.log(
-        `  ${chalk.blue("[in_progress]")} ${priority} ${task.ref} ${task.title}${started}`,
+        `  ${statusLabel} ${priority} ${displayRef(task)} ${task.title}${started}`,
       );
+
+      // AC: @cmd-session-start ac-active-detail — show description
+      if (task.description) {
+        console.log(chalk.gray(`    ${task.description}`));
+      }
+
+      // AC: @cmd-session-start ac-active-detail — show recent notes inline
+      const taskNotes = activeTaskNotes.filter(
+        (n) => n.task_ref === task.ref,
+      );
+      if (taskNotes.length > 0) {
+        const latestNote = taskNotes[0]; // already sorted most recent first
+        const noteAge = formatRelativeTime(new Date(latestNote.created_at));
+        const author = latestNote.author
+          ? chalk.gray(` by ${latestNote.author}`)
+          : "";
+        console.log(`    ${chalk.yellow("Note")} ${chalk.gray(`(${noteAge}${author})`)}`);
+
+        let content = latestNote.content.trim();
+        if (!isFull && content.length > 200) {
+          content = `${content.slice(0, 200).trim()}...`;
+        }
+        const lines = content.split("\n");
+        const maxLines = isFull ? lines.length : 3;
+        for (const line of lines.slice(0, maxLines)) {
+          console.log(`      ${chalk.white(line)}`);
+        }
+        if (!isFull && lines.length > maxLines) {
+          console.log(
+            chalk.gray(
+              `      ... (${lines.length - maxLines} more lines)`,
+            ),
+          );
+        }
+      }
     }
-  } else {
-    console.log(`\n${sessionHeaders.noActiveWork}`);
   }
 
-  // Awaiting review section
+  // ── Awaiting review section ──
+  // AC: @cmd-session-start ac-review-detail
   if (ctx.pending_review_tasks.length > 0) {
     console.log(`\n${sessionHeaders.awaitingReview}`);
+
+    const reviewNotes = ctx.recent_notes.filter(
+      (n) => n.task_status === "pending_review",
+    );
+
     for (const task of ctx.pending_review_tasks) {
       const priority =
         task.priority <= 2
           ? chalk.red(`P${task.priority}`)
           : chalk.gray(`P${task.priority}`);
       console.log(
-        `  ${chalk.yellow("[pending_review]")} ${priority} ${task.ref} ${task.title}`,
+        `  ${chalk.yellow("[pending_review]")} ${priority} ${displayRef(task)} ${task.title}`,
+      );
+
+      // AC: @cmd-session-start ac-review-detail — show recent notes
+      const taskNotes = reviewNotes.filter((n) => n.task_ref === task.ref);
+      if (taskNotes.length > 0) {
+        const latestNote = taskNotes[0];
+        const noteAge = formatRelativeTime(new Date(latestNote.created_at));
+        const author = latestNote.author
+          ? chalk.gray(` by ${latestNote.author}`)
+          : "";
+        console.log(`    ${chalk.yellow("Note")} ${chalk.gray(`(${noteAge}${author})`)}`);
+
+        let content = latestNote.content.trim();
+        if (!isFull && content.length > 200) {
+          content = `${content.slice(0, 200).trim()}...`;
+        }
+        const lines = content.split("\n");
+        const maxLines = isFull ? lines.length : 3;
+        for (const line of lines.slice(0, maxLines)) {
+          console.log(`      ${chalk.white(line)}`);
+        }
+        if (!isFull && lines.length > maxLines) {
+          console.log(
+            chalk.gray(
+              `      ... (${lines.length - maxLines} more lines)`,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  // ── Blocked tasks section ──
+  if (ctx.blocked_tasks.length > 0) {
+    console.log(`\n${sessionHeaders.blocked}`);
+    for (const task of ctx.blocked_tasks) {
+      const unlocks =
+        task.unlocks > 0 ? chalk.green(` unlocks ${task.unlocks}`) : "";
+      console.log(
+        `  ${chalk.red("[blocked]")} ${displayRef(task)} ${task.title}${unlocks}`,
+      );
+      if (task.blocked_by.length > 0) {
+        console.log(chalk.gray(`    Blockers: ${task.blocked_by.join(", ")}`));
+      }
+      if (task.unmet_deps.length > 0) {
+        console.log(
+          chalk.gray(`    Waiting on: ${task.unmet_deps.join(", ")}`),
+        );
+      }
+    }
+  }
+
+  // ── Ready tasks section ──
+  if (ctx.ready_tasks.length > 0) {
+    console.log(`\n${sessionHeaders.readyTasks}`);
+    for (const task of ctx.ready_tasks) {
+      const priority =
+        task.priority <= 2
+          ? chalk.red(`P${task.priority}`)
+          : chalk.gray(`P${task.priority}`);
+      const tags =
+        task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(" #")}`) : "";
+      const unlocks =
+        task.unlocks > 0 ? chalk.green(` unlocks ${task.unlocks}`) : "";
+      console.log(
+        `  ${priority} ${displayRef(task)} ${task.title}${unlocks}${tags}`,
       );
     }
   }
 
-  // Recent Activity timeline (unified view of completed tasks + commits)
+  // ── Recent Activity timeline ──
   // AC: @session-start-activity-timeline ac-activity-merge
   if (ctx.activity_timeline.length > 0) {
     console.log(`\n${sessionHeaders.recentActivity}`);
     const observationPromotedTasks: string[] = [];
     for (const item of ctx.activity_timeline) {
-      const age = formatRelativeTime(new Date(item.date));
+      // AC: @cmd-session-start ac-relative-time-human
+      const itemAge = formatRelativeTime(new Date(item.date));
       if (item.type === "task_completion") {
         let reason = "";
         if (item.task.closed_reason) {
-          const maxLen = isBrief ? 60 : 120;
+          const maxLen = isFull ? 120 : 60;
           const truncated =
             item.task.closed_reason.length > maxLen
               ? `${item.task.closed_reason.slice(0, maxLen).trim()}...`
               : item.task.closed_reason;
           reason = chalk.gray(` - ${truncated}`);
         }
+        // AC: @cmd-session-start ac-slug-display
+        const taskDisplay = item.task.slug
+          ? `@${item.task.slug}`
+          : `@${item.task.ref}`;
         console.log(
-          `  ${chalk.green("[completed]")} ${item.task.ref} ${item.task.title} ${chalk.gray(`(${age})`)}${reason}`,
+          `  ${chalk.green("[completed]")} ${taskDisplay} ${item.task.title} ${chalk.gray(`(${itemAge})`)}${reason}`,
         );
         if (item.task.origin === "observation_promotion") {
-          observationPromotedTasks.push(item.task.ref);
+          observationPromotedTasks.push(taskDisplay);
         }
       } else if (item.type === "commit") {
         console.log(
-          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${age}, ${item.commit.author})`)}`,
+          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${itemAge}, ${item.commit.author})`)}`,
         );
       } else if (item.type === "linked_commit") {
         // AC: @session-start-activity-timeline ac-activity-dedup, ac-activity-trailer-link
-        // Combined entry: show commit with linked task info
+        const taskDisplay = item.task.slug
+          ? `@${item.task.slug}`
+          : `@${item.task.ref}`;
         console.log(
-          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${age}, ${item.commit.author})`)} ${chalk.green(`→ ${item.task.ref} ${item.task.title}`)}`,
+          `  ${chalk.yellow(item.commit.hash)} ${item.commit.message} ${chalk.gray(`(${itemAge}, ${item.commit.author})`)} ${chalk.green(`→ ${taskDisplay} ${item.task.title}`)}`,
         );
         if (item.task.origin === "observation_promotion") {
-          observationPromotedTasks.push(item.task.ref);
+          observationPromotedTasks.push(taskDisplay);
         }
       }
     }
@@ -1169,127 +1362,11 @@ function formatSessionContext(
     }
   }
 
-  // Recent notes section - grouped by task status
-  // AC: @cmd-session-start ac-1, ac-2
-  if (ctx.recent_notes.length > 0) {
-    console.log(`\n${sessionHeaders.recentNotes}`);
-
-    // Group notes by task status
-    const inProgressNotes = ctx.recent_notes.filter(
-      (n) => n.task_status === "in_progress",
-    );
-    const pendingReviewNotes = ctx.recent_notes.filter(
-      (n) => n.task_status === "pending_review",
-    );
-    const completedNotes = ctx.recent_notes.filter(
-      (n) => n.task_status === "completed",
-    );
-
-    // Helper to format a single note
-    const formatNote = (note: NoteSummary) => {
-      const age = formatRelativeTime(new Date(note.created_at));
-      const author = note.author ? chalk.gray(` by ${note.author}`) : "";
-      console.log(`    ${chalk.yellow(age)} on ${note.task_ref}${author}:`);
-
-      // Truncate content in brief mode
-      let content = note.content.trim();
-      if (isBrief && content.length > 200) {
-        content = `${content.slice(0, 200).trim()}...`;
-      }
-
-      // Indent content, limit lines in brief mode
-      const lines = content.split("\n");
-      const maxLines = isBrief ? 3 : lines.length;
-      for (const line of lines.slice(0, maxLines)) {
-        console.log(`      ${chalk.white(line)}`);
-      }
-      if (isBrief && lines.length > maxLines) {
-        console.log(
-          chalk.gray(`      ... (${lines.length - maxLines} more lines)`),
-        );
-      }
-    };
-
-    // AC: @cmd-session-start ac-1 - In Progress notes
-    if (inProgressNotes.length > 0) {
-      console.log(`  ${chalk.blue("In Progress:")}`);
-      for (const note of inProgressNotes) {
-        formatNote(note);
-      }
-    }
-
-    // AC: @cmd-session-start ac-1 - Pending Review notes (grouped separately)
-    if (pendingReviewNotes.length > 0) {
-      console.log(`  ${chalk.yellow("Pending Review:")}`);
-      for (const note of pendingReviewNotes) {
-        formatNote(note);
-      }
-    }
-
-    // AC: @cmd-session-start ac-2 - Recently Completed notes
-    if (completedNotes.length > 0) {
-      console.log(`  ${chalk.green("Recently Completed:")}`);
-      for (const note of completedNotes) {
-        formatNote(note);
-      }
-    }
-  }
-
-  // Incomplete todos section
-  if (ctx.active_todos.length > 0) {
-    console.log(`\n${sessionHeaders.incompleteTodos}`);
-    for (const todo of ctx.active_todos) {
-      console.log(
-        `  ${chalk.yellow("[ ]")} ${todo.task_ref}#${todo.id}: ${todo.text}`,
-      );
-    }
-  }
-
-  // Ready tasks section
-  if (ctx.ready_tasks.length > 0) {
-    console.log(`\n${sessionHeaders.readyTasks}`);
-    for (const task of ctx.ready_tasks) {
-      const priority =
-        task.priority <= 2
-          ? chalk.red(`P${task.priority}`)
-          : chalk.gray(`P${task.priority}`);
-      const tags =
-        task.tags.length > 0 ? chalk.cyan(` #${task.tags.join(" #")}`) : "";
-      const unlocks =
-        task.unlocks > 0
-          ? chalk.green(` unlocks ${task.unlocks}`)
-          : "";
-      console.log(`  ${priority} ${task.ref} ${task.title}${unlocks}${tags}`);
-    }
-  }
-
-  // Blocked tasks section
-  if (ctx.blocked_tasks.length > 0) {
-    console.log(`\n${sessionHeaders.blocked}`);
-    for (const task of ctx.blocked_tasks) {
-      const unlocks =
-        task.unlocks > 0
-          ? chalk.green(` unlocks ${task.unlocks}`)
-          : "";
-      console.log(`  ${chalk.red("[blocked]")} ${task.ref} ${task.title}${unlocks}`);
-      if (task.blocked_by.length > 0) {
-        console.log(chalk.gray(`    Blockers: ${task.blocked_by.join(", ")}`));
-      }
-      if (task.unmet_deps.length > 0) {
-        console.log(
-          chalk.gray(`    Waiting on: ${task.unmet_deps.join(", ")}`),
-        );
-      }
-    }
-  }
-
-  // Note: Recent Commits section replaced by unified activity timeline above
-
+  // ── Inbox section ──
   // AC: @session-start-inbox-triage ac-inbox-stat-line, ac-inbox-full-list, ac-inbox-all-triaged
-  // Inbox section with triage-aware statistics
   if (ctx.inbox_stats.total > 0) {
     console.log(`\n${sessionHeaders.inbox}`);
-    // Stat line always shown
+    // Stat line always shown (primer and full)
     const statParts = [
       `${ctx.inbox_stats.untriaged} untriaged`,
       `${ctx.inbox_stats.deferred} deferred`,
@@ -1297,22 +1374,23 @@ function formatSessionContext(
     ];
     console.log(`  ${statParts.join(" | ")}`);
 
-    // AC: @session-start-inbox-triage ac-inbox-full-list
+    // AC: @cmd-session-start ac-full-sections, @session-start-inbox-triage ac-inbox-full-list
     // Full mode: list untriaged items (up to 20)
+    // AC: @cmd-session-start ac-slug-fallback — inbox uses @short-ulid
     const untriagedItems = ctx.inbox_items
       .filter((i) => !i.triaged)
       .slice(0, 20);
-    if (!isBrief && untriagedItems.length > 0) {
+    if (isFull && untriagedItems.length > 0) {
       console.log("");
       for (const item of untriagedItems) {
-        const age = formatRelativeTime(new Date(item.created_at));
+        const itemAge = formatRelativeTime(new Date(item.created_at));
         const author = item.added_by ? ` by ${item.added_by}` : "";
         const tags =
           item.tags.length > 0
             ? chalk.cyan(` [${item.tags.join(", ")}]`)
             : "";
         console.log(
-          `  ${chalk.magenta(item.ref)} ${chalk.gray(`(${age}${author})`)}${tags}`,
+          `  ${chalk.magenta(`@${item.ref}`)} ${chalk.gray(`(${itemAge}${author})`)}${tags}`,
         );
         console.log(`    ${item.text}`);
       }
@@ -1322,7 +1400,38 @@ function formatSessionContext(
     }
   }
 
-  // Working tree section
+  // ── Observations section (full mode only) ──
+  // AC: @cmd-session-start ac-full-sections
+  if (isFull && ctx.observations.length > 0) {
+    console.log(`\n${chalk.yellow.bold("--- Observations (unresolved) ---")}`);
+    for (const obs of ctx.observations) {
+      const obsAge = formatRelativeTime(new Date(obs.created_at));
+      const author = obs.author ? ` by ${obs.author}` : "";
+      const typeLabel = chalk.cyan(`[${obs.type}]`);
+      console.log(
+        `  ${typeLabel} ${chalk.gray(`@${obs.ref}`)} ${chalk.gray(`(${obsAge}${author})`)}`,
+      );
+      console.log(`    ${obs.content}`);
+    }
+  }
+
+  // ── Session metadata section (full mode only) ──
+  // AC: @cmd-session-start ac-full-sections
+  if (
+    isFull &&
+    ctx.context &&
+    ctx.context.updated_at
+  ) {
+    console.log(`\n${chalk.gray.bold("--- Session Metadata ---")}`);
+    console.log(
+      chalk.gray(
+        `  Last updated: ${formatRelativeTime(new Date(ctx.context.updated_at))}`,
+      ),
+    );
+  }
+
+  // ── Working tree section ──
+  // AC: @cmd-session-start ac-dirty-tree-only — only shown when dirty
   if (ctx.working_tree && !ctx.working_tree.clean) {
     console.log(`\n${sessionHeaders.workingTree}`);
 
@@ -1346,37 +1455,40 @@ function formatSessionContext(
 
     if (ctx.working_tree.untracked.length > 0) {
       console.log(chalk.gray("  Untracked:"));
-      const limit = isBrief ? 5 : ctx.working_tree.untracked.length;
-      for (const path of ctx.working_tree.untracked.slice(0, limit)) {
-        console.log(`    ${chalk.gray("?")} ${path}`);
+      const untrackedLimit = isFull
+        ? ctx.working_tree.untracked.length
+        : 5;
+      for (const filePath of ctx.working_tree.untracked.slice(
+        0,
+        untrackedLimit,
+      )) {
+        console.log(`    ${chalk.gray("?")} ${filePath}`);
       }
-      if (isBrief && ctx.working_tree.untracked.length > limit) {
+      if (!isFull && ctx.working_tree.untracked.length > untrackedLimit) {
         console.log(
           chalk.gray(
-            `    ... and ${ctx.working_tree.untracked.length - limit} more`,
+            `    ... and ${ctx.working_tree.untracked.length - untrackedLimit} more`,
           ),
         );
       }
     }
-  } else if (ctx.working_tree?.clean) {
-    console.log(`\n${sessionHeaders.workingTreeClean}`);
   }
 
-  // Quick Commands section - contextual hints based on state
+  // ── Quick Commands section ──
   const quickCommands: string[] = [];
 
   if (ctx.active_tasks.length > 0) {
-    const ref = ctx.active_tasks[0].ref;
+    const ref = displayRef(ctx.active_tasks[0]);
     quickCommands.push(
-      `kspec task note @${ref} "Progress..."  ${chalk.gray("# document work")}`,
+      `kspec task note ${ref} "Progress..."  ${chalk.gray("# document work")}`,
     );
     quickCommands.push(
-      `kspec task complete @${ref} --reason "..."  ${chalk.gray("# finish task")}`,
+      `kspec task complete ${ref} --reason "..."  ${chalk.gray("# finish task")}`,
     );
   } else if (ctx.ready_tasks.length > 0) {
-    const ref = ctx.ready_tasks[0].ref;
+    const ref = displayRef(ctx.ready_tasks[0]);
     quickCommands.push(
-      `kspec task start @${ref}  ${chalk.gray("# begin work")}`,
+      `kspec task start ${ref}  ${chalk.gray("# begin work")}`,
     );
   }
 
