@@ -85,6 +85,8 @@ export interface WrapUpOptions {
   yolo: boolean;
   /** Working directory */
   cwd: string;
+  /** Extra arguments to append to adapter args (e.g., auto-approve flags) */
+  extraArgs?: string[];
   /** Tool request handler */
   handleRequest: (
     client: SpawnedAgent["client"],
@@ -321,6 +323,7 @@ export async function runWrapUpAgent(
     // AC: @ralph-wrap-up-agent-on-loop-exit ac-1 - Spawn wrap-up agent
     agent = await spawnAndInitialize(adapter, {
       cwd: options.cwd,
+      extraArgs: options.extraArgs,
       clientOptions: {
         clientInfo: {
           name: "kspec-ralph-wrapup",

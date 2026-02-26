@@ -17,6 +17,8 @@ export interface SpawnAgentOptions {
   cwd: string;
   /** Additional environment variables */
   env?: Record<string, string>;
+  /** Extra arguments to append (e.g., auto-approve flags) */
+  extraArgs?: string[];
   /** ACP client options */
   clientOptions?: Omit<ACPClientOptions, "stdin" | "stdout">;
 }
@@ -47,7 +49,7 @@ export function spawnAgent(
   adapter: AgentAdapter,
   options: SpawnAgentOptions,
 ): SpawnedAgent {
-  const { cwd, env = {}, clientOptions = {} } = options;
+  const { cwd, env = {}, extraArgs, clientOptions = {} } = options;
 
   // Merge environment variables
   const processEnv = {
@@ -56,8 +58,11 @@ export function spawnAgent(
     ...env,
   };
 
+  // Build args from fresh copy to prevent cross-call leakage
+  const args = [...adapter.args, ...(extraArgs || [])];
+
   // Spawn the agent process
-  const child = spawn(adapter.command, adapter.args, {
+  const child = spawn(adapter.command, args, {
     cwd,
     env: processEnv,
     shell: adapter.shell,

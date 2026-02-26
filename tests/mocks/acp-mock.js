@@ -18,6 +18,7 @@
  * - MOCK_ACP_COMPLETE_TASK: Task ref to complete after successful prompt (e.g., "@task-slug")
  * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
  * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
+ * - MOCK_ACP_VERIFY_ARGS_FILE: Write process.argv to this file for verifying command-line args
  */
 
 import * as fs from 'node:fs';
@@ -43,6 +44,8 @@ const cliPath = process.env.MOCK_ACP_CLI_PATH || 'kspec';
 // Write specified env var values to a file for test verification
 const verifyEnvFile = process.env.MOCK_ACP_VERIFY_ENV_FILE;
 const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated var names
+// Write process.argv to a file for verifying command-line args
+const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -92,6 +95,11 @@ function shouldFail() {
 
 async function handleInitialize(id, _params) {
   initialized = true;
+
+  // Write process.argv to file for test verification of command-line args
+  if (verifyArgsFile) {
+    fs.writeFileSync(verifyArgsFile, JSON.stringify(process.argv, null, 2));
+  }
 
   // Write requested env var values to file for test verification
   if (verifyEnvFile && verifyEnvVars) {
