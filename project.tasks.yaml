@@ -60897,12 +60897,22 @@
     - daemon
     - e2e
   vcs_refs: []
+  session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
   created_at: 2026-02-26T00:28:49.241Z
-  notes: []
+  started_at: 2026-02-26T11:16:59.701Z
+  notes:
+    - _ulid: 01KJCTPC9QPYRQ5ESZXJVTCQV7
+      created_at: 2026-02-26T11:17:39.255Z
+      author: "@claude"
+      content: "Reading existing test files: daemon-api-error-handling.test.ts (148 lines, static
+        analysis) and daemon-api-projects.test.ts (235 lines, static/documentary tests). Projects
+        route is fully implemented in packages/daemon/src/routes/projects.ts. Writing
+        api-errors.spec.ts for error handling ACs (ac-22, ac-23, ac-24) and api-projects.spec.ts for
+        projects API ACs (ac-28, ac-29, ac-30). Existing errors.spec.ts uses mocks — creating
+        separate api-errors.spec.ts for real daemon tests."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-26T11:16:59.701Z
-  session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
 - _ulid: 01KJBNJCYDTFHTDB60DJFM1356
   slugs:
     - task-e2e-daemon-server-core
