@@ -6316,7 +6316,7 @@ runs:
   - _ulid: 01KJDZS6BEADXHVJPJXN2KT10F
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-26T22:05:48.783Z
     step_results:
@@ -6353,5 +6353,26 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T22:06:04.783Z
-        completed_at: 2026-02-26T22:06:04.783Z
+        completed_at: 2026-02-26T22:06:14.082Z
+        notes: >-
+          ## Friction Points
+
+
+          1. **Single mock adapter limitation** — --adapter-cmd registers one 'custom' adapter.
+          Can't test different adapter IDs in a real (non-dry-run) run. Had to work around this by
+          using dry-run with default adapters. Already captured as inbox item 01KJDZBA.
+
+
+          2. **Build step required before CLI tests** — After editing ralph.ts, tests using
+          spawnSync(node, CLI_PATH) require npm run build first. Forgot this initially, got 'unknown
+          option' errors. The runRalph helper masks this because it uses the built output.
+
+
+          3. **Codex review thread resolution requires GraphQL** — Resolving review threads to clear
+          the unresolved-comments CI check requires the GraphQL API, not REST. Already in memory but
+          still a manual multi-step process each time.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T22:06:14.082Z
+        completed_at: 2026-02-26T22:06:14.082Z
     initiated_by: "@claude"
