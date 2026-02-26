@@ -61582,7 +61582,7 @@
     - Session metadata records both adapter IDs
   spec_ref: "@ralph-per-role-adapters"
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-register-codex-acp-in-adapter-registry"
@@ -61598,6 +61598,7 @@
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-26T21:25:04.040Z
 - _ulid: 01KJDCYSATR96J7FMFSGTG51GQ
   slugs:
     - implement-per-adapter-auto-approve-arguments
@@ -61638,6 +61639,8 @@
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #563. Replaced hardcoded --dangerously-skip-permissions with
+    per-adapter autoApproveArgs via extraArgs in spawner. 9 tests cover all 4 ACs."
   depends_on:
     - "@implement-register-codex-acp-in-adapter-registry"
   context: []
@@ -61647,6 +61650,7 @@
   created_at: 2026-02-26T16:36:49.114Z
   started_at: 2026-02-26T20:48:06.594Z
   submitted_at: 2026-02-26T21:02:15.479Z
+  completed_at: 2026-02-26T21:17:25.499Z
   notes:
     - _ulid: 01KJDCYSAT8CGF4D804VEAEECD
       created_at: 2026-02-26T16:36:49.114Z
@@ -61676,9 +61680,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-26T21:17:25.499Z
-  closed_reason: "Merged in PR #563. Replaced hardcoded --dangerously-skip-permissions with
-    per-adapter autoApproveArgs via extraArgs in spawner. 9 tests cover all 4 ACs."
 - _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
   slugs:
     - implement-register-codex-acp-in-adapter-registry
