@@ -60471,7 +60471,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -60536,6 +60536,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-26T02:25:43.308Z
+  closed_reason: "Merged in PR #543. Replaced tests/daemon-api-tasks.test.ts (258 lines of static
+    analysis) with 23 Playwright E2E tests in packages/web-ui/tests/e2e/api-tasks.spec.ts covering
+    @api-contract ac-2 through ac-7. Fixed coverage scan regression by extending scanTestCoverage()
+    to also scan packages/web-ui/tests/e2e/. All CI checks passed."
 - _ulid: 01KJBNJ1DSH5BZXHC12V9ZSWMX
   slugs:
     - task-e2e-daemon-items-api
