@@ -62038,7 +62038,52 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:32:59.586Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQ8ZD10EG4Z7MHEAHWBMAT
+      created_at: 2026-02-26T19:37:08.769Z
+      author: "@claude"
+      content: >-
+        ENRICHMENT — Standalone context for this task:
+
+
+        **What**: When `kspec plan import --update` encounters an existing spec, it replaces the
+        entire `acceptance_criteria` array instead of merging. If a spec already has ac-1 through
+        ac-9 and a plan adds ac-10, --update overwrites all ACs with only what the plan document
+        contains, losing ac-1 through ac-9.
+
+
+        **Where**: `src/cli/commands/plan-import.ts` lines 271-303 (the --update branch). The update
+        logic builds a `Partial<SpecItemInput>` and sets `updates.acceptance_criteria =
+        spec.acceptance_criteria` (line 296), passed to `updateSpecItem()` in `src/parser/yaml.ts`
+        line 1522. `updateSpecItem` does direct property assignment (`targetObj[key] = value` at
+        line 1560) with no merge logic.
+
+
+        **How**: Implement an AC merge strategy in the update path. When
+        `updates.acceptance_criteria` is set and the existing item already has ACs:
+
+        1. Index existing ACs by their `id` field (e.g., "ac-1", "ac-2")
+
+        2. For each AC in the plan update: if an AC with the same `id` exists, replace it; otherwise
+        append it
+
+        3. Preserve existing ACs whose IDs are not in the update set
+
+        Best done in `plan-import.ts` before calling `updateSpecItem`, since general updateSpecItem
+        callers may want full replacement semantics.
+
+
+        **Done when**:
+
+        - `kspec plan import --update` with a plan that adds one new AC to an existing spec
+        preserves all pre-existing ACs and appends the new one
+
+        - A plan that modifies an existing AC (same id) updates that AC in place while preserving
+        others
+
+        - Tests cover: append-only new AC, update existing AC by id, mixed append+update, no ACs in
+        plan (preserves existing), empty existing ACs (creates all from plan)
+      supersedes: null
   todos: []
 - _ulid: 01KJDQ1CTV35WDA9G51NEH943K
   slugs: []
@@ -62136,20 +62181,20 @@
   created_at: 2026-02-26T19:33:03.825Z
   notes: []
   todos: []
-- title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
+- _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
+  slugs: []
+  title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation into reconnection logic, heartbeat handling, or fallback to polling.
-  _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:33:04.635Z
   notes: []
