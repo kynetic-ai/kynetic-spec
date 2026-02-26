@@ -1972,13 +1972,14 @@ triage:
     inbox_ref: 01KJCXMR42ZTQZK510F8AESYN7
     item_snapshot: kspec agents generate meta hash should include package version — currently skips
       regeneration when only the version changes, requiring manual edit of the freshness comment
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — agents generate version hash
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.249Z
-    updated_at: 2026-02-26T19:02:53.261Z
+    updated_at: 2026-02-26T19:32:48.341Z
+    acted_at: 2026-02-26T19:32:48.325Z
   - _ulid: 01KJDNA833SJZV4WRP256KK839
     inbox_ref: 01KJCXMR524W6YTGCEPHEZ97WH
     item_snapshot: kspec task patch appears to hang indefinitely — had to kill and use task set + task
@@ -1988,10 +1989,10 @@ triage:
     reasoning: "Bug: task patch hangs indefinitely. Blocks normal workflow."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.283Z
-    updated_at: 2026-02-26T19:32:48.204Z
     acted_at: 2026-02-26T19:32:48.188Z
     result_ref: "@01KJDQ10"
+    created_at: 2026-02-26T19:02:53.283Z
+    updated_at: 2026-02-26T19:32:48.204Z
   - _ulid: 01KJDNA844EG8Y2D2XN590AW43
     inbox_ref: 01KJDFFJDCG18ZY3B8RQ96JJFP
     item_snapshot: Add --description flag to kspec task set (matches task add interface, avoids need for
