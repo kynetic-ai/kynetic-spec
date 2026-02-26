@@ -1559,14 +1559,16 @@ triage:
     item_snapshot: Triage promote action should optionally delete the inbox item after creating the
       task. Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag
       or making deletion the default for promote (with snapshot preserved in triage record).
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Triage promote should delete inbox item — causes inbox bloat (67 deferred items stay).
       Clear scope, well-defined fix.
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.307Z
-    updated_at: 2026-02-26T19:02:52.321Z
+    updated_at: 2026-02-26T19:33:02.887Z
+    acted_at: 2026-02-26T19:33:02.872Z
+    result_ref: "@01KJDQ1E"
   - _ulid: 01KJDNA75PX9EHFDXZ8KJFEJ0Z
     inbox_ref: 01KJ4VDK7KWD0TZWCYBWXDABHT
     item_snapshot: "Batch arg name discoverability: kspec batch commands shows CLI signatures but batch
@@ -1580,9 +1582,9 @@ triage:
     override_reasoning: Think this is handled now with the recent improvements around batch.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:53.746Z
+    acted_at: 2026-02-26T19:33:02.123Z
     created_at: 2026-02-26T19:02:52.342Z
     updated_at: 2026-02-26T19:33:02.137Z
-    acted_at: 2026-02-26T19:33:02.123Z
   - _ulid: 01KJDNA76ZV0P7GCJGJMMAAAVA
     inbox_ref: 01KJ4VHNAZDGTNTX7S7630S6B9
     item_snapshot: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
