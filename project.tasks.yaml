@@ -61839,24 +61839,44 @@
   created_at: 2026-02-26T19:32:50.617Z
   notes: []
   todos: []
-- title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
+- _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
+  slugs: []
+  title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
     a --age
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
     Either add a --agent flag (e.g. kspec setup --agent claude-code) to explicitly specify the agent
     type, or detect based on installed tooling (~/.claude exists) rather than requiring runtime env
     vars. Discovered while building containerized ralph runner — entrypoint bash script can't set
     CLAUDECODE=1 globally because claude blocks nested sessions.
-  _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:51.412Z
+  notes: []
+  todos: []
+- title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
+    documen
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and
+    plan documents use P1/P2/P3 notation. Error message says 'Priority must be a number between 1
+    and 5' which is confusing when you've been writing P1 everywhere. Should either accept both
+    formats or align documentation with the numeric API.
+  _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:51.412Z
+  created_at: 2026-02-26T19:32:52.387Z
   notes: []
   todos: []

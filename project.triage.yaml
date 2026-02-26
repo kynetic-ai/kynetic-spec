@@ -1839,7 +1839,7 @@ triage:
       and plan documents use P1/P2/P3 notation. Error message says 'Priority must be a number
       between 1 and 5' which is confusing when you've been writing P1 everywhere. Should either
       accept both formats or align documentation with the numeric API.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: P1/P2/P3 format alias — DX improvement, duplicate of deferred item
     decided_by: "@claude"
@@ -1850,7 +1850,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:18:59.745Z
     created_at: 2026-02-26T19:02:52.958Z
-    updated_at: 2026-02-26T19:18:59.766Z
+    updated_at: 2026-02-26T19:32:53.087Z
+    acted_at: 2026-02-26T19:32:53.071Z
+    result_ref: "@01KJDQ15"
   - _ulid: 01KJDNA7SVE6M6JV4XH7CH9KJP
     inbox_ref: 01KJ9BENECYW9DP5FP6Y5EJSVM
     item_snapshot: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the
@@ -1864,10 +1866,10 @@ triage:
     override_reasoning: Having to delete is bad IMO, best to close this gap.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:17:52.527Z
-    created_at: 2026-02-26T19:02:52.987Z
-    updated_at: 2026-02-26T19:32:52.303Z
     acted_at: 2026-02-26T19:32:52.287Z
     result_ref: "@01KJDQ14"
+    created_at: 2026-02-26T19:02:52.987Z
+    updated_at: 2026-02-26T19:32:52.303Z
   - _ulid: 01KJDNA7TNPB96SWJFH8JK4YW4
     inbox_ref: 01KJ9NJC7QK6F0SAB11PNN3798
     item_snapshot: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
