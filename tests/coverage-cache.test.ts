@@ -60,6 +60,64 @@ it('should do more', () => {});
       expect(coverage.has('@spec-item ac-3')).toBe(true);
     });
 
+    it('should return coverage from .spec.ts files in tests/ directory', async () => {
+      // .spec.ts files (e.g., Playwright E2E tests) should also be scanned
+      const specFile = path.join(tempDir, 'tests', 'example.spec.ts');
+      await fs.writeFile(
+        specFile,
+        `
+// AC: @api-contract ac-2
+test('returns tasks', async () => {});
+
+// AC: @api-contract ac-3
+test('filters tasks', async () => {});
+`
+      );
+
+      const coverage = await getCachedTestCoverage(tempDir);
+      expect(coverage.has('@api-contract ac-2')).toBe(true);
+      expect(coverage.has('@api-contract ac-3')).toBe(true);
+    });
+
+    it('should return coverage from E2E spec files in packages/web-ui/tests/e2e/', async () => {
+      // E2E Playwright tests live in packages/web-ui/tests/e2e/ — not in tests/
+      // These should be scanned even though they are outside the main tests/ dir
+      const e2eDir = path.join(tempDir, 'packages', 'web-ui', 'tests', 'e2e');
+      await fs.mkdir(e2eDir, { recursive: true });
+      await fs.writeFile(
+        path.join(e2eDir, 'api-tasks.spec.ts'),
+        `
+// AC: @api-contract ac-2
+test('returns tasks with required fields', async () => {});
+
+// AC: @api-contract ac-7
+test('appends note to task', async () => {});
+`
+      );
+
+      const coverage = await getCachedTestCoverage(tempDir);
+      expect(coverage.has('@api-contract ac-2')).toBe(true);
+      expect(coverage.has('@api-contract ac-7')).toBe(true);
+    });
+
+    it('should merge coverage from both tests/ and E2E directories', async () => {
+      // Coverage from both directories should be combined
+      await fs.writeFile(
+        path.join(tempDir, 'tests', 'unit.test.ts'),
+        '// AC: @spec-a ac-1\nit("unit test", () => {});'
+      );
+      const e2eDir = path.join(tempDir, 'packages', 'web-ui', 'tests', 'e2e');
+      await fs.mkdir(e2eDir, { recursive: true });
+      await fs.writeFile(
+        path.join(e2eDir, 'api.spec.ts'),
+        '// AC: @api-contract ac-5\ntest("e2e test", async () => {});'
+      );
+
+      const coverage = await getCachedTestCoverage(tempDir);
+      expect(coverage.has('@spec-a ac-1')).toBe(true);
+      expect(coverage.has('@api-contract ac-5')).toBe(true);
+    });
+
     it('should cache results on second call', async () => {
       // First call populates cache
       const coverage1 = await getCachedTestCoverage(tempDir);
