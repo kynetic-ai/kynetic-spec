@@ -6051,6 +6051,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-26T14:58:34.139Z
+    completed_at: 2026-02-26T14:59:32.513Z
     step_results:
       - step_index: 0
         status: completed
@@ -6087,4 +6088,11 @@ runs:
         notes: "Step 4: No items to capture. All potential observations were below high-confidence threshold
           or already covered by existing observations. Session reflection complete."
     initiated_by: "@claude"
-    completed_at: 2026-02-26T14:59:32.513Z
+  - _ulid: 01KJD916MEQNTG0EJWJZFN55C4
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-26T15:28:13.967Z
+    step_results: []
+    initiated_by: "@claude"
