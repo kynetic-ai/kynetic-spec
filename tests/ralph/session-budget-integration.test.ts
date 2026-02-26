@@ -482,7 +482,6 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
   }, 30_000);
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  // AC: @session-end-loop-signal ac-session-close-error
   it("should clean up budget.json after agent crash (error path)", async () => {
     const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
 
@@ -506,13 +505,39 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
     expect(budgetExists).toBe(false);
 
-    // Session should be closed with a close_reason set
-    // AC: @session-end-loop-signal ac-session-close-error
+    // Session is closed with a close_reason regardless of exit path.
+    // Note: with --max-loops 1, ralph exits after one iteration even if it failed,
+    // so the close_reason is typically "Completed all 1 iterations" not "Max failures".
+    // @session-end-loop-signal ac-session-close-error needs --max-failures testing to
+    // reliably trigger the abandoned+error path.
     const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
     const content = await fs.readFile(sessionPath, "utf-8");
     expect(content).toContain("close_reason:");
-    // With --max-loops 1, ralph exits after the one (failed) iteration with
-    // "Completed all 1 iterations" — or on max_failures if configured
-    expect(content).toMatch(/Max failures|Unrecoverable error|Completed all/);
+  }, 30_000);
+
+  // AC: @session-end-loop-signal ac-session-close-error
+  it("should close session as abandoned with error reason on max failures", async () => {
+    const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
+
+    // Use --max-failures 1 so ralph exits due to failure rather than completing iterations.
+    const result = await spawnRalphUntil(
+      ["--adapter-cmd", `node ${crashAgent}`, "--max-loops", "999", "--max-failures", "1", "--max-tasks", "2"],
+      "Ralph loop completed",
+    );
+
+    // Ralph should have logged failure and max-failures exit
+    expect(result.output).toContain("Iteration failed");
+
+    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionDirs = await fs.readdir(sessionsDir);
+    expect(sessionDirs.length).toBe(1);
+
+    // Session should be closed as abandoned with Max failures close_reason
+    // AC: @session-end-loop-signal ac-session-close-error
+    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
+    const content = await fs.readFile(sessionPath, "utf-8");
+    expect(content).toContain("status: abandoned");
+    expect(content).toContain("close_reason:");
+    expect(content).toContain("Max failures");
   }, 30_000);
 });
