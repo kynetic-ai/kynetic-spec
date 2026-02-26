@@ -88,6 +88,7 @@ export interface TraitCycleError {
  */
 export interface CompletenessWarning {
   type: CompletenessWarningType;
+  subtype?: "own_ac" | "trait_ac";
   itemRef: string;
   itemTitle: string;
   message: string;
@@ -964,6 +965,7 @@ async function checkCompleteness(
       if (uncoveredACs.length > 0) {
         warnings.push({
           type: "missing_test_coverage",
+          subtype: "own_ac",
           itemRef,
           itemTitle: item.title,
           message: `Item ${itemRef} has ${uncoveredACs.length} AC(s) without test coverage`,
@@ -1005,6 +1007,7 @@ async function checkCompleteness(
           .join(", ");
         warnings.push({
           type: "missing_test_coverage",
+          subtype: "trait_ac",
           itemRef,
           itemTitle: item.title,
           message: `Item ${itemRef} has ${uncoveredTraitACs.length} inherited trait AC(s) without test coverage`,
