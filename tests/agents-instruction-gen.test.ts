@@ -497,6 +497,7 @@ describe('Agent Instruction Generation', () => {
         expect(content).toContain('## PR Workflow');
         expect(content).toContain('## Commit Convention');
         expect(content).toContain('## Ralph Loop Mode');
+        expect(content).toContain('## Batch Usage');
       });
 
       it('should include templates in file order (sorted by prefix)', async () => {
@@ -512,12 +513,14 @@ describe('Agent Instruction Generation', () => {
         const prWorkflowPos = content.indexOf('## PR Workflow');
         const commitConventionPos = content.indexOf('## Commit Convention');
         const ralphLoopPos = content.indexOf('## Ralph Loop Mode');
+        const batchUsagePos = content.indexOf('## Batch Usage');
 
         expect(quickStartPos).toBeLessThan(shadowBranchPos);
         expect(shadowBranchPos).toBeLessThan(taskLifecyclePos);
         expect(taskLifecyclePos).toBeLessThan(prWorkflowPos);
         expect(prWorkflowPos).toBeLessThan(commitConventionPos);
         expect(commitConventionPos).toBeLessThan(ralphLoopPos);
+        expect(ralphLoopPos).toBeLessThan(batchUsagePos);
       });
     });
 
@@ -600,6 +603,18 @@ describe('Agent Instruction Generation', () => {
         expect(content).toContain('pending_review');
         expect(content).toContain('kspec task block');
       });
+
+      it('should include batch-usage template content', async () => {
+        kspecFull('agents generate', tempDir);
+
+        const filePath = path.join(tempDir, 'kspec-agents.md');
+        const content = await fs.readFile(filePath, 'utf-8');
+
+        // Verify batch-usage specific content
+        expect(content).toContain('Batch Usage');
+        expect(content).toContain('kspec batch');
+        expect(content).toContain('batch commands');
+      });
     });
 
     // AC: @agent-templates ac-2 (JSON output verification)
@@ -609,7 +624,7 @@ describe('Agent Instruction Generation', () => {
       }>('agents generate', tempDir);
 
       // Verify templates count is returned (currently 6 templates)
-      expect(result.templates).toBe(6);
+      expect(result.templates).toBe(7);
     });
 
     it('should include templates count in dry-run JSON output', async () => {
@@ -619,7 +634,7 @@ describe('Agent Instruction Generation', () => {
       }>('agents generate --dry-run', tempDir);
 
       expect(result.dry_run).toBe(true);
-      expect(result.templates).toBe(6);
+      expect(result.templates).toBe(7);
     });
 
     // Note: AC: @agent-templates ac-3 (error if templates directory missing/empty)

@@ -224,7 +224,8 @@ Examples:
   batchCmd
     .command("commands")
     .description("List commands allowed in batch mode")
-    .action(() => {
+    .argument("[path]", "Filter to a specific command (e.g. 'task add')")
+    .action((pathFilter?: string) => {
       const json = isJsonMode();
       const tree = extractCommandTree(program);
       const allCommands = flattenCommandTree(tree);
@@ -241,15 +242,52 @@ Examples:
         return true;
       });
 
+      // AC: @batch-allowed-commands ac-filter-by-path
+      let filteredCommands = allowedCommands;
+      if (pathFilter) {
+        const normalizedFilter = pathFilter.trim();
+        filteredCommands = allowedCommands.filter(
+          (cmd) => cmd.fullPath.slice(1).join(" ") === normalizedFilter,
+        );
+
+        // AC: @batch-allowed-commands ac-filter-not-found
+        if (filteredCommands.length === 0) {
+          if (json) {
+            output({
+              commands: [],
+              total: 0,
+              filter: normalizedFilter,
+              error: `No batch-allowed command found matching '${normalizedFilter}'`,
+            });
+          } else {
+            console.error(
+              `No batch-allowed command found matching '${normalizedFilter}'`,
+            );
+            console.error(
+              "Run 'kspec batch commands' without arguments to see all available commands.",
+            );
+          }
+          process.exit(EXIT_CODES.NOT_FOUND);
+          return;
+        }
+      }
+
       if (json) {
-        const commandInfos = allowedCommands.map(buildCommandInfo);
-        output({ commands: commandInfos, total: commandInfos.length });
+        const commandInfos = filteredCommands.map(buildCommandInfo);
+        const result: Record<string, unknown> = {
+          commands: commandInfos,
+          total: commandInfos.length,
+        };
+        if (pathFilter) result.filter = pathFilter.trim();
+        output(result);
       } else {
         console.log(chalk.bold.cyan("Batch-Allowed Commands"));
         console.log(chalk.gray("─".repeat(60)));
-        console.log(chalk.gray("Only mutating commands can be used in batch mode.\n"));
+        if (!pathFilter) {
+          console.log(chalk.gray("Only mutating commands can be used in batch mode.\n"));
+        }
 
-        for (const cmd of allowedCommands) {
+        for (const cmd of filteredCommands) {
           const signature = formatCommandSignature(cmd);
           console.log(chalk.green(signature));
           if (cmd.description) {
@@ -257,7 +295,7 @@ Examples:
           }
         }
 
-        console.log(chalk.gray(`\n${allowedCommands.length} command(s) available`));
+        console.log(chalk.gray(`\n${filteredCommands.length} command(s) available`));
       }
     });
 }

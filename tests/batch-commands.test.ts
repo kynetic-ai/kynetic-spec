@@ -166,6 +166,78 @@ describe("batch commands", () => {
     });
   });
 
+  describe("path filter", () => {
+    // AC: @batch-allowed-commands ac-filter-by-path
+    it("filters to a single command by exact path", () => {
+      const result = kspec('batch commands "task add"', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("task add");
+      expect(result.stdout).toContain("1 command(s) available");
+    });
+
+    // AC: @batch-allowed-commands ac-filter-by-path
+    it("suppresses blurb when filter is active", () => {
+      const result = kspec('batch commands "task add"', tempDir);
+      expect(result.stdout).not.toContain("Only mutating commands can be used in batch mode");
+    });
+
+    it("unfiltered output still shows blurb", () => {
+      const result = kspec("batch commands", tempDir);
+      expect(result.stdout).toContain("Only mutating commands can be used in batch mode");
+    });
+
+    // AC: @batch-allowed-commands ac-filter-by-path
+    it("rejects partial path matches", () => {
+      // "task" is a command group, not an exact leaf command path
+      const result = kspec('batch commands "task"', tempDir, { expectFail: true });
+      expect(result.exitCode).toBe(3); // NOT_FOUND
+    });
+
+    // AC: @batch-allowed-commands ac-filter-not-found
+    it("returns NOT_FOUND for nonexistent command", () => {
+      const result = kspec('batch commands "nonexistent"', tempDir, { expectFail: true });
+      expect(result.exitCode).toBe(3);
+      expect(result.stderr).toContain("No batch-allowed command found matching");
+      expect(result.stderr).toContain("Run 'kspec batch commands' without arguments");
+    });
+
+    // AC: @batch-allowed-commands ac-filter-not-found
+    it("returns NOT_FOUND for read-only command", () => {
+      const result = kspec('batch commands "task list"', tempDir, { expectFail: true });
+      expect(result.exitCode).toBe(3);
+    });
+
+    // AC: @batch-allowed-commands ac-filter-by-path
+    it("returns JSON schema with filter field", () => {
+      const result = kspecJson<{
+        commands: Array<{
+          command: string;
+          arguments: Array<{ name: string; required: boolean }>;
+          options: Array<{ flags: string }>;
+        }>;
+        total: number;
+        filter: string;
+      }>('batch commands "inbox add"', tempDir);
+
+      expect(result.total).toBe(1);
+      expect(result.filter).toBe("inbox add");
+      expect(result.commands[0].command).toBe("inbox add");
+      expect(result.commands[0].arguments.length).toBeGreaterThan(0);
+    });
+
+    // AC: @batch-allowed-commands ac-filter-not-found
+    it("returns JSON error on stdout when no match", () => {
+      const result = kspec('batch commands "nonexistent" --json', tempDir, { expectFail: true });
+      expect(result.exitCode).toBe(3);
+      // JSON error should be on stdout for kspecJson compatibility
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed.commands).toHaveLength(0);
+      expect(parsed.total).toBe(0);
+      expect(parsed.filter).toBe("nonexistent");
+      expect(parsed.error).toContain("No batch-allowed command found matching");
+    });
+  });
+
   describe("nested batch rejection", () => {
     it("rejects 'batch commands' in batch input with nested-batch error", () => {
       // AC: @batch-allowed-commands ac-batch-itself - regression test for subcommands
