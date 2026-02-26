@@ -1756,7 +1756,10 @@ triage:
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.798Z
-    updated_at: 2026-02-26T19:02:52.815Z
+    updated_at: 2026-02-26T19:21:22.627Z
+    override_reasoning: Should investigate this cause it might be fixed, but if not then def promote
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:21:22.606Z
   - _ulid: 01KJDNA7N6V4CR5HZTM52QYD3Y
     inbox_ref: 01KJ8X526K52BVBGYENJKFFSM8
     item_snapshot: "Session event log tool-level filtering: kspec session log show <id> --tool Read
@@ -1799,12 +1802,12 @@ triage:
     reasoning: Batch JSON format docs — already in AGENTS.md, could be improved but not urgent
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.930Z
-    updated_at: 2026-02-26T19:20:13.138Z
     override_reasoning: There's recent work on this specifically (adding to the kspec-agents.md and new
       way to see command info)
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:20:13.120Z
+    created_at: 2026-02-26T19:02:52.930Z
+    updated_at: 2026-02-26T19:20:13.138Z
   - _ulid: 01KJDNA7RYTZHTKEB8X5NN755Q
     inbox_ref: 01KJ93W2PWGATM2YVHQRBSSVK5
     item_snapshot: kspec task set --priority accepts numbers (1-5) but all documentation, conventions,
