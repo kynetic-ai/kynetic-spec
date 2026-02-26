@@ -19,6 +19,8 @@ export interface AgentAdapter {
   shell?: boolean;
   /** Human-readable description */
   description?: string;
+  /** Arguments to append for auto-approve / yolo mode */
+  autoApproveArgs?: string[];
 }
 
 /**
@@ -34,6 +36,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
     args: ["@zed-industries/claude-agent-acp"],
     shell: process.platform === "win32",
     description: "Claude Agent via ACP protocol",
+    autoApproveArgs: ["--dangerously-skip-permissions"],
   },
 
   /**
@@ -46,6 +49,24 @@ const ADAPTERS: Record<string, AgentAdapter> = {
     args: ["@zed-industries/claude-agent-acp"],
     shell: process.platform === "win32",
     description: "Claude Agent via ACP protocol (deprecated alias)",
+    autoApproveArgs: ["--dangerously-skip-permissions"],
+  },
+
+  /**
+   * Codex ACP adapter.
+   * Uses the codex-acp package for OpenAI Codex agent.
+   */
+  "codex-acp": {
+    command: "npx",
+    args: ["codex-acp"],
+    shell: process.platform === "win32",
+    description: "Codex agent via ACP protocol",
+    autoApproveArgs: [
+      "-c",
+      'approval_policy="never"',
+      "-c",
+      'sandbox_mode="danger-full-access"',
+    ],
   },
 
   /**

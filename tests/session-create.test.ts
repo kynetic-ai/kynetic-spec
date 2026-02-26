@@ -18,6 +18,7 @@ import {
   injectClaudeCodeEnv,
   removeClaudeCodeEnv,
   injectCodexEnv,
+  removeCodexEnv,
   injectGeminiEnv,
   injectOpenCodeEnv,
   getFallbackInjectionInstructions,
@@ -29,6 +30,7 @@ import {
   createSession,
 } from "../src/sessions/store.js";
 import type { SessionMetadataInput } from "../src/sessions/types.js";
+import { resolveAdapter } from "../src/agents/adapters.js";
 import {
   kspec,
   kspecJson,
@@ -874,6 +876,83 @@ describe("Environment Injection", () => {
         } else {
           delete process.env.CLAUDE_ENV_FILE;
         }
+      }
+    });
+
+    // AC: @codex-acp-adapter-registration ac-1
+    it("should resolve codex-acp as a registered adapter (not ad-hoc)", () => {
+      const adapter = resolveAdapter("codex-acp");
+      // Registered adapters have a specific description; ad-hoc ones say "Ad-hoc adapter for ..."
+      expect(adapter.description).not.toContain("Ad-hoc");
+      expect(adapter.command).toBe("npx");
+      expect(adapter.args).toContain("codex-acp");
+    });
+
+    // AC: @codex-acp-adapter-registration ac-2
+    it("should inject for codex-acp adapter via injectEnvForAdapter", async () => {
+      const originalHome = process.env.HOME;
+      process.env.HOME = testDir;
+
+      try {
+        const sessionId = testUlid("ADPT", 3);
+        const result = await injectEnvForAdapter("codex-acp", sessionId);
+
+        expect(result).not.toBeNull();
+        expect(result!.injected).toBe(true);
+        expect(result!.method).toBe("codex_config");
+
+        const configPath = path.join(testDir, ".codex", "config.json");
+        const content = JSON.parse(await fs.readFile(configPath, "utf-8"));
+        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(sessionId);
+      } finally {
+        process.env.HOME = originalHome;
+      }
+    });
+
+    // AC: @codex-acp-adapter-registration ac-3
+    it("should clean up for codex-acp adapter via removeEnvForAdapter", async () => {
+      const originalHome = process.env.HOME;
+      process.env.HOME = testDir;
+
+      try {
+        // First inject
+        const sessionId = testUlid("ADPT", 4);
+        await injectCodexEnv(sessionId);
+
+        // Verify injection
+        const configPath = path.join(testDir, ".codex", "config.json");
+        let content = JSON.parse(await fs.readFile(configPath, "utf-8"));
+        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(sessionId);
+
+        // Remove via adapter function
+        await removeEnvForAdapter("codex-acp");
+
+        content = JSON.parse(await fs.readFile(configPath, "utf-8"));
+        expect(content.shell_environment_policy).toBeUndefined();
+      } finally {
+        process.env.HOME = originalHome;
+      }
+    });
+
+    // AC: @codex-acp-adapter-registration ac-3
+    it("should restore previous value for codex-acp adapter", async () => {
+      const originalHome = process.env.HOME;
+      process.env.HOME = testDir;
+
+      try {
+        // Inject session
+        const sessionId = testUlid("ADPT", 5);
+        await injectCodexEnv(sessionId);
+
+        // Remove with previousValue to restore
+        const previousValue = "previous-session-id";
+        await removeEnvForAdapter("codex-acp", previousValue);
+
+        const configPath = path.join(testDir, ".codex", "config.json");
+        const content = JSON.parse(await fs.readFile(configPath, "utf-8"));
+        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(previousValue);
+      } finally {
+        process.env.HOME = originalHome;
       }
     });
 

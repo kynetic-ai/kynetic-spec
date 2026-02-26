@@ -1987,6 +1987,57 @@ export async function injectCodexEnv(
 }
 
 /**
+ * Remove or restore KSPEC_SESSION_ID in Codex config.
+ *
+ * Reverses the injection performed by injectCodexEnv().
+ * If previousValue is provided, restores it instead of deleting.
+ * Best-effort: silently ignores missing files or missing keys.
+ *
+ * @param previousValue - Value to restore, or null/undefined to delete
+ */
+export async function removeCodexEnv(
+  previousValue?: string | null,
+): Promise<void> {
+  const configDir = path.join(
+    process.env.HOME || process.env.USERPROFILE || "",
+    ".codex",
+  );
+  const configPath = path.join(configDir, "config.json");
+
+  try {
+    const content = await fsPromises.readFile(configPath, "utf-8");
+    const config = JSON.parse(content);
+
+    const policy = config.shell_environment_policy;
+    if (policy && typeof policy === "object" && policy.set && typeof policy.set === "object") {
+      if (previousValue) {
+        (policy.set as Record<string, string>).KSPEC_SESSION_ID = previousValue;
+      } else {
+        delete (policy.set as Record<string, unknown>).KSPEC_SESSION_ID;
+
+        // Remove set section entirely if empty
+        if (Object.keys(policy.set as Record<string, unknown>).length === 0) {
+          delete policy.set;
+        }
+
+        // Remove shell_environment_policy if empty
+        if (Object.keys(policy as Record<string, unknown>).length === 0) {
+          delete config.shell_environment_policy;
+        }
+      }
+
+      await fsPromises.writeFile(
+        configPath,
+        JSON.stringify(config, null, 2) + "\n",
+        "utf-8",
+      );
+    }
+  } catch {
+    // Best-effort cleanup — file may not exist or may not be valid JSON
+  }
+}
+
+/**
  * Inject KSPEC_SESSION_ID into Gemini CLI environment.
  *
  * Writes to .gemini/.env in project root (auto-loaded by Gemini CLI).
@@ -2066,9 +2117,9 @@ export async function injectEnvForAdapter(
     case "claude-agent-acp":
     case "claude-code-acp":
       return injectClaudeCodeEnv(sessionId);
+    case "codex-acp":
+      return injectCodexEnv(sessionId);
     // Future harnesses can be added here:
-    // case "codex-acp":
-    //   return injectCodexEnv(sessionId);
     // case "gemini-acp":
     //   return injectGeminiEnv(sessionId);
     default:
@@ -2095,7 +2146,9 @@ export async function removeEnvForAdapter(
     case "claude-code-acp":
       await removeClaudeCodeEnv(previousValue);
       break;
-    // Future harnesses can be added here
+    case "codex-acp":
+      await removeCodexEnv(previousValue);
+      break;
   }
 }
 
