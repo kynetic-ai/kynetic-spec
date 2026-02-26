@@ -61234,7 +61234,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -61294,6 +61294,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-26T14:58:17.442Z
+  closed_reason: "Merged in PR #558. Deleted 869 lines of static analysis tests across 7 files. Added
+    behavioral replacements: close_reason assertions for session close paths, new
+    ac-session-close-error test using --max-failures 1, N/A annotations for ac-detect and
+    ac-remove-markers. All Codex review findings addressed."
 - _ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
   slugs:
     - task-lint-no-static-analysis-tests
