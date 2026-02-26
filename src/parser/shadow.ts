@@ -9,7 +9,7 @@
  * - Changes auto-commit to shadow branch
  */
 
-import { exec, execSync, spawn } from "node:child_process";
+import { exec, execSync, spawn, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { promisify } from "node:util";
@@ -20,6 +20,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const execAsync = promisify(exec);
+
+function runGitSync(
+  cwd: string,
+  args: string[],
+): { ok: boolean; stdout: string } {
+  const result = spawnSync("git", args, {
+    cwd,
+    stdio: ["ignore", "pipe", "pipe"],
+    encoding: "utf-8",
+  });
+
+  return {
+    ok: !result.error && result.status === 0,
+    stdout: (result.stdout || "").toString(),
+  };
+}
 
 // Import getVerboseMode for checking CLI --debug-shadow flag
 // We use a getter function to avoid issues with circular dependencies
@@ -150,32 +166,18 @@ export function isDebugMode(verboseFlag?: boolean): boolean {
  * Check if we're in a git repository
  */
 export async function isGitRepo(dir: string): Promise<boolean> {
-  try {
-    execSync("git rev-parse --git-dir", {
-      cwd: dir,
-      stdio: ["pipe", "pipe", "pipe"],
-      encoding: "utf-8",
-    });
-    return true;
-  } catch {
-    return false;
-  }
+  return runGitSync(dir, ["rev-parse", "--git-dir"]).ok;
 }
 
 /**
  * Get the git root directory
  */
 export function getGitRoot(dir: string): string | null {
-  try {
-    const result = execSync("git rev-parse --show-toplevel", {
-      cwd: dir,
-      stdio: ["pipe", "pipe", "pipe"],
-      encoding: "utf-8",
-    }).trim();
-    return result;
-  } catch {
+  const result = runGitSync(dir, ["rev-parse", "--show-toplevel"]);
+  if (!result.ok) {
     return null;
   }
+  return result.stdout.trim();
 }
 
 /**
@@ -185,15 +187,12 @@ export async function branchExists(
   dir: string,
   branchName: string,
 ): Promise<boolean> {
-  try {
-    execSync(`git show-ref --verify --quiet refs/heads/${branchName}`, {
-      cwd: dir,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
-    return true;
-  } catch {
-    return false;
-  }
+  return runGitSync(dir, [
+    "show-ref",
+    "--verify",
+    "--quiet",
+    `refs/heads/${branchName}`,
+  ]).ok;
 }
 
 /**
