@@ -61819,23 +61819,44 @@
   created_at: 2026-02-26T19:32:49.803Z
   notes: []
   todos: []
-- title: kspec agents generate should include package version in content hash (or add --force flag) so
+- _ulid: 01KJDQ139SP70H2H9GNBH8BM72
+  slugs: []
+  title: kspec agents generate should include package version in content hash (or add --force flag) so
     versio
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "kspec agents generate should include package version in content hash (or add --force
     flag) so version bumps during releases automatically trigger regeneration. Currently skips
     because content is identical, but the version comment in the header is stale. Workaround:
     manually edit the version line."
-  _ulid: 01KJDQ139SP70H2H9GNBH8BM72
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:50.617Z
+  notes: []
+  todos: []
+- title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
+    a --age
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
+    Either add a --agent flag (e.g. kspec setup --agent claude-code) to explicitly specify the agent
+    type, or detect based on installed tooling (~/.claude exists) rather than requiring runtime env
+    vars. Discovered while building containerized ralph runner — entrypoint bash script can't set
+    CLAUDECODE=1 globally because claude blocks nested sessions.
+  _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:50.617Z
+  created_at: 2026-02-26T19:32:51.412Z
   notes: []
   todos: []
