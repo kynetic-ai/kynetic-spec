@@ -436,7 +436,7 @@ features:
             then: queries the remote directly (e.g. git ls-remote) instead of relying on locally-fetched refs
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
   - _ulid: 01KF1V217AVWW2EFF87A6M5EGY
     slugs:
       - shadow-cli
