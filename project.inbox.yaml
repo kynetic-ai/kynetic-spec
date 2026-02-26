@@ -1024,11 +1024,3 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
-  - _ulid: 01KJDN04QWW61AC3MBPD2EQW8A
-    text: Include package.json version in kspec agents staleness hash so version bumps auto-trigger
-      regeneration without manual hash deletion.
-    created_at: 2026-02-26T18:57:22.172Z
-    tags:
-      - cli
-      - dx
-    added_by: "@claude"

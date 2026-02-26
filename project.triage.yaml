@@ -1535,11 +1535,11 @@ triage:
     reasoning: Web UI filter controls — nice to have, not blocking
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.229Z
-    updated_at: 2026-02-26T19:31:13.874Z
     override_reasoning: I want this
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:31:13.854Z
+    created_at: 2026-02-26T19:02:52.229Z
+    updated_at: 2026-02-26T19:31:13.874Z
   - _ulid: 01KJDNA73KN5GAXGA1DM1AWWSP
     inbox_ref: 01KJ4TETPNXN6GZ4MT53BRZ1KA
     item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
@@ -2059,10 +2059,11 @@ triage:
     inbox_ref: 01KJDN04QWW61AC3MBPD2EQW8A
     item_snapshot: Include package.json version in kspec agents staleness hash so version bumps
       auto-trigger regeneration without manual hash deletion.
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — version in staleness hash
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.473Z
-    updated_at: 2026-02-26T19:02:53.486Z
+    updated_at: 2026-02-26T19:32:45.935Z
+    acted_at: 2026-02-26T19:32:45.916Z
