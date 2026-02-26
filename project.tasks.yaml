@@ -60471,7 +60471,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -60481,9 +60481,10 @@
     - daemon
     - e2e
   vcs_refs: []
-  session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
+  session_id: null
   created_at: 2026-02-26T00:28:37.381Z
   started_at: 2026-02-26T01:32:04.659Z
+  submitted_at: 2026-02-26T01:49:03.254Z
   notes:
     - _ulid: 01KJBT52BPCM4H5QVHEBR5WJTT
       created_at: 2026-02-26T01:48:57.590Z
@@ -60496,9 +60497,26 @@
         pass. E2E tests require bun runtime (same as all other E2E tests) — not runnable in current
         sandbox but structurally correct.
       supersedes: null
+    - _ulid: 01KJBV4VCA11X39BPYZZ3E3SJC
+      created_at: 2026-02-26T02:06:19.019Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1] Review findings: Two MUST-FIX issues found:
+
+
+        1. kspec validate coverage regression: scanTestCoverage() only scans rootDir/tests/ but new
+        E2E tests are in packages/web-ui/tests/e2e/. This causes @api-contract ac-2, ac-3, ac-5,
+        ac-6, ac-7 to show as uncovered in validate output, regressing from main which showed only
+        ac-31, ac-33 uncovered. Fix: extend scanTestCoverage() to also scan
+        packages/web-ui/tests/e2e/ (or add a stub annotation file in tests/).
+
+
+        2. check-unresolved-comments CI gate failing: 7 inline review threads from previous review
+        remain open on GitHub. Code was fixed in commit a298a9d5 but threads must be resolved.
+        Worker must resolve all review comment threads on PR #543.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T01:49:03.254Z
 - _ulid: 01KJBNJ1DSH5BZXHC12V9ZSWMX
   slugs:
     - task-e2e-daemon-items-api
