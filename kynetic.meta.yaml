@@ -6737,6 +6737,19 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDQ14VW0MD9YQ077ZM45MVQ
+    type: question
+    content: >-
+      [spec-gap] kspec meta set convention: add --update-rule and --remove-rule flags. Currently the
+      only way to fix a rule is to delete the entire convention and recreate it. Surfaced during
+      skill CLI lookups task when codex review caught a wording issue in one rule.
+
+
+      Reasoning: Convention --update-rule — DX improvement, workaround is delete+recreate
+    created_at: 2026-02-26T19:32:52.221Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
