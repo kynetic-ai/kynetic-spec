@@ -58,7 +58,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    */
   "codex-acp": {
     command: "npx",
-    args: ["codex-acp"],
+    args: ["@zed-industries/codex-acp"],
     shell: process.platform === "win32",
     description: "Codex agent via ACP protocol",
     autoApproveArgs: [
