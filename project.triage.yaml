@@ -1760,13 +1760,14 @@ triage:
       parallel, results appear under the wrong header. Fix: include tool summary (e.g. filename) in
       the completed/failed status line so each result is self-identifying regardless of
       interleaving."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Ralph renderer parallel tool output — cosmetic, not blocking
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.755Z
-    updated_at: 2026-02-26T19:02:52.775Z
+    updated_at: 2026-02-26T19:32:54.444Z
+    acted_at: 2026-02-26T19:32:54.425Z
   - _ulid: 01KJDNA7KYG668K3QAEKADJZV7
     inbox_ref: 01KJ8NDTW6M80T7T07SACEP7F8
     item_snapshot: "Tests fail when run inside ralph loop due to environment contamination: (1)
@@ -1783,10 +1784,10 @@ triage:
     override_reasoning: Should investigate this cause it might be fixed, but if not then def promote
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:21:22.606Z
-    created_at: 2026-02-26T19:02:52.798Z
-    updated_at: 2026-02-26T19:32:54.322Z
     acted_at: 2026-02-26T19:32:54.305Z
     result_ref: "@01KJDQ16"
+    created_at: 2026-02-26T19:02:52.798Z
+    updated_at: 2026-02-26T19:32:54.322Z
   - _ulid: 01KJDNA7N6V4CR5HZTM52QYD3Y
     inbox_ref: 01KJ8X526K52BVBGYENJKFFSM8
     item_snapshot: "Session event log tool-level filtering: kspec session log show <id> --tool Read
