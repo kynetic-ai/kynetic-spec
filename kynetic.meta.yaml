@@ -6768,6 +6768,23 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDXCB7E87A4EYJKK009VQ2K
+    type: success
+    content: Well-decomposed task descriptions with exact files and verification criteria make
+      implementation fast — the per-adapter-auto-approve task took one focused session from start to
+      merged PR.
+    created_at: 2026-02-26T21:23:50.639Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJDXCBBHHBBKXDKV5Z74BX7B
+    type: success
+    content: MOCK_ACP_VERIFY_ARGS_FILE pattern extends the existing env var verification pattern cleanly
+      — behavioral test infrastructure for ACP agent spawning is now solid.
+    created_at: 2026-02-26T21:23:50.769Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
