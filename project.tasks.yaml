@@ -61697,7 +61697,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T16:36:49.470Z
