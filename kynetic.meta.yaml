@@ -6651,6 +6651,22 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDFFJGEQ0R6JST5PR2JZVN4
+    type: success
+    content: Dual review pattern (internal plan review + /codex review-plan) catches complementary
+      issues — format vs substance. Worth standardizing for all plan imports.
+    created_at: 2026-02-26T17:20:56.334Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJDFFJK5FZ5DBANYTJEVH6Q9
+    type: success
+    content: Shadow branch merge driver handles complex YAML conflicts (project.tasks.yaml with 38
+      divergent commits) automatically during rebase — reliable for ralph parallel sessions.
+    created_at: 2026-02-26T17:20:56.421Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
