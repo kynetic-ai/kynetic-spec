@@ -211,12 +211,8 @@ function checkNodeModules() {
  * Check if dist/ exists and has the CLI
  */
 function checkBuild() {
-  const distCli = path.join(projectRoot, 'dist', 'cli', 'index.js');
-  if (!fs.existsSync(distCli)) {
-    return { built: false, reason: 'dist/cli/index.js not found' };
-  }
-
-  return { built: true };
+  // Always rebuild — it's fast and prevents stale dist/ issues
+  return { built: false, reason: 'always rebuild to ensure dist/ matches source' };
 }
 
 /**
