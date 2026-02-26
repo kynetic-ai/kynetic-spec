@@ -61340,7 +61340,7 @@
   spec_ref: "@triage-daemon-api"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -61351,6 +61351,7 @@
   vcs_refs: []
   created_at: 2026-02-26T11:42:09.349Z
   started_at: 2026-02-26T11:48:57.047Z
+  submitted_at: 2026-02-26T11:54:12.777Z
   notes:
     - _ulid: 01KJCWETVNFAKFMQ8H3X2NFVHE
       created_at: 2026-02-26T11:48:29.173Z
@@ -61372,7 +61373,9 @@
       supersedes: null
   todos: []
   automation: manual_only
-  submitted_at: 2026-02-26T11:54:12.777Z
+  completed_at: 2026-02-26T12:07:17.141Z
+  closed_reason: "Merged in PR #552. Bootstrap now always rebuilds dist/ to prevent stale code. Root
+    cause was checkBuild() only checking existence, not freshness."
 - _ulid: 01KJCW71YTXH4JG06QN5CKP5FJ
   slugs:
     - task-triage-e2e-behavioral-coverage
