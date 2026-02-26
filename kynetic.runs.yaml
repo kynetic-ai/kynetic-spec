@@ -6135,7 +6135,7 @@ runs:
   - _ulid: 01KJDE3W7TBDMJ42XZAMNKZW2G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-26T16:57:04.507Z
     step_results:
@@ -6159,5 +6159,27 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T16:57:18.899Z
-        completed_at: 2026-02-26T16:57:18.899Z
+        completed_at: 2026-02-26T16:57:28.006Z
+        notes: >-
+          Friction points:
+
+          1. kspec shadow repair failed with "spawn /bin/sh ENOENT" — had to manually recreate
+          worktree with git worktree add. The repair command should handle this gracefully on
+          systems without /bin/sh (fish shell).
+
+          2. .kspec-agents-hash conflict during rebase wasn't handled by merge driver — it's a
+          simple hash file that should auto-resolve (take latest).
+
+          3. kspec task set has no --description flag — had to discover kspec task patch --data for
+          enriching task descriptions. This is unintuitive.
+
+          4. The plan import generates generic task descriptions ("See plan...") that aren't useful
+          for autonomous agents — tasks need manual enrichment every time.
+
+          5. Codex auto-approve flags required separate research — this info should be documented
+          somewhere accessible (adapter registry or docs).
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T16:57:28.006Z
+        completed_at: 2026-02-26T16:57:28.006Z
     initiated_by: "@claude"
