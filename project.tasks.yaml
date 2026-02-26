@@ -60984,8 +60984,8 @@
   title: Add CI lint to prevent static analysis test pattern
   type: task
   description: >-
-    Add a vitest test (or script) that fails if any test file reads source code files — the static
-    analysis anti-pattern this project is migrating away from.
+    Add a vitest test that fails if any test file reads source code files — the static analysis
+    anti-pattern this project is migrating away from.
 
 
     The pattern to detect: test files under tests/ that use readFile/readFileSync on paths
@@ -60997,36 +60997,26 @@
 
     1. Globs all tests/**/*.test.ts files
 
-    2. Parses each file looking for readFile/readFileSync calls where the path argument contains
-    src/ (using simple regex or AST)
+    2. Parses each file looking for readFile/readFileSync calls where the path argument references
+    src/ (using simple regex)
 
-    3. Has an allowlist for known exceptions: absence tests that check removed code stays removed
-    (ralph/end-loop.test.ts lines 348-372, ralph/session-budget-integration.test.ts lines 293-339).
-    These are the ONE case where reading source to check it does NOT contain something is the right
-    tool.
-
-    4. Fails with a clear error message: 'Test file X reads source file Y. Tests should exercise
+    3. Fails with a clear error message: "Test file X reads source file Y. Tests should exercise
     behavior (import functions, call CLI, make HTTP requests) not scan source code for string
-    patterns.'
+    patterns."
 
 
-    The allowlist should be a const array at the top of the file so it's easy to see what's exempted
-    and why.
+    No allowlist needed — there are no valid exceptions.
 
 
-    This should run as part of npm test so it catches new static analysis tests before they're
-    merged.
+    This should run as part of npm test so it catches new static analysis tests before they merge.
 
 
     Note: The project uses Biome (not ESLint), and Biome doesn't support custom rules. A vitest lint
-    test is the right approach — it's already the pattern used for other convention enforcement (see
+    test is the right approach — it's the same pattern used for other convention enforcement (see
     tests/convention-validation.test.ts).
 
 
-    IMPORTANT: This task should be done AFTER the E2E migration tasks are complete, or the lint will
-    fail on all the existing static analysis files. Add a depends_on to the deletion task, or
-    include a generous allowlist that shrinks as migration tasks complete. The simpler approach:
-    just do this task last.
+    This task is blocked on all E2E migration and deletion tasks completing first.
   spec_ref: null
   meta_ref: null
   plan_ref: null
