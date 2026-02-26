@@ -61921,24 +61921,43 @@
   created_at: 2026-02-26T19:32:54.517Z
   notes: []
   todos: []
-- title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
+- _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
+  slugs: []
+  title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
     hanging o
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool
     call hanging on stdin), ralph has no mechanism to detect or recover. A configurable
     per-iteration timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would
     prevent indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't
     prevent the kspec batch stdin hang.
-  _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:55.301Z
+  notes: []
+  todos: []
+- title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
+    with a cle
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
+    fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
+    with empty string arg.
+  _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:55.301Z
+  created_at: 2026-02-26T19:32:56.309Z
   notes: []
   todos: []
