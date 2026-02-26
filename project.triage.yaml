@@ -1963,12 +1963,17 @@ triage:
     item_snapshot: "Plan import: generate richer task descriptions from Implementation Notes section —
       include file paths, what to change, verification steps instead of generic 'See plan...' text"
     status: triaged
-    action: defer
+    action: spec-gap
     reasoning: Plan import richer descriptions — improvement, not blocking
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.347Z
-    updated_at: 2026-02-26T19:02:53.362Z
+    updated_at: 2026-02-26T19:12:37.017Z
+    override_reasoning: It's not blocking but is something that I've found causes pain when doing plan
+      imports as it often takes multiple passes to ensure the resulting tasks are standalone. So I
+      would like to properly handle this.
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:12:37.001Z
   - _ulid: 01KJDNA863W9TWRQP1FAWQ5NGB
     inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
     item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
@@ -1978,13 +1983,13 @@ triage:
     reasoning: Merge driver for hash file — low frequency conflict, manual resolution works
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.379Z
-    updated_at: 2026-02-26T19:10:50.630Z
     override_reasoning: Since this is meant to track what is in main but is really when it was last
       generated, it is a bit weird and could be a source of conflicts as work is done across many
       instances of the repo. So we'd want our merge driver to handle it in a consistent way.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:10:50.608Z
+    created_at: 2026-02-26T19:02:53.379Z
+    updated_at: 2026-02-26T19:10:50.630Z
   - _ulid: 01KJDNA8723DJ93CK1F5EBEX44
     inbox_ref: 01KJDFFJFXQWX51PQEGAPJ09AC
     item_snapshot: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning
