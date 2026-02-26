@@ -9,11 +9,16 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import {
+  detectAgentFromEnv,
+  type AgentType,
+  type AgentConfidence,
+} from "./agent-detection.js";
 
 /**
  * Detected agent type
  */
-export type AgentType = "claude-code" | "cursor" | "windsurf" | "unknown";
+export type { AgentType } from "./agent-detection.js";
 
 /**
  * Setup status information
@@ -22,7 +27,7 @@ export type AgentType = "claude-code" | "cursor" | "windsurf" | "unknown";
 export interface SetupStatus {
   agent: {
     detected: AgentType;
-    confidence: "high" | "medium" | "low";
+    confidence: AgentConfidence;
   };
   hooks: {
     promptCheck: boolean;
@@ -70,19 +75,11 @@ const GUARD_SCRIPTS: Record<string, boolean> = {
  */
 export async function detectAgent(): Promise<{
   type: AgentType;
-  confidence: "high" | "medium" | "low";
+  confidence: AgentConfidence;
 }> {
-  // Check environment variables for agent hints
-  const envHints = {
-    CLAUDE_CODE: "claude-code",
-    CURSOR_TRACE_ID: "cursor",
-    WINDSURF_SESSION: "windsurf",
-  } as const;
-
-  for (const [envVar, agent] of Object.entries(envHints)) {
-    if (process.env[envVar]) {
-      return { type: agent as AgentType, confidence: "high" };
-    }
+  const detected = detectAgentFromEnv();
+  if (detected.type !== "unknown") {
+    return { type: detected.type, confidence: detected.confidence };
   }
 
   // Check for Claude Code by looking for .claude directory
