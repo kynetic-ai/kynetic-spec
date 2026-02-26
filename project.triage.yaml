@@ -1939,13 +1939,15 @@ triage:
     inbox_ref: 01KJCTQGQ6VA5DNT6NSGVZ5V99
     item_snapshot: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate
       slug. Pre-existing issue across main.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug: @observations slug ambiguity — validate reports 6 errors. Data integrity."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.159Z
-    updated_at: 2026-02-26T19:02:53.173Z
+    updated_at: 2026-02-26T19:32:49.420Z
+    acted_at: 2026-02-26T19:32:49.406Z
+    result_ref: "@01KJDQ11"
   - _ulid: 01KJDNA805PBMJDXBWG85732Y5
     inbox_ref: 01KJCTQGRDZYNYRD66RHV5GGMX
     item_snapshot: Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST
@@ -1955,10 +1957,10 @@ triage:
     reasoning: Triage API spec PUT vs POST mismatch — spec needs updating to match implementation
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.189Z
-    updated_at: 2026-02-26T19:32:48.649Z
     acted_at: 2026-02-26T19:32:48.633Z
     result_ref: "@01KJDQ11"
+    created_at: 2026-02-26T19:02:53.189Z
+    updated_at: 2026-02-26T19:32:48.649Z
   - _ulid: 01KJDNA8146X69M9P5FMBSGXKK
     inbox_ref: 01KJCTQGSAZ8H0NZT9DR5628NX
     item_snapshot: Triage ac-5 says sets result_ref but delete action may not produce one. Verify

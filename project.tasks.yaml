@@ -61764,21 +61764,39 @@
   created_at: 2026-02-26T19:32:46.139Z
   notes: []
   todos: []
-- title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
+- _ulid: 01KJDQ107WAD90WTAVFFQDW0B1
+  slugs: []
+  title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
     workarou
+  type: task
+  description: kspec task patch appears to hang indefinitely — had to kill and use task set + task
+    note as workaround
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:47.484Z
+  notes: []
+  todos: []
+- title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
+    Pre-existing "
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: kspec task patch appears to hang indefinitely — had to kill and use task set + task
-    note as workaround
-  _ulid: 01KJDQ107WAD90WTAVFFQDW0B1
+  description: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
+    Pre-existing issue across main.
+  _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:47.484Z
+  created_at: 2026-02-26T19:32:48.731Z
   notes: []
   todos: []
