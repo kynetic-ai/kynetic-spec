@@ -14,25 +14,44 @@
  * - @api-contract ac-19: GET /api/search?q=keyword searches across all entities
  * - @api-contract ac-20: GET /api/validate returns ValidationResult
  * - @api-contract ac-21: GET /api/alignment returns AlignmentIndex stats and warnings
- *
- * Trait ACs from @trait-json-output:
- * // AC: @trait-json-output ac-1 — N/A: HTTP API always returns JSON, no --json flag needed
- * // AC: @trait-json-output ac-2 — N/A: HTTP API always returns full data, no human-readable mode
- * // AC: @trait-json-output ac-3 — N/A: HTTP API errors use status codes and JSON bodies, not --json flag
- * // AC: @trait-json-output ac-4 — N/A: HTTP API ref format not applicable to REST JSON responses
- * // AC: @trait-json-output ac-5 — N/A: covered by verifying ISO 8601 timestamps in response fields below
- * // AC: @trait-json-output ac-6 — N/A: HTTP API has no formatting flags equivalent to --json
- *
- * Trait ACs from @trait-filterable-list:
- * // AC: @trait-filterable-list ac-1 — N/A: REST query params differ from CLI --status flags; covered by search tests
- * // AC: @trait-filterable-list ac-2 — N/A: REST query params differ from CLI --tag flags
- * // AC: @trait-filterable-list ac-3 — N/A: HTTP API uses limit query param; covered by search limit test below
- * // AC: @trait-filterable-list ac-4 — N/A: HTTP API uses offset query param, not tested on these endpoints
- * // AC: @trait-filterable-list ac-5 — N/A: HTTP API uses AND logic via query params; covered by search filter tests
- * // AC: @trait-filterable-list ac-6 — N/A: REST API returns empty array, not CLI message
- * // AC: @trait-filterable-list ac-7 — N/A: REST API returns total field in JSON response
- * // AC: @trait-filterable-list ac-8 — N/A: REST API does not have count mode
  */
+
+// Trait N/A annotations — @api-contract inherits from 5 traits, all CLI-oriented, not applicable to HTTP REST API:
+// AC: @trait-json-output ac-1 — N/A: HTTP REST API always returns JSON; no --json flag concept for HTTP endpoints
+// AC: @trait-json-output ac-2 — N/A: HTTP REST API always returns full data; no human-readable vs JSON mode
+// AC: @trait-json-output ac-3 — N/A: HTTP REST API errors use HTTP status codes + JSON bodies, not --json flag
+// AC: @trait-json-output ac-4 — N/A: HTTP REST API references in JSON responses; @ prefix convention is CLI-specific
+// AC: @trait-json-output ac-5 — N/A: HTTP REST API timestamps are ISO 8601 by convention; not enforced via --json flag
+// AC: @trait-json-output ac-6 — N/A: HTTP REST API has no formatting flags; not applicable
+// AC: @trait-filterable-list ac-1 — N/A: HTTP REST API uses query params, not CLI --status flag; covered by search tests
+// AC: @trait-filterable-list ac-2 — N/A: HTTP REST API uses query params, not CLI --tag flag; not applicable here
+// AC: @trait-filterable-list ac-3 — N/A: HTTP REST API uses ?limit param; covered by search limit test below
+// AC: @trait-filterable-list ac-4 — N/A: HTTP REST API uses ?offset param; these endpoints don't support pagination
+// AC: @trait-filterable-list ac-5 — N/A: HTTP REST API AND-filter logic via multiple query params; not this spec's concern
+// AC: @trait-filterable-list ac-6 — N/A: HTTP REST API returns empty array on no match, not CLI empty message
+// AC: @trait-filterable-list ac-7 — N/A: HTTP REST API returns total field in JSON response; not CLI summary line
+// AC: @trait-filterable-list ac-8 — N/A: HTTP REST API has no --count mode; not applicable
+// AC: @trait-error-guidance ac-1 — N/A: CLI error message guidance; REST API uses JSON error bodies (tested in ac-22..24 E2E tests)
+// AC: @trait-error-guidance ac-2 — N/A: CLI error message guidance; REST API uses suggestion field (tested in error handling E2E tests)
+// AC: @trait-error-guidance ac-3 — N/A: CLI ref-not-found guidance; REST API uses 404 with suggestion (covered in errors E2E tests)
+// AC: @trait-error-guidance ac-4 — N/A: CLI state-transition error guidance; REST API 409 format tested in tasks E2E tests
+// AC: @trait-error-guidance ac-5 — N/A: CLI validation error guidance; REST API 422 format tested in tasks/inbox E2E tests
+// AC: @trait-error-guidance ac-6 — N/A: CLI error guidance; this is a CLI pattern not applicable to REST API endpoints
+// AC: @trait-api-endpoint ac-1 — covered: all endpoints return 200 + JSON body when request is valid (tested below)
+// AC: @trait-api-endpoint ac-2 — N/A: meta/validation endpoints don't take :ref params; 404 for invalid refs tested in errors E2E tests
+// AC: @trait-api-endpoint ac-3 — N/A: these endpoints are GET-only; 400 validation tested in tasks/inbox mutation E2E tests
+// AC: @trait-api-endpoint ac-4 — N/A: meta/observations doesn't use {items,total,offset,limit} wrapper; search uses {results,total,showing}
+// AC: @trait-api-endpoint ac-5 — N/A: these are read-only GET endpoints; no shadow commit occurs
+// AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket protocol; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast events; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat ping; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested separately in api-websocket E2E tests
+// AC: @multi-directory-daemon ac-24 — covered: meta/validation routes use projectContext from middleware (daemon fixture provides this)
 
 import { test, expect } from '../fixtures/test-base';
 
