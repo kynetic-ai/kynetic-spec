@@ -2019,21 +2019,24 @@ export async function removeCodexEnv(
     const content = await fsPromises.readFile(configPath, "utf-8");
     const config = parseTOML(content) as Record<string, unknown>;
 
-    const policy = config.shell_environment_policy;
-    if (policy && typeof policy === "object" && policy.set && typeof policy.set === "object") {
-      if (previousValue) {
-        (policy.set as Record<string, string>).KSPEC_SESSION_ID = previousValue;
-      } else {
-        delete (policy.set as Record<string, unknown>).KSPEC_SESSION_ID;
+    const rawPolicy = config.shell_environment_policy;
+    if (rawPolicy && typeof rawPolicy === "object") {
+      const policy = rawPolicy as Record<string, unknown>;
+      if (policy.set && typeof policy.set === "object") {
+        if (previousValue) {
+          (policy.set as Record<string, string>).KSPEC_SESSION_ID = previousValue;
+        } else {
+          delete (policy.set as Record<string, unknown>).KSPEC_SESSION_ID;
 
-        // Remove set section entirely if empty
-        if (Object.keys(policy.set as Record<string, unknown>).length === 0) {
-          delete policy.set;
-        }
+          // Remove set section entirely if empty
+          if (Object.keys(policy.set as Record<string, unknown>).length === 0) {
+            delete policy.set;
+          }
 
-        // Remove shell_environment_policy if empty
-        if (Object.keys(policy as Record<string, unknown>).length === 0) {
-          delete config.shell_environment_policy;
+          // Remove shell_environment_policy if empty
+          if (Object.keys(policy).length === 0) {
+            delete config.shell_environment_policy;
+          }
         }
       }
 
