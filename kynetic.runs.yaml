@@ -6238,7 +6238,7 @@ runs:
   - _ulid: 01KJDX8T0R3BNPK4QFE6C7VPXM
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-26T21:21:54.712Z
     step_results:
@@ -6292,5 +6292,16 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-26T21:22:33.905Z
-        completed_at: 2026-02-26T21:22:33.905Z
+        completed_at: 2026-02-26T21:22:40.234Z
+        notes: >-
+          Proposed improvements:
+
+          1. Handle EPIPE in ACP framing layer (small scope) — In src/acp/framing.ts, the send()
+          method at line 268 should catch EPIPE errors on stdout.write() and treat them as
+          connection-closed rather than throwing uncaught exceptions. This would prevent test
+          cleanup issues and make production shutdown cleaner too. Affects framing.ts only.
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-26T21:22:40.234Z
+        completed_at: 2026-02-26T21:22:40.234Z
     initiated_by: "@claude"
