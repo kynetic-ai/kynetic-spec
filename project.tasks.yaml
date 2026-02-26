@@ -62431,7 +62431,73 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:33:03.004Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQB2J9SKA1QNC3SG3NN8WF
+      created_at: 2026-02-26T19:38:17.546Z
+      author: "@claude"
+      content: >-
+        ENRICHMENT — Standalone context for this task:
+
+
+        **What**: Web UI pages lose their filter state when the browser refreshes. For example,
+        filtering tasks by status=in_progress or triage by tag=cli is lost on reload. Filter state
+        should be persisted in URL query parameters so that refreshing preserves the view, and URLs
+        are shareable/bookmarkable.
+
+
+        **Where**: The tasks page (`packages/web-ui/src/routes/tasks/+page.svelte`) already
+        partially implements URL-based filters — it reads from `$page.url.searchParams` (line 39-47)
+        via the `filterParams` derived value. However, the triage page
+        (`packages/web-ui/src/routes/triage/+page.svelte`) uses local `$state` variables
+        (`filterTag`, `filterStatus` at lines 43-44) that are NOT synced to URL params. Other list
+        pages (items, inbox) likely have the same issue.
+
+
+        Key files to update:
+
+        - `packages/web-ui/src/routes/triage/+page.svelte` — filterTag and filterStatus need URL
+        param sync
+
+        - `packages/web-ui/src/routes/items/+page.svelte` — check if filters use URL params
+
+        - Any other list/filter pages under `packages/web-ui/src/routes/`
+
+
+        **How**: Follow the pattern already established in the tasks page:
+
+        1. Read initial filter values from `$page.url.searchParams` (from `$app/stores`)
+
+        2. When a filter changes, use `goto()` (from `$app/navigation`) to update URL params without
+        a full page reload: `goto(\`?status=\${filterStatus}&tag=\${filterTag}\`, { replaceState:
+        true, keepFocus: true })`
+
+        3. Use `$derived` to compute filter values from URL params (like tasks page does)
+
+        4. This approach gives: URL persistence, back/forward navigation, shareable links
+
+
+        For the triage page specifically:
+
+        - Replace `let filterTag = $state('')` with reading from `$page.url.searchParams.get('tag')`
+
+        - Replace `let filterStatus = $state('all')` with reading from
+        `$page.url.searchParams.get('status')`
+
+        - Add `goto()` calls when filters change
+
+
+        **Done when**:
+
+        - All list/filter pages read initial state from URL query params
+
+        - Changing a filter updates the URL without full page reload
+
+        - Refreshing the page preserves filter state
+
+        - Browser back/forward navigates between filter states
+
+        - The triage page URL shows filters like `?status=untriaged&tag=cli`
+      supersedes: null
   todos: []
 - _ulid: 01KJDQ1G6HBSJRXVSWEWQ9W9E4
   slugs: []
