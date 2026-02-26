@@ -6094,6 +6094,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-26T15:28:13.967Z
+    completed_at: 2026-02-26T15:29:19.669Z
     step_results:
       - step_index: 0
         status: completed
@@ -6131,4 +6132,11 @@ runs:
         notes: "Captured friction observation 01KJD933: PR-merge-mid-session branch switch causing lost Edit
           tool changes. No other items to capture."
     initiated_by: "@claude"
-    completed_at: 2026-02-26T15:29:19.669Z
+  - _ulid: 01KJDE3W7TBDMJ42XZAMNKZW2G
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-26T16:57:04.507Z
+    step_results: []
+    initiated_by: "@claude"
