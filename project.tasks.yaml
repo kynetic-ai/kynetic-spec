@@ -61840,8 +61840,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:32:48.731Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQTMT800GZ7QRMP1B1TQV4
+      created_at: 2026-02-26T19:46:47.753Z
+      author: "@claude"
+      content: "Infra: slug namespace collision fix. No user-facing behavior change. Clear scope from
+        enrichment."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
@@ -61871,8 +61878,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:32:49.803Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQTV8A3ATSFX2C5HVBBV2T
+      created_at: 2026-02-26T19:46:54.346Z
+      author: "@claude"
+      content: "Infra: Add --delete-branch to pr-review-merge workflow guidance. Workflow/meta YAML
+        change. Clear scope."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
@@ -62043,8 +62057,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:32:53.607Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQV1M6DXPCZAW1F8YNY2FR
+      created_at: 2026-02-26T19:47:00.870Z
+      author: "@claude"
+      content: "Infra: Testing env contamination fix. Strip KSPEC_RALPH_SESSION and KSPEC_SESSION_ID in
+        test helpers. Clear scope."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
@@ -62106,8 +62127,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:32:54.517Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQV80MWHBKZ4ZKYV1YNJC2
+      created_at: 2026-02-26T19:47:07.412Z
+      author: "@claude"
+      content: "Infra: Improve error message for shadow branch index inconsistency. Internal fix, no spec
+        needed."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
