@@ -46928,6 +46928,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #552. Bootstrap now always rebuilds dist/ to prevent stale code. Root cause was checkBuild() only checking existence, not freshness."
   depends_on: []
   context: []
   priority: 3
@@ -46938,6 +46939,7 @@
   created_at: 2026-02-26T11:42:09.349Z
   started_at: 2026-02-26T11:48:57.047Z
   submitted_at: 2026-02-26T11:54:12.777Z
+  completed_at: 2026-02-26T12:07:17.141Z
   notes:
     - _ulid: 01KJCWETVNFAKFMQ8H3X2NFVHE
       created_at: 2026-02-26T11:48:29.173Z
@@ -46951,8 +46953,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-02-26T12:07:17.141Z
-  closed_reason: "Merged in PR #552. Bootstrap now always rebuilds dist/ to prevent stale code. Root cause was checkBuild() only checking existence, not freshness."
 - _ulid: 01KJCW71YTXH4JG06QN5CKP5FJ
   slugs:
     - task-triage-e2e-behavioral-coverage
@@ -46995,4 +46995,67 @@
   vcs_refs: []
   created_at: 2026-02-26T13:07:52.613Z
   notes: []
+  todos: []
+- _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
+  slugs:
+    - implement-per-role-adapter-selection-for-ralph-loo
+  title: Implement Per-role adapter selection for ralph loop
+  type: task
+  spec_ref: "@ralph-per-role-adapters"
+  plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T16:36:48.749Z
+  notes:
+    - _ulid: 01KJDCYRZDGNBX74NF2DFSCEEW
+      created_at: 2026-02-26T16:36:48.749Z
+      author: "@claude"
+      content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
+  todos: []
+- _ulid: 01KJDCYSATR96J7FMFSGTG51GQ
+  slugs:
+    - implement-per-adapter-auto-approve-arguments
+  title: Implement Per-adapter auto-approve arguments
+  type: task
+  spec_ref: "@ralph-adapter-auto-approve"
+  plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T16:36:49.114Z
+  notes:
+    - _ulid: 01KJDCYSAT8CGF4D804VEAEECD
+      created_at: 2026-02-26T16:36:49.114Z
+      author: "@claude"
+      content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
+  todos: []
+- title: Implement Register codex-acp in adapter registry
+  type: task
+  spec_ref: "@codex-acp-adapter-registration"
+  plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
+  priority: 3
+  slugs:
+    - implement-register-codex-acp-in-adapter-registry
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KJDCYSNYVCKH2VNCNC9J1Q9Q
+      created_at: 2026-02-26T16:36:49.470Z
+      author: "@claude"
+      content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
+  _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T16:36:49.470Z
   todos: []
