@@ -6091,7 +6091,7 @@ runs:
   - _ulid: 01KJD916MEQNTG0EJWJZFN55C4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-26T15:28:13.967Z
     step_results:
@@ -6107,5 +6107,17 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T15:28:54.742Z
-        completed_at: 2026-02-26T15:28:54.742Z
+        completed_at: 2026-02-26T15:29:07.549Z
+        notes: "HIGH CONFIDENCE friction: When a PR is merged by the review subagent while the worker agent
+          is still editing files in that same branch, the local branch switches to main and all
+          pending Edit tool changes are silently lost. This caused significant rework this session
+          (re-applying all triage.spec.ts edits on a new branch). Pattern: review subagent and
+          worker agent operate concurrently on the same branch, creating a race condition. HIGH
+          CONFIDENCE success: Real-time WebSocket E2E test pattern of observing DOM state change
+          (progress count) rather than raw WebSocket messages proved resilient — decoupled from
+          WebSocket implementation details, tests actual user-visible behavior."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T15:29:07.549Z
+        completed_at: 2026-02-26T15:29:07.549Z
     initiated_by: "@claude"
