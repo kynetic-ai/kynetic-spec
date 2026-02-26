@@ -1916,13 +1916,14 @@ triage:
       --summary. Parse events.jsonl to show: iteration count, tasks started/completed/blocked, PRs
       created/merged, total duration, exit reason. Currently requires custom python scripts to
       extract from 14k+ line event logs."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Session stats command — useful but not blocking, custom scripts work for now
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.100Z
-    updated_at: 2026-02-26T19:02:53.113Z
+    updated_at: 2026-02-26T19:32:49.725Z
+    acted_at: 2026-02-26T19:32:49.709Z
   - _ulid: 01KJDNA7YARNCEYQCH7RGM6DGT
     inbox_ref: 01KJBQ62SW8AJYGQJVC2Q7CMCF
     item_snapshot: "@cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
@@ -1933,10 +1934,10 @@ triage:
     reasoning: "@cmd-validate spec is stale — missing 6 flags already in code. Spec drift."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.130Z
-    updated_at: 2026-02-26T19:32:49.618Z
     acted_at: 2026-02-26T19:32:49.604Z
     result_ref: "@01KJDQ12"
+    created_at: 2026-02-26T19:02:53.130Z
+    updated_at: 2026-02-26T19:32:49.618Z
   - _ulid: 01KJDNA7Z7MEB2A756AGPH3WCX
     inbox_ref: 01KJCTQGQ6VA5DNT6NSGVZ5V99
     item_snapshot: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate
