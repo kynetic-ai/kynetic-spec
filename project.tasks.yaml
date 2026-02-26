@@ -62388,6 +62388,7 @@
         scope from enrichment."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
   slugs: []
   title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
