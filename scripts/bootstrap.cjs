@@ -118,23 +118,32 @@ function checkKspecCli() {
     return { available: true, linked: false, version: result.output.trim(), reason: 'local dist not built yet' };
   }
 
-  // Resolve the kspec binary path and compare to local dist
-  // Use command -v (POSIX) instead of which (not available everywhere)
-  const whichResult = run('command -v kspec', { silent: true });
-  if (whichResult.success) {
+  // Check if the kspec binary is a symlink pointing to our local dist.
+  // npm link creates: <global-bin>/kspec -> <global-lib>/node_modules/.bin/kspec -> our dist/cli/index.js
+  // We follow the symlink chain with realpathSync and compare to our dist.
+  // This works cross-platform (Node's fs handles symlinks on all OSes).
+  const prefixResult = run('npm prefix -g', { silent: true });
+  if (prefixResult.success) {
+    const globalPrefix = prefixResult.output.trim();
+    // npm puts bins in <prefix>/bin on Unix, <prefix> on Windows
+    const binName = process.platform === 'win32' ? 'kspec.cmd' : 'kspec';
+    const binDir = process.platform === 'win32' ? globalPrefix : path.join(globalPrefix, 'bin');
+    const globalBin = path.join(binDir, binName);
+
     try {
-      const resolvedBin = fs.realpathSync(whichResult.output.trim());
-      const resolvedDist = fs.realpathSync(distCli);
-      if (resolvedBin !== resolvedDist) {
-        return { available: true, linked: false, version: result.output.trim(), reason: 'kspec is globally installed but not linked to local build' };
+      if (fs.existsSync(globalBin)) {
+        const resolvedBin = fs.realpathSync(globalBin);
+        const resolvedDist = fs.realpathSync(distCli);
+        if (resolvedBin === resolvedDist) {
+          return { available: true, linked: true, version: result.output.trim() };
+        }
       }
     } catch {
-      return { available: true, linked: false, version: result.output.trim(), reason: 'could not verify link target' };
+      // Symlink resolution failed — fall through to not linked
     }
-  } else {
-    // Can't resolve path — assume not linked to be safe
-    return { available: true, linked: false, version: result.output.trim(), reason: 'could not resolve kspec path' };
   }
+
+  return { available: true, linked: false, version: result.output.trim(), reason: 'kspec is not npm-linked to local project' };
 
   return { available: true, linked: true, version: result.output.trim() };
 }
