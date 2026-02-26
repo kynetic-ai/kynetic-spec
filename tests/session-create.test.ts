@@ -12,6 +12,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
+import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import {
   createSessionWithBudget,
   validateSessionId,
@@ -384,12 +385,11 @@ describe("Environment Injection", () => {
         expect(result.injected).toBe(true);
         expect(result.method).toBe("codex_config");
 
-        const configPath = path.join(configDir, "config.json");
+        const configPath = path.join(configDir, "config.toml");
         const content = await fs.readFile(configPath, "utf-8");
-        const config = JSON.parse(content);
-        expect(config.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(
-          sessionId,
-        );
+        const config = parseTOML(content) as Record<string, unknown>;
+        const policy = config.shell_environment_policy as Record<string, Record<string, string>>;
+        expect(policy.set.KSPEC_SESSION_ID).toBe(sessionId);
       } finally {
         process.env.HOME = originalHome;
       }
@@ -400,12 +400,12 @@ describe("Environment Injection", () => {
       const configDir = path.join(testDir, ".codex");
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
-        path.join(configDir, "config.json"),
-        JSON.stringify({
+        path.join(configDir, "config.toml"),
+        stringifyTOML({
           model: "gpt-5",
           shell_environment_policy: {
             set: { EXISTING_VAR: "keep" },
-            inherit: ["PATH"],
+            inherit: "all",
           },
         }),
         "utf-8",
@@ -419,16 +419,77 @@ describe("Environment Injection", () => {
         await injectCodexEnv(sessionId);
 
         const content = await fs.readFile(
-          path.join(configDir, "config.json"),
+          path.join(configDir, "config.toml"),
           "utf-8",
         );
-        const config = JSON.parse(content);
+        const config = parseTOML(content) as Record<string, unknown>;
         expect(config.model).toBe("gpt-5");
-        expect(config.shell_environment_policy.set.EXISTING_VAR).toBe("keep");
-        expect(config.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(
+        const policy = config.shell_environment_policy as Record<string, unknown>;
+        expect((policy.set as Record<string, string>).EXISTING_VAR).toBe("keep");
+        expect((policy.set as Record<string, string>).KSPEC_SESSION_ID).toBe(
           sessionId,
         );
-        expect(config.shell_environment_policy.inherit).toEqual(["PATH"]);
+        expect(policy.inherit).toBe("all");
+      } finally {
+        process.env.HOME = originalHome;
+      }
+    });
+
+    // AC: @session-creation-and-env-injection ac-inject-codex
+    it("should preserve complex TOML structures during inject/remove round-trip", async () => {
+      const configDir = path.join(testDir, ".codex");
+      await fs.mkdir(configDir, { recursive: true });
+
+      // Pre-seed with a realistic codex config.toml containing various TOML types
+      const originalConfig = {
+        model: "gpt-5.3-codex",
+        approval_policy: "never",
+        sandbox_mode: "danger-full-access",
+        shell_environment_policy: {
+          inherit: "all",
+          set: { MY_VAR: "keep-this", ANOTHER_VAR: "also-keep" },
+        },
+      };
+      await fs.writeFile(
+        path.join(configDir, "config.toml"),
+        stringifyTOML(originalConfig),
+        "utf-8",
+      );
+
+      const originalHome = process.env.HOME;
+      process.env.HOME = testDir;
+
+      try {
+        const sessionId = testUlid("CDEX", 3);
+
+        // Inject
+        const result = await injectCodexEnv(sessionId);
+        expect(result.previousValue).toBeNull();
+
+        // Verify injection didn't clobber other values
+        let content = parseTOML(
+          await fs.readFile(path.join(configDir, "config.toml"), "utf-8"),
+        ) as Record<string, unknown>;
+        expect(content.model).toBe("gpt-5.3-codex");
+        expect(content.approval_policy).toBe("never");
+        expect(content.sandbox_mode).toBe("danger-full-access");
+        const policy = content.shell_environment_policy as Record<string, unknown>;
+        expect(policy.inherit).toBe("all");
+        expect((policy.set as Record<string, string>).MY_VAR).toBe("keep-this");
+        expect((policy.set as Record<string, string>).ANOTHER_VAR).toBe("also-keep");
+        expect((policy.set as Record<string, string>).KSPEC_SESSION_ID).toBe(sessionId);
+
+        // Remove — should delete KSPEC_SESSION_ID but preserve everything else
+        await removeCodexEnv();
+        content = parseTOML(
+          await fs.readFile(path.join(configDir, "config.toml"), "utf-8"),
+        ) as Record<string, unknown>;
+        expect(content.model).toBe("gpt-5.3-codex");
+        expect(content.approval_policy).toBe("never");
+        const policyAfter = content.shell_environment_policy as Record<string, unknown>;
+        expect(policyAfter.inherit).toBe("all");
+        expect((policyAfter.set as Record<string, string>).MY_VAR).toBe("keep-this");
+        expect((policyAfter.set as Record<string, string>).KSPEC_SESSION_ID).toBeUndefined();
       } finally {
         process.env.HOME = originalHome;
       }
@@ -463,12 +524,12 @@ describe("Environment Injection", () => {
       }
     });
 
-    it("should throw on corrupt codex config.json instead of overwriting", async () => {
+    it("should throw on corrupt codex config.toml instead of overwriting", async () => {
       const configDir = path.join(testDir, ".codex");
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
-        path.join(configDir, "config.json"),
-        "not json at all!",
+        path.join(configDir, "config.toml"),
+        "not valid toml [[[",
         "utf-8",
       );
 
@@ -478,7 +539,7 @@ describe("Environment Injection", () => {
       try {
         const sessionId = testUlid("CRPT", 2);
         await expect(injectCodexEnv(sessionId)).rejects.toThrow(
-          "not valid JSON",
+          "not valid TOML",
         );
       } finally {
         process.env.HOME = originalHome;
@@ -885,7 +946,7 @@ describe("Environment Injection", () => {
       // Registered adapters have a specific description; ad-hoc ones say "Ad-hoc adapter for ..."
       expect(adapter.description).not.toContain("Ad-hoc");
       expect(adapter.command).toBe("npx");
-      expect(adapter.args).toContain("codex-acp");
+      expect(adapter.args).toContain("@zed-industries/codex-acp");
     });
 
     // AC: @codex-acp-adapter-registration ac-2
@@ -901,9 +962,10 @@ describe("Environment Injection", () => {
         expect(result!.injected).toBe(true);
         expect(result!.method).toBe("codex_config");
 
-        const configPath = path.join(testDir, ".codex", "config.json");
-        const content = JSON.parse(await fs.readFile(configPath, "utf-8"));
-        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(sessionId);
+        const configPath = path.join(testDir, ".codex", "config.toml");
+        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
+        expect(policy.set.KSPEC_SESSION_ID).toBe(sessionId);
       } finally {
         process.env.HOME = originalHome;
       }
@@ -920,14 +982,15 @@ describe("Environment Injection", () => {
         await injectCodexEnv(sessionId);
 
         // Verify injection
-        const configPath = path.join(testDir, ".codex", "config.json");
-        let content = JSON.parse(await fs.readFile(configPath, "utf-8"));
-        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(sessionId);
+        const configPath = path.join(testDir, ".codex", "config.toml");
+        let content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
+        expect(policy.set.KSPEC_SESSION_ID).toBe(sessionId);
 
         // Remove via adapter function
         await removeEnvForAdapter("codex-acp");
 
-        content = JSON.parse(await fs.readFile(configPath, "utf-8"));
+        content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
         expect(content.shell_environment_policy).toBeUndefined();
       } finally {
         process.env.HOME = originalHome;
@@ -948,9 +1011,10 @@ describe("Environment Injection", () => {
         const previousValue = "previous-session-id";
         await removeEnvForAdapter("codex-acp", previousValue);
 
-        const configPath = path.join(testDir, ".codex", "config.json");
-        const content = JSON.parse(await fs.readFile(configPath, "utf-8"));
-        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe(previousValue);
+        const configPath = path.join(testDir, ".codex", "config.toml");
+        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
+        expect(policy.set.KSPEC_SESSION_ID).toBe(previousValue);
       } finally {
         process.env.HOME = originalHome;
       }
@@ -966,8 +1030,8 @@ describe("Environment Injection", () => {
         const codexDir = path.join(testDir, ".codex");
         await fs.mkdir(codexDir, { recursive: true });
         await fs.writeFile(
-          path.join(codexDir, "config.json"),
-          JSON.stringify({
+          path.join(codexDir, "config.toml"),
+          stringifyTOML({
             shell_environment_policy: { set: { KSPEC_SESSION_ID: "old-session" } },
           }),
           "utf-8",
@@ -982,9 +1046,10 @@ describe("Environment Injection", () => {
         // Remove via adapter using the captured previousValue — should restore
         await removeEnvForAdapter("codex-acp", result!.previousValue);
 
-        const configPath = path.join(codexDir, "config.json");
-        const content = JSON.parse(await fs.readFile(configPath, "utf-8"));
-        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe("old-session");
+        const configPath = path.join(codexDir, "config.toml");
+        const content = parseTOML(await fs.readFile(configPath, "utf-8")) as Record<string, unknown>;
+        const policy = content.shell_environment_policy as Record<string, Record<string, string>>;
+        expect(policy.set.KSPEC_SESSION_ID).toBe("old-session");
       } finally {
         process.env.HOME = originalHome;
       }
