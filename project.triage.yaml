@@ -1378,10 +1378,10 @@ triage:
     reasoning: Bug - batch silently fails on malformed JSON, no error message
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-23T08:33:39.710Z
-    updated_at: 2026-02-23T08:33:50.710Z
     acted_at: 2026-02-23T08:33:50.700Z
     result_ref: "@01KJ4T48"
+    created_at: 2026-02-23T08:33:39.710Z
+    updated_at: 2026-02-23T08:33:50.710Z
   - _ulid: 01KJ4T3YDHBC7YXXJ1JDM9AANQ
     inbox_ref: 01KJ3318Y1350NCQF6SK9GKHY7
     item_snapshot: "Session checkpoint hook noise: fires repeatedly for intentionally uncommitted files
@@ -1515,3 +1515,501 @@ triage:
     acted_at: 2026-02-23T08:33:46.884Z
     created_at: 2026-02-23T08:33:39.990Z
     updated_at: 2026-02-23T08:33:46.903Z
+  - _ulid: 01KJDNA70808Y9ZN1XF8ARPPBP
+    inbox_ref: 01KJ4TETN5XH8286FWZABW5ZX3
+    item_snapshot: Web UI WebSocket connection unreliable - continually disconnects and reconnects.
+      Needs investigation into reconnection logic, heartbeat handling, or fallback to polling.
+    status: triaged
+    action: promote
+    reasoning: "Bug: WebSocket unreliable, disconnects/reconnects. Needs investigation."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.168Z
+    updated_at: 2026-02-26T19:02:52.197Z
+  - _ulid: 01KJDNA725H4FZMFZH92R3ADM7
+    inbox_ref: 01KJ4TETP5C44S2YDBCR1P3075
+    item_snapshot: "Web UI triage page: add filter controls for triage action types (promote, delete,
+      defer, spec-gap, duplicate). Currently no way to filter triage records by action."
+    status: triaged
+    action: defer
+    reasoning: Web UI filter controls — nice to have, not blocking
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.229Z
+    updated_at: 2026-02-26T19:02:52.246Z
+  - _ulid: 01KJDNA73KN5GAXGA1DM1AWWSP
+    inbox_ref: 01KJ4TETPNXN6GZ4MT53BRZ1KA
+    item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
+      the page preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
+    status: triaged
+    action: defer
+    reasoning: Web UI URL state persistence — nice to have, not blocking
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.275Z
+    updated_at: 2026-02-26T19:02:52.288Z
+  - _ulid: 01KJDNA74KJQPRCKXA0WCVVM2Q
+    inbox_ref: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
+    item_snapshot: Triage promote action should optionally delete the inbox item after creating the
+      task. Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag
+      or making deletion the default for promote (with snapshot preserved in triage record).
+    status: triaged
+    action: promote
+    reasoning: Triage promote should delete inbox item — causes inbox bloat (67 deferred items stay).
+      Clear scope, well-defined fix.
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.307Z
+    updated_at: 2026-02-26T19:02:52.321Z
+  - _ulid: 01KJDNA75PX9EHFDXZ8KJFEJ0Z
+    inbox_ref: 01KJ4VDK7KWD0TZWCYBWXDABHT
+    item_snapshot: "Batch arg name discoverability: kspec batch commands shows CLI signatures but batch
+      JSON uses different arg names (e.g. inbox-ref not ref, message not text). Add a batch-specific
+      help that shows the JSON arg names, or accept both forms."
+    status: triaged
+    action: defer
+    reasoning: Batch arg name discoverability — DX improvement, not urgent
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.342Z
+    updated_at: 2026-02-26T19:02:52.358Z
+  - _ulid: 01KJDNA76ZV0P7GCJGJMMAAAVA
+    inbox_ref: 01KJ4VHNAZDGTNTX7S7630S6B9
+    item_snapshot: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
+      01KJ4SNE9 and 01KJ4SNEC), short refs like @01KJ4SNE fail. kspec already has a
+      shortest-unique-ID utility — this should be used anywhere refs are displayed (triage list,
+      task list, inbox list, promote result_ref, etc.) so that presented refs are always unambiguous
+      and copy-pasteable into subsequent commands."
+    status: triaged
+    action: promote
+    reasoning: ULID short ref ambiguity causes batch failures. kspec already has shortest-unique-ID
+      utility — wire it up.
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.383Z
+    updated_at: 2026-02-26T19:02:52.398Z
+  - _ulid: 01KJDNA7819FJ59DBD57YGKC4P
+    inbox_ref: 01KJ4YMK5A4D2BDHAFVQ0XTAPS
+    item_snapshot: "Add kspec.config.yaml with ralph.skills overrides for project-specific skill names
+      (/task-work, /reflect, /pr-review) until core kspec: namespace skills are created"
+    status: triaged
+    action: defer
+    reasoning: Config file for ralph skill overrides — workaround exists, not urgent
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.417Z
+    updated_at: 2026-02-26T19:02:52.430Z
+  - _ulid: 01KJDNA7902JC2BCJX50258W86
+    inbox_ref: 01KJ63QDZSHSB8J8BAEEPV4EZQ
+    item_snapshot: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec
+      plan get @plan-ref to read implementation notes, algorithm details, and context. Update
+      task-work skill and task-work-loop workflow to include this step. Plans are the right place
+      for rich implementation context instead of cramming it into task notes.
+    status: triaged
+    action: defer
+    reasoning: Agent plan_ref check — workflow/skill improvement, not blocking task work
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.448Z
+    updated_at: 2026-02-26T19:02:52.460Z
+  - _ulid: 01KJDNA79VHCVAAN363VV8ZSDQ
+    inbox_ref: 01KJ63RW5ZEQFM3PMXD224F9VG
+    item_snapshot: "Plan import --update replaces all ACs instead of merging. When extending an existing
+      spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need
+      AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for
+      session-log-show ac-10."
+    status: triaged
+    action: promote
+    reasoning: "Bug: plan import --update replaces all ACs instead of merging. Data loss risk."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.475Z
+    updated_at: 2026-02-26T19:02:52.487Z
+  - _ulid: 01KJDNA7AS6NTRE2SVK8AWP8G2
+    inbox_ref: 01KJ63RW6VJ8K1MTR4VC3GM4AQ
+    item_snapshot: Plan import warnings treated as errors in batch mode. The no YAML code block in specs
+      section warning causes batch atomic rollback even though the task creation succeeded. Warnings
+      should not cause batch failure — only actual errors should.
+    status: triaged
+    action: promote
+    reasoning: "Bug: plan import warnings cause batch rollback. Warnings should not be errors."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.505Z
+    updated_at: 2026-02-26T19:02:52.518Z
+  - _ulid: 01KJDNA7BTBMEN482J2FQQWQJH
+    inbox_ref: 01KJ67G4H6EHK6DZCXFM80BTXV
+    item_snapshot: "Ralph event handler iteration attribution should use session-scoped mapping instead
+      of shared mutable currentIteration. Codex review on PR #484 identified that late updates from
+      a previous ACP session can still be tagged with wrong iteration. Use session_id→iteration map
+      or session-scoped listener. See PR #484 review comment."
+    status: triaged
+    action: promote
+    reasoning: "Bug: ralph event iteration attribution uses shared mutable state. Identified in PR review."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.538Z
+    updated_at: 2026-02-26T19:02:52.553Z
+  - _ulid: 01KJDNA7CV4THZZ2XJR72F2YK6
+    inbox_ref: 01KJ6KTDE6ADT92WQ0CXYF9NZG
+    item_snapshot: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
+      depends_on). Currently batch commands reject underscore variants even though the error message
+      suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
+      generating JSON batch payloads where underscore is the natural convention.
+    status: triaged
+    action: defer
+    reasoning: CLI kebab/underscore normalization — DX improvement, workaround is to use correct form
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.571Z
+    updated_at: 2026-02-26T19:02:52.582Z
+  - _ulid: 01KJDNA7DP29PT56R2CV9V406M
+    inbox_ref: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
+    item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
+      fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling
+      batch with empty string arg.
+    status: triaged
+    action: promote
+    reasoning: "Bug: batch --commands '' hangs on stdin. Caused ralph loop to get stuck."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.598Z
+    updated_at: 2026-02-26T19:02:52.610Z
+  - _ulid: 01KJDNA7EJT5VVGV2W3DM9R5HR
+    inbox_ref: 01KJ76Y81G54ASMF0A18Z5G35Y
+    item_snapshot: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering
+      workflow show/list to current session by default. Session end could auto-close orphaned runs.
+      Reduces noise when multiple sessions active (ralph + interactive). Natural fit since workflows
+      are already ephemeral."
+    status: triaged
+    action: defer
+    reasoning: Session-scoped workflow runs — nice architectural improvement, not urgent
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.626Z
+    updated_at: 2026-02-26T19:02:52.638Z
+  - _ulid: 01KJDNA7FQKFAM59D2HJ2B4TNV
+    inbox_ref: 01KJ778T2MZ63PJ6MF46X2J2S9
+    item_snapshot: "Ralph loop logs 'Unexpected case' for rate_limit_event messages from Claude API.
+      These are informational SSE events (status: allowed) that the event handler doesn't recognize.
+      Should either handle gracefully (ignore/log at debug level) or add to known event types.
+      Currently noisy in ralph output."
+    status: triaged
+    action: defer
+    reasoning: Ralph rate_limit_event logging — cosmetic noise, not functional issue
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.663Z
+    updated_at: 2026-02-26T19:02:52.678Z
+  - _ulid: 01KJDNA7GQQ45RS1SFN0SVXTS6
+    inbox_ref: 01KJ77S4BZYW0CYX68JHNAQ31X
+    item_snapshot: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool
+      call hanging on stdin), ralph has no mechanism to detect or recover. A configurable
+      per-iteration timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would
+      prevent indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't
+      prevent the kspec batch stdin hang.
+    status: triaged
+    action: promote
+    reasoning: Ralph iteration timeout needed. Agent hangs block entire loop with no recovery.
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.695Z
+    updated_at: 2026-02-26T19:02:52.709Z
+  - _ulid: 01KJDNA7HMG8YYEMJCFEMJ56NW
+    inbox_ref: 01KJ7CNAZQRSSS2BH4KWXT9G0R
+    item_snapshot: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
+      but failed on kspec item get. Possible write conflict or index corruption during ralph loop
+      session. Investigate shadow branch integrity."
+    status: triaged
+    action: promote
+    reasoning: "Bug: shadow branch index inconsistency — items in search but not in item get. Data
+      integrity issue."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.724Z
+    updated_at: 2026-02-26T19:02:52.739Z
+  - _ulid: 01KJDNA7JJYXDRGF2D104KFH7Y
+    inbox_ref: 01KJ8N6842MXY0QBV3VPZGTAY1
+    item_snapshot: "Ralph CLI renderer: parallel tool calls produce confusing output. tool_result events
+      render sequentially with no association to their tool_start, so when multiple tools run in
+      parallel, results appear under the wrong header. Fix: include tool summary (e.g. filename) in
+      the completed/failed status line so each result is self-identifying regardless of
+      interleaving."
+    status: triaged
+    action: defer
+    reasoning: Ralph renderer parallel tool output — cosmetic, not blocking
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.755Z
+    updated_at: 2026-02-26T19:02:52.775Z
+  - _ulid: 01KJDNA7KYG668K3QAEKADJZV7
+    inbox_ref: 01KJ8NDTW6M80T7T07SACEP7F8
+    item_snapshot: "Tests fail when run inside ralph loop due to environment contamination: (1)
+      ralph.test.ts KSPEC_RALPH_SESSION assertion expects null but env var is inherited from ralph
+      process, (2) session-create.test.ts active session warning in stderr breaks JSON parsing, (3)
+      session-budget-integration.test.ts references nonexistent task set-automation command. Tests
+      should isolate from parent process env vars (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID) to be
+      reliable in all contexts."
+    status: triaged
+    action: promote
+    reasoning: "Bug: tests fail in ralph loop due to env contamination. Causes false failures."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.798Z
+    updated_at: 2026-02-26T19:02:52.815Z
+  - _ulid: 01KJDNA7N6V4CR5HZTM52QYD3Y
+    inbox_ref: 01KJ8X526K52BVBGYENJKFFSM8
+    item_snapshot: "Session event log tool-level filtering: kspec session log show <id> --tool Read
+      would avoid grep/python one-liners when debugging ralph event issues"
+    status: triaged
+    action: defer
+    reasoning: Session log --tool filter — DX improvement, grep workaround exists
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.838Z
+    updated_at: 2026-02-26T19:02:52.854Z
+  - _ulid: 01KJDNA7P7GT9X5QW2MJ5XTNVX
+    inbox_ref: 01KJ905CBEHVK9RGCYDZ4K03BH
+    item_snapshot: First item
+    status: triaged
+    action: delete
+    reasoning: Test data — First item
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.872Z
+    updated_at: 2026-02-26T19:02:52.884Z
+  - _ulid: 01KJDNA7Q3P3G0D83DTNW6XE91
+    inbox_ref: 01KJ905CK3H9P9QMY8DYXF3JSS
+    item_snapshot: Second item
+    status: triaged
+    action: delete
+    reasoning: Test data — Second item
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.899Z
+    updated_at: 2026-02-26T19:02:52.915Z
+  - _ulid: 01KJDNA7R26BDB2QY813VX1ND2
+    inbox_ref: 01KJ93VXC8AJHN546JBKV9SJ8W
+    item_snapshot: kspec batch command JSON format is undocumented — the shape {command, ref,
+      ...options} is discoverable only through trial-and-error. Tried array format, args array, and
+      string format before finding the correct object format. Help output shows allowed commands but
+      not the JSON schema for batch payloads.
+    status: triaged
+    action: defer
+    reasoning: Batch JSON format docs — already in AGENTS.md, could be improved but not urgent
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.930Z
+    updated_at: 2026-02-26T19:02:52.941Z
+  - _ulid: 01KJDNA7RYTZHTKEB8X5NN755Q
+    inbox_ref: 01KJ93W2PWGATM2YVHQRBSSVK5
+    item_snapshot: kspec task set --priority accepts numbers (1-5) but all documentation, conventions,
+      and plan documents use P1/P2/P3 notation. Error message says 'Priority must be a number
+      between 1 and 5' which is confusing when you've been writing P1 everywhere. Should either
+      accept both formats or align documentation with the numeric API.
+    status: triaged
+    action: defer
+    reasoning: P1/P2/P3 format alias — DX improvement, duplicate of deferred item
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.958Z
+    updated_at: 2026-02-26T19:02:52.971Z
+  - _ulid: 01KJDNA7SVE6M6JV4XH7CH9KJP
+    inbox_ref: 01KJ9BENECYW9DP5FP6Y5EJSVM
+    item_snapshot: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the
+      only way to fix a rule is to delete the entire convention and recreate it. Surfaced during
+      skill CLI lookups task when codex review caught a wording issue in one rule."
+    status: triaged
+    action: defer
+    reasoning: Convention --update-rule — DX improvement, workaround is delete+recreate
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:52.987Z
+    updated_at: 2026-02-26T19:02:52.998Z
+  - _ulid: 01KJDNA7TNPB96SWJFH8JK4YW4
+    inbox_ref: 01KJ9NJC7QK6F0SAB11PNN3798
+    item_snapshot: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
+      Either add a --agent flag (e.g. kspec setup --agent claude-code) to explicitly specify the
+      agent type, or detect based on installed tooling (~/.claude exists) rather than requiring
+      runtime env vars. Discovered while building containerized ralph runner — entrypoint bash
+      script can't set CLAUDECODE=1 globally because claude blocks nested sessions.
+    status: triaged
+    action: defer
+    reasoning: Setup without CLAUDECODE=1 — ralph container workaround exists
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.013Z
+    updated_at: 2026-02-26T19:02:53.027Z
+  - _ulid: 01KJDNA7VMWSG7KP54SZGJ2V9P
+    inbox_ref: 01KJA6SXTB3DG19YC17E604J7X
+    item_snapshot: "kspec agents generate should include package version in content hash (or add --force
+      flag) so version bumps during releases automatically trigger regeneration. Currently skips
+      because content is identical, but the version comment in the header is stale. Workaround:
+      manually edit the version line."
+    status: triaged
+    action: promote
+    reasoning: "Agents generate version in hash — hit during every release. Clear scope. Consolidates
+      duplicates #34, #40, #41."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.044Z
+    updated_at: 2026-02-26T19:02:53.057Z
+  - _ulid: 01KJDNA7WG9TW2D239EA8JX9G3
+    inbox_ref: 01KJA6SXVCSYQT1X48341636SC
+    item_snapshot: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates
+      stale branches (found 13 after one session). The gh pr merge command supports --delete-branch.
+      Add to pr-review-loop workflow merge step.
+    status: triaged
+    action: promote
+    reasoning: "Ralph auto-delete branches after merge. 13 stale branches per session. Simple fix:
+      --delete-branch."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.072Z
+    updated_at: 2026-02-26T19:02:53.084Z
+  - _ulid: 01KJDNA7XCWV164J03NXCGK32X
+    inbox_ref: 01KJA6SXW5DHXFFJHH6DYQYBVJ
+    item_snapshot: "Session summary/stats command — kspec session stats @id or kspec session show @id
+      --summary. Parse events.jsonl to show: iteration count, tasks started/completed/blocked, PRs
+      created/merged, total duration, exit reason. Currently requires custom python scripts to
+      extract from 14k+ line event logs."
+    status: triaged
+    action: defer
+    reasoning: Session stats command — useful but not blocking, custom scripts work for now
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.100Z
+    updated_at: 2026-02-26T19:02:53.113Z
+  - _ulid: 01KJDNA7YARNCEYQCH7RGM6DGT
+    inbox_ref: 01KJBQ62SW8AJYGQJVC2Q7CMCF
+    item_snapshot: "@cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
+      --alignment, --skills, --conventions (all already implemented in code). Pre-existing drift,
+      not introduced by trait AC task."
+    status: triaged
+    action: spec-gap
+    reasoning: "@cmd-validate spec is stale — missing 6 flags already in code. Spec drift."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.130Z
+    updated_at: 2026-02-26T19:02:53.144Z
+  - _ulid: 01KJDNA7Z7MEB2A756AGPH3WCX
+    inbox_ref: 01KJCTQGQ6VA5DNT6NSGVZ5V99
+    item_snapshot: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate
+      slug. Pre-existing issue across main.
+    status: triaged
+    action: promote
+    reasoning: "Bug: @observations slug ambiguity — validate reports 6 errors. Data integrity."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.159Z
+    updated_at: 2026-02-26T19:02:53.173Z
+  - _ulid: 01KJDNA805PBMJDXBWG85732Y5
+    inbox_ref: 01KJCTQGRDZYNYRD66RHV5GGMX
+    item_snapshot: Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST
+      /:ref/override and POST /:ref/act. Spec needs updating to match reality.
+    status: triaged
+    action: spec-gap
+    reasoning: Triage API spec PUT vs POST mismatch — spec needs updating to match implementation
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.189Z
+    updated_at: 2026-02-26T19:02:53.203Z
+  - _ulid: 01KJDNA8146X69M9P5FMBSGXKK
+    inbox_ref: 01KJCTQGSAZ8H0NZT9DR5628NX
+    item_snapshot: Triage ac-5 says sets result_ref but delete action may not produce one. Verify
+      behavior and update spec or add test assertion.
+    status: triaged
+    action: spec-gap
+    reasoning: Triage ac-5 result_ref for delete — spec may be wrong, needs verification
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.220Z
+    updated_at: 2026-02-26T19:02:53.231Z
+  - _ulid: 01KJDNA821666CZ2E4AGAXNAJA
+    inbox_ref: 01KJCXMR42ZTQZK510F8AESYN7
+    item_snapshot: kspec agents generate meta hash should include package version — currently skips
+      regeneration when only the version changes, requiring manual edit of the freshness comment
+    status: triaged
+    action: duplicate
+    reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — agents generate version hash
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.249Z
+    updated_at: 2026-02-26T19:02:53.261Z
+  - _ulid: 01KJDNA833SJZV4WRP256KK839
+    inbox_ref: 01KJCXMR524W6YTGCEPHEZ97WH
+    item_snapshot: kspec task patch appears to hang indefinitely — had to kill and use task set + task
+      note as workaround
+    status: triaged
+    action: promote
+    reasoning: "Bug: task patch hangs indefinitely. Blocks normal workflow."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.283Z
+    updated_at: 2026-02-26T19:02:53.298Z
+  - _ulid: 01KJDNA844EG8Y2D2XN590AW43
+    inbox_ref: 01KJDFFJDCG18ZY3B8RQ96JJFP
+    item_snapshot: Add --description flag to kspec task set (matches task add interface, avoids need for
+      task patch --data JSON workaround)
+    status: triaged
+    action: duplicate
+    reasoning: Duplicate of deferred item 01KHWWMD — task set --description flag
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.317Z
+    updated_at: 2026-02-26T19:02:53.331Z
+  - _ulid: 01KJDNA853NFJ8ZS5SDMBRNM0Z
+    inbox_ref: 01KJDFFJEED59WPDEZ7MZ98ZW9
+    item_snapshot: "Plan import: generate richer task descriptions from Implementation Notes section —
+      include file paths, what to change, verification steps instead of generic 'See plan...' text"
+    status: triaged
+    action: defer
+    reasoning: Plan import richer descriptions — improvement, not blocking
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.347Z
+    updated_at: 2026-02-26T19:02:53.362Z
+  - _ulid: 01KJDNA863W9TWRQP1FAWQ5NGB
+    inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
+    item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
+      should always take latest)"
+    status: triaged
+    action: defer
+    reasoning: Merge driver for hash file — low frequency conflict, manual resolution works
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.379Z
+    updated_at: 2026-02-26T19:02:53.394Z
+  - _ulid: 01KJDNA8723DJ93CK1F5EBEX44
+    inbox_ref: 01KJDFFJFXQWX51PQEGAPJ09AC
+    item_snapshot: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning
+      shell, fails on fish-only systems"
+    status: triaged
+    action: promote
+    reasoning: "Bug: shadow repair fails on fish-only systems (no /bin/sh). Affects real users."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.410Z
+    updated_at: 2026-02-26T19:02:53.423Z
+  - _ulid: 01KJDNA881HJEG69MJN5NWXV0Q
+    inbox_ref: 01KJDN04PSK23P7QTTP3RWEQES
+    item_snapshot: kspec agents generate --force flag to skip staleness check and always regenerate.
+      Needed during release when version bumps but content hash unchanged.
+    status: triaged
+    action: duplicate
+    reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — agents generate --force flag
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.441Z
+    updated_at: 2026-02-26T19:02:53.455Z
+  - _ulid: 01KJDNA891TXP2E23ZAXJWWVGX
+    inbox_ref: 01KJDN04QWW61AC3MBPD2EQW8A
+    item_snapshot: Include package.json version in kspec agents staleness hash so version bumps
+      auto-trigger regeneration without manual hash deletion.
+    status: triaged
+    action: duplicate
+    reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — version in staleness hash
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-02-26T19:02:53.473Z
+    updated_at: 2026-02-26T19:02:53.486Z
