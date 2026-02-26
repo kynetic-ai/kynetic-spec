@@ -60728,6 +60728,13 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #546. Replaced 224 lines of static analysis in
+    tests/daemon-api-meta.test.ts and 166 lines in tests/daemon-api-validation.test.ts with 34
+    Playwright E2E tests in packages/web-ui/tests/e2e/api-meta.spec.ts. All ACs (ac-15 through
+    ac-21) covered with real HTTP calls against running daemon. Fixed Codex review issues: trait N/A
+    annotations moved outside JSDoc block comment for machine parseability, added all 5 inherited
+    traits with complete N/A annotations (29 total trait ACs), added @multi-directory-daemon ac-24
+    annotation. All CI checks passed."
   depends_on: []
   context: []
   priority: 2
@@ -60740,6 +60747,7 @@
   created_at: 2026-02-26T00:28:44.505Z
   started_at: 2026-02-26T04:08:50.834Z
   submitted_at: 2026-02-26T04:17:00.251Z
+  completed_at: 2026-02-26T04:32:53.831Z
   notes:
     - _ulid: 01KJC2KF217ZY93C87QTBASQG8
       created_at: 2026-02-26T04:16:37.953Z
@@ -60761,14 +60769,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-26T04:32:53.831Z
-  closed_reason: "Merged in PR #546. Replaced 224 lines of static analysis in
-    tests/daemon-api-meta.test.ts and 166 lines in tests/daemon-api-validation.test.ts with 34
-    Playwright E2E tests in packages/web-ui/tests/e2e/api-meta.spec.ts. All ACs (ac-15 through
-    ac-21) covered with real HTTP calls against running daemon. Fixed Codex review issues: trait N/A
-    annotations moved outside JSDoc block comment for machine parseability, added all 5 inherited
-    traits with complete N/A annotations (29 total trait ACs), added @multi-directory-daemon ac-24
-    annotation. All CI checks passed."
 - _ulid: 01KJBNJ8BPJSB3EYXX6FBP7CRJ
   slugs:
     - task-e2e-daemon-triage-api
@@ -60808,7 +60808,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -60822,6 +60822,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-26T04:34:28.288Z
+  session_id: 01KJBZXXNHE3M4WX1BZ6Z5ZNCJ
 - _ulid: 01KJBNJAPSK8858417YYGBFX7S
   slugs:
     - task-e2e-daemon-errors-projects-api
