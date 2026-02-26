@@ -6135,8 +6135,29 @@ runs:
   - _ulid: 01KJDE3W7TBDMJ42XZAMNKZW2G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-26T16:57:04.507Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-26T16:57:04.507Z
+        completed_at: 2026-02-26T16:57:18.899Z
+        notes: >-
+          What worked well:
+
+          1. Dual review pattern (internal + /codex review-plan) caught complementary issues
+
+          2. Plan import dry-run → import → verify AC counts pipeline is reliable
+
+          3. Shadow branch merge driver handled YAML conflicts automatically during rebase
+
+          4. Ralph container diagnosis was efficient — reading entrypoint revealed missing kspec
+          init
+
+          5. Task enrichment via kspec task patch --data worked well post-import
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-26T16:57:18.899Z
+        completed_at: 2026-02-26T16:57:18.899Z
     initiated_by: "@claude"
