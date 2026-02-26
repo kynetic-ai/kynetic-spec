@@ -46975,23 +46975,23 @@
   notes: []
   todos: []
   automation: eligible
-- title: Add E2E test job to CI
-  description: Add a separate GitHub Actions job for Playwright E2E tests. Should install Playwright chromium with deps (cache browsers), run npm run test:e2e, and be distinct from the unit test shards. Reference imgen CI pattern for browser caching strategy.
+- _ulid: 01KJD106N5ZQ3VB9T3EV3BHYZK
+  slugs:
+    - task-ci-e2e-tests
+  title: Add E2E test job to CI
   type: infra
+  description: Add a separate GitHub Actions job for Playwright E2E tests. Should install Playwright chromium with deps (cache browsers), run npm run test:e2e, and be distinct from the unit test shards. Reference imgen CI pattern for browser caching strategy.
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-ci-e2e-tests
   tags:
     - ci
     - infra
-  depends_on: []
-  _ulid: 01KJD106N5ZQ3VB9T3EV3BHYZK
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-26T13:07:52.613Z
   notes: []
@@ -47005,7 +47005,8 @@
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-register-codex-acp-in-adapter-registry"
   context: []
   priority: 3
   tags: []
@@ -47026,7 +47027,8 @@
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-register-codex-acp-in-adapter-registry"
   context: []
   priority: 3
   tags: []
