@@ -63207,6 +63207,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #566. Fixed codex env injection to use ~/.codex/config.toml (TOML)
+    instead of config.json (JSON). Added smol-toml dependency, updated all tests, added round-trip
+    preservation test, fixed pre-existing adapter.args assertion, tightened spec AC."
   depends_on: []
   context: []
   priority: 1
@@ -63218,6 +63221,7 @@
   created_at: 2026-02-26T22:11:34.669Z
   started_at: 2026-02-26T22:13:52.039Z
   submitted_at: 2026-02-26T22:56:57.626Z
+  completed_at: 2026-02-26T23:11:57.790Z
   notes:
     - _ulid: 01KJE2P4YDHZ798YTGWZHX3CF0
       created_at: 2026-02-26T22:56:34.766Z
@@ -63229,7 +63233,94 @@
         pre-existing flaky integration test unrelated)."
       supersedes: null
   todos: []
-  completed_at: 2026-02-26T23:11:57.790Z
-  closed_reason: "Merged in PR #566. Fixed codex env injection to use ~/.codex/config.toml (TOML)
-    instead of config.json (JSON). Added smol-toml dependency, updated all tests, added round-trip
-    preservation test, fixed pre-existing adapter.args assertion, tightened spec AC."
+- _ulid: 01KJE3T75E2F7KYBT7Q89SV5VJ
+  slugs: []
+  title: Harden Codex environment detection for setup and setup-status
+  type: task
+  description: >-
+    Codex detection is currently brittle and inconsistent across setup paths.
+
+
+    In this Codex environment, `kspec setup` falls back to unknown because setup detection in
+    `src/cli/commands/setup.ts` only checks `CODEX_SANDBOX`, while active sessions can expose other
+    stable markers such as `CODEX_THREAD_ID`.
+
+
+    Separately, `src/parser/setup-status.ts` uses a different detector that does not recognize Codex
+    at all, so setup and status/doctor can disagree.
+
+
+    Scope:
+
+    - Expand setup detection to treat `CODEX_THREAD_ID` as a primary high-confidence Codex signal,
+    while keeping `CODEX_SANDBOX` support for backward compatibility.
+
+    - Add additional Codex fallbacks/supporting signals if needed to improve robustness without
+    increasing false positives.
+
+    - Align setup-status/doctor detection with the same Codex signal model and confidence semantics.
+
+    - Add tests that cover Codex detection when `CODEX_THREAD_ID` is present and `CODEX_SANDBOX` is
+    absent, plus status/setup consistency checks.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - setup
+    - codex
+    - detection
+  vcs_refs: []
+  created_at: 2026-02-26T23:17:00.000Z
+  notes: []
+  todos: []
+- _ulid: 01KJE46AQZHKVQMVWWCWKGH2P3
+  slugs: []
+  title: Make git root/shadow detection resilient to restricted runtimes
+  type: task
+  description: 'Issue: In the Codex execution runtime, Node shell-based git calls (execSync with
+    string commands like "git rev-parse --show-toplevel") can fail with spawnSync /bin/sh EPERM even
+    when git itself is available. Impact: getGitRoot() and related checks return false negatives,
+    kspec treats repo as non-git/non-shadow, and writes can fall back to root-level files (for
+    example project.tasks.yaml) instead of .kspec worktree paths. Findings: (1) kspec shadow status
+    returned Not a git repository in this runtime while user environment returned healthy shadow
+    JSON. (2) Running getGitRoot() through parser returned null before fix. (3) Task add created an
+    untracked root project.tasks.yaml due to shadow detection failure. Why: the implementation
+    depended on shell invocation semantics instead of direct process execution, which is fragile in
+    sandboxed/restricted runtimes. Proposal: standardize git invocations in detection-critical paths
+    to direct argv-based spawn/execFile style calls, add regression tests that simulate
+    shell-unavailable execution behavior, and audit other shell-form git calls that can influence
+    path resolution.'
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending_review
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - bug
+    - shadow
+    - portability
+    - runtime
+  vcs_refs: []
+  created_at: 2026-02-26T23:22:53.567Z
+  started_at: 2026-02-26T23:26:58.084Z
+  notes:
+    - _ulid: 01KJE46FMZK4P8MB71JJ0J1Z5M
+      created_at: 2026-02-26T23:22:58.591Z
+      author: "@codex"
+      content: "Investigation summary: reproduced mismatch where kspec shadow status failed in Codex
+        runtime but succeeded in user shell. Root cause is shell-form Node git execution failing
+        under restricted runtime (/bin/sh EPERM), which made getGitRoot/isGitRepo/branchExists
+        return false negatives and caused non-shadow fallback writes. Confirmed by direct module
+        probe (getGitRoot returned null before patch) and by root project.tasks.yaml creation from
+        task add before fix."
+      supersedes: null
+  todos: []
+  submitted_at: 2026-02-26T23:26:59.112Z
