@@ -60335,3 +60335,555 @@
         as-is."
       supersedes: null
   todos: []
+- _ulid: 01KJBNHZ455RC87A2SYYZ55KV5
+  slugs:
+    - task-e2e-daemon-tasks-api
+  title: E2E tests for daemon Tasks API (replace daemon-api-tasks.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-api-tasks.test.ts (258 lines, all static analysis) with Playwright E2E
+    tests that hit the real daemon.
+
+
+    The existing file reads packages/daemon/src/routes/tasks.ts and checks for string patterns. None
+    of it exercises actual HTTP behavior.
+
+
+    Write: packages/web-ui/tests/e2e/api-tasks.spec.ts
+
+    Using: the daemon fixture from tests/fixtures/test-base.ts (provides running daemon + fixtures
+    with tasks)
+
+    Pattern: fetch() against http://localhost:3456/api/tasks/* endpoints, verify response shapes and
+    status codes
+
+
+    Endpoints to test:
+
+    - GET /api/tasks — list tasks, verify response has items array with status/priority/spec_ref
+    fields (@api-contract ac-2)
+
+    - GET /api/tasks?status=pending,in_progress — multi-value status filter (@api-contract ac-3)
+
+    - GET /api/tasks?offset=0&limit=5 — pagination response shape {items, total, offset, limit}
+    (@api-contract ac-4)
+
+    - GET /api/tasks/:ref — single task with notes, todos, dependencies (@api-contract ac-5)
+
+    - POST /api/tasks/:ref/start — transition to in_progress, verify 200 response (@api-contract
+    ac-6)
+
+    - POST /api/tasks/:ref/note — append note, verify response (@api-contract ac-7)
+
+
+    After E2E tests pass, delete tests/daemon-api-tasks.test.ts.
+
+    Run: npm test && npm run test:e2e to verify no regressions.
+
+
+    Fixture data: packages/web-ui/tests/fixtures/project.tasks.yaml has test tasks to query.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:37.381Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJ1DSH5BZXHC12V9ZSWMX
+  slugs:
+    - task-e2e-daemon-items-api
+  title: E2E tests for daemon Items API (replace daemon-api-items.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-api-items.test.ts (217 lines, all static analysis) with Playwright E2E
+    tests.
+
+
+    Write: packages/web-ui/tests/e2e/api-items.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Endpoints to test:
+
+    - GET /api/items — list spec items with modules/features/requirements (@api-contract ac-8)
+
+    - GET /api/items?type=feature,requirement — multi-value type filter (@api-contract ac-9)
+
+    - GET /api/items/:ref — single item with acceptance_criteria, traits, relationships
+    (@api-contract ac-10)
+
+    - GET /api/items/:ref/tasks — linked tasks via AlignmentIndex (@api-contract ac-11)
+
+
+    After E2E tests pass, delete tests/daemon-api-items.test.ts.
+
+    Run: npm test && npm run test:e2e to verify.
+
+
+    Fixture data: packages/web-ui/tests/fixtures/modules/core.yaml has test spec items.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:39.737Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJ3QWS882SPWM83DDVXJM
+  slugs:
+    - task-e2e-daemon-inbox-api
+  title: E2E tests for daemon Inbox API (replace daemon-api-inbox.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-api-inbox.test.ts (218 lines, all static analysis) with Playwright E2E
+    tests.
+
+
+    Write: packages/web-ui/tests/e2e/api-inbox.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Endpoints to test:
+
+    - GET /api/inbox — list items ordered by created_at desc (@api-contract ac-12)
+
+    - POST /api/inbox — create item with text, verify ULID assigned and 201 response (@api-contract
+    ac-13)
+
+    - DELETE /api/inbox/:ref — delete item, verify 200 response (@api-contract ac-14)
+
+
+    After E2E tests pass, delete tests/daemon-api-inbox.test.ts.
+
+    Run: npm test && npm run test:e2e to verify.
+
+
+    Fixture data: packages/web-ui/tests/fixtures/project.inbox.yaml has test inbox items.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:42.108Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJ62SC5K1NZRBRDQD9EGE
+  slugs:
+    - task-e2e-daemon-meta-validation-api
+  title: E2E tests for daemon Meta + Validation APIs (replace 2 files)
+  type: task
+  description: >-
+    Replace tests/daemon-api-meta.test.ts (224 lines) and tests/daemon-api-validation.test.ts (166
+    lines) with Playwright E2E tests. Both are all static analysis.
+
+
+    Write: packages/web-ui/tests/e2e/api-meta.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Meta endpoints:
+
+    - GET /api/meta/session — session context with focus, threads, questions (@api-contract ac-15)
+
+    - GET /api/meta/agents — defined agents (@api-contract ac-16)
+
+    - GET /api/meta/workflows — defined workflows (@api-contract ac-17)
+
+    - GET /api/meta/observations — observations with resolved filter (@api-contract ac-18)
+
+
+    Validation/Search endpoints:
+
+    - GET /api/search?q=keyword — search across items, tasks, inbox, observations (@api-contract
+    ac-19)
+
+    - GET /api/validate — validation results {valid, schemaErrors, refErrors, orphans}
+    (@api-contract ac-20)
+
+    - GET /api/alignment — AlignmentIndex stats and warnings (@api-contract ac-21)
+
+
+    After E2E tests pass, delete both static files.
+
+    Run: npm test && npm run test:e2e to verify.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:44.505Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJ8BPJSB3EYXX6FBP7CRJ
+  slugs:
+    - task-e2e-daemon-triage-api
+  title: E2E tests for daemon Triage API (replace daemon-api-triage.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-api-triage.test.ts (414 lines, all static analysis) with Playwright E2E
+    tests.
+
+
+    Write: packages/web-ui/tests/e2e/api-triage.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Endpoints to test:
+
+    - GET /api/triage — list records sorted by created_at desc (@triage-daemon-api ac-1)
+
+    - GET /api/triage?status=pending — status filter (@triage-daemon-api ac-2)
+
+    - POST /api/triage — create record with item_snapshot (@triage-daemon-api ac-3)
+
+    - POST /api/triage/:ref/override — set override fields (@triage-daemon-api ac-4)
+
+    - POST /api/triage/:ref/act — execute action, transition to acted_on (@triage-daemon-api ac-5)
+
+    - GET /api/triage/export?format=json — export records (@triage-daemon-api ac-6)
+
+    - Error cases: 404 not found, 409 already acted, 422 validation (@triage-daemon-api ac-7 through
+    ac-9)
+
+
+    After E2E tests pass, delete tests/daemon-api-triage.test.ts.
+
+    Run: npm test && npm run test:e2e to verify.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:46.838Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJAPSK8858417YYGBFX7S
+  slugs:
+    - task-e2e-daemon-errors-projects-api
+  title: E2E tests for daemon Error Handling + Projects API (replace 2 files)
+  type: task
+  description: >-
+    Replace tests/daemon-api-error-handling.test.ts (148 lines) and
+    tests/daemon-api-projects.test.ts (235 lines) with Playwright E2E tests. Both are all static
+    analysis.
+
+
+    Write: packages/web-ui/tests/e2e/api-errors.spec.ts (or extend existing errors.spec.ts which
+    currently uses mocks)
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Error handling — make real requests that trigger each error type:
+
+    - GET /api/tasks/nonexistent-ref — 404 with {error, message, suggestion} (@api-contract ac-22)
+
+    - POST /api/tasks/:ref/note with empty body — 400 with {error, details:[{field, message}]}
+    (@api-contract ac-23)
+
+    - POST /api/tasks/:ref/start on already-started task — 409 with {error, current,
+    valid_transitions} (@api-contract ac-24)
+
+
+    Note: existing errors.spec.ts uses route.fulfill() mocks. The new tests should hit the REAL
+    daemon instead. Either extend that file with a real-daemon section or create api-errors.spec.ts.
+
+
+    Projects API (uses daemon.createSecondProject helper):
+
+    - GET /api/projects — list registered projects with paths and watcherStatus
+    (@multi-directory-daemon ac-28)
+
+    - POST /api/projects — register project with path validation (@multi-directory-daemon ac-29)
+
+    - DELETE /api/projects/:encodedPath — unregister project (@multi-directory-daemon ac-30)
+
+
+    After E2E tests pass, delete both static files.
+
+    Run: npm test && npm run test:e2e to verify.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:49.241Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJCYDTFHTDB60DJFM1356
+  slugs:
+    - task-e2e-daemon-server-core
+  title: E2E tests for daemon Server core (replace daemon-server.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-server.test.ts (310 lines) with Playwright E2E tests. Currently all static
+    analysis except the localhost middleware unit tests (lines 59-188).
+
+
+    Write: packages/web-ui/tests/e2e/api-server.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Behaviors to test:
+
+    - GET /api/health — verify response shape {status: 'ok', uptime, connections, version}
+    (@daemon-server ac-11)
+
+    - CORS headers — fetch from test, verify Access-Control-Allow-Origin includes localhost:5173
+    (@daemon-server ac-15, @api-contract ac-1)
+
+    - Verify daemon is only accessible on localhost (the middleware unit tests at lines 59-188 are
+    already behavioral — move them to a vitest file like tests/daemon-localhost-middleware.test.ts,
+    or keep them in the same file with only the behavioral tests) (@daemon-server ac-3)
+
+
+    For the static tests being deleted (ac-1 Elysia dep, ac-2 hostname binding, ac-12 signal
+    handlers): these are verified implicitly — if the daemon starts and responds to health checks,
+    it's bound correctly. Signal handler shutdown is tested in cli-serve.test.ts.
+
+
+    After E2E tests pass, delete the static analysis tests from daemon-server.test.ts. Keep the
+    localhost middleware unit tests (lines 59-188) in place — they test real logic.
+
+    Run: npm test && npm run test:e2e to verify.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:51.533Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJF6Z5F9EPA0J0VDKTQ20
+  slugs:
+    - task-e2e-daemon-websocket
+  title: E2E tests for daemon WebSocket (replace daemon-websocket.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-websocket.test.ts (591 lines, all static analysis) with Playwright E2E
+    tests.
+
+
+    Write: packages/web-ui/tests/e2e/api-websocket.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Note: existing connection.spec.ts tests WebSocket reconnection via the UI. These new tests
+    should verify the WebSocket protocol directly using page.evaluate() to create raw WebSocket
+    connections, or use Playwright's page.waitForEvent('websocket') API.
+
+
+    Behaviors to test:
+
+    - Connect to ws://localhost:3456/ws — receive 'connected' event with session_id (@api-contract
+    ac-25)
+
+    - Send subscribe command — receive ack response with matching command_id (@api-contract ac-26,
+    ac-27)
+
+    - Trigger a mutation (POST /api/tasks/:ref/note) — receive broadcast event via WebSocket
+    (@api-contract ac-28 through ac-33)
+
+    - Heartbeat: server sends ping, client responds pong (@trait-websocket-protocol ac-5)
+
+
+    Note: existing E2E connection.spec.ts has a SKIPPED test for WebSocket task updates due to
+    'daemon WebSocket upgrade returns 200 instead of 101'. Investigate if this is still an issue. If
+    WebSocket connections work in the fixture, the skip can be removed.
+
+
+    After E2E tests pass, delete tests/daemon-websocket.test.ts.
+
+    Run: npm test && npm run test:e2e to verify.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:53.855Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJBNJHHMW5H7T4Q9NHJK0PWE
+  slugs:
+    - task-e2e-daemon-watcher
+  title: E2E tests for daemon Watcher (replace daemon-watcher.test.ts)
+  type: task
+  description: >-
+    Replace tests/daemon-watcher.test.ts (163 lines, all static analysis) with Playwright E2E tests.
+
+
+    Write: packages/web-ui/tests/e2e/api-watcher.spec.ts
+
+    Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+    Behaviors to test:
+
+    - Modify a YAML file in the fixture's .kspec/ directory — verify daemon detects the change and
+    updates data (visible via subsequent GET request or WebSocket event) (@daemon-server ac-4)
+
+    - Verify debounce: rapid successive file changes result in a single reparse (@daemon-server
+    ac-5)
+
+    - Verify YAML parse errors don't crash the watcher — modify file to invalid YAML, then fix it
+    (@daemon-server ac-6)
+
+
+    Note: CI (GitHub Actions) does not support recursive fs.watch — file watcher tests are skipped
+    in CI. Add the same skip condition used by other watcher tests. Check the convention in
+    kspec-agents.md: 'File watcher tests skip in CI'.
+
+
+    After E2E tests pass, delete tests/daemon-watcher.test.ts.
+
+    Run: npm test && npm run test:e2e to verify.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - testing
+    - daemon
+    - e2e
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:56.244Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Delete static analysis tests for ralph end-loop, web-ui-triage, and misc
+  description: >-
+    Delete static analysis tests that either have behavioral coverage elsewhere or test things that
+    don't need testing.
+
+
+    Files to DELETE entirely:
+
+    1. tests/skill-module-split.test.ts (121 lines) — tests that a code split happened. The split is
+    done. Re-exports are proven by actual usage in setup.ts and other importers.
+
+    2. tests/web-ui-shared-types.test.ts (61 lines) — guards against local type definitions in 2
+    files. Convention enforcement, not behavior.
+
+    3. tests/web-ui-triage.test.ts (300 lines) — reads Svelte components checking for string
+    patterns. UI behavior is covered by E2E triage tests.
+
+
+    Partial deletes:
+
+    4. tests/ralph/end-loop.test.ts — delete these blocks:
+       - Lines 254-272 (ac-detect): reads ralph.ts, checks for isEndLoopRequested string. Behavioral tests at lines 148-251 prove detection works via CLI.
+       - Lines 277-346 (session close handlers): reads ralph.ts, checks for signal handler strings. Session close is tested behaviorally in session-budget-integration.test.ts lines 420+.
+       - Lines 374-418 (trait error-guidance): exact duplicates of behavioral tests at lines 120-144.
+       - Lines 493-502 (closeSession export): reads store.ts, checks function signature string.
+       KEEP: lines 1-252 (behavioral), 348-372 (absence tests for removed markers), 423-478 (behavioral CLI tests).
+    5. tests/normalize-ref-input.test.ts — delete lines 37-139 (anti-pattern scanning and import
+    existence checks). Keep lines 1-35 (unit tests for normalizeRefInput function).
+
+    6. tests/package-distribution.test.ts — delete lines 20-46 (directory existence checks via
+    fs.stat) and lines 57-62 (directory count). Keep lines 50-55, 64-91, 94-185 (content validation,
+    npm packaging, plugin integrity).
+
+
+    Run: npm test to verify no regressions.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-delete-static-analysis-tests
+  tags:
+    - testing
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJBNJKVJWSX2240N81H9KYYA
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T00:28:58.610Z
+  notes: []
+  todos: []
