@@ -1820,12 +1820,15 @@ triage:
       only way to fix a rule is to delete the entire convention and recreate it. Surfaced during
       skill CLI lookups task when codex review caught a wording issue in one rule."
     status: triaged
-    action: defer
+    action: spec-gap
     reasoning: Convention --update-rule — DX improvement, workaround is delete+recreate
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.987Z
-    updated_at: 2026-02-26T19:02:52.998Z
+    updated_at: 2026-02-26T19:17:52.548Z
+    override_reasoning: Having to delete is bad IMO, best to close this gap.
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:17:52.527Z
   - _ulid: 01KJDNA7TNPB96SWJFH8JK4YW4
     inbox_ref: 01KJ9NJC7QK6F0SAB11PNN3798
     item_snapshot: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
@@ -1838,11 +1841,11 @@ triage:
     reasoning: Setup without CLAUDECODE=1 — ralph container workaround exists
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.013Z
-    updated_at: 2026-02-26T19:17:00.618Z
     override_reasoning: Given I want to start using codex as well I would like to ensure setup works beyond claude code
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:17:00.594Z
+    created_at: 2026-02-26T19:02:53.013Z
+    updated_at: 2026-02-26T19:17:00.618Z
   - _ulid: 01KJDNA7VMWSG7KP54SZGJ2V9P
     inbox_ref: 01KJA6SXTB3DG19YC17E604J7X
     item_snapshot: "kspec agents generate should include package version in content hash (or add --force
