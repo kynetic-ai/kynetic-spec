@@ -60967,7 +60967,11 @@
   notes: []
   todos: []
   automation: eligible
-- title: Add CI lint to prevent static analysis test pattern
+- _ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
+  slugs:
+    - task-lint-no-static-analysis-tests
+  title: Add CI lint to prevent static analysis test pattern
+  type: task
   description: >-
     Add a vitest test (or script) that fails if any test file reads source code files — the static
     analysis anti-pattern this project is migrating away from.
@@ -61012,23 +61016,29 @@
     fail on all the existing static analysis files. Add a depends_on to the deletion task, or
     include a generous allowlist that shrinks as migration tasks complete. The simpler approach:
     just do this task last.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-e2e-daemon-tasks-api"
+    - "@task-e2e-daemon-items-api"
+    - "@task-e2e-daemon-inbox-api"
+    - "@task-e2e-daemon-meta-validation-api"
+    - "@task-e2e-daemon-triage-api"
+    - "@task-e2e-daemon-errors-projects-api"
+    - "@task-e2e-daemon-server-core"
+    - "@task-e2e-daemon-websocket"
+    - "@task-e2e-daemon-watcher"
+    - "@task-delete-static-analysis-tests"
+  context: []
   priority: 2
-  slugs:
-    - task-lint-no-static-analysis-tests
   tags:
     - testing
     - ci
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-26T00:36:04.458Z
   notes: []
   todos: []
+  automation: eligible
