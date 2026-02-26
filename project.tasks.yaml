@@ -60577,7 +60577,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -60590,6 +60590,7 @@
   session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
   created_at: 2026-02-26T00:28:39.737Z
   started_at: 2026-02-26T02:26:06.286Z
+  submitted_at: 2026-02-26T02:39:56.285Z
   notes:
     - _ulid: 01KJBX0WRB668M1VT0RGTEPA22
       created_at: 2026-02-26T02:39:06.507Z
@@ -60602,7 +60603,11 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T02:39:56.285Z
+  completed_at: 2026-02-26T03:34:26.228Z
+  closed_reason: "Merged in PR #544. Replaced 217 lines of static analysis in
+    tests/daemon-api-items.test.ts with 23 Playwright E2E tests in
+    packages/web-ui/tests/e2e/api-items.spec.ts. All ACs (ac-8 through ac-11) covered with real HTTP
+    calls against running daemon. All CI checks passed."
 - _ulid: 01KJBNJ3QWS882SPWM83DDVXJM
   slugs:
     - task-e2e-daemon-inbox-api
