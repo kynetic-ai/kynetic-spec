@@ -60810,6 +60810,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #547. Replaced 414-line static analysis file
+    tests/daemon-api-triage.test.ts with 34 Playwright E2E tests in
+    packages/web-ui/tests/e2e/api-triage.spec.ts. All 9 @triage-daemon-api ACs and
+    @trait-api-endpoint ACs covered with real HTTP calls to running daemon. All CI checks passed."
   depends_on: []
   context: []
   priority: 2
@@ -60822,6 +60826,7 @@
   created_at: 2026-02-26T00:28:46.838Z
   started_at: 2026-02-26T04:34:28.288Z
   submitted_at: 2026-02-26T05:36:07.584Z
+  completed_at: 2026-02-26T11:16:32.366Z
   notes:
     - _ulid: 01KJC7468Z6HCQWHFE1G0414DY
       created_at: 2026-02-26T05:35:40.319Z
@@ -60834,11 +60839,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-26T11:16:32.366Z
-  closed_reason: "Merged in PR #547. Replaced 414-line static analysis file
-    tests/daemon-api-triage.test.ts with 34 Playwright E2E tests in
-    packages/web-ui/tests/e2e/api-triage.spec.ts. All 9 @triage-daemon-api ACs and
-    @trait-api-endpoint ACs covered with real HTTP calls to running daemon. All CI checks passed."
 - _ulid: 01KJBNJAPSK8858417YYGBFX7S
   slugs:
     - task-e2e-daemon-errors-projects-api
@@ -60887,7 +60887,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -60901,6 +60901,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-26T11:16:59.701Z
+  session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
 - _ulid: 01KJBNJCYDTFHTDB60DJFM1356
   slugs:
     - task-e2e-daemon-server-core
