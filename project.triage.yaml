@@ -1822,7 +1822,7 @@ triage:
       ...options} is discoverable only through trial-and-error. Tried array format, args array, and
       string format before finding the correct object format. Help output shows allowed commands but
       not the JSON schema for batch payloads.
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Batch JSON format docs — already in AGENTS.md, could be improved but not urgent
     decided_by: "@claude"
@@ -1832,7 +1832,8 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:20:13.120Z
     created_at: 2026-02-26T19:02:52.930Z
-    updated_at: 2026-02-26T19:20:13.138Z
+    updated_at: 2026-02-26T19:32:53.228Z
+    acted_at: 2026-02-26T19:32:53.212Z
   - _ulid: 01KJDNA7RYTZHTKEB8X5NN755Q
     inbox_ref: 01KJ93W2PWGATM2YVHQRBSSVK5
     item_snapshot: kspec task set --priority accepts numbers (1-5) but all documentation, conventions,
@@ -1849,10 +1850,10 @@ triage:
       support both but easy to do as part of the task work.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:18:59.745Z
-    created_at: 2026-02-26T19:02:52.958Z
-    updated_at: 2026-02-26T19:32:53.087Z
     acted_at: 2026-02-26T19:32:53.071Z
     result_ref: "@01KJDQ15"
+    created_at: 2026-02-26T19:02:52.958Z
+    updated_at: 2026-02-26T19:32:53.087Z
   - _ulid: 01KJDNA7SVE6M6JV4XH7CH9KJP
     inbox_ref: 01KJ9BENECYW9DP5FP6Y5EJSVM
     item_snapshot: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the
