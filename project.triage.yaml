@@ -1617,7 +1617,7 @@ triage:
       plan get @plan-ref to read implementation notes, algorithm details, and context. Update
       task-work skill and task-work-loop workflow to include this step. Plans are the right place
       for rich implementation context instead of cramming it into task notes.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Agent plan_ref check — workflow/skill improvement, not blocking task work
     decided_by: "@claude"
@@ -1626,7 +1626,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:27:59.358Z
     created_at: 2026-02-26T19:02:52.448Z
-    updated_at: 2026-02-26T19:27:59.376Z
+    updated_at: 2026-02-26T19:33:01.080Z
+    acted_at: 2026-02-26T19:33:01.065Z
+    result_ref: "@01KJDQ1CT"
   - _ulid: 01KJDNA79VHCVAAN363VV8ZSDQ
     inbox_ref: 01KJ63RW5ZEQFM3PMXD224F9VG
     item_snapshot: "Plan import --update replaces all ACs instead of merging. When extending an existing
@@ -1638,10 +1640,10 @@ triage:
     reasoning: "Bug: plan import --update replaces all ACs instead of merging. Data loss risk."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.475Z
-    updated_at: 2026-02-26T19:33:00.273Z
     acted_at: 2026-02-26T19:33:00.257Z
     result_ref: "@01KJDQ1C"
+    created_at: 2026-02-26T19:02:52.475Z
+    updated_at: 2026-02-26T19:33:00.273Z
   - _ulid: 01KJDNA7AS6NTRE2SVK8AWP8G2
     inbox_ref: 01KJ63RW6VJ8K1MTR4VC3GM4AQ
     item_snapshot: Plan import warnings treated as errors in batch mode. The no YAML code block in specs
