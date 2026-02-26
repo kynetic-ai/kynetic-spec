@@ -6241,6 +6241,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-02-26T21:21:54.712Z
+    completed_at: 2026-02-26T21:23:56.775Z
     step_results:
       - step_index: 0
         status: completed
@@ -6312,4 +6313,11 @@ runs:
         notes: "Captured: 1 inbox item (EPIPE fix, 01KJDXC0), 2 success observations (task decomposition
           quality, mock ACP test infrastructure). Session complete."
     initiated_by: "@claude"
-    completed_at: 2026-02-26T21:23:56.775Z
+  - _ulid: 01KJDZS6BEADXHVJPJXN2KT10F
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-02-26T22:05:48.783Z
+    step_results: []
+    initiated_by: "@claude"
