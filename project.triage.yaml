@@ -1671,7 +1671,7 @@ triage:
       depends_on). Currently batch commands reject underscore variants even though the error message
       suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
       generating JSON batch payloads where underscore is the natural convention.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: CLI kebab/underscore normalization — DX improvement, workaround is to use correct form
     decided_by: "@claude"
@@ -1680,7 +1680,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:26:20.438Z
     created_at: 2026-02-26T19:02:52.571Z
-    updated_at: 2026-02-26T19:26:20.461Z
+    updated_at: 2026-02-26T19:32:57.835Z
+    acted_at: 2026-02-26T19:32:57.821Z
+    result_ref: "@01KJDQ19"
   - _ulid: 01KJDNA7DP29PT56R2CV9V406M
     inbox_ref: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
@@ -1691,10 +1693,10 @@ triage:
     reasoning: "Bug: batch --commands '' hangs on stdin. Caused ralph loop to get stuck."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.598Z
-    updated_at: 2026-02-26T19:32:57.017Z
     acted_at: 2026-02-26T19:32:56.998Z
     result_ref: "@01KJDQ18"
+    created_at: 2026-02-26T19:02:52.598Z
+    updated_at: 2026-02-26T19:32:57.017Z
   - _ulid: 01KJDNA7EJT5VVGV2W3DM9R5HR
     inbox_ref: 01KJ76Y81G54ASMF0A18Z5G35Y
     item_snapshot: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering

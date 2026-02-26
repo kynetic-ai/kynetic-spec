@@ -61942,22 +61942,42 @@
   created_at: 2026-02-26T19:32:55.301Z
   notes: []
   todos: []
-- title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
+- _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
+  slugs: []
+  title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
     with a cle
+  type: task
+  description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
+    fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
+    with empty string arg.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:56.309Z
+  notes: []
+  todos: []
+- title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
+    depends_on). Cur
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
-    fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
-    with empty string arg.
-  _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
+  description: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
+    depends_on). Currently batch commands reject underscore variants even though the error message
+    suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
+    generating JSON batch payloads where underscore is the natural convention.
+  _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:56.309Z
+  created_at: 2026-02-26T19:32:57.124Z
   notes: []
   todos: []
