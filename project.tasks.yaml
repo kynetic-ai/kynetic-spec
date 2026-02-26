@@ -60900,6 +60900,7 @@
   session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
   created_at: 2026-02-26T00:28:49.241Z
   started_at: 2026-02-26T11:16:59.701Z
+  submitted_at: 2026-02-26T11:27:49.570Z
   notes:
     - _ulid: 01KJCTPC9QPYRQ5ESZXJVTCQV7
       created_at: 2026-02-26T11:17:39.255Z
@@ -60921,9 +60922,17 @@
         tests/daemon-api-projects.test.ts (235 lines). All unit test suites pass (54 files, 1173
         tests). N/A trait annotations added for all inherited traits.
       supersedes: null
+    - _ulid: 01KJCVT4RNWJKA9G74BZFRS12S
+      created_at: 2026-02-26T11:37:11.189Z
+      author: "@claude"
+      content: "Fixed Codex review MUST-FIX issues: (1) api-errors.spec.ts: Added proper ac-23 test
+        sending empty text string to hit custom 400 handler with {error, details} shape. Clarified
+        422 tests are Elysia framework validation. (2) api-projects.spec.ts: Corrected AC
+        annotations on POST path validation tests from ac-5/6/7 (X-Kspec-Dir header ACs) to ac-29
+        (POST /api/projects endpoint). Consolidated redundant POST tests. Pushed fix commit."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T11:27:49.570Z
 - _ulid: 01KJBNJCYDTFHTDB60DJFM1356
   slugs:
     - task-e2e-daemon-server-core
