@@ -6542,6 +6542,27 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJBW3RSM37ERH1SJ37DYHRB3
+    type: success
+    content: "GitHub PR thread resolution requires GraphQL mutation (resolveReviewThread), not REST API.
+      REST API only supports replies. Pattern: get thread node IDs via graphql query on
+      pullRequest.reviewThreads, then loop resolveReviewThread mutations. Reliably resolved all 7
+      threads in one pass."
+    created_at: 2026-02-26T02:23:12.180Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJBW3RXM0JGWW5GP8KBE53C6
+    type: friction
+    content: "scanTestCoverage() only scanned rootDir/tests/ — missed packages/web-ui/tests/e2e/ where
+      Playwright E2E specs with AC annotations live. Fixed by extending scan to also cover the E2E
+      directory and .spec.ts/.spec.js file extensions. Risk: any future E2E test directory additions
+      would silently miss coverage until the scan list is updated. Consider making E2E scan paths
+      configurable or convention-documented."
+    created_at: 2026-02-26T02:23:12.308Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
