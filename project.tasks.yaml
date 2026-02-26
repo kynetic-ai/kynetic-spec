@@ -61702,6 +61702,7 @@
   vcs_refs: []
   created_at: 2026-02-26T16:36:49.470Z
   started_at: 2026-02-26T20:12:15.039Z
+  submitted_at: 2026-02-26T20:20:39.155Z
   notes:
     - _ulid: 01KJDCYSNYVCKH2VNCNC9J1Q9Q
       created_at: 2026-02-26T16:36:49.470Z
@@ -61718,7 +61719,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T20:20:39.155Z
 - _ulid: 01KJDGCEF2MXN9KEMJ2F4S5VVP
   slugs: []
   title: Add batch usage template for agent instructions and CLI example output
@@ -63056,3 +63056,30 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix test failures after v0.7.0 version bump
+  description: "5 tests failing across 3 files after the v0.7.0 bump: (1)
+    tests/claude-plugin-registry.test.ts - checkMarketplaceHealth returns version-mismatch instead
+    of healthy, plugin files still at 0.6.0. (2) tests/package-distribution.test.ts (2 failures) -
+    plugin.json and marketplace.json still show 0.6.0, tests expect 0.7.0. (3)
+    tests/ralph/session-budget-integration.test.ts (2 failures) - ralph loop times out waiting for
+    completion marker, likely unrelated to version bump, may be a race condition or mock issue. The
+    plugin version failures are likely fixed by regenerating plugin distribution files. The ralph
+    budget tests need investigation."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - bug
+    - testing
+  depends_on: []
+  _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T20:23:16.878Z
+  notes: []
+  todos: []
