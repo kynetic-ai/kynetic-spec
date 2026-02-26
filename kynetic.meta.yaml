@@ -6573,6 +6573,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJCVXZYRRDSMSAA2AN5TPVWR
+    type: friction
+    content: "AC annotation verification gap: Tests annotated with wrong AC refs (e.g., Elysia 422 tests
+      annotated as ac-23 when ac-23 requires 400+{error,details}; POST body validation annotated as
+      ac-5/6/7 when those are for X-Kspec-Dir header). Fix: always run kspec item get @spec-ref and
+      read AC text before annotating tests."
+    created_at: 2026-02-26T11:39:17.337Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
