@@ -61636,7 +61636,7 @@
     - Worker and reviewer auto-approve args are independent (no leakage)
   spec_ref: "@ralph-adapter-auto-approve"
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-register-codex-acp-in-adapter-registry"
@@ -61646,6 +61646,7 @@
   vcs_refs: []
   created_at: 2026-02-26T16:36:49.114Z
   started_at: 2026-02-26T20:48:06.594Z
+  submitted_at: 2026-02-26T21:02:15.479Z
   notes:
     - _ulid: 01KJDCYSAT8CGF4D804VEAEECD
       created_at: 2026-02-26T16:36:49.114Z
@@ -61675,7 +61676,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T21:02:15.479Z
+  completed_at: 2026-02-26T21:17:25.499Z
+  closed_reason: "Merged in PR #563. Replaced hardcoded --dangerously-skip-permissions with
+    per-adapter autoApproveArgs via extraArgs in spawner. 9 tests cover all 4 ACs."
 - _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
   slugs:
     - implement-register-codex-acp-in-adapter-registry
