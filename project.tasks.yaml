@@ -61522,8 +61522,15 @@
     - infra
   vcs_refs: []
   created_at: 2026-02-26T13:07:52.613Z
-  notes: []
+  notes:
+    - _ulid: 01KJDFWAA0883CNHNQ37PYMGNF
+      created_at: 2026-02-26T17:27:53.920Z
+      author: "@claude"
+      content: "Automation status set to manual_only: CI configuration requires human judgment on runner
+        resources, caching strategy, and secrets"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
   slugs:
     - implement-per-role-adapter-selection-for-ralph-loo
@@ -61590,6 +61597,7 @@
       author: "@claude"
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJDCYSATR96J7FMFSGTG51GQ
   slugs:
     - implement-per-adapter-auto-approve-arguments
@@ -61643,6 +61651,7 @@
       author: "@claude"
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
   slugs:
     - implement-register-codex-acp-in-adapter-registry
@@ -61698,3 +61707,4 @@
       author: "@claude"
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
+  automation: eligible
