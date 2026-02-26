@@ -1567,12 +1567,15 @@ triage:
       JSON uses different arg names (e.g. inbox-ref not ref, message not text). Add a batch-specific
       help that shows the JSON arg names, or accept both forms."
     status: triaged
-    action: defer
+    action: delete
     reasoning: Batch arg name discoverability — DX improvement, not urgent
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.342Z
-    updated_at: 2026-02-26T19:02:52.358Z
+    updated_at: 2026-02-26T19:29:53.765Z
+    override_reasoning: Think this is handled now with the recent improvements around batch.
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:29:53.746Z
   - _ulid: 01KJDNA76ZV0P7GCJGJMMAAAVA
     inbox_ref: 01KJ4VHNAZDGTNTX7S7630S6B9
     item_snapshot: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
@@ -1597,11 +1600,11 @@ triage:
     reasoning: Config file for ralph skill overrides — workaround exists, not urgent
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.417Z
-    updated_at: 2026-02-26T19:29:09.561Z
     override_reasoning: I think this isn't needed as we have the core skills now?
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:09.542Z
+    created_at: 2026-02-26T19:02:52.417Z
+    updated_at: 2026-02-26T19:29:09.561Z
   - _ulid: 01KJDNA7902JC2BCJX50258W86
     inbox_ref: 01KJ63QDZSHSB8J8BAEEPV4EZQ
     item_snapshot: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec
