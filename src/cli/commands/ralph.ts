@@ -1056,8 +1056,16 @@ export function registerRalphCommand(program: Command): void {
 
         // AC: @ralph-per-role-adapters ac-6, ac-7
         // Adapter IDs for harness-specific env injection/cleanup.
-        // Deduplicate when worker and reviewer use the same adapter.
-        const uniqueAdapterIds = [...new Set([workerAdapterId, reviewerAdapterId])];
+        // Deduplicate by harness target, not just adapter ID. claude-code-acp is
+        // an alias for claude-agent-acp — both inject to the same Claude Code
+        // settings file. Without normalization, injecting twice would clobber the
+        // previousValue and break cleanup restoration.
+        const normalizeForEnv = (id: string) =>
+          id === "claude-code-acp" ? "claude-agent-acp" : id;
+        const uniqueAdapterIds = [...new Set([
+          normalizeForEnv(workerAdapterId),
+          normalizeForEnv(reviewerAdapterId),
+        ])];
 
         // Everything after session creation is wrapped in try/finally to guarantee
         // budget cleanup even if pre-loop setup (event logging, signal handlers) throws.
