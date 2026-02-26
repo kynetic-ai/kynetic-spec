@@ -370,7 +370,7 @@ features:
                   total: 0, filter, error} on stdout."
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
