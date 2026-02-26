@@ -1016,11 +1016,3 @@ inbox:
       - cli
       - reflection
     added_by: "@claude"
-  - _ulid: 01KJDN04PSK23P7QTTP3RWEQES
-    text: kspec agents generate --force flag to skip staleness check and always regenerate. Needed
-      during release when version bumps but content hash unchanged.
-    created_at: 2026-02-26T18:57:22.137Z
-    tags:
-      - cli
-      - dx
-    added_by: "@claude"
