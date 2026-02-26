@@ -61582,7 +61582,7 @@
     - Session metadata records both adapter IDs
   spec_ref: "@ralph-per-role-adapters"
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-register-codex-acp-in-adapter-registry"
@@ -61628,6 +61628,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-26T21:35:47.745Z
 - _ulid: 01KJDCYSATR96J7FMFSGTG51GQ
   slugs:
     - implement-per-adapter-auto-approve-arguments
