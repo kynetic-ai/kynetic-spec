@@ -6316,7 +6316,7 @@ runs:
   - _ulid: 01KJDZS6BEADXHVJPJXN2KT10F
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-26T22:05:48.783Z
     step_results:
@@ -6374,5 +6374,25 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-26T22:06:14.082Z
-        completed_at: 2026-02-26T22:06:14.082Z
+        completed_at: 2026-02-26T22:06:28.412Z
+        notes: >-
+          ## Coverage Check
+
+
+          1. **Mock adapter limitation** — Already captured as inbox 01KJDZBA (just created this
+          session). Fully tracked.
+
+
+          2. **Build before CLI tests** — Partially covered by completed task 01KFC7FZ (centralize
+          utilities). The friction is that spawnSync-based tests silently use stale builds. Not
+          specifically tracked.
+
+
+          3. **Thread resolution process** — Observation 01KGVCEF covers the self-authored PR review
+          thread issue. The GraphQL resolution process is documented in MEMORY.md. The ongoing
+          friction is that it's manual — no automation. Not tracked as an improvement item.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-26T22:06:28.412Z
+        completed_at: 2026-02-26T22:06:28.412Z
     initiated_by: "@claude"
