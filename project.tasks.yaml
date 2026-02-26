@@ -63149,7 +63149,10 @@
   created_at: 2026-02-26T20:23:16.878Z
   notes: []
   todos: []
-- title: Verify and fix codex-acp adapter integration for ralph
+- _ulid: 01KJE03R4EZDVZS2ZHHEE4WJ81
+  slugs: []
+  title: Verify and fix codex-acp adapter integration for ralph
+  type: task
   description: >-
     Several issues identified with the codex-acp adapter that prevent it from working correctly with
     ralph:
@@ -63199,22 +63202,20 @@
     - Session ID reaches kspec subprocesses inside the codex agent
 
     - Auto-approve args produce no permission prompts during ralph loop
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - ralph
     - codex
     - bug
-  depends_on: []
-  _ulid: 01KJE03R4EZDVZS2ZHHEE4WJ81
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-26T22:11:34.669Z
   notes: []
   todos: []
+  started_at: 2026-02-26T22:13:52.039Z
