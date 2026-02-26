@@ -61245,6 +61245,7 @@
   session_id: 01KJD384ABVWV1CVHJX0B5PJYA
   created_at: 2026-02-26T00:28:58.610Z
   started_at: 2026-02-26T14:23:36.699Z
+  submitted_at: 2026-02-26T14:33:07.775Z
   notes:
     - _ulid: 01KJD5W4KAJZCFD2SSSXN6K0H0
       created_at: 2026-02-26T14:33:02.315Z
@@ -61259,9 +61260,16 @@
         test). Added AC annotations for ac-session-close-normal/signal/error to behavioral tests.
         All 3431 tests pass across all 3 shards."
       supersedes: null
+    - _ulid: 01KJD60DRN2WXRX8QPB5MRC373
+      created_at: 2026-02-26T14:35:22.773Z
+      author: "@claude"
+      content: "PR #558 created. Deleted 869 lines of static analysis tests across 7 files. Replaced with
+        behavioral close_reason assertions in session-budget-integration.test.ts. Fixed test
+        assertion for crash agent path (close_reason is 'Completed all 1 iterations' not 'abandoned'
+        when using --max-loops 1). All shards pass locally."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T14:33:07.775Z
 - _ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
   slugs:
     - task-lint-no-static-analysis-tests
