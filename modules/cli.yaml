@@ -359,9 +359,15 @@ features:
                 when: Used in batch
                 then: Validation rejects with message that batch cannot be nested
               - id: ac-filter-by-path
-                given: An agent needs the schema for a specific command (e.g. 'task set')
-                when: kspec batch commands 'task set' is run
-                then: Only that command's info is displayed (arguments, options, description)
+                given: A path argument is provided (e.g. task set)
+                when: kspec batch commands "task set" is run
+                then: Only that command info is displayed with arguments, options, and description. Input is trimmed
+                  before matching. Exact match only — partial paths do not match.
+              - id: ac-filter-not-found
+                given: A path argument is provided that matches no allowed command
+                when: kspec batch commands "nonexistent" is run
+                then: "Exits with NOT_FOUND (3). Text mode shows error message. JSON mode outputs {commands: [],
+                  total: 0, filter, error} on stdout."
             status:
               maturity: draft
               implementation: implemented
