@@ -430,6 +430,10 @@ features:
             given: origin remote exists
             when: checking for remote shadow branch
             then: runs git fetch origin to ensure remote refs are up to date
+          - id: ac-5
+            given: a shallow clone where kspec-meta is not in local refs
+            when: checking for remote shadow branch
+            then: queries the remote directly (e.g. git ls-remote) instead of relying on locally-fetched refs
         status:
           maturity: draft
           implementation: implemented

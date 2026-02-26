@@ -60821,6 +60821,7 @@
   session_id: 01KJBZXXNHE3M4WX1BZ6Z5ZNCJ
   created_at: 2026-02-26T00:28:46.838Z
   started_at: 2026-02-26T04:34:28.288Z
+  submitted_at: 2026-02-26T05:36:07.584Z
   notes:
     - _ulid: 01KJC7468Z6HCQWHFE1G0414DY
       created_at: 2026-02-26T05:35:40.319Z
@@ -60833,7 +60834,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T05:36:07.584Z
 - _ulid: 01KJBNJAPSK8858417YYGBFX7S
   slugs:
     - task-e2e-daemon-errors-projects-api
@@ -61204,3 +61204,29 @@
   notes: []
   todos: []
   automation: eligible
+- title: Fix shadow branch remote detection in shallow clones
+  description: "remoteBranchExists() uses git show-ref which relies on locally-fetched refs. In
+    shallow clones, kspec-meta refs are never populated, causing init to create a fresh orphan
+    branch instead of attaching to the existing remote one. Fix: use git ls-remote to query remote
+    directly. Also fix initializeShadow to fetch the branch before worktree creation, and update
+    ralph-container entrypoint check."
+  type: task
+  spec_ref: "@shadow-init-remote"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs:
+    - task-shadow-shallow-clone-detection
+  tags:
+    - bug
+    - cli
+    - infra
+  depends_on: []
+  _ulid: 01KJCQ01EAF79RKFYTMBSZRP1Q
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T10:13:01.513Z
+  notes: []
+  todos: []
