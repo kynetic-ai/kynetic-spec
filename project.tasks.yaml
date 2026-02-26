@@ -60925,6 +60925,9 @@
 
     - DELETE lines 254-272 (ac-detect): covered by behavioral tests at lines 148-251.
 
+    - DELETE lines 348-372 (ac-remove-markers): absence tests checking removed marker code stays
+    removed. Not behavior — nobody is reintroducing deleted marker file code.
+
     - DELETE lines 374-418 (trait error-guidance): exact duplicates of lines 120-144.
 
     - DELETE lines 493-502 (closeSession export check): string matching on store.ts source.
@@ -60938,10 +60941,18 @@
     277-346. Annotate the new assertions with // AC: @session-end-loop-signal
     ac-session-close-normal, ac-session-close-signal, ac-session-close-error.
 
-    - KEEP: lines 1-252 (behavioral), 348-372 (absence tests), 423-478 (behavioral CLI tests).
+    - KEEP: lines 1-252 (behavioral), 423-478 (behavioral CLI tests).
 
 
-    Partial deletes:
+    Partial deletes in tests/ralph/session-budget-integration.test.ts:
+
+    - DELETE lines 293-339 (ac-remove-marker-code): 13 absence tests checking 26 removed marker
+    patterns in ralph.ts. Same rationale — nobody is reintroducing deleted marker file code.
+
+    - KEEP: lines 1-290 (behavioral budget tests), 341-548 (behavioral session close tests).
+
+
+    Other partial deletes:
 
     5. tests/normalize-ref-input.test.ts — delete lines 37-139 (anti-pattern scanning and import
     checks). Keep lines 1-35 (unit tests for normalizeRefInput function).
