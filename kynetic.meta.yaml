@@ -6531,6 +6531,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJBTMZJE38BW62X2QG6CMYYK
+    type: friction
+    content: Elysia body schema validation returns 422 (not 400) before the handler runs. When writing
+      E2E tests for daemon endpoints that have body schema validation (t.Object(...)),
+      missing/invalid body fields return 422. If the handler also has manual validation that returns
+      400, the schema check fires first. Account for this in test assertions — do not assume 400 for
+      missing body fields on Elysia-validated routes.
+    created_at: 2026-02-26T01:57:39.023Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
