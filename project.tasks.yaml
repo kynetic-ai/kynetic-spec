@@ -61693,7 +61693,7 @@
     - See tests/session-create.test.ts and tests/ralph.test.ts for patterns
   spec_ref: "@codex-acp-adapter-registration"
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -61708,6 +61708,7 @@
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-26T20:12:15.039Z
 - _ulid: 01KJDGCEF2MXN9KEMJ2F4S5VVP
   slugs: []
   title: Add batch usage template for agent instructions and CLI example output
