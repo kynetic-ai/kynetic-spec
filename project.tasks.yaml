@@ -61800,22 +61800,42 @@
   created_at: 2026-02-26T19:32:48.731Z
   notes: []
   todos: []
-- title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
+- _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
+  slugs: []
+  title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
     branches "
+  type: task
+  description: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates
+    stale branches (found 13 after one session). The gh pr merge command supports --delete-branch.
+    Add to pr-review-loop workflow merge step.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:49.803Z
+  notes: []
+  todos: []
+- title: kspec agents generate should include package version in content hash (or add --force flag) so
+    versio
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates
-    stale branches (found 13 after one session). The gh pr merge command supports --delete-branch.
-    Add to pr-review-loop workflow merge step.
-  _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
+  description: "kspec agents generate should include package version in content hash (or add --force
+    flag) so version bumps during releases automatically trigger regeneration. Currently skips
+    because content is identical, but the version comment in the header is stale. Workaround:
+    manually edit the version line."
+  _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:49.803Z
+  created_at: 2026-02-26T19:32:50.617Z
   notes: []
   todos: []

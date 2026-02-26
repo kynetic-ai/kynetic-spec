@@ -1889,14 +1889,16 @@ triage:
       flag) so version bumps during releases automatically trigger regeneration. Currently skips
       because content is identical, but the version comment in the header is stale. Workaround:
       manually edit the version line."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Agents generate version in hash — hit during every release. Clear scope. Consolidates
       duplicates #34, #40, #41."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.044Z
-    updated_at: 2026-02-26T19:02:53.057Z
+    updated_at: 2026-02-26T19:32:51.305Z
+    acted_at: 2026-02-26T19:32:51.290Z
+    result_ref: "@01KJDQ13"
   - _ulid: 01KJDNA7WG9TW2D239EA8JX9G3
     inbox_ref: 01KJA6SXVCSYQT1X48341636SC
     item_snapshot: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates
@@ -1908,10 +1910,10 @@ triage:
       --delete-branch."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.072Z
-    updated_at: 2026-02-26T19:32:50.501Z
     acted_at: 2026-02-26T19:32:50.487Z
     result_ref: "@01KJDQ12"
+    created_at: 2026-02-26T19:02:53.072Z
+    updated_at: 2026-02-26T19:32:50.501Z
   - _ulid: 01KJDNA7XCWV164J03NXCGK32X
     inbox_ref: 01KJA6SXW5DHXFFJHH6DYQYBVJ
     item_snapshot: "Session summary/stats command — kspec session stats @id or kspec session show @id
