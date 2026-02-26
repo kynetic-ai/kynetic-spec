@@ -55560,7 +55560,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -55709,6 +55709,11 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-02-26T00:29:20.781Z
+  closed_reason: "Audit complete. Identified ~3,500 lines of static analysis tests across 14 files
+    covering ~98 ACs. Created 10 follow-up tasks: 9 E2E replacement tasks for daemon APIs and 1
+    deletion task for tests that don't need replacing. All tasks are automation-eligible with
+    concrete endpoints, AC annotations, and file references."
 - _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
   slugs:
     - task-deduplicate-web-ui-types
