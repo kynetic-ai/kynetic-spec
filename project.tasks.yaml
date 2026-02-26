@@ -61636,7 +61636,7 @@
     - Worker and reviewer auto-approve args are independent (no leakage)
   spec_ref: "@ralph-adapter-auto-approve"
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-register-codex-acp-in-adapter-registry"
@@ -61652,6 +61652,7 @@
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-02-26T20:48:06.594Z
 - _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
   slugs:
     - implement-register-codex-acp-in-adapter-registry
@@ -61695,6 +61696,8 @@
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #562. Registered codex-acp adapter, added autoApproveArgs to interface,
+    wired env injection/removal, fixed previousValue propagation caught by Codex review."
   depends_on: []
   context: []
   priority: 1
@@ -61703,6 +61706,7 @@
   created_at: 2026-02-26T16:36:49.470Z
   started_at: 2026-02-26T20:12:15.039Z
   submitted_at: 2026-02-26T20:20:39.155Z
+  completed_at: 2026-02-26T20:44:58.769Z
   notes:
     - _ulid: 01KJDCYSNYVCKH2VNCNC9J1Q9Q
       created_at: 2026-02-26T16:36:49.470Z
@@ -61719,9 +61723,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-26T20:44:58.769Z
-  closed_reason: "Merged in PR #562. Registered codex-acp adapter, added autoApproveArgs to interface,
-    wired env injection/removal, fixed previousValue propagation caught by Codex review."
 - _ulid: 01KJDGCEF2MXN9KEMJ2F4S5VVP
   slugs: []
   title: Add batch usage template for agent instructions and CLI example output
