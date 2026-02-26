@@ -6238,7 +6238,7 @@ runs:
   - _ulid: 01KJDX8T0R3BNPK4QFE6C7VPXM
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-26T21:21:54.712Z
     step_results:
@@ -6264,5 +6264,21 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T21:22:08.725Z
-        completed_at: 2026-02-26T21:22:08.725Z
+        completed_at: 2026-02-26T21:22:17.060Z
+        notes: >-
+          Friction points:
+
+          1. EPIPE error during test cleanup — When spawning mock ACP agents in vitest and shutting
+          them down, the ACP framing layer throws uncaught EPIPE errors because it tries to write to
+          a dead child process pipe. Required adding a process-level uncaughtException handler in
+          the test file. This is a systemic issue — any test that directly spawns and kills ACP
+          agents will hit this.
+
+          2. No clean shutdown helper for SpawnedAgent — Had to write a custom cleanShutdown helper
+          in the test, then ultimately fall back to suppressing EPIPE. The SpawnedAgent API lacks a
+          graceful shutdown method that waits for the process to exit.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T21:22:17.060Z
+        completed_at: 2026-02-26T21:22:17.060Z
     initiated_by: "@claude"
