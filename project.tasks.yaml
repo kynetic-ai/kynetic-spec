@@ -61902,22 +61902,43 @@
   created_at: 2026-02-26T19:32:53.607Z
   notes: []
   todos: []
-- title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
+- _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
+  slugs: []
+  title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
     failed on ks"
+  type: task
+  description: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
+    but failed on kspec item get. Possible write conflict or index corruption during ralph loop
+    session. Investigate shadow branch integrity."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:54.517Z
+  notes: []
+  todos: []
+- title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
+    hanging o
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
-    but failed on kspec item get. Possible write conflict or index corruption during ralph loop
-    session. Investigate shadow branch integrity."
-  _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
+  description: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool
+    call hanging on stdin), ralph has no mechanism to detect or recover. A configurable
+    per-iteration timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would
+    prevent indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't
+    prevent the kspec batch stdin hang.
+  _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:54.517Z
+  created_at: 2026-02-26T19:32:55.301Z
   notes: []
   todos: []
