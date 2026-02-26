@@ -5919,7 +5919,7 @@ runs:
   - _ulid: 01KJC3HWNFCNM1J29G17YF02YC
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-26T04:33:14.927Z
     step_results:
@@ -5934,5 +5934,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T04:33:50.328Z
-        completed_at: 2026-02-26T04:33:50.328Z
+        completed_at: 2026-02-26T04:33:55.646Z
+        notes: "One high-confidence friction already captured (01KJC3JS). Success: Codex review workflow
+          effectively catches annotation format issues before merge - the review->fix->push cycle
+          took <5 mins for the fix commit. No additional high-confidence items beyond what was
+          already captured."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T04:33:55.646Z
+        completed_at: 2026-02-26T04:33:55.646Z
     initiated_by: "@claude"
