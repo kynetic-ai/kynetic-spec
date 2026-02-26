@@ -968,3 +968,19 @@ inbox:
       - spec
       - cli
     added_by: "@claude"
+  - _ulid: 01KJCXMR42ZTQZK510F8AESYN7
+    text: kspec agents generate meta hash should include package version — currently skips regeneration
+      when only the version changes, requiring manual edit of the freshness comment
+    created_at: 2026-02-26T12:09:11.554Z
+    tags:
+      - cli
+      - agents
+    added_by: "@claude"
+  - _ulid: 01KJCXMR524W6YTGCEPHEZ97WH
+    text: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
+      workaround
+    created_at: 2026-02-26T12:09:11.586Z
+    tags:
+      - cli
+      - bug
+    added_by: "@claude"
