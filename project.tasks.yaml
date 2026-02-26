@@ -61242,12 +61242,25 @@
   tags:
     - testing
   vcs_refs: []
+  session_id: 01KJD384ABVWV1CVHJX0B5PJYA
   created_at: 2026-02-26T00:28:58.610Z
-  notes: []
+  started_at: 2026-02-26T14:23:36.699Z
+  notes:
+    - _ulid: 01KJD5W4KAJZCFD2SSSXN6K0H0
+      created_at: 2026-02-26T14:33:02.315Z
+      author: "@claude"
+      content: "Deleted 3 test files entirely (skill-module-split.test.ts, web-ui-shared-types.test.ts,
+        web-ui-triage.test.ts). Made partial deletes in 4 more files: end-loop.test.ts (removed
+        ac-detect static, session close handlers static, ac-remove-markers, trait error-guidance
+        duplicates, closeSession export check), session-budget-integration.test.ts (removed
+        ac-remove-marker-code block + added behavioral close_reason assertions to spawnRalphUntil
+        tests), normalize-ref-input.test.ts (removed static analysis and import checks),
+        package-distribution.test.ts (removed directory existence fs.stat tests and directory count
+        test). Added AC annotations for ac-session-close-normal/signal/error to behavioral tests.
+        All 3431 tests pass across all 3 shards."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-26T14:23:36.699Z
-  session_id: 01KJD384ABVWV1CVHJX0B5PJYA
 - _ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
   slugs:
     - task-lint-no-static-analysis-tests
