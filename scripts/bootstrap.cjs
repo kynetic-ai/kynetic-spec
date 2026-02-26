@@ -97,19 +97,38 @@ function commandExists(cmd) {
 }
 
 /**
- * Check if kspec CLI is available and working
+ * Check if kspec CLI is available, working, and linked to the local build.
+ * A globally installed kspec (e.g. from npm install -g) is not sufficient
+ * for this project — we need the locally built version via npm link.
  */
 function checkKspecCli() {
   if (!commandExists('kspec')) {
-    return { available: false, reason: 'kspec command not found' };
+    return { available: false, linked: false, reason: 'kspec command not found' };
   }
 
   const result = run('kspec --version', { silent: true });
   if (!result.success) {
-    return { available: false, reason: 'kspec command exists but failed to run' };
+    return { available: false, linked: false, reason: 'kspec command exists but failed to run' };
   }
 
-  return { available: true, version: result.output.trim() };
+  // Check if kspec resolves to the local project (npm link)
+  // by comparing the resolved path with our project's dist
+  const distCli = path.join(projectRoot, 'dist', 'cli', 'index.js');
+  const whichResult = run('which kspec', { silent: true });
+  if (whichResult.success) {
+    try {
+      const resolvedBin = fs.realpathSync(whichResult.output.trim());
+      const resolvedDist = fs.existsSync(distCli) ? fs.realpathSync(distCli) : null;
+      if (resolvedDist && resolvedBin !== resolvedDist) {
+        return { available: true, linked: false, version: result.output.trim(), reason: 'kspec is globally installed but not linked to local build' };
+      }
+    } catch {
+      // If realpath fails, assume not linked
+      return { available: true, linked: false, version: result.output.trim(), reason: 'could not verify link target' };
+    }
+  }
+
+  return { available: true, linked: true, version: result.output.trim() };
 }
 
 /**
@@ -191,7 +210,7 @@ async function bootstrap() {
   // Determine what needs to be done
   const needsInstall = !modulesStatus.installed;
   const needsBuild = !buildStatus.built;
-  const needsLink = !cliStatus.available;
+  const needsLink = !cliStatus.linked;
   const needsInit = !dirStatus.exists || !dirStatus.healthy;
 
   if (!needsInstall && !needsBuild && !needsLink && !needsInit) {
