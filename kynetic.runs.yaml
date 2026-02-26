@@ -6316,8 +6316,42 @@ runs:
   - _ulid: 01KJDZS6BEADXHVJPJXN2KT10F
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-26T22:05:48.783Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-26T22:05:48.783Z
+        completed_at: 2026-02-26T22:06:04.783Z
+        notes: >-
+          Session: Implemented per-role adapter selection for ralph loop (PR #564).
+
+
+          ## What Worked Well
+
+
+          1. **Codex as second reviewer caught a real bug** — The alias dedup issue (claude-code-acp
+          / claude-agent-acp sharing the same harness config) was a genuine correctness bug that I
+          missed. Running /codex pr twice (before and after fixes) provided iterative quality
+          improvement.
+
+
+          2. **Task description quality** — The plan-derived task had excellent implementation notes
+          with exact line numbers and a clear 4-step change list. Made implementation fast and
+          focused.
+
+
+          3. **Incremental commit strategy** — 4 commits (feature, AC annotations, different-ID
+          test, env dedup fix) made it easy to trace what changed and why. Each addressed specific
+          review feedback.
+
+
+          4. **Dry-run as test mechanism** — Using --dry-run with default adapter IDs
+          (claude-code-acp / claude-agent-acp) to test per-role propagation without needing real
+          agents was effective and fast.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-26T22:06:04.783Z
+        completed_at: 2026-02-26T22:06:04.783Z
     initiated_by: "@claude"
