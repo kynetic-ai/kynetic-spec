@@ -879,6 +879,8 @@ export function registerRalphCommand(program: Command): void {
     .option("--no-yolo", "Require normal permission prompts")
     .option("--subagent-timeout <minutes>", "Review subagent timeout in minutes", "20")
     .option("--adapter <id>", "Agent adapter to use", "claude-agent-acp")
+    .option("--worker-adapter <id>", "Adapter for task-work agent (overrides --adapter)")
+    .option("--reviewer-adapter <id>", "Adapter for review subagent (overrides --adapter)")
     .option("--adapter-cmd <cmd>", "Custom adapter command (for testing)")
     .option(
       "--restart-every <n>",
@@ -967,32 +969,36 @@ export function registerRalphCommand(program: Command): void {
           options.adapter = "custom";
         }
 
-        // Resolve adapter
-        const adapter = resolveAdapter(options.adapter);
+        // AC: @ralph-per-role-adapters ac-3, ac-4, ac-5
+        // Resolve per-role adapters with precedence: role flag > --adapter > default
+        const workerAdapterId = options.workerAdapter ?? options.adapter;
+        const reviewerAdapterId = options.reviewerAdapter ?? options.adapter;
 
-        // Validate adapter package exists before proceeding
-        // Skip validation for:
-        // - Custom adapters (--adapter-cmd)
-        // - Non-npx adapters
-        // - Dry-run mode with default adapter (doesn't spawn agent, default may not be installed in CI)
-        // Note: If user explicitly specifies --adapter, validate even in dry-run to catch typos
-        // Accept both new and deprecated adapter names
-        const isDefaultAdapter =
-          options.adapter === "claude-agent-acp" ||
-          options.adapter === "claude-code-acp";
-        const skipValidation =
-          options.adapterCmd ||
-          adapter.command !== "npx" ||
-          !adapter.args[0] ||
-          (options.dryRun && isDefaultAdapter);
+        const workerAdapter = resolveAdapter(workerAdapterId);
+        const reviewerAdapter = resolveAdapter(reviewerAdapterId);
 
-        if (!skipValidation) {
-          validateAdapter(adapter.args[0]);
+        // AC: @ralph-per-role-adapters ac-6, ac-9, ac-11
+        // Validate adapter packages — deduplicate when same ID
+        const adapterIdsToValidate = new Set([workerAdapterId, reviewerAdapterId]);
+        for (const id of adapterIdsToValidate) {
+          const resolved = resolveAdapter(id);
+          const isDefault = id === "claude-agent-acp" || id === "claude-code-acp";
+          const skip =
+            resolved.command !== "npx" ||
+            !resolved.args[0] ||
+            (options.dryRun && isDefault);
+
+          if (!skip) {
+            validateAdapter(resolved.args[0]);
+          }
         }
 
-        // Build auto-approve extra args from adapter (applied per-spawn to prevent cross-role leakage)
-        const autoApproveArgs = options.yolo
-          ? adapter.autoApproveArgs
+        // Build auto-approve extra args per adapter (applied per-spawn to prevent cross-role leakage)
+        const workerAutoApproveArgs = options.yolo
+          ? workerAdapter.autoApproveArgs
+          : undefined;
+        const reviewerAutoApproveArgs = options.yolo
+          ? reviewerAdapter.autoApproveArgs
           : undefined;
 
         const restartInfo =
@@ -1018,8 +1024,11 @@ export function registerRalphCommand(program: Command): void {
         const taskScopeInfo = explicitTaskScope
           ? `, tasks=${explicitTaskScope.refs.join(",")}`
           : "";
+        const adapterInfo = workerAdapterId === reviewerAdapterId
+          ? `adapter=${workerAdapterId}`
+          : `worker=${workerAdapterId}, reviewer=${reviewerAdapterId}`;
         info(
-          `Starting ralph loop (adapter=${options.adapter}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo}, max-tasks=${maxTasksInfo}${taskScopeInfo})`,
+          `Starting ralph loop (${adapterInfo}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo}, max-tasks=${maxTasksInfo}${taskScopeInfo})`,
         );
         if (options.focus) {
           info(`Focus: ${options.focus}`);
@@ -1041,13 +1050,22 @@ export function registerRalphCommand(program: Command): void {
         // Create session with budget. When maxTasks=0 (unlimited), no budget.json is created.
         await createSessionWithBudget(specDir, {
           id: sessionId,
-          agent_type: options.adapter,
+          agent_type: workerAdapterId,
           budget: maxTasks,
         });
 
-        // Adapter ID for harness-specific env injection/cleanup.
-        // Declared before try/finally so signal handlers and finally block can access it.
-        const adapterId = options.adapter || "claude-agent-acp";
+        // AC: @ralph-per-role-adapters ac-6, ac-7
+        // Adapter IDs for harness-specific env injection/cleanup.
+        // Deduplicate by harness target, not just adapter ID. claude-code-acp is
+        // an alias for claude-agent-acp — both inject to the same Claude Code
+        // settings file. Without normalization, injecting twice would clobber the
+        // previousValue and break cleanup restoration.
+        const normalizeForEnv = (id: string) =>
+          id === "claude-code-acp" ? "claude-agent-acp" : id;
+        const uniqueAdapterIds = [...new Set([
+          normalizeForEnv(workerAdapterId),
+          normalizeForEnv(reviewerAdapterId),
+        ])];
 
         // Everything after session creation is wrapped in try/finally to guarantee
         // budget cleanup even if pre-loop setup (event logging, signal handlers) throws.
@@ -1058,7 +1076,9 @@ export function registerRalphCommand(program: Command): void {
         let exitReason: ExitReason | null = null;
         let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
-        let previousEnvValue: string | null | undefined; // For restoring pre-existing KSPEC_SESSION_ID
+        // AC: @ralph-per-role-adapters ac-7
+        // Track previous env values per adapter for cleanup restoration
+        const previousEnvValues = new Map<string, string | null | undefined>();
         const recentTaskRefs: string[] = [];
         const sessionIterationMap = new Map<string, number>();
 
@@ -1078,7 +1098,9 @@ export function registerRalphCommand(program: Command): void {
               await Promise.all([
                 fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {}),
                 closeSession(specDir, sessionId, "abandoned", `Received ${signal}`),
-                removeEnvForAdapter(adapterId, previousEnvValue),
+                ...uniqueAdapterIds.map((id) =>
+                  removeEnvForAdapter(id, previousEnvValues.get(id)),
+                ),
               ]);
             } catch {
               // Best-effort cleanup — don't let errors prevent exit
@@ -1098,20 +1120,25 @@ export function registerRalphCommand(program: Command): void {
           process.on("SIGINT", sigintHandler);
           process.on("SIGTERM", sigtermHandler);
 
-          // Inject KSPEC_SESSION_ID into agent harness config so it reaches child
-          // processes. Inside try/finally so cleanup runs even if injection fails.
+          // AC: @ralph-per-role-adapters ac-6, ac-7
+          // Inject KSPEC_SESSION_ID into agent harness config for each unique adapter.
           // Process env alone is insufficient — some harnesses (e.g., Claude Code)
           // sandbox child processes and don't forward arbitrary parent env vars.
           // AC: @ralph-session-budget-integration ac-env-inject
-          const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
-          previousEnvValue = injectionResult?.previousValue;
+          for (const id of uniqueAdapterIds) {
+            const injectionResult = await injectEnvForAdapter(id, sessionId);
+            previousEnvValues.set(id, injectionResult?.previousValue);
+          }
 
-          // Log session start
+          // AC: @ralph-per-role-adapters ac-12
+          // Log session start with both adapter IDs
           await appendEvent(specDir, {
             session_id: sessionId,
             type: "session.start",
             data: {
-              adapter: options.adapter,
+              adapter: workerAdapterId,
+              workerAdapter: workerAdapterId,
+              reviewerAdapter: reviewerAdapterId,
               maxLoops,
               maxRetries,
               maxFailures,
@@ -1155,11 +1182,12 @@ export function registerRalphCommand(program: Command): void {
             }
 
             // AC: @ralph-subagent-spawning ac-8 - Process pending_review tasks BEFORE main iteration
+            // AC: @ralph-per-role-adapters ac-2 - Use reviewer adapter for review subagents
             // This wraps consecutiveFailures in an object so it can be mutated by the helper
             const failureTracker = { count: consecutiveFailures };
             const continueLoop = await processPendingReviewTasks(
               ctx,
-              adapter,
+              reviewerAdapter,
               sessionCtx.pending_review_tasks,
               {
                 yolo: options.yolo,
@@ -1167,7 +1195,7 @@ export function registerRalphCommand(program: Command): void {
                 maxFailures,
                 cwd: process.cwd(),
                 subagentTimeout: subagentTimeout * 60 * 1000,
-                autoApproveArgs,
+                autoApproveArgs: reviewerAutoApproveArgs,
               },
               failureTracker,
             );
@@ -1246,10 +1274,13 @@ export function registerRalphCommand(program: Command): void {
             );
 
             // AC: @cli-ralph ac-21
+            // AC: @ralph-per-role-adapters ac-10
             if (options.dryRun) {
               console.log(
                 chalk.yellow("=== DRY RUN - Configuration ===\n"),
               );
+              console.log(`  worker-adapter: ${workerAdapterId}`);
+              console.log(`  reviewer-adapter: ${reviewerAdapterId}`);
               console.log(`  max-loops: ${maxLoops}`);
               console.log(`  max-tasks: ${maxTasks === 0 ? "unlimited" : maxTasks}`);
               console.log(`  max-retries: ${maxRetries}`);
@@ -1298,14 +1329,15 @@ export function registerRalphCommand(program: Command): void {
 
               try {
                 // Spawn agent if not already running
+                // AC: @ralph-per-role-adapters ac-1 - Use worker adapter for task-work
                 if (!agent) {
                   info("Spawning ACP agent...");
                   // AC: @ralph-session-budget-integration ac-env-inject
                   // AC: @ralph-adapter-auto-approve ac-1, ac-2, ac-3
-                  agent = await spawnAndInitialize(adapter, {
+                  agent = await spawnAndInitialize(workerAdapter, {
                     cwd: process.cwd(),
                     env: { KSPEC_SESSION_ID: sessionId },
-                    extraArgs: autoApproveArgs,
+                    extraArgs: workerAutoApproveArgs,
                     clientOptions: {
                       clientInfo: {
                         name: "kspec-ralph",
@@ -1540,9 +1572,11 @@ export function registerRalphCommand(program: Command): void {
           }
 
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
-          // Clean up budget file and harness env injection when session ends
+          // AC: @ralph-per-role-adapters ac-7 - Clean up env for all unique adapters
           await fs.unlink(getSessionBudgetPath(specDir, sessionId)).catch(() => {});
-          await removeEnvForAdapter(adapterId, previousEnvValue);
+          for (const id of uniqueAdapterIds) {
+            await removeEnvForAdapter(id, previousEnvValues.get(id));
+          }
 
           // Clean up session env vars
           delete process.env.KSPEC_RALPH_SESSION;
@@ -1575,13 +1609,14 @@ export function registerRalphCommand(program: Command): void {
             info(`Exit reason: ${exitReason}`);
             info(`Working tree: ${wrapUpCtx.workingTree.clean ? "clean" : "has uncommitted changes"}`);
 
+            // AC: @ralph-per-role-adapters ac-8 - Wrap-up uses worker adapter
             const wrapUpResult = await runWrapUpAgent(
-              adapter,
+              workerAdapter,
               wrapUpCtx,
               {
                 yolo: options.yolo,
                 cwd: process.cwd(),
-                extraArgs: autoApproveArgs,
+                extraArgs: workerAutoApproveArgs,
                 handleRequest: (client, reqId, method, params) =>
                   handleRequest(client, reqId, method, params, options.yolo),
               },
