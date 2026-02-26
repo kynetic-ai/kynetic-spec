@@ -6048,7 +6048,7 @@ runs:
   - _ulid: 01KJD7AWGVQWTH13G761BK5Z3T
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-26T14:58:34.139Z
     step_results:
@@ -6062,5 +6062,17 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T14:58:47.233Z
-        completed_at: 2026-02-26T14:58:47.233Z
+        completed_at: 2026-02-26T14:59:22.095Z
+        notes: "Step 2: Friction identified: (1) Context compaction caused redundant work at session start -
+          re-reading files and re-doing edits already committed. Not systemic enough to capture -
+          inherent to context window architecture. (2) check-unresolved-comments CI timing race:
+          Codex comments posted at 14:44, CI checked at 14:45 before threads resolved, required
+          manual rerun. Low confidence this is systemic vs one-off timing. Success: Codex correctly
+          identified incorrect ac-session-close-error annotation on test that accepted normal exits.
+          This is a good example of review catching annotation/behavior mismatch. No novel
+          high-confidence items not already tracked."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T14:59:22.095Z
+        completed_at: 2026-02-26T14:59:22.095Z
     initiated_by: "@claude"
