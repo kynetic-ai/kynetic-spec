@@ -62552,7 +62552,70 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:33:03.825Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQBJ4QTDMCZJ4NAY7B1KGP
+      created_at: 2026-02-26T19:38:33.495Z
+      author: "@claude"
+      content: >-
+        ENRICHMENT — Standalone context for this task:
+
+
+        **What**: The triage page has status and tag filters (lines 326-347 of
+        `packages/web-ui/src/routes/triage/+page.svelte`) but no way to filter triage records by
+        their action type (promote, delete, defer, spec-gap, duplicate). When reviewing triage
+        history, users often want to see "all promote decisions" or "all spec-gap findings" without
+        scrolling through mixed results.
+
+
+        **Where**: `packages/web-ui/src/routes/triage/+page.svelte`:
+
+        - Existing filters: `filterStatus` (all/untriaged/triaged/acted_on) at line 44, `filterTag`
+        at line 43
+
+        - Filter UI: lines 324-347 (the filter controls div with data-testid="triage-filters")
+
+        - Filtered items computation: `filteredItems` derived at lines 78-96 — currently filters by
+        tag and status only
+
+        - The `TriageAction` type includes: promote, delete, defer, spec-gap, duplicate (defined in
+        `$lib/types/triage`)
+
+
+        **How**:
+
+        1. Add a new `filterAction` state variable: `let filterAction = $state<TriageAction |
+        ''>('')`
+
+        2. Add a new `<select>` element in the filters div (alongside status and tag filters) with
+        options for each action type
+
+        3. Add action filtering to the `filteredItems` derived computation:
+           ```
+           if (filterAction) {
+             items = items.filter((i) => i.record?.action === filterAction);
+           }
+           ```
+        4. Include the action filter in the `$effect` that resets `currentIndex` when filters change
+        (line 296-302)
+
+        5. If implementing URL state persistence (task @01KJDQ1F), also sync this filter to URL
+        params
+
+
+        **Done when**:
+
+        - A dropdown/select control for triage action type appears in the filter bar
+
+        - Selecting "promote" shows only items with promote decisions
+
+        - Selecting "spec-gap" shows only spec-gap items
+
+        - The empty/default option shows all items (no action filter)
+
+        - Changing the filter resets the card navigation index to 0
+
+        - E2E test covers filtering by action type
+      supersedes: null
   todos: []
 - _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
   slugs: []
