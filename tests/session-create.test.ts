@@ -956,6 +956,40 @@ describe("Environment Injection", () => {
       }
     });
 
+    // AC: @codex-acp-adapter-registration ac-3
+    it("should round-trip inject/remove for codex-acp via adapter path with previousValue propagation", async () => {
+      const originalHome = process.env.HOME;
+      process.env.HOME = testDir;
+
+      try {
+        // Pre-seed an existing KSPEC_SESSION_ID in Codex config
+        const codexDir = path.join(testDir, ".codex");
+        await fs.mkdir(codexDir, { recursive: true });
+        await fs.writeFile(
+          path.join(codexDir, "config.json"),
+          JSON.stringify({
+            shell_environment_policy: { set: { KSPEC_SESSION_ID: "old-session" } },
+          }),
+          "utf-8",
+        );
+
+        // Inject via adapter — should capture previousValue
+        const sessionId = testUlid("ADPT", 6);
+        const result = await injectEnvForAdapter("codex-acp", sessionId);
+        expect(result).not.toBeNull();
+        expect(result!.previousValue).toBe("old-session");
+
+        // Remove via adapter using the captured previousValue — should restore
+        await removeEnvForAdapter("codex-acp", result!.previousValue);
+
+        const configPath = path.join(codexDir, "config.json");
+        const content = JSON.parse(await fs.readFile(configPath, "utf-8"));
+        expect(content.shell_environment_policy.set.KSPEC_SESSION_ID).toBe("old-session");
+      } finally {
+        process.env.HOME = originalHome;
+      }
+    });
+
     it("should be a no-op for unknown adapter", async () => {
       // Should not throw
       await expect(removeEnvForAdapter("unknown-adapter")).resolves.toBeUndefined();

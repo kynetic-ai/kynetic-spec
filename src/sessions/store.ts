@@ -1959,6 +1959,15 @@ export async function injectCodexEnv(
     }
   }
 
+  // Capture previous value before overwriting
+  const previousValue =
+    config.shell_environment_policy &&
+    typeof config.shell_environment_policy === "object" &&
+    (config.shell_environment_policy as Record<string, unknown>).set &&
+    typeof (config.shell_environment_policy as Record<string, unknown>).set === "object"
+      ? ((config.shell_environment_policy as Record<string, Record<string, string>>).set.KSPEC_SESSION_ID ?? null)
+      : null;
+
   // Ensure shell_environment_policy.set exists
   if (
     !config.shell_environment_policy ||
@@ -1983,6 +1992,7 @@ export async function injectCodexEnv(
     method: "codex_config",
     description: `Added KSPEC_SESSION_ID to Codex config shell_environment_policy.set`,
     path: configPath,
+    previousValue,
   };
 }
 
