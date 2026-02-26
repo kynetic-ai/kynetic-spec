@@ -1519,13 +1519,15 @@ triage:
     inbox_ref: 01KJ4TETN5XH8286FWZABW5ZX3
     item_snapshot: Web UI WebSocket connection unreliable - continually disconnects and reconnects.
       Needs investigation into reconnection logic, heartbeat handling, or fallback to polling.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug: WebSocket unreliable, disconnects/reconnects. Needs investigation."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.168Z
-    updated_at: 2026-02-26T19:02:52.197Z
+    updated_at: 2026-02-26T19:33:05.310Z
+    acted_at: 2026-02-26T19:33:05.296Z
+    result_ref: "@01KJDQ1GZ"
   - _ulid: 01KJDNA725H4FZMFZH92R3ADM7
     inbox_ref: 01KJ4TETP5C44S2YDBCR1P3075
     item_snapshot: "Web UI triage page: add filter controls for triage action types (promote, delete,
@@ -1538,10 +1540,10 @@ triage:
     override_reasoning: I want this
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:31:13.854Z
-    created_at: 2026-02-26T19:02:52.229Z
-    updated_at: 2026-02-26T19:33:04.516Z
     acted_at: 2026-02-26T19:33:04.501Z
     result_ref: "@01KJDQ1G"
+    created_at: 2026-02-26T19:02:52.229Z
+    updated_at: 2026-02-26T19:33:04.516Z
   - _ulid: 01KJDNA73KN5GAXGA1DM1AWWSP
     inbox_ref: 01KJ4TETPNXN6GZ4MT53BRZ1KA
     item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
