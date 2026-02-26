@@ -46848,28 +46848,28 @@
       content: Implementation complete. Changed remoteBranchExists() from git show-ref to git ls-remote for shallow clone compat. Updated initializeShadow to fetch with refspec (kspec-meta:kspec-meta) and set tracking via git config instead of git branch --set-upstream-to. Added AC-5 test for shallow clones using file:// protocol. Also fixed ralph-container entrypoint to use git ls-remote.
       supersedes: null
   todos: []
-- title: Add tests for bootstrap link detection
-  description: "Add unit tests for bootstrap.cjs link detection logic (checkKspecCli). Cover: global kspec not linked, dist not built yet, already linked, symlink resolution on Unix. Extract testable helpers if needed."
+- _ulid: 01KJCT38Z5DFJTVH1DJ860PD4P
+  slugs:
+    - task-test-bootstrap-link-detection
+  title: Add tests for bootstrap link detection
   type: task
+  description: "Add unit tests for bootstrap.cjs link detection logic (checkKspecCli). Cover: global kspec not linked, dist not built yet, already linked, symlink resolution on Unix. Extract testable helpers if needed."
   spec_ref: "@bootstrap-script"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-test-bootstrap-link-detection
   tags:
     - test
     - infra
-  depends_on: []
-  _ulid: 01KJCT38Z5DFJTVH1DJ860PD4P
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-26T11:07:13.253Z
   notes: []
   todos: []
-- title: "Fix AC coverage gaps in triage API E2E tests (PR #547 retro)"
+- title: Investigate kspec validate not crediting triage API E2E annotations
   description: "Codex retrospective review of PR #547 found coverage gaps in the triage API E2E tests. MUST-FIX: (1) kspec validate doesn't credit AC annotations in packages/web-ui/tests/e2e/api-triage.spec.ts — likely path/root mismatch. (2) ac-3/ac-4/ac-5 claim coverage but don't verify triage:updates WebSocket broadcast — file marks WS as N/A which conflicts. (3) ac-5 never verifies result_ref for result-producing actions. SHOULD-FIX: (4) @trait-api-endpoint ac-5 (shadow commit) annotated as implicitly covered but no test checks shadow commit occurrence."
   type: bug
   spec_ref: "@triage-daemon-api"
@@ -46888,5 +46888,27 @@
   context: []
   vcs_refs: []
   created_at: 2026-02-26T11:42:09.349Z
+  notes: []
+  todos: []
+  automation: manual_only
+- title: Add missing behavioral coverage to triage API E2E tests
+  type: bug
+  spec_ref: "@triage-daemon-api"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-triage-e2e-behavioral-coverage
+  tags:
+    - testing
+    - e2e
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJCW71YTXH4JG06QN5CKP5FJ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T11:44:14.296Z
   notes: []
   todos: []
