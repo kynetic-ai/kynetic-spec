@@ -39,7 +39,7 @@ See `kspec help task` for transition commands and options.
 - **Unclear scope, no specific guidance?** → `kspec inbox add "idea"` → triage later with `/kspec:triage`
 - **Learning/friction?** → `kspec meta observe friction "..."` → review during reflection
 
-**Rule:** Inbox is for YOUR uncertain discoveries, not for user requests. When the user says "create a task", create a task.
+**Rule:** When the user says "create a task", always create a task. Inbox-first is fine for your own uncertain ideas — but explicit user requests override that default.
 
 ### Staying Aligned During Work
 
