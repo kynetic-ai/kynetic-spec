@@ -944,3 +944,27 @@ inbox:
     created_at: 2026-02-26T00:57:05.085Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KJCTQGQ6VA5DNT6NSGVZ5V99
+    text: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
+      Pre-existing issue across main.
+    created_at: 2026-02-26T11:18:16.551Z
+    tags:
+      - bug
+      - schema
+    added_by: "@claude"
+  - _ulid: 01KJCTQGRDZYNYRD66RHV5GGMX
+    text: Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST /:ref/override
+      and POST /:ref/act. Spec needs updating to match reality.
+    created_at: 2026-02-26T11:18:16.589Z
+    tags:
+      - bug
+      - spec
+    added_by: "@claude"
+  - _ulid: 01KJCTQGSAZ8H0NZT9DR5628NX
+    text: Triage ac-5 says sets result_ref but delete action may not produce one. Verify behavior and
+      update spec or add test assertion.
+    created_at: 2026-02-26T11:18:16.618Z
+    tags:
+      - spec
+      - cli
+    added_by: "@claude"
