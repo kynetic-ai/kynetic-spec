@@ -15,6 +15,7 @@
 import * as fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import * as path from "node:path";
+import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import * as YAML from "yaml";
 import {
   type SessionEvent,
@@ -1939,21 +1940,21 @@ export async function injectCodexEnv(
     process.env.HOME || process.env.USERPROFILE || "",
     ".codex",
   );
-  const configPath = path.join(configDir, "config.json");
+  const configPath = path.join(configDir, "config.toml");
 
   await fsPromises.mkdir(configDir, { recursive: true });
 
   let config: Record<string, unknown> = {};
   try {
     const content = await fsPromises.readFile(configPath, "utf-8");
-    config = JSON.parse(content);
+    config = parseTOML(content) as Record<string, unknown>;
   } catch (err: unknown) {
     // Only start fresh for ENOENT; throw on parse errors to avoid overwriting
     if (err instanceof Error && "code" in err && err.code === "ENOENT") {
       // File doesn't exist, start fresh
     } else {
       throw new Error(
-        `Cannot inject env: ~/.codex/config.json exists but is not valid JSON. ` +
+        `Cannot inject env: ~/.codex/config.toml exists but is not valid TOML. ` +
         `Fix the file manually or remove it, then retry.`,
       );
     }
@@ -1983,7 +1984,7 @@ export async function injectCodexEnv(
 
   await fsPromises.writeFile(
     configPath,
-    JSON.stringify(config, null, 2) + "\n",
+    stringifyTOML(config) + "\n",
     "utf-8",
   );
 
@@ -2012,11 +2013,11 @@ export async function removeCodexEnv(
     process.env.HOME || process.env.USERPROFILE || "",
     ".codex",
   );
-  const configPath = path.join(configDir, "config.json");
+  const configPath = path.join(configDir, "config.toml");
 
   try {
     const content = await fsPromises.readFile(configPath, "utf-8");
-    const config = JSON.parse(content);
+    const config = parseTOML(content) as Record<string, unknown>;
 
     const policy = config.shell_environment_policy;
     if (policy && typeof policy === "object" && policy.set && typeof policy.set === "object") {
@@ -2038,12 +2039,12 @@ export async function removeCodexEnv(
 
       await fsPromises.writeFile(
         configPath,
-        JSON.stringify(config, null, 2) + "\n",
+        stringifyTOML(config) + "\n",
         "utf-8",
       );
     }
   } catch {
-    // Best-effort cleanup — file may not exist or may not be valid JSON
+    // Best-effort cleanup — file may not exist or may not be valid TOML
   }
 }
 
