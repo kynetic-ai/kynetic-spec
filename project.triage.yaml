@@ -1531,12 +1531,15 @@ triage:
     item_snapshot: "Web UI triage page: add filter controls for triage action types (promote, delete,
       defer, spec-gap, duplicate). Currently no way to filter triage records by action."
     status: triaged
-    action: defer
+    action: promote
     reasoning: Web UI filter controls — nice to have, not blocking
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.229Z
-    updated_at: 2026-02-26T19:02:52.246Z
+    updated_at: 2026-02-26T19:31:13.874Z
+    override_reasoning: I want this
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:31:13.854Z
   - _ulid: 01KJDNA73KN5GAXGA1DM1AWWSP
     inbox_ref: 01KJ4TETPNXN6GZ4MT53BRZ1KA
     item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
@@ -1546,11 +1549,11 @@ triage:
     reasoning: Web UI URL state persistence — nice to have, not blocking
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.275Z
-    updated_at: 2026-02-26T19:31:04.945Z
     override_reasoning: I want this
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:31:04.929Z
+    created_at: 2026-02-26T19:02:52.275Z
+    updated_at: 2026-02-26T19:31:04.945Z
   - _ulid: 01KJDNA74KJQPRCKXA0WCVVM2Q
     inbox_ref: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
     item_snapshot: Triage promote action should optionally delete the inbox item after creating the
