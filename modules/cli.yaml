@@ -2254,6 +2254,35 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KJCT2Z088W7TT4GR6A4HK9Q0
+        slugs:
+          - bootstrap-script
+        title: Bootstrap Script
+        type: requirement
+        tags: []
+        description: Zero-dependency bootstrap script that ensures kspec is installed, built, linked, and
+          initialized. Must use the locally built kspec (via npm link) when running in the project
+          repo, not a globally installed version.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-02-26T11:07:03.048Z
+        acceptance_criteria:
+          - id: ac-1
+            given: a globally installed kspec exists but is not npm-linked to the local project
+            when: bootstrap runs
+            then: runs npm link to override the global with the local build
+          - id: ac-2
+            given: dist/ does not exist yet (fresh clone)
+            when: bootstrap checks if kspec is linked
+            then: reports not linked and proceeds to build then link
+          - id: ac-3
+            given: kspec is already npm-linked to the local project dist
+            when: bootstrap runs
+            then: skips npm link
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands

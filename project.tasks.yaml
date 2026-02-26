@@ -61219,6 +61219,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #548. remoteBranchExists() now uses git ls-remote for shallow clone
+    compatibility. AC-4 spec updated to match."
   depends_on: []
   context: []
   priority: 1
@@ -61230,6 +61232,7 @@
   created_at: 2026-02-26T10:13:01.513Z
   started_at: 2026-02-26T10:13:32.379Z
   submitted_at: 2026-02-26T10:21:05.762Z
+  completed_at: 2026-02-26T10:41:18.809Z
   notes:
     - _ulid: 01KJCQ9CV7317W85C29TRY0DYR
       created_at: 2026-02-26T10:18:08.104Z
@@ -61241,6 +61244,26 @@
         ralph-container entrypoint to use git ls-remote.
       supersedes: null
   todos: []
-  completed_at: 2026-02-26T10:41:18.809Z
-  closed_reason: "Merged in PR #548. remoteBranchExists() now uses git ls-remote for shallow clone
-    compatibility. AC-4 spec updated to match."
+- title: Add tests for bootstrap link detection
+  description: "Add unit tests for bootstrap.cjs link detection logic (checkKspecCli). Cover: global
+    kspec not linked, dist not built yet, already linked, symlink resolution on Unix. Extract
+    testable helpers if needed."
+  type: task
+  spec_ref: "@bootstrap-script"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-test-bootstrap-link-detection
+  tags:
+    - test
+    - infra
+  depends_on: []
+  _ulid: 01KJCT38Z5DFJTVH1DJ860PD4P
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T11:07:13.253Z
+  notes: []
+  todos: []
