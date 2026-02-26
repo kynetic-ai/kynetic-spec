@@ -61708,3 +61708,27 @@
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
   automation: eligible
+- title: Add batch usage template for agent instructions and CLI example output
+  description: "Two parts: (1) New agents-sections template (02-cli-usage.md) documenting batch JSON
+    format, arg rules, invocation methods, and discovery commands. Ships with npm package. (2) CLI
+    enhancement — either kspec batch --example or kspec batch commands <path> --json for lightweight
+    per-command schema lookup. Reduces agent trial-and-error when constructing batch payloads."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cli
+    - docs
+    - dx
+  depends_on: []
+  _ulid: 01KJDGCEF2MXN9KEMJ2F4S5VVP
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T17:36:42.460Z
+  notes: []
+  todos: []
