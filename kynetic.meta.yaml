@@ -6637,6 +6637,20 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJD933WJ6W0FBY150BET1PZN
+    type: friction
+    content: "PR merged by review subagent while worker agent still editing files on same branch — local
+      branch switches to main automatically, all pending Edit tool changes silently lost. Caused
+      significant rework this session (re-applying all triage.spec.ts changes on new branch
+      fix/triage-ac6-session-close-error). The review subagent and worker agent operate concurrently
+      on the same branch in a fix cycle, creating a race condition. Potential mitigations: (1)
+      worker agent checks for branch changes before editing, (2) ralph serializes review subagent
+      after worker fully stops, (3) worker agent uses a local patch/stash before any branch
+      changes."
+    created_at: 2026-02-26T15:29:16.691Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
