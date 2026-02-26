@@ -1544,7 +1544,7 @@ triage:
     inbox_ref: 01KJ4TETPNXN6GZ4MT53BRZ1KA
     item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
       the page preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Web UI URL state persistence — nice to have, not blocking
     decided_by: "@claude"
@@ -1553,7 +1553,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:31:04.929Z
     created_at: 2026-02-26T19:02:52.275Z
-    updated_at: 2026-02-26T19:31:04.945Z
+    updated_at: 2026-02-26T19:33:03.706Z
+    acted_at: 2026-02-26T19:33:03.691Z
+    result_ref: "@01KJDQ1F"
   - _ulid: 01KJDNA74KJQPRCKXA0WCVVM2Q
     inbox_ref: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
     item_snapshot: Triage promote action should optionally delete the inbox item after creating the
@@ -1565,10 +1567,10 @@ triage:
       Clear scope, well-defined fix.
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.307Z
-    updated_at: 2026-02-26T19:33:02.887Z
     acted_at: 2026-02-26T19:33:02.872Z
     result_ref: "@01KJDQ1E"
+    created_at: 2026-02-26T19:02:52.307Z
+    updated_at: 2026-02-26T19:33:02.887Z
   - _ulid: 01KJDNA75PX9EHFDXZ8KJFEJ0Z
     inbox_ref: 01KJ4VDK7KWD0TZWCYBWXDABHT
     item_snapshot: "Batch arg name discoverability: kspec batch commands shows CLI signatures but batch
