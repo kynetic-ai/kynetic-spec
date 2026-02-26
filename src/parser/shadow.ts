@@ -1623,7 +1623,7 @@ export async function initializeShadow(
   }
 
   // Check for remote shadow branch
-  // AC: @shadow-init-remote ac-4, ac-5 — uses ls-remote (works in shallow clones)
+  // AC: @shadow-init-remote ac-4 ac-5 — queries remote directly via ls-remote
   const remoteExists = await hasRemote(projectRoot, remoteName);
   let remoteHasShadow = false;
   if (remoteExists) {
