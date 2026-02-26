@@ -6591,6 +6591,39 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJD309GMRXFSRKWNJ6KD3MTY
+    type: friction
+    content: 'JS date validation gotcha in E2E tests: new Date("invalid") returns Invalid Date but does
+      NOT throw. Tests using expect(() => new Date(x)).not.toThrow() or try/catch will always pass
+      even with malformed timestamps - false positive. Always use isNaN(new Date(x).getTime()) for
+      timestamp format validation. Caught this in api-websocket.spec.ts timestamp assertion
+      (AC-29/@trait-websocket-protocol ac-3).'
+    created_at: 2026-02-26T13:42:52.692Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJD309N30QVB8RRSD7A9J3CV
+    type: friction
+    content: "CI check-unresolved-comments timing race in review fix cycle: When Codex posts inline
+      review comments on a PR, we push a fix commit which triggers CI immediately. The
+      check-unresolved-comments job runs BEFORE we resolve the Codex threads via GraphQL, causing it
+      to fail on the new commit. Then requires manual workflow re-run. Mitigation: always resolve
+      all review threads BEFORE pushing any fix commits during a review cycle."
+    created_at: 2026-02-26T13:42:52.835Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJD309R4M9JR7EDRZPE91AEA
+    type: success
+    content: "window.__testWs pattern for Playwright WebSocket E2E: Store native browser WebSocket in
+      window.__testWs via page.evaluate() and access it across subsequent evaluate() calls. Browser
+      context maintains the global between calls. Enables clean helper functions (connectWebSocket,
+      sendAndWaitForAck, subscribeAndWaitForBroadcast) without needing Playwright WebSocket
+      interception. Used successfully in packages/web-ui/tests/e2e/api-websocket.spec.ts."
+    created_at: 2026-02-26T13:42:52.932Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
