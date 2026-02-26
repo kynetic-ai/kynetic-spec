@@ -15,6 +15,10 @@
  * - @daemon-server ac-6: YAML parse errors don't crash the watcher — error event broadcast instead
  */
 
+// Spec own AC N/A annotations (ACs not covered in E2E — require infrastructure beyond E2E scope)
+// AC: @daemon-server ac-7 — N/A: directory inaccessibility + exponential backoff recovery cannot be reliably triggered in E2E without OS-level access control manipulation; implementation verified in watcher.ts (retryCount, maxRetries, baseBackoffMs, handleWatcherError)
+// AC: @daemon-server ac-8 — N/A: forcing Bun fs.watch to fail (to trigger Chokidar fallback) requires process-level interception not available in E2E; implementation verified in watcher.ts (startBunWatcher, startChokidarWatcher, 'falling back to Chokidar')
+
 // Trait N/A annotations
 // AC: @trait-json-output ac-1 — N/A: daemon file watcher is not a CLI command
 // AC: @trait-json-output ac-2 — N/A: daemon file watcher is not a CLI command
@@ -208,46 +212,57 @@ async function waitForBroadcast(
 }
 
 /**
- * Count broadcasts on a topic received within a time window.
- * The window starts immediately when this promise is created.
+ * Install a broadcast counter for a topic and return a function to collect the count.
+ *
+ * Unlike countBroadcasts(), this function is two-phase:
+ * 1. Call installBroadcastCounter() and await it — this guarantees the listener is
+ *    installed in the browser BEFORE any Node.js writes happen.
+ * 2. After triggering the writes, call the returned collectFn after a delay to read
+ *    the accumulated count.
+ *
+ * This eliminates the race where page.evaluate() round-trip completes AFTER the
+ * debounced broadcast has already fired.
  */
-async function countBroadcasts(
+async function installBroadcastCounter(
   page: import('@playwright/test').Page,
-  topic: string,
-  windowMs: number
-): Promise<number> {
-  return page.evaluate(
-    ({ expectedTopic, durationMs }: { expectedTopic: string; durationMs: number }) => {
-      return new Promise<number>((resolve) => {
-        const ws = (window as unknown as Record<string, WebSocket>).__testWs;
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
-          resolve(0);
-          return;
+  topic: string
+): Promise<() => Promise<number>> {
+  // Install the counter in the browser and confirm it's ready
+  await page.evaluate(({ expectedTopic }: { expectedTopic: string }) => {
+    const ws = (window as unknown as Record<string, WebSocket>).__testWs;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+    // Attach a named counter that accumulates broadcast count
+    (window as unknown as Record<string, number>).__broadcastCount = 0;
+    const countKey = `__broadcastCount_${expectedTopic.replace(/:/g, '_')}`;
+    (window as unknown as Record<string, number>)[countKey] = 0;
+
+    const original = ws.onmessage;
+    const counter = (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.topic === expectedTopic && data.msg_id) {
+          (window as unknown as Record<string, number>)[countKey]++;
         }
+      } catch {
+        // ignore
+      }
+      if (original) original.call(ws, event);
+    };
 
-        let count = 0;
-        const original = ws.onmessage;
+    ws.onmessage = counter;
+    // Store for cleanup
+    (window as unknown as Record<string, unknown>).__broadcastCounter = counter;
+    (window as unknown as Record<string, string>).__broadcastCounterTopic = expectedTopic;
+  }, { expectedTopic: topic });
 
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            if (data.topic === expectedTopic && data.msg_id) {
-              count++;
-            }
-          } catch {
-            // ignore
-          }
-          if (original) original.call(ws, event);
-        };
-
-        setTimeout(() => {
-          ws.onmessage = original;
-          resolve(count);
-        }, durationMs);
-      });
-    },
-    { expectedTopic: topic, durationMs: windowMs }
-  );
+  // Return a collector function that reads the count after writes have settled
+  return async () => {
+    return page.evaluate(({ expectedTopic }: { expectedTopic: string }) => {
+      const countKey = `__broadcastCount_${expectedTopic.replace(/:/g, '_')}`;
+      return (window as unknown as Record<string, number>)[countKey] ?? 0;
+    }, { expectedTopic: topic });
+  };
 }
 
 /**
@@ -412,22 +427,26 @@ test.describe('File Watcher API', () => {
       '  status: draft',
     ].join('\n');
 
-    // Start counting broadcasts in a 2-second window, then make rapid writes
-    // Both the counter and the writes start near-simultaneously
-    const countingPromise = countBroadcasts(page, 'files:updates', 2000);
+    // Phase 1: Install the counter listener in the browser and await confirmation.
+    // This guarantees the listener is installed BEFORE any Node.js writes happen,
+    // eliminating the race where page.evaluate() round-trip occurs after the broadcast.
+    const collectCount = await installBroadcastCounter(page, 'files:updates');
 
-    // 3 rapid writes within ~120ms — all within the 500ms debounce window
+    // Phase 2: Make 3 rapid writes within ~120ms — all within the 500ms debounce window.
+    // The counter listener is already installed, so no broadcasts will be missed.
     writeFileSync(targetFile, base + '\n  description: rapid write 1\n');
     await new Promise((r) => setTimeout(r, 40));
     writeFileSync(targetFile, base + '\n  description: rapid write 2\n');
     await new Promise((r) => setTimeout(r, 40));
     writeFileSync(targetFile, base + '\n  description: rapid write 3\n');
 
-    // Wait for counting window to complete
-    const broadcastCount = await countingPromise;
+    // Phase 3: Wait for debounce to settle (500ms window + 300ms buffer), then collect count.
+    await new Promise((r) => setTimeout(r, 1200));
+    const broadcastCount = await collectCount();
 
     // AC: @daemon-server ac-5 — debounce collapses rapid writes into fewer broadcasts
-    // Ideal: 1 broadcast. Allow up to 2 for timing edge cases.
+    // Ideal: 1 broadcast. Allow up to 2 for timing edge cases where first write's debounce
+    // timer fires before the third write resets it.
     expect(broadcastCount).toBeGreaterThanOrEqual(1); // At least one change was detected
     expect(broadcastCount).toBeLessThanOrEqual(2); // Debounce prevented 3 separate broadcasts
   });
@@ -449,7 +468,13 @@ test.describe('File Watcher API', () => {
       '  status: draft',
     ].join('\n');
 
-    // 3 rapid writes within ~100ms — all within 500ms debounce
+    // Set up broadcast listener BEFORE any writes to eliminate the race where the
+    // debounce fires (500ms after last write) before waitForBroadcast is called.
+    // waitForBroadcast returns a Promise that resolves on the NEXT broadcast.
+    const firstBroadcastPromise = waitForBroadcast(page, 'files:updates');
+
+    // 3 rapid writes within ~100ms — all within 500ms debounce.
+    // The listener is already installed before the first write.
     writeFileSync(targetFile, base + '\n  description: write A\n');
     await new Promise((r) => setTimeout(r, 40));
     writeFileSync(targetFile, base + '\n  description: write B\n');
@@ -457,16 +482,19 @@ test.describe('File Watcher API', () => {
     writeFileSync(targetFile, base + '\n  description: write C\n');
 
     // The debounce fires 500ms after the last write (write C + 500ms)
-    // Wait for the first (debounced) broadcast
-    const firstBroadcast = await waitForBroadcast(page, 'files:updates');
+    const firstBroadcast = await firstBroadcastPromise;
 
     // AC: @daemon-server ac-5 — debounced broadcast arrives
     expect(firstBroadcast.topic).toBe('files:updates');
     expect(firstBroadcast).toHaveProperty('msg_id');
 
-    // Verify no additional broadcast arrives in the next 400ms
+    // Install a fresh counter for the 400ms window AFTER the first broadcast.
     // (400ms < 500ms debounce, so any lingering timer would have fired by now)
-    const extraCount = await countBroadcasts(page, 'files:updates', 400);
+    const collectExtra = await installBroadcastCounter(page, 'files:updates');
+    await new Promise((r) => setTimeout(r, 400));
+    const extraCount = await collectExtra();
+
+    // AC: @daemon-server ac-5 — no additional broadcast within 400ms of the first
     expect(extraCount).toBe(0);
   });
 
