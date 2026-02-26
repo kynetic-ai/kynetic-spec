@@ -61961,23 +61961,43 @@
   created_at: 2026-02-26T19:32:56.309Z
   notes: []
   todos: []
-- title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
+- _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
+  slugs: []
+  title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
     depends_on). Cur
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
     depends_on). Currently batch commands reject underscore variants even though the error message
     suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
     generating JSON batch payloads where underscore is the natural convention.
-  _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:57.124Z
+  notes: []
+  todos: []
+- title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
+    mutabl
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Ralph event handler iteration attribution should use session-scoped mapping instead of
+    shared mutable currentIteration. Codex review on PR #484 identified that late updates from a
+    previous ACP session can still be tagged with wrong iteration. Use session_id→iteration map or
+    session-scoped listener. See PR #484 review comment."
+  _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:57.124Z
+  created_at: 2026-02-26T19:32:57.953Z
   notes: []
   todos: []

@@ -1658,13 +1658,15 @@ triage:
       of shared mutable currentIteration. Codex review on PR #484 identified that late updates from
       a previous ACP session can still be tagged with wrong iteration. Use session_id→iteration map
       or session-scoped listener. See PR #484 review comment."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug: ralph event iteration attribution uses shared mutable state. Identified in PR review."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.538Z
-    updated_at: 2026-02-26T19:02:52.553Z
+    updated_at: 2026-02-26T19:32:58.677Z
+    acted_at: 2026-02-26T19:32:58.662Z
+    result_ref: "@01KJDQ1A"
   - _ulid: 01KJDNA7CV4THZZ2XJR72F2YK6
     inbox_ref: 01KJ6KTDE6ADT92WQ0CXYF9NZG
     item_snapshot: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
@@ -1679,10 +1681,10 @@ triage:
     override_reasoning: This happens enough it is worth doing, simple fix afaik
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:26:20.438Z
-    created_at: 2026-02-26T19:02:52.571Z
-    updated_at: 2026-02-26T19:32:57.835Z
     acted_at: 2026-02-26T19:32:57.821Z
     result_ref: "@01KJDQ19"
+    created_at: 2026-02-26T19:02:52.571Z
+    updated_at: 2026-02-26T19:32:57.835Z
   - _ulid: 01KJDNA7DP29PT56R2CV9V406M
     inbox_ref: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
