@@ -5922,6 +5922,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-26T04:33:14.927Z
+    completed_at: 2026-02-26T04:34:05.580Z
     step_results:
       - step_index: 0
         status: completed
@@ -5952,4 +5953,11 @@ runs:
         notes: "Captures complete. Observation 01KJC3JS already added in step 1 (friction: trait N/A
           annotations in JSDoc blocks not machine-parseable). No additional captures needed."
     initiated_by: "@claude"
-    completed_at: 2026-02-26T04:34:05.580Z
+  - _ulid: 01KJD2Y74DEFVWSA0WFAH3HE7W
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-26T13:41:44.717Z
+    step_results: []
+    initiated_by: "@claude"
