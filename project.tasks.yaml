@@ -60587,12 +60587,21 @@
     - daemon
     - e2e
   vcs_refs: []
+  session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
   created_at: 2026-02-26T00:28:39.737Z
-  notes: []
+  started_at: 2026-02-26T02:26:06.286Z
+  notes:
+    - _ulid: 01KJBX0WRB668M1VT0RGTEPA22
+      created_at: 2026-02-26T02:39:06.507Z
+      author: "@claude"
+      content: Written packages/web-ui/tests/e2e/api-items.spec.ts with 23 Playwright E2E tests covering
+        @api-contract ac-8 through ac-11. Tests use daemon fixture for real HTTP calls. Deleted
+        tests/daemon-api-items.test.ts (217 lines of static analysis). Unit test run skipped due to
+        cgroup PID limit (2020/2048) in sandbox — identical pattern to previous task which passed
+        CI.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-26T02:26:06.286Z
-  session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
 - _ulid: 01KJBNJ3QWS882SPWM83DDVXJM
   slugs:
     - task-e2e-daemon-inbox-api
