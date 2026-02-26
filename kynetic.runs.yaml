@@ -5956,8 +5956,32 @@ runs:
   - _ulid: 01KJD2Y74DEFVWSA0WFAH3HE7W
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-26T13:41:44.717Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-26T13:41:44.717Z
+        completed_at: 2026-02-26T13:41:56.870Z
+        notes: >-
+          Session work: Completed task-e2e-daemon-websocket. Key events:
+
+          1. Inherited task-e2e-daemon-server-core which was already done (PR #553 merged) -
+          completed it.
+
+          2. Wrote 13 Playwright E2E tests for WebSocket protocol in
+          packages/web-ui/tests/e2e/api-websocket.spec.ts, deleted tests/daemon-websocket.test.ts.
+
+          3. Ran Codex review, found 3 MUST-FIX + 3 SHOULD-FIX issues, fixed all of them.
+
+          4. Key fixes: (a) sendAck always sends ack:true, not ack:false - had to check
+          success:false for errors; (b) new Date(invalid) doesn't throw - needed getTime() NaN
+          check; (c) resolved 6 GitHub review threads via GraphQL before merging.
+
+          5. PR #556 merged successfully. All CI passed.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-26T13:41:56.870Z
+        completed_at: 2026-02-26T13:41:56.870Z
     initiated_by: "@claude"
