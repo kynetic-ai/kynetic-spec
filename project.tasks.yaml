@@ -62073,9 +62073,55 @@
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
     with a cle
   type: task
-  description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
-    fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
-    with empty string arg.
+  description: >-
+    **What**: `kspec batch --commands ''` hangs instead of failing fast. When Commander receives
+    `--commands ''` (empty string), `options.commands` is `''` which is falsy in JavaScript. The
+    source selection logic at `src/cli/commands/batch.ts` line 148 (`else if (options.commands)`)
+    skips the inline path and falls through to `source = { type: 'stdin' }`. The stdin reader at
+    `src/cli/batch-exec.ts` lines 114-124 then blocks forever waiting for input that will never
+    come.
+
+
+    **Where**:
+
+    - `src/cli/commands/batch.ts` lines 146-152 — source selection logic
+
+    - `src/cli/batch-exec.ts` lines 100-126 — `readSource()` stdin path
+
+
+    **How**:
+
+    Change the source selection to check `options.commands !== undefined` instead of truthiness:
+
+    ```typescript
+
+    if (options.file) {
+      source = { type: 'file', path: options.file };
+    } else if (options.commands !== undefined) {
+      source = { type: 'inline', json: options.commands };
+    } else {
+      source = { type: 'stdin' };
+    }
+
+    ```
+
+    This way `--commands ''` takes the inline path and gets caught by `parseBatchInput()` which will
+    fail on `JSON.parse('')` with a clear 'Invalid JSON' error.
+
+
+    Alternatively, also add early validation in the inline path: if `options.commands` is
+    empty/whitespace, throw `BatchParseError('Empty --commands value')` before attempting parse.
+
+
+    **Done when**:
+
+    - `kspec batch --commands ''` exits immediately with a clear error (not a hang)
+
+    - `kspec batch --commands ' '` also fails fast
+
+    - No regression: `kspec batch --commands '[...]'` still works correctly
+
+    - Add a test case for empty `--commands` input
   spec_ref: null
   status: pending
   blocked_by: []
