@@ -61717,7 +61717,7 @@
     enhancement — kspec batch commands <path> to filter output to a single command schema (e.g.
     kspec batch commands task-set). Documented in the new template. Reduces agent trial-and-error
     when constructing batch payloads."
-  spec_ref: null
+  spec_ref: "@batch-allowed-commands"
   meta_ref: null
   plan_ref: null
   status: pending
