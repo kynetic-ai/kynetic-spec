@@ -441,7 +441,7 @@ function formatCompletenessWarnings(
     (w) => w.type === "status_inconsistency",
   );
   const missingOwnACCoverage = warnings.filter(
-    (w) => w.type === "missing_test_coverage" && w.subtype === "own_ac",
+    (w) => w.type === "missing_test_coverage" && w.subtype !== "trait_ac",
   );
   const missingTraitACCoverage = warnings.filter(
     (w) => w.type === "missing_test_coverage" && w.subtype === "trait_ac",
