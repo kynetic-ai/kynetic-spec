@@ -3093,7 +3093,7 @@ features:
         created: 2026-02-26T16:36:48.456Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     features:
       - _ulid: 01KG8N2T41X1F9EDRSYMC7P4M7
         slugs:
