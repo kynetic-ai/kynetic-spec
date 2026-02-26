@@ -61720,7 +61720,7 @@
   spec_ref: "@batch-allowed-commands"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -61742,3 +61742,4 @@
         passes (pre-existing ralph flaky test unrelated). AGENTS.md and kspec-agents.md updated.
       supersedes: null
   todos: []
+  submitted_at: 2026-02-26T18:25:51.504Z
