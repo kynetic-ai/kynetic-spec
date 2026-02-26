@@ -47018,6 +47018,30 @@
       author: "@claude"
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
+  description: |-
+    Add --worker-adapter and --reviewer-adapter flags to ralph CLI for per-role adapter selection.
+
+    ## What to change
+
+    1. **src/cli/commands/ralph.ts** (~line 879) — Add two new CLI options: --worker-adapter <id> and --reviewer-adapter <id>. After option parsing (~line 968), resolve two adapters using precedence: role flag > --adapter > default.
+
+    2. **src/cli/commands/ralph.ts** — Pass workerAdapter to main iteration spawn (~line 1303) and reviewerAdapter to processPendingReviewTasks() (~line 1158). Wrap-up agent uses workerAdapter.
+
+    3. **src/cli/commands/ralph.ts** — Update validation to check both adapters on startup. Deduplicate when same ID (validate once, inject env once). Track injected adapters in a Set.
+
+    4. **src/cli/commands/ralph.ts** — Update dry-run output to show both adapter IDs. Record both in session start event metadata.
+
+    ## Precedence
+    worker = --worker-adapter ?? --adapter ?? claude-agent-acp
+    reviewer = --reviewer-adapter ?? --adapter ?? claude-agent-acp
+    wrap-up = worker (always)
+
+    ## How to verify
+    - kspec ralph run --dry-run --worker-adapter codex-acp shows codex-acp for worker
+    - kspec ralph run --dry-run --reviewer-adapter codex-acp shows codex-acp for reviewer
+    - Both invalid adapters cause exit code 3 before session creation
+    - Same adapter ID deduplicates validation and env injection
+    - Session metadata records both adapter IDs
 - _ulid: 01KJDCYSATR96J7FMFSGTG51GQ
   slugs:
     - implement-per-adapter-auto-approve-arguments
