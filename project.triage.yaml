@@ -1834,12 +1834,15 @@ triage:
       runtime env vars. Discovered while building containerized ralph runner — entrypoint bash
       script can't set CLAUDECODE=1 globally because claude blocks nested sessions.
     status: triaged
-    action: defer
+    action: promote
     reasoning: Setup without CLAUDECODE=1 — ralph container workaround exists
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.013Z
-    updated_at: 2026-02-26T19:02:53.027Z
+    updated_at: 2026-02-26T19:17:00.618Z
+    override_reasoning: Given I want to start using codex as well I would like to ensure setup works beyond claude code
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:17:00.594Z
   - _ulid: 01KJDNA7VMWSG7KP54SZGJ2V9P
     inbox_ref: 01KJA6SXTB3DG19YC17E604J7X
     item_snapshot: "kspec agents generate should include package version in content hash (or add --force
@@ -1967,13 +1970,13 @@ triage:
     reasoning: Plan import richer descriptions — improvement, not blocking
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.347Z
-    updated_at: 2026-02-26T19:12:37.017Z
     override_reasoning: It's not blocking but is something that I've found causes pain when doing plan
       imports as it often takes multiple passes to ensure the resulting tasks are standalone. So I
       would like to properly handle this.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:12:37.001Z
+    created_at: 2026-02-26T19:02:53.347Z
+    updated_at: 2026-02-26T19:12:37.017Z
   - _ulid: 01KJDNA863W9TWRQP1FAWQ5NGB
     inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
     item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
