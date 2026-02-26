@@ -86,6 +86,7 @@ describe('Trait AC coverage validation', () => {
         w.message.includes('inherited trait AC')
     );
     expect(coverageWarnings).toHaveLength(1);
+    expect(coverageWarnings[0].subtype).toBe('trait_ac');
     expect(coverageWarnings[0].details).toContain('@test-trait ac-1');
   });
 
@@ -229,6 +230,7 @@ describe('Test spec', () => {
         w.message.includes('inherited trait AC')
     );
     expect(coverageWarnings.length).toBeGreaterThan(0);
+    expect(coverageWarnings[0].subtype).toBe('trait_ac');
   });
 
   // AC: @trait-validation ac-4
@@ -433,7 +435,59 @@ describe('Test spec', () => {
         w.message.includes('inherited trait AC')
     );
     expect(coverageWarnings).toHaveLength(1);
+    expect(coverageWarnings[0].subtype).toBe('trait_ac');
     expect(coverageWarnings[0].details).toContain('@trait-one ac-1');
     expect(coverageWarnings[0].details).toContain('@trait-two ac-1');
+  });
+
+  // AC: @spec-completeness ac-4
+  it('should set subtype own_ac for own AC coverage warnings', async () => {
+    // Setup minimal kspec structure
+    const specDir = path.join(tempDir, 'spec');
+    const modulesDir = path.join(specDir, 'modules');
+    await fs.mkdir(modulesDir, { recursive: true });
+
+    // Create manifest
+    const manifest = {
+      project: {
+        name: 'test-project',
+      },
+      includes: ['modules/specs.yaml'],
+    };
+    await writeYamlFilePreserveFormat(path.join(specDir, 'kynetic.yaml'), manifest);
+
+    // Create a spec with own ACs but no traits
+    const spec = {
+      _ulid: '01KFCRVY8MT49H8N6JW35NN2P3',
+      slugs: ['spec-with-ac'],
+      title: 'Spec With AC',
+      type: 'requirement',
+      description: 'A spec with own acceptance criteria',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      acceptance_criteria: [
+        {
+          id: 'ac-1',
+          given: 'some condition',
+          when: 'some action',
+          then: 'some result',
+        },
+      ],
+    };
+
+    await writeYamlFilePreserveFormat(path.join(modulesDir, 'specs.yaml'), [spec]);
+
+    // Run validation (no tests = missing own AC coverage)
+    const ctx = await initContext(tempDir);
+    const result = await validate(ctx, { completeness: true });
+
+    // Verify own AC coverage warning has subtype own_ac
+    const ownACWarnings = result.completenessWarnings.filter(
+      w =>
+        w.type === 'missing_test_coverage' &&
+        w.subtype === 'own_ac' &&
+        w.itemRef.includes('spec-with-ac')
+    );
+    expect(ownACWarnings).toHaveLength(1);
+    expect(ownACWarnings[0].details).toContain('ac-1');
   });
 });

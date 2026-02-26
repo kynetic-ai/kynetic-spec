@@ -440,8 +440,11 @@ function formatCompletenessWarnings(
   const statusMismatch = warnings.filter(
     (w) => w.type === "status_inconsistency",
   );
-  const missingTestCoverage = warnings.filter(
-    (w) => w.type === "missing_test_coverage",
+  const missingOwnACCoverage = warnings.filter(
+    (w) => w.type === "missing_test_coverage" && w.subtype !== "trait_ac",
+  );
+  const missingTraitACCoverage = warnings.filter(
+    (w) => w.type === "missing_test_coverage" && w.subtype === "trait_ac",
   );
   const automationNoSpec = warnings.filter(
     (w) => w.type === "automation_eligible_no_spec",
@@ -485,22 +488,42 @@ function formatCompletenessWarnings(
     }
   }
 
-  if (missingTestCoverage.length > 0) {
+  if (missingOwnACCoverage.length > 0) {
     console.log(
-      chalk.yellow(`  Missing test coverage: ${missingTestCoverage.length}`),
+      chalk.yellow(`  Missing own AC coverage: ${missingOwnACCoverage.length}`),
     );
     const shown = verbose
-      ? missingTestCoverage
-      : missingTestCoverage.slice(0, 3);
+      ? missingOwnACCoverage
+      : missingOwnACCoverage.slice(0, 3);
     for (const w of shown) {
       console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
       if (w.details) {
         console.log(chalk.gray(`      ${w.details}`));
       }
     }
-    if (!verbose && missingTestCoverage.length > 3) {
+    if (!verbose && missingOwnACCoverage.length > 3) {
       console.log(
-        chalk.gray(`    ... and ${missingTestCoverage.length - 3} more`),
+        chalk.gray(`    ... and ${missingOwnACCoverage.length - 3} more`),
+      );
+    }
+  }
+
+  if (missingTraitACCoverage.length > 0) {
+    console.log(
+      chalk.yellow(`  Missing trait AC coverage: ${missingTraitACCoverage.length}`),
+    );
+    const shown = verbose
+      ? missingTraitACCoverage
+      : missingTraitACCoverage.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+    if (!verbose && missingTraitACCoverage.length > 3) {
+      console.log(
+        chalk.gray(`    ... and ${missingTraitACCoverage.length - 3} more`),
       );
     }
   }
