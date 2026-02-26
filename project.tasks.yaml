@@ -52921,7 +52921,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -52948,6 +52948,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  submitted_at: 2026-02-26T01:00:54.568Z
 - _ulid: 01KHWQESQ29G03V88XAPW3HWMS
   slugs: []
   title: Fix weak doctor ac-exit-zero test
