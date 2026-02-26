@@ -6563,6 +6563,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJC3JSTA7DXYJ8QRZJ341KS8
+    type: friction
+    content: "Trait N/A annotations placed inside JSDoc block comments are not machine-parseable — the
+      '* // AC:' pattern (where * is the JSDoc line prefix) does not match the scanner's '// AC:'
+      regex. Must use standalone // AC: line comments OUTSIDE any /** ... */ block. Occurred in
+      api-meta.spec.ts E2E tests, caught by Codex review, required fix commit."
+    created_at: 2026-02-26T04:33:44.778Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
