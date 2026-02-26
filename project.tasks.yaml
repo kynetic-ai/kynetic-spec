@@ -63205,7 +63205,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -63217,6 +63217,7 @@
   vcs_refs: []
   created_at: 2026-02-26T22:11:34.669Z
   started_at: 2026-02-26T22:13:52.039Z
+  submitted_at: 2026-02-26T22:56:57.626Z
   notes:
     - _ulid: 01KJE2P4YDHZ798YTGWZHX3CF0
       created_at: 2026-02-26T22:56:34.766Z
@@ -63228,4 +63229,7 @@
         pre-existing flaky integration test unrelated)."
       supersedes: null
   todos: []
-  submitted_at: 2026-02-26T22:56:57.626Z
+  completed_at: 2026-02-26T23:11:57.790Z
+  closed_reason: "Merged in PR #566. Fixed codex env injection to use ~/.codex/config.toml (TOML)
+    instead of config.json (JSON). Added smol-toml dependency, updated all tests, added round-trip
+    preservation test, fixed pre-existing adapter.args assertion, tightened spec AC."
