@@ -97,19 +97,66 @@ function commandExists(cmd) {
 }
 
 /**
- * Check if kspec CLI is available and working
+ * Check if kspec CLI is available, working, and linked to the local build.
+ * A globally installed kspec (e.g. from npm install -g) is not sufficient
+ * for this project — we need the locally built version via npm link.
  */
 function checkKspecCli() {
   if (!commandExists('kspec')) {
-    return { available: false, reason: 'kspec command not found' };
+    return { available: false, linked: false, reason: 'kspec command not found' };
   }
 
   const result = run('kspec --version', { silent: true });
   if (!result.success) {
-    return { available: false, reason: 'kspec command exists but failed to run' };
+    return { available: false, linked: false, reason: 'kspec command exists but failed to run' };
   }
 
-  return { available: true, version: result.output.trim() };
+  // Check if kspec resolves to the local project (npm link)
+  // If dist/ doesn't exist yet, we definitely need to build and link
+  const distCli = path.join(projectRoot, 'dist', 'cli', 'index.js');
+  if (!fs.existsSync(distCli)) {
+    return { available: true, linked: false, version: result.output.trim(), reason: 'local dist not built yet' };
+  }
+
+  // Check if the globally installed kspec points to our local project.
+  // On Unix: npm link creates symlinks, so realpathSync follows them.
+  // On Windows: npm link creates .cmd shims containing the JS path as text.
+  const prefixResult = run('npm prefix -g', { silent: true });
+  if (prefixResult.success) {
+    const globalPrefix = prefixResult.output.trim();
+    const resolvedDist = fs.realpathSync(distCli);
+
+    if (process.platform === 'win32') {
+      // Windows: npm creates a .cmd shim that contains the path to the JS entry
+      const cmdShim = path.join(globalPrefix, 'kspec.cmd');
+      try {
+        if (fs.existsSync(cmdShim)) {
+          const shimContent = fs.readFileSync(cmdShim, 'utf8');
+          // .cmd shims contain the target JS path — check if it references our project
+          if (shimContent.includes(projectRoot.replace(/\//g, '\\'))) {
+            return { available: true, linked: true, version: result.output.trim() };
+          }
+        }
+      } catch {
+        // Shim read failed — fall through to not linked
+      }
+    } else {
+      // Unix: follow the symlink chain
+      const globalBin = path.join(globalPrefix, 'bin', 'kspec');
+      try {
+        if (fs.existsSync(globalBin)) {
+          const resolvedBin = fs.realpathSync(globalBin);
+          if (resolvedBin === resolvedDist) {
+            return { available: true, linked: true, version: result.output.trim() };
+          }
+        }
+      } catch {
+        // Symlink resolution failed — fall through to not linked
+      }
+    }
+  }
+
+  return { available: true, linked: false, version: result.output.trim(), reason: 'kspec is not npm-linked to local project' };
 }
 
 /**
@@ -191,7 +238,7 @@ async function bootstrap() {
   // Determine what needs to be done
   const needsInstall = !modulesStatus.installed;
   const needsBuild = !buildStatus.built;
-  const needsLink = !cliStatus.available;
+  const needsLink = !cliStatus.linked;
   const needsInit = !dirStatus.exists || !dirStatus.healthy;
 
   if (!needsInstall && !needsBuild && !needsLink && !needsInit) {
