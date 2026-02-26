@@ -1572,7 +1572,7 @@ triage:
     item_snapshot: "Batch arg name discoverability: kspec batch commands shows CLI signatures but batch
       JSON uses different arg names (e.g. inbox-ref not ref, message not text). Add a batch-specific
       help that shows the JSON arg names, or accept both forms."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Batch arg name discoverability — DX improvement, not urgent
     decided_by: "@claude"
@@ -1581,7 +1581,8 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:53.746Z
     created_at: 2026-02-26T19:02:52.342Z
-    updated_at: 2026-02-26T19:29:53.765Z
+    updated_at: 2026-02-26T19:33:02.137Z
+    acted_at: 2026-02-26T19:33:02.123Z
   - _ulid: 01KJDNA76ZV0P7GCJGJMMAAAVA
     inbox_ref: 01KJ4VHNAZDGTNTX7S7630S6B9
     item_snapshot: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
@@ -1595,10 +1596,10 @@ triage:
       utility — wire it up.
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.383Z
-    updated_at: 2026-02-26T19:33:01.998Z
     acted_at: 2026-02-26T19:33:01.983Z
     result_ref: "@01KJDQ1D"
+    created_at: 2026-02-26T19:02:52.383Z
+    updated_at: 2026-02-26T19:33:01.998Z
   - _ulid: 01KJDNA7819FJ59DBD57YGKC4P
     inbox_ref: 01KJ4YMK5A4D2BDHAFVQ0XTAPS
     item_snapshot: "Add kspec.config.yaml with ralph.skills overrides for project-specific skill names
