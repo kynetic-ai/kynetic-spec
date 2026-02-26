@@ -63,6 +63,7 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @cli-serve-commands ac-1
+  // AC: @daemon-server ac-12
   it('should start in foreground mode with Ctrl+C support', async () => {
     if (!bunAvailable) {
       console.log('  ⊘ Skipping test - Bun runtime required');
@@ -172,6 +173,7 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @cli-serve-commands ac-4
+  // AC: @daemon-server ac-12
   it('should send SIGTERM and wait for shutdown', async () => {
     if (!bunAvailable) {
       console.log('  ⊘ Skipping test - Bun runtime required');
