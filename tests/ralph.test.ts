@@ -1967,13 +1967,11 @@ describe('subagent module', () => {
     });
 
     // AC: @ralph-per-role-adapters ac-12
-    it('records both adapter IDs in session start event with different adapters', async () => {
-      // ac-12 requires different worker/reviewer adapters recorded distinctly.
-      // runRalph registers "custom" via --adapter-cmd. We override worker to "custom"
-      // and use the base --adapter (also "custom" from --adapter-cmd) for reviewer.
-      // To get distinct values, we pass --adapter claude-agent-acp explicitly;
-      // but --adapter-cmd overrides options.adapter to "custom". Instead, we verify
-      // the metadata fields are present and correct by checking the event data structure.
+    it('records both adapter IDs in session start event', async () => {
+      // Verifies workerAdapter and reviewerAdapter fields exist in session metadata.
+      // With --adapter-cmd both resolve to "custom". Different-ID propagation is
+      // proven by the dry-run test (ac-10) which uses claude-code-acp / claude-agent-acp;
+      // session metadata writes the same variables, so no second mock adapter needed.
       const result = runRalph('--max-loops 1', tempDir, {
         MOCK_ACP_EXIT_CODE: '0',
       });
@@ -1997,12 +1995,33 @@ describe('subagent module', () => {
       );
 
       expect(startEvent).toBeDefined();
-      // Both fields must be present in session metadata
-      expect(startEvent.data).toHaveProperty('workerAdapter');
-      expect(startEvent.data).toHaveProperty('reviewerAdapter');
-      // With --adapter-cmd, both resolve to "custom"
       expect(startEvent.data.workerAdapter).toBe('custom');
       expect(startEvent.data.reviewerAdapter).toBe('custom');
+    });
+
+    // AC: @ralph-per-role-adapters ac-12 (different IDs)
+    it('dry-run shows different adapter IDs propagate to both roles', async () => {
+      // Uses two distinct registered default adapters to prove different IDs
+      // flow through to the output. Session metadata writes the same workerAdapterId
+      // and reviewerAdapterId variables, so this confirms distinct values propagate.
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run', '--worker-adapter', 'claude-code-acp', '--reviewer-adapter', 'claude-agent-acp'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      expect(result.status).toBe(0);
+      // Verify the two distinct adapter IDs appear separately
+      expect(result.stdout).toContain('worker-adapter: claude-code-acp');
+      expect(result.stdout).toContain('reviewer-adapter: claude-agent-acp');
+      // Info line should show split format
+      expect(result.stderr || result.stdout).toContain('worker=claude-code-acp');
+      expect(result.stderr || result.stdout).toContain('reviewer=claude-agent-acp');
     });
 
     // AC: @ralph-per-role-adapters ac-1
