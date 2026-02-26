@@ -1808,12 +1808,17 @@ triage:
       between 1 and 5' which is confusing when you've been writing P1 everywhere. Should either
       accept both formats or align documentation with the numeric API.
     status: triaged
-    action: defer
+    action: promote
     reasoning: P1/P2/P3 format alias — DX improvement, duplicate of deferred item
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.958Z
-    updated_at: 2026-02-26T19:02:52.971Z
+    updated_at: 2026-02-26T19:18:59.766Z
+    override_reasoning: I think it would be good to support this, it happens enough. So either we
+      support both inputs or update all documentation. There's a small spec gap on this if we
+      support both but easy to do as part of the task work.
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:18:59.745Z
   - _ulid: 01KJDNA7SVE6M6JV4XH7CH9KJP
     inbox_ref: 01KJ9BENECYW9DP5FP6Y5EJSVM
     item_snapshot: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the
@@ -1824,11 +1829,11 @@ triage:
     reasoning: Convention --update-rule — DX improvement, workaround is delete+recreate
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.987Z
-    updated_at: 2026-02-26T19:17:52.548Z
     override_reasoning: Having to delete is bad IMO, best to close this gap.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:17:52.527Z
+    created_at: 2026-02-26T19:02:52.987Z
+    updated_at: 2026-02-26T19:17:52.548Z
   - _ulid: 01KJDNA7TNPB96SWJFH8JK4YW4
     inbox_ref: 01KJ9NJC7QK6F0SAB11PNN3798
     item_snapshot: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
