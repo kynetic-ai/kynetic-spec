@@ -440,6 +440,7 @@ describe('Test spec', () => {
     expect(coverageWarnings[0].details).toContain('@trait-two ac-1');
   });
 
+  // AC: @spec-completeness ac-4
   it('should set subtype own_ac for own AC coverage warnings', async () => {
     // Setup minimal kspec structure
     const specDir = path.join(tempDir, 'spec');
