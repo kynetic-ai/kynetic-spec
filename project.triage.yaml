@@ -1928,13 +1928,15 @@ triage:
     item_snapshot: "@cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
       --alignment, --skills, --conventions (all already implemented in code). Pre-existing drift,
       not introduced by trait AC task."
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: "@cmd-validate spec is stale — missing 6 flags already in code. Spec drift."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.130Z
-    updated_at: 2026-02-26T19:02:53.144Z
+    updated_at: 2026-02-26T19:32:49.618Z
+    acted_at: 2026-02-26T19:32:49.604Z
+    result_ref: "@01KJDQ12"
   - _ulid: 01KJDNA7Z7MEB2A756AGPH3WCX
     inbox_ref: 01KJCTQGQ6VA5DNT6NSGVZ5V99
     item_snapshot: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate
@@ -1944,10 +1946,10 @@ triage:
     reasoning: "Bug: @observations slug ambiguity — validate reports 6 errors. Data integrity."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.159Z
-    updated_at: 2026-02-26T19:32:49.420Z
     acted_at: 2026-02-26T19:32:49.406Z
     result_ref: "@01KJDQ11"
+    created_at: 2026-02-26T19:02:53.159Z
+    updated_at: 2026-02-26T19:32:49.420Z
   - _ulid: 01KJDNA805PBMJDXBWG85732Y5
     inbox_ref: 01KJCTQGRDZYNYRD66RHV5GGMX
     item_snapshot: Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST

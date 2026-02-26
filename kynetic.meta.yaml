@@ -6724,6 +6724,19 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDQ1281SE4DYG57NR127DKN
+    type: question
+    content: >-
+      [spec-gap] @cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
+      --alignment, --skills, --conventions (all already implemented in code). Pre-existing drift,
+      not introduced by trait AC task.
+
+
+      Reasoning: @cmd-validate spec is stale — missing 6 flags already in code. Spec drift.
+    created_at: 2026-02-26T19:32:49.537Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
