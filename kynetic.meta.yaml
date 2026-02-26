@@ -6750,6 +6750,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDR3S3ZJRMAB0M35SQEGXRM
+    type: success
+    content: "Triage record-then-act pattern with UI review works well at scale: batch-record 41
+      decisions, user reviews/overrides in web UI, batch-act on confirmed. Clean separation of agent
+      proposals from user decisions. 12 overrides out of 41 shows useful agent-human collaboration."
+    created_at: 2026-02-26T19:51:47.071Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
