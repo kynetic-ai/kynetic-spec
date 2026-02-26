@@ -5798,7 +5798,7 @@ runs:
   - _ulid: 01KJBTKW094Q8S748N9Y248NDX
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-26T01:57:02.601Z
     step_results:
@@ -5812,5 +5812,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T01:57:44.763Z
-        completed_at: 2026-02-26T01:57:44.763Z
+        completed_at: 2026-02-26T01:57:49.763Z
+        notes: "Already searched for existing tracking (elysia validation 422, bun e2e daemon, validation
+          status code — all no results). Friction identified: Elysia schema validation returns 422
+          before handler, already captured as observation 01KJBTMZ. No other high-confidence
+          systemic patterns beyond what was already captured."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T01:57:49.763Z
+        completed_at: 2026-02-26T01:57:49.763Z
     initiated_by: "@claude"
