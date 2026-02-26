@@ -984,3 +984,10 @@ inbox:
       - cli
       - bug
     added_by: "@claude"
+  - _ulid: 01KJD0Z8YA04SCGP54DW5PM7JN
+    text: Add E2E test job to CI workflow - separate from unit tests. Should install Playwright chromium
+      with deps, run npm run test:e2e, and be a distinct GitHub Actions job. Reference imgen CI
+      pattern for caching.
+    created_at: 2026-02-26T13:07:22.186Z
+    tags: []
+    added_by: "@claude"
