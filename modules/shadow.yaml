@@ -429,7 +429,7 @@ features:
           - id: ac-4
             given: origin remote exists
             when: checking for remote shadow branch
-            then: runs git fetch origin to ensure remote refs are up to date
+            then: queries remote refs directly (e.g. git ls-remote) rather than relying on stale local refs
           - id: ac-5
             given: a shallow clone where kspec-meta is not in local refs
             when: checking for remote shadow branch
