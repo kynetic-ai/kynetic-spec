@@ -55646,6 +55646,67 @@
 
         ~40+ other files use readFile legitimately (reading test output, YAML fixtures, etc.)
       supersedes: null
+    - _ulid: 01KJBNK3GGD5D43GD8G7WTHM1W
+      created_at: 2026-02-26T00:29:14.640Z
+      author: "@claude"
+      content: >-
+        AUDIT RESTRUCTURED — Original 4 tasks deleted, replaced with 10 properly-scoped tasks:
+
+
+        E2E REPLACEMENT TASKS (9 tasks, P2):
+
+        - @task-e2e-daemon-tasks-api — replace daemon-api-tasks.test.ts (258 lines, @api-contract
+        ac-2 through ac-7)
+
+        - @task-e2e-daemon-items-api — replace daemon-api-items.test.ts (217 lines, @api-contract
+        ac-8 through ac-11)
+
+        - @task-e2e-daemon-inbox-api — replace daemon-api-inbox.test.ts (218 lines, @api-contract
+        ac-12 through ac-14)
+
+        - @task-e2e-daemon-meta-validation-api — replace daemon-api-meta.test.ts +
+        daemon-api-validation.test.ts (390 lines, @api-contract ac-15 through ac-21)
+
+        - @task-e2e-daemon-triage-api — replace daemon-api-triage.test.ts (414 lines,
+        @triage-daemon-api ac-1 through ac-9)
+
+        - @task-e2e-daemon-errors-projects-api — replace daemon-api-error-handling.test.ts +
+        daemon-api-projects.test.ts (383 lines, @api-contract ac-22-24, @multi-directory-daemon
+        ac-28-30)
+
+        - @task-e2e-daemon-server-core — replace daemon-server.test.ts static parts (310 lines,
+        @daemon-server ac-11,15, @api-contract ac-1)
+
+        - @task-e2e-daemon-websocket — replace daemon-websocket.test.ts (591 lines, @api-contract
+        ac-25-33, @trait-websocket-protocol)
+
+        - @task-e2e-daemon-watcher — replace daemon-watcher.test.ts (163 lines, @daemon-server
+        ac-4-6)
+
+
+        DELETION TASK (1 task, P2):
+
+        - @task-delete-static-analysis-tests — delete skill-module-split, web-ui-shared-types,
+        web-ui-triage, plus partial cleanup of end-loop, normalize-ref-input, package-distribution
+
+
+        Key decisions:
+
+        - All daemon API tests become Playwright E2E hitting real daemon (not vitest static
+        analysis)
+
+        - skill-module-split tests deleted entirely (one-time refactoring outcome, not ongoing
+        behavior)
+
+        - web-ui-shared-types deleted (convention enforcement, not behavior)
+
+        - normalize-ref-input anti-pattern scanning deleted (not worth ESLint rule)
+
+        - Ralph absence tests (removed markers) kept — static scanning IS the right tool for absence
+        checks
+
+        - Localhost middleware unit tests kept — already behavioral
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
@@ -60833,7 +60894,11 @@
   notes: []
   todos: []
   automation: eligible
-- title: Delete static analysis tests for ralph end-loop, web-ui-triage, and misc
+- _ulid: 01KJBNJKVJWSX2240N81H9KYYA
+  slugs:
+    - task-delete-static-analysis-tests
+  title: Delete static analysis tests for ralph end-loop, web-ui-triage, and misc
+  type: task
   description: >-
     Delete static analysis tests that either have behavioral coverage elsewhere or test things that
     don't need testing.
@@ -60868,22 +60933,18 @@
 
 
     Run: npm test to verify no regressions.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 2
-  slugs:
-    - task-delete-static-analysis-tests
-  tags:
-    - testing
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJBNJKVJWSX2240N81H9KYYA
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 2
+  tags:
+    - testing
   vcs_refs: []
   created_at: 2026-02-26T00:28:58.610Z
   notes: []
   todos: []
+  automation: eligible
