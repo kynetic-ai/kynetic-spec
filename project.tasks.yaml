@@ -62679,5 +62679,72 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:33:04.635Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQC6EMCTTQFKDBQX9JCG55
+      created_at: 2026-02-26T19:38:54.292Z
+      author: "@claude"
+      content: >-
+        ENRICHMENT — Standalone context for this task:
+
+
+        **What**: The Web UI WebSocket connection continually disconnects and reconnects. The
+        `WebSocketManager` in `packages/web-ui/src/lib/websocket/manager.ts` has exponential backoff
+        reconnection (1s, 2s, 4s... max 30s, max 10 attempts), but users report seeing frequent
+        disconnect/reconnect cycles in the console logs. This suggests either the server is closing
+        connections, the keepalive/heartbeat mechanism is missing, or reconnection resets are
+        happening incorrectly.
+
+
+        **Where**:
+
+        - `packages/web-ui/src/lib/websocket/manager.ts` — The WebSocketManager class. Key areas:
+          - `connect()` (line 150): creates WebSocket, sets up onopen/onmessage/onerror/onclose handlers
+          - `scheduleReconnect()` (line 371): exponential backoff logic, max 10 attempts
+          - `onclose` handler (line 183): triggers reconnect on any close event, even clean ones
+          - No heartbeat/ping mechanism — if the server expects periodic pings, the connection may time out
+        - `packages/web-ui/src/lib/stores/connection.svelte.ts` — Connection store wrapping the
+        manager
+
+        - Server-side WebSocket handler (in the daemon code) — check if it sends pings or has idle
+        timeouts
+
+
+        **How**: Investigation and fix areas:
+
+        1. **Add heartbeat/ping**: Implement a periodic ping from client to server (e.g., every
+        30s). Many WebSocket servers close idle connections after a timeout (often 60s). The client
+        should send a ping command and expect a pong response.
+
+        2. **Don't reconnect on clean close**: The `onclose` handler (line 183) calls
+        `scheduleReconnect()` unconditionally. If `event.code === 1000` (normal closure) and the
+        client initiated it via `disconnect()`, skip reconnection. Currently `disconnect()` clears
+        the timer, but there's a race if onclose fires after disconnect resets state.
+
+        3. **Check server-side idle timeout**: The daemon's WebSocket server may have an idle
+        timeout that closes connections. Either increase it or implement heartbeat to keep alive.
+
+        4. **Consider connection health check**: After reconnecting, verify the connection is
+        actually healthy (e.g., send a ping and wait for response) before transitioning to
+        'connected' state.
+
+        5. **Investigate MAX_RECONNECT_ATTEMPTS**: After 10 failed reconnects, the connection is
+        abandoned permanently. Consider resetting the attempt counter after a successful connection
+        that lasts longer than some threshold (e.g., 60s).
+
+
+        **Done when**:
+
+        - WebSocket connection remains stable for extended periods without spurious disconnects
+
+        - Client sends periodic heartbeat/ping to prevent idle timeout
+
+        - Clean disconnects (code 1000 from client-initiated disconnect) don't trigger reconnection
+
+        - Console shows clean connection lifecycle without repeated disconnect/reconnect spam
+
+        - Connection lost indicator (10s threshold) only triggers for genuine server unavailability
+
+        - Tests cover: heartbeat keeps connection alive, clean close doesn't reconnect, reconnection
+        works after genuine server restart
+      supersedes: null
   todos: []
