@@ -34,9 +34,12 @@ See `kspec help task` for transition commands and options.
 
 ### Creating Work
 
+- **User asks to create a task** → `kspec task add` — always create a task when explicitly asked
 - **Clear scope?** → Create task directly
-- **Unclear scope?** → `kspec inbox add "idea"` → triage later with `/kspec:triage`
+- **Unclear scope, no specific guidance?** → `kspec inbox add "idea"` → triage later with `/kspec:triage`
 - **Learning/friction?** → `kspec meta observe friction "..."` → review during reflection
+
+**Rule:** Inbox is for YOUR uncertain discoveries, not for user requests. When the user says "create a task", create a task.
 
 ### Staying Aligned During Work
 
