@@ -5956,7 +5956,7 @@ runs:
   - _ulid: 01KJD2Y74DEFVWSA0WFAH3HE7W
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-26T13:41:44.717Z
     step_results:
@@ -5983,5 +5983,35 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T13:41:56.870Z
-        completed_at: 2026-02-26T13:41:56.870Z
+        completed_at: 2026-02-26T13:42:36.480Z
+        notes: >-
+          High-confidence items identified (searched, none duplicated):
+
+
+          FRICTION (systemic, concrete):
+
+          1. new Date(invalid) JS gotcha: new Date('bad-string') returns Invalid Date but does NOT
+          throw. Any test using expect(() => new Date(x)).not.toThrow() or try/catch around new
+          Date() will always pass even with malformed timestamps. Fix: always use isNaN(new
+          Date(x).getTime()). This is a repeatable E2E testing pitfall.
+
+
+          2. CI check-unresolved-comments timing race: When Codex posts inline PR comments and we
+          then push a fix commit, CI triggers immediately on the push BEFORE we manually resolve
+          threads. The check-unresolved-comments job then fails on the new commit. Requires manual
+          workflow re-run after resolving threads. Pattern: push -> CI triggers -> resolve threads
+          -> CI already done. Mitigation: resolve threads BEFORE pushing fix commit, or configure
+          check to skip on fix commits.
+
+
+          SUCCESS (concrete pattern that worked):
+
+          3. window.__testWs pattern: Storing WebSocket in window.__testWs via page.evaluate() and
+          accessing it across evaluate calls works reliably for Playwright E2E WebSocket testing.
+          The browser context maintains the global between evaluate calls. Pattern used in
+          api-websocket.spec.ts and worth documenting for future E2E writers.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T13:42:36.480Z
+        completed_at: 2026-02-26T13:42:36.480Z
     initiated_by: "@claude"
