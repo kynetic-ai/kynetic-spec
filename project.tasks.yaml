@@ -61204,29 +61204,30 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix shadow branch remote detection in shallow clones
+- _ulid: 01KJCQ01EAF79RKFYTMBSZRP1Q
+  slugs:
+    - task-shadow-shallow-clone-detection
+  title: Fix shadow branch remote detection in shallow clones
+  type: task
   description: "remoteBranchExists() uses git show-ref which relies on locally-fetched refs. In
     shallow clones, kspec-meta refs are never populated, causing init to create a fresh orphan
     branch instead of attaching to the existing remote one. Fix: use git ls-remote to query remote
     directly. Also fix initializeShadow to fetch the branch before worktree creation, and update
     ralph-container entrypoint check."
-  type: task
   spec_ref: "@shadow-init-remote"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-shadow-shallow-clone-detection
   tags:
     - bug
     - cli
     - infra
-  depends_on: []
-  _ulid: 01KJCQ01EAF79RKFYTMBSZRP1Q
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-26T10:13:01.513Z
   notes: []
   todos: []
+  started_at: 2026-02-26T10:13:32.379Z
