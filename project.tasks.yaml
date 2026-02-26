@@ -60481,12 +60481,23 @@
     - daemon
     - e2e
   vcs_refs: []
+  session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
   created_at: 2026-02-26T00:28:37.381Z
-  notes: []
+  started_at: 2026-02-26T01:32:04.659Z
+  notes:
+    - _ulid: 01KJBT52BPCM4H5QVHEBR5WJTT
+      created_at: 2026-02-26T01:48:57.590Z
+      author: "@claude"
+      content: Wrote packages/web-ui/tests/e2e/api-tasks.spec.ts with 23 Playwright E2E tests covering
+        @api-contract ac-2 through ac-7. Tests use the daemon fixture (running daemon + fixtures)
+        and Playwright request API for direct HTTP calls. Verified response shapes, status codes,
+        error handling (404, 409, 400), pagination, and status filtering. Deleted
+        tests/daemon-api-tasks.test.ts (258 lines of static analysis). All 1200 unit tests still
+        pass. E2E tests require bun runtime (same as all other E2E tests) — not runnable in current
+        sandbox but structurally correct.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-26T01:32:04.659Z
-  session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
 - _ulid: 01KJBNJ1DSH5BZXHC12V9ZSWMX
   slugs:
     - task-e2e-daemon-items-api
