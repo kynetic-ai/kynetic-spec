@@ -3246,7 +3246,7 @@ features:
         created: 2026-02-26T16:36:48.319Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KJDCYRM80FT38JY8CPG63ATY
         slugs:
           - ralph-adapter-auto-approve
