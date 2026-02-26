@@ -61797,7 +61797,7 @@
     @ref` without `--data` and without piped stdin immediately prints a helpful error and exits. (2)
     `kspec task patch @ref --data '{...}'` still works. (3) `echo '{...}' | kspec task patch @ref`
     still works. (4) Batch exec engine (`src/cli/batch-exec.ts`) still works with task patch."
-  spec_ref: null
+  spec_ref: "@task-patch"
   status: pending
   blocked_by: []
   depends_on: []
@@ -61808,6 +61808,7 @@
   created_at: 2026-02-26T19:32:47.484Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
   title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
@@ -61894,7 +61895,7 @@
     After a version bump, `kspec agents generate` regenerates the file instead of skipping. (3)
     Existing tests in `tests/agents-instruction-gen.test.ts` updated to reflect the new hash
     behavior. (4) Optionally: `--force` flag added to bypass the hash check entirely."
-  spec_ref: null
+  spec_ref: "@agents-cli"
   status: pending
   blocked_by: []
   depends_on: []
@@ -61905,6 +61906,7 @@
   created_at: 2026-02-26T19:32:50.617Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
   slugs: []
   title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
@@ -61929,7 +61931,7 @@
     claude-code` reports correct status. (3) `detectAgent()` still works as before when `--agent` is
     not provided. (4) Invalid `--agent` values are rejected with a clear error. (5) Tests in
     `tests/enhanced-setup.test.ts` and `tests/setup-pipeline-unification.test.ts` updated."
-  spec_ref: null
+  spec_ref: "@enhanced-setup"
   status: pending
   blocked_by: []
   depends_on: []
@@ -61940,6 +61942,7 @@
   created_at: 2026-02-26T19:32:51.412Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
@@ -61963,7 +61966,7 @@
     compatible). (4) Invalid values like `P6`, `Px`, `0` are rejected with a clear error mentioning
     both formats. (5) Tests in `tests/cli-validators.test.ts` cover both formats. (6) CLI help text
     shows accepted format."
-  spec_ref: null
+  spec_ref: "@batch-exec"
   status: pending
   blocked_by: []
   depends_on: []
@@ -61974,6 +61977,7 @@
   created_at: 2026-02-26T19:32:52.387Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
   slugs: []
   title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
@@ -62216,7 +62220,7 @@
     - No regression: `kspec batch --commands '[...]'` still works correctly
 
     - Add a test case for empty `--commands` input
-  spec_ref: null
+  spec_ref: "@batch-exec"
   status: pending
   blocked_by: []
   depends_on: []
@@ -62227,6 +62231,7 @@
   created_at: 2026-02-26T19:32:56.309Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
@@ -62277,7 +62282,7 @@
     - Same normalization applies to all options, not just depends_on
 
     - Add test cases for underscore variant args in batch validation tests
-  spec_ref: null
+  spec_ref: "@batch-exec"
   status: pending
   blocked_by: []
   depends_on: []
@@ -62288,6 +62293,7 @@
   created_at: 2026-02-26T19:32:57.124Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
   title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
@@ -62416,7 +62422,7 @@
     module, etc.)
 
     - Add a test case: batch with a plan import that produces warnings should succeed
-  spec_ref: null
+  spec_ref: "@plan-import"
   status: pending
   blocked_by: []
   depends_on: []
@@ -62427,6 +62433,7 @@
   created_at: 2026-02-26T19:32:58.796Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1C22TH9SEXXGBYQT8Y3Z
   slugs: []
   title: Plan import --update replaces all ACs instead of merging. When extending an existing spec
@@ -62436,7 +62443,7 @@
     spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need
     AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for
     session-log-show ac-10."
-  spec_ref: null
+  spec_ref: "@plan-import"
   status: pending
   blocked_by: []
   depends_on: []
@@ -62492,6 +62499,7 @@
         plan (preserves existing), empty existing ACs (creates all from plan)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1CTV35WDA9G51NEH943K
   slugs: []
   title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get
@@ -62572,7 +62580,7 @@
     utility — this should be used anywhere refs are displayed (triage list, task list, inbox list,
     promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
     subsequent commands."
-  spec_ref: null
+  spec_ref: "@batch-exec"
   status: pending
   blocked_by: []
   depends_on: []
@@ -62648,6 +62656,7 @@
         still unique and resolvable
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
   title: Triage promote action should optionally delete the inbox item after creating the task.
@@ -62656,7 +62665,7 @@
   description: Triage promote action should optionally delete the inbox item after creating the task.
     Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag or
     making deletion the default for promote (with snapshot preserved in triage record).
-  spec_ref: null
+  spec_ref: "@triage-cli-commands"
   status: pending
   blocked_by: []
   depends_on: []
@@ -62733,6 +62742,7 @@
         - Tests cover: promote with deletion (default), promote with --keep, dry-run output
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
   slugs: []
   title: "Web UI: persist all filter state and current view in URL query params so refreshing the page
