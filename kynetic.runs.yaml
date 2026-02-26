@@ -6316,7 +6316,7 @@ runs:
   - _ulid: 01KJDZS6BEADXHVJPJXN2KT10F
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-26T22:05:48.783Z
     step_results:
@@ -6406,5 +6406,11 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-26T22:06:33.466Z
-        completed_at: 2026-02-26T22:06:33.466Z
+        completed_at: 2026-02-26T22:06:41.238Z
+        notes: Presented to user. No new items proposed — main friction (mock adapter) already captured as
+          01KJDZBA.
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-26T22:06:41.238Z
+        completed_at: 2026-02-26T22:06:41.238Z
     initiated_by: "@claude"
