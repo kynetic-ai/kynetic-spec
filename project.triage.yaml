@@ -1542,12 +1542,15 @@ triage:
     item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
       the page preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
     status: triaged
-    action: defer
+    action: promote
     reasoning: Web UI URL state persistence — nice to have, not blocking
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.275Z
-    updated_at: 2026-02-26T19:02:52.288Z
+    updated_at: 2026-02-26T19:31:04.945Z
+    override_reasoning: I want this
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:31:04.929Z
   - _ulid: 01KJDNA74KJQPRCKXA0WCVVM2Q
     inbox_ref: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
     item_snapshot: Triage promote action should optionally delete the inbox item after creating the
@@ -1571,11 +1574,11 @@ triage:
     reasoning: Batch arg name discoverability — DX improvement, not urgent
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.342Z
-    updated_at: 2026-02-26T19:29:53.765Z
     override_reasoning: Think this is handled now with the recent improvements around batch.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:53.746Z
+    created_at: 2026-02-26T19:02:52.342Z
+    updated_at: 2026-02-26T19:29:53.765Z
   - _ulid: 01KJDNA76ZV0P7GCJGJMMAAAVA
     inbox_ref: 01KJ4VHNAZDGTNTX7S7630S6B9
     item_snapshot: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
