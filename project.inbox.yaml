@@ -984,14 +984,6 @@ inbox:
       - cli
       - bug
     added_by: "@claude"
-  - _ulid: 01KJDFFJDCG18ZY3B8RQ96JJFP
-    text: Add --description flag to kspec task set (matches task add interface, avoids need for task
-      patch --data JSON workaround)
-    created_at: 2026-02-26T17:20:56.236Z
-    tags:
-      - cli
-      - reflection
-    added_by: "@claude"
   - _ulid: 01KJDFFJEED59WPDEZ7MZ98ZW9
     text: "Plan import: generate richer task descriptions from Implementation Notes section — include
       file paths, what to change, verification steps instead of generic 'See plan...' text"

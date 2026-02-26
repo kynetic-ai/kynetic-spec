@@ -1994,13 +1994,14 @@ triage:
     inbox_ref: 01KJDFFJDCG18ZY3B8RQ96JJFP
     item_snapshot: Add --description flag to kspec task set (matches task add interface, avoids need for
       task patch --data JSON workaround)
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: Duplicate of deferred item 01KHWWMD — task set --description flag
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:53.317Z
-    updated_at: 2026-02-26T19:02:53.331Z
+    updated_at: 2026-02-26T19:32:47.415Z
+    acted_at: 2026-02-26T19:32:47.397Z
   - _ulid: 01KJDNA853NFJ8ZS5SDMBRNM0Z
     inbox_ref: 01KJDFFJEED59WPDEZ7MZ98ZW9
     item_snapshot: "Plan import: generate richer task descriptions from Implementation Notes section —
@@ -2015,10 +2016,10 @@ triage:
       would like to properly handle this.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:12:37.001Z
-    created_at: 2026-02-26T19:02:53.347Z
-    updated_at: 2026-02-26T19:32:47.305Z
     acted_at: 2026-02-26T19:32:47.291Z
     result_ref: "@01KJDQ0Z"
+    created_at: 2026-02-26T19:02:53.347Z
+    updated_at: 2026-02-26T19:32:47.305Z
   - _ulid: 01KJDNA863W9TWRQP1FAWQ5NGB
     inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
     item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
