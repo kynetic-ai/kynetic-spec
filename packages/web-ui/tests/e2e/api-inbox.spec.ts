@@ -286,7 +286,8 @@ test.describe('Inbox API', () => {
       expect(body.deleted).toBe(ulid);
     });
 
-    // Error: 404 for non-existent ref
+    // AC: @api-contract ac-14 - error handling
+    // AC: @trait-api-endpoint ac-2 - 404 with {error, message, suggestion}
     test('returns 404 with message and suggestion for non-existent inbox ref', async ({
       request,
       daemon,
@@ -299,7 +300,6 @@ test.describe('Inbox API', () => {
       const body = await response.json();
       expect(body).toHaveProperty('error');
       expect(body.error).toBe('not_found');
-      // AC: @trait-api-endpoint ac-2 — error responses include message and suggestion
       expect(body).toHaveProperty('message');
       expect(typeof body.message).toBe('string');
       expect(body).toHaveProperty('suggestion');
