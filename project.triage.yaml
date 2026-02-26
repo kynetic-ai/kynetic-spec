@@ -2021,7 +2021,7 @@ triage:
     inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
     item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
       should always take latest)"
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: Merge driver for hash file — low frequency conflict, manual resolution works
     decided_by: "@claude"
@@ -2032,7 +2032,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:10:50.608Z
     created_at: 2026-02-26T19:02:53.379Z
-    updated_at: 2026-02-26T19:10:50.630Z
+    updated_at: 2026-02-26T19:32:47.138Z
+    acted_at: 2026-02-26T19:32:47.122Z
+    result_ref: "@01KJDQ0Z"
   - _ulid: 01KJDNA8723DJ93CK1F5EBEX44
     inbox_ref: 01KJDFFJFXQWX51PQEGAPJ09AC
     item_snapshot: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning
@@ -2042,10 +2044,10 @@ triage:
     reasoning: "Bug: shadow repair fails on fish-only systems (no /bin/sh). Affects real users."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:53.410Z
-    updated_at: 2026-02-26T19:32:46.943Z
     acted_at: 2026-02-26T19:32:46.928Z
     result_ref: "@01KJDQ0Y"
+    created_at: 2026-02-26T19:02:53.410Z
+    updated_at: 2026-02-26T19:32:46.943Z
   - _ulid: 01KJDNA881HJEG69MJN5NWXV0Q
     inbox_ref: 01KJDN04PSK23P7QTTP3RWEQES
     item_snapshot: kspec agents generate --force flag to skip staleness check and always regenerate.
