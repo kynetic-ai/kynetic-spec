@@ -61217,7 +61217,7 @@
   spec_ref: "@shadow-init-remote"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -61240,3 +61240,4 @@
         ralph-container entrypoint to use git ls-remote.
       supersedes: null
   todos: []
+  submitted_at: 2026-02-26T10:21:05.762Z
