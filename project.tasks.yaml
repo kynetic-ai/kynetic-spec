@@ -61722,6 +61722,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #560. Added batch usage template (07-batch-usage.md) and path filter
+    for batch commands CLI."
   depends_on: []
   context: []
   priority: 3
@@ -61733,6 +61735,7 @@
   created_at: 2026-02-26T17:36:42.460Z
   started_at: 2026-02-26T18:20:24.049Z
   submitted_at: 2026-02-26T18:25:51.504Z
+  completed_at: 2026-02-26T18:42:57.046Z
   notes:
     - _ulid: 01KJDK6A610NEHK8GA42GYZ4SA
       created_at: 2026-02-26T18:25:47.201Z
@@ -61743,6 +61746,21 @@
         passes (pre-existing ralph flaky test unrelated). AGENTS.md and kspec-agents.md updated.
       supersedes: null
   todos: []
-  completed_at: 2026-02-26T18:42:57.046Z
-  closed_reason: "Merged in PR #560. Added batch usage template (07-batch-usage.md) and path filter
-    for batch commands CLI."
+- title: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning shell,
+    fails on "
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning
+    shell, fails on fish-only systems"
+  _ulid: 01KJDQ0YXVQCR1ZY2ZY80G670Q
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:46.139Z
+  notes: []
+  todos: []
