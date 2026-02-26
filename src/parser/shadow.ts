@@ -848,7 +848,11 @@ export async function hasRemote(
 }
 
 /**
- * Check if a branch exists on a remote
+ * Check if a branch exists on a remote.
+ * Uses git ls-remote to query the remote directly, which works in both
+ * full and shallow clones.
+ *
+ * AC: @shadow-init-remote ac-5 — works in shallow clones
  */
 export async function remoteBranchExists(
   projectRoot: string,
@@ -856,14 +860,11 @@ export async function remoteBranchExists(
   remoteName = "origin",
 ): Promise<boolean> {
   try {
-    execSync(
-      `git show-ref --verify --quiet refs/remotes/${remoteName}/${branchName}`,
-      {
-        cwd: projectRoot,
-        stdio: ["pipe", "pipe", "pipe"],
-      },
+    const { stdout } = await execAsync(
+      `git ls-remote --heads ${remoteName} ${branchName}`,
+      { cwd: projectRoot },
     );
-    return true;
+    return stdout.trim().length > 0;
   } catch {
     return false;
   }
@@ -1621,11 +1622,11 @@ export async function initializeShadow(
     remoteName = options.shadow.remote;
   }
 
-  // Check for remote shadow branch (AC-4: fetch to ensure refs are up to date)
+  // Check for remote shadow branch
+  // AC: @shadow-init-remote ac-4 ac-5 — queries remote directly via ls-remote
   const remoteExists = await hasRemote(projectRoot, remoteName);
   let remoteHasShadow = false;
   if (remoteExists) {
-    await fetchRemote(projectRoot, remoteName); // Best effort, ignore failures
     remoteHasShadow = await remoteBranchExists(projectRoot, branchName, remoteName);
   }
 
@@ -1650,14 +1651,27 @@ export async function initializeShadow(
       }
 
       if (remoteHasShadow) {
-        // AC: @shadow-init-remote ac-1 - Remote has shadow branch - create worktree from it with tracking
+        // AC: @shadow-init-remote ac-1, ac-5 - Remote has shadow branch - fetch and create worktree
+        // Fetch with refspec to create a local branch ref (required in shallow clones
+        // where plain `git fetch origin kspec-meta` only populates FETCH_HEAD)
+        await execAsync(
+          `git fetch ${remoteName} ${branchName}:${branchName}`,
+          { cwd: projectRoot },
+        );
         await execAsync(
           `git worktree add "${directoryName}" ${branchName}`,
           { cwd: projectRoot },
         );
         // Set up tracking for the branch
+        // Use git config directly — `git branch --set-upstream-to` requires
+        // the remote tracking ref to exist locally, which may not be the case
+        // in shallow clones where we only fetched the branch itself
         await execAsync(
-          `git branch --set-upstream-to=${remoteName}/${branchName} ${branchName}`,
+          `git config branch.${branchName}.remote ${remoteName}`,
+          { cwd: projectRoot },
+        );
+        await execAsync(
+          `git config branch.${branchName}.merge refs/heads/${branchName}`,
           { cwd: projectRoot },
         );
         result.createdFromRemote = true;
