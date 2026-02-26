@@ -6624,6 +6624,19 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJD6M8MHMH09W8NJ504S0D0R
+    type: friction
+    content: "When deleting test files that cover spec ACs, kspec validate does not warn that AC
+      annotations are being removed. This means coverage regressions are only caught during Codex
+      review after the PR is up — requiring an extra fix commit. A pre-delete validate or a
+      local-review gate that checks 'these AC annotations would disappear' would catch this earlier.
+      Observed during task-delete-static-analysis-tests (PR #558): deleted web-ui-triage.test.ts
+      removed all @interactive-triage-ui ac-1..ac-8 coverage; Codex caught it, required creating
+      triage.spec.ts to recover."
+    created_at: 2026-02-26T14:46:12.882Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
