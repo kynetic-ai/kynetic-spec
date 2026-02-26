@@ -1601,7 +1601,7 @@ triage:
     inbox_ref: 01KJ4YMK5A4D2BDHAFVQ0XTAPS
     item_snapshot: "Add kspec.config.yaml with ralph.skills overrides for project-specific skill names
       (/task-work, /reflect, /pr-review) until core kspec: namespace skills are created"
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Config file for ralph skill overrides — workaround exists, not urgent
     decided_by: "@claude"
@@ -1610,7 +1610,8 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:09.542Z
     created_at: 2026-02-26T19:02:52.417Z
-    updated_at: 2026-02-26T19:29:09.561Z
+    updated_at: 2026-02-26T19:33:01.223Z
+    acted_at: 2026-02-26T19:33:01.208Z
   - _ulid: 01KJDNA7902JC2BCJX50258W86
     inbox_ref: 01KJ63QDZSHSB8J8BAEEPV4EZQ
     item_snapshot: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec
@@ -1625,10 +1626,10 @@ triage:
     override_reasoning: High value documentation update that will help reinforce behavior and high quality output
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:27:59.358Z
-    created_at: 2026-02-26T19:02:52.448Z
-    updated_at: 2026-02-26T19:33:01.080Z
     acted_at: 2026-02-26T19:33:01.065Z
     result_ref: "@01KJDQ1CT"
+    created_at: 2026-02-26T19:02:52.448Z
+    updated_at: 2026-02-26T19:33:01.080Z
   - _ulid: 01KJDNA79VHCVAAN363VV8ZSDQ
     inbox_ref: 01KJ63RW5ZEQFM3PMXD224F9VG
     item_snapshot: "Plan import --update replaces all ACs instead of merging. When extending an existing
