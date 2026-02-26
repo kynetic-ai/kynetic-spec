@@ -5266,8 +5266,9 @@ features:
           --inject flag with Codex CLI detected (CODEX_SANDBOX)
         when: |
           the session is created
-        then: |
-          KSPEC_SESSION_ID is added to shell_environment_policy.set in codex config
+        then: KSPEC_SESSION_ID is added to shell_environment_policy.set in ~/.codex/config.toml using TOML
+          format. Existing config values are preserved. Corrupt TOML files cause an error rather
+          than being silently overwritten.
       - id: ac-inject-fallback
         given: |
           --inject flag with unknown agent harness
