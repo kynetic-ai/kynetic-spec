@@ -62174,7 +62174,72 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-26T19:33:01.300Z
-  notes: []
+  notes:
+    - _ulid: 01KJDQA0MV956KKZREMG980AE6
+      created_at: 2026-02-26T19:37:42.812Z
+      author: "@claude"
+      content: >-
+        ENRICHMENT — Standalone context for this task:
+
+
+        **What**: When two ULIDs share a prefix (e.g., 01KJ4SNE9... and 01KJ4SNEC...), the default
+        8-character short ref `@01KJ4SNE` is ambiguous and fails to resolve. The
+        `ReferenceIndex.shortUlid()` method (in `src/parser/refs.ts` line 310) already computes the
+        minimum unique prefix, but many places in the codebase use a hardcoded `_ulid.slice(0, 8)`
+        instead. There are 69 occurrences of `_ulid.slice(0, 8)` across 19 files.
+
+
+        **Where**: All places that format ULID refs for display need to use `shortUlid()` instead of
+        `_ulid.slice(0, 8)`. Key files with hardcoded slicing:
+
+        - `src/cli/commands/triage.ts` (14 occurrences) — triage list, record, act, get, start
+
+        - `src/cli/commands/inbox.ts` (9 occurrences) — inbox list, add, promote
+
+        - `src/cli/commands/item.ts` (6 occurrences) — item list, get, add
+
+        - `src/cli/commands/plan.ts` (9 occurrences) — plan list, get
+
+        - `src/cli/commands/search.ts` (4 occurrences) — search results
+
+        - `src/cli/commands/session/context.ts` (4 occurrences) — session context display
+
+        - `src/triage/actions.ts` (1 occurrence) — promote result ref
+
+        - `src/parser/validate.ts` (8 occurrences) — validation output
+
+        - Several other files with 1-3 occurrences each
+
+
+        The `ReferenceIndex` is already available in most of these contexts (it's built during
+        `initContext()` or `buildIndexes()`).
+
+
+        **How**:
+
+        1. For each file, replace `_ulid.slice(0, 8)` with `index.shortUlid(_ulid)` where a
+        ReferenceIndex is in scope
+
+        2. For files where no index is available, either thread the index through or create a
+        lightweight shortening utility
+
+        3. For triage records (which aren't indexed in the main ReferenceIndex), consider building a
+        local index or a dedicated triage ULID shortener
+
+        4. Ensure that refs displayed by any list/get/result command are always copy-pasteable into
+        subsequent commands without ambiguity
+
+
+        **Done when**:
+
+        - No occurrences of `_ulid.slice(0, 8)` remain in display-facing code paths
+
+        - All displayed refs (triage list, task list, inbox list, search results, promote
+        result_ref, etc.) use `shortUlid()` or equivalent
+
+        - A test with two items sharing an 8-character ULID prefix shows that displayed refs are
+        still unique and resolvable
+      supersedes: null
   todos: []
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
