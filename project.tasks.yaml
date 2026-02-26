@@ -61636,7 +61636,7 @@
     - Worker and reviewer auto-approve args are independent (no leakage)
   spec_ref: "@ralph-adapter-auto-approve"
   plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-register-codex-acp-in-adapter-registry"
@@ -61675,6 +61675,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-26T21:02:15.479Z
 - _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
   slugs:
     - implement-register-codex-acp-in-adapter-registry
