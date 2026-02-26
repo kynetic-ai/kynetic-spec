@@ -16,8 +16,16 @@
  * - @interactive-triage-ui ac-8: Static mode: read-only, action buttons hidden
  */
 
-// Trait N/A annotations — @interactive-triage-ui inherits no traits directly.
-// WebSocket behavior for triage:updates is tested via @trait-websocket-protocol in api-websocket.spec.ts.
+// Trait N/A annotations — @interactive-triage-ui inherits @trait-websocket-protocol.
+// Server-side WebSocket protocol behaviors are tested in api-websocket.spec.ts.
+// AC: @trait-websocket-protocol ac-1 — N/A: server connection ID assignment tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-2 — N/A: server subscribe ack tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-3 — N/A: server broadcast format tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-4 — N/A: server heartbeat timing tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: server ping/pong timeout close with code 1001 tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-6 — N/A: server backpressure handling tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-7 — N/A: server close codes tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-8 — N/A: client sequence reset on reconnect tested in api-websocket.spec.ts
 
 import { test, expect } from '../fixtures/test-base';
 
@@ -183,6 +191,44 @@ test.describe('Interactive Triage UI', () => {
         await page.waitForTimeout(200);
       }
     }
+  });
+});
+
+test.describe('Triage real-time updates via WebSocket', () => {
+  // AC: @interactive-triage-ui ac-6
+  test('triage page updates progress count in real-time when another client submits a triage decision', async ({ page, request }) => {
+    // Open triage page — Svelte component subscribes to triage:updates on mount
+    await page.goto('/triage');
+    await page.waitForLoadState('networkidle');
+
+    // Record initial progress count from the triage-progress element
+    const progressEl = page.getByTestId('triage-progress');
+    await expect(progressEl).toBeVisible();
+    const initialProgress = await progressEl.textContent();
+
+    // Create a fresh inbox item to triage (so we don't conflict with fixture records)
+    const inboxResp = await request.post('http://localhost:3456/api/inbox', {
+      data: { text: `Real-time update test item ${Date.now()}` },
+    });
+    expect(inboxResp.status()).toBe(200);
+    const inboxBody = await inboxResp.json();
+    const newInboxUlid = inboxBody.item._ulid;
+
+    // POST triage decision via API (simulates another client acting on the item).
+    // The daemon broadcasts triage:updates after mutation, which the triage page
+    // receives and calls loadTriageData() to refresh the displayed count.
+    const triageResp = await request.post('http://localhost:3456/api/triage', {
+      data: {
+        inbox_ref: `@${newInboxUlid}`,
+        action: 'defer',
+        reasoning: 'E2E real-time test',
+      },
+    });
+    expect(triageResp.status()).toBe(200);
+
+    // Wait for the triage page to receive the WebSocket broadcast and re-render.
+    // The progress count should increase since we added a new triaged record.
+    await expect(progressEl).not.toHaveText(initialProgress ?? '', { timeout: 5000 });
   });
 });
 
