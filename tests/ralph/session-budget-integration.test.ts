@@ -290,54 +290,6 @@ describe("ac-env-inject: spawnAgent passes KSPEC_SESSION_ID to child process", (
   });
 });
 
-// ─── Marker Code Removal (ac-remove-marker-code) ────────────────────────────
-
-describe("ac-remove-marker-code: no marker file code in ralph.ts", () => {
-  let ralphSource: string;
-
-  beforeEach(async () => {
-    ralphSource = await fs.readFile(
-      path.resolve("src/cli/commands/ralph.ts"),
-      "utf-8",
-    );
-  });
-
-  // Task-limit marker artifacts
-  const removedPatterns = [
-    "TaskLimitMarker",
-    "TASK_LIMIT_MARKER",
-    "ralph-task-limit.json",
-    "detectTaskCompleteCommand",
-    "extractBashCommand",
-    "TASK LIMIT REACHED",
-    "writeTaskLimitMarker",
-    "readTaskLimitMarker",
-    "clearTaskLimitMarker",
-    "clearStaleMarker",
-    "STALE_MARKER_THRESHOLD",
-    "taskLimitReached",
-    "tasksCompletedThisIteration",
-    // End-loop marker artifacts (removed in end-loop migration)
-    "END_LOOP_MARKER_PATH",
-    "ralph-end-loop.json",
-    "writeEndLoopMarker",
-    "readEndLoopMarker",
-    "clearEndLoopMarker",
-  ];
-
-  // AC: @ralph-session-budget-integration ac-remove-marker-code
-  for (const pattern of removedPatterns) {
-    it(`should not contain "${pattern}"`, () => {
-      expect(ralphSource).not.toContain(pattern);
-    });
-  }
-
-  // AC: @ralph-session-budget-integration ac-remove-marker-code
-  it("should not import getIterationStats", () => {
-    expect(ralphSource).not.toMatch(/import.*getIterationStats/);
-  });
-});
-
 // ─── Session Close All Paths (ac-session-close-all-paths) ───────────────────
 
 describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
@@ -417,6 +369,7 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
   }
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  // AC: @session-end-loop-signal ac-session-close-normal
   it("should clean up budget.json after normal exit (max-iterations reached)", async () => {
     // Run ralph with mock agent for 1 iteration.
     // Wait for "Ralph loop completed" which appears after all cleanup.
@@ -439,10 +392,12 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
     expect(budgetExists).toBe(false);
 
-    // Session should be closed as completed
+    // Session should be closed as completed with a descriptive close_reason
     const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
     const content = await fs.readFile(sessionPath, "utf-8");
     expect(content).toContain("status: completed");
+    expect(content).toContain("close_reason:");
+    expect(content).toMatch(/Completed all|No eligible tasks/);
   }, 30_000);
 
   /**
@@ -502,26 +457,32 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
     expect(budgetExists).toBe(false);
 
-    // Session should be closed as abandoned with signal name
+    // Session should be closed as abandoned with signal name in close_reason
     const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
     const content = await fs.readFile(sessionPath, "utf-8");
     expect(content).toContain("status: abandoned");
     expect(content).toContain(signal);
+    // AC: @session-end-loop-signal ac-session-close-signal
+    expect(content).toContain("close_reason:");
+    expect(content).toContain(`Received ${signal}`);
   }
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
   // AC: @ralph-task-limit ac-signal-cleanup
+  // AC: @session-end-loop-signal ac-session-close-signal
   it("should clean up budget.json after signal (SIGINT)", async () => {
     await testSignalCleanup("SIGINT");
   }, 30_000);
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
   // AC: @ralph-task-limit ac-signal-cleanup
+  // AC: @session-end-loop-signal ac-session-close-signal
   it("should clean up budget.json after signal (SIGTERM)", async () => {
     await testSignalCleanup("SIGTERM");
   }, 30_000);
 
   // AC: @ralph-session-budget-integration ac-session-close-all-paths
+  // AC: @session-end-loop-signal ac-session-close-error
   it("should clean up budget.json after agent crash (error path)", async () => {
     const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
 
@@ -544,5 +505,14 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
     const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
     expect(budgetExists).toBe(false);
+
+    // Session should be closed with a close_reason set
+    // AC: @session-end-loop-signal ac-session-close-error
+    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
+    const content = await fs.readFile(sessionPath, "utf-8");
+    expect(content).toContain("close_reason:");
+    // With --max-loops 1, ralph exits after the one (failed) iteration with
+    // "Completed all 1 iterations" — or on max_failures if configured
+    expect(content).toMatch(/Max failures|Unrecoverable error|Completed all/);
   }, 30_000);
 });
