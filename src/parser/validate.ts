@@ -738,7 +738,8 @@ function detectTraitCycles(
 // ============================================================
 
 /**
- * Recursively find all test files in a directory
+ * Recursively find all test files in a directory.
+ * Matches .test.ts, .test.js, .spec.ts, and .spec.js files.
  */
 async function findTestFilesRecursive(dir: string): Promise<string[]> {
   const testFiles: string[] = [];
@@ -755,7 +756,10 @@ async function findTestFilesRecursive(dir: string): Promise<string[]> {
         testFiles.push(...subFiles);
       } else if (
         entry.isFile() &&
-        (entry.name.endsWith(".test.ts") || entry.name.endsWith(".test.js"))
+        (entry.name.endsWith(".test.ts") ||
+          entry.name.endsWith(".test.js") ||
+          entry.name.endsWith(".spec.ts") ||
+          entry.name.endsWith(".spec.js"))
       ) {
         testFiles.push(fullPath);
       }
@@ -768,50 +772,67 @@ async function findTestFilesRecursive(dir: string): Promise<string[]> {
 }
 
 /**
+ * Scan a directory of test files for AC annotations and add to the coverage set.
+ */
+async function scanDirForACAnnotations(
+  dir: string,
+  coveredACs: Set<string>
+): Promise<void> {
+  try {
+    await fs.access(dir);
+  } catch {
+    // Directory doesn't exist - skip
+    return;
+  }
+
+  const testFiles = await findTestFilesRecursive(dir);
+
+  for (const filePath of testFiles) {
+    const content = await fs.readFile(filePath, "utf-8");
+
+    // Match AC annotations: // AC: @spec-ref ac-N
+    // Also handle multiple ACs on one line: // AC: @spec-ref ac-1, ac-2
+    const acPattern =
+      /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
+    let match;
+
+    while ((match = acPattern.exec(content)) !== null) {
+      const specRef = match[1]; // @spec-ref
+      const acList = match[2]; // "ac-1, ac-2" or just "ac-1" or undefined
+
+      if (acList) {
+        // Split by comma and trim
+        const acs = acList.split(",").map((ac) => ac.trim());
+        for (const ac of acs) {
+          coveredACs.add(`${specRef} ${ac}`);
+        }
+      } else {
+        // No specific AC mentioned, just the spec ref
+        // We'll consider this as generic coverage
+        coveredACs.add(specRef);
+      }
+    }
+  }
+}
+
+/**
  * Scan test files for AC annotations to build coverage index.
- * Recursively scans all subdirectories under tests/.
+ * Scans:
+ * - tests/ (unit/integration tests, .test.ts/.test.js)
+ * - packages/web-ui/tests/e2e/ (E2E Playwright tests, .spec.ts/.spec.js)
  * Returns a Set of covered ACs in format "@spec-ref ac-N"
  */
 export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   const coveredACs = new Set<string>();
-  const testsDir = path.join(rootDir, "tests");
 
-  try {
-    // Check if tests directory exists
-    await fs.access(testsDir);
+  // Scan primary tests directory (unit/integration tests)
+  await scanDirForACAnnotations(path.join(rootDir, "tests"), coveredACs);
 
-    // Recursively find all test files
-    const testFiles = await findTestFilesRecursive(testsDir);
-
-    for (const filePath of testFiles) {
-      const content = await fs.readFile(filePath, "utf-8");
-
-      // Match AC annotations: // AC: @spec-ref ac-N
-      // Also handle multiple ACs on one line: // AC: @spec-ref ac-1, ac-2
-      const acPattern =
-        /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
-      let match;
-
-      while ((match = acPattern.exec(content)) !== null) {
-        const specRef = match[1]; // @spec-ref
-        const acList = match[2]; // "ac-1, ac-2" or just "ac-1" or undefined
-
-        if (acList) {
-          // Split by comma and trim
-          const acs = acList.split(",").map((ac) => ac.trim());
-          for (const ac of acs) {
-            coveredACs.add(`${specRef} ${ac}`);
-          }
-        } else {
-          // No specific AC mentioned, just the spec ref
-          // We'll consider this as generic coverage
-          coveredACs.add(specRef);
-        }
-      }
-    }
-  } catch (_err) {
-    // Tests directory doesn't exist or can't be read - that's ok
-  }
+  // Scan E2E test directory (Playwright specs)
+  await scanDirForACAnnotations(
+    path.join(rootDir, "packages", "web-ui", "tests", "e2e"),
+    coveredACs
+  );
 
   return coveredACs;
 }
