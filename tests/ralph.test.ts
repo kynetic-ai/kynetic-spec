@@ -1842,4 +1842,211 @@ describe('subagent module', () => {
     });
   });
 
+  // ─── Per-Role Adapter Selection ─────────────────────────────────────────────
+
+  describe('per-role adapter selection', () => {
+    let tempDir: string;
+
+    beforeEach(async () => {
+      tempDir = await setupTempFixtures();
+    });
+
+    afterEach(async () => {
+      await cleanupTempDir(tempDir);
+    });
+
+    // AC: @ralph-per-role-adapters ac-10
+    it('shows both adapter IDs in dry-run output with per-role flags', async () => {
+      // Use claude-code-acp and claude-agent-acp — both are default adapters,
+      // so dry-run skips package validation
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run', '--worker-adapter', 'claude-code-acp', '--reviewer-adapter', 'claude-agent-acp'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('worker-adapter: claude-code-acp');
+      expect(result.stdout).toContain('reviewer-adapter: claude-agent-acp');
+    });
+
+    // AC: @ralph-per-role-adapters ac-3
+    it('--adapter sets both roles when no role-specific flags given', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run', '--adapter', 'claude-code-acp'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      // Both should show claude-code-acp
+      expect(result.stdout).toContain('worker-adapter: claude-code-acp');
+      expect(result.stdout).toContain('reviewer-adapter: claude-code-acp');
+    });
+
+    // AC: @ralph-per-role-adapters ac-4
+    it('role-specific flag overrides --adapter', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run', '--adapter', 'claude-agent-acp', '--worker-adapter', 'claude-code-acp'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      // Worker overridden, reviewer falls back to --adapter
+      expect(result.stdout).toContain('worker-adapter: claude-code-acp');
+      expect(result.stdout).toContain('reviewer-adapter: claude-agent-acp');
+    });
+
+    // AC: @ralph-per-role-adapters ac-5
+    it('defaults both roles to claude-agent-acp with no adapter flags', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      expect(result.stdout).toContain('worker-adapter: claude-agent-acp');
+      expect(result.stdout).toContain('reviewer-adapter: claude-agent-acp');
+    });
+
+    // AC: @ralph-per-role-adapters ac-9
+    it('exits with code 3 when --worker-adapter specifies missing package', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--worker-adapter', '@nonexistent/adapter-pkg', '--dry-run'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 10000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      const output = (result.stdout || '') + (result.stderr || '');
+
+      expect(result.status).toBe(3);
+      expect(output).toContain('Adapter package not found: @nonexistent/adapter-pkg');
+    });
+
+    // AC: @ralph-per-role-adapters ac-11
+    it('exits with code 3 when --reviewer-adapter specifies missing package', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--reviewer-adapter', '@nonexistent/adapter-pkg', '--dry-run'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 10000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      const output = (result.stdout || '') + (result.stderr || '');
+
+      expect(result.status).toBe(3);
+      expect(output).toContain('Adapter package not found: @nonexistent/adapter-pkg');
+    });
+
+    // AC: @ralph-per-role-adapters ac-12
+    it('records both adapter IDs in session start event', async () => {
+      const result = runRalph('--max-loops 1 --worker-adapter custom --reviewer-adapter custom', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      // Read session events
+      const sessionsDir = path.join(tempDir, 'sessions');
+      const sessions = await fs.readdir(sessionsDir).catch(() => []);
+      expect(sessions.length).toBeGreaterThan(0);
+
+      const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+      const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
+      const events = eventsRaw
+        .trim()
+        .split('\n')
+        .map((line) => JSON.parse(line));
+
+      const startEvent = events.find(
+        (e: { type: string }) => e.type === 'session.start',
+      );
+
+      expect(startEvent).toBeDefined();
+      expect(startEvent.data.workerAdapter).toBe('custom');
+      expect(startEvent.data.reviewerAdapter).toBe('custom');
+    });
+
+    // AC: @ralph-per-role-adapters ac-1
+    it('uses worker adapter for task-work spawn', async () => {
+      // When using --adapter-cmd, it registers as "custom" adapter.
+      // Since no role-specific flags, both roles use "custom".
+      // The info line should show adapter=custom (both same).
+      const result = runRalph('--max-loops 1', tempDir, {
+        MOCK_ACP_EXIT_CODE: '0',
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.output).toContain('adapter=custom');
+      expect(result.output).toContain('Spawning ACP agent');
+    });
+
+    // AC: @ralph-per-role-adapters ac-6
+    it('shows single adapter info when both roles use same adapter', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run', '--adapter', 'claude-code-acp'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      const output = (result.stdout || '') + (result.stderr || '');
+
+      // When same adapter, info line should show adapter=X, not worker=X, reviewer=X
+      expect(output).toContain('adapter=claude-code-acp');
+      expect(output).not.toContain('worker=claude-code-acp');
+    });
+
+    // AC: @ralph-per-role-adapters ac-4 (info line variant)
+    it('shows split adapter info when roles use different adapters', async () => {
+      const result = spawnSync(
+        'node',
+        [CLI_PATH, 'ralph', '--dry-run', '--worker-adapter', 'claude-code-acp', '--reviewer-adapter', 'claude-agent-acp'],
+        {
+          cwd: tempDir,
+          encoding: 'utf-8',
+          timeout: 30000,
+          env: { ...process.env, KSPEC_AUTHOR: '@test' },
+        }
+      );
+
+      const output = (result.stdout || '') + (result.stderr || '');
+
+      expect(output).toContain('worker=claude-code-acp');
+      expect(output).toContain('reviewer=claude-agent-acp');
+    });
+  });
+
 });
