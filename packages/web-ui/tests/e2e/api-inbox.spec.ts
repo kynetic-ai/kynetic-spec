@@ -85,7 +85,7 @@ test.describe('Inbox API', () => {
       expect(body.items[2].text).toBe('Third inbox item - oldest');
     });
 
-    // AC: @api-contract ac-1 (partial) - JSON content type
+    // AC: @api-contract ac-12 (response format) - JSON content type
     test('returns JSON content type', async ({ request, daemon }) => {
       const response = await request.get(`${DAEMON_URL}/api/inbox`);
       const contentType = response.headers()['content-type'] || '';
@@ -268,31 +268,29 @@ test.describe('Inbox API', () => {
       expect(found).toBeUndefined();
     });
 
-    // AC: @api-contract ac-14 - can delete using short ULID prefix ref
-    test('deletes item using short ref prefix', async ({ request, daemon }) => {
-      // First list items to get a known ULID we can use a prefix for
-      const listResponse = await request.get(`${DAEMON_URL}/api/inbox`);
-      expect(listResponse.status()).toBe(200);
-      const list = await listResponse.json();
-      expect(list.items.length).toBeGreaterThan(0);
-
-      // Create a new item to delete (don't mess with fixture items for other tests)
+    // AC: @api-contract ac-14 - can delete using full ULID ref
+    test('deletes item using full ULID ref', async ({ request, daemon }) => {
+      // Create a new item to delete
       const createResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
-        data: { text: 'Short ref deletion test' },
+        data: { text: 'Full ULID ref deletion test' },
       });
       expect(createResponse.status()).toBe(200);
       const created = await createResponse.json();
       const ulid = created.item._ulid;
 
-      // Try to delete using the full ULID (always unambiguous)
+      // Delete using the full ULID
       const deleteResponse = await request.delete(`${DAEMON_URL}/api/inbox/@${ulid}`);
       expect(deleteResponse.status()).toBe(200);
       const body = await deleteResponse.json();
       expect(body.success).toBe(true);
+      expect(body.deleted).toBe(ulid);
     });
 
     // Error: 404 for non-existent ref
-    test('returns 404 for non-existent inbox ref', async ({ request, daemon }) => {
+    test('returns 404 with message and suggestion for non-existent inbox ref', async ({
+      request,
+      daemon,
+    }) => {
       const response = await request.delete(
         `${DAEMON_URL}/api/inbox/@nonexistent-inbox-ref-xyz`
       );
@@ -301,6 +299,11 @@ test.describe('Inbox API', () => {
       const body = await response.json();
       expect(body).toHaveProperty('error');
       expect(body.error).toBe('not_found');
+      // AC: @trait-api-endpoint ac-2 — error responses include message and suggestion
+      expect(body).toHaveProperty('message');
+      expect(typeof body.message).toBe('string');
+      expect(body).toHaveProperty('suggestion');
+      expect(typeof body.suggestion).toBe('string');
     });
 
     // Error: can delete fixture items by ULID
