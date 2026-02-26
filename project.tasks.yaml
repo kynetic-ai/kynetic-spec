@@ -61981,23 +61981,42 @@
   created_at: 2026-02-26T19:32:57.124Z
   notes: []
   todos: []
-- title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
+- _ulid: 01KJDQ1AF125H0FK29HE769R4P
+  slugs: []
+  title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
     mutabl
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Ralph event handler iteration attribution should use session-scoped mapping instead of
     shared mutable currentIteration. Codex review on PR #484 identified that late updates from a
     previous ACP session can still be tagged with wrong iteration. Use session_id→iteration map or
     session-scoped listener. See PR #484 review comment."
-  _ulid: 01KJDQ1AF125H0FK29HE769R4P
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:57.953Z
+  notes: []
+  todos: []
+- title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
+    warnin
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Plan import warnings treated as errors in batch mode. The no YAML code block in specs
+    section warning causes batch atomic rollback even though the task creation succeeded. Warnings
+    should not cause batch failure — only actual errors should.
+  _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:57.953Z
+  created_at: 2026-02-26T19:32:58.796Z
   notes: []
   todos: []
