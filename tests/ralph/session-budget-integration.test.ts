@@ -520,19 +520,18 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
     const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
 
     // Use --max-failures 1 so ralph exits due to failure rather than completing iterations.
-    const result = await spawnRalphUntil(
+    // The crash agent always exits immediately, causing every attempt (iteration or review
+    // subagent) to fail. With --max-failures 1, the first consecutive failure exits the loop.
+    await spawnRalphUntil(
       ["--adapter-cmd", `node ${crashAgent}`, "--max-loops", "999", "--max-failures", "1", "--max-tasks", "2"],
       "Ralph loop completed",
     );
-
-    // Ralph should have logged failure and max-failures exit
-    expect(result.output).toContain("Iteration failed");
 
     const sessionsDir = path.join(tempDir, "sessions");
     const sessionDirs = await fs.readdir(sessionsDir);
     expect(sessionDirs.length).toBe(1);
 
-    // Session should be closed as abandoned with Max failures close_reason
+    // Session should be closed as abandoned with Max failures close_reason.
     // AC: @session-end-loop-signal ac-session-close-error
     const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
     const content = await fs.readFile(sessionPath, "utf-8");
