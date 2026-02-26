@@ -63291,6 +63291,13 @@
         suites passed (agent-detection, enhanced-setup, parser/doctor). kspec validate currently
         fails due unrelated pre-existing repo-wide reference/alignment/completeness issues."
       supersedes: null
+    - _ulid: 01KJE5P8VH76H46VK36PCGDWXW
+      created_at: 2026-02-26T23:49:04.497Z
+      author: Jacob Chapel
+      content: "Follow-up verification: fixed AgentType compatibility in setup.ts by adding
+        cursor/windsurf literals so shared detector return type is assignable. Re-ran pnpm tsc
+        --noEmit and tests/agent-detection.test.ts; both pass."
+      supersedes: null
   todos: []
 - _ulid: 01KJE46AQZHKVQMVWWCWKGH2P3
   slugs: []
