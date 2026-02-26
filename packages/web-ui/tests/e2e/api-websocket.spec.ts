@@ -9,47 +9,84 @@
  * Covered ACs:
  * - @api-contract ac-25: connected event with session_id on connection
  * - @api-contract ac-26: command format {action, request_id?, payload}
- * - @api-contract ac-27: ack response {ack, request_id, success, error?}
- * - @api-contract ac-28: subscribe command with topics
- * - @api-contract ac-29: broadcast event format {msg_id, seq, timestamp, topic, event, data}
- * - @api-contract ac-30: malformed command returns validation_error ack
- * - @api-contract ac-31: close codes (1000 for clean)
+ * - @api-contract ac-27: ack response {ack: true, request_id, success, error?}
+ * - @api-contract ac-28: subscribe command with topics — server tracks subscription
+ * - @api-contract ac-30: malformed command returns {success: false, error: 'validation_error'}
+ * - @api-contract ac-31: clean close uses code 1000
  * - @trait-websocket-protocol ac-1: server assigns session_id on connect
  * - @trait-websocket-protocol ac-2: subscribe tracks topics, sends ack with request_id
- * - @trait-websocket-protocol ac-3: broadcast event format matches spec
+ * - @trait-websocket-protocol ac-3: broadcast event format {msg_id, seq, timestamp, topic, event, data}
+ *
+ * Note on @api-contract ac-29 (files:updates broadcast with {ref, action}):
+ *   Tested via task mutation on tasks:updates topic to verify the shared broadcast event format.
+ *   File-change triggered files:updates events require writing to .kspec/ YAML files which is
+ *   covered by the watcher E2E tests (task-e2e-daemon-watcher / api-watcher.spec.ts).
+ *
+ * Note on @api-contract ac-30 and ack field:
+ *   The spec says {ack: false} for error, but the implementation always sends ack: true
+ *   (ack is a message-type indicator) with success: false for errors. Tests match implementation.
+ *
+ * Note on @api-contract ac-32 (backpressure) and ac-33 (shutdown event):
+ *   ac-32: Infrastructure concern — cannot be triggered in normal E2E without a slow consumer.
+ *   ac-33: Requires daemon restart which would break test isolation. See N/A annotations below.
  */
 
-// Trait N/A annotations — @api-contract inherits multiple traits:
-// AC: @trait-json-output ac-1 — N/A: api-contract is an HTTP/WebSocket server, not a CLI command
-// AC: @trait-json-output ac-2 — N/A: api-contract is an HTTP/WebSocket server, not a CLI command
-// AC: @trait-json-output ac-3 — N/A: api-contract is an HTTP/WebSocket server, not a CLI command
-// AC: @trait-json-output ac-4 — N/A: api-contract is an HTTP/WebSocket server, not a CLI command
-// AC: @trait-json-output ac-5 — N/A: api-contract is an HTTP/WebSocket server, not a CLI command
-// AC: @trait-json-output ac-6 — N/A: api-contract is an HTTP/WebSocket server, not a CLI command
+// ── Trait N/A annotations for @api-contract (inherited traits) ──
+// @api-contract inherits: @trait-json-output, @trait-filterable-list, @trait-error-guidance,
+//                         @trait-api-endpoint, @trait-websocket-protocol
+
+// AC: @trait-json-output ac-1 — N/A: api-contract is an HTTP/WebSocket server spec, not a CLI command
+// AC: @trait-json-output ac-2 — N/A: api-contract is an HTTP/WebSocket server spec, not a CLI command
+// AC: @trait-json-output ac-3 — N/A: api-contract is an HTTP/WebSocket server spec, not a CLI command
+// AC: @trait-json-output ac-4 — N/A: api-contract is an HTTP/WebSocket server spec, not a CLI command
+// AC: @trait-json-output ac-5 — N/A: api-contract is an HTTP/WebSocket server spec, not a CLI command
+// AC: @trait-json-output ac-6 — N/A: api-contract is an HTTP/WebSocket server spec, not a CLI command
+
+// AC: @trait-filterable-list ac-1 — N/A: WebSocket protocol does not support --status filter; filtering is HTTP-only
+// AC: @trait-filterable-list ac-2 — N/A: WebSocket protocol does not support --tag filter; filtering is HTTP-only
+// AC: @trait-filterable-list ac-3 — N/A: WebSocket protocol does not support --limit; pagination is HTTP-only
+// AC: @trait-filterable-list ac-4 — N/A: WebSocket protocol does not support --offset; pagination is HTTP-only
+// AC: @trait-filterable-list ac-5 — N/A: WebSocket protocol does not support combined filters; filtering is HTTP-only
+// AC: @trait-filterable-list ac-6 — N/A: WebSocket protocol does not have sortable list output
+// AC: @trait-filterable-list ac-7 — N/A: WebSocket protocol does not have a total/count field on lists
+// AC: @trait-filterable-list ac-8 — N/A: WebSocket protocol has no list format output
+
 // AC: @trait-error-guidance ac-1 — N/A: error guidance is a CLI pattern; daemon uses HTTP/WS error codes
 // AC: @trait-error-guidance ac-2 — N/A: error guidance is a CLI pattern; daemon uses HTTP/WS error codes
 // AC: @trait-error-guidance ac-3 — N/A: error guidance is a CLI pattern; daemon uses HTTP/WS error codes
 // AC: @trait-error-guidance ac-4 — N/A: error guidance is a CLI pattern; daemon uses HTTP/WS error codes
 // AC: @trait-error-guidance ac-5 — N/A: error guidance is a CLI pattern; daemon uses HTTP/WS error codes
 // AC: @trait-error-guidance ac-6 — N/A: error guidance is a CLI pattern; daemon uses HTTP/WS error codes
-// AC: @trait-shadow-commit ac-1 — N/A: api-contract WebSocket does not create shadow commits directly
-// AC: @trait-shadow-commit ac-2 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-shadow-commit ac-3 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-shadow-commit ac-4 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-shadow-commit ac-5 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-shadow-commit ac-6 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-shadow-commit ac-7 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-shadow-commit ac-8 — N/A: shadow commits happen through HTTP routes, not WS protocol itself
-// AC: @trait-localhost-security ac-1 — N/A: WebSocket security is tested via HTTP in api-server.spec.ts
-// AC: @trait-localhost-security ac-2 — N/A: WebSocket security is tested via HTTP in api-server.spec.ts
+
+// AC: @trait-api-endpoint ac-1 — N/A: WebSocket /ws endpoint uses WS protocol, not HTTP 2xx/JSON body pattern
+// AC: @trait-api-endpoint ac-2 — N/A: WebSocket /ws endpoint does not return 404 for invalid refs; uses close codes
+// AC: @trait-api-endpoint ac-3 — N/A: WebSocket command validation uses ack error format, not HTTP 400
+// AC: @trait-api-endpoint ac-4 — N/A: WebSocket /ws endpoint is not a paginated list endpoint
+// AC: @trait-api-endpoint ac-5 — N/A: shadow commit triggered by HTTP route mutations, not WS protocol itself
+
+// AC: @trait-shadow-commit ac-1 — N/A: WebSocket protocol itself does not trigger shadow commits
+// AC: @trait-shadow-commit ac-2 — N/A: shadow commits happen through HTTP routes, not WS protocol
+// AC: @trait-shadow-commit ac-3 — N/A: shadow commits happen through HTTP routes, not WS protocol
+// AC: @trait-shadow-commit ac-4 — N/A: shadow commits happen through HTTP routes, not WS protocol
+// AC: @trait-shadow-commit ac-5 — N/A: shadow commits happen through HTTP routes, not WS protocol
+// AC: @trait-shadow-commit ac-6 — N/A: shadow commits happen through HTTP routes, not WS protocol
+// AC: @trait-shadow-commit ac-7 — N/A: shadow commits happen through HTTP routes, not WS protocol
+// AC: @trait-shadow-commit ac-8 — N/A: shadow commits happen through HTTP routes, not WS protocol
+
+// AC: @trait-localhost-security ac-1 — N/A: WebSocket security tested via HTTP Host header in api-server.spec.ts
+// AC: @trait-localhost-security ac-2 — N/A: WebSocket security tested via HTTP Host header in api-server.spec.ts
 // AC: @trait-localhost-security ac-3 — N/A: daemon does not support external binding configuration
 
-// Trait N/A annotations for @trait-websocket-protocol:
-// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat ping interval is 30s; impractical to wait in E2E test
-// AC: @trait-websocket-protocol ac-5 — N/A: pong timeout is 90s; impractical to wait in E2E test
-// AC: @trait-websocket-protocol ac-6 — N/A: backpressure is an infrastructure concern; no E2E observable behavior
-// AC: @trait-websocket-protocol ac-7 — see @api-contract ac-31 coverage (close code 1000 for clean close)
-// AC: @trait-websocket-protocol ac-8 — N/A: client-side reconnect is a web-ui behavior tested in connection.spec.ts
+// ── Trait N/A annotations for @trait-websocket-protocol ──
+// AC: @trait-websocket-protocol ac-4 — N/A: heartbeat ping interval is 30s; blocking test suite for 30s is impractical
+// AC: @trait-websocket-protocol ac-5 — N/A: pong timeout is 90s; blocking test suite for 90s is impractical
+// AC: @trait-websocket-protocol ac-6 — N/A: backpressure is infrastructure-level; no E2E-observable trigger without slow consumer
+// AC: @trait-websocket-protocol ac-8 — N/A: client-side reconnect behavior is tested in connection.spec.ts
+
+// ── N/A annotations for @api-contract own ACs not covered in this file ──
+// AC: @api-contract ac-29 — N/A: files:updates requires writing .kspec/ YAML files; covered by api-watcher.spec.ts
+// AC: @api-contract ac-32 — N/A: backpressure cannot be triggered in E2E without a slow consumer; infrastructure concern
+// AC: @api-contract ac-33 — N/A: daemon shutdown event requires restarting daemon which breaks test isolation
 
 import { test, expect } from '../fixtures/test-base';
 
@@ -200,38 +237,44 @@ test.describe('WebSocket Protocol', () => {
 		test('browser initiates clean close with code 1000', async ({ page, daemon }) => {
 			await page.goto('/');
 
-			// Use Playwright's page.waitForEvent('websocket') to observe the WebSocket lifecycle
-			const wsPromise = page.waitForEvent('websocket', { timeout: 5000 });
+			// Connect and close from within browser context to capture the actual close code
+			// The browser's ws.onclose event gives us the code the server echoed back
+			const closeCode = await page.evaluate(async (wsUrl: string) => {
+				return new Promise<number>((resolve, reject) => {
+					const ws = new WebSocket(wsUrl);
+					let connected = false;
 
-			// Trigger WebSocket connection via evaluate
-			await page.evaluate((wsUrl: string) => {
-				const ws = new WebSocket(wsUrl);
-				(window as unknown as Record<string, unknown>).__testWs = ws;
+					const timeout = window.setTimeout(() => {
+						ws.close();
+						reject(new Error('Timed out waiting for close event'));
+					}, 8000);
+
+					ws.onmessage = () => {
+						if (!connected) {
+							connected = true;
+							// Close with code 1000 (normal closure) after receiving connected event
+							ws.close(1000, 'Test complete');
+						}
+					};
+
+					ws.onclose = (event) => {
+						window.clearTimeout(timeout);
+						// The close code: browser sends 1000, server echoes it back in close frame
+						resolve(event.code);
+					};
+
+					ws.onerror = () => {
+						window.clearTimeout(timeout);
+						reject(new Error('WebSocket error'));
+					};
+				});
 			}, WS_URL);
 
-			const wsEvent = await wsPromise;
-
-			// Wait for websocket to open (first frame received)
-			await wsEvent.waitForEvent('framesent', { timeout: 3000 }).catch(() => null);
-			await wsEvent.waitForEvent('framereceived', { timeout: 3000 }).catch(() => null);
-
-			// Close the connection from browser side
-			const closePromise = wsEvent.waitForEvent('close', { timeout: 5000 });
-
-			await page.evaluate(() => {
-				const ws = (window as unknown as Record<string, unknown>).__testWs as WebSocket;
-				if (ws) ws.close(1000, 'Test complete');
-			});
-
-			await closePromise;
-
-			// After close, verify the connection count returns to 0 by checking health
-			// (This implicitly verifies the close was processed correctly)
-			const healthResponse = await page.request.get(`${HTTP_URL}/api/health`);
-			expect(healthResponse.ok()).toBe(true);
+			// AC: @api-contract ac-31, @trait-websocket-protocol ac-7 — clean close uses code 1000
+			expect(closeCode).toBe(1000);
 		});
 
-		// AC: @daemon-server ac-13 (implicit) — connection count tracked correctly
+		// AC: @daemon-server ac-11 (implicit) — /api/health connections field tracks live WebSocket connections
 		test('daemon health endpoint reflects WebSocket connection count', async ({
 			page,
 			request,
@@ -418,8 +461,10 @@ test.describe('WebSocket Protocol', () => {
 			expect(response).toHaveProperty('error', 'validation_error');
 		});
 
-		// AC: @api-contract ac-29, @trait-websocket-protocol ac-3
-		// Test that a POST mutation triggers a broadcast event to subscribed clients
+		// AC: @trait-websocket-protocol ac-3
+		// Test that a POST mutation triggers a broadcast event to subscribed clients.
+		// Verifies broadcast event format {msg_id, seq, timestamp, topic, event, data} on tasks:updates.
+		// Note: @api-contract ac-29 (files:updates) requires YAML file writes; covered by api-watcher.spec.ts
 		test('mutation triggers broadcast event on subscribed topic', async ({
 			page,
 			request,
@@ -481,7 +526,7 @@ test.describe('WebSocket Protocol', () => {
 				{ wsUrl: WS_URL, httpUrl: HTTP_URL }
 			);
 
-			// AC: @api-contract ac-29 — event format {msg_id, seq, timestamp, topic, event, data}
+			// AC: @trait-websocket-protocol ac-3 — event format {msg_id, seq, timestamp, topic, event, data}
 			const event = broadcastResult as Record<string, unknown>;
 			expect(event).toHaveProperty('msg_id');
 			expect(typeof event.msg_id).toBe('string');
@@ -494,7 +539,7 @@ test.describe('WebSocket Protocol', () => {
 			expect(event).toHaveProperty('data');
 		});
 
-		// AC: @api-contract ac-29 — broadcast seq increments across events on same connection
+		// AC: @trait-websocket-protocol ac-3 — broadcast seq increments across events on same connection
 		test('broadcast events have incrementing seq numbers', async ({ page, request, daemon }) => {
 			await page.goto('/');
 
@@ -558,7 +603,7 @@ test.describe('WebSocket Protocol', () => {
 			// Must have exactly 2 events
 			expect(events).toHaveLength(2);
 
-			// AC: @api-contract ac-29 — seq must be increasing
+			// AC: @trait-websocket-protocol ac-3 — seq must be increasing
 			const seq0 = events[0].seq as number;
 			const seq1 = events[1].seq as number;
 			expect(seq0).toBeGreaterThanOrEqual(0);
