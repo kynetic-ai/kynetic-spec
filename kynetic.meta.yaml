@@ -6712,6 +6712,18 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDQ119THNSN93R18BVCPZSN
+    type: question
+    content: >-
+      [spec-gap] Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST
+      /:ref/override and POST /:ref/act. Spec needs updating to match reality.
+
+
+      Reasoning: Triage API spec PUT vs POST mismatch — spec needs updating to match implementation
+    created_at: 2026-02-26T19:32:48.570Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
