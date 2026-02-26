@@ -61268,6 +61268,17 @@
         assertion for crash agent path (close_reason is 'Completed all 1 iterations' not 'abandoned'
         when using --max-loops 1). All shards pass locally."
       supersedes: null
+    - _ulid: 01KJD6F0DEP9QYHT60DDHK1K4Z
+      created_at: 2026-02-26T14:43:20.623Z
+      author: "@claude"
+      content: "Codex review found 2 MUST-FIX coverage regressions: (1) @interactive-triage-ui ac-1
+        through ac-8 had no coverage after deleting web-ui-triage.test.ts — fixed by creating
+        packages/web-ui/tests/e2e/triage.spec.ts with 9 behavioral E2E tests testing the real triage
+        UI page; (2) @package-distribution ac-1 and ac-2 had no annotations after removing the
+        fs.stat directory tests — fixed by adding AC annotations to the manifest.yaml content test,
+        hooks/ file test, and agents-sections/ readdir test. Also updated stale N/A references in
+        api-triage.spec.ts pointing to deleted web-ui-triage.test.ts. All fixes pushed to PR #558."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
