@@ -187,6 +187,14 @@ describe("batch commands", () => {
     });
 
     // AC: @batch-allowed-commands ac-filter-by-path
+    it("trims whitespace from path input before matching", () => {
+      const result = kspec('batch commands "  task add  "', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("task add");
+      expect(result.stdout).toContain("1 command(s) available");
+    });
+
+    // AC: @batch-allowed-commands ac-filter-by-path
     it("rejects partial path matches", () => {
       // "task" is a command group, not an exact leaf command path
       const result = kspec('batch commands "task"', tempDir, { expectFail: true });
