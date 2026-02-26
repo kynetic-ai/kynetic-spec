@@ -690,6 +690,7 @@ async function processPendingReviewTasks(
     maxFailures: number;
     cwd: string;
     subagentTimeout: number;
+    autoApproveArgs?: string[];
   },
   consecutiveFailures: { count: number },
 ): Promise<boolean> {
@@ -728,6 +729,7 @@ async function processPendingReviewTasks(
         {
           yolo: options.yolo,
           cwd: options.cwd,
+          extraArgs: options.autoApproveArgs,
           handleRequest: (client, reqId, method, params) =>
             handleRequest(client, reqId, method, params, options.yolo),
         },
@@ -988,10 +990,10 @@ export function registerRalphCommand(program: Command): void {
           validateAdapter(adapter.args[0]);
         }
 
-        // Add yolo flag to adapter args if needed (accept both new and deprecated names)
-        if (options.yolo && isDefaultAdapter) {
-          adapter.args = [...adapter.args, "--dangerously-skip-permissions"];
-        }
+        // Build auto-approve extra args from adapter (applied per-spawn to prevent cross-role leakage)
+        const autoApproveArgs = options.yolo
+          ? adapter.autoApproveArgs
+          : undefined;
 
         const restartInfo =
           restartEvery > 0 ? `, restart every ${restartEvery}` : "";
@@ -1165,6 +1167,7 @@ export function registerRalphCommand(program: Command): void {
                 maxFailures,
                 cwd: process.cwd(),
                 subagentTimeout: subagentTimeout * 60 * 1000,
+                autoApproveArgs,
               },
               failureTracker,
             );
@@ -1298,9 +1301,11 @@ export function registerRalphCommand(program: Command): void {
                 if (!agent) {
                   info("Spawning ACP agent...");
                   // AC: @ralph-session-budget-integration ac-env-inject
+                  // AC: @ralph-adapter-auto-approve ac-1, ac-2, ac-3
                   agent = await spawnAndInitialize(adapter, {
                     cwd: process.cwd(),
                     env: { KSPEC_SESSION_ID: sessionId },
+                    extraArgs: autoApproveArgs,
                     clientOptions: {
                       clientInfo: {
                         name: "kspec-ralph",
@@ -1576,6 +1581,7 @@ export function registerRalphCommand(program: Command): void {
               {
                 yolo: options.yolo,
                 cwd: process.cwd(),
+                extraArgs: autoApproveArgs,
                 handleRequest: (client, reqId, method, params) =>
                   handleRequest(client, reqId, method, params, options.yolo),
               },

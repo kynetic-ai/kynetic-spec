@@ -62,6 +62,8 @@ export interface SubagentOptions {
   yolo: boolean;
   /** Working directory */
   cwd: string;
+  /** Extra arguments to append to adapter args (e.g., auto-approve flags) */
+  extraArgs?: string[];
   /** Tool request handler */
   handleRequest: (
     client: SpawnedAgent["client"],
@@ -208,8 +210,10 @@ export async function runSubagent(
 
   try {
     // AC: @ralph-subagent-spawning ac-1 - Spawn new ACP process
+    // AC: @ralph-adapter-auto-approve ac-4
     agent = await spawnAndInitialize(adapter, {
       cwd: options.cwd,
+      extraArgs: options.extraArgs,
       clientOptions: {
         clientInfo: {
           name: "kspec-ralph-subagent",
