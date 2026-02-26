@@ -60887,7 +60887,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -60897,7 +60897,7 @@
     - daemon
     - e2e
   vcs_refs: []
-  session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
+  session_id: null
   created_at: 2026-02-26T00:28:49.241Z
   started_at: 2026-02-26T11:16:59.701Z
   submitted_at: 2026-02-26T11:27:49.570Z
@@ -60930,6 +60930,16 @@
         422 tests are Elysia framework validation. (2) api-projects.spec.ts: Corrected AC
         annotations on POST path validation tests from ac-5/6/7 (X-Kspec-Dir header ACs) to ac-29
         (POST /api/projects endpoint). Consolidated redundant POST tests. Pushed fix commit."
+      supersedes: null
+    - _ulid: 01KJCVZHBT0GN16X5ZN4DAYDFB
+      created_at: 2026-02-26T11:40:07.930Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: CI check-unresolved-comments is FAILING due to 3
+        unresolved GitHub review threads from prior Codex review. The code fixes were applied in
+        commit 6e045e45 but the threads were never resolved in GitHub. Worker must resolve the 3
+        threads: (1) api-errors.spec.ts:153 ac-23 422 test thread, (2) api-projects.spec.ts ac-5/6/7
+        annotation thread, (3) api-projects.spec.ts POST test structure suggestion. Code is correct
+        — only GitHub thread resolution needed."
       supersedes: null
   todos: []
   automation: eligible
