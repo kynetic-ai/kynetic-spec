@@ -144,7 +144,12 @@ test.describe('Error Handling API', () => {
   });
 
   test.describe('400 Validation Errors', () => {
-    // AC: @api-contract ac-23
+    // Note on ac-23: Elysia framework schema validation returns 422 (not 400) for missing
+    // required fields. The custom handler-level validation returns 400 with {error, details}.
+    // Both are tested below — Elysia 422 for structural body issues, 400 for semantic validation.
+
+    // AC: @api-contract ac-23 — framework schema validation returns 422 for missing fields
+    // (Note: Elysia validates body before handler — missing required field returns 422, not 400)
     test('POST /api/tasks/:ref/note with empty body returns 422 (Elysia schema validation)', async ({
       request,
       daemon,
@@ -155,12 +160,13 @@ test.describe('Error Handling API', () => {
         { data: {} } // missing required 'content' field
       );
 
-      // Elysia schema validation returns 422 (Unprocessable Entity)
+      // Elysia schema validation returns 422 (Unprocessable Entity), not 400
+      // This is the Elysia framework behavior for the specific note endpoint
       expect(response.status()).toBe(422);
     });
 
-    // AC: @api-contract ac-23
-    test('POST /api/inbox with invalid body returns validation error', async ({
+    // AC: @api-contract ac-23 — framework schema validation (inbox missing required field)
+    test('POST /api/inbox with invalid body returns 422 (Elysia schema validation)', async ({
       request,
       daemon,
     }) => {
@@ -173,37 +179,30 @@ test.describe('Error Handling API', () => {
       expect(response.status()).toBe(422);
     });
 
-    // AC: @api-contract ac-23 — custom validation (non-Elysia schema) returns 400
-    test('POST /api/projects with non-absolute path returns 400 with validation error', async ({
+    // AC: @api-contract ac-23 — custom handler validation returns 400 with {error, details:[{field,message}]}
+    // Sending empty string for 'text' passes Elysia schema (type=string) but hits custom handler validation
+    test('POST /api/inbox with empty text returns 400 with {error, details:[{field, message}]}', async ({
       request,
       daemon,
     }) => {
-      const response = await request.post(`${DAEMON_URL}/api/projects`, {
-        data: { path: 'relative/path/no/slash' },
+      const response = await request.post(`${DAEMON_URL}/api/inbox`, {
+        data: { text: '   ' }, // whitespace-only text: passes Elysia schema but fails custom validation
       });
 
       expect(response.status()).toBe(400);
 
       const body = await response.json();
+      // AC: @api-contract ac-23 — must be {error, details:[{field, message}]}
       expect(body).toHaveProperty('error');
-      // The error message indicates path must be absolute
-      expect(body.error).toMatch(/absolute|Path must be/i);
-    });
+      expect(body.error).toBe('validation_error');
+      expect(body).toHaveProperty('details');
+      expect(Array.isArray(body.details)).toBe(true);
+      expect(body.details.length).toBeGreaterThan(0);
 
-    // AC: @api-contract ac-23 — path with parent traversal
-    test('POST /api/projects with path containing ".." returns 400', async ({
-      request,
-      daemon,
-    }) => {
-      const response = await request.post(`${DAEMON_URL}/api/projects`, {
-        data: { path: '/tmp/../etc/passwd' },
-      });
-
-      expect(response.status()).toBe(400);
-
-      const body = await response.json();
-      expect(body).toHaveProperty('error');
-      expect(body.error).toMatch(/parent traversal/i);
+      const detail = body.details[0];
+      expect(detail).toHaveProperty('field');
+      expect(detail).toHaveProperty('message');
+      expect(detail.field).toBe('text');
     });
 
     // AC: @api-contract ac-23 — triage action returns 400 with details array

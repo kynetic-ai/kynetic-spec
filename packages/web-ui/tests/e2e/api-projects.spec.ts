@@ -122,47 +122,19 @@ test.describe('Projects API', () => {
   });
 
   test.describe('POST /api/projects', () => {
-    // AC: @multi-directory-daemon ac-29
-    test('manually registers a project and returns project info', async ({ request, daemon }) => {
-      // createSecondProject creates the directory structure but registers it too
-      // So we need a fresh path — create one directly via the API
-      const secondPath = await daemon.createSecondProject();
-
-      // The second project was already registered by createSecondProject
-      // Verify it appears in the list
-      const listResponse = await request.get(`${DAEMON_URL}/api/projects`);
-      const listBody = await listResponse.json();
-      const found = listBody.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
-      expect(found).toBeDefined();
-      expect(found.path).toBe(secondPath);
-    });
-
-    // AC: @multi-directory-daemon ac-29 — direct POST /api/projects test
-    test('POST /api/projects accepts {path} body and returns {success, project}', async ({
+    // AC: @multi-directory-daemon ac-29 — POST /api/projects returns {success, project} shape
+    test('accepts {path} body and returns {success: true, project: {path, registeredAt, watcherStatus}}', async ({
       request,
       daemon,
     }) => {
-      // createSecondProject uses POST /api/projects under the hood
-      // This test verifies the response shape is {success, project} with correct fields
+      // Set up a valid second project directory structure
       const secondPath = await daemon.createSecondProject();
 
-      // Verify the project was registered with correct response shape by re-fetching it
-      const listResponse = await request.get(`${DAEMON_URL}/api/projects`);
-      const listBody = await listResponse.json();
-      const found = listBody.projects.find(
-        (p: { path: string }) => p.path === secondPath
-      );
-      expect(found).toBeDefined();
-
-      // Verify POST /api/projects response shape directly
-      // Unregister first so we can re-register and check the response
+      // Unregister so we can re-register and capture the direct POST response
       const encodedPath = encodeURIComponent(secondPath);
       await request.delete(`${DAEMON_URL}/api/projects/${encodedPath}`);
 
-      // Re-register to capture the response shape
-      // AC: @multi-directory-daemon ac-29 — POST with {path} body
+      // AC: @multi-directory-daemon ac-29 — POST with {path} body, verify response shape
       const registerResponse = await request.post(`${DAEMON_URL}/api/projects`, {
         data: { path: secondPath },
       });
@@ -178,10 +150,14 @@ test.describe('Projects API', () => {
       expect(project).toHaveProperty('path');
       expect(project.path).toBe(secondPath);
       expect(project).toHaveProperty('registeredAt');
+      expect(typeof project.registeredAt).toBe('string');
       expect(project).toHaveProperty('watcherStatus');
+      expect(['active', 'stopped']).toContain(project.watcherStatus);
     });
 
-    // AC: @multi-directory-daemon ac-6 — path must be absolute
+    // AC: @multi-directory-daemon ac-29 — POST /api/projects validates path is absolute
+    // (Note: ac-6/ac-7/ac-5 are for X-Kspec-Dir header validation; POST /api/projects
+    // mirrors those rules for the request body {path} field as part of ac-29 path validation)
     test('returns 400 when path is not absolute', async ({ request, daemon }) => {
       const response = await request.post(`${DAEMON_URL}/api/projects`, {
         data: { path: 'relative/path/without/slash' },
@@ -194,7 +170,7 @@ test.describe('Projects API', () => {
       expect(body.error).toMatch(/absolute|Path must be/i);
     });
 
-    // AC: @multi-directory-daemon ac-7 — reject parent traversal
+    // AC: @multi-directory-daemon ac-29 — POST /api/projects rejects parent traversal in path
     test('returns 400 when path contains ".." segments', async ({ request, daemon }) => {
       const response = await request.post(`${DAEMON_URL}/api/projects`, {
         data: { path: '/tmp/../etc' },
@@ -207,7 +183,7 @@ test.describe('Projects API', () => {
       expect(body.error).toMatch(/parent traversal/i);
     });
 
-    // AC: @multi-directory-daemon ac-5 — reject invalid projects (no .kspec/)
+    // AC: @multi-directory-daemon ac-29 — POST /api/projects rejects paths without .kspec/
     test('returns 400 for path without .kspec/ directory', async ({ request, daemon }) => {
       const response = await request.post(`${DAEMON_URL}/api/projects`, {
         data: { path: '/tmp' }, // /tmp exists but has no .kspec/
