@@ -5919,8 +5919,20 @@ runs:
   - _ulid: 01KJC3HWNFCNM1J29G17YF02YC
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-26T04:33:14.927Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-26T04:33:14.927Z
+        completed_at: 2026-02-26T04:33:50.328Z
+        notes: "Completed E2E meta/validation API task. One high-confidence friction: trait N/A annotations
+          inside JSDoc blocks are not machine-parseable (captured as observation 01KJC3JS). Also
+          confirmed: must annotate ALL inherited trait families, not just the first 2 visible in
+          item get output."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-26T04:33:50.328Z
+        completed_at: 2026-02-26T04:33:50.328Z
     initiated_by: "@claude"
