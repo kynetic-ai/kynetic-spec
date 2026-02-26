@@ -61849,6 +61849,7 @@
   created_at: 2026-02-26T19:32:48.731Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
@@ -61880,6 +61881,7 @@
   created_at: 2026-02-26T19:32:49.803Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
@@ -62052,6 +62054,7 @@
   created_at: 2026-02-26T19:32:53.607Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
@@ -62115,6 +62118,7 @@
   created_at: 2026-02-26T19:32:54.517Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
