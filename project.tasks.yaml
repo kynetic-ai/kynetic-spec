@@ -47064,27 +47064,29 @@
       author: "@claude"
       content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
   todos: []
+  description: |-
+    Add per-adapter auto-approve args so --yolo works with any adapter.
+
+    ## What to change
+
+    1. **src/agents/adapters.ts** — Add optional autoApproveArgs: string[] to AgentAdapter interface. Set for each adapter:
+       - claude-agent-acp: ["--dangerously-skip-permissions"]
+       - codex-acp: ["-c", "approval_policy=never", "-c", "sandbox_mode=danger-full-access"]
+
+    2. **src/cli/commands/ralph.ts** — Replace hardcoded --dangerously-skip-permissions logic (~line 991) with adapter.autoApproveArgs. Apply per-role (worker gets worker adapter args, reviewer gets reviewer adapter args). When --no-yolo, skip autoApproveArgs entirely.
+
+    3. **src/agents/spawner.ts** — Ensure spawn args are constructed from a fresh copy of adapter.args + autoApproveArgs to prevent cross-role leakage (adapter objects are registry-backed and mutable).
+
+    ## How to verify
+    - Claude adapter with --yolo passes --dangerously-skip-permissions (existing behavior preserved)
+    - Codex adapter with --yolo passes -c approval_policy=never -c sandbox_mode=danger-full-access
+    - --no-yolo passes no auto-approve args for any adapter
+    - Worker and reviewer auto-approve args are independent (no leakage)
 - _ulid: 01KJDCYSNY0TFQB6RFV90HE2X9
   slugs:
     - implement-register-codex-acp-in-adapter-registry
   title: Implement Register codex-acp in adapter registry
   type: task
-  spec_ref: "@codex-acp-adapter-registration"
-  plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: 2026-02-26T16:36:49.470Z
-  notes:
-    - _ulid: 01KJDCYSNYVCKH2VNCNC9J1Q9Q
-      created_at: 2026-02-26T16:36:49.470Z
-      author: "@claude"
-      content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
-  todos: []
   description: |-
     Register codex-acp as a first-class adapter and enable Codex env injection.
 
@@ -47103,3 +47105,19 @@
     - injectEnvForAdapter with codex-acp writes KSPEC_SESSION_ID to Codex config
     - removeEnvForAdapter with codex-acp restores previous config state
     - See tests/session-create.test.ts and tests/ralph.test.ts for patterns
+  spec_ref: "@codex-acp-adapter-registration"
+  plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T16:36:49.470Z
+  notes:
+    - _ulid: 01KJDCYSNYVCKH2VNCNC9J1Q9Q
+      created_at: 2026-02-26T16:36:49.470Z
+      author: "@claude"
+      content: See plan @plan-plan-per-role-adapter-configuration-for-ralph-loop for implementation notes
+  todos: []
