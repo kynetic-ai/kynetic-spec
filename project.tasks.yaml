@@ -60298,98 +60298,6 @@
       supersedes: null
   todos: []
   automation: eligible
-- _ulid: 01KJBK3V52ATSHDATM21GGMWQ9
-  slugs:
-    - task-migrate-daemon-server-tests
-  title: Migrate daemon-server static analysis tests to E2E
-  type: task
-  description: >-
-    Migrate static analysis tests in tests/daemon-server.test.ts that read packages/daemon/src/*.ts
-    and check string patterns.
-
-
-    Actions:
-
-    1. DELETE these tests (covered elsewhere or low value): Elysia dependency (line 27), --port flag
-    parsing (line 37), localhost hostname binding (line 49), /api/health endpoint (line 191),
-    SIGTERM handler (line 205), SIGINT handler (line 216), stop server on shutdown (line 226), CORS
-    plugin middleware (line 236), CORS plugin dependency (line 248), CORS localhost:5173 (line 257),
-    chokidar dependency (line 269), WebSocket endpoint (line 278), isDaemon true (line 289),
-    createServer export (line 299). Signal handlers covered by cli-serve.test.ts. WebSocket covered
-    by E2E connection.spec.ts.
-
-    2. KEEP the localhost-only middleware unit tests (lines 59-188) — these are already behavioral.
-
-    3. After deletion, verify full test suite passes: npm test.
-
-
-    Expected result: daemon-server.test.ts shrinks to ~130 lines containing only the behavioral
-    middleware tests.
-  spec_ref: null
-  meta_ref: null
-  plan_ref: null
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 2
-  tags:
-    - testing
-    - daemon
-    - e2e
-  vcs_refs: []
-  created_at: 2026-02-25T23:45:57.410Z
-  notes: []
-  todos: []
-  automation: eligible
-- _ulid: 01KJBK3XJF3X1PX2Q9204H7JN1
-  slugs:
-    - task-migrate-ralph-endloop-tests
-  title: Migrate ralph end-loop static analysis tests to behavioral
-  type: task
-  description: >-
-    Delete static analysis tests in tests/ralph/end-loop.test.ts that read src/cli/commands/ralph.ts
-    and check string patterns.
-
-
-    Actions:
-
-    1. DELETE ac-detect block (lines 254-272) — behavioral tests in lines 1-252 already verify
-    end-loop detection via CLI.
-
-    2. DELETE session close handlers block (lines 277-346) — 4 tests checking signal handler
-    strings. Session close is tested behaviorally in session-budget-integration.test.ts lines 420+.
-
-    3. KEEP ac-remove-markers block (lines 348-372) — absence tests verifying removed code stays
-    removed. Static scanning is correct for this.
-
-    4. DELETE trait error-guidance blocks (lines 374-418) — duplicate of behavioral coverage in
-    lines 1-252.
-
-    5. DELETE Session store and Session close with closeSession blocks (lines 423-502) — functions
-    tested behaviorally elsewhere.
-
-    6. Run npm test to verify no regressions.
-
-
-    Expected result: end-loop.test.ts shrinks from ~503 to ~375 lines. Lines 1-252 (behavioral) +
-    348-372 (absence) remain.
-  spec_ref: null
-  meta_ref: null
-  plan_ref: null
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 2
-  tags:
-    - testing
-    - ralph
-  vcs_refs: []
-  created_at: 2026-02-25T23:45:59.887Z
-  notes: []
-  todos: []
-  automation: eligible
 - _ulid: 01KJBK3ZWA9HHCRR7A5A7GXNDQ
   slugs:
     - task-migrate-budget-marker-tests
@@ -60404,6 +60312,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Audit determined no migration needed. Absence tests (checking removed code patterns)
+    are the correct approach for this use case. Static scanning is the right tool for verifying code
+    has been removed. Cost is ~72ms. Keep as-is.
   depends_on: []
   context: []
   priority: 3
@@ -60412,6 +60323,8 @@
     - ralph
   vcs_refs: []
   created_at: 2026-02-25T23:46:02.250Z
+  started_at: 2026-02-25T23:51:03.860Z
+  completed_at: 2026-02-25T23:51:03.860Z
   notes:
     - _ulid: 01KJBKD6DMGFQMJJASCQMZ8CEQ
       created_at: 2026-02-25T23:51:03.860Z
@@ -60422,46 +60335,3 @@
         as-is."
       supersedes: null
   todos: []
-  completed_at: 2026-02-25T23:51:03.860Z
-  closed_reason: Audit determined no migration needed. Absence tests (checking removed code patterns)
-    are the correct approach for this use case. Static scanning is the right tool for verifying code
-    has been removed. Cost is ~72ms. Keep as-is.
-  started_at: 2026-02-25T23:51:03.860Z
-- _ulid: 01KJBK428WJZA8ZRRSA7D4ZF88
-  slugs:
-    - task-migrate-remaining-static-tests
-  title: Migrate remaining static analysis tests (normalize-ref, skill-split, web-ui-types)
-  type: task
-  description: >-
-    Migrate 3 files with static analysis tests. Each is independent.
-
-
-    1. tests/skill-module-split.test.ts:
-       - DELETE lines 18-34 (file existence via fs.stat — imports fail naturally if files missing).
-       - CONVERT lines 36-50 to import-based: import skill.ts module, verify registerSkillCrudCommands/registerSkillInstallCommands/registerSkillDiffCommands are exported functions (typeof check).
-       - KEEP lines 54-69 and 74-120 (already behavioral or low risk).
-
-    2. tests/web-ui-shared-types.test.ts:
-       - CONVERT all 5 tests to TypeScript import checks. Instead of readFile + toContain, import the types directly and verify they exist. If re-exports break, TypeScript import fails.
-
-    3. tests/package-distribution.test.ts:
-       - DELETE lines 20-46 (directory existence via fs.stat — superseded by content checks).
-       - DELETE lines 57-62 (directory count check — superseded by manifest-driven checks in lines 146-158).
-       - KEEP lines 50-55, 64-91, 113-185 (content validation, npm packaging, plugin version sync).
-
-    4. Run npm test after all changes to verify no regressions.
-  spec_ref: null
-  meta_ref: null
-  plan_ref: null
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags:
-    - testing
-  vcs_refs: []
-  created_at: 2026-02-25T23:46:04.700Z
-  notes: []
-  todos: []
-  automation: eligible
