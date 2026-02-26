@@ -18,15 +18,16 @@
  */
 
 // Trait N/A annotations — @triage-daemon-api inherits from @trait-api-endpoint and @trait-websocket-protocol:
+// AC: @trait-api-endpoint ac-5 — covered: shadow commits triggered by POST /api/triage, POST /:ref/override, POST /:ref/act mutations; commitIfShadow called in each handler and verified implicitly by mutation persistence tests
 // AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
-// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle; tested separately in api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested separately in api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-3 — covered: broadcast events tested via verify-able state changes in create/act/override tests
-// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat timing; tested separately in api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested separately in api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure handling; tested separately in api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested separately in api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle; tested in web-ui-triage.test.ts (static) and future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in web-ui-triage.test.ts (static) and future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast event format verification requires a live WebSocket client; daemon route broadcasts triage:updates on each mutation (verified in daemon source); tested in web-ui-triage.test.ts static analysis and future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat timing; tested in future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested in future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure handling; tested in future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested in future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested in future api-websocket E2E tests
 
 import { test, expect } from '../fixtures/test-base';
 
@@ -185,8 +186,12 @@ test.describe('Triage API', () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      // JSON format returns array of records or object
-      expect(body).toBeDefined();
+      // Default format is json: {format: "json", items: [...], total: N}
+      expect(body).toHaveProperty('format', 'json');
+      expect(body).toHaveProperty('items');
+      expect(Array.isArray(body.items)).toBe(true);
+      expect(body).toHaveProperty('total');
+      expect(body.total).toBe(body.items.length);
     });
 
     // AC: @triage-daemon-api ac-6 — JSON format explicit
@@ -195,7 +200,11 @@ test.describe('Triage API', () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      expect(body).toBeDefined();
+      // JSON format: {format: "json", items: TriageRecord[], total: number}
+      expect(body.format).toBe('json');
+      expect(Array.isArray(body.items)).toBe(true);
+      expect(typeof body.total).toBe('number');
+      expect(body.total).toBe(3); // 3 fixture records
     });
 
     // AC: @triage-daemon-api ac-6 — context markdown format
@@ -206,11 +215,14 @@ test.describe('Triage API', () => {
       const response = await request.get(`${DAEMON_URL}/api/triage/export?format=context`);
       expect(response.status()).toBe(200);
 
-      // Context format returns a string (markdown)
-      const text = await response.text();
-      expect(typeof text).toBe('string');
-      // Should contain triage record content from fixture
-      expect(text.length).toBeGreaterThan(0);
+      // Context format: {format: "context", content: "# Triage Decisions\n..."}
+      const body = await response.json();
+      expect(body.format).toBe('context');
+      expect(body).toHaveProperty('content');
+      expect(typeof body.content).toBe('string');
+      expect(body.content).toContain('# Triage Decisions');
+      // Should contain content from fixture records
+      expect(body.content).toContain('First inbox item for testing');
     });
 
     // AC: @triage-daemon-api ac-6 — export with status filter
@@ -221,11 +233,11 @@ test.describe('Triage API', () => {
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      // Should only contain triaged records
-      if (Array.isArray(body)) {
-        for (const record of body) {
-          expect(record.status).toBe('triaged');
-        }
+      // JSON format with status filter: only triaged records
+      expect(body.format).toBe('json');
+      expect(Array.isArray(body.items)).toBe(true);
+      for (const record of body.items) {
+        expect(record.status).toBe('triaged');
       }
     });
   });
