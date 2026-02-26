@@ -937,3 +937,10 @@ inbox:
       - session
       - dx
     added_by: "@claude"
+  - _ulid: 01KJBQ62SW8AJYGQJVC2Q7CMCF
+    text: "@cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
+      --alignment, --skills, --conventions (all already implemented in code). Pre-existing drift,
+      not introduced by trait AC task."
+    created_at: 2026-02-26T00:57:05.085Z
+    tags: []
+    added_by: "@claude"
