@@ -62015,11 +62015,48 @@
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
     hanging o
   type: task
-  description: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool
-    call hanging on stdin), ralph has no mechanism to detect or recover. A configurable
-    per-iteration timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would
-    prevent indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't
-    prevent the kspec batch stdin hang.
+  description: >-
+    **What**: Ralph loop has no per-iteration timeout. When a spawned agent gets stuck (e.g., a tool
+    call hanging on stdin, like the `kspec batch --commands ""` hang), ralph waits indefinitely.
+    Claude Code's per-bash-command timeout (120s default) does not cover all hang scenarios — an
+    agent can be alive but unresponsive at the ACP protocol level.
+
+
+    **Where**:
+
+    - `src/cli/commands/ralph.ts` — main loop at line ~1127, the `agent.client.prompt()` call at
+    line ~1373 and the reflection prompt call. These are the two main await points that can hang.
+
+    - `src/acp/client.ts` — the ACP client that manages the session/prompt lifecycle
+
+
+    **How**:
+
+    - Add a configurable `--iteration-timeout <minutes>` CLI option (default: 20 minutes) to the
+    ralph command registration (line ~868).
+
+    - Wrap the `agent.client.prompt()` calls in a `Promise.race` with a timeout. On timeout: (1)
+    kill the stuck agent process via `agent.kill()`, (2) log the timeout as a failed iteration, (3)
+    apply the existing retry/failure escalation logic.
+
+    - The timeout should cover the entire iteration (task-work prompt + optional reflection prompt),
+    not individual prompts, since an iteration is the atomic unit of work.
+
+    - Consider using `AbortController` / `AbortSignal` if the ACP client supports it, otherwise use
+    `Promise.race` with a timer.
+
+
+    **Done when**:
+
+    - `kspec ralph --iteration-timeout 15` kills a stuck agent after 15 minutes and continues to the
+    next iteration (or exits if max failures reached)
+
+    - Default timeout is 20 minutes
+
+    - Timeout events are logged to the session event store with type `iteration.timeout`
+
+    - Existing retry and failure escalation logic handles timeouts the same as other iteration
+    failures
   spec_ref: null
   status: pending
   blocked_by: []
