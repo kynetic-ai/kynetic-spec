@@ -1657,12 +1657,15 @@ triage:
       suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
       generating JSON batch payloads where underscore is the natural convention.
     status: triaged
-    action: defer
+    action: promote
     reasoning: CLI kebab/underscore normalization — DX improvement, workaround is to use correct form
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.571Z
-    updated_at: 2026-02-26T19:02:52.582Z
+    updated_at: 2026-02-26T19:26:20.461Z
+    override_reasoning: This happens enough it is worth doing, simple fix afaik
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:26:20.438Z
   - _ulid: 01KJDNA7DP29PT56R2CV9V406M
     inbox_ref: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
@@ -1726,8 +1729,6 @@ triage:
       integrity issue."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.724Z
-    updated_at: 2026-02-26T19:23:43.414Z
     override_reasoning: iirc this was due to a bad status input so when trying to get the full record it
       failed but probably showed up in indexing for search just fine, seems like we might want to
       add a task as well to evaluate how we handle error cases like this (e.g. data shape incorrect,
@@ -1735,6 +1736,8 @@ triage:
       with a message about what is wrong)
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:23:43.394Z
+    created_at: 2026-02-26T19:02:52.724Z
+    updated_at: 2026-02-26T19:23:43.414Z
   - _ulid: 01KJDNA7JJYXDRGF2D104KFH7Y
     inbox_ref: 01KJ8N6842MXY0QBV3VPZGTAY1
     item_snapshot: "Ralph CLI renderer: parallel tool calls produce confusing output. tool_result events
