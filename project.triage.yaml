@@ -1712,13 +1712,14 @@ triage:
       These are informational SSE events (status: allowed) that the event handler doesn't recognize.
       Should either handle gracefully (ignore/log at debug level) or add to known event types.
       Currently noisy in ralph output."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Ralph rate_limit_event logging — cosmetic noise, not functional issue
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.663Z
-    updated_at: 2026-02-26T19:02:52.678Z
+    updated_at: 2026-02-26T19:32:56.137Z
+    acted_at: 2026-02-26T19:32:56.122Z
   - _ulid: 01KJDNA7GQQ45RS1SFN0SVXTS6
     inbox_ref: 01KJ77S4BZYW0CYX68JHNAQ31X
     item_snapshot: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool
@@ -1731,10 +1732,10 @@ triage:
     reasoning: Ralph iteration timeout needed. Agent hangs block entire loop with no recovery.
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.695Z
-    updated_at: 2026-02-26T19:32:56.013Z
     acted_at: 2026-02-26T19:32:55.999Z
     result_ref: "@01KJDQ17W"
+    created_at: 2026-02-26T19:02:52.695Z
+    updated_at: 2026-02-26T19:32:56.013Z
   - _ulid: 01KJDNA7HMG8YYEMJCFEMJ56NW
     inbox_ref: 01KJ7CNAZQRSSS2BH4KWXT9G0R
     item_snapshot: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
