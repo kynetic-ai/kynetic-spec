@@ -5835,7 +5835,7 @@ runs:
   - _ulid: 01KJC213ATH0R2P0799BJ03GDW
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-26T04:06:36.122Z
     step_results:
@@ -5851,5 +5851,41 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-26T04:06:48.118Z
-        completed_at: 2026-02-26T04:06:48.118Z
+        completed_at: 2026-02-26T04:07:47.798Z
+        notes: >-
+          Friction points identified (with existing coverage check):
+
+
+          1. check-unresolved-comments CI fails on push BEFORE threads are resolved — pattern: Codex
+          posts review inline comments, CI checks run immediately on push, threads aren't resolved
+          until after CI runs. This causes CI fail → resolve → need another push to re-trigger.
+          Already seen in previous tasks (Task #543 fix cycle). Search: 'review threads' shows no
+          dedicated tracking for this specific workflow friction. Not worth capturing — it's
+          inherent to the async CI + thread resolution workflow.
+
+
+          2. Task description says '201 response' for POST /api/inbox but daemon returns 200 — minor
+          task description inaccuracy. This is a one-off, not systemic.
+
+
+          3. trait AC annotation placement — inline vs. before test() call. Already tracked in inbox
+          01KJ4KFA and task 01KJ88CM (completed convention doc).
+
+
+          Success patterns:
+
+          - Codex review caught real issues (misannotated AC, incomplete 404 assertion) that
+          improved test quality
+
+          - E2E replacement pattern (static → real HTTP calls) well-established across 3 tasks now
+          (api-tasks, api-items, api-inbox)
+
+          - PR body Task/Spec trailers enable good traceability
+
+
+          High-confidence captures: None warranted — all friction either already tracked or one-off.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-26T04:07:47.798Z
+        completed_at: 2026-02-26T04:07:47.798Z
     initiated_by: "@claude"
