@@ -1738,7 +1738,7 @@ triage:
     item_snapshot: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
       but failed on kspec item get. Possible write conflict or index corruption during ralph loop
       session. Investigate shadow branch integrity."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug: shadow branch index inconsistency — items in search but not in item get. Data
       integrity issue."
@@ -1752,7 +1752,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:23:43.394Z
     created_at: 2026-02-26T19:02:52.724Z
-    updated_at: 2026-02-26T19:23:43.414Z
+    updated_at: 2026-02-26T19:32:55.199Z
+    acted_at: 2026-02-26T19:32:55.180Z
+    result_ref: "@01KJDQ17"
   - _ulid: 01KJDNA7JJYXDRGF2D104KFH7Y
     inbox_ref: 01KJ8N6842MXY0QBV3VPZGTAY1
     item_snapshot: "Ralph CLI renderer: parallel tool calls produce confusing output. tool_result events
@@ -1765,9 +1767,9 @@ triage:
     reasoning: Ralph renderer parallel tool output — cosmetic, not blocking
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-02-26T19:32:54.425Z
     created_at: 2026-02-26T19:02:52.755Z
     updated_at: 2026-02-26T19:32:54.444Z
-    acted_at: 2026-02-26T19:32:54.425Z
   - _ulid: 01KJDNA7KYG668K3QAEKADJZV7
     inbox_ref: 01KJ8NDTW6M80T7T07SACEP7F8
     item_snapshot: "Tests fail when run inside ralph loop due to environment contamination: (1)

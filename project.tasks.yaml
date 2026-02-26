@@ -61880,25 +61880,44 @@
   created_at: 2026-02-26T19:32:52.387Z
   notes: []
   todos: []
-- title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
+- _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
+  slugs: []
+  title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
     KSPEC_RALP"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Tests fail when run inside ralph loop due to environment contamination: (1)
     ralph.test.ts KSPEC_RALPH_SESSION assertion expects null but env var is inherited from ralph
     process, (2) session-create.test.ts active session warning in stderr breaks JSON parsing, (3)
     session-budget-integration.test.ts references nonexistent task set-automation command. Tests
     should isolate from parent process env vars (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID) to be
     reliable in all contexts."
-  _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-26T19:32:53.607Z
+  notes: []
+  todos: []
+- title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
+    failed on ks"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
+    but failed on kspec item get. Possible write conflict or index corruption during ralph loop
+    session. Investigate shadow branch integrity."
+  _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-02-26T19:32:53.607Z
+  created_at: 2026-02-26T19:32:54.517Z
   notes: []
   todos: []
