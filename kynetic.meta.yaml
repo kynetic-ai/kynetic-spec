@@ -6759,6 +6759,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJDV6RXJE25G2B3QRF02MYW3
+    type: success
+    content: "Codex two-pass review pattern effective: implement → codex review → fix bug found →
+      re-review clean. Caught missing previousValue in injectCodexEnv that would have broken Ralph
+      cleanup."
+    created_at: 2026-02-26T20:45:50.899Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
