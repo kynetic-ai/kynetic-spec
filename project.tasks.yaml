@@ -61731,6 +61731,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-02-26T17:36:42.460Z
-  notes: []
-  todos: []
   started_at: 2026-02-26T18:20:24.049Z
+  notes:
+    - _ulid: 01KJDK6A610NEHK8GA42GYZ4SA
+      created_at: 2026-02-26T18:25:47.201Z
+      author: "@claude"
+      content: Implementation complete. Created 07-batch-usage.md template, added [path] filter to batch
+        commands with NOT_FOUND exit code and JSON errors on stdout, added 7 path filter tests + 3
+        template tests. All ACs covered (ac-filter-by-path, ac-filter-not-found). Full test suite
+        passes (pre-existing ralph flaky test unrelated). AGENTS.md and kspec-agents.md updated.
+      supersedes: null
+  todos: []
