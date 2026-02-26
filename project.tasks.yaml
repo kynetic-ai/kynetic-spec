@@ -60992,7 +60992,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -61005,10 +61005,16 @@
   session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
   created_at: 2026-02-26T00:28:51.533Z
   started_at: 2026-02-26T11:47:01.975Z
+  submitted_at: 2026-02-26T12:58:15.251Z
   notes: []
   todos: []
   automation: eligible
-  submitted_at: 2026-02-26T12:58:15.251Z
+  completed_at: 2026-02-26T12:58:16.329Z
+  closed_reason: "Merged in PR #553. Replaced static analysis tests in tests/daemon-server.test.ts
+    with Playwright E2E tests in packages/web-ui/tests/e2e/api-server.spec.ts. Tests cover
+    @daemon-server ac-1, ac-2, ac-3, ac-11, ac-15, @api-contract ac-1, and
+    @trait-localhost-security. Kept behavioral unit tests for localhost middleware in
+    daemon-server.test.ts. Deleted static analysis tests that only read source files."
 - _ulid: 01KJBNJF6Z5F9EPA0J0VDKTQ20
   slugs:
     - task-e2e-daemon-websocket
