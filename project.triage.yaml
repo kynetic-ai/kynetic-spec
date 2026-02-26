@@ -1606,12 +1606,15 @@ triage:
       task-work skill and task-work-loop workflow to include this step. Plans are the right place
       for rich implementation context instead of cramming it into task notes.
     status: triaged
-    action: defer
+    action: promote
     reasoning: Agent plan_ref check — workflow/skill improvement, not blocking task work
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.448Z
-    updated_at: 2026-02-26T19:02:52.460Z
+    updated_at: 2026-02-26T19:27:59.376Z
+    override_reasoning: High value documentation update that will help reinforce behavior and high quality output
+    override_by: Jacob Chapel
+    override_at: 2026-02-26T19:27:59.358Z
   - _ulid: 01KJDNA79VHCVAAN363VV8ZSDQ
     inbox_ref: 01KJ63RW5ZEQFM3PMXD224F9VG
     item_snapshot: "Plan import --update replaces all ACs instead of merging. When extending an existing
@@ -1661,11 +1664,11 @@ triage:
     reasoning: CLI kebab/underscore normalization — DX improvement, workaround is to use correct form
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.571Z
-    updated_at: 2026-02-26T19:26:20.461Z
     override_reasoning: This happens enough it is worth doing, simple fix afaik
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:26:20.438Z
+    created_at: 2026-02-26T19:02:52.571Z
+    updated_at: 2026-02-26T19:26:20.461Z
   - _ulid: 01KJDNA7DP29PT56R2CV9V406M
     inbox_ref: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
