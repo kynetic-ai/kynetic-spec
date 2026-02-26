@@ -112,20 +112,28 @@ function checkKspecCli() {
   }
 
   // Check if kspec resolves to the local project (npm link)
-  // by comparing the resolved path with our project's dist
+  // If dist/ doesn't exist yet, we definitely need to build and link
   const distCli = path.join(projectRoot, 'dist', 'cli', 'index.js');
-  const whichResult = run('which kspec', { silent: true });
+  if (!fs.existsSync(distCli)) {
+    return { available: true, linked: false, version: result.output.trim(), reason: 'local dist not built yet' };
+  }
+
+  // Resolve the kspec binary path and compare to local dist
+  // Use command -v (POSIX) instead of which (not available everywhere)
+  const whichResult = run('command -v kspec', { silent: true });
   if (whichResult.success) {
     try {
       const resolvedBin = fs.realpathSync(whichResult.output.trim());
-      const resolvedDist = fs.existsSync(distCli) ? fs.realpathSync(distCli) : null;
-      if (resolvedDist && resolvedBin !== resolvedDist) {
+      const resolvedDist = fs.realpathSync(distCli);
+      if (resolvedBin !== resolvedDist) {
         return { available: true, linked: false, version: result.output.trim(), reason: 'kspec is globally installed but not linked to local build' };
       }
     } catch {
-      // If realpath fails, assume not linked
       return { available: true, linked: false, version: result.output.trim(), reason: 'could not verify link target' };
     }
+  } else {
+    // Can't resolve path — assume not linked to be safe
+    return { available: true, linked: false, version: result.output.trim(), reason: 'could not resolve kspec path' };
   }
 
   return { available: true, linked: true, version: result.output.trim() };
