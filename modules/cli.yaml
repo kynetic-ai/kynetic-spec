@@ -358,6 +358,10 @@ features:
                 given: A batch command nested inside a batch
                 when: Used in batch
                 then: Validation rejects with message that batch cannot be nested
+              - id: ac-filter-by-path
+                given: An agent needs the schema for a specific command (e.g. 'task set')
+                when: kspec batch commands 'task set' is run
+                then: Only that command's info is displayed (arguments, options, description)
             status:
               maturity: draft
               implementation: implemented
