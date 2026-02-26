@@ -2005,7 +2005,7 @@ triage:
     inbox_ref: 01KJDFFJEED59WPDEZ7MZ98ZW9
     item_snapshot: "Plan import: generate richer task descriptions from Implementation Notes section —
       include file paths, what to change, verification steps instead of generic 'See plan...' text"
-    status: triaged
+    status: acted_on
     action: spec-gap
     reasoning: Plan import richer descriptions — improvement, not blocking
     decided_by: "@claude"
@@ -2016,7 +2016,9 @@ triage:
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:12:37.001Z
     created_at: 2026-02-26T19:02:53.347Z
-    updated_at: 2026-02-26T19:12:37.017Z
+    updated_at: 2026-02-26T19:32:47.305Z
+    acted_at: 2026-02-26T19:32:47.291Z
+    result_ref: "@01KJDQ0Z"
   - _ulid: 01KJDNA863W9TWRQP1FAWQ5NGB
     inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
     item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
@@ -2031,10 +2033,10 @@ triage:
       instances of the repo. So we'd want our merge driver to handle it in a consistent way.
     override_by: Jacob Chapel
     override_at: 2026-02-26T19:10:50.608Z
-    created_at: 2026-02-26T19:02:53.379Z
-    updated_at: 2026-02-26T19:32:47.138Z
     acted_at: 2026-02-26T19:32:47.122Z
     result_ref: "@01KJDQ0Z"
+    created_at: 2026-02-26T19:02:53.379Z
+    updated_at: 2026-02-26T19:32:47.138Z
   - _ulid: 01KJDNA8723DJ93CK1F5EBEX44
     inbox_ref: 01KJDFFJFXQWX51PQEGAPJ09AC
     item_snapshot: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning
