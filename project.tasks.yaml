@@ -46878,7 +46878,7 @@
   spec_ref: "@triage-daemon-api"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -46896,6 +46896,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-02-26T11:48:57.047Z
 - _ulid: 01KJCW71YTXH4JG06QN5CKP5FJ
   slugs:
     - task-triage-e2e-behavioral-coverage
