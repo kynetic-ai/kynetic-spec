@@ -6135,7 +6135,7 @@ runs:
   - _ulid: 01KJDE3W7TBDMJ42XZAMNKZW2G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-26T16:57:04.507Z
     step_results:
@@ -6199,5 +6199,32 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-26T16:57:41.282Z
-        completed_at: 2026-02-26T16:57:41.282Z
+        completed_at: 2026-02-26T16:57:51.213Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. **task set --description flag** (small) — Add --description to kspec task set, same as
+          kspec task add has --description. Currently requires kspec task patch --data with JSON
+          which is unintuitive.
+
+
+          2. **Plan import: richer task descriptions** (medium) — When deriving tasks from specs
+          during plan import, generate implementation-ready descriptions from the plan's
+          Implementation Notes section. Include file paths, what to change, and verification steps.
+          Currently generates generic "See plan..." text.
+
+
+          3. **Merge driver: handle .kspec-agents-hash** (small) — Add .kspec-agents-hash to merge
+          driver's auto-resolve list. It's a deterministic hash that should always take the latest
+          version. Currently causes manual conflict resolution during rebase.
+
+
+          4. **Shadow repair: handle missing /bin/sh** (small) — The shadow repair command uses
+          spawn with /bin/sh which fails on systems without it (e.g., fish-only setups). Should use
+          the configured shell or direct git commands.
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-26T16:57:51.213Z
+        completed_at: 2026-02-26T16:57:51.213Z
     initiated_by: "@claude"
