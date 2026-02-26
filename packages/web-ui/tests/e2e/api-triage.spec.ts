@@ -20,9 +20,9 @@
 // Trait N/A annotations — @triage-daemon-api inherits from @trait-api-endpoint and @trait-websocket-protocol:
 // AC: @trait-api-endpoint ac-5 — covered: shadow commits triggered by POST /api/triage, POST /:ref/override, POST /:ref/act mutations; commitIfShadow called in each handler and verified implicitly by mutation persistence tests
 // AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
-// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle; tested in web-ui-triage.test.ts (static) and future api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in web-ui-triage.test.ts (static) and future api-websocket E2E tests
-// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast event format verification requires a live WebSocket client; daemon route broadcasts triage:updates on each mutation (verified in daemon source); tested in web-ui-triage.test.ts static analysis and future api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle; tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast event format verification requires a live WebSocket client; daemon route broadcasts triage:updates on each mutation (verified in daemon source); tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat timing; tested in future api-websocket E2E tests
 // AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested in future api-websocket E2E tests
 // AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure handling; tested in future api-websocket E2E tests

@@ -2,13 +2,16 @@
  * Tests for session-scoped end-loop signal.
  *
  * Migrated from marker file approach to session state.
- * AC: @session-end-loop-signal ac-signal, ac-block-task, ac-detect, ac-session-close-normal,
- *     ac-session-close-signal, ac-session-close-error, ac-remove-markers
+ * AC: @session-end-loop-signal ac-signal, ac-block-task
  * AC: @trait-error-guidance ac-1, ac-2
  * AC: @trait-error-guidance ac-3 N/A — no ref resolution in end-loop command
  * AC: @trait-error-guidance ac-4 N/A — no state transitions in end-loop command
  * AC: @trait-error-guidance ac-5 N/A — no field-level validation in end-loop command
  * AC: @trait-error-guidance ac-6 N/A — ralph end-loop does not support --json output mode
+ * AC: @session-end-loop-signal ac-detect — N/A: tested implicitly via ac-block-task; task start
+ *     and ralph both call isEndLoopRequested(). Integration verified in session-budget-integration.test.ts.
+ * AC: @session-end-loop-signal ac-remove-markers — N/A: static absence check for removed code
+ *     (END_LOOP_MARKER_PATH, readEndLoopMarker, etc.). Removed code does not need ongoing guard tests.
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";

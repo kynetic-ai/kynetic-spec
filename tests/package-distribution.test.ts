@@ -16,9 +16,13 @@ import { describe, it, expect } from 'vitest';
 const PACKAGE_ROOT = path.resolve(__dirname, '..');
 
 describe('Package Distribution', () => {
+  // AC: @package-distribution ac-1 (templates/ present and readable — verified by reading files below)
+  // AC: @package-distribution ac-2 (skills/, agents-sections/, hooks/ present — verified by reading from each)
   // AC: @package-distribution ac-3
   describe('skills/ contains core skill content', () => {
     it('contains manifest.yaml with core skill definitions', async () => {
+      // AC: @package-distribution ac-1
+      // AC: @package-distribution ac-2
       const manifestPath = path.join(PACKAGE_ROOT, 'templates', 'skills', 'manifest.yaml');
       const content = await fs.readFile(manifestPath, 'utf-8');
       expect(content).toContain('skills:');
@@ -32,9 +36,12 @@ describe('Package Distribution', () => {
     });
   });
 
+  // AC: @package-distribution ac-2 (hooks/ subdirectory verified by hook content tests)
   // AC: @package-distribution ac-4
   describe('hooks/ contains pre-commit hook source', () => {
     it('pre-commit hook file exists', async () => {
+      // AC: @package-distribution ac-2
+      // AC: @package-distribution ac-4
       const preCommitPath = path.join(PACKAGE_ROOT, 'templates', 'hooks', 'pre-commit');
       const stats = await fs.stat(preCommitPath);
       expect(stats.isFile()).toBe(true);
@@ -56,6 +63,7 @@ describe('Package Distribution', () => {
 
   describe('agents-sections/ contains markdown templates', () => {
     it('contains markdown template files', async () => {
+      // AC: @package-distribution ac-2
       const sectionsPath = path.join(PACKAGE_ROOT, 'templates', 'agents-sections');
       const entries = await fs.readdir(sectionsPath);
       const mdFiles = entries.filter(f => f.endsWith('.md'));
@@ -75,6 +83,7 @@ describe('Package Distribution', () => {
 
   describe('package.json files field includes templates and plugin', () => {
     it('package.json files array includes templates', async () => {
+      // AC: @package-distribution ac-1
       const packageJsonPath = path.join(PACKAGE_ROOT, 'package.json');
       const content = await fs.readFile(packageJsonPath, 'utf-8');
       const pkg = JSON.parse(content);
