@@ -3285,6 +3285,11 @@ features:
                 when: prompts are rendered for worker or reviewer roles
                 then: portable references resolve to adapter-appropriate invocation strings using known skill origin
                   metadata
+              - id: ac-5
+                given: ralph skill config still uses legacy slash-style invocation strings
+                when: prompts are rendered for Codex adapters
+                then: core invocations are normalized to Codex syntax for backward compatibility (for example
+                  /kspec:task-work becomes $kspec-task-work)
             status:
               maturity: draft
               implementation: in_progress
