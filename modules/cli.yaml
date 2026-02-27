@@ -3278,7 +3278,7 @@ features:
               - id: ac-3
                 given: ralph reviewer adapter targets Codex harness
                 when: the review subagent prompt is built
-                then: the PR review invocation uses Codex syntax (for example -review @task-ref)
+                then: the PR review invocation uses Codex syntax (for example $kspec-review @task-ref)
               - id: ac-4
                 given: ralph skill config uses portable references like {skill:task-work}, {skill:reflect}, or
                   {skill:review}
