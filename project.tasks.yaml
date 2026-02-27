@@ -63509,6 +63509,7 @@
     - install-core
   vcs_refs: []
   created_at: 2026-02-27T00:18:22.197Z
+  started_at: 2026-02-27T00:35:16.481Z
   notes:
     - _ulid: 01KJE86X9X7XWBQ87BRE6T0KMC
       created_at: 2026-02-27T00:33:06.877Z
@@ -63520,8 +63521,19 @@
         Because renderSkillsForSetup iterates skill.platforms, codex renderer is never invoked for
         core skills."
       supersedes: null
+    - _ulid: 01KJE8F7XBKDG47VBDQRH5S3AB
+      created_at: 2026-02-27T00:37:39.883Z
+      author: Jacob Chapel
+      content: "Implemented codex core-skill install/render path (2026-02-27): updated
+        templates/skills/manifest.yaml so all core skills target both claude-code and codex; setup
+        render fallback message now platform-neutral; added regression tests in
+        tests/core-skill-install.test.ts (install-core + skill render creates
+        .agents/skills/kspec-help and keeps claude core plugin-provided) and
+        tests/enhanced-setup.test.ts (setup in codex env renders core skills to codex output).
+        Verified with npm run build plus vitest runs: core-skill-install, enhanced-setup,
+        core-skill-update, setup-pipeline-unification, core-skill-namespace all passing."
+      supersedes: null
   todos: []
-  started_at: 2026-02-27T00:35:16.481Z
 - _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
   slugs: []
   title: Make core skill cross-references platform-aware (Claude/Codex)
