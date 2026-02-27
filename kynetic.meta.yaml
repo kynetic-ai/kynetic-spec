@@ -6810,6 +6810,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJEVMQJJZ127WW5CHM0KQK16
+    type: success
+    content: Portable {skill:<id>} tokens with renderer-side platform resolution reduced template
+      duplication and kept Claude/Codex invocation guidance consistent across SKILL.md and
+      supporting markdown.
+    created_at: 2026-02-27T06:12:42.706Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
