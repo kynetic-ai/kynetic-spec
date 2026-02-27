@@ -3271,10 +3271,10 @@ features:
                 when: the task-work prompt is built
                 then: task-work and reflect invocations use dollar-style syntax with core namespacing (for example
                   -task-work loop and -reflect loop)
-              - id: ac-5
-                given: ralph skill config still uses legacy slash-style invocation strings
-                when: prompts are rendered for Codex adapters
-                then: core invocations are normalized to Codex syntax for backward compatibility
+              - id: ac-6
+                given: worker and reviewer adapters target different harnesses
+                when: ralph builds worker and subagent prompts in the same session
+                then: each prompt uses invocation formatting for its own role adapter without cross-role leakage
       - _ulid: 01KJDCYRM80FT38JY8CPG63ATY
         slugs:
           - ralph-adapter-auto-approve
