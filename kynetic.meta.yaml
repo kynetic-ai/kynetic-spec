@@ -7084,6 +7084,7 @@ skills:
     origin: project
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags: []
     allowed_tools: []
