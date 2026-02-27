@@ -63523,7 +63523,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -63572,6 +63572,8 @@
         is live."
       supersedes: null
   todos: []
+  completed_at: 2026-02-27T05:19:42.802Z
+  closed_reason: null
 - _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
   slugs: []
   title: Make core skill cross-references platform-aware (Claude/Codex)
