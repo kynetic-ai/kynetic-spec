@@ -61341,7 +61341,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-e2e-daemon-tasks-api"
@@ -61382,6 +61382,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-27T09:05:24.188Z
 - _ulid: 01KJCQ01EAF79RKFYTMBSZRP1Q
   slugs:
     - task-shadow-shallow-clone-detection
