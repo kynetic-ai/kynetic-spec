@@ -61343,6 +61343,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged PR #575 (tests/lint/no-static-analysis.test.ts) adding CI lint guard against
+    source-scanning tests; removed remaining static-analysis test patterns."
   depends_on:
     - "@task-e2e-daemon-tasks-api"
     - "@task-e2e-daemon-items-api"
@@ -61364,6 +61366,7 @@
   created_at: 2026-02-26T00:36:04.458Z
   started_at: 2026-02-27T08:57:30.523Z
   submitted_at: 2026-02-27T09:05:24.188Z
+  completed_at: 2026-02-27T09:17:32.858Z
   notes:
     - _ulid: 01KJF5GD8YHVV7SM2ZX9RQJP7K
       created_at: 2026-02-27T09:05:06.846Z
@@ -61383,9 +61386,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-27T09:17:32.858Z
-  closed_reason: "Merged PR #575 (tests/lint/no-static-analysis.test.ts) adding CI lint guard against
-    source-scanning tests; removed remaining static-analysis test patterns."
 - _ulid: 01KJCQ01EAF79RKFYTMBSZRP1Q
   slugs:
     - task-shadow-shallow-clone-detection
@@ -63922,3 +63922,86 @@
       supersedes: null
   todos: []
   automation: eligible
+- _ulid: 01KJF687QGPXXV00F9ZPTQJKYF
+  slugs: []
+  title: "Ralph: Stream terminal/run output to session files and return bounded previews"
+  type: bug
+  description: >-
+    Problem: terminal/run currently accumulates child stdout/stderr in unbounded in-memory strings,
+    which can OOM long codex runs.
+
+
+    Scope (steps 1-2):
+
+    1) In terminal/run handler, stream stdout/stderr directly to per-session files (e.g.,
+    .kspec/sessions/<id>/tool-output/<toolCallId>.stdout.log and .stderr.log).
+
+    2) Keep only bounded in-memory preview (e.g., first N chars/lines and byte counters) for tool
+    response + CLI display.
+
+    3) Include metadata in tool response: stdout_path, stderr_path, stdout_bytes, stderr_bytes,
+    preview_truncated.
+
+    4) Preserve current UX by showing truncated preview in CLI while retaining full output on disk.
+
+
+    Done when: reproducing command-heavy codex run no longer grows heap unbounded from terminal/run
+    output, and full output is still retrievable from session artifacts.
+  spec_ref: "@cli-ralph"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - ralph
+    - memory
+    - session-log
+  vcs_refs: []
+  created_at: 2026-02-27T09:18:07.599Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: "Session events: Add oversized payload guardrails with externalized blob pointers"
+  description: >-
+    Problem: large ACP updates can inflate JSONL event lines and memory pressure. We need safety
+    limits without losing auditability.
+
+
+    Scope (steps 3-4):
+
+    1) Add framing/event safety caps (line/payload size) to prevent single-message heap blowups.
+
+    2) For oversized payload fields (toolResponse stdout/stderr, rawOutput, large chunk text), write
+    full content to session blob files under .kspec/sessions/<id>/blobs/.
+
+    3) Store compact pointer objects in events.jsonl (path, bytes, sha256, truncated=true, preview).
+
+    4) Update session log show/search behavior to surface previews by default and optionally resolve
+    blob content on demand.
+
+
+    Non-goal: silently dropping payloads. If payload is externalized, events must keep enough
+    metadata to reconstruct/audit.
+  type: bug
+  spec_ref: "@session-events"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - session-log
+    - memory
+    - reliability
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJF68AWM0F61QBQ957V6T2C1
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-27T09:18:10.836Z
+  notes: []
+  todos: []
