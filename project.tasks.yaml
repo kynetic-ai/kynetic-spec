@@ -63657,4 +63657,10 @@
         with idempotent diff/copy checks preserved. Legacy codex core /kspec:<id> rewrite remains as
         compatibility fallback."
       supersedes: null
+    - _ulid: 01KJECGMZ03J8B90EQAZC895ZW
+      created_at: 2026-02-27T01:48:20.320Z
+      author: Jacob Chapel
+      content: "PR #569 updated with portable {skill:<id>} token resolution across SKILL.md and supporting
+        markdown; CI passing on head dba33943; task moved to pending_review."
+      supersedes: null
   todos: []
