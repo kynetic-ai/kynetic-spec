@@ -63877,7 +63877,19 @@
     - validation
   vcs_refs: []
   created_at: 2026-02-27T08:37:26.602Z
-  notes: []
+  started_at: 2026-02-27T08:37:32.216Z
+  notes:
+    - _ulid: 01KJF418YAMNV5W2V03NJXR5X0
+      created_at: 2026-02-27T08:39:22.315Z
+      author: Jacob Chapel
+      content: "Implemented adapter validation probe fallback in src/cli/commands/ralph.ts: validation now
+        checks npx --no-install <pkg> --help first, then falls back to --version, preventing false
+        negatives for CLIs like @zed-industries/codex-acp that reject --version. Added regression
+        tests in tests/ralph.test.ts (adapter validation probe strategy) covering codex-acp pattern,
+        fallback path, and full-failure path. Spec-gap check: no new spec needed; this fixes a
+        violation of existing @ralph-adapter-validation AC valid-adapter-proceeds. Verification: npx
+        vitest run tests/ralph.test.ts passed (114/114). kspec validate currently fails on
+        pre-existing repository reference/alignment/completeness issues unrelated to this change."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-27T08:37:32.216Z
