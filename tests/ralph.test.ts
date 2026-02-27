@@ -13,6 +13,7 @@ import type { SessionUpdate } from '../src/acp/types.js';
 import {
   getPromptPlatformForAdapter,
   isAdapterPackageAvailable,
+  runTerminalCommandWithArtifacts,
   resolveRalphSkillInvocation
 } from '../src/cli/commands/ralph.js';
 import { CLI_PATH, setupTempFixtures, cleanupTempDir } from './helpers/cli';
@@ -622,6 +623,65 @@ describe('ralph command', () => {
       const envData = JSON.parse(await fs.readFile(envVerifyFile, 'utf-8'));
       expect(envData.KSPEC_RALPH_SESSION).toBeNull();
     });
+  });
+});
+
+describe('ralph terminal/run output capture', () => {
+  // AC: @cli-ralph ac-11
+  it('streams full terminal output to session artifacts with bounded preview response', async () => {
+    const tempDir = await fs.mkdtemp(path.join(__dirname, 'tmp-ralph-terminal-'));
+    const specDir = path.join(tempDir, '.kspec');
+
+    try {
+      const result = await runTerminalCommandWithArtifacts({
+        command: `node -e "process.stdout.write('A'.repeat(80)); process.stderr.write('B'.repeat(60));"`,
+        cwd: tempDir,
+        timeout: 10_000,
+        toolCallId: 'tool-123',
+        specDir,
+        sessionId: '01KTESTTERMINALOUTPUTSESSION',
+        previewMaxBytes: 32,
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe('A'.repeat(32));
+      expect(result.stderr).toBe('B'.repeat(32));
+      expect(result.stdout_bytes).toBe(80);
+      expect(result.stderr_bytes).toBe(60);
+      expect(result.preview_truncated).toBe(true);
+      expect(result.stdout_path).toBeTruthy();
+      expect(result.stderr_path).toBeTruthy();
+
+      const fullStdout = await fs.readFile(result.stdout_path!, 'utf-8');
+      const fullStderr = await fs.readFile(result.stderr_path!, 'utf-8');
+      expect(fullStdout).toBe('A'.repeat(80));
+      expect(fullStderr).toBe('B'.repeat(60));
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('returns preview-only output when session artifact context is unavailable', async () => {
+    const tempDir = await fs.mkdtemp(path.join(__dirname, 'tmp-ralph-preview-'));
+
+    try {
+      const result = await runTerminalCommandWithArtifacts({
+        command: `node -e "process.stdout.write('ok');"`,
+        cwd: tempDir,
+        timeout: 10_000,
+        toolCallId: 'tool-preview',
+        previewMaxBytes: 32,
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe('ok');
+      expect(result.stderr).toBe('');
+      expect(result.stdout_path).toBeUndefined();
+      expect(result.stderr_path).toBeUndefined();
+      expect(result.preview_truncated).toBe(false);
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
   });
 });
 
