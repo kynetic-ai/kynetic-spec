@@ -2724,6 +2724,16 @@ features:
         when: task selection runs each iteration
         then: only the explicitly listed tasks are considered for work, regardless of automation eligibility
           of other tasks; exits when all listed tasks are completed or blocked
+      - id: ac-22
+        given: A terminal/run tool request produces large stdout or stderr output
+        when: Ralph handles the terminal/run request
+        then: Ralph streams stdout and stderr to per-session artifact files under
+          .kspec/sessions/{session}/tool-output/ instead of accumulating unbounded output in memory
+      - id: ac-23
+        given: A terminal/run command completes after producing output
+        when: Ralph sends the tool response and renders tool output
+        then: The response includes bounded previews and metadata (stdout_path, stderr_path, stdout_bytes,
+          stderr_bytes, preview_truncated) while preserving access to full output via artifact files
     status:
       maturity: draft
       implementation: in_progress
@@ -3433,6 +3443,18 @@ features:
         given: events are accumulated
         when: a commit boundary is reached (task complete, session end)
         then: events are included in next kspec commit
+      - id: ac-8
+        given: A session event contains oversized payload fields (for example large tool outputs or chunk
+          text)
+        when: The event is prepared for persistence
+        then: Oversized field content is externalized to session blob files under
+          .kspec/sessions/{id}/blobs/ and the JSONL event stores a pointer object instead of the
+          full payload
+      - id: ac-9
+        given: Event payload content is externalized
+        when: The pointer object is written to events.jsonl
+        then: The pointer records path, byte length, hash, truncation flag, and preview so audit trails
+          remain reconstructible without silently dropping content
     status:
       maturity: draft
       implementation: implemented
