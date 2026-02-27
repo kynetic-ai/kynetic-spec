@@ -64030,7 +64030,7 @@
   spec_ref: "@session-events"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -64068,3 +64068,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-27T10:09:50.333Z
