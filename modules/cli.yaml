@@ -3270,7 +3270,7 @@ features:
                 given: ralph worker adapter targets Codex harness
                 when: the task-work prompt is built
                 then: task-work and reflect invocations use dollar-style syntax with core namespacing (for example
-                  -task-work loop and -reflect loop)
+                  $kspec-task-work loop and $kspec-reflect loop)
               - id: ac-6
                 given: worker and reviewer adapters target different harnesses
                 when: ralph builds worker and subagent prompts in the same session
@@ -3285,11 +3285,6 @@ features:
                 when: prompts are rendered for worker or reviewer roles
                 then: portable references resolve to adapter-appropriate invocation strings using known skill origin
                   metadata
-              - id: ac-1
-                given: ralph worker adapter targets Claude-family harness
-                when: the task-work prompt is built
-                then: task-work and reflect invocations use slash-style syntax (for example /kspec:task-work loop
-                  and /kspec:reflect loop)
             status:
               maturity: draft
               implementation: in_progress
