@@ -63275,6 +63275,7 @@
     - codex
     - detection
   vcs_refs: []
+  session_id: null
   created_at: 2026-02-26T23:17:00.000Z
   started_at: 2026-02-26T23:46:28.603Z
   submitted_at: 2026-02-27T00:00:43.321Z
@@ -63312,8 +63313,15 @@
         can be overshadowed by GH_TOKEN/COPILOT_MODEL) and missing regression test; npm test gate
         not green."
       supersedes: null
+    - _ulid: 01KJE6T45PZTGWMGCGW8VTHJ7X
+      created_at: 2026-02-27T00:08:39.350Z
+      author: Jacob Chapel
+      content: "Addressed PR MUST-FIX feedback: moved codex detection precedence ahead of copilot markers
+        in shared detector and added regression test for CODEX_THREAD_ID+GH_TOKEN coexistence.
+        Verification: tests/agent-detection.test.ts and tsc --noEmit pass. Pushed commit 234bab50 to
+        PR #568."
+      supersedes: null
   todos: []
-  session_id: null
 - _ulid: 01KJE46AQZHKVQMVWWCWKGH2P3
   slugs: []
   title: Make git root/shadow detection resilient to restricted runtimes
