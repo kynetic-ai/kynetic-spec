@@ -63853,30 +63853,31 @@
         issues (e.g., duplicate @observations slug), not introduced by this task."
       supersedes: null
   todos: []
-- title: Fix ralph adapter validation false-negative for codex-acp
+- _ulid: 01KJF3XQYB6SGAG3HNQPSGKQA8
+  slugs: []
+  title: Fix ralph adapter validation false-negative for codex-acp
+  type: bug
   description: Ralph adapter startup validation currently probes adapters with 'npx --no-install <pkg>
     --version'. @zed-industries/codex-acp does not support --version and exits non-zero, causing a
     false 'Adapter package not found' error even when the package exists. Update validation to use
     an adapter-agnostic availability probe and keep the existing error behavior for truly missing
     packages. Add regression tests covering codex-acp-like CLIs that reject --version but support
     --help.
-  type: bug
   spec_ref: "@ralph-adapter-validation"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - ralph
     - codex
     - validation
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJF3XQYB6SGAG3HNQPSGKQA8
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-27T08:37:26.602Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-02-27T08:37:32.216Z
