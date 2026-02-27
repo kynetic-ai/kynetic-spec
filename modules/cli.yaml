@@ -3287,7 +3287,7 @@ features:
                   metadata
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
       - _ulid: 01KJDCYRM80FT38JY8CPG63ATY
         slugs:
           - ralph-adapter-auto-approve
