@@ -64043,6 +64043,7 @@
   session_id: 01KJF8SYSNY2SBB7APZ2CTWCF4
   created_at: 2026-02-27T09:18:10.836Z
   started_at: 2026-02-27T10:05:04.080Z
+  submitted_at: 2026-02-27T10:09:50.333Z
   notes:
     - _ulid: 01KJF8YC0BXF7553R2YE2NBHWD
       created_at: 2026-02-27T10:05:10.027Z
@@ -64066,6 +64067,14 @@
         @observations slug ambiguity + baseline alignment/completeness warnings unrelated to this
         task."
       supersedes: null
+    - _ulid: 01KJF97EMCB0T6K5G4P9A86V0Z
+      created_at: 2026-02-27T10:10:07.629Z
+      author: Jacob Chapel
+      content: "Submitted for review and opened PR #578 (fix/session-event-blob-guardrails). Includes
+        event payload/line guardrails with blob externalization pointers and --resolve-blobs support
+        in session log show/search with regression coverage. Verification: npm run build; npx vitest
+        run tests/sessions.test.ts tests/session-log-show.test.ts tests/session-log-search.test.ts
+        (131/131)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-27T10:09:50.333Z
