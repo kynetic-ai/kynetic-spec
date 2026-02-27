@@ -74,6 +74,24 @@ describe('Skill Rendering Pipeline', () => {
       // name should be the skill id, not the skill name
       expect(content).toContain('name: test-skill');
     });
+
+    it('should resolve portable skill references for claude rendering', async () => {
+      kspecFull(
+        'skill add --id task-work --name "Task Work" --description "Core task work" --origin core --platform claude-code',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'test-skill', 'SKILL.md');
+      await fs.writeFile(skillMdPath, '# Test Skill\n\nUse {skill:task-work}.\n', 'utf-8');
+
+      kspecFull('skill render', tempDir);
+
+      const renderedPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(content).toContain('/kspec:task-work');
+      expect(content).not.toContain('{skill:task-work}');
+    });
   });
 
   // AC: @skill-rendering ac-2
@@ -95,6 +113,28 @@ describe('Skill Rendering Pipeline', () => {
 
       expect(quickref).toContain('# Quick Reference');
       expect(advanced).toContain('# Advanced Guide');
+    });
+
+    it('should resolve portable references in copied docs for claude renderer', async () => {
+      kspecFull(
+        'skill add --id task-work --name "Task Work" --description "Core task work" --origin core --platform claude-code',
+        tempDir
+      );
+
+      const docsDir = path.join(tempDir, 'skills', 'test-skill', 'docs');
+      await fs.writeFile(
+        path.join(docsDir, 'quickref.md'),
+        '# Quick Reference\n\nRun {skill:task-work} first.\n',
+        'utf-8'
+      );
+
+      kspecFull('skill render', tempDir);
+
+      const renderedDocsPath = path.join(tempDir, '.claude', 'skills', 'test-skill', 'docs', 'quickref.md');
+      const rendered = await fs.readFile(renderedDocsPath, 'utf-8');
+
+      expect(rendered).toContain('/kspec:task-work');
+      expect(rendered).not.toContain('{skill:task-work}');
     });
 
     it('should work when skill has no docs directory', async () => {
@@ -1351,6 +1391,87 @@ describe('Codex Skill Renderer', () => {
       expect(content).not.toContain('platform_config:');
     });
 
+    it('should namespace core codex skill name and resolve portable skill references', async () => {
+      kspecFull(
+        'skill add --id core-refs --name "Core Refs" --description "Core refs" --origin core --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'core-refs', 'SKILL.md');
+      await fs.writeFile(
+        skillMdPath,
+        '# Core Refs\n\nUse {skill:task-work} then {skill:help}.\n',
+        'utf-8'
+      );
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('core-refs');
+      expect(skill).toBeDefined();
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'kspec-core-refs', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(content).toContain('name: kspec-core-refs');
+      expect(content).toContain('$kspec-task-work');
+      expect(content).toContain('$kspec-help');
+      expect(content).not.toContain('{skill:task-work}');
+      expect(content).not.toContain('{skill:help}');
+    });
+
+    it('should not rewrite claude-style references for non-core codex skills', async () => {
+      kspecFull(
+        'skill add --id project-refs --name "Project Refs" --description "Project refs" --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'project-refs', 'SKILL.md');
+      await fs.writeFile(
+        skillMdPath,
+        '# Project Refs\n\nReference /kspec:task-work for related docs.\n',
+        'utf-8'
+      );
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('project-refs');
+      expect(skill).toBeDefined();
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'project-refs', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(content).toContain('/kspec:task-work');
+      expect(content).not.toContain('$kspec-task-work');
+    });
+
+    it('should resolve portable references in non-core codex skills based on referenced skill origin', async () => {
+      kspecFull(
+        'skill add --id task-work --name "Task Work" --description "Core task work" --origin core --platform codex',
+        tempDir
+      );
+      kspecFull(
+        'skill add --id helper --name "Helper" --description "Helper skill" --platform codex',
+        tempDir
+      );
+
+      const helperSkillMdPath = path.join(tempDir, 'skills', 'helper', 'SKILL.md');
+      await fs.writeFile(
+        helperSkillMdPath,
+        '# Helper\n\nRun {skill:task-work} and then {skill:helper}.\n',
+        'utf-8'
+      );
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('helper');
+      expect(skill).toBeDefined();
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'helper', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(content).toContain('$kspec-task-work');
+      expect(content).toContain('$helper');
+      expect(content).not.toContain('{skill:task-work}');
+      expect(content).not.toContain('{skill:helper}');
+    });
+
     it('should include kspec-managed marker', async () => {
       kspecFull(
         'skill add --id marker-skill --name "Marker Skill" --description "Test marker" --platform codex',
@@ -1533,6 +1654,32 @@ describe('Codex Skill Renderer', () => {
       expect(refContent).toContain('# API Reference');
 
       expect(result.supportingDirsAction?.references).toBe('created');
+    });
+
+    it('should resolve portable references in supporting markdown docs', async () => {
+      kspecFull(
+        'skill add --id help --name "Help" --description "Core help" --origin core --platform codex',
+        tempDir
+      );
+      kspecFull(
+        'skill add --id docs-skill --name "Docs Skill" --description "With docs" --platform codex',
+        tempDir
+      );
+
+      const skillDir = path.join(tempDir, 'skills', 'docs-skill');
+      await fs.writeFile(path.join(skillDir, 'SKILL.md'), '# Docs Skill\n', 'utf-8');
+
+      const docsDir = path.join(skillDir, 'docs');
+      await fs.mkdir(docsDir, { recursive: true });
+      await fs.writeFile(path.join(docsDir, 'guide.md'), 'See {skill:help} for details.\n', 'utf-8');
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('docs-skill');
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'docs-skill', 'docs', 'guide.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+      expect(content).toContain('$kspec-help');
+      expect(content).not.toContain('{skill:help}');
     });
 
     it('should copy scripts/ and assets/ directories', async () => {

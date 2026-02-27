@@ -150,6 +150,6 @@ kspec workflow resume         # Resume
 
 ## Integration
 
-- Observations created during reflection feed into `/kspec:triage observations`
+- Observations created during reflection feed into `{skill:triage} observations`
 - Friction observations may be promoted to tasks via `kspec meta promote @ref`
 - Success patterns may inform AGENTS.md or convention updates

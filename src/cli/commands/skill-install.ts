@@ -21,6 +21,7 @@ import chalk from "chalk";
 import type { Command } from "commander";
 import { ulid } from "ulid";
 import yaml from "yaml";
+import { detectAgentFromEnv } from "../../parser/agent-detection.js";
 import { markMutating } from "../command-annotations.js";
 import {
   getSkillContentPath,
@@ -70,6 +71,19 @@ interface CoreSkillDefinition {
   name: string;
   description?: string;
   platforms?: string[];
+}
+
+type CoreInstallPlatform = "claude-code" | "codex";
+
+interface CoreSkillRenderSummary {
+  platform: CoreInstallPlatform;
+  source: "auto-detect" | "override";
+  created: number;
+  updated: number;
+  unchanged: number;
+  skipped: number;
+  pluginProvided: number;
+  failed: number;
 }
 
 // ============================================================================
@@ -267,6 +281,20 @@ export async function copyCoreSkillFiles(
   return { changed };
 }
 
+function resolveCoreInstallPlatform(
+  override?: string
+): { platform: CoreInstallPlatform; source: "auto-detect" | "override" } {
+  if (override === "claude-code" || override === "codex") {
+    return { platform: override, source: "override" };
+  }
+
+  const detected = detectAgentFromEnv();
+  if (detected.type === "codex-cli") {
+    return { platform: "codex", source: "auto-detect" };
+  }
+  return { platform: "claude-code", source: "auto-detect" };
+}
+
 // ============================================================================
 // Command Registration
 // ============================================================================
@@ -282,6 +310,10 @@ export function registerSkillInstallCommands(skill: Command): void {
     )
     .option("--force", "Overwrite custom forks with core versions")
     .option("--dry-run", "Show what would be installed without making changes")
+    .option(
+      "--platform <platform>",
+      "Render target platform override (claude-code|codex)"
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -297,7 +329,20 @@ export function registerSkillInstallCommands(skill: Command): void {
         const metaCtx = await loadMetaContext(ctx);
         const dryRun = options.dryRun || false;
         const force = options.force || false;
+        const platformOverride = options.platform as string | undefined;
+        if (
+          platformOverride
+          && platformOverride !== "claude-code"
+          && platformOverride !== "codex"
+        ) {
+          error(
+            `Invalid --platform value "${platformOverride}". Expected "claude-code" or "codex".`
+          );
+          process.exit(EXIT_CODES.ERROR);
+        }
+        const renderTarget = resolveCoreInstallPlatform(platformOverride);
         const results: CoreSkillInstallResult[] = [];
+        const installedSkills: LoadedSkill[] = [];
 
         // Load core skills manifest
         const coreSkills = await loadCoreSkillsManifest();
@@ -375,6 +420,52 @@ export function registerSkillInstallCommands(skill: Command): void {
             action: existingSkill ? "updated" : "created",
             version: kspecVersion ?? undefined,
           });
+          installedSkills.push(skill);
+        }
+
+        const renderSummary: CoreSkillRenderSummary = {
+          platform: renderTarget.platform,
+          source: renderTarget.source,
+          created: 0,
+          updated: 0,
+          unchanged: 0,
+          skipped: 0,
+          pluginProvided: 0,
+          failed: 0,
+        };
+        if (installedSkills.length > 0) {
+          const { getRenderer } = await import("../../parser/skill-render.js");
+          const renderer = getRenderer(renderTarget.platform);
+          if (!renderer) {
+            renderSummary.failed = installedSkills.length;
+          } else {
+            for (const coreSkill of installedSkills) {
+              try {
+                const renderResult = await renderer.render(ctx, ctx.rootDir, coreSkill, {
+                  dryRun,
+                });
+                switch (renderResult.action) {
+                  case "created":
+                    renderSummary.created++;
+                    break;
+                  case "updated":
+                    renderSummary.updated++;
+                    break;
+                  case "unchanged":
+                    renderSummary.unchanged++;
+                    break;
+                  case "skipped":
+                    renderSummary.skipped++;
+                    if (renderResult.skipCode === "plugin-provided") {
+                      renderSummary.pluginProvided++;
+                    }
+                    break;
+                }
+              } catch {
+                renderSummary.failed++;
+              }
+            }
+          }
         }
 
         // Commit changes if not dry run
@@ -398,6 +489,7 @@ export function registerSkillInstallCommands(skill: Command): void {
           {
             dry_run: dryRun,
             results,
+            render: renderSummary,
             marketplace: marketplaceResult,
             pluginEnabled: enableResult,
           },
@@ -439,6 +531,32 @@ export function registerSkillInstallCommands(skill: Command): void {
                 console.log(`  ${chalk.red("x")} ${r.id}: ${r.reason}`);
               }
             }
+            console.log();
+            console.log(
+              chalk.gray(
+                `Render target: ${renderSummary.platform} (${renderSummary.source})`
+              )
+            );
+            if (renderSummary.created > 0 || renderSummary.updated > 0) {
+              console.log(
+                chalk.green(
+                  `Rendered: ${renderSummary.created + renderSummary.updated} skill(s)`
+                )
+              );
+            }
+            if (renderSummary.pluginProvided > 0) {
+              console.log(
+                chalk.gray(
+                  `Plugin-provided: ${renderSummary.pluginProvided} skill(s) skipped local render`
+                )
+              );
+            }
+            if (renderSummary.unchanged > 0) {
+              console.log(chalk.gray(`Unchanged render: ${renderSummary.unchanged} skill(s)`));
+            }
+            if (renderSummary.failed > 0) {
+              console.log(chalk.red(`Render failed: ${renderSummary.failed} skill(s)`));
+            }
 
             console.log();
             if (dryRun) {
@@ -471,7 +589,7 @@ export function registerSkillInstallCommands(skill: Command): void {
         );
 
         // Exit non-zero if plugin registration or enablement failed
-        if (!marketplaceResult.success || !enableResult.success) {
+        if (!marketplaceResult.success || !enableResult.success || renderSummary.failed > 0) {
           process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {

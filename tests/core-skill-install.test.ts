@@ -34,11 +34,13 @@ describe('Core Skill Installation', () => {
       expect(result.exitCode).toBe(0);
 
       // Check skill was created
-      const skills = kspecJson<{ id: string; origin: string }[]>('skill list', tempDir);
+      const skills = kspecJson<{ id: string; origin: string; platforms: string[] }[]>('skill list', tempDir);
       const coreSkill = skills.find((s) => s.id === 'help');
 
       expect(coreSkill).toBeDefined();
       expect(coreSkill?.origin).toBe('core');
+      expect(coreSkill?.platforms).toContain('claude-code');
+      expect(coreSkill?.platforms).toContain('codex');
     });
 
     it('should include "core" tag on installed skills', async () => {
@@ -240,6 +242,74 @@ describe('Core Skill Installation', () => {
       expect(result.dry_run).toBe(true);
     });
   });
+
+  describe('codex render path', () => {
+    it('should render core skills to .agents/skills/kspec-*/ after install-core', async () => {
+      kspecFull('skill install-core', tempDir, {
+        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '' },
+      });
+
+      const renderResult = kspecJson<{
+        rendered: Array<{
+          id: string;
+          platform: string;
+          action: string;
+          skipCode?: string;
+        }>;
+      }>('skill render', tempDir);
+
+      const codexHelp = renderResult.rendered.find(
+        (r) => r.id === 'help' && r.platform === 'codex'
+      );
+      expect(codexHelp).toBeDefined();
+      expect(codexHelp?.action).toBe('created');
+
+      const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
+      const codexContent = await fs.readFile(codexPath, 'utf-8');
+      expect(codexContent).toContain('<!-- kspec-managed -->');
+      expect(codexContent).toContain('name: kspec-help');
+
+      const claudeHelp = renderResult.rendered.find(
+        (r) => r.id === 'help' && r.platform === 'claude-code'
+      );
+      expect(claudeHelp?.action).toBe('skipped');
+      expect(claudeHelp?.skipCode).toBe('plugin-provided');
+    });
+
+    it('should auto-detect codex platform when CODEX_THREAD_ID is present', async () => {
+      const result = kspecJson<{
+        render: { platform: string; source: string };
+      }>('skill install-core', tempDir, {
+        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '' },
+      });
+
+      expect(result.render.platform).toBe('codex');
+      expect(result.render.source).toBe('auto-detect');
+
+      const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
+      const codexContent = await fs.readFile(codexPath, 'utf-8');
+      expect(codexContent).toContain('<!-- kspec-managed -->');
+      expect(codexContent).toContain('name: kspec-help');
+    });
+
+    it('should force codex render path with --platform codex even in claude env', async () => {
+      const result = kspecJson<{
+        render: { platform: string; source: string };
+      }>('skill install-core --platform codex', tempDir, {
+        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '' },
+      });
+
+      expect(result.render.platform).toBe('codex');
+      expect(result.render.source).toBe('override');
+
+      const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
+      await expect(fs.access(codexPath)).resolves.toBeUndefined();
+
+      // No local claude core render path (still plugin-provided)
+      const claudePath = path.join(tempDir, '.claude', 'skills', 'help', 'SKILL.md');
+      await expect(fs.access(claudePath)).rejects.toThrow();
+    });
+  });
 });
 
 describe('Core Skills Manifest Loading', () => {
@@ -256,6 +326,7 @@ describe('Core Skills Manifest Loading', () => {
     expect(kspecHelp?.name).toBe('Kspec Help');
     expect(kspecHelp?.description).toContain('help');
     expect(kspecHelp?.platforms).toContain('claude-code');
+    expect(kspecHelp?.platforms).toContain('codex');
   });
 
   it('should load SKILL.md content for core skills', async () => {

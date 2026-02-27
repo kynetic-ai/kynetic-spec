@@ -186,7 +186,7 @@ kspec batch --commands '[
 ]'
 ```
 
-Use `--dry-run` to preview. See `/kspec:help` for full batch documentation.
+Use `--dry-run` to preview. See `{skill:help}` for full batch documentation.
 
 ## Common Patterns
 
@@ -220,6 +220,6 @@ At session end, provide summary:
 
 ## Integration
 
-- **`/kspec:reflect`** — Session reflection may generate inbox items for triage
-- **`/kspec:observations`** — Captures systemic patterns found during triage
+- **`{skill:reflect}`** — Session reflection may generate inbox items for triage
+- **`{skill:observations}`** — Captures systemic patterns found during triage
 - **`kspec session start`** — Shows inbox count for triage awareness

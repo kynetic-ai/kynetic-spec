@@ -1416,7 +1416,7 @@ export async function runSetupPipeline(
         steps.push({
           name: "Render skills",
           status: "skipped",
-          message: "No claude-code skills in meta",
+          message: "No skills with registered renderers in meta",
         });
       }
     } else {

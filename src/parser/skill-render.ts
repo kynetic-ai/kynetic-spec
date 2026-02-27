@@ -37,7 +37,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "yaml";
 import type { KspecContext } from "./yaml.js";
-import { loadSkillContent, type LoadedSkill } from "./meta.js";
+import { loadMetaContext, loadSkillContent, type LoadedSkill } from "./meta.js";
 
 // ============================================================================
 // Platform Renderer Contract (AC: @platform-renderer-trait)
@@ -240,6 +240,53 @@ export function getClaudeCodeSkillSubdir(skill: LoadedSkill): string {
   return getSkillSubdir(skill.id, skill.origin, "claude-code");
 }
 
+const SKILL_REFERENCE_TOKEN_RE = /\{skill:([a-z0-9][a-z0-9-]*)\}/g;
+
+/**
+ * Build a map of skill id -> origin for reference token resolution.
+ */
+async function loadSkillOrigins(ctx: KspecContext): Promise<Map<string, LoadedSkill["origin"]>> {
+  const meta = await loadMetaContext(ctx);
+  const origins = new Map<string, LoadedSkill["origin"]>();
+  for (const skill of meta.skills) {
+    origins.set(skill.id, skill.origin);
+  }
+  return origins;
+}
+
+/**
+ * Format a platform-specific invocation for a skill id.
+ * - Claude: core skills use /kspec:<id>, others use /<id>
+ * - Codex: uses $<rendered-name>, where rendered-name may include core namespace
+ */
+function formatSkillInvocation(skillId: string, platform: string, origin?: LoadedSkill["origin"]): string {
+  switch (platform) {
+    case "claude-code":
+      return origin === "core" ? `/kspec:${skillId}` : `/${skillId}`;
+    case "codex":
+      return `$${getSkillSubdir(skillId, origin, "codex")}`;
+    default:
+      return `/${skillId}`;
+  }
+}
+
+/**
+ * Resolve portable reference tokens in skill body content.
+ * Token syntax: {skill:<id>}
+ */
+function resolveSkillReferenceTokens(
+  body: string,
+  platform: string,
+  skill: LoadedSkill,
+  skillOrigins: Map<string, LoadedSkill["origin"]>
+): string {
+  return body.replace(SKILL_REFERENCE_TOKEN_RE, (_match, refId: string) => {
+    // If reference isn't in loaded meta, core templates usually point to core skills.
+    const referencedOrigin = skillOrigins.get(refId) ?? (skill.origin === "core" ? "core" : undefined);
+    return formatSkillInvocation(refId, platform, referencedOrigin);
+  });
+}
+
 /**
  * Get the target directory for rendered skills on main branch.
  * Core skills on claude-code are plugin-provided (returns null).
@@ -264,8 +311,19 @@ export function contentsEqual(a: string, b: string): boolean {
 /**
  * Recursively copy a directory
  */
-export async function copyDirectory(src: string, dest: string): Promise<void> {
+type FileContentTransform = (relativePath: string, content: string) => string;
+
+function isMarkdownFile(filePath: string): boolean {
+  return filePath.endsWith(".md");
+}
+
+export async function copyDirectory(
+  src: string,
+  dest: string,
+  options?: { baseSrc?: string; transformFileContent?: FileContentTransform }
+): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
+  const baseSrc = options?.baseSrc || src;
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
@@ -273,9 +331,17 @@ export async function copyDirectory(src: string, dest: string): Promise<void> {
 
     if (entry.isDirectory()) {
       await fs.mkdir(destPath, { recursive: true });
-      await copyDirectory(srcPath, destPath);
+      await copyDirectory(srcPath, destPath, { ...options, baseSrc });
     } else {
-      await fs.copyFile(srcPath, destPath);
+      const transformFileContent = options?.transformFileContent;
+      if (transformFileContent && isMarkdownFile(srcPath)) {
+        const srcContent = await fs.readFile(srcPath, "utf-8");
+        const relativePath = path.relative(baseSrc, srcPath).replaceAll(path.sep, "/");
+        const transformed = transformFileContent(relativePath, srcContent);
+        await fs.writeFile(destPath, transformed, "utf-8");
+      } else {
+        await fs.copyFile(srcPath, destPath);
+      }
     }
   }
 }
@@ -369,9 +435,18 @@ export async function checkSkillDrift(
  * Recursively check if two directories have the same contents
  */
 export async function directoriesEqual(src: string, dest: string): Promise<boolean> {
+  return directoriesEqualWithTransform(src, dest);
+}
+
+async function directoriesEqualWithTransform(
+  src: string,
+  dest: string,
+  options?: { baseSrc?: string; transformFileContent?: FileContentTransform }
+): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src, { withFileTypes: true });
     const destEntries = await fs.readdir(dest, { withFileTypes: true });
+    const baseSrc = options?.baseSrc || src;
 
     // Different number of entries = not equal
     if (srcEntries.length !== destEntries.length) {
@@ -391,11 +466,16 @@ export async function directoriesEqual(src: string, dest: string): Promise<boole
       const destPath = path.join(dest, srcEntry.name);
 
       if (srcEntry.isDirectory() && destEntry.isDirectory()) {
-        if (!(await directoriesEqual(srcPath, destPath))) {
+        if (!(await directoriesEqualWithTransform(srcPath, destPath, { ...options, baseSrc }))) {
           return false;
         }
       } else if (srcEntry.isFile() && destEntry.isFile()) {
-        const srcContent = await fs.readFile(srcPath, "utf-8");
+        let srcContent = await fs.readFile(srcPath, "utf-8");
+        const transformFileContent = options?.transformFileContent;
+        if (transformFileContent && isMarkdownFile(srcPath)) {
+          const relativePath = path.relative(baseSrc, srcPath).replaceAll(path.sep, "/");
+          srcContent = transformFileContent(relativePath, srcContent);
+        }
         const destContent = await fs.readFile(destPath, "utf-8");
         if (!contentsEqual(srcContent, destContent)) {
           return false;
@@ -427,7 +507,8 @@ const SUPPORTING_DIRS = ["references", "scripts", "assets", "docs"] as const;
 async function copySupportingDirectories(
   sourceSkillDir: string,
   targetSkillDir: string,
-  dryRun: boolean
+  dryRun: boolean,
+  transformFileContent?: FileContentTransform
 ): Promise<Record<string, "created" | "updated" | "unchanged" | "skipped">> {
   const results: Record<string, "created" | "updated" | "unchanged" | "skipped"> = {};
 
@@ -455,7 +536,10 @@ async function copySupportingDirectories(
         results[dirName] = "created";
       } else {
         // Compare directories
-        const equal = await directoriesEqual(sourceDir, targetDir);
+        const equal = await directoriesEqualWithTransform(sourceDir, targetDir, {
+          baseSrc: sourceSkillDir,
+          transformFileContent,
+        });
         results[dirName] = equal ? "unchanged" : "updated";
       }
 
@@ -465,7 +549,10 @@ async function copySupportingDirectories(
           await fs.rm(targetDir, { recursive: true, force: true });
         }
         await fs.mkdir(targetDir, { recursive: true });
-        await copyDirectory(sourceDir, targetDir);
+        await copyDirectory(sourceDir, targetDir, {
+          baseSrc: sourceSkillDir,
+          transformFileContent,
+        });
       }
     } catch {
       // Source directory doesn't exist
@@ -501,6 +588,7 @@ export async function renderClaudeCodeSkill(
 ): Promise<ClaudeCodeRenderResult> {
   const dryRun = options.dryRun ?? false;
   const storeHash = options.storeHash ?? false;
+  const skillOrigins = await loadSkillOrigins(ctx);
   const targetDir = getRenderedSkillPath(projectRoot, skill.id, skill.origin);
 
   // Core skills are plugin-provided; skip local render
@@ -548,9 +636,15 @@ export async function renderClaudeCodeSkill(
   const contentWithoutFrontmatter = frontmatterMatch
     ? sourceContent.slice(frontmatterMatch[0].length)
     : sourceContent;
+  const transformedBody = resolveSkillReferenceTokens(
+    contentWithoutFrontmatter,
+    "claude-code",
+    skill,
+    skillOrigins
+  );
 
   // AC: @claude-code-renderer ac-1, ac-3 - Build rendered content with frontmatter + verbatim body
-  const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+  const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${transformedBody}`;
 
   // Check if target exists and compare for idempotency
   let targetExists = false;
@@ -589,7 +683,9 @@ export async function renderClaudeCodeSkill(
   const supportingDirsAction = await copySupportingDirectories(
     sourceSkillDir,
     targetDir,
-    dryRun
+    dryRun,
+    (_relativePath, content) =>
+      resolveSkillReferenceTokens(content, "claude-code", skill, skillOrigins)
   );
 
   // For backward compatibility, also expose docsAction
@@ -779,6 +875,14 @@ interface BaseRenderConfig {
     targetDir: string,
     dryRun: boolean
   ) => Promise<{ paths: string[]; contentChanged: boolean }>;
+  /** Optional: transform source skill body content before rendering */
+  transformBody?: (body: string, skill: LoadedSkill) => string;
+  /** Optional: transform markdown content in supporting directories during copy */
+  transformSupportingFileContent?: (
+    relativePath: string,
+    content: string,
+    skill: LoadedSkill
+  ) => string;
   /** Optional: additional hash computation for drift check */
   getAdditionalDriftContent?: (skillDir: string) => Promise<string | null>;
   /** If true, also write legacy .render-hash for backward compatibility */
@@ -825,7 +929,10 @@ export async function renderSkillBase(
     const contentWithoutFrontmatter = frontmatterMatch
       ? sourceContent.slice(frontmatterMatch[0].length)
       : sourceContent;
-    renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+    const transformedBody = config.transformBody
+      ? config.transformBody(contentWithoutFrontmatter, skill)
+      : contentWithoutFrontmatter;
+    renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${transformedBody}`;
   }
 
   // Idempotency check
@@ -882,7 +989,11 @@ export async function renderSkillBase(
   const supportingDirsAction = await copySupportingDirectories(
     sourceSkillDir,
     targetDir,
-    dryRun
+    dryRun,
+    config.transformSupportingFileContent
+      ? (relativePath, content) =>
+          config.transformSupportingFileContent!(relativePath, content, skill)
+      : undefined
   );
 
   for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
@@ -1008,10 +1119,16 @@ export const claudeCodeRenderer: PlatformRenderer = {
       };
     }
 
+    const skillOrigins = await loadSkillOrigins(ctx);
+
     // Project/local skills render to .claude/skills/
     const result = await renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter,
+      transformBody: (body, loadedSkill) =>
+        resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
+      transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
+        resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
       writeLegacyHash: true,
     }, this.defaultOutputDir, skill.id);
 
@@ -1046,10 +1163,20 @@ export const claudeCodeRenderer: PlatformRenderer = {
  */
 function generateCodexFrontmatter(skill: LoadedSkill): string {
   const frontmatter: Record<string, unknown> = {
-    name: skill.id,
+    name: getSkillSubdir(skill.id, skill.origin, "codex"),
     description: skill.description || skill.name,
   };
   return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
+}
+
+/**
+ * Backward-compatibility conversion for legacy core content.
+ * Example: /kspec:task-work -> $kspec-task-work
+ */
+function transformLegacyCodexCoreReferences(body: string): string {
+  return body.replace(/\/kspec:([a-z0-9][a-z0-9-]*)/g, (_match, skillId: string) => {
+    return `$kspec-${skillId}`;
+  });
 }
 
 /**
@@ -1125,12 +1252,39 @@ export const codexRenderer: PlatformRenderer = {
   ): Promise<PlatformRenderResult> {
     // Pre-compute sidecar content so it's available for both hash and write
     const sidecarContent = generateCodexSidecarYaml(skill);
+    const skillOrigins = await loadSkillOrigins(ctx);
 
     const codexSubdir = getSkillSubdir(skill.id, skill.origin, "codex");
 
     return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter: generateCodexFrontmatter,
+      // Resolve portable {skill:<id>} tokens for all skills.
+      // Keep legacy /kspec:* rewrite only for core skills for backward compatibility.
+      transformBody: (body, loadedSkill) => {
+        const tokenResolved = resolveSkillReferenceTokens(
+          body,
+          this.platform,
+          loadedSkill,
+          skillOrigins
+        );
+        if (loadedSkill.origin === "core") {
+          return transformLegacyCodexCoreReferences(tokenResolved);
+        }
+        return tokenResolved;
+      },
+      transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
+        const tokenResolved = resolveSkillReferenceTokens(
+          content,
+          this.platform,
+          loadedSkill,
+          skillOrigins
+        );
+        if (loadedSkill.origin === "core") {
+          return transformLegacyCodexCoreReferences(tokenResolved);
+        }
+        return tokenResolved;
+      },
 
       // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
       getAdditionalHashContent: () => sidecarContent,

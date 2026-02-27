@@ -8,7 +8,7 @@ Structured workflow for working on tasks. Full lifecycle from start through PR m
 - Continuing in-progress or needs_work tasks
 - Ensuring consistent task lifecycle with notes and audit trail
 
-**Not for:** Spec creation (use `/kspec:writing-specs`), plan translation (use `/kspec:plan`), or triage (use `/kspec:triage`).
+**Not for:** Spec creation (use `{skill:writing-specs}`), plan translation (use `{skill:plan}`), or triage (use `{skill:triage}`).
 
 ## Inherit Existing Work First
 
@@ -305,8 +305,8 @@ kspec session start
 
 ## Integration
 
-- **`/kspec:writing-specs`** — Create specs before deriving tasks
-- **`/kspec:plan`** — Plans create specs that become tasks
-- **`/kspec:review`** — Review checks AC coverage and code quality
-- **`/kspec:observations`** — Capture friction found during task work
-- **`/kspec:reflect`** — Session reflection after completing tasks
+- **`{skill:writing-specs}`** — Create specs before deriving tasks
+- **`{skill:plan}`** — Plans create specs that become tasks
+- **`{skill:review}`** — Review checks AC coverage and code quality
+- **`{skill:observations}`** — Capture friction found during task work
+- **`{skill:reflect}`** — Session reflection after completing tasks
