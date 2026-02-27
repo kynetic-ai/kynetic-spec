@@ -6997,4 +6997,16 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KJEYPWYV7QEYPG9W9FQ3Y7NW
+    _type: skill
+    id: codex
+    name: codex
+    description: Use when the user asks to run Codex CLI (codex exec, codex resume) or wants Codex to
+      review PRs, plans, or specs. Delegates to GPT-5.3-codex with preset reasoning modes.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
