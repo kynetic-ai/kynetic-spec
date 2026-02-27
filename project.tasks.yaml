@@ -63591,6 +63591,7 @@
     - platform
   vcs_refs: []
   created_at: 2026-02-27T00:23:23.629Z
+  started_at: 2026-02-27T00:47:34.749Z
   notes:
     - _ulid: 01KJE86XA7G73YT1Q8V613YQQQ
       created_at: 2026-02-27T00:33:06.888Z
@@ -63603,5 +63604,13 @@
         guidance likely needs a consistent policy across templates + generated docs + config
         defaults."
       supersedes: null
+    - _ulid: 01KJE956KMW4YYXMFW5W3TPF19
+      created_at: 2026-02-27T00:49:39.444Z
+      author: Jacob Chapel
+      content: "Implemented platform-aware core skill references for Codex (2026-02-27): codex renderer
+        now namespaces core skill frontmatter name as kspec-<id> (matching codex directory naming)
+        and applies render-time conversion of Claude-style references /kspec:<id> -> -<id> in
+        rendered SKILL.md body. This keeps shared template source while producing codex-native
+        invocation guidance."
+      supersedes: null
   todos: []
-  started_at: 2026-02-27T00:47:34.749Z
