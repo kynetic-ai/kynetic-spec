@@ -63794,7 +63794,7 @@
   type: task
   spec_ref: "@ralph-adapter-aware-skill-invocation"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-per-role-adapter-selection-for-ralph-loo"
@@ -63847,3 +63847,4 @@
         issues (e.g., duplicate @observations slug), not introduced by this task."
       supersedes: null
   todos: []
+  submitted_at: 2026-02-27T08:13:44.075Z
