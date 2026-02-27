@@ -7023,4 +7023,16 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KJEYQ0SWV1NJBA5P0CNFMPMA
+    _type: skill
+    id: eval-agents
+    name: eval-agents
+    description: Evaluate whether AGENTS.md provides enough context for agents to make correct
+      decisions. Spawns test agents with scenario questions and grades responses.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
