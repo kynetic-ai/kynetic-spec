@@ -63950,7 +63950,7 @@
   spec_ref: "@cli-ralph"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -63960,7 +63960,7 @@
     - memory
     - session-log
   vcs_refs: []
-  session_id: 01KJF5Z4M046HF67XZN7Z0KKK6
+  session_id: null
   created_at: 2026-02-27T09:18:07.599Z
   started_at: 2026-02-27T09:19:24.995Z
   submitted_at: 2026-02-27T09:22:51.000Z
@@ -63981,6 +63981,12 @@
       content: "Submitted for review and opened PR #576 (fix/ralph-terminal-output-artifacts). Includes
         streamed terminal/run artifact capture with bounded previews and metadata; verified via npm
         run build and npx vitest run tests/ralph.test.ts."
+      supersedes: null
+    - _ulid: 01KJF7D49QJMJSH32BEGS876D8
+      created_at: 2026-02-27T09:38:16.503Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: tests are annotated as @cli-ralph ac-11 but do
+        not explicitly annotate new @cli-ralph ac-22/ac-23 coverage in PR #576."
       supersedes: null
   todos: []
   automation: eligible
