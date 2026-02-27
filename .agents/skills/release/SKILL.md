@@ -29,7 +29,7 @@ Create versioned releases with proper git tagging and GitHub release creation. T
 ## Arguments
 
 ```
-/release [patch|minor|major|X.Y.Z] [options]
+$release [patch|minor|major|X.Y.Z] [options]
 ```
 
 | Argument | Description |
@@ -190,7 +190,7 @@ Bug fixes and improvements for kspec CLI.
 6. Create GitHub release with notes above
 7. CI will publish to npm
 
-To execute: run `/release` without --dry-run
+To execute: run `$release` without --dry-run
 ```
 
 ### Phase 6: Bump Version (PR)
@@ -378,7 +378,7 @@ git push origin main
 
 ### Standard patch release
 ```
-User: /release patch
+User: $release patch
 Agent: [Validates state]
 Agent: [Creates version bump PR, waits for CI, merges]
 Agent: [Creates v0.1.2 tag, pushes, creates GH release]
@@ -392,7 +392,7 @@ Release v0.1.2 created successfully.
 
 ### Auto-detect version
 ```
-User: /release
+User: $release
 Agent: [Analyzes 5 commits: 2 feat, 3 fix]
 Detected: feat commits present -> minor bump (0.1.1 -> 0.2.0)
 [Proceeds with release]
@@ -400,19 +400,19 @@ Detected: feat commits present -> minor bump (0.1.1 -> 0.2.0)
 
 ### Preview only
 ```
-User: /release --dry-run
+User: $release --dry-run
 Agent: [Shows full preview, makes NO changes]
 ```
 
 ### Pre-release
 ```
-User: /release minor --prerelease alpha
+User: $release minor --prerelease alpha
 Agent: [Creates v0.2.0-alpha.0]
 ```
 
 ### Explicit version
 ```
-User: /release 1.0.0
+User: $release 1.0.0
 Agent: [Creates v1.0.0 - useful for major milestones]
 ```
 
@@ -467,7 +467,7 @@ gh release delete v0.1.2 --yes
 
 ## Related Skills
 
-- `/pr` - Create pull requests (used internally by this skill)
-- `/audit` - Pre-release codebase review
-- `/kspec:task-work` - Task lifecycle and completion tracking
-- `/kspec:help` - Command lookup and workflow help
+- `$pr` - Create pull requests (used internally by this skill)
+- `$audit` - Pre-release codebase review
+- `$kspec-task-work` - Task lifecycle and completion tracking
+- `$kspec-help` - Command lookup and workflow help

@@ -159,7 +159,7 @@ When you discover a gap (agent made a wrong decision due to missing docs), add a
 
 1. Add to `docs/agents-eval-scenarios.md` following the existing format
 2. Include: situation, expected answer, what knowledge it tests
-3. Run `/eval-agents` to verify the new scenario passes with current docs
+3. Run `$eval-agents` to verify the new scenario passes with current docs
 4. If it fails, fix AGENTS.md first, then re-run
 
 ## Key Principles
@@ -294,7 +294,7 @@ R8: You notice the JSON export has a bug while implementing CSV export
 | R2 | ULID Crockford base32 | Avoids I, L, O, U — uses `testUlid()` or valid chars |
 | R3 | E2E fixture isolation | Correct path, imports test-base, no manual daemon |
 | R4 | Batch operations | Uses `kspec batch`, not 6 sequential commands |
-| R5 | PR workflow pairing | local-review → /pr → /pr-review, task complete after merge |
+| R5 | PR workflow pairing | local-review → $pr → $pr-review, task complete after merge |
 | R6 | Blocking criteria | Block for missing API (valid), fix failing tests (invalid blocker) |
 | R7 | Spec-first / plan mode | Create specs with ACs → derive tasks → then implement |
 | R8 | Scope expansion | Capture separately, note in task, don't derail |
