@@ -63787,16 +63787,22 @@
         bcda69ab). This is the concrete reproduction to preserve in tests."
       supersedes: null
   todos: []
-- title: "Implement: Adapter-aware skill invocation formatting for ralph prompts"
+- _ulid: 01KJF29ZGMMW4HZ6KX5SCHR7G2
+  slugs:
+    - task-adapter-aware-skill-invocation-formatting-for-ralp
+  title: "Implement: Adapter-aware skill invocation formatting for ralph prompts"
   type: task
   spec_ref: "@ralph-adapter-aware-skill-invocation"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-adapter-aware-skill-invocation-formatting-for-ralp
-  tags: []
+  status: in_progress
+  blocked_by: []
   depends_on:
     - "@implement-per-role-adapter-selection-for-ralph-loo"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-02-27T08:09:10.420Z
   notes:
     - _ulid: 01KJF29ZGM26S80GYMP45CGDSY
       created_at: 2026-02-27T08:09:10.420Z
@@ -63822,10 +63828,5 @@
         worker and subagent prompts in the same session, then each prompt uses invocation formatting
         for its own role adapter without cross-role leakage
       supersedes: null
-  _ulid: 01KJF29ZGMMW4HZ6KX5SCHR7G2
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-02-27T08:09:10.420Z
   todos: []
+  started_at: 2026-02-27T08:09:17.725Z
