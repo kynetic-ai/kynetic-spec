@@ -361,6 +361,61 @@ describe("seedMemory", () => {
     expect(result.seeded).toBe(false);
     expect(result.message).toContain("no memory writer");
   });
+
+  it("should seed codex project_doc_fallback_filenames with kspec-agents.md", async () => {
+    const result = await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
+
+    expect(result.seeded).toBe(true);
+    const configPath = path.join(tempDir, ".codex", "config.toml");
+    const configContent = await fs.readFile(configPath, "utf-8");
+    expect(configContent).toContain("project_doc_fallback_filenames");
+    expect(configContent).toContain("kspec-agents.md");
+  });
+
+  it("should merge codex project_doc_fallback_filenames without clobbering existing entries", async () => {
+    const configPath = path.join(tempDir, ".codex", "config.toml");
+    await fs.mkdir(path.dirname(configPath), { recursive: true });
+    await fs.writeFile(
+      configPath,
+      'project_doc_fallback_filenames = ["AGENTS.md"]\nmodel = "gpt-5-codex"\n',
+      "utf-8",
+    );
+
+    const result = await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
+    expect(result.seeded).toBe(true);
+
+    const content = await fs.readFile(configPath, "utf-8");
+    expect(content).toContain('"AGENTS.md"');
+    expect(content).toContain('"kspec-agents.md"');
+    expect(content).toContain('model = "gpt-5-codex"');
+  });
+
+  it("should skip codex fallback seeding when already configured", async () => {
+    await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
+    const result = await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
+
+    expect(result.seeded).toBe(false);
+    expect(result.message).toContain("already configured");
+  });
+
+  it("should fail safely when codex config.toml is malformed", async () => {
+    const configPath = path.join(tempDir, ".codex", "config.toml");
+    await fs.mkdir(path.dirname(configPath), { recursive: true });
+    await fs.writeFile(configPath, "[[invalid toml", "utf-8");
+
+    const result = await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
+
+    expect(result.seeded).toBe(false);
+    expect(result.message).toContain("failed:");
+    expect(result.message).toContain("not valid TOML");
+  });
+
+  it("should produce no codex config changes in dry-run", async () => {
+    const result = await seedMemory(tempDir, "codex-cli", { dryRun: true, homeDir: tempDir });
+
+    expect(result.seeded).toBe(true);
+    await expect(fs.access(path.join(tempDir, ".codex", "config.toml"))).rejects.toThrow();
+  });
 });
 
 // --- Pipeline Integration Tests ---

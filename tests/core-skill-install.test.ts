@@ -246,7 +246,7 @@ describe('Core Skill Installation', () => {
   describe('codex render path', () => {
     it('should render core skills to .agents/skills/kspec-*/ after install-core', async () => {
       kspecFull('skill install-core', tempDir, {
-        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '' },
+        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '', HOME: tempDir },
       });
 
       const renderResult = kspecJson<{
@@ -280,7 +280,7 @@ describe('Core Skill Installation', () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
       }>('skill install-core', tempDir, {
-        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '' },
+        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', HOME: tempDir },
       });
 
       expect(result.render.platform).toBe('codex');
@@ -290,13 +290,18 @@ describe('Core Skill Installation', () => {
       const codexContent = await fs.readFile(codexPath, 'utf-8');
       expect(codexContent).toContain('<!-- kspec-managed -->');
       expect(codexContent).toContain('name: kspec-help');
+
+      const codexConfigPath = path.join(tempDir, '.codex', 'config.toml');
+      const codexConfig = await fs.readFile(codexConfigPath, 'utf-8');
+      expect(codexConfig).toContain('project_doc_fallback_filenames');
+      expect(codexConfig).toContain('kspec-agents.md');
     });
 
     it('should force codex render path with --platform codex even in claude env', async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
       }>('skill install-core --platform codex', tempDir, {
-        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '' },
+        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '', HOME: tempDir },
       });
 
       expect(result.render.platform).toBe('codex');
@@ -304,6 +309,11 @@ describe('Core Skill Installation', () => {
 
       const codexPath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
       await expect(fs.access(codexPath)).resolves.toBeUndefined();
+
+      const codexConfigPath = path.join(tempDir, '.codex', 'config.toml');
+      const codexConfig = await fs.readFile(codexConfigPath, 'utf-8');
+      expect(codexConfig).toContain('project_doc_fallback_filenames');
+      expect(codexConfig).toContain('kspec-agents.md');
 
       // No local claude core render path (still plugin-provided)
       const claudePath = path.join(tempDir, '.claude', 'skills', 'help', 'SKILL.md');

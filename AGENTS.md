@@ -2,6 +2,11 @@
 
 @kspec-agents.md
 
+## Required Include
+
+For Codex and any harness that does not auto-resolve `@file` references: **you MUST read `kspec-agents.md` explicitly before doing any project work**.  
+Treat `AGENTS.md` + `kspec-agents.md` as a single instruction set.
+
 ## What This Project Is
 
 Kynetic Spec (`kspec`) is a **self-hosting specification and task management system**. The spec files in `.kspec/` define what kspec should do. The TypeScript code in `src/` implements it. They reference each other.

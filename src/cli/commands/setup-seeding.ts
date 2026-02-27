@@ -12,6 +12,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { AgentType } from "./setup.js";
+import { ensureCodexProjectDocFallback } from "../../lib/codex-config.js";
 
 function debugLog(message: string, detail?: unknown): void {
   if (process.env.KSPEC_DEBUG === "1") {
@@ -331,7 +332,8 @@ async function getModuleNames(projectDir: string): Promise<string[]> {
  *
  * AC: @new-project-bootstrapping ac-2
  * - Generates platform-agnostic content, delegates to platform writer
- * - Currently supports Claude Code; other platforms return no-op
+ * - Supports Claude Code memory seed and Codex project doc fallback seed
+ * - Other platforms return no-op
  * - Skips if memory file already exists (unless force)
  * - Creates parent directories
  * - Dry-run support
@@ -339,9 +341,23 @@ async function getModuleNames(projectDir: string): Promise<string[]> {
 export async function seedMemory(
   projectDir: string,
   agentType: AgentType,
-  options: { dryRun?: boolean; force?: boolean } = {},
+  options: { dryRun?: boolean; force?: boolean; homeDir?: string } = {},
 ): Promise<SeedResult> {
-  const { dryRun = false, force = false } = options;
+  const { dryRun = false, force = false, homeDir } = options;
+
+  if (agentType === "codex-cli") {
+    const codexResult = await ensureCodexProjectDocFallback("kspec-agents.md", {
+      dryRun,
+      homeDir,
+    });
+    return {
+      seeded: codexResult.success && codexResult.action === "added",
+      path: codexResult.path,
+      message: codexResult.success
+        ? codexResult.message
+        : `failed: ${codexResult.message}`,
+    };
+  }
 
   const writer = getMemoryWriter(agentType);
   if (!writer) {

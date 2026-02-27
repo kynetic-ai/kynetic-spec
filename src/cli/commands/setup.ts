@@ -1385,10 +1385,16 @@ export async function runSetupPipeline(
         force: options.force,
       });
       memorySeeded = memResult.seeded;
+      const memoryStepStatus =
+        memResult.message.startsWith("failed:")
+          ? "failed"
+          : memResult.seeded
+            ? "done"
+            : "skipped";
 
       steps.push({
         name: "Seed memory",
-        status: memResult.seeded ? "done" : "skipped",
+        status: memoryStepStatus,
         message: memResult.seeded ? memResult.path : memResult.message,
       });
     }
