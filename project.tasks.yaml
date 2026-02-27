@@ -63622,4 +63622,12 @@
         namespaced codex names. Validation passed across skill-rendering, core-skill-install,
         enhanced-setup, core-skill-namespace, and core-skill-update suites."
       supersedes: null
+    - _ulid: 01KJEA53YN88QYHB8R4PE20DDV
+      created_at: 2026-02-27T01:07:05.301Z
+      author: Jacob Chapel
+      content: "Review clarification (2026-02-27): Codex core-skill cross-reference target remains
+        namespaced invocation form (-<id>) to match codex frontmatter naming (kspec-<id>). The
+        temporary /kspec:<id> -> -<id> adjustment was reverted; renderer now keeps -* conversion and
+        scopes rewriting to core skills only to avoid mutating non-core codex content."
+      supersedes: null
   todos: []
