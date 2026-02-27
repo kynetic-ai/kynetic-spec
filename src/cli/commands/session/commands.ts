@@ -24,6 +24,7 @@ import { markMutating } from "../../command-annotations.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, info, isJsonMode, output, warn } from "../../output.js";
 import { performCheckpoint } from "./checkpoint.js";
+import { sessionCompactAction } from "./compact.js";
 import { gatherSessionContext } from "./context.js";
 import { sessionCreateAction } from "./create.js";
 import { formatCheckpointResult, formatSessionContext } from "./format.js";
@@ -307,6 +308,14 @@ export function registerSessionCommands(program: Command): void {
     .option("-n, --limit <n>", "Maximum matches to return (default: 50)")
     .option("--resolve-blobs", "Resolve externalized payload blobs for full-content search")
     .action(sessionLogSearchAction);
+
+  markMutating(session.command("compact [session-id]"))
+    .description(
+      "Retroactively compact session events by externalizing oversized payloads",
+    )
+    .option("--all", "Compact all non-active sessions sequentially")
+    .option("--dry-run", "Preview compaction without modifying files")
+    .action(sessionCompactAction);
 
   session
     .command("checkpoint")
