@@ -414,6 +414,6 @@ await expect(statusBadge).toContainText('In Progress');
 
 ## Related Skills
 
-- `/svelte-5` - Svelte 5 patterns, SSR, reactivity
-- `/local-review` - Pre-PR quality checks
-- `/task-work` - Task lifecycle workflow
+- `{skill:svelte-5}` - Svelte 5 patterns, SSR, reactivity
+- `{skill:local-review}` - Pre-PR quality checks
+- `{skill:task-work}` - Task lifecycle workflow

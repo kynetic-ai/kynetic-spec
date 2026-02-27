@@ -9,7 +9,7 @@ Create and merge pull requests. This skill handles PR creation; for the review-t
 
 ```bash
 # Create PR from current work
-/pr
+{skill:pr}
 
 # After PR created, start review workflow
 kspec workflow start @pr-review-merge
@@ -54,7 +54,7 @@ Generate a branch name automatically and proceed without confirmation:
 2. If recent commits have conventional format: derive from commit message (e.g., `fix: foo bar` → `fix/foo-bar`)
 3. If unpushed commits exist: summarize their intent
 
-**Do NOT ask for confirmation.** The user ran `/pr` because they want a PR created. Just generate the best name and proceed. Only ask if you truly have no context to generate a name (rare).
+**Do NOT ask for confirmation.** The user ran `{skill:pr}` because they want a PR created. Just generate the best name and proceed. Only ask if you truly have no context to generate a name (rare).
 
 **If on `main` with uncommitted changes:**
 1. Auto-generate branch name (see above)
@@ -200,7 +200,7 @@ Check if branch exists on remote with different history. Offer:
 ## Example Usage
 
 ```
-User: /pr
+User: {skill:pr}
 Agent: [Detects 2 unpushed commits on main, auto-generates branch name from commits]
 Agent: [Creates branch fix/ready-task-secondary-sort, resets main, pushes]
 Agent: [Creates PR]

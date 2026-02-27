@@ -253,6 +253,6 @@ Review this implementation against the spec @spec-ref. Assume there are problems
 
 ## Integration
 
-- **After task work**: Run local review before `/pr`
+- **After task work**: Run local review before `{skill:pr}`
 - **Before merge**: Complements `@pr-review-merge` workflow
 - **In CI**: Automated review also runs but local catches issues earlier

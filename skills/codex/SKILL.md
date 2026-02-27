@@ -7,21 +7,21 @@ Run OpenAI Codex CLI for code analysis, reviews, and automated editing. Defaults
 
 ```bash
 # PR review (posts inline comments to GitHub)
-/codex review #123
+{skill:codex} review #123
 
 # Plan review
-/codex review-plan @plan-slug
-/codex review-plan ./path/to/plan.md
+{skill:codex} review-plan @plan-slug
+{skill:codex} review-plan ./path/to/plan.md
 
 # Spec review
-/codex review-spec @spec-slug
+{skill:codex} review-spec @spec-slug
 
 # General task
-/codex "refactor the parser module for clarity"
+{skill:codex} "refactor the parser module for clarity"
 
 # Resume last session
-/codex resume
-/codex resume "follow-up prompt"
+{skill:codex} resume
+{skill:codex} resume "follow-up prompt"
 ```
 
 ## Modes and Reasoning Presets
@@ -43,8 +43,8 @@ Users can override reasoning (`-c model_reasoning_effort="xhigh"`) or model (`-m
 ## PR Review Mode
 
 ```
-/codex review #123
-/codex review @task-ref
+{skill:codex} review #123
+{skill:codex} review @task-ref
 ```
 
 ### Resolving @task-ref to PR Number
@@ -59,7 +59,7 @@ kspec task get @task-ref --json | jq '.vcs_refs'
 gh pr list --search "Task: @task-ref" --json number,url,title
 ```
 
-If no PR is found, error: "No PR found for task @task-ref. Create a PR first with /pr."
+If no PR is found, error: "No PR found for task @task-ref. Create a PR first with {skill:pr}."
 
 ### Flow
 
@@ -146,20 +146,20 @@ When a task ref is provided, Codex is instructed to verify:
 - Missing coverage (own or trait) is flagged as `MUST-FIX`
 - Spec alignment: implementation matches spec intent, not just syntax
 
-### Integration with /pr-review
+### Integration with {skill:pr-review}
 
-For full quality-gate PR review (CI verification, merge decision), use `/pr-review @task-ref` instead. This skill focuses on **code-level review feedback** — use both together:
+For full quality-gate PR review (CI verification, merge decision), use `{skill:pr-review} @task-ref` instead. This skill focuses on **code-level review feedback** — use both together:
 
 ```
-/codex review #123          # Codex posts inline code review
-/pr-review @task-ref        # Full quality gate workflow (AC, CI, merge)
+{skill:codex} review #123          # Codex posts inline code review
+{skill:pr-review} @task-ref        # Full quality gate workflow (AC, CI, merge)
 ```
 
 ## Plan Review Mode
 
 ```
-/codex review-plan @plan-slug
-/codex review-plan ./path/to/plan.md
+{skill:codex} review-plan @plan-slug
+{skill:codex} review-plan ./path/to/plan.md
 ```
 
 ### What Codex Checks
@@ -225,8 +225,8 @@ head -50 /tmp/codex-plan-review.md
 ## Spec Review Mode
 
 ```
-/codex review-spec @spec-slug
-/codex review-spec @module-slug    # Review entire module
+{skill:codex} review-spec @spec-slug
+{skill:codex} review-spec @module-slug    # Review entire module
 ```
 
 ### What Codex Checks
@@ -282,8 +282,8 @@ Written to `/tmp/codex-spec-review.md`.
 ## General Mode
 
 ```
-/codex "analyze the error handling patterns in src/cli/"
-/codex "refactor parser module for clarity"
+{skill:codex} "analyze the error handling patterns in src/cli/"
+{skill:codex} "refactor parser module for clarity"
 ```
 
 ### Defaults
@@ -356,8 +356,8 @@ If auth fails, instruct the user to run `gh auth login` before retrying.
 Users can override any preset:
 
 ```
-/codex review #123 --model gpt-5.2 -c model_reasoning_effort="xhigh"
-/codex "prompt" -c model_reasoning_effort="high"
+{skill:codex} review #123 --model gpt-5.2 -c model_reasoning_effort="xhigh"
+{skill:codex} "prompt" -c model_reasoning_effort="high"
 ```
 
 Parse overrides from the user's message and map to CLI flags:
