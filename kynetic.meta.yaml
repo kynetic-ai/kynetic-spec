@@ -7084,4 +7084,16 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KJEYQZ29GRJM6CF18FZXBQ9E
+    _type: skill
+    id: svelte-5
+    name: svelte-5
+    description: Svelte 5 patterns, gotchas, and solutions. Use when working with Svelte 5/SvelteKit,
+      especially for reactivity, SSR, and state management issues.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
