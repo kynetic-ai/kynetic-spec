@@ -3247,6 +3247,24 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        requirements:
+          - _ulid: 01KJF29CB6JQHFFBMSMR6W5P54
+            slugs:
+              - ralph-adapter-aware-skill-invocation
+            title: Adapter-aware skill invocation formatting for ralph prompts
+            type: requirement
+            tags: []
+            description: Ralph must render skill invocation syntax in prompts based on the adapter role
+              (worker/reviewer). Claude-family adapters use slash syntax; Codex adapters use dollar
+              syntax with core namespacing. Portable {skill:<id>} references should resolve per
+              adapter without requiring duplicate prompt templates.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-02-27T08:08:50.790Z
       - _ulid: 01KJDCYRM80FT38JY8CPG63ATY
         slugs:
           - ralph-adapter-auto-approve
