@@ -1146,7 +1146,14 @@ export const codexRenderer: PlatformRenderer = {
     return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter: generateCodexFrontmatter,
-      transformBody: transformCodexSkillReferences,
+      // Scope reference conversion to core skills only to avoid mutating
+      // user-authored codex skill content.
+      transformBody: (body, loadedSkill) => {
+        if (loadedSkill.origin === "core") {
+          return transformCodexSkillReferences(body);
+        }
+        return body;
+      },
 
       // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
       getAdditionalHashContent: () => sidecarContent,
