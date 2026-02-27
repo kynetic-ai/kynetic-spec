@@ -396,6 +396,9 @@ interface ResolvedSessionBlobPointer extends SessionBlobPointer {
 interface BlobWriteContext {
   blobDir: string;
   ensuredDir: boolean;
+  dryRun?: boolean;
+  createdBlobs?: number;
+  dryRunCounter?: number;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -490,16 +493,23 @@ async function createBlobPointer(
   const content = stringifyPayload(value);
   const bytes = Buffer.byteLength(content, "utf-8");
   const sha256 = createHash("sha256").update(content).digest("hex");
-  if (!context.ensuredDir) {
-    await fsPromises.mkdir(context.blobDir, { recursive: true });
-    context.ensuredDir = true;
-  }
 
   const fieldLabel = normalizeFieldLabel(pathSegments);
-  const fileName = `${String(seq).padStart(6, "0")}-${fieldLabel}-${randomUUID()}.blob`;
+  const dryRunCounter = context.dryRunCounter ?? 0;
+  const fileName = context.dryRun
+    ? `${String(seq).padStart(6, "0")}-${fieldLabel}-dry-run-${String(dryRunCounter).padStart(4, "0")}.blob`
+    : `${String(seq).padStart(6, "0")}-${fieldLabel}-${randomUUID()}.blob`;
   const relativePath = path.posix.join(BLOBS_DIR, fileName);
-  const absolutePath = path.join(getSessionDir(specDir, sessionId), relativePath);
-  await fsPromises.writeFile(absolutePath, content, "utf-8");
+  if (!context.dryRun) {
+    if (!context.ensuredDir) {
+      await fsPromises.mkdir(context.blobDir, { recursive: true });
+      context.ensuredDir = true;
+    }
+    const absolutePath = path.join(getSessionDir(specDir, sessionId), relativePath);
+    await fsPromises.writeFile(absolutePath, content, "utf-8");
+  }
+  context.createdBlobs = (context.createdBlobs ?? 0) + 1;
+  context.dryRunCounter = dryRunCounter + 1;
 
   return {
     path: relativePath,
@@ -737,6 +747,187 @@ export async function appendEvent(
   fs.appendFileSync(eventsPath, `${line}\n`, "utf-8");
 
   return validated;
+}
+
+export interface CompactSessionEventsOptions {
+  dryRun?: boolean;
+  renameFn?: (
+    oldPath: string,
+    newPath: string,
+  ) => Promise<void>;
+}
+
+export type CompactSessionReason =
+  | "missing_events_file"
+  | "empty_events_file"
+  | "already_compacted"
+  | "compacted"
+  | "would_compact";
+
+export interface CompactSessionEventsResult {
+  events_processed: number;
+  blobs_created: number;
+  bytes_before: number;
+  bytes_after: number;
+  bytes_reclaimed: number;
+  changed: boolean;
+  reason: CompactSessionReason;
+  dry_run: boolean;
+}
+
+/**
+ * Retroactively compact a session event log by externalizing oversized payloads.
+ *
+ * Reuses the same two-stage externalization pipeline as appendEvent():
+ * 1) Field-level externalization for known large payload fields
+ * 2) Full-data externalization if a line still exceeds EVENT_LINE_MAX_BYTES
+ *
+ * Writes are atomic (temp-file then rename). When dryRun is enabled, no files
+ * are modified and no blob files are written.
+ */
+export async function compactSessionEvents(
+  specDir: string,
+  sessionId: string,
+  options: CompactSessionEventsOptions = {},
+): Promise<CompactSessionEventsResult> {
+  const dryRun = options.dryRun === true;
+  const renameFn = options.renameFn ?? fsPromises.rename;
+  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  let content: string;
+
+  try {
+    content = await fsPromises.readFile(eventsPath, "utf-8");
+  } catch (err: unknown) {
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      return {
+        events_processed: 0,
+        blobs_created: 0,
+        bytes_before: 0,
+        bytes_after: 0,
+        bytes_reclaimed: 0,
+        changed: false,
+        reason: "missing_events_file",
+        dry_run: dryRun,
+      };
+    }
+    throw err;
+  }
+
+  const bytesBefore = Buffer.byteLength(content, "utf-8");
+  const sourceLines = content
+    .split("\n")
+    .filter((line) => line.trim().length > 0);
+
+  if (sourceLines.length === 0) {
+    return {
+      events_processed: 0,
+      blobs_created: 0,
+      bytes_before: bytesBefore,
+      bytes_after: bytesBefore,
+      bytes_reclaimed: 0,
+      changed: false,
+      reason: "empty_events_file",
+      dry_run: dryRun,
+    };
+  }
+
+  const blobContext: BlobWriteContext = {
+    blobDir: getSessionBlobDir(specDir, sessionId),
+    ensuredDir: false,
+    dryRun,
+    createdBlobs: 0,
+    dryRunCounter: 0,
+  };
+
+  const compactedLines: string[] = [];
+  for (let i = 0; i < sourceLines.length; i += 1) {
+    const line = sourceLines[i];
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(line);
+    } catch (err: unknown) {
+      throw new Error(
+        `Invalid JSON in events log at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+
+    const event = SessionEventSchema.parse(parsed);
+    const externalizedData = await externalizeOversizedPayloads(
+      specDir,
+      sessionId,
+      event.seq,
+      event.data,
+      [],
+      blobContext,
+    );
+
+    let validated = SessionEventSchema.parse({
+      ...event,
+      data: externalizedData,
+    });
+
+    let compactedLine = JSON.stringify(validated);
+    if (Buffer.byteLength(compactedLine, "utf-8") > EVENT_LINE_MAX_BYTES) {
+      const fullDataPointer = await createBlobPointer(
+        specDir,
+        sessionId,
+        event.seq,
+        [],
+        validated.data,
+        blobContext,
+      );
+      validated = SessionEventSchema.parse({
+        ...validated,
+        data: fullDataPointer,
+      });
+      compactedLine = JSON.stringify(validated);
+    }
+
+    compactedLines.push(compactedLine);
+  }
+
+  const compactedContent = `${compactedLines.join("\n")}\n`;
+  const changed = compactedContent !== content;
+  const bytesAfter = changed ? Buffer.byteLength(compactedContent, "utf-8") : bytesBefore;
+
+  if (!changed) {
+    return {
+      events_processed: sourceLines.length,
+      blobs_created: 0,
+      bytes_before: bytesBefore,
+      bytes_after: bytesBefore,
+      bytes_reclaimed: 0,
+      changed: false,
+      reason: "already_compacted",
+      dry_run: dryRun,
+    };
+  }
+
+  if (!dryRun) {
+    const sessionDir = getSessionDir(specDir, sessionId);
+    const tmpPath = path.join(
+      sessionDir,
+      `.${EVENTS_FILE}.${process.pid}.${Date.now()}.tmp`,
+    );
+    try {
+      await fsPromises.writeFile(tmpPath, compactedContent, "utf-8");
+      await renameFn(tmpPath, eventsPath);
+    } catch (err) {
+      await fsPromises.unlink(tmpPath).catch(() => undefined);
+      throw err;
+    }
+  }
+
+  return {
+    events_processed: sourceLines.length,
+    blobs_created: blobContext.createdBlobs ?? 0,
+    bytes_before: bytesBefore,
+    bytes_after: bytesAfter,
+    bytes_reclaimed: Math.max(0, bytesBefore - bytesAfter),
+    changed: true,
+    reason: dryRun ? "would_compact" : "compacted",
+    dry_run: dryRun,
+  };
 }
 
 /**
