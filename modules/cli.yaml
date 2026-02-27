@@ -2824,7 +2824,7 @@ features:
             then: No ACP agent process is spawned, no session is created, no events are logged
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KFR7T4FV90ZS4RCBF8WCTRHB
         slugs:
           - ralph-skill-delegation
