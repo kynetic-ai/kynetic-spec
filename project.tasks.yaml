@@ -63663,4 +63663,11 @@
       content: "PR #569 updated with portable {skill:<id>} token resolution across SKILL.md and supporting
         markdown; CI passing on head dba33943; task moved to pending_review."
       supersedes: null
+    - _ulid: 01KJECH6JT5SMRHS3NRZSXWYE5
+      created_at: 2026-02-27T01:48:38.362Z
+      author: Jacob Chapel
+      content: "Correction (2026-02-27): Codex invocation mapping in this task is core -> -<id>, non-core
+        -> $<id>. Some earlier notes displayed '-' due shell interpolation when posting text;
+        implementation/tests/PR use the '$' forms."
+      supersedes: null
   todos: []
