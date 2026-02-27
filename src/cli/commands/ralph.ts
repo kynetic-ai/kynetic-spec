@@ -445,7 +445,10 @@ export function isAdapterPackageAvailable(
  */
 function validateAdapter(adapterPackage: string, adapterId?: string): void {
   if (!isAdapterPackageAvailable(adapterPackage)) {
-    const label = adapterId ? `${adapterId} (${adapterPackage})` : adapterPackage;
+    const label =
+      adapterId && adapterId !== adapterPackage
+        ? `${adapterId} (${adapterPackage})`
+        : adapterPackage;
     error(
       `Adapter not found: ${label}. Install with: npm install -g ${adapterPackage}`,
     );

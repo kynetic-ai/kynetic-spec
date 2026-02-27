@@ -458,7 +458,7 @@ describe('ralph command', () => {
     const output = (result.stdout || '') + (result.stderr || '');
 
     expect(result.status).toBe(3);
-    expect(output).toContain('Adapter package not found: @nonexistent/adapter-package');
+    expect(output).toContain('Adapter not found: @nonexistent/adapter-package');
     expect(output).toContain('npm install -g @nonexistent/adapter-package');
   });
 
@@ -483,7 +483,7 @@ describe('ralph command', () => {
 
     // Should fail validation immediately
     expect(result.status).toBe(3);
-    expect(output).toContain('Adapter package not found');
+    expect(output).toContain('Adapter not found');
 
     // Should NOT show any signs of session creation or agent spawn
     expect(output).not.toContain('Spawning ACP agent');
@@ -2011,7 +2011,7 @@ describe('subagent module', () => {
       const output = (result.stdout || '') + (result.stderr || '');
 
       expect(result.status).toBe(3);
-      expect(output).toContain('Adapter package not found: @nonexistent/adapter-pkg');
+      expect(output).toContain('Adapter not found: @nonexistent/adapter-pkg');
     });
 
     // AC: @ralph-per-role-adapters ac-11
@@ -2030,7 +2030,7 @@ describe('subagent module', () => {
       const output = (result.stdout || '') + (result.stderr || '');
 
       expect(result.status).toBe(3);
-      expect(output).toContain('Adapter package not found: @nonexistent/adapter-pkg');
+      expect(output).toContain('Adapter not found: @nonexistent/adapter-pkg');
     });
 
     // AC: @ralph-per-role-adapters ac-12
