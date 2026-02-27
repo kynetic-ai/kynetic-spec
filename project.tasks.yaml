@@ -63988,6 +63988,13 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: tests are annotated as @cli-ralph ac-11 but do
         not explicitly annotate new @cli-ralph ac-22/ac-23 coverage in PR #576."
       supersedes: null
+    - _ulid: 01KJF7GM9BJJ9XFSVDYK6WS2V6
+      created_at: 2026-02-27T09:40:11.179Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Addressed review MUST-FIX by adding explicit AC annotations for new
+        @cli-ralph ac-22/ac-23 in tests/ralph.test.ts terminal/run output capture tests.
+        Verification: npx vitest run tests/ralph.test.ts (116/116)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJF68AWM0F61QBQ957V6T2C1
