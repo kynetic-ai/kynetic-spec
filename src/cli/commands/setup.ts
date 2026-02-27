@@ -30,6 +30,10 @@ import {
   repairShadow,
   SHADOW_BRANCH_NAME,
 } from "../../parser/shadow.js";
+import {
+  detectAgentFromEnv,
+  type AgentConfidence,
+} from "../../parser/agent-detection.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
@@ -61,6 +65,8 @@ export type AgentType =
   | "aider"
   | "opencode"
   | "amp"
+  | "cursor"
+  | "windsurf"
   | "unknown";
 
 /**
@@ -68,7 +74,7 @@ export type AgentType =
  */
 export interface DetectedAgent {
   type: AgentType;
-  confidence: "high" | "medium" | "low";
+  confidence: AgentConfidence;
   configPath?: string;
   envVars?: Record<string, string>;
 }
@@ -80,104 +86,7 @@ export interface DetectedAgent {
  * Detection priority matters - more specific markers checked first.
  */
 export function detectAgent(): DetectedAgent {
-  // Claude Code: Multiple possible markers
-  // CLAUDECODE=1 is set in CLI sessions
-  // CLAUDE_CODE_ENTRYPOINT indicates entry point (cli, etc.)
-  // CLAUDE_PROJECT_DIR is set in some contexts
-  if (
-    process.env.CLAUDECODE === "1" ||
-    process.env.CLAUDE_CODE_ENTRYPOINT ||
-    process.env.CLAUDE_PROJECT_DIR
-  ) {
-    return {
-      type: "claude-code",
-      confidence: "high",
-      configPath: path.join(os.homedir(), ".claude", "settings.json"),
-      envVars: {
-        ...(process.env.CLAUDECODE && { CLAUDECODE: process.env.CLAUDECODE }),
-        ...(process.env.CLAUDE_CODE_ENTRYPOINT && {
-          CLAUDE_CODE_ENTRYPOINT: process.env.CLAUDE_CODE_ENTRYPOINT,
-        }),
-        ...(process.env.CLAUDE_PROJECT_DIR && {
-          CLAUDE_PROJECT_DIR: process.env.CLAUDE_PROJECT_DIR,
-        }),
-      },
-    };
-  }
-
-  // Cline: CLINE_ACTIVE is set when running in Cline terminal
-  if (process.env.CLINE_ACTIVE) {
-    return {
-      type: "cline",
-      confidence: "high",
-      // Cline uses VS Code settings, but env vars should be in shell profile
-      configPath: undefined,
-      envVars: { CLINE_ACTIVE: process.env.CLINE_ACTIVE },
-    };
-  }
-
-  // GitHub Copilot CLI: Check for copilot-specific markers
-  if (process.env.COPILOT_MODEL || process.env.GH_TOKEN) {
-    return {
-      type: "copilot-cli",
-      confidence: "medium",
-      configPath: path.join(os.homedir(), ".copilot", "config.json"),
-    };
-  }
-
-  // Aider: Check for AIDER_* env vars
-  if (process.env.AIDER_MODEL || process.env.AIDER_DARK_MODE !== undefined) {
-    return {
-      type: "aider",
-      confidence: "high",
-      configPath: path.join(os.homedir(), ".aider.conf.yml"),
-    };
-  }
-
-  // OpenCode: Check for OPENCODE_* env vars
-  if (process.env.OPENCODE_CONFIG_DIR || process.env.OPENCODE_CONFIG) {
-    return {
-      type: "opencode",
-      confidence: "high",
-      configPath:
-        process.env.OPENCODE_CONFIG ||
-        path.join(os.homedir(), ".config", "opencode", "opencode.json"),
-    };
-  }
-
-  // Gemini CLI: GEMINI_CLI=1 is set when running in Gemini CLI
-  if (process.env.GEMINI_CLI === "1") {
-    return {
-      type: "gemini-cli",
-      confidence: "high",
-      configPath: path.join(os.homedir(), ".gemini", "settings.json"),
-      envVars: { GEMINI_CLI: "1" },
-    };
-  }
-
-  // Codex CLI: CODEX_SANDBOX is set when running in sandbox
-  if (process.env.CODEX_SANDBOX) {
-    return {
-      type: "codex-cli",
-      confidence: "high",
-      configPath: path.join(os.homedir(), ".codex", "config.toml"),
-      envVars: { CODEX_SANDBOX: process.env.CODEX_SANDBOX },
-    };
-  }
-
-  // Amp (Sourcegraph): Check for AMP_API_KEY or AMP_TOOLBOX
-  if (process.env.AMP_API_KEY || process.env.AMP_TOOLBOX) {
-    return {
-      type: "amp",
-      confidence: "medium",
-      configPath: path.join(os.homedir(), ".config", "amp", "settings.json"),
-    };
-  }
-
-  return {
-    type: "unknown",
-    confidence: "low",
-  };
+  return detectAgentFromEnv();
 }
 
 /**
