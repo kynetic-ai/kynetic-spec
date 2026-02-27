@@ -63676,4 +63676,10 @@
         -> $<id>. Some earlier notes displayed '-' due shell interpolation when posting text;
         implementation/tests/PR use the '$' forms."
       supersedes: null
+    - _ulid: 01KJERKDZ4DX2W6PNJAZMRFS7G
+      created_at: 2026-02-27T05:19:34.372Z
+      author: Jacob Chapel
+      content: "Merged via PR #569 on 2026-02-27 (merge commit 7042139b); portable {skill:<id>} reference
+        resolution across SKILL and supporting markdown is live."
+      supersedes: null
   todos: []
