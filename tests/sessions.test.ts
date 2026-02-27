@@ -31,7 +31,6 @@ import {
   getSessionDir,
   getSessionMetadataPath,
   getSessionEventsPath,
-  getSessionBlobDir,
   saveSessionContext,
   readSessionContext,
   getSessionContextPath,
@@ -536,6 +535,29 @@ describe('Event storage', () => {
       expect(blobContent).toBe(rawOutput);
     });
 
+    it('should generate UTF-8 safe previews for externalized payloads', async () => {
+      const rawOutput = '漢'.repeat(7_000);
+
+      await appendEvent(testDir, {
+        type: 'session.update',
+        session_id: sessionId,
+        data: {
+          iteration: 1,
+          update: {
+            sessionUpdate: 'tool_call_update',
+            rawOutput,
+          },
+        },
+      });
+
+      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const stored = JSON.parse((await fs.readFile(eventsPath, 'utf-8')).trim());
+      const pointer = stored.data.update.rawOutput as { preview: string };
+
+      expect(pointer.preview).toContain('...');
+      expect(pointer.preview).not.toContain('\uFFFD');
+    });
+
     it('should cap oversized event lines by externalizing whole payload', async () => {
       const giantPayload = 'Y'.repeat(320_000);
 
@@ -552,12 +574,16 @@ describe('Event storage', () => {
       expect(Buffer.byteLength(rawLine, 'utf-8')).toBeLessThan(256 * 1024);
 
       const parsed = JSON.parse(rawLine);
-      expect(parsed.data.path).toMatch(/^blobs\//);
-      expect(parsed.data.bytes).toBeGreaterThan(giantPayload.length);
+      const pointer = parsed.data as {
+        path: string;
+        bytes: number;
+      };
+      expect(pointer.path).toMatch(/^blobs\//);
 
-      const blobDir = getSessionBlobDir(testDir, sessionId);
-      const blobs = await fs.readdir(blobDir);
-      expect(blobs.length).toBeGreaterThan(0);
+      const blobPath = path.join(getSessionDir(testDir, sessionId), pointer.path);
+      const blobContent = await fs.readFile(blobPath, 'utf-8');
+      expect(Buffer.byteLength(blobContent, 'utf-8')).toBe(pointer.bytes);
+      expect(JSON.parse(blobContent)).toEqual({ prompt: giantPayload });
     });
   });
 

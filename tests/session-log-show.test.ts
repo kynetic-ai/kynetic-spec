@@ -735,6 +735,12 @@ describe('kspec session log show (CLI)', () => {
     expect(output.content).toBe('FULL_BLOB_CONTENT_FOR_SHOW_RESOLUTION');
   });
 
+  it('should warn when --resolve-blobs is used without --events', () => {
+    const result = kspec(`session log show ${sessionId1} --resolve-blobs`, tempDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain('--resolve-blobs has no effect without --events');
+  });
+
   // Show active session
   it('should show active session without ended_at', () => {
     const detail = kspecJson<SessionLogDetail>(`session log show ${sessionId2}`, tempDir);

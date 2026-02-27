@@ -276,7 +276,10 @@ export function registerSessionCommands(program: Command): void {
     .option("-t, --type <type>", "Filter events by type (e.g., tool.call)")
     .option("-n, --limit <n>", "Show only the last N events")
     .option("-c, --context <n>", "Show context snapshot for iteration N")
-    .option("--resolve-blobs", "Resolve externalized event payload blobs")
+    .option(
+      "--resolve-blobs",
+      "Resolve externalized event payload blobs (requires --events)",
+    )
     .action(sessionLogShowAction);
 
   log

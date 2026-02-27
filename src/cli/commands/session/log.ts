@@ -35,7 +35,7 @@ import {
 } from "../../../utils/index.js";
 import { isObject } from "../../../acp/types.js";
 import { EXIT_CODES } from "../../exit-codes.js";
-import { error, output } from "../../output.js";
+import { error, output, warn } from "../../output.js";
 
 // ─── Shared Helpers ─────────────────────────────────────────────────────────
 
@@ -463,6 +463,10 @@ export async function sessionLogShowAction(
     if (!detail) {
       error(`Session not found: ${sessionId}`);
       process.exit(EXIT_CODES.NOT_FOUND);
+    }
+
+    if (options.resolveBlobs && !options.events) {
+      warn("--resolve-blobs has no effect without --events; showing metadata only.");
     }
 
     // AC: @session-log-show ac-3, ac-4, ac-5 - Event timeline

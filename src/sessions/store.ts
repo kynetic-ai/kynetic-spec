@@ -393,6 +393,11 @@ interface ResolvedSessionBlobPointer extends SessionBlobPointer {
   content: string;
 }
 
+interface BlobWriteContext {
+  blobDir: string;
+  ensuredDir: boolean;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -422,11 +427,21 @@ function payloadBytes(value: unknown): number {
 }
 
 function toPreview(content: string): string {
-  const buf = Buffer.from(content, "utf-8");
-  if (buf.length <= EVENT_PREVIEW_MAX_BYTES) {
+  const totalBytes = Buffer.byteLength(content, "utf-8");
+  if (totalBytes <= EVENT_PREVIEW_MAX_BYTES) {
     return content;
   }
-  return `${buf.subarray(0, EVENT_PREVIEW_MAX_BYTES).toString("utf-8")}...`;
+
+  let preview = "";
+  let usedBytes = 0;
+  for (const char of content) {
+    const charBytes = Buffer.byteLength(char, "utf-8");
+    if (usedBytes + charBytes > EVENT_PREVIEW_MAX_BYTES) break;
+    preview += char;
+    usedBytes += charBytes;
+  }
+
+  return `${preview}...`;
 }
 
 function normalizeFieldLabel(pathSegments: string[]): string {
@@ -470,12 +485,15 @@ async function createBlobPointer(
   seq: number,
   pathSegments: string[],
   value: unknown,
+  context: BlobWriteContext,
 ): Promise<SessionBlobPointer> {
   const content = stringifyPayload(value);
   const bytes = Buffer.byteLength(content, "utf-8");
   const sha256 = createHash("sha256").update(content).digest("hex");
-  const blobDir = getSessionBlobDir(specDir, sessionId);
-  await fsPromises.mkdir(blobDir, { recursive: true });
+  if (!context.ensuredDir) {
+    await fsPromises.mkdir(context.blobDir, { recursive: true });
+    context.ensuredDir = true;
+  }
 
   const fieldLabel = normalizeFieldLabel(pathSegments);
   const fileName = `${String(seq).padStart(6, "0")}-${fieldLabel}-${randomUUID()}.blob`;
@@ -498,13 +516,14 @@ async function externalizeOversizedPayloads(
   seq: number,
   value: unknown,
   pathSegments: string[],
+  context: BlobWriteContext,
 ): Promise<unknown> {
   if (isSessionBlobPointer(value)) {
     return value;
   }
 
   if (shouldExternalizeField(pathSegments, value)) {
-    return createBlobPointer(specDir, sessionId, seq, pathSegments, value);
+    return createBlobPointer(specDir, sessionId, seq, pathSegments, value, context);
   }
 
   if (Array.isArray(value)) {
@@ -513,7 +532,7 @@ async function externalizeOversizedPayloads(
         externalizeOversizedPayloads(specDir, sessionId, seq, entry, [
           ...pathSegments,
           String(idx),
-        ]),
+        ], context),
       ),
     );
   }
@@ -527,6 +546,7 @@ async function externalizeOversizedPayloads(
         seq,
         child,
         [...pathSegments, key],
+        context,
       );
     }
     return next;
@@ -675,6 +695,10 @@ export async function appendEvent(
     seq,
     event.data,
     [],
+    {
+      blobDir: getSessionBlobDir(specDir, input.session_id),
+      ensuredDir: false,
+    },
   );
 
   const eventWithGuardrails: SessionEvent = {
@@ -689,12 +713,17 @@ export async function appendEvent(
   // targeted field externalization, externalize the entire data payload.
   let line = JSON.stringify(validated);
   if (Buffer.byteLength(line, "utf-8") > EVENT_LINE_MAX_BYTES) {
+    const blobContext: BlobWriteContext = {
+      blobDir: getSessionBlobDir(specDir, input.session_id),
+      ensuredDir: false,
+    };
     const fullDataPointer = await createBlobPointer(
       specDir,
       input.session_id,
       seq,
       [],
       validated.data,
+      blobContext,
     );
     validated = SessionEventSchema.parse({
       ...validated,
