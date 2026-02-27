@@ -627,7 +627,8 @@ describe('ralph command', () => {
 });
 
 describe('ralph terminal/run output capture', () => {
-  // AC: @cli-ralph ac-11
+  // AC: @cli-ralph ac-22
+  // AC: @cli-ralph ac-23
   it('streams full terminal output to session artifacts with bounded preview response', async () => {
     const tempDir = await fs.mkdtemp(path.join(__dirname, 'tmp-ralph-terminal-'));
     const specDir = path.join(tempDir, '.kspec');
@@ -661,6 +662,7 @@ describe('ralph terminal/run output capture', () => {
     }
   });
 
+  // AC: @cli-ralph ac-23
   it('returns preview-only output when session artifact context is unavailable', async () => {
     const tempDir = await fs.mkdtemp(path.join(__dirname, 'tmp-ralph-preview-'));
 
