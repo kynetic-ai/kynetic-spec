@@ -25,6 +25,7 @@ import {
   computeTimePeriodStats,
   searchSessionEvents,
   deduplicatePhasedToolCalls,
+  resolveSessionBlobPointers,
 } from "../../../sessions/store.js";
 import type { SessionEvent } from "../../../sessions/types.js";
 import { SessionStatusSchema } from "../../../sessions/types.js";
@@ -271,6 +272,7 @@ interface SessionLogShowOptions {
   type?: string;
   limit?: string;
   context?: string;
+  resolveBlobs?: boolean;
 }
 
 /**
@@ -484,6 +486,19 @@ export async function sessionLogShowAction(
         }
       }
 
+      if (options.resolveBlobs) {
+        allEvents = await Promise.all(
+          allEvents.map(async (event) => ({
+            ...event,
+            data: await resolveSessionBlobPointers(
+              ctx.specDir,
+              sessionId,
+              event.data,
+            ),
+          })),
+        );
+      }
+
       events = allEvents;
     }
 
@@ -691,6 +706,7 @@ interface SessionLogSearchOptions {
   since?: string;
   agent?: string;
   limit?: string;
+  resolveBlobs?: boolean;
 }
 
 /**
@@ -768,6 +784,7 @@ export async function sessionLogSearchAction(
       sinceDate: sinceDate || undefined,
       agentType: options.agent,
       limit,
+      resolveBlobs: options.resolveBlobs,
     });
 
     // AC: @session-log-search ac-6 - No matches found message

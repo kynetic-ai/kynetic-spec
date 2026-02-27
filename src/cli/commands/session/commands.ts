@@ -276,6 +276,7 @@ export function registerSessionCommands(program: Command): void {
     .option("-t, --type <type>", "Filter events by type (e.g., tool.call)")
     .option("-n, --limit <n>", "Show only the last N events")
     .option("-c, --context <n>", "Show context snapshot for iteration N")
+    .option("--resolve-blobs", "Resolve externalized event payload blobs")
     .action(sessionLogShowAction);
 
   log
@@ -301,6 +302,7 @@ export function registerSessionCommands(program: Command): void {
     )
     .option("--agent <type>", "Only search sessions with this agent type")
     .option("-n, --limit <n>", "Maximum matches to return (default: 50)")
+    .option("--resolve-blobs", "Resolve externalized payload blobs for full-content search")
     .action(sessionLogSearchAction);
 
   session

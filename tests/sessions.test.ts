@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -30,6 +31,7 @@ import {
   getSessionDir,
   getSessionMetadataPath,
   getSessionEventsPath,
+  getSessionBlobDir,
   saveSessionContext,
   readSessionContext,
   getSessionContextPath,
@@ -489,6 +491,73 @@ describe('Event storage', () => {
       const event2 = JSON.parse(lines[1]);
       expect(event2.type).toBe('prompt.sent');
       expect(event2.seq).toBe(1);
+    });
+
+    // AC: @session-events ac-8
+    // AC: @session-events ac-9
+    it('should externalize oversized rawOutput and store pointer metadata', async () => {
+      const rawOutput = 'X'.repeat(20_000);
+
+      await appendEvent(testDir, {
+        type: 'session.update',
+        session_id: sessionId,
+        data: {
+          iteration: 1,
+          update: {
+            sessionUpdate: 'tool_call_update',
+            rawOutput,
+          },
+        },
+      });
+
+      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const lines = (await fs.readFile(eventsPath, 'utf-8')).trim().split('\n');
+      expect(lines).toHaveLength(1);
+
+      const stored = JSON.parse(lines[0]);
+      const pointer = stored.data.update.rawOutput as {
+        path: string;
+        bytes: number;
+        sha256: string;
+        truncated: boolean;
+        preview: string;
+      };
+      expect(pointer.path).toMatch(/^blobs\//);
+      expect(pointer.bytes).toBe(rawOutput.length);
+      expect(pointer.sha256).toBe(
+        createHash('sha256').update(rawOutput).digest('hex'),
+      );
+      expect(pointer.truncated).toBe(true);
+      expect(pointer.preview.length).toBeGreaterThan(0);
+      expect(pointer.preview.length).toBeLessThan(rawOutput.length);
+
+      const blobPath = path.join(getSessionDir(testDir, sessionId), pointer.path);
+      const blobContent = await fs.readFile(blobPath, 'utf-8');
+      expect(blobContent).toBe(rawOutput);
+    });
+
+    it('should cap oversized event lines by externalizing whole payload', async () => {
+      const giantPayload = 'Y'.repeat(320_000);
+
+      await appendEvent(testDir, {
+        type: 'prompt.sent',
+        session_id: sessionId,
+        data: {
+          prompt: giantPayload,
+        },
+      });
+
+      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const rawLine = (await fs.readFile(eventsPath, 'utf-8')).trim();
+      expect(Buffer.byteLength(rawLine, 'utf-8')).toBeLessThan(256 * 1024);
+
+      const parsed = JSON.parse(rawLine);
+      expect(parsed.data.path).toMatch(/^blobs\//);
+      expect(parsed.data.bytes).toBeGreaterThan(giantPayload.length);
+
+      const blobDir = getSessionBlobDir(testDir, sessionId);
+      const blobs = await fs.readdir(blobDir);
+      expect(blobs.length).toBeGreaterThan(0);
     });
   });
 
