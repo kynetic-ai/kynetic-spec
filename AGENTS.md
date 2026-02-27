@@ -48,6 +48,14 @@ Templates ship with the npm package and provide the structural documentation tha
 - Changing how a workflow section is *explained* → edit the template file
 - Adding a new documentation section → create `NN-section-name.md` (numeric prefix controls order)
 
+## Skill Source of Truth
+
+Do not edit rendered skill files directly in `.agents/skills/`.
+
+- **Core skills** (the ones rendered with `kspec-` prefix under `.agents/skills/`) are authored in `templates/skills/` and listed in `templates/skills/manifest.yaml`.
+- **Project/local skills** are stored in `.kspec/skills/` (shadow branch state).
+- `.agents/skills/` is rendered output for agent runtimes; regenerate from sources via `kspec skill render` or `kspec setup`.
+
 ## Test Helpers
 
 | Helper | Purpose |

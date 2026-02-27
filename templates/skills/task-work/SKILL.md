@@ -318,5 +318,5 @@ kspec session start
 - **`{skill:writing-specs}`** — Create specs before deriving tasks
 - **`{skill:plan}`** — Plans create specs that become tasks
 - **`{skill:review}`** — Review checks AC coverage and code quality
-- **`{skill:observations}`** — Capture friction found during task work
+- **`{skill:observe}`** — Capture friction found during task work
 - **`{skill:reflect}`** — Session reflection after completing tasks

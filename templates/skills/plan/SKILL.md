@@ -343,4 +343,4 @@ kspec validate --alignment
 - **`{skill:writing-specs}`** — Spec authoring details (types, AC format, traits)
 - **`{skill:task-work}`** — After specs are created, work on derived tasks
 - **`{skill:triage}`** — Inbox items may trigger plan creation
-- **`{skill:observations}`** — Friction during planning becomes observations
+- **`{skill:observe}`** — Friction during planning becomes observations
