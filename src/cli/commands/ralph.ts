@@ -443,10 +443,11 @@ export function isAdapterPackageAvailable(
  *
  * @throws {Error} Never throws - exits process with code 3 if validation fails
  */
-function validateAdapter(adapterPackage: string): void {
+function validateAdapter(adapterPackage: string, adapterId?: string): void {
   if (!isAdapterPackageAvailable(adapterPackage)) {
+    const label = adapterId ? `${adapterId} (${adapterPackage})` : adapterPackage;
     error(
-      `Adapter package not found: ${adapterPackage}. Install with: npm install -g ${adapterPackage}`,
+      `Adapter not found: ${label}. Install with: npm install -g ${adapterPackage}`,
     );
     process.exit(EXIT_CODES.NOT_FOUND);
   }
@@ -1307,7 +1308,7 @@ export function registerRalphCommand(program: Command): void {
             (options.dryRun && isDefault);
 
           if (!skip) {
-            validateAdapter(resolved.args[0]);
+            validateAdapter(resolved.args[0], id);
           }
         }
 
