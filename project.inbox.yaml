@@ -989,3 +989,12 @@ inbox:
       - ralph
       - infra
     added_by: "@claude"
+  - _ulid: 01KJF69VH0BZGHTJYQKRAAJN7W
+    text: kspec validate should warn about items with identical titles in the same module — two items
+      both named 'Generation Progress UX' with different ULIDs caused confusion during a fix session
+      in imgen project
+    created_at: 2026-02-27T09:19:00.640Z
+    tags:
+      - cli
+      - validation
+    added_by: "@claude"
