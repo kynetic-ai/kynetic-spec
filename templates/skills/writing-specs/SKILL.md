@@ -10,7 +10,7 @@ Create and maintain specification items — the source of truth for what to buil
 - Organizing specs under the right module/parent
 - Reviewing spec quality before deriving tasks
 
-**Not for:** Task management (use `/kspec:task-work`), plan-to-spec translation (use `/kspec:plan`), or triage (use `/kspec:triage`).
+**Not for:** Task management (use `{skill:task-work}`), plan-to-spec translation (use `{skill:plan}`), or triage (use `{skill:triage}`).
 
 ## Finding Things
 
@@ -340,8 +340,8 @@ The derived task gets `spec_ref: @feature-slug` automatically.
 
 ## Integration
 
-- **`/kspec:plan`** — Plans create specs via import or manual creation
-- **`/kspec:task-work`** — Tasks reference specs; AC guides implementation
-- **`/kspec:triage`** — Inbox items may reveal spec gaps
-- **`/kspec:observations`** — Friction may indicate missing specs
-- **`/kspec:review`** — Reviews check AC coverage
+- **`{skill:plan}`** — Plans create specs via import or manual creation
+- **`{skill:task-work}`** — Tasks reference specs; AC guides implementation
+- **`{skill:triage}`** — Inbox items may reveal spec gaps
+- **`{skill:observations}`** — Friction may indicate missing specs
+- **`{skill:review}`** — Reviews check AC coverage

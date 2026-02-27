@@ -18,6 +18,7 @@ const TEMPLATES_DIR = path.join(ROOT, "templates", "skills");
 const PLUGIN_DIR = path.join(ROOT, "plugin");
 const MANIFEST_PATH = path.join(TEMPLATES_DIR, "manifest.yaml");
 const PACKAGE_JSON_PATH = path.join(ROOT, "package.json");
+const SKILL_REFERENCE_TOKEN_RE = /\{skill:([a-z0-9][a-z0-9-]*)\}/g;
 
 /** Recursively copy a directory tree (sync). */
 function copyDirSync(src, dest) {
@@ -110,10 +111,13 @@ function main() {
     }
 
     const sourceContent = fs.readFileSync(sourcePath, "utf-8");
+    const resolvedSourceContent = sourceContent.replace(SKILL_REFERENCE_TOKEN_RE, (_m, refId) => {
+      return `/kspec:${refId}`;
+    });
 
     // Generate YAML frontmatter
     const frontmatter = yaml.stringify({ name: skillId, description: skillDesc }).trim();
-    const output = `---\n${frontmatter}\n---\n<!-- kspec-managed -->\n${sourceContent}`;
+    const output = `---\n${frontmatter}\n---\n<!-- kspec-managed -->\n${resolvedSourceContent}`;
 
     // Write to plugin/plugins/kspec/skills/<id>/SKILL.md
     const targetDir = path.join(pluginContentDir, "skills", skillId);

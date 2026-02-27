@@ -37,7 +37,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "yaml";
 import type { KspecContext } from "./yaml.js";
-import { loadSkillContent, type LoadedSkill } from "./meta.js";
+import { loadMetaContext, loadSkillContent, type LoadedSkill } from "./meta.js";
 
 // ============================================================================
 // Platform Renderer Contract (AC: @platform-renderer-trait)
@@ -238,6 +238,53 @@ export function getSkillSubdir(skillId: string, origin?: string, platform?: stri
  */
 export function getClaudeCodeSkillSubdir(skill: LoadedSkill): string {
   return getSkillSubdir(skill.id, skill.origin, "claude-code");
+}
+
+const SKILL_REFERENCE_TOKEN_RE = /\{skill:([a-z0-9][a-z0-9-]*)\}/g;
+
+/**
+ * Build a map of skill id -> origin for reference token resolution.
+ */
+async function loadSkillOrigins(ctx: KspecContext): Promise<Map<string, LoadedSkill["origin"]>> {
+  const meta = await loadMetaContext(ctx);
+  const origins = new Map<string, LoadedSkill["origin"]>();
+  for (const skill of meta.skills) {
+    origins.set(skill.id, skill.origin);
+  }
+  return origins;
+}
+
+/**
+ * Format a platform-specific invocation for a skill id.
+ * - Claude: core skills use /kspec:<id>, others use /<id>
+ * - Codex: uses $<rendered-name>, where rendered-name may include core namespace
+ */
+function formatSkillInvocation(skillId: string, platform: string, origin?: LoadedSkill["origin"]): string {
+  switch (platform) {
+    case "claude-code":
+      return origin === "core" ? `/kspec:${skillId}` : `/${skillId}`;
+    case "codex":
+      return `$${getSkillSubdir(skillId, origin, "codex")}`;
+    default:
+      return `/${skillId}`;
+  }
+}
+
+/**
+ * Resolve portable reference tokens in skill body content.
+ * Token syntax: {skill:<id>}
+ */
+function resolveSkillReferenceTokens(
+  body: string,
+  platform: string,
+  skill: LoadedSkill,
+  skillOrigins: Map<string, LoadedSkill["origin"]>
+): string {
+  return body.replace(SKILL_REFERENCE_TOKEN_RE, (_match, refId: string) => {
+    // If reference isn't in loaded meta, core templates usually point to core skills.
+    const referencedOrigin = skillOrigins.get(refId) ?? (skill.origin === "core" ? "core" : undefined);
+    return formatSkillInvocation(refId, platform, referencedOrigin);
+  });
 }
 
 /**
@@ -1013,10 +1060,14 @@ export const claudeCodeRenderer: PlatformRenderer = {
       };
     }
 
+    const skillOrigins = await loadSkillOrigins(ctx);
+
     // Project/local skills render to .claude/skills/
     const result = await renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter,
+      transformBody: (body, loadedSkill) =>
+        resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
       writeLegacyHash: true,
     }, this.defaultOutputDir, skill.id);
 
@@ -1058,10 +1109,10 @@ function generateCodexFrontmatter(skill: LoadedSkill): string {
 }
 
 /**
- * Convert Claude-style core skill references to Codex invocation form.
+ * Backward-compatibility conversion for legacy core content.
  * Example: /kspec:task-work -> $kspec-task-work
  */
-function transformCodexSkillReferences(body: string): string {
+function transformLegacyCodexCoreReferences(body: string): string {
   return body.replace(/\/kspec:([a-z0-9][a-z0-9-]*)/g, (_match, skillId: string) => {
     return `$kspec-${skillId}`;
   });
@@ -1140,19 +1191,26 @@ export const codexRenderer: PlatformRenderer = {
   ): Promise<PlatformRenderResult> {
     // Pre-compute sidecar content so it's available for both hash and write
     const sidecarContent = generateCodexSidecarYaml(skill);
+    const skillOrigins = await loadSkillOrigins(ctx);
 
     const codexSubdir = getSkillSubdir(skill.id, skill.origin, "codex");
 
     return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter: generateCodexFrontmatter,
-      // Scope reference conversion to core skills only to avoid mutating
-      // user-authored codex skill content.
+      // Resolve portable {skill:<id>} tokens for all skills.
+      // Keep legacy /kspec:* rewrite only for core skills for backward compatibility.
       transformBody: (body, loadedSkill) => {
+        const tokenResolved = resolveSkillReferenceTokens(
+          body,
+          this.platform,
+          loadedSkill,
+          skillOrigins
+        );
         if (loadedSkill.origin === "core") {
-          return transformCodexSkillReferences(body);
+          return transformLegacyCodexCoreReferences(tokenResolved);
         }
-        return body;
+        return tokenResolved;
       },
 
       // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash

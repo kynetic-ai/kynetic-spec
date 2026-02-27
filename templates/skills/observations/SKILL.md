@@ -132,6 +132,6 @@ kspec batch --commands '[
 
 ## Integration
 
-- **`/kspec:triage observations`** — Processes pending observations during triage
-- **`/kspec:reflect`** — Creates observations from session learnings
+- **`{skill:triage} observations`** — Processes pending observations during triage
+- **`{skill:reflect}`** — Creates observations from session learnings
 - **`kspec session start`** — Shows pending observation count
