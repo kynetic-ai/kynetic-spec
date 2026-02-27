@@ -64040,9 +64040,16 @@
     - memory
     - reliability
   vcs_refs: []
+  session_id: 01KJF8SYSNY2SBB7APZ2CTWCF4
   created_at: 2026-02-27T09:18:10.836Z
-  notes: []
+  started_at: 2026-02-27T10:05:04.080Z
+  notes:
+    - _ulid: 01KJF8YC0BXF7553R2YE2NBHWD
+      created_at: 2026-02-27T10:05:10.027Z
+      author: Jacob Chapel
+      content: Started implementation. Adding session event payload/line guardrails with blob
+        externalization + pointer metadata in store.ts, then wiring session log show/search to
+        preview pointers by default with optional blob resolution flags and regression tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-27T10:05:04.080Z
-  session_id: 01KJF8SYSNY2SBB7APZ2CTWCF4
