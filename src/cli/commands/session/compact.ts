@@ -261,6 +261,8 @@ export async function sessionCompactAction(
     }
   } catch (err) {
     error("Failed to compact session events", err);
-    process.exit(EXIT_CODES.ERROR);
+    // AC: @trait-semantic-exit-codes ac-4
+    // Runtime failures map to exit code 3 for this trait.
+    process.exit(EXIT_CODES.NOT_FOUND);
   }
 }

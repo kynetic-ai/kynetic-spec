@@ -265,6 +265,7 @@ describe("session compact", () => {
   });
 
   // AC: @trait-dry-run ac-4
+  // AC: @trait-semantic-exit-codes ac-4
   // AC: @trait-json-output ac-3
   it("returns errors in --json mode and preserves state in dry-run failures", async () => {
     const sessionId = testUlid("SESS", 10);
@@ -278,7 +279,7 @@ describe("session compact", () => {
       tempDir,
       { expectFail: true },
     );
-    expect(result.exitCode).toBe(1);
+    expect(result.exitCode).toBe(3);
 
     const errJson = JSON.parse(result.stderr);
     expect(errJson.success).toBe(false);
