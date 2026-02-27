@@ -63454,14 +63454,15 @@
         override flag is currently missing in both direct install-core and setup-driven core install
         paths."
       supersedes: null
-    - _ulid: 01KJE8R7YZZQX17BSYNSB0AQ51
-      created_at: 2026-02-27T00:42:34.847Z
+    - _ulid: 01KJE8R7ZBR8G0A02J40MD0M4G
+      created_at: 2026-02-27T00:42:34.860Z
       author: Jacob Chapel
-      content: "Added regression coverage: tests/core-skill-install.test.ts now checks codex platform in
-        installed core metadata, render path after install-core, auto-detected codex rendering via
-        CODEX_THREAD_ID, and forced codex rendering via --platform codex under claude env. Verified
-        with vitest runs for core-skill-install, enhanced-setup, core-skill-update, and
-        cross-platform-robustness."
+      content: "Implemented install-core platform targeting (2026-02-27): added --platform
+        <claude-code|codex> option to kspec skill install-core. Without override, platform now
+        auto-detects from agent env (codex-cli -> codex, otherwise claude-code) for
+        backward-compatible default behavior. Core skills are rendered immediately to resolved
+        platform during install-core, so --platform codex writes .agents/skills/kspec-*/SKILL.md
+        independent of env detection."
       supersedes: null
   todos: []
 - _ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
