@@ -63509,7 +63509,17 @@
     - install-core
   vcs_refs: []
   created_at: 2026-02-27T00:18:22.197Z
-  notes: []
+  notes:
+    - _ulid: 01KJE86X9X7XWBQ87BRE6T0KMC
+      created_at: 2026-02-27T00:33:06.877Z
+      author: Jacob Chapel
+      content: "Investigation (2026-02-27): reproduced codex gap in this repo. kspec setup --dry-run
+        --json (detected codex-cli high confidence) reports Render skills: 11 plugin-provided with
+        no rendered skill IDs, and kspec skill render --json shows only claude-code plugin-provided
+        skips. templates/skills/manifest.yaml currently marks all core skills as claude-code only.
+        Because renderSkillsForSetup iterates skill.platforms, codex renderer is never invoked for
+        core skills."
+      supersedes: null
   todos: []
 - _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
   slugs: []
