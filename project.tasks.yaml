@@ -63498,7 +63498,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -63521,6 +63521,7 @@
         core skills."
       supersedes: null
   todos: []
+  started_at: 2026-02-27T00:35:16.481Z
 - _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
   slugs: []
   title: Make core skill cross-references platform-aware (Claude/Codex)
