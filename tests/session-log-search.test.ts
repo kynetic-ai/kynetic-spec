@@ -139,6 +139,40 @@ describe('searchSessionEvents', () => {
         data: { reason: 'done' },
       }),
     ].join('\n') + '\n');
+
+    // Session 4: externalized blob pointer payload
+    const s4 = testUlid('SESS', 4);
+    const s4Dir = path.join(sessionsDir, s4);
+    await fs.mkdir(s4Dir);
+    await fs.mkdir(path.join(s4Dir, 'blobs'));
+    await fs.writeFile(path.join(s4Dir, 'session.yaml'), YAML.stringify({
+      id: s4,
+      agent_type: 'claude-agent-acp',
+      status: 'completed',
+      started_at: '2026-02-03T10:00:00.000Z',
+      ended_at: '2026-02-03T10:30:00.000Z',
+    }));
+    await fs.writeFile(
+      path.join(s4Dir, 'blobs', 'search-pointer.blob'),
+      'RESOLVED_ONLY_BLOB_TOKEN',
+    );
+    await fs.writeFile(path.join(s4Dir, 'events.jsonl'), [
+      JSON.stringify({
+        ts: 9000,
+        seq: 0,
+        type: 'tool.result',
+        session_id: s4,
+        data: {
+          output: {
+            path: 'blobs/search-pointer.blob',
+            bytes: 24,
+            sha256: 'test-hash',
+            truncated: true,
+            preview: 'PREVIEW_ONLY_BLOB_TOKEN',
+          },
+        },
+      }),
+    ].join('\n') + '\n');
   });
 
   afterEach(async () => {
@@ -275,6 +309,23 @@ describe('searchSessionEvents', () => {
     expect(results.length).toBe(1);
     expect(results[0].agent_type).toBe('custom-agent');
   });
+
+  it('should search pointer previews by default', async () => {
+    const results = await searchSessionEvents(testDir, 'preview_only_blob_token');
+    expect(results.length).toBe(1);
+    expect(results[0].matches[0].content_excerpt).toContain('PREVIEW_ONLY_BLOB_TOKEN');
+  });
+
+  it('should resolve blob content when resolveBlobs is enabled', async () => {
+    const noResolve = await searchSessionEvents(testDir, 'resolved_only_blob_token');
+    expect(noResolve).toEqual([]);
+
+    const resolved = await searchSessionEvents(testDir, 'resolved_only_blob_token', {
+      resolveBlobs: true,
+    });
+    expect(resolved.length).toBe(1);
+    expect(resolved[0].matches[0].content_excerpt).toContain('RESOLVED_ONLY_BLOB_TOKEN');
+  });
 });
 
 // ─── CLI Integration Tests ──────────────────────────────────────────────────
@@ -386,6 +437,40 @@ describe('kspec session log search (CLI)', () => {
         type: 'session.end',
         session_id: s3,
         data: { reason: 'done' },
+      }),
+    ].join('\n') + '\n');
+
+    // Session 4: event containing externalized blob pointer
+    const s4 = testUlid('SESS', 4);
+    const s4Dir = path.join(sessionsDir, s4);
+    await fs.mkdir(s4Dir);
+    await fs.mkdir(path.join(s4Dir, 'blobs'));
+    await fs.writeFile(path.join(s4Dir, 'session.yaml'), YAML.stringify({
+      id: s4,
+      agent_type: 'claude-agent-acp',
+      status: 'completed',
+      started_at: '2026-02-06T10:00:00.000Z',
+      ended_at: '2026-02-06T10:15:00.000Z',
+    }));
+    await fs.writeFile(
+      path.join(s4Dir, 'blobs', 'cli-search-pointer.blob'),
+      'CLI_RESOLVED_BLOB_TOKEN',
+    );
+    await fs.writeFile(path.join(s4Dir, 'events.jsonl'), [
+      JSON.stringify({
+        ts: 8000,
+        seq: 0,
+        type: 'tool.result',
+        session_id: s4,
+        data: {
+          output: {
+            path: 'blobs/cli-search-pointer.blob',
+            bytes: 23,
+            sha256: 'test-hash',
+            truncated: true,
+            preview: 'CLI_PREVIEW_BLOB_TOKEN',
+          },
+        },
       }),
     ].join('\n') + '\n');
   });
@@ -565,6 +650,29 @@ describe('kspec session log search (CLI)', () => {
   it('should exit with code 0 when no matches found', () => {
     const result = kspec('session log search nonexistent', tempDir);
     expect(result.exitCode).toBe(0);
+  });
+
+  it('should search pointer preview content by default', () => {
+    const results = kspecJson<SessionSearchResult[]>(
+      'session log search cli_preview_blob_token',
+      tempDir,
+    );
+    expect(results.length).toBe(1);
+  });
+
+  it('should resolve blob content when --resolve-blobs is set', () => {
+    const noResolve = kspecJson<SessionSearchResult[]>(
+      'session log search cli_resolved_blob_token',
+      tempDir,
+    );
+    expect(noResolve).toEqual([]);
+
+    const resolved = kspecJson<SessionSearchResult[]>(
+      'session log search cli_resolved_blob_token --resolve-blobs',
+      tempDir,
+    );
+    expect(resolved.length).toBe(1);
+    expect(resolved[0].matches[0].content_excerpt).toContain('CLI_RESOLVED_BLOB_TOKEN');
   });
 
   // AC: @trait-semantic-exit-codes ac-6 - Invalid limit handling (exit code 2 = USAGE_ERROR)

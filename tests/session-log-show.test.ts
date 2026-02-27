@@ -424,6 +424,10 @@ describe('kspec session log show (CLI)', () => {
       started_at: '2026-01-15T10:00:00.000Z',
       ended_at: '2026-01-15T11:30:00.000Z',
     }));
+    const blobRelPath = 'blobs/session-show-output.blob';
+    const blobContent = 'FULL_BLOB_CONTENT_FOR_SHOW_RESOLUTION';
+    await fs.mkdir(path.join(s1Dir, 'blobs'), { recursive: true });
+    await fs.writeFile(path.join(s1Dir, blobRelPath), blobContent, 'utf-8');
     await fs.writeFile(path.join(s1Dir, 'events.jsonl'), [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId1, data: { iteration: 1 } }),
       JSON.stringify({
@@ -439,7 +443,22 @@ describe('kspec session log show (CLI)', () => {
       }),
       JSON.stringify({ ts: 3000, seq: 2, type: 'prompt.sent', session_id: sessionId1, data: { phase: 'task-work', iteration: 1, prompt: 'Continue the task' } }),
       JSON.stringify({ ts: 4000, seq: 3, type: 'tool.call', session_id: sessionId1, data: { iteration: 1, tool: 'Read' } }),
-      JSON.stringify({ ts: 5000, seq: 4, type: 'session.end', session_id: sessionId1, data: { reason: 'completed' } }),
+      JSON.stringify({
+        ts: 4500,
+        seq: 4,
+        type: 'tool.result',
+        session_id: sessionId1,
+        data: {
+          output: {
+            path: blobRelPath,
+            bytes: blobContent.length,
+            sha256: 'test-hash',
+            truncated: true,
+            preview: 'PREVIEW_ONLY_SHOW',
+          },
+        },
+      }),
+      JSON.stringify({ ts: 5000, seq: 5, type: 'session.end', session_id: sessionId1, data: { reason: 'completed' } }),
     ].join('\n') + '\n');
     await fs.writeFile(path.join(s1Dir, 'context-iter-1.json'), JSON.stringify({ focus: 'test focus', ready_tasks: [] }));
 
@@ -522,7 +541,7 @@ describe('kspec session log show (CLI)', () => {
       tempDir,
     );
     expect(detail.events).toBeDefined();
-    expect(detail.events!.length).toBe(5);
+    expect(detail.events!.length).toBe(6);
   });
 
   // AC: @session-log-show ac-4
@@ -555,8 +574,8 @@ describe('kspec session log show (CLI)', () => {
     );
     expect(detail.events).toBeDefined();
     expect(detail.events!.length).toBe(2);
-    // Should be the last 2 events (tool.call and session.end)
-    expect(detail.events![0].type).toBe('tool.call');
+    // Should be the last 2 events (tool.result and session.end)
+    expect(detail.events![0].type).toBe('tool.result');
     expect(detail.events![1].type).toBe('session.end');
   });
 
@@ -680,6 +699,46 @@ describe('kspec session log show (CLI)', () => {
     );
     expect(detail.events).toBeDefined();
     expect(detail.events!.length).toBe(1);
+  });
+
+  it('should keep blob pointer previews by default in --events JSON output', () => {
+    const detail = kspecJson<SessionLogDetail & {
+      events?: Array<{ type: string; data: Record<string, unknown> }>;
+    }>(
+      `session log show ${sessionId1} --events`,
+      tempDir,
+    );
+    const toolResult = detail.events!.find((e) => e.type === 'tool.result');
+    expect(toolResult).toBeDefined();
+    const output = toolResult!.data.output as {
+      preview?: string;
+      content?: string;
+    };
+    expect(output.preview).toBe('PREVIEW_ONLY_SHOW');
+    expect(output.content).toBeUndefined();
+  });
+
+  it('should resolve blob content on demand with --resolve-blobs', () => {
+    const detail = kspecJson<SessionLogDetail & {
+      events?: Array<{ type: string; data: Record<string, unknown> }>;
+    }>(
+      `session log show ${sessionId1} --events --resolve-blobs`,
+      tempDir,
+    );
+    const toolResult = detail.events!.find((e) => e.type === 'tool.result');
+    expect(toolResult).toBeDefined();
+    const output = toolResult!.data.output as {
+      preview?: string;
+      content?: string;
+    };
+    expect(output.preview).toBe('PREVIEW_ONLY_SHOW');
+    expect(output.content).toBe('FULL_BLOB_CONTENT_FOR_SHOW_RESOLUTION');
+  });
+
+  it('should warn when --resolve-blobs is used without --events', () => {
+    const result = kspec(`session log show ${sessionId1} --resolve-blobs`, tempDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain('--resolve-blobs has no effect without --events');
   });
 
   // Show active session

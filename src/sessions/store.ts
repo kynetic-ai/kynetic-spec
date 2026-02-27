@@ -15,6 +15,7 @@
 import * as fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import * as path from "node:path";
+import { createHash, randomUUID } from "node:crypto";
 import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import * as YAML from "yaml";
 import {
@@ -35,6 +36,13 @@ const SESSIONS_DIR = "sessions";
 const METADATA_FILE = "session.yaml";
 const EVENTS_FILE = "events.jsonl";
 const BUDGET_FILE = "budget.json";
+const BLOBS_DIR = "blobs";
+
+// Event persistence guardrails: keep single-line events bounded in size while
+// preserving full payloads via externalized blob files.
+const EVENT_LINE_MAX_BYTES = 256 * 1024;
+const EVENT_FIELD_EXTERNALIZE_BYTES = 16 * 1024;
+const EVENT_PREVIEW_MAX_BYTES = 512;
 
 // ─── Path Helpers ────────────────────────────────────────────────────────────
 
@@ -95,6 +103,13 @@ export function getSessionBudgetPath(
   sessionId: string,
 ): string {
   return path.join(getSessionDir(specDir, sessionId), BUDGET_FILE);
+}
+
+/**
+ * Get the path to a session's blob directory.
+ */
+export function getSessionBlobDir(specDir: string, sessionId: string): string {
+  return path.join(getSessionDir(specDir, sessionId), BLOBS_DIR);
 }
 
 // ─── Session CRUD ────────────────────────────────────────────────────────────
@@ -354,6 +369,259 @@ export async function closeSession(
 // ─── Event Storage ───────────────────────────────────────────────────────────
 
 /**
+ * Pointer stored in events.jsonl when payload content is externalized.
+ *
+ * AC: @session-events ac-9
+ */
+export interface SessionBlobPointer {
+  /** Relative path from session dir (for example blobs/<file>) */
+  path: string;
+  /** UTF-8 byte length of the externalized payload */
+  bytes: number;
+  /** SHA-256 hash of externalized content */
+  sha256: string;
+  /** Always true for externalized content */
+  truncated: true;
+  /** Bounded preview stored inline for fast inspection/search */
+  preview: string;
+}
+
+/**
+ * Blob pointer with resolved full payload content.
+ */
+interface ResolvedSessionBlobPointer extends SessionBlobPointer {
+  content: string;
+}
+
+interface BlobWriteContext {
+  blobDir: string;
+  ensuredDir: boolean;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function isSessionBlobPointer(value: unknown): value is SessionBlobPointer {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.path === "string" &&
+    typeof value.bytes === "number" &&
+    typeof value.sha256 === "string" &&
+    value.truncated === true &&
+    typeof value.preview === "string"
+  );
+}
+
+function stringifyPayload(value: unknown): string {
+  if (typeof value === "string") return value;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function payloadBytes(value: unknown): number {
+  return Buffer.byteLength(stringifyPayload(value), "utf-8");
+}
+
+function toPreview(content: string): string {
+  const totalBytes = Buffer.byteLength(content, "utf-8");
+  if (totalBytes <= EVENT_PREVIEW_MAX_BYTES) {
+    return content;
+  }
+
+  let preview = "";
+  let usedBytes = 0;
+  for (const char of content) {
+    const charBytes = Buffer.byteLength(char, "utf-8");
+    if (usedBytes + charBytes > EVENT_PREVIEW_MAX_BYTES) break;
+    preview += char;
+    usedBytes += charBytes;
+  }
+
+  return `${preview}...`;
+}
+
+function normalizeFieldLabel(pathSegments: string[]): string {
+  const joined = pathSegments.length > 0 ? pathSegments.join("-") : "event-data";
+  const cleaned = joined
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 48);
+  return cleaned || "event-data";
+}
+
+function shouldExternalizeField(pathSegments: string[], value: unknown): boolean {
+  if (value === null || value === undefined) return false;
+
+  const keyPath = pathSegments.join(".");
+  if (keyPath === "update.rawOutput") {
+    return payloadBytes(value) > EVENT_FIELD_EXTERNALIZE_BYTES;
+  }
+  if (
+    keyPath === "update._meta.claudeCode.toolResponse.stdout" ||
+    keyPath === "update._meta.claudeCode.toolResponse.stderr"
+  ) {
+    return payloadBytes(value) > EVENT_FIELD_EXTERNALIZE_BYTES;
+  }
+  if (pathSegments[pathSegments.length - 1] === "text") {
+    const hasChunkContext =
+      pathSegments.includes("content") ||
+      pathSegments.includes("chunk") ||
+      pathSegments.includes("delta");
+    if (hasChunkContext) {
+      return payloadBytes(value) > EVENT_FIELD_EXTERNALIZE_BYTES;
+    }
+  }
+  return false;
+}
+
+async function createBlobPointer(
+  specDir: string,
+  sessionId: string,
+  seq: number,
+  pathSegments: string[],
+  value: unknown,
+  context: BlobWriteContext,
+): Promise<SessionBlobPointer> {
+  const content = stringifyPayload(value);
+  const bytes = Buffer.byteLength(content, "utf-8");
+  const sha256 = createHash("sha256").update(content).digest("hex");
+  if (!context.ensuredDir) {
+    await fsPromises.mkdir(context.blobDir, { recursive: true });
+    context.ensuredDir = true;
+  }
+
+  const fieldLabel = normalizeFieldLabel(pathSegments);
+  const fileName = `${String(seq).padStart(6, "0")}-${fieldLabel}-${randomUUID()}.blob`;
+  const relativePath = path.posix.join(BLOBS_DIR, fileName);
+  const absolutePath = path.join(getSessionDir(specDir, sessionId), relativePath);
+  await fsPromises.writeFile(absolutePath, content, "utf-8");
+
+  return {
+    path: relativePath,
+    bytes,
+    sha256,
+    truncated: true,
+    preview: toPreview(content),
+  };
+}
+
+async function externalizeOversizedPayloads(
+  specDir: string,
+  sessionId: string,
+  seq: number,
+  value: unknown,
+  pathSegments: string[],
+  context: BlobWriteContext,
+): Promise<unknown> {
+  if (isSessionBlobPointer(value)) {
+    return value;
+  }
+
+  if (shouldExternalizeField(pathSegments, value)) {
+    return createBlobPointer(specDir, sessionId, seq, pathSegments, value, context);
+  }
+
+  if (Array.isArray(value)) {
+    return Promise.all(
+      value.map((entry, idx) =>
+        externalizeOversizedPayloads(specDir, sessionId, seq, entry, [
+          ...pathSegments,
+          String(idx),
+        ], context),
+      ),
+    );
+  }
+
+  if (isRecord(value)) {
+    const next: Record<string, unknown> = {};
+    for (const [key, child] of Object.entries(value)) {
+      next[key] = await externalizeOversizedPayloads(
+        specDir,
+        sessionId,
+        seq,
+        child,
+        [...pathSegments, key],
+        context,
+      );
+    }
+    return next;
+  }
+
+  return value;
+}
+
+function resolveBlobAbsolutePath(
+  specDir: string,
+  sessionId: string,
+  relativePath: string,
+): string | null {
+  const sessionDir = path.resolve(getSessionDir(specDir, sessionId));
+  const absolutePath = path.resolve(sessionDir, relativePath);
+  if (
+    absolutePath === sessionDir ||
+    absolutePath.startsWith(`${sessionDir}${path.sep}`)
+  ) {
+    return absolutePath;
+  }
+  return null;
+}
+
+async function resolveBlobPointer(
+  specDir: string,
+  sessionId: string,
+  pointer: SessionBlobPointer,
+): Promise<ResolvedSessionBlobPointer> {
+  const absolutePath = resolveBlobAbsolutePath(specDir, sessionId, pointer.path);
+  if (!absolutePath) {
+    return { ...pointer, content: pointer.preview };
+  }
+
+  try {
+    const content = await fsPromises.readFile(absolutePath, "utf-8");
+    return { ...pointer, content };
+  } catch {
+    return { ...pointer, content: pointer.preview };
+  }
+}
+
+/**
+ * Resolve all blob pointers in a value tree to include full payload content.
+ *
+ * Default flows keep compact pointer objects (preview-only). This helper powers
+ * explicit on-demand blob resolution in session log commands.
+ */
+export async function resolveSessionBlobPointers(
+  specDir: string,
+  sessionId: string,
+  value: unknown,
+): Promise<unknown> {
+  if (isSessionBlobPointer(value)) {
+    return resolveBlobPointer(specDir, sessionId, value);
+  }
+
+  if (Array.isArray(value)) {
+    return Promise.all(
+      value.map((entry) => resolveSessionBlobPointers(specDir, sessionId, entry)),
+    );
+  }
+
+  if (isRecord(value)) {
+    const next: Record<string, unknown> = {};
+    for (const [key, child] of Object.entries(value)) {
+      next[key] = await resolveSessionBlobPointers(specDir, sessionId, child);
+    }
+    return next;
+  }
+
+  return value;
+}
+
+/**
  * Get the current event count for a session (for seq assignment).
  *
  * @param specDir - The .kspec directory path
@@ -419,13 +687,54 @@ export async function appendEvent(
     data: input.data,
   };
 
+  // AC: @session-events ac-8, ac-9 - Externalize oversized payload fields
+  // before writing to events.jsonl.
+  const externalizedData = await externalizeOversizedPayloads(
+    specDir,
+    input.session_id,
+    seq,
+    event.data,
+    [],
+    {
+      blobDir: getSessionBlobDir(specDir, input.session_id),
+      ensuredDir: false,
+    },
+  );
+
+  const eventWithGuardrails: SessionEvent = {
+    ...event,
+    data: externalizedData,
+  };
+
   // Validate event
-  const validated = SessionEventSchema.parse(event);
+  let validated = SessionEventSchema.parse(eventWithGuardrails);
+
+  // Event-line safety cap: if a single JSONL line is still too large after
+  // targeted field externalization, externalize the entire data payload.
+  let line = JSON.stringify(validated);
+  if (Buffer.byteLength(line, "utf-8") > EVENT_LINE_MAX_BYTES) {
+    const blobContext: BlobWriteContext = {
+      blobDir: getSessionBlobDir(specDir, input.session_id),
+      ensuredDir: false,
+    };
+    const fullDataPointer = await createBlobPointer(
+      specDir,
+      input.session_id,
+      seq,
+      [],
+      validated.data,
+      blobContext,
+    );
+    validated = SessionEventSchema.parse({
+      ...validated,
+      data: fullDataPointer,
+    });
+    line = JSON.stringify(validated);
+  }
 
   // AC: @session-events ac-3 - Use synchronous append for crash safety
   // This ensures the line is fully written before returning
-  const line = `${JSON.stringify(validated)}\n`;
-  fs.appendFileSync(eventsPath, line, "utf-8");
+  fs.appendFileSync(eventsPath, `${line}\n`, "utf-8");
 
   return validated;
 }
@@ -1495,6 +1804,8 @@ export interface SearchOptions {
   agentType?: string;
   /** Maximum total matches to return (default: 50) */
   limit?: number;
+  /** Resolve blob pointers and search full payload content */
+  resolveBlobs?: boolean;
 }
 
 /**
@@ -1560,6 +1871,7 @@ export async function searchSessionEvents(
   const rawLimit = options.limit ?? 50;
   const limit = Number.isNaN(rawLimit) || rawLimit <= 0 ? 50 : rawLimit;
   const lowerPattern = pattern.toLowerCase();
+  const resolveBlobs = options.resolveBlobs ?? false;
 
   // Get all session summaries for metadata filtering
   const allSummaries = await getAllSessionLogSummaries(specDir);
@@ -1603,8 +1915,9 @@ export async function searchSessionEvents(
     for (const line of lines) {
       if (totalMatches >= limit) break;
 
-      // Quick substring pre-filter before parsing JSON
-      if (!line.toLowerCase().includes(lowerPattern)) continue;
+      // Quick substring pre-filter before parsing JSON.
+      // Disabled when resolving blobs because full content lives outside line.
+      if (!resolveBlobs && !line.toLowerCase().includes(lowerPattern)) continue;
 
       try {
         const event = JSON.parse(line);
@@ -1624,8 +1937,13 @@ export async function searchSessionEvents(
           }
         }
 
-        // Verify match in stringified data (not just line, in case pattern appears in metadata)
-        const dataStr = JSON.stringify(event.data);
+        const searchableData = resolveBlobs
+          ? await resolveSessionBlobPointers(specDir, summary.id, event.data)
+          : event.data;
+
+        // Verify match in stringified data (not just line, in case pattern
+        // appears in metadata)
+        const dataStr = JSON.stringify(searchableData);
         if (!dataStr.toLowerCase().includes(lowerPattern)) continue;
 
         // AC: @session-log-search ac-4 - Create match with excerpt
@@ -1633,7 +1951,7 @@ export async function searchSessionEvents(
           session_id: summary.id,
           timestamp: event.ts,
           event_type: event.type,
-          content_excerpt: extractContentExcerpt(event.data, pattern, 200),
+          content_excerpt: extractContentExcerpt(searchableData, pattern, 200),
         });
         totalMatches++;
       } catch {

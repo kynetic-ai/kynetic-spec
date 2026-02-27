@@ -25,6 +25,7 @@ import {
   computeTimePeriodStats,
   searchSessionEvents,
   deduplicatePhasedToolCalls,
+  resolveSessionBlobPointers,
 } from "../../../sessions/store.js";
 import type { SessionEvent } from "../../../sessions/types.js";
 import { SessionStatusSchema } from "../../../sessions/types.js";
@@ -34,7 +35,7 @@ import {
 } from "../../../utils/index.js";
 import { isObject } from "../../../acp/types.js";
 import { EXIT_CODES } from "../../exit-codes.js";
-import { error, output } from "../../output.js";
+import { error, output, warn } from "../../output.js";
 
 // ─── Shared Helpers ─────────────────────────────────────────────────────────
 
@@ -271,6 +272,7 @@ interface SessionLogShowOptions {
   type?: string;
   limit?: string;
   context?: string;
+  resolveBlobs?: boolean;
 }
 
 /**
@@ -463,6 +465,10 @@ export async function sessionLogShowAction(
       process.exit(EXIT_CODES.NOT_FOUND);
     }
 
+    if (options.resolveBlobs && !options.events) {
+      warn("--resolve-blobs has no effect without --events; showing metadata only.");
+    }
+
     // AC: @session-log-show ac-3, ac-4, ac-5 - Event timeline
     let events: SessionEvent[] | null = null;
     if (options.events) {
@@ -482,6 +488,19 @@ export async function sessionLogShowAction(
         if (!Number.isNaN(limit) && limit > 0) {
           allEvents = allEvents.slice(-limit);
         }
+      }
+
+      if (options.resolveBlobs) {
+        allEvents = await Promise.all(
+          allEvents.map(async (event) => ({
+            ...event,
+            data: await resolveSessionBlobPointers(
+              ctx.specDir,
+              sessionId,
+              event.data,
+            ),
+          })),
+        );
       }
 
       events = allEvents;
@@ -691,6 +710,7 @@ interface SessionLogSearchOptions {
   since?: string;
   agent?: string;
   limit?: string;
+  resolveBlobs?: boolean;
 }
 
 /**
@@ -768,6 +788,7 @@ export async function sessionLogSearchAction(
       sinceDate: sinceDate || undefined,
       agentType: options.agent,
       limit,
+      resolveBlobs: options.resolveBlobs,
     });
 
     // AC: @session-log-search ac-6 - No matches found message
