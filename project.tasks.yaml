@@ -63267,6 +63267,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #568. Unified setup/setup-status agent detection via shared
+    src/parser/agent-detection.ts, with CODEX_THREAD_ID and CODEX_SANDBOX high-confidence Codex
+    detection plus medium-confidence CODEX_CI/CODEX_MANAGED_BY_NPM fallback; added regression
+    coverage for CODEX_THREAD_ID+GH_TOKEN precedence and setup/status consistency. Infra task
+    (spec_ref null), targeted validation and CI test shards passed."
   depends_on: []
   context: []
   priority: 2
@@ -63279,6 +63284,7 @@
   created_at: 2026-02-26T23:17:00.000Z
   started_at: 2026-02-27T00:08:51.708Z
   submitted_at: 2026-02-27T00:09:04.801Z
+  completed_at: 2026-02-27T00:20:52.197Z
   notes:
     - _ulid: 01KJE5NK4CTQFR2ZWNN55P4N2Q
       created_at: 2026-02-26T23:48:42.252Z
@@ -63322,12 +63328,6 @@
         PR #568."
       supersedes: null
   todos: []
-  completed_at: 2026-02-27T00:20:52.197Z
-  closed_reason: "Merged in PR #568. Unified setup/setup-status agent detection via shared
-    src/parser/agent-detection.ts, with CODEX_THREAD_ID and CODEX_SANDBOX high-confidence Codex
-    detection plus medium-confidence CODEX_CI/CODEX_MANAGED_BY_NPM fallback; added regression
-    coverage for CODEX_THREAD_ID+GH_TOKEN precedence and setup/status consistency. Infra task
-    (spec_ref null), targeted validation and CI test shards passed."
 - _ulid: 01KJE46AQZHKVQMVWWCWKGH2P3
   slugs: []
   title: Make git root/shadow detection resilient to restricted runtimes
@@ -63498,5 +63498,53 @@
     - install-core
   vcs_refs: []
   created_at: 2026-02-27T00:18:22.197Z
+  notes: []
+  todos: []
+- title: Make core skill cross-references platform-aware (Claude/Codex)
+  description: >-
+    Core skill content currently uses Claude-style invocation references like , , etc. In Codex
+    environments this is ambiguous/non-native and can mislead users.
+
+
+    Decision needed:
+
+    - Option A: maintain separate skill variants per platform (e.g., Codex-specific SKILL.md
+    variants).
+
+    - Option B: keep shared skill content but express cross-references in a platform-neutral or
+    multi-platform form (e.g., include both Claude and Codex invocation forms, such as  and ).
+
+
+    Scope for follow-up implementation:
+
+    - Define canonical invocation guidance for each supported platform.
+
+    - Update core skill templates to use platform-aware cross-references.
+
+    - Ensure rendered outputs preserve correct guidance per platform renderer.
+
+    - Add tests to prevent regressions (e.g., no Claude-only invocation syntax in Codex-rendered
+    core skills unless explicitly dual-formatted).
+
+
+    Out of scope for this tracking task creation: no implementation changes now.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - skills
+    - codex
+    - docs
+    - platform
+  depends_on: []
+  _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-27T00:23:23.629Z
   notes: []
   todos: []
