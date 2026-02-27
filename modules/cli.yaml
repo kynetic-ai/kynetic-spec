@@ -3285,11 +3285,11 @@ features:
                 when: prompts are rendered for worker or reviewer roles
                 then: portable references resolve to adapter-appropriate invocation strings using known skill origin
                   metadata
-              - id: ac-5
-                given: ralph skill config still uses legacy slash-style invocation strings
-                when: prompts are rendered for Codex adapters
-                then: core invocations are normalized to Codex syntax for backward compatibility (for example
-                  /kspec:task-work becomes $kspec-task-work)
+              - id: ac-1
+                given: ralph worker adapter targets Claude-family harness
+                when: the task-work prompt is built
+                then: task-work and reflect invocations use slash-style syntax (for example /kspec:task-work loop
+                  and /kspec:reflect loop)
             status:
               maturity: draft
               implementation: in_progress
