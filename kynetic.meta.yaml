@@ -7072,4 +7072,16 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KJEYQY32N7Q062D91P3W34ST
+    _type: skill
+    id: release
+    name: release
+    description: Create versioned releases - bump version via PR, tag, create GitHub release. CI
+      publishes to npm.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
