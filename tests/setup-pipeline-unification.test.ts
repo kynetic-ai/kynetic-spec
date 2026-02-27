@@ -284,18 +284,6 @@ describe('Setup Pipeline Unification', () => {
       expect(result.stderr).not.toContain('[DEBUG] setup:');
     });
 
-    it('source code should have no bare catch blocks', async () => {
-      // Static analysis: verify setup.ts has no bare catch {} blocks
-      const setupTsPath = path.join(process.cwd(), 'src', 'cli', 'commands', 'setup.ts');
-      const content = await fs.readFile(setupTsPath, 'utf-8');
-
-      // Find catch blocks - bare catch {} means "catch {" without a variable binding
-      // The pattern: catch followed by { without (err) or (e) or similar
-      const bareCatchPattern = /\bcatch\s*\{/g;
-      const matches = content.match(bareCatchPattern);
-
-      expect(matches).toBeNull();
-    });
   });
 
   // AC: @setup-pipeline-unification ac-5

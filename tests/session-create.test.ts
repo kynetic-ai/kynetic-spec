@@ -32,6 +32,7 @@ import {
 } from "../src/sessions/store.js";
 import type { SessionMetadataInput } from "../src/sessions/types.js";
 import { resolveAdapter } from "../src/agents/adapters.js";
+import { EXIT_CODES } from "../src/cli/exit-codes.js";
 import {
   kspec,
   kspecJson,
@@ -1268,15 +1269,14 @@ describe("session create CLI", () => {
     expect(result.agent_type).toBe("claude-code");
   });
 
-  // AC: @trait-semantic-exit-codes ac-8 - exit codes documented
-  // This is a structural test — verifying the code has proper comments
-  it("should have exit code documentation in action handler", async () => {
-    const content = await fs.readFile(
-      path.join(__dirname, "..", "src", "cli", "commands", "session", "create.ts"),
-      "utf-8",
+  // AC: @trait-semantic-exit-codes ac-8 - documented exit code behavior
+  it("should return USAGE_ERROR for invalid session create input", () => {
+    const result = kspec(
+      "session create --agent-type test --budget abc",
+      testDir,
+      { expectFail: true },
     );
-    // Verify exit code documentation comment exists
-    expect(content).toContain("Exit codes documented per @trait-semantic-exit-codes ac-8");
+    expect(result.exitCode).toBe(EXIT_CODES.USAGE_ERROR);
   });
 
   // AC: @trait-json-output ac-4 - references use @ prefix consistently
