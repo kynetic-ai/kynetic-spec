@@ -311,8 +311,19 @@ export function contentsEqual(a: string, b: string): boolean {
 /**
  * Recursively copy a directory
  */
-export async function copyDirectory(src: string, dest: string): Promise<void> {
+type FileContentTransform = (relativePath: string, content: string) => string;
+
+function isMarkdownFile(filePath: string): boolean {
+  return filePath.endsWith(".md");
+}
+
+export async function copyDirectory(
+  src: string,
+  dest: string,
+  options?: { baseSrc?: string; transformFileContent?: FileContentTransform }
+): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
+  const baseSrc = options?.baseSrc || src;
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
@@ -320,9 +331,17 @@ export async function copyDirectory(src: string, dest: string): Promise<void> {
 
     if (entry.isDirectory()) {
       await fs.mkdir(destPath, { recursive: true });
-      await copyDirectory(srcPath, destPath);
+      await copyDirectory(srcPath, destPath, { ...options, baseSrc });
     } else {
-      await fs.copyFile(srcPath, destPath);
+      const transformFileContent = options?.transformFileContent;
+      if (transformFileContent && isMarkdownFile(srcPath)) {
+        const srcContent = await fs.readFile(srcPath, "utf-8");
+        const relativePath = path.relative(baseSrc, srcPath).replaceAll(path.sep, "/");
+        const transformed = transformFileContent(relativePath, srcContent);
+        await fs.writeFile(destPath, transformed, "utf-8");
+      } else {
+        await fs.copyFile(srcPath, destPath);
+      }
     }
   }
 }
@@ -416,9 +435,18 @@ export async function checkSkillDrift(
  * Recursively check if two directories have the same contents
  */
 export async function directoriesEqual(src: string, dest: string): Promise<boolean> {
+  return directoriesEqualWithTransform(src, dest);
+}
+
+async function directoriesEqualWithTransform(
+  src: string,
+  dest: string,
+  options?: { baseSrc?: string; transformFileContent?: FileContentTransform }
+): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src, { withFileTypes: true });
     const destEntries = await fs.readdir(dest, { withFileTypes: true });
+    const baseSrc = options?.baseSrc || src;
 
     // Different number of entries = not equal
     if (srcEntries.length !== destEntries.length) {
@@ -438,11 +466,16 @@ export async function directoriesEqual(src: string, dest: string): Promise<boole
       const destPath = path.join(dest, srcEntry.name);
 
       if (srcEntry.isDirectory() && destEntry.isDirectory()) {
-        if (!(await directoriesEqual(srcPath, destPath))) {
+        if (!(await directoriesEqualWithTransform(srcPath, destPath, { ...options, baseSrc }))) {
           return false;
         }
       } else if (srcEntry.isFile() && destEntry.isFile()) {
-        const srcContent = await fs.readFile(srcPath, "utf-8");
+        let srcContent = await fs.readFile(srcPath, "utf-8");
+        const transformFileContent = options?.transformFileContent;
+        if (transformFileContent && isMarkdownFile(srcPath)) {
+          const relativePath = path.relative(baseSrc, srcPath).replaceAll(path.sep, "/");
+          srcContent = transformFileContent(relativePath, srcContent);
+        }
         const destContent = await fs.readFile(destPath, "utf-8");
         if (!contentsEqual(srcContent, destContent)) {
           return false;
@@ -474,7 +507,8 @@ const SUPPORTING_DIRS = ["references", "scripts", "assets", "docs"] as const;
 async function copySupportingDirectories(
   sourceSkillDir: string,
   targetSkillDir: string,
-  dryRun: boolean
+  dryRun: boolean,
+  transformFileContent?: FileContentTransform
 ): Promise<Record<string, "created" | "updated" | "unchanged" | "skipped">> {
   const results: Record<string, "created" | "updated" | "unchanged" | "skipped"> = {};
 
@@ -502,7 +536,10 @@ async function copySupportingDirectories(
         results[dirName] = "created";
       } else {
         // Compare directories
-        const equal = await directoriesEqual(sourceDir, targetDir);
+        const equal = await directoriesEqualWithTransform(sourceDir, targetDir, {
+          baseSrc: sourceSkillDir,
+          transformFileContent,
+        });
         results[dirName] = equal ? "unchanged" : "updated";
       }
 
@@ -512,7 +549,10 @@ async function copySupportingDirectories(
           await fs.rm(targetDir, { recursive: true, force: true });
         }
         await fs.mkdir(targetDir, { recursive: true });
-        await copyDirectory(sourceDir, targetDir);
+        await copyDirectory(sourceDir, targetDir, {
+          baseSrc: sourceSkillDir,
+          transformFileContent,
+        });
       }
     } catch {
       // Source directory doesn't exist
@@ -548,6 +588,7 @@ export async function renderClaudeCodeSkill(
 ): Promise<ClaudeCodeRenderResult> {
   const dryRun = options.dryRun ?? false;
   const storeHash = options.storeHash ?? false;
+  const skillOrigins = await loadSkillOrigins(ctx);
   const targetDir = getRenderedSkillPath(projectRoot, skill.id, skill.origin);
 
   // Core skills are plugin-provided; skip local render
@@ -595,9 +636,15 @@ export async function renderClaudeCodeSkill(
   const contentWithoutFrontmatter = frontmatterMatch
     ? sourceContent.slice(frontmatterMatch[0].length)
     : sourceContent;
+  const transformedBody = resolveSkillReferenceTokens(
+    contentWithoutFrontmatter,
+    "claude-code",
+    skill,
+    skillOrigins
+  );
 
   // AC: @claude-code-renderer ac-1, ac-3 - Build rendered content with frontmatter + verbatim body
-  const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+  const renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${transformedBody}`;
 
   // Check if target exists and compare for idempotency
   let targetExists = false;
@@ -636,7 +683,9 @@ export async function renderClaudeCodeSkill(
   const supportingDirsAction = await copySupportingDirectories(
     sourceSkillDir,
     targetDir,
-    dryRun
+    dryRun,
+    (_relativePath, content) =>
+      resolveSkillReferenceTokens(content, "claude-code", skill, skillOrigins)
   );
 
   // For backward compatibility, also expose docsAction
@@ -828,6 +877,12 @@ interface BaseRenderConfig {
   ) => Promise<{ paths: string[]; contentChanged: boolean }>;
   /** Optional: transform source skill body content before rendering */
   transformBody?: (body: string, skill: LoadedSkill) => string;
+  /** Optional: transform markdown content in supporting directories during copy */
+  transformSupportingFileContent?: (
+    relativePath: string,
+    content: string,
+    skill: LoadedSkill
+  ) => string;
   /** Optional: additional hash computation for drift check */
   getAdditionalDriftContent?: (skillDir: string) => Promise<string | null>;
   /** If true, also write legacy .render-hash for backward compatibility */
@@ -934,7 +989,11 @@ export async function renderSkillBase(
   const supportingDirsAction = await copySupportingDirectories(
     sourceSkillDir,
     targetDir,
-    dryRun
+    dryRun,
+    config.transformSupportingFileContent
+      ? (relativePath, content) =>
+          config.transformSupportingFileContent!(relativePath, content, skill)
+      : undefined
   );
 
   for (const [dirName, dirAction] of Object.entries(supportingDirsAction)) {
@@ -1068,6 +1127,8 @@ export const claudeCodeRenderer: PlatformRenderer = {
       generateFrontmatter,
       transformBody: (body, loadedSkill) =>
         resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
+      transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
+        resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
       writeLegacyHash: true,
     }, this.defaultOutputDir, skill.id);
 
@@ -1203,6 +1264,18 @@ export const codexRenderer: PlatformRenderer = {
       transformBody: (body, loadedSkill) => {
         const tokenResolved = resolveSkillReferenceTokens(
           body,
+          this.platform,
+          loadedSkill,
+          skillOrigins
+        );
+        if (loadedSkill.origin === "core") {
+          return transformLegacyCodexCoreReferences(tokenResolved);
+        }
+        return tokenResolved;
+      },
+      transformSupportingFileContent: (_relativePath, content, loadedSkill) => {
+        const tokenResolved = resolveSkillReferenceTokens(
+          content,
           this.platform,
           loadedSkill,
           skillOrigins

@@ -21,16 +21,24 @@ const PACKAGE_JSON_PATH = path.join(ROOT, "package.json");
 const SKILL_REFERENCE_TOKEN_RE = /\{skill:([a-z0-9][a-z0-9-]*)\}/g;
 
 /** Recursively copy a directory tree (sync). */
-function copyDirSync(src, dest) {
+function copyDirSync(src, dest, options = {}) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
-      copyDirSync(srcPath, destPath);
+      copyDirSync(srcPath, destPath, options);
     } else if (entry.isFile()) {
-      fs.copyFileSync(srcPath, destPath);
+      if (options.transformSkillReferences && entry.name.endsWith(".md")) {
+        const content = fs.readFileSync(srcPath, "utf-8");
+        const transformed = content.replace(SKILL_REFERENCE_TOKEN_RE, (_m, refId) => {
+          return `/kspec:${refId}`;
+        });
+        fs.writeFileSync(destPath, transformed, "utf-8");
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
     }
   }
 }
@@ -128,7 +136,9 @@ function main() {
     for (const dirName of SUPPORTING_DIRS) {
       const srcSubDir = path.join(sourceSkillDir, dirName);
       if (!fs.existsSync(srcSubDir)) continue;
-      copyDirSync(srcSubDir, path.join(targetDir, dirName));
+      copyDirSync(srcSubDir, path.join(targetDir, dirName), {
+        transformSkillReferences: true,
+      });
     }
 
     count++;
