@@ -274,6 +274,16 @@ kspec task set @task-slug --depends-on @other-task
 kspec plan get @plan-slug
 ```
 
+If derived tasks are too generic to execute without chat history, add a structured task note immediately:
+
+```bash
+kspec task note @task-slug "Execution context:
+- Background: why this task exists
+- Scope: concrete boundaries for this task
+- Files: exact files/areas to touch
+- Verification: commands/tests to run"
+```
+
 ## Plan Lifecycle
 
 ```

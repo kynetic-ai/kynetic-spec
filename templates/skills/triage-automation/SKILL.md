@@ -61,6 +61,7 @@ For each task shown:
   - Is the spec appropriate for this task?
   - Are the ACs adequate and testable?
   - Does the task have sufficient context?
+  - Can the task be executed from task data alone (without hidden chat/session context)?
 - If yes: `kspec task set @ref --automation eligible`
 - If no: Fix issues or mark `needs_review` with specific reason
 
