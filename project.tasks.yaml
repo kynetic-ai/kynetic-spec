@@ -63803,6 +63803,7 @@
   tags: []
   vcs_refs: []
   created_at: 2026-02-27T08:09:10.420Z
+  started_at: 2026-02-27T08:09:17.725Z
   notes:
     - _ulid: 01KJF29ZGM26S80GYMP45CGDSY
       created_at: 2026-02-27T08:09:10.420Z
@@ -63828,5 +63829,14 @@
         worker and subagent prompts in the same session, then each prompt uses invocation formatting
         for its own role adapter without cross-role leakage
       supersedes: null
+    - _ulid: 01KJF2HXZJCAATS2P6DYE2RXTM
+      created_at: 2026-02-27T08:13:30.995Z
+      author: Jacob Chapel
+      content: Implemented adapter-aware skill invocation resolution for ralph prompts. Added runtime
+        resolver that maps role adapters to platforms (claude/codex), resolves portable {skill:<id>}
+        references using meta skill origins, and normalizes legacy slash-style core invocations for
+        Codex compatibility. Wired reviewer subagent prompt to use reviewer-resolved skill name and
+        worker prompts to use worker-resolved task-work/reflect names. Added ralph tests for codex
+        normalization, portable token resolution, and per-role formatting isolation.
+      supersedes: null
   todos: []
-  started_at: 2026-02-27T08:09:17.725Z
