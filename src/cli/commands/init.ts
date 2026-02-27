@@ -6,7 +6,6 @@ import {
   getGitRoot,
   initializeShadow,
   isGitRepo,
-  SHADOW_WORKTREE_DIR,
   checkConfigMismatch,
 } from "../../parser/shadow.js";
 import {
@@ -282,14 +281,14 @@ export function registerInitCommand(program: Command): void {
             // AC: @init-setup-integration ac-4 - Without --setup, behavior unchanged
             console.log("\nNext steps:");
             console.log(
-              `  1. Edit ${SHADOW_WORKTREE_DIR}/${slug}.yaml to customize your project`,
+              `  1. Edit ${directoryName}/${slug}.yaml to customize your project`,
             );
             console.log(
-              `  2. Add spec items to ${SHADOW_WORKTREE_DIR}/modules/main.yaml`,
+              `  2. Add spec items to ${directoryName}/modules/main.yaml`,
             );
             console.log("  3. Run `kspec tasks ready` to see available tasks");
             console.log(
-              "\nNote: Spec files live in .kspec/ (gitignored) and commit to kspec-meta branch",
+              `\nNote: Spec files live in ${directoryName}/ (gitignored) and commit to ${branchName} branch`,
             );
             console.log(
               "\nTip: Run `kspec init --setup` or `kspec setup` for full agent integration.",
