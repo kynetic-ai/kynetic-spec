@@ -6420,8 +6420,20 @@ runs:
   - _ulid: 01KJE7VEZ352TM775CWHKMVE8J
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-27T00:26:51.747Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-27T00:26:51.747Z
+        completed_at: 2026-02-27T00:27:37.014Z
+        notes: "Baseline search complete (required first step): ran kspec meta observations list, kspec
+          inbox list, and kspec tasks list. Existing tracking includes many open observations/inbox
+          items plus newly created tasks @01KJE7BX (core skills codex install/render gap) and
+          @01KJE7N3 (platform-aware skill references)."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-27T00:27:37.014Z
+        completed_at: 2026-02-27T00:27:37.014Z
     initiated_by: Jacob Chapel
