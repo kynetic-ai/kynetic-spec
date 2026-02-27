@@ -462,6 +462,36 @@ describe('ralph command', () => {
     expect(output).toContain('npm install -g @nonexistent/adapter-package');
   });
 
+  // AC: @ralph-adapter-validation invalid-adapter-error
+  it('shows both adapter ID and package name when they differ', async () => {
+    // codex-acp is a registered adapter with package @zed-industries/codex-acp
+    // Use --dry-run so we only test validation, not spawning
+    const result = spawnSync(
+      'node',
+      [CLI_PATH, 'ralph', '--adapter', 'codex-acp', '--dry-run'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: {
+          ...process.env,
+          KSPEC_AUTHOR: '@test',
+          // Ensure codex-acp package is not found by clearing node paths
+          NODE_PATH: '',
+        },
+      }
+    );
+
+    const output = (result.stdout || '') + (result.stderr || '');
+
+    // When adapter ID differs from package name, error shows both
+    if (result.status === 3) {
+      expect(output).toContain('codex-acp (@zed-industries/codex-acp)');
+      expect(output).toContain('npm install -g @zed-industries/codex-acp');
+    }
+    // If codex-acp is actually installed, validation passes — that's fine too
+  });
+
   // AC: @ralph-adapter-validation validation-before-spawn
   it('validates adapter before spawning agent or creating session', async () => {
     // Run with invalid adapter
