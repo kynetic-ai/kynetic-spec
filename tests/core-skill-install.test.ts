@@ -276,6 +276,7 @@ describe('Core Skill Installation', () => {
       expect(claudeHelp?.skipCode).toBe('plugin-provided');
     });
 
+    // AC: @new-project-bootstrapping ac-3
     it('should auto-detect codex platform when CODEX_THREAD_ID is present', async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
@@ -297,6 +298,7 @@ describe('Core Skill Installation', () => {
       expect(codexConfig).toContain('kspec-agents.md');
     });
 
+    // AC: @new-project-bootstrapping ac-3
     it('should force codex render path with --platform codex even in claude env', async () => {
       const result = kspecJson<{
         render: { platform: string; source: string };

@@ -335,6 +335,7 @@ describe('kspec setup (enhanced)', () => {
       expect(content).toContain('name: test-skill');
     });
 
+    // AC: @new-project-bootstrapping ac-3
     it('should render core skills to codex output when codex is detected', async () => {
       const result = kspec('setup', tempDir, {
         env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', HOME: tempDir },

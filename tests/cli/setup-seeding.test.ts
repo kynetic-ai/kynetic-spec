@@ -2,7 +2,8 @@
  * Tests for setup seeding (permission and memory seeding)
  *
  * AC: @new-project-bootstrapping ac-1 - permission seeding
- * AC: @new-project-bootstrapping ac-2 - memory seeding
+ * AC: @new-project-bootstrapping ac-2 - Claude memory seeding
+ * AC: @new-project-bootstrapping ac-3 - Codex fallback seeding
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -362,6 +363,7 @@ describe("seedMemory", () => {
     expect(result.message).toContain("no memory writer");
   });
 
+  // AC: @new-project-bootstrapping ac-3
   it("should seed codex project_doc_fallback_filenames with kspec-agents.md", async () => {
     const result = await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
 
@@ -372,6 +374,7 @@ describe("seedMemory", () => {
     expect(configContent).toContain("kspec-agents.md");
   });
 
+  // AC: @new-project-bootstrapping ac-3
   it("should merge codex project_doc_fallback_filenames without clobbering existing entries", async () => {
     const configPath = path.join(tempDir, ".codex", "config.toml");
     await fs.mkdir(path.dirname(configPath), { recursive: true });
@@ -390,6 +393,7 @@ describe("seedMemory", () => {
     expect(content).toContain('model = "gpt-5-codex"');
   });
 
+  // AC: @new-project-bootstrapping ac-3
   it("should skip codex fallback seeding when already configured", async () => {
     await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
     const result = await seedMemory(tempDir, "codex-cli", { homeDir: tempDir });
@@ -398,6 +402,7 @@ describe("seedMemory", () => {
     expect(result.message).toContain("already configured");
   });
 
+  // AC: @new-project-bootstrapping ac-3
   it("should fail safely when codex config.toml is malformed", async () => {
     const configPath = path.join(tempDir, ".codex", "config.toml");
     await fs.mkdir(path.dirname(configPath), { recursive: true });
@@ -410,6 +415,7 @@ describe("seedMemory", () => {
     expect(result.message).toContain("not valid TOML");
   });
 
+  // AC: @new-project-bootstrapping ac-3
   it("should produce no codex config changes in dry-run", async () => {
     const result = await seedMemory(tempDir, "codex-cli", { dryRun: true, homeDir: tempDir });
 

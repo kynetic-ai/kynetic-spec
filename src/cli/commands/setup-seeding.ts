@@ -5,7 +5,8 @@
  * Seeds permission patterns and project memory when running kspec setup on a new project.
  *
  * AC: @new-project-bootstrapping ac-1 - permission seeding
- * AC: @new-project-bootstrapping ac-2 - memory seeding
+ * AC: @new-project-bootstrapping ac-2 - Claude memory seeding
+ * AC: @new-project-bootstrapping ac-3 - Codex project-doc fallback seeding
  */
 
 import * as fs from "node:fs/promises";
@@ -330,7 +331,7 @@ async function getModuleNames(projectDir: string): Promise<string[]> {
 /**
  * Seed project memory for the detected agent platform.
  *
- * AC: @new-project-bootstrapping ac-2
+ * AC: @new-project-bootstrapping ac-2, ac-3
  * - Generates platform-agnostic content, delegates to platform writer
  * - Supports Claude Code memory seed and Codex project doc fallback seed
  * - Other platforms return no-op

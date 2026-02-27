@@ -484,6 +484,7 @@ export function registerSkillInstallCommands(skill: Command): void {
         );
         const marketplaceResult = await registerCorePluginMarketplace({ dryRun });
         const enableResult = await enablePluginInProject(ctx.rootDir, { dryRun });
+        // AC: @new-project-bootstrapping ac-3 - Codex fallback includes kspec-agents.md
         const codexProjectDocsResult = renderTarget.platform === "codex"
           ? await ensureCodexProjectDocFallback("kspec-agents.md", { dryRun })
           : null;
