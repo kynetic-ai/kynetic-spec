@@ -63729,6 +63729,15 @@
     - config
   vcs_refs: []
   created_at: 2026-02-27T06:29:31.187Z
-  notes: []
-  todos: []
   started_at: 2026-02-27T06:34:28.412Z
+  notes:
+    - _ulid: 01KJEWWMCXH1FFB3TX8QZNAYX4
+      created_at: 2026-02-27T06:34:30.173Z
+      author: Jacob Chapel
+      content: "Implemented Codex project_doc_fallback_filenames seeding: added shared
+        src/lib/codex-config.ts helper and wired setup memory seeding + skill install-core codex
+        paths to ensure kspec-agents.md is present idempotently, with invalid TOML safety and
+        dry-run behavior. Added regression coverage in tests/cli/setup-seeding.test.ts,
+        tests/core-skill-install.test.ts, and tests/enhanced-setup.test.ts."
+      supersedes: null
+  todos: []
