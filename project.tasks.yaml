@@ -63787,3 +63787,45 @@
         bcda69ab). This is the concrete reproduction to preserve in tests."
       supersedes: null
   todos: []
+- title: "Implement: Adapter-aware skill invocation formatting for ralph prompts"
+  type: task
+  spec_ref: "@ralph-adapter-aware-skill-invocation"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-adapter-aware-skill-invocation-formatting-for-ralp
+  tags: []
+  depends_on:
+    - "@implement-per-role-adapter-selection-for-ralph-loo"
+  notes:
+    - _ulid: 01KJF29ZGM26S80GYMP45CGDSY
+      created_at: 2026-02-27T08:09:10.420Z
+      author: Jacob Chapel
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Ralph must render skill invocation syntax in prompts based on the adapter role
+        (worker/reviewer). Claude-family adapters use slash syntax; Codex adapters use dollar syntax
+        with core namespacing. Portable {skill:<id>} references should resolve per adapter without
+        requiring duplicate prompt templates.
+
+
+
+        Acceptance Criteria:
+
+        - ac-2: Given ralph worker adapter targets Codex harness, when the task-work prompt is
+        built, then task-work and reflect invocations use dollar-style syntax with core namespacing
+        (for example -task-work loop and -reflect loop)
+
+        - ac-6: Given worker and reviewer adapters target different harnesses, when ralph builds
+        worker and subagent prompts in the same session, then each prompt uses invocation formatting
+        for its own role adapter without cross-role leakage
+      supersedes: null
+  _ulid: 01KJF29ZGMMW4HZ6KX5SCHR7G2
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-27T08:09:10.420Z
+  todos: []
