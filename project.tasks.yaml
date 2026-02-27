@@ -63454,6 +63454,15 @@
         override flag is currently missing in both direct install-core and setup-driven core install
         paths."
       supersedes: null
+    - _ulid: 01KJE8R7YZZQX17BSYNSB0AQ51
+      created_at: 2026-02-27T00:42:34.847Z
+      author: Jacob Chapel
+      content: "Added regression coverage: tests/core-skill-install.test.ts now checks codex platform in
+        installed core metadata, render path after install-core, auto-detected codex rendering via
+        CODEX_THREAD_ID, and forced codex rendering via --platform codex under claude env. Verified
+        with vitest runs for core-skill-install, enhanced-setup, core-skill-update, and
+        cross-platform-robustness."
+      supersedes: null
   todos: []
 - _ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
   slugs: []
