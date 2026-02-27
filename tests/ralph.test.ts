@@ -10,7 +10,11 @@ import * as path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createTranslator } from '../src/ralph/events.js';
 import type { SessionUpdate } from '../src/acp/types.js';
-import { getPromptPlatformForAdapter, resolveRalphSkillInvocation } from '../src/cli/commands/ralph.js';
+import {
+  getPromptPlatformForAdapter,
+  isAdapterPackageAvailable,
+  resolveRalphSkillInvocation
+} from '../src/cli/commands/ralph.js';
 import { CLI_PATH, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
 const MOCK_ACP = path.join(__dirname, 'mocks', 'acp-mock.js');
@@ -2154,6 +2158,62 @@ describe('subagent module', () => {
 
       expect(workerSkill).toBe('$kspec-task-work');
       expect(reviewerSkill).toBe('/kspec:review');
+    });
+  });
+
+  describe('adapter validation probe strategy', () => {
+    // AC: @ralph-adapter-validation valid-adapter-proceeds
+    it('accepts adapters that support --help but not --version (codex-acp pattern)', () => {
+      const calls: string[][] = [];
+      const runner = (_command: string, args: string[]) => {
+        calls.push(args);
+        return { status: args.includes('--help') ? 0 : 2 };
+      };
+
+      const available = isAdapterPackageAvailable('@zed-industries/codex-acp', runner);
+
+      expect(available).toBe(true);
+      // Should succeed on first probe and not continue.
+      expect(calls).toEqual([
+        ['--no-install', '@zed-industries/codex-acp', '--help'],
+      ]);
+    });
+
+    // AC: @ralph-adapter-validation valid-adapter-proceeds
+    it('falls back to --version when --help is unsupported', () => {
+      const calls: string[][] = [];
+      const runner = (_command: string, args: string[]) => {
+        calls.push(args);
+        if (args.includes('--help')) {
+          return { status: 2 };
+        }
+        return { status: args.includes('--version') ? 0 : 2 };
+      };
+
+      const available = isAdapterPackageAvailable('some-adapter', runner);
+
+      expect(available).toBe(true);
+      expect(calls).toEqual([
+        ['--no-install', 'some-adapter', '--help'],
+        ['--no-install', 'some-adapter', '--version'],
+      ]);
+    });
+
+    // AC: @ralph-adapter-validation invalid-adapter-error
+    it('returns false when all probes fail', () => {
+      const calls: string[][] = [];
+      const runner = (_command: string, args: string[]) => {
+        calls.push(args);
+        return { status: 1 };
+      };
+
+      const available = isAdapterPackageAvailable('@nonexistent/adapter', runner);
+
+      expect(available).toBe(false);
+      expect(calls).toEqual([
+        ['--no-install', '@nonexistent/adapter', '--help'],
+        ['--no-install', '@nonexistent/adapter', '--version'],
+      ]);
     });
   });
 

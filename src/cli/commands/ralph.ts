@@ -188,6 +188,7 @@ type RalphPromptPlatform = "claude-code" | "codex" | "unknown";
 type SkillOrigin = LoadedSkill["origin"];
 
 const FALLBACK_CORE_SKILLS = new Set(["task-work", "reflect", "review"]);
+const ADAPTER_VALIDATION_PROBES = [["--help"], ["--version"]];
 
 /**
  * Map adapter IDs to prompt rendering platforms.
@@ -400,25 +401,46 @@ Exit when reflection is complete.
 // ─── Adapter Validation ──────────────────────────────────────────────────────
 
 // AC: @ralph-adapter-validation valid-adapter-proceeds, invalid-adapter-error, validation-before-spawn
+type AdapterValidationRunner = (
+  command: string,
+  args: string[],
+  options: { encoding: "utf-8"; stdio: "pipe" },
+) => { status: number | null };
+
+/**
+ * Check whether an adapter package appears to be installed and executable.
+ * Uses multiple non-installing probes because CLIs differ on supported flags.
+ */
+export function isAdapterPackageAvailable(
+  adapterPackage: string,
+  runner: AdapterValidationRunner = spawnSync,
+): boolean {
+  for (const probeArgs of ADAPTER_VALIDATION_PROBES) {
+    const result = runner(
+      "npx",
+      ["--no-install", adapterPackage, ...probeArgs],
+      {
+        encoding: "utf-8",
+        stdio: "pipe",
+      },
+    );
+
+    if (result.status === 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 /**
  * Validate that the specified ACP adapter package exists.
- * Uses npx --no-install to check both global and local node_modules.
+ * Uses npx --no-install probes to check both global and local node_modules.
  *
  * @throws {Error} Never throws - exits process with code 3 if validation fails
  */
 function validateAdapter(adapterPackage: string): void {
-  // Use npx --no-install with --version to check if package exists
-  // This checks both global and local node_modules, handles scoped packages
-  const result = spawnSync(
-    "npx",
-    ["--no-install", adapterPackage, "--version"],
-    {
-      encoding: "utf-8",
-      stdio: "pipe",
-    },
-  );
-
-  if (result.status !== 0) {
+  if (!isAdapterPackageAvailable(adapterPackage)) {
     error(
       `Adapter package not found: ${adapterPackage}. Install with: npm install -g ${adapterPackage}`,
     );
