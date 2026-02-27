@@ -63613,4 +63613,13 @@
         rendered SKILL.md body. This keeps shared template source while producing codex-native
         invocation guidance."
       supersedes: null
+    - _ulid: 01KJE95CCSKZEN13XVMVPK8RGF
+      created_at: 2026-02-27T00:49:45.369Z
+      author: Jacob Chapel
+      content: "Added regression tests: tests/skill-rendering.test.ts verifies core codex skills render
+        name: kspec-<id> and rewrite /kspec:* references to -*; updated install/setup codex
+        assertions in tests/core-skill-install.test.ts and tests/enhanced-setup.test.ts to expect
+        namespaced codex names. Validation passed across skill-rendering, core-skill-install,
+        enhanced-setup, core-skill-namespace, and core-skill-update suites."
+      supersedes: null
   todos: []
