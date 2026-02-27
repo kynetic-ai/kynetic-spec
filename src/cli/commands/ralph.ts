@@ -6,6 +6,7 @@
  */
 
 import { spawn, spawnSync } from "node:child_process";
+import { createWriteStream, type WriteStream } from "node:fs";
 import * as fs from "node:fs/promises";
 import { createRequire } from "node:module";
 import * as path from "node:path";
@@ -59,6 +60,7 @@ import {
   closeSession,
   createSessionWithBudget,
   getSessionBudgetPath,
+  getSessionDir,
   injectEnvForAdapter,
   isEndLoopRequested,
   removeEnvForAdapter,
@@ -189,6 +191,8 @@ type SkillOrigin = LoadedSkill["origin"];
 
 const FALLBACK_CORE_SKILLS = new Set(["task-work", "reflect", "review"]);
 const ADAPTER_VALIDATION_PROBES = [["--help"], ["--version"]];
+const TERMINAL_PREVIEW_MAX_BYTES = 64 * 1024;
+const TOOL_OUTPUT_DIR = "tool-output";
 
 /**
  * Map adapter IDs to prompt rendering platforms.
@@ -448,6 +452,204 @@ function validateAdapter(adapterPackage: string): void {
   }
 }
 
+interface HandleRequestOptions {
+  yolo: boolean;
+  specDir?: string;
+  sessionId?: string;
+}
+
+interface TerminalRunResult {
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+  stdout_path?: string;
+  stderr_path?: string;
+  stdout_bytes: number;
+  stderr_bytes: number;
+  preview_truncated: boolean;
+}
+
+interface TerminalRunOptions {
+  command: string;
+  cwd: string;
+  timeout: number;
+  toolCallId: string | number;
+  specDir?: string;
+  sessionId?: string;
+  previewMaxBytes?: number;
+}
+
+interface StreamCaptureState {
+  bytes: number;
+  previewBytes: number;
+  previewParts: string[];
+  truncated: boolean;
+  stream?: WriteStream;
+}
+
+function sanitizeToolCallId(toolCallId: string | number): string {
+  const raw = String(toolCallId).trim();
+  if (!raw) {
+    return "tool-call";
+  }
+
+  return raw.replace(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+function updateStreamPreview(
+  state: StreamCaptureState,
+  chunk: Buffer,
+  maxPreviewBytes: number,
+): void {
+  state.bytes += chunk.length;
+  const remaining = maxPreviewBytes - state.previewBytes;
+
+  if (remaining <= 0) {
+    state.truncated = true;
+    return;
+  }
+
+  if (chunk.length > remaining) {
+    state.previewParts.push(chunk.subarray(0, remaining).toString("utf-8"));
+    state.previewBytes += remaining;
+    state.truncated = true;
+    return;
+  }
+
+  state.previewParts.push(chunk.toString("utf-8"));
+  state.previewBytes += chunk.length;
+}
+
+function closeStream(stream?: WriteStream): Promise<void> {
+  if (!stream) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const onError = (err: Error) => {
+      stream.off("finish", onFinish);
+      reject(err);
+    };
+    const onFinish = () => {
+      stream.off("error", onError);
+      resolve();
+    };
+
+    stream.once("error", onError);
+    stream.once("finish", onFinish);
+    stream.end();
+  });
+}
+
+/**
+ * Execute terminal/run request with bounded in-memory preview and streamed
+ * session artifacts for full stdout/stderr retention.
+ */
+export async function runTerminalCommandWithArtifacts(
+  options: TerminalRunOptions,
+): Promise<TerminalRunResult> {
+  const previewMaxBytes = options.previewMaxBytes ?? TERMINAL_PREVIEW_MAX_BYTES;
+  const shouldWriteArtifacts = Boolean(options.specDir && options.sessionId);
+
+  let stdoutPath: string | undefined;
+  let stderrPath: string | undefined;
+  if (shouldWriteArtifacts) {
+    const outputDir = path.join(
+      getSessionDir(options.specDir!, options.sessionId!),
+      TOOL_OUTPUT_DIR,
+    );
+    await fs.mkdir(outputDir, { recursive: true });
+    const safeToolCallId = sanitizeToolCallId(options.toolCallId);
+    stdoutPath = path.join(outputDir, `${safeToolCallId}.stdout.log`);
+    stderrPath = path.join(outputDir, `${safeToolCallId}.stderr.log`);
+  }
+
+  const stdoutState: StreamCaptureState = {
+    bytes: 0,
+    previewBytes: 0,
+    previewParts: [],
+    truncated: false,
+    stream: stdoutPath ? createWriteStream(stdoutPath) : undefined,
+  };
+  const stderrState: StreamCaptureState = {
+    bytes: 0,
+    previewBytes: 0,
+    previewParts: [],
+    truncated: false,
+    stream: stderrPath ? createWriteStream(stderrPath) : undefined,
+  };
+
+  return await new Promise<TerminalRunResult>((resolve, reject) => {
+    let settled = false;
+    const child = spawn(options.command, [], {
+      cwd: options.cwd,
+      shell: true,
+      timeout: options.timeout,
+    });
+
+    const finalize = async (
+      exitCode: number,
+      errorMessage?: string,
+    ): Promise<void> => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+
+      if (errorMessage) {
+        const errChunk = Buffer.from(errorMessage, "utf-8");
+        stderrState.stream?.write(errChunk);
+        updateStreamPreview(stderrState, errChunk, previewMaxBytes);
+      }
+
+      try {
+        await Promise.all([
+          closeStream(stdoutState.stream),
+          closeStream(stderrState.stream),
+        ]);
+      } catch (streamErr) {
+        reject(streamErr);
+        return;
+      }
+
+      resolve({
+        stdout: stdoutState.previewParts.join(""),
+        stderr: stderrState.previewParts.join(""),
+        exitCode,
+        stdout_path: stdoutPath,
+        stderr_path: stderrPath,
+        stdout_bytes: stdoutState.bytes,
+        stderr_bytes: stderrState.bytes,
+        preview_truncated: stdoutState.truncated || stderrState.truncated,
+      });
+    };
+
+    child.stdout?.on("data", (data) => {
+      const chunk = Buffer.isBuffer(data)
+        ? data
+        : Buffer.from(String(data), "utf-8");
+      stdoutState.stream?.write(chunk);
+      updateStreamPreview(stdoutState, chunk, previewMaxBytes);
+    });
+
+    child.stderr?.on("data", (data) => {
+      const chunk = Buffer.isBuffer(data)
+        ? data
+        : Buffer.from(String(data), "utf-8");
+      stderrState.stream?.write(chunk);
+      updateStreamPreview(stderrState, chunk, previewMaxBytes);
+    });
+
+    child.on("close", (code) => {
+      void finalize(code ?? 1);
+    });
+
+    child.on("error", (err) => {
+      void finalize(1, err.message);
+    });
+  });
+}
+
 // ─── Tool Request Handler ────────────────────────────────────────────────────
 
 /**
@@ -459,7 +661,7 @@ async function handleRequest(
   id: string | number,
   method: string,
   params: unknown,
-  yolo: boolean,
+  options: HandleRequestOptions,
 ): Promise<void> {
   try {
     switch (method) {
@@ -467,13 +669,13 @@ async function handleRequest(
         const p = params as RequestPermissionRequest;
         // In yolo mode, auto-approve all permissions
         // In normal mode, would need to implement permission UI
-        const options = p.options || [];
+        const permissionOptions = p.options || [];
 
-        if (yolo) {
+        if (options.yolo) {
           // Find an "allow" option (prefer allow_always, then allow_once)
           const allowOption =
-            options.find((o) => o.kind === "allow_always") ||
-            options.find((o) => o.kind === "allow_once");
+            permissionOptions.find((o) => o.kind === "allow_always") ||
+            permissionOptions.find((o) => o.kind === "allow_once");
 
           if (allowOption) {
             client.respondPermission(id, {
@@ -517,35 +719,13 @@ async function handleRequest(
         const cwd = p.cwd || process.cwd();
         const timeout = p.timeout || 60000;
 
-        const result = await new Promise<{
-          stdout: string;
-          stderr: string;
-          exitCode: number;
-        }>((resolve) => {
-          const child = spawn(command, [], {
-            cwd,
-            shell: true,
-            timeout,
-          });
-
-          let stdout = "";
-          let stderr = "";
-
-          child.stdout?.on("data", (data) => {
-            stdout += data.toString();
-          });
-
-          child.stderr?.on("data", (data) => {
-            stderr += data.toString();
-          });
-
-          child.on("close", (code) => {
-            resolve({ stdout, stderr, exitCode: code ?? 1 });
-          });
-
-          child.on("error", (err) => {
-            resolve({ stdout, stderr: err.message, exitCode: 1 });
-          });
+        const result = await runTerminalCommandWithArtifacts({
+          command,
+          cwd,
+          timeout,
+          toolCallId: id,
+          specDir: options.specDir,
+          sessionId: options.sessionId,
         });
 
         // Using generic respond() since this is a custom method
@@ -817,6 +997,8 @@ async function processPendingReviewTasks(
   pendingReviewTasks: ActiveTaskSummary[],
   options: {
     yolo: boolean;
+    specDir: string;
+    sessionId: string;
     maxRetries: number;
     maxFailures: number;
     cwd: string;
@@ -863,7 +1045,11 @@ async function processPendingReviewTasks(
           cwd: options.cwd,
           extraArgs: options.autoApproveArgs,
           handleRequest: (client, reqId, method, params) =>
-            handleRequest(client, reqId, method, params, options.yolo),
+            handleRequest(client, reqId, method, params, {
+              yolo: options.yolo,
+              specDir: options.specDir,
+              sessionId: options.sessionId,
+            }),
         },
       );
 
@@ -1345,6 +1531,8 @@ export function registerRalphCommand(program: Command): void {
                 maxRetries,
                 maxFailures,
                 cwd: process.cwd(),
+                specDir,
+                sessionId,
                 subagentTimeout: subagentTimeout * 60 * 1000,
                 autoApproveArgs: reviewerAutoApproveArgs,
                 prReviewSkillName: reviewerPrReviewSkill,
@@ -1543,7 +1731,11 @@ export function registerRalphCommand(program: Command): void {
                         reqId,
                         method,
                         params,
-                        options.yolo,
+                        {
+                          yolo: options.yolo,
+                          specDir,
+                          sessionId,
+                        },
                       ).catch((err) => {
                         // biome-ignore lint/style/noNonNullAssertion: agent is guaranteed to exist when callback is registered
                         agent!.client.respondError(reqId, -32000, err.message);
@@ -1773,7 +1965,11 @@ export function registerRalphCommand(program: Command): void {
                 cwd: process.cwd(),
                 extraArgs: workerAutoApproveArgs,
                 handleRequest: (client, reqId, method, params) =>
-                  handleRequest(client, reqId, method, params, options.yolo),
+                  handleRequest(client, reqId, method, params, {
+                    yolo: options.yolo,
+                    specDir,
+                    sessionId,
+                  }),
               },
               DEFAULT_WRAPUP_TIMEOUT,
             );
