@@ -63473,6 +63473,12 @@
         added install-core platform override and codex-targeted render path assertions; pending
         review with linked PR checks now green."
       supersedes: null
+    - _ulid: 01KJERKFAZKQTMEC3B07Q757EA
+      created_at: 2026-02-27T05:19:35.775Z
+      author: Jacob Chapel
+      content: "Merged via PR #569 on 2026-02-27 (merge commit 7042139b); install-core --platform override
+        is live."
+      supersedes: null
   todos: []
 - _ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
   slugs: []
