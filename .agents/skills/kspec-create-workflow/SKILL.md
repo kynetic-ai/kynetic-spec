@@ -133,6 +133,16 @@ git add templates/skills/<name>/SKILL.md
 git commit -m "feat: add <name> skill for workflow integration"
 ```
 
+### Cross-Skill Consistency Check (When Updating Existing Skills)
+
+If your workflow or wording change is cross-cutting, run this quick consistency pass before committing:
+
+1. List related skills/templates that describe the same concept (for example: `codex`, `pr-review`, `local-review`, review templates).
+2. Verify each related file is either updated in the same PR or explicitly noted as intentionally unchanged.
+3. Add a short checklist in PR notes showing which related files were reviewed.
+
+This prevents partial updates where one skill changes but sibling skills keep outdated guidance.
+
 ## Step Design Guidelines
 
 ### Action Steps

@@ -109,6 +109,7 @@ grep -rn "// AC: @spec-ref" tests/
 ```
 
 Each AC listed in the spec output must have a corresponding annotation. Missing annotations are MUST-FIX.
+Before accepting coverage, confirm each annotation matches the AC text from `kspec item get @spec-ref` (not only the `ac-N` label).
 
 ## Trait AC Coverage
 
@@ -149,6 +150,7 @@ If a trait AC genuinely doesn't apply to this spec, annotate it with a reason:
 ```
 
 The annotation must exist so coverage tooling can track it.
+Annotations must be standalone line comments (`// AC:` or `# AC:`), not embedded inside block/JSDoc comments.
 
 ### No Traits?
 

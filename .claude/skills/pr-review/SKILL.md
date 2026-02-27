@@ -129,6 +129,8 @@ it('should exit 0 on success', () => { ... });
 - Run `kspec item get @spec-ref` — shows own ACs and inherited trait ACs (under "Inherited from @trait-slug")
 - Search test files for `// AC: @spec-ref ac-N` (own) and `// AC: @trait-slug ac-N` (trait) across `tests/` and `packages/`
 - Run `kspec validate` — any "inherited trait AC(s) without test coverage" for this spec is MUST-FIX
+- Confirm annotation refs match AC text (not just matching `ac-N` numbers)
+- Ensure annotations are standalone line comments (`// AC:` or `# AC:`), not inside block/JSDoc comments
 - Flag any uncovered ACs (own or trait)
 
 ### 2. Spec Alignment

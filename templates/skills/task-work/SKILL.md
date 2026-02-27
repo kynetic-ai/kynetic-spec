@@ -113,6 +113,16 @@ Note when you:
 - Encounter a blocker
 - Complete a significant piece
 
+For tasks that are missing standalone context (for example, generic derived notes), add one structured note before deep implementation work:
+
+```bash
+kspec task note @ref "Execution context:
+- Background: why this task matters
+- Scope: what is in/out for this task
+- Files: exact files expected to change
+- Verification: tests/commands that prove completion"
+```
+
 ### 5. Commit
 
 Include task and spec trailers:
