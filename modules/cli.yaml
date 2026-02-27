@@ -3275,11 +3275,10 @@ features:
                 given: worker and reviewer adapters target different harnesses
                 when: ralph builds worker and subagent prompts in the same session
                 then: each prompt uses invocation formatting for its own role adapter without cross-role leakage
-              - id: ac-1
-                given: ralph worker adapter targets Claude-family harness
-                when: the task-work prompt is built
-                then: task-work and reflect invocations use slash-style syntax (for example /kspec:task-work loop
-                  and /kspec:reflect loop)
+              - id: ac-3
+                given: ralph reviewer adapter targets Codex harness
+                when: the review subagent prompt is built
+                then: the PR review invocation uses Codex syntax (for example -review @task-ref)
             status:
               maturity: draft
               implementation: in_progress
