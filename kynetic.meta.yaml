@@ -7047,4 +7047,16 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KJEYQW5E3GES6RV21AR7JDQP
+    _type: skill
+    id: pr
+    name: pr
+    description: Create a pull request from current work. Handles branch creation, commits, push, and PR
+      creation. Detects branch protection and guides through the PR workflow.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
