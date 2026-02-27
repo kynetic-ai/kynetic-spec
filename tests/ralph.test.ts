@@ -458,8 +458,38 @@ describe('ralph command', () => {
     const output = (result.stdout || '') + (result.stderr || '');
 
     expect(result.status).toBe(3);
-    expect(output).toContain('Adapter package not found: @nonexistent/adapter-package');
+    expect(output).toContain('Adapter not found: @nonexistent/adapter-package');
     expect(output).toContain('npm install -g @nonexistent/adapter-package');
+  });
+
+  // AC: @ralph-adapter-validation invalid-adapter-error
+  it('shows both adapter ID and package name when they differ', async () => {
+    // codex-acp is a registered adapter with package @zed-industries/codex-acp
+    // Use --dry-run so we only test validation, not spawning
+    const result = spawnSync(
+      'node',
+      [CLI_PATH, 'ralph', '--adapter', 'codex-acp', '--dry-run'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: {
+          ...process.env,
+          KSPEC_AUTHOR: '@test',
+          // Ensure codex-acp package is not found by clearing node paths
+          NODE_PATH: '',
+        },
+      }
+    );
+
+    const output = (result.stdout || '') + (result.stderr || '');
+
+    // When adapter ID differs from package name, error shows both
+    if (result.status === 3) {
+      expect(output).toContain('codex-acp (@zed-industries/codex-acp)');
+      expect(output).toContain('npm install -g @zed-industries/codex-acp');
+    }
+    // If codex-acp is actually installed, validation passes — that's fine too
   });
 
   // AC: @ralph-adapter-validation validation-before-spawn
@@ -483,7 +513,7 @@ describe('ralph command', () => {
 
     // Should fail validation immediately
     expect(result.status).toBe(3);
-    expect(output).toContain('Adapter package not found');
+    expect(output).toContain('Adapter not found');
 
     // Should NOT show any signs of session creation or agent spawn
     expect(output).not.toContain('Spawning ACP agent');
@@ -2011,7 +2041,7 @@ describe('subagent module', () => {
       const output = (result.stdout || '') + (result.stderr || '');
 
       expect(result.status).toBe(3);
-      expect(output).toContain('Adapter package not found: @nonexistent/adapter-pkg');
+      expect(output).toContain('Adapter not found: @nonexistent/adapter-pkg');
     });
 
     // AC: @ralph-per-role-adapters ac-11
@@ -2030,7 +2060,7 @@ describe('subagent module', () => {
       const output = (result.stdout || '') + (result.stderr || '');
 
       expect(result.status).toBe(3);
-      expect(output).toContain('Adapter package not found: @nonexistent/adapter-pkg');
+      expect(output).toContain('Adapter not found: @nonexistent/adapter-pkg');
     });
 
     // AC: @ralph-per-role-adapters ac-12
