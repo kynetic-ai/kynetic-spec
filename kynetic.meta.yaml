@@ -6984,4 +6984,16 @@ skills:
     tags:
       - core
     allowed_tools: []
+  - _ulid: 01KJEYPTZQY0M295EE80VMTHWM
+    _type: skill
+    id: audit
+    name: audit
+    description: Comprehensive codebase audit for release readiness. Parallel exploration of docs, code,
+      config, tests, and specs to identify cruft, then interactive triage with clear action options.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
