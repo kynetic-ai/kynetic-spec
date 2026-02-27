@@ -63431,7 +63431,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -63480,6 +63480,8 @@
         is live."
       supersedes: null
   todos: []
+  completed_at: 2026-02-27T05:19:45.630Z
+  closed_reason: null
 - _ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
   slugs: []
   title: Enable core skill install/render path for codex
@@ -63611,6 +63613,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 2
@@ -63623,6 +63626,7 @@
   created_at: 2026-02-27T00:23:23.629Z
   started_at: 2026-02-27T00:47:34.749Z
   submitted_at: 2026-02-27T01:48:03.769Z
+  completed_at: 2026-02-27T05:19:44.218Z
   notes:
     - _ulid: 01KJE86XA7G73YT1Q8V613YQQQ
       created_at: 2026-02-27T00:33:06.888Z
@@ -63691,5 +63695,3 @@
         resolution across SKILL and supporting markdown is live."
       supersedes: null
   todos: []
-  completed_at: 2026-02-27T05:19:44.218Z
-  closed_reason: null
