@@ -779,6 +779,8 @@ interface BaseRenderConfig {
     targetDir: string,
     dryRun: boolean
   ) => Promise<{ paths: string[]; contentChanged: boolean }>;
+  /** Optional: transform source skill body content before rendering */
+  transformBody?: (body: string, skill: LoadedSkill) => string;
   /** Optional: additional hash computation for drift check */
   getAdditionalDriftContent?: (skillDir: string) => Promise<string | null>;
   /** If true, also write legacy .render-hash for backward compatibility */
@@ -825,7 +827,10 @@ export async function renderSkillBase(
     const contentWithoutFrontmatter = frontmatterMatch
       ? sourceContent.slice(frontmatterMatch[0].length)
       : sourceContent;
-    renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${contentWithoutFrontmatter}`;
+    const transformedBody = config.transformBody
+      ? config.transformBody(contentWithoutFrontmatter, skill)
+      : contentWithoutFrontmatter;
+    renderedContent = `${frontmatter}\n${KSPEC_MANAGED_MARKER}\n${transformedBody}`;
   }
 
   // Idempotency check
@@ -1046,10 +1051,20 @@ export const claudeCodeRenderer: PlatformRenderer = {
  */
 function generateCodexFrontmatter(skill: LoadedSkill): string {
   const frontmatter: Record<string, unknown> = {
-    name: skill.id,
+    name: getSkillSubdir(skill.id, skill.origin, "codex"),
     description: skill.description || skill.name,
   };
   return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
+}
+
+/**
+ * Convert Claude-style core skill references to Codex invocation form.
+ * Example: /kspec:task-work -> $kspec-task-work
+ */
+function transformCodexSkillReferences(body: string): string {
+  return body.replace(/\/kspec:([a-z0-9][a-z0-9-]*)/g, (_match, skillId: string) => {
+    return `$kspec-${skillId}`;
+  });
 }
 
 /**
@@ -1131,6 +1146,7 @@ export const codexRenderer: PlatformRenderer = {
     return renderSkillBase(ctx, projectRoot, skill, options, {
       platform: this.platform,
       generateFrontmatter: generateCodexFrontmatter,
+      transformBody: transformCodexSkillReferences,
 
       // AC: @skill-drift-detection-improvements ac-1 - Include sidecar in hash
       getAdditionalHashContent: () => sidecarContent,

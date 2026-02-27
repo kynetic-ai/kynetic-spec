@@ -335,6 +335,30 @@ describe('kspec setup (enhanced)', () => {
       expect(content).toContain('name: test-skill');
     });
 
+    it('should render core skills to codex output when codex is detected', async () => {
+      const result = kspec('setup', tempDir, {
+        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '' },
+      });
+      expect(result.exitCode).toBe(0);
+
+      const codexCorePath = path.join(tempDir, '.agents', 'skills', 'kspec-help', 'SKILL.md');
+      const codexCoreExists = await fs.access(codexCorePath)
+        .then(() => true)
+        .catch(() => false);
+      expect(codexCoreExists).toBe(true);
+
+      const codexContent = await fs.readFile(codexCorePath, 'utf-8');
+      expect(codexContent).toContain('<!-- kspec-managed -->');
+      expect(codexContent).toContain('name: kspec-help');
+
+      // Core claude-code path remains plugin-provided (no local render)
+      const claudeCorePath = path.join(tempDir, '.claude', 'skills', 'help', 'SKILL.md');
+      const claudeCoreExists = await fs.access(claudeCorePath)
+        .then(() => true)
+        .catch(() => false);
+      expect(claudeCoreExists).toBe(false);
+    });
+
     // AC: @enhanced-setup ac-5 - --skip-skills flag
     it('should not render skills when --skip-skills is set', async () => {
       kspec('setup --skip-skills', tempDir, {

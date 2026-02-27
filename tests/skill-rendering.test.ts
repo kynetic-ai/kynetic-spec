@@ -1351,6 +1351,33 @@ describe('Codex Skill Renderer', () => {
       expect(content).not.toContain('platform_config:');
     });
 
+    it('should namespace core codex skill name and convert claude-style references', async () => {
+      kspecFull(
+        'skill add --id core-refs --name "Core Refs" --description "Core refs" --origin core --platform codex',
+        tempDir
+      );
+
+      const skillMdPath = path.join(tempDir, 'skills', 'core-refs', 'SKILL.md');
+      await fs.writeFile(
+        skillMdPath,
+        '# Core Refs\n\nUse /kspec:task-work then /kspec:help.\n',
+        'utf-8'
+      );
+
+      const { codexRenderer, ctx, skill } = await loadSkillForTest('core-refs');
+      expect(skill).toBeDefined();
+      await codexRenderer.render(ctx, tempDir, skill!);
+
+      const renderedPath = path.join(tempDir, '.agents', 'skills', 'kspec-core-refs', 'SKILL.md');
+      const content = await fs.readFile(renderedPath, 'utf-8');
+
+      expect(content).toContain('name: kspec-core-refs');
+      expect(content).toContain('$kspec-task-work');
+      expect(content).toContain('$kspec-help');
+      expect(content).not.toContain('/kspec:task-work');
+      expect(content).not.toContain('/kspec:help');
+    });
+
     it('should include kspec-managed marker', async () => {
       kspecFull(
         'skill add --id marker-skill --name "Marker Skill" --description "Test marker" --platform codex',
