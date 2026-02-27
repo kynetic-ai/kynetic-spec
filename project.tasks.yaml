@@ -63568,5 +63568,16 @@
     - platform
   vcs_refs: []
   created_at: 2026-02-27T00:23:23.629Z
-  notes: []
+  notes:
+    - _ulid: 01KJE86XA7G73YT1Q8V613YQQQ
+      created_at: 2026-02-27T00:33:06.888Z
+      author: Jacob Chapel
+      content: "Investigation (2026-02-27): core skill content currently contains many Claude-form
+        invocations (/kspec:task-work, /kspec:plan, etc.) in templates/skills/*/SKILL.md. No
+        codex-specific variant pipeline is present for core templates, so codex-rendered output
+        would carry the same references. Related assumptions also appear in parser/config defaults
+        and ralph constants (/kspec:task-work, /kspec:reflect, /kspec:review), so platform-aware
+        guidance likely needs a consistent policy across templates + generated docs + config
+        defaults."
+      supersedes: null
   todos: []
