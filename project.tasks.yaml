@@ -64051,5 +64051,20 @@
         externalization + pointer metadata in store.ts, then wiring session log show/search to
         preview pointers by default with optional blob resolution flags and regression tests.
       supersedes: null
+    - _ulid: 01KJF96KD07NW7FDR9RN7HCVXM
+      created_at: 2026-02-27T10:09:39.744Z
+      author: Jacob Chapel
+      content: "Implemented session event guardrails: appendEvent now externalizes oversized
+        update.rawOutput, update._meta.claudeCode.toolResponse stdout/stderr, and chunk text into
+        sessions/<id>/blobs with pointer metadata {path, bytes, sha256, truncated, preview}; added
+        event-line cap fallback to externalize entire data payload if still oversized. Added pointer
+        resolution utility and wired session log show/search with --resolve-blobs (default keeps
+        preview pointers). Added regression coverage in tests/sessions.test.ts,
+        tests/session-log-show.test.ts, tests/session-log-search.test.ts. Verification: npm run
+        build; npx vitest run tests/sessions.test.ts tests/session-log-show.test.ts
+        tests/session-log-search.test.ts (131/131). kspec validate still fails on pre-existing
+        @observations slug ambiguity + baseline alignment/completeness warnings unrelated to this
+        task."
+      supersedes: null
   todos: []
   automation: eligible
