@@ -63630,4 +63630,14 @@
         temporary /kspec:<id> -> -<id> adjustment was reverted; renderer now keeps -* conversion and
         scopes rewriting to core skills only to avoid mutating non-core codex content."
       supersedes: null
+    - _ulid: 01KJEAVR8EHM9K90N4FW0X55WH
+      created_at: 2026-02-27T01:19:26.990Z
+      author: Jacob Chapel
+      content: "Implemented portable skill reference tokens end-to-end (2026-02-27): core skill templates
+        now use {skill:<id>} in SKILL.md and triage docs; renderer resolves tokens per platform and
+        origin (Claude: /kspec:<id> for core, /<id> for non-core; Codex: -<id> for core, $<id> for
+        non-core). Supporting markdown directories (docs/references) are transformed during render
+        with idempotent diff/copy checks preserved. Legacy codex core /kspec:<id> rewrite remains as
+        compatibility fallback."
+      supersedes: null
   todos: []
