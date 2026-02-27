@@ -61341,7 +61341,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-e2e-daemon-tasks-api"
@@ -61363,6 +61363,7 @@
   session_id: 01KJF51MP7P74B0KE93BPKQC3W
   created_at: 2026-02-26T00:36:04.458Z
   started_at: 2026-02-27T08:57:30.523Z
+  submitted_at: 2026-02-27T09:05:24.188Z
   notes:
     - _ulid: 01KJF5GD8YHVV7SM2ZX9RQJP7K
       created_at: 2026-02-27T09:05:06.846Z
@@ -61382,7 +61383,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-27T09:05:24.188Z
+  completed_at: 2026-02-27T09:17:32.858Z
+  closed_reason: "Merged PR #575 (tests/lint/no-static-analysis.test.ts) adding CI lint guard against
+    source-scanning tests; removed remaining static-analysis test patterns."
 - _ulid: 01KJCQ01EAF79RKFYTMBSZRP1Q
   slugs:
     - task-shadow-shallow-clone-detection
