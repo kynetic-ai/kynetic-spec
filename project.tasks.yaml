@@ -63443,6 +63443,7 @@
   vcs_refs: []
   created_at: 2026-02-26T23:42:27.525Z
   started_at: 2026-02-27T01:48:09.321Z
+  submitted_at: 2026-02-27T01:48:12.117Z
   notes:
     - _ulid: 01KJE86X8EY9R143SVPK7M0SR0
       created_at: 2026-02-27T00:33:06.830Z
@@ -63473,7 +63474,6 @@
         review with linked PR checks now green."
       supersedes: null
   todos: []
-  submitted_at: 2026-02-27T01:48:12.117Z
 - _ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
   slugs: []
   title: Enable core skill install/render path for codex
@@ -63552,6 +63552,12 @@
         tests/enhanced-setup.test.ts (setup in codex env renders core skills to codex output).
         Verified with npm run build plus vitest runs: core-skill-install, enhanced-setup,
         core-skill-update, setup-pipeline-unification, core-skill-namespace all passing."
+      supersedes: null
+    - _ulid: 01KJECGKGR5GZSP3FD9AJ0BTSH
+      created_at: 2026-02-27T01:48:18.840Z
+      author: Jacob Chapel
+      content: "PR #569 updated and re-reviewed on 2026-02-27; CI passing on head dba33943; task moved to
+        pending_review."
       supersedes: null
   todos: []
 - _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
