@@ -63719,6 +63719,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #570. Seeded Codex project_doc_fallback_filenames with kspec-agents.md
+    in setup/install-core with tests and AC alignment."
   depends_on: []
   context: []
   priority: 2
@@ -63731,6 +63733,7 @@
   created_at: 2026-02-27T06:29:31.187Z
   started_at: 2026-02-27T06:34:28.412Z
   submitted_at: 2026-02-27T06:57:32.837Z
+  completed_at: 2026-02-27T06:58:29.499Z
   notes:
     - _ulid: 01KJEWWMCXH1FFB3TX8QZNAYX4
       created_at: 2026-02-27T06:34:30.173Z
@@ -63748,6 +63751,32 @@
         and annotating implementation/tests to AC refs (commit c0268b66).
       supersedes: null
   todos: []
-  completed_at: 2026-02-27T06:58:29.499Z
-  closed_reason: "Merged in PR #570. Seeded Codex project_doc_fallback_filenames with kspec-agents.md
-    in setup/install-core with tests and AC alignment."
+- title: Close shadow auto-commit gaps in skill commands
+  description: "What: skill command flows (notably skill import/set/render in this session) left
+    pending changes in .kspec that required a manual git commit/push on kspec-meta. This violates
+    expected shadow auto-commit/sync behavior. Where: skill command implementations and related
+    spec/trait mappings. How: identify commands that mutate .kspec without going through
+    commitIfShadow (or equivalent), align their spec coverage to @trait-shadow-commit where
+    applicable, and implement missing auto-commit/sync integration. Add tests proving no pending
+    .kspec changes remain after mutating skill commands. Done when: running skill
+    import/set/render/update paths that mutate shadow state leaves kspec-meta clean with commits
+    synced, and spec/trait coverage reflects the behavior."
+  type: bug
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - skills
+    - shadow
+    - spec
+  depends_on: []
+  _ulid: 01KJF06NRBB8EHQ6VGA8AZ8PAY
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-27T07:32:24.971Z
+  notes: []
+  todos: []
