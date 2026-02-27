@@ -29,8 +29,8 @@ If you find issues, post them as inline comments and transition the task to need
 ## Usage
 
 ```
-/pr-review @task-ref
-/pr-review #123
+$pr-review @task-ref
+$pr-review #123
 ```
 
 **Task reference is preferred** but not a hard gate. If a PR number is provided instead, the reviewer discovers spec context from the PR.
@@ -104,7 +104,7 @@ If reviewing by task ref and no PR is found:
 
 ```
 Error: No PR found for task @task-ref.
-Create a PR first with /pr, then run /pr-review @task-ref.
+Create a PR first with $pr, then run $pr-review @task-ref.
 ```
 
 ## Quality Gates
@@ -163,7 +163,7 @@ kspec workflow start @pr-review-loop
 ```
 
 The workflow handles:
-1. Run local review (`/local-review`) — covers own + trait AC coverage, test quality, code quality
+1. Run local review (`$local-review`) — covers own + trait AC coverage, test quality, code quality
 2. Verify spec alignment (implementation matches spec intent)
 3. Review code quality (DRY, consistency, shared code usage)
 4. Verify no regressions (`npm test` passes fully)
@@ -276,7 +276,7 @@ This skill runs in **ACP subagent context**:
 ## Example
 
 ```
-/pr-review @task-reflect-loop-skill
+$pr-review @task-reflect-loop-skill
 
 [Validates task exists]
 [Finds PR #234 linked to task]
