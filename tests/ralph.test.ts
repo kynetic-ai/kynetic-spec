@@ -10,6 +10,7 @@ import * as path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createTranslator } from '../src/ralph/events.js';
 import type { SessionUpdate } from '../src/acp/types.js';
+import { getPromptPlatformForAdapter, resolveRalphSkillInvocation } from '../src/cli/commands/ralph.js';
 import { CLI_PATH, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
 const MOCK_ACP = path.join(__dirname, 'mocks', 'acp-mock.js');
@@ -2099,6 +2100,60 @@ describe('subagent module', () => {
 
       expect(output).toContain('worker=claude-code-acp');
       expect(output).toContain('reviewer=claude-agent-acp');
+    });
+  });
+
+  describe('adapter-aware skill invocation resolution', () => {
+    const skillOrigins = new Map([
+      ['task-work', 'core'],
+      ['reflect', 'core'],
+      ['review', 'core'],
+      ['project-review', 'project'],
+    ] as const);
+
+    // AC: @ralph-adapter-aware-skill-invocation ac-2
+    it('normalizes legacy core slash invocations to codex syntax for worker prompts', () => {
+      const platform = getPromptPlatformForAdapter('codex-acp');
+      const taskWork = resolveRalphSkillInvocation('/kspec:task-work', platform, skillOrigins);
+      const reflect = resolveRalphSkillInvocation('/kspec:reflect', platform, skillOrigins);
+
+      expect(taskWork).toBe('$kspec-task-work');
+      expect(reflect).toBe('$kspec-reflect');
+    });
+
+    // AC: @ralph-adapter-aware-skill-invocation ac-3
+    it('renders reviewer skill using codex syntax when reviewer adapter is codex', () => {
+      const platform = getPromptPlatformForAdapter('codex-acp');
+      const review = resolveRalphSkillInvocation('{skill:review}', platform, skillOrigins);
+      expect(review).toBe('$kspec-review');
+    });
+
+    // AC: @ralph-adapter-aware-skill-invocation ac-4
+    it('resolves portable {skill:*} references using platform and skill origins', () => {
+      const claudePlatform = getPromptPlatformForAdapter('claude-agent-acp');
+      const codexPlatform = getPromptPlatformForAdapter('codex-acp');
+
+      expect(
+        resolveRalphSkillInvocation('{skill:task-work}', claudePlatform, skillOrigins)
+      ).toBe('/kspec:task-work');
+      expect(
+        resolveRalphSkillInvocation('{skill:task-work}', codexPlatform, skillOrigins)
+      ).toBe('$kspec-task-work');
+      expect(
+        resolveRalphSkillInvocation('{skill:project-review}', codexPlatform, skillOrigins)
+      ).toBe('$project-review');
+    });
+
+    // AC: @ralph-adapter-aware-skill-invocation ac-6
+    it('resolves worker and reviewer skills independently by role adapter', () => {
+      const workerPlatform = getPromptPlatformForAdapter('codex-acp');
+      const reviewerPlatform = getPromptPlatformForAdapter('claude-agent-acp');
+
+      const workerSkill = resolveRalphSkillInvocation('{skill:task-work}', workerPlatform, skillOrigins);
+      const reviewerSkill = resolveRalphSkillInvocation('{skill:review}', reviewerPlatform, skillOrigins);
+
+      expect(workerSkill).toBe('$kspec-task-work');
+      expect(reviewerSkill).toBe('/kspec:review');
     });
   });
 

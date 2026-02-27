@@ -34,10 +34,13 @@ import {
   initContext,
   type KspecContext,
   loadAllItems,
+  loadMetaContext,
+  type LoadedSkill,
   loadAllTasks,
   type LoadedTask,
   ReferenceIndex,
 } from "../../parser/index.js";
+import { resolveSkillReferenceTokensForPlatform } from "../../parser/skill-render.js";
 import {
   buildWrapUpContext,
   createCliRenderer,
@@ -179,6 +182,112 @@ async function allExplicitTasksDone(
 }
 
 // ─── Prompt Template ─────────────────────────────────────────────────────────
+
+type RalphPromptPlatform = "claude-code" | "codex" | "unknown";
+
+type SkillOrigin = LoadedSkill["origin"];
+
+const FALLBACK_CORE_SKILLS = new Set(["task-work", "reflect", "review"]);
+
+/**
+ * Map adapter IDs to prompt rendering platforms.
+ */
+export function getPromptPlatformForAdapter(adapterId: string): RalphPromptPlatform {
+  switch (adapterId) {
+    case "claude-agent-acp":
+    case "claude-code-acp":
+      return "claude-code";
+    case "codex-acp":
+      return "codex";
+    default:
+      return "unknown";
+  }
+}
+
+/**
+ * Build skill origin map from meta skills.
+ */
+async function loadSkillOriginsForRalph(ctx: KspecContext): Promise<Map<string, SkillOrigin>> {
+  const meta = await loadMetaContext(ctx);
+  const origins = new Map<string, SkillOrigin>();
+  for (const skill of meta.skills) {
+    origins.set(skill.id, skill.origin);
+  }
+  // Fallback for core skills frequently used by ralph, even if core skills
+  // were not loaded into project meta for any reason.
+  for (const coreSkill of FALLBACK_CORE_SKILLS) {
+    if (!origins.has(coreSkill)) {
+      origins.set(coreSkill, "core");
+    }
+  }
+  return origins;
+}
+
+/**
+ * Normalize legacy literal invocation syntax for a target platform.
+ * Keeps backward compatibility for existing slash-style config values.
+ */
+function normalizeLegacyInvocation(
+  invocation: string,
+  platform: RalphPromptPlatform,
+): string {
+  if (platform === "codex") {
+    if (/^\/kspec:([a-z0-9][a-z0-9-]*)$/.test(invocation)) {
+      return invocation.replace(
+        /^\/kspec:([a-z0-9][a-z0-9-]*)$/,
+        (_m, skillId: string) => `$kspec-${skillId}`,
+      );
+    }
+    if (/^\/([a-z0-9][a-z0-9-]*)$/.test(invocation)) {
+      return invocation.replace(
+        /^\/([a-z0-9][a-z0-9-]*)$/,
+        (_m, skillId: string) => `$${skillId}`,
+      );
+    }
+  }
+
+  if (platform === "claude-code") {
+    if (/^\$kspec-([a-z0-9][a-z0-9-]*)$/.test(invocation)) {
+      return invocation.replace(
+        /^\$kspec-([a-z0-9][a-z0-9-]*)$/,
+        (_m, skillId: string) => `/kspec:${skillId}`,
+      );
+    }
+    if (/^\$([a-z0-9][a-z0-9-]*)$/.test(invocation)) {
+      return invocation.replace(
+        /^\$([a-z0-9][a-z0-9-]*)$/,
+        (_m, skillId: string) => `/${skillId}`,
+      );
+    }
+  }
+
+  return invocation;
+}
+
+/**
+ * Resolve configured skill invocation string for a specific platform.
+ * Supports portable {skill:<id>} syntax and legacy literal strings.
+ */
+export function resolveRalphSkillInvocation(
+  invocation: string,
+  platform: RalphPromptPlatform,
+  skillOrigins: Map<string, SkillOrigin>,
+): string {
+  if (platform === "unknown") {
+    return invocation;
+  }
+
+  const tokenResolved = resolveSkillReferenceTokensForPlatform(
+    invocation,
+    platform,
+    skillOrigins,
+  );
+  if (tokenResolved !== invocation) {
+    return tokenResolved;
+  }
+
+  return normalizeLegacyInvocation(invocation, platform);
+}
 
 // AC: @ralph-skill-delegation ac-1, ac-2, ac-3
 function buildTaskWorkPrompt(
@@ -691,6 +800,7 @@ async function processPendingReviewTasks(
     cwd: string;
     subagentTimeout: number;
     autoApproveArgs?: string[];
+    prReviewSkillName: string;
   },
   consecutiveFailures: { count: number },
 ): Promise<boolean> {
@@ -724,7 +834,7 @@ async function processPendingReviewTasks(
         {
           timeout: options.subagentTimeout,
           outputPrefix: DEFAULT_SUBAGENT_PREFIX,
-          skillName: ctx.config.ralph.skills.pr_review,
+          skillName: options.prReviewSkillName,
         },
         {
           yolo: options.yolo,
@@ -1021,6 +1131,25 @@ export function registerRalphCommand(program: Command): void {
           }
         }
 
+        const skillOrigins = await loadSkillOriginsForRalph(ctx);
+        const workerPromptPlatform = getPromptPlatformForAdapter(workerAdapterId);
+        const reviewerPromptPlatform = getPromptPlatformForAdapter(reviewerAdapterId);
+        const workerTaskWorkSkill = resolveRalphSkillInvocation(
+          ctx.config.ralph.skills.task_work,
+          workerPromptPlatform,
+          skillOrigins,
+        );
+        const workerReflectSkill = resolveRalphSkillInvocation(
+          ctx.config.ralph.skills.reflect,
+          workerPromptPlatform,
+          skillOrigins,
+        );
+        const reviewerPrReviewSkill = resolveRalphSkillInvocation(
+          ctx.config.ralph.skills.pr_review,
+          reviewerPromptPlatform,
+          skillOrigins,
+        );
+
         const taskScopeInfo = explicitTaskScope
           ? `, tasks=${explicitTaskScope.refs.join(",")}`
           : "";
@@ -1196,6 +1325,7 @@ export function registerRalphCommand(program: Command): void {
                 cwd: process.cwd(),
                 subagentTimeout: subagentTimeout * 60 * 1000,
                 autoApproveArgs: reviewerAutoApproveArgs,
+                prReviewSkillName: reviewerPrReviewSkill,
               },
               failureTracker,
             );
@@ -1262,7 +1392,7 @@ export function registerRalphCommand(program: Command): void {
               iteration,
               maxLoops,
               sessionId,
-              ctx.config.ralph.skills.task_work,
+              workerTaskWorkSkill,
               options.focus,
               explicitTaskScope,
             );
@@ -1270,7 +1400,7 @@ export function registerRalphCommand(program: Command): void {
               iteration,
               maxLoops,
               sessionId,
-              ctx.config.ralph.skills.reflect,
+              workerReflectSkill,
             );
 
             // AC: @cli-ralph ac-21
@@ -1286,6 +1416,9 @@ export function registerRalphCommand(program: Command): void {
               console.log(`  max-retries: ${maxRetries}`);
               console.log(`  max-failures: ${maxFailures}`);
               console.log(`  restart-every: ${restartEvery === 0 ? "never" : restartEvery}`);
+              console.log(`  worker-task-work-skill: ${workerTaskWorkSkill}`);
+              console.log(`  worker-reflect-skill: ${workerReflectSkill}`);
+              console.log(`  reviewer-pr-review-skill: ${reviewerPrReviewSkill}`);
               if (explicitTaskScope) {
                 console.log(`  explicit-tasks: ${explicitTaskScope.refs.join(", ")}`);
               }
