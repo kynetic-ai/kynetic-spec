@@ -3265,6 +3265,12 @@ features:
             traits: []
             notes: []
             created: 2026-02-27T08:08:50.790Z
+            acceptance_criteria:
+              - id: ac-1
+                given: ralph worker adapter targets Claude-family harness
+                when: the task-work prompt is built
+                then: task-work and reflect invocations use slash-style syntax (for example /kspec:task-work loop
+                  and /kspec:reflect loop)
       - _ulid: 01KJDCYRM80FT38JY8CPG63ATY
         slugs:
           - ralph-adapter-auto-approve
