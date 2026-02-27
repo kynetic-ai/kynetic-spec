@@ -3279,6 +3279,10 @@ features:
                 given: ralph reviewer adapter targets Codex harness
                 when: the review subagent prompt is built
                 then: the PR review invocation uses Codex syntax (for example -review @task-ref)
+              - id: ac-5
+                given: ralph skill config still uses legacy slash-style invocation strings
+                when: prompts are rendered for Codex adapters
+                then: core invocations are normalized to Codex syntax for backward compatibility
             status:
               maturity: draft
               implementation: in_progress
