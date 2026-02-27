@@ -259,7 +259,7 @@ async function loadSkillOrigins(ctx: KspecContext): Promise<Map<string, LoadedSk
  * - Claude: core skills use /kspec:<id>, others use /<id>
  * - Codex: uses $<rendered-name>, where rendered-name may include core namespace
  */
-function formatSkillInvocation(skillId: string, platform: string, origin?: LoadedSkill["origin"]): string {
+export function formatSkillInvocation(skillId: string, platform: string, origin?: LoadedSkill["origin"]): string {
   switch (platform) {
     case "claude-code":
       return origin === "core" ? `/kspec:${skillId}` : `/${skillId}`;
@@ -268,6 +268,26 @@ function formatSkillInvocation(skillId: string, platform: string, origin?: Loade
     default:
       return `/${skillId}`;
   }
+}
+
+/**
+ * Resolve portable reference tokens in text for a target platform.
+ * Token syntax: {skill:<id>}
+ *
+ * `currentSkillOrigin` is optional and used as a fallback when a referenced
+ * skill isn't present in `skillOrigins` (primarily for core template rendering).
+ */
+export function resolveSkillReferenceTokensForPlatform(
+  body: string,
+  platform: string,
+  skillOrigins: Map<string, LoadedSkill["origin"]> = new Map(),
+  currentSkillOrigin?: LoadedSkill["origin"]
+): string {
+  return body.replace(SKILL_REFERENCE_TOKEN_RE, (_match, refId: string) => {
+    // If reference isn't in loaded meta, core templates usually point to core skills.
+    const referencedOrigin = skillOrigins.get(refId) ?? (currentSkillOrigin === "core" ? "core" : undefined);
+    return formatSkillInvocation(refId, platform, referencedOrigin);
+  });
 }
 
 /**
@@ -280,11 +300,7 @@ function resolveSkillReferenceTokens(
   skill: LoadedSkill,
   skillOrigins: Map<string, LoadedSkill["origin"]>
 ): string {
-  return body.replace(SKILL_REFERENCE_TOKEN_RE, (_match, refId: string) => {
-    // If reference isn't in loaded meta, core templates usually point to core skills.
-    const referencedOrigin = skillOrigins.get(refId) ?? (skill.origin === "core" ? "core" : undefined);
-    return formatSkillInvocation(refId, platform, referencedOrigin);
-  });
+  return resolveSkillReferenceTokensForPlatform(body, platform, skillOrigins, skill.origin);
 }
 
 /**
