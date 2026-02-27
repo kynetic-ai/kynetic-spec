@@ -75,14 +75,6 @@ export function detectAgentFromEnv(): DetectedAgent {
     };
   }
 
-  if (process.env.COPILOT_MODEL || process.env.GH_TOKEN) {
-    return {
-      type: "copilot-cli",
-      confidence: "medium",
-      configPath: path.join(os.homedir(), ".copilot", "config.json"),
-    };
-  }
-
   if (process.env.AIDER_MODEL || process.env.AIDER_DARK_MODE !== undefined) {
     return {
       type: "aider",
@@ -137,6 +129,14 @@ export function detectAgentFromEnv(): DetectedAgent {
           CODEX_MANAGED_BY_NPM: process.env.CODEX_MANAGED_BY_NPM,
         }),
       },
+    };
+  }
+
+  if (process.env.COPILOT_MODEL || process.env.GH_TOKEN) {
+    return {
+      type: "copilot-cli",
+      confidence: "medium",
+      configPath: path.join(os.homedir(), ".copilot", "config.json"),
     };
   }
 

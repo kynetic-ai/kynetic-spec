@@ -38,6 +38,20 @@ describe("Agent detection", () => {
     });
   });
 
+  // AC: @01KJE3T7 - codex signal precedence over copilot markers
+  it("prefers codex-cli when CODEX_THREAD_ID and GH_TOKEN are both present", async () => {
+    process.env.CODEX_THREAD_ID = "test-thread-123";
+    process.env.GH_TOKEN = "ghp_test";
+
+    const setupDetected = detectSetupAgent();
+    const statusDetected = await detectStatusAgent();
+
+    expect(setupDetected.type).toBe("codex-cli");
+    expect(setupDetected.confidence).toBe("high");
+    expect(statusDetected.type).toBe("codex-cli");
+    expect(statusDetected.confidence).toBe("high");
+  });
+
   // AC: @01KJE3T7 - keep CODEX_SANDBOX compatibility for older codex environments
   it("keeps codex-cli detection via CODEX_SANDBOX", async () => {
     process.env.CODEX_SANDBOX = "1";
