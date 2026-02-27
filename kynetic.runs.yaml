@@ -6423,6 +6423,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-27T00:26:51.747Z
+    completed_at: 2026-02-27T00:28:16.451Z
     step_results:
       - step_index: 0
         status: completed
@@ -6458,4 +6459,11 @@ runs:
           all meaningful friction/success findings were already represented in existing
           tasks/observations.
     initiated_by: Jacob Chapel
-    completed_at: 2026-02-27T00:28:16.451Z
+  - _ulid: 01KJF6JCT4GTVMH30DYAZJK3BJ
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-27T09:23:40.484Z
+    step_results: []
+    initiated_by: Jacob Chapel
