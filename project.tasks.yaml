@@ -63701,3 +63701,33 @@
         -> $<id>; Claude mapping is core -> /kspec:<id>, non-core -> /<id>."
       supersedes: null
   todos: []
+- title: Seed Codex project_doc_fallback_filenames with kspec-agents.md
+  description: "What: Ensure Codex project config includes kspec-agents.md in
+    project_doc_fallback_filenames so AGENTS.md fallback discovery can load bundled kspec
+    instructions. Where: setup/install path that currently writes Codex config.toml entries (and/or
+    setup seeding for codex-cli). How: parse ~/.codex/config.toml safely, merge kspec-agents.md into
+    project_doc_fallback_filenames idempotently, preserve existing fields/order where possible, and
+    support dry-run semantics used by setup/install-core. Add regression tests for create, merge,
+    idempotent re-run, and invalid TOML failure handling. Done when: running kspec setup (codex-cli)
+    and kspec skill install-core --platform codex leaves ~/.codex/config.toml with
+    project_doc_fallback_filenames containing kspec-agents.md without clobbering existing config."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - codex
+    - skills
+    - setup
+    - config
+  depends_on: []
+  _ulid: 01KJEWKGDK8YRGGF7CEXX0W33H
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-02-27T06:29:31.187Z
+  notes: []
+  todos: []
