@@ -35,6 +35,7 @@ import { SkillSchema } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success } from "../output.js";
+import { ensureCodexProjectDocFallback } from "../../lib/codex-config.js";
 
 // ============================================================================
 // Types
@@ -483,6 +484,10 @@ export function registerSkillInstallCommands(skill: Command): void {
         );
         const marketplaceResult = await registerCorePluginMarketplace({ dryRun });
         const enableResult = await enablePluginInProject(ctx.rootDir, { dryRun });
+        // AC: @new-project-bootstrapping ac-3 - Codex fallback includes kspec-agents.md
+        const codexProjectDocsResult = renderTarget.platform === "codex"
+          ? await ensureCodexProjectDocFallback("kspec-agents.md", { dryRun })
+          : null;
 
         // Output results
         output(
@@ -492,6 +497,7 @@ export function registerSkillInstallCommands(skill: Command): void {
             render: renderSummary,
             marketplace: marketplaceResult,
             pluginEnabled: enableResult,
+            codexProjectDocs: codexProjectDocsResult,
           },
           () => {
             if (dryRun) {
@@ -585,11 +591,26 @@ export function registerSkillInstallCommands(skill: Command): void {
             } else if (!enableResult.success) {
               console.log(chalk.red(`Plugin enablement failed: ${enableResult.message}`));
             }
+
+            if (codexProjectDocsResult) {
+              if (codexProjectDocsResult.success && codexProjectDocsResult.action === "added") {
+                console.log(chalk.green(codexProjectDocsResult.message));
+              } else if (codexProjectDocsResult.success) {
+                console.log(chalk.gray(codexProjectDocsResult.message));
+              } else {
+                console.log(chalk.red(`Codex fallback update failed: ${codexProjectDocsResult.message}`));
+              }
+            }
           }
         );
 
         // Exit non-zero if plugin registration or enablement failed
-        if (!marketplaceResult.success || !enableResult.success || renderSummary.failed > 0) {
+        if (
+          !marketplaceResult.success
+          || !enableResult.success
+          || renderSummary.failed > 0
+          || (codexProjectDocsResult && !codexProjectDocsResult.success)
+        ) {
           process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {

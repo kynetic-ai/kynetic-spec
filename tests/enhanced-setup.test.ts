@@ -335,9 +335,10 @@ describe('kspec setup (enhanced)', () => {
       expect(content).toContain('name: test-skill');
     });
 
+    // AC: @new-project-bootstrapping ac-3
     it('should render core skills to codex output when codex is detected', async () => {
       const result = kspec('setup', tempDir, {
-        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '' },
+        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', HOME: tempDir },
       });
       expect(result.exitCode).toBe(0);
 
@@ -350,6 +351,11 @@ describe('kspec setup (enhanced)', () => {
       const codexContent = await fs.readFile(codexCorePath, 'utf-8');
       expect(codexContent).toContain('<!-- kspec-managed -->');
       expect(codexContent).toContain('name: kspec-help');
+
+      const codexConfigPath = path.join(tempDir, '.codex', 'config.toml');
+      const codexConfig = await fs.readFile(codexConfigPath, 'utf-8');
+      expect(codexConfig).toContain('project_doc_fallback_filenames');
+      expect(codexConfig).toContain('kspec-agents.md');
 
       // Core claude-code path remains plugin-provided (no local render)
       const claudeCorePath = path.join(tempDir, '.claude', 'skills', 'help', 'SKILL.md');

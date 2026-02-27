@@ -1377,7 +1377,7 @@ export async function runSetupPipeline(
     }
 
     // Step 3c: Seed memory (platform-extensible)
-    // AC: @new-project-bootstrapping ac-2
+    // AC: @new-project-bootstrapping ac-2, ac-3
     {
       const { seedMemory } = await import("./setup-seeding.js");
       const memResult = await seedMemory(projectDir, detected.type, {
@@ -1385,10 +1385,16 @@ export async function runSetupPipeline(
         force: options.force,
       });
       memorySeeded = memResult.seeded;
+      const memoryStepStatus =
+        memResult.message.startsWith("failed:")
+          ? "failed"
+          : memResult.seeded
+            ? "done"
+            : "skipped";
 
       steps.push({
         name: "Seed memory",
-        status: memResult.seeded ? "done" : "skipped",
+        status: memoryStepStatus,
         message: memResult.seeded ? memResult.path : memResult.message,
       });
     }
