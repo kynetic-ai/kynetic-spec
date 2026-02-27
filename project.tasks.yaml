@@ -63433,6 +63433,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 2
@@ -63444,6 +63445,7 @@
   created_at: 2026-02-26T23:42:27.525Z
   started_at: 2026-02-27T01:48:09.321Z
   submitted_at: 2026-02-27T01:48:12.117Z
+  completed_at: 2026-02-27T05:19:45.630Z
   notes:
     - _ulid: 01KJE86X8EY9R143SVPK7M0SR0
       created_at: 2026-02-27T00:33:06.830Z
@@ -63480,8 +63482,6 @@
         is live."
       supersedes: null
   todos: []
-  completed_at: 2026-02-27T05:19:45.630Z
-  closed_reason: null
 - _ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
   slugs: []
   title: Enable core skill install/render path for codex
@@ -63693,5 +63693,11 @@
       author: Jacob Chapel
       content: "Merged via PR #569 on 2026-02-27 (merge commit 7042139b); portable {skill:<id>} reference
         resolution across SKILL and supporting markdown is live."
+      supersedes: null
+    - _ulid: 01KJERMMMBGRHY29RFFW92GT0R
+      created_at: 2026-02-27T05:20:13.963Z
+      author: Jacob Chapel
+      content: "Final correction (2026-02-27): Codex invocation mapping is core -> $kspec-<id>, non-core
+        -> $<id>; Claude mapping is core -> /kspec:<id>, non-core -> /<id>."
       supersedes: null
   todos: []
