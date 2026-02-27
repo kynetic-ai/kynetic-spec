@@ -3275,6 +3275,9 @@ features:
                 given: worker and reviewer adapters target different harnesses
                 when: ralph builds worker and subagent prompts in the same session
                 then: each prompt uses invocation formatting for its own role adapter without cross-role leakage
+            status:
+              maturity: draft
+              implementation: in_progress
       - _ulid: 01KJDCYRM80FT38JY8CPG63ATY
         slugs:
           - ralph-adapter-auto-approve
