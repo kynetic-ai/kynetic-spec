@@ -63960,12 +63960,22 @@
     - memory
     - session-log
   vcs_refs: []
+  session_id: 01KJF5Z4M046HF67XZN7Z0KKK6
   created_at: 2026-02-27T09:18:07.599Z
-  notes: []
+  started_at: 2026-02-27T09:19:24.995Z
+  notes:
+    - _ulid: 01KJF6GD922YTTN9A75CAC5KCJ
+      created_at: 2026-02-27T09:22:35.426Z
+      author: Jacob Chapel
+      content: "Implemented bounded terminal/run capture in ralph: stdout/stderr now stream to
+        .kspec/sessions/<session>/tool-output/<toolCallId>.{stdout,stderr}.log while responses
+        return bounded previews plus metadata (stdout_path, stderr_path, stdout_bytes, stderr_bytes,
+        preview_truncated). Wired request handler context for worker/subagent/wrap-up and added
+        regression tests in tests/ralph.test.ts for artifact streaming + preview-only fallback.
+        Verification: npm run build; npx vitest run tests/ralph.test.ts (116/116)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-27T09:19:24.995Z
-  session_id: 01KJF5Z4M046HF67XZN7Z0KKK6
 - _ulid: 01KJF68AWM0F61QBQ957V6T2C1
   slugs: []
   title: "Session events: Add oversized payload guardrails with externalized blob pointers"
