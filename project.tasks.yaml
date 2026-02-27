@@ -63866,7 +63866,7 @@
   spec_ref: "@ralph-adapter-validation"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -63878,6 +63878,7 @@
   vcs_refs: []
   created_at: 2026-02-27T08:37:26.602Z
   started_at: 2026-02-27T08:37:32.216Z
+  submitted_at: 2026-02-27T08:45:12.244Z
   notes:
     - _ulid: 01KJF418YAMNV5W2V03NJXR5X0
       created_at: 2026-02-27T08:39:22.315Z
@@ -63893,4 +63894,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-27T08:45:12.244Z
+  completed_at: 2026-02-27T08:53:53.963Z
+  closed_reason: "Merged in PR #574. Updated ralph adapter validation to probe adapter packages with
+    --help first and --version fallback to avoid false negatives for codex-acp-like CLIs while
+    preserving existing not-found behavior. Added regression tests for help-first success, version
+    fallback, and all-probes-fail. AC coverage for @ralph-adapter-validation
+    valid-adapter-proceeds/invalid-adapter-error/validation-before-spawn verified."
