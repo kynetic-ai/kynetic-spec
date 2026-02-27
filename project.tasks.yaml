@@ -63952,6 +63952,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #576 (commit 4cf2a76e7d8223077e9f0db595080c145338b1c7). Implemented
+    streamed terminal/run stdout/stderr artifact capture to .kspec/sessions/{session}/tool-output
+    with bounded in-memory previews and metadata (stdout_path, stderr_path, stdout_bytes,
+    stderr_bytes, preview_truncated). Re-review fix-cycle verified explicit @cli-ralph ac-22/ac-23
+    test annotations and spec alignment; CI checks passed on head fad7abeb before merge."
   depends_on: []
   context: []
   priority: 1
@@ -63964,6 +63969,7 @@
   created_at: 2026-02-27T09:18:07.599Z
   started_at: 2026-02-27T09:40:30.969Z
   submitted_at: 2026-02-27T09:40:49.352Z
+  completed_at: 2026-02-27T09:49:29.200Z
   notes:
     - _ulid: 01KJF6GD922YTTN9A75CAC5KCJ
       created_at: 2026-02-27T09:22:35.426Z
@@ -63997,12 +64003,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-27T09:49:29.200Z
-  closed_reason: "Merged in PR #576 (commit 4cf2a76e7d8223077e9f0db595080c145338b1c7). Implemented
-    streamed terminal/run stdout/stderr artifact capture to .kspec/sessions/{session}/tool-output
-    with bounded in-memory previews and metadata (stdout_path, stderr_path, stdout_bytes,
-    stderr_bytes, preview_truncated). Re-review fix-cycle verified explicit @cli-ralph ac-22/ac-23
-    test annotations and spec alignment; CI checks passed on head fad7abeb before merge."
 - _ulid: 01KJF68AWM0F61QBQ957V6T2C1
   slugs: []
   title: "Session events: Add oversized payload guardrails with externalized blob pointers"
@@ -64030,7 +64030,7 @@
   spec_ref: "@session-events"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -64044,3 +64044,5 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-27T10:05:04.080Z
+  session_id: 01KJF8SYSNY2SBB7APZ2CTWCF4
