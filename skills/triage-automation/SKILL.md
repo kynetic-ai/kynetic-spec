@@ -129,6 +129,6 @@ kspec tasks ready --needs-review           # Tasks needing human triage
 
 ## Integration
 
-- **`/kspec:triage-inbox`** — Inbox triage may promote items to tasks needing assessment
+- **`{skill:triage-inbox}`** — Inbox triage may promote items to tasks needing assessment
 - **`kspec tasks ready --eligible`** — Used by task-work loop to find automatable work
 - **Ralph loop** — Consumes eligible tasks; automation assessment feeds the pipeline

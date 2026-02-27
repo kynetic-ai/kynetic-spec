@@ -6811,6 +6811,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6825,6 +6826,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6839,6 +6841,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6853,6 +6856,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6867,6 +6871,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6881,6 +6886,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6895,6 +6901,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6909,6 +6916,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6923,6 +6931,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6937,6 +6946,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core
@@ -6951,6 +6961,7 @@ skills:
     version: 0.7.0
     platforms:
       - claude-code
+      - codex
     depends_on: []
     tags:
       - core

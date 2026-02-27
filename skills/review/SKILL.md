@@ -218,6 +218,6 @@ Project-specific gates to add in your own review skill:
 
 ## Integration
 
-- **`/kspec:task-work`** — Run review before submitting tasks
-- **`/kspec:writing-specs`** — If review reveals spec gaps, update specs first
+- **`{skill:task-work}`** — Run review before submitting tasks
+- **`{skill:writing-specs}`** — If review reveals spec gaps, update specs first
 - **`kspec validate`** — Automated validation complements manual review

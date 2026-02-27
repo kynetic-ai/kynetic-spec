@@ -8,7 +8,7 @@ Translate approved plans into specs and tasks. Plans are durable artifacts — t
 - Creating specs for new features or multi-spec capabilities
 - Translating design documents into the spec hierarchy
 
-**Not for:** Raw ideas (use `kspec inbox add`), single spec creation (use `/kspec:writing-specs`), or triage (use `/kspec:triage`).
+**Not for:** Raw ideas (use `kspec inbox add`), single spec creation (use `{skill:writing-specs}`), or triage (use `{skill:triage}`).
 
 ## Two Paths
 
@@ -330,7 +330,7 @@ kspec validate --alignment
 
 ## Integration
 
-- **`/kspec:writing-specs`** — Spec authoring details (types, AC format, traits)
-- **`/kspec:task-work`** — After specs are created, work on derived tasks
-- **`/kspec:triage`** — Inbox items may trigger plan creation
-- **`/kspec:observations`** — Friction during planning becomes observations
+- **`{skill:writing-specs}`** — Spec authoring details (types, AC format, traits)
+- **`{skill:task-work}`** — After specs are created, work on derived tasks
+- **`{skill:triage}`** — Inbox items may trigger plan creation
+- **`{skill:observations}`** — Friction during planning becomes observations
