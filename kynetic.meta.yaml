@@ -6801,6 +6801,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJEVM2Y2ZXMSY10GNP2CMBCV
+    type: friction
+    content: When posting content containing $ and angle-bracket placeholders via shell-wrapped
+      commands, interpolation can silently mutate task/PR notes; prefer literal-safe quoting or
+      file-based payloads.
+    created_at: 2026-02-27T06:12:21.570Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
