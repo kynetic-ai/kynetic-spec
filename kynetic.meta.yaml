@@ -7059,4 +7059,17 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KJEYQX3W594DYQAJDW12ASQX
+    _type: skill
+    id: pr-review
+    name: pr-review
+    description: Review a PR linked to a kspec task, post findings as inline comments, and merge only
+      when all quality gates pass. You NEVER fix code — you review and comment. If issues found,
+      kick back to worker.
+    origin: project
+    platforms:
+      - claude-code
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
