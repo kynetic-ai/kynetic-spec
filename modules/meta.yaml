@@ -3896,8 +3896,8 @@ modules:
         type: feature
         tags: []
         description: Improve the experience of installing kspec on a new project by seeding agent
-          configuration with useful starting context — permissions for common operations and project
-          memory with key paths and conventions.
+          configuration with useful starting context for supported harnesses — Claude permissions
+          and memory plus Codex project-doc fallback settings.
         acceptance_criteria:
           - id: ac-1
             given: kspec setup runs in a new project with Claude Code
