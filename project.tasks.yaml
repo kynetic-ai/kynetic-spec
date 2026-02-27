@@ -63500,10 +63500,13 @@
   created_at: 2026-02-27T00:18:22.197Z
   notes: []
   todos: []
-- title: Make core skill cross-references platform-aware (Claude/Codex)
+- _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
+  slugs: []
+  title: Make core skill cross-references platform-aware (Claude/Codex)
+  type: task
   description: >-
-    Core skill content currently uses Claude-style invocation references like , , etc. In Codex
-    environments this is ambiguous/non-native and can mislead users.
+    Core skill content currently uses Claude-style invocation references like `/kspec:task-work`,
+    `/kspec:plan`, etc. In Codex environments this is ambiguous/non-native and can mislead users.
 
 
     Decision needed:
@@ -63512,7 +63515,8 @@
     variants).
 
     - Option B: keep shared skill content but express cross-references in a platform-neutral or
-    multi-platform form (e.g., include both Claude and Codex invocation forms, such as  and ).
+    multi-platform form (e.g., include both Claude and Codex invocation forms, such as
+    `/kspec:task-work` and `$task-work`).
 
 
     Scope for follow-up implementation:
@@ -63528,22 +63532,19 @@
 
 
     Out of scope for this tracking task creation: no implementation changes now.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - skills
     - codex
     - docs
     - platform
-  depends_on: []
-  _ulid: 01KJE7N3QDCV5GDJKKFE9VQ3W5
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-27T00:23:23.629Z
   notes: []
