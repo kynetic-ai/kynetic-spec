@@ -64058,7 +64058,7 @@
   spec_ref: "@session-events"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -64134,3 +64134,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T04:50:38.826Z
+  closed_reason: "Merged in PR #587 (merge commit badc21d5d07debaac92c8e031ac5a43add2e1f8b). Added
+    explicit @session-events ac-7 commit-boundary coverage and verified @session-events AC
+    annotations/tests cover ac-1 through ac-9, including blob externalization and pointer audit
+    metadata behaviors."
