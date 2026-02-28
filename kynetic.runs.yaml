@@ -9102,7 +9102,7 @@ runs:
   - _ulid: 01KJKAM5HXSYPGJ4T4RX51XE9J
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T23:51:30.621Z
     step_results:
@@ -9115,5 +9115,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T23:52:15.558Z
-        completed_at: 2026-02-28T23:52:15.558Z
+        completed_at: 2026-02-28T23:52:17.044Z
+        notes: "Friction check: pre-existing validate noise from @observations slug ambiguity and missing
+          observations skill file remains; known/tracked already."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T23:52:17.044Z
+        completed_at: 2026-02-28T23:52:17.044Z
     initiated_by: "@claude"
