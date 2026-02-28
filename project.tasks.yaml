@@ -62264,7 +62264,7 @@
     not provided. (4) Invalid `--agent` values are rejected with a clear error. (5) Tests in
     `tests/enhanced-setup.test.ts` and `tests/setup-pipeline-unification.test.ts` updated."
   spec_ref: "@enhanced-setup"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62275,6 +62275,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T07:04:26.341Z
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
@@ -62392,6 +62394,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Already implemented on main. Verified helper env isolation, corrected command usage,
+    and contaminated-env regression run passed (203 tests).
   depends_on: []
   context: []
   priority: 3
@@ -62401,6 +62405,7 @@
   created_at: 2026-02-26T19:32:53.607Z
   started_at: 2026-02-28T07:03:24.915Z
   submitted_at: 2026-02-28T07:04:15.904Z
+  completed_at: 2026-02-28T07:04:17.233Z
   notes:
     - _ulid: 01KJHGZQNC05ZHT2F82VHY2ZF4
       created_at: 2026-02-28T07:04:12.205Z
@@ -62416,9 +62421,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T07:04:17.233Z
-  closed_reason: Already implemented on main. Verified helper env isolation, corrected command usage,
-    and contaminated-env regression run passed (203 tests).
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
