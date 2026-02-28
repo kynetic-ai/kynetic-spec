@@ -62891,6 +62891,7 @@
   session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
   created_at: 2026-02-26T19:32:57.124Z
   started_at: 2026-02-28T13:53:48.588Z
+  submitted_at: 2026-02-28T13:58:02.088Z
   notes:
     - _ulid: 01KJJ8DXYSJ1XM78N2028HFCZP
       created_at: 2026-02-28T13:53:54.649Z
@@ -62912,9 +62913,16 @@
         tests/batch-schema.test.ts; npm test -- tests/batch-exec-engine.test.ts; npm test; kspec
         validate."
       supersedes: null
+    - _ulid: 01KJJ8P6CTQH49FKV098HGCP4W
+      created_at: 2026-02-28T13:58:25.434Z
+      author: "@claude"
+      content: "Submitted for review in PR #600: https://github.com/kynetic-ai/kynetic-spec/pull/600.
+        Implemented canonical arg-key normalization for kebab/camel/underscore variants in batch
+        validation + argv build path, added underscore regression coverage, and verified with
+        targeted tests, full npm test (3550 passed), and kspec validate."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T13:58:02.088Z
 - _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
   title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
