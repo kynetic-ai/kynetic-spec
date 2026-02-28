@@ -3957,7 +3957,7 @@ features:
             created: 2026-02-27T20:15:53.916Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KJGBWN453M60B01TV7DA019V
             slugs:
               - session-stale-close-metadata
