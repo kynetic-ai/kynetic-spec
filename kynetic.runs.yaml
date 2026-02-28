@@ -8303,7 +8303,7 @@ runs:
   - _ulid: 01KJK3XBCR99QN61RH1ZFX69ZH
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T21:54:11.481Z
     step_results:
@@ -8317,5 +8317,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T21:54:48.560Z
-        completed_at: 2026-02-28T21:54:48.560Z
+        completed_at: 2026-02-28T21:54:54.453Z
+        notes: "High-confidence friction: pre-staged index entries can leak unrelated files into task
+          commits even when adding only target paths. In this iteration, two unrelated staged files
+          were included in a task commit, requiring post-commit triage. Search checks run: 'staged
+          files commit', 'accidentally committed staged', 'git add accidentally includes staged',
+          'pre-staged index', 'commit scope guard' (all no results)."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T21:54:54.453Z
+        completed_at: 2026-02-28T21:54:54.453Z
     initiated_by: "@claude"
