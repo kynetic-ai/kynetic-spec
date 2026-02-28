@@ -8056,7 +8056,7 @@ runs:
   - _ulid: 01KJJYS1B66WXZ1T08HZEFPM45
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T20:24:27.238Z
     step_results:
@@ -8069,5 +8069,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T20:24:58.546Z
-        completed_at: 2026-02-28T20:24:58.546Z
+        completed_at: 2026-02-28T20:25:12.938Z
+        notes: "High-confidence reflection items this iteration: (1) friction: shell-wrapped command
+          payloads with markdown/backticks can be interpolated unexpectedly; (2) friction:
+          dist-based CLI tests require rebuild before validation. Both observed directly during this
+          iteration."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T20:25:12.938Z
+        completed_at: 2026-02-28T20:25:12.938Z
     initiated_by: "@claude"
