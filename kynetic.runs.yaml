@@ -7835,7 +7835,7 @@ runs:
   - _ulid: 01KJJH3K0KAH0JHTCZ698KTHW4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-02-28T16:25:32.948Z
     step_results:
@@ -7933,5 +7933,26 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-02-28T16:26:33.106Z
-        completed_at: 2026-02-28T16:26:33.106Z
+        completed_at: 2026-02-28T16:26:42.082Z
+        notes: >-
+          Proposed improvements for untracked items:
+
+
+          1. **Worktree guard escape hatch** (small) — Add a way for users to bypass the guard for
+          intentional recovery operations. Could be an env var (KSPEC_GUARD_OVERRIDE=1) or a
+          --force-dangerous flag on the guard command. The guard correctly blocks accidental
+          destructive ops, but during recovery scenarios like we had today, it blocks the human too.
+
+
+          2. **Compact portability** (small, low priority) — Allow kspec session compact to accept a
+          --spec-dir flag to target a different .kspec directory. Useful when working in isolated
+          worktrees. Workaround (rsync) is fine for now.
+
+
+          Both are small scope. The guard escape hatch is more impactful since recovery scenarios
+          are exactly when you need to do dangerous things intentionally.
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-28T16:26:42.082Z
+        completed_at: 2026-02-28T16:26:42.082Z
     initiated_by: "@claude"
