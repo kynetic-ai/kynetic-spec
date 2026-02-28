@@ -61906,6 +61906,11 @@
   spec_ref: "@task-patch"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #588. Added TTY guard in task patch so interactive runs without --data
+    fail fast with validation error; preserved --data and piped-stdin behavior; added integration
+    coverage for stdin patch path and interactive no-input failure. Verified @task-patch AC coverage
+    (ac-1..ac-4) remains covered in tests/integration.test.ts and CI checks passed on PR head before
+    merge."
   depends_on: []
   context: []
   priority: 3
@@ -61915,6 +61920,7 @@
   created_at: 2026-02-26T19:32:47.484Z
   started_at: 2026-02-28T04:54:11.378Z
   submitted_at: 2026-02-28T04:54:12.481Z
+  completed_at: 2026-02-28T05:04:57.045Z
   notes:
     - _ulid: 01KJH8VZV37NY5P2HGGM1MAH94
       created_at: 2026-02-28T04:42:20.899Z
@@ -61958,12 +61964,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T05:04:57.045Z
-  closed_reason: "Merged in PR #588. Added TTY guard in task patch so interactive runs without --data
-    fail fast with validation error; preserved --data and piped-stdin behavior; added integration
-    coverage for stdin patch path and interactive no-input failure. Verified @task-patch AC coverage
-    (ac-1..ac-4) remains covered in tests/integration.test.ts and CI checks passed on PR head before
-    merge."
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
   title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
@@ -62019,7 +62019,7 @@
     regenerated to reflect the change. (3) After a ralph PR merge, the source branch is deleted from
     the remote."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62030,6 +62030,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T05:05:35.942Z
+  session_id: 01KJH73C9JTMB6977AEY991KBQ
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
