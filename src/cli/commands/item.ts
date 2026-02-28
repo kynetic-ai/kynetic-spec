@@ -16,10 +16,12 @@ import {
   initContext,
   type LoadedSpecItem,
   loadAllItems,
+  loadMetaContext,
   loadAllTasks,
   type PatchOperation,
   patchSpecItems,
   ReferenceIndex,
+  resolveMetaRef,
   updateSpecItem,
 } from "../../parser/index.js";
 import type { ItemFilter } from "../../parser/items.js";
@@ -452,7 +454,18 @@ export function registerItemCommands(program: Command): void {
         const result = refIndex.resolve(ref);
 
         if (!result.ok) {
-          error(errors.reference.itemNotFound(ref));
+          let notFoundMessage = errors.reference.itemNotFound(ref);
+          try {
+            const metaCtx = await loadMetaContext(ctx);
+            const resolvedMetaRef = resolveMetaRef(metaCtx, ref);
+            if (resolvedMetaRef?.type === "observation") {
+              notFoundMessage = `Item not found: ${ref}\nHint: ${ref} is an observation. Use: kspec meta observe get ${ref}`;
+            }
+          } catch {
+            // Fall back to the standard item-not-found error when meta context is unavailable.
+          }
+
+          error(notFoundMessage);
           process.exit(EXIT_CODES.ERROR);
         }
 

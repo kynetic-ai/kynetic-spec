@@ -570,6 +570,23 @@ describe('Integration: items', () => {
     expect(output).toContain('requirement');
   });
 
+  it('should suggest meta observe get for observation refs', () => {
+    const observation = kspecJson<{ _ulid: string }>(
+      'meta observe idea "Observation for item-get guidance"',
+      tempDir
+    );
+    const observationRef = `@${observation._ulid.slice(0, 8)}`;
+
+    const result = kspecRun(`item get ${observationRef}`, tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.stderr).toContain(`Item not found: ${observationRef}`);
+    expect(result.stderr).toContain(
+      `Hint: ${observationRef} is an observation. Use: kspec meta observe get ${observationRef}`
+    );
+  });
+
   // AC: @item-get ac-1
   it('should display acceptance criteria in item get output', () => {
     // First add an AC to the item
