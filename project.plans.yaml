@@ -5943,3 +5943,451 @@ plans:
           - codex-acp: TBD (determine correct Codex ACP auto-approve flags)
 
           - When `--no-yolo`: skip autoApproveArgs entirely
+  - _ulid: 01KJG4QB2Q95HB7CQ4GYZ777DV
+    slugs:
+      - plan-session-compact-command
+    title: Session Compact Command
+    content: >
+      # Session Compact Command
+
+
+      ## Context
+
+
+      PR #578 added blob externalization guardrails to `appendEvent`, but they only apply to new
+      events. The project has 87 sessions totaling ~820 MB of `events.jsonl` data, with the largest
+      single session (01KJF8SY) at 272 MB. These pre-existing oversized events inflate the shadow
+      branch and every clone/sync. A retroactive compact command reprocesses existing events through
+      the same externalization pipeline.
+
+
+      Existing inbox item `01KGWQ2T` proposed stats compilation + pruning, but blob externalization
+      is better — it preserves full auditability while reducing JSONL line sizes.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Session Event Compaction
+        slug: session-compact
+        type: feature
+        parent: "@session-events"
+        description: |
+          Retroactive compaction of session event logs. Rewrites events.jsonl
+          by running existing events through the blob externalization pipeline,
+          replacing oversized inline payloads with blob pointers. Preserves
+          full auditability — no data is lost, payloads are moved to blob files.
+        traits:
+          - "@trait-semantic-exit-codes"
+          - "@trait-dry-run"
+          - "@trait-shadow-commit"
+          - "@trait-json-output"
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A session has events.jsonl with oversized inline payloads
+            when: |
+              kspec session compact <session-id> is run
+            then: |
+              Each event's data is processed through the blob externalization
+              pipeline and oversized fields are written to blobs/ as blob files
+          - id: ac-2
+            given: |
+              Events have been externalized to blobs
+            when: |
+              The compacted events are persisted
+            then: |
+              events.jsonl is atomically replaced using temp-file-then-rename
+              so a crash mid-compact does not corrupt the event log
+          - id: ac-3
+            given: |
+              A session has already been compacted (all payloads are blob pointers
+              or below thresholds)
+            when: |
+              kspec session compact <session-id> is run again
+            then: |
+              No new blobs are created and events.jsonl content is unchanged
+          - id: ac-4
+            given: |
+              The target session has status "active"
+            when: |
+              kspec session compact <session-id> is run
+            then: |
+              The command refuses with an error and non-zero exit code
+              because compacting an actively-written session risks data loss
+          - id: ac-5
+            given: |
+              The user wants to compact all eligible sessions
+            when: |
+              kspec session compact --all is run
+            then: |
+              All non-active sessions are processed sequentially with
+              per-session progress output
+          - id: ac-6
+            given: |
+              A compaction completes (single or --all)
+            when: |
+              Results are reported
+            then: |
+              Output shows events processed, blobs created, bytes before,
+              bytes after, and bytes reclaimed
+          - id: ac-7
+            given: |
+              A session directory has empty or missing events.jsonl
+            when: |
+              kspec session compact <session-id> is run
+            then: |
+              The command exits cleanly reporting nothing to compact
+          - id: ac-8
+            given: |
+              A blob write or temp-file rename fails during compaction
+            when: |
+              The error is caught
+            then: |
+              The original events.jsonl is preserved unchanged and the
+              command exits with a non-zero error code
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ## Implementation Notes
+
+
+      **Key reuse points:**
+
+      - `externalizeOversizedPayloads` and `createBlobPointer` in `src/sessions/store.ts` —
+      currently private. Wrap in a new public `compactSessionEvents(specDir, sessionId)` function
+      rather than exporting internals.
+
+      - `readEvents()` for reading existing events (note: loads all into memory — acceptable for
+      current session sizes, largest is 272 MB / 1841 lines)
+
+      - `isSessionBlobPointer` already handles idempotency (early return in externalization)
+
+      - Atomic write pattern from `writeBudgetAtomic` (write to `.{pid}.tmp`, then `rename`)
+
+
+      **Two-stage externalization (must replicate both):**
+
+      1. Field-level: `externalizeOversizedPayloads` targets specific key paths (rawOutput,
+      toolResponse stdout/stderr, chunk text)
+
+      2. Line-level: if JSON line still exceeds `EVENT_LINE_MAX_BYTES` (256 KB) after field
+      externalization, externalize entire `data` payload as single blob
+
+
+      **Re-validate each event through `SessionEventSchema.parse()` after externalization** (same as
+      `appendEvent` does).
+
+
+      **Implementation approach:**
+
+      1. Add `compactSessionEvents(specDir, sessionId): Promise<CompactResult>` to `store.ts`
+
+      2. Add `session compact` CLI command in new `src/cli/commands/session/compact.ts`
+
+      3. Register in `commands.ts` with `markMutating()`
+
+      4. Handle `--all` by iterating `getAllSessionLogSummaries()`, skipping active sessions
+
+      5. Single shadow commit after all compaction completes (not per-session)
+
+      6. Check session status via `readSessionMetadata()` — refuse active sessions
+
+
+      **Rollback strategy:** Git history on shadow branch serves as implicit backup. The atomic
+      rename ensures no partial writes.
+
+
+      **Git size note:** Rewriting events.jsonl means git stores both old and new versions. Net
+      shadow branch size may increase temporarily until `git gc`. The JSONL shrinks but blob files
+      are added. Long-term net effect is positive for clone/sync because JSONL lines stay bounded.
+
+
+      **Files to modify:**
+
+      - `src/sessions/store.ts` — add `compactSessionEvents()` wrapping existing internals
+
+      - `src/cli/commands/session/compact.ts` — new file, CLI action
+
+      - `src/cli/commands/session/commands.ts` — register command
+
+      - `tests/session-compact.test.ts` — new file, tests
+
+
+      **Supersedes inbox item:** `01KGWQ2T` (session log compaction)
+    status: active
+    derived_tasks:
+      - "@implement-session-event-compaction"
+    derived_specs:
+      - "@session-compact"
+    source_path: /home/chapel/.claude/plans/keen-wiggling-reef.md
+    created_at: 2026-02-27T18:10:39.830Z
+    approved_at: null
+    completed_at: null
+    notes:
+      - _ulid: 01KJG4QB2QRMN72CGAZ7GBJVK0
+        created_at: 2026-02-27T18:10:39.831Z
+        author: "@claude"
+        content: >-
+          Implementation notes:
+
+
+          **Key reuse points:**
+
+          - `externalizeOversizedPayloads` and `createBlobPointer` in `src/sessions/store.ts` —
+          currently private. Wrap in a new public `compactSessionEvents(specDir, sessionId)`
+          function rather than exporting internals.
+
+          - `readEvents()` for reading existing events (note: loads all into memory — acceptable for
+          current session sizes, largest is 272 MB / 1841 lines)
+
+          - `isSessionBlobPointer` already handles idempotency (early return in externalization)
+
+          - Atomic write pattern from `writeBudgetAtomic` (write to `.{pid}.tmp`, then `rename`)
+
+
+          **Two-stage externalization (must replicate both):**
+
+          1. Field-level: `externalizeOversizedPayloads` targets specific key paths (rawOutput,
+          toolResponse stdout/stderr, chunk text)
+
+          2. Line-level: if JSON line still exceeds `EVENT_LINE_MAX_BYTES` (256 KB) after field
+          externalization, externalize entire `data` payload as single blob
+
+
+          **Re-validate each event through `SessionEventSchema.parse()` after externalization**
+          (same as `appendEvent` does).
+
+
+          **Implementation approach:**
+
+          1. Add `compactSessionEvents(specDir, sessionId): Promise<CompactResult>` to `store.ts`
+
+          2. Add `session compact` CLI command in new `src/cli/commands/session/compact.ts`
+
+          3. Register in `commands.ts` with `markMutating()`
+
+          4. Handle `--all` by iterating `getAllSessionLogSummaries()`, skipping active sessions
+
+          5. Single shadow commit after all compaction completes (not per-session)
+
+          6. Check session status via `readSessionMetadata()` — refuse active sessions
+
+
+          **Rollback strategy:** Git history on shadow branch serves as implicit backup. The atomic
+          rename ensures no partial writes.
+
+
+          **Git size note:** Rewriting events.jsonl means git stores both old and new versions. Net
+          shadow branch size may increase temporarily until `git gc`. The JSONL shrinks but blob
+          files are added. Long-term net effect is positive for clone/sync because JSONL lines stay
+          bounded.
+
+
+          **Files to modify:**
+
+          - `src/sessions/store.ts` — add `compactSessionEvents()` wrapping existing internals
+
+          - `src/cli/commands/session/compact.ts` — new file, CLI action
+
+          - `src/cli/commands/session/commands.ts` — register command
+
+          - `tests/session-compact.test.ts` — new file, tests
+
+
+          **Supersedes inbox item:** `01KGWQ2T` (session log compaction)
+  - _ulid: 01KJGBWMZCX7EQFWP4JFN7MB8V
+    slugs:
+      - plan-auto-close-stale-active-sessions
+    title: Auto-close stale active sessions
+    content: >
+      # Auto-close stale active sessions
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Stale Active Session Cleanup
+        slug: session-stale-cleanup
+        type: feature
+        parent: "@session-events"
+        description: |
+          Detect and close stale active sessions so maintenance commands like
+          session compaction can proceed without manual cleanup. The cleanup path
+          must be safe, auditable, and previewable before mutation.
+        traits:
+          - trait-json-output
+          - trait-dry-run
+          - trait-semantic-exit-codes
+          - trait-shadow-commit
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              one or more sessions are currently in status "active"
+            when: |
+              user runs "kspec session stale close --dry-run"
+            then: |
+              command reports which sessions would be marked abandoned and includes
+              per-session reasons without modifying any session files
+          - id: ac-2
+            given: |
+              stale active sessions match the configured criteria
+            when: |
+              user runs "kspec session stale close"
+            then: |
+              command marks only matching sessions abandoned and leaves all other
+              session statuses unchanged
+          - id: ac-3
+            given: |
+              no active sessions match the stale criteria
+            when: |
+              command executes
+            then: |
+              command exits successfully and reports zero sessions changed
+          - id: ac-4
+            given: |
+              command runs in --all mode against many sessions
+            when: |
+              execution completes
+            then: |
+              output includes totals for candidates, changed sessions, skipped
+              sessions, and failures in both human and JSON modes
+
+      - title: Stale Session Candidate Criteria
+        slug: session-stale-criteria
+        type: requirement
+        parent: "@session-stale-cleanup"
+        description: |
+          Candidate selection is deterministic and based on explicit time criteria,
+          not guessed session age.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              an active session has a most-recent event timestamp older than the
+              inactivity threshold
+            when: |
+              stale candidates are computed
+            then: |
+              the session is eligible for closure if it also satisfies the age
+              threshold
+          - id: ac-2
+            given: |
+              an active session has no events in events.jsonl
+            when: |
+              stale candidates are computed
+            then: |
+              started_at is used as the last-activity fallback timestamp
+          - id: ac-3
+            given: |
+              user provides both --older-than and --inactive-for criteria
+            when: |
+              candidates are filtered
+            then: |
+              both criteria are applied with AND logic
+          - id: ac-4
+            given: |
+              user provides an invalid time specification
+            when: |
+              command validates input
+            then: |
+              command returns usage error with guidance on accepted formats
+
+      - title: Auto-abandon Metadata and Audit Trail
+        slug: session-stale-close-metadata
+        type: requirement
+        parent: "@session-stale-cleanup"
+        description: |
+          Automatic closure must preserve auditability so operators can understand
+          why and when a session was auto-abandoned.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a stale active session is selected for closure
+            when: |
+              closure is applied
+            then: |
+              session metadata is updated to status "abandoned" and ended_at is set
+              to an ISO 8601 timestamp
+          - id: ac-2
+            given: |
+              a stale active session is auto-closed
+            when: |
+              close metadata is written
+            then: |
+              close_reason includes an "auto-abandoned" marker and the criteria
+              used for selection
+          - id: ac-3
+            given: |
+              multiple sessions are auto-closed in one command
+            when: |
+              persistence completes
+            then: |
+              all metadata updates are captured in one shadow commit with a
+              command-specific commit message
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ## Implementation Notes
+
+
+      Use existing session summary and last-event helpers in src/sessions/store.ts to avoid
+      duplicate log scanning.
+
+      Prefer the same time-spec parsing style already used by session log and workflow prune
+      commands.
+    status: active
+    derived_tasks:
+      - "@implement-stale-active-session-cleanup"
+      - "@implement-stale-session-candidate-criteria"
+      - "@implement-auto-abandon-metadata-and-audit-trail"
+    derived_specs:
+      - "@session-stale-cleanup"
+      - "@session-stale-criteria"
+      - "@session-stale-close-metadata"
+    source_path: /tmp/session-stale-cleanup-plan.md
+    created_at: 2026-02-27T20:15:53.836Z
+    approved_at: null
+    completed_at: null
+    notes:
+      - _ulid: 01KJGBWMZCFGG7P1TWE5GP3G5G
+        created_at: 2026-02-27T20:15:53.836Z
+        author: Jacob Chapel
+        content: >-
+          Implementation notes:
+
+
+          Use existing session summary and last-event helpers in src/sessions/store.ts to avoid
+          duplicate log scanning.
+
+          Prefer the same time-spec parsing style already used by session log and workflow prune
+          commands.
+      - _ulid: 01KJGCHPGC1X0RAM6J1QAKH8NP
+        created_at: 2026-02-27T20:27:23.533Z
+        author: Jacob Chapel
+        content: "Incorporated review feedback: clarified targeting semantics (<session-id> vs --all, no
+          --refs), added explicit usage-error ACs, restricted criteria flags to relative durations,
+          added corrupt events handling + liveness guard ACs, standardized close_reason format, and
+          added task dependency edges so parent feature task waits on criteria+metadata tasks."
+      - _ulid: 01KJGCJZHWBB409R2GSCX2BTX3
+        created_at: 2026-02-27T20:28:05.564Z
+        author: Jacob Chapel
+        content: "Review refinement: aligned batch semantics with traits by adding --refs support and
+          @trait-multi-ref-batch; targeting contract is now <session-id> OR --refs OR --all
+          (mutually exclusive), with --all --dry-run used for batch preview AC."

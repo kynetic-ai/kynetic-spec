@@ -594,16 +594,57 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
-          `kspec validate` supports multiple modes:
-          - --schema: Check schema conformance only
-          - --refs: Check all @references resolve
-          - --orphans: Find items not referenced by anything
-          - (default): All checks
+        description: >-
+          `kspec validate` supports scoped and combinable mode flags.
 
-          CI should run `kspec validate` or `kspec lint --strict`.
+
+          Mode flags:
+
+          - --schema
+
+          - --refs
+
+          - --orphans
+
+          - --alignment
+
+          - --completeness
+
+          - --conventions
+
+          - --staleness
+
+          - --skills
+
+          - --drift
+
+
+          Behavior:
+
+          - No mode flags: run full validation surface
+
+          - One mode flag: run only that mode's checks
+
+          - Multiple mode flags: run the union of selected checks
+
+
+          CI should run `kspec validate` (full baseline) and may run scoped modes for focused
+          debugging.
         implements:
           - "@validation"
+        acceptance_criteria:
+          - id: ac-mode-default-all
+            given: No mode flags are passed to kspec validate
+            when: Validation runs
+            then: All validation modes execute.
+          - id: ac-mode-flag-isolation
+            given: A single mode flag (for example --staleness or --completeness) is passed
+            when: Validation runs
+            then: Only the selected mode's checks execute.
+          - id: ac-mode-flag-combination
+            given: Multiple mode flags are passed
+            when: Validation runs
+            then: Validation executes the union of selected modes and does not run unselected modes.
       - _ulid: 01KEZCJPJ42RZQPFC962QV2TP3
         slugs:
           - validation-output

@@ -100,6 +100,8 @@ grep -rn "// AC: @spec-ref" tests/ packages/
 it('should validate input when given invalid data', () => { ... });
 ```
 
+Before accepting coverage, confirm each annotation maps to the correct AC text from `kspec item get @spec-ref` (not just the same `ac-N` number).
+
 ### 2. Trait AC Coverage (MUST-FIX)
 
 If the spec implements traits, every inherited trait AC MUST also have test coverage. Run `kspec item get @spec-ref` — inherited ACs appear under "Inherited from @trait-slug" sections. Each one needs a test annotated with the **trait's** ref, not the spec's ref.
@@ -124,6 +126,8 @@ Any "inherited trait AC(s) without test coverage" warning from `kspec validate` 
 // AC: @trait-json-output ac-1
 it('should output valid JSON with --json flag', () => { ... });
 ```
+
+Annotations must be standalone line comments (`// AC:` or `# AC:`), not embedded inside block/JSDoc comments.
 
 If a trait AC genuinely does not apply to this spec, annotate it with a reason: `// AC: @trait-slug ac-N — N/A: <reason>`. The annotation must exist so coverage tooling can track it.
 
