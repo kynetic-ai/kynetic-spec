@@ -62757,7 +62757,7 @@
 
     - Add a test case for empty `--commands` input
   spec_ref: "@batch-exec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62781,6 +62781,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T13:33:39.765Z
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
