@@ -6732,7 +6732,7 @@ runs:
   - _ulid: 01KJHBTAN0JR0ZQWX0QVMZP2P8
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T05:33:52.160Z
     step_results:
@@ -6745,5 +6745,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T05:34:16.025Z
-        completed_at: 2026-02-28T05:34:16.025Z
+        completed_at: 2026-02-28T05:34:16.820Z
+        notes: "Friction: full-suite nondeterminism in session-budget assertions and env leakage; already
+          covered by existing tracked item @01KJ8NDT."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T05:34:16.820Z
+        completed_at: 2026-02-28T05:34:16.820Z
     initiated_by: "@claude"
