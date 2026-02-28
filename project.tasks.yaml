@@ -61574,6 +61574,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #596. Added triage API E2E behavioral coverage for triage:updates
+    broadcasts on create/override/act paths in packages/web-ui/tests/e2e/api-triage.spec.ts,
+    including protocol payload assertions and result_ref validation for act. Updated
+    @trait-websocket-protocol ac-3 annotation to covered. Own ACs (ac-1..ac-9) and task-scope trait
+    AC coverage verified in review."
   depends_on:
     - "@task-fix-triage-e2e-ac-gaps"
   context: []
@@ -61586,6 +61591,7 @@
   created_at: 2026-02-26T11:44:14.296Z
   started_at: 2026-02-28T07:29:10.652Z
   submitted_at: 2026-02-28T07:29:15.432Z
+  completed_at: 2026-02-28T07:39:14.668Z
   notes:
     - _ulid: 01KJHJ3CQ8KCK68Y6EEDVG3NEC
       created_at: 2026-02-28T07:23:40.648Z
@@ -61631,12 +61637,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T07:39:14.668Z
-  closed_reason: "Merged in PR #596. Added triage API E2E behavioral coverage for triage:updates
-    broadcasts on create/override/act paths in packages/web-ui/tests/e2e/api-triage.spec.ts,
-    including protocol payload assertions and result_ref validation for act. Updated
-    @trait-websocket-protocol ac-3 annotation to covered. Own ACs (ac-1..ac-9) and task-scope trait
-    AC coverage verified in review."
 - _ulid: 01KJD106N5ZQ3VB9T3EV3BHYZK
   slugs:
     - task-ci-e2e-tests
@@ -62553,7 +62553,7 @@
     - Alternatively, if extending ReferenceIndex: meta entities are resolvable via `item get` with
     correct type display
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62588,6 +62588,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T07:43:17.442Z
+  closed_reason: "Merged in PR #595. Implemented item-get unresolved-ref guidance for observation refs
+    by suggesting 'kspec meta observe get <ref>' when applicable, with integration regression
+    coverage for the hint path. AC coverage N/A (task has no spec_ref); full regression and CI
+    checks passed."
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
