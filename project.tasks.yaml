@@ -62145,7 +62145,7 @@
     previously-ambiguous references resolve correctly. (4) `kspec agents generate` still includes
     the observations skill."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62172,6 +62172,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T13:47:04.205Z
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
