@@ -64941,6 +64941,18 @@
         events.jsonl failure path; add explicit unreadable-case test asserting skipped/failure
         counts and warning context."
       supersedes: null
+    - _ulid: 01KJK2REWT51YVGY85GJ5AMF25
+      created_at: 2026-02-28T21:34:02.650Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Addressed MUST-FIX for @session-stale-criteria ac-7 by adding explicit
+        unreadable events.jsonl coverage in tests/session-stale-criteria.test.ts. New AC-annotated
+        test creates an unreadable events path and asserts skipped/failure totals plus warning
+        context (reason=events_unreadable, detail includes read failure context). Commit b563c372
+        pushed to PR #605 branch (feat/session-stale-candidate-criteria). Verification: npx vitest
+        run tests/session-stale-criteria.test.ts passes (12 tests). Full npm test run in this
+        session still reports pre-existing timeout failures in tests/cli/session-note-limit.test.ts
+        and tests/cli/session-start-format.test.ts unrelated to stale-session criteria changes."
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KJGBWPAR4PYC6G8DD4PFJ770
