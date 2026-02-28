@@ -1431,6 +1431,93 @@ export async function selectStaleActiveSessions(
   };
 }
 
+export interface AutoAbandonMetadataPreview {
+  sessionId: string;
+  status: "abandoned";
+  endedAt: string;
+  closeReason: string;
+}
+
+export interface AutoAbandonMetadataResult {
+  dryRun: boolean;
+  updatedCount: number;
+  updates: AutoAbandonMetadataPreview[];
+}
+
+/**
+ * Build canonical close_reason for stale auto-abandon updates.
+ *
+ * Canonical format:
+ * auto-abandoned:older-than=<duration>,inactive-for=<duration>,liveness-guard=<duration>,last-activity=<iso>
+ */
+export function buildAutoAbandonedCloseReason(
+  criteria: StaleSessionCriteria,
+  evaluation: Pick<StaleSessionEvaluation, "lastActivityAt">,
+): string {
+  const segments = [
+    `older-than=${criteria.olderThan}`,
+    `inactive-for=${criteria.inactiveFor}`,
+    `liveness-guard=${criteria.livenessGuard}`,
+    `last-activity=${evaluation.lastActivityAt}`,
+  ];
+  return `auto-abandoned:${segments.join(",")}`;
+}
+
+/**
+ * Apply abandoned metadata to stale session candidates.
+ *
+ * All updates in a single invocation share one ended_at timestamp, which lets
+ * the caller persist and commit the batch atomically with one shadow commit.
+ */
+export async function applyAutoAbandonMetadata(
+  specDir: string,
+  selection: Pick<StaleSessionCandidateSelection, "criteria" | "candidates">,
+  options?: { dryRun?: boolean; nowMs?: number },
+): Promise<AutoAbandonMetadataResult> {
+  const dryRun = options?.dryRun === true;
+  const endedAt = new Date(options?.nowMs ?? Date.now()).toISOString();
+  const updates: AutoAbandonMetadataPreview[] = [];
+
+  for (const candidate of selection.candidates) {
+    const closeReason = buildAutoAbandonedCloseReason(
+      selection.criteria,
+      candidate,
+    );
+    updates.push({
+      sessionId: candidate.sessionId,
+      status: "abandoned",
+      endedAt,
+      closeReason,
+    });
+
+    if (dryRun) continue;
+
+    const metadata = await getSession(specDir, candidate.sessionId);
+    if (!metadata) continue;
+
+    const updated: SessionMetadata = {
+      ...metadata,
+      status: "abandoned",
+      ended_at: endedAt,
+      close_reason: closeReason,
+    };
+
+    const metadataPath = getSessionMetadataPath(specDir, candidate.sessionId);
+    const content = YAML.stringify(updated, {
+      indent: 2,
+      lineWidth: 100,
+      sortMapEntries: false,
+    });
+    await fsPromises.writeFile(metadataPath, content, "utf-8");
+  }
+
+  return {
+    dryRun,
+    updatedCount: updates.length,
+    updates,
+  };
+}
+
 // ─── Session Log Summaries ───────────────────────────────────────────────────
 
 /**
