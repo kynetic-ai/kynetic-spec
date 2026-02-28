@@ -64997,7 +64997,7 @@
   type: task
   spec_ref: "@session-stale-close-metadata"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -65095,8 +65095,16 @@
       author: "@claude"
       content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
       supersedes: null
+    - _ulid: 01KJK4M0MH7VQGCDZCN9RED8K4
+      created_at: 2026-02-28T22:06:34.129Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR includes unrelated @cli-ralph/@01KJDQ17W
+        changes and does not satisfy @session-stale-close-metadata ac-3 (one shadow commit with
+        command-specific message not implemented/covered). See PR #607 inline review comments."
+      supersedes: null
   todos: []
   automation: needs_review
+  session_id: null
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
