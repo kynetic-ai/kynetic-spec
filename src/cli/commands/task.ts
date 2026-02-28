@@ -995,12 +995,25 @@ Examples:
         if (options.data) {
           jsonData = options.data;
         } else {
+          const isTTY =
+            process.env.KSPEC_TEST_TTY === "1" ||
+            process.env.KSPEC_TEST_TTY === "true" ||
+            process.stdin.isTTY;
+          if (isTTY) {
+            error(errors.validation.noPatchData);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+
           // Read from stdin
           const chunks: Buffer[] = [];
           for await (const chunk of process.stdin) {
             chunks.push(chunk);
           }
           jsonData = Buffer.concat(chunks).toString("utf-8");
+          if (!jsonData.trim()) {
+            error(errors.validation.noPatchData);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
         }
 
         // Parse JSON

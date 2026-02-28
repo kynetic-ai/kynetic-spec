@@ -502,6 +502,23 @@ describe('Integration: task patch', () => {
     const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
     expect(task.priority).toBe(2); // Original value from fixture
   });
+
+  it('should read patch JSON from stdin when no --data is provided', () => {
+    // AC: @task-patch ac-1
+    kspec('task patch @test-task-pending', tempDir, { stdin: '{"priority":1}' });
+
+    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    expect(task.priority).toBe(1);
+  });
+
+  it('should fail fast in interactive mode when no --data is provided', () => {
+    const result = kspecRun('task patch @test-task-pending', tempDir, {
+      expectFail: true,
+      env: { KSPEC_TEST_TTY: 'true' },
+    });
+    expect(result.exitCode).toBe(4);
+    expect(result.stderr).toContain('No patch data. Use --data or pipe JSON to stdin.');
+  });
 });
 
 describe('Integration: items', () => {
