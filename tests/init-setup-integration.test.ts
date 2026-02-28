@@ -138,6 +138,24 @@ describe('Init Setup Integration', () => {
       const settingsExists = await fs.access(settingsPath).then(() => true).catch(() => false);
       expect(settingsExists).toBe(false);
     });
+
+    // AC: @init-setup-integration ac-4 - behavior unchanged without --setup
+    it('shows custom shadow directory and branch in next steps when configured', async () => {
+      await fs.writeFile(
+        path.join(testDir, 'kspec.config.yaml'),
+        `shadow:
+  directory: .specs
+  branch: specs-meta
+`
+      );
+
+      const result = kspec('init --no-prompt', testDir);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Next steps');
+      expect(result.stdout).toContain('Note: Spec files live in .specs/ (gitignored) and commit to specs-meta branch');
+      expect(result.stdout).not.toContain('Note: Spec files live in .kspec/ (gitignored) and commit to kspec-meta branch');
+    });
   });
 
   describe('kspec init --setup edge cases', () => {
