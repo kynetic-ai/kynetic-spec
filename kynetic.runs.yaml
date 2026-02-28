@@ -6957,6 +6957,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T06:54:06.668Z
+    completed_at: 2026-02-28T06:55:12.187Z
     step_results:
       - step_index: 0
         status: completed
@@ -6990,4 +6991,11 @@ runs:
         notes: No new captures created in this loop reflection. All high-confidence candidates were either
           already tracked (duplicate) or below capture confidence threshold.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T06:55:12.187Z
+  - _ulid: 01KJHGHFT1DXA6VW6QB7929D97
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-28T06:56:25.410Z
+    step_results: []
+    initiated_by: "@claude"
