@@ -1907,8 +1907,12 @@ export function registerRalphCommand(program: Command): void {
 
                 let timeoutHandle: NodeJS.Timeout | null = null;
                 try {
+                  const iterationPromptsPromise = runIterationPrompts();
+                  // Prevent unhandled rejection if timeout wins the race and
+                  // disposeSpawnedAgent() causes the pending prompt to reject.
+                  iterationPromptsPromise.catch(() => {});
                   await Promise.race([
-                    runIterationPrompts(),
+                    iterationPromptsPromise,
                     new Promise<never>((_resolve, reject) => {
                       timeoutHandle = setTimeout(() => {
                         reject(
