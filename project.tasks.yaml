@@ -61922,6 +61922,16 @@
         instead of hanging; preserve --data and piped-stdin behavior; update CLI tests in
         tests/task.test.ts and verify batch path remains functional."
       supersedes: null
+    - _ulid: 01KJH8ZQ3XZ4ATR45B2WNKXR0Q
+      created_at: 2026-02-28T04:44:23.037Z
+      author: "@claude"
+      content: 'Implemented stdin TTY guard for task patch: if --data is absent and input is interactive
+        (process.stdin.isTTY or KSPEC_TEST_TTY), command now exits immediately with validation error
+        instead of waiting on stdin. Also treats empty stdin as no patch data. Added integration
+        regressions for piped-stdin success and interactive/no-data fast-fail; verified with npm run
+        build, npx vitest run tests/integration.test.ts -t "Integration: task patch", and npx vitest
+        run tests/batch-exec-engine.test.ts.'
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
