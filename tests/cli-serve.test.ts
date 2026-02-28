@@ -9,6 +9,7 @@ import { spawn, execSync } from 'child_process';
 import { join } from 'path';
 import { readFileSync, existsSync, mkdirSync, unlinkSync } from 'fs';
 import { homedir } from 'os';
+import { createServer } from 'net';
 
 // Check if Bun runtime is available
 let bunAvailable = false;
@@ -24,6 +25,28 @@ describe('kspec serve commands', () => {
   let globalPidFilePath: string;
   let globalPortFilePath: string;
 
+  async function getAvailablePort(): Promise<number> {
+    return await new Promise((resolve, reject) => {
+      const server = createServer();
+      server.once('error', reject);
+      server.listen(0, '127.0.0.1', () => {
+        const address = server.address();
+        if (!address || typeof address === 'string') {
+          server.close(() => reject(new Error('Failed to allocate ephemeral port')));
+          return;
+        }
+        const { port } = address;
+        server.close((error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve(port);
+        });
+      });
+    });
+  }
+
   beforeEach(async () => {
     tempDir = await createTempDir();
     await initGitRepo(tempDir);
@@ -34,6 +57,14 @@ describe('kspec serve commands', () => {
     const configDir = join(homedir(), '.config', 'kspec');
     globalPidFilePath = join(configDir, 'daemon.pid');
     globalPortFilePath = join(configDir, 'daemon.port');
+
+    // Ensure tests start from a clean daemon state, even if a previous run
+    // (or external process) left a daemon running.
+    try {
+      kspec(`serve stop --kspec-dir ${join(tempDir, '.kspec')}`, tempDir);
+    } catch {
+      // Ignore: this is best-effort cleanup.
+    }
   });
 
   afterEach(async () => {
@@ -71,7 +102,7 @@ describe('kspec serve commands', () => {
     }
 
     // Use a unique port for this test
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Spawn kspec serve in foreground
     const child = spawn('node', [
@@ -121,7 +152,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     const result = kspec(
       `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
@@ -159,7 +190,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const customPort = 4567;
+    const customPort = await getAvailablePort();
 
     const result = kspec(
       `serve start --daemon --port ${customPort} --kspec-dir ${join(tempDir, '.kspec')}`,
@@ -180,7 +211,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Start daemon
     kspec(
@@ -225,7 +256,7 @@ describe('kspec serve commands', () => {
     }
 
     // Start daemon
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
     kspec(
       `serve start --daemon --port ${port} --kspec-dir ${join(tempDir, '.kspec')}`,
       tempDir
@@ -254,7 +285,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Start daemon
     kspec(
@@ -292,7 +323,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Start daemon
     kspec(
@@ -341,7 +372,7 @@ describe('kspec serve commands', () => {
     const emptyTempDir = await createTempDir();
     await initGitRepo(emptyTempDir);
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Start daemon from directory without .kspec/ (AC: @multi-directory-daemon ac-3)
     // This ensures no default project is registered
@@ -370,7 +401,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Start daemon
     kspec(
@@ -404,7 +435,7 @@ describe('kspec serve commands', () => {
       return;
     }
 
-    const port = 3500 + Math.floor(Math.random() * 100);
+    const port = await getAvailablePort();
 
     // Start daemon
     kspec(
@@ -492,7 +523,7 @@ describe('kspec serve commands', () => {
         return;
       }
 
-      const port = 3500 + Math.floor(Math.random() * 100);
+      const port = await getAvailablePort();
 
       // Start daemon
       kspec(
