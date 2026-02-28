@@ -8254,6 +8254,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T21:34:32.937Z
+    completed_at: 2026-02-28T21:35:24.691Z
     step_results:
       - step_index: 0
         status: completed
@@ -8291,4 +8292,11 @@ runs:
         completed_at: 2026-02-28T21:35:24.691Z
         notes: "No captures made: no unique high-confidence items passed step-3 evaluation."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T21:35:24.691Z
+  - _ulid: 01KJK3AZAAQCE15PK9PTW5NYZJ
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T21:44:09.291Z
+    step_results: []
+    initiated_by: "@claude"
