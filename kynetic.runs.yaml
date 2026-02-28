@@ -6688,7 +6688,7 @@ runs:
   - _ulid: 01KJHAEP9EK1FWFG9CNC01WQ3Z
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T05:10:02.286Z
     step_results:
@@ -6701,5 +6701,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T05:10:38.191Z
-        completed_at: 2026-02-28T05:10:38.191Z
+        completed_at: 2026-02-28T05:10:39.328Z
+        notes: "Identified candidates from this iteration: (1) shell interpolation pitfalls in command
+          bodies (already tracked), (2) inability to update workflow steps via meta set, which
+          forced workflow delete+add and temporarily introduced reference breakage risk."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T05:10:39.328Z
+        completed_at: 2026-02-28T05:10:39.328Z
     initiated_by: "@claude"
