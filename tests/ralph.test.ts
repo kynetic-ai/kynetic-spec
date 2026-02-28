@@ -1987,7 +1987,7 @@ describe('subagent module', () => {
     });
   });
 
-  // AC: @ralph-subagent-spawning ac-11
+  // AC: @ralph-subagent-spawning ac-4, ac-11
   describe('createPrefixedRenderer', () => {
     it('does not double prefix for console.log output', () => {
       const renderer = createPrefixedRenderer('[TEST]');

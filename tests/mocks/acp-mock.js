@@ -16,6 +16,7 @@
  * - MOCK_ACP_RESPONSE_TEXT: Text to include in response
  * - MOCK_ACP_STOP_REASON: Stop reason (default: end_turn)
  * - MOCK_ACP_COMPLETE_TASK: Task ref to complete after successful prompt (e.g., "@task-slug")
+ * - MOCK_ACP_NEEDS_WORK_TASK: Task ref to kick back as needs_work after successful prompt
  * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
  * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
  * - MOCK_ACP_VERIFY_ARGS_FILE: Write process.argv to this file for verifying command-line args
@@ -39,6 +40,7 @@ const delayMs = parseInt(process.env.MOCK_ACP_DELAY_MS || '0', 10);
 const responseText = process.env.MOCK_ACP_RESPONSE_TEXT || 'Mock response';
 const stopReason = process.env.MOCK_ACP_STOP_REASON || 'end_turn';
 const completeTask = process.env.MOCK_ACP_COMPLETE_TASK;
+const needsWorkTask = process.env.MOCK_ACP_NEEDS_WORK_TASK;
 const projectDir = process.env.MOCK_ACP_PROJECT_DIR;
 const cliPath = process.env.MOCK_ACP_CLI_PATH || 'kspec';
 // Write specified env var values to a file for test verification
@@ -180,6 +182,23 @@ async function handlePrompt(id, params) {
     } catch (err) {
       console.error(`Mock ACP: Failed to complete task ${completeTask}: ${err.message}`);
       // Don't fail the mock - task completion is best-effort
+    }
+  }
+
+  // Kick task back to needs_work if configured (simulates reviewer findings)
+  if (needsWorkTask && projectDir) {
+    try {
+      const cmd = cliPath === 'kspec'
+        ? `kspec task needs-work ${needsWorkTask} --reason "Mock review findings"`
+        : `node ${cliPath} task needs-work ${needsWorkTask} --reason "Mock review findings"`;
+      execSync(cmd, {
+        cwd: projectDir,
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      console.error(`Mock ACP: Kicked task to needs_work ${needsWorkTask}`);
+    } catch (err) {
+      console.error(`Mock ACP: Failed to set needs_work for ${needsWorkTask}: ${err.message}`);
+      // Don't fail the mock - task status update is best-effort
     }
   }
 
