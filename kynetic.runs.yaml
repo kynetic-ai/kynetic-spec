@@ -7417,7 +7417,7 @@ runs:
   - _ulid: 01KJJ82G3Z3MJPW3J47AEMTT1K
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T13:47:40.032Z
     step_results:
@@ -7430,5 +7430,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T13:48:00.823Z
-        completed_at: 2026-02-28T13:48:00.823Z
+        completed_at: 2026-02-28T13:48:01.375Z
+        notes: "What worked: task-work loop flow was efficient for a focused metadata fix; batch + validate
+          + agents regenerate provided fast confirmation."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T13:48:01.375Z
+        completed_at: 2026-02-28T13:48:01.375Z
     initiated_by: "@claude"
