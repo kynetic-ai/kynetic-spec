@@ -7253,7 +7253,7 @@ runs:
   - _ulid: 01KJJ7CZ7N9P917FS5CXKTG66C
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 8
     started_at: 2026-02-28T13:35:54.614Z
     step_results:
@@ -7287,5 +7287,11 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-28T13:37:37.763Z
-        completed_at: 2026-02-28T13:37:37.763Z
+        completed_at: 2026-02-28T13:37:40.908Z
+        notes: Batch integration tests use setupTempFixtures()/cleanupTempDir() and initGitRepo(tempDir), so
+          execution is isolated from the repository worktree.
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-28T13:37:40.908Z
+        completed_at: 2026-02-28T13:37:40.908Z
     initiated_by: "@claude"
