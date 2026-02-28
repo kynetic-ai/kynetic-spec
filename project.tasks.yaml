@@ -62299,7 +62299,7 @@
     both formats. (5) Tests in `tests/cli-validators.test.ts` cover both formats. (6) CLI help text
     shows accepted format."
   spec_ref: "@batch-exec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62327,6 +62327,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T07:02:49.676Z
+  closed_reason: "Merged in PR #593: added parsePriority() to accept 1-5 and P1-P5 notation
+    (case-insensitive), switched task add/set priority parsing to parsePriority, updated CLI help
+    text, and added validator + integration coverage for valid and invalid P-notation (including
+    clear guidance errors). AC coverage for task scope verified; full npm test and required CI
+    checks passed."
 - _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
   slugs: []
   title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
