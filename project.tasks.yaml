@@ -62274,6 +62274,7 @@
   session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
   created_at: 2026-02-26T19:32:51.412Z
   started_at: 2026-02-28T07:04:26.341Z
+  submitted_at: 2026-02-28T07:09:05.914Z
   notes:
     - _ulid: 01KJHH8DC08TQTPCC8BQ44TBME
       created_at: 2026-02-28T07:08:56.576Z
@@ -62287,9 +62288,15 @@
         Verification: npm test -- --run tests/enhanced-setup.test.ts
         tests/setup-pipeline-unification.test.ts; npm test (160 files, 3545 passed, 3 skipped)."
       supersedes: null
+    - _ulid: 01KJHH935YWEK10GR11WP7XXCA
+      created_at: 2026-02-28T07:09:18.911Z
+      author: "@claude"
+      content: "Submitted for review in PR #594: https://github.com/kynetic-ai/kynetic-spec/pull/594.
+        Includes setup --agent override support, status-path override threading, ~/.claude fallback
+        detection, and regression tests in enhanced-setup + setup-pipeline-unification."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T07:09:05.914Z
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
