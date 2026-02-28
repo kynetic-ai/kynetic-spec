@@ -65231,7 +65231,7 @@
   spec_ref: "@core-skill-update"
   meta_ref: "@01KJGAKM"
   origin: observation_promotion
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -65287,6 +65287,12 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-02-28T20:58:20.117Z
+  closed_reason: "Merged in PR #603. Implemented same-version template drift detection in skill update
+    and explicit guidance to run 'kspec skill install-core' when local files differ despite matching
+    version, including dry-run output. Added regression tests for drift guidance in
+    tests/core-skill-update.test.ts. AC coverage confirmed for @core-skill-update ac-1, ac-2, ac-3;
+    full regression suite passed via npm test."
 - _ulid: 01KJGRPS7WJ1RAZJC62K7Z6YT6
   slugs:
     - task-reconcile-validate-alignment-warning-baseline
@@ -65395,6 +65401,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #604. Added integration test coverage in
+    tests/init-setup-integration.test.ts for config-aware init output messaging when running without
+    --setup; verifies custom shadow directory (.specs) and branch (specs-meta) are shown in Next
+    steps/Note output and guards against fallback to hardcoded defaults. AC coverage confirmed for
+    @init-setup-integration ac-1 through ac-4 (trait ACs N/A)."
   depends_on: []
   context: []
   priority: 3
@@ -65406,6 +65417,7 @@
   created_at: 2026-02-28T00:43:14.232Z
   started_at: 2026-02-28T20:39:50.979Z
   submitted_at: 2026-02-28T20:41:04.840Z
+  completed_at: 2026-02-28T20:51:34.652Z
   notes:
     - _ulid: 01KJJZN8MA9HBKJZ4K7P6PNNXW
       created_at: 2026-02-28T20:39:52.202Z
@@ -65435,12 +65447,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T20:51:34.652Z
-  closed_reason: "Merged in PR #604. Added integration test coverage in
-    tests/init-setup-integration.test.ts for config-aware init output messaging when running without
-    --setup; verifies custom shadow directory (.specs) and branch (specs-meta) are shown in Next
-    steps/Note output and guards against fallback to hardcoded defaults. AC coverage confirmed for
-    @init-setup-integration ac-1 through ac-4 (trait ACs N/A)."
 - _ulid: 01KJGW1EZK12VQ50673X0FPZ01
   slugs: []
   title: Fix ralph orchestrator memory leaks causing OOM after ~30 iterations
