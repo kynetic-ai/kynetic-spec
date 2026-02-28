@@ -67590,6 +67590,21 @@
         (mergeable CONFLICTING / mergeStateStatus DIRTY). Rebase/resolve conflicts and rerun CI on
         latest HEAD."
       supersedes: null
+    - _ulid: 01KJJSCAPYPR6V25NXGCFQVF0Y
+      created_at: 2026-02-28T18:50:07.967Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 4] Rebased fix/truncate-oversized-acp-prompts onto origin/main to resolve PR
+        #590 merge conflict flagged by review subagent. No manual conflict edits were required.
+        Re-verified after rebase:
+
+        - npm test -- tests/ralph/session-budget-integration.test.ts
+        tests/ralph-context-refresh.test.ts tests/ralph.test.ts (pass)
+
+        - npm run test:shard2 (pass)
+
+        Pushed rebased branch with --force-with-lease.
+      supersedes: null
   todos: []
 - _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
   slugs: []
