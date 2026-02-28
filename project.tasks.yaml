@@ -1,3 +1,9 @@
+# CONFLICT: Field "started_at" added with different values in both branches
+# Path: [01KJDQ1C22TH9SEXXGBYQT8Y3Z].started_at
+# Ours:   "2026-02-28T23:40:24.828Z"
+# Theirs: "2026-02-28T23:42:23.441Z"
+# Resolution: Using ours (run merge interactively to resolve)
+
 - _ulid: 01KEZFXCM3WEMMRGFDZSJSRARJ
   slugs:
     - task-cli-polish
@@ -48109,7 +48115,7 @@
   type: task
   description: "Plan import --update replaces all ACs instead of merging. When extending an existing spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for session-log-show ac-10."
   spec_ref: "@plan-import"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
