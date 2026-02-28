@@ -7039,6 +7039,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T07:09:31.335Z
+    completed_at: 2026-02-28T07:10:06.576Z
     step_results:
       - step_index: 0
         status: completed
@@ -7069,4 +7070,11 @@ runs:
         notes: "No captures added in this reflection run. Loop-mode quality bar applied: all observed
           friction/success items were already tracked or not uniquely systemic for this iteration."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T07:10:06.576Z
+  - _ulid: 01KJHHBEBY6EMATFPM8VZX3KXV
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T07:10:35.902Z
+    step_results: []
+    initiated_by: "@claude"
