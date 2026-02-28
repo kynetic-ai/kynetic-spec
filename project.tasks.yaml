@@ -67582,4 +67582,27 @@
         rebase context). Backup branches available: kspec-meta-backup-2026-02-28 (local),
         kspec-remote-pre-merge (remote).
       supersedes: null
+    - _ulid: 01KJJH0155QWRXXC31YDA31HCJ
+      created_at: 2026-02-28T16:23:36.357Z
+      author: "@claude"
+      content: >-
+        Refined scope — 3 code changes needed:
+
+
+        1. src/parser/shadow.ts — Ensure all code paths that register merge.kspec.driver include
+        --non-interactive. Audit initShadowBranch and any other registration points.
+
+
+        2. src/cli/commands/merge-driver.ts — Two fixes:
+           a. TTY detection: if process.stdin.isTTY is false, auto-enable non-interactive mode regardless of flag. Defense-in-depth so driver never hangs.
+           b. Exit code: in non-interactive mode, exit 0 even with conflicts (line 536). Currently exits 1 which breaks git rebase. The spec ac-10 already says exit 0.
+
+        3. src/merge/arrays.ts (mergeUlidArrays or equivalent) — Notes arrays should be union-merged
+        by ULID, not fall through to scalar conflict. Spec ac-5 says 'notes never conflict' but the
+        implementation doesn't match when arrays differ.
+
+
+        Items from original description already done: lost notes on @01KJDQ11 restored, inbox item
+        @01KJDFFJ is separate scope, timestamp-aware status resolution is a future enhancement.
+      supersedes: null
   todos: []
