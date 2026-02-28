@@ -61585,6 +61585,7 @@
   session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
   created_at: 2026-02-26T11:44:14.296Z
   started_at: 2026-02-28T07:29:10.652Z
+  submitted_at: 2026-02-28T07:29:15.432Z
   notes:
     - _ulid: 01KJHJ3CQ8KCK68Y6EEDVG3NEC
       created_at: 2026-02-28T07:23:40.648Z
@@ -61617,9 +61618,19 @@
         establish /ws WebSocket (existing api-websocket also fails with WebSocket error), so WS
         tests could not be validated end-to-end here."
       supersedes: null
+    - _ulid: 01KJHJF0BYA84T74QX8TQNF2T3
+      created_at: 2026-02-28T07:30:01.215Z
+      author: "@claude"
+      content: "Submitted for review in PR #596: https://github.com/kynetic-ai/kynetic-spec/pull/596.
+        Added triage API E2E behavioral coverage for triage:updates broadcasts on
+        create/override/act paths in packages/web-ui/tests/e2e/api-triage.spec.ts and updated
+        @trait-websocket-protocol ac-3 annotation to covered. Verification attempted with targeted
+        Playwright commands, but this runner currently fails WebSocket connection setup for existing
+        websocket E2E tests as well (api-websocket connect test also errors), so WS E2E execution
+        could not be fully validated here."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T07:29:15.432Z
 - _ulid: 01KJD106N5ZQ3VB9T3EV3BHYZK
   slugs:
     - task-ci-e2e-tests
