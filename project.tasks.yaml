@@ -65274,6 +65274,12 @@
       author: "@claude"
       content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
       supersedes: null
+    - _ulid: 01KJJZVZ37Y6JFR2TTFJSG1CGP
+      created_at: 2026-02-28T20:43:31.816Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+        Review required."
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KJGRPS7WJ1RAZJC62K7Z6YT6
@@ -65394,6 +65400,7 @@
   session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   created_at: 2026-02-28T00:43:14.232Z
   started_at: 2026-02-28T20:39:50.979Z
+  submitted_at: 2026-02-28T20:41:04.840Z
   notes:
     - _ulid: 01KJJZN8MA9HBKJZ4K7P6PNNXW
       created_at: 2026-02-28T20:39:52.202Z
@@ -65423,7 +65430,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T20:41:04.840Z
 - _ulid: 01KJGW1EZK12VQ50673X0FPZ01
   slugs: []
   title: Fix ralph orchestrator memory leaks causing OOM after ~30 iterations
