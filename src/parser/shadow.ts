@@ -9,7 +9,7 @@
  * - Changes auto-commit to shadow branch
  */
 
-import { exec, execSync, spawn, spawnSync } from "node:child_process";
+import { execFile, spawn, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { promisify } from "node:util";
@@ -19,7 +19,44 @@ import { isBatchMode } from "../cli/batch-context.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
+
+interface RunCommandOptions {
+  cwd?: string;
+  env?: NodeJS.ProcessEnv;
+}
+
+function runCommandSync(
+  command: string,
+  args: string[],
+  options: RunCommandOptions = {},
+): { ok: boolean; stdout: string; stderr: string } {
+  const result = spawnSync(command, args, {
+    cwd: options.cwd,
+    env: options.env,
+    stdio: ["ignore", "pipe", "pipe"],
+    encoding: "utf-8",
+  });
+
+  return {
+    ok: !result.error && result.status === 0,
+    stdout: (result.stdout || "").toString(),
+    stderr: (result.stderr || "").toString(),
+  };
+}
+
+async function runGitAsync(
+  cwd: string,
+  args: string[],
+  env?: NodeJS.ProcessEnv,
+): Promise<{ stdout: string; stderr: string }> {
+  const { stdout = "", stderr = "" } = await execFileAsync("git", args, {
+    cwd,
+    env,
+    encoding: "utf-8",
+  });
+  return { stdout: stdout.toString(), stderr: stderr.toString() };
+}
 
 function runGitSync(
   cwd: string,
@@ -580,10 +617,10 @@ export async function shadowAutoCommit(
     }
 
     // Stage all changes
-    execSync("git add -A", {
-      cwd: worktreeDir,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    const addResult = runCommandSync("git", ["add", "-A"], { cwd: worktreeDir });
+    if (!addResult.ok) {
+      throw new Error(addResult.stderr || "git add failed");
+    }
 
     // Check if there are staged changes
     try {
@@ -591,10 +628,14 @@ export async function shadowAutoCommit(
         console.error(`[DEBUG] Shadow auto-commit: git diff --cached --quiet`);
       }
 
-      execSync("git diff --cached --quiet", {
-        cwd: worktreeDir,
-        stdio: ["pipe", "pipe", "pipe"],
-      });
+      const diffResult = runCommandSync(
+        "git",
+        ["diff", "--cached", "--quiet"],
+        { cwd: worktreeDir },
+      );
+      if (!diffResult.ok) {
+        throw new Error("changes staged");
+      }
       // No error = no changes
       if (debug) {
         console.error(`[DEBUG] Shadow auto-commit: No changes to commit`);
@@ -610,11 +651,13 @@ export async function shadowAutoCommit(
 
     // Commit with message
     // Set KSPEC_SHADOW_COMMIT=1 to signal authorized commit to git hooks
-    execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, {
+    const commitResult = runCommandSync("git", ["commit", "-m", message], {
       cwd: worktreeDir,
-      stdio: ["pipe", "pipe", "pipe"],
       env: { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
     });
+    if (!commitResult.ok) {
+      throw new Error(commitResult.stderr || "git commit failed");
+    }
 
     if (debug) {
       console.error(`[DEBUG] Shadow auto-commit: Success`);
@@ -837,9 +880,11 @@ export async function hasRemote(
   remoteName = "origin",
 ): Promise<boolean> {
   try {
-    const { stdout } = await execAsync(`git remote get-url ${remoteName}`, {
-      cwd: projectRoot,
-    });
+    const { stdout } = await runGitAsync(projectRoot, [
+      "remote",
+      "get-url",
+      remoteName,
+    ]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -859,10 +904,12 @@ export async function remoteBranchExists(
   remoteName = "origin",
 ): Promise<boolean> {
   try {
-    const { stdout } = await execAsync(
-      `git ls-remote --heads ${remoteName} ${branchName}`,
-      { cwd: projectRoot },
-    );
+    const { stdout } = await runGitAsync(projectRoot, [
+      "ls-remote",
+      "--heads",
+      remoteName,
+      branchName,
+    ]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -878,9 +925,7 @@ export async function fetchRemote(
   remoteName = "origin",
 ): Promise<boolean> {
   try {
-    await execAsync(`git fetch ${remoteName}`, {
-      cwd: projectRoot,
-    });
+    await runGitAsync(projectRoot, ["fetch", remoteName]);
     return true;
   } catch {
     return false;
@@ -905,9 +950,7 @@ export async function pushShadowBranch(
 ): Promise<boolean> {
   const branchName = getBranchName(options);
   try {
-    await execAsync(`git push -u ${remoteName} ${branchName}`, {
-      cwd: worktreeDir,
-    });
+    await runGitAsync(worktreeDir, ["push", "-u", remoteName, branchName]);
     return true;
   } catch {
     return false;
@@ -929,10 +972,10 @@ export async function hasRemoteTracking(
 ): Promise<boolean> {
   const branchName = getBranchName(options);
   try {
-    const { stdout } = await execAsync(
-      `git config branch.${branchName}.remote`,
-      { cwd: worktreeDir },
-    );
+    const { stdout } = await runGitAsync(worktreeDir, [
+      "config",
+      `branch.${branchName}.remote`,
+    ]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -1003,9 +1046,12 @@ export async function ensureRemoteTracking(
             );
           }
 
-          await execAsync(`git remote add ${specRemoteName} "${remoteTarget}"`, {
-            cwd: projectRoot,
-          });
+          await runGitAsync(projectRoot, [
+            "remote",
+            "add",
+            specRemoteName,
+            remoteTarget,
+          ]);
         } catch {
           // Remote add failed - may already exist with different URL
           return { success: false };
@@ -1023,13 +1069,16 @@ export async function ensureRemoteTracking(
 
   // Set up tracking for shadow branch
   try {
-    await execAsync(`git config branch.${branchName}.remote ${remoteName}`, {
-      cwd: worktreeDir,
-    });
-    await execAsync(
-      `git config branch.${branchName}.merge refs/heads/${branchName}`,
-      { cwd: worktreeDir },
-    );
+    await runGitAsync(worktreeDir, [
+      "config",
+      `branch.${branchName}.remote`,
+      remoteName,
+    ]);
+    await runGitAsync(worktreeDir, [
+      "config",
+      `branch.${branchName}.merge`,
+      `refs/heads/${branchName}`,
+    ]);
     return { success: true };
   } catch {
     return { success: false };
@@ -1175,7 +1224,7 @@ export async function shadowPull(
 
   try {
     // Try fast-forward only first (cleanest)
-    await execAsync("git pull --ff-only", { cwd: worktreeDir });
+    await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
     result.success = true;
     result.pulled = true;
     return result;
@@ -1185,7 +1234,7 @@ export async function shadowPull(
 
   try {
     // AC: @shadow-sync ac-6 - Fall back to rebase
-    await execAsync("git pull --rebase", { cwd: worktreeDir });
+    await runGitAsync(worktreeDir, ["pull", "--rebase"]);
     result.success = true;
     result.pulled = true;
     return result;
@@ -1195,7 +1244,7 @@ export async function shadowPull(
 
   // AC: @shadow-sync ac-3 - Conflict detected - abort rebase and report
   try {
-    await execAsync("git rebase --abort", { cwd: worktreeDir });
+    await runGitAsync(worktreeDir, ["rebase", "--abort"]);
   } catch {
     // May not be in rebase state, ignore
   }
@@ -1227,7 +1276,7 @@ export async function shadowSync(
   // Then push (only if tracking configured, checked inside)
   if (await hasRemoteTracking(worktreeDir, options)) {
     try {
-      await execAsync("git push", { cwd: worktreeDir });
+      await runGitAsync(worktreeDir, ["push"]);
       pullResult.pushed = true;
     } catch {
       // Push failed - not a critical error, local state is correct
@@ -1244,9 +1293,11 @@ export async function shadowSync(
 async function hasUncommittedGitignore(projectRoot: string): Promise<boolean> {
   try {
     // Check both staged and unstaged changes to .gitignore
-    const { stdout } = await execAsync("git status --porcelain .gitignore", {
-      cwd: projectRoot,
-    });
+    const { stdout } = await runGitAsync(projectRoot, [
+      "status",
+      "--porcelain",
+      ".gitignore",
+    ]);
     return stdout.trim().length > 0;
   } catch {
     return false;
@@ -1263,13 +1314,12 @@ async function commitGitignore(
   projectRoot: string,
   directoryName: string,
 ): Promise<void> {
-  await execAsync("git add .gitignore", { cwd: projectRoot });
-  await execAsync(
-    `git commit -m "chore: add ${directoryName}/ to .gitignore for shadow branch"`,
-    {
-      cwd: projectRoot,
-    },
-  );
+  await runGitAsync(projectRoot, ["add", ".gitignore"]);
+  await runGitAsync(projectRoot, [
+    "commit",
+    "-m",
+    `chore: add ${directoryName}/ to .gitignore for shadow branch`,
+  ]);
 }
 
 /**
@@ -1485,35 +1535,47 @@ async function configureMergeDriver(
 ): Promise<boolean> {
   try {
     // Step 1: Configure merge driver in .git/config
-    const kspecPath = execSync("which kspec", {
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "pipe"],
-    }).trim();
+    const kspecPathResult = runCommandSync("which", ["kspec"]);
+    if (!kspecPathResult.ok) {
+      throw new Error(kspecPathResult.stderr || "kspec executable not found");
+    }
+    const kspecPath = kspecPathResult.stdout.trim();
 
     // Add merge driver configuration to git config
     try {
-      execSync(
-        `git config merge.kspec.name "Kspec YAML semantic merge driver"`,
-        {
-          cwd: projectRoot,
-          stdio: ["pipe", "pipe", "pipe"],
-        },
+      const setNameResult = runCommandSync(
+        "git",
+        ["config", "merge.kspec.name", "Kspec YAML semantic merge driver"],
+        { cwd: projectRoot },
       );
-      execSync(
-        `git config merge.kspec.driver "${kspecPath} merge-driver %O %A %B --non-interactive"`,
-        {
-          cwd: projectRoot,
-          stdio: ["pipe", "pipe", "pipe"],
-        },
+      if (!setNameResult.ok) {
+        throw new Error(setNameResult.stderr || "failed to set merge.kspec.name");
+      }
+
+      const setDriverResult = runCommandSync(
+        "git",
+        [
+          "config",
+          "merge.kspec.driver",
+          `${kspecPath} merge-driver %O %A %B --non-interactive`,
+        ],
+        { cwd: projectRoot },
       );
+      if (!setDriverResult.ok) {
+        throw new Error(setDriverResult.stderr || "failed to set merge.kspec.driver");
+      }
     } catch (error) {
       // Config may fail if already set - check if it's set correctly
       try {
-        const existingDriver = execSync("git config merge.kspec.driver", {
-          cwd: projectRoot,
-          encoding: "utf-8",
-          stdio: ["pipe", "pipe", "pipe"],
-        }).trim();
+        const existingDriverResult = runCommandSync(
+          "git",
+          ["config", "merge.kspec.driver"],
+          { cwd: projectRoot },
+        );
+        if (!existingDriverResult.ok) {
+          throw new Error(existingDriverResult.stderr || "failed to read merge.kspec.driver");
+        }
+        const existingDriver = existingDriverResult.stdout.trim();
 
         if (!existingDriver.includes("kspec merge-driver")) {
           throw new Error("Merge driver config exists but is incorrect");
@@ -1642,9 +1704,12 @@ export async function initializeShadow(
 
       // Remove stale worktree reference if any
       try {
-        await execAsync(`git worktree remove "${directoryName}" --force`, {
-          cwd: projectRoot,
-        });
+        await runGitAsync(projectRoot, [
+          "worktree",
+          "remove",
+          directoryName,
+          "--force",
+        ]);
       } catch {
         // Ignore - worktree may not exist in git's list
       }
@@ -1653,41 +1718,52 @@ export async function initializeShadow(
         // AC: @shadow-init-remote ac-1, ac-5 - Remote has shadow branch - fetch and create worktree
         // Fetch with refspec to create a local branch ref (required in shallow clones
         // where plain `git fetch origin kspec-meta` only populates FETCH_HEAD)
-        await execAsync(
-          `git fetch ${remoteName} ${branchName}:${branchName}`,
-          { cwd: projectRoot },
-        );
-        await execAsync(
-          `git worktree add "${directoryName}" ${branchName}`,
-          { cwd: projectRoot },
-        );
+        await runGitAsync(projectRoot, [
+          "fetch",
+          remoteName,
+          `${branchName}:${branchName}`,
+        ]);
+        await runGitAsync(projectRoot, [
+          "worktree",
+          "add",
+          directoryName,
+          branchName,
+        ]);
         // Set up tracking for the branch
         // Use git config directly — `git branch --set-upstream-to` requires
         // the remote tracking ref to exist locally, which may not be the case
         // in shallow clones where we only fetched the branch itself
-        await execAsync(
-          `git config branch.${branchName}.remote ${remoteName}`,
-          { cwd: projectRoot },
-        );
-        await execAsync(
-          `git config branch.${branchName}.merge refs/heads/${branchName}`,
-          { cwd: projectRoot },
-        );
+        await runGitAsync(projectRoot, [
+          "config",
+          `branch.${branchName}.remote`,
+          remoteName,
+        ]);
+        await runGitAsync(projectRoot, [
+          "config",
+          `branch.${branchName}.merge`,
+          `refs/heads/${branchName}`,
+        ]);
         result.createdFromRemote = true;
       } else if (!status.branchExists) {
         // AC: @shadow-init-remote ac-2 ac-3 - No remote branch or no remote - create orphan branch
         // AC: @config-shadow ac-1 — use configured branch name
-        await execAsync(
-          `git worktree add --orphan -b ${branchName} "${directoryName}"`,
-          { cwd: projectRoot },
-        );
+        await runGitAsync(projectRoot, [
+          "worktree",
+          "add",
+          "--orphan",
+          "-b",
+          branchName,
+          directoryName,
+        ]);
         result.branchCreated = true;
       } else {
         // Attach to existing local branch
-        await execAsync(
-          `git worktree add "${directoryName}" ${branchName}`,
-          { cwd: projectRoot },
-        );
+        await runGitAsync(projectRoot, [
+          "worktree",
+          "add",
+          directoryName,
+          branchName,
+        ]);
       }
 
       result.worktreeCreated = true;
@@ -1823,9 +1899,12 @@ export async function repairShadow(
   try {
     // Remove stale worktree reference
     try {
-      await execAsync(`git worktree remove "${directoryName}" --force`, {
-        cwd: projectRoot,
-      });
+      await runGitAsync(projectRoot, [
+        "worktree",
+        "remove",
+        directoryName,
+        "--force",
+      ]);
     } catch {
       // Ignore - worktree may not be in git's list
     }
@@ -1835,16 +1914,18 @@ export async function repairShadow(
 
     // Prune stale worktree references (cleans up orphaned entries)
     try {
-      await execAsync("git worktree prune", { cwd: projectRoot });
+      await runGitAsync(projectRoot, ["worktree", "prune"]);
     } catch {
       // Ignore - prune is best-effort
     }
 
     // Recreate worktree
-    await execAsync(
-      `git worktree add "${directoryName}" ${branchName}`,
-      { cwd: projectRoot },
-    );
+    await runGitAsync(projectRoot, [
+      "worktree",
+      "add",
+      directoryName,
+      branchName,
+    ]);
 
     // Install pre-commit hook
     await installShadowHook(projectRoot);
