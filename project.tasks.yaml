@@ -62145,7 +62145,7 @@
     previously-ambiguous references resolve correctly. (4) `kspec agents generate` still includes
     the observations skill."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62156,6 +62156,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T13:45:04.362Z
+  session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
@@ -62759,6 +62761,12 @@
   spec_ref: "@batch-exec"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #598. Updated batch source selection in src/cli/commands/batch.ts to
+    treat --commands as inline whenever provided (options.commands !== undefined), fixing hang
+    behavior for empty/whitespace --commands by routing to JSON parse failure instead of stdin
+    blocking. Added regression tests in tests/batch-exec-engine.test.ts for --commands '' and
+    --commands '   ' with fast-fail Invalid JSON assertions. No deviations from spec intent; AC
+    coverage verified for @batch-exec own criteria and inherited traits relevant to this path."
   depends_on: []
   context: []
   priority: 3
@@ -62768,6 +62776,7 @@
   created_at: 2026-02-26T19:32:56.309Z
   started_at: 2026-02-28T13:32:24.588Z
   submitted_at: 2026-02-28T13:33:39.765Z
+  completed_at: 2026-02-28T13:44:19.990Z
   notes:
     - _ulid: 01KJJ78GMNRXYKH5487693GGAF
       created_at: 2026-02-28T13:33:28.597Z
@@ -62792,13 +62801,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T13:44:19.990Z
-  closed_reason: "Merged in PR #598. Updated batch source selection in src/cli/commands/batch.ts to
-    treat --commands as inline whenever provided (options.commands !== undefined), fixing hang
-    behavior for empty/whitespace --commands by routing to JSON parse failure instead of stdin
-    blocking. Added regression tests in tests/batch-exec-engine.test.ts for --commands '' and
-    --commands '   ' with fast-fail Invalid JSON assertions. No deviations from spec intent; AC
-    coverage verified for @batch-exec own criteria and inherited traits relevant to this path."
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
