@@ -62873,6 +62873,11 @@
         tests/ralph.test.ts lines 230 and 313 have no // AC: annotations. Add ACs to spec and
         annotate tests. Review posted at PR #608."
       supersedes: null
+    - _ulid: 01KJK704TWT5HRZ6R4VQ5Y7HZK
+      created_at: 2026-02-28T22:48:08.796Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Subagent timed out after 20 minutes"
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
