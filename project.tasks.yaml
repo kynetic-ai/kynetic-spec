@@ -64872,6 +64872,11 @@
   plan_ref: "@plan-auto-close-stale-active-sessions"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #605. Implemented stale session candidate criteria engine with
+    relative-duration validation/defaults, AND threshold evaluation, started_at fallback, strict
+    corrupt/unreadable events handling with skipped/failure reporting, and liveness guard
+    suppression. AC coverage verified for @session-stale-criteria ac-1 through ac-8 (including
+    unreadable events path)."
   depends_on: []
   context: []
   priority: 3
@@ -64881,6 +64886,7 @@
   created_at: 2026-02-27T20:15:54.767Z
   started_at: 2026-02-28T21:28:15.380Z
   submitted_at: 2026-02-28T21:34:08.281Z
+  completed_at: 2026-02-28T21:43:37.853Z
   notes:
     - _ulid: 01KJGBWNWFME1VVZFKGQW9SRWR
       created_at: 2026-02-27T20:15:54.767Z
@@ -64955,12 +64961,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-02-28T21:43:37.853Z
-  closed_reason: "Merged in PR #605. Implemented stale session candidate criteria engine with
-    relative-duration validation/defaults, AND threshold evaluation, started_at fallback, strict
-    corrupt/unreadable events handling with skipped/failure reporting, and liveness guard
-    suppression. AC coverage verified for @session-stale-criteria ac-1 through ac-8 (including
-    unreadable events path)."
 - _ulid: 01KJGBWPAR4PYC6G8DD4PFJ770
   slugs:
     - implement-auto-abandon-metadata-and-audit-trail
@@ -65054,6 +65054,12 @@
       created_at: 2026-02-28T21:27:34.392Z
       author: "@claude"
       content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+      supersedes: null
+    - _ulid: 01KJK3BZT08SNWEE1FJ4F9B7A1
+      created_at: 2026-02-28T21:44:42.561Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+        Review required."
       supersedes: null
   todos: []
   automation: needs_review
