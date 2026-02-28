@@ -47751,7 +47751,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   created_at: 2026-02-26T19:32:55.301Z
+  started_at: 2026-02-28T23:07:15.520Z
   notes:
     - _ulid: 01KJDQW7RZ6DDS9BNKW8XMDXF4
       created_at: 2026-02-26T19:47:39.935Z
@@ -47840,8 +47842,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  started_at: 2026-02-28T23:07:15.520Z
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   closed_reason: "Merged in PR #610. Implemented iteration-timeout hardening by capturing runIterationPrompts() promise and attaching catch before Promise.race to prevent Node.js 22 unhandled rejection on timeout/dispose path. Added/confirmed @cli-ralph ac-24/ac-25/ac-26 for iteration-timeout defaults, validation, and iteration.timeout event behavior, with AC annotations in tests/ralph.test.ts. Verified @cli-ralph AC annotation coverage across ac-1..ac-26 and green PR CI on merge commit 3935ca808c131813871ec5a48e7550f9a239a5a1."
   submitted_at: 2026-02-28T23:07:18.877Z
   completed_at: 2026-02-28T23:14:18.000Z
@@ -51865,5 +51865,27 @@
   context: []
   vcs_refs: []
   created_at: 2026-02-28T23:30:35.422Z
-  notes: []
+  notes:
+    - _ulid: 01KJK9EJRQ5RDBD9RQSD4S1CQD
+      created_at: 2026-02-28T23:30:58.967Z
+      author: "@claude"
+      content: |-
+        Implementation notes:
+
+        1. src/ralph/subagent.ts:
+           - Add formatCompactSection(data, label, fetchCmd) — always returns compact format (identity fields via existing compactSummary() + CLI fetch command). No JSON fence.
+           - Change buildSubagentPrompt to use formatCompactSection instead of formatJsonSection. Keep truncatePromptIfNeeded as final guardrail.
+           - Lower SUBAGENT_PROMPT_MAX_BYTES to 16KB and add WORKER_PROMPT_MAX_BYTES (32KB). Export both.
+
+        2. src/cli/commands/ralph.ts:
+           - buildTaskWorkPrompt uses WORKER_PROMPT_MAX_BYTES (32KB) — no behavior change for worker prompts.
+           - Pass explicit maxBytes to truncatePromptIfNeeded call.
+
+        3. tests/ralph.test.ts:
+           - Update buildSubagentPrompt tests: assert compact summaries (no json fence for task/spec), always include CLI fetch commands.
+           - Add test: subagent prompt with 37-AC spec stays compact and well under 16KB.
+           - Update budget constant tests.
+           - Add worker prompt test: verify it uses 32KB budget (no regression from constant split).
+           - Existing truncatePromptIfNeeded and formatJsonSection tests stay unchanged (worker path still uses them).
+      supersedes: null
   todos: []
