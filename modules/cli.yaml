@@ -2772,6 +2772,21 @@ features:
         when: Ralph sends the tool response and renders tool output
         then: The response includes bounded previews and metadata (stdout_path, stderr_path, stdout_bytes,
           stderr_bytes, preview_truncated) while preserving access to full output via artifact files
+      - id: ac-24
+        given: "--iteration-timeout <minutes> is provided (default: 20)"
+        when: ralph runs an iteration
+        then: the entire task-work and reflect prompt phase is bounded by that timeout; defaults to 20
+          minutes if not specified
+      - id: ac-25
+        given: --iteration-timeout receives a non-positive or non-numeric value
+        when: ralph starts
+        then: exits immediately with an error indicating --iteration-timeout must be a positive number of
+          minutes
+      - id: ac-26
+        given: an iteration timeout fires while agent is still running
+        when: the timeout expires
+        then: logs iteration.timeout event with iteration/attempt/timeout metadata and applies existing
+          retry/failure escalation logic
     status:
       maturity: draft
       implementation: in_progress
