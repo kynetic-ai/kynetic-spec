@@ -2293,6 +2293,9 @@ features:
             given: kspec is already npm-linked to the local project dist
             when: bootstrap runs
             then: skips npm link
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
