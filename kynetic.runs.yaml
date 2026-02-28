@@ -7119,6 +7119,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T07:30:23.270Z
+    completed_at: 2026-02-28T07:31:22.888Z
     step_results:
       - step_index: 0
         status: completed
@@ -7150,4 +7151,11 @@ runs:
         notes: No items passed capture gate in step 3. Completed loop reflection with zero new
           observations/inbox/task entries to avoid duplicate or low-confidence noise.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T07:31:22.888Z
+  - _ulid: 01KJHJJXSZVVKXJ3GXSVEW8BTA
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T07:32:09.664Z
+    step_results: []
+    initiated_by: "@claude"
