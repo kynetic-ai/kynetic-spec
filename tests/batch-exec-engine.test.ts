@@ -162,6 +162,18 @@ describe("buildCommandArgv", () => {
     expect(argv).toContain("ref1");
   });
 
+  it("handles underscore args for kebab-case options", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "add")!;
+    const argv = buildCommandArgv(
+      { command: "task add", args: { title: "T", spec_ref: "ref1" } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--spec-ref");
+    expect(argv).toContain("ref1");
+  });
+
   it("handles multiple positional args", () => {
     const cmdMeta = tree.subcommands
       .find((c) => c.name === "task")!

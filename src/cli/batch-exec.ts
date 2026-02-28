@@ -182,19 +182,41 @@ function kebabToCamel(s: string): string {
 }
 
 /**
+ * Convert a kebab-case string to snake_case.
+ * e.g. "spec-ref" -> "spec_ref"
+ */
+function kebabToSnake(s: string): string {
+  return s.replace(/-/g, "_");
+}
+
+/**
+ * Normalize a user-provided arg key to canonical kebab-case.
+ * Accepts kebab-case, camelCase, and underscore variants.
+ */
+function normalizeArgKey(key: string): string {
+  return key
+    .replace(/_/g, "-")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .toLowerCase();
+}
+
+/**
  * Get all known argument and option names for a command, returning both
- * kebab-case and camelCase variants.
+ * kebab-case, camelCase, and underscore variants.
  */
 function getKnownArgNames(
   cmd: CommandMeta,
-): { names: Set<string>; required: string[] } {
+): { names: Set<string>; canonicalNames: Set<string>; required: string[] } {
   const names = new Set<string>();
+  const canonicalNames = new Set<string>();
   const required: string[] = [];
 
   // Positional arguments
   for (const arg of cmd.arguments) {
     names.add(arg.name);
     names.add(kebabToCamel(arg.name));
+    names.add(kebabToSnake(arg.name));
+    canonicalNames.add(normalizeArgKey(arg.name));
     if (arg.required) {
       required.push(arg.name);
     }
@@ -206,13 +228,15 @@ function getKnownArgNames(
     if (optName) {
       names.add(optName);
       names.add(kebabToCamel(optName));
+      names.add(kebabToSnake(optName));
+      canonicalNames.add(normalizeArgKey(optName));
       if (opt.mandatory) {
         required.push(optName);
       }
     }
   }
 
-  return { names, required };
+  return { names, canonicalNames, required };
 }
 
 /**
@@ -305,15 +329,18 @@ export function validateBatchCommands(
     }
 
     // 4. Check for unknown args
-    const { names: knownNames, required: requiredNames } =
+    const {
+      names: knownNames,
+      canonicalNames: knownCanonicalNames,
+      required: requiredNames,
+    } =
       getKnownArgNames(found);
 
     // Collect all known names as flat array for suggestion matching
     const knownNamesArray = Array.from(knownNames);
 
     for (const argKey of Object.keys(cmd.args)) {
-      // Accept both kebab-case and camelCase
-      if (!knownNames.has(argKey)) {
+      if (!knownCanonicalNames.has(normalizeArgKey(argKey))) {
         const suggestion = findClosestCommand(argKey, knownNamesArray);
         errors.push({
           index: i,
@@ -328,13 +355,10 @@ export function validateBatchCommands(
 
     // 5. Check for missing required args
     for (const reqName of requiredNames) {
-      const camelName = kebabToCamel(reqName);
+      const normalizedReqName = normalizeArgKey(reqName);
       if (
-        !(reqName in cmd.args) &&
-        !(camelName in cmd.args) &&
-        // Skip if provided via positional alias
         !Object.keys(cmd.args).some(
-          (k) => kebabToCamel(k) === camelName,
+          (k) => normalizeArgKey(k) === normalizedReqName,
         )
       ) {
         errors.push({
@@ -433,30 +457,36 @@ function toArgString(value: unknown): string {
 
 export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): string[] {
   const argv: string[] = [...cmd.command.trim().split(/\s+/)];
+  const consumedKeys = new Set<string>();
 
   // Build sets for classification
   const positionalDefs = cmdMeta.arguments; // ordered by Commander definition
-  const positionalNameSet = new Set<string>();
+  const positionalCanonicalNameSet = new Set<string>();
   for (const arg of positionalDefs) {
-    positionalNameSet.add(arg.name);
-    positionalNameSet.add(kebabToCamel(arg.name));
+    positionalCanonicalNameSet.add(normalizeArgKey(arg.name));
   }
 
-  const optionMap = new Map<string, { flags: string; variadic: boolean }>();
+  const optionMap = new Map<string, { flags: string; variadic: boolean; name: string }>();
   for (const opt of cmdMeta.options) {
     const name = extractOptionName(opt.flags);
     if (name) {
-      optionMap.set(name, { flags: opt.flags, variadic: opt.variadic });
-      optionMap.set(kebabToCamel(name), { flags: opt.flags, variadic: opt.variadic });
+      optionMap.set(normalizeArgKey(name), {
+        flags: opt.flags,
+        variadic: opt.variadic,
+        name,
+      });
     }
   }
 
   // Phase 1: Emit positional args in Commander definition order
   for (const argDef of positionalDefs) {
-    const name = argDef.name;
-    const camelName = kebabToCamel(name);
-    const value = cmd.args[name] ?? cmd.args[camelName];
+    const canonicalName = normalizeArgKey(argDef.name);
+    const matchedKey = Object.keys(cmd.args).find(
+      (k) => normalizeArgKey(k) === canonicalName,
+    );
+    const value = matchedKey ? cmd.args[matchedKey] : undefined;
     if (value === undefined) continue;
+    consumedKeys.add(matchedKey!);
 
     if (Array.isArray(value)) {
       for (const v of value) argv.push(toArgString(v));
@@ -467,15 +497,18 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
 
   // Phase 2: Emit options from remaining keys
   for (const [key, value] of Object.entries(cmd.args)) {
-    const camelKey = kebabToCamel(key);
-    // Skip positional args (already emitted)
-    if (positionalNameSet.has(key) || positionalNameSet.has(camelKey)) {
+    if (consumedKeys.has(key)) {
       continue;
     }
 
-    // Convert camelCase key back to kebab-case for CLI
-    const kebabKey = key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
-    const flagName = `--${kebabKey}`;
+    const canonicalKey = normalizeArgKey(key);
+    // Skip positional args (already emitted)
+    if (positionalCanonicalNameSet.has(canonicalKey)) {
+      continue;
+    }
+
+    const knownOption = optionMap.get(canonicalKey);
+    const flagName = `--${knownOption?.name ?? canonicalKey}`;
 
     if (typeof value === "boolean") {
       if (value) {

@@ -317,6 +317,25 @@ describe("validateBatchCommands", () => {
       expect(unknownArgErrs).toHaveLength(0);
     });
 
+    it("accepts underscore option names", () => {
+      const result = validateBatchCommands(
+        [
+          {
+            command: "task set",
+            args: {
+              ref: "@task-1",
+              depends_on: ["@task-2"],
+            },
+          },
+        ],
+        tree,
+      );
+      const unknownArgErrs = result.errors.filter(
+        (e) => e.type === "unknown_arg",
+      );
+      expect(unknownArgErrs).toHaveLength(0);
+    });
+
     it("accepts positional args by name", () => {
       const result = validateBatchCommands(
         [{ command: "task start", args: { ref: "@my-task" } }],
