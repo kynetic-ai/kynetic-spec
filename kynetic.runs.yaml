@@ -8003,7 +8003,7 @@ runs:
   - _ulid: 01KJJT6T30BXNED81ZNEGNJZNR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-28T19:04:35.680Z
     step_results:
@@ -8017,5 +8017,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T19:05:08.460Z
-        completed_at: 2026-02-28T19:05:08.460Z
+        completed_at: 2026-02-28T19:05:12.684Z
+        notes: "Friction points: (1) CI-only breakage from hardcoded bare 'kspec' subprocess calls in ralph
+          needed another full fix cycle. (2) Session-budget integration harness was sensitive to
+          KSPEC_SPEC_DIR override semantics, causing non-obvious cross-tempdir task discovery and
+          misleading failures. (3) Full-suite signal/noise remained low due unrelated flaky timeout
+          tests outside task scope."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T19:05:12.684Z
+        completed_at: 2026-02-28T19:05:12.684Z
     initiated_by: Jacob Chapel
