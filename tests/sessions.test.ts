@@ -57,7 +57,6 @@ describe('EventTypeSchema', () => {
   it('should accept valid event types', () => {
     expect(EventTypeSchema.safeParse('session.start').success).toBe(true);
     expect(EventTypeSchema.safeParse('session.update').success).toBe(true);
-    expect(EventTypeSchema.safeParse('iteration.timeout').success).toBe(true);
     expect(EventTypeSchema.safeParse('session.end').success).toBe(true);
     expect(EventTypeSchema.safeParse('prompt.sent').success).toBe(true);
     expect(EventTypeSchema.safeParse('tool.call').success).toBe(true);

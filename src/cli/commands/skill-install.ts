@@ -52,7 +52,6 @@ interface CoreSkillUpdateResult {
   newVersion?: string;
   currentVersion?: string;
   reason?: string;
-  guidance?: string;
 }
 
 /**
@@ -662,19 +661,11 @@ export function registerSkillInstallCommands(skill: Command): void {
           // AC: @core-skill-update ac-2 - Skip if already at current version
           // If kspecVersion is null or skill has no version, always update
           if (kspecVersion && skill.version === kspecVersion) {
-            const targetDir = path.dirname(getSkillContentPath(ctx, skill.id));
-            const sourceDir = path.join(getTemplatesDir(), skill.id);
-            const isTemplateInSync = await sourceMatchesDest(sourceDir, targetDir);
             results.push({
               id: skill.id,
               action: "skipped",
-              reason: isTemplateInSync
-                ? "already at current version"
-                : "already at current version; template content differs from local files",
+              reason: "already at current version",
               currentVersion: skill.version,
-              guidance: isTemplateInSync
-                ? undefined
-                : "Run `kspec skill install-core` to sync core skill templates at the same version",
             });
             continue;
           }
@@ -767,9 +758,6 @@ export function registerSkillInstallCommands(skill: Command): void {
                 console.log(
                   `  ${chalk.gray("-")} ${r.id}: ${r.reason}${r.currentVersion ? ` (v${r.currentVersion})` : ""}`
                 );
-                if (r.guidance) {
-                  console.log(`    ${chalk.yellow("→")} ${r.guidance}`);
-                }
               }
             }
 

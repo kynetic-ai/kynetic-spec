@@ -79,7 +79,6 @@ export type SessionMetadataInput = z.infer<typeof SessionMetadataInputSchema>;
 export const EventTypeSchema = z.enum([
   "session.start",
   "session.update",
-  "iteration.timeout",
   "session.end",
   "session.wrapup",
   "prompt.sent",

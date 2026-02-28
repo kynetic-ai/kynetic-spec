@@ -138,35 +138,6 @@ describe('Core Skill Update', () => {
       expect(kspecHelp?.action).toBe('skipped');
       expect(kspecHelp?.reason).toContain('already at current version');
     });
-
-    it('should provide install-core guidance when same-version templates drift', async () => {
-      // AC: @core-skill-update ac-2
-      kspecFull('skill install-core', tempDir);
-
-      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
-      await fs.writeFile(skillMdPath, '# Local drift\n', 'utf-8');
-
-      const result = kspecFull('skill update', tempDir);
-
-      expect(result.stdout).toContain('help');
-      expect(result.stdout).toContain('template content differs from local files');
-      expect(result.stdout).toContain('kspec skill install-core');
-      expect(result.stdout).toContain('No skills needed updating');
-    });
-
-    it('should provide the same drift guidance in dry-run output', async () => {
-      // AC: @core-skill-update ac-2
-      kspecFull('skill install-core', tempDir);
-
-      const skillMdPath = path.join(tempDir, 'skills', 'help', 'SKILL.md');
-      await fs.writeFile(skillMdPath, '# Local drift\n', 'utf-8');
-
-      const result = kspecFull('skill update --dry-run', tempDir);
-
-      expect(result.stdout).toContain('DRY RUN');
-      expect(result.stdout).toContain('template content differs from local files');
-      expect(result.stdout).toContain('kspec skill install-core');
-    });
   });
 
   // AC: @core-skill-update ac-3

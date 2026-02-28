@@ -219,19 +219,6 @@ describe('ralph command', () => {
     expect(result.stdout).not.toContain('Completed iteration');
   });
 
-  it('shows iteration-timeout in dry-run configuration output', async () => {
-    const result = runRalph('--dry-run --iteration-timeout 15', tempDir);
-
-    expect(result.stdout).toContain('iteration-timeout: 15 minute(s)');
-  });
-
-  it('fails fast for non-positive iteration-timeout values', async () => {
-    const result = runRalph('--dry-run --iteration-timeout 0', tempDir);
-
-    expect(result.exitCode).toBe(1);
-    expect(result.output).toContain('--iteration-timeout must be a positive number of minutes');
-  });
-
   // AC: @ralph-skill-delegation ac-1
   it('includes iteration N/M, session ID, and no-human flag in prompt', async () => {
     const result = runRalph('--dry-run --max-loops 5', tempDir);
@@ -303,37 +290,6 @@ describe('ralph command', () => {
     expect(result.output).toContain('failed after 2 attempts');
     expect(result.output).toContain('Continuing to next iteration');
     expect(result.output).toContain('Iteration 2/2');
-  });
-
-  it('times out stalled iteration attempts and logs iteration.timeout event', async () => {
-    const result = runRalph(
-      '--max-loops 1 --max-retries 0 --max-failures 1 --iteration-timeout 0.001',
-      tempDir,
-      {
-        MOCK_ACP_DELAY_MS: '500',
-      },
-    );
-
-    expect(result.output).toContain('Iteration timed out after 0.001 minutes');
-    expect(result.output).toContain('Reached 1 consecutive failures');
-
-    const sessionsDir = path.join(tempDir, 'sessions');
-    const sessions = await fs.readdir(sessionsDir).catch(() => []);
-    expect(sessions.length).toBeGreaterThan(0);
-
-    const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
-    const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
-    const events = eventsRaw
-      .trim()
-      .split('\n')
-      .map((line) => JSON.parse(line));
-
-    const timeoutEvent = events.find(
-      (event: { type: string; data?: { timeout_minutes?: number } }) =>
-        event.type === 'iteration.timeout',
-    );
-    expect(timeoutEvent).toBeTruthy();
-    expect(timeoutEvent.data.timeout_minutes).toBe(0.001);
   });
 
   // AC: @cli-ralph ac-8 - Consecutive failure guard
