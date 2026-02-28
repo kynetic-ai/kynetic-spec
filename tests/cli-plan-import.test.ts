@@ -521,7 +521,7 @@ derive_from_specs: true
     expect(result.stderr).toContain("Malformed YAML");
   });
 
-  // AC: @plan-import ac-21 - YAML-unsafe diagnostic for unquoted colons
+  // AC: @plan-import ac-21, ac-37 - YAML-unsafe diagnostic for unquoted colons
   it("should provide diagnostic hints when AC values contain unquoted colons", async () => {
     const planPath = path.join(tempDir, "test-plan.md");
     await fs.writeFile(
