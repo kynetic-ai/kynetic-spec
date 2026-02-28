@@ -63188,7 +63188,7 @@
 
     - Add a test case: batch with a plan import that produces warnings should succeed
   spec_ref: "@plan-import"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -63212,6 +63212,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T22:37:50.461Z
 - _ulid: 01KJDQ1C22TH9SEXXGBYQT8Y3Z
   slugs: []
   title: Plan import --update replaces all ACs instead of merging. When extending an existing spec
