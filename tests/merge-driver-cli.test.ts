@@ -120,11 +120,11 @@ tasks:
     const result = kspec(
       `merge-driver ${baseFile} ${oursFile} ${theirsFile} --non-interactive`,
       tempDir,
-      { expectFail: true }, // Conflicts return exit code 1
     );
 
-    // Should exit with code 1 (conflicts detected)
-    expect(result.exitCode).toBe(1);
+    // AC: @yaml-merge-driver ac-10
+    // Non-interactive: exit 0 even with conflicts (prevents git text-merge fallback)
+    expect(result.exitCode).toBe(0);
 
     // Should show conflict count and details
     expect(result.stderr).toContain("conflict");
@@ -170,10 +170,11 @@ tasks:
     const result = kspec(
       `merge-driver ${baseFile} ${oursFile} ${theirsFile} --non-interactive`,
       tempDir,
-      { expectFail: true }, // Conflicts return exit code 1
     );
 
-    expect(result.exitCode).toBe(1); // Conflicts detected
+    // AC: @yaml-merge-driver ac-10
+    // Non-interactive: exit 0 even with conflicts (prevents git text-merge fallback)
+    expect(result.exitCode).toBe(0);
 
     // Read merged result
     const merged = await fs.readFile(oursFile, "utf-8");
@@ -277,10 +278,11 @@ tasks:
     const result = kspec(
       `merge-driver ${baseFile} ${oursFile} ${theirsFile} --non-interactive`,
       tempDir,
-      { expectFail: true }, // Conflicts return exit code 1
     );
 
-    expect(result.exitCode).toBe(1); // Conflicts detected
+    // AC: @yaml-merge-driver ac-10
+    // Non-interactive: exit 0 even with conflicts (prevents git text-merge fallback)
+    expect(result.exitCode).toBe(0);
 
     // Should show multiple conflicts in stderr
     expect(result.stderr).toMatch(/\d+ conflict/);
@@ -294,6 +296,7 @@ tasks:
   });
 
   // AC: @merge-driver-cli ac-1
+  // AC: @yaml-merge-driver ac-9
   it("should handle clean merge with no conflicts", async () => {
     await fs.writeFile(
       baseFile,
@@ -409,9 +412,10 @@ tasks:
       const result = kspec(
         `merge-driver ${baseFile} ${oursFile} ${theirsFile} --non-interactive`,
         tempDir,
-        { expectFail: true },
       );
-      expect(result.exitCode).toBe(1);
+      // AC: @yaml-merge-driver ac-10
+      // Non-interactive: exit 0 even with conflicts (prevents git text-merge fallback)
+      expect(result.exitCode).toBe(0);
 
       const merged = await fs.readFile(oursFile, "utf-8");
       expect(merged).toContain("# CONFLICT:");
