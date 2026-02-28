@@ -61948,6 +61948,14 @@
         changes (tests/sessions.test.ts) unrelated to @task-patch task scope. Split unrelated commit
         and resubmit focused PR."
       supersedes: null
+    - _ulid: 01KJH9J412J7CR669TYWT5XXAE
+      created_at: 2026-02-28T04:54:26.083Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Removed out-of-scope @session-events commit from PR #588 by rewriting
+        branch history; PR now contains only src/cli/commands/task.ts and tests/integration.test.ts
+        for @task-patch. Re-verified with npm run build, npx vitest run tests/integration.test.ts -t
+        'Integration: task patch', and npx vitest run tests/batch-exec-engine.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
