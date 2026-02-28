@@ -953,7 +953,7 @@ workflows:
           Start implementation.
           Use: kspec task start @first-task
           Then follow /task-work for task lifecycle.
-  - _ulid: 01KJHA8T6PEJY3RHXWCR0QZ3HX
+  - _ulid: 01KFM9G3BR4VFNBM2G7BGE5BZY
     id: pr-review-merge
     trigger: pr-merge
     description: |
