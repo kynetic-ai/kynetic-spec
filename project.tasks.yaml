@@ -64030,7 +64030,7 @@
   spec_ref: "@session-events"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -64040,7 +64040,7 @@
     - memory
     - reliability
   vcs_refs: []
-  session_id: 01KJF8SYSNY2SBB7APZ2CTWCF4
+  session_id: null
   created_at: 2026-02-27T09:18:10.836Z
   started_at: 2026-02-27T10:05:04.080Z
   submitted_at: 2026-02-27T10:09:50.333Z
@@ -64075,6 +64075,13 @@
         in session log show/search with regression coverage. Verification: npm run build; npx vitest
         run tests/sessions.test.ts tests/session-log-show.test.ts tests/session-log-search.test.ts
         (131/131)."
+      supersedes: null
+    - _ulid: 01KJH7BQQ86TMZHRCYY0VD0V64
+      created_at: 2026-02-28T04:15:59.721Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Missing AC annotation/test coverage for
+        @session-events ac-7 (commit-boundary inclusion). Posted inline review comment on PR #578;
+        requires follow-up before approval."
       supersedes: null
   todos: []
   automation: eligible
