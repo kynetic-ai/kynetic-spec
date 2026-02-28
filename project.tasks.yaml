@@ -65026,8 +65026,14 @@
         feat/session-stale-candidate-criteria). Includes metadata apply helper + AC tests for
         @session-stale-close-metadata ac-1..ac-4."
       supersedes: null
+    - _ulid: 01KJK2CJ4JZXSGYFY2VRR40FNT
+      created_at: 2026-02-28T21:27:32.755Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+        Review required."
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
