@@ -269,6 +269,10 @@ includes:
 
     // Should contain drift warnings
     expect(resultWithFlag).toContain("AC Schema Drift");
+    // Scoped mode should not run unrelated warning checks
+    expect(resultWithFlag).not.toContain("Alignment warnings");
+    expect(resultWithFlag).not.toContain("Completeness warnings");
+    expect(resultWithFlag).not.toContain("Staleness warnings");
   });
 
   it("should exit with code 6 for warnings, code 4 with --strict", async () => {
