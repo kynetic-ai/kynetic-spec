@@ -62902,6 +62902,21 @@
 
         All 140 ralph tests pass. Opening new PR for these fixes on a separate branch.
       supersedes: null
+    - _ulid: 01KJK7AYYW3N608J9D0FH4B2DE
+      created_at: 2026-02-28T22:54:03.228Z
+      author: "@claude"
+      content: >-
+        FIX_CYCLE: 5 complete. Opened PR #610 (https://github.com/kynetic-ai/kynetic-spec/pull/610)
+        with:
+
+        1. Fixed floating runIterationPrompts() promise (.catch(() => {}) before Promise.race)
+
+        2. Added @cli-ralph ac-24/ac-25/ac-26 for --iteration-timeout feature
+
+        3. Added // AC: annotations to tests/ralph.test.ts
+
+        All 140 ralph tests pass.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
