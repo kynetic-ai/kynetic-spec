@@ -65382,7 +65382,7 @@
   spec_ref: "@init-setup-integration"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -65423,6 +65423,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T20:41:04.840Z
 - _ulid: 01KJGW1EZK12VQ50673X0FPZ01
   slugs: []
   title: Fix ralph orchestrator memory leaks causing OOM after ~30 iterations
