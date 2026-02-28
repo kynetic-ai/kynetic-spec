@@ -7835,7 +7835,7 @@ runs:
   - _ulid: 01KJJH3K0KAH0JHTCZ698KTHW4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-02-28T16:25:32.948Z
     step_results:
@@ -7954,5 +7954,19 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-02-28T16:26:42.082Z
-        completed_at: 2026-02-28T16:26:42.082Z
+        completed_at: 2026-02-28T16:29:12.058Z
+        notes: >-
+          User feedback:
+
+          1. Guard escape hatch — approved, but use a deliberately long name like
+          KSPEC_GUARD_OVERRIDE_DONT_USE to discourage agents from reaching for it when blocked. The
+          point is humans-only for recovery.
+
+          2. Compact portability — KSPEC_SPEC_DIR env var already exists for batch mode but isn't
+          wired through to compact. Probably not worth a separate item, just a minor wiring fix.
+          Skip capturing.
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-28T16:29:12.058Z
+        completed_at: 2026-02-28T16:29:12.058Z
     initiated_by: "@claude"
