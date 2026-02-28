@@ -62390,7 +62390,7 @@
 
     - Tests that need these vars explicitly pass them via the `env` option
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62415,6 +62415,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T07:04:15.904Z
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
