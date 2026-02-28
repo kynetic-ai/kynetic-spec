@@ -67427,7 +67427,10 @@
         behavior."
       supersedes: null
   todos: []
-- title: Fix merge driver non-interactive flag and improve conflict resolution
+- _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
+  slugs: []
+  title: Fix merge driver non-interactive flag and improve conflict resolution
+  type: task
   description: >-
     **Background**: Shadow branch diverged (170 local vs 260 remote commits). During merge, the
     merge driver was registered without --non-interactive, causing it to hang on stdin when
@@ -67475,22 +67478,45 @@
 
     7. Consider timestamp-aware conflict resolution for status fields (task state has natural
     ordering)
-  type: task
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - infra
     - bug
-  depends_on: []
-  _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-02-28T16:15:57.681Z
-  notes: []
+  notes:
+    - _ulid: 01KJJGJSC1QET01A4DV0TR5WYD
+      created_at: 2026-02-28T16:16:22.402Z
+      author: "@claude"
+      content: >-
+        Session work completed (2026-02-28):
+
+
+        Root cause: merge driver registered without --non-interactive flag. When git invoked it on
+        conflicting YAML files, it attempted interactive resolution via readline on unavailable
+        stdin, hanging indefinitely. The ours file was never written with merged content, so git
+        used unmodified ours version — silently losing remote-side changes.
+
+
+        Key finding: merge driver has NO timestamp awareness — purely structural 3-way merge. For
+        notes (append-only), it picks one side instead of unioning both.
+
+
+        Rebase approach worked: 170 local commits rebased onto 260 remote in isolated /tmp worktree.
+        Auto-continue script handled non-YAML conflicts. All 169 commits applied. Result: 705 tasks
+        with both sides preserved.
+
+
+        One data loss: Task @01KJDQ11 notes — 8 local notes replaced by 3 remote (ours-bias in
+        rebase context). Backup branches available: kspec-meta-backup-2026-02-28 (local),
+        kspec-remote-pre-merge (remote).
+      supersedes: null
   todos: []
