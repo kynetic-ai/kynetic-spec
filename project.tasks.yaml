@@ -62779,9 +62779,14 @@
     - Existing retry and failure escalation logic handles timeouts the same as other iteration
     failures
   spec_ref: "@cli-ralph"
-  status: pending_review
+  status: completed
   blocked_by: []
-  closed_reason: null
+  closed_reason: "Merged in PR #610. Implemented iteration-timeout hardening by capturing
+    runIterationPrompts() promise and attaching catch before Promise.race to prevent Node.js 22
+    unhandled rejection on timeout/dispose path. Added/confirmed @cli-ralph ac-24/ac-25/ac-26 for
+    iteration-timeout defaults, validation, and iteration.timeout event behavior, with AC
+    annotations in tests/ralph.test.ts. Verified @cli-ralph AC annotation coverage across
+    ac-1..ac-26 and green PR CI on merge commit 3935ca808c131813871ec5a48e7550f9a239a5a1."
   depends_on: []
   context: []
   priority: 3
@@ -62791,7 +62796,7 @@
   created_at: 2026-02-26T19:32:55.301Z
   started_at: 2026-02-28T23:07:15.520Z
   submitted_at: 2026-02-28T23:07:18.877Z
-  completed_at: null
+  completed_at: 2026-02-28T23:14:18.000Z
   notes:
     - _ulid: 01KJDQW7RZ6DDS9BNKW8XMDXF4
       created_at: 2026-02-26T19:47:39.935Z
