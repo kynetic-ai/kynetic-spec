@@ -155,6 +155,33 @@ describe("stale session criteria", () => {
     expect(result.skipped[0].detail).toContain("invalid line 2");
   });
 
+  // AC: @session-stale-criteria ac-7
+  it("skips and reports sessions with unreadable events.jsonl", async () => {
+    const sessionId = "01KJHSTAL3CR1T3R1A000000A";
+    await createSession(specDir, {
+      id: sessionId,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-24T00:00:00.000Z",
+    });
+    await fs.mkdir(getSessionEventsPath(specDir, sessionId), {
+      recursive: true,
+    });
+
+    const result = await selectStaleActiveSessions(
+      specDir,
+      { olderThan: "24h", inactiveFor: "6h" },
+      nowMs,
+    );
+    expect(result.candidates).toHaveLength(0);
+    expect(result.skippedCount).toBe(1);
+    expect(result.failureCount).toBe(1);
+    expect(result.skipped[0].sessionId).toBe(sessionId);
+    expect(result.skipped[0].reason).toBe("events_unreadable");
+    expect(result.skipped[0].detail).toContain("Unable to read events.jsonl");
+    expect(result.skipped[0].detail).toContain(sessionId);
+  });
+
   // AC: @session-stale-criteria ac-8
   it("blocks closure when session has recent activity inside liveness guard window", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000005";
