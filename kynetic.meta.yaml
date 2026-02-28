@@ -6930,6 +6930,32 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJJT519QTQXSJWRM17W06HH6
+    type: friction
+    content: Codex PR review takes 10+ minutes because npm test subagent polling is inefficient.
+      Consider instructing Codex to skip full suite and rely on CI, or use test shards instead of
+      full npm test.
+    created_at: 2026-02-28T19:03:37.528Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJJT51HXZZBH71BXK6VXKM15
+    type: friction
+    content: "Codex PR review cannot distinguish pre-existing test failures from regressions. Flags
+      false positives (e.g. session-budget-integration flakiness on PR #590). Could pre-seed
+      known-flaky test list or compare failure counts against main baseline."
+    created_at: 2026-02-28T19:03:37.790Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJJT51PHNAYJRJFMW7HQHMXH
+    type: success
+    content: "Codex-then-fix cycle on PR #601 was tight: review posted, ac-9 gap caught, fixed in 1
+      commit, thread resolved, CI passed, merged. Total turnaround ~15 min including CI."
+    created_at: 2026-02-28T19:03:37.937Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
