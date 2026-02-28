@@ -62155,6 +62155,7 @@
   session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
   created_at: 2026-02-26T19:32:48.731Z
   started_at: 2026-02-28T13:45:04.362Z
+  submitted_at: 2026-02-28T13:47:04.205Z
   notes:
     - _ulid: 01KJJ7ZVSTGWCFRGPCPWA7587W
       created_at: 2026-02-28T13:46:13.690Z
@@ -62170,9 +62171,16 @@
         validate now passes References: OK with no duplicate @observations slug errors. Regenerated
         kspec-agents.md so skills table points to /kspec:observe only."
       supersedes: null
+    - _ulid: 01KJJ821Z9S9HZ59G3GAGTPRG1
+      created_at: 2026-02-28T13:47:25.545Z
+      author: "@claude"
+      content: "Submitted for review in PR #599: https://github.com/kynetic-ai/kynetic-spec/pull/599.
+        Removed legacy skill id observations via batch skill delete, regenerated kspec-agents.md to
+        reference /kspec:observe, and verified kspec validate reports References: OK with no
+        duplicate @observations errors."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T13:47:04.205Z
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
