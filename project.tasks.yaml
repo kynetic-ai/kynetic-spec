@@ -62145,7 +62145,7 @@
     previously-ambiguous references resolve correctly. (4) `kspec agents generate` still includes
     the observations skill."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62181,6 +62181,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T13:53:13.698Z
+  closed_reason: "Merged in PR #599 (commit 5ee2254244a7c9aa718493418964a600869f4b97). Removed legacy
+    /kspec:observations skill entry ambiguity by retaining canonical /kspec:observe in generated
+    agent instructions; duplicate @observations reference errors resolved (References: OK). AC
+    coverage N/A for this infra task (no spec_ref). Local regression: npm test passed (3548 passed,
+    0 failed)."
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
