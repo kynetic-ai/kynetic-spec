@@ -7,6 +7,7 @@
 import { describe, expect, it } from "vitest";
 import {
   parseIntOption,
+  parsePriority,
   validateEnumOption,
   validateSpecRef,
 } from "../src/cli/validators.js";
@@ -90,6 +91,36 @@ describe("parseIntOption", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error).toContain("Limit");
+    }
+  });
+});
+
+describe("parsePriority", () => {
+  it("accepts numeric format", () => {
+    expect(parsePriority("2")).toEqual({ ok: true, value: 2 });
+  });
+
+  it("accepts uppercase P notation", () => {
+    expect(parsePriority("P1")).toEqual({ ok: true, value: 1 });
+  });
+
+  it("accepts lowercase p notation", () => {
+    expect(parsePriority("p3")).toEqual({ ok: true, value: 3 });
+  });
+
+  it("rejects out-of-range P notation", () => {
+    const result = parsePriority("P6");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toContain("Priority (1-5 or P1-P5)");
+    }
+  });
+
+  it("rejects invalid P notation", () => {
+    const result = parsePriority("Px");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toContain("Priority (1-5 or P1-P5)");
     }
   });
 });

@@ -310,6 +310,13 @@ describe('Integration: task add', () => {
     expect(task.tags).toContain('fix');
     expect(task.slugs).toContain('my-bug');
   });
+
+  it('should accept P-notation for --priority in task add', () => {
+    kspec('task add --title "P notation add" --priority p3 --slug p-notation-add', tempDir);
+
+    const task = kspecJson<{ priority: number }>('task get @p-notation-add', tempDir);
+    expect(task.priority).toBe(3);
+  });
 });
 
 describe('Integration: task set', () => {
@@ -399,10 +406,23 @@ describe('Integration: task set', () => {
     expect(task.priority).toBe(1);
   });
 
+  it('should accept P-notation for --priority in task set', () => {
+    kspec('task set @test-task-pending --priority P1', tempDir);
+
+    const task = kspecJson<{ priority: number }>('task get @test-task-pending', tempDir);
+    expect(task.priority).toBe(1);
+  });
+
   // AC: @task-set ac-task-set-6
   it('should reject invalid priority', () => {
     const result = kspecRun('task set @test-task-pending --priority 6', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
+  });
+
+  it('should reject invalid P-notation priority with clear guidance', () => {
+    const result = kspecRun('task set @test-task-pending --priority Px', tempDir, { expectFail: true });
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Priority (1-5 or P1-P5)');
   });
 
   it('should add slug to task', () => {

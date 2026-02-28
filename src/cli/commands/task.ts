@@ -41,7 +41,7 @@ import {
   warn,
 } from "../output.js";
 import {
-  parseIntOption,
+  parsePriority,
   validateEnumOption,
   validateSpecRef,
 } from "../validators.js";
@@ -284,11 +284,7 @@ async function setTaskFields(
     }
 
     if (options.priority) {
-      const priorityResult = parseIntOption(options.priority, {
-        min: 1,
-        max: 5,
-        name: "Priority",
-      });
+      const priorityResult = parsePriority(options.priority);
       if (!priorityResult.ok) {
         return { success: false, error: priorityResult.error };
       }
@@ -605,7 +601,7 @@ export function registerTaskCommands(program: Command): void {
       "Reference to meta item (workflow, agent, or convention)",
     )
     .option("--plan-ref <ref>", "Reference to plan this task is derived from")
-    .option("--priority <n>", "Priority (1-5)", "3")
+    .option("--priority <n>", "Priority (1-5 or P1-P5)", "3")
     .option("--slug <slug>", "Human-friendly slug")
     .option("--tag <tag...>", "Tags")
     .option("--depends-on <refs...>", "Set task dependencies")
@@ -756,11 +752,7 @@ Examples:
         }
 
         // Validate priority
-        const priorityResult = parseIntOption(options.priority, {
-          min: 1,
-          max: 5,
-          name: "Priority",
-        });
+        const priorityResult = parsePriority(options.priority);
         if (!priorityResult.ok) {
           error(priorityResult.error);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
@@ -824,7 +816,7 @@ Examples:
       "Link to meta item (use 'null' to clear)",
     )
     .option("--plan-ref <ref>", "Link to plan (use 'null' to clear)")
-    .option("--priority <n>", "Set priority (1-5)")
+    .option("--priority <n>", "Set priority (1-5 or P1-P5)")
     .option("--slug <slug>", "Add a slug alias")
     .option("--tag <tag...>", "Add tags")
     .option("--depends-on <refs...>", "Set dependencies (replaces existing)")

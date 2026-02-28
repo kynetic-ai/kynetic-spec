@@ -63,6 +63,20 @@ export function parseIntOption(
   return { ok: true, value: num };
 }
 
+// ─── parsePriority ──────────────────────────────────────────
+
+/**
+ * Parse task priority supporting numeric form (1-5) and P-notation (P1-P5).
+ */
+export function parsePriority(value: string): Result<number> {
+  const normalized = value.replace(/^[Pp]/, "");
+  return parseIntOption(normalized, {
+    min: 1,
+    max: 5,
+    name: "Priority (1-5 or P1-P5)",
+  });
+}
+
 // ─── validateEnumOption ─────────────────────────────────────
 
 /**
