@@ -64870,14 +64870,14 @@
   type: task
   spec_ref: "@session-stale-criteria"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+  session_id: null
   created_at: 2026-02-27T20:15:54.767Z
   started_at: 2026-02-28T20:59:56.669Z
   submitted_at: 2026-02-28T21:09:04.655Z
@@ -64932,6 +64932,14 @@
       created_at: 2026-02-28T21:11:40.727Z
       author: "@claude"
       content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+      supersedes: null
+    - _ulid: 01KJK2B9XM881XGMFXE5DKF1HR
+      created_at: 2026-02-28T21:26:51.572Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-7 coverage is incomplete in PR #605.
+        tests/session-stale-criteria.test.ts covers corrupt events.jsonl but not unreadable
+        events.jsonl failure path; add explicit unreadable-case test asserting skipped/failure
+        counts and warning context."
       supersedes: null
   todos: []
   automation: needs_review
