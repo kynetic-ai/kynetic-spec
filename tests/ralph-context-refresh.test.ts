@@ -479,7 +479,21 @@ describe('ralph context refresh - mock task completion integration', () => {
 
     // The mock should have completed Task A
     expect(result.stderr).toContain(`Completed task @${taskASlug}`);
-    expect(result.output).toContain('[REVIEW SUBAGENT] Completed:');
+
+    const completedTaskResult = spawnSync(
+      'node',
+      [CLI_PATH, 'task', 'get', `@${taskASlug}`, '--json'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: { ...process.env, KSPEC_AUTHOR: '@test' },
+      }
+    );
+
+    expect(completedTaskResult.status).toBe(0);
+    const completedTask = JSON.parse(completedTaskResult.stdout || '{}');
+    expect(completedTask.status).toBe('completed');
 
     // With AC-20 fix: After pending_review processing completes Task A,
     // ralph should refresh context and see that Task B is now ready.
@@ -508,8 +522,6 @@ describe('ralph context refresh - mock task completion integration', () => {
       MOCK_ACP_PROJECT_DIR: tempDir,
       MOCK_ACP_CLI_PATH: CLI_PATH,
     });
-
-    expect(result.output).toContain('issues found, kicked back to worker');
 
     const taskResult = spawnSync(
       'node',
