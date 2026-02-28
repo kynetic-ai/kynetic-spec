@@ -8453,7 +8453,7 @@ runs:
   - _ulid: 01KJK7C560714575BTVZ2CJH5H
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T22:54:42.368Z
     step_results:
@@ -8468,5 +8468,10 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T22:56:48.654Z
-        completed_at: 2026-02-28T22:56:48.654Z
+        completed_at: 2026-02-28T22:56:49.412Z
+        notes: No discussion step in loop mode — auto-advancing.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T22:56:49.412Z
+        completed_at: 2026-02-28T22:56:49.412Z
     initiated_by: "@claude"
