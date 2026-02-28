@@ -62152,12 +62152,19 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
   created_at: 2026-02-26T19:32:48.731Z
-  notes: []
+  started_at: 2026-02-28T13:45:04.362Z
+  notes:
+    - _ulid: 01KJJ7ZVSTGWCFRGPCPWA7587W
+      created_at: 2026-02-28T13:46:13.690Z
+      author: "@claude"
+      content: "Execution update: identified duplicate core skill IDs in meta ( v0.7.0 and  v0.9.0).
+        Removed legacy  entry via kspec batch + skill delete to resolve shared-slug ambiguity with
+        @observations spec feature."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T13:45:04.362Z
-  session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
 - _ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
   slugs: []
   title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
