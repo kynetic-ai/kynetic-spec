@@ -61983,6 +61983,11 @@
   spec_ref: "@shadow-repair-cmd"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #597. Replaced shell-based git command execution in
+    src/parser/shadow.ts with non-shell execFile/spawnSync argument-array execution across shadow
+    init/sync/repair/remote-tracking paths; removed execSync/execAsync usage and shell
+    interpolation. AC coverage verified via @shadow-recovery ac-recovery-1..6 tests and full
+    regression suite passed."
   depends_on: []
   context: []
   priority: 3
@@ -61992,6 +61997,7 @@
   created_at: 2026-02-26T19:32:46.139Z
   started_at: 2026-02-28T07:44:31.479Z
   submitted_at: 2026-02-28T07:46:20.025Z
+  completed_at: 2026-02-28T13:31:39.593Z
   notes:
     - _ulid: 01KJDQVZCFA46XS91H4TP27506
       created_at: 2026-02-26T19:47:31.344Z
@@ -62036,12 +62042,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T13:31:39.593Z
-  closed_reason: "Merged in PR #597. Replaced shell-based git command execution in
-    src/parser/shadow.ts with non-shell execFile/spawnSync argument-array execution across shadow
-    init/sync/repair/remote-tracking paths; removed execSync/execAsync usage and shell
-    interpolation. AC coverage verified via @shadow-recovery ac-recovery-1..6 tests and full
-    regression suite passed."
 - _ulid: 01KJDQ107WAD90WTAVFFQDW0B1
   slugs: []
   title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
@@ -62757,7 +62757,7 @@
 
     - Add a test case for empty `--commands` input
   spec_ref: "@batch-exec"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62768,6 +62768,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T13:32:24.588Z
+  session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
