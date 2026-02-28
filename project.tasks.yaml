@@ -65004,6 +65004,7 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: null
   created_at: 2026-02-27T20:15:55.224Z
   started_at: 2026-02-28T21:19:12.896Z
   submitted_at: 2026-02-28T21:19:15.098Z
@@ -65102,9 +65103,19 @@
         changes and does not satisfy @session-stale-close-metadata ac-3 (one shadow commit with
         command-specific message not implemented/covered). See PR #607 inline review comments."
       supersedes: null
+    - _ulid: 01KJK4R6E28V9BN68WJJWQ8ECY
+      created_at: 2026-02-28T22:08:51.138Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Addressed MUST-FIX findings from PR #607. (1) Removed unrelated
+        @01KJDQ17W/@cli-ralph changes by reverting commit f22d110 (new commit ed22e4f7), restoring
+        task/scope isolation for @session-stale-close-metadata. (2) Implemented AC-3 support in
+        applyAutoAbandonMetadata via optional shadowCommitMessage that performs one shadow
+        auto-commit after multi-session persistence, and added AC-annotated git-backed regression
+        test verifying exactly one commit with command-specific message. Commits pushed: ed22e4f7,
+        8131a376. Verification: npx vitest run tests/session-stale-criteria.test.ts (pass)."
+      supersedes: null
   todos: []
   automation: needs_review
-  session_id: null
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
