@@ -8096,6 +8096,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T20:41:37.063Z
+    completed_at: 2026-02-28T20:42:19.228Z
     step_results:
       - step_index: 0
         status: completed
@@ -8126,4 +8127,11 @@ runs:
         notes: No captures made in this loop run. All potential items were duplicates of existing tracked
           observations/inbox entries; high-confidence uniqueness threshold not met.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T20:42:19.228Z
+  - _ulid: 01KJJZWM8M261J840VC79P8J83
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T20:43:53.492Z
+    step_results: []
+    initiated_by: "@claude"
