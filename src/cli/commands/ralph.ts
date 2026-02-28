@@ -229,13 +229,24 @@ export function pushRecentTaskRef(
   }
 }
 
-export function setSessionIteration(
-  sessionIterationMap: Map<string, number>,
-  sessionId: string,
+export function createSessionUpdateLogger(
+  acpSessionId: string,
   iteration: number,
-): void {
-  sessionIterationMap.clear();
-  sessionIterationMap.set(sessionId, iteration);
+  logUpdate: (
+    iteration: number,
+    update: SessionUpdate,
+  ) => Promise<void> | void,
+): (sessionId: string, update: SessionUpdate) => void {
+  return (sessionId: string, update: SessionUpdate) => {
+    if (sessionId !== acpSessionId) {
+      return;
+    }
+    Promise.resolve()
+      .then(() => logUpdate(iteration, update))
+      .catch(() => {
+      // Ignore logging errors during streaming
+      });
+  };
 }
 
 export function disposeSpawnedAgent(spawned: SpawnedAgentLike | null): null {
@@ -1490,13 +1501,10 @@ export function registerRalphCommand(program: Command): void {
         let exitReason: ExitReason | null = null;
         let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
-        let latestIteration = 0;
         // AC: @ralph-per-role-adapters ac-7
         // Track previous env values per adapter for cleanup restoration
         const previousEnvValues = new Map<string, string | null | undefined>();
         const recentTaskRefs: string[] = [];
-        const sessionIterationMap = new Map<string, number>();
-
         const endAcpSession = (
           spawned: SpawnedAgent | null,
           sessionToEnd: string | null,
@@ -1505,7 +1513,6 @@ export function registerRalphCommand(program: Command): void {
             return null;
           }
           spawned.client.endSession(sessionToEnd);
-          sessionIterationMap.delete(sessionToEnd);
           return null;
         };
 
@@ -1583,7 +1590,6 @@ export function registerRalphCommand(program: Command): void {
           const renderer = createCliRenderer();
 
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
-            latestIteration = iteration;
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
             // AC: @ralph-session-budget-integration ac-reset-iteration
@@ -1797,17 +1803,6 @@ export function registerRalphCommand(program: Command): void {
                         renderer.render(event);
                       }
 
-                      // Log raw update event (async, non-blocking)
-                      // Look up iteration by ACP session ID so late updates from
-                      // a previous session are attributed to the correct iteration
-                      const eventIteration = sessionIterationMap.get(_sid) ?? latestIteration;
-                      appendEvent(specDir, {
-                        session_id: sessionId,
-                        type: "session.update",
-                        data: { iteration: eventIteration, update },
-                      }).catch(() => {
-                        // Ignore logging errors during streaming
-                      });
                     },
                   );
 
@@ -1845,7 +1840,18 @@ export function registerRalphCommand(program: Command): void {
                   cwd: process.cwd(),
                   mcpServers: [], // No MCP servers for now
                 });
-                setSessionIteration(sessionIterationMap, acpSessionId, iteration);
+                const updateLogger = createSessionUpdateLogger(
+                  acpSessionId,
+                  iteration,
+                  async (eventIteration, update) => {
+                    await appendEvent(specDir, {
+                      session_id: sessionId,
+                      type: "session.update",
+                      data: { iteration: eventIteration, update },
+                    });
+                  },
+                );
+                agent.client.on("update", updateLogger);
 
                 const runIterationPrompts = async () => {
                   // Phase 1: Task Work
