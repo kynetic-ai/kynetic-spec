@@ -6,6 +6,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -744,6 +745,55 @@ describe('Event storage', () => {
       const lastEvent = await getLastEvent(testDir, sessionId);
 
       expect(lastEvent).toBeNull();
+    });
+  });
+
+  describe('commit boundary inclusion', () => {
+    // AC: @session-events ac-7
+    it('should include accumulated events in the next git commit', async () => {
+      const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-commit-test-'));
+      const boundarySessionId = '01KF123456789ABCDEFGHJKMNQ';
+
+      const runGit = (...args: string[]) => {
+        const result = spawnSync('git', args, {
+          cwd: repoDir,
+          encoding: 'utf-8',
+        });
+        if (result.status !== 0) {
+          throw new Error(result.stderr || `git ${args.join(' ')} failed`);
+        }
+        return result.stdout.trim();
+      };
+
+      try {
+        runGit('init', '-b', 'main');
+        runGit('config', 'user.email', 'test@example.com');
+        runGit('config', 'user.name', 'Test User');
+
+        await fs.writeFile(path.join(repoDir, 'README.md'), '# test\n', 'utf-8');
+        runGit('add', 'README.md');
+        runGit('commit', '-m', 'test: initial commit');
+
+        await appendEvent(repoDir, {
+          type: 'session.update',
+          session_id: boundarySessionId,
+          data: {
+            update: {
+              rawInput: {
+                command: 'kspec task complete @task-ref --reason "Done"',
+              },
+            },
+          },
+        });
+
+        runGit('add', '.');
+        runGit('commit', '-m', 'test: commit boundary includes session events');
+
+        const committedFiles = runGit('show', '--name-only', '--pretty=format:', 'HEAD');
+        expect(committedFiles).toContain(`sessions/${boundarySessionId}/events.jsonl`);
+      } finally {
+        await fs.rm(repoDir, { recursive: true, force: true });
+      }
     });
   });
 
