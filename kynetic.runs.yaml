@@ -6924,6 +6924,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T06:41:50.849Z
+    completed_at: 2026-02-28T06:42:44.966Z
     step_results:
       - step_index: 0
         status: completed
@@ -6950,4 +6951,11 @@ runs:
         notes: "No captures added in step 4: evaluated candidates against existing observations/inbox/tasks
           and skipped duplicates/low-confidence items per loop criteria."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T06:42:44.966Z
+  - _ulid: 01KJHGD8AB0B60083XM6Y65SHG
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-28T06:54:06.668Z
+    step_results: []
+    initiated_by: "@claude"
