@@ -67554,6 +67554,15 @@
         - npm test (fails in unrelated tests/cli/session-note-limit.test.ts timeout; reproduced in
         isolation).
       supersedes: null
+    - _ulid: 01KJJQ8NTKQ46V5D7CMFTWTJA1
+      created_at: 2026-02-28T18:13:11.123Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Codex PR review posted (pullrequestreview-3870655818). MUST-FIX: PR CI test
+        shard 2 fails in tests/ralph-context-refresh.test.ts (assertions at lines 482 and 512). Root
+        cause from CI logs: reviewer status/transition subprocess paths rely on bare 'kspec' and
+        return null status in Actions context. Fix CLI invocation path in status-check helpers, then
+        re-run CI."
+      supersedes: null
   todos: []
 - _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
   slugs: []
