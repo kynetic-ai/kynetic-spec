@@ -64942,7 +64942,7 @@
   type: task
   spec_ref: "@session-stale-close-metadata"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -64963,6 +64963,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-28T21:13:44.187Z
+  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
