@@ -1,10 +1,13 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { execSync } from "node:child_process";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
+  applyAutoAbandonMetadata,
   appendEvent,
   createSession,
+  getSession,
   getSessionEventsPath,
   resolveStaleSessionCriteria,
   selectStaleActiveSessions,
@@ -208,5 +211,188 @@ describe("stale session criteria", () => {
     expect(result.evaluations[0].meetsInactivityThreshold).toBe(true);
     expect(result.evaluations[0].blockedByLivenessGuard).toBe(true);
     expect(result.candidates).toHaveLength(0);
+  });
+
+  // AC: @session-stale-close-metadata ac-1
+  // AC: @session-stale-close-metadata ac-2
+  it("writes abandoned status with canonical auto-abandoned close_reason", async () => {
+    const sessionId = "01KJHSTAL3CR1T3R1A0000006";
+    await createSession(specDir, {
+      id: sessionId,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-20T00:00:00.000Z",
+    });
+    await appendEvent(specDir, {
+      session_id: sessionId,
+      type: "session.update",
+      ts: new Date("2026-02-27T12:00:00.000Z").getTime(),
+      data: { update: "idle" },
+    });
+
+    const selection = await selectStaleActiveSessions(
+      specDir,
+      { olderThan: "24h", inactiveFor: "6h" },
+      nowMs,
+    );
+    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+      nowMs,
+    });
+
+    expect(applied.updatedCount).toBe(1);
+    const updated = await getSession(specDir, sessionId);
+    expect(updated?.status).toBe("abandoned");
+    expect(updated?.ended_at).toBe(nowIso);
+    expect(updated?.close_reason?.startsWith("auto-abandoned:")).toBe(true);
+    expect(updated?.close_reason).toContain("older-than=24h");
+    expect(updated?.close_reason).toContain("inactive-for=6h");
+    expect(updated?.close_reason).toContain("liveness-guard=5m");
+    expect(updated?.close_reason).toContain("last-activity=2026-02-27T12:00:00.000Z");
+  });
+
+  // AC: @session-stale-close-metadata ac-3
+  it("applies batch metadata updates for multiple sessions in one invocation", async () => {
+    const sessionA = "01KJHSTAL3CR1T3R1A0000007";
+    const sessionB = "01KJHSTAL3CR1T3R1A0000008";
+    await createSession(specDir, {
+      id: sessionA,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-20T00:00:00.000Z",
+    });
+    await createSession(specDir, {
+      id: sessionB,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-19T00:00:00.000Z",
+    });
+
+    const selection = await selectStaleActiveSessions(
+      specDir,
+      { olderThan: "24h", inactiveFor: "6h" },
+      nowMs,
+    );
+    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+      nowMs,
+    });
+
+    expect(applied.updatedCount).toBe(2);
+    expect(applied.updates).toHaveLength(2);
+    expect(applied.updates[0].endedAt).toBe(nowIso);
+    expect(applied.updates[1].endedAt).toBe(nowIso);
+    expect(applied.updates[0].closeReason.startsWith("auto-abandoned:")).toBe(true);
+    expect(applied.updates[1].closeReason.startsWith("auto-abandoned:")).toBe(true);
+
+    const updatedA = await getSession(specDir, sessionA);
+    const updatedB = await getSession(specDir, sessionB);
+    expect(updatedA?.status).toBe("abandoned");
+    expect(updatedB?.status).toBe("abandoned");
+    expect(updatedA?.ended_at).toBe(nowIso);
+    expect(updatedB?.ended_at).toBe(nowIso);
+  });
+
+  // AC: @session-stale-close-metadata ac-3
+  it("records one shadow commit with command-specific message for multi-session close", async () => {
+    execSync("git init", { cwd: specDir, stdio: "pipe" });
+    execSync('git config user.name "Test User"', { cwd: specDir, stdio: "pipe" });
+    execSync('git config user.email "test@example.com"', {
+      cwd: specDir,
+      stdio: "pipe",
+    });
+
+    const sessionA = "01KJHSTAL3CR1T3R1A000000B";
+    const sessionB = "01KJHSTAL3CR1T3R1A000000C";
+    await createSession(specDir, {
+      id: sessionA,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-20T00:00:00.000Z",
+    });
+    await createSession(specDir, {
+      id: sessionB,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-19T00:00:00.000Z",
+    });
+
+    execSync("git add -A", { cwd: specDir, stdio: "pipe" });
+    execSync('git commit -m "test: seed sessions"', {
+      cwd: specDir,
+      stdio: "pipe",
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
+    });
+    const beforeCount = Number.parseInt(
+      execSync("git rev-list --count HEAD", {
+        cwd: specDir,
+        encoding: "utf-8",
+      }).trim(),
+      10,
+    );
+
+    const selection = await selectStaleActiveSessions(
+      specDir,
+      { olderThan: "24h", inactiveFor: "6h" },
+      nowMs,
+    );
+    const commitMessage = "session stale close auto-abandoned metadata";
+    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+      nowMs,
+      shadowCommitMessage: commitMessage,
+    });
+
+    const afterCount = Number.parseInt(
+      execSync("git rev-list --count HEAD", {
+        cwd: specDir,
+        encoding: "utf-8",
+      }).trim(),
+      10,
+    );
+    const lastMessage = execSync("git log -1 --pretty=%s", {
+      cwd: specDir,
+      encoding: "utf-8",
+    }).trim();
+
+    expect(applied.updatedCount).toBe(2);
+    expect(applied.shadowCommitted).toBe(true);
+    expect(afterCount - beforeCount).toBe(1);
+    expect(lastMessage).toBe(commitMessage);
+  });
+
+  // AC: @session-stale-close-metadata ac-4
+  it("returns preview close_reason in dry-run mode without changing files", async () => {
+    const sessionId = "01KJHSTAL3CR1T3R1A0000009";
+    await createSession(specDir, {
+      id: sessionId,
+      agent_type: "ralph",
+      status: "active",
+      started_at: "2026-02-20T00:00:00.000Z",
+    });
+    await appendEvent(specDir, {
+      session_id: sessionId,
+      type: "session.update",
+      ts: new Date("2026-02-27T12:00:00.000Z").getTime(),
+      data: { update: "idle" },
+    });
+
+    const before = await getSession(specDir, sessionId);
+    const selection = await selectStaleActiveSessions(
+      specDir,
+      { olderThan: "24h", inactiveFor: "6h" },
+      nowMs,
+    );
+    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+      dryRun: true,
+      nowMs,
+    });
+    const after = await getSession(specDir, sessionId);
+
+    expect(applied.dryRun).toBe(true);
+    expect(applied.updatedCount).toBe(1);
+    expect(applied.updates[0].closeReason.startsWith("auto-abandoned:")).toBe(true);
+    expect(applied.updates[0].closeReason).toContain("older-than=24h");
+
+    expect(after?.status).toBe(before?.status);
+    expect(after?.ended_at).toBe(before?.ended_at);
+    expect(after?.close_reason).toBe(before?.close_reason);
   });
 });
