@@ -8899,6 +8899,7 @@ runs:
     current_step: 9
     total_steps: 10
     started_at: 2026-02-28T23:29:56.413Z
+    completed_at: 2026-02-28T23:39:30.483Z
     step_results:
       - step_index: 0
         status: completed
@@ -8952,7 +8953,6 @@ runs:
         completed_at: 2026-02-28T23:39:30.483Z
         notes: No new systemic PR-review friction to capture.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T23:39:30.483Z
   - _ulid: 01KJK9D911M9RJEYP0NM3G29SY
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: completed
@@ -9064,4 +9064,12 @@ runs:
         started_at: 2026-02-28T23:38:29.261Z
         completed_at: 2026-02-28T23:39:04.405Z
         notes: "Merged PR #612 (merge commit 504e356c0d06a20375fc359904d47726b89379d5)."
+    initiated_by: "@claude"
+  - _ulid: 01KJKA5BEAE9GBHN14P2S99D08
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-28T23:43:25.130Z
+    step_results: []
     initiated_by: "@claude"
