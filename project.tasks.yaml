@@ -62299,7 +62299,7 @@
     both formats. (5) Tests in `tests/cli-validators.test.ts` cover both formats. (6) CLI help text
     shows accepted format."
   spec_ref: "@batch-exec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62321,6 +62321,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T06:53:37.898Z
 - _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
   slugs: []
   title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
