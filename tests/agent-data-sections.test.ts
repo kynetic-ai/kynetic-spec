@@ -555,4 +555,27 @@ describe("computeMetaHash", () => {
 
     expect(hashWithout).not.toBe(hashWith);
   });
+
+  it("should produce different hashes when only package version differs", () => {
+    const skills: LoadedSkill[] = [];
+    const conventions: LoadedConvention[] = [];
+    const workflows: LoadedWorkflow[] = [];
+
+    const hashV1 = computeMetaHash(
+      skills,
+      conventions,
+      workflows,
+      undefined,
+      "0.9.0",
+    );
+    const hashV2 = computeMetaHash(
+      skills,
+      conventions,
+      workflows,
+      undefined,
+      "0.9.1",
+    );
+
+    expect(hashV1).not.toBe(hashV2);
+  });
 });

@@ -7,8 +7,11 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import * as crypto from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { computeMetaHash, getPackageRoot, loadTemplateSections } from '../src/cli/commands/agents.js';
+import { initContext, loadMetaContext } from '../src/parser/index.js';
 import {
   kspec as kspecFull,
   kspecJson,
@@ -293,6 +296,57 @@ describe('Agent Instruction Generation', () => {
       const result = kspecFull('agents status', tempDir);
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('stale');
+    });
+
+    it('should report stale when stored hash was computed without version', async () => {
+      kspecFull('agents generate', tempDir);
+
+      const ctx = await initContext(tempDir);
+      const meta = await loadMetaContext(ctx);
+      const templateSections = await loadTemplateSections(getPackageRoot());
+
+      const hashPath = path.join(tempDir, '.kspec', '.kspec-agents-hash');
+      const hashData = JSON.parse(await fs.readFile(hashPath, 'utf-8'));
+
+      const legacyData = {
+        skills: meta.skills.map((s) => ({
+          id: s.id,
+          name: s.name,
+          description: s.description,
+        })),
+        conventions: meta.conventions.map((c) => ({
+          domain: c.domain,
+          rules: c.rules,
+          examples: (c.examples ?? []).map((e) => ({ good: e.good, bad: e.bad })),
+        })),
+        workflows: meta.workflows.map((w) => ({
+          id: w.id,
+          trigger: w.trigger,
+          description: w.description,
+        })),
+        templates: templateSections,
+      };
+      const legacyHash = crypto
+        .createHash('sha256')
+        .update(JSON.stringify(legacyData), 'utf-8')
+        .digest('hex');
+      const currentHash = computeMetaHash(
+        meta.skills,
+        meta.conventions,
+        meta.workflows,
+        templateSections
+      );
+
+      expect(legacyHash).not.toBe(currentHash);
+      await fs.writeFile(
+        hashPath,
+        JSON.stringify({ ...hashData, metaHash: legacyHash }, null, 2) + '\n',
+        'utf-8'
+      );
+
+      const status = kspecFull('agents status', tempDir);
+      expect(status.exitCode).toBe(0);
+      expect(status.stdout).toContain('stale');
     });
 
     it('should return status in JSON output', async () => {
