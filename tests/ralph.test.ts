@@ -11,13 +11,14 @@ import { spawnSync } from 'node:child_process';
 import { createTranslator } from '../src/ralph/events.js';
 import type { SessionUpdate } from '../src/acp/types.js';
 import {
+  createSessionUpdateLogger,
   disposeSpawnedAgent,
   getPromptPlatformForAdapter,
   isAdapterPackageAvailable,
   pushRecentTaskRef,
+  replaceSessionUpdateLogger,
   runTerminalCommandWithArtifacts,
-  resolveRalphSkillInvocation,
-  setSessionIteration
+  resolveRalphSkillInvocation
 } from '../src/cli/commands/ralph.js';
 import { CLI_PATH, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
@@ -754,14 +755,69 @@ describe('ralph command', () => {
 });
 
 describe('ralph memory-safety helpers', () => {
-  it('setSessionIteration keeps only the active session mapping', () => {
-    const map = new Map<string, number>();
+  it('createSessionUpdateLogger binds iteration to one ACP session', async () => {
+    const logged: Array<{ iteration: number; update: SessionUpdate }> = [];
+    const logger = createSessionUpdateLogger(
+      'session-2',
+      2,
+      (iteration, update) => {
+        logged.push({ iteration, update });
+      },
+    );
 
-    setSessionIteration(map, 'session-1', 1);
-    setSessionIteration(map, 'session-2', 2);
-    setSessionIteration(map, 'session-3', 3);
+    const update1 = {
+      sessionUpdate: 'agent_message_chunk',
+      content: { type: 'text', text: 'old session' },
+    } satisfies SessionUpdate;
+    const update2 = {
+      sessionUpdate: 'agent_message_chunk',
+      content: { type: 'text', text: 'active session' },
+    } satisfies SessionUpdate;
 
-    expect(Array.from(map.entries())).toEqual([['session-3', 3]]);
+    logger('session-1', update1);
+    logger('session-2', update2);
+    await Promise.resolve();
+
+    expect(logged).toEqual([{ iteration: 2, update: update2 }]);
+  });
+
+  it('createSessionUpdateLogger swallows logging errors', () => {
+    const logger = createSessionUpdateLogger(
+      'session-1',
+      1,
+      () => {
+        throw new Error('logger failed');
+      },
+    );
+
+    const update = {
+      sessionUpdate: 'agent_message_chunk',
+      content: { type: 'text', text: 'chunk' },
+    } satisfies SessionUpdate;
+
+    expect(() => logger('session-1', update)).not.toThrow();
+  });
+
+  it('replaceSessionUpdateLogger detaches previous listener before attaching next', () => {
+    const calls: string[] = [];
+    const listenerA = () => {};
+    const listenerB = () => {};
+    const client = {
+      on: (_event: 'update', listener: unknown) => {
+        calls.push(listener === listenerA ? 'onA' : 'onB');
+      },
+      off: (_event: 'update', listener: unknown) => {
+        calls.push(listener === listenerA ? 'offA' : 'offB');
+      },
+    };
+
+    let active = replaceSessionUpdateLogger(client, null, listenerA);
+    expect(active).toBe(listenerA);
+    active = replaceSessionUpdateLogger(client, active, listenerB);
+    expect(active).toBe(listenerB);
+    active = replaceSessionUpdateLogger(client, active, null);
+    expect(active).toBeNull();
+    expect(calls).toEqual(['onA', 'offA', 'onB', 'offB']);
   });
 
   it('pushRecentTaskRef deduplicates and enforces the cap', () => {

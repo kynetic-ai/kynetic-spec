@@ -229,13 +229,44 @@ export function pushRecentTaskRef(
   }
 }
 
-export function setSessionIteration(
-  sessionIterationMap: Map<string, number>,
-  sessionId: string,
+export function createSessionUpdateLogger(
+  acpSessionId: string,
   iteration: number,
-): void {
-  sessionIterationMap.clear();
-  sessionIterationMap.set(sessionId, iteration);
+  logUpdate: (
+    iteration: number,
+    update: SessionUpdate,
+  ) => Promise<void> | void,
+): (sessionId: string, update: SessionUpdate) => void {
+  return (sessionId: string, update: SessionUpdate) => {
+    if (sessionId !== acpSessionId) {
+      return;
+    }
+    Promise.resolve()
+      .then(() => logUpdate(iteration, update))
+      .catch(() => {
+      // Ignore logging errors during streaming
+      });
+  };
+}
+
+type SessionUpdateLogger = (sessionId: string, update: SessionUpdate) => void;
+type SessionUpdateLoggerClient = {
+  on(event: "update", listener: SessionUpdateLogger): unknown;
+  off(event: "update", listener: SessionUpdateLogger): unknown;
+};
+
+export function replaceSessionUpdateLogger(
+  client: SessionUpdateLoggerClient,
+  currentLogger: SessionUpdateLogger | null,
+  nextLogger: SessionUpdateLogger | null,
+): SessionUpdateLogger | null {
+  if (currentLogger) {
+    client.off("update", currentLogger);
+  }
+  if (nextLogger) {
+    client.on("update", nextLogger);
+  }
+  return nextLogger;
 }
 
 export function disposeSpawnedAgent(spawned: SpawnedAgentLike | null): null {
@@ -1487,16 +1518,14 @@ export function registerRalphCommand(program: Command): void {
         let consecutiveFailures = 0;
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
+        let sessionUpdateLogger: SessionUpdateLogger | null = null;
         let exitReason: ExitReason | null = null;
         let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
-        let latestIteration = 0;
         // AC: @ralph-per-role-adapters ac-7
         // Track previous env values per adapter for cleanup restoration
         const previousEnvValues = new Map<string, string | null | undefined>();
         const recentTaskRefs: string[] = [];
-        const sessionIterationMap = new Map<string, number>();
-
         const endAcpSession = (
           spawned: SpawnedAgent | null,
           sessionToEnd: string | null,
@@ -1505,7 +1534,6 @@ export function registerRalphCommand(program: Command): void {
             return null;
           }
           spawned.client.endSession(sessionToEnd);
-          sessionIterationMap.delete(sessionToEnd);
           return null;
         };
 
@@ -1583,7 +1611,6 @@ export function registerRalphCommand(program: Command): void {
           const renderer = createCliRenderer();
 
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
-            latestIteration = iteration;
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
             // AC: @ralph-session-budget-integration ac-reset-iteration
@@ -1797,17 +1824,6 @@ export function registerRalphCommand(program: Command): void {
                         renderer.render(event);
                       }
 
-                      // Log raw update event (async, non-blocking)
-                      // Look up iteration by ACP session ID so late updates from
-                      // a previous session are attributed to the correct iteration
-                      const eventIteration = sessionIterationMap.get(_sid) ?? latestIteration;
-                      appendEvent(specDir, {
-                        session_id: sessionId,
-                        type: "session.update",
-                        data: { iteration: eventIteration, update },
-                      }).catch(() => {
-                        // Ignore logging errors during streaming
-                      });
                     },
                   );
 
@@ -1845,7 +1861,22 @@ export function registerRalphCommand(program: Command): void {
                   cwd: process.cwd(),
                   mcpServers: [], // No MCP servers for now
                 });
-                setSessionIteration(sessionIterationMap, acpSessionId, iteration);
+                const nextUpdateLogger = createSessionUpdateLogger(
+                  acpSessionId,
+                  iteration,
+                  async (eventIteration, update) => {
+                    await appendEvent(specDir, {
+                      session_id: sessionId,
+                      type: "session.update",
+                      data: { iteration: eventIteration, update },
+                    });
+                  },
+                );
+                sessionUpdateLogger = replaceSessionUpdateLogger(
+                  agent.client,
+                  sessionUpdateLogger,
+                  nextUpdateLogger,
+                );
 
                 const runIterationPrompts = async () => {
                   // Phase 1: Task Work
@@ -1930,6 +1961,11 @@ export function registerRalphCommand(program: Command): void {
                   }
                 }
 
+                sessionUpdateLogger = replaceSessionUpdateLogger(
+                  agent.client,
+                  sessionUpdateLogger,
+                  null,
+                );
                 acpSessionId = endAcpSession(agent, acpSessionId);
                 succeeded = true;
                 break;
@@ -1951,6 +1987,11 @@ export function registerRalphCommand(program: Command): void {
 
                 // Clean up agent on error - will respawn next attempt
                 if (agent) {
+                  sessionUpdateLogger = replaceSessionUpdateLogger(
+                    agent.client,
+                    sessionUpdateLogger,
+                    null,
+                  );
                   acpSessionId = endAcpSession(agent, acpSessionId);
                   agent = disposeSpawnedAgent(agent);
                 }
@@ -1989,6 +2030,11 @@ export function registerRalphCommand(program: Command): void {
                   `Restarting agent to prevent memory buildup (every ${restartEvery} iterations)...`,
                 );
                 if (agent) {
+                  sessionUpdateLogger = replaceSessionUpdateLogger(
+                    agent.client,
+                    sessionUpdateLogger,
+                    null,
+                  );
                   acpSessionId = endAcpSession(agent, acpSessionId);
                   agent = disposeSpawnedAgent(agent);
                 }
@@ -2045,6 +2091,11 @@ export function registerRalphCommand(program: Command): void {
 
           // Clean up agent
           if (agent) {
+            sessionUpdateLogger = replaceSessionUpdateLogger(
+              agent.client,
+              sessionUpdateLogger,
+              null,
+            );
             acpSessionId = endAcpSession(agent, acpSessionId);
             agent = disposeSpawnedAgent(agent);
           }
