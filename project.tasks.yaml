@@ -62881,7 +62881,7 @@
 
     - Add test cases for underscore variant args in batch validation tests
   spec_ref: "@batch-exec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62914,6 +62914,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T13:58:02.088Z
 - _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
   title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
