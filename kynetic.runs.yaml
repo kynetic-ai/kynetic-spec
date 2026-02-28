@@ -7835,7 +7835,7 @@ runs:
   - _ulid: 01KJJH3K0KAH0JHTCZ698KTHW4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-02-28T16:25:32.948Z
     step_results:
@@ -7864,5 +7864,42 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T16:25:57.522Z
-        completed_at: 2026-02-28T16:25:57.522Z
+        completed_at: 2026-02-28T16:26:12.702Z
+        notes: >-
+          Friction points:
+
+
+          1. **Merge driver missing --non-interactive was a silent disaster** — No error, no
+          warning, just hangs and leaves files unmerged. The driver should never hang regardless of
+          how it's invoked. stdin TTY detection is basic defense-in-depth that was missing.
+
+
+          2. **Exit code 1 from merge driver breaks git rebase** — In non-interactive mode, the
+          driver auto-resolves conflicts but still exits 1, causing git to stop at every conflicted
+          commit. Had to use "; true" hack to work around it. The spec (ac-10) already says exit 0
+          but the code doesn't match.
+
+
+          3. **kspec session compact can't target a different spec dir** — When working in a /tmp
+          worktree, we couldn't run compact against it — it always reads from the project's .kspec.
+          Had to rsync compacted sessions from the real .kspec instead.
+
+
+          4. **Many stale active sessions accumulate silently** — 37 sessions were stuck in "active"
+          status with no mechanism to detect or clean them up. The stale session criteria task
+          exists but isn't implemented yet.
+
+
+          5. **Worktree guard blocks legitimate operations** — git reset --soft in .kspec was
+          blocked by the guard hook even though it was an intentional recovery operation. Had to run
+          it manually outside the agent.
+
+
+          6. **Notes array conflict picks one side instead of unioning** — The spec says notes never
+          conflict (ac-5), but when both sides have different notes arrays, the merge driver treats
+          it as a scalar conflict and picks ours. Lost 8 detailed notes from one task.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T16:26:12.702Z
+        completed_at: 2026-02-28T16:26:12.702Z
     initiated_by: "@claude"
