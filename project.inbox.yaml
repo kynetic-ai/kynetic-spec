@@ -1130,3 +1130,14 @@ inbox:
       - cli
       - reflection
     added_by: "@claude"
+  - _ulid: 01KJK3YZ9KSNY37H0RSAQ9DWMP
+    text: "Add commit-scope guard for automated task work: before committing, detect pre-existing staged
+      files unrelated to the current task and prevent accidental inclusion (or require explicit
+      acknowledgment). In this iteration, unrelated staged files were included because they were
+      already in the index before git add on task files."
+    created_at: 2026-02-28T21:55:04.627Z
+    tags:
+      - reflection
+      - git
+      - automation
+    added_by: "@claude"
