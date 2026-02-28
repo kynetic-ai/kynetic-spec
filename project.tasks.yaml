@@ -64951,6 +64951,7 @@
   vcs_refs: []
   created_at: 2026-02-27T20:15:55.224Z
   started_at: 2026-02-28T21:19:12.896Z
+  submitted_at: 2026-02-28T21:19:15.098Z
   notes:
     - _ulid: 01KJGBWPARS0EW9YRFFK2S50CE
       created_at: 2026-02-27T20:15:55.224Z
@@ -65010,9 +65011,15 @@
         reports known pre-existing repo-level schema/reference/alignment/completeness issues
         unrelated to this task."
       supersedes: null
+    - _ulid: 01KJK1Y06KRY2DCWWE5CRV60E6
+      created_at: 2026-02-28T21:19:35.636Z
+      author: "@claude"
+      content: "PR opened: https://github.com/kynetic-ai/kynetic-spec/pull/606 (base:
+        feat/session-stale-candidate-criteria). Includes metadata apply helper + AC tests for
+        @session-stale-close-metadata ac-1..ac-4."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T21:19:15.098Z
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
