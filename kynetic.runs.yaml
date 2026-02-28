@@ -7477,7 +7477,7 @@ runs:
   - _ulid: 01KJJ8PE1HXDSVHQS5TXM6ZWX1
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T13:58:33.266Z
     step_results:
@@ -7490,5 +7490,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T13:58:52.105Z
-        completed_at: 2026-02-28T13:58:52.105Z
+        completed_at: 2026-02-28T13:58:52.674Z
+        notes: "Friction: gh pr create failed initially in dirty tree without --head; rerunning with
+          explicit --head resolved it."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T13:58:52.674Z
+        completed_at: 2026-02-28T13:58:52.674Z
     initiated_by: "@claude"
