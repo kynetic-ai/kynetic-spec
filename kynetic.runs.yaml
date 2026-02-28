@@ -8518,8 +8518,18 @@ runs:
   - _ulid: 01KJK99FYA5M66Q5GHKXQ73Q7H
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-28T23:28:12.235Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-28T23:28:12.235Z
+        completed_at: 2026-02-28T23:28:35.230Z
+        notes: "What worked: inherited needs_work task @01KJDQ1A, implemented minimal listener-detach fix,
+          added focused regression test, and re-submitted to pending_review with clean audit notes."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-28T23:28:35.230Z
+        completed_at: 2026-02-28T23:28:35.230Z
     initiated_by: "@claude"
