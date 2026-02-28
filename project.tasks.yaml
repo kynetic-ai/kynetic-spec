@@ -61911,12 +61911,19 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJH73C9JTMB6977AEY991KBQ
   created_at: 2026-02-26T19:32:47.484Z
-  notes: []
+  started_at: 2026-02-28T04:42:16.130Z
+  notes:
+    - _ulid: 01KJH8VZV37NY5P2HGGM1MAH94
+      created_at: 2026-02-28T04:42:20.899Z
+      author: "@claude"
+      content: "Execution context: add TTY guard in task patch stdin path so interactive runs fail fast
+        instead of hanging; preserve --data and piped-stdin behavior; update CLI tests in
+        tests/task.test.ts and verify batch path remains functional."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T04:42:16.130Z
-  session_id: 01KJH73C9JTMB6977AEY991KBQ
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
   title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
