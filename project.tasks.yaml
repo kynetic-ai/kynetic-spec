@@ -67462,7 +67462,7 @@
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -67606,6 +67606,8 @@
         Pushed rebased branch with --force-with-lease.
       supersedes: null
   todos: []
+  completed_at: 2026-02-28T19:01:41.319Z
+  closed_reason: "PR #590 reviewed and merged at head 690d0648"
 - _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
   slugs: []
   title: Fix merge driver non-interactive flag and improve conflict resolution
