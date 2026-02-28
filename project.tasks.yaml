@@ -63195,12 +63195,23 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   created_at: 2026-02-26T19:32:58.796Z
-  notes: []
+  started_at: 2026-02-28T22:31:41.762Z
+  notes:
+    - _ulid: 01KJK6BHC1K8VKC5HSMV2WE7VB
+      created_at: 2026-02-28T22:36:53.505Z
+      author: "@claude"
+      content: "Fixed batch-mode plan import success handling by removing success-path process.exit(0) in
+        src/cli/commands/plan-import.ts and returning normally, preventing BatchExitError from being
+        caught by the command wrapper as a hard failure. Added regression in
+        tests/batch-exec-engine.test.ts (AC: @plan-import ac-34, ac-23) verifying warning-only plan
+        import inside batch succeeds and still surfaces warning text in command output.
+        Verification: npm run build; npx vitest run tests/batch-exec-engine.test.ts; npx vitest run
+        tests/cli-plan-import.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T22:31:41.762Z
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
 - _ulid: 01KJDQ1C22TH9SEXXGBYQT8Y3Z
   slugs: []
   title: Plan import --update replaces all ACs instead of merging. When extending an existing spec
