@@ -1054,6 +1054,383 @@ export async function getLastEvent(
   return events[events.length - 1];
 }
 
+// ─── Stale Session Candidate Selection ──────────────────────────────────────
+
+const RELATIVE_DURATION_PATTERN = /^(\d+)([hdwm])$/i;
+
+const STALE_DEFAULTS = {
+  olderThan: "24h",
+  inactiveFor: "6h",
+  livenessGuard: "5m",
+} as const;
+
+export interface StaleSessionCriteriaInput {
+  olderThan?: string;
+  inactiveFor?: string;
+  livenessGuard?: string;
+}
+
+export interface StaleSessionCriteria {
+  olderThan: string;
+  olderThanMs: number;
+  inactiveFor: string;
+  inactiveForMs: number;
+  livenessGuard: string;
+  livenessGuardMs: number;
+}
+
+export type StaleSessionCriteriaValidation =
+  | {
+    ok: true;
+    criteria: StaleSessionCriteria;
+  }
+  | {
+    ok: false;
+    field: "older-than" | "inactive-for" | "liveness-guard";
+    value: string;
+    message: string;
+    guidance: string;
+  };
+
+function durationGuidance(flag: "older-than" | "inactive-for" | "liveness-guard"): string {
+  return `--${flag} accepts relative durations only (h, d, w, m), for example 6h, 7d, 2w, 1m`;
+}
+
+function parseRelativeDurationMs(
+  rawValue: string,
+): number | null {
+  const match = rawValue.match(RELATIVE_DURATION_PATTERN);
+  if (!match) return null;
+  const amount = parseInt(match[1], 10);
+  const unit = match[2].toLowerCase();
+  if (Number.isNaN(amount)) return null;
+
+  switch (unit) {
+    case "h":
+      return amount * 60 * 60 * 1000;
+    case "d":
+      return amount * 24 * 60 * 60 * 1000;
+    case "w":
+      return amount * 7 * 24 * 60 * 60 * 1000;
+    case "m":
+      return amount * 60 * 1000;
+    default:
+      return null;
+  }
+}
+
+function parseCriteriaDuration(
+  field: "older-than" | "inactive-for" | "liveness-guard",
+  value: string,
+): {
+  ok: true;
+  ms: number;
+} | {
+  ok: false;
+  field: "older-than" | "inactive-for" | "liveness-guard";
+  value: string;
+  message: string;
+  guidance: string;
+} {
+  const parsed = parseRelativeDurationMs(value);
+  if (parsed !== null) {
+    return { ok: true, ms: parsed };
+  }
+
+  const parsedDate = new Date(value);
+  const appearsAbsolute = !Number.isNaN(parsedDate.getTime());
+  return {
+    ok: false,
+    field,
+    value,
+    message: appearsAbsolute
+      ? `Invalid value for --${field}: "${value}" (absolute timestamps are not supported)`
+      : `Invalid value for --${field}: "${value}"`,
+    guidance: durationGuidance(field),
+  };
+}
+
+export function resolveStaleSessionCriteria(
+  input: StaleSessionCriteriaInput,
+): StaleSessionCriteriaValidation {
+  const olderThan = input.olderThan ?? STALE_DEFAULTS.olderThan;
+  const inactiveFor = input.inactiveFor ?? STALE_DEFAULTS.inactiveFor;
+  const livenessGuard = input.livenessGuard ?? STALE_DEFAULTS.livenessGuard;
+
+  const olderThanParsed = parseCriteriaDuration("older-than", olderThan);
+  if (!olderThanParsed.ok) return olderThanParsed;
+  const olderThanMs = olderThanParsed.ms;
+
+  const inactiveForParsed = parseCriteriaDuration("inactive-for", inactiveFor);
+  if (!inactiveForParsed.ok) return inactiveForParsed;
+  const inactiveForMs = inactiveForParsed.ms;
+
+  const livenessGuardParsed = parseCriteriaDuration(
+    "liveness-guard",
+    livenessGuard,
+  );
+  if (!livenessGuardParsed.ok) return livenessGuardParsed;
+  const livenessGuardMs = livenessGuardParsed.ms;
+
+  return {
+    ok: true,
+    criteria: {
+      olderThan,
+      olderThanMs,
+      inactiveFor,
+      inactiveForMs,
+      livenessGuard,
+      livenessGuardMs,
+    },
+  };
+}
+
+export interface StaleSessionActivity {
+  lastActivityAt: string;
+  lastActivityTs: number;
+  source: "event" | "started_at";
+}
+
+export type StaleSessionActivityResult =
+  | {
+    ok: true;
+    activity: StaleSessionActivity;
+  }
+  | {
+    ok: false;
+    reason: "events_unreadable" | "events_corrupt" | "invalid_started_at";
+    detail: string;
+  };
+
+/**
+ * Resolve most recent activity timestamp for stale-session candidate checks.
+ *
+ * Unlike readEvents(), this is strict: corrupt events are surfaced as failures
+ * so stale auto-close can skip unsafe sessions.
+ */
+export async function getSessionActivityForStaleCheck(
+  specDir: string,
+  sessionId: string,
+): Promise<StaleSessionActivityResult> {
+  const metadata = await getSession(specDir, sessionId);
+  if (!metadata) {
+    return {
+      ok: false,
+      reason: "invalid_started_at",
+      detail: `Session metadata missing or unreadable for ${sessionId}`,
+    };
+  }
+
+  const startedAtTs = new Date(metadata.started_at).getTime();
+  if (Number.isNaN(startedAtTs)) {
+    return {
+      ok: false,
+      reason: "invalid_started_at",
+      detail: `Session ${sessionId} has invalid started_at timestamp`,
+    };
+  }
+
+  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  let content: string;
+  try {
+    content = await fsPromises.readFile(eventsPath, "utf-8");
+  } catch (err: unknown) {
+    if (err instanceof Error && "code" in err && err.code === "ENOENT") {
+      return {
+        ok: true,
+        activity: {
+          lastActivityAt: metadata.started_at,
+          lastActivityTs: startedAtTs,
+          source: "started_at",
+        },
+      };
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    return {
+      ok: false,
+      reason: "events_unreadable",
+      detail: `Unable to read events.jsonl for ${sessionId}: ${message}`,
+    };
+  }
+
+  const lines = content
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+  if (lines.length === 0) {
+    return {
+      ok: true,
+      activity: {
+        lastActivityAt: metadata.started_at,
+        lastActivityTs: startedAtTs,
+        source: "started_at",
+      },
+    };
+  }
+
+  let latestTs: number | null = null;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    try {
+      const parsed = JSON.parse(line);
+      const event = SessionEventSchema.parse(parsed);
+      if (latestTs === null || event.ts > latestTs) {
+        latestTs = event.ts;
+      }
+    } catch {
+      return {
+        ok: false,
+        reason: "events_corrupt",
+        detail: `Corrupt events.jsonl for ${sessionId}: invalid line ${i + 1}`,
+      };
+    }
+  }
+
+  if (latestTs === null) {
+    return {
+      ok: true,
+      activity: {
+        lastActivityAt: metadata.started_at,
+        lastActivityTs: startedAtTs,
+        source: "started_at",
+      },
+    };
+  }
+
+  return {
+    ok: true,
+    activity: {
+      lastActivityAt: new Date(latestTs).toISOString(),
+      lastActivityTs: latestTs,
+      source: "event",
+    },
+  };
+}
+
+export interface StaleSessionEvaluation {
+  sessionId: string;
+  startedAt: string;
+  lastActivityAt: string;
+  lastActivitySource: "event" | "started_at";
+  ageMs: number;
+  inactivityMs: number;
+  meetsAgeThreshold: boolean;
+  meetsInactivityThreshold: boolean;
+  blockedByLivenessGuard: boolean;
+  eligible: boolean;
+}
+
+export interface StaleSessionSkipped {
+  sessionId: string;
+  reason: "events_unreadable" | "events_corrupt" | "invalid_started_at";
+  detail: string;
+}
+
+export interface StaleSessionCandidateSelection {
+  criteria: StaleSessionCriteria;
+  totalActiveSessions: number;
+  evaluations: StaleSessionEvaluation[];
+  candidates: StaleSessionEvaluation[];
+  skipped: StaleSessionSkipped[];
+  skippedCount: number;
+  failureCount: number;
+}
+
+export function evaluateStaleSession(
+  startedAt: string,
+  activity: StaleSessionActivity,
+  criteria: StaleSessionCriteria,
+  nowMs: number = Date.now(),
+): Omit<
+  StaleSessionEvaluation,
+  "sessionId"
+> {
+  const startedAtMs = new Date(startedAt).getTime();
+  const ageMs = nowMs - startedAtMs;
+  const inactivityMs = nowMs - activity.lastActivityTs;
+  const meetsAgeThreshold = ageMs >= criteria.olderThanMs;
+  const meetsInactivityThreshold = inactivityMs >= criteria.inactiveForMs;
+  const blockedByLivenessGuard = inactivityMs < criteria.livenessGuardMs;
+  const eligible =
+    meetsAgeThreshold &&
+    meetsInactivityThreshold &&
+    !blockedByLivenessGuard;
+
+  return {
+    startedAt,
+    lastActivityAt: activity.lastActivityAt,
+    lastActivitySource: activity.source,
+    ageMs,
+    inactivityMs,
+    meetsAgeThreshold,
+    meetsInactivityThreshold,
+    blockedByLivenessGuard,
+    eligible,
+  };
+}
+
+export async function selectStaleActiveSessions(
+  specDir: string,
+  criteriaInput: StaleSessionCriteriaInput = {},
+  nowMs: number = Date.now(),
+): Promise<StaleSessionCandidateSelection> {
+  const criteriaResolved = resolveStaleSessionCriteria(criteriaInput);
+  if (!criteriaResolved.ok) {
+    throw new Error(
+      `${criteriaResolved.message}. ${criteriaResolved.guidance}`,
+    );
+  }
+  const criteria = criteriaResolved.criteria;
+
+  const sessionIds = await listSessions(specDir);
+  const evaluations: StaleSessionEvaluation[] = [];
+  const candidates: StaleSessionEvaluation[] = [];
+  const skipped: StaleSessionSkipped[] = [];
+
+  for (const sessionId of sessionIds) {
+    const metadata = await getSession(specDir, sessionId);
+    if (!metadata || metadata.status !== "active") continue;
+
+    const activityResult = await getSessionActivityForStaleCheck(
+      specDir,
+      sessionId,
+    );
+    if (!activityResult.ok) {
+      skipped.push({
+        sessionId,
+        reason: activityResult.reason,
+        detail: activityResult.detail,
+      });
+      continue;
+    }
+
+    const evaluation = evaluateStaleSession(
+      metadata.started_at,
+      activityResult.activity,
+      criteria,
+      nowMs,
+    );
+    const withSessionId: StaleSessionEvaluation = {
+      sessionId,
+      ...evaluation,
+    };
+    evaluations.push(withSessionId);
+    if (withSessionId.eligible) {
+      candidates.push(withSessionId);
+    }
+  }
+
+  return {
+    criteria,
+    totalActiveSessions: evaluations.length + skipped.length,
+    evaluations,
+    candidates,
+    skipped,
+    skippedCount: skipped.length,
+    failureCount: skipped.length,
+  };
+}
+
 // ─── Session Log Summaries ───────────────────────────────────────────────────
 
 /**
