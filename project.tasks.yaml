@@ -62888,12 +62888,21 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
   created_at: 2026-02-26T19:32:57.124Z
-  notes: []
+  started_at: 2026-02-28T13:53:48.588Z
+  notes:
+    - _ulid: 01KJJ8DXYSJ1XM78N2028HFCZP
+      created_at: 2026-02-28T13:53:54.649Z
+      author: "@claude"
+      content: "Execution context:\\n- Background: batch JSON args currently accept kebab/camel but reject
+        underscore keys used by many generators.\\n- Scope: normalize arg-key variants in batch
+        validation + argv building so kebab/camel/underscore all work consistently.\\n- Files:
+        src/cli/batch-exec.ts and batch exec tests.\\n- Verification: targeted batch tests plus full
+        validation check for regression."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T13:53:48.588Z
-  session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
 - _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
   title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
