@@ -128,15 +128,6 @@ describe('Init Setup Integration', () => {
       expect(result.stdout).not.toContain('Setup Summary');
     });
 
-    // AC: @init-setup-integration ac-4 - shows tip about --setup option
-    it('shows tip about --setup option after init', async () => {
-      const result = kspec('init --no-prompt', testDir);
-
-      expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('--setup');
-      expect(result.stdout).toContain('kspec setup');
-    });
-
     it('does not install hooks without --setup', async () => {
       const result = kspec('init --no-prompt', testDir);
 
