@@ -6801,7 +6801,7 @@ runs:
   - _ulid: 01KJHCZ1SSJ46917F9WVD9J8QD
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T05:53:55.514Z
     step_results:
@@ -6814,5 +6814,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T05:55:14.180Z
-        completed_at: 2026-02-28T05:55:14.180Z
+        completed_at: 2026-02-28T05:55:28.187Z
+        notes: "High-confidence findings: success = focused branch isolation plus full regression gate
+          before submit. Friction = session budget guard can block legitimate task state transition
+          after context/branch switch; workaround required env unsetting for task start."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T05:55:28.187Z
+        completed_at: 2026-02-28T05:55:28.187Z
     initiated_by: "@claude"
