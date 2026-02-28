@@ -61572,7 +61572,7 @@
   spec_ref: "@triage-daemon-api"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-fix-triage-e2e-ac-gaps"
@@ -61617,6 +61617,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-28T07:29:10.652Z
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJD106N5ZQ3VB9T3EV3BHYZK
   slugs:
     - task-ci-e2e-tests
