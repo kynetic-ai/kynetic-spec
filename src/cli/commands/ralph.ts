@@ -872,7 +872,7 @@ async function markTaskNeedsReview(
   // Use kspec CLI to set automation status
   const result = spawnSync(
     "kspec",
-    ["task", "set-automation", taskRef, "needs_review"],
+    ["task", "set", taskRef, "--automation", "needs_review", "--reason", reason],
     {
       encoding: "utf-8",
       stdio: "pipe",
