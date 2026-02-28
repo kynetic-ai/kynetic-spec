@@ -296,6 +296,7 @@ tasks:
   });
 
   // AC: @merge-driver-cli ac-1
+  // AC: @yaml-merge-driver ac-9
   it("should handle clean merge with no conflicts", async () => {
     await fs.writeFile(
       baseFile,
