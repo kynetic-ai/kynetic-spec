@@ -684,7 +684,9 @@ async function importPlan(
   // Exit code logic
   // AC: @plan-import ac-15 - Dry run exits 0
   // AC: @plan-import ac-23 - Success with some errors still exits 0
-  process.exit(EXIT_CODES.SUCCESS);
+  // Return normally so batch mode treats this as success instead of
+  // intercepting process.exit(0) as an exception path.
+  return;
 }
 
 /**
