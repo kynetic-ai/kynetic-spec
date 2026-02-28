@@ -1580,6 +1580,24 @@ async function configureMergeDriver(
         if (!existingDriver.includes("kspec merge-driver")) {
           throw new Error("Merge driver config exists but is incorrect");
         }
+
+        // Ensure --non-interactive flag is present (older registrations may lack it)
+        if (!existingDriver.includes("--non-interactive")) {
+          const fixResult = runCommandSync(
+            "git",
+            [
+              "config",
+              "merge.kspec.driver",
+              `${kspecPath} merge-driver %O %A %B --non-interactive`,
+            ],
+            { cwd: projectRoot },
+          );
+          if (!fixResult.ok) {
+            throw new Error(
+              fixResult.stderr || "failed to update merge.kspec.driver with --non-interactive",
+            );
+          }
+        }
       } catch {
         throw error; // Re-throw original error
       }

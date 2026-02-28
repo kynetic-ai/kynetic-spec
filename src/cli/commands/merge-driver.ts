@@ -511,7 +511,7 @@ export function registerMergeDriverCommand(program: Command): void {
             oursPath,
             theirsPath,
             {
-              nonInteractive: options.nonInteractive || false,
+              nonInteractive: options.nonInteractive || !process.stdin.isTTY,
               filePath,
             },
           );
@@ -531,8 +531,13 @@ export function registerMergeDriverCommand(program: Command): void {
           // Write summary to stderr for user visibility
           console.error(formatMergeSummary(result));
 
-          // Exit code: 0 for clean merge, 1 if conflicts remain
-          // Git interprets non-zero exit as "conflict markers written"
+          // AC: @yaml-merge-driver ac-9, ac-10
+          // Non-interactive: always exit 0 (conflicts are written as YAML comments,
+          // exit 1 would cause git to fall back to text merge, corrupting YAML)
+          // Interactive: exit 1 if unresolved conflicts remain
+          if (options.nonInteractive || !process.stdin.isTTY) {
+            process.exit(0);
+          }
           process.exit(result.hasConflicts ? 1 : 0);
         } catch (err) {
           error("Merge driver failed", err);
