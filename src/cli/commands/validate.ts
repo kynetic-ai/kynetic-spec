@@ -841,15 +841,20 @@ export function registerValidateCommand(program: Command): void {
         // Track warnings from all sources for exit code determination
         let additionalWarningCount = 0;
 
-        // Determine which checks to run
-        const runAll =
-          !options.schema &&
-          !options.refs &&
-          !options.orphans &&
-          !options.alignment &&
-          !options.completeness &&
-          !options.conventions &&
-          !options.skills;
+        // Determine which checks to run. Coerce to booleans so we pass explicit
+        // false values to parser validation when a check is not selected.
+        const selectedChecks = {
+          schema: Boolean(options.schema),
+          refs: Boolean(options.refs),
+          orphans: Boolean(options.orphans),
+          alignment: Boolean(options.alignment),
+          completeness: Boolean(options.completeness),
+          conventions: Boolean(options.conventions),
+          staleness: Boolean(options.staleness),
+          skills: Boolean(options.skills),
+          drift: Boolean(options.drift),
+        };
+        const runAll = !Object.values(selectedChecks).some(Boolean);
 
         // AC: @config-validation ac-4 — CLI --strict overrides config strict_refs
         // If --strict is passed, use strict behavior regardless of config
@@ -858,10 +863,10 @@ export function registerValidateCommand(program: Command): void {
         const requireAcceptance = ctx.config.validation.require_acceptance;
 
         const validateOptions = {
-          schema: runAll || options.schema,
-          refs: runAll || options.refs,
-          orphans: runAll || options.orphans,
-          completeness: runAll || options.completeness,
+          schema: runAll || selectedChecks.schema,
+          refs: runAll || selectedChecks.refs,
+          orphans: runAll || selectedChecks.orphans,
+          completeness: runAll || selectedChecks.completeness,
           // AC: @config-validation ac-2 ac-3 ac-4 — wire config into validation
           strictRefs,
           requireAcceptance,
@@ -899,7 +904,7 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Run alignment check if requested or running all checks
-        if (options.alignment || runAll) {
+        if (selectedChecks.alignment || runAll) {
           const tasks = await loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
@@ -932,7 +937,7 @@ export function registerValidateCommand(program: Command): void {
 
         // Run convention validation if requested
         // AC: @convention-definitions ac-3, ac-4
-        if (options.conventions) {
+        if (selectedChecks.conventions) {
           try {
             const metaCtx = await loadMetaContext(ctx);
             if (metaCtx && metaCtx.conventions.length > 0) {
@@ -965,7 +970,7 @@ export function registerValidateCommand(program: Command): void {
         // Run staleness checks if requested
         // AC: @stale-status-detection ac-4, ac-5
         let stalenessWarningCount = 0;
-        if (options.staleness) {
+        if (selectedChecks.staleness) {
           const tasks = await loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
@@ -982,7 +987,7 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Run skill file validation if requested or running all checks
-        if (runAll || options.skills) {
+        if (runAll || selectedChecks.skills) {
           const skillResult = await validateSkills(ctx.rootDir);
           formatSkillValidationResult(skillResult, options.verbose);
 
@@ -993,7 +998,7 @@ export function registerValidateCommand(program: Command): void {
 
         // Run AC schema drift checks if requested
         let driftWarningCount = 0;
-        if (options.drift) {
+        if (selectedChecks.drift) {
           const items = await loadAllItems(ctx);
           const driftWarnings = checkACSchemaReferences(items);
           formatDriftWarnings(driftWarnings, options.verbose);
@@ -1055,21 +1060,23 @@ export function registerValidateCommand(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const runAll =
-          !options.schema &&
-          !options.refs &&
-          !options.orphans &&
-          !options.completeness;
+        const selectedChecks = {
+          schema: Boolean(options.schema),
+          refs: Boolean(options.refs),
+          orphans: Boolean(options.orphans),
+          completeness: Boolean(options.completeness),
+        };
+        const runAll = !Object.values(selectedChecks).some(Boolean);
 
         // AC: @config-validation ac-4 — CLI --strict overrides config strict_refs
         const strictRefs = options.strict ? true : ctx.config.validation.strict_refs;
         const requireAcceptance = ctx.config.validation.require_acceptance;
 
         const validateOptions = {
-          schema: runAll || options.schema,
-          refs: runAll || options.refs,
-          orphans: runAll || options.orphans,
-          completeness: runAll || options.completeness,
+          schema: runAll || selectedChecks.schema,
+          refs: runAll || selectedChecks.refs,
+          orphans: runAll || selectedChecks.orphans,
+          completeness: runAll || selectedChecks.completeness,
           strictRefs,
           requireAcceptance,
         };

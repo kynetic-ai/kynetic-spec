@@ -256,6 +256,9 @@ tasks:
 
     // Should contain staleness warnings
     expect(resultWithFlag).toContain("Staleness warnings");
+    // Should not include unrelated warning sections in scoped mode
+    expect(resultWithFlag).not.toContain("Alignment warnings");
+    expect(resultWithFlag).not.toContain("Completeness warnings");
   });
 
   // AC: @stale-status-detection staleness-exit-code

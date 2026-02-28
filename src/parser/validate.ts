@@ -1605,9 +1605,10 @@ export async function validate(
   // AC: @plan-validation ac-10
   const allPlans = await loadPlans(ctx);
 
-  // Reference validation
+  // Build reference index when any downstream check needs it.
+  const needsRefIndex = runRefs || runOrphans || runCompleteness;
   if (
-    runRefs &&
+    needsRefIndex &&
     (allTasks.length > 0 ||
       allItems.length > 0 ||
       allMetaItems.length > 0 ||
@@ -1619,40 +1620,43 @@ export async function validate(
       allMetaItems,
       allPlans,
     );
-    const refResult = validateRefs(index, allTasks, allItems);
 
-    // AC: @config-validation ac-2 ac-3 — strict_refs controls error vs warning
-    // When strictRefs is false, demote "not_found" ref errors to warnings
-    if (options.strictRefs === false) {
-      // Move not_found errors to warnings
-      const notFoundErrors = refResult.errors.filter((e) => e.error === "not_found");
-      const otherErrors = refResult.errors.filter((e) => e.error !== "not_found");
+    if (runRefs) {
+      const refResult = validateRefs(index, allTasks, allItems);
 
-      result.refErrors = otherErrors;
-      result.refWarnings = [
-        ...refResult.warnings,
-        ...notFoundErrors.map((e) => ({
-          ref: e.ref,
-          sourceFile: e.sourceFile,
-          sourceUlid: e.sourceUlid,
-          field: e.field,
-          warning: "deprecated_target" as const, // Reuse existing warning type
-          message: e.message,
-        })),
-      ];
-    } else {
-      // Default/strict behavior: not_found refs are errors
-      result.refErrors = refResult.errors;
-      result.refWarnings = refResult.warnings;
+      // AC: @config-validation ac-2 ac-3 — strict_refs controls error vs warning
+      // When strictRefs is false, demote "not_found" ref errors to warnings
+      if (options.strictRefs === false) {
+        // Move not_found errors to warnings
+        const notFoundErrors = refResult.errors.filter((e) => e.error === "not_found");
+        const otherErrors = refResult.errors.filter((e) => e.error !== "not_found");
+
+        result.refErrors = otherErrors;
+        result.refWarnings = [
+          ...refResult.warnings,
+          ...notFoundErrors.map((e) => ({
+            ref: e.ref,
+            sourceFile: e.sourceFile,
+            sourceUlid: e.sourceUlid,
+            field: e.field,
+            warning: "deprecated_target" as const, // Reuse existing warning type
+            message: e.message,
+          })),
+        ];
+      } else {
+        // Default/strict behavior: not_found refs are errors
+        result.refErrors = refResult.errors;
+        result.refWarnings = refResult.warnings;
+      }
+
+      // AC: @skill-validation ac-2 - validate skill depends_on references
+      const skillDependsOnWarnings = validateSkillDependsOn(metaCtx.skills, index);
+      result.refWarnings.push(...skillDependsOnWarnings);
+
+      // AC: @trait-edge-cases ac-2
+      // Detect circular trait references
+      result.traitCycleErrors = detectTraitCycles(allItems, index);
     }
-
-    // AC: @skill-validation ac-2 - validate skill depends_on references
-    const skillDependsOnWarnings = validateSkillDependsOn(metaCtx.skills, index);
-    result.refWarnings.push(...skillDependsOnWarnings);
-
-    // AC: @trait-edge-cases ac-2
-    // Detect circular trait references
-    result.traitCycleErrors = detectTraitCycles(allItems, index);
 
     // Orphan detection
     if (runOrphans) {
