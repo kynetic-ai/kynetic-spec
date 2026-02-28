@@ -61904,7 +61904,7 @@
     `kspec task patch @ref --data '{...}'` still works. (3) `echo '{...}' | kspec task patch @ref`
     still works. (4) Batch exec engine (`src/cli/batch-exec.ts`) still works with task patch."
   spec_ref: "@task-patch"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -61934,6 +61934,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T04:44:55.782Z
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
   title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
