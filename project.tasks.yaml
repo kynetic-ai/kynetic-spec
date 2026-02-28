@@ -62509,12 +62509,21 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
   created_at: 2026-02-26T19:32:54.517Z
-  notes: []
+  started_at: 2026-02-28T07:19:25.415Z
+  notes:
+    - _ulid: 01KJHHXRHVPVTBKNR40K8QACV7
+      created_at: 2026-02-28T07:20:36.155Z
+      author: "@claude"
+      content: "Implemented item-get guidance for meta observation refs. Scope: src/cli/commands/item.ts
+        and tests/integration.test.ts. Behavior change: when item ref resolution fails, item get now
+        checks meta refs and, if ref is an observation, returns a hint to use 'kspec meta observe
+        get <ref>' instead of a generic not-found error. Verification: npm test -- --run
+        tests/integration.test.ts -t 'suggest meta observe get for observation refs'."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T07:19:25.415Z
-  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
