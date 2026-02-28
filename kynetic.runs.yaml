@@ -6997,6 +6997,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T06:56:25.410Z
+    completed_at: 2026-02-28T06:57:07.204Z
     step_results:
       - step_index: 0
         status: completed
@@ -7024,4 +7025,11 @@ runs:
         notes: "No captures added this iteration: no unique, high-confidence reflection items after
           duplicate/uncertainty filtering."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T06:57:07.204Z
+  - _ulid: 01KJHGMN784C6MS29S68XJ4FSJ
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T06:58:09.257Z
+    step_results: []
+    initiated_by: "@claude"
