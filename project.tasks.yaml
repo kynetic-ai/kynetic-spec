@@ -62786,7 +62786,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   created_at: 2026-02-26T19:32:55.301Z
+  started_at: 2026-02-28T21:45:34.729Z
   notes:
     - _ulid: 01KJDQW7RZ6DDS9BNKW8XMDXF4
       created_at: 2026-02-26T19:47:39.935Z
@@ -62794,10 +62796,21 @@
       content: "Linked to @cli-ralph spec. New feature: iteration-level timeout for ralph loop. Spec
         covers ralph command."
       supersedes: null
+    - _ulid: 01KJK3T7PC2Z2H7RTVSQ8328M7
+      created_at: 2026-02-28T21:52:29.388Z
+      author: "@claude"
+      content: "Implemented iteration-level timeout for ralph loop attempts. Added --iteration-timeout
+        <minutes> (default 20), validated as positive numeric minutes, and applied timeout over full
+        task-work+reflect attempt using Promise.race. On timeout, ralph now logs iteration.timeout
+        events with iteration/attempt/timeout metadata, kills the stuck agent, and reuses existing
+        retry/max-failure handling. Updated session event schema to include iteration.timeout and
+        added regression tests in tests/ralph.test.ts for dry-run display, invalid value handling,
+        and timeout event logging. Verification: npx vitest run tests/ralph.test.ts
+        tests/sessions.test.ts (pass), npm test (pass). kspec validate still reports pre-existing
+        project-level meta/reference/alignment/completeness issues unrelated to this change."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T21:45:34.729Z
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
   slugs: []
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
