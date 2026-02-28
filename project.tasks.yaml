@@ -67471,6 +67471,7 @@
     - cli
     - ralph
   vcs_refs: []
+  session_id: null
   created_at: 2026-02-28T05:09:15.330Z
   started_at: 2026-02-28T05:09:19.988Z
   submitted_at: 2026-02-28T05:10:10.341Z
@@ -67497,8 +67498,19 @@
         may be pre-existing flakiness tracked in @01KJGDR9; (2) AC annotation coverage gap for
         @ralph-subagent-spawning (9 of 13 ACs missing test annotations, mostly pre-existing)."
       supersedes: null
+    - _ulid: 01KJJN05R8MPWDZRFTJFZ9NBVW
+      created_at: 2026-02-28T17:33:35.369Z
+      author: "@claude"
+      content: >-
+        Codex PR review posted on #590 (pullrequestreview-3870620687). Two inline MUST-FIX comments:
+
+        1. src/ralph/subagent.ts:288 — session-budget-integration regression (4 test failures on
+        branch, passes on main). Likely related to flaky timeout issue tracked in @01KJGDR9.
+
+        2. tests/ralph.test.ts:1680 — AC annotation coverage gap: only ac-2,9,10,11 annotated out of
+        ac-1..13. Mostly pre-existing, not introduced by this PR.
+      supersedes: null
   todos: []
-  session_id: null
 - _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
   slugs: []
   title: Fix merge driver non-interactive flag and improve conflict resolution
