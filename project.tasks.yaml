@@ -61904,14 +61904,14 @@
     `kspec task patch @ref --data '{...}'` still works. (3) `echo '{...}' | kspec task patch @ref`
     still works. (4) Batch exec engine (`src/cli/batch-exec.ts`) still works with task patch."
   spec_ref: "@task-patch"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJH73C9JTMB6977AEY991KBQ
+  session_id: null
   created_at: 2026-02-26T19:32:47.484Z
   started_at: 2026-02-28T04:42:16.130Z
   submitted_at: 2026-02-28T04:44:55.782Z
@@ -61940,6 +61940,13 @@
         task patch + empty-stdin validation and integration tests for piped stdin and interactive
         fast-fail. Verification: npm run build; npx vitest run tests/integration.test.ts -t
         'Integration: task patch'; npx vitest run tests/batch-exec-engine.test.ts."
+      supersedes: null
+    - _ulid: 01KJH9ECSTVGM54987HWKRE450
+      created_at: 2026-02-28T04:52:23.995Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #588 includes out-of-scope @session-events
+        changes (tests/sessions.test.ts) unrelated to @task-patch task scope. Split unrelated commit
+        and resubmit focused PR."
       supersedes: null
   todos: []
   automation: eligible
@@ -64060,6 +64067,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #587 (merge commit badc21d5d07debaac92c8e031ac5a43add2e1f8b). Added
+    explicit @session-events ac-7 commit-boundary coverage and verified @session-events AC
+    annotations/tests cover ac-1 through ac-9, including blob externalization and pointer audit
+    metadata behaviors."
   depends_on: []
   context: []
   priority: 1
@@ -64072,6 +64083,7 @@
   created_at: 2026-02-27T09:18:10.836Z
   started_at: 2026-02-28T04:17:04.505Z
   submitted_at: 2026-02-28T04:20:40.175Z
+  completed_at: 2026-02-28T04:50:38.826Z
   notes:
     - _ulid: 01KJF8YC0BXF7553R2YE2NBHWD
       created_at: 2026-02-27T10:05:10.027Z
@@ -64134,8 +64146,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T04:50:38.826Z
-  closed_reason: "Merged in PR #587 (merge commit badc21d5d07debaac92c8e031ac5a43add2e1f8b). Added
-    explicit @session-events ac-7 commit-boundary coverage and verified @session-events AC
-    annotations/tests cover ac-1 through ac-9, including blob externalization and pointer audit
-    metadata behaviors."
