@@ -110,6 +110,15 @@ describe('kspec setup (enhanced)', () => {
       expect(result.skills).toBeDefined();
       expect(result.agentsMd).toBeDefined();
     });
+
+    it('should use --agent override for status without env detection vars', async () => {
+      const result = kspec('setup --status --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '' },
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Detected: claude-code');
+    });
   });
 
   describe('--dry-run flag', () => {
@@ -179,6 +188,26 @@ describe('kspec setup (enhanced)', () => {
       expect(result.stdout).toContain('Install hooks');
       expect(result.stdout).toContain('Render skills');
       expect(result.stdout).toContain('Generate kspec-agents.md');
+    });
+
+    it('should run setup with --agent claude-code without CLAUDECODE env var', async () => {
+      const result = kspec('setup --dry-run --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '' },
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Agent detection');
+      expect(result.stdout).toContain('claude-code');
+    });
+
+    it('should reject invalid --agent values with clear error', async () => {
+      const result = kspec('setup --status --agent not-a-real-agent', tempDir, {
+        expectFail: true,
+      });
+
+      expect(result.exitCode).toBeGreaterThan(0);
+      expect(result.stderr).toContain('Invalid --agent value');
+      expect(result.stderr).toContain('Supported values');
     });
 
     // AC: @enhanced-setup ac-2 - all hook entries present
