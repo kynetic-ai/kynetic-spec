@@ -326,7 +326,6 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
         cwd: tempDir,
         env: {
           ...process.env,
-          KSPEC_SPEC_DIR: tempDir,
           KSPEC_AUTHOR: "@test",
           ...env,
         },
@@ -411,7 +410,6 @@ describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
         cwd: tempDir,
         env: {
           ...process.env,
-          KSPEC_SPEC_DIR: tempDir,
           KSPEC_AUTHOR: "@test",
         },
         stdio: ["pipe", "pipe", "pipe"],

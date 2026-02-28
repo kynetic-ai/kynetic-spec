@@ -10,6 +10,7 @@ import { createWriteStream, type WriteStream } from "node:fs";
 import * as fs from "node:fs/promises";
 import { createRequire } from "node:module";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import type { Command } from "commander";
 import { ulid } from "ulid";
@@ -17,6 +18,9 @@ import { ulid } from "ulid";
 // Read version from package.json for ACP client info
 const require = createRequire(import.meta.url);
 const { version: packageVersion } = require("../../../package.json");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DEFAULT_KSPEC_CLI_PATH = path.resolve(__dirname, "..", "index.js");
 
 import type { ACPClient } from "../../acp/client.js";
 import type {
@@ -49,10 +53,13 @@ import {
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_WRAPUP_TIMEOUT,
   type ExitReason,
+  formatJsonSection,
+  type PromptSection,
   RALPH_PROMPT_TIMEOUT,
   runSubagent,
   runWrapUpAgent,
   type SubagentContext,
+  truncatePromptIfNeeded,
   WRAPUP_AGENT_PREFIX,
 } from "../../ralph/index.js";
 import {
@@ -369,17 +376,21 @@ This session is scoped to specific tasks: ${explicitTaskScope.refs.join(", ")}
     ? "Loop mode means: no confirmations, auto-resolve decisions, explicit task scope (only the listed tasks)."
     : "Loop mode means: no confirmations, auto-resolve decisions, automation-eligible tasks only.";
 
-  return `# Kspec Automation Session - Task Work
+  const stateSection = formatJsonSection(
+    sessionCtx as unknown as Record<string, unknown>,
+    "Current State",
+    `kspec session start --json`,
+  );
+  const sections: PromptSection[] = [stateSection.section];
+
+  const prompt = `# Kspec Automation Session - Task Work
 
 **Session ID:** \`${sessionId}\`
 **Iteration:** ${iteration} of ${maxLoops}
 **Mode:** Automated (no human in the loop)
 ${focusSection}${taskScopeSection}
 
-## Current State
-\`\`\`json
-${JSON.stringify(sessionCtx, null, 2)}
-\`\`\`
+${stateSection.text}
 
 ## Instructions
 
@@ -397,6 +408,8 @@ it checks for remaining eligible tasks at the start of each iteration and exits 
 **Do NOT call \`end-loop\` after completing a task.** Simply stop responding.
 \`end-loop\` is a rare escape hatch for when work is stalling across multiple iterations with no progress — not a normal exit path.
 `;
+
+  return truncatePromptIfNeeded(prompt, sections);
 }
 
 /**
@@ -840,11 +853,17 @@ async function buildSubagentContext(
  * Get the current status of a task.
  * AC: @ralph-subagent-spawning ac-12
  */
-function getTaskStatus(taskRef: string): string | null {
-  const result = spawnSync("kspec", ["task", "get", taskRef, "--json"], {
+function runKspecCli(args: string[]) {
+  const cliPath = process.env.KSPEC_CLI_PATH || DEFAULT_KSPEC_CLI_PATH;
+  return spawnSync(process.execPath, [cliPath, ...args], {
     encoding: "utf-8",
     stdio: "pipe",
+    cwd: process.cwd(),
   });
+}
+
+function getTaskStatus(taskRef: string): string | null {
+  const result = runKspecCli(["task", "get", taskRef, "--json"]);
 
   if (result.status !== 0) {
     warn(`Failed to check task status for ${taskRef}: ${result.stderr}`);
@@ -867,16 +886,9 @@ async function markTaskNeedsReview(
   taskRef: string,
   reason: string,
 ): Promise<void> {
-  const { spawnSync } = await import("node:child_process");
-
   // Use kspec CLI to set automation status
-  const result = spawnSync(
-    "kspec",
+  const result = runKspecCli(
     ["task", "set", taskRef, "--automation", "needs_review", "--reason", reason],
-    {
-      encoding: "utf-8",
-      stdio: "pipe",
-    },
   );
 
   if (result.status !== 0) {
@@ -884,13 +896,8 @@ async function markTaskNeedsReview(
   }
 
   // Add a note explaining the timeout
-  const noteResult = spawnSync(
-    "kspec",
+  const noteResult = runKspecCli(
     ["task", "note", taskRef, `[RALPH SUBAGENT] ${reason}`],
-    {
-      encoding: "utf-8",
-      stdio: "pipe",
-    },
   );
 
   if (noteResult.status !== 0) {

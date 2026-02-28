@@ -1646,10 +1646,14 @@ import {
   buildSubagentPrompt,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  formatJsonSection,
+  type PromptSection,
   SKILL_PR_REVIEW,
   SKILL_REFLECT,
   SKILL_TASK_WORK,
+  SUBAGENT_PROMPT_MAX_BYTES,
   type SubagentContext,
+  truncatePromptIfNeeded,
 } from '../src/ralph/subagent.js';
 import { createPrefixedRenderer } from '../src/ralph/cli-renderer.js';
 
@@ -1758,6 +1762,213 @@ describe('subagent module', () => {
     });
   });
 
+  // ─── Prompt Truncation Tests ──────────────────────────────────────────────
+  // AC: @ralph-subagent-spawning ac-10
+
+  describe('formatJsonSection', () => {
+    it('returns markdown JSON fence for normal data', () => {
+      const data = { title: 'Test', status: 'pending' };
+      const { text } = formatJsonSection(data, 'Task Details', 'kspec task get @test --json');
+
+      expect(text).toContain('### Task Details');
+      expect(text).toContain('```json');
+      expect(text).toContain('"title": "Test"');
+    });
+
+    it('section marker matches the text for replacement', () => {
+      const data = { title: 'Test' };
+      const { text, section } = formatJsonSection(data, 'Label', 'kspec task get @t --json');
+
+      expect(section.marker).toBe(text);
+      expect(section.size).toBe(Buffer.byteLength(text, 'utf8'));
+    });
+
+    it('truncated output has no ```json fence', () => {
+      const data = { title: 'Test' };
+      const { section } = formatJsonSection(data, 'Label', 'kspec task get @t --json');
+
+      expect(section.truncated).not.toContain('```json');
+      expect(section.truncated).toContain('**Truncated**');
+      expect(section.truncated).toContain('kspec task get @t --json');
+    });
+
+    it('truncated output includes compact summary with identity fields', () => {
+      const data = {
+        ulid: '01ABC',
+        title: 'My Task',
+        status: 'in_progress',
+        spec_ref: '@my-spec',
+        acceptance_criteria: [{ id: 'ac-1' }, { id: 'ac-2' }],
+      };
+      const { section } = formatJsonSection(data, 'Task', 'kspec task get @t --json');
+
+      expect(section.truncated).toContain('"_ulid":"01ABC"');
+      expect(section.truncated).toContain('"title":"My Task"');
+      expect(section.truncated).toContain('"status":"in_progress"');
+      expect(section.truncated).toContain('"spec_ref":"@my-spec"');
+      expect(section.truncated).toContain('"ac_count":2');
+    });
+  });
+
+  describe('truncatePromptIfNeeded', () => {
+    it('passes through prompt under budget', () => {
+      const prompt = 'Short prompt';
+      const sections: PromptSection[] = [];
+      const result = truncatePromptIfNeeded(prompt, sections, 1024);
+
+      expect(result).toBe(prompt);
+    });
+
+    it('truncates largest section first when over budget', () => {
+      const smallSection = '<!-- SMALL -->';
+      const largeSection = '<!-- LARGE ' + 'x'.repeat(500) + ' -->';
+      const prompt = `Header\n${smallSection}\n${largeSection}\nFooter`;
+
+      const sections: PromptSection[] = [
+        { marker: smallSection, truncated: '<!-- S_TRUNC -->', size: Buffer.byteLength(smallSection) },
+        { marker: largeSection, truncated: '<!-- L_TRUNC -->', size: Buffer.byteLength(largeSection) },
+      ];
+
+      // Set budget so only large section needs truncating
+      const budget = Buffer.byteLength(prompt) - 400;
+      const result = truncatePromptIfNeeded(prompt, sections, budget);
+
+      expect(result).toContain('<!-- L_TRUNC -->');
+      expect(result).toContain(smallSection); // small section untouched
+      expect(result).not.toContain('<!-- LARGE ');
+    });
+
+    it('truncates multiple sections if needed', () => {
+      const sec1 = 'A'.repeat(300);
+      const sec2 = 'B'.repeat(300);
+      const prompt = `Header\n${sec1}\n${sec2}\nFooter`;
+
+      const sections: PromptSection[] = [
+        { marker: sec1, truncated: 'a', size: Buffer.byteLength(sec1) },
+        { marker: sec2, truncated: 'b', size: Buffer.byteLength(sec2) },
+      ];
+
+      const budget = 50;
+      const result = truncatePromptIfNeeded(prompt, sections, budget);
+
+      expect(result).toContain('a');
+      expect(result).toContain('b');
+      expect(result).not.toContain('A'.repeat(10));
+    });
+
+    it('exactly at limit passes through', () => {
+      const prompt = 'x'.repeat(100);
+      const sections: PromptSection[] = [
+        { marker: prompt, truncated: 'y', size: 100 },
+      ];
+
+      const result = truncatePromptIfNeeded(prompt, sections, 100);
+      expect(result).toBe(prompt);
+    });
+
+    it('1 byte over limit triggers truncation', () => {
+      const prompt = 'x'.repeat(101);
+      const sections: PromptSection[] = [
+        { marker: prompt, truncated: 'y', size: 101 },
+      ];
+
+      const result = truncatePromptIfNeeded(prompt, sections, 100);
+      expect(result).toBe('y');
+    });
+  });
+
+  describe('buildSubagentPrompt truncation', () => {
+    it('small payloads are embedded verbatim with json fence', () => {
+      const context: SubagentContext = {
+        taskRef: '@task-small',
+        taskDetails: { title: 'Small Task', status: 'pending_review' },
+        specWithACs: { title: 'Small Spec', acceptance_criteria: [{ id: 'ac-1' }] },
+        gitBranch: 'feat/small',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('```json');
+      expect(prompt).toContain('"title": "Small Task"');
+      expect(prompt).toContain('"title": "Small Spec"');
+      expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
+    });
+
+    it('oversized taskDetails triggers truncation with CLI fetch command', () => {
+      const hugeNotes = 'x'.repeat(40000);
+      const context: SubagentContext = {
+        taskRef: '@task-huge',
+        taskDetails: { title: 'Huge Task', status: 'in_progress', notes: hugeNotes },
+        specWithACs: null,
+        gitBranch: 'feat/huge',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('**Truncated**');
+      expect(prompt).toContain('kspec task get @task-huge --json');
+      expect(prompt).not.toContain(hugeNotes);
+      expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
+    });
+
+    it('oversized specWithACs triggers truncation with CLI fetch command', () => {
+      const hugeSpec = 'y'.repeat(40000);
+      const context: SubagentContext = {
+        taskRef: '@task-spec-huge',
+        taskDetails: { title: 'Task', status: 'pending_review', spec_ref: '@big-spec' },
+        specWithACs: { title: 'Big Spec', description: hugeSpec, acceptance_criteria: [] },
+        gitBranch: 'feat/big-spec',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('**Truncated**');
+      expect(prompt).toContain('kspec item get @big-spec --json');
+      expect(prompt).not.toContain(hugeSpec);
+      expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
+    });
+
+    it('both sections oversized triggers truncation for both', () => {
+      // Each section individually exceeds budget, so truncating one still leaves prompt over limit
+      const bigData = 'z'.repeat(SUBAGENT_PROMPT_MAX_BYTES);
+      const context: SubagentContext = {
+        taskRef: '@task-both',
+        taskDetails: { title: 'Task', status: 'pending_review', spec_ref: '@spec-both', data: bigData },
+        specWithACs: { title: 'Spec', description: bigData, acceptance_criteria: [{ id: 'ac-1' }] },
+        gitBranch: 'feat/both',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('kspec task get @task-both --json');
+      expect(prompt).toContain('kspec item get @spec-both --json');
+      expect(prompt).not.toContain(bigData);
+      expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
+    });
+
+    it('compact summary present in truncation output', () => {
+      const hugeNotes = 'x'.repeat(40000);
+      const context: SubagentContext = {
+        taskRef: '@task-summary',
+        taskDetails: {
+          ulid: '01TESTULID',
+          title: 'Summary Task',
+          status: 'pending_review',
+          spec_ref: '@my-spec',
+          notes: hugeNotes,
+        },
+        specWithACs: null,
+        gitBranch: 'feat/summary',
+      };
+
+      const prompt = buildSubagentPrompt(context);
+
+      expect(prompt).toContain('"_ulid":"01TESTULID"');
+      expect(prompt).toContain('"title":"Summary Task"');
+      expect(prompt).toContain('"status":"pending_review"');
+    });
+  });
+
   describe('constants', () => {
     // AC: @ralph-subagent-spawning ac-9
     it('DEFAULT_SUBAGENT_TIMEOUT is 20 minutes', () => {
@@ -1776,7 +1987,7 @@ describe('subagent module', () => {
     });
   });
 
-  // AC: @ralph-subagent-spawning ac-11
+  // AC: @ralph-subagent-spawning ac-4, ac-11
   describe('createPrefixedRenderer', () => {
     it('does not double prefix for console.log output', () => {
       const renderer = createPrefixedRenderer('[TEST]');

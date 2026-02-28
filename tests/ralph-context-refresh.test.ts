@@ -112,6 +112,54 @@ async function setupDependencyFixtures(tempDir: string): Promise<{
   return { taskAUlid, taskBUlid, taskASlug, taskBSlug };
 }
 
+/**
+ * Create test fixtures with two pending_review tasks to verify sequential processing.
+ */
+async function setupMultiPendingReviewFixtures(tempDir: string): Promise<{
+  firstTaskSlug: string;
+  secondTaskSlug: string;
+}> {
+  const firstTaskSlug = 'task-review-one';
+  const secondTaskSlug = 'task-review-two';
+
+  const tasksYaml = `tasks:
+  - _ulid: ${testUlid('TRVW1', 1)}
+    slugs:
+      - ${firstTaskSlug}
+    title: Task Review One
+    type: task
+    status: pending_review
+    priority: 1
+    automation: eligible
+    tags:
+      - test
+    description: First pending review task
+    depends_on: []
+    notes: []
+    todos: []
+    created_at: "2026-01-01T00:00:00Z"
+
+  - _ulid: ${testUlid('TRVW2', 2)}
+    slugs:
+      - ${secondTaskSlug}
+    title: Task Review Two
+    type: task
+    status: pending_review
+    priority: 2
+    automation: eligible
+    tags:
+      - test
+    description: Second pending review task
+    depends_on: []
+    notes: []
+    todos: []
+    created_at: "2026-01-01T00:00:00Z"
+`;
+
+  await fs.writeFile(path.join(tempDir, 'project.tasks.yaml'), tasksYaml);
+  return { firstTaskSlug, secondTaskSlug };
+}
+
 describe('ralph context refresh after pending_review processing', () => {
   let tempDir: string;
 
@@ -145,6 +193,8 @@ describe('ralph context refresh after pending_review processing', () => {
   });
 
   // AC: @cli-ralph ac-20 - Verify pending_review tasks trigger subagent processing
+  // AC: @ralph-subagent-spawning ac-1
+  // AC: @ralph-subagent-spawning ac-8
   it('spawns subagent when pending_review tasks exist', { timeout: 35000 }, async () => {
     await setupDependencyFixtures(tempDir);
 
@@ -156,6 +206,33 @@ describe('ralph context refresh after pending_review processing', () => {
     expect(result.output).toContain('[REVIEW SUBAGENT]');
     expect(result.output).toContain('pending_review task');
     expect(result.output).toContain('Task A - Pending Review');
+  });
+
+  // AC: @ralph-subagent-spawning ac-6
+  it('processes multiple pending_review tasks sequentially', { timeout: 35000 }, async () => {
+    await setupMultiPendingReviewFixtures(tempDir);
+
+    const result = runRalph('--max-loops 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    const firstIdx = result.output.indexOf('Task Review One');
+    const secondIdx = result.output.indexOf('Task Review Two');
+
+    expect(firstIdx).toBeGreaterThan(-1);
+    expect(secondIdx).toBeGreaterThan(firstIdx);
+  });
+
+  // AC: @ralph-subagent-spawning ac-7
+  it('respects failure limits when subagent reviews fail repeatedly', { timeout: 35000 }, async () => {
+    await setupDependencyFixtures(tempDir);
+
+    const result = runRalph('--max-loops 5 --max-failures 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '1',
+    });
+
+    expect(result.output).toContain('[REVIEW SUBAGENT] Reached max failures (1)');
+    expect(result.output).toContain('Ralph loop completed');
   });
 });
 
@@ -334,6 +411,8 @@ describe('ralph context refresh - behavior verification', () => {
   });
 
   // AC: @cli-ralph ac-20 - Verify task state after subagent processing
+  // AC: @ralph-subagent-spawning ac-3
+  // AC: @ralph-subagent-spawning ac-4
   it('processes pending_review task and continues loop', { timeout: 35000 }, async () => {
     await setupDependencyFixtures(tempDir);
 
@@ -382,6 +461,8 @@ describe('ralph context refresh - mock task completion integration', () => {
   });
 
   // AC: @cli-ralph ac-20 - Full integration test with mock completing tasks
+  // AC: @ralph-subagent-spawning ac-5
+  // AC: @ralph-subagent-spawning ac-12
   // This test verifies that when a pending_review task is completed by the subagent,
   // ralph refreshes its context and detects newly-unblocked tasks
   it('continues loop when subagent completes blocking task (AC-20 integration)', { timeout: 60000 }, async () => {
@@ -399,6 +480,21 @@ describe('ralph context refresh - mock task completion integration', () => {
     // The mock should have completed Task A
     expect(result.stderr).toContain(`Completed task @${taskASlug}`);
 
+    const completedTaskResult = spawnSync(
+      'node',
+      [CLI_PATH, 'task', 'get', `@${taskASlug}`, '--json'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: { ...process.env, KSPEC_AUTHOR: '@test' },
+      }
+    );
+
+    expect(completedTaskResult.status).toBe(0);
+    const completedTask = JSON.parse(completedTaskResult.stdout || '{}');
+    expect(completedTask.status).toBe('completed');
+
     // With AC-20 fix: After pending_review processing completes Task A,
     // ralph should refresh context and see that Task B is now ready.
     // Without the fix, ralph would use stale context and exit early.
@@ -413,6 +509,34 @@ describe('ralph context refresh - mock task completion integration', () => {
 
     // Verify ralph didn't exit immediately after pending_review processing
     expect(result.output).toContain('Ralph loop completed');
+  });
+
+  // AC: @ralph-subagent-spawning ac-5
+  // AC: @ralph-subagent-spawning ac-13
+  it('treats needs_work kickback as a valid subagent review outcome', { timeout: 60000 }, async () => {
+    const { taskASlug } = await setupDependencyFixtures(tempDir);
+
+    const result = runRalph('--max-loops 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+      MOCK_ACP_NEEDS_WORK_TASK: `@${taskASlug}`,
+      MOCK_ACP_PROJECT_DIR: tempDir,
+      MOCK_ACP_CLI_PATH: CLI_PATH,
+    });
+
+    const taskResult = spawnSync(
+      'node',
+      [CLI_PATH, 'task', 'get', `@${taskASlug}`, '--json'],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 10000,
+        env: { ...process.env, KSPEC_AUTHOR: '@test' },
+      }
+    );
+
+    expect(taskResult.status).toBe(0);
+    const task = JSON.parse(taskResult.stdout || '{}');
+    expect(task.status).toBe('needs_work');
   });
 
   // AC: @cli-ralph ac-20 - Verify context snapshot reflects refreshed state
