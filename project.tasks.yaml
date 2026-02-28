@@ -67555,6 +67555,7 @@
     - bug
   vcs_refs: []
   created_at: 2026-02-28T16:15:57.681Z
+  started_at: 2026-02-28T16:31:00.151Z
   notes:
     - _ulid: 01KJJGJSC1QET01A4DV0TR5WYD
       created_at: 2026-02-28T16:16:22.402Z
@@ -67605,5 +67606,34 @@
         Items from original description already done: lost notes on @01KJDQ11 restored, inbox item
         @01KJDFFJ is separate scope, timestamp-aware status resolution is a future enhancement.
       supersedes: null
+    - _ulid: 01KJJHKEVS5G77Z1WYPKBHG165
+      created_at: 2026-02-28T16:34:12.986Z
+      author: "@claude"
+      content: >-
+        Implementation changes (3 files):
+
+
+        1. src/parser/shadow.ts — When existing merge driver config found in catch block, now
+        validates --non-interactive flag is present. If missing (legacy registration), re-registers
+        with --non-interactive. Ensures no stale config can cause hangs.
+
+
+        2. src/cli/commands/merge-driver.ts (line 514) — Added TTY detection fallback:
+        nonInteractive defaults to true when process.stdin.isTTY is false. Defense-in-depth so
+        driver never hangs even if --non-interactive flag is somehow missing.
+
+
+        3. src/cli/commands/merge-driver.ts (lines 534-536) — Non-interactive mode now always exits
+        0 regardless of conflicts. Per spec ac-10, conflicts are written as YAML comments and exit 0
+        prevents git from falling back to text merge (which corrupts YAML). Interactive mode retains
+        exit 1 for unresolved conflicts.
+
+
+        Tests updated: 4 existing tests that expected exit code 1 for non-interactive conflicts now
+        expect exit 0. All 12 merge-driver-cli tests pass.
+
+
+        Note: Array merge (notes union by ULID) was already correctly implemented — no changes
+        needed there. The spec ac-5 behavior was already working.
+      supersedes: null
   todos: []
-  started_at: 2026-02-28T16:31:00.151Z
