@@ -1,9 +1,3 @@
-# CONFLICT: Field "started_at" modified with different values in both branches
-# Path: [01KJDQ1C22TH9SEXXGBYQT8Y3Z].started_at
-# Ours:   "2026-02-28T23:40:24.828Z"
-# Theirs: "2026-02-28T23:50:24.163Z"
-# Resolution: Using ours (run merge interactively to resolve)
-
 - _ulid: 01KEZFXCM3WEMMRGFDZSJSRARJ
   slugs:
     - task-cli-polish
@@ -48167,6 +48161,11 @@
       created_at: 2026-02-28T23:49:44.336Z
       author: "@claude"
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @plan-import ac-37 lacks explicit test annotation coverage (unquoted-colon diagnostic test is tagged as ac-21)."
+      supersedes: null
+    - _ulid: 01KJKAKJBZ87004T8MVK8EDWXF
+      created_at: 2026-02-28T23:51:10.975Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Addressed review MUST-FIX by updating unquoted-colon diagnostic test annotation to explicitly cover @plan-import ac-37 (alongside ac-21) in tests/cli-plan-import.test.ts. Verification: npm test -- tests/cli-plan-import.test.ts (47 passed). kspec validate still fails on pre-existing project meta/reference issues (@observations slug ambiguity, missing observations skill file), unrelated to this task."
       supersedes: null
   todos: []
   automation: eligible
