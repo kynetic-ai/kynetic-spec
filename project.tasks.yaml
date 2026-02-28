@@ -63187,16 +63187,17 @@
 
     - Event log entries show correct iteration numbers even when sessions overlap
   spec_ref: "@cli-ralph"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
+  session_id: null
   created_at: 2026-02-26T19:32:57.953Z
   started_at: 2026-02-28T23:19:28.481Z
+  submitted_at: 2026-02-28T23:19:30.724Z
   notes:
     - _ulid: 01KJDQVH2H94SY215Y96TMWF0K
       created_at: 2026-02-26T19:47:16.689Z
@@ -63240,9 +63241,15 @@
 
         Verification: npm test -- tests/ralph.test.ts (141 passed).
       supersedes: null
+    - _ulid: 01KJK94BAT1FKZC7RGRWJEYYCY
+      created_at: 2026-02-28T23:25:23.674Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #612 adds a new update listener per iteration
+        without removing prior listeners; listener accumulation risks memory leaks and EventEmitter
+        warnings over long ralph loops."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T23:19:30.724Z
 - _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
   slugs: []
   title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
