@@ -9105,6 +9105,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T23:51:30.621Z
+    completed_at: 2026-02-28T23:52:19.940Z
     step_results:
       - step_index: 0
         status: completed
@@ -9131,4 +9132,11 @@ runs:
         notes: "Capture decision (loop mode): no new high-confidence untracked reflection items; completing
           without new inbox/observation entries."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T23:52:19.940Z
+  - _ulid: 01KJKAPNQ8MA09E2VT1TFS5Y85
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T23:52:52.713Z
+    step_results: []
+    initiated_by: "@claude"
