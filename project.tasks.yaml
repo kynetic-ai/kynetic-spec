@@ -63248,6 +63248,16 @@
         without removing prior listeners; listener accumulation risks memory leaks and EventEmitter
         warnings over long ralph loops."
       supersedes: null
+    - _ulid: 01KJK98J6NVSYHMX05DNR12CTF
+      created_at: 2026-02-28T23:27:41.786Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 2] Addressed PR #612 MUST-FIX listener accumulation by tracking one active
+        session.update logger and detaching it via replaceSessionUpdateLogger() on session rotation,
+        error cleanup, periodic restart, and final cleanup. Added unit regression test for
+        detach-then-attach behavior in tests/ralph.test.ts. Verification: npm test --
+        tests/ralph.test.ts (142 passed). kspec validate still reports pre-existing meta/reference
+        issues unrelated to this task (@observations ambiguity, missing observations skill file)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
