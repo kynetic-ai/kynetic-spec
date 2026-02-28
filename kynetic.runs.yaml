@@ -7116,8 +7116,19 @@ runs:
   - _ulid: 01KJHJFNX67QNWZXYZ3RV53Y3Y
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-28T07:30:23.270Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-28T07:30:23.270Z
+        completed_at: 2026-02-28T07:31:10.258Z
+        notes: Completed mandatory baseline search across observations, inbox, and tasks (loop ac-1/ac-3).
+          Reviewed existing tracking for websocket reliability, workflow show UX, and
+          reflection-shell quoting patterns before proposing any new captures.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-28T07:31:10.258Z
+        completed_at: 2026-02-28T07:31:10.258Z
     initiated_by: "@claude"
