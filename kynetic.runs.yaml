@@ -8896,7 +8896,7 @@ runs:
   - _ulid: 01KJK9CNNW4GRQEWN2S8VRQXF6
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 6
+    current_step: 7
     total_steps: 10
     started_at: 2026-02-28T23:29:56.413Z
     step_results:
@@ -8934,7 +8934,12 @@ runs:
       - step_index: 6
         status: completed
         started_at: 2026-02-28T23:37:26.759Z
-        completed_at: 2026-02-28T23:37:26.759Z
+        completed_at: 2026-02-28T23:39:08.327Z
+        notes: "Completed @pr-review-merge run 01KJK9TG; PR #612 merged."
+      - step_index: 7
+        status: completed
+        started_at: 2026-02-28T23:39:08.327Z
+        completed_at: 2026-02-28T23:39:08.327Z
     initiated_by: "@claude"
   - _ulid: 01KJK9D911M9RJEYP0NM3G29SY
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -8995,6 +9000,7 @@ runs:
     current_step: 9
     total_steps: 10
     started_at: 2026-02-28T23:37:29.777Z
+    completed_at: 2026-02-28T23:39:04.405Z
     step_results:
       - step_index: 0
         status: completed
@@ -9047,4 +9053,3 @@ runs:
         completed_at: 2026-02-28T23:39:04.405Z
         notes: "Merged PR #612 (merge commit 504e356c0d06a20375fc359904d47726b89379d5)."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T23:39:04.405Z
