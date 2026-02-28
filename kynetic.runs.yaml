@@ -7480,6 +7480,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T13:58:33.266Z
+    completed_at: 2026-02-28T13:58:53.859Z
     step_results:
       - step_index: 0
         status: completed
@@ -7506,4 +7507,11 @@ runs:
         notes: "Loop-mode decision: no high-confidence new capture. Observed friction is external gh CLI
           behavior with straightforward workaround and low project-level leverage."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T13:58:53.859Z
+  - _ulid: 01KJJ8QM7QFAA1FKJVDAHK70JZ
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T13:59:12.376Z
+    step_results: []
+    initiated_by: "@claude"
