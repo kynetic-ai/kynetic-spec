@@ -1141,3 +1141,13 @@ inbox:
       - git
       - automation
     added_by: "@claude"
+  - _ulid: 01KJK5XG971KKFAZS459CJCXM4
+    text: tests/ralph.test.ts helper runRalph splits args on whitespace, so quoted values (e.g., --focus
+      "keep scope narrow") break and cause misleading unknown-command/option failures. Improve
+      helper to accept argv arrays or robust shell-like parsing for test args.
+    created_at: 2026-02-28T22:29:13.640Z
+    tags:
+      - reflection
+      - testing
+      - ralph
+    added_by: "@claude"
