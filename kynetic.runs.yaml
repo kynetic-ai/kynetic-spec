@@ -8379,6 +8379,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T22:28:48.460Z
+    completed_at: 2026-02-28T22:29:39.544Z
     step_results:
       - step_index: 0
         status: completed
@@ -8410,4 +8411,11 @@ runs:
           tokenization). No additional captures to keep signal high; duplicate stale-dist item was
           intentionally skipped as already tracked."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T22:29:39.544Z
+  - _ulid: 01KJK6DRSG22EK7NBVBASXV28C
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-28T22:38:06.641Z
+    step_results: []
+    initiated_by: "@claude"
