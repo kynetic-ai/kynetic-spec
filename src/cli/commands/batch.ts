@@ -145,7 +145,7 @@ Examples:
       let source: { type: "stdin" } | { type: "file"; path: string } | { type: "inline"; json: string };
       if (options.file) {
         source = { type: "file", path: options.file };
-      } else if (options.commands) {
+      } else if (options.commands !== undefined) {
         source = { type: "inline", json: options.commands };
       } else {
         source = { type: "stdin" };
