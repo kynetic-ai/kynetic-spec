@@ -7420,6 +7420,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T13:47:40.032Z
+    completed_at: 2026-02-28T13:48:02.506Z
     step_results:
       - step_index: 0
         status: completed
@@ -7447,4 +7448,11 @@ runs:
         notes: "Loop-mode capture decision: no new observation/inbox/task captured this iteration to avoid
           low-confidence noise."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T13:48:02.506Z
+  - _ulid: 01KJJ83JWMREGTP53Q4M75T3QG
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T13:48:15.636Z
+    step_results: []
+    initiated_by: "@claude"
