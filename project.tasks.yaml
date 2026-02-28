@@ -62264,7 +62264,7 @@
     not provided. (4) Invalid `--agent` values are rejected with a clear error. (5) Tests in
     `tests/enhanced-setup.test.ts` and `tests/setup-pipeline-unification.test.ts` updated."
   spec_ref: "@enhanced-setup"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62289,6 +62289,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T07:09:05.914Z
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
