@@ -8002,7 +8002,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJJT6T30BXNED81ZNEGNJZNR
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-28T19:04:35.680Z
@@ -8048,5 +8048,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-28T19:05:31.162Z
-        completed_at: 2026-02-28T19:05:31.162Z
+        completed_at: 2026-02-28T19:05:36.889Z
+        notes: No new captures added. Reflection closed with existing coverage references to avoid
+          duplicates.
     initiated_by: Jacob Chapel
+    completed_at: 2026-02-28T19:05:36.889Z
