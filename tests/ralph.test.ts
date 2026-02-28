@@ -220,6 +220,7 @@ describe('ralph command', () => {
   });
 
   // AC: @cli-ralph ac-15
+  // AC: @cli-ralph ac-24
   it('shows iteration-timeout and focus instructions in dry-run output', async () => {
     const result = runRalph('--dry-run --iteration-timeout 15 --focus keep-pr-scope-narrow', tempDir);
 
@@ -227,6 +228,7 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('keep-pr-scope-narrow');
   });
 
+  // AC: @cli-ralph ac-25
   it('fails fast for non-positive iteration-timeout values', async () => {
     const result = runRalph('--dry-run --iteration-timeout 0', tempDir);
 
@@ -310,6 +312,8 @@ describe('ralph command', () => {
     expect(result.output).toContain('Iteration 2/2');
   });
 
+  // AC: @cli-ralph ac-24
+  // AC: @cli-ralph ac-26
   it('times out stalled iteration attempts and logs iteration.timeout event', async () => {
     const result = runRalph(
       '--max-loops 1 --max-retries 0 --max-failures 1 --iteration-timeout 0.001',
