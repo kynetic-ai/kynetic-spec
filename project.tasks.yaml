@@ -62883,6 +62883,25 @@
       author: "@claude"
       content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
       supersedes: null
+    - _ulid: 01KJK791KD9PKHACN3GH461C4V
+      created_at: 2026-02-28T22:53:00.397Z
+      author: "@claude"
+      content: >-
+        FIX_CYCLE: 5 Addressed all review findings:
+
+        1. MUST-FIX: Fixed floating runIterationPrompts() promise by storing the promise in a
+        variable and attaching .catch(() => {}) before Promise.race — prevents unhandled rejection
+        crash in Node.js 22 when timeout fires first and disposeSpawnedAgent() rejects the pending
+        prompt.
+
+        2. SHOULD-FIX: Added spec ACs ac-24/ac-25/ac-26 to @cli-ralph for --iteration-timeout
+        feature (default behavior, validation, timeout event logging).
+
+        3. SHOULD-FIX: Added // AC: @cli-ralph annotations to tests at lines 230 (ac-25), 313
+        (ac-24, ac-26), and 222 (ac-24).
+
+        All 140 ralph tests pass. Opening new PR for these fixes on a separate branch.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
