@@ -6804,6 +6804,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T05:53:55.514Z
+    completed_at: 2026-02-28T05:55:31.820Z
     step_results:
       - step_index: 0
         status: completed
@@ -6834,4 +6835,11 @@ runs:
           plausible but single-sample and not yet high-confidence systemic; defer until repeated
           evidence appears. Reflection run completed without adding inbox/tasks/observations."
     initiated_by: "@claude"
-    completed_at: 2026-02-28T05:55:31.820Z
+  - _ulid: 01KJHDVCGGKCY040QGHVJT4WS7
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-28T06:09:23.984Z
+    step_results: []
+    initiated_by: "@claude"
