@@ -62512,6 +62512,7 @@
   session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
   created_at: 2026-02-26T19:32:54.517Z
   started_at: 2026-02-28T07:19:25.415Z
+  submitted_at: 2026-02-28T07:20:51.490Z
   notes:
     - _ulid: 01KJHHXRHVPVTBKNR40K8QACV7
       created_at: 2026-02-28T07:20:36.155Z
@@ -62522,9 +62523,15 @@
         get <ref>' instead of a generic not-found error. Verification: npm test -- --run
         tests/integration.test.ts -t 'suggest meta observe get for observation refs'."
       supersedes: null
+    - _ulid: 01KJHHYQ1NMHT96Y99X4ZX9SN9
+      created_at: 2026-02-28T07:21:07.382Z
+      author: "@claude"
+      content: "Submitted for review in PR #595: https://github.com/kynetic-ai/kynetic-spec/pull/595.
+        Includes item-get observation hint guidance and regression coverage in
+        tests/integration.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T07:20:51.490Z
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
