@@ -62266,6 +62266,13 @@
   spec_ref: "@enhanced-setup"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #594. Added setup --agent override
+    (claude-code|cline|cursor|windsurf|unknown), threaded override through setup and setup --status
+    paths, added ~/.claude fallback for detectAgent() when env markers are absent, and added
+    regression tests for override + invalid value guidance in enhanced-setup and
+    setup-pipeline-unification. AC coverage verified for @enhanced-setup own ACs and inherited trait
+    expectations; local npm test passed (160 files, 3545 passed, 3 skipped) and CI checks were green
+    on PR head before merge."
   depends_on: []
   context: []
   priority: 3
@@ -62275,6 +62282,7 @@
   created_at: 2026-02-26T19:32:51.412Z
   started_at: 2026-02-28T07:04:26.341Z
   submitted_at: 2026-02-28T07:09:05.914Z
+  completed_at: 2026-02-28T07:18:49.091Z
   notes:
     - _ulid: 01KJHH8DC08TQTPCC8BQ44TBME
       created_at: 2026-02-28T07:08:56.576Z
@@ -62297,14 +62305,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T07:18:49.091Z
-  closed_reason: "Merged in PR #594. Added setup --agent override
-    (claude-code|cline|cursor|windsurf|unknown), threaded override through setup and setup --status
-    paths, added ~/.claude fallback for detectAgent() when env markers are absent, and added
-    regression tests for override + invalid value guidance in enhanced-setup and
-    setup-pipeline-unification. AC coverage verified for @enhanced-setup own ACs and inherited trait
-    expectations; local npm test passed (160 files, 3545 passed, 3 skipped) and CI checks were green
-    on PR head before merge."
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
@@ -62502,7 +62502,7 @@
     - Alternatively, if extending ReferenceIndex: meta entities are resolvable via `item get` with
     correct type display
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62513,6 +62513,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T07:19:25.415Z
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
