@@ -22,7 +22,7 @@
 // AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
 // AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle; tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in api-websocket.spec.ts
-// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast event format verification requires a live WebSocket client; daemon route broadcasts triage:updates on each mutation (verified in daemon source); tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-3 — covered: triage mutation routes broadcast triage:updates events with protocol payload fields (see tests below)
 // AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat timing; tested in future api-websocket E2E tests
 // AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested in future api-websocket E2E tests
 // AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure handling; tested in future api-websocket E2E tests
@@ -32,6 +32,7 @@
 import { test, expect } from '../fixtures/test-base';
 
 const DAEMON_URL = 'http://localhost:3456';
+const DAEMON_WS_URL = 'ws://localhost:3456/ws';
 
 // Fixture ULIDs defined in project.triage.yaml
 // TRIAGED record: inbox_ref = 01KJNBX0CA45ZT43W2T6HJMVA1 ("First inbox item for testing"), status=triaged
@@ -45,6 +46,115 @@ const FIXTURE_TRIAGE_PENDING_ULID = '01KJC3NZHCBKZMDKQNZ28JNRG2';
 const INBOX_ITEM_1_ULID = '01KJNBX0CA45ZT43W2T6HJMVA1'; // First inbox item — already has a triage record
 const INBOX_ITEM_2_ULID = '01KJNBX1CC9N4YGP991WD7XS8S'; // Second inbox item — already acted_on
 const INBOX_ITEM_3_ULID = '01KJNBX2CB8N4YGP991WD7XS9R'; // Third inbox item — pending triage record
+
+async function subscribeToTriageUpdates(page: import('@playwright/test').Page): Promise<void> {
+  await page.goto(DAEMON_URL + '/api/health');
+
+  await page.evaluate((wsUrl: string) => {
+    return new Promise<void>((resolve, reject) => {
+      const ws = new WebSocket(wsUrl);
+      (window as unknown as Record<string, unknown>).__triageWs = ws;
+
+      const timeout = setTimeout(() => {
+        ws.close();
+        reject(new Error('Timed out connecting/subscribing to triage:updates'));
+      }, 5000);
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.event === 'connected') {
+            ws.send(
+              JSON.stringify({
+                action: 'subscribe',
+                request_id: 'triage-sub',
+                payload: { topics: ['triage:updates'] },
+              })
+            );
+            return;
+          }
+          if (data.ack === true && data.request_id === 'triage-sub') {
+            clearTimeout(timeout);
+            resolve();
+            return;
+          }
+          if (data.ack === false && data.request_id === 'triage-sub') {
+            clearTimeout(timeout);
+            reject(new Error('Subscribe failed for triage:updates'));
+          }
+        } catch {
+          // Ignore non-JSON messages
+        }
+      };
+
+      ws.onerror = () => {
+        clearTimeout(timeout);
+        reject(new Error('WebSocket error while subscribing to triage:updates'));
+      };
+    });
+  }, DAEMON_WS_URL);
+}
+
+async function waitForTriageBroadcast(
+  page: import('@playwright/test').Page,
+  expectedEvent: string
+): Promise<{
+  msg_id: string;
+  seq: number;
+  timestamp: string;
+  topic: string;
+  event: string;
+  data: {
+    ulid: string;
+    inbox_ref?: string;
+    action?: string;
+    new_action?: string;
+    result_ref?: string;
+  };
+}> {
+  return page.evaluate((eventName: string) => {
+    return new Promise((resolve, reject) => {
+      const ws = (window as unknown as Record<string, WebSocket>).__triageWs;
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        reject(new Error('WebSocket not connected'));
+        return;
+      }
+
+      const timeout = setTimeout(() => {
+        ws.removeEventListener('message', onMessage);
+        reject(new Error(`Timed out waiting for triage broadcast: ${eventName}`));
+      }, 10000);
+
+      function onMessage(event: MessageEvent<string>): void {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.topic === 'triage:updates' && payload.event === eventName && payload.msg_id) {
+            clearTimeout(timeout);
+            ws.removeEventListener('message', onMessage);
+            resolve(payload);
+          }
+        } catch {
+          // Ignore non-JSON messages
+        }
+      }
+
+      ws.addEventListener('message', onMessage);
+    });
+  }, expectedEvent) as Promise<{
+    msg_id: string;
+    seq: number;
+    timestamp: string;
+    topic: string;
+    event: string;
+    data: {
+      ulid: string;
+      inbox_ref?: string;
+      action?: string;
+      new_action?: string;
+      result_ref?: string;
+    };
+  }>;
+}
 
 test.describe('Triage API', () => {
   test.describe('GET /api/triage', () => {
@@ -392,6 +502,45 @@ test.describe('Triage API', () => {
       expect(body.record.decided_by).toBe('@custom-author');
     });
 
+    // AC: @triage-daemon-api ac-3 — broadcasts triage:updates
+    // AC: @trait-websocket-protocol ac-3
+    test('broadcasts triage_record_created to subscribed clients', async ({
+      request,
+      page,
+      daemon,
+    }) => {
+      await subscribeToTriageUpdates(page);
+
+      // Create a fresh inbox item for deterministic broadcast data
+      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+        data: { text: `Broadcast create test ${Date.now()}` },
+      });
+      expect(inboxResponse.status()).toBe(200);
+      const inbox = await inboxResponse.json();
+
+      const broadcastPromise = waitForTriageBroadcast(page, 'triage_record_created');
+      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+        data: {
+          inbox_ref: `@${inbox.item._ulid}`,
+          action: 'defer',
+          reasoning: 'Broadcast check',
+        },
+      });
+
+      expect(triageResponse.status()).toBe(200);
+      const triage = await triageResponse.json();
+      const broadcast = await broadcastPromise;
+
+      expect(broadcast.topic).toBe('triage:updates');
+      expect(broadcast.event).toBe('triage_record_created');
+      expect(typeof broadcast.msg_id).toBe('string');
+      expect(typeof broadcast.seq).toBe('number');
+      expect(typeof broadcast.timestamp).toBe('string');
+      expect(broadcast.data.ulid).toBe(triage.record._ulid);
+      expect(broadcast.data.inbox_ref).toBe(inbox.item._ulid);
+      expect(broadcast.data.action).toBe('defer');
+    });
+
     // AC: @triage-daemon-api ac-7 — 404 for nonexistent inbox item
     test('returns 404 for nonexistent inbox item reference', async ({ request, daemon }) => {
       const response = await request.post(`${DAEMON_URL}/api/triage`, {
@@ -514,6 +663,54 @@ test.describe('Triage API', () => {
 
       const body = await response.json();
       expect(body.record.override_by).toBe('@specific-reviewer');
+    });
+
+    // AC: @triage-daemon-api ac-4 — broadcasts triage:updates
+    // AC: @trait-websocket-protocol ac-3
+    test('broadcasts triage_record_updated when overriding a record', async ({
+      request,
+      page,
+      daemon,
+    }) => {
+      // Create a record first so this test is not fixture-dependent.
+      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+        data: { text: `Broadcast override test ${Date.now()}` },
+      });
+      expect(inboxResponse.status()).toBe(200);
+      const inbox = await inboxResponse.json();
+
+      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+        data: {
+          inbox_ref: `@${inbox.item._ulid}`,
+          action: 'defer',
+          reasoning: 'Initial decision',
+        },
+      });
+      expect(triageResponse.status()).toBe(200);
+      const triage = await triageResponse.json();
+
+      await subscribeToTriageUpdates(page);
+
+      const broadcastPromise = waitForTriageBroadcast(page, 'triage_record_updated');
+      const response = await request.post(
+        `${DAEMON_URL}/api/triage/@${triage.record._ulid}/override`,
+        {
+          data: {
+            action: 'promote',
+            reasoning: 'Broadcast override check',
+          },
+        }
+      );
+
+      expect(response.status()).toBe(200);
+      const body = await response.json();
+      const broadcast = await broadcastPromise;
+
+      expect(broadcast.topic).toBe('triage:updates');
+      expect(broadcast.event).toBe('triage_record_updated');
+      expect(broadcast.data.ulid).toBe(body.record._ulid);
+      expect(broadcast.data.action).toBe('override');
+      expect(broadcast.data.new_action).toBe('promote');
     });
 
     // AC: @trait-api-endpoint ac-2 — 404 for nonexistent ref
@@ -650,6 +847,48 @@ test.describe('Triage API', () => {
       const found = list.items.find((r: { _ulid: string }) => r._ulid === triage.record._ulid);
       expect(found).toBeDefined();
       expect(found.status).toBe('acted_on');
+    });
+
+    // AC: @triage-daemon-api ac-5 — broadcasts triage:updates
+    // AC: @trait-websocket-protocol ac-3
+    test('broadcasts triage_record_acted with result_ref when action is executed', async ({
+      request,
+      page,
+      daemon,
+    }) => {
+      // Create inbox item + triaged record with promote action so act yields result_ref
+      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+        data: { text: `Broadcast act test ${Date.now()}` },
+      });
+      expect(inboxResponse.status()).toBe(200);
+      const inbox = await inboxResponse.json();
+
+      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+        data: {
+          inbox_ref: `@${inbox.item._ulid}`,
+          action: 'promote',
+          reasoning: 'Promote for broadcast test',
+        },
+      });
+      expect(triageResponse.status()).toBe(200);
+      const triage = await triageResponse.json();
+
+      await subscribeToTriageUpdates(page);
+
+      const broadcastPromise = waitForTriageBroadcast(page, 'triage_record_acted');
+      const actResponse = await request.post(
+        `${DAEMON_URL}/api/triage/@${triage.record._ulid}/act`
+      );
+      expect(actResponse.status()).toBe(200);
+      const acted = await actResponse.json();
+      const broadcast = await broadcastPromise;
+
+      expect(broadcast.topic).toBe('triage:updates');
+      expect(broadcast.event).toBe('triage_record_acted');
+      expect(broadcast.data.ulid).toBe(acted.record._ulid);
+      expect(broadcast.data.action).toBe('promote');
+      expect(acted.record.result_ref).toBeTruthy();
+      expect(broadcast.data.result_ref).toBe(acted.record.result_ref);
     });
 
     // AC: @triage-daemon-api ac-8 — 409 for already acted_on record
