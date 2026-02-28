@@ -537,6 +537,43 @@ describe("batch command integration", () => {
     expect(result.summary.succeeded).toBe(1);
   });
 
+  // AC: @plan-import ac-34
+  // AC: @plan-import ac-23
+  it("treats warning-only plan import as success in batch mode", async () => {
+    const { writeFile } = await import("node:fs/promises");
+    const { join } = await import("node:path");
+    const planPath = join(tempDir, "warning-only-plan.md");
+    kspec('module add --title "Batch Module" --slug batch-module', tempDir);
+    await writeFile(
+      planPath,
+      `# Warning Only Plan
+
+## Specs
+
+No fenced YAML block in this section.
+`,
+    );
+
+    const commands = JSON.stringify([
+      {
+        command: "plan import",
+        args: { path: planPath, module: "@batch-module" },
+      },
+    ]);
+
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${commands}'`,
+      tempDir,
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(1);
+    expect(result.results[0].success).toBe(true);
+    expect(String(result.results[0].output)).toContain(
+      "Specs section found but contains no YAML code block",
+    );
+  });
+
   // AC: @batch-exec ac-file
   it("accepts file input", async () => {
     const { writeFile } = await import("node:fs/promises");
