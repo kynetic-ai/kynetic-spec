@@ -62019,7 +62019,7 @@
     regenerated to reflect the change. (3) After a ralph PR merge, the source branch is deleted from
     the remote."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62040,6 +62040,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T05:09:11.294Z
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
