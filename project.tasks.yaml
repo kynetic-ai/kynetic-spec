@@ -62082,7 +62082,7 @@
     regenerated to reflect the change. (3) After a ralph PR merge, the source branch is deleted from
     the remote."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62182,6 +62182,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T06:36:19.057Z
+  closed_reason: "Merged in PR #589. Updated @pr-review-merge workflow merge guidance to use 'gh pr
+    merge --merge --delete-branch' and regenerated kspec-agents.md. Verified via kspec meta get
+    @pr-review-merge and regression gate (npm test: 160 files passed, 3531 tests passed, 3
+    skipped)."
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
