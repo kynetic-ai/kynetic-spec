@@ -249,6 +249,26 @@ export function createSessionUpdateLogger(
   };
 }
 
+type SessionUpdateLogger = (sessionId: string, update: SessionUpdate) => void;
+type SessionUpdateLoggerClient = {
+  on(event: "update", listener: SessionUpdateLogger): unknown;
+  off(event: "update", listener: SessionUpdateLogger): unknown;
+};
+
+export function replaceSessionUpdateLogger(
+  client: SessionUpdateLoggerClient,
+  currentLogger: SessionUpdateLogger | null,
+  nextLogger: SessionUpdateLogger | null,
+): SessionUpdateLogger | null {
+  if (currentLogger) {
+    client.off("update", currentLogger);
+  }
+  if (nextLogger) {
+    client.on("update", nextLogger);
+  }
+  return nextLogger;
+}
+
 export function disposeSpawnedAgent(spawned: SpawnedAgentLike | null): null {
   if (!spawned) {
     return null;
@@ -1498,6 +1518,7 @@ export function registerRalphCommand(program: Command): void {
         let consecutiveFailures = 0;
         let agent: SpawnedAgent | null = null;
         let acpSessionId: string | null = null;
+        let sessionUpdateLogger: SessionUpdateLogger | null = null;
         let exitReason: ExitReason | null = null;
         let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
@@ -1840,7 +1861,7 @@ export function registerRalphCommand(program: Command): void {
                   cwd: process.cwd(),
                   mcpServers: [], // No MCP servers for now
                 });
-                const updateLogger = createSessionUpdateLogger(
+                const nextUpdateLogger = createSessionUpdateLogger(
                   acpSessionId,
                   iteration,
                   async (eventIteration, update) => {
@@ -1851,7 +1872,11 @@ export function registerRalphCommand(program: Command): void {
                     });
                   },
                 );
-                agent.client.on("update", updateLogger);
+                sessionUpdateLogger = replaceSessionUpdateLogger(
+                  agent.client,
+                  sessionUpdateLogger,
+                  nextUpdateLogger,
+                );
 
                 const runIterationPrompts = async () => {
                   // Phase 1: Task Work
@@ -1936,6 +1961,11 @@ export function registerRalphCommand(program: Command): void {
                   }
                 }
 
+                sessionUpdateLogger = replaceSessionUpdateLogger(
+                  agent.client,
+                  sessionUpdateLogger,
+                  null,
+                );
                 acpSessionId = endAcpSession(agent, acpSessionId);
                 succeeded = true;
                 break;
@@ -1957,6 +1987,11 @@ export function registerRalphCommand(program: Command): void {
 
                 // Clean up agent on error - will respawn next attempt
                 if (agent) {
+                  sessionUpdateLogger = replaceSessionUpdateLogger(
+                    agent.client,
+                    sessionUpdateLogger,
+                    null,
+                  );
                   acpSessionId = endAcpSession(agent, acpSessionId);
                   agent = disposeSpawnedAgent(agent);
                 }
@@ -1995,6 +2030,11 @@ export function registerRalphCommand(program: Command): void {
                   `Restarting agent to prevent memory buildup (every ${restartEvery} iterations)...`,
                 );
                 if (agent) {
+                  sessionUpdateLogger = replaceSessionUpdateLogger(
+                    agent.client,
+                    sessionUpdateLogger,
+                    null,
+                  );
                   acpSessionId = endAcpSession(agent, acpSessionId);
                   agent = disposeSpawnedAgent(agent);
                 }
@@ -2051,6 +2091,11 @@ export function registerRalphCommand(program: Command): void {
 
           // Clean up agent
           if (agent) {
+            sessionUpdateLogger = replaceSessionUpdateLogger(
+              agent.client,
+              sessionUpdateLogger,
+              null,
+            );
             acpSessionId = endAcpSession(agent, acpSessionId);
             agent = disposeSpawnedAgent(agent);
           }

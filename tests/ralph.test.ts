@@ -16,6 +16,7 @@ import {
   getPromptPlatformForAdapter,
   isAdapterPackageAvailable,
   pushRecentTaskRef,
+  replaceSessionUpdateLogger,
   runTerminalCommandWithArtifacts,
   resolveRalphSkillInvocation
 } from '../src/cli/commands/ralph.js';
@@ -795,6 +796,28 @@ describe('ralph memory-safety helpers', () => {
     } satisfies SessionUpdate;
 
     expect(() => logger('session-1', update)).not.toThrow();
+  });
+
+  it('replaceSessionUpdateLogger detaches previous listener before attaching next', () => {
+    const calls: string[] = [];
+    const listenerA = () => {};
+    const listenerB = () => {};
+    const client = {
+      on: (_event: 'update', listener: unknown) => {
+        calls.push(listener === listenerA ? 'onA' : 'onB');
+      },
+      off: (_event: 'update', listener: unknown) => {
+        calls.push(listener === listenerA ? 'offA' : 'offB');
+      },
+    };
+
+    let active = replaceSessionUpdateLogger(client, null, listenerA);
+    expect(active).toBe(listenerA);
+    active = replaceSessionUpdateLogger(client, active, listenerB);
+    expect(active).toBe(listenerB);
+    active = replaceSessionUpdateLogger(client, active, null);
+    expect(active).toBeNull();
+    expect(calls).toEqual(['onA', 'offA', 'onB', 'offB']);
   });
 
   it('pushRecentTaskRef deduplicates and enforces the cap', () => {
