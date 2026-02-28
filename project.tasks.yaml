@@ -62881,7 +62881,7 @@
 
     - Add test cases for underscore variant args in batch validation tests
   spec_ref: "@batch-exec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62923,6 +62923,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T14:07:12.388Z
+  closed_reason: "Merged in PR #600. Implemented canonical arg-key normalization for batch args so
+    kebab-case, camelCase, and underscore variants are accepted consistently in validation,
+    required-arg checks, and argv generation. Added underscore regression tests in batch schema and
+    batch exec engine coverage. Verified by full npm test (3550 passed) and green PR CI checks on
+    commit b7b44fb4a11a5a4d655333b96a9e13368d95b9ed."
 - _ulid: 01KJDQ1AF125H0FK29HE769R4P
   slugs: []
   title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
