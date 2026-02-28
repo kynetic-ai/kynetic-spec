@@ -4998,6 +4998,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-27T10:10:31.114Z
+    completed_at: 2026-02-27T10:11:22.177Z
     step_results:
       - step_index: 0
         status: completed
@@ -5020,250 +5021,6 @@ runs:
         completed_at: 2026-02-27T10:11:22.177Z
         notes: "Step 4: No new captures created. Applied loop-mode high-confidence threshold and duplicate-check gate; all candidate reflections were already tracked, so capturing nothing is the correct low-noise outcome for this iteration."
     initiated_by: Jacob Chapel
-    completed_at: 2026-02-27T10:11:22.177Z
-  - _ulid: 01KJG60T5X04MKMKSMSMM6D2GM
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: completed
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-27T18:33:18.781Z
-    completed_at: 2026-02-27T18:39:09.004Z
-    step_results: []
-    initiated_by: Jacob Chapel
-    result: early_exit
-  - _ulid: 01KJG77HBR42H16GDBDWKC0DER
-    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: completed
-    current_step: 5
-    total_steps: 6
-    started_at: 2026-02-27T18:54:27.704Z
-    completed_at: 2026-02-27T18:55:47.963Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-27T18:54:27.704Z
-        completed_at: 2026-02-27T18:55:25.832Z
-        notes: "What worked well: (1) strict task lifecycle execution (start -> submit -> PR -> review loop -> complete) kept spec/task state consistent, (2) subagent-driven PR review caught real trait-level defects quickly, (3) focused verification (targeted tests + typecheck) made fix-cycle turnaround fast and safe."
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-27T18:55:25.832Z
-        completed_at: 2026-02-27T18:55:29.608Z
-        notes: "Friction points observed: (1) stale KSPEC_SESSION_ID triggered false task-budget enforcement outside ralph loop context, requiring explicit env unsetting workaround, (2) shell interpolation/backtick hazards when composing gh pr body inline created accidental command execution risk; switching to --body-file is safer."
-      - step_index: 2
-        status: completed
-        started_at: 2026-02-27T18:55:29.608Z
-        completed_at: 2026-02-27T18:55:33.971Z
-        notes: "Coverage check: (1) task-budget friction is already tracked as inbox @01KJG5A7 (search: 'false-positive outside ralph loop'), so no duplicate needed; (2) shell escaping/quoting friction has existing observation coverage (e.g., @01KFFS1G), so treat as already tracked pattern rather than adding another duplicate."
-      - step_index: 3
-        status: completed
-        started_at: 2026-02-27T18:55:33.971Z
-        completed_at: 2026-02-27T18:55:38.162Z
-        notes: "No untracked high-confidence friction remained after coverage checks. Proposed improvement count: 0 (intentionally avoiding duplicate inbox/observation noise)."
-      - step_index: 4
-        status: completed
-        started_at: 2026-02-27T18:55:38.162Z
-        completed_at: 2026-02-27T18:55:43.415Z
-        notes: "Discussion decision: no new improvements to present because both identified frictions are already tracked. User requested session reflection execution; outcome is dedupe/no-new-capture."
-      - step_index: 5
-        status: completed
-        started_at: 2026-02-27T18:55:43.415Z
-        completed_at: 2026-02-27T18:55:47.963Z
-        notes: "Capture results: no new captures created. Existing coverage retained: inbox @01KJG5A7 for stale KSPEC_SESSION_ID budget guard issue; shell quoting friction already represented by prior observations. Reflection run closed with deliberate no-op capture."
-    initiated_by: Jacob Chapel
-  - _ulid: 01KJGAHFR5HMSGEKPA7A2T9X4Z
-    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: completed
-    current_step: 5
-    total_steps: 6
-    started_at: 2026-02-27T19:52:19.462Z
-    completed_at: 2026-02-27T19:53:34.212Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-27T19:52:19.462Z
-        completed_at: 2026-02-27T19:52:45.724Z
-        notes: "Worked well: (1) Meta-observation triage to core-vs-skill buckets kept scope clean and avoided overloading core conventions, (2) branch hygiene correction (new branch from origin/main) prevented mixing unrelated prior feature context, (3) source-of-truth correction (templates for core, .kspec for project skills) aligned updates with architecture before PR."
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-27T19:52:45.724Z
-        completed_at: 2026-02-27T19:52:46.297Z
-        notes: "Friction points: (1) skill source layering confusion (.agents/.kspec/templates) caused rework, (2) core skill update command behavior is version-gated so same-version template edits were skipped by kspec skill update and required kspec skill install-core, (3) skill verify showed codex drift/no-hash for plugin-provided core skills despite plugin-provided diff path."
-      - step_index: 2
-        status: completed
-        started_at: 2026-02-27T19:52:46.297Z
-        completed_at: 2026-02-27T19:52:46.850Z
-        notes: "Coverage check: plugin-provided drift/no-hash issue is now tracked in inbox @01KJGA18. Search did not find an explicitly tracked item for 'kspec skill update skips same-version template changes' (version-gated update behavior) as a dedicated workflow/UX friction."
-      - step_index: 3
-        status: completed
-        started_at: 2026-02-27T19:52:46.850Z
-        completed_at: 2026-02-27T19:52:47.436Z
-        notes: "Proposed untracked improvement: capture a friction observation to document version-gated update behavior and recommend either clearer CLI guidance (update vs install-core) or command behavior adjustment when local templates change at same version."
-      - step_index: 4
-        status: completed
-        started_at: 2026-02-27T19:52:47.436Z
-        completed_at: 2026-02-27T19:53:29.948Z
-        notes: Captured approved friction observation about version-gated skill update behavior and install-core fallback requirement. Existing plugin-provided verify/hash issue remains tracked in inbox @01KJGA18 (no duplicate capture).
-      - step_index: 5
-        status: completed
-        started_at: 2026-02-27T19:53:29.948Z
-        completed_at: 2026-02-27T19:53:34.212Z
-        notes: "Capture complete: added friction observation @01KJGAKM. Reflection run closed."
-    initiated_by: Jacob Chapel
-  - _ulid: 01KJGBT61Q7N2Z3MZT0K7JNTS1
-    workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
-    status: completed
-    current_step: 0
-    total_steps: 5
-    started_at: 2026-02-27T20:14:33.015Z
-    completed_at: 2026-02-27T20:16:50.312Z
-    step_results: []
-    initiated_by: Jacob Chapel
-    result: success
-  - _ulid: 01KJGBYCKJ9NREKNZSNAZV1XV9
-    workflow_ref: "@01KGPF7BP1KF0FAQAEFXNNTPTT"
-    status: completed
-    current_step: 0
-    total_steps: 8
-    started_at: 2026-02-27T20:16:50.802Z
-    completed_at: 2026-02-27T20:16:55.618Z
-    step_results: []
-    initiated_by: Jacob Chapel
-    result: success
-  - _ulid: 01KJGDWCAYS30Y1WHSBB46X528
-    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: completed
-    current_step: 5
-    total_steps: 6
-    started_at: 2026-02-27T20:50:42.142Z
-    completed_at: 2026-02-27T21:00:53.376Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-27T20:50:42.142Z
-        completed_at: 2026-02-27T20:51:17.723Z
-        notes: "Worked well: plan-import dry-run caught structure early; review feedback was converted into concrete ACs quickly; trait-based spec updates made cross-cutting behavior explicit."
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-27T20:51:17.723Z
-        completed_at: 2026-02-27T20:51:18.262Z
-        notes: "Friction: hierarchy visibility is unclear in some views (easy to misread parentage), trait assumptions can conflict with command-surface ACs, and full validate output is noisy due unrelated baseline issues."
-      - step_index: 2
-        status: completed
-        started_at: 2026-02-27T20:51:18.262Z
-        completed_at: 2026-02-27T20:51:18.812Z
-        notes: "Coverage check: searched for item-parent visibility, tree ancestor display, trait conflict detection, and workflow-step discoverability; found no direct tracked items for these frictions."
-      - step_index: 3
-        status: completed
-        started_at: 2026-02-27T20:51:18.812Z
-        completed_at: 2026-02-27T20:51:19.351Z
-        notes: "Proposed improvements: (1) add parent/ancestor output to item get, (2) add optional tree context/ancestor display when using item list --tree --search, (3) add validate check for trait/AC contract contradictions (e.g., refs assumptions)."
-      - step_index: 4
-        status: completed
-        started_at: 2026-02-27T20:51:19.351Z
-        completed_at: 2026-02-27T21:00:30.023Z
-        notes: "Discussion outcomes: user approved all three improvements for capture (item-get parent context, tree-search ancestor context, and trait/command-contract validation checks)."
-      - step_index: 5
-        status: completed
-        started_at: 2026-02-27T21:00:30.023Z
-        completed_at: 2026-02-27T21:00:30.023Z
-    initiated_by: Jacob Chapel
-    result: success
-  - _ulid: 01KJGQ1R7VJ3PK7ANPPE4FEQ9K
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-27T23:30:55.355Z
-    step_results: []
-    initiated_by: Jacob Chapel
-  - _ulid: 01KJGQHGAKWR386MSXQG89X579
-    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: completed
-    current_step: 5
-    total_steps: 6
-    started_at: 2026-02-27T23:39:31.539Z
-    completed_at: 2026-02-27T23:40:46.931Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-27T23:39:31.539Z
-        completed_at: 2026-02-27T23:40:19.883Z
-        notes: "What worked well: using dry-run triad (skill install-core/update/render) plus focused tests quickly isolated source-of-truth drift and prevented direct edits to generated outputs."
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-27T23:40:19.883Z
-        completed_at: 2026-02-27T23:40:23.359Z
-        notes: "Friction points: (1) source-of-truth for core skills was unclear at handoff, causing churn between generated/runtime paths and template paths; (2) skill update behavior for same-version template edits is non-obvious (already tracked as observation @01KJGAKM)."
-      - step_index: 2
-        status: completed
-        started_at: 2026-02-27T23:40:23.359Z
-        completed_at: 2026-02-27T23:40:29.459Z
-        notes: "Coverage check performed with kspec search. Existing tracking found: observation @01KJGAKM (core skill update UX gap). No clear existing item found for the generated-vs-source documentation gap prior to this session; this session addressed it by updating quick-start guidance."
-      - step_index: 3
-        status: completed
-        started_at: 2026-02-27T23:40:29.459Z
-        completed_at: 2026-02-27T23:40:35.423Z
-        notes: "Improvement proposal (small): when kspec skill update skips due same version, print explicit guidance: 'local template edits require kspec skill install-core (or --force render)'. This is already tracked in @01KJGAKM; no duplicate task proposed in this reflection."
-      - step_index: 4
-        status: completed
-        started_at: 2026-02-27T23:40:35.423Z
-        completed_at: 2026-02-27T23:40:40.223Z
-        notes: "User requested direct -reflect execution. Decision: keep existing tracked friction (@01KJGAKM) without duplicate capture; capture one success observation from this session."
-      - step_index: 5
-        status: completed
-        started_at: 2026-02-27T23:40:40.223Z
-        completed_at: 2026-02-27T23:40:46.928Z
-        notes: Captured one success observation (@01KJGQKP). Did not create duplicate friction item because update UX gap already tracked in @01KJGAKM; docs-gap friction was addressed by shipped guidance changes in this session.
-    initiated_by: Jacob Chapel
-  - _ulid: 01KJGVMD72PKVXFE81CSPFH4Z9
-    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: completed
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-02-28T00:51:00.962Z
-    completed_at: 2026-02-28T00:55:37.912Z
-    step_results: []
-    initiated_by: Jacob Chapel
-    result: success
-  - _ulid: 01KJGW5ME081H8JSYW67CPB8HJ
-    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: completed
-    current_step: 5
-    total_steps: 6
-    started_at: 2026-02-28T01:00:25.408Z
-    step_results:
-      - step_index: 0
-        status: completed
-        started_at: 2026-02-28T01:00:25.408Z
-        completed_at: 2026-02-28T01:01:13.196Z
-        notes: "Worked well: (1) CLI-first lookup + validation loop quickly confirmed root cause and prevented YAML drift, (2) using kspec batch for task state + notes + follow-up creation kept mutation history atomic/auditable, (3) targeted regression tests before full suite gave fast confidence on validate mode semantics."
-      - step_index: 1
-        status: completed
-        started_at: 2026-02-28T01:01:13.196Z
-        completed_at: 2026-02-28T01:01:19.644Z
-        notes: "Friction: (1) tests that execute dist CLI can fail against stale build output unless npm run build is run first, which caused initial misleading failures, (2) full npm test gate still surfaces known unrelated session-budget integration timeouts, creating noise when validating unrelated PRs."
-      - step_index: 2
-        status: completed
-        started_at: 2026-02-28T01:01:19.644Z
-        completed_at: 2026-02-28T01:01:24.543Z
-        notes: "Coverage check via kspec search: session-budget timeout friction is already tracked (task @01KJGDR9 plus related task/inbox hits including @01KJDQ16 and @01KJ8NDT). Dist-build/stale-build friction appears untracked (no relevant matches for build-dist/test helper keywords)."
-      - step_index: 3
-        status: completed
-        started_at: 2026-02-28T01:01:24.543Z
-        completed_at: 2026-02-28T01:01:31.043Z
-        notes: "Proposed improvement (untracked): add stale-dist detection in tests/helpers/cli.ts so CLI tests fail fast with actionable guidance (or optional auto-build) when dist CLI is out of date. Benefit: removes false-negative debugging churn. Scope: medium. For session-budget timeout friction: no new proposal (already tracked by @01KJGDR9)."
-      - step_index: 4
-        status: completed
-        started_at: 2026-02-28T01:01:31.043Z
-        completed_at: 2026-02-28T01:01:37.050Z
-        notes: "Auto-resolution in assistant context: worth capturing the untracked dist-build friction improvement and a success observation from this session."
-      - step_index: 5
-        status: completed
-        started_at: 2026-02-28T01:01:37.050Z
-        completed_at: 2026-02-28T01:02:30.080Z
-        notes: "Captured outputs: (1) inbox improvement for stale-dist guard in CLI test helper, (2) friction observation on stale dist artifact debugging churn, (3) success observation on focused validate mode matrix testing."
-    initiated_by: Jacob Chapel
-    completed_at: 2026-02-28T01:02:30.089Z
   - _ulid: 01KJH73YQCF0VF3JBBV7Y2F833
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
@@ -6106,3 +5863,246 @@ runs:
     started_at: 2026-02-28T13:59:16.710Z
     step_results: []
     initiated_by: "@claude"
+  - _ulid: 01KJG60T5X04MKMKSMSMM6D2GM
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: completed
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-27T18:33:18.781Z
+    completed_at: 2026-02-27T18:39:09.004Z
+    step_results: []
+    initiated_by: Jacob Chapel
+    result: early_exit
+  - _ulid: 01KJG77HBR42H16GDBDWKC0DER
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: completed
+    current_step: 5
+    total_steps: 6
+    started_at: 2026-02-27T18:54:27.704Z
+    completed_at: 2026-02-27T18:55:47.963Z
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-27T18:54:27.704Z
+        completed_at: 2026-02-27T18:55:25.832Z
+        notes: "What worked well: (1) strict task lifecycle execution (start -> submit -> PR -> review loop -> complete) kept spec/task state consistent, (2) subagent-driven PR review caught real trait-level defects quickly, (3) focused verification (targeted tests + typecheck) made fix-cycle turnaround fast and safe."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-27T18:55:25.832Z
+        completed_at: 2026-02-27T18:55:29.608Z
+        notes: "Friction points observed: (1) stale KSPEC_SESSION_ID triggered false task-budget enforcement outside ralph loop context, requiring explicit env unsetting workaround, (2) shell interpolation/backtick hazards when composing gh pr body inline created accidental command execution risk; switching to --body-file is safer."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-27T18:55:29.608Z
+        completed_at: 2026-02-27T18:55:33.971Z
+        notes: "Coverage check: (1) task-budget friction is already tracked as inbox @01KJG5A7 (search: 'false-positive outside ralph loop'), so no duplicate needed; (2) shell escaping/quoting friction has existing observation coverage (e.g., @01KFFS1G), so treat as already tracked pattern rather than adding another duplicate."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-27T18:55:33.971Z
+        completed_at: 2026-02-27T18:55:38.162Z
+        notes: "No untracked high-confidence friction remained after coverage checks. Proposed improvement count: 0 (intentionally avoiding duplicate inbox/observation noise)."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-27T18:55:38.162Z
+        completed_at: 2026-02-27T18:55:43.415Z
+        notes: "Discussion decision: no new improvements to present because both identified frictions are already tracked. User requested session reflection execution; outcome is dedupe/no-new-capture."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-27T18:55:43.415Z
+        completed_at: 2026-02-27T18:55:47.963Z
+        notes: "Capture results: no new captures created. Existing coverage retained: inbox @01KJG5A7 for stale KSPEC_SESSION_ID budget guard issue; shell quoting friction already represented by prior observations. Reflection run closed with deliberate no-op capture."
+    initiated_by: Jacob Chapel
+  - _ulid: 01KJGAHFR5HMSGEKPA7A2T9X4Z
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: completed
+    current_step: 5
+    total_steps: 6
+    started_at: 2026-02-27T19:52:19.462Z
+    completed_at: 2026-02-27T19:53:34.212Z
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-27T19:52:19.462Z
+        completed_at: 2026-02-27T19:52:45.724Z
+        notes: "Worked well: (1) Meta-observation triage to core-vs-skill buckets kept scope clean and avoided overloading core conventions, (2) branch hygiene correction (new branch from origin/main) prevented mixing unrelated prior feature context, (3) source-of-truth correction (templates for core, .kspec for project skills) aligned updates with architecture before PR."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-27T19:52:45.724Z
+        completed_at: 2026-02-27T19:52:46.297Z
+        notes: "Friction points: (1) skill source layering confusion (.agents/.kspec/templates) caused rework, (2) core skill update command behavior is version-gated so same-version template edits were skipped by kspec skill update and required kspec skill install-core, (3) skill verify showed codex drift/no-hash for plugin-provided core skills despite plugin-provided diff path."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-27T19:52:46.297Z
+        completed_at: 2026-02-27T19:52:46.850Z
+        notes: "Coverage check: plugin-provided drift/no-hash issue is now tracked in inbox @01KJGA18. Search did not find an explicitly tracked item for 'kspec skill update skips same-version template changes' (version-gated update behavior) as a dedicated workflow/UX friction."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-27T19:52:46.850Z
+        completed_at: 2026-02-27T19:52:47.436Z
+        notes: "Proposed untracked improvement: capture a friction observation to document version-gated update behavior and recommend either clearer CLI guidance (update vs install-core) or command behavior adjustment when local templates change at same version."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-27T19:52:47.436Z
+        completed_at: 2026-02-27T19:53:29.948Z
+        notes: Captured approved friction observation about version-gated skill update behavior and install-core fallback requirement. Existing plugin-provided verify/hash issue remains tracked in inbox @01KJGA18 (no duplicate capture).
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-27T19:53:29.948Z
+        completed_at: 2026-02-27T19:53:34.212Z
+        notes: "Capture complete: added friction observation @01KJGAKM. Reflection run closed."
+    initiated_by: Jacob Chapel
+  - _ulid: 01KJGBT61Q7N2Z3MZT0K7JNTS1
+    workflow_ref: "@01KGPF7BP1XWM82TSK942D6Y0R"
+    status: completed
+    current_step: 0
+    total_steps: 5
+    started_at: 2026-02-27T20:14:33.015Z
+    completed_at: 2026-02-27T20:16:50.312Z
+    step_results: []
+    initiated_by: Jacob Chapel
+    result: success
+  - _ulid: 01KJGBYCKJ9NREKNZSNAZV1XV9
+    workflow_ref: "@01KGPF7BP1KF0FAQAEFXNNTPTT"
+    status: completed
+    current_step: 0
+    total_steps: 8
+    started_at: 2026-02-27T20:16:50.802Z
+    completed_at: 2026-02-27T20:16:55.618Z
+    step_results: []
+    initiated_by: Jacob Chapel
+    result: success
+  - _ulid: 01KJGDWCAYS30Y1WHSBB46X528
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: completed
+    current_step: 5
+    total_steps: 6
+    started_at: 2026-02-27T20:50:42.142Z
+    completed_at: 2026-02-27T21:00:53.376Z
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-27T20:50:42.142Z
+        completed_at: 2026-02-27T20:51:17.723Z
+        notes: "Worked well: plan-import dry-run caught structure early; review feedback was converted into concrete ACs quickly; trait-based spec updates made cross-cutting behavior explicit."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-27T20:51:17.723Z
+        completed_at: 2026-02-27T20:51:18.262Z
+        notes: "Friction: hierarchy visibility is unclear in some views (easy to misread parentage), trait assumptions can conflict with command-surface ACs, and full validate output is noisy due unrelated baseline issues."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-27T20:51:18.262Z
+        completed_at: 2026-02-27T20:51:18.812Z
+        notes: "Coverage check: searched for item-parent visibility, tree ancestor display, trait conflict detection, and workflow-step discoverability; found no direct tracked items for these frictions."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-27T20:51:18.812Z
+        completed_at: 2026-02-27T20:51:19.351Z
+        notes: "Proposed improvements: (1) add parent/ancestor output to item get, (2) add optional tree context/ancestor display when using item list --tree --search, (3) add validate check for trait/AC contract contradictions (e.g., refs assumptions)."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-27T20:51:19.351Z
+        completed_at: 2026-02-27T21:00:30.023Z
+        notes: "Discussion outcomes: user approved all three improvements for capture (item-get parent context, tree-search ancestor context, and trait/command-contract validation checks)."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-27T21:00:30.023Z
+        completed_at: 2026-02-27T21:00:30.023Z
+    initiated_by: Jacob Chapel
+    result: success
+  - _ulid: 01KJGQ1R7VJ3PK7ANPPE4FEQ9K
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-27T23:30:55.355Z
+    step_results: []
+    initiated_by: Jacob Chapel
+  - _ulid: 01KJGQHGAKWR386MSXQG89X579
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: completed
+    current_step: 5
+    total_steps: 6
+    started_at: 2026-02-27T23:39:31.539Z
+    completed_at: 2026-02-27T23:40:46.931Z
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-27T23:39:31.539Z
+        completed_at: 2026-02-27T23:40:19.883Z
+        notes: "What worked well: using dry-run triad (skill install-core/update/render) plus focused tests quickly isolated source-of-truth drift and prevented direct edits to generated outputs."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-27T23:40:19.883Z
+        completed_at: 2026-02-27T23:40:23.359Z
+        notes: "Friction points: (1) source-of-truth for core skills was unclear at handoff, causing churn between generated/runtime paths and template paths; (2) skill update behavior for same-version template edits is non-obvious (already tracked as observation @01KJGAKM)."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-27T23:40:23.359Z
+        completed_at: 2026-02-27T23:40:29.459Z
+        notes: "Coverage check performed with kspec search. Existing tracking found: observation @01KJGAKM (core skill update UX gap). No clear existing item found for the generated-vs-source documentation gap prior to this session; this session addressed it by updating quick-start guidance."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-27T23:40:29.459Z
+        completed_at: 2026-02-27T23:40:35.423Z
+        notes: "Improvement proposal (small): when kspec skill update skips due same version, print explicit guidance: 'local template edits require kspec skill install-core (or --force render)'. This is already tracked in @01KJGAKM; no duplicate task proposed in this reflection."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-27T23:40:35.423Z
+        completed_at: 2026-02-27T23:40:40.223Z
+        notes: "User requested direct -reflect execution. Decision: keep existing tracked friction (@01KJGAKM) without duplicate capture; capture one success observation from this session."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-27T23:40:40.223Z
+        completed_at: 2026-02-27T23:40:46.928Z
+        notes: Captured one success observation (@01KJGQKP). Did not create duplicate friction item because update UX gap already tracked in @01KJGAKM; docs-gap friction was addressed by shipped guidance changes in this session.
+    initiated_by: Jacob Chapel
+  - _ulid: 01KJGVMD72PKVXFE81CSPFH4Z9
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: completed
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T00:51:00.962Z
+    completed_at: 2026-02-28T00:55:37.912Z
+    step_results: []
+    initiated_by: Jacob Chapel
+    result: success
+  - _ulid: 01KJGW5ME081H8JSYW67CPB8HJ
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: completed
+    current_step: 5
+    total_steps: 6
+    started_at: 2026-02-28T01:00:25.408Z
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-28T01:00:25.408Z
+        completed_at: 2026-02-28T01:01:13.196Z
+        notes: "Worked well: (1) CLI-first lookup + validation loop quickly confirmed root cause and prevented YAML drift, (2) using kspec batch for task state + notes + follow-up creation kept mutation history atomic/auditable, (3) targeted regression tests before full suite gave fast confidence on validate mode semantics."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-28T01:01:13.196Z
+        completed_at: 2026-02-28T01:01:19.644Z
+        notes: "Friction: (1) tests that execute dist CLI can fail against stale build output unless npm run build is run first, which caused initial misleading failures, (2) full npm test gate still surfaces known unrelated session-budget integration timeouts, creating noise when validating unrelated PRs."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T01:01:19.644Z
+        completed_at: 2026-02-28T01:01:24.543Z
+        notes: "Coverage check via kspec search: session-budget timeout friction is already tracked (task @01KJGDR9 plus related task/inbox hits including @01KJDQ16 and @01KJ8NDT). Dist-build/stale-build friction appears untracked (no relevant matches for build-dist/test helper keywords)."
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-28T01:01:24.543Z
+        completed_at: 2026-02-28T01:01:31.043Z
+        notes: "Proposed improvement (untracked): add stale-dist detection in tests/helpers/cli.ts so CLI tests fail fast with actionable guidance (or optional auto-build) when dist CLI is out of date. Benefit: removes false-negative debugging churn. Scope: medium. For session-budget timeout friction: no new proposal (already tracked by @01KJGDR9)."
+      - step_index: 4
+        status: completed
+        started_at: 2026-02-28T01:01:31.043Z
+        completed_at: 2026-02-28T01:01:37.050Z
+        notes: "Auto-resolution in assistant context: worth capturing the untracked dist-build friction improvement and a success observation from this session."
+      - step_index: 5
+        status: completed
+        started_at: 2026-02-28T01:01:37.050Z
+        completed_at: 2026-02-28T01:02:30.080Z
+        notes: "Captured outputs: (1) inbox improvement for stale-dist guard in CLI test helper, (2) friction observation on stale dist artifact debugging churn, (3) success observation on focused validate mode matrix testing."
+    initiated_by: Jacob Chapel
+    completed_at: 2026-02-28T01:02:30.089Z
