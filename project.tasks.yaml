@@ -64870,7 +64870,7 @@
   type: task
   spec_ref: "@session-stale-criteria"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -64955,6 +64955,12 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-02-28T21:43:37.853Z
+  closed_reason: "Merged in PR #605. Implemented stale session candidate criteria engine with
+    relative-duration validation/defaults, AND threshold evaluation, started_at fallback, strict
+    corrupt/unreadable events handling with skipped/failure reporting, and liveness guard
+    suppression. AC coverage verified for @session-stale-criteria ac-1 through ac-8 (including
+    unreadable events path)."
 - _ulid: 01KJGBWPAR4PYC6G8DD4PFJ770
   slugs:
     - implement-auto-abandon-metadata-and-audit-trail
