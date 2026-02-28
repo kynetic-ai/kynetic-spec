@@ -62779,17 +62779,19 @@
     - Existing retry and failure escalation logic handles timeouts the same as other iteration
     failures
   spec_ref: "@cli-ralph"
-  status: completed
+  status: pending
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+  session_id: null
   created_at: 2026-02-26T19:32:55.301Z
-  started_at: 2026-02-28T22:27:53.222Z
+  started_at: null
   submitted_at: 2026-02-28T22:27:55.023Z
+  completed_at: null
   notes:
     - _ulid: 01KJDQW7RZ6DDS9BNKW8XMDXF4
       created_at: 2026-02-26T19:47:39.935Z
@@ -62854,13 +62856,13 @@
       author: "@claude"
       content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
       supersedes: null
+    - _ulid: 01KJK6Y20KT1W73HHH9V2PCW4C
+      created_at: 2026-02-28T22:47:00.371Z
+      author: "@claude"
+      content: Reset from completed to pending
+      supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-02-28T22:46:04.816Z
-  closed_reason: "Merged in PR #608. Added --iteration-timeout (default 20m) for ralph, applied
-    iteration-level timeout across task-work+reflect, emitted iteration.timeout events with timeout
-    metadata, and reused existing retry/max-failure escalation behavior. Verified @cli-ralph AC
-    coverage for ac-1 through ac-23 with no trait ACs for this spec."
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
   slugs: []
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
