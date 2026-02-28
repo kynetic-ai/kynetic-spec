@@ -61904,7 +61904,7 @@
     `kspec task patch @ref --data '{...}'` still works. (3) `echo '{...}' | kspec task patch @ref`
     still works. (4) Batch exec engine (`src/cli/batch-exec.ts`) still works with task patch."
   spec_ref: "@task-patch"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -61958,6 +61958,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T05:04:57.045Z
+  closed_reason: "Merged in PR #588. Added TTY guard in task patch so interactive runs without --data
+    fail fast with validation error; preserved --data and piped-stdin behavior; added integration
+    coverage for stdin patch path and interactive no-input failure. Verified @task-patch AC coverage
+    (ac-1..ac-4) remains covered in tests/integration.test.ts and CI checks passed on PR head before
+    merge."
 - _ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
   slugs: []
   title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
