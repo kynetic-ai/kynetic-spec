@@ -8210,6 +8210,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T21:19:52.341Z
+    completed_at: 2026-02-28T21:20:41.263Z
     step_results:
       - step_index: 0
         status: completed
@@ -8239,4 +8240,11 @@ runs:
           (inbox 01KJG5A7), and no additional unique high-confidence reflection items met capture
           threshold.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T21:20:41.263Z
+  - _ulid: 01KJK2C0QKQEASYX5F5XZPFCX4
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T21:27:14.931Z
+    step_results: []
+    initiated_by: "@claude"
