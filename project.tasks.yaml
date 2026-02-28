@@ -65241,7 +65241,9 @@
     - cli
     - ux
   vcs_refs: []
+  session_id: 01KJJYHWH08599J074BXW0JH58
   created_at: 2026-02-27T23:45:02.684Z
+  started_at: 2026-02-28T20:21:11.151Z
   notes:
     - _ulid: 01KJGQWDEDV8KC457TZCK90AM4
       created_at: 2026-02-27T23:45:29.037Z
@@ -65249,10 +65251,19 @@
       content: Promoted from observation @01KJGAKM and expanded into standalone execution scope with
         concrete behavior options, file targets, tests, and done criteria.
       supersedes: null
+    - _ulid: 01KJJYQ417VJ23RG391HQZGWYX
+      created_at: 2026-02-28T20:23:24.455Z
+      author: "@claude"
+      content: "Implementation: added same-version template drift detection to skill update by comparing
+        template source tree to installed skill files. When drift is detected with matching version,
+        update now reports explicit guidance to run kspec skill install-core (normal + dry-run +
+        JSON reason/guidance fields). Added regression tests in tests/core-skill-update.test.ts for
+        both normal and dry-run drift messaging. Verification: npm run build; npx vitest run
+        tests/core-skill-update.test.ts tests/core-skill-install.test.ts; manual CLI scenario
+        confirms guidance appears in both modes."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T20:21:11.151Z
-  session_id: 01KJJYHWH08599J074BXW0JH58
 - _ulid: 01KJGRPS7WJ1RAZJC62K7Z6YT6
   slugs:
     - task-reconcile-validate-alignment-warning-baseline
