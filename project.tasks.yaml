@@ -61464,6 +61464,15 @@
 
         - Verification: run targeted vitest for bootstrap tests, then full npm test regression gate.
       supersedes: null
+    - _ulid: 01KJHCWDGMRTGP2PCM1RYCSWP4
+      created_at: 2026-02-28T05:52:29.204Z
+      author: "@claude"
+      content: "Implemented unit coverage for bootstrap link detection by extracting a testable helper
+        from scripts/bootstrap.cjs and adding tests for: (1) global kspec not linked, (2) local dist
+        missing, (3) already linked via Unix symlink resolution, and (4) explicit Unix realpath
+        call-path verification. Verification: npx vitest run tests/bootstrap.test.ts; npm test (160
+        files passed, 3525 tests passed, 3 skipped)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJCW37YCFYNRWF1R8P6D5KE1
