@@ -565,7 +565,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec shadow repair
 

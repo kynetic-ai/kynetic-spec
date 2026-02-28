@@ -61981,20 +61981,39 @@
     repair` succeeds on a system without `/bin/sh`. (3) All existing shadow tests pass. (4) No
     string interpolation of git commands (eliminates shell injection risk as a bonus)."
   spec_ref: "@shadow-repair-cmd"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
   created_at: 2026-02-26T19:32:46.139Z
+  started_at: 2026-02-28T07:44:31.479Z
   notes:
     - _ulid: 01KJDQVZCFA46XS91H4TP27506
       created_at: 2026-02-26T19:47:31.344Z
       author: "@claude"
       content: Linked to @shadow-repair-cmd spec. Large scope (15+ functions) but spec exists with ACs.
         Shell portability fix — replace /bin/sh spawns with direct git commands.
+      supersedes: null
+    - _ulid: 01KJHK9K26XGHPC9PN1Q8R8NW2
+      created_at: 2026-02-28T07:44:32.326Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: shadow git operations still invoke shell command strings, which breaks on
+        environments without /bin/sh and increases command-injection surface.
+
+        - Scope: refactor git invocation paths in src/parser/shadow.ts to non-shell child-process
+        execution only.
+
+        - Files: src/parser/shadow.ts and tests/shadow.test.ts (only if extra coverage is needed).
+
+        - Verification: run targeted shadow tests and focused command-level checks for repair/sync
+        paths.
       supersedes: null
   todos: []
   automation: eligible
@@ -62555,6 +62574,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #595. Implemented item-get unresolved-ref guidance for observation refs
+    by suggesting 'kspec meta observe get <ref>' when applicable, with integration regression
+    coverage for the hint path. AC coverage N/A (task has no spec_ref); full regression and CI
+    checks passed."
   depends_on: []
   context: []
   priority: 3
@@ -62564,6 +62587,7 @@
   created_at: 2026-02-26T19:32:54.517Z
   started_at: 2026-02-28T07:19:25.415Z
   submitted_at: 2026-02-28T07:20:51.490Z
+  completed_at: 2026-02-28T07:43:17.442Z
   notes:
     - _ulid: 01KJHHXRHVPVTBKNR40K8QACV7
       created_at: 2026-02-28T07:20:36.155Z
@@ -62588,11 +62612,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T07:43:17.442Z
-  closed_reason: "Merged in PR #595. Implemented item-get unresolved-ref guidance for observation refs
-    by suggesting 'kspec meta observe get <ref>' when applicable, with integration regression
-    coverage for the hint path. AC coverage N/A (task has no spec_ref); full regression and CI
-    checks passed."
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
