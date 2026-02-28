@@ -63187,7 +63187,7 @@
 
     - Event log entries show correct iteration numbers even when sessions overlap
   spec_ref: "@cli-ralph"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -63240,6 +63240,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-02-28T23:19:28.481Z
+  session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
 - _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
   slugs: []
   title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
