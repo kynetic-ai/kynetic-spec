@@ -62530,6 +62530,11 @@
         Includes item-get observation hint guidance and regression coverage in
         tests/integration.test.ts."
       supersedes: null
+    - _ulid: 01KJHJ1F0KY595ZGZ3X81MMJWN
+      created_at: 2026-02-28T07:22:37.459Z
+      author: "@claude"
+      content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
