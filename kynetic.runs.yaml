@@ -7835,7 +7835,7 @@ runs:
   - _ulid: 01KJJH3K0KAH0JHTCZ698KTHW4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-02-28T16:25:32.948Z
     step_results:
@@ -7901,5 +7901,37 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-28T16:26:12.702Z
-        completed_at: 2026-02-28T16:26:12.702Z
+        completed_at: 2026-02-28T16:26:33.106Z
+        notes: >-
+          Coverage check:
+
+
+          1. Merge driver --non-interactive + TTY detection + exit code + notes union — ALL covered
+          by new task @01KJJGJ1, linked to spec @yaml-merge-driver. Spec ac-5 (notes union) and
+          ac-10 (exit 0 in non-interactive) already describe correct behavior.
+
+
+          2. Compact can't target different specDir — NOT TRACKED. Minor friction, workaround exists
+          (rsync). Low priority.
+
+
+          3. Stale session accumulation — TRACKED: task @implement-stale-session-candidate-criteria
+          (pending), spec @session-stale-criteria. Full coverage.
+
+
+          4. Worktree guard blocking legitimate ops — PARTIALLY TRACKED: spec
+          @guard-script-and-diff-quality exists but doesn't cover escape hatch for intentional
+          recovery. Could add an AC for --force or similar override.
+
+
+          5. Notes conflict (picks one side) — TRACKED in @01KJJGJ1 item 3, and spec ac-5 already
+          says correct behavior.
+
+
+          Summary: Most friction already tracked. Only untracked item is compact specDir portability
+          (low priority) and worktree guard escape hatch (minor).
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-28T16:26:33.106Z
+        completed_at: 2026-02-28T16:26:33.106Z
     initiated_by: "@claude"
