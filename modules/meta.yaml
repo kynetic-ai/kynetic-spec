@@ -3806,7 +3806,7 @@ modules:
               implementation: implemented
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KHQQTFPHKFKA87RWR2EYTZHK
         slugs:
           - setup-pipeline-unification
