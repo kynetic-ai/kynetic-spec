@@ -8521,6 +8521,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T23:28:12.235Z
+    completed_at: 2026-02-28T23:28:57.394Z
     step_results:
       - step_index: 0
         status: completed
@@ -8892,4 +8893,11 @@ runs:
         completed_at: 2026-02-28T23:28:57.394Z
         notes: No items met loop-mode capture threshold this iteration; skipping capture step by design.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T23:28:57.394Z
+  - _ulid: 01KJK9CNNW4GRQEWN2S8VRQXF6
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T23:29:56.413Z
+    step_results: []
+    initiated_by: "@claude"
