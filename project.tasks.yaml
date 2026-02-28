@@ -63258,6 +63258,12 @@
         tests/ralph.test.ts (142 passed). kspec validate still reports pre-existing meta/reference
         issues unrelated to this task (@observations ambiguity, missing observations skill file)."
       supersedes: null
+    - _ulid: 01KJK98XXK58WHY0PGWCEXHPET
+      created_at: 2026-02-28T23:27:53.779Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 2] Pushed commit 3eba7201 to PR #612 with listener detach on
+        rotation/end/dispose and regression test coverage for replaceSessionUpdateLogger ordering."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1B9C62DT55EK8WK01BP0
