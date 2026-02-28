@@ -62210,7 +62210,7 @@
     Existing tests in `tests/agents-instruction-gen.test.ts` updated to reflect the new hash
     behavior. (4) Optionally: `--force` flag added to bypass the hash check entirely."
   spec_ref: "@agents-cli"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62233,6 +62233,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T06:41:24.259Z
 - _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
   slugs: []
   title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
