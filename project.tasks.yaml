@@ -62767,6 +62767,7 @@
   session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
   created_at: 2026-02-26T19:32:56.309Z
   started_at: 2026-02-28T13:32:24.588Z
+  submitted_at: 2026-02-28T13:33:39.765Z
   notes:
     - _ulid: 01KJJ78GMNRXYKH5487693GGAF
       created_at: 2026-02-28T13:33:28.597Z
@@ -62779,9 +62780,18 @@
         and manual CLI check node dist/cli/index.js batch --commands '' exits 1 immediately with
         Invalid JSON."
       supersedes: null
+    - _ulid: 01KJJ7A2J3021G3W3B5JRTHJHB
+      created_at: 2026-02-28T13:34:19.715Z
+      author: "@claude"
+      content: "Submitted for review in PR #598: https://github.com/kynetic-ai/kynetic-spec/pull/598.
+        Fixed batch source selection to treat --commands as inline when provided (including
+        empty/whitespace), eliminating stdin fallback for empty inline args. Added regression tests
+        for --commands '' and --commands '   '. Verification: npm test --
+        tests/batch-exec-engine.test.ts (59 passing) and manual fast-fail check via node
+        dist/cli/index.js batch --commands ''."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T13:33:39.765Z
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
