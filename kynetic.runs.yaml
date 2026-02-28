@@ -8376,7 +8376,7 @@ runs:
   - _ulid: 01KJK5WQPB0NT502WHZ4SKJ5V4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T22:28:48.460Z
     step_results:
@@ -8389,5 +8389,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T22:29:13.881Z
-        completed_at: 2026-02-28T22:29:13.881Z
+        completed_at: 2026-02-28T22:29:28.192Z
+        notes: "High-confidence findings: (1) Success: using a clean task branch from main prevented
+          unrelated-file contamination in fix cycle PR scope and simplified review. (2) Friction:
+          ralph test helper runRalph tokenizes args with whitespace split, so quoted values break
+          and create misleading unknown-option failures. Coverage check: stale-dist friction already
+          tracked in inbox @01KJGW8Z and observation @01KJGW8Z; no duplicate capture for that."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T22:29:28.192Z
+        completed_at: 2026-02-28T22:29:28.192Z
     initiated_by: "@claude"
