@@ -18,6 +18,7 @@ import * as path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
 import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import * as YAML from "yaml";
+import { shadowAutoCommit } from "../parser/shadow.js";
 import {
   type SessionEvent,
   type SessionEventInput,
@@ -1442,6 +1443,7 @@ export interface AutoAbandonMetadataResult {
   dryRun: boolean;
   updatedCount: number;
   updates: AutoAbandonMetadataPreview[];
+  shadowCommitted?: boolean;
 }
 
 /**
@@ -1472,7 +1474,7 @@ export function buildAutoAbandonedCloseReason(
 export async function applyAutoAbandonMetadata(
   specDir: string,
   selection: Pick<StaleSessionCandidateSelection, "criteria" | "candidates">,
-  options?: { dryRun?: boolean; nowMs?: number },
+  options?: { dryRun?: boolean; nowMs?: number; shadowCommitMessage?: string },
 ): Promise<AutoAbandonMetadataResult> {
   const dryRun = options?.dryRun === true;
   const endedAt = new Date(options?.nowMs ?? Date.now()).toISOString();
@@ -1511,10 +1513,16 @@ export async function applyAutoAbandonMetadata(
     await fsPromises.writeFile(metadataPath, content, "utf-8");
   }
 
+  let shadowCommitted: boolean | undefined;
+  if (!dryRun && updates.length > 0 && options?.shadowCommitMessage) {
+    shadowCommitted = await shadowAutoCommit(specDir, options.shadowCommitMessage);
+  }
+
   return {
     dryRun,
     updatedCount: updates.length,
     updates,
+    shadowCommitted,
   };
 }
 
