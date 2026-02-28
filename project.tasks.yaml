@@ -62779,14 +62779,14 @@
     - Existing retry and failure escalation logic handles timeouts the same as other iteration
     failures
   spec_ref: "@cli-ralph"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+  session_id: null
   created_at: 2026-02-26T19:32:55.301Z
   started_at: 2026-02-28T21:45:34.729Z
   submitted_at: 2026-02-28T21:53:18.922Z
@@ -62815,6 +62815,13 @@
       author: "@claude"
       content: "Pushed commit f22d1109 to existing branch feat/session-stale-close-metadata (open PR #607:
         https://github.com/kynetic-ai/kynetic-spec/pull/607)."
+      supersedes: null
+    - _ulid: 01KJK48WZBHDXEHPAG6FTRW3T7
+      created_at: 2026-02-28T22:00:29.932Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #607 includes unrelated @core-skill-update
+        changes in this task scope, and @cli-ralph AC coverage gate is incomplete (missing annotated
+        coverage for ac-3, ac-4, ac-5, ac-14, ac-15, ac-17, ac-18)."
       supersedes: null
   todos: []
   automation: eligible
