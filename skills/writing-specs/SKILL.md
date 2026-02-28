@@ -343,5 +343,5 @@ The derived task gets `spec_ref: @feature-slug` automatically.
 - **`{skill:plan}`** — Plans create specs via import or manual creation
 - **`{skill:task-work}`** — Tasks reference specs; AC guides implementation
 - **`{skill:triage}`** — Inbox items may reveal spec gaps
-- **`{skill:observations}`** — Friction may indicate missing specs
+- **`{skill:observe}`** — Friction may indicate missing specs
 - **`{skill:review}`** — Reviews check AC coverage

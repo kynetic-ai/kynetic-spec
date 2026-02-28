@@ -221,5 +221,5 @@ At session end, provide summary:
 ## Integration
 
 - **`{skill:reflect}`** — Session reflection may generate inbox items for triage
-- **`{skill:observations}`** — Captures systemic patterns found during triage
+- **`{skill:observe}`** — Captures systemic patterns found during triage
 - **`kspec session start`** — Shows inbox count for triage awareness
