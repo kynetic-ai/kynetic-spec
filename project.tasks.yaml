@@ -61981,7 +61981,7 @@
     repair` succeeds on a system without `/bin/sh`. (3) All existing shadow tests pass. (4) No
     string interpolation of git commands (eliminates shell injection risk as a bonus)."
   spec_ref: "@shadow-repair-cmd"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62027,6 +62027,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T07:46:20.025Z
 - _ulid: 01KJDQ107WAD90WTAVFFQDW0B1
   slugs: []
   title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
