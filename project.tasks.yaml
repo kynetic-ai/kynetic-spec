@@ -1,3 +1,9 @@
+# CONFLICT: Field "started_at" modified with different values in both branches
+# Path: [01KJDQ1C22TH9SEXXGBYQT8Y3Z].started_at
+# Ours:   "2026-02-28T23:40:24.828Z"
+# Theirs: "2026-02-28T23:50:24.163Z"
+# Resolution: Using ours (run merge interactively to resolve)
+
 - _ulid: 01KEZFXCM3WEMMRGFDZSJSRARJ
   slugs:
     - task-cli-polish
@@ -48109,16 +48115,17 @@
   type: task
   description: "Plan import --update replaces all ACs instead of merging. When extending an existing spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for session-log-show ac-10."
   spec_ref: "@plan-import"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
   created_at: 2026-02-26T19:32:59.586Z
   started_at: 2026-02-28T23:40:24.828Z
+  submitted_at: 2026-02-28T23:42:42.861Z
   notes:
     - _ulid: 01KJDQ8ZD10EG4Z7MHEAHWBMAT
       created_at: 2026-02-26T19:37:08.769Z
@@ -48163,7 +48170,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T23:42:42.861Z
 - _ulid: 01KJDQ1CTV35WDA9G51NEH943K
   slugs: []
   title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get @plan-r
