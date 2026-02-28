@@ -6768,6 +6768,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T05:46:01.822Z
+    completed_at: 2026-02-28T05:46:31.846Z
     step_results:
       - step_index: 0
         status: completed
@@ -6797,4 +6798,11 @@ runs:
         notes: No captures made this iteration. All candidate reflections were duplicates of already-tracked
           items; loop-mode high-confidence gate kept output intentionally empty.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T05:46:31.846Z
+  - _ulid: 01KJHCZ1SSJ46917F9WVD9J8QD
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-02-28T05:53:55.514Z
+    step_results: []
+    initiated_by: "@claude"
