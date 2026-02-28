@@ -49,10 +49,13 @@ import {
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_WRAPUP_TIMEOUT,
   type ExitReason,
+  formatJsonSection,
+  type PromptSection,
   RALPH_PROMPT_TIMEOUT,
   runSubagent,
   runWrapUpAgent,
   type SubagentContext,
+  truncatePromptIfNeeded,
   WRAPUP_AGENT_PREFIX,
 } from "../../ralph/index.js";
 import {
@@ -369,17 +372,21 @@ This session is scoped to specific tasks: ${explicitTaskScope.refs.join(", ")}
     ? "Loop mode means: no confirmations, auto-resolve decisions, explicit task scope (only the listed tasks)."
     : "Loop mode means: no confirmations, auto-resolve decisions, automation-eligible tasks only.";
 
-  return `# Kspec Automation Session - Task Work
+  const stateSection = formatJsonSection(
+    sessionCtx as unknown as Record<string, unknown>,
+    "Current State",
+    `kspec session start --json`,
+  );
+  const sections: PromptSection[] = [stateSection.section];
+
+  const prompt = `# Kspec Automation Session - Task Work
 
 **Session ID:** \`${sessionId}\`
 **Iteration:** ${iteration} of ${maxLoops}
 **Mode:** Automated (no human in the loop)
 ${focusSection}${taskScopeSection}
 
-## Current State
-\`\`\`json
-${JSON.stringify(sessionCtx, null, 2)}
-\`\`\`
+${stateSection.text}
 
 ## Instructions
 
@@ -397,6 +404,8 @@ it checks for remaining eligible tasks at the start of each iteration and exits 
 **Do NOT call \`end-loop\` after completing a task.** Simply stop responding.
 \`end-loop\` is a rare escape hatch for when work is stalling across multiple iterations with no progress — not a normal exit path.
 `;
+
+  return truncatePromptIfNeeded(prompt, sections);
 }
 
 /**

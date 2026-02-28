@@ -80,6 +80,11 @@ export interface SubagentOptions {
 /** Default subagent timeout: 20 minutes */
 export const DEFAULT_SUBAGENT_TIMEOUT = 20 * 60 * 1000;
 
+/** Maximum prompt size in bytes before truncation kicks in.
+ * 32KB prompt ≈ 35-40KB on the wire (JSON-RPC envelope + escaping),
+ * well under the 64KB Linux pipe buffer. */
+export const SUBAGENT_PROMPT_MAX_BYTES = 32 * 1024;
+
 /** Default output prefix for subagent */
 export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
 
@@ -112,6 +117,97 @@ export const SKILL_PR_REVIEW = "/kspec:review";
 export const RALPH_PROMPT_TIMEOUT = 30 * 60 * 1000;
 
 // ============================================================================
+// Prompt Truncation
+// ============================================================================
+
+/**
+ * Build a compact summary stub for truncated sections.
+ * Provides enough identity context to avoid a CLI call for basic triage.
+ */
+function compactSummary(data: Record<string, unknown>): Record<string, unknown> {
+  const summary: Record<string, unknown> = {};
+  if (data._ulid != null) summary._ulid = data._ulid;
+  if (data.ulid != null) summary._ulid = data.ulid;
+  if (data.title != null) summary.title = data.title;
+  if (data.status != null) summary.status = data.status;
+  if (data.spec_ref != null) summary.spec_ref = data.spec_ref;
+  if (data.slug != null) summary.slug = data.slug;
+  if (Array.isArray(data.acceptance_criteria)) {
+    summary.ac_count = data.acceptance_criteria.length;
+  }
+  return summary;
+}
+
+/**
+ * Represents a replaceable JSON section within a prompt.
+ */
+export interface PromptSection {
+  /** Marker string that appears in the prompt (the full formatted section) */
+  marker: string;
+  /** Replacement text if this section is truncated */
+  truncated: string;
+  /** Byte size of the marker */
+  size: number;
+}
+
+/**
+ * Format a data object as a labeled markdown JSON section.
+ * Returns the formatted string and a PromptSection for potential truncation.
+ *
+ * When not truncated: heading + ```json fence + pretty-printed JSON
+ * When truncated: heading + blockquote with compact summary + CLI fetch command
+ */
+export function formatJsonSection(
+  data: Record<string, unknown>,
+  label: string,
+  fetchCmd: string,
+): { text: string; section: PromptSection } {
+  const json = JSON.stringify(data, null, 2);
+  const text = `### ${label}\n\n\`\`\`json\n${json}\n\`\`\``;
+  const summary = JSON.stringify(compactSummary(data));
+  const truncated = `### ${label}\n\n> **Truncated** (${Buffer.byteLength(json, "utf8")} bytes). Fetch full data:\n> \`\`\`\n> ${fetchCmd}\n> \`\`\`\n>\n> Summary: \`${summary}\``;
+
+  return {
+    text,
+    section: {
+      marker: text,
+      truncated,
+      size: Buffer.byteLength(text, "utf8"),
+    },
+  };
+}
+
+/**
+ * If the assembled prompt exceeds the byte budget, truncate the largest
+ * section(s) until it fits. Sections are replaced largest-first.
+ */
+export function truncatePromptIfNeeded(
+  prompt: string,
+  sections: PromptSection[],
+  maxBytes: number = SUBAGENT_PROMPT_MAX_BYTES,
+): string {
+  let totalBytes = Buffer.byteLength(prompt, "utf8");
+  if (totalBytes <= maxBytes) return prompt;
+
+  // Sort sections largest-first for greedy truncation
+  const sorted = [...sections].sort((a, b) => b.size - a.size);
+  let result = prompt;
+
+  for (const section of sorted) {
+    if (totalBytes <= maxBytes) break;
+    // Only truncate if this section hasn't already been truncated
+    if (!result.includes(section.marker)) continue;
+
+    const savedBytes = Buffer.byteLength(section.marker, "utf8") -
+      Buffer.byteLength(section.truncated, "utf8");
+    result = result.replace(section.marker, section.truncated);
+    totalBytes -= savedBytes;
+  }
+
+  return result;
+}
+
+// ============================================================================
 // Prompt Builder
 // ============================================================================
 
@@ -123,19 +219,30 @@ export const RALPH_PROMPT_TIMEOUT = 30 * 60 * 1000;
  * @param skillName - Skill invocation name for PR review (from config or default)
  */
 export function buildSubagentPrompt(context: SubagentContext, skillName: string = SKILL_PR_REVIEW): string {
-  const specSection = context.specWithACs
-    ? `
-## Linked Spec with Acceptance Criteria
+  // Build replaceable JSON sections
+  const taskSection = formatJsonSection(
+    context.taskDetails,
+    "Task Details",
+    `kspec task get ${context.taskRef} --json`,
+  );
 
-\`\`\`json
-${JSON.stringify(context.specWithACs, null, 2)}
-\`\`\`
+  const sections: PromptSection[] = [taskSection.section];
 
-**Verify all ACs have test coverage before merging.**
-`
-    : "";
+  let specBlock = "";
+  let specSection: PromptSection | null = null;
+  if (context.specWithACs) {
+    const specRef = (context.taskDetails.spec_ref as string) || "@spec";
+    const formatted = formatJsonSection(
+      context.specWithACs,
+      "Linked Spec with Acceptance Criteria",
+      `kspec item get ${specRef} --json`,
+    );
+    specBlock = `\n${formatted.text}\n\n**Verify all ACs have test coverage before merging.**\n`;
+    specSection = formatted.section;
+    sections.push(specSection);
+  }
 
-  return `# PR Review Subagent
+  const prompt = `# PR Review Subagent
 
 You are a subagent spawned by ralph to REVIEW a PR and merge it only if clean.
 
@@ -163,12 +270,8 @@ If you find issues:
 - **Task:** \`${context.taskRef}\`
 - **Branch:** \`${context.gitBranch}\`
 
-### Task Details
-
-\`\`\`json
-${JSON.stringify(context.taskDetails, null, 2)}
-\`\`\`
-${specSection}
+${taskSection.text}
+${specBlock}
 ## Instructions
 
 Run the PR review skill:
@@ -181,6 +284,8 @@ The skill defines all review steps, quality gates, and merge criteria. Follow it
 
 Do NOT start new work. Do NOT fix code. Your only job is reviewing this task's PR, posting findings, and merging if clean.
 `;
+
+  return truncatePromptIfNeeded(prompt, sections);
 }
 
 // ============================================================================
