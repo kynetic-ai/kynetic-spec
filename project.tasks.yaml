@@ -62264,7 +62264,7 @@
     not provided. (4) Invalid `--agent` values are rejected with a clear error. (5) Tests in
     `tests/enhanced-setup.test.ts` and `tests/setup-pipeline-unification.test.ts` updated."
   spec_ref: "@enhanced-setup"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62297,6 +62297,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T07:18:49.091Z
+  closed_reason: "Merged in PR #594. Added setup --agent override
+    (claude-code|cline|cursor|windsurf|unknown), threaded override through setup and setup --status
+    paths, added ~/.claude fallback for detectAgent() when env markers are absent, and added
+    regression tests for override + invalid value guidance in enhanced-setup and
+    setup-pipeline-unification. AC coverage verified for @enhanced-setup own ACs and inherited trait
+    expectations; local npm test passed (160 files, 3545 passed, 3 skipped) and CI checks were green
+    on PR head before merge."
 - _ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
   slugs: []
   title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
