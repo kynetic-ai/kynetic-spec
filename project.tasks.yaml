@@ -62019,14 +62019,14 @@
     regenerated to reflect the change. (3) After a ralph PR merge, the source branch is deleted from
     the remote."
   spec_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJH73C9JTMB6977AEY991KBQ
+  session_id: null
   created_at: 2026-02-26T19:32:49.803Z
   started_at: 2026-02-28T05:05:35.942Z
   submitted_at: 2026-02-28T05:09:11.294Z
@@ -62045,6 +62045,12 @@
       content: "Submitted for review in PR #589 (fix/pr-review-merge-delete-branch). Updated
         @pr-review-merge merge guidance to 'gh pr merge --merge --delete-branch' and regenerated
         kspec-agents.md."
+      supersedes: null
+    - _ulid: 01KJHAPG8MBT48AS4YG5Q6DXY2
+      created_at: 2026-02-28T05:14:18.260Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Regression gate failed in PR #589. npm test
+        reports 3 failing tests (daemon-executable + 2 session-budget-integration)."
       supersedes: null
   todos: []
   automation: eligible
