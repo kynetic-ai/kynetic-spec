@@ -64979,6 +64979,20 @@
         - Verification: targeted stale-session tests plus full npm test before submit; run kspec
         validate and note any pre-existing repo warnings.
       supersedes: null
+    - _ulid: 01KJK1V68WRNVK82R2G5M6SS0F
+      created_at: 2026-02-28T21:18:03.549Z
+      author: "@claude"
+      content: "Implemented auto-abandon metadata helpers in src/sessions/store.ts: canonical close_reason
+        builder () plus batch apply function that updates status=abandoned, ended_at (shared
+        timestamp), and close_reason for stale candidates with dry-run preview support (no file
+        mutation). Added AC-annotated tests in tests/session-stale-criteria.test.ts for
+        @session-stale-close-metadata ac-1..ac-4 covering persisted metadata updates, structured
+        reason format, multi-session batch behavior, and dry-run preview/non-mutation. Verification:
+        npx vitest run tests/session-stale-criteria.test.ts; npx vitest run tests/sessions.test.ts
+        tests/session-stale-criteria.test.ts; npm test (full suite run); kspec validate currently
+        reports known pre-existing repo-level schema/reference/alignment/completeness issues
+        unrelated to this task."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
