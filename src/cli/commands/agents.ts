@@ -127,10 +127,12 @@ export function computeMetaHash(
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
   templateSections?: string[],
+  metaVersion: string = version,
 ): string {
   // Create a stable representation of the meta content
   // AC: @cross-platform-and-version-robustness ac-4 - includes templates for staleness detection
   const data: Record<string, unknown> = {
+    version: metaVersion,
     skills: skills.map((s) => ({
       id: s.id,
       name: s.name,
