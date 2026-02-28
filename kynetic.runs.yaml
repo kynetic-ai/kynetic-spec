@@ -8486,7 +8486,7 @@ runs:
   - _ulid: 01KJK8TG6F41BZQBT38V4DKERS
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-02-28T23:20:00.975Z
     step_results:
@@ -8499,5 +8499,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T23:20:37.498Z
-        completed_at: 2026-02-28T23:20:37.498Z
+        completed_at: 2026-02-28T23:20:38.543Z
+        notes: "Friction review: only notable issue was task submit rejection due to status not in_progress
+          at submit time; similar/related friction already tracked in inbox item 01KJK84Y."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T23:20:38.543Z
+        completed_at: 2026-02-28T23:20:38.543Z
     initiated_by: "@claude"
