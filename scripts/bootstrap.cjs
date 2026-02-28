@@ -97,43 +97,48 @@ function commandExists(cmd) {
 }
 
 /**
- * Check if kspec CLI is available, working, and linked to the local build.
- * A globally installed kspec (e.g. from npm install -g) is not sufficient
- * for this project — we need the locally built version via npm link.
+ * Internal helper for testable CLI link detection.
  */
-function checkKspecCli() {
-  if (!commandExists('kspec')) {
+function checkKspecCliWithDeps({
+  commandExistsFn,
+  runFn,
+  fsApi,
+  pathApi,
+  platform,
+  projectRootPath,
+}) {
+  if (!commandExistsFn('kspec')) {
     return { available: false, linked: false, reason: 'kspec command not found' };
   }
 
-  const result = run('kspec --version', { silent: true });
+  const result = runFn('kspec --version', { silent: true });
   if (!result.success) {
     return { available: false, linked: false, reason: 'kspec command exists but failed to run' };
   }
 
   // Check if kspec resolves to the local project (npm link)
   // If dist/ doesn't exist yet, we definitely need to build and link
-  const distCli = path.join(projectRoot, 'dist', 'cli', 'index.js');
-  if (!fs.existsSync(distCli)) {
+  const distCli = pathApi.join(projectRootPath, 'dist', 'cli', 'index.js');
+  if (!fsApi.existsSync(distCli)) {
     return { available: true, linked: false, version: result.output.trim(), reason: 'local dist not built yet' };
   }
 
   // Check if the globally installed kspec points to our local project.
   // On Unix: npm link creates symlinks, so realpathSync follows them.
   // On Windows: npm link creates .cmd shims containing the JS path as text.
-  const prefixResult = run('npm prefix -g', { silent: true });
+  const prefixResult = runFn('npm prefix -g', { silent: true });
   if (prefixResult.success) {
     const globalPrefix = prefixResult.output.trim();
-    const resolvedDist = fs.realpathSync(distCli);
+    const resolvedDist = fsApi.realpathSync(distCli);
 
-    if (process.platform === 'win32') {
+    if (platform === 'win32') {
       // Windows: npm creates a .cmd shim that contains the path to the JS entry
-      const cmdShim = path.join(globalPrefix, 'kspec.cmd');
+      const cmdShim = pathApi.join(globalPrefix, 'kspec.cmd');
       try {
-        if (fs.existsSync(cmdShim)) {
-          const shimContent = fs.readFileSync(cmdShim, 'utf8');
+        if (fsApi.existsSync(cmdShim)) {
+          const shimContent = fsApi.readFileSync(cmdShim, 'utf8');
           // .cmd shims contain the target JS path — check if it references our project
-          if (shimContent.includes(projectRoot.replace(/\//g, '\\'))) {
+          if (shimContent.includes(projectRootPath.replace(/\//g, '\\'))) {
             return { available: true, linked: true, version: result.output.trim() };
           }
         }
@@ -142,10 +147,10 @@ function checkKspecCli() {
       }
     } else {
       // Unix: follow the symlink chain
-      const globalBin = path.join(globalPrefix, 'bin', 'kspec');
+      const globalBin = pathApi.join(globalPrefix, 'bin', 'kspec');
       try {
-        if (fs.existsSync(globalBin)) {
-          const resolvedBin = fs.realpathSync(globalBin);
+        if (fsApi.existsSync(globalBin)) {
+          const resolvedBin = fsApi.realpathSync(globalBin);
           if (resolvedBin === resolvedDist) {
             return { available: true, linked: true, version: result.output.trim() };
           }
@@ -157,6 +162,22 @@ function checkKspecCli() {
   }
 
   return { available: true, linked: false, version: result.output.trim(), reason: 'kspec is not npm-linked to local project' };
+}
+
+/**
+ * Check if kspec CLI is available, working, and linked to the local build.
+ * A globally installed kspec (e.g. from npm install -g) is not sufficient
+ * for this project — we need the locally built version via npm link.
+ */
+function checkKspecCli() {
+  return checkKspecCliWithDeps({
+    commandExistsFn: commandExists,
+    runFn: run,
+    fsApi: fs,
+    pathApi: path,
+    platform: process.platform,
+    projectRootPath: projectRoot,
+  });
 }
 
 /**
@@ -319,8 +340,15 @@ async function bootstrap() {
   run(`${kspecCmd} session start`);
 }
 
-// Run bootstrap
-bootstrap().catch(err => {
-  logError(`Bootstrap failed: ${err.message}`);
-  process.exit(1);
-});
+if (require.main === module) {
+  // Run bootstrap
+  bootstrap().catch(err => {
+    logError(`Bootstrap failed: ${err.message}`);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  checkKspecCli,
+  checkKspecCliWithDeps,
+};
