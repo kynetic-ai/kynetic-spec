@@ -7835,8 +7835,34 @@ runs:
   - _ulid: 01KJJH3K0KAH0JHTCZ698KTHW4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-02-28T16:25:32.948Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-28T16:25:32.948Z
+        completed_at: 2026-02-28T16:25:57.522Z
+        notes: >-
+          What worked well:
+
+
+          1. Backup-first approach — Creating kspec-meta-backup-2026-02-28 before any destructive
+          operation saved us. We referenced it throughout to diagnose and extract correct state.
+
+          2. Isolated worktree for rebase — /tmp/kspec-rebase-test let us experiment freely with
+          zero consequences on failure.
+
+          3. Incremental diagnosis — Methodically compared remote vs local vs current to identify
+          exactly what was lost (12 task completions, notes) instead of blindly retrying.
+
+          4. Patching instead of force-push — Applying corrected state as new commit avoided branch
+          protection issues entirely.
+
+          5. kspec session compact — Handled the 260MB session file perfectly. Having this
+          infrastructure already built was critical.
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-28T16:25:57.522Z
+        completed_at: 2026-02-28T16:25:57.522Z
     initiated_by: "@claude"
