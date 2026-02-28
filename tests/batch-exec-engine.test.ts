@@ -459,6 +459,33 @@ describe("batch command integration", () => {
     expect(result.stderr).toMatch(/position \d+/i);
   });
 
+  // AC: @batch-exec ac-inline — empty --commands still uses inline source
+  // AC: @batch-exec ac-invalid-json
+  // AC: @trait-semantic-exit-codes ac-2 — validation error exits non-zero
+  it("rejects empty --commands value instead of falling back to stdin", () => {
+    const result = kspec(
+      "batch --commands ''",
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Invalid JSON");
+    expect(result.stderr).not.toContain("No input received on stdin");
+  });
+
+  // AC: @batch-exec ac-inline — whitespace --commands still uses inline source
+  // AC: @batch-exec ac-invalid-json
+  it("rejects whitespace-only --commands value instead of falling back to stdin", () => {
+    const result = kspec(
+      "batch --commands '   '",
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Invalid JSON");
+    expect(result.stderr).not.toContain("No input received on stdin");
+  });
+
   // AC: @batch-exec ac-invalid-json — JSON mode returns structured error
   // AC: @trait-json-output ac-3 — error returned as JSON with error field
   it("returns structured JSON error for malformed JSON in --json mode", () => {
