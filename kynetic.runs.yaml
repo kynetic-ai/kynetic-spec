@@ -6841,6 +6841,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-02-28T06:09:23.984Z
+    completed_at: 2026-02-28T06:10:27.607Z
     step_results:
       - step_index: 0
         status: completed
@@ -6874,4 +6875,11 @@ runs:
         notes: No approved unique items from step 3, so no new observation/inbox/task entries were created.
           Reflection complete with zero captures (intentional per high-confidence loop policy).
     initiated_by: "@claude"
-    completed_at: 2026-02-28T06:10:27.607Z
+  - _ulid: 01KJHDY0QVT110SNE6BX8ADANP
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-02-28T06:10:50.235Z
+    step_results: []
+    initiated_by: "@claude"
