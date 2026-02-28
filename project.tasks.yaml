@@ -64870,7 +64870,7 @@
   type: task
   spec_ref: "@session-stale-criteria"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -64880,7 +64880,7 @@
   session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   created_at: 2026-02-27T20:15:54.767Z
   started_at: 2026-02-28T21:28:15.380Z
-  submitted_at: 2026-02-28T21:09:04.655Z
+  submitted_at: 2026-02-28T21:34:08.281Z
   notes:
     - _ulid: 01KJGBWNWFME1VVZFKGQW9SRWR
       created_at: 2026-02-27T20:15:54.767Z
