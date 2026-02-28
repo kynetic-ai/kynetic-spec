@@ -67544,7 +67544,7 @@
   spec_ref: "@yaml-merge-driver"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -67637,3 +67637,4 @@
         needed there. The spec ac-5 behavior was already working.
       supersedes: null
   todos: []
+  submitted_at: 2026-02-28T16:37:34.567Z
