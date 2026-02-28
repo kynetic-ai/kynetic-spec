@@ -62019,7 +62019,7 @@
     regenerated to reflect the change. (3) After a ralph PR merge, the source branch is deleted from
     the remote."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62029,7 +62029,7 @@
   session_id: 01KJH73C9JTMB6977AEY991KBQ
   created_at: 2026-02-26T19:32:49.803Z
   started_at: 2026-02-28T05:33:23.755Z
-  submitted_at: 2026-02-28T05:09:11.294Z
+  submitted_at: 2026-02-28T05:33:25.356Z
   notes:
     - _ulid: 01KJHAD08HSAPTTRF83R8ZKHJ6
       created_at: 2026-02-28T05:09:06.962Z
