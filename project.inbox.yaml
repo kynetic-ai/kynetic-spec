@@ -998,3 +998,14 @@ inbox:
       - cli
       - validation
     added_by: "@claude"
+  - _ulid: 01KJHAFVNBDK5SP2HFKP5TXX77
+    text: "Meta workflow editing gap: kspec meta set cannot update workflow steps. Agents must
+      delete+recreate workflow to edit a step, which can churn workflow ULIDs and temporarily break
+      references. Add safe step-level update support (e.g., --set-step <index> --content/--on-fail)
+      or preserve ULID on replace to avoid reference drift."
+    created_at: 2026-02-28T05:10:40.560Z
+    tags:
+      - reflection
+      - cli
+      - workflow
+    added_by: "@claude"
