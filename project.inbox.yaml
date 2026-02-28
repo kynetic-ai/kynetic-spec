@@ -1151,3 +1151,14 @@ inbox:
       - testing
       - ralph
     added_by: "@claude"
+  - _ulid: 01KJK84YECKCKEHK22B7HR76GT
+    text: "Reflection: fix-cycle ergonomics mismatch — task-work guidance says 're-submit' needs_work
+      tasks, but CLI rejects kspec task submit when status is needs_work and requires explicit kspec
+      task start first. Consider allowing direct submit from needs_work (auto-transition to
+      in_progress) or improving error/help text to show required two-step command sequence."
+    created_at: 2026-02-28T23:08:14.675Z
+    tags:
+      - reflection
+      - cli
+      - tasks
+    added_by: "@claude"
