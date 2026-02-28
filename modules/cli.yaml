@@ -1226,7 +1226,7 @@ features:
             then: field is written
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KG97Q3XPX6XW95D8G08J3NAW
         slugs:
           - task-add-depends-on
