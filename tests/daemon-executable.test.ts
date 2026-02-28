@@ -51,21 +51,17 @@ describe('Daemon Executable Compilation', () => {
     // Verify executable permissions (should have execute bit)
     expect(stats.mode & 0o111).toBeGreaterThan(0);
 
-    // Verify it's a valid executable using file command
-    const fileResult = spawnSync('file', [executablePath], {
-      encoding: 'utf-8',
-    });
-
-    if (fileResult.error?.code === 'ENOENT') {
-      console.warn("'file' command not found, skipping executable type check");
-      return;
+    // Verify it's a valid executable using file command when available.
+    // Some environments used in CI/dev containers do not provide `file`.
+    const fileCheck = spawnSync('which', ['file'], { encoding: 'utf-8' });
+    if (fileCheck.status === 0) {
+      const fileResult = spawnSync('file', [executablePath], {
+        encoding: 'utf-8',
+      });
+      expect(fileResult.error).toBeUndefined();
+      expect(fileResult.status).toBe(0);
+      expect(fileResult.stdout).toMatch(/executable|elf|mach-o|pe32/i);
     }
-
-    if (fileResult.error) {
-      throw new Error(`'file' command failed: ${fileResult.error.message}`);
-    }
-
-    expect(fileResult.stdout).toMatch(/executable/i);
 
     // Verify standalone (should run without Bun runtime)
     // The binary should at least execute even if it fails due to missing .kspec directory
