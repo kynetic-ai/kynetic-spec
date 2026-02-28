@@ -62390,7 +62390,7 @@
 
     - Tests that need these vars explicitly pass them via the `env` option
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62400,6 +62400,7 @@
   session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
   created_at: 2026-02-26T19:32:53.607Z
   started_at: 2026-02-28T07:03:24.915Z
+  submitted_at: 2026-02-28T07:04:15.904Z
   notes:
     - _ulid: 01KJHGZQNC05ZHT2F82VHY2ZF4
       created_at: 2026-02-28T07:04:12.205Z
@@ -62415,7 +62416,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T07:04:15.904Z
+  completed_at: 2026-02-28T07:04:17.233Z
+  closed_reason: Already implemented on main. Verified helper env isolation, corrected command usage,
+    and contaminated-env regression run passed (203 tests).
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
