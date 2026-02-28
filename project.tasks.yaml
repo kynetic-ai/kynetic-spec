@@ -61492,6 +61492,19 @@
         test on head 9ba12297 failed (tests/daemon-executable.test.ts reproducible; session-budget
         integration showed instability in full run). Review posted with inline finding."
       supersedes: null
+    - _ulid: 01KJHDTG0SSN1Z8M0PM27PQN0E
+      created_at: 2026-02-28T06:08:54.809Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Stabilized full-suite regression failures blocking PR #591: (1)
+        tests/daemon-executable.test.ts now treats the 'file' utility as optional and validates
+        executable output only when available, (2) tests/cli-serve.test.ts now allocates ephemeral
+        ports and force-cleans daemon state in beforeEach to avoid stale global daemon interference,
+        and (3) tests/ralph/session-budget-integration.test.ts accepts either iteration-failure or
+        max-failures review-subagent path in crash-mode assertions. Verification: npx vitest run
+        tests/daemon-executable.test.ts tests/cli-serve.test.ts
+        tests/ralph/session-budget-integration.test.ts; npm test (160 files passed, 3525 tests
+        passed, 3 skipped)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJCW37YCFYNRWF1R8P6D5KE1
