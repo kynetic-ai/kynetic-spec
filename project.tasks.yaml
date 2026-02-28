@@ -62502,7 +62502,7 @@
     - Alternatively, if extending ReferenceIndex: meta entities are resolvable via `item get` with
     correct type display
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62524,6 +62524,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T07:20:51.490Z
 - _ulid: 01KJDQ17W53F5NN0CWTVSEY53R
   slugs: []
   title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
