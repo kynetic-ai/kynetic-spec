@@ -7253,7 +7253,7 @@ runs:
   - _ulid: 01KJJ7CZ7N9P917FS5CXKTG66C
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 8
     started_at: 2026-02-28T13:35:54.614Z
     step_results:
@@ -7273,5 +7273,12 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-02-28T13:37:30.352Z
-        completed_at: 2026-02-28T13:37:30.352Z
+        completed_at: 2026-02-28T13:37:33.154Z
+        notes: New tests execute CLI behavior end-to-end via kspec helper, assert exit code and stderr
+          content, and guard against stdin fallback regression. They are behavior-based and would
+          fail if source selection regresses.
+      - step_index: 3
+        status: completed
+        started_at: 2026-02-28T13:37:33.154Z
+        completed_at: 2026-02-28T13:37:33.154Z
     initiated_by: "@claude"
