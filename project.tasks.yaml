@@ -64870,14 +64870,16 @@
   type: task
   spec_ref: "@session-stale-criteria"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
   created_at: 2026-02-27T20:15:54.767Z
+  started_at: 2026-02-28T20:59:56.669Z
   notes:
     - _ulid: 01KJGBWNWFME1VVZFKGQW9SRWR
       created_at: 2026-02-27T20:15:54.767Z
@@ -64888,6 +64890,23 @@
       author: "@claude"
       content: "Automation triage: eligible. 8 testable ACs covering inactivity threshold, fallback, AND
         logic, input validation, defaults, ISO rejection, corrupt events, and liveness guard."
+      supersedes: null
+    - _ulid: 01KJK0T1ZVRG2WT45A2FFDBM7D
+      created_at: 2026-02-28T20:59:57.819Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: implement stale-session candidate selection for upcoming auto-close flow.
+
+        - Scope: add criteria parsing/validation and candidate selection logic, with fallback +
+        guard behavior per @session-stale-criteria ACs.
+
+        - Files: primarily ralph/session command implementation + session store helpers + tests for
+        candidate selection and CLI validation paths.
+
+        - Verification: targeted stale-session tests plus full npm test and kspec validate before
+        submit.
       supersedes: null
   todos: []
   automation: eligible
@@ -65233,6 +65252,11 @@
   origin: observation_promotion
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #603. Implemented same-version template drift detection in skill update
+    and explicit guidance to run 'kspec skill install-core' when local files differ despite matching
+    version, including dry-run output. Added regression tests for drift guidance in
+    tests/core-skill-update.test.ts. AC coverage confirmed for @core-skill-update ac-1, ac-2, ac-3;
+    full regression suite passed via npm test."
   depends_on: []
   context: []
   priority: 2
@@ -65245,6 +65269,7 @@
   created_at: 2026-02-27T23:45:02.684Z
   started_at: 2026-02-28T20:21:11.151Z
   submitted_at: 2026-02-28T20:23:42.868Z
+  completed_at: 2026-02-28T20:58:20.117Z
   notes:
     - _ulid: 01KJGQWDEDV8KC457TZCK90AM4
       created_at: 2026-02-27T23:45:29.037Z
@@ -65287,12 +65312,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-02-28T20:58:20.117Z
-  closed_reason: "Merged in PR #603. Implemented same-version template drift detection in skill update
-    and explicit guidance to run 'kspec skill install-core' when local files differ despite matching
-    version, including dry-run output. Added regression tests for drift guidance in
-    tests/core-skill-update.test.ts. AC coverage confirmed for @core-skill-update ac-1, ac-2, ac-3;
-    full regression suite passed via npm test."
 - _ulid: 01KJGRPS7WJ1RAZJC62K7Z6YT6
   slugs:
     - task-reconcile-validate-alignment-warning-baseline
