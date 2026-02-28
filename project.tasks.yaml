@@ -62779,7 +62779,7 @@
     - Existing retry and failure escalation logic handles timeouts the same as other iteration
     failures
   spec_ref: "@cli-ralph"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -62811,6 +62811,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-02-28T21:53:18.922Z
 - _ulid: 01KJDQ18VNYYAXETR8WREAJW2X
   slugs: []
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
