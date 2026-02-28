@@ -660,22 +660,35 @@ derive_from_specs: true
     expect(output).toContain("Updated spec: @my-feature");
   });
 
-  // AC: @plan-import ac-26 - Verify acceptance criteria are updated
-  it("should update acceptance criteria on existing specs with --update flag", async () => {
-    // Create initial spec with ACs
-    kspec('item add --under @test-core --title "Feature" --slug ac-feature', tempDir);
-    kspec('item ac add @ac-feature --given "initial" --when "test" --then "pass"', tempDir);
-
-    // Verify initial AC exists
-    const beforeSpec = kspecJson<{
-      acceptance_criteria: Array<{ id: string; given: string; when: string; then: string }>;
-    }>("item get @ac-feature --json", tempDir);
-    expect(beforeSpec.acceptance_criteria).toHaveLength(1);
-    expect(beforeSpec.acceptance_criteria[0].given).toBe("initial");
-
-    const planPath = path.join(tempDir, "update-ac-plan.md");
+  // AC: @plan-import ac-26 - Merge ACs by id when updating existing specs
+  it("should merge acceptance criteria by id on --update", async () => {
+    const initialPlanPath = path.join(tempDir, "initial-ac-plan.md");
     await fs.writeFile(
-      planPath,
+      initialPlanPath,
+      `# Initial AC Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Feature
+  slug: ac-feature
+  acceptance_criteria:
+    - id: ac-1
+      given: Original one
+      when: Initial state
+      then: First behavior
+    - id: ac-2
+      given: Original two
+      when: Initial state
+      then: Second behavior
+\`\`\`
+`,
+    );
+    kspec(`plan import "${initialPlanPath}" --module @test-core`, tempDir);
+
+    const updatePlanPath = path.join(tempDir, "update-ac-plan.md");
+    await fs.writeFile(
+      updatePlanPath,
       `# Update AC Plan
 
 ## Specs
@@ -683,38 +696,119 @@ derive_from_specs: true
 \`\`\`yaml
 - title: Feature
   slug: ac-feature
-  description: Updated with new ACs
+  description: Updated with merged ACs
   acceptance_criteria:
-    - id: ac-new-1
-      given: A user is logged in
-      when: They click logout
-      then: Session ends
-    - id: ac-new-2
-      given: A user is on the dashboard
-      when: They view stats
-      then: Current data is shown
+    - id: ac-2
+      given: Updated two
+      when: Updated state
+      then: Updated second behavior
+    - id: ac-3
+      given: New three
+      when: Added state
+      then: Third behavior
 \`\`\`
 `,
     );
 
     const output = kspec(
-      `plan import "${planPath}" --module @test-core --update`,
+      `plan import "${updatePlanPath}" --module @test-core --update`,
       tempDir,
     );
     expect(output).toContain("Updated spec: @ac-feature");
 
-    // Verify ACs were updated
     const afterSpec = kspecJson<{
       description: string;
       acceptance_criteria: Array<{ id: string; given: string; when: string; then: string }>;
     }>("item get @ac-feature --json", tempDir);
 
-    expect(afterSpec.description).toBe("Updated with new ACs");
-    expect(afterSpec.acceptance_criteria).toHaveLength(2);
-    expect(afterSpec.acceptance_criteria[0].id).toBe("ac-new-1");
-    expect(afterSpec.acceptance_criteria[0].given).toBe("A user is logged in");
-    expect(afterSpec.acceptance_criteria[1].id).toBe("ac-new-2");
-    expect(afterSpec.acceptance_criteria[1].given).toBe("A user is on the dashboard");
+    expect(afterSpec.description).toBe("Updated with merged ACs");
+    expect(afterSpec.acceptance_criteria).toHaveLength(3);
+    expect(afterSpec.acceptance_criteria.map(ac => ac.id)).toEqual(["ac-1", "ac-2", "ac-3"]);
+    expect(afterSpec.acceptance_criteria[0].given).toBe("Original one");
+    expect(afterSpec.acceptance_criteria[1].given).toBe("Updated two");
+    expect(afterSpec.acceptance_criteria[2].given).toBe("New three");
+  });
+
+  // AC: @plan-import ac-26 - Omitted AC field should preserve existing ACs
+  it("should preserve acceptance criteria when update spec omits acceptance_criteria", async () => {
+    const initialPlanPath = path.join(tempDir, "preserve-ac-initial.md");
+    await fs.writeFile(
+      initialPlanPath,
+      `# Preserve AC Initial
+
+## Specs
+
+\`\`\`yaml
+- title: Preserve Feature
+  slug: preserve-feature
+  acceptance_criteria:
+    - id: ac-1
+      given: Preserve this
+      when: Existing spec
+      then: Keep AC
+\`\`\`
+`,
+    );
+    kspec(`plan import "${initialPlanPath}" --module @test-core`, tempDir);
+
+    const updatePlanPath = path.join(tempDir, "preserve-ac-update.md");
+    await fs.writeFile(
+      updatePlanPath,
+      `# Preserve AC Update
+
+## Specs
+
+\`\`\`yaml
+- title: Preserve Feature
+  slug: preserve-feature
+  description: Description only change
+\`\`\`
+`,
+    );
+    kspec(`plan import "${updatePlanPath}" --module @test-core --update`, tempDir);
+
+    const afterSpec = kspecJson<{
+      description: string;
+      acceptance_criteria: Array<{ id: string; given: string }>;
+    }>("item get @preserve-feature --json", tempDir);
+
+    expect(afterSpec.description).toBe("Description only change");
+    expect(afterSpec.acceptance_criteria).toHaveLength(1);
+    expect(afterSpec.acceptance_criteria[0].id).toBe("ac-1");
+    expect(afterSpec.acceptance_criteria[0].given).toBe("Preserve this");
+  });
+
+  // AC: @plan-import ac-26 - Empty existing ACs should be populated from plan update
+  it("should add acceptance criteria when existing spec has none and update includes ACs", async () => {
+    kspec('item add --under @test-core --title "Empty Feature" --slug empty-feature', tempDir);
+
+    const updatePlanPath = path.join(tempDir, "empty-ac-update.md");
+    await fs.writeFile(
+      updatePlanPath,
+      `# Empty AC Update
+
+## Specs
+
+\`\`\`yaml
+- title: Empty Feature
+  slug: empty-feature
+  acceptance_criteria:
+    - id: ac-1
+      given: New condition
+      when: Update is applied
+      then: AC exists
+\`\`\`
+`,
+    );
+    kspec(`plan import "${updatePlanPath}" --module @test-core --update`, tempDir);
+
+    const afterSpec = kspecJson<{
+      acceptance_criteria: Array<{ id: string; given: string }>;
+    }>("item get @empty-feature --json", tempDir);
+
+    expect(afterSpec.acceptance_criteria).toHaveLength(1);
+    expect(afterSpec.acceptance_criteria[0].id).toBe("ac-1");
+    expect(afterSpec.acceptance_criteria[0].given).toBe("New condition");
   });
 
   // AC: @plan-import ac-26 - Verify traits are updated
