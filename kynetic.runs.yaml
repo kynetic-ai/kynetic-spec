@@ -8992,7 +8992,7 @@ runs:
   - _ulid: 01KJK9TGDH95ZXZAAGR0B3MZW9
     workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
     status: active
-    current_step: 8
+    current_step: 9
     total_steps: 10
     started_at: 2026-02-28T23:37:29.777Z
     step_results:
@@ -9039,5 +9039,10 @@ runs:
       - step_index: 8
         status: completed
         started_at: 2026-02-28T23:38:26.041Z
-        completed_at: 2026-02-28T23:38:26.041Z
+        completed_at: 2026-02-28T23:38:29.261Z
+        notes: "Ready to merge: no unresolved findings, threads resolved, CI green."
+      - step_index: 9
+        status: completed
+        started_at: 2026-02-28T23:38:29.261Z
+        completed_at: 2026-02-28T23:38:29.261Z
     initiated_by: "@claude"
