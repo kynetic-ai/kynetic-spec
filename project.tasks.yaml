@@ -62212,6 +62212,10 @@
   spec_ref: "@agents-cli"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #592. Included package version in agents freshness hash input
+    (computeMetaHash) so version bumps invalidate stale hashes, plus regression tests for
+    version-only hash drift and legacy no-version hash staleness; AC coverage for @agents-cli
+    ac-1..ac-4 verified."
   depends_on: []
   context: []
   priority: 3
@@ -62221,6 +62225,7 @@
   created_at: 2026-02-26T19:32:50.617Z
   started_at: 2026-02-28T06:36:53.505Z
   submitted_at: 2026-02-28T06:41:24.259Z
+  completed_at: 2026-02-28T06:50:08.857Z
   notes:
     - _ulid: 01KJHFNRHEFK7BDCSV76MJ8EFK
       created_at: 2026-02-28T06:41:16.846Z
@@ -62234,11 +62239,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T06:50:08.857Z
-  closed_reason: "Merged in PR #592. Included package version in agents freshness hash input
-    (computeMetaHash) so version bumps invalidate stale hashes, plus regression tests for
-    version-only hash drift and legacy no-version hash staleness; AC coverage for @agents-cli
-    ac-1..ac-4 verified."
 - _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
   slugs: []
   title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
@@ -62299,7 +62299,7 @@
     both formats. (5) Tests in `tests/cli-validators.test.ts` cover both formats. (6) CLI help text
     shows accepted format."
   spec_ref: "@batch-exec"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62310,6 +62310,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T06:50:50.347Z
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
   slugs: []
   title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
