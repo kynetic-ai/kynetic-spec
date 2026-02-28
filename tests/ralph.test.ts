@@ -219,6 +219,21 @@ describe('ralph command', () => {
     expect(result.stdout).not.toContain('Completed iteration');
   });
 
+  // AC: @cli-ralph ac-15
+  it('shows iteration-timeout and focus instructions in dry-run output', async () => {
+    const result = runRalph('--dry-run --iteration-timeout 15 --focus keep-pr-scope-narrow', tempDir);
+
+    expect(result.stdout).toContain('iteration-timeout: 15 minute(s)');
+    expect(result.stdout).toContain('keep-pr-scope-narrow');
+  });
+
+  it('fails fast for non-positive iteration-timeout values', async () => {
+    const result = runRalph('--dry-run --iteration-timeout 0', tempDir);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.output).toContain('--iteration-timeout must be a positive number of minutes');
+  });
+
   // AC: @ralph-skill-delegation ac-1
   it('includes iteration N/M, session ID, and no-human flag in prompt', async () => {
     const result = runRalph('--dry-run --max-loops 5', tempDir);
@@ -241,6 +256,9 @@ describe('ralph command', () => {
   });
 
   // AC: @ralph-skill-delegation ac-3
+  // AC: @cli-ralph ac-3
+  // AC: @cli-ralph ac-4
+  // AC: @cli-ralph ac-5
   it('contains kspec: namespace skill invocations by default', async () => {
     const result = runRalph('--dry-run', tempDir);
 
@@ -290,6 +308,47 @@ describe('ralph command', () => {
     expect(result.output).toContain('failed after 2 attempts');
     expect(result.output).toContain('Continuing to next iteration');
     expect(result.output).toContain('Iteration 2/2');
+  });
+
+  it('times out stalled iteration attempts and logs iteration.timeout event', async () => {
+    const result = runRalph(
+      '--max-loops 1 --max-retries 0 --max-failures 1 --iteration-timeout 0.001',
+      tempDir,
+      {
+        MOCK_ACP_DELAY_MS: '500',
+      },
+    );
+
+    expect(result.output).toContain('Iteration timed out after 0.001 minutes');
+    expect(result.output).toContain('Reached 1 consecutive failures');
+
+    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessions = await fs.readdir(sessionsDir).catch(() => []);
+    expect(sessions.length).toBeGreaterThan(0);
+
+    const eventsPath = path.join(sessionsDir, sessions[0], 'events.jsonl');
+    const eventsRaw = await fs.readFile(eventsPath, 'utf-8');
+    const events = eventsRaw
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line));
+
+    const timeoutEvent = events.find(
+      (event: { type: string; data?: { timeout_minutes?: number } }) =>
+        event.type === 'iteration.timeout',
+    );
+    expect(timeoutEvent).toBeTruthy();
+    expect(timeoutEvent.data.timeout_minutes).toBe(0.001);
+  });
+
+  // AC: @cli-ralph ac-18
+  it('does not restart the agent when --restart-every 0 is configured', async () => {
+    const result = runRalph('--max-loops 3 --restart-every 0', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    const spawnCount = (result.output.match(/Spawning ACP agent\.\.\./g) || []).length;
+    expect(spawnCount).toBe(1);
   });
 
   // AC: @cli-ralph ac-8 - Consecutive failure guard
@@ -561,6 +620,7 @@ describe('ralph command', () => {
   // ─── Event Logging Iteration Attribution ──────────────────────────────────
 
   describe('event logging iteration attribution', () => {
+    // AC: @cli-ralph ac-14
     it('tags streaming update events with the correct iteration number', async () => {
       // Run 2 iterations — the update handler persists across both.
       // Each iteration creates a fresh ACP session; the handler must attribute
@@ -603,6 +663,7 @@ describe('ralph command', () => {
       );
       expect(iterationNumbers.has(1)).toBe(true);
       expect(iterationNumbers.has(2)).toBe(true);
+
     });
 
     it('never tags events with iteration 0 (stale/unmapped fallback)', async () => {
@@ -739,6 +800,28 @@ describe('ralph memory-safety helpers', () => {
     );
     expect(result).toBeNull();
     expect(calls).toEqual(['removeAllListeners', 'kill', 'close']);
+  });
+});
+
+describe('restart behavior', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cli-ralph ac-17
+  it('restarts worker agent process every N iterations when restart-every > 0', async () => {
+    const result = runRalph('--max-loops 3 --restart-every 1', tempDir, {
+      MOCK_ACP_EXIT_CODE: '0',
+    });
+
+    const restartCount = (result.output.match(/Restarting agent to prevent memory buildup/g) || []).length;
+    expect(restartCount).toBe(2);
   });
 });
 

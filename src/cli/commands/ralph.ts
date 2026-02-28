@@ -201,8 +201,18 @@ const ADAPTER_VALIDATION_PROBES = [["--help"], ["--version"]];
 const TERMINAL_PREVIEW_MAX_BYTES = 64 * 1024;
 const TOOL_OUTPUT_DIR = "tool-output";
 const RECENT_TASK_REF_LIMIT = 50;
+const DEFAULT_ITERATION_TIMEOUT_MINUTES = 20;
 
 type SpawnedAgentLike = Pick<SpawnedAgent, "client" | "kill">;
+
+class IterationTimeoutError extends Error {
+  constructor(public readonly timeoutMinutes: number, public readonly timeoutMs: number) {
+    super(
+      `Iteration timed out after ${timeoutMinutes} minute${timeoutMinutes === 1 ? "" : "s"}`,
+    );
+    this.name = "IterationTimeoutError";
+  }
+}
 
 export function pushRecentTaskRef(
   recentTaskRefs: string[],
@@ -1243,6 +1253,11 @@ export function registerRalphCommand(program: Command): void {
       "Max consecutive failed iterations before exit",
       "3",
     )
+    .option(
+      "--iteration-timeout <minutes>",
+      "Max minutes per iteration attempt before aborting",
+      String(DEFAULT_ITERATION_TIMEOUT_MINUTES),
+    )
     .option("--dry-run", "Show prompt without executing")
     .option("--yolo", "Use dangerously-skip-permissions (default)", true)
     .option("--no-yolo", "Require normal permission prompts")
@@ -1291,6 +1306,11 @@ export function registerRalphCommand(program: Command): void {
         const maxLoops = parseInt(options.maxLoops, 10);
         const maxRetries = parseInt(options.maxRetries, 10);
         const maxFailures = parseInt(options.maxFailures, 10);
+        const iterationTimeoutMinutes = Number(options.iterationTimeout);
+        const iterationTimeoutMs = Math.max(
+          1,
+          Math.round(iterationTimeoutMinutes * 60 * 1000),
+        );
 
         if (Number.isNaN(maxLoops) || maxLoops < 1) {
           error(errors.usage.maxLoopsPositive);
@@ -1304,6 +1324,11 @@ export function registerRalphCommand(program: Command): void {
 
         if (Number.isNaN(maxFailures) || maxFailures < 1) {
           error(errors.usage.maxFailuresPositive);
+          process.exit(EXIT_CODES.ERROR);
+        }
+
+        if (!Number.isFinite(iterationTimeoutMinutes) || iterationTimeoutMinutes <= 0) {
+          error("--iteration-timeout must be a positive number of minutes");
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1418,6 +1443,7 @@ export function registerRalphCommand(program: Command): void {
         info(
           `Starting ralph loop (${adapterInfo}, max ${maxLoops} iterations, ${maxRetries} retries, ${maxFailures} max failures${restartInfo}, max-tasks=${maxTasksInfo}${taskScopeInfo})`,
         );
+        info(`Iteration timeout: ${iterationTimeoutMinutes} minute(s)`);
         if (options.focus) {
           info(`Focus: ${options.focus}`);
         }
@@ -1544,6 +1570,7 @@ export function registerRalphCommand(program: Command): void {
               maxLoops,
               maxRetries,
               maxFailures,
+              iterationTimeoutMinutes,
               maxTasks,
               yolo: options.yolo,
               focus: options.focus,
@@ -1691,6 +1718,7 @@ export function registerRalphCommand(program: Command): void {
               console.log(`  max-tasks: ${maxTasks === 0 ? "unlimited" : maxTasks}`);
               console.log(`  max-retries: ${maxRetries}`);
               console.log(`  max-failures: ${maxFailures}`);
+              console.log(`  iteration-timeout: ${iterationTimeoutMinutes} minute(s)`);
               console.log(`  restart-every: ${restartEvery === 0 ? "never" : restartEvery}`);
               console.log(`  worker-task-work-skill: ${workerTaskWorkSkill}`);
               console.log(`  worker-reflect-skill: ${workerReflectSkill}`);
@@ -1810,7 +1838,8 @@ export function registerRalphCommand(program: Command): void {
                   );
                 }
 
-                // Create fresh ACP session per iteration to keep context clean
+                // AC: @cli-ralph ac-14 - Create fresh ACP session per iteration
+                // to keep context clean.
                 info("Creating ACP session...");
                 acpSessionId = await agent.client.newSession({
                   cwd: process.cwd(),
@@ -1818,60 +1847,83 @@ export function registerRalphCommand(program: Command): void {
                 });
                 setSessionIteration(sessionIterationMap, acpSessionId, iteration);
 
-                // Phase 1: Task Work
-                info("Sending task-work prompt to agent...");
-                const taskWorkResponse = await agent.client.prompt({
-                  sessionId: acpSessionId!,
-                  prompt: [{ type: "text", text: taskWorkPrompt }],
-                });
+                const runIterationPrompts = async () => {
+                  // Phase 1: Task Work
+                  info("Sending task-work prompt to agent...");
+                  const taskWorkResponse = await agent!.client.prompt({
+                    sessionId: acpSessionId!,
+                    prompt: [{ type: "text", text: taskWorkPrompt }],
+                  });
 
-                // Log task-work completion
-                await appendEvent(specDir, {
-                  session_id: sessionId,
-                  type: "session.update",
-                  data: {
-                    iteration,
-                    phase: "task-work",
-                    stopReason: taskWorkResponse.stopReason,
-                    completed: true,
-                  },
-                });
+                  // Log task-work completion
+                  await appendEvent(specDir, {
+                    session_id: sessionId,
+                    type: "session.update",
+                    data: {
+                      iteration,
+                      phase: "task-work",
+                      stopReason: taskWorkResponse.stopReason,
+                      completed: true,
+                    },
+                  });
 
-                if (taskWorkResponse.stopReason === "cancelled") {
-                  throw new Error(errors.usage.agentPromptCancelled);
-                }
+                  if (taskWorkResponse.stopReason === "cancelled") {
+                    throw new Error(errors.usage.agentPromptCancelled);
+                  }
 
-                // Phase 2: Reflect (always sent after task-work completes)
-                info("Sending reflect prompt to agent...");
-                await appendEvent(specDir, {
-                  session_id: sessionId,
-                  type: "prompt.sent",
-                  data: {
-                    iteration,
-                    phase: "reflect",
-                    prompt: reflectPrompt,
-                  },
-                });
+                  // Phase 2: Reflect (always sent after task-work completes)
+                  info("Sending reflect prompt to agent...");
+                  await appendEvent(specDir, {
+                    session_id: sessionId,
+                    type: "prompt.sent",
+                    data: {
+                      iteration,
+                      phase: "reflect",
+                      prompt: reflectPrompt,
+                    },
+                  });
 
-                const reflectResponse = await agent.client.prompt({
-                  sessionId: acpSessionId!,
-                  prompt: [{ type: "text", text: reflectPrompt }],
-                });
+                  const reflectResponse = await agent!.client.prompt({
+                    sessionId: acpSessionId!,
+                    prompt: [{ type: "text", text: reflectPrompt }],
+                  });
 
-                // Log reflect completion
-                await appendEvent(specDir, {
-                  session_id: sessionId,
-                  type: "session.update",
-                  data: {
-                    iteration,
-                    phase: "reflect",
-                    stopReason: reflectResponse.stopReason,
-                    completed: true,
-                  },
-                });
+                  // Log reflect completion
+                  await appendEvent(specDir, {
+                    session_id: sessionId,
+                    type: "session.update",
+                    data: {
+                      iteration,
+                      phase: "reflect",
+                      stopReason: reflectResponse.stopReason,
+                      completed: true,
+                    },
+                  });
 
-                if (reflectResponse.stopReason === "cancelled") {
-                  throw new Error(errors.usage.agentPromptCancelled);
+                  if (reflectResponse.stopReason === "cancelled") {
+                    throw new Error(errors.usage.agentPromptCancelled);
+                  }
+                };
+
+                let timeoutHandle: NodeJS.Timeout | null = null;
+                try {
+                  await Promise.race([
+                    runIterationPrompts(),
+                    new Promise<never>((_resolve, reject) => {
+                      timeoutHandle = setTimeout(() => {
+                        reject(
+                          new IterationTimeoutError(
+                            iterationTimeoutMinutes,
+                            iterationTimeoutMs,
+                          ),
+                        );
+                      }, iterationTimeoutMs);
+                    }),
+                  ]);
+                } finally {
+                  if (timeoutHandle) {
+                    clearTimeout(timeoutHandle);
+                  }
                 }
 
                 acpSessionId = endAcpSession(agent, acpSessionId);
@@ -1879,6 +1931,18 @@ export function registerRalphCommand(program: Command): void {
                 break;
               } catch (err) {
                 lastError = err as Error;
+                if (lastError instanceof IterationTimeoutError) {
+                  await appendEvent(specDir, {
+                    session_id: sessionId,
+                    type: "iteration.timeout",
+                    data: {
+                      iteration,
+                      attempt,
+                      timeout_minutes: lastError.timeoutMinutes,
+                      timeout_ms: lastError.timeoutMs,
+                    },
+                  });
+                }
                 error(errors.failures.iterationFailed(lastError.message));
 
                 // Clean up agent on error - will respawn next attempt
@@ -1910,8 +1974,8 @@ export function registerRalphCommand(program: Command): void {
               lastIterationCtx = sessionCtx;
 
 
-              // Periodic agent restart to prevent OOM
-              // AC: @cli-ralph ac-restart-periodic
+              // Periodic agent restart to prevent OOM.
+              // AC: @cli-ralph ac-17
               if (
                 restartEvery > 0 &&
                 iteration % restartEvery === 0 &&
