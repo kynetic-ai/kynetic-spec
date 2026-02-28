@@ -64942,7 +64942,7 @@
   type: task
   spec_ref: "@session-stale-close-metadata"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -64961,10 +64961,26 @@
       content: "Automation triage: eligible. 4 testable ACs covering status update, structured
         close_reason format, atomic shadow commit, and dry-run preview."
       supersedes: null
+    - _ulid: 01KJK1K8ZSZD3AQRB1NC2JB7EY
+      created_at: 2026-02-28T21:13:44.185Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: implement stale auto-close metadata/audit semantics so parent cleanup command
+        can persist closures safely.
+
+        - Scope: add structured auto-abandon close_reason builder + metadata apply helper with
+        dry-run preview and multi-session update behavior.
+
+        - Files: src/sessions/store.ts and tests/session-stale-criteria.test.ts (or adjacent
+        stale-close tests if split is cleaner).
+
+        - Verification: targeted stale-session tests plus full npm test before submit; run kspec
+        validate and note any pre-existing repo warnings.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-02-28T21:13:44.187Z
-  session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
