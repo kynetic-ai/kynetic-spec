@@ -62084,6 +62084,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #589. Updated @pr-review-merge workflow merge guidance to use 'gh pr
+    merge --merge --delete-branch' and regenerated kspec-agents.md. Verified via kspec meta get
+    @pr-review-merge and regression gate (npm test: 160 files passed, 3531 tests passed, 3
+    skipped)."
   depends_on: []
   context: []
   priority: 3
@@ -62093,6 +62097,7 @@
   created_at: 2026-02-26T19:32:49.803Z
   started_at: 2026-02-28T06:29:28.407Z
   submitted_at: 2026-02-28T06:29:29.735Z
+  completed_at: 2026-02-28T06:36:19.057Z
   notes:
     - _ulid: 01KJHAD08HSAPTTRF83R8ZKHJ6
       created_at: 2026-02-28T05:09:06.962Z
@@ -62182,11 +62187,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T06:36:19.057Z
-  closed_reason: "Merged in PR #589. Updated @pr-review-merge workflow merge guidance to use 'gh pr
-    merge --merge --delete-branch' and regenerated kspec-agents.md. Verified via kspec meta get
-    @pr-review-merge and regression gate (npm test: 160 files passed, 3531 tests passed, 3
-    skipped)."
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
@@ -62210,7 +62210,7 @@
     Existing tests in `tests/agents-instruction-gen.test.ts` updated to reflect the new hash
     behavior. (4) Optionally: `--force` flag added to bypass the hash check entirely."
   spec_ref: "@agents-cli"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62221,6 +62221,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T06:36:53.505Z
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJDQ142M8AM5HAYQBBG12VRS
   slugs: []
   title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
