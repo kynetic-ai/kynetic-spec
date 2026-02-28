@@ -213,6 +213,17 @@ describe('Setup Pipeline Unification', () => {
       expect(result.stdout).toContain('@myauthor');
     });
 
+    it('should honor --agent override in setup command flow', async () => {
+      await setupKspecProject(tempDir);
+
+      const result = kspec('setup --dry-run --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '' },
+      });
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Agent detection');
+      expect(result.stdout).toContain('claude-code');
+    });
+
     it('should handle --no-hooks through the unified pipeline', async () => {
       await setupKspecProject(tempDir);
 

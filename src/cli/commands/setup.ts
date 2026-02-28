@@ -19,6 +19,7 @@
  */
 
 import * as fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as readline from "node:readline/promises";
@@ -79,6 +80,41 @@ export interface DetectedAgent {
   envVars?: Record<string, string>;
 }
 
+const SETUP_AGENT_OVERRIDES = [
+  "claude-code",
+  "cline",
+  "cursor",
+  "windsurf",
+  "unknown",
+] as const;
+
+type SetupAgentOverride = (typeof SETUP_AGENT_OVERRIDES)[number];
+
+function parseSetupAgentOverride(value: string): SetupAgentOverride {
+  const normalized = value.trim().toLowerCase();
+  if (
+    (SETUP_AGENT_OVERRIDES as readonly string[]).includes(normalized)
+  ) {
+    return normalized as SetupAgentOverride;
+  }
+
+  const allowed = SETUP_AGENT_OVERRIDES.join(", ");
+  throw new Error(
+    `Invalid --agent value "${value}". Supported values: ${allowed}`,
+  );
+}
+
+function buildDetectedAgent(type: AgentType): DetectedAgent {
+  if (type === "claude-code") {
+    return {
+      type,
+      confidence: "high",
+      configPath: path.join(os.homedir(), ".claude", "settings.json"),
+    };
+  }
+  return { type, confidence: "high" };
+}
+
 /**
  * Detect which agent environment we're running in.
  * Returns the detected agent type and confidence level.
@@ -86,7 +122,21 @@ export interface DetectedAgent {
  * Detection priority matters - more specific markers checked first.
  */
 export function detectAgent(): DetectedAgent {
-  return detectAgentFromEnv();
+  const detected = detectAgentFromEnv();
+  if (detected.type !== "unknown") {
+    return detected;
+  }
+
+  // Fallback for non-interactive contexts where env markers may be absent.
+  if (existsSync(path.join(os.homedir(), ".claude"))) {
+    return {
+      type: "claude-code",
+      confidence: "low",
+      configPath: path.join(os.homedir(), ".claude", "settings.json"),
+    };
+  }
+
+  return detected;
 }
 
 /**
@@ -630,6 +680,8 @@ export interface SetupPipelineOptions {
   skipSkills?: boolean;
   installHooks?: boolean;
   force?: boolean;
+  /** Explicit agent override (bypasses auto-detection) */
+  agent?: SetupAgentOverride;
   /** Custom author string (overrides auto-detected default) */
   author?: string;
   /** Whether to configure author (only in command handler, not init) */
@@ -680,8 +732,13 @@ interface SetupStatus {
  * Check the current setup status
  * AC: @enhanced-setup ac-7, ac-8
  */
-async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
-  const detected = detectAgent();
+async function getSetupStatus(
+  projectDir: string,
+  agentOverride?: SetupAgentOverride,
+): Promise<SetupStatus> {
+  const detected = agentOverride
+    ? buildDetectedAgent(agentOverride)
+    : detectAgent();
   const configPath = path.join(projectDir, ".claude", "settings.json");
   const hooksDir = path.join(projectDir, ".claude", "hooks");
   const agentsMdPath = path.join(projectDir, "kspec-agents.md");
@@ -1251,7 +1308,9 @@ export async function runSetupPipeline(
   let memorySeeded = false;
 
   try {
-    const detected = detectAgent();
+    const detected = options.agent
+      ? buildDetectedAgent(options.agent)
+      : detectAgent();
 
     // Step 1: Agent detection
     steps.push({
@@ -1554,6 +1613,10 @@ export function registerSetupCommand(program: Command): void {
   program
     .command("setup")
     .description("Configure agent environment for kspec (orchestrated pipeline)")
+    .option(
+      "--agent <type>",
+      "Explicit agent type override (claude-code|cline|cursor|windsurf|unknown)",
+    )
     .option("--dry-run", "Show what would be done without making changes")
     .option(
       "--author <author>",
@@ -1570,10 +1633,13 @@ export function registerSetupCommand(program: Command): void {
     .action(async (options) => {
       try {
         const projectDir = process.cwd();
+        const agentOverride = options.agent
+          ? parseSetupAgentOverride(options.agent)
+          : undefined;
 
         // AC: @enhanced-setup ac-7, ac-8 - --status mode
         if (options.status) {
-          const status = await getSetupStatus(projectDir);
+          const status = await getSetupStatus(projectDir, agentOverride);
 
           output(status, () => {
             console.log(chalk.bold("kspec Setup Status\n"));
@@ -1681,7 +1747,9 @@ export function registerSetupCommand(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const detected = detectAgent();
+        const detected = agentOverride
+          ? buildDetectedAgent(agentOverride)
+          : detectAgent();
         const dryRun = options.dryRun || false;
 
         if (detected.type === "unknown") {
@@ -1697,6 +1765,7 @@ export function registerSetupCommand(program: Command): void {
           skipSkills: options.skipSkills || false,
           installHooks: options.hooks !== false,
           force: options.force || false,
+          agent: agentOverride,
           author: options.author,
           configureAuthor: true,
         });
