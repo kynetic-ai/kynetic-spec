@@ -6954,8 +6954,20 @@ runs:
   - _ulid: 01KJHGD8AB0B60083XM6Y65SHG
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-28T06:54:06.668Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-28T06:54:06.668Z
+        completed_at: 2026-02-28T06:54:57.840Z
+        notes: "Baseline search completed per loop workflow: reviewed observations, inbox, and tasks lists;
+          ran targeted searches for workflow-show UX, shell-quoting, and priority notation. Existing
+          coverage found for workflow-show active-run inference (@01KGGPJ6) and priority notation
+          tracking/work item (@01KJ93W2, task @01KJDQ15)."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-28T06:54:57.840Z
+        completed_at: 2026-02-28T06:54:57.840Z
     initiated_by: "@claude"
