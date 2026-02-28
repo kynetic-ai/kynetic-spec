@@ -7237,7 +7237,7 @@ runs:
   - _ulid: 01KJJ7CM6JXP9VY9VKR5T94BPP
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 10
     started_at: 2026-02-28T13:35:43.314Z
     step_results:
@@ -7248,7 +7248,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T13:35:50.549Z
-        completed_at: 2026-02-28T13:35:50.549Z
+        completed_at: 2026-02-28T13:40:40.962Z
+        notes: Verified own + trait AC coverage for @batch-exec via annotations and local-review; no
+          uncovered ACs for this spec.
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T13:40:40.962Z
+        completed_at: 2026-02-28T13:40:40.962Z
     initiated_by: "@claude"
   - _ulid: 01KJJ7CZ7N9P917FS5CXKTG66C
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -7256,6 +7262,7 @@ runs:
     current_step: 7
     total_steps: 8
     started_at: 2026-02-28T13:35:54.614Z
+    completed_at: 2026-02-28T13:40:31.870Z
     step_results:
       - step_index: 0
         status: completed
@@ -7307,4 +7314,3 @@ runs:
         completed_at: 2026-02-28T13:40:31.870Z
         notes: No MUST-FIX or SHOULD-FIX findings. Change is spec-aligned and regression-safe.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T13:40:31.870Z
