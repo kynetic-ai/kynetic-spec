@@ -64997,7 +64997,7 @@
   type: task
   spec_ref: "@session-stale-close-metadata"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -65116,6 +65116,12 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-02-28T22:19:13.639Z
+  closed_reason: "Merged in PR #607. Implemented stale auto-abandon metadata apply helper with
+    canonical close_reason format, shared ended_at/status=abandoned updates, dry-run preview, and
+    one command-specific shadow commit path for multi-session persistence. Verified AC coverage for
+    @session-stale-close-metadata ac-1..ac-4 in tests/session-stale-criteria.test.ts and confirmed
+    green CI on commit 8131a376."
 - _ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
   slugs: []
   title: Fix ralph session-budget-integration test timeouts
