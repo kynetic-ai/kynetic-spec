@@ -62757,7 +62757,7 @@
 
     - Add a test case for empty `--commands` input
   spec_ref: "@batch-exec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62792,6 +62792,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-02-28T13:44:19.990Z
+  closed_reason: "Merged in PR #598. Updated batch source selection in src/cli/commands/batch.ts to
+    treat --commands as inline whenever provided (options.commands !== undefined), fixing hang
+    behavior for empty/whitespace --commands by routing to JSON parse failure instead of stdin
+    blocking. Added regression tests in tests/batch-exec-engine.test.ts for --commands '' and
+    --commands '   ' with fast-fail Invalid JSON assertions. No deviations from spec intent; AC
+    coverage verified for @batch-exec own criteria and inherited traits relevant to this path."
 - _ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
   slugs: []
   title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
