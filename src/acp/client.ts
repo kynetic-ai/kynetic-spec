@@ -270,6 +270,16 @@ export class ACPClient extends EventEmitter {
   }
 
   /**
+   * Remove a session from local tracking once the caller is done with it.
+   *
+   * ACP does not currently expose a required "session/end" RPC method, so
+   * callers should invoke this when their local session lifecycle ends.
+   */
+  endSession(sessionId: string): void {
+    this.sessions.delete(sessionId);
+  }
+
+  /**
    * Get agent capabilities (available after initialize)
    *
    * @returns Agent capabilities
@@ -364,6 +374,7 @@ export class ACPClient extends EventEmitter {
    * Rejects any pending requests and cleans up resources.
    */
   close(): void {
+    this.sessions.clear();
     this.framing.close();
   }
 

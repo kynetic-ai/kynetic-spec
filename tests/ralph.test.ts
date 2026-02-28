@@ -11,10 +11,13 @@ import { spawnSync } from 'node:child_process';
 import { createTranslator } from '../src/ralph/events.js';
 import type { SessionUpdate } from '../src/acp/types.js';
 import {
+  disposeSpawnedAgent,
   getPromptPlatformForAdapter,
   isAdapterPackageAvailable,
+  pushRecentTaskRef,
   runTerminalCommandWithArtifacts,
-  resolveRalphSkillInvocation
+  resolveRalphSkillInvocation,
+  setSessionIteration
 } from '../src/cli/commands/ralph.js';
 import { CLI_PATH, setupTempFixtures, cleanupTempDir } from './helpers/cli';
 
@@ -86,6 +89,35 @@ describe('ralph command', () => {
     expect(result.stdout).toContain('Completed iteration 2');
     expect(result.stdout).toContain('Ralph loop completed');
   });
+
+  it('completes 30 iterations with periodic restarts without crashing', async () => {
+    const result = spawnSync(
+      'node',
+      [
+        CLI_PATH,
+        'ralph',
+        '--max-loops', '30',
+        '--restart-every', '1',
+        '--adapter-cmd', `node ${MOCK_ACP}`,
+      ],
+      {
+        cwd: tempDir,
+        encoding: 'utf-8',
+        timeout: 120000,
+        env: {
+          ...process.env,
+          KSPEC_AUTHOR: '@test',
+          MOCK_ACP_EXIT_CODE: '0',
+        },
+      }
+    );
+
+    const output = (result.stdout || '') + (result.stderr || '');
+    expect(result.status).toBe(0);
+    expect(output).toContain('Iteration 30/30');
+    expect(output).toContain('Ralph loop completed');
+    expect(output.toLowerCase()).not.toContain('heap out of memory');
+  }, 120000);
 
   // AC: @cli-ralph ac-2 - No ready tasks exit
   it('exits when no ready tasks exist', async () => {
@@ -653,6 +685,60 @@ describe('ralph command', () => {
       const envData = JSON.parse(await fs.readFile(envVerifyFile, 'utf-8'));
       expect(envData.KSPEC_RALPH_SESSION).toBeNull();
     });
+  });
+});
+
+describe('ralph memory-safety helpers', () => {
+  it('setSessionIteration keeps only the active session mapping', () => {
+    const map = new Map<string, number>();
+
+    setSessionIteration(map, 'session-1', 1);
+    setSessionIteration(map, 'session-2', 2);
+    setSessionIteration(map, 'session-3', 3);
+
+    expect(Array.from(map.entries())).toEqual([['session-3', 3]]);
+  });
+
+  it('pushRecentTaskRef deduplicates and enforces the cap', () => {
+    const refs: string[] = [];
+    for (let i = 1; i <= 60; i++) {
+      pushRecentTaskRef(refs, `@task-${i}`, 50);
+    }
+
+    expect(refs).toHaveLength(50);
+    expect(refs[0]).toBe('@task-11');
+    expect(refs[49]).toBe('@task-60');
+
+    pushRecentTaskRef(refs, '@task-20', 50);
+    expect(refs).toHaveLength(50);
+    expect(refs[49]).toBe('@task-20');
+    expect(new Set(refs).size).toBe(50);
+  });
+
+  it('disposeSpawnedAgent removes listeners before kill and closes the client', () => {
+    const calls: string[] = [];
+    const fakeAgent = {
+      client: {
+        removeAllListeners: () => {
+          calls.push('removeAllListeners');
+          return undefined;
+        },
+        isClosed: () => false,
+        close: () => {
+          calls.push('close');
+          return undefined;
+        },
+      },
+      kill: () => {
+        calls.push('kill');
+      },
+    };
+
+    const result = disposeSpawnedAgent(
+      fakeAgent as Parameters<typeof disposeSpawnedAgent>[0]
+    );
+    expect(result).toBeNull();
+    expect(calls).toEqual(['removeAllListeners', 'kill', 'close']);
   });
 });
 

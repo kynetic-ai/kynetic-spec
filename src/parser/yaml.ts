@@ -508,8 +508,10 @@ async function loadTasksFromFile(filePath: string): Promise<LoadedTask[]> {
 export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
   const tasks: LoadedTask[] = [];
 
-  // When shadow is enabled, look only in specDir
-  if (ctx.shadow?.enabled) {
+  // When shadow is enabled (or spec dir is explicitly overridden), look only in specDir.
+  // KSPEC_SPEC_DIR override is used by batch mode and some integration tests to isolate
+  // task state to a temp directory; scanning ctx.rootDir can leak tasks from parent dirs.
+  if (ctx.shadow?.enabled || Boolean(process.env.KSPEC_SPEC_DIR)) {
     const taskFiles = await findTaskFiles(ctx.specDir);
 
     // Also check for standalone files in specDir

@@ -460,6 +460,23 @@ describe('ACPClient', () => {
     });
   });
 
+  describe('endSession', () => {
+    it('removes session tracking when a session lifecycle ends', async () => {
+      const initPromise = client.initialize();
+      await respondToNext({ protocolVersion: 1, agentCapabilities: {} });
+      await initPromise;
+
+      const sessionPromise = client.newSession({ cwd: '/' });
+      await respondToNext({ sessionId: 'session-123' });
+      await sessionPromise;
+
+      expect(client.getAllSessions()).toHaveLength(1);
+      client.endSession('session-123');
+      expect(client.getSession('session-123')).toBeUndefined();
+      expect(client.getAllSessions()).toHaveLength(0);
+    });
+  });
+
   // AC: @acp-client ac-3
   describe('prompt', () => {
     beforeEach(async () => {
@@ -707,6 +724,20 @@ describe('ACPClient', () => {
       client.close();
 
       await expect(client.newSession({ cwd: '/' })).rejects.toThrow('closed');
+    });
+
+    it('clears tracked sessions on close', async () => {
+      const initPromise = client.initialize();
+      await respondToNext({ protocolVersion: 1, agentCapabilities: {} });
+      await initPromise;
+
+      const sessionPromise = client.newSession({ cwd: '/' });
+      await respondToNext({ sessionId: 'session-123' });
+      await sessionPromise;
+      expect(client.getAllSessions()).toHaveLength(1);
+
+      client.close();
+      expect(client.getAllSessions()).toHaveLength(0);
     });
   });
 });

@@ -193,6 +193,46 @@ const FALLBACK_CORE_SKILLS = new Set(["task-work", "reflect", "review"]);
 const ADAPTER_VALIDATION_PROBES = [["--help"], ["--version"]];
 const TERMINAL_PREVIEW_MAX_BYTES = 64 * 1024;
 const TOOL_OUTPUT_DIR = "tool-output";
+const RECENT_TASK_REF_LIMIT = 50;
+
+type SpawnedAgentLike = Pick<SpawnedAgent, "client" | "kill">;
+
+export function pushRecentTaskRef(
+  recentTaskRefs: string[],
+  ref: string,
+  limit = RECENT_TASK_REF_LIMIT,
+): void {
+  const existingIndex = recentTaskRefs.indexOf(ref);
+  if (existingIndex !== -1) {
+    recentTaskRefs.splice(existingIndex, 1);
+  }
+  recentTaskRefs.push(ref);
+  if (recentTaskRefs.length > limit) {
+    recentTaskRefs.splice(0, recentTaskRefs.length - limit);
+  }
+}
+
+export function setSessionIteration(
+  sessionIterationMap: Map<string, number>,
+  sessionId: string,
+  iteration: number,
+): void {
+  sessionIterationMap.clear();
+  sessionIterationMap.set(sessionId, iteration);
+}
+
+export function disposeSpawnedAgent(spawned: SpawnedAgentLike | null): null {
+  if (!spawned) {
+    return null;
+  }
+  // Remove callbacks first so captured loop state can be garbage-collected.
+  spawned.client.removeAllListeners();
+  spawned.kill();
+  if (!spawned.client.isClosed()) {
+    spawned.client.close();
+  }
+  return null;
+}
 
 /**
  * Map adapter IDs to prompt rendering platforms.
@@ -832,7 +872,7 @@ async function markTaskNeedsReview(
   // Use kspec CLI to set automation status
   const result = spawnSync(
     "kspec",
-    ["task", "set-automation", taskRef, "needs_review"],
+    ["task", "set", taskRef, "--automation", "needs_review", "--reason", reason],
     {
       encoding: "utf-8",
       stdio: "pipe",
@@ -1417,18 +1457,32 @@ export function registerRalphCommand(program: Command): void {
         let exitReason: ExitReason | null = null;
         let lastIterationCtx: SessionStartContext | null = null;
         let lastErrorMessage: string | undefined;
+        let latestIteration = 0;
         // AC: @ralph-per-role-adapters ac-7
         // Track previous env values per adapter for cleanup restoration
         const previousEnvValues = new Map<string, string | null | undefined>();
         const recentTaskRefs: string[] = [];
         const sessionIterationMap = new Map<string, number>();
 
+        const endAcpSession = (
+          spawned: SpawnedAgent | null,
+          sessionToEnd: string | null,
+        ): null => {
+          if (!spawned || !sessionToEnd) {
+            return null;
+          }
+          spawned.client.endSession(sessionToEnd);
+          sessionIterationMap.delete(sessionToEnd);
+          return null;
+        };
+
         // Signal handler refs — declared here so finally can remove them
         // AC: @ralph-task-limit ac-signal-cleanup
         const signalCleanup = (signal: string) => {
           info(`Received ${signal}, cleaning up...`);
           if (agent) {
-            agent.kill();
+            acpSessionId = endAcpSession(agent, acpSessionId);
+            agent = disposeSpawnedAgent(agent);
           }
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
           // Must use async IIFE — signal handlers are called synchronously,
@@ -1495,6 +1549,7 @@ export function registerRalphCommand(program: Command): void {
           const renderer = createCliRenderer();
 
           for (let iteration = 1; iteration <= maxLoops; iteration++) {
+            latestIteration = iteration;
             renderer.newSection?.(`Iteration ${iteration}/${maxLoops}`);
 
             // AC: @ralph-session-budget-integration ac-reset-iteration
@@ -1710,7 +1765,7 @@ export function registerRalphCommand(program: Command): void {
                       // Log raw update event (async, non-blocking)
                       // Look up iteration by ACP session ID so late updates from
                       // a previous session are attributed to the correct iteration
-                      const eventIteration = sessionIterationMap.get(_sid) ?? 0;
+                      const eventIteration = sessionIterationMap.get(_sid) ?? latestIteration;
                       appendEvent(specDir, {
                         session_id: sessionId,
                         type: "session.update",
@@ -1754,7 +1809,7 @@ export function registerRalphCommand(program: Command): void {
                   cwd: process.cwd(),
                   mcpServers: [], // No MCP servers for now
                 });
-                sessionIterationMap.set(acpSessionId, iteration);
+                setSessionIteration(sessionIterationMap, acpSessionId, iteration);
 
                 // Phase 1: Task Work
                 info("Sending task-work prompt to agent...");
@@ -1812,6 +1867,7 @@ export function registerRalphCommand(program: Command): void {
                   throw new Error(errors.usage.agentPromptCancelled);
                 }
 
+                acpSessionId = endAcpSession(agent, acpSessionId);
                 succeeded = true;
                 break;
               } catch (err) {
@@ -1820,9 +1876,8 @@ export function registerRalphCommand(program: Command): void {
 
                 // Clean up agent on error - will respawn next attempt
                 if (agent) {
-                  agent.kill();
-                  agent = null;
-                  acpSessionId = null;
+                  acpSessionId = endAcpSession(agent, acpSessionId);
+                  agent = disposeSpawnedAgent(agent);
                 }
               }
             }
@@ -1843,9 +1898,7 @@ export function registerRalphCommand(program: Command): void {
 
               // Track task refs from this iteration for wrap-up context
               for (const t of sessionCtx.active_tasks) {
-                if (!recentTaskRefs.includes(t.ref)) {
-                  recentTaskRefs.push(t.ref);
-                }
+                pushRecentTaskRef(recentTaskRefs, t.ref);
               }
               lastIterationCtx = sessionCtx;
 
@@ -1861,9 +1914,8 @@ export function registerRalphCommand(program: Command): void {
                   `Restarting agent to prevent memory buildup (every ${restartEvery} iterations)...`,
                 );
                 if (agent) {
-                  agent.kill();
-                  agent = null;
-                  acpSessionId = null;
+                  acpSessionId = endAcpSession(agent, acpSessionId);
+                  agent = disposeSpawnedAgent(agent);
                 }
               }
             } else {
@@ -1918,8 +1970,8 @@ export function registerRalphCommand(program: Command): void {
 
           // Clean up agent
           if (agent) {
-            agent.kill();
-            agent = null;
+            acpSessionId = endAcpSession(agent, acpSessionId);
+            agent = disposeSpawnedAgent(agent);
           }
 
           // AC: @ralph-session-budget-integration ac-session-close-all-paths
