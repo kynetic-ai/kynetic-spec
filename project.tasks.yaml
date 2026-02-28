@@ -62301,6 +62301,11 @@
   spec_ref: "@batch-exec"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #593: added parsePriority() to accept 1-5 and P1-P5 notation
+    (case-insensitive), switched task add/set priority parsing to parsePriority, updated CLI help
+    text, and added validator + integration coverage for valid and invalid P-notation (including
+    clear guidance errors). AC coverage for task scope verified; full npm test and required CI
+    checks passed."
   depends_on: []
   context: []
   priority: 3
@@ -62310,6 +62315,7 @@
   created_at: 2026-02-26T19:32:52.387Z
   started_at: 2026-02-28T06:50:50.347Z
   submitted_at: 2026-02-28T06:53:37.898Z
+  completed_at: 2026-02-28T07:02:49.676Z
   notes:
     - _ulid: 01KJHGC0GS6CFYHAAVGGQ4YPYY
       created_at: 2026-02-28T06:53:25.914Z
@@ -62327,12 +62333,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-02-28T07:02:49.676Z
-  closed_reason: "Merged in PR #593: added parsePriority() to accept 1-5 and P1-P5 notation
-    (case-insensitive), switched task add/set priority parsing to parsePriority, updated CLI help
-    text, and added validator + integration coverage for valid and invalid P-notation (including
-    clear guidance errors). AC coverage for task scope verified; full npm test and required CI
-    checks passed."
 - _ulid: 01KJDQ1677X9VQ0DGK550NBGZX
   slugs: []
   title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
@@ -62390,7 +62390,7 @@
 
     - Tests that need these vars explicitly pass them via the `env` option
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62401,6 +62401,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-02-28T07:03:24.915Z
+  session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
 - _ulid: 01KJDQ173NEFK9RFZGRS22VG6M
   slugs: []
   title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
