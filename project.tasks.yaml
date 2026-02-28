@@ -62029,6 +62029,7 @@
   session_id: 01KJH73C9JTMB6977AEY991KBQ
   created_at: 2026-02-26T19:32:49.803Z
   started_at: 2026-02-28T05:05:35.942Z
+  submitted_at: 2026-02-28T05:09:11.294Z
   notes:
     - _ulid: 01KJHAD08HSAPTTRF83R8ZKHJ6
       created_at: 2026-02-28T05:09:06.962Z
@@ -62038,9 +62039,15 @@
         kspec-agents.md. Verified with kspec meta get @pr-review-merge --json and kspec validate
         --refs (no new reference errors; only pre-existing @observations ambiguity remains).
       supersedes: null
+    - _ulid: 01KJHAE3JJADV9MVSKQD608BNV
+      created_at: 2026-02-28T05:09:43.123Z
+      author: "@claude"
+      content: "Submitted for review in PR #589 (fix/pr-review-merge-delete-branch). Updated
+        @pr-review-merge merge guidance to 'gh pr merge --merge --delete-branch' and regenerated
+        kspec-agents.md."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-02-28T05:09:11.294Z
 - _ulid: 01KJDQ139SP70H2H9GNBH8BM72
   slugs: []
   title: kspec agents generate should include package version in content hash (or add --force flag) so
