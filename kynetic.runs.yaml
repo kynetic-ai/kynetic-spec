@@ -7834,7 +7834,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJJH3K0KAH0JHTCZ698KTHW4
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-02-28T16:25:32.948Z
@@ -7968,5 +7968,19 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-02-28T16:29:12.058Z
-        completed_at: 2026-02-28T16:29:12.058Z
+        completed_at: 2026-02-28T16:29:46.325Z
+        notes: >-
+          Captured:
+
+          - Inbox: Worktree guard escape hatch (KSPEC_GUARD_OVERRIDE_DONT_USE)
+
+          - Observation (success): Isolated worktree + backup branch pattern for shadow branch
+          recovery
+
+          - Observation (friction): Merge driver silent data loss from missing --non-interactive
+          flag
+
+
+          Skipped: compact portability (minor wiring fix, not worth separate tracking)
     initiated_by: "@claude"
+    completed_at: 2026-02-28T16:29:46.325Z
