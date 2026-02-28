@@ -67563,6 +67563,26 @@
         return null status in Actions context. Fix CLI invocation path in status-check helpers, then
         re-run CI."
       supersedes: null
+    - _ulid: 01KJJQVHMGYH4HCA79V7NEX8YM
+      created_at: 2026-02-28T18:23:29.424Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 3] Addressed PR review follow-up MUST-FIX items.
+
+        - Replaced hardcoded 'kspec' subprocess usage in ralph status/transition checks with
+        portable Node CLI invocation (process.execPath + dist CLI path, optional KSPEC_CLI_PATH
+        override).
+
+        - Hardened ralph-context-refresh integration assertions to verify task state transitions
+        (completed/needs_work) instead of brittle log-string contracts.
+
+        Verification:
+
+        - npm test -- tests/ralph/session-budget-integration.test.ts
+        tests/ralph-context-refresh.test.ts tests/ralph.test.ts (pass)
+
+        - npm run test:shard2 (pass; 1361 tests).
+      supersedes: null
   todos: []
 - _ulid: 01KJJGJ17SR1GSXNK90DXKY4CR
   slugs: []
