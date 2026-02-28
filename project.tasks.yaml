@@ -64908,6 +64908,19 @@
         - Verification: targeted stale-session tests plus full npm test and kspec validate before
         submit.
       supersedes: null
+    - _ulid: 01KJK19NHPSA4DF6RE7TK8A6QQ
+      created_at: 2026-02-28T21:08:29.367Z
+      author: "@claude"
+      content: "Implemented stale-session criteria engine in src/sessions/store.ts: relative-duration
+        validation/defaults (older-than=24h, inactive-for=6h, liveness-guard=5m), strict activity
+        resolution with started_at fallback for missing events, AND-based threshold evaluation, and
+        liveness-guard suppression for recently-active sessions. Added AC-annotated regression
+        coverage in tests/session-stale-criteria.test.ts for @session-stale-criteria ac-1..ac-8,
+        including corrupt events handling and absolute timestamp rejection guidance. Verification:
+        npx vitest run tests/session-stale-criteria.test.ts tests/sessions.test.ts; npm test (full
+        suite pass: 3578 passed, 3 skipped). kspec validate currently reports known pre-existing
+        repo-level schema/reference/alignment/completeness issues unrelated to this task."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJGBWPAR4PYC6G8DD4PFJ770
