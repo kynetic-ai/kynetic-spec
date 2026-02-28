@@ -8896,7 +8896,7 @@ runs:
   - _ulid: 01KJK9CNNW4GRQEWN2S8VRQXF6
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 10
     started_at: 2026-02-28T23:29:56.413Z
     step_results:
@@ -8907,7 +8907,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-02-28T23:30:12.508Z
-        completed_at: 2026-02-28T23:30:12.508Z
+        completed_at: 2026-02-28T23:35:59.247Z
+        notes: "@local-review run 01KJK9D9 completed with no MUST-FIX/SHOULD-FIX findings."
+      - step_index: 2
+        status: completed
+        started_at: 2026-02-28T23:35:59.247Z
+        completed_at: 2026-02-28T23:35:59.247Z
     initiated_by: "@claude"
   - _ulid: 01KJK9D911M9RJEYP0NM3G29SY
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -8915,6 +8920,7 @@ runs:
     current_step: 7
     total_steps: 8
     started_at: 2026-02-28T23:30:16.225Z
+    completed_at: 2026-02-28T23:35:55.318Z
     step_results:
       - step_index: 0
         status: completed
@@ -8961,4 +8967,3 @@ runs:
         completed_at: 2026-02-28T23:35:55.317Z
         notes: No MUST-FIX or SHOULD-FIX findings in local-review.
     initiated_by: "@claude"
-    completed_at: 2026-02-28T23:35:55.318Z
