@@ -8453,8 +8453,20 @@ runs:
   - _ulid: 01KJK7C560714575BTVZ2CJH5H
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-02-28T22:54:42.368Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-02-28T22:54:42.368Z
+        completed_at: 2026-02-28T22:56:48.654Z
+        notes: "Reviewed session work: fixed floating runIterationPrompts() promise crash (Node.js 22),
+          added @cli-ralph ac-24/ac-25/ac-26, annotated tests, opened PR #610. Friction: task budget
+          guard blocked needs_work fix cycle transition. Captured as friction observation. Success
+          pattern captured: pre-race .catch() for floating promises."
+      - step_index: 1
+        status: completed
+        started_at: 2026-02-28T22:56:48.654Z
+        completed_at: 2026-02-28T22:56:48.654Z
     initiated_by: "@claude"
