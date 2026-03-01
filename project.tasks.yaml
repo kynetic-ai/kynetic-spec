@@ -48247,7 +48247,7 @@
     Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most
     valuable data for mining/telemetry but require parsing raw YAML to access.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -48274,6 +48274,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-01T17:55:42.084Z
+  session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
 - _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
   slugs: []
   title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
@@ -48476,6 +48478,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #626 (merge commit 81d7a0e26983b64709e2e3a4685c8d2b4ed82603).
+    Implemented runtime derivation of drift detection field sets from SpecItemSchema.shape and
+    TaskSchema.shape in src/parser/validate.ts, removing hardcoded lists to prevent future schema
+    drift. No linked spec_ref for this internal task, so own/trait AC coverage is N/A; regression
+    verification passed via local npm test (3630 passed) and green PR CI on head
+    0efdedf47f9edf11e2169a992bb3f3a88824a146."
   depends_on: []
   context: []
   priority: 3
@@ -48485,6 +48493,7 @@
   created_at: 2026-02-14T22:07:56.801Z
   started_at: 2026-03-01T16:50:30.312Z
   submitted_at: 2026-03-01T17:01:10.777Z
+  completed_at: 2026-03-01T17:53:35.635Z
   notes:
     - _ulid: 01KHFCPJAKH17FY3JY4622K1F7
       created_at: 2026-02-15T00:55:06.836Z
@@ -48513,13 +48522,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  completed_at: 2026-03-01T17:53:35.635Z
-  closed_reason: "Merged in PR #626 (merge commit 81d7a0e26983b64709e2e3a4685c8d2b4ed82603).
-    Implemented runtime derivation of drift detection field sets from SpecItemSchema.shape and
-    TaskSchema.shape in src/parser/validate.ts, removing hardcoded lists to prevent future schema
-    drift. No linked spec_ref for this internal task, so own/trait AC coverage is N/A; regression
-    verification passed via local npm test (3630 passed) and green PR CI on head
-    0efdedf47f9edf11e2169a992bb3f3a88824a146."
 - _ulid: 01KHF34K4JKJV2M81YAPCDNGPX
   slugs: []
   title: Add code-level reflect gating in ralph based on iteration delta
