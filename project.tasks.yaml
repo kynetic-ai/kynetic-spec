@@ -58458,7 +58458,7 @@
   created_at: 2026-02-24T08:36:10.800Z
   notes: []
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KJ7CNF3BR5K1DM2H6A67TYP2
   slugs: []
   title: Audit and improve skills for agent self-sufficiency
