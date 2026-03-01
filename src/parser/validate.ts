@@ -1097,69 +1097,16 @@ async function checkCompleteness(
 // ============================================================
 
 /**
- * Known schema fields for SpecItem
- * These are the actual fields defined in SpecItemSchema
+ * Known schema fields for SpecItem — derived at runtime from SpecItemSchema.shape
+ * to prevent drift from the actual schema definition.
  */
-const SPEC_ITEM_FIELDS = new Set([
-  "_ulid",
-  "slugs",
-  "title",
-  "type",
-  "status",
-  "maturity",
-  "implementation",
-  "priority",
-  "tags",
-  "description",
-  "acceptance_criteria",
-  "depends_on",
-  "implements",
-  "relates_to",
-  "tests",
-  "traits",
-  "supersedes",
-  "traceability",
-  "created",
-  "created_by",
-  "deprecated_in",
-  "superseded_by",
-  "verified_at",
-  "verified_by",
-  "notes",
-]);
+const SPEC_ITEM_FIELDS = new Set(Object.keys(SpecItemSchema.shape));
 
 /**
- * Known schema fields for Task
- * These are the actual fields defined in TaskSchema
+ * Known schema fields for Task — derived at runtime from TaskSchema.shape
+ * to prevent drift from the actual schema definition.
  */
-const TASK_FIELDS = new Set([
-  "_ulid",
-  "slugs",
-  "title",
-  "type",
-  "description",
-  "spec_ref",
-  "derivation",
-  "meta_ref",
-  "plan_ref",
-  "origin",
-  "status",
-  "blocked_by",
-  "closed_reason",
-  "depends_on",
-  "context",
-  "priority",
-  "complexity",
-  "tags",
-  "assignee",
-  "vcs_refs",
-  "created_at",
-  "started_at",
-  "completed_at",
-  "notes",
-  "todos",
-  "automation",
-]);
+const TASK_FIELDS = new Set(Object.keys(TaskSchema.shape));
 
 /**
  * Known fields that are referenced but are parse-time or conceptual only
