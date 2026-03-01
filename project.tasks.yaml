@@ -64300,16 +64300,16 @@
   description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation into reconnection logic, heartbeat handling, or fallback to polling.
   spec_ref: "@daemon-server"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJMTEASC25JM78T6MY1NW3XF
   created_at: 2026-02-26T19:33:04.635Z
-  started_at: 2026-03-01T07:29:06.129Z
+  started_at: 2026-03-01T13:50:05.559Z
   submitted_at: 2026-03-01T07:33:44.791Z
   notes:
     - _ulid: 01KJDQC6EMCTTQFKDBQX9JCG55
@@ -64479,14 +64479,6 @@
         d0de668 (CI test shard 2/3). New test tests/websocket-manager.test.ts triggers
         ReferenceError: crypto is not defined when subscribe() calls crypto.randomUUID(). Address CI
         compatibility and re-submit for review."
-      supersedes: null
-    - _ulid: 01KJMTKN7027PCJTBH57YGPQCP
-      created_at: 2026-03-01T13:50:05.536Z
-      author: Jacob Chapel
-      content: "[FIX_CYCLE: 5] Started fix cycle for PR #622 MUST-FIX CI failure:
-        tests/websocket-manager.test.ts assumes global crypto.randomUUID in Node test runtime.
-        Applying test-environment-safe UUID stub and re-running regression + full suite before
-        re-submit."
       supersedes: null
   todos: []
   automation: eligible
