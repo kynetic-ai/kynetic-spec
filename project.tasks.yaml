@@ -48111,6 +48111,7 @@
   spec_ref: "@plan-import"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #613. Implemented AC-merge-by-id for plan import --update so existing acceptance criteria are preserved, same-id ACs are replaced in place, and new IDs are appended. Added regression coverage for mixed update+append, omitted acceptance_criteria preservation, empty-existing AC population, and explicit ac-37 annotation coverage. Verified with full npm test and green CI checks."
   depends_on: []
   context: []
   priority: 3
@@ -48120,6 +48121,7 @@
   created_at: 2026-02-26T19:32:59.586Z
   started_at: 2026-02-28T23:40:24.828Z
   submitted_at: 2026-02-28T23:51:20.207Z
+  completed_at: 2026-03-01T00:04:41.946Z
   notes:
     - _ulid: 01KJDQ8ZD10EG4Z7MHEAHWBMAT
       created_at: 2026-02-26T19:37:08.769Z
@@ -48169,15 +48171,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-01T00:04:41.946Z
-  closed_reason: "Merged in PR #613. Implemented AC-merge-by-id for plan import --update so existing acceptance criteria are preserved, same-id ACs are replaced in place, and new IDs are appended. Added regression coverage for mixed update+append, omitted acceptance_criteria preservation, empty-existing AC population, and explicit ac-37 annotation coverage. Verified with full npm test and green CI checks."
 - _ulid: 01KJDQ1CTV35WDA9G51NEH943K
   slugs: []
   title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get @plan-r
   type: task
   description: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get @plan-ref to read implementation notes, algorithm details, and context. Update task-work skill and task-work-loop workflow to include this step. Plans are the right place for rich implementation context instead of cramming it into task notes.
   spec_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -48215,6 +48215,16 @@
       created_at: 2026-02-26T19:47:22.705Z
       author: "@claude"
       content: "Infra: Workflow/skill documentation change. Agents check plan_ref when starting tasks. No code change needed, skill template update."
+      supersedes: null
+    - _ulid: 01KJKBF7R47NGTJDZJMFFYAZAA
+      created_at: 2026-03-01T00:06:17.604Z
+      author: "@claude"
+      content: |-
+        Execution context:
+        - Background: agents can miss implementation context when tasks are linked to plans.
+        - Scope: update task-work skill docs + task-work-loop workflow steps to require plan_ref lookup via kspec plan get.
+        - Files: templates/skills/task-work/SKILL.md, kspec-agents.md (generated), and workflow definition in meta via kspec CLI.
+        - Verification: regenerate agent docs and confirm both skill + workflow include plan_ref retrieval guidance.
       supersedes: null
   todos: []
   automation: eligible
