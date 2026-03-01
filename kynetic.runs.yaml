@@ -9643,7 +9643,7 @@ runs:
   - _ulid: 01KJKZEQT8MWAQHGG5J5MDP8A5
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T05:55:32.808Z
     step_results:
@@ -9658,5 +9658,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T05:55:58.833Z
-        completed_at: 2026-03-01T05:55:58.833Z
+        completed_at: 2026-03-01T05:56:10.984Z
+        notes: "High-confidence observations from this iteration: (1) stale-close task execution flow was
+          effective (spec/plan-driven, targeted tests before broad verification), (2) shell-wrapped
+          note/commit payloads with special characters are brittle. Search-first check confirms (2)
+          is already tracked in observation @01KJEVM2 and inbox item @01KJKKCB, and
+          session-note-limit baseline timeout is already tracked in inbox @01KJKDBK."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T05:56:10.984Z
+        completed_at: 2026-03-01T05:56:10.984Z
     initiated_by: Jacob Chapel
