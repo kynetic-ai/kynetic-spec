@@ -6980,6 +6980,18 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJKCF1SNKNBV25JG0VPW9HZ6
+    type: success
+    content: "Agent investigation breadth vs accuracy tradeoff — Explore agents are valuable for
+      surveying many files quickly but their conclusions need manual verification before acting. In
+      this session, the agent reported event listener accumulation as CRITICAL (wrong — listeners
+      registered once per spawn) while the actual bottleneck (getEventCount O(n^2)) wasn't in its
+      top findings. Pattern: use agents for breadth, verify claims against actual code, then form
+      your own root cause hypothesis."
+    created_at: 2026-03-01T00:23:40.085Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
