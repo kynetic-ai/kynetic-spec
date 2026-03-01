@@ -48109,7 +48109,7 @@
   type: task
   description: "Plan import --update replaces all ACs instead of merging. When extending an existing spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for session-log-show ac-10."
   spec_ref: "@plan-import"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -48169,6 +48169,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T00:04:41.946Z
+  closed_reason: "Merged in PR #613. Implemented AC-merge-by-id for plan import --update so existing acceptance criteria are preserved, same-id ACs are replaced in place, and new IDs are appended. Added regression coverage for mixed update+append, omitted acceptance_criteria preservation, empty-existing AC population, and explicit ac-37 annotation coverage. Verified with full npm test and green CI checks."
 - _ulid: 01KJDQ1CTV35WDA9G51NEH943K
   slugs: []
   title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get @plan-r
