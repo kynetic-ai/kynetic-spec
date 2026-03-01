@@ -69202,7 +69202,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix WebSocket upgrade blocked by Elysia beforeHandle return value
+- _ulid: 01KJMYKSCERREYAAPVXVG9HE71
+  slugs: []
+  title: Fix WebSocket upgrade blocked by Elysia beforeHandle return value
+  type: task
   description: >-
     ## Problem
 
@@ -69285,22 +69288,20 @@
     Predecessor task @01KJDQ1GZ addressed client-side reconnect race conditions (PR #622) but missed
     the server-side root cause. The client-side fixes remain valuable for handling legitimate
     disconnects, but the server was never actually upgrading connections.
-  type: task
   spec_ref: "@trait-websocket-protocol"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cli
     - daemon
     - bug
-  depends_on: []
-  _ulid: 01KJMYKSCERREYAAPVXVG9HE71
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-01T15:00:04.110Z
   notes: []
   todos: []
+  started_at: 2026-03-01T15:00:11.962Z
