@@ -60,6 +60,7 @@ import {
   runWrapUpAgent,
   type SubagentContext,
   truncatePromptIfNeeded,
+  WORKER_PROMPT_MAX_BYTES,
   WRAPUP_AGENT_PREFIX,
 } from "../../ralph/index.js";
 import {
@@ -450,7 +451,7 @@ it checks for remaining eligible tasks at the start of each iteration and exits 
 \`end-loop\` is a rare escape hatch for when work is stalling across multiple iterations with no progress — not a normal exit path.
 `;
 
-  return truncatePromptIfNeeded(prompt, sections);
+  return truncatePromptIfNeeded(prompt, sections, WORKER_PROMPT_MAX_BYTES);
 }
 
 /**
