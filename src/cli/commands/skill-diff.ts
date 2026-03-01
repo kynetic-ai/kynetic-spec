@@ -37,6 +37,7 @@ import {
   type PlatformRenderer,
   type DriftStatus,
 } from "../../parser/skill-render.js";
+import { commitIfShadow } from "../../parser/shadow.js";
 import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success } from "../output.js";
@@ -589,6 +590,23 @@ export function registerSkillDiffCommands(skill: Command): void {
               }
             }
           }
+        }
+
+        // Commit render hash changes to shadow branch
+        // AC: @trait-shadow-commit ac-1 - render hashes written to shadow worktree must be committed
+        // Regression: skill render wrote .render-hash-<platform> files to .kspec/ but did not commit them
+        const renderedOrCleaned = results.some((r) => r.action === "created" || r.action === "updated")
+          || cleanResults.some((r) => r.action === "removed");
+        if (!dryRun && renderedOrCleaned) {
+          const renderedIds = [...new Set(
+            results
+              .filter((r) => r.action === "created" || r.action === "updated")
+              .map((r) => r.id)
+          )];
+          const detail = renderedIds.length === 1
+            ? renderedIds[0]
+            : `${renderedIds.length} skills`;
+          await commitIfShadow(ctx.shadow, "skill-render", detail);
         }
 
         // Output results
