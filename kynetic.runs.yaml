@@ -9536,7 +9536,7 @@ runs:
   - _ulid: 01KJKN9J086FSZNJ28VHKEMK21
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T02:57:57.256Z
     step_results:
@@ -9550,5 +9550,19 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T02:58:34.831Z
-        completed_at: 2026-03-01T02:58:34.831Z
+        completed_at: 2026-03-01T02:58:51.715Z
+        notes: >-
+          High-confidence reflection candidate: E2E tests in packages/web-ui can fail with opaque
+          ERR_CONNECTION_REFUSED when the daemon fixture is not requested in the test signature.
+          This is systemic and reproducible.
+
+
+          Coverage check: existing tracked items already cover overlapping daemon-fixture
+          reliability/debugging patterns (e.g., tasks @01KFVRXR and @01KG5VSF and observations on
+          E2E daemon fixture/debugging). Given overlap, no new capture this iteration to avoid
+          duplicate noise.
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T02:58:51.715Z
+        completed_at: 2026-03-01T02:58:51.715Z
     initiated_by: Jacob Chapel
