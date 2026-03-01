@@ -9941,7 +9941,7 @@ runs:
     task_ref: "@01KJDQ1GZVK77Y8CETXW2E56TG"
   - _ulid: 01KJMTXX99N74N52E3JTZGVWY1
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
-    status: active
+    status: completed
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T13:55:41.481Z
@@ -9970,5 +9970,8 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-03-01T13:56:29.536Z
-        completed_at: 2026-03-01T13:56:29.536Z
+        completed_at: 2026-03-01T13:56:34.526Z
+        notes: "Capture step: no items qualified for capture in this iteration (high-confidence + unique
+          gate not met). Reflection loop complete with no-op capture by design."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-01T13:56:34.527Z
