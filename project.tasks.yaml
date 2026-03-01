@@ -63833,6 +63833,31 @@
 
         - Verification: targeted triage tests + kspec validate before submit.
       supersedes: null
+    - _ulid: 01KJKGB939JWK2RT4H5M3WSB2S
+      created_at: 2026-03-01T01:31:30.793Z
+      author: Jacob Chapel
+      content: >-
+        Implemented promote-consume behavior in shared triage action executor and triage CLI act
+        command:
+
+        - Added promote consume control (default true) to executeTriageAction options.
+
+        - Promote now deletes referenced inbox item by default after task creation; --keep bypasses
+        deletion.
+
+        - Dry-run now reports whether promoted inbox item would be deleted or kept.
+
+        - Added regression coverage in tests/triage-actions.test.ts and tests/triage-cli.test.ts for
+        default consume, --keep, and dry-run messaging.
+
+        Verification:
+
+        - npm test -- tests/triage-actions.test.ts tests/triage-cli.test.ts (67 passed).
+
+        - kspec validate still fails with pre-existing project-wide
+        meta/reference/alignment/completeness issues around observations slug/skill and unrelated
+        alignment warnings.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
