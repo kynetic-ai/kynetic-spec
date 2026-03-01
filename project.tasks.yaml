@@ -64300,7 +64300,7 @@
   description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation into reconnection logic, heartbeat handling, or fallback to polling.
   spec_ref: "@daemon-server"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -64525,6 +64525,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T14:26:11.228Z
+  closed_reason: "Merged in PR #622 (commit a5ccb212). Stabilized WebSocket reconnect lifecycle by
+    ignoring stale socket events, suppressing reconnect after intentional disconnect, and preserving
+    reconnect on unexpected disconnect; added regression tests in tests/websocket-manager.test.ts.
+    Also hardened serve status uptime parsing/retry to clear regression flake. AC coverage reviewed
+    for @daemon-server and inherited traits; regression gates passed (npm test + PR checks)."
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
   slugs: []
   title: Fix test failures after v0.7.0 version bump
