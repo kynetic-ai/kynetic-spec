@@ -9245,6 +9245,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T00:37:58.934Z
+    completed_at: 2026-03-01T00:39:25.257Z
     step_results:
       - step_index: 0
         status: completed
@@ -9287,4 +9288,11 @@ runs:
         notes: Captured approved item @01KJKDBK via inbox add (reflection/testing/sessions). No additional
           captures this iteration to maintain high-confidence/low-volume loop-mode threshold.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-01T00:39:25.257Z
+  - _ulid: 01KJKDE23D1YV1KWPF1RDZCG2P
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-01T00:40:36.205Z
+    step_results: []
+    initiated_by: Jacob Chapel
