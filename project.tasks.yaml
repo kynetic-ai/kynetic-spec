@@ -68370,6 +68370,21 @@
         truncation to explicit worker budget in src/cli/commands/ralph.ts to preserve previous
         worker behavior.
       supersedes: null
+    - _ulid: 01KJKD5NF9CE1VW1MAR54S3XBC
+      created_at: 2026-03-01T00:36:01.129Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - npm test -- tests/ralph.test.ts (146 passed).
+
+        - Full npm test run failed due pre-existing session-note-limit timeouts
+        (tests/cli/session-note-limit.test.ts timed out at lines 34, 70, 104 in suite run; isolated
+        rerun timed out at lines 34 and 104) unrelated to modified files.
+
+        - kspec validate still fails on pre-existing project meta/reference issues (@observations
+        slug ambiguity + missing observations skill file).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJKBB94D9HKQHW3HPJPE1AK9
