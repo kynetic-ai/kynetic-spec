@@ -1195,3 +1195,14 @@ inbox:
       - testing
       - sessions
     added_by: Jacob Chapel
+  - _ulid: 01KJKKCBBK5Y366SEHGR9M38MT
+    text: "Reflection: add file-based payload input to task notes (e.g., kspec task note @ref --file
+      <path> and/or --stdin). Current command only accepts positional message, which makes
+      multiline/special-character notes brittle and conflicts with the convention to use file-based
+      payloads for safe shell handling."
+    created_at: 2026-03-01T02:24:31.604Z
+    tags:
+      - reflection
+      - cli
+      - tasks
+    added_by: Jacob Chapel
