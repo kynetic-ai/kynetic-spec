@@ -10163,6 +10163,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T17:35:42.199Z
+    completed_at: 2026-03-01T17:37:27.440Z
     step_results:
       - step_index: 0
         status: completed
@@ -10191,4 +10192,12 @@ runs:
         completed_at: 2026-03-01T17:37:27.440Z
         notes: Capture already done in step 2 via kspec batch (2 friction observations). Workflow complete.
     initiated_by: "@claude"
-    completed_at: 2026-03-01T17:37:27.440Z
+  - _ulid: 01KJN85S5N7YF26WKB088100ES
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-01T17:47:10.901Z
+    step_results: []
+    initiated_by: Jacob Chapel
+    task_ref: "@01KHF34FC1CG2NTAV26QE4VASM"
