@@ -235,6 +235,7 @@ Examples:
   markMutating(triage.command("act <triage-ref>"))
     .description("Execute a triage decision")
     .option("--dry-run", "Show what would happen without executing")
+    .option("--keep", "Keep inbox item after promote")
     .action(async (triageRef: string, options) => {
       try {
         const ctx = await initContext();
@@ -258,12 +259,19 @@ Examples:
         // AC: @triage-cli-commands ac-17 — dry run
         if (options.dryRun) {
           info(`Dry run for triage record ${record._ulid.slice(0, 8)}:`);
-          await executeTriageAction(record, ctx, { dryRun: true, onInfo: info });
+          await executeTriageAction(record, ctx, {
+            dryRun: true,
+            consume: !options.keep,
+            onInfo: info,
+          });
           return;
         }
 
         // Execute the action
-        const result = await executeTriageAction(record, ctx, { onInfo: info });
+        const result = await executeTriageAction(record, ctx, {
+          consume: !options.keep,
+          onInfo: info,
+        });
 
         // Transition to acted_on
         record.status = "acted_on";

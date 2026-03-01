@@ -242,7 +242,7 @@ describe("kspec triage list", () => {
 
 describe("kspec triage act", () => {
   // AC: @triage-cli-commands ac-4
-  it("should execute promote action creating a task from snapshot", () => {
+  it("should execute promote action creating a task and consuming inbox item by default", () => {
     const inboxUlid = addInboxItem("Create this as a task");
     const record = recordTriage(inboxUlid, "promote", "clear feature");
 
@@ -252,6 +252,7 @@ describe("kspec triage act", () => {
     );
     expect(result.stdout).toContain("Acted on triage record");
     expect(result.stdout).toContain("promote");
+    expect(result.stdout).toContain("Deleted promoted inbox item");
 
     // Verify record transitioned to acted_on
     const records = kspecJson<Array<{ _ulid: string; status: string; acted_at: string; result_ref: string }>>(
@@ -263,6 +264,35 @@ describe("kspec triage act", () => {
     expect(acted!.status).toBe("acted_on");
     expect(acted!.acted_at).toBeDefined();
     expect(acted!.result_ref).toBeDefined();
+
+    // Verify inbox item was consumed
+    const inbox = kspecJson<Array<{ _ulid: string }>>(
+      "inbox list",
+      tempDir,
+    );
+    const found = inbox.find((item) => item._ulid === inboxUlid);
+    expect(found).toBeUndefined();
+  });
+
+  // AC: @triage-cli-commands ac-4
+  it("should keep promoted inbox item when --keep is provided", () => {
+    const inboxUlid = addInboxItem("Keep this inbox item");
+    const record = recordTriage(inboxUlid, "promote", "keep item");
+
+    const result = kspec(
+      `triage act @${record._ulid.slice(0, 8)} --keep`,
+      tempDir,
+    );
+    expect(result.stdout).toContain("Acted on triage record");
+    expect(result.stdout).toContain("promote");
+    expect(result.stdout).not.toContain("Deleted promoted inbox item");
+
+    const inbox = kspecJson<Array<{ _ulid: string }>>(
+      "inbox list",
+      tempDir,
+    );
+    const found = inbox.find((item) => item._ulid === inboxUlid);
+    expect(found).toBeDefined();
   });
 
   // AC: @triage-cli-commands ac-5
@@ -421,6 +451,13 @@ describe("kspec triage act", () => {
     );
     expect(result.stdout).toContain("Dry run");
     expect(result.stdout).toContain("Would create task");
+    expect(result.stdout).toContain("Would delete promoted inbox item");
+
+    const keepResult = kspec(
+      `triage act @${record._ulid.slice(0, 8)} --dry-run --keep`,
+      tempDir,
+    );
+    expect(keepResult.stdout).toContain("Would keep promoted inbox item");
 
     // Verify record was NOT transitioned
     const records = kspecJson<Array<{ _ulid: string; status: string }>>(

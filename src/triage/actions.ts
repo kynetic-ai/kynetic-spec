@@ -28,6 +28,7 @@ export interface TriageActionResult {
  */
 export interface ExecuteTriageActionOptions {
   dryRun?: boolean;
+  consume?: boolean;
   onInfo?: (message: string) => void;
 }
 
@@ -44,7 +45,7 @@ export async function executeTriageAction(
   ctx: KspecContext,
   options: ExecuteTriageActionOptions = {},
 ): Promise<TriageActionResult> {
-  const { dryRun = false, onInfo } = options;
+  const { dryRun = false, consume = true, onInfo } = options;
   const action = record.action;
   if (!action) {
     throw new Error("Record has no action to execute");
@@ -55,6 +56,11 @@ export async function executeTriageAction(
       // AC: @triage-cli-commands ac-4
       if (dryRun) {
         onInfo?.(`Would create task from inbox item snapshot: "${truncateText(record.item_snapshot)}"`);
+        if (consume) {
+          onInfo?.(`Would delete promoted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        } else {
+          onInfo?.(`Would keep promoted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        }
         return {};
       }
       const task = createTask({
@@ -70,6 +76,14 @@ export async function executeTriageAction(
       const items = await loadAllItems(ctx);
       const index = new ReferenceIndex(tasks, items);
       const taskRef = `@${index.shortUlid(task._ulid)}`;
+      if (consume) {
+        const inboxItems = await loadInboxItems(ctx);
+        const inboxItem = findInboxItemByRef(inboxItems, record.inbox_ref);
+        if (inboxItem) {
+          await deleteInboxItem(ctx, inboxItem._ulid);
+          onInfo?.(`Deleted promoted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        }
+      }
       onInfo?.(`Created task: ${taskRef} - ${task.title}`);
       return { resultRef: taskRef };
     }
