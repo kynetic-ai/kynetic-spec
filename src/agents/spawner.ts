@@ -85,10 +85,18 @@ export function spawnAgent(
     stdout: child.stdin as NodeJS.WritableStream, // We write to child's stdin
   });
 
-  // Forward process exit to client close
-  child.on("exit", () => {
+  // Forward process exit to client close, surfacing exit code/signal
+  child.on("exit", (code, signal) => {
     if (!client.isClosed()) {
-      client.close();
+      let reason: string;
+      if (signal !== null) {
+        reason = `Subagent process exited with signal ${signal}`;
+      } else if (code !== null) {
+        reason = `Subagent process exited with code ${code}`;
+      } else {
+        reason = "Subagent process exited unexpectedly";
+      }
+      client.close(reason);
     }
   });
 
