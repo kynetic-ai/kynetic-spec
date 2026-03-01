@@ -63499,16 +63499,16 @@
     task-work skill and task-work-loop workflow to include this step. Plans are the right place for
     rich implementation context instead of cramming it into task notes.
   spec_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
+  session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
   created_at: 2026-02-26T19:33:00.379Z
-  started_at: 2026-03-01T01:13:02.393Z
+  started_at: 2026-03-01T00:06:16.163Z
   notes:
     - _ulid: 01KJDQ9E2V7MF4XRKW0MQQC59X
       created_at: 2026-02-26T19:37:23.804Z
@@ -63582,6 +63582,15 @@
 
         - Verification: regenerate agent docs and confirm both skill + workflow include plan_ref
         retrieval guidance.
+      supersedes: null
+    - _ulid: 01KJKF9EP1S1YTRX9A1Q59C6Z9
+      created_at: 2026-03-01T01:13:02.401Z
+      author: Jacob Chapel
+      content: "Execution update: verified task-work-loop meta workflow already includes plan_ref lookup
+        in the start step; remaining work is to add equivalent guidance to
+        templates/skills/task-work/SKILL.md and regenerate kspec-agents.md so rendered instructions
+        match meta workflow behavior. Verification will diff for plan_ref guidance and run targeted
+        tests if any code-path behavior changes."
       supersedes: null
   todos: []
   automation: eligible
