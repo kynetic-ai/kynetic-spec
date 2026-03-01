@@ -8,21 +8,7 @@
  */
 
 import type { TriageRecord } from "../schema/triage.js";
-
-function shortestUniqueUlid(ulid: string, allUlids: readonly string[]): string {
-  let length = 8;
-  while (length < ulid.length) {
-    const prefix = ulid.slice(0, length);
-    const matches = allUlids.filter((candidate) =>
-      candidate.toUpperCase().startsWith(prefix.toUpperCase()),
-    );
-    if (matches.length === 1) {
-      return prefix;
-    }
-    length++;
-  }
-  return ulid;
-}
+import { shortestUniqueUlid } from "../parser/refs.js";
 
 /**
  * Truncate text to a maximum length, taking only the first line.
