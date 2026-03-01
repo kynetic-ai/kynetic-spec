@@ -65491,7 +65491,7 @@
   type: task
   spec_ref: "@session-stale-cleanup"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-stale-session-candidate-criteria"
@@ -65500,7 +65500,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJKWXHKKHZMP574E78F7BHA3
+  session_id: null
   created_at: 2026-02-27T20:15:54.343Z
   started_at: 2026-03-01T06:08:02.135Z
   submitted_at: 2026-03-01T06:15:05.308Z
@@ -65642,6 +65642,14 @@
 
         - `kspec validate` (pre-existing project-wide schema/reference/alignment/completeness issues
         unrelated to this task)
+      supersedes: null
+    - _ulid: 01KJM14M4X9YVGS6ECJBDC8FNA
+      created_at: 2026-03-01T06:24:58.526Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: Regression gate still failing on PR #621 head
+        f1ce5c9 (npm test exit 1). Failures: tests/cli-serve.test.ts assertion mismatch and two
+        timeout failures in tests/cli/session-note-limit.test.ts. AC coverage gaps from prior review
+        are resolved; only full-suite green gate remains."
       supersedes: null
   todos: []
   automation: eligible
