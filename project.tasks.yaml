@@ -48471,7 +48471,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KHF34K4JKJV2M81YAPCDNGPX
   slugs: []
   title: Add code-level reflect gating in ralph based on iteration delta
