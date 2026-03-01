@@ -69291,7 +69291,7 @@
   spec_ref: "@trait-websocket-protocol"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -69303,6 +69303,11 @@
   vcs_refs: []
   created_at: 2026-03-01T15:00:04.110Z
   started_at: 2026-03-01T15:00:11.962Z
+  submitted_at: 2026-03-01T15:00:13.349Z
   notes: []
   todos: []
-  submitted_at: 2026-03-01T15:00:13.349Z
+  completed_at: 2026-03-01T15:00:14.700Z
+  closed_reason: Fixed in commit 7848744c8. WebSocket beforeHandle was returning a value which Elysia
+    1.4 treated as HTTP 200 response when derive middleware present, blocking the 101 upgrade.
+    Replaced requestId-keyed Map with Request-keyed WeakMap and removed return statements. Verified
+    fix with progressive reproduction and daemon integration test.
