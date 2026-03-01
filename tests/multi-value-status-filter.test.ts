@@ -76,10 +76,30 @@ describe('Integration: multi-value status filter', () => {
 
   // AC: @multi-value-status-filter ac-item-list-parity
   it('should support comma-separated status on item list', () => {
-    const result = kspec('item list --status implemented,verified', tempDir);
-    expect(result.exitCode).toBe(0);
-    // Should not error — even if fixture has no items with those statuses,
-    // the command should complete successfully
+    // Create items with known statuses
+    kspec('item add --under @test-core --title "Implemented Feature" --slug impl-feature --type feature', tempDir);
+    kspec('item add --under @test-core --title "Verified Feature" --slug verified-feature --type feature', tempDir);
+    kspec('item add --under @test-core --title "Not Started Feature" --slug not-started-feature --type feature', tempDir);
+
+    kspec('item set @impl-feature --status implemented', tempDir);
+    kspec('item set @verified-feature --status verified', tempDir);
+    // @not-started-feature stays not_started (default)
+
+    const result = kspecJson<{
+      items: Array<{ slugs: string[]; status?: { implementation?: string } }>;
+    }>('item list --status implemented,verified --json', tempDir);
+    const items = result.items;
+    expect(Array.isArray(items)).toBe(true);
+
+    const slugs = items.flatMap((item) => item.slugs);
+    expect(slugs).toContain('impl-feature');
+    expect(slugs).toContain('verified-feature');
+    expect(slugs).not.toContain('not-started-feature');
+
+    // All returned items must have status implemented or verified
+    for (const item of items) {
+      expect(['implemented', 'verified']).toContain(item.status?.implementation);
+    }
   });
 
   // AC: @multi-value-status-filter ac-json-output
