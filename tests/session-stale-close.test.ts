@@ -399,9 +399,71 @@ describe("session stale close", () => {
     expect(result.stderr).toContain("Operation cancelled");
   });
 
-  // AC: @trait-dry-run ac-5
   // AC: @trait-confirmation-prompt ac-2
+  it("proceeds when user confirms interactive prompt in single-target mode", async () => {
+    const staleId = testUlid("SESS", 15);
+    await createActiveSession(
+      staleId,
+      "2024-01-01T00:00:00.000Z",
+      "2024-01-02T00:00:00.000Z",
+    );
+
+    const result = kspec(
+      `session stale close ${staleId} --older-than 24h --inactive-for 6h`,
+      tempDir,
+      {
+        stdin: "yes",
+        env: {
+          KSPEC_TEST_TTY: "1",
+        },
+      },
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Auto-abandon this stale session? [y/N]");
+
+    const session = await getSession(tempDir, staleId);
+    expect(session?.status).toBe("abandoned");
+    expect(session?.close_reason?.startsWith("auto-abandoned:")).toBe(true);
+  });
+
   // AC: @trait-confirmation-prompt ac-5
+  it("uses a single confirmation prompt for destructive --refs batch mode", async () => {
+    const staleA = testUlid("SESS", 16);
+    const staleB = testUlid("SESS", 17);
+    await createActiveSession(
+      staleA,
+      "2024-01-01T00:00:00.000Z",
+      "2024-01-02T00:00:00.000Z",
+    );
+    await createActiveSession(
+      staleB,
+      "2024-01-01T00:00:00.000Z",
+      "2024-01-02T00:00:00.000Z",
+    );
+
+    const result = kspec(
+      `session stale close --refs ${staleA} ${staleB} --older-than 24h --inactive-for 6h`,
+      tempDir,
+      {
+        stdin: "y",
+        env: {
+          KSPEC_TEST_TTY: "1",
+        },
+      },
+    );
+
+    expect(result.exitCode).toBe(0);
+    const promptCount = result.stdout.match(/from --refs\? \[y\/N\]/g)?.length ?? 0;
+    expect(promptCount).toBe(1);
+
+    const first = await getSession(tempDir, staleA);
+    const second = await getSession(tempDir, staleB);
+    expect(first?.status).toBe("abandoned");
+    expect(second?.status).toBe("abandoned");
+  });
+
+  // AC: @trait-dry-run ac-5
   // AC: @trait-json-output ac-4 -- N/A: session IDs are identifiers, not @ref-index references.
   // AC: @trait-json-output ac-5 -- N/A: this command does not emit timestamps in top-level totals.
   // AC: @trait-json-output ac-6 -- N/A: no competing output-format flags beyond global --json.
