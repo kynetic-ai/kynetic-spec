@@ -42,6 +42,7 @@
 	// AC: @interactive-triage-ui ac-7
 	let filterTag = $state<string | ''>('');
 	let filterStatus = $state<'all' | 'untriaged' | 'triaged' | 'acted_on'>('all');
+	let filterAction = $state<TriageAction | ''>('');
 
 	// Action labels
 	const ACTION_LABELS: Record<TriageAction, string> = {
@@ -90,6 +91,11 @@
 			items = items.filter((i) => i.record?.status === 'triaged');
 		} else if (filterStatus === 'acted_on') {
 			items = items.filter((i) => i.record?.status === 'acted_on');
+		}
+
+		// Action filter
+		if (filterAction) {
+			items = items.filter((i) => i.record?.action === filterAction);
 		}
 
 		return items;
@@ -294,9 +300,10 @@
 
 	// AC: @interactive-triage-ui ac-7 - Reset index when filter changes
 	$effect(() => {
-		// Reading filterTag and filterStatus creates reactive dependencies
+		// Reading filter values creates reactive dependencies
 		const _tag = filterTag;
 		const _status = filterStatus;
+		const _action = filterAction;
 		currentIndex = 0;
 		resetForm();
 	});
@@ -331,6 +338,16 @@
 				<option value="untriaged">Untriaged</option>
 				<option value="triaged">Triaged</option>
 				<option value="acted_on">Acted On</option>
+			</select>
+			<select
+				bind:value={filterAction}
+				class="rounded-md border bg-background px-3 py-1.5 text-sm"
+				data-testid="triage-action-filter"
+			>
+				<option value="">All Actions</option>
+				{#each Object.entries(ACTION_LABELS) as [action, label]}
+					<option value={action}>{label}</option>
+				{/each}
 			</select>
 			{#if allTags.length > 0}
 				<select
