@@ -64100,7 +64100,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-26T19:33:03.825Z
+  started_at: 2026-03-01T02:46:20.462Z
   notes:
     - _ulid: 01KJDQBJ4QTDMCZJ4NAY7B1KGP
       created_at: 2026-02-26T19:38:33.495Z
@@ -64171,10 +64173,33 @@
       content: Linked to @interactive-triage-ui spec. Add filter controls for triage action types on
         triage page.
       supersedes: null
+    - _ulid: 01KJKMNG3VF2TXPKYDBZC72JTD
+      created_at: 2026-03-01T02:46:59.963Z
+      author: Jacob Chapel
+      content: >-
+        Implemented triage action-filter support in web UI scope for @interactive-triage-ui ac-7.
+
+
+        Changes in progress:
+
+        - Added action filter state (`filterAction`) and filtering logic in
+        `packages/web-ui/src/routes/triage/+page.svelte` so cards can be filtered by triage decision
+        action.
+
+        - Added action filter `<select>` UI (`data-testid="triage-action-filter"`) using existing
+        ACTION_LABELS.
+
+        - Included action filter in the index-reset effect so changing filters returns card
+        navigation to index 0.
+
+        - Added E2E coverage in `packages/web-ui/tests/e2e/triage.spec.ts` for control visibility
+        and behavior (action filter narrows results and resets card index).
+
+
+        Next: run targeted E2E and validation checks, then full test suite before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T02:46:20.462Z
-  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
 - _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
   slugs: []
   title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
