@@ -9646,6 +9646,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T05:55:32.808Z
+    completed_at: 2026-03-01T05:56:22.662Z
     step_results:
       - step_index: 0
         status: completed
@@ -9679,4 +9680,11 @@ runs:
         notes: No unique high-confidence items passed step-3 filtering; capture intentionally skipped to
           avoid duplicate noise in loop mode.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-01T05:56:22.662Z
+  - _ulid: 01KJM0MWQF4SBX0BJJYDEAJNJG
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-03-01T06:16:23.024Z
+    step_results: []
+    initiated_by: Jacob Chapel
