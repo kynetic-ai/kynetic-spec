@@ -9763,6 +9763,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T06:54:41.877Z
+    completed_at: 2026-03-01T06:55:42.614Z
     step_results:
       - step_index: 0
         status: completed
@@ -9807,4 +9808,12 @@ runs:
         notes: No new captures created. All high-confidence candidates were already tracked and skipped to
           avoid duplicate noise in loop mode.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-01T06:55:42.614Z
+  - _ulid: 01KJM2YQW8BVHHYP4G8GP7ZCAD
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-01T06:56:42.889Z
+    step_results: []
+    initiated_by: Jacob Chapel
+    task_ref: "@01KJDQ1GZVK77Y8CETXW2E56TG"
