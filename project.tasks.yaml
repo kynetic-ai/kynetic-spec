@@ -48177,7 +48177,7 @@
   type: task
   description: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get @plan-ref to read implementation notes, algorithm details, and context. Update task-work skill and task-work-loop workflow to include this step. Plans are the right place for rich implementation context instead of cramming it into task notes.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -48218,6 +48218,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-01T00:06:16.163Z
+  session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
   slugs: []
   title: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9 and 01KJ"
