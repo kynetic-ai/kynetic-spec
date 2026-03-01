@@ -1230,3 +1230,13 @@ inbox:
       - bug
       - testing
     added_by: "@claude"
+  - _ulid: 01KJN5MB6E6DCF3VMTDHHJ1ZWQ
+    text: "Fix pre-existing test failure: tests/enhanced-setup.test.ts 'should render core skills to
+      codex output when codex is detected' fails with ENOENT on .codex/config.toml — test expects
+      setup to create codex config but it is not being created. Confirmed pre-existing (not
+      introduced by recent changes). Investigate whether codex config generation is missing or test
+      fixture setup is incomplete."
+    created_at: 2026-03-01T17:02:42.383Z
+    tags:
+      - reflection
+    added_by: "@claude"
