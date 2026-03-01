@@ -48257,7 +48257,9 @@
     - cli
     - dx
   vcs_refs: []
+  session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
   created_at: 2026-02-13T05:53:47.482Z
+  started_at: 2026-03-01T17:55:42.084Z
   notes:
     - _ulid: 01KHAS00YX1H78GD9AGX27241D
       created_at: 2026-02-13T05:53:47.485Z
@@ -48272,10 +48274,17 @@
       content: "Automation status set to needs_review: CLI --json output schema is user-facing - may need
         spec"
       supersedes: null
+    - _ulid: 01KJN8NJWCMHZ17TE9BFHETXE5
+      created_at: 2026-03-01T17:55:48.748Z
+      author: "@claude"
+      content: "Verified current behavior: workflow runs --json already includes full step_results (with
+        notes) and abort_reason in output. The output function serializes the full run objects. The
+        gap is test coverage — existing tests only check status, not step_results content in JSON
+        output. Adding tests to verify step_results notes and abort_reason appear in workflow
+        runs/show --json."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T17:55:42.084Z
-  session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
 - _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
   slugs: []
   title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
