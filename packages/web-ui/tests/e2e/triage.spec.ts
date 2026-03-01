@@ -12,7 +12,7 @@
  * - @interactive-triage-ui ac-4: Override captures override with user attribution
  * - @interactive-triage-ui ac-5: Next/previous navigation, decision state display
  * - @interactive-triage-ui ac-6: Real-time updates via WebSocket triage:updates
- * - @interactive-triage-ui ac-7: Tag and status filters with progress count
+ * - @interactive-triage-ui ac-7: Tag/status/action filters with progress count
  * - @interactive-triage-ui ac-8: Static mode: read-only, action buttons hidden
  */
 
@@ -29,8 +29,32 @@
 
 import { test, expect } from '../fixtures/test-base';
 
+const ACTION_LABELS: Record<string, string> = {
+  promote: 'Promote to Task',
+  delete: 'Delete',
+  defer: 'Defer',
+  'spec-gap': 'Spec Gap',
+  duplicate: 'Duplicate',
+};
+
+async function reloadWithRetry(page: import('@playwright/test').Page, attempts = 3): Promise<void> {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      await page.reload();
+      await page.waitForLoadState('networkidle');
+      return;
+    } catch (error) {
+      if (attempt === attempts) {
+        throw error;
+      }
+      await page.waitForTimeout(250 * attempt);
+    }
+  }
+}
+
 test.describe('Interactive Triage UI', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, daemon }) => {
+    void daemon;
     await page.goto('/triage');
     // Wait for page to load — either items or empty state
     await page.waitForLoadState('networkidle');
@@ -118,6 +142,7 @@ test.describe('Interactive Triage UI', () => {
     // Filter and progress elements are always rendered on the page
     await expect(page.getByTestId('triage-filters')).toBeVisible();
     await expect(page.getByTestId('triage-status-filter')).toBeVisible();
+    await expect(page.getByTestId('triage-action-filter')).toBeVisible();
     await expect(page.getByTestId('triage-progress')).toBeVisible();
     await expect(page.getByTestId('triage-progress-bar')).toBeVisible();
   });
@@ -126,6 +151,48 @@ test.describe('Interactive Triage UI', () => {
   test('tag filter controls are visible', async ({ page }) => {
     // Tag filter exists alongside status filter
     await expect(page.getByTestId('triage-tag-filter')).toBeVisible();
+  });
+
+  // AC: @interactive-triage-ui ac-7
+  test('action filter narrows cards by triage action and resets card index', async ({ page, request }) => {
+    let targetAction = 'defer';
+    const triageListResponse = await request.get('http://localhost:3456/api/triage?limit=1000');
+    expect(triageListResponse.ok()).toBe(true);
+    const triageListBody = await triageListResponse.json();
+    const existingAction = triageListBody.items.find((item: { action?: string | null }) => item.action)?.action;
+
+    if (existingAction) {
+      targetAction = existingAction;
+    } else {
+      const inboxResponse = await request.post('http://localhost:3456/api/inbox', {
+        data: { text: `Action filter test item ${Date.now()}` },
+      });
+      expect(inboxResponse.status()).toBe(200);
+      const inboxBody = await inboxResponse.json();
+      const inboxUlid = inboxBody.item._ulid;
+
+      const triageResponse = await request.post('http://localhost:3456/api/triage', {
+        data: {
+          inbox_ref: `@${inboxUlid}`,
+          action: targetAction,
+          reasoning: 'Create deterministic action-filter test record',
+        },
+      });
+      expect(triageResponse.status()).toBe(200);
+      await reloadWithRetry(page);
+    }
+
+    const nextBtn = page.getByTestId('triage-next');
+    if (await nextBtn.isEnabled()) {
+      await nextBtn.click();
+    }
+
+    await page.getByTestId('triage-action-filter').selectOption(targetAction);
+
+    // Filter change should reset navigation index to the first matching card.
+    await expect(page.getByTestId('triage-position')).toContainText(/^1\s*\/\s*\d+/);
+    await expect(page.getByTestId('triage-progress')).toContainText('Showing');
+    await expect(page.getByTestId('triage-rec-action')).toContainText(ACTION_LABELS[targetAction]);
   });
 
   // AC: @interactive-triage-ui ac-8
@@ -196,7 +263,8 @@ test.describe('Interactive Triage UI', () => {
 
 test.describe('Triage real-time updates via WebSocket', () => {
   // AC: @interactive-triage-ui ac-6
-  test('triage page updates progress count in real-time when another client submits a triage decision', async ({ page, request }) => {
+  test('triage page updates progress count in real-time when another client submits a triage decision', async ({ page, request, daemon }) => {
+    void daemon;
     // Open triage page — Svelte component subscribes to triage:updates on mount
     await page.goto('/triage');
     await page.waitForLoadState('networkidle');
@@ -234,7 +302,8 @@ test.describe('Triage real-time updates via WebSocket', () => {
 
 test.describe('Triage API operations via UI', () => {
   // AC: @interactive-triage-ui ac-3
-  test('submitting a triage decision calls the API and updates state', async ({ page, request }) => {
+  test('submitting a triage decision calls the API and updates state', async ({ page, request, daemon }) => {
+    void daemon;
     await page.goto('/triage');
     await page.waitForLoadState('networkidle');
 
