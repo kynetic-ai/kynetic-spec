@@ -63657,7 +63657,7 @@
     promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
     subsequent commands."
   spec_ref: "@batch-exec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -63667,7 +63667,7 @@
   session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-26T19:33:01.300Z
   started_at: 2026-03-01T02:22:52.837Z
-  submitted_at: 2026-03-01T02:04:07.920Z
+  submitted_at: 2026-03-01T02:23:15.306Z
   notes:
     - _ulid: 01KJDQA0MV956KKZREMG980AE6
       created_at: 2026-02-26T19:37:42.812Z
