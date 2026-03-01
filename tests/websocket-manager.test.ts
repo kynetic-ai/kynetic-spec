@@ -52,6 +52,9 @@ describe("WebSocketManager reconnect handling", () => {
 		MockWebSocket.instances = [];
 		vi.useFakeTimers();
 		vi.stubGlobal("WebSocket", MockWebSocket);
+		vi.stubGlobal("crypto", {
+			randomUUID: vi.fn(() => "00000000-0000-4000-8000-000000000000")
+		});
 		vi.spyOn(console, "log").mockImplementation(() => {});
 		vi.spyOn(console, "warn").mockImplementation(() => {});
 		vi.spyOn(console, "error").mockImplementation(() => {});
