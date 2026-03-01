@@ -371,6 +371,9 @@ describe('kspec serve commands', () => {
     // Create temp directory WITHOUT .kspec/ to avoid auto-registration
     const emptyTempDir = await createTempDir();
     await initGitRepo(emptyTempDir);
+    const isolatedHome = join(emptyTempDir, '.home');
+    mkdirSync(isolatedHome, { recursive: true });
+    const env = { HOME: isolatedHome };
 
     const port = await getAvailablePort();
 
@@ -378,19 +381,20 @@ describe('kspec serve commands', () => {
     // This ensures no default project is registered
     kspec(
       `serve start --daemon --port ${port}`,
-      emptyTempDir
+      emptyTempDir,
+      { env }
     );
 
     // Wait for daemon to fully start
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Check status - should indicate no projects
-    const result = kspec(`serve status`, emptyTempDir);
+    const result = kspec(`serve status`, emptyTempDir, { env });
 
     expect(result.stdout).toContain('No projects registered');
 
     // Cleanup
-    kspec(`serve stop`, emptyTempDir);
+    kspec(`serve stop`, emptyTempDir, { env });
     await cleanupTempDir(emptyTempDir);
   });
 

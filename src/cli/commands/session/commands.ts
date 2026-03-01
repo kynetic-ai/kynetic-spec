@@ -34,6 +34,7 @@ import {
   sessionLogShowAction,
   sessionLogStatsAction,
 } from "./log.js";
+import { sessionStaleCloseAction } from "./stale-close.js";
 import type { CheckpointOptions, SessionOptions, StopHookInput } from "./types.js";
 
 // ─── Debug Logging ──────────────────────────────────────────────────────────
@@ -316,6 +317,30 @@ export function registerSessionCommands(program: Command): void {
     .option("--all", "Compact all non-active sessions sequentially")
     .option("--dry-run", "Preview compaction without modifying files")
     .action(sessionCompactAction);
+
+  const stale = session
+    .command("stale")
+    .description("Stale active session cleanup commands");
+
+  markMutating(stale.command("close [session-id]"))
+    .description("Close stale active sessions by target or batch")
+    .option("--refs <session-ids...>", "Evaluate specific sessions in batch mode")
+    .option("--all", "Evaluate all active sessions")
+    .option(
+      "--older-than <duration>",
+      "Minimum session age (relative duration, e.g., 24h, 7d, 2w, 1m)",
+    )
+    .option(
+      "--inactive-for <duration>",
+      "Minimum inactivity duration (relative duration, e.g., 6h)",
+    )
+    .option(
+      "--liveness-guard <duration>",
+      "Protect recently-active sessions (default: 5m)",
+    )
+    .option("--dry-run", "Preview stale-session closures without modifying files")
+    .option("--force", "Skip confirmation prompts for destructive execution")
+    .action(sessionStaleCloseAction);
 
   session
     .command("checkpoint")

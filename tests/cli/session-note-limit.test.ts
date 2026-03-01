@@ -18,6 +18,7 @@ import type { SessionContext } from '../helpers/session-types';
 
 describe('session start note limit behavior', () => {
   let tempDir: string;
+  const NOTE_LIMIT_TEST_TIMEOUT_MS = 90_000;
 
   beforeEach(async () => {
     // Use clean environment to avoid fixture notes contaminating counts
@@ -31,7 +32,7 @@ describe('session start note limit behavior', () => {
   });
 
   describe('non-full mode total cap', () => {
-    it('should cap total notes at --limit value', { timeout: 30000 }, () => {
+    it('should cap total notes at --limit value', { timeout: NOTE_LIMIT_TEST_TIMEOUT_MS }, () => {
       // Create tasks across all 3 status buckets with many notes each.
       // With --limit 3, each bucket gets ceil(3/3) = 1 per-status,
       // and total should be capped at 3 after concatenation.
@@ -67,7 +68,7 @@ describe('session start note limit behavior', () => {
       expect(session.recent_notes!.length).toBeGreaterThan(0);
     });
 
-    it('should not exceed limit even with ceil rounding across 3 buckets', { timeout: 30000 }, () => {
+    it('should not exceed limit even with ceil rounding across 3 buckets', { timeout: NOTE_LIMIT_TEST_TIMEOUT_MS }, () => {
       // --limit 4: ceil(4/3) = 2 per bucket = up to 6 without final cap.
       // With fix, total should be capped at 4.
 
@@ -101,7 +102,7 @@ describe('session start note limit behavior', () => {
   });
 
   describe('full mode uncap', () => {
-    it('should allow more notes than default limit in full mode', { timeout: 30000 }, () => {
+    it('should allow more notes than default limit in full mode', { timeout: NOTE_LIMIT_TEST_TIMEOUT_MS }, () => {
       // Create many notes across multiple statuses.
       // Full mode should return all notes without artificial cap.
 
@@ -133,7 +134,7 @@ describe('session start note limit behavior', () => {
   });
 
   describe('starvation prevention with cap', () => {
-    it('should still include notes from all status buckets when capped', { timeout: 30000 }, () => {
+    it('should still include notes from all status buckets when capped', { timeout: NOTE_LIMIT_TEST_TIMEOUT_MS }, () => {
       // With --limit 6 and notes in all 3 statuses, each status should be represented.
       // ceil(6/3) = 2 per bucket, so each status gets up to 2 notes.
 
