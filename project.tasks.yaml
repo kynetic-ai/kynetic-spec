@@ -64010,7 +64010,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJKWXHKKHZMP574E78F7BHA3
   created_at: 2026-02-26T19:33:03.004Z
+  started_at: 2026-03-01T05:21:35.378Z
   notes:
     - _ulid: 01KJDQB2J9SKA1QNC3SG3NN8WF
       created_at: 2026-02-26T19:38:17.546Z
@@ -64083,10 +64085,15 @@
       author: "@claude"
       content: Linked to @web-ui module. URL state persistence for filter/view params across all list pages.
       supersedes: null
+    - _ulid: 01KJKXGPK47G78073ZAWTM0P1Z
+      created_at: 2026-03-01T05:21:39.940Z
+      author: Jacob Chapel
+      content: "Execution scope: sync triage filter state (status/tag/action) with URL query params,
+        preserve state on refresh/back-forward, and add/update E2E coverage in triage.spec.ts for
+        URL persistence behavior."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T05:21:35.378Z
-  session_id: 01KJKWXHKKHZMP574E78F7BHA3
 - _ulid: 01KJDQ1G6HBSJRXVSWEWQ9W9E4
   slugs: []
   title: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
