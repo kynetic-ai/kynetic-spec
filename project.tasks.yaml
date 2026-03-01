@@ -63667,6 +63667,7 @@
   session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-26T19:33:01.300Z
   started_at: 2026-03-01T01:53:09.621Z
+  submitted_at: 2026-03-01T02:04:07.920Z
   notes:
     - _ulid: 01KJDQA0MV956KKZREMG980AE6
       created_at: 2026-02-26T19:37:42.812Z
@@ -63792,9 +63793,14 @@
         - kspec validate (fails with pre-existing project-wide meta/reference/alignment/completeness
         issues, including duplicate @observations slug and missing observations skill file)
       supersedes: null
+    - _ulid: 01KJKJ74A1NSBDD9TB39QKSSHB
+      created_at: 2026-03-01T02:04:11.970Z
+      author: Jacob Chapel
+      content: "Opened PR #618: https://github.com/kynetic-ai/kynetic-spec/pull/618 (branch
+        fix/short-ulid-display-refs). Task submitted to pending_review."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-01T02:04:07.920Z
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
   title: Triage promote action should optionally delete the inbox item after creating the task.
