@@ -260,14 +260,16 @@ export async function sessionStaleCloseAction(
                 session_id: normalized,
                 input_ref: rawRef,
                 status: "resolution_error",
-                reason: `Session not found: ${rawRef}`,
+                reason: `Session not found: ${rawRef}. Try: kspec session list --status active`,
               });
             } else {
               results.push({
                 session_id: normalized,
                 input_ref: rawRef,
                 status: "resolution_error",
-                reason: `Ambiguous session ref ${rawRef}: ${resolution.matches.join(", ")}`,
+                reason:
+                  `Ambiguous session ref ${rawRef}: ${resolution.matches.join(", ")}. ` +
+                  "Try: kspec session list --status active and use a longer ref.",
               });
             }
             continue;
@@ -289,11 +291,15 @@ export async function sessionStaleCloseAction(
         const resolution = await resolveSessionId(ctx.specDir, normalized);
         if (!resolution.ok) {
           if (resolution.error === "not_found") {
-            error(`Session not found: ${sessionIdOrPrefix}`);
+            error(
+              `Session not found: ${sessionIdOrPrefix}`,
+              "Try: kspec session list --status active",
+            );
             process.exit(EXIT_CODES.NOT_FOUND);
           }
           error(
             `Session prefix "${sessionIdOrPrefix}" is ambiguous: ${resolution.matches.join(", ")}`,
+            "Try: kspec session list --status active and use a longer ref",
           );
           process.exit(EXIT_CODES.NOT_FOUND);
         }

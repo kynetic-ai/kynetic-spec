@@ -46,6 +46,16 @@ interface SessionStaleCloseJson {
   };
 }
 
+interface JsonErrorPayload {
+  success: false;
+  error: string;
+  details?: {
+    field?: string;
+    value?: string;
+    guidance?: string;
+  };
+}
+
 describe("session stale close", () => {
   let tempDir: string;
 
@@ -232,6 +242,8 @@ describe("session stale close", () => {
   });
 
   // AC: @session-stale-cleanup ac-8
+  // AC: @trait-multi-ref-batch ac-1
+  // AC: @trait-multi-ref-batch ac-3
   // AC: @trait-multi-ref-batch ac-8
   it("evaluates unique sessions only once in --refs mode", async () => {
     const staleId = testUlid("SESS", 9);
@@ -278,9 +290,12 @@ describe("session stale close", () => {
 
   // AC: @trait-multi-ref-batch ac-2
   // AC: @trait-multi-ref-batch ac-4
+  // AC: @trait-multi-ref-batch ac-5
   // AC: @trait-multi-ref-batch ac-7
+  // AC: @trait-dry-run ac-4
   // AC: @trait-error-guidance ac-1
   // AC: @trait-error-guidance ac-2
+  // AC: @trait-error-guidance ac-3
   // AC: @trait-error-guidance ac-6
   it("continues refs batch after resolution errors and returns partial-failure exit", async () => {
     const staleId = testUlid("SESS", 12);
@@ -299,10 +314,44 @@ describe("session stale close", () => {
 
     const payload = JSON.parse(result.stdout) as SessionStaleCloseJson;
     expect(payload.totals.candidates).toBe(1);
+    expect(payload.totals.changed_sessions).toBe(0);
     expect(payload.totals.failures).toBe(1);
     expect(payload.sessions.some((row) => row.status === "resolution_error")).toBe(
       true,
     );
+    const resolutionError = payload.sessions.find(
+      (row) => row.status === "resolution_error",
+    );
+    expect(resolutionError?.reason).toContain("Session not found");
+    expect(resolutionError?.reason).toContain("kspec session list --status active");
+
+    const unchanged = await getSession(tempDir, staleId);
+    expect(unchanged?.status).toBe("active");
+  });
+
+  // AC: @trait-json-output ac-3
+  it("returns structured JSON errors in --json mode", async () => {
+    const result = kspec("session stale close --json", tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(2);
+
+    const payload = JSON.parse(result.stderr) as JsonErrorPayload;
+    expect(payload.success).toBe(false);
+    expect(payload.error).toContain("Missing target");
+  });
+
+  // AC: @trait-error-guidance ac-5
+  it("includes validation field/value details for invalid criteria in JSON mode", async () => {
+    const result = kspec(
+      "session stale close --all --older-than nope --json",
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).toBe(2);
+
+    const payload = JSON.parse(result.stderr) as JsonErrorPayload;
+    expect(payload.error).toContain("Invalid value for --older-than");
+    expect(payload.details?.field).toBe("older-than");
+    expect(payload.details?.value).toBe("nope");
   });
 
   // AC: @trait-confirmation-prompt ac-1
@@ -360,6 +409,7 @@ describe("session stale close", () => {
   // AC: @trait-semantic-exit-codes ac-4 -- covered by malformed criteria and runtime exception path.
   // AC: @trait-semantic-exit-codes ac-7 -- covered by refs partial-failure test above.
   // AC: @trait-semantic-exit-codes ac-8 -- N/A: exit code constants documented centrally.
+  // AC: @trait-error-guidance ac-4 -- N/A: command has no state machine transitions; only validation/lookup errors.
   // AC: @trait-shadow-commit ac-1 -- covered via non-dry-run stale close mutation path.
   // AC: @trait-shadow-commit ac-2 -- covered by command-specific shadowCommitMessage.
   // AC: @trait-shadow-commit ac-3 -- N/A: no task/spec ULID ref in commit message contract for session IDs.
