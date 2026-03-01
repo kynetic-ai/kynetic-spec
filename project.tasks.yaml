@@ -64310,6 +64310,7 @@
   session_id: 01KJKWXHKKHZMP574E78F7BHA3
   created_at: 2026-02-26T19:33:04.635Z
   started_at: 2026-03-01T06:53:31.672Z
+  submitted_at: 2026-03-01T06:53:35.116Z
   notes:
     - _ulid: 01KJDQC6EMCTTQFKDBQX9JCG55
       created_at: 2026-02-26T19:38:54.292Z
@@ -64436,9 +64437,20 @@
           - tests/cli/session-note-limit.test.ts timeout failures (2 cases)
         - kspec validate (pre-existing project-wide schema/reference/alignment/completeness issues)
       supersedes: null
+    - _ulid: 01KJM2TCM0Y1NCBBZ9JZTKW183
+      created_at: 2026-03-01T06:54:20.288Z
+      author: Jacob Chapel
+      content: "Submitted for review in PR #622: https://github.com/kynetic-ai/kynetic-spec/pull/622
+        (branch fix/web-ui-websocket-reconnect-race, commit 155276ca9). Implemented WebSocketManager
+        stale-close race guard and intentional-disconnect reconnect suppression with regression
+        coverage in tests/websocket-manager.test.ts. Verification: npx vitest run
+        tests/websocket-manager.test.ts (3 passed). Full npm test and kspec validate still show
+        pre-existing unrelated baseline failures/issues (cli-serve no-projects assertion,
+        session-note-limit timeouts, existing validate schema/reference/alignment/completeness
+        warnings/errors)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-01T06:53:35.116Z
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
   slugs: []
   title: Fix test failures after v0.7.0 version bump
