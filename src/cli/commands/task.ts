@@ -1131,15 +1131,20 @@ Examples:
           }
         }
 
-        // AC: @task-budget-enforcement ac-block-start, ac-no-session, ac-no-budget
-        // Check budget before starting — only when session is set
-        const budgetCheck = await checkBudget(
-          ctx.specDir,
-          sessionId || undefined,
-        );
-        if (!budgetCheck.allowed) {
-          error(budgetCheck.reason!);
-          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        // AC: @task-budget-enforcement ac-block-start, ac-no-session, ac-no-budget, ac-needs-work-no-increment
+        // Check budget before starting — only when session is set.
+        // Skip budget check for needs_work→in_progress (fix cycles): the task
+        // already consumed a budget slot when originally started; blocking it
+        // would prevent completing already-assigned work.
+        if (foundTask.status !== "needs_work") {
+          const budgetCheck = await checkBudget(
+            ctx.specDir,
+            sessionId || undefined,
+          );
+          if (!budgetCheck.allowed) {
+            error(budgetCheck.reason!);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
         }
 
         // Update status
@@ -1158,11 +1163,12 @@ Examples:
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
 
-        // AC: @task-budget-enforcement ac-increment, ac-resume-no-increment
-        // Increment budget counter after successful start.
-        // Resume case (already in_progress) returns early above, so this only
-        // runs for genuine pending→in_progress or needs_work→in_progress transitions.
-        if (sessionId) {
+        // AC: @task-budget-enforcement ac-increment, ac-resume-no-increment, ac-needs-work-no-increment
+        // Increment budget counter after successful start, but only for
+        // genuine pending→in_progress transitions. Resume case returns early
+        // above. needs_work→in_progress is a fix cycle (task already consumed
+        // a budget slot when originally started) — don't double-count it.
+        if (sessionId && foundTask.status === "pending") {
           await incrementBudget(ctx.specDir, sessionId);
         }
 

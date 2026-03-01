@@ -185,6 +185,53 @@ describe("Integration: task budget enforcement", () => {
     });
   });
 
+  // AC: @task-budget-enforcement ac-needs-work-no-increment
+  describe("ac-needs-work-no-increment: no increment when restarting a needs_work task", () => {
+    it("should not increment budget when transitioning needs_work to in_progress", async () => {
+      // Set up budget with 1 task started (consumed when task was originally started)
+      await createTestBudget(tempDir, SESSION_ID, 3, 1);
+
+      // Put task into needs_work state (start → submit → needs-work)
+      // These run without budget env to avoid budget interference during setup
+      kspec("task start @test-task-pending", tempDir);
+      kspec("task submit @test-task-pending", tempDir);
+      kspec(
+        'task needs-work @test-task-pending --reason "Fix cycle test"',
+        tempDir,
+      );
+
+      // Now restart from needs_work WITH session — should NOT increment
+      kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      // Budget should still be 1 — needs_work restart doesn't burn a new slot
+      const budget = await readTestBudget(tempDir, SESSION_ID);
+      expect(budget).not.toBeNull();
+      expect(budget!.started_this_cycle).toBe(1);
+    });
+
+    it("should allow needs_work restart even when budget is exhausted", async () => {
+      // Budget is at max — but needs_work restart should bypass this
+      await createTestBudget(tempDir, SESSION_ID, 1, 1);
+
+      // Put task into needs_work without budget env
+      kspec("task start @test-task-pending", tempDir);
+      kspec("task submit @test-task-pending", tempDir);
+      kspec(
+        'task needs-work @test-task-pending --reason "Fix cycle test"',
+        tempDir,
+      );
+
+      // Restart from needs_work even though budget is exhausted
+      const result = kspec("task start @test-task-pending", tempDir, {
+        env: { KSPEC_SESSION_ID: SESSION_ID },
+      });
+
+      expect(result.stdout + result.stderr).toContain("Started task");
+    });
+  });
+
   // AC: @task-budget-enforcement ac-resume-no-increment
   describe("ac-resume-no-increment: no increment when task already in_progress", () => {
     it("should not increment budget when resuming an in-progress task", async () => {
