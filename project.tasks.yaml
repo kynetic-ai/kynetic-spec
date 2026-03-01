@@ -64003,7 +64003,7 @@
   description: "Web UI: persist all filter state and current view in URL query params so refreshing
     the page preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
   spec_ref: "@web-ui"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -64107,6 +64107,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-01T05:28:13.436Z
 - _ulid: 01KJDQ1G6HBSJRXVSWEWQ9W9E4
   slugs: []
   title: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
