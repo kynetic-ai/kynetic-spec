@@ -9819,12 +9819,14 @@ runs:
     task_ref: "@01KJDQ1GZVK77Y8CETXW2E56TG"
   - _ulid: 01KJM39VJ4YMQQ910977DNWCRF
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
+    status: completed
     current_step: 0
     total_steps: 10
     started_at: 2026-03-01T07:02:47.108Z
     step_results: []
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-01T07:10:02.209Z
+    result: early_exit
   - _ulid: 01KJM3BKVACDXQMJ7R75RZ4SQD
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
