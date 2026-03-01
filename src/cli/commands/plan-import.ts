@@ -92,6 +92,27 @@ interface ImportResult {
   planRef: string;
 }
 
+function mergeAcceptanceCriteriaById(
+  existingCriteria: SpecItemInput["acceptance_criteria"] | undefined,
+  incomingCriteria: NonNullable<SpecItemInput["acceptance_criteria"]>,
+): NonNullable<SpecItemInput["acceptance_criteria"]> {
+  if (!existingCriteria || existingCriteria.length === 0) {
+    return incomingCriteria;
+  }
+
+  const incomingById = new Map(incomingCriteria.map(ac => [ac.id, ac]));
+  const existingIds = new Set(existingCriteria.map(ac => ac.id));
+  const merged = existingCriteria.map(ac => incomingById.get(ac.id) ?? ac);
+
+  for (const ac of incomingCriteria) {
+    if (!existingIds.has(ac.id)) {
+      merged.push(ac);
+    }
+  }
+
+  return merged;
+}
+
 /**
  * Import plan document and create specs/tasks
  * AC: @plan-import ac-11 through ac-33
@@ -293,7 +314,10 @@ async function importPlan(
             updates.depends_on = spec.depends_on.map(normalizeRefInput);
           }
           if (spec.acceptance_criteria !== undefined) {
-            updates.acceptance_criteria = spec.acceptance_criteria;
+            updates.acceptance_criteria = mergeAcceptanceCriteriaById(
+              existingSpec.acceptance_criteria,
+              spec.acceptance_criteria,
+            );
           }
 
           await updateSpecItem(ctx, existingSpec, updates);
