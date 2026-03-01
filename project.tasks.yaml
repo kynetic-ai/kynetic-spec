@@ -65205,6 +65205,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #624. Fixed missing shadow auto-commit in skill render by calling
+    commitIfShadow after render/cleanup in src/cli/commands/skill-diff.ts. Added regression suite
+    tests/shadow-skill-commit.test.ts covering skill add/import/set/render(single+all)/delete
+    clean-shadow behavior. No deviations from task scope. Trait AC coverage confirmed for
+    @trait-shadow-commit ac-1 and ac-8 via new tests and passing CI/full test suite."
   depends_on: []
   context: []
   priority: 2
@@ -65217,6 +65222,7 @@
   created_at: 2026-02-27T07:32:24.971Z
   started_at: 2026-03-01T16:05:46.576Z
   submitted_at: 2026-03-01T16:18:25.415Z
+  completed_at: 2026-03-01T16:30:27.227Z
   notes:
     - _ulid: 01KJF06VJWMZTND40RHY7PS9VX
       created_at: 2026-02-27T07:32:30.940Z
@@ -65265,12 +65271,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-01T16:30:27.227Z
-  closed_reason: "Merged in PR #624. Fixed missing shadow auto-commit in skill render by calling
-    commitIfShadow after render/cleanup in src/cli/commands/skill-diff.ts. Added regression suite
-    tests/shadow-skill-commit.test.ts covering skill add/import/set/render(single+all)/delete
-    clean-shadow behavior. No deviations from task scope. Trait AC coverage confirmed for
-    @trait-shadow-commit ac-1 and ac-8 via new tests and passing CI/full test suite."
 - _ulid: 01KJF29ZGMMW4HZ6KX5SCHR7G2
   slugs:
     - task-adapter-aware-skill-invocation-formatting-for-ralp
@@ -69225,7 +69225,7 @@
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -69238,6 +69238,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-01T16:31:32.133Z
+  session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
 - _ulid: 01KJMYKSCERREYAAPVXVG9HE71
   slugs: []
   title: Fix WebSocket upgrade blocked by Elysia beforeHandle return value
