@@ -9986,7 +9986,7 @@ runs:
   - _ulid: 01KJMW548NB4MJAZ1J166EV92E
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T14:17:06.581Z
     step_results:
@@ -9999,5 +9999,15 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T14:17:40.397Z
-        completed_at: 2026-03-01T14:17:40.397Z
+        completed_at: 2026-03-01T14:18:03.883Z
+        notes: "High-confidence signals this iteration: (1) fix-cycle regression gate handling worked
+          (targeted repro + full-suite re-run), (2) one transient failure in
+          tests/ralph/session-budget-integration (SIGINT cleanup) during first npm test run.
+          Coverage check shows this area is already tracked by pending task @01KJGDR9
+          (session-budget-integration timeout/race stabilization), so no new untracked friction
+          identified."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T14:18:03.883Z
+        completed_at: 2026-03-01T14:18:03.883Z
     initiated_by: Jacob Chapel
