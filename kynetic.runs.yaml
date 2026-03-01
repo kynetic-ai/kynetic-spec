@@ -10035,6 +10035,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T16:19:11.231Z
+    completed_at: 2026-03-01T16:20:54.320Z
     step_results:
       - step_index: 0
         status: completed
@@ -10067,4 +10068,11 @@ runs:
         notes: Captures already executed in earlier steps (2 meta observations + 1 inbox item). No
           additional items to capture.
     initiated_by: "@claude"
-    completed_at: 2026-03-01T16:20:54.320Z
+  - _ulid: 01KJN490R70KKM1Y4CQ6DZBB81
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-03-01T16:39:02.664Z
+    step_results: []
+    initiated_by: "@claude"
