@@ -2794,7 +2794,7 @@ features:
           do not accumulate unbounded in-flight promises
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     requirements:
       - _ulid: 01KF6NBAZPZTWADHJJK95B2K6C
         slugs:
