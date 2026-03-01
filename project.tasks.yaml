@@ -48247,7 +48247,7 @@
     Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most
     valuable data for mining/telemetry but require parsing raw YAML to access.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -48285,6 +48285,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-01T17:57:11.802Z
 - _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
   slugs: []
   title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
