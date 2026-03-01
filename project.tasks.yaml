@@ -68324,7 +68324,7 @@
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -68394,6 +68394,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T00:48:48.299Z
+  closed_reason: "Merged in PR #614. Switched subagent prompt context to compact task/spec identity
+    summaries with CLI fetch commands, split prompt budgets to 16KB subagent and 32KB worker, and
+    pinned worker truncation to explicit worker budget. AC coverage for @ralph-subagent-spawning
+    (ac-1..ac-13) verified via annotated tests."
 - _ulid: 01KJKBB94D9HKQHW3HPJPE1AK9
   slugs: []
   title: Fix ralph loop OOM — O(1) seq assignment + event logging backpressure
