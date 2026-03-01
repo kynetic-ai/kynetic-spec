@@ -10112,7 +10112,7 @@ runs:
   - _ulid: 01KJN5JV36MFEDQS206EGPVT09
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T17:01:53.126Z
     step_results:
@@ -10126,7 +10126,16 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T17:02:19.463Z
-        completed_at: 2026-03-01T17:02:19.463Z
+        completed_at: 2026-03-01T17:02:32.882Z
+        notes: "Friction identified: tests/enhanced-setup.test.ts has a pre-existing failing test 'should
+          render core skills to codex output when codex is detected' — ENOENT on .codex/config.toml.
+          Confirmed via git stash test that this predates my work. Not tracked anywhere. Systemic:
+          runs every shard2, causes noise in test output. Success: Zod .shape derivation pattern is
+          clean — any future hardcoded field lists should follow same pattern."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T17:02:32.882Z
+        completed_at: 2026-03-01T17:02:32.882Z
     initiated_by: "@claude"
   - _ulid: 01KJN5K3PGJ9TXR1AZSVW8EX0R
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
