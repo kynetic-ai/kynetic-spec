@@ -64198,6 +64198,25 @@
 
         Next: run targeted E2E and validation checks, then full test suite before submit.
       supersedes: null
+    - _ulid: 01KJKN5GXGSEWEQNXEDV71W02R
+      created_at: 2026-03-01T02:55:45.072Z
+      author: Jacob Chapel
+      content: >-
+        Verification summary after implementation:
+
+
+        - Targeted AC-7 E2E checks pass:
+          - `npm run build && npx playwright test tests/e2e/triage.spec.ts -g "displays filter controls and progress count|action filter narrows cards by triage action and resets card index"`
+          - Result: 2 passed.
+        - Full triage.spec run still has pre-existing failures unrelated to this change (real-time
+        progress assertion and submit-enabled expectation paths).
+
+        - Full repo test run has a pre-existing failing file:
+          - `tests/cli/session-note-limit.test.ts` (3 timeout failures at lines 34, 70, 104).
+        - `kspec validate` still fails with pre-existing project-wide
+        schema/reference/alignment/completeness issues (missing observations skill file, duplicate
+        @observations slug, many baseline alignment warnings).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
