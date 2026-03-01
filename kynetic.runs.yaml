@@ -9407,7 +9407,7 @@ runs:
   - _ulid: 01KJKGDSE99XR1JT4P7Y1GEZZZ
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T01:32:53.065Z
     step_results:
@@ -9420,5 +9420,15 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T01:33:27.604Z
-        completed_at: 2026-03-01T01:33:27.604Z
+        completed_at: 2026-03-01T01:33:39.045Z
+        notes: "High-confidence friction: stale/non-loop KSPEC_SESSION_ID can trigger false 'Task budget
+          exhausted' on task start/submit transitions. Session evidence: needed env -u
+          KSPEC_SESSION_ID workaround this iteration. Coverage check: already tracked in inbox
+          @01KJG5A7 and related observations around task-budget guard behavior, so duplicate capture
+          is unnecessary. Success: targeted-scope implementation + focused regression tests + clean
+          PR flow worked reliably."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T01:33:39.045Z
+        completed_at: 2026-03-01T01:33:39.045Z
     initiated_by: Jacob Chapel
