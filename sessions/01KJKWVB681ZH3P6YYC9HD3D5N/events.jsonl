@@ -13164,3 +13164,5 @@
 {"ts":1772350528130,"seq":13162,"type":"session.update","session_id":"01KJKWVB681ZH3P6YYC9HD3D5N","data":{"iteration":6,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}}
 {"ts":1772350528227,"seq":13163,"type":"session.update","session_id":"01KJKWVB681ZH3P6YYC9HD3D5N","data":{"iteration":6,"update":{"sessionUpdate":"usage_update","used":46103,"size":258400}}}
 {"ts":1772350528227,"seq":13164,"type":"session.update","session_id":"01KJKWVB681ZH3P6YYC9HD3D5N","data":{"iteration":6,"phase":"reflect","stopReason":"end_turn","completed":true}}
+{"ts":1772350650738,"seq":13165,"type":"session.wrapup","session_id":"01KJKWVB681ZH3P6YYC9HD3D5N","data":{"exitReason":"no_tasks","result":{"success":true,"timedOut":false,"skipped":true,"skipReason":"Working tree is clean and no tasks in progress"}}}
+{"ts":1772350650740,"seq":13166,"type":"session.end","session_id":"01KJKWVB681ZH3P6YYC9HD3D5N","data":{"status":"completed","consecutiveFailures":1,"exitReason":"no_tasks","closeReason":"No eligible tasks remaining"}}
