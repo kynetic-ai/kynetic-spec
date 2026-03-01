@@ -64232,6 +64232,18 @@
         (packages/web-ui/tests/e2e/triage.spec.ts:167, page.reload ERR_CONNECTION_REFUSED). PR #619
         reviewed and commented inline; worker should stabilize this test and resubmit."
       supersedes: null
+    - _ulid: 01KJKNXZKY0QRGHSAGE6PKW2HW
+      created_at: 2026-03-01T03:09:06.558Z
+      author: Jacob Chapel
+      content: '[FIX_CYCLE: 2] Stabilized AC-7 action-filter E2E test in PR #619 by replacing single-shot
+        page.reload() with a retry wrapper (up to 3 attempts with backoff) to tolerate transient
+        daemon connection refusal during test-created triage setup.\n\nCode change:\n-
+        packages/web-ui/tests/e2e/triage.spec.ts: added reloadWithRetry(page) helper and used it in
+        the fallback branch that creates a deterministic triage record.\n\nVerification:\n- cd
+        packages/web-ui && npx playwright test tests/e2e/triage.spec.ts -g "action filter narrows
+        cards by triage action and resets card index" --repeat-each=8 --workers=1\n- Result: 8
+        passed (39.4s).'
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
