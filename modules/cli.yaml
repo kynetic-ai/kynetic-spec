@@ -3017,7 +3017,7 @@ features:
             then: task transitions to needs_work; worker picks it up in next iteration as fix cycle
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KG6CHDCEB2D34NEDF1QSWW80
         slugs:
           - ralph-task-limit
