@@ -2,6 +2,9 @@
 	// AC: @interactive-triage-ui ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
 	// AC: @trait-websocket-protocol ac-1, ac-2, ac-3
 	import { onMount, onDestroy } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
+	import { page } from '$app/stores';
 	import type { InboxItem, BroadcastEvent } from '@kynetic-ai/shared';
 	import type { TriageRecord, TriageAction } from '$lib/types/triage';
 	import {
@@ -38,12 +41,6 @@
 	let selectedAction = $state<TriageAction | ''>('');
 	let reasoning = $state('');
 
-	// Filter state
-	// AC: @interactive-triage-ui ac-7
-	let filterTag = $state<string | ''>('');
-	let filterStatus = $state<'all' | 'untriaged' | 'triaged' | 'acted_on'>('all');
-	let filterAction = $state<TriageAction | ''>('');
-
 	// Action labels
 	const ACTION_LABELS: Record<TriageAction, string> = {
 		promote: 'Promote to Task',
@@ -60,6 +57,46 @@
 		'spec-gap': 'bg-purple-500',
 		duplicate: 'bg-gray-500'
 	};
+
+	type TriageFilterStatus = 'all' | 'untriaged' | 'triaged' | 'acted_on';
+	const TRIAGE_STATUS_VALUES: readonly TriageFilterStatus[] = ['all', 'untriaged', 'triaged', 'acted_on'];
+	const TRIAGE_ACTION_VALUES = Object.keys(ACTION_LABELS) as TriageAction[];
+
+	// Filter state
+	// AC: @interactive-triage-ui ac-7
+	let filterTag = $state<string | ''>('');
+	let filterStatus = $state<TriageFilterStatus>('all');
+	let filterAction = $state<TriageAction | ''>('');
+
+	function parseFilterStatus(rawStatus: string | null): TriageFilterStatus {
+		if (rawStatus && TRIAGE_STATUS_VALUES.includes(rawStatus as TriageFilterStatus)) {
+			return rawStatus as TriageFilterStatus;
+		}
+		return 'all';
+	}
+
+	function parseFilterAction(rawAction: string | null): TriageAction | '' {
+		if (rawAction && TRIAGE_ACTION_VALUES.includes(rawAction as TriageAction)) {
+			return rawAction as TriageAction;
+		}
+		return '';
+	}
+
+	$effect(() => {
+		const nextTag = $page.url.searchParams.get('tag') || '';
+		const nextStatus = parseFilterStatus($page.url.searchParams.get('status'));
+		const nextAction = parseFilterAction($page.url.searchParams.get('action'));
+
+		if (filterTag !== nextTag) {
+			filterTag = nextTag;
+		}
+		if (filterStatus !== nextStatus) {
+			filterStatus = nextStatus;
+		}
+		if (filterAction !== nextAction) {
+			filterAction = nextAction;
+		}
+	});
 
 	// Merged view: inbox items with their triage records
 	interface TriageCardItem {
@@ -171,6 +208,20 @@
 		} catch (err) {
 			console.error('Failed to reload triage records:', err);
 		}
+	}
+
+	function updateFilterParam(key: 'status' | 'action' | 'tag', value: string) {
+		const params = new URLSearchParams($page.url.searchParams);
+
+		if (!value || value === 'all') {
+			params.delete(key);
+		} else {
+			params.set(key, value);
+		}
+
+		const query = params.toString();
+		const nextUrl = query ? `${base}/triage?${query}` : `${base}/triage`;
+		goto(nextUrl, { replaceState: false, keepFocus: true, noScroll: true });
 	}
 
 	// AC: @interactive-triage-ui ac-5 - Navigation
@@ -331,6 +382,7 @@
 		<div class="flex gap-2 items-center" data-testid="triage-filters">
 			<select
 				bind:value={filterStatus}
+				onchange={(event) => updateFilterParam('status', (event.currentTarget as HTMLSelectElement).value)}
 				class="rounded-md border bg-background px-3 py-1.5 text-sm"
 				data-testid="triage-status-filter"
 			>
@@ -341,6 +393,7 @@
 			</select>
 			<select
 				bind:value={filterAction}
+				onchange={(event) => updateFilterParam('action', (event.currentTarget as HTMLSelectElement).value)}
 				class="rounded-md border bg-background px-3 py-1.5 text-sm"
 				data-testid="triage-action-filter"
 			>
@@ -352,6 +405,7 @@
 			{#if allTags.length > 0}
 				<select
 					bind:value={filterTag}
+					onchange={(event) => updateFilterParam('tag', (event.currentTarget as HTMLSelectElement).value)}
 					class="rounded-md border bg-background px-3 py-1.5 text-sm"
 					data-testid="triage-tag-filter"
 				>
