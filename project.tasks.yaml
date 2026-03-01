@@ -64300,14 +64300,16 @@
   description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation into reconnection logic, heartbeat handling, or fallback to polling.
   spec_ref: "@daemon-server"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJKWXHKKHZMP574E78F7BHA3
   created_at: 2026-02-26T19:33:04.635Z
+  started_at: 2026-03-01T06:53:31.672Z
   notes:
     - _ulid: 01KJDQC6EMCTTQFKDBQX9JCG55
       created_at: 2026-02-26T19:38:54.292Z
@@ -64436,8 +64438,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T06:53:31.672Z
-  session_id: 01KJKWXHKKHZMP574E78F7BHA3
+  submitted_at: 2026-03-01T06:53:35.116Z
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
   slugs: []
   title: Fix test failures after v0.7.0 version bump
