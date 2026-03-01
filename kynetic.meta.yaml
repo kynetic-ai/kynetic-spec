@@ -875,6 +875,161 @@ workflows:
           Merge the PR.
           Use: gh pr merge --merge --delete-branch
           Or: GitHub UI merge button
+  - _ulid: 01KJKBFYG5K4XTGZJGXRFMP1YD
+    id: task-work-loop
+    trigger: manual
+    description: "Loop variant of task-work-session for autonomous agents. Auto-filters to
+      automation-eligible tasks, auto-resolves decisions. Task selection: needs_work > in_progress >
+      unblocking > priority. Includes local-review subagent step and fix cycle handling for
+      needs_work tasks. Verifies work needed including trait AC coverage. Implementation quality:
+      search for existing utilities, match code style, run full test suite. PR review handled
+      externally by ralph."
+    steps:
+      - type: action
+        content: |
+          Filter to automation-eligible tasks only.
+          Use: kspec tasks ready --eligible
+          This ensures only tasks marked automation: eligible are considered.
+        execution:
+          mode: silent
+      - type: decision
+        content: >
+          Select task by priority order.
+
+          First, run `kspec tasks ready --eligible` — its output is authoritative. Do not select
+          exit based on assumptions.
+
+          Check in order:
+
+          1. needs_work tasks (fix cycle — address review feedback, highest priority)
+
+          2. in_progress tasks (continue existing work)
+
+          3. Ready tasks that unblock others (high impact)
+
+          4. Highest priority ready task (lowest number = higher priority)
+
+
+          Note: pending_review tasks are handled externally by ralph spawning PR review subagents.
+        options:
+          - needs_work task exists -> fix review feedback (fix cycle)
+          - in_progress task exists -> continue that task
+          - Ready task unblocks others -> select that task
+          - Only isolated ready tasks -> select highest priority (lowest number)
+          - "`kspec tasks ready --eligible` returned empty -> stop responding (ralph exits
+            automatically)"
+          - "`kspec tasks ready --eligible` shows all blocked -> stop responding (ralph exits
+            automatically)"
+        execution:
+          mode: silent
+      - type: check
+        content: >
+          Verify work is needed - but VALIDATE, don't trust notes.
+
+
+          Notes are context, not proof. If a task is in the queue, there's a reason.
+
+
+          To mark "Already implemented" you MUST:
+
+          1. RUN the tests (npm test) - they must PASS, not skip
+
+          2. VERIFY own AC coverage - each spec AC has a test annotated // AC: @spec-ref ac-N
+
+          3. VERIFY trait AC coverage - each inherited trait AC has a test annotated // AC:
+          @trait-slug ac-N
+
+          4. RUN kspec validate - zero trait AC coverage warnings for your spec
+
+          5. CHECK implementation matches spec requirements
+
+
+          DO NOT mark complete just because:
+
+          - Notes say "already done" (verify yourself)
+
+          - Tests exist but skip in CI (that's a gap to fix)
+
+          - Someone said it was implemented (run the tests)
+
+
+          Treat this like a code review - validate the actual work.
+        on_fail: |
+          Only if tests PASS and ACs are COVERED:
+          Mark task complete with "Already implemented" reason and EXIT
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Start selected task (if not already in_progress).
+          Use: kspec task start @task
+
+          If task has plan_ref, load plan context before deep implementation work:
+            1. Check task link: kspec task get @task
+            2. If plan_ref is non-null: kspec plan get @plan-ref
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Work on the task, adding notes as you go.
+          Use: kspec task note @task "What you're doing..."
+          Add notes during work, not just at end.
+
+          SCOPE EXPANSION: If you discover missing implementation while testing,
+          implementing it IS in scope. The goal is verified behavior, not just test files.
+          "Add tests for X" means "ensure X is verified" - if X doesn't exist, implement it.
+      - type: check
+        content: |
+          Verify Definition of Done before committing.
+
+          Read task notes for any DoD criteria. Common constraints:
+          - "No test.skip() calls" - verify no skipped tests in changes
+          - "All own ACs covered" - verify each spec AC has corresponding test
+          - "All trait ACs covered" - verify each inherited trait AC has test
+          - "No TODO/FIXME" - no placeholder comments
+          - "No duplicated logic" - search for existing utilities before writing new code
+
+          CRITICAL: Never use test.skip() to document missing functionality.
+          If functionality is missing, implement it - that's in scope.
+
+          If DoD criteria exist and are not met, fix the gaps first.
+        on_fail: |
+          Do not proceed with DoD violations.
+          Either fix the gaps or escalate to user if scope is unclear.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Commit changes with Task: @task trailer.
+          All changes must be committed before submitting.
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          Run local review via subagent before submitting.
+          Spawn a subagent using Task tool with prompt:
+          "Run /local-review for @spec-ref. Report all findings with severity."
+
+          If MUST-FIX findings: fix them, re-commit, re-run local review.
+          If SHOULD-FIX or SUGGESTION only: note findings, proceed to submit.
+          If actionable items not worth fixing now: kspec inbox add "..."
+        execution:
+          mode: silent
+      - type: action
+        content: |
+          If this is a fix cycle (needs_work task):
+            1. Read PR review comments: gh api repos/{owner}/{repo}/pulls/{number}/reviews
+            2. Fix MUST-FIX and SHOULD-FIX issues identified in comments
+            3. Commit and push fixes to PR branch
+            4. Submit task: kspec task submit @task
+            5. Stop responding — reviewer re-reviews in next iteration
+
+          Otherwise (new work):
+            1. Submit task: kspec task submit @task
+            2. Create PR: /pr skill
+            3. Stop responding — ralph handles PR review via separate subagent
+        execution:
+          mode: silent
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
