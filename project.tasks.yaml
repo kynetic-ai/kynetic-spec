@@ -64300,7 +64300,7 @@
   description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation into reconnection logic, heartbeat handling, or fallback to polling.
   spec_ref: "@daemon-server"
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -64382,10 +64382,26 @@
       content: Linked to @daemon-server spec (covers WebSocket protocol). Investigate and fix WebSocket
         reconnection reliability.
       supersedes: null
+    - _ulid: 01KJM2DPN621APMNNFFZCX3RN5
+      created_at: 2026-03-01T06:47:24.582Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Web UI websocket manager can enter reconnect churn due to stale onclose
+        handlers from prior sockets and reconnect attempts after intentional disconnect.
+
+        - Scope: stabilize client connection lifecycle for intentional close and project-switch
+        reconnects; add focused regression tests for stale-close and manual-disconnect behavior.
+
+        - Files: packages/web-ui/src/lib/websocket/manager.ts,
+        tests/web-ui/websocket-manager.test.ts (new).
+
+        - Verification: run targeted vitest for websocket manager tests and relevant existing
+        connection-related tests, then run full npm test before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T06:47:24.583Z
-  session_id: 01KJKWXHKKHZMP574E78F7BHA3
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
   slugs: []
   title: Fix test failures after v0.7.0 version bump
