@@ -5846,6 +5846,11 @@ features:
           the task start returns early (already in progress)
         then: |
           budget is not incremented since no new task was started
+      - id: ac-needs-work-no-increment
+        given: a task is in needs_work status and kspec task start is called on it with KSPEC_SESSION_ID set
+        when: the task transitions from needs_work to in_progress
+        then: budget is NOT incremented — the task already consumed a budget slot in the previous cycle when
+          it was originally started
     depends_on: []
     implements: []
     relates_to: []
