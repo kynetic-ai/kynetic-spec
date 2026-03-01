@@ -9145,8 +9145,33 @@ runs:
   - _ulid: 01KJKCBRNRQ22M13HB9RJK3VBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-01T00:21:52.441Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-01T00:21:52.441Z
+        completed_at: 2026-03-01T00:22:12.747Z
+        notes: >-
+          What worked well:
+
+          1. Systematic root cause analysis — traced ACP RPC error from symptom (truncated JSON) to
+          root cause (wire-size overhead from JSON escaping not accounted for in 32KB budget). Codex
+          + Plan agent dual review caught the shared-constant cross-role regression risk.
+
+          2. Deep investigation on ralph OOM — followed the stack trace (StringDecoder::DecodeData)
+          to the actual bottleneck (getEventCount reading entire events.jsonl per append +
+          fire-and-forget Promise pattern). Didn't stop at surface-level theories.
+
+          3. Live container recovery — successfully rebased 57 diverged commits using kspec merge
+          driver inside a running podman container, with only 1 corrupted commit skipped. The merge
+          driver handled YAML conflicts automatically.
+
+          4. Spec-first discipline — checked spec coverage before creating tasks for both the RPC
+          fix and OOM fix, added new AC to @cli-ralph for backpressure.
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-01T00:22:12.747Z
+        completed_at: 2026-03-01T00:22:12.747Z
     initiated_by: "@claude"
