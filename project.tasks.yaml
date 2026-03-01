@@ -48273,7 +48273,7 @@
         spec"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KHASR8CABEKX1EW5KH4W7RCE
   slugs: []
   title: "Fix: ralph noise stripping leaks on split-chunk boundaries"
@@ -53613,6 +53613,7 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Parent ACP spike completed; mock concerns addressed during ACP migration work
   depends_on:
     - "@01KHY9WV"
   context: []
@@ -53656,7 +53657,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  closed_reason: Parent ACP spike completed; mock concerns addressed during ACP migration work
 - _ulid: 01KHYP4CQBQP9ZKKFPNYC3FHG4
   slugs:
     - separate-worker-reviewer-roles
