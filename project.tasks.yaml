@@ -48443,7 +48443,7 @@
       content: "Automation assessment: set to needs_review. missing spec_ref"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KHF34FC1CG2NTAV26QE4VASM
   slugs: []
   title: Extract drift detection field lists from Zod schemas at runtime
