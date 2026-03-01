@@ -10160,8 +10160,19 @@ runs:
   - _ulid: 01KJN7GRKQTM9TQ40V63Y3ZD0Y
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-03-01T17:35:42.199Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-01T17:35:42.199Z
+        completed_at: 2026-03-01T17:37:08.202Z
+        notes: "Completed task 01KHF2BR: fixed vacuous AC-6 item list parity test. Captured 2 friction
+          observations about inconsistent JSON shapes (item list wraps in {items:[]}, item status is
+          nested object). No new tasks warranted — observations captured for future triage."
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-01T17:37:08.202Z
+        completed_at: 2026-03-01T17:37:08.202Z
     initiated_by: "@claude"
