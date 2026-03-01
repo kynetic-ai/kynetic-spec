@@ -63751,6 +63751,7 @@
   vcs_refs: []
   created_at: 2026-02-26T19:33:02.203Z
   started_at: 2026-03-01T01:31:55.076Z
+  submitted_at: 2026-03-01T01:31:56.326Z
   notes:
     - _ulid: 01KJDQAHM5SX18W9F5V0ET02G6
       created_at: 2026-02-26T19:38:00.197Z
@@ -63859,9 +63860,15 @@
         meta/reference/alignment/completeness issues around observations slug/skill and unrelated
         alignment warnings.
       supersedes: null
+    - _ulid: 01KJKGC61AKBA443BD79ERR95C
+      created_at: 2026-03-01T01:32:00.426Z
+      author: Jacob Chapel
+      content: "Lifecycle note: this iteration inherited a stale KSPEC_SESSION_ID budget guard that
+        blocked normal task start ('Task budget exhausted: 1/1'). Used one-shot env -u
+        KSPEC_SESSION_ID for task start/submit transitions after code/test completion."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-01T01:31:56.326Z
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
   slugs: []
   title: "Web UI: persist all filter state and current view in URL query params so refreshing the page
