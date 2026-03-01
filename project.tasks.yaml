@@ -64103,6 +64103,7 @@
   session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-26T19:33:03.825Z
   started_at: 2026-03-01T02:46:20.462Z
+  submitted_at: 2026-03-01T02:57:17.878Z
   notes:
     - _ulid: 01KJDQBJ4QTDMCZJ4NAY7B1KGP
       created_at: 2026-02-26T19:38:33.495Z
@@ -64217,9 +64218,15 @@
         schema/reference/alignment/completeness issues (missing observations skill file, duplicate
         @observations slug, many baseline alignment warnings).
       supersedes: null
+    - _ulid: 01KJKN8H59YH4Y0DZ330GFE5AD
+      created_at: 2026-03-01T02:57:23.625Z
+      author: Jacob Chapel
+      content: "Submitted for review in PR #619: https://github.com/kynetic-ai/kynetic-spec/pull/619
+        (branch feat/triage-action-filter, commit e8371171a). Implemented triage action filter UI +
+        logic and AC-7 E2E coverage updates."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-01T02:57:17.878Z
 - _ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
   slugs: []
   title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
