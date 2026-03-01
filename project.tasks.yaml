@@ -64497,6 +64497,32 @@
         3d198c43 (npm test: tests/cli-serve.test.ts 'should show uptime in status output' expected
         uptime number but got object)."
       supersedes: null
+    - _ulid: 01KJMW169CN2XWNAFNHZX3KYZD
+      created_at: 2026-03-01T14:14:57.580Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 7] Hardened daemon status uptime retrieval to resolve regression gate flake in
+        tests/cli-serve.test.ts ("should show uptime in status output").
+
+
+        Changes:
+
+        - Added `parseUptimeSeconds()` in src/cli/commands/serve.ts to normalize uptime payloads to
+        seconds when runtimes serialize structured uptime objects (seconds/ms shapes).
+
+        - Updated `serve status` health fetch to retry up to 5 times (200ms backoff) before giving
+        up, reducing startup race windows where uptime could be null.
+
+
+        Verification:
+
+        - `npx vitest run tests/cli-serve.test.ts -t "should show uptime in status output"` (passed)
+
+        - `npm test` (163 files passed, 3620 tests passed, 0 failed, 3 skipped)
+
+        - `kspec validate` still reports pre-existing project-wide
+        meta/reference/alignment/completeness issues unrelated to this task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
