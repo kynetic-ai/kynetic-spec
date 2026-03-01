@@ -9145,7 +9145,7 @@ runs:
   - _ulid: 01KJKCBRNRQ22M13HB9RJK3VBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-01T00:21:52.441Z
     step_results:
@@ -9200,5 +9200,24 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-01T00:22:26.941Z
-        completed_at: 2026-03-01T00:22:26.941Z
+        completed_at: 2026-03-01T00:22:54.988Z
+        notes: >-
+          Coverage check:
+
+          1. Silent push failures — inbox @01KJKC9T created this session. Covered.
+
+          2. getEventCount OOM — task @01KJKBB9 created this session with implementation notes.
+          Covered.
+
+          3. Backpressure — new AC added to @cli-ralph this session, task @01KJKBB9 covers both
+          fixes. Covered.
+
+          4. Explore agent accuracy — NOT tracked. Systemic observation about agent investigation
+          quality.
+
+          5. Stale workflow runs — already tracked as inbox @01KHVCPEX. Covered.
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-01T00:22:54.988Z
+        completed_at: 2026-03-01T00:22:54.988Z
     initiated_by: "@claude"
