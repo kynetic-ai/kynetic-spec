@@ -43748,7 +43748,7 @@
       content: "Automation status set to needs_review: New spec construct - needs spec definition"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: manual_only
 - _ulid: 01KGGZKQDSPMJ2242BCMJX48K6
   slugs: []
   title: Add AC schema field validation to detect drift
