@@ -54,6 +54,7 @@ Use CLI commands to find information. **Do NOT search `.kspec/` YAML files manua
 | List by type | `kspec item list --type feature` |
 | All traits | `kspec trait list` |
 | Task's linked spec | `kspec task get @ref` → read `spec_ref` field |
+| Task's linked plan | `kspec task get @ref` → if `plan_ref` is non-null, run `kspec plan get @plan-ref` |
 
 **Key pattern:** When `kspec item get` output shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the trait's ACs. One command — do not grep YAML files.
 
@@ -86,6 +87,13 @@ If already implemented: verify tests pass, AC coverage exists, then `kspec task 
 ### 3. Start Task
 
 ```bash
+# Check task links first
+kspec task get @ref
+
+# If plan_ref is non-null, load implementation context from the plan
+kspec plan get @plan-ref
+
+# Then start work
 kspec task start @ref
 ```
 
