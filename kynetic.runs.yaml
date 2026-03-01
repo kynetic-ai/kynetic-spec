@@ -9942,8 +9942,18 @@ runs:
   - _ulid: 01KJMTXX99N74N52E3JTZGVWY1
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-03-01T13:55:41.481Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-01T13:55:41.481Z
+        completed_at: 2026-03-01T13:56:06.423Z
+        notes: "Step 1 (gate): meaningful work present in this iteration (commit 3d198c43a on
+          tests/websocket-manager.test.ts and task transitioned to pending_review)."
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-01T13:56:06.423Z
+        completed_at: 2026-03-01T13:56:06.423Z
     initiated_by: Jacob Chapel
