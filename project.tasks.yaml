@@ -68420,7 +68420,9 @@
     - cli
     - ralph
   vcs_refs: []
+  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-03-01T00:04:07.949Z
+  started_at: 2026-03-01T00:49:38.723Z
   notes:
     - _ulid: 01KJKBBRTSDFKNX0MZADX4G3F1
       created_at: 2026-03-01T00:04:24.025Z
@@ -68475,7 +68477,29 @@
 
         - tests/ralph.test.ts — update/add logger backpressure tests
       supersedes: null
+    - _ulid: 01KJKEGTZ7T2Y7WDYK5XFYM6BG
+      created_at: 2026-03-01T00:59:35.783Z
+      author: Jacob Chapel
+      content: >-
+        Implemented O(1) event seq assignment by replacing full-file line counting with tail-based
+        last-seq lookup in src/sessions/store.ts (bounded tail read + fallback full parse only when
+        tail is unparsable), and added bounded sequential backpressure queueing in
+        createSessionUpdateLogger to prevent unbounded in-flight appendEvent promises during rapid
+        update streams.
+
+
+        Verification:
+
+        - npm test -- tests/sessions.test.ts tests/ralph.test.ts (200 passed).
+
+        - npm test (3597 passed, 2 failed, 3 skipped) with failures in pre-existing baseline
+        timeouts: tests/cli/session-note-limit.test.ts:34 and :104.
+
+        - npm test -- tests/cli/session-note-limit.test.ts reproduced same baseline timeouts (2
+        failed, 2 passed). 
+
+        - kspec validate still fails on pre-existing project issues (@observations slug ambiguity +
+        missing observations skill file), unrelated to this task.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T00:49:38.723Z
-  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
