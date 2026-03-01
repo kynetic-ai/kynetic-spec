@@ -68410,7 +68410,7 @@
   spec_ref: "@cli-ralph"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -68503,3 +68503,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-01T00:59:44.685Z
