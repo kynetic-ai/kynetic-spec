@@ -69176,28 +69176,29 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Surface subagent process exit code and signal in failure errors
+- _ulid: 01KJMX0Q15WBBPAC91SJAK4G54
+  slugs: []
+  title: Surface subagent process exit code and signal in failure errors
+  type: task
   description: When a subagent process dies unexpectedly, the error only says JsonRpcFraming closed
     with no indication of why. The spawner exit handler (spawner.ts:89) discards (code, signal) from
     the child process exit event. Capture exit code/signal in the spawner and propagate it through
     the ACP client close path so the error message in ralph says something like Subagent process
     exited with signal SIGKILL or Subagent process exited with code 1 instead of the opaque framing
     error.
-  type: task
   spec_ref: "@ralph-subagent-spawning"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cli
     - ralph
-  depends_on: []
-  _ulid: 01KJMX0Q15WBBPAC91SJAK4G54
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-01T14:32:10.533Z
   notes: []
   todos: []
+  automation: eligible
