@@ -9144,7 +9144,7 @@ runs:
     result: success
   - _ulid: 01KJKCBRNRQ22M13HB9RJK3VBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-01T00:21:52.441Z
@@ -9234,5 +9234,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-01T00:23:31.938Z
-        completed_at: 2026-03-01T00:23:31.938Z
+        completed_at: 2026-03-01T00:23:48.091Z
+        notes: Captured success observation @01KJKCF1 about agent investigation accuracy. All other items
+          were already tracked during the session.
     initiated_by: "@claude"
+    completed_at: 2026-03-01T00:23:48.091Z
