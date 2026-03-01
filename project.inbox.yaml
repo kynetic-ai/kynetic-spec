@@ -1183,3 +1183,15 @@ inbox:
       - shadow
       - ralph
     added_by: "@claude"
+  - _ulid: 01KJKDBKNYSC80EW2ZGEKCPGRT
+    text: "tests/cli/session-note-limit.test.ts has reproducible timeout instability in current
+      baseline. During this iteration: full npm test timed out at lines 34/70/104, and isolated run
+      timed out at lines 34/104 despite rebuilding. This appears separate from ralph prompt changes
+      and indicates session-start note-limit path/perf regression or test flake that should be
+      stabilized."
+    created_at: 2026-03-01T00:39:15.902Z
+    tags:
+      - reflection
+      - testing
+      - sessions
+    added_by: Jacob Chapel
