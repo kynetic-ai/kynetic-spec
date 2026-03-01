@@ -792,9 +792,51 @@ describe('ralph memory-safety helpers', () => {
 
     logger('session-1', update1);
     logger('session-2', update2);
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(logged).toEqual([{ iteration: 2, update: update2 }]);
+  });
+
+  // AC: @cli-ralph ac-27
+  it('createSessionUpdateLogger queues updates and drains sequentially', async () => {
+    let inFlight = 0;
+    let maxInFlight = 0;
+    const observed: string[] = [];
+
+    const logger = createSessionUpdateLogger(
+      'session-1',
+      1,
+      async (_iteration, update) => {
+        inFlight += 1;
+        maxInFlight = Math.max(maxInFlight, inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        if (
+          update.sessionUpdate === 'agent_message_chunk' &&
+          update.content?.type === 'text'
+        ) {
+          observed.push(update.content.text);
+        }
+        inFlight -= 1;
+      },
+    );
+
+    logger('session-1', {
+      sessionUpdate: 'agent_message_chunk',
+      content: { type: 'text', text: 'one' },
+    } satisfies SessionUpdate);
+    logger('session-1', {
+      sessionUpdate: 'agent_message_chunk',
+      content: { type: 'text', text: 'two' },
+    } satisfies SessionUpdate);
+    logger('session-1', {
+      sessionUpdate: 'agent_message_chunk',
+      content: { type: 'text', text: 'three' },
+    } satisfies SessionUpdate);
+
+    await new Promise((resolve) => setTimeout(resolve, 60));
+
+    expect(maxInFlight).toBe(1);
+    expect(observed).toEqual(['one', 'two', 'three']);
   });
 
   it('createSessionUpdateLogger swallows logging errors', () => {

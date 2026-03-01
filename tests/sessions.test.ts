@@ -438,6 +438,43 @@ describe('Event storage', () => {
       expect(event3.seq).toBe(2);
     });
 
+    // AC: @session-events ac-2
+    it('should derive next seq from the last stored event seq', async () => {
+      const sessionDir = getSessionDir(testDir, sessionId);
+      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      await fs.mkdir(sessionDir, { recursive: true });
+
+      const existing = [
+        {
+          ts: 1000,
+          seq: 5,
+          type: 'session.start',
+          session_id: sessionId,
+          data: null,
+        },
+        {
+          ts: 2000,
+          seq: 9,
+          type: 'session.update',
+          session_id: sessionId,
+          data: { message: 'existing tail event' },
+        },
+      ];
+      await fs.writeFile(
+        eventsPath,
+        `${existing.map((event) => JSON.stringify(event)).join('\n')}\n`,
+        'utf-8',
+      );
+
+      const next = await appendEvent(testDir, {
+        type: 'prompt.sent',
+        session_id: sessionId,
+        data: { prompt: 'new event' },
+      });
+
+      expect(next.seq).toBe(10);
+    });
+
     // AC: @session-events ac-3
     it('should create session directory if it does not exist (lazy creation)', async () => {
       const event = await appendEvent(testDir, {

@@ -203,6 +203,7 @@ const TERMINAL_PREVIEW_MAX_BYTES = 64 * 1024;
 const TOOL_OUTPUT_DIR = "tool-output";
 const RECENT_TASK_REF_LIMIT = 50;
 const DEFAULT_ITERATION_TIMEOUT_MINUTES = 20;
+const MAX_SESSION_UPDATE_QUEUE = 1000;
 
 type SpawnedAgentLike = Pick<SpawnedAgent, "client" | "kill">;
 
@@ -238,15 +239,43 @@ export function createSessionUpdateLogger(
     update: SessionUpdate,
   ) => Promise<void> | void,
 ): (sessionId: string, update: SessionUpdate) => void {
+  const queue: SessionUpdate[] = [];
+  let draining = false;
+
+  const drainQueue = async (): Promise<void> => {
+    if (draining) {
+      return;
+    }
+    draining = true;
+    try {
+      while (queue.length > 0) {
+        const nextUpdate = queue.shift();
+        if (!nextUpdate) {
+          continue;
+        }
+        try {
+          await logUpdate(iteration, nextUpdate);
+        } catch {
+          // Ignore logging errors during streaming
+        }
+      }
+    } finally {
+      draining = false;
+      if (queue.length > 0) {
+        void drainQueue();
+      }
+    }
+  };
+
   return (sessionId: string, update: SessionUpdate) => {
     if (sessionId !== acpSessionId) {
       return;
     }
-    Promise.resolve()
-      .then(() => logUpdate(iteration, update))
-      .catch(() => {
-      // Ignore logging errors during streaming
-      });
+    if (queue.length >= MAX_SESSION_UPDATE_QUEUE) {
+      queue.shift();
+    }
+    queue.push(update);
+    void drainQueue();
   };
 }
 
