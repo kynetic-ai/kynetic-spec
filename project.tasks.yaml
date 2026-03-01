@@ -63752,6 +63752,46 @@
         - Verification: run focused vitest suites for touched command paths + kspec validate before
         submit.
       supersedes: null
+    - _ulid: 01KJKJ64JHAYW893RNTS9CNKXC
+      created_at: 2026-03-01T02:03:39.473Z
+      author: Jacob Chapel
+      content: >-
+        Implemented shortest-unique ULID display refs across key CLI/export paths to prevent
+        ambiguous 8-char prefixes from breaking copy/paste workflows.
+
+
+        Changes:
+
+        - Added shared shortestUniqueUlid helper in parser refs and wired ReferenceIndex.shortUlid
+        to use it.
+
+        - Updated triage/inbox/search/plan/item/session-context/session-checkpoint/log output paths
+        to emit shortest unique refs instead of fixed 8-char prefixes in human-readable output.
+
+        - Updated shared triage action executor (CLI+daemon path) to disambiguate inbox refs and
+        spec-gap observation result refs.
+
+        - Updated AC coverage matching logic (parser validate + task review) to accept variable ULID
+        prefix lengths (8..full), preventing false uncovered-AC warnings when tests use
+        shortest-unique refs.
+
+        - Updated HTML/context exports for tasks/items/triage records to emit disambiguated refs.
+
+        - Added regression test in tests/triage-cli.test.ts that seeds colliding triage ULIDs and
+        verifies triage list prints distinct refs that each resolve via triage get.
+
+
+        Verification:
+
+        - npm test -- tests/triage-cli.test.ts (56 passed)
+
+        - npm test -- tests/triage-actions.test.ts tests/observation-content-search.test.ts
+        tests/cli-plan.test.ts tests/session-context.test.ts tests/validate-mode-selection.test.ts
+        tests/item-list-under.test.ts tests/task-add-depends-on.test.ts (108 passed)
+
+        - kspec validate (fails with pre-existing project-wide meta/reference/alignment/completeness
+        issues, including duplicate @observations slug and missing observations skill file)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
