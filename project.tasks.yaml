@@ -63592,6 +63592,30 @@
         match meta workflow behavior. Verification will diff for plan_ref guidance and run targeted
         tests if any code-path behavior changes."
       supersedes: null
+    - _ulid: 01KJKFECG3NC9JKE9705Z9BB1E
+      created_at: 2026-03-01T01:15:44.004Z
+      author: Jacob Chapel
+      content: >-
+        Implemented task-work plan_ref guidance and regen:
+
+        - Updated templates/skills/task-work/SKILL.md CLI lookup table with plan_ref lookup (
+        then  when non-null).
+
+        - Updated Start Task step in task-work skill template to explicitly load plan context before
+        starting work.
+
+        - Regenerated kspec-agents.md via OK kspec-agents.md is already up to date (meta
+        task-work-loop already had plan_ref start-step guidance; no additional workflow edit
+        required).
+
+        Verification:
+
+        - npm test -- tests/skill-rendering.test.ts tests/agents-instruction-gen.test.ts (127
+        passed).
+
+        - kspec validate still reports pre-existing project-wide meta/reference issues around
+        @observations plus alignment/completeness warnings, unchanged by this task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
