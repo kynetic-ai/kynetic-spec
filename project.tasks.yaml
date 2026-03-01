@@ -65651,6 +65651,16 @@
         timeout failures in tests/cli/session-note-limit.test.ts. AC coverage gaps from prior review
         are resolved; only full-suite green gate remains."
       supersedes: null
+    - _ulid: 01KJM25SP16KPJV7VJHJRAMVNN
+      created_at: 2026-03-01T06:43:05.537Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Resolved regression gate blockers by hardening flaky tests: isolated HOME
+        in tests/cli-serve.test.ts no-projects case to avoid shared daemon PID/port cross-test
+        interference, and increased session-note-limit integration test timeouts to 90s (observed
+        runtimes 43s and 59s). Verification: npx vitest run tests/cli-serve.test.ts
+        tests/cli/session-note-limit.test.ts (25 passed); npm test (162 files passed, 3615 tests
+        passed)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJGBWNWFX1FTRV43F0H07X1H
