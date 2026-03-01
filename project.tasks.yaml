@@ -65491,7 +65491,7 @@
   type: task
   spec_ref: "@session-stale-cleanup"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-stale-session-candidate-criteria"
@@ -65500,9 +65500,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJKWXHKKHZMP574E78F7BHA3
   created_at: 2026-02-27T20:15:54.343Z
-  started_at: 2026-03-01T06:08:02.135Z
+  started_at: 2026-03-01T06:43:04.280Z
   submitted_at: 2026-03-01T06:15:05.308Z
   notes:
     - _ulid: 01KJGBWNF783W553MKSVK92XCE
