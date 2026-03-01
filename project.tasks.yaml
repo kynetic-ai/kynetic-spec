@@ -64480,6 +64480,16 @@
         ReferenceError: crypto is not defined when subscribe() calls crypto.randomUUID(). Address CI
         compatibility and re-submit for review."
       supersedes: null
+    - _ulid: 01KJMTWJCRHTG1VHVV3APHRKEB
+      created_at: 2026-03-01T13:54:57.560Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Addressed CI Node-compat failure by stubbing global crypto.randomUUID in
+        tests/websocket-manager.test.ts beforeEach. This removes Node-runtime dependency assumptions
+        in test execution while preserving production behavior. Verification: npx vitest run
+        tests/websocket-manager.test.ts (3 passed); npm test (163 files passed, 3620 tests passed, 0
+        failed, 3 skipped). kspec validate still reports pre-existing project-wide
+        meta/reference/alignment/completeness issues unrelated to this task."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
