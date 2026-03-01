@@ -63657,14 +63657,14 @@
     promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
     subsequent commands."
   spec_ref: "@batch-exec"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
+  session_id: null
   created_at: 2026-02-26T19:33:01.300Z
   started_at: 2026-03-01T01:53:09.621Z
   submitted_at: 2026-03-01T02:04:07.920Z
@@ -63798,6 +63798,13 @@
       author: Jacob Chapel
       content: "Opened PR #618: https://github.com/kynetic-ai/kynetic-spec/pull/618 (branch
         fix/short-ulid-display-refs). Task submitted to pending_review."
+      supersedes: null
+    - _ulid: 01KJKK53PWW73JTYWWQGWM7V2V
+      created_at: 2026-03-01T02:20:34.396Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: duplicated shortestUniqueUlid implementations
+        in src/export/html.ts and src/export/triage.ts instead of reusing shared src/parser/refs.ts
+        helper (see PR #618 inline review comments)."
       supersedes: null
   todos: []
   automation: eligible
