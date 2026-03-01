@@ -63634,6 +63634,12 @@
         KSPEC_SESSION_ID for start/submit transition so task could be moved to pending_review after
         implementation was complete and committed."
       supersedes: null
+    - _ulid: 01KJKFJ0PQR0W2WMD7HMMB8M03
+      created_at: 2026-03-01T01:17:42.999Z
+      author: Jacob Chapel
+      content: "Opened PR #616: https://github.com/kynetic-ai/kynetic-spec/pull/616 (branch
+        docs/task-work-plan-ref-context). Task submitted for review."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
