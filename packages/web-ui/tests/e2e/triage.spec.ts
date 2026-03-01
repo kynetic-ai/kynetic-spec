@@ -37,6 +37,21 @@ const ACTION_LABELS: Record<string, string> = {
   duplicate: 'Duplicate',
 };
 
+async function reloadWithRetry(page: import('@playwright/test').Page, attempts = 3): Promise<void> {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      await page.reload();
+      await page.waitForLoadState('networkidle');
+      return;
+    } catch (error) {
+      if (attempt === attempts) {
+        throw error;
+      }
+      await page.waitForTimeout(250 * attempt);
+    }
+  }
+}
+
 test.describe('Interactive Triage UI', () => {
   test.beforeEach(async ({ page, daemon }) => {
     void daemon;
@@ -164,8 +179,7 @@ test.describe('Interactive Triage UI', () => {
         },
       });
       expect(triageResponse.status()).toBe(200);
-      await page.reload();
-      await page.waitForLoadState('networkidle');
+      await reloadWithRetry(page);
     }
 
     const nextBtn = page.getByTestId('triage-next');
