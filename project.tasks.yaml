@@ -65203,7 +65203,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -65244,6 +65244,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-01T16:05:46.576Z
+  session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
 - _ulid: 01KJF29ZGMMW4HZ6KX5SCHR7G2
   slugs:
     - task-adapter-aware-skill-invocation-formatting-for-ralp
