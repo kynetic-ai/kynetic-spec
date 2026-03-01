@@ -45,6 +45,7 @@ export class WebSocketManager {
 	private baseUrl: string;
 	private projectPath: string | null;
 	private state: ConnectionState = 'disconnected';
+	private intentionalDisconnect = false;
 	private subscriptions = new Map<string, Subscription>();
 	private eventHandlers = new Map<string, Set<EventHandler>>();
 	private stateChangeHandlers = new Set<StateChangeHandler>();
@@ -153,12 +154,17 @@ export class WebSocketManager {
 			return;
 		}
 
+		this.intentionalDisconnect = false;
 		this.setState('connecting');
 		const url = this.getUrl();
 		console.log('[WebSocketManager] Connecting to:', url);
-		this.ws = new WebSocket(url);
+		const socket = new WebSocket(url);
+		this.ws = socket;
 
-		this.ws.onopen = () => {
+		socket.onopen = () => {
+			if (this.ws !== socket) {
+				return;
+			}
 			console.log('[WebSocketManager] Connected');
 			this.setState('connected');
 			this.reconnectAttempts = 0;
@@ -167,7 +173,10 @@ export class WebSocketManager {
 			this.clearConnectionLostTimer();
 		};
 
-		this.ws.onmessage = (event) => {
+		socket.onmessage = (event) => {
+			if (this.ws !== socket) {
+				return;
+			}
 			try {
 				const message: WebSocketMessage = JSON.parse(event.data);
 				this.handleMessage(message);
@@ -176,15 +185,26 @@ export class WebSocketManager {
 			}
 		};
 
-		this.ws.onerror = (error) => {
+		socket.onerror = (error) => {
+			if (this.ws !== socket) {
+				return;
+			}
 			console.error('[WebSocketManager] WebSocket error:', error);
 		};
 
-		this.ws.onclose = (event) => {
+		socket.onclose = (event) => {
+			if (this.ws !== socket) {
+				return;
+			}
 			console.log('[WebSocketManager] Disconnected:', event.code, event.reason);
 			this.setState('disconnected');
 			this.stats.last_disconnected_at = new Date();
 			this.ws = null;
+
+			if (this.intentionalDisconnect) {
+				this.intentionalDisconnect = false;
+				return;
+			}
 
 			// AC: @web-dashboard ac-28, ac-29
 			this.startConnectionLostTimer();
@@ -198,10 +218,12 @@ export class WebSocketManager {
 	disconnect(): void {
 		this.clearReconnectTimer();
 		this.clearConnectionLostTimer();
+		this.intentionalDisconnect = true;
 
 		if (this.ws) {
-			this.ws.close(1000, 'Client disconnect');
+			const socket = this.ws;
 			this.ws = null;
+			socket.close(1000, 'Client disconnect');
 		}
 
 		this.setState('disconnected');
