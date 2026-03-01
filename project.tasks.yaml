@@ -63867,6 +63867,12 @@
         blocked normal task start ('Task budget exhausted: 1/1'). Used one-shot env -u
         KSPEC_SESSION_ID for task start/submit transitions after code/test completion."
       supersedes: null
+    - _ulid: 01KJKGCXACKNR9AS8J5240WSP1
+      created_at: 2026-03-01T01:32:24.268Z
+      author: Jacob Chapel
+      content: "Opened PR #617: https://github.com/kynetic-ai/kynetic-spec/pull/617 (branch
+        fix/triage-promote-consume-inbox). Task submitted to pending_review."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
