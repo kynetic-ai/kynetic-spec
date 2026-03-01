@@ -9145,7 +9145,7 @@ runs:
   - _ulid: 01KJKCBRNRQ22M13HB9RJK3VBN
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-01T00:21:52.441Z
     step_results:
@@ -9173,5 +9173,32 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T00:22:12.747Z
-        completed_at: 2026-03-01T00:22:12.747Z
+        completed_at: 2026-03-01T00:22:26.941Z
+        notes: >-
+          Friction points:
+
+          1. Shadow branch push failures are completely invisible — the fire-and-forget spawn with
+          stdio:ignore means 50+ commits accumulated locally in the container with zero indication.
+          This is the biggest operational risk for ralph container sessions. Already captured as
+          inbox @01KJKC9T.
+
+          2. getEventCount reads entire events.jsonl per appendEvent call — O(n^2) over a session,
+          causing 8GB OOM after ~133 minutes. The fix is straightforward (tail-read for last seq)
+          but the pattern existed since initial implementation.
+
+          3. No backpressure on session update logging — thousands of concurrent fire-and-forget
+          Promises from createSessionUpdateLogger, each doing async I/O. Compounds the OOM from
+          point 2.
+
+          4. Explore agent analysis had several incorrect findings — reported event listener
+          accumulation per iteration when listeners are only added once per agent spawn. Required
+          manual verification of key claims. Agent investigation is useful for breadth but
+          conclusions need verification.
+
+          5. Multiple stale workflow runs accumulating — had to specify run ID for workflow next due
+          to 19 active runs. No easy way to bulk-close stale runs.
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T00:22:26.941Z
+        completed_at: 2026-03-01T00:22:26.941Z
     initiated_by: "@claude"
