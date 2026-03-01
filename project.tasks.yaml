@@ -56176,7 +56176,7 @@
         placing traits in kynetic.yaml. Add AC to @item-add before implementing."
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: manual_only
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
   slugs: []
   title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
