@@ -63657,7 +63657,7 @@
     promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
     subsequent commands."
   spec_ref: "@batch-exec"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -63794,6 +63794,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-01T02:04:07.920Z
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
   title: Triage promote action should optionally delete the inbox item after creating the task.
