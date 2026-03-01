@@ -166,8 +166,10 @@ export async function createServer(options: ServerOptions) {
   heartbeatManager = new HeartbeatManager();
   wsHandler = new WebSocketHandler(pubsubManager);
 
-  // WeakMap to store project path during WebSocket upgrade
-  const wsProjectPaths = new Map<string, string>();
+  // WeakMap to store project path during WebSocket upgrade (keyed by Request object)
+  // Using WeakMap avoids needing to pass a requestId through beforeHandle return value,
+  // which breaks WebSocket upgrade in Elysia 1.4 when derive middleware is present.
+  const wsProjectPaths = new WeakMap<Request, string>();
 
   const app = new Elysia()
     // AC-15: Plugin pattern for middleware
@@ -232,14 +234,17 @@ export async function createServer(options: ServerOptions) {
         const projectPath = request.headers.get('X-Kspec-Dir')
                         || url.searchParams.get('project')
                         || undefined;
-        const requestId = ulid(); // Temporary ID to correlate upgrade with open
 
+        // IMPORTANT: Do NOT return a value from ws beforeHandle.
+        // In Elysia 1.4 with derive middleware, returning a value short-circuits
+        // the WebSocket upgrade and sends the value as an HTTP 200 response.
+        // Use a WeakMap keyed by Request object to pass data to open().
         try {
           const manager = (store as Record<string, unknown>).projectManager as import('./project-context').ProjectContextManager | undefined;
           if (!manager) {
             // Fallback: project manager not initialized yet
-            wsProjectPaths.set(requestId, startupProjectPath);
-            return { wsRequestId: requestId };
+            wsProjectPaths.set(request, startupProjectPath);
+            return;
           }
 
           let projectContext;
@@ -264,9 +269,8 @@ export async function createServer(options: ServerOptions) {
             }
           }
 
-          // Store resolved path for open() handler
-          wsProjectPaths.set(requestId, projectContext.path);
-          return { wsRequestId: requestId };
+          // Store resolved path for open() handler via WeakMap
+          wsProjectPaths.set(request, projectContext.path);
         } catch (err: unknown) {
           console.error(`[daemon] WebSocket connection rejected: ${err instanceof Error ? err.message : String(err)}`);
           throw err;
@@ -277,14 +281,9 @@ export async function createServer(options: ServerOptions) {
         const sessionId = ulid();
 
         // AC: @multi-directory-daemon ac-21 - Get bound project path
-        // Fallback to startup project if not found (shouldn't happen)
-        const requestId = (ws.data as ConnectionData & { wsRequestId?: string }).wsRequestId;
-        const projectPath = requestId ? wsProjectPaths.get(requestId) || startupProjectPath : startupProjectPath;
-
-        // Clean up temporary mapping
-        if (requestId) {
-          wsProjectPaths.delete(requestId);
-        }
+        // Retrieve project path from WeakMap via the request object on ws.data
+        const request = (ws.data as Record<string, unknown>).request as Request | undefined;
+        const projectPath = request ? wsProjectPaths.get(request) || startupProjectPath : startupProjectPath;
 
         ws.data = {
           sessionId,
