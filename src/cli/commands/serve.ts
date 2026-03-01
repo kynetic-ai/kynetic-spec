@@ -66,6 +66,33 @@ function checkDaemonStaleness(): boolean {
   }
 }
 
+/**
+ * Normalize daemon uptime payloads to seconds.
+ * Some runtimes may serialize uptime as structured objects instead of a number.
+ */
+function parseUptimeSeconds(raw: unknown): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    return raw;
+  }
+
+  if (!raw || typeof raw !== 'object') {
+    return null;
+  }
+
+  const candidate = raw as { seconds?: unknown; milliseconds?: unknown; ms?: unknown };
+  if (typeof candidate.seconds === 'number' && Number.isFinite(candidate.seconds)) {
+    return candidate.seconds;
+  }
+  if (typeof candidate.milliseconds === 'number' && Number.isFinite(candidate.milliseconds)) {
+    return candidate.milliseconds / 1000;
+  }
+  if (typeof candidate.ms === 'number' && Number.isFinite(candidate.ms)) {
+    return candidate.ms / 1000;
+  }
+
+  return null;
+}
+
 
 /**
  * Register serve commands
@@ -432,15 +459,26 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
       // This can happen if daemon is still starting up or network issues
     }
 
-    // Fetch uptime from health endpoint
-    try {
-      const healthResponse = await fetch(`http://localhost:${port}/api/health`);
-      if (healthResponse.ok) {
-        const healthData = await healthResponse.json() as { status: string; uptime: number };
-        uptime = healthData.uptime;
+    // Fetch uptime from health endpoint.
+    // Retry briefly to reduce startup races where status is checked immediately after daemon start.
+    for (let attempt = 1; attempt <= 5 && uptime === null; attempt++) {
+      try {
+        const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+        if (healthResponse.ok) {
+          const healthData = await healthResponse.json() as { status: string; uptime?: unknown };
+          const parsed = parseUptimeSeconds(healthData.uptime);
+          if (parsed !== null) {
+            uptime = parsed;
+            break;
+          }
+        }
+      } catch {
+        // If health endpoint fails, continue retry loop.
       }
-    } catch {
-      // If health endpoint fails, continue without uptime
+
+      if (attempt < 5) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
     }
   }
 
