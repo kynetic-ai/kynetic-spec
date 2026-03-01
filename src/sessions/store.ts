@@ -44,6 +44,7 @@ const BLOBS_DIR = "blobs";
 const EVENT_LINE_MAX_BYTES = 256 * 1024;
 const EVENT_FIELD_EXTERNALIZE_BYTES = 16 * 1024;
 const EVENT_PREVIEW_MAX_BYTES = 512;
+const EVENT_SEQ_TAIL_READ_BYTES = EVENT_LINE_MAX_BYTES + 1024;
 
 // ─── Path Helpers ────────────────────────────────────────────────────────────
 
@@ -632,26 +633,80 @@ export async function resolveSessionBlobPointers(
   return value;
 }
 
+function extractLastEventSeq(content: string): number | null {
+  const lines = content.split("\n");
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    const line = lines[i].trim();
+    if (line.length === 0) {
+      continue;
+    }
+
+    try {
+      const parsed = JSON.parse(line);
+      if (
+        isRecord(parsed) &&
+        typeof parsed.seq === "number" &&
+        Number.isInteger(parsed.seq) &&
+        parsed.seq >= 0
+      ) {
+        return parsed.seq;
+      }
+    } catch {
+      // Ignore malformed lines and continue scanning backward.
+    }
+  }
+
+  return null;
+}
+
 /**
- * Get the current event count for a session (for seq assignment).
+ * Get next sequence number from the last stored event.
  *
- * @param specDir - The .kspec directory path
- * @param sessionId - Session ID
- * @returns Number of events in the session
+ * Reads a bounded tail slice for O(1) seq lookup; falls back to full scan only
+ * if the tail slice cannot be parsed (for example, partial line boundary).
  */
-async function getEventCount(
+async function getNextEventSeq(
   specDir: string,
   sessionId: string,
 ): Promise<number> {
   const eventsPath = getSessionEventsPath(specDir, sessionId);
 
+  let fileHandle: fsPromises.FileHandle | null = null;
   try {
-    const content = await fsPromises.readFile(eventsPath, "utf-8");
-    const lines = content
-      .trim()
-      .split("\n")
-      .filter((line) => line.length > 0);
-    return lines.length;
+    fileHandle = await fsPromises.open(eventsPath, "r");
+    const stats = await fileHandle.stat();
+    if (stats.size === 0) {
+      return 0;
+    }
+
+    const readBytes = Math.min(stats.size, EVENT_SEQ_TAIL_READ_BYTES);
+    const startOffset = stats.size - readBytes;
+    const buffer = Buffer.alloc(readBytes);
+    await fileHandle.read(buffer, 0, readBytes, startOffset);
+
+    let tailContent = buffer.toString("utf-8");
+    if (startOffset > 0) {
+      // Drop potential partial first line from tail slice.
+      const firstNewline = tailContent.indexOf("\n");
+      tailContent = firstNewline === -1 ? "" : tailContent.slice(firstNewline + 1);
+    }
+
+    const tailSeq = extractLastEventSeq(tailContent);
+    if (tailSeq !== null) {
+      return tailSeq + 1;
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return 0;
+    }
+  } finally {
+    await fileHandle?.close().catch(() => undefined);
+  }
+
+  try {
+    const fullContent = await fsPromises.readFile(eventsPath, "utf-8");
+    const fullSeq = extractLastEventSeq(fullContent);
+    return fullSeq === null ? 0 : fullSeq + 1;
   } catch {
     return 0;
   }
@@ -685,8 +740,8 @@ export async function appendEvent(
   // Ensure session directory exists (lazy creation)
   await fsPromises.mkdir(sessionDir, { recursive: true });
 
-  // Get current event count for seq assignment
-  const seq = input.seq ?? (await getEventCount(specDir, input.session_id));
+  // Derive next sequence number from the last stored event.
+  const seq = input.seq ?? (await getNextEventSeq(specDir, input.session_id));
 
   // Build full event
   const event: SessionEvent = {
