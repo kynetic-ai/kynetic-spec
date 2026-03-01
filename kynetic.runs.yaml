@@ -9686,6 +9686,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T06:16:23.024Z
+    completed_at: 2026-03-01T06:17:26.145Z
     step_results:
       - step_index: 0
         status: completed
@@ -9719,4 +9720,11 @@ runs:
         notes: "No captures created in this iteration: all high-confidence observations were already tracked
           and no unique high-confidence reflection item remained after duplicate checks."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-01T06:17:26.145Z
+  - _ulid: 01KJM0QV0K4X73W1JTTQZ8JZTA
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-01T06:17:59.571Z
+    step_results: []
+    initiated_by: Jacob Chapel
