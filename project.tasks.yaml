@@ -65491,7 +65491,7 @@
   type: task
   spec_ref: "@session-stale-cleanup"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-stale-session-candidate-criteria"
@@ -65573,6 +65573,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-01T05:54:12.438Z
 - _ulid: 01KJGBWNWFX1FTRV43F0H07X1H
   slugs:
     - implement-stale-session-candidate-criteria
