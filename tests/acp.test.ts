@@ -326,6 +326,20 @@ describe('JsonRpcFraming', () => {
     expect(() => framing.sendResponse(1, {})).toThrow('closed');
   });
 
+  it('should reject pending requests with default message when closed without reason', async () => {
+    const requestPromise = framing.sendRequest('test/method');
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    framing.close();
+    await expect(requestPromise).rejects.toThrow('JsonRpcFraming closed');
+  });
+
+  it('should reject pending requests with provided reason when closed with reason', async () => {
+    const requestPromise = framing.sendRequest('test/method');
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    framing.close('Subagent process exited with signal SIGKILL');
+    await expect(requestPromise).rejects.toThrow('Subagent process exited with signal SIGKILL');
+  });
+
   // AC: @acp-client ac-6
   it('should reset pending timers on incoming activity', async () => {
     // Create framing with short timeout
@@ -738,6 +752,42 @@ describe('ACPClient', () => {
 
       client.close();
       expect(client.getAllSessions()).toHaveLength(0);
+    });
+
+    it('rejects pending requests with default message when no reason given', async () => {
+      const initPromise = client.initialize();
+      await respondToNext({ protocolVersion: 1, agentCapabilities: {} });
+      await initPromise;
+
+      const sessionPromise = client.newSession({ cwd: '/' });
+      // Don't respond — leave the request pending, then close
+      const closeAndCheck = new Promise<void>((resolve) => {
+        setTimeout(() => {
+          client.close();
+          resolve();
+        }, 10);
+      });
+
+      await closeAndCheck;
+      await expect(sessionPromise).rejects.toThrow('JsonRpcFraming closed');
+    });
+
+    it('rejects pending requests with provided reason on process exit', async () => {
+      const initPromise = client.initialize();
+      await respondToNext({ protocolVersion: 1, agentCapabilities: {} });
+      await initPromise;
+
+      const sessionPromise = client.newSession({ cwd: '/' });
+      // Don't respond — simulate process exit with signal
+      const closeAndCheck = new Promise<void>((resolve) => {
+        setTimeout(() => {
+          client.close('Subagent process exited with signal SIGKILL');
+          resolve();
+        }, 10);
+      });
+
+      await closeAndCheck;
+      await expect(sessionPromise).rejects.toThrow('Subagent process exited with signal SIGKILL');
     });
   });
 });

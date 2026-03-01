@@ -372,10 +372,15 @@ export class ACPClient extends EventEmitter {
    * Close the client connection
    *
    * Rejects any pending requests and cleans up resources.
+   *
+   * @param reason - Optional reason message for pending request rejections.
+   *   Defaults to "JsonRpcFraming closed". Pass process exit info here so
+   *   callers see "Subagent process exited with signal SIGKILL" instead of
+   *   the opaque framing error.
    */
-  close(): void {
+  close(reason?: string): void {
     this.sessions.clear();
-    this.framing.close();
+    this.framing.close(reason);
   }
 
   /**

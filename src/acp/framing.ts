@@ -212,15 +212,21 @@ export class JsonRpcFraming extends EventEmitter {
 
   /**
    * Close the framing layer
+   *
+   * @param reason - Optional reason message for pending request rejections.
+   *   Defaults to "JsonRpcFraming closed". Use this to surface process exit
+   *   information (e.g., "Subagent process exited with signal SIGKILL").
    */
-  close(): void {
+  close(reason?: string): void {
     if (this.closed) return;
     this.closed = true;
+
+    const errorMessage = reason ?? "JsonRpcFraming closed";
 
     // Reject all pending requests
     for (const [id, pending] of this.pending.entries()) {
       clearTimeout(pending.timer);
-      pending.reject(new Error("JsonRpcFraming closed"));
+      pending.reject(new Error(errorMessage));
       this.pending.delete(id);
     }
 
