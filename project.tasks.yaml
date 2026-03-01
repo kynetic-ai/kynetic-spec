@@ -63657,7 +63657,7 @@
     promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
     subsequent commands."
   spec_ref: "@batch-exec"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -63833,6 +63833,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T02:44:56.320Z
+  closed_reason: "Merged in PR #618. Implemented shortest-unique ULID display refs across CLI/export
+    and reused shared refs helper for export paths in fix cycle 1. Review verified spec alignment
+    for unambiguous copy-pasteable refs and confirmed @batch-exec own + inherited trait AC
+    annotation coverage. CI checks passed on head 691228e72."
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
   title: Triage promote action should optionally delete the inbox item after creating the task.
