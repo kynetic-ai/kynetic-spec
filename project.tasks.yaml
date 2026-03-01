@@ -65566,7 +65566,7 @@
   type: task
   spec_ref: "@session-stale-cleanup"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-stale-session-candidate-criteria"
@@ -65745,6 +65745,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T07:27:41.145Z
+  closed_reason: "Merged in PR #621. Implemented 'kspec session stale close' orchestration under
+    session stale with mutually exclusive target modes (<session-id>/--refs/--all), stale criteria
+    flags, dry-run/apply behavior, confirmation gating, per-session reason reporting, and human/JSON
+    totals. Included regression hardening updates in tests/cli-serve.test.ts and
+    tests/cli/session-note-limit.test.ts. AC coverage confirmed for @session-stale-cleanup
+    ac-1..ac-9 plus inherited trait AC annotations (including confirmation prompt and multi-ref
+    batch behaviors)."
 - _ulid: 01KJGBWNWFX1FTRV43F0H07X1H
   slugs:
     - implement-stale-session-candidate-criteria
