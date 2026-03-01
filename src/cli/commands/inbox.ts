@@ -16,6 +16,7 @@ import {
   ReferenceIndex,
   saveInboxItem,
   saveTask,
+  shortestUniqueUlid,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { InboxItemInput, TaskInput } from "../../schema/index.js";
@@ -47,6 +48,13 @@ function resolveInboxRef(
     process.exit(EXIT_CODES.NOT_FOUND);
   }
   return item;
+}
+
+function shortInboxRef(item: LoadedInboxItem, items: LoadedInboxItem[]): string {
+  return shortestUniqueUlid(
+    item._ulid,
+    items.map((candidate) => candidate._ulid),
+  );
 }
 
 /**
@@ -97,8 +105,10 @@ Examples:
         const item = createInboxItem(input, ctx.config?.identity?.author);
         await saveInboxItem(ctx, item);
         await commitIfShadow(ctx.shadow, "inbox-add", undefined, text);
+        const inboxItems = await loadInboxItems(ctx);
+        const itemRef = shortInboxRef(item, inboxItems);
 
-        success(`Captured: ${item._ulid.slice(0, 8)}`, { item });
+        success(`Captured: ${itemRef}`, { item });
       } catch (err) {
         error(errors.failures.addInboxItem, err);
         process.exit(EXIT_CODES.ERROR);
@@ -117,6 +127,7 @@ Examples:
       try {
         const ctx = await initContext();
         let items = await loadInboxItems(ctx);
+        const allInboxUlids = items.map((item) => item._ulid);
 
         // Filter by tag
         if (options.tag) {
@@ -159,7 +170,8 @@ Examples:
               item.tags.length > 0 ? ` [${item.tags.join(", ")}]` : "";
             const age = formatRelativeTime(item.created_at);
             const author = item.added_by ? ` by ${item.added_by}` : "";
-            console.log(`  ${item._ulid.slice(0, 8)} (${age}${author})${tags}`);
+            const itemRef = shortestUniqueUlid(item._ulid, allInboxUlids);
+            console.log(`  ${itemRef} (${age}${author})${tags}`);
             console.log(`    ${item.text}`);
             console.log("");
           }
@@ -196,6 +208,7 @@ Examples:
         const ctx = await initContext();
         const inboxItems = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, inboxItems);
+        const itemRef = shortInboxRef(item, inboxItems);
 
         // Validate priority
         const priorityResult = parseIntOption(options.priority, {
@@ -267,7 +280,7 @@ Examples:
         // Delete inbox item unless --keep
         if (!options.keep) {
           await deleteInboxItem(ctx, item._ulid);
-          info(`Removed from inbox: ${item._ulid.slice(0, 8)}`);
+          info(`Removed from inbox: ${itemRef}`);
         }
 
         await commitIfShadow(
@@ -293,6 +306,7 @@ Examples:
         const ctx = await initContext();
         const items = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, items);
+        const itemRef = shortInboxRef(item, items);
 
         // Confirm unless --force
         if (!options.force) {
@@ -311,7 +325,7 @@ Examples:
             "inbox-delete",
             item._ulid.slice(0, 8),
           );
-          success(`Deleted inbox item: ${item._ulid.slice(0, 8)}`);
+          success(`Deleted inbox item: ${itemRef}`);
         } else {
           error(errors.failures.deleteInboxItem);
           process.exit(EXIT_CODES.ERROR);
@@ -331,6 +345,7 @@ Examples:
         const ctx = await initContext();
         const items = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, items);
+        const itemRef = shortInboxRef(item, items);
 
         output(item, () => {
           console.log(`${fieldLabels.ulid}     ${item._ulid}`);
@@ -372,6 +387,7 @@ Examples:
         const ctx = await initContext();
         const items = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, items);
+        const itemRef = shortInboxRef(item, items);
 
         // Track what was updated
         const updates: string[] = [];
@@ -411,7 +427,7 @@ Examples:
           updates.join(", "),
         );
 
-        success(`Updated inbox item: ${item._ulid.slice(0, 8)}`, { item });
+        success(`Updated inbox item: ${itemRef}`, { item });
       } catch (err) {
         error(errors.failures.updateInboxItem, err);
         process.exit(EXIT_CODES.ERROR);
@@ -434,6 +450,7 @@ Examples:
         const ctx = await initContext();
         const items = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, items);
+        const itemRef = shortInboxRef(item, items);
 
         // Append note with separator
         const separator = "\n\n---\n\n";
@@ -442,7 +459,7 @@ Examples:
         await saveInboxItem(ctx, item);
         await commitIfShadow(ctx.shadow, "inbox-note", item._ulid.slice(0, 8));
 
-        success(`Added note to inbox item: ${item._ulid.slice(0, 8)}`, { item });
+        success(`Added note to inbox item: ${itemRef}`, { item });
       } catch (err) {
         error(errors.failures.addInboxNote, err);
         process.exit(EXIT_CODES.ERROR);

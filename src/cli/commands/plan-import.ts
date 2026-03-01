@@ -165,7 +165,7 @@ async function importPlan(
     for (const slug of (item as LoadedSpecItem).slugs || []) {
       existingSpecRefs.add(slug);
     }
-    existingSpecRefs.add(item._ulid.slice(0, 8));
+    existingSpecRefs.add(refIndex.shortUlid(item._ulid));
   }
 
   // Resolve module reference

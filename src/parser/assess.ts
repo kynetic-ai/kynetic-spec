@@ -66,7 +66,7 @@ export function assessTask(
   items: LoadedSpecItem[],
 ): TaskAssessment {
   const taskRef =
-    task.slugs.length > 0 ? `@${task.slugs[0]}` : `@${task._ulid.slice(0, 8)}`;
+    task.slugs.length > 0 ? `@${task.slugs[0]}` : `@${index.shortUlid(task._ulid)}`;
   const taskType = task.type || "task";
 
   // AC: @tasks-assess-automation ac-8, ac-9 - Check has_spec_ref

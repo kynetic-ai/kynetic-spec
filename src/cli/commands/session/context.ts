@@ -14,6 +14,7 @@ import {
   loadSessionContext,
   loadTriageRecords,
   ReferenceIndex,
+  shortestUniqueUlid,
 } from "../../../parser/index.js";
 import { loadMetaContext } from "../../../parser/meta.js";
 import {
@@ -162,6 +163,7 @@ function collectRecentNotes(
   const allNotes: NoteSummary[] = [];
 
   for (const task of tasks) {
+    const noteUlids = task.notes.map((note) => note._ulid);
     // Only include notes from in_progress, pending_review, or completed tasks
     const taskStatus = task.status as "in_progress" | "pending_review" | "needs_work" | "completed";
     if (!["in_progress", "pending_review", "needs_work", "completed"].includes(taskStatus)) {
@@ -185,7 +187,7 @@ function collectRecentNotes(
         task_ref: index.shortUlid(task._ulid),
         task_title: task.title,
         task_status: taskStatus,
-        note_ulid: note._ulid.slice(0, 8),
+        note_ulid: shortestUniqueUlid(note._ulid, noteUlids),
         created_at: note.created_at,
         author: note.author || null,
         content: note.content,
@@ -343,6 +345,7 @@ export async function gatherSessionContext(
   const items = await loadAllItems(ctx);
   const inboxItems = await loadInboxItems(ctx);
   const triageRecords = await loadTriageRecords(ctx);
+  const inboxUlids = inboxItems.map((item) => item._ulid);
   const index = new ReferenceIndex(allTasks, items);
 
   // AC: @session-start-inbox-triage ac-inbox-untriaged-def
@@ -517,7 +520,7 @@ export async function gatherSessionContext(
     .map((item) => {
       const triageInfo = triageByInboxRef.get(item._ulid);
       return {
-        ref: item._ulid.slice(0, 8),
+        ref: shortestUniqueUlid(item._ulid, inboxUlids),
         text: item.text,
         created_at: item.created_at,
         tags: item.tags,
@@ -572,6 +575,7 @@ export async function gatherSessionContext(
   let observations: ObservationSummary[] = [];
   if (options.full) {
     const metaCtx = await loadMetaContext(ctx);
+    const observationUlids = metaCtx.observations.map((observation) => observation._ulid);
     observations = metaCtx.observations
       .filter((o) => !o.resolved)
       .sort(
@@ -579,7 +583,7 @@ export async function gatherSessionContext(
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       .map((o) => ({
-        ref: o._ulid.slice(0, 8),
+        ref: shortestUniqueUlid(o._ulid, observationUlids),
         type: o.type,
         content: o.content,
         created_at: o.created_at,
@@ -640,6 +644,8 @@ export async function getIterationStats(
   since: Date,
 ): Promise<IterationStats> {
   const allTasks = await loadAllTasks(ctx);
+  const items = await loadAllItems(ctx);
+  const index = new ReferenceIndex(allTasks, items);
 
   // Count both completed and pending_review (submitted) tasks toward the limit.
   // Submit means the agent's work is done — it should count the same as complete.
@@ -663,7 +669,7 @@ export async function getIterationStats(
     tasks_completed: completedSince.length,
     tasks_started: startedSince.length,
     completed_refs: completedSince.map((t) =>
-      getDisplayRef({ ref: t._ulid.slice(0, 8), slug: t.slugs[0] || null }),
+      getDisplayRef({ ref: index.shortUlid(t._ulid), slug: t.slugs[0] || null }),
     ),
   };
 }

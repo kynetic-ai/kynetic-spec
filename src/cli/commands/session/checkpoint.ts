@@ -6,7 +6,9 @@
 
 import {
   type KspecContext,
+  loadAllItems,
   loadAllTasks,
+  ReferenceIndex,
 } from "../../../parser/index.js";
 import { getSession } from "../../../sessions/store.js";
 import {
@@ -40,6 +42,8 @@ export async function performCheckpoint(
 
   // Load tasks
   const allTasks = await loadAllTasks(ctx);
+  const allItems = await loadAllItems(ctx);
+  const refIndex = new ReferenceIndex(allTasks, allItems);
 
   // Filter in-progress tasks by session scope
   // AC: @cmd-session-checkpoint ac-session-scope
@@ -72,7 +76,10 @@ export async function performCheckpoint(
     // else: active other session — skip
   }
   for (const task of inProgressTasks) {
-    const ref = getDisplayRef({ ref: task._ulid.slice(0, 8), slug: task.slugs[0] || null });
+    const ref = getDisplayRef({
+      ref: refIndex.shortUlid(task._ulid),
+      slug: task.slugs[0] || null,
+    });
     issues.push({
       type: "in_progress_task",
       description: `Task ${ref} is still in progress: ${task.title}`,

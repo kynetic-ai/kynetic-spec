@@ -8,6 +8,7 @@
  */
 
 import type { TriageRecord } from "../schema/triage.js";
+import { shortestUniqueUlid } from "../parser/refs.js";
 
 /**
  * Truncate text to a maximum length, taking only the first line.
@@ -23,9 +24,12 @@ export function truncateText(text: string, maxLen: number = 60): string {
  * AC: @triage-agent-export ac-1
  * AC: @triage-agent-export ac-3
  */
-export function formatTriageRecordContext(record: TriageRecord): string {
+export function formatTriageRecordContext(
+  record: TriageRecord,
+  displayRef: string = record._ulid.slice(0, 8),
+): string {
   const lines: string[] = [];
-  lines.push(`### ${record._ulid.slice(0, 8)} — ${truncateText(record.item_snapshot, 80)}`);
+  lines.push(`### ${displayRef} — ${truncateText(record.item_snapshot, 80)}`);
   lines.push("");
   lines.push(`**Item:** ${record.item_snapshot}`);
   lines.push(`**Status:** ${record.status}`);
@@ -57,9 +61,13 @@ export function exportTriageAsContext(records: TriageRecord[]): string {
   if (records.length === 0) {
     return "No triage decisions recorded.";
   }
+  const recordUlids = records.map((record) => record._ulid);
   let content = "# Triage Decisions\n\n";
   for (const record of records) {
-    content += formatTriageRecordContext(record);
+    content += formatTriageRecordContext(
+      record,
+      shortestUniqueUlid(record._ulid, recordUlids),
+    );
   }
   return content;
 }

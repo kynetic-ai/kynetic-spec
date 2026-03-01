@@ -6,6 +6,7 @@
  */
 
 import type { KspecSnapshot } from "./types.js";
+import { shortestUniqueUlid } from "../parser/refs.js";
 
 /**
  * Generate a self-contained HTML file with embedded JSON snapshot.
@@ -18,6 +19,8 @@ import type { KspecSnapshot } from "./types.js";
  * AC: @gh-pages-export ac-6
  */
 export function generateHtmlExport(snapshot: KspecSnapshot): string {
+  const taskUlids = snapshot.tasks.map((task) => task._ulid);
+  const itemUlids = snapshot.items.map((item) => item._ulid);
   const jsonData = JSON.stringify(snapshot, null, 2);
   const escapedJson = jsonData
     .replace(/</g, "\\u003c")
@@ -187,7 +190,7 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
               ${escapeHtml(task.title)}
             </div>
             <div class="item-meta">
-              @${task.slugs[0] || task._ulid.slice(0, 8)}
+              @${task.slugs[0] || shortestUniqueUlid(task._ulid, taskUlids)}
               ${task.spec_ref_title ? ` • ${escapeHtml(task.spec_ref_title)}` : ""}
             </div>
           </div>
@@ -203,7 +206,7 @@ export function generateHtmlExport(snapshot: KspecSnapshot): string {
           <div class="item">
             <div class="item-title">${escapeHtml(item.title)}</div>
             <div class="item-meta">
-              ${item.type || "item"} • @${item.slugs[0] || item._ulid.slice(0, 8)}
+              ${item.type || "item"} • @${item.slugs[0] || shortestUniqueUlid(item._ulid, itemUlids)}
               ${item.acceptance_criteria?.length ? ` • ${item.acceptance_criteria.length} ACs` : ""}
             </div>
           </div>

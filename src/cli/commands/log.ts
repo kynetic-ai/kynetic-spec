@@ -244,7 +244,7 @@ export function registerLogCommand(program: Command): void {
               for (const t of linkedTasks) {
                 const taskRef = t.slugs[0]
                   ? `@${t.slugs[0]}`
-                  : `@${t._ulid.slice(0, 8)}`;
+                  : `@${index.shortUlid(t._ulid)}`;
                 patterns.push(`Task: ${taskRef}`);
               }
             }

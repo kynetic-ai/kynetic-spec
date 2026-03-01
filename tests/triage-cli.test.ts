@@ -238,6 +238,69 @@ describe("kspec triage list", () => {
     expect(filtered.stdout).toContain("1 of 2");
     expect(filtered.stdout).toContain("action=promote");
   });
+
+  it("should disambiguate displayed refs when triage ULIDs share 8-char prefix", async () => {
+    const first = testUlid("ABCDEF", 0);
+    const second = testUlid("ABCDEF", 1);
+    const inboxA = addInboxItem("First colliding record");
+    const inboxB = addInboxItem("Second colliding record");
+    recordTriage(inboxA, "promote", "seed");
+    recordTriage(inboxB, "defer", "seed");
+
+    const existing = kspecJson<
+      Array<{
+        _ulid: string;
+        inbox_ref: string;
+        item_snapshot: string;
+        status: string;
+        action: string;
+        reasoning: string;
+        decided_by: string;
+        evidence_refs: string[];
+        created_at: string;
+        updated_at?: string;
+        _sourceFile?: string;
+      }>
+    >("triage list", tempDir);
+    const triagePath = existing[0]._sourceFile || path.join(tempDir, "spec", "project.triage.yaml");
+
+    await fs.writeFile(
+      triagePath,
+      yamlStringify({
+        kynetic_triage: "1.0",
+        triage: existing.map((record, idx) => ({
+          _ulid: idx === 0 ? first : second,
+          inbox_ref: record.inbox_ref,
+          item_snapshot: record.item_snapshot,
+          status: record.status,
+          action: record.action,
+          reasoning: record.reasoning,
+          decided_by: record.decided_by,
+          evidence_refs: record.evidence_refs,
+          created_at: record.created_at,
+          updated_at: record.updated_at,
+        })),
+      }),
+      "utf-8",
+    );
+
+    const list = kspec("triage list", tempDir);
+    const refs = list.stdout
+      .split("\n")
+      .map((line) => line.trim().split(" ")[0] || "")
+      .filter((token) => token.startsWith("01ABCDEF"));
+
+    expect(refs).toHaveLength(2);
+    expect(refs[0]).not.toBe("01ABCDEF");
+    expect(refs[1]).not.toBe("01ABCDEF");
+    expect(refs[0]).not.toBe(refs[1]);
+    expect(refs[0].length).toBeGreaterThan(8);
+    expect(refs[1].length).toBeGreaterThan(8);
+
+    const firstGet = kspecJson<{ _ulid: string }>(`triage get @${refs[0]}`, tempDir);
+    const secondGet = kspecJson<{ _ulid: string }>(`triage get @${refs[1]}`, tempDir);
+    expect(new Set([firstGet._ulid, secondGet._ulid])).toEqual(new Set([first, second]));
+  });
 });
 
 describe("kspec triage act", () => {
