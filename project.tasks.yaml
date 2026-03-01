@@ -64300,14 +64300,14 @@
   description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
     investigation into reconnection logic, heartbeat handling, or fallback to polling.
   spec_ref: "@daemon-server"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJMTEASC25JM78T6MY1NW3XF
+  session_id: null
   created_at: 2026-02-26T19:33:04.635Z
   started_at: 2026-03-01T13:50:05.559Z
   submitted_at: 2026-03-01T13:55:08.129Z
@@ -64489,6 +64489,13 @@
         tests/websocket-manager.test.ts (3 passed); npm test (163 files passed, 3620 tests passed, 0
         failed, 3 skipped). kspec validate still reports pre-existing project-wide
         meta/reference/alignment/completeness issues unrelated to this task."
+      supersedes: null
+    - _ulid: 01KJMV9TD6Z2K9X0TQGM5MTK0Z
+      created_at: 2026-03-01T14:02:11.750Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Review findings: MUST-FIX: PR #622 fails regression gate on current head
+        3d198c43 (npm test: tests/cli-serve.test.ts 'should show uptime in status output' expected
+        uptime number but got object)."
       supersedes: null
   todos: []
   automation: eligible
