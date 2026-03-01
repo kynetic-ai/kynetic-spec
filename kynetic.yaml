@@ -35,6 +35,19 @@ traits:
         given: command supports --json
         when: used with other formatting flags
         then: --json takes precedence over other format options
+    traits:
+      - _ulid: 01KJN1WT94B23HXX1R5KVD9BVC
+        slugs: []
+        title: Test Trait
+        type: trait
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-01T15:57:25.668Z
   - _ulid: 01KFDZSHFAV02EW1F6Y20MAF51
     slugs:
       - trait-multi-ref-batch
