@@ -9760,8 +9760,19 @@ runs:
   - _ulid: 01KJM2V1PNQ9KJ8XS9536SRF0S
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-03-01T06:54:41.877Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-01T06:54:41.877Z
+        completed_at: 2026-03-01T06:55:28.550Z
+        notes: "Baseline search completed per loop workflow: ran kspec meta observations list --json, kspec
+          inbox list --json, and kspec tasks list --json to establish existing tracking before
+          proposing captures."
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-01T06:55:28.550Z
+        completed_at: 2026-03-01T06:55:28.550Z
     initiated_by: Jacob Chapel
