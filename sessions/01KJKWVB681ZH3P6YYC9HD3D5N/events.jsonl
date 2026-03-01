@@ -1,0 +1,1 @@
+{"ts":1772341800141,"seq":0,"type":"session.start","session_id":"01KJKWVB681ZH3P6YYC9HD3D5N","data":{"adapter":"codex-acp","workerAdapter":"codex-acp","reviewerAdapter":"codex-acp","maxLoops":30,"maxRetries":3,"maxFailures":3,"iterationTimeoutMinutes":20,"maxTasks":1,"yolo":true}}
