@@ -65540,6 +65540,37 @@
 
         - Verification: targeted stale-close tests, full npm test, and kspec validate before submit.
       supersedes: null
+    - _ulid: 01KJKZBJTKCBCRCEWGEH8B06P5
+      created_at: 2026-03-01T05:53:49.395Z
+      author: Jacob Chapel
+      content: >-
+        Implemented `kspec session stale close` end-to-end CLI orchestration for
+        @session-stale-cleanup. Added new `session stale` command group + `close` subcommand with
+        target-mode validation (`<session-id>` vs `--refs` vs `--all`), stale criteria parsing
+        (`--older-than`, `--inactive-for`, `--liveness-guard`), dry-run/apply behavior, confirmation
+        gating (`--force`, non-interactive/JSON handling), per-session reason reporting, and
+        aggregate totals (`candidates`, `changed_sessions`, `skipped_sessions`, `failures`). Command
+        reuses `selectStaleActiveSessions` + `applyAutoAbandonMetadata` and sets a command-specific
+        shadow commit message for applied closures. Added CLI coverage in
+        `tests/session-stale-close.test.ts` for own ACs (`ac-1`..`ac-9`) plus refs
+        batch/error/confirmation traits.
+
+
+        Verification:
+
+        - `npm run build`
+
+        - `npx vitest run tests/session-stale-close.test.ts` (11 passed)
+
+        - `npx vitest run tests/session-stale-criteria.test.ts tests/session-stale-close.test.ts`
+        (24 passed)
+
+        - `npm test` (baseline failure: existing timeouts in `tests/cli/session-note-limit.test.ts`
+        lines 34 and 104)
+
+        - `kspec validate` (reports pre-existing project-wide
+        schema/reference/alignment/completeness issues unrelated to this task)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJGBWNWFX1FTRV43F0H07X1H
