@@ -69497,7 +69497,10 @@
   created_at: 2026-03-01T15:29:10.994Z
   notes: []
   todos: []
-- title: Fix session task counting for claude-agent-acp and codex-acp adapters
+- _ulid: 01KJNN7XBTSH6S6A08KQJSXJJG
+  slugs: []
+  title: Fix session task counting for claude-agent-acp and codex-acp adapters
+  type: task
   description: "countTaskCompletions() in src/sessions/store.ts:1654 and extractTaskTransitions() rely
     on rawInput.command being a plain string containing 'task complete'. Two ACP adapters break
     this: (1) claude-agent-acp sets rawInput to {} (empty) — command never recorded in
@@ -69506,6 +69509,74 @@
     for all sessions since ~Feb 24. Fix: normalize command extraction to handle string, array, and
     _meta.claudeCode fallback formats. Affects both countTaskCompletions and extractTaskTransitions
     in store.ts."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - sessions
+    - ralph
+  vcs_refs: []
+  created_at: 2026-03-01T21:35:32.217Z
+  notes: []
+  todos: []
+- title: Design agent runtime architecture — from ralph loop to reactive agent service
+  description: >-
+    Replace the ralph batch loop with a reactive agent runtime that dispatches named agents based on
+    task state changes. The outcome is a spec plan (importable via kspec plan import).
+
+
+    ## Vision
+
+
+    Move from explicit "ralph loop with N iterations" to an always-on service that watches for task
+    state and dispatches the right agent. Same agent definitions also usable for one-shot CLI
+    invocations.
+
+
+    ## Key Design Areas
+
+
+    1. **Agent definitions in kspec meta** — Named agents with roles, adapters, skills, permissions
+    (e.g. worker, reviewer, pr-merge). Defined in .kspec/ like other meta, not hardcoded in
+    ralph.ts.
+
+
+    2. **Reactive dispatch** — Runtime watches task state changes and dispatches:
+       - pending/ready → worker agent
+       - pending_review → review agent  
+       - needs_work → fix-cycle agent
+       Different agents for different task states, not one monolithic loop.
+
+    3. **CLI one-shot invocations** — `kspec agent <name> "prompt"` spawns a defined agent for a
+    single task. Same agent definitions, same runtime, just not long-lived.
+
+
+    4. **Session model evolution** — Sessions become long-lived (service lifecycle), with individual
+    agent invocations as first-class units within a session. Not bounded by iteration counts.
+
+
+    5. **Unified event logging** — Every agent invocation (including what are currently subagents)
+    logs events to the session. Eliminates the current gap where review subagent tool calls are
+    fire-and-forget to terminal only.
+
+
+    6. **Task counting fix** — Current countTaskCompletions() scrapes events for rawInput.command
+    strings, which fails for claude-agent-acp (empty rawInput) and codex-acp (array format). New
+    architecture tracks agent invocations and outcomes structurally.
+
+
+    ## Outcome
+
+
+    A spec plan document suitable for `kspec plan import` covering the module, features,
+    requirements, and acceptance criteria for the agent runtime system. Should address migration
+    path from current ralph loop.
   type: task
   spec_ref: null
   meta_ref: null
@@ -69513,15 +69584,17 @@
   priority: 2
   slugs: []
   tags:
-    - bug
-    - sessions
+    - design
     - ralph
+    - agents
+    - architecture
   depends_on: []
-  _ulid: 01KJNN7XBTSH6S6A08KQJSXJJG
+  automation: manual_only
+  _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-01T21:35:32.217Z
+  created_at: 2026-03-01T22:03:54.284Z
   notes: []
   todos: []
