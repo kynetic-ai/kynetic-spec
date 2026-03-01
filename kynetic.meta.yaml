@@ -6992,6 +6992,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJN09ER284K52Q9J66N0KXT6
+    type: friction
+    content: E2E tests not in CI allowed a fundamental WebSocket upgrade bug to persist undetected.
+      Previous task closed as fixed based on unit tests passing, but E2E would have shown the server
+      never upgraded connections.
+    created_at: 2026-03-01T15:29:22.690Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJN09EX8RN1NK8K8BCVJ8Q3A
+    type: success
+    content: Progressive reproduction technique (incrementally adding middleware layers to a minimal
+      Elysia server) isolated an Elysia framework interaction bug in minutes. More effective than
+      reading framework source code.
+    created_at: 2026-03-01T15:29:22.856Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
