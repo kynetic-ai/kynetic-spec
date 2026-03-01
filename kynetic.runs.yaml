@@ -10160,7 +10160,7 @@ runs:
   - _ulid: 01KJN7GRKQTM9TQ40V63Y3ZD0Y
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T17:35:42.199Z
     step_results:
@@ -10174,5 +10174,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T17:37:08.202Z
-        completed_at: 2026-03-01T17:37:08.202Z
+        completed_at: 2026-03-01T17:37:13.841Z
+        notes: "Captured 2 high-confidence friction observations: (1) item list --json uses {items:[]}
+          wrapper vs tasks flat array — systemic, causes test type errors, (2) item status is nested
+          {maturity, implementation} vs task status plain string — systemic, causes silent test
+          failures. Both are concrete, repeatable patterns confirmed in this session."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T17:37:13.841Z
+        completed_at: 2026-03-01T17:37:13.841Z
     initiated_by: "@claude"
