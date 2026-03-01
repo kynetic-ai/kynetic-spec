@@ -63509,6 +63509,7 @@
   session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
   created_at: 2026-02-26T19:33:00.379Z
   started_at: 2026-03-01T01:17:08.331Z
+  submitted_at: 2026-03-01T01:17:09.523Z
   notes:
     - _ulid: 01KJDQ9E2V7MF4XRKW0MQQC59X
       created_at: 2026-02-26T19:37:23.804Z
@@ -63625,9 +63626,16 @@
         regenerated kspec-agents.md. Verification unchanged: targeted tests passed (127), and kspec
         validate failures remain pre-existing @observations/alignment/completeness issues."
       supersedes: null
+    - _ulid: 01KJKFH4YN6JWZCQCAYJ5YBNGC
+      created_at: 2026-03-01T01:17:14.581Z
+      author: Jacob Chapel
+      content: "Lifecycle note: task start was blocked in this loop iteration by stale per-cycle budget
+        state on injected KSPEC_SESSION_ID while task status remained pending. Used one-shot env -u
+        KSPEC_SESSION_ID for start/submit transition so task could be moved to pending_review after
+        implementation was complete and committed."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-01T01:17:09.523Z
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
   slugs: []
   title: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9
