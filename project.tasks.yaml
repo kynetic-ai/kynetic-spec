@@ -63616,6 +63616,15 @@
         - kspec validate still reports pre-existing project-wide meta/reference issues around
         @observations plus alignment/completeness warnings, unchanged by this task.
       supersedes: null
+    - _ulid: 01KJKFESF9M9VVQW9A1GCTZH32
+      created_at: 2026-03-01T01:15:57.289Z
+      author: Jacob Chapel
+      content: "Correction to prior note (shell interpolation removed): task-work skill now explicitly
+        instructs reading task links with kspec task get @ref and, when plan_ref is non-null,
+        loading plan context with kspec plan get @plan-ref before kspec task start @ref. Also
+        regenerated kspec-agents.md. Verification unchanged: targeted tests passed (127), and kspec
+        validate failures remain pre-existing @observations/alignment/completeness issues."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
