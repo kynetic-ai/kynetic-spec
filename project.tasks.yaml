@@ -46805,7 +46805,7 @@
       content: "Automation status set to needs_review: Feature - needs spec for dependency derivation rules"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: manual_only
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
   slugs: []
   title: Filter superseded notes from default task display
