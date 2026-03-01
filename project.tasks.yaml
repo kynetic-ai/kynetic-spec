@@ -48357,7 +48357,7 @@
         principle"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: manual_only
 - _ulid: 01KHF2BKJKKGZCRRWRYPTDZWAA
   slugs: []
   title: Revisit ralph wrap-up agent design and test coverage
