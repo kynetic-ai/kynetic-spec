@@ -63499,7 +63499,7 @@
     task-work skill and task-work-loop workflow to include this step. Plans are the right place for
     rich implementation context instead of cramming it into task notes.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -63642,6 +63642,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T01:28:19.393Z
+  closed_reason: "Merged in PR #616. Added explicit plan_ref context retrieval guidance to task-work
+    skill (CLI lookup + Start Task step), and regenerated kspec-agents.md. Task has no spec_ref, so
+    AC coverage is N/A; review and CI gates passed on current PR head."
 - _ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
   slugs: []
   title: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9
