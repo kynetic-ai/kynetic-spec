@@ -9602,6 +9602,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T05:29:45.113Z
+    completed_at: 2026-03-01T05:31:10.069Z
     step_results:
       - step_index: 0
         status: completed
@@ -9631,4 +9632,11 @@ runs:
         notes: "Capture complete: added inbox item 01KJKY1H (reflection/bug/batch/shadow) for unique
           ENOTEMPTY batch copy-back failure. No additional captures to avoid duplicates/noise."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-01T05:31:10.069Z
+  - _ulid: 01KJKY3TPH0RMPVK1KG6N4PTPT
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-01T05:32:06.737Z
+    step_results: []
+    initiated_by: Jacob Chapel
