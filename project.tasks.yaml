@@ -63806,6 +63806,31 @@
         in src/export/html.ts and src/export/triage.ts instead of reusing shared src/parser/refs.ts
         helper (see PR #618 inline review comments)."
       supersedes: null
+    - _ulid: 01KJKK9NP7TDZ543D9KC1HDTF7
+      created_at: 2026-03-01T02:23:03.879Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 1] Addressed PR #618 SHOULD-FIX review finding by removing duplicated
+        shortestUniqueUlid implementations and reusing shared src/parser/refs.ts helper.
+
+
+        Changes:
+
+        - src/export/html.ts: removed local shortestUniqueUlid function and imported
+        shortestUniqueUlid from ../parser/refs.js.
+
+        - src/export/triage.ts: removed local shortestUniqueUlid function and imported
+        shortestUniqueUlid from ../parser/refs.js.
+
+
+        Verification:
+
+        - npm test -- tests/export/html.test.ts tests/triage-export.test.ts tests/triage-cli.test.ts
+        (84 passed)
+
+        - kspec validate (fails with pre-existing project-wide meta/reference/alignment/completeness
+        issues, including duplicate @observations slug and missing observations skill file)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
