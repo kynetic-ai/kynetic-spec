@@ -63742,7 +63742,7 @@
     Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag or
     making deletion the default for promote (with snapshot preserved in triage record).
   spec_ref: "@triage-cli-commands"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -63860,6 +63860,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-01T01:31:55.076Z
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
   slugs: []
   title: "Web UI: persist all filter state and current view in URL query params so refreshing the page
