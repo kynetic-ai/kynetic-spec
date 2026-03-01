@@ -360,6 +360,9 @@ traits:
         given: client reconnects after disconnect
         when: new connection established
         then: client resets sequence tracking (lastSeqProcessed = -1) since server generates new sequence
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFMKZFTYTRK4ENHFKWGR5RF6
     slugs:
       - trait-api-endpoint
