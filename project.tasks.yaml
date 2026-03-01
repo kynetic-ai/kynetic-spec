@@ -63664,7 +63664,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-26T19:33:01.300Z
+  started_at: 2026-03-01T01:53:09.621Z
   notes:
     - _ulid: 01KJDQA0MV956KKZREMG980AE6
       created_at: 2026-02-26T19:37:42.812Z
@@ -63731,10 +63733,27 @@
         - A test with two items sharing an 8-character ULID prefix shows that displayed refs are
         still unique and resolvable
       supersedes: null
+    - _ulid: 01KJKHK2NRA76YCR98DKGTC5RR
+      created_at: 2026-03-01T01:53:14.936Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: displayed short refs currently use fixed 8-char ULID prefixes in many output
+        paths; collisions make copy/paste refs ambiguous.
+
+        - Scope: update display-facing short-ref formatting to use shortest unique prefixes via
+        ReferenceIndex (or equivalent local unique-set helper where index is unavailable) and add
+        regression tests for ambiguous-prefix scenarios.
+
+        - Files: CLI display/output paths (triage/inbox/item/search/session context and related
+        helpers), triage action output, and targeted tests.
+
+        - Verification: run focused vitest suites for touched command paths + kspec validate before
+        submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T01:53:09.621Z
-  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
 - _ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
   slugs: []
   title: Triage promote action should optionally delete the inbox item after creating the task.
