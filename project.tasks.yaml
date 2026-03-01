@@ -68410,7 +68410,7 @@
   spec_ref: "@cli-ralph"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -68510,3 +68510,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-01T01:11:41.050Z
+  closed_reason: "Merged in PR #615. Implemented O(1) next-seq derivation for session events via
+    bounded tail read with full-scan fallback in src/sessions/store.ts, and added bounded sequential
+    backpressure queueing for session update logging in src/cli/commands/ralph.ts to prevent
+    unbounded in-flight appendEvent calls. Added/updated tests in tests/ralph.test.ts and
+    tests/sessions.test.ts including explicit AC coverage for @cli-ralph ac-27 and @session-events
+    ac-2; AC coverage audit confirms @cli-ralph ac-1..ac-27 covered."
