@@ -63742,7 +63742,7 @@
     Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag or
     making deletion the default for promote (with snapshot preserved in triage record).
   spec_ref: "@triage-cli-commands"
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
@@ -63817,10 +63817,24 @@
 
         - Tests cover: promote with deletion (default), promote with --keep, dry-run output
       supersedes: null
+    - _ulid: 01KJKG7WFH1661Q65B70E3XAQF
+      created_at: 2026-03-01T01:29:39.569Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: triage promote should consume inbox items by default while preserving audit
+        snapshot in triage records.
+
+        - Scope: add default consume behavior for promote action, add --keep escape hatch, and
+        update dry-run messaging/tests.
+
+        - Files: src/triage/actions.ts, src/cli/commands/triage.ts, triage CLI/action tests.
+
+        - Verification: targeted triage tests + kspec validate before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-01T01:29:39.538Z
-  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
 - _ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
   slugs: []
   title: "Web UI: persist all filter state and current view in URL query params so refreshing the page
