@@ -68337,6 +68337,7 @@
   session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-28T23:30:35.422Z
   started_at: 2026-03-01T00:25:14.523Z
+  submitted_at: 2026-03-01T00:36:26.508Z
   notes:
     - _ulid: 01KJK9EJRQ5RDBD9RQSD4S1CQD
       created_at: 2026-02-28T23:30:58.967Z
@@ -68385,9 +68386,14 @@
         - kspec validate still fails on pre-existing project meta/reference issues (@observations
         slug ambiguity + missing observations skill file).
       supersedes: null
+    - _ulid: 01KJKD8HKN58XTAG32132RX0S3
+      created_at: 2026-03-01T00:37:35.478Z
+      author: Jacob Chapel
+      content: "Opened PR #614: https://github.com/kynetic-ai/kynetic-spec/pull/614 (branch
+        fix/ralph-compact-subagent-prompts). Task submitted for review."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-01T00:36:26.508Z
 - _ulid: 01KJKBB94D9HKQHW3HPJPE1AK9
   slugs: []
   title: Fix ralph loop OOM — O(1) seq assignment + event logging backpressure
