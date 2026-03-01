@@ -64005,6 +64005,11 @@
   spec_ref: "@web-ui"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #620. Implemented triage URL query synchronization for
+    status/action/tag filters in web UI, with restore-on-load and back/forward history behavior.
+    Added E2E coverage for URL updates and filter restoration in triage tests. AC coverage verified
+    for @interactive-triage-ui ac-7; inherited @trait-websocket-protocol ACs are annotated N/A for
+    this UI-focused change."
   depends_on: []
   context: []
   priority: 3
@@ -64014,6 +64019,7 @@
   created_at: 2026-02-26T19:33:03.004Z
   started_at: 2026-03-01T05:21:35.378Z
   submitted_at: 2026-03-01T05:28:13.436Z
+  completed_at: 2026-03-01T05:40:47.233Z
   notes:
     - _ulid: 01KJDQB2J9SKA1QNC3SG3NN8WF
       created_at: 2026-02-26T19:38:17.546Z
@@ -64118,12 +64124,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-01T05:40:47.233Z
-  closed_reason: "Merged in PR #620. Implemented triage URL query synchronization for
-    status/action/tag filters in web UI, with restore-on-load and back/forward history behavior.
-    Added E2E coverage for URL updates and filter restoration in triage tests. AC coverage verified
-    for @interactive-triage-ui ac-7; inherited @trait-websocket-protocol ACs are annotated N/A for
-    this UI-focused change."
 - _ulid: 01KJDQ1G6HBSJRXVSWEWQ9W9E4
   slugs: []
   title: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
@@ -65491,7 +65491,7 @@
   type: task
   spec_ref: "@session-stale-cleanup"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-stale-session-candidate-criteria"
@@ -65500,7 +65500,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJKWXHKKHZMP574E78F7BHA3
   created_at: 2026-02-27T20:15:54.343Z
+  started_at: 2026-03-01T05:43:48.224Z
   notes:
     - _ulid: 01KJGBWNF783W553MKSVK92XCE
       created_at: 2026-02-27T20:15:54.343Z
@@ -65519,6 +65521,24 @@
       content: "Automation triage: eligible. 9 own ACs + 6 traits (43 inherited ACs). Depends on
         @implement-stale-session-candidate-criteria and
         @implement-auto-abandon-metadata-and-audit-trail."
+      supersedes: null
+    - _ulid: 01KJKYS8K4WAZNB3Y08351NJ01
+      created_at: 2026-03-01T05:43:49.093Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: implement the missing CLI orchestration for stale active session cleanup so
+        candidate/metadata helpers are reachable from users.
+
+        - Scope: add `kspec session stale close` command with targeting validation (<session-id> vs
+        --refs vs --all), criteria flags, dry-run/apply modes, confirmation behavior, and JSON/human
+        summaries including per-session reasons/totals.
+
+        - Files: src/cli/commands/session/commands.ts, new src/cli/commands/session/stale-close.ts,
+        and new CLI tests for stale close behavior/AC coverage.
+
+        - Verification: targeted stale-close tests, full npm test, and kspec validate before submit.
       supersedes: null
   todos: []
   automation: eligible
