@@ -65236,7 +65236,7 @@
         @trait-shadow-commit."
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KJF29ZGMMW4HZ6KX5SCHR7G2
   slugs:
     - task-adapter-aware-skill-invocation-formatting-for-ralp
