@@ -68284,28 +68284,81 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix ralph loop OOM — O(1) seq assignment + event logging backpressure
+- _ulid: 01KJKBB94D9HKQHW3HPJPE1AK9
+  slugs: []
+  title: Fix ralph loop OOM — O(1) seq assignment + event logging backpressure
+  type: bug
   description: "Ralph loop hits 8GB heap OOM after ~133 minutes. Root cause: getEventCount reads
     entire events.jsonl on every appendEvent call (O(n) per append, O(n²) total), and session update
     logger fires appendEvent via Promise.resolve().then() with no backpressure — thousands of
     concurrent file reads/writes accumulate in flight."
-  type: bug
   spec_ref: "@cli-ralph"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - fix
     - cli
     - ralph
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJKBB94D9HKQHW3HPJPE1AK9
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-01T00:04:07.949Z
-  notes: []
+  notes:
+    - _ulid: 01KJKBBRTSDFKNX0MZADX4G3F1
+      created_at: 2026-03-01T00:04:24.025Z
+      author: "@claude"
+      content: >-
+        Implementation notes:
+
+
+        ## Fix 1: O(1) seq assignment in appendEvent (src/sessions/store.ts)
+
+
+        Replace getEventCount (reads entire file, counts lines) with getLastSeq:
+
+        - Read last ~4KB of events.jsonl (fs.read with position = fileSize - 4096)
+
+        - Find last complete JSON line (last newline boundary)
+
+        - Parse it, extract seq field, return seq + 1
+
+        - Empty/missing file returns 0
+
+        - This is O(1) regardless of file size
+
+
+        ## Fix 2: Backpressure in session update logger (src/cli/commands/ralph.ts)
+
+
+        Replace fire-and-forget Promise.resolve().then() pattern in createSessionUpdateLogger with a
+        sequential queue:
+
+        - Maintain a queue of pending updates and a processing flag
+
+        - When an update arrives: push to queue, start processing if not already
+
+        - Process loop: shift from queue, await appendEvent, repeat until queue empty
+
+        - This ensures at most ONE appendEvent is in flight at a time
+
+        - Updates are still non-blocking from the caller's perspective (event handler returns
+        immediately)
+
+        - Queue should be bounded (e.g., 1000 entries) — drop oldest if exceeded with a warning
+
+
+        ## Files
+
+        - src/sessions/store.ts — getEventCount → getLastSeq
+
+        - src/cli/commands/ralph.ts — createSessionUpdateLogger backpressure queue
+
+        - tests/sessions-store.test.ts — update seq assignment tests
+
+        - tests/ralph.test.ts — update/add logger backpressure tests
+      supersedes: null
   todos: []
+  automation: eligible
