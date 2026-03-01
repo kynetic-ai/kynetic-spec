@@ -9989,6 +9989,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-01T14:17:06.581Z
+    completed_at: 2026-03-01T14:18:11.148Z
     step_results:
       - step_index: 0
         status: completed
@@ -10020,4 +10021,11 @@ runs:
         notes: No items passed uniqueness + high-confidence gate in step 3; reflection intentionally
           captured nothing this iteration.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-01T14:18:11.148Z
+  - _ulid: 01KJMW850W4BHYVMPXDRPE7FAM
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-01T14:18:45.660Z
+    step_results: []
+    initiated_by: Jacob Chapel
