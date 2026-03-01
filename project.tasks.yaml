@@ -65491,7 +65491,7 @@
   type: task
   spec_ref: "@session-stale-cleanup"
   plan_ref: "@plan-auto-close-stale-active-sessions"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-stale-session-candidate-criteria"
@@ -65500,7 +65500,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJKWXHKKHZMP574E78F7BHA3
+  session_id: null
   created_at: 2026-02-27T20:15:54.343Z
   started_at: 2026-03-01T05:43:48.224Z
   submitted_at: 2026-03-01T05:54:12.438Z
@@ -65597,6 +65597,14 @@
 
         - `kspec validate` (pre-existing project-wide schema/reference/alignment/completeness issues
         unrelated to this task)
+      supersedes: null
+    - _ulid: 01KJM03MG7DYCG1JS89Y50B0G9
+      created_at: 2026-03-01T06:06:57.543Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: inherited trait AC coverage incomplete for
+        @session-stale-cleanup (missing @trait-dry-run ac-4, @trait-json-output ac-3,
+        @trait-error-guidance ac-3/ac-4/ac-5, @trait-multi-ref-batch ac-1/ac-3/ac-5); regression
+        gate failing (npm test: tests/cli/session-note-limit.test.ts timeouts)."
       supersedes: null
   todos: []
   automation: eligible
