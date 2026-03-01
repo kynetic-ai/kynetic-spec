@@ -154,6 +154,50 @@ test.describe('Interactive Triage UI', () => {
   });
 
   // AC: @interactive-triage-ui ac-7
+  test('filter selections update URL query params', async ({ page }) => {
+    const statusFilter = page.getByTestId('triage-status-filter');
+    const actionFilter = page.getByTestId('triage-action-filter');
+    const tagFilter = page.getByTestId('triage-tag-filter');
+
+    await statusFilter.selectOption('triaged');
+    await expect(page).toHaveURL(/\/triage\?.*status=triaged/);
+
+    await actionFilter.selectOption('defer');
+    await expect(page).toHaveURL(/\/triage\?.*status=triaged/);
+    await expect(page).toHaveURL(/\/triage\?.*action=defer/);
+
+    const optionCount = await tagFilter.locator('option').count();
+    if (optionCount > 1) {
+      const firstTag = await tagFilter.locator('option').nth(1).getAttribute('value');
+      if (firstTag) {
+        await tagFilter.selectOption(firstTag);
+        const encodedTag = encodeURIComponent(firstTag);
+        await expect(page).toHaveURL(new RegExp(`\\/triage\\?.*tag=${encodedTag}`));
+      }
+    }
+  });
+
+  // AC: @interactive-triage-ui ac-7
+  test('restores filter selections from URL and supports back-forward history', async ({ page }) => {
+    await page.goto('/triage?status=triaged&action=defer');
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByTestId('triage-status-filter')).toHaveValue('triaged');
+    await expect(page.getByTestId('triage-action-filter')).toHaveValue('defer');
+
+    await page.getByTestId('triage-status-filter').selectOption('acted_on');
+    await expect(page).toHaveURL(/\/triage\?.*status=acted_on/);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/\/triage\?.*status=triaged/);
+    await expect(page.getByTestId('triage-status-filter')).toHaveValue('triaged');
+
+    await page.goForward();
+    await expect(page).toHaveURL(/\/triage\?.*status=acted_on/);
+    await expect(page.getByTestId('triage-status-filter')).toHaveValue('acted_on');
+  });
+
+  // AC: @interactive-triage-ui ac-7
   test('action filter narrows cards by triage action and resets card index', async ({ page, request }) => {
     let targetAction = 'defer';
     const triageListResponse = await request.get('http://localhost:3456/api/triage?limit=1000');
