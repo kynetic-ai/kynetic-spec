@@ -220,6 +220,22 @@ describe('ralph command', () => {
     expect(result.stdout).not.toContain('Completed iteration');
   });
 
+  it('keeps worker prompt state JSON untruncated under worker budget', async () => {
+    const tasksPath = path.join(tempDir, 'project.tasks.yaml');
+    const content = await fs.readFile(tasksPath, 'utf-8');
+    const largeDescription = 'x'.repeat(20 * 1024);
+    const modified = content.replace(
+      'description: A task that is pending and ready to work on',
+      `description: ${largeDescription}`
+    );
+    await fs.writeFile(tasksPath, modified);
+
+    const result = runRalph('--dry-run --max-loops 1', tempDir);
+
+    expect(result.stdout).toContain(largeDescription.slice(0, 256));
+    expect(result.stdout).not.toContain('### Current State\n\n> **Truncated**');
+  });
+
   // AC: @cli-ralph ac-15
   // AC: @cli-ralph ac-24
   it('shows iteration-timeout and focus instructions in dry-run output', async () => {
@@ -1789,12 +1805,14 @@ import {
   buildSubagentPrompt,
   DEFAULT_SUBAGENT_PREFIX,
   DEFAULT_SUBAGENT_TIMEOUT,
+  formatCompactSection,
   formatJsonSection,
   type PromptSection,
   SKILL_PR_REVIEW,
   SKILL_REFLECT,
   SKILL_TASK_WORK,
   SUBAGENT_PROMPT_MAX_BYTES,
+  WORKER_PROMPT_MAX_BYTES,
   type SubagentContext,
   truncatePromptIfNeeded,
 } from '../src/ralph/subagent.js';
@@ -1830,24 +1848,28 @@ describe('subagent module', () => {
       expect(prompt).toContain('feat/my-branch');
     });
 
-    it('includes task details as JSON', () => {
+    it('includes task details as compact summary with CLI fetch command', () => {
       const context: SubagentContext = {
         taskRef: '@task-example',
-        taskDetails: { title: 'Test Task', priority: 1 },
+        taskDetails: { title: 'Test Task', status: 'pending_review', priority: 1 },
         specWithACs: null,
         gitBranch: 'main',
       };
 
       const prompt = buildSubagentPrompt(context);
 
-      expect(prompt).toContain('"title": "Test Task"');
-      expect(prompt).toContain('"priority": 1');
+      expect(prompt).toContain('kspec task get @task-example --json');
+      expect(prompt).toContain('Summary:');
+      expect(prompt).toContain('"title":"Test Task"');
+      expect(prompt).toContain('"status":"pending_review"');
+      expect(prompt).not.toContain('```json');
+      expect(prompt).not.toContain('"priority": 1');
     });
 
     it('includes spec with ACs when provided', () => {
       const context: SubagentContext = {
         taskRef: '@task-example',
-        taskDetails: { title: 'Test Task' },
+        taskDetails: { title: 'Test Task', spec_ref: '@example-spec' },
         specWithACs: {
           title: 'Example Spec',
           acceptance_criteria: [
@@ -1860,7 +1882,8 @@ describe('subagent module', () => {
       const prompt = buildSubagentPrompt(context);
 
       expect(prompt).toContain('Example Spec');
-      expect(prompt).toContain('acceptance_criteria');
+      expect(prompt).toContain('"ac_count":1');
+      expect(prompt).toContain('kspec item get @example-spec --json');
       expect(prompt).toContain('Verify all ACs have test coverage');
     });
 
@@ -1902,6 +1925,30 @@ describe('subagent module', () => {
 
       expect(prompt).toContain('/my-custom-review @task-my-feature');
       expect(prompt).not.toContain(SKILL_PR_REVIEW);
+    });
+  });
+
+  describe('formatCompactSection', () => {
+    it('returns compact summary format with CLI fetch command', () => {
+      const data = { title: 'Task', status: 'pending_review', acceptance_criteria: [{ id: 'ac-1' }] };
+      const { text } = formatCompactSection(data, 'Task Details', 'kspec task get @t --json');
+
+      expect(text).toContain('### Task Details');
+      expect(text).toContain('kspec task get @t --json');
+      expect(text).toContain('Summary:');
+      expect(text).toContain('"title":"Task"');
+      expect(text).toContain('"status":"pending_review"');
+      expect(text).toContain('"ac_count":1');
+      expect(text).not.toContain('```json');
+    });
+
+    it('section marker matches compact text for replacement', () => {
+      const data = { title: 'Task' };
+      const { text, section } = formatCompactSection(data, 'Label', 'kspec task get @t --json');
+
+      expect(section.marker).toBe(text);
+      expect(section.size).toBe(Buffer.byteLength(text, 'utf8'));
+      expect(section.truncated).toContain('**Truncated**');
     });
   });
 
@@ -2021,23 +2068,25 @@ describe('subagent module', () => {
   });
 
   describe('buildSubagentPrompt truncation', () => {
-    it('small payloads are embedded verbatim with json fence', () => {
+    it('small payloads are rendered as compact sections (no json fence)', () => {
       const context: SubagentContext = {
         taskRef: '@task-small',
-        taskDetails: { title: 'Small Task', status: 'pending_review' },
+        taskDetails: { title: 'Small Task', status: 'pending_review', spec_ref: '@small-spec' },
         specWithACs: { title: 'Small Spec', acceptance_criteria: [{ id: 'ac-1' }] },
         gitBranch: 'feat/small',
       };
 
       const prompt = buildSubagentPrompt(context);
 
-      expect(prompt).toContain('```json');
-      expect(prompt).toContain('"title": "Small Task"');
-      expect(prompt).toContain('"title": "Small Spec"');
+      expect(prompt).not.toContain('```json');
+      expect(prompt).toContain('kspec task get @task-small --json');
+      expect(prompt).toContain('kspec item get @small-spec --json');
+      expect(prompt).toContain('"title":"Small Task"');
+      expect(prompt).toContain('"title":"Small Spec"');
       expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
     });
 
-    it('oversized taskDetails triggers truncation with CLI fetch command', () => {
+    it('oversized taskDetails remains compact and omits large payload fields', () => {
       const hugeNotes = 'x'.repeat(40000);
       const context: SubagentContext = {
         taskRef: '@task-huge',
@@ -2048,13 +2097,12 @@ describe('subagent module', () => {
 
       const prompt = buildSubagentPrompt(context);
 
-      expect(prompt).toContain('**Truncated**');
       expect(prompt).toContain('kspec task get @task-huge --json');
       expect(prompt).not.toContain(hugeNotes);
       expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
     });
 
-    it('oversized specWithACs triggers truncation with CLI fetch command', () => {
+    it('oversized specWithACs remains compact and omits large payload fields', () => {
       const hugeSpec = 'y'.repeat(40000);
       const context: SubagentContext = {
         taskRef: '@task-spec-huge',
@@ -2065,14 +2113,12 @@ describe('subagent module', () => {
 
       const prompt = buildSubagentPrompt(context);
 
-      expect(prompt).toContain('**Truncated**');
       expect(prompt).toContain('kspec item get @big-spec --json');
       expect(prompt).not.toContain(hugeSpec);
       expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
     });
 
-    it('both sections oversized triggers truncation for both', () => {
-      // Each section individually exceeds budget, so truncating one still leaves prompt over limit
+    it('both sections oversized still fit budget via compact summaries', () => {
       const bigData = 'z'.repeat(SUBAGENT_PROMPT_MAX_BYTES);
       const context: SubagentContext = {
         taskRef: '@task-both',
@@ -2089,7 +2135,7 @@ describe('subagent module', () => {
       expect(Buffer.byteLength(prompt, 'utf8')).toBeLessThanOrEqual(SUBAGENT_PROMPT_MAX_BYTES);
     });
 
-    it('compact summary present in truncation output', () => {
+    it('compact summary is present in output', () => {
       const hugeNotes = 'x'.repeat(40000);
       const context: SubagentContext = {
         taskRef: '@task-summary',
@@ -2127,6 +2173,11 @@ describe('subagent module', () => {
       expect(SKILL_TASK_WORK).toBe('/kspec:task-work');
       expect(SKILL_REFLECT).toBe('/kspec:reflect');
       expect(SKILL_PR_REVIEW).toBe('/kspec:review');
+    });
+
+    it('uses split prompt budgets for subagent and worker prompts', () => {
+      expect(SUBAGENT_PROMPT_MAX_BYTES).toBe(16 * 1024);
+      expect(WORKER_PROMPT_MAX_BYTES).toBe(32 * 1024);
     });
   });
 

@@ -80,10 +80,14 @@ export interface SubagentOptions {
 /** Default subagent timeout: 20 minutes */
 export const DEFAULT_SUBAGENT_TIMEOUT = 20 * 60 * 1000;
 
-/** Maximum prompt size in bytes before truncation kicks in.
- * 32KB prompt ≈ 35-40KB on the wire (JSON-RPC envelope + escaping),
- * well under the 64KB Linux pipe buffer. */
-export const SUBAGENT_PROMPT_MAX_BYTES = 32 * 1024;
+/** Maximum prompt size in bytes for subagent prompts before truncation kicks in.
+ * Kept lower than worker prompts because reviewer subagents include additional
+ * framing and have hit ACP parser limits with oversized JSON payloads. */
+export const SUBAGENT_PROMPT_MAX_BYTES = 16 * 1024;
+
+/** Maximum prompt size in bytes for worker prompts before truncation kicks in.
+ * Worker prompts can retain the prior 32KB budget. */
+export const WORKER_PROMPT_MAX_BYTES = 32 * 1024;
 
 /** Default output prefix for subagent */
 export const DEFAULT_SUBAGENT_PREFIX = "[REVIEW SUBAGENT]";
@@ -178,6 +182,29 @@ export function formatJsonSection(
 }
 
 /**
+ * Format a section as a compact summary + CLI fetch command.
+ * Intended for subagent prompts to avoid embedding full JSON payloads.
+ */
+export function formatCompactSection(
+  data: Record<string, unknown>,
+  label: string,
+  fetchCmd: string,
+): { text: string; section: PromptSection } {
+  const summary = JSON.stringify(compactSummary(data));
+  const text = `### ${label}\n\n> Fetch full data:\n> \`\`\`\n> ${fetchCmd}\n> \`\`\`\n>\n> Summary: \`${summary}\``;
+  const truncated = `### ${label}\n\n> **Truncated**. Fetch full data:\n> \`\`\`\n> ${fetchCmd}\n> \`\`\``;
+
+  return {
+    text,
+    section: {
+      marker: text,
+      truncated,
+      size: Buffer.byteLength(text, "utf8"),
+    },
+  };
+}
+
+/**
  * If the assembled prompt exceeds the byte budget, truncate the largest
  * section(s) until it fits. Sections are replaced largest-first.
  */
@@ -219,8 +246,8 @@ export function truncatePromptIfNeeded(
  * @param skillName - Skill invocation name for PR review (from config or default)
  */
 export function buildSubagentPrompt(context: SubagentContext, skillName: string = SKILL_PR_REVIEW): string {
-  // Build replaceable JSON sections
-  const taskSection = formatJsonSection(
+  // Build compact identity sections to keep subagent payloads small.
+  const taskSection = formatCompactSection(
     context.taskDetails,
     "Task Details",
     `kspec task get ${context.taskRef} --json`,
@@ -232,7 +259,7 @@ export function buildSubagentPrompt(context: SubagentContext, skillName: string 
   let specSection: PromptSection | null = null;
   if (context.specWithACs) {
     const specRef = (context.taskDetails.spec_ref as string) || "@spec";
-    const formatted = formatJsonSection(
+    const formatted = formatCompactSection(
       context.specWithACs,
       "Linked Spec with Acceptance Criteria",
       `kspec item get ${specRef} --json`,
@@ -285,7 +312,7 @@ The skill defines all review steps, quality gates, and merge criteria. Follow it
 Do NOT start new work. Do NOT fix code. Your only job is reviewing this task's PR, posting findings, and merging if clean.
 `;
 
-  return truncatePromptIfNeeded(prompt, sections);
+  return truncatePromptIfNeeded(prompt, sections, SUBAGENT_PROMPT_MAX_BYTES);
 }
 
 // ============================================================================
