@@ -8,9 +8,11 @@ import {
   loadAllItems,
   loadAllTasks,
   loadInboxItems,
+  loadMetaContext,
   ReferenceIndex,
   saveObservation,
   saveTask,
+  shortestUniqueUlid,
 } from "../parser/index.js";
 import { truncateText } from "../export/triage.js";
 
@@ -51,15 +53,25 @@ export async function executeTriageAction(
     throw new Error("Record has no action to execute");
   }
 
+  const getShortInboxRef = async (): Promise<string> => {
+    const inboxItems = await loadInboxItems(ctx);
+    const ulids = inboxItems.map((item) => item._ulid);
+    if (!ulids.includes(record.inbox_ref)) {
+      ulids.push(record.inbox_ref);
+    }
+    return shortestUniqueUlid(record.inbox_ref, ulids);
+  };
+
   switch (action) {
     case "promote": {
       // AC: @triage-cli-commands ac-4
       if (dryRun) {
+        const inboxRef = await getShortInboxRef();
         onInfo?.(`Would create task from inbox item snapshot: "${truncateText(record.item_snapshot)}"`);
         if (consume) {
-          onInfo?.(`Would delete promoted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+          onInfo?.(`Would delete promoted inbox item: ${inboxRef}`);
         } else {
-          onInfo?.(`Would keep promoted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+          onInfo?.(`Would keep promoted inbox item: ${inboxRef}`);
         }
         return {};
       }
@@ -78,10 +90,14 @@ export async function executeTriageAction(
       const taskRef = `@${index.shortUlid(task._ulid)}`;
       if (consume) {
         const inboxItems = await loadInboxItems(ctx);
+        const inboxRef = shortestUniqueUlid(
+          record.inbox_ref,
+          inboxItems.map((item) => item._ulid),
+        );
         const inboxItem = findInboxItemByRef(inboxItems, record.inbox_ref);
         if (inboxItem) {
           await deleteInboxItem(ctx, inboxItem._ulid);
-          onInfo?.(`Deleted promoted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+          onInfo?.(`Deleted promoted inbox item: ${inboxRef}`);
         }
       }
       onInfo?.(`Created task: ${taskRef} - ${task.title}`);
@@ -91,14 +107,18 @@ export async function executeTriageAction(
     case "delete": {
       // AC: @triage-cli-commands ac-5
       if (dryRun) {
-        onInfo?.(`Would delete inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        onInfo?.(`Would delete inbox item: ${await getShortInboxRef()}`);
         return {};
       }
       const inboxItems = await loadInboxItems(ctx);
+      const inboxRef = shortestUniqueUlid(
+        record.inbox_ref,
+        inboxItems.map((item) => item._ulid),
+      );
       const inboxItem = findInboxItemByRef(inboxItems, record.inbox_ref);
       if (inboxItem) {
         await deleteInboxItem(ctx, inboxItem._ulid);
-        onInfo?.(`Deleted inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        onInfo?.(`Deleted inbox item: ${inboxRef}`);
       }
       return {};
     }
@@ -123,7 +143,11 @@ export async function executeTriageAction(
         configAuthor: ctx.config?.identity?.author,
       });
       await saveObservation(ctx, observation);
-      const obsRef = `@${observation._ulid.slice(0, 8)}`;
+      const meta = await loadMetaContext(ctx);
+      const obsRef = `@${shortestUniqueUlid(
+        observation._ulid,
+        meta.observations.map((obs) => obs._ulid),
+      )}`;
       onInfo?.(`Created spec-gap observation: ${obsRef}`);
       return { resultRef: obsRef };
     }
@@ -131,14 +155,18 @@ export async function executeTriageAction(
     case "duplicate": {
       // AC: @triage-cli-commands ac-8
       if (dryRun) {
-        onInfo?.(`Would delete duplicate inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        onInfo?.(`Would delete duplicate inbox item: ${await getShortInboxRef()}`);
         return {};
       }
       const dupItems = await loadInboxItems(ctx);
+      const inboxRef = shortestUniqueUlid(
+        record.inbox_ref,
+        dupItems.map((item) => item._ulid),
+      );
       const dupItem = findInboxItemByRef(dupItems, record.inbox_ref);
       if (dupItem) {
         await deleteInboxItem(ctx, dupItem._ulid);
-        onInfo?.(`Deleted duplicate inbox item: ${record.inbox_ref.slice(0, 8)}`);
+        onInfo?.(`Deleted duplicate inbox item: ${inboxRef}`);
       }
       return {};
     }

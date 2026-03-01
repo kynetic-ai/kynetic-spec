@@ -103,6 +103,29 @@ export interface RefValidationWarning {
 // ============================================================
 
 /**
+ * Compute the shortest unique ULID prefix within a set of ULIDs.
+ * Falls back to full ULID when no unique prefix is found before full length.
+ */
+export function shortestUniqueUlid(
+  ulid: string,
+  allUlids: readonly string[],
+  minLength = 8,
+): string {
+  let length = minLength;
+  while (length < ulid.length) {
+    const prefix = ulid.slice(0, length);
+    const matches = allUlids.filter((candidate) =>
+      candidate.toUpperCase().startsWith(prefix.toUpperCase()),
+    );
+    if (matches.length === 1) {
+      return prefix;
+    }
+    length++;
+  }
+  return ulid;
+}
+
+/**
  * Index for efficient reference resolution.
  * Build once when loading the spec, then resolve many times.
  * AC: @agent-definitions ac-agent-3
@@ -308,24 +331,7 @@ export class ReferenceIndex {
    * @returns Shortest unique prefix
    */
   shortUlid(ulid: string, minLength = 8): string {
-    // Start with minimum length
-    let length = minLength;
-
-    while (length < ulid.length) {
-      const prefix = ulid.slice(0, length);
-      const matches = this.allUlids.filter((u) =>
-        u.toUpperCase().startsWith(prefix.toUpperCase()),
-      );
-
-      if (matches.length === 1) {
-        return prefix;
-      }
-
-      length++;
-    }
-
-    // Return full ULID if no shorter unique prefix found
-    return ulid;
+    return shortestUniqueUlid(ulid, this.allUlids, minLength);
   }
 
   /**

@@ -2093,8 +2093,11 @@ Examples:
                   possibleRefs.push(`@${specItem.slugs[0]} ${ac.id}`);
                   possibleRefs.push(`@${specItem.slugs[0]}`);
                 }
-                possibleRefs.push(`@${specItem._ulid.slice(0, 8)} ${ac.id}`);
-                possibleRefs.push(`@${specItem._ulid.slice(0, 8)}`);
+                for (let prefixLength = 8; prefixLength <= specItem._ulid.length; prefixLength++) {
+                  const prefix = specItem._ulid.slice(0, prefixLength);
+                  possibleRefs.push(`@${prefix} ${ac.id}`);
+                  possibleRefs.push(`@${prefix}`);
+                }
 
                 const isCovered = possibleRefs.some((ref) =>
                   coveredACs.has(ref),

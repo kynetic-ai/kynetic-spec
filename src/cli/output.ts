@@ -233,7 +233,7 @@ function statusColor(status: TaskStatus): (text: string) => string {
  * @param index Optional ReferenceIndex for dynamic short ULID computation
  */
 export function formatTaskRef(task: Task, index?: ReferenceIndex): string {
-  const shortId = index ? index.shortUlid(task._ulid) : task._ulid.slice(0, 8);
+  const shortId = index ? index.shortUlid(task._ulid) : task._ulid;
   if (task.slugs.length > 0) {
     return `${shortId} (${task.slugs[0]})`;
   }

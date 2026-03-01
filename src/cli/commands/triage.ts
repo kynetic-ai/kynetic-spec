@@ -11,6 +11,7 @@ import {
   saveTriageRecord,
   findInboxItemByRef,
   findTriageRecordByRef,
+  shortestUniqueUlid,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { normalizeRefInput } from "../../schema/index.js";
@@ -42,6 +43,13 @@ function resolveTriageRef(
     process.exit(EXIT_CODES.NOT_FOUND);
   }
   return record;
+}
+
+function shortRecordRef(record: LoadedTriageRecord, records: LoadedTriageRecord[]): string {
+  return shortestUniqueUlid(
+    record._ulid,
+    records.map((r) => r._ulid),
+  );
 }
 
 // truncateText imported from shared export/triage.ts
@@ -84,16 +92,20 @@ Examples:
 
         // Resolve inbox item
         const inboxItems = await loadInboxItems(ctx);
+        const inboxUlids = inboxItems.map((inboxItem) => inboxItem._ulid);
         const item = findInboxItemByRef(inboxItems, inboxRef);
         if (!item) {
           error(errors.reference.inboxNotFound(inboxRef));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
+        const inboxRefDisplay = shortestUniqueUlid(item._ulid, inboxUlids);
 
         if (options.dryRun) {
-          info(`Would create triage record for inbox item ${item._ulid.slice(0, 8)} with action: ${options.action}`);
+          info(`Would create triage record for inbox item ${inboxRefDisplay} with action: ${options.action}`);
           return;
         }
+
+        const existingRecords = await loadTriageRecords(ctx);
 
         const author = options.decidedBy || getAuthor(ctx.config?.identity?.author);
         const evidenceRefs = options.evidence
@@ -120,9 +132,14 @@ Examples:
           options.action,
         );
 
+        const createdRef = shortestUniqueUlid(
+          record._ulid,
+          [...existingRecords.map((r) => r._ulid), record._ulid],
+        );
+
         // AC: @triage-cli-commands ac-11 — JSON output
         // AC: @trait-json-output ac-1, ac-2, ac-4, ac-5
-        success(`Recorded triage decision: ${record._ulid.slice(0, 8)}`, { record });
+        success(`Recorded triage decision: ${createdRef}`, { record });
       } catch (err) {
         error("Failed to record triage decision", err);
         process.exit(EXIT_CODES.ERROR);
@@ -144,6 +161,7 @@ Examples:
       try {
         const ctx = await initContext();
         let records = await loadTriageRecords(ctx);
+        const allRecordUlids = records.map((record) => record._ulid);
         const totalCount = records.length;
         const activeFilters: string[] = [];
         let filteredCount: number;
@@ -219,7 +237,8 @@ Examples:
             const age = formatRelativeTime(record.created_at);
             const action = record.action ? ` [${record.action}]` : "";
             const decidedBy = record.decided_by ? ` by ${record.decided_by}` : "";
-            console.log(`  ${record._ulid.slice(0, 8)} (${age}${decidedBy}) ${record.status}${action}`);
+            const recordRef = shortestUniqueUlid(record._ulid, allRecordUlids);
+            console.log(`  ${recordRef} (${age}${decidedBy}) ${record.status}${action}`);
             console.log(`    ${snapshot}`);
             console.log("");
           }
@@ -241,24 +260,25 @@ Examples:
         const ctx = await initContext();
         const records = await loadTriageRecords(ctx);
         const record = resolveTriageRef(triageRef, records);
+        const recordRef = shortRecordRef(record, records);
 
         // AC: @triage-cli-commands ac-15 — already acted on
         // AC: @trait-error-guidance ac-1, ac-2
         if (record.status === "acted_on") {
-          error(`Triage record ${record._ulid.slice(0, 8)} has already been acted on. No further action is possible.`);
+          error(`Triage record ${recordRef} has already been acted on. No further action is possible.`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         // AC: @triage-cli-commands ac-16 — no decision yet
         // AC: @trait-error-guidance ac-1, ac-2
         if (record.status === "pending") {
-          error(`Triage record ${record._ulid.slice(0, 8)} has no decision yet. Record a decision first with: kspec triage record <inbox-ref> --action <action> --reasoning <text>`);
+          error(`Triage record ${recordRef} has no decision yet. Record a decision first with: kspec triage record <inbox-ref> --action <action> --reasoning <text>`);
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
         // AC: @triage-cli-commands ac-17 — dry run
         if (options.dryRun) {
-          info(`Dry run for triage record ${record._ulid.slice(0, 8)}:`);
+          info(`Dry run for triage record ${recordRef}:`);
           await executeTriageAction(record, ctx, {
             dryRun: true,
             consume: !options.keep,
@@ -289,7 +309,7 @@ Examples:
           record.action,
         );
 
-        success(`Acted on triage record: ${record._ulid.slice(0, 8)} (${record.action})`, { record });
+        success(`Acted on triage record: ${recordRef} (${record.action})`, { record });
       } catch (err) {
         error("Failed to act on triage record", err);
         process.exit(EXIT_CODES.ERROR);
@@ -308,6 +328,7 @@ Examples:
         const ctx = await initContext();
         const records = await loadTriageRecords(ctx);
         const record = resolveTriageRef(triageRef, records);
+        const recordRef = shortRecordRef(record, records);
 
         // Validate action
         if (!VALID_ACTIONS.includes(options.action)) {
@@ -336,7 +357,7 @@ Examples:
           options.action,
         );
 
-        success(`Overrode triage decision: ${record._ulid.slice(0, 8)} → ${options.action}`, { record });
+        success(`Overrode triage decision: ${recordRef} → ${options.action}`, { record });
       } catch (err) {
         error("Failed to override triage decision", err);
         process.exit(EXIT_CODES.ERROR);
@@ -392,6 +413,8 @@ Examples:
         const ctx = await initContext();
         const inboxItems = await loadInboxItems(ctx);
         const existingRecords = await loadTriageRecords(ctx);
+        const inboxUlids = inboxItems.map((item) => item._ulid);
+        const recordUlids = existingRecords.map((record) => record._ulid);
 
         // Find untriaged items (no existing triage record)
         const triagedInboxRefs = new Set(existingRecords.map((r) => r.inbox_ref));
@@ -454,8 +477,9 @@ Examples:
 
         // AC: @triage-cli-commands ac-9 — present items one at a time
         for (const item of untriaged) {
+          const inboxRef = shortestUniqueUlid(item._ulid, inboxUlids);
           console.log("─".repeat(60));
-          console.log(`Item: ${item._ulid.slice(0, 8)} (${formatRelativeTime(item.created_at)})`);
+          console.log(`Item: ${inboxRef} (${formatRelativeTime(item.created_at)})`);
           if (item.tags.length > 0) {
             console.log(`Tags: ${item.tags.join(", ")}`);
           }
@@ -521,8 +545,10 @@ Examples:
             action,
           );
 
+          recordUlids.push(record._ulid);
+          const recordRef = shortestUniqueUlid(record._ulid, recordUlids);
           triaged++;
-          console.log(`Recorded: ${record._ulid.slice(0, 8)} → ${action}\n`);
+          console.log(`Recorded: ${recordRef} → ${action}\n`);
         }
 
         rl.close();

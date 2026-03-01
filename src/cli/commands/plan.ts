@@ -20,6 +20,7 @@ import {
   loadPlans,
   savePlan,
   saveTask,
+  shortestUniqueUlid,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { PlanInput, TaskInput } from "../../schema/index.js";
@@ -58,6 +59,13 @@ function resolvePlanRef(ref: string, plans: LoadedPlan[]): LoadedPlan {
   }
 
   return plan;
+}
+
+function shortPlanRef(plan: LoadedPlan, plans: LoadedPlan[]): string {
+  return shortestUniqueUlid(
+    plan._ulid,
+    plans.map((candidate) => candidate._ulid),
+  );
 }
 
 /**
@@ -160,11 +168,12 @@ Examples:
 
         const newPlan = createPlan(input);
         await savePlan(ctx, newPlan);
+        const planRef = shortPlanRef(newPlan, [...plans, newPlan]);
 
         // AC: @plan-crud ac-1 - auto-commit to shadow branch
         await commitIfShadow(ctx.shadow, "plan-add", newPlan.slugs[0] || newPlan._ulid.slice(0, 8), options.title);
 
-        success(`Created plan: ${newPlan._ulid.slice(0, 8)} - ${newPlan.title}`, {
+        success(`Created plan: ${planRef} - ${newPlan.title}`, {
           plan: newPlan,
         });
       } catch (err) {
@@ -265,6 +274,7 @@ Examples:
         const ctx = await initContext();
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
+        const foundPlanRef = shortPlanRef(foundPlan, plans);
 
         // AC: @plan-crud ac-4 - prevent transitions from terminal states
         if (
@@ -319,7 +329,7 @@ Examples:
           changes.join(", "),
         );
 
-        success(`Updated plan: ${foundPlan._ulid.slice(0, 8)}`, {
+        success(`Updated plan: ${foundPlanRef}`, {
           changes,
           plan: foundPlan,
         });
@@ -362,7 +372,7 @@ Examples:
           console.log(`Plans (${plans.length}):\n`);
 
           for (const p of plans) {
-            const ref = p._ulid.slice(0, 8);
+            const ref = shortPlanRef(p, plans);
             const age = formatRelativeTime(p.created_at);
             const taskCount = p.derived_tasks.length;
             const tasks =
@@ -398,6 +408,7 @@ Examples:
         const author = getAuthor(ctx.config?.identity?.author);
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
+        const foundPlanRef = shortPlanRef(foundPlan, plans);
 
         // AC: @plan-crud ac-9 - append note with ULID, timestamp, author
         const note = {
@@ -415,7 +426,7 @@ Examples:
           foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
         );
 
-        success(`Added note to plan: ${foundPlan._ulid.slice(0, 8)}`, {
+        success(`Added note to plan: ${foundPlanRef}`, {
           note,
         });
       } catch (err) {
@@ -492,7 +503,7 @@ Examples:
         // AC: @plan-derive ac-5 - create task with plan_ref
         const planRef = foundPlan.slugs[0]
           ? `@${foundPlan.slugs[0]}`
-          : `@${foundPlan._ulid.slice(0, 8)}`;
+          : `@${shortPlanRef(foundPlan, plans)}`;
 
         const taskInput: TaskInput = {
           title: taskTitle,

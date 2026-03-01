@@ -26,6 +26,7 @@ import {
   ReferenceIndex,
   type RefValidationError,
   type RefValidationWarning,
+  shortestUniqueUlid,
   validateRefs,
 } from "./refs.js";
 import { TraitIndex } from "./traits.js";
@@ -654,7 +655,7 @@ function detectTraitCycles(
   for (const trait of traits) {
     const ref = trait.slugs?.[0]
       ? `@${trait.slugs[0]}`
-      : `@${trait._ulid.slice(0, 8)}`;
+      : `@${index.shortUlid(trait._ulid)}`;
     traitInfo.set(trait._ulid, { ref, title: trait.title });
 
     const dependencies: string[] = [];
@@ -711,7 +712,7 @@ function detectTraitCycles(
         if (info) {
           const cycleRefs = cycle.map((ulid) => {
             const cycleInfo = traitInfo.get(ulid);
-            return cycleInfo ? cycleInfo.ref : `@${ulid.slice(0, 8)}`;
+            return cycleInfo ? cycleInfo.ref : `@${index.shortUlid(ulid)}`;
           });
 
           errors.push({
@@ -865,9 +866,12 @@ export function computeACCoverage<
       possibleRefs.push(`@${item.slugs[0]}`);
     }
 
-    // Try with ULID (short form)
-    possibleRefs.push(`@${item._ulid.slice(0, 8)} ${acId}`);
-    possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
+    // Try all ULID prefix lengths (8..full) to support shortest-unique refs
+    for (let prefixLength = 8; prefixLength <= item._ulid.length; prefixLength++) {
+      const prefix = item._ulid.slice(0, prefixLength);
+      possibleRefs.push(`@${prefix} ${acId}`);
+      possibleRefs.push(`@${prefix}`);
+    }
 
     const covered = possibleRefs.some((ref) => coveredACs.has(ref));
     return { ...ac, covered };
@@ -881,7 +885,7 @@ export function computeACCoverage<
  */
 async function checkCompleteness(
   items: LoadedSpecItem[],
-  _index: ReferenceIndex,
+  index: ReferenceIndex,
   rootDir: string,
   traitIndex?: TraitIndex,
 ): Promise<CompletenessWarning[]> {
@@ -893,7 +897,7 @@ async function checkCompleteness(
   for (const item of items) {
     const itemRef = item.slugs?.[0]
       ? `@${item.slugs[0]}`
-      : `@${item._ulid.slice(0, 8)}`;
+      : `@${index.shortUlid(item._ulid)}`;
     const isTrait = item.type === "trait";
 
     // AC: @spec-completeness ac-1
@@ -941,7 +945,12 @@ async function checkCompleteness(
             if (child.status?.implementation === "not_started") {
               const childRef = child.slugs?.[0]
                 ? `@${child.slugs[0]}`
-                : `@${child._ulid?.slice(0, 8) || "unknown"}`;
+                : child._ulid
+                  ? `@${shortestUniqueUlid(
+                    child._ulid,
+                    items.map((candidate) => candidate._ulid),
+                  )}`
+                  : "@unknown";
               warnings.push({
                 type: "status_inconsistency",
                 itemRef,
@@ -970,9 +979,12 @@ async function checkCompleteness(
           possibleRefs.push(`@${item.slugs[0]}`);
         }
 
-        // Try with ULID (short form)
-        possibleRefs.push(`@${item._ulid.slice(0, 8)} ${ac.id}`);
-        possibleRefs.push(`@${item._ulid.slice(0, 8)}`);
+        // Try all ULID prefix lengths (8..full) to support shortest-unique refs
+        for (let prefixLength = 8; prefixLength <= item._ulid.length; prefixLength++) {
+          const prefix = item._ulid.slice(0, prefixLength);
+          possibleRefs.push(`@${prefix} ${ac.id}`);
+          possibleRefs.push(`@${prefix}`);
+        }
 
         // Check if any of these references are covered
         const isCovered = possibleRefs.some((ref) => coveredACs.has(ref));
@@ -1009,9 +1021,12 @@ async function checkCompleteness(
         possibleRefs.push(`@${trait.slug} ${ac.id}`);
         possibleRefs.push(`@${trait.slug}`);
 
-        // Try with trait ULID (short form)
-        possibleRefs.push(`@${trait.ulid.slice(0, 8)} ${ac.id}`);
-        possibleRefs.push(`@${trait.ulid.slice(0, 8)}`);
+        // Try all trait ULID prefix lengths (8..full) to support shortest-unique refs
+        for (let prefixLength = 8; prefixLength <= trait.ulid.length; prefixLength++) {
+          const prefix = trait.ulid.slice(0, prefixLength);
+          possibleRefs.push(`@${prefix} ${ac.id}`);
+          possibleRefs.push(`@${prefix}`);
+        }
 
         // Check if any of these references are covered
         const isCovered = possibleRefs.some((ref) => coveredACs.has(ref));
@@ -1273,6 +1288,7 @@ export function checkACSchemaReferences(
   items: LoadedSpecItem[],
 ): CompletenessWarning[] {
   const warnings: CompletenessWarning[] = [];
+  const itemUlids = items.map((item) => item._ulid);
 
   for (const item of items) {
     if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
@@ -1281,7 +1297,7 @@ export function checkACSchemaReferences(
 
     const itemRef = item.slugs?.[0]
       ? `@${item.slugs[0]}`
-      : `@${item._ulid.slice(0, 8)}`;
+      : `@${shortestUniqueUlid(item._ulid, itemUlids)}`;
 
     for (const ac of item.acceptance_criteria) {
       // Check all three parts of the AC for field references
@@ -1355,7 +1371,7 @@ function checkAutomationEligibility(
   for (const task of tasks) {
     const taskRef = task.slugs?.[0]
       ? `@${task.slugs[0]}`
-      : `@${task._ulid.slice(0, 8)}`;
+      : `@${index.shortUlid(task._ulid)}`;
 
     // AC: @task-automation-eligibility ac-21
     // Warn if eligible but no spec_ref

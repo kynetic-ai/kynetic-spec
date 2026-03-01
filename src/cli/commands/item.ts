@@ -22,6 +22,7 @@ import {
   patchSpecItems,
   ReferenceIndex,
   resolveMetaRef,
+  shortestUniqueUlid,
   updateSpecItem,
 } from "../../parser/index.js";
 import type { ItemFilter } from "../../parser/items.js";
@@ -50,10 +51,11 @@ import { parseTagsArray } from "../parse-utils.js";
  */
 function formatItem(
   item: LoadedSpecItem,
+  refIndex: ReferenceIndex,
   verbose = false,
   grepPattern?: string,
 ): string {
-  const shortId = item._ulid.slice(0, 8);
+  const shortId = refIndex.shortUlid(item._ulid);
   const slugStr = item.slugs.length > 0 ? chalk.cyan(`@${item.slugs[0]}`) : "";
   const typeStr = chalk.gray(`[${item.type}]`);
 
@@ -107,6 +109,7 @@ function formatItem(
  */
 function formatItemList(
   items: LoadedSpecItem[],
+  refIndex: ReferenceIndex,
   verbose = false,
   grepPattern?: string,
 ): void {
@@ -116,7 +119,7 @@ function formatItemList(
   }
 
   for (const item of items) {
-    console.log(formatItem(item, verbose, grepPattern));
+    console.log(formatItem(item, refIndex, verbose, grepPattern));
   }
 
   console.log(chalk.gray(`\n${items.length} item(s)`));
@@ -127,6 +130,7 @@ function formatItemList(
  */
 function formatItemTree(
   items: LoadedSpecItem[],
+  refIndex: ReferenceIndex,
   verbose = false,
   grepPattern?: string,
 ): void {
@@ -176,7 +180,7 @@ function formatItemTree(
   function printTree(item: LoadedSpecItem, prefix = "", isLast = true): void {
     // Print current item with tree prefix
     const connector = isLast ? "└── " : "├── ";
-    const itemLine = formatItem(item, verbose, grepPattern);
+    const itemLine = formatItem(item, refIndex, verbose, grepPattern);
     console.log(prefix + connector + itemLine);
 
     // Print children
@@ -430,9 +434,9 @@ export function registerItemCommands(program: Command): void {
           () => {
             if (options.tree) {
               // AC: @module-scoped-item-listing ac-under-with-tree
-              formatItemTree(specItems, options.verbose, options.grep);
+              formatItemTree(specItems, refIndex, options.verbose, options.grep);
             } else {
-              formatItemList(specItems, options.verbose, options.grep);
+              formatItemList(specItems, refIndex, options.verbose, options.grep);
             }
           },
         );
@@ -780,7 +784,7 @@ Examples:
           index.shortUlid(result.item._ulid);
         await commitIfShadow(ctx.shadow, "item-add", itemSlug);
         success(
-          `Created item: ${index.shortUlid(result.item._ulid)} under @${parent.slugs[0] || parent._ulid.slice(0, 8)}`,
+          `Created item: ${index.shortUlid(result.item._ulid)} under @${parent.slugs[0] || index.shortUlid(parent._ulid)}`,
           {
             item: result.item,
             path: result.path,
@@ -1136,7 +1140,7 @@ Examples:
         const implementors = findTraitImplementors(foundItem, items);
         if (implementors.length > 0) {
           const implementorRefs = implementors
-            .map((i) => `@${i.slugs[0] || i._ulid.slice(0, 8)}`)
+            .map((i) => `@${i.slugs[0] || refIndex.shortUlid(i._ulid)}`)
             .join(", ");
           const errorMsg = `Cannot delete: trait is used by ${implementors.length} specs. Remove trait from specs first: ${implementorRefs}`;
 
@@ -1170,7 +1174,7 @@ Examples:
                 ulid: c._ulid,
                 slug: c.slugs[0],
                 title: c.title,
-                ref: `@${c.slugs[0] || c._ulid.slice(0, 8)}`,
+                ref: `@${c.slugs[0] || refIndex.shortUlid(c._ulid)}`,
               })),
             });
           } else {
@@ -1181,7 +1185,7 @@ Examples:
 
         // AC: @spec-item-delete-children ac-9 - Custom confirmation prompt for cascade
         if (children.length > 0 && options.cascade && !options.force) {
-          const itemRef = `@${foundItem.slugs[0] || foundItem._ulid.slice(0, 8)}`;
+          const itemRef = `@${foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid)}`;
 
           // Check for JSON mode - requires --force
           if (isJsonMode()) {
@@ -1412,9 +1416,9 @@ Examples:
                 wouldApplyTo: foundItem.title,
                 ulid: foundItem._ulid,
               },
-              () => {
+            () => {
                 console.log(chalk.yellow("Would patch:"), foundItem.title);
-                console.log(chalk.gray("ULID:"), foundItem._ulid.slice(0, 8));
+                console.log(chalk.gray("ULID:"), refIndex.shortUlid(foundItem._ulid));
                 console.log(chalk.gray("Changes:"));
                 console.log(JSON.stringify(data, null, 2));
               },
@@ -1518,7 +1522,7 @@ Examples:
                   : task.taskStatus === "in_progress"
                     ? chalk.blue
                     : chalk.gray;
-              const shortId = task.taskUlid.slice(0, 8);
+              const shortId = refIndex.shortUlid(task.taskUlid);
               const notes = task.hasNotes ? chalk.gray(" (has notes)") : "";
               console.log(
                 `  ${statusColor(`[${task.taskStatus}]`)} ${shortId} ${task.taskTitle}${notes}`,
@@ -2028,12 +2032,18 @@ function formatBulkPatchResult(
   isDryRun = false,
 ): void {
   const prefix = isDryRun ? "Would patch" : "Patched";
+  const updatedUlids = result.results
+    .map((entry) => entry.ulid)
+    .filter((ulid): ulid is string => typeof ulid === "string");
 
   for (const r of result.results) {
     if (r.status === "updated") {
+      const shortUlid = r.ulid
+        ? shortestUniqueUlid(r.ulid, updatedUlids)
+        : undefined;
       console.log(
         chalk.green("OK"),
-        `${prefix}: ${r.ref} (${r.ulid?.slice(0, 8)})`,
+        `${prefix}: ${r.ref} (${shortUlid})`,
       );
     } else if (r.status === "error") {
       console.log(chalk.red("ERR"), `${r.ref}: ${r.error}`);

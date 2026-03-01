@@ -28,7 +28,7 @@ export function formatCommitGuidance(
   const trailers: string[] = [];
   const taskRef = task.slugs[0]
     ? `@${task.slugs[0]}`
-    : `@${task._ulid.slice(0, 8)}`;
+    : `@${task._ulid}`;
   trailers.push(`Task: ${taskRef}`);
 
   if (task.spec_ref) {
