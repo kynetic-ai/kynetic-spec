@@ -9942,7 +9942,7 @@ runs:
   - _ulid: 01KJMTXX99N74N52E3JTZGVWY1
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 4
     started_at: 2026-03-01T13:55:41.481Z
     step_results:
@@ -9955,5 +9955,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-01T13:56:06.423Z
-        completed_at: 2026-03-01T13:56:06.423Z
+        completed_at: 2026-03-01T13:56:24.935Z
+        notes: "High-confidence reflection review: no new systemic friction/success to capture. The main
+          issue this iteration (Node runtime global crypto assumption in websocket test) was
+          task-specific and resolved in code/tests. Candidate workflow friction (workflow show
+          requiring run-ref) is already tracked in inbox as workflow CLI improvement, so no
+          duplicate capture."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-01T13:56:24.935Z
+        completed_at: 2026-03-01T13:56:24.935Z
     initiated_by: Jacob Chapel
