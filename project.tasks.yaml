@@ -64457,6 +64457,14 @@
         tests/cli/session-note-limit.test.ts two timeout failures). Review posted with inline
         comment; do not merge until full suite is green."
       supersedes: null
+    - _ulid: 01KJM52BE1CPS3RB3YKACD24BJ
+      created_at: 2026-03-01T07:33:38.369Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Rebased branch fix/web-ui-websocket-reconnect-race onto origin/main after
+        PR #621 merged regression-flake fixes. Verified full suite on rebased head: npm test => 163
+        files passed, 3620 tests passed, 0 failed (3 skipped). No functional changes to websocket
+        fix; update is to clear regression gate with current base."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJDSXEME66TYKVVGGFW6PYT2
