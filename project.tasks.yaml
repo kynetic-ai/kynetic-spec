@@ -63657,16 +63657,16 @@
     promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
     subsequent commands."
   spec_ref: "@batch-exec"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
   created_at: 2026-02-26T19:33:01.300Z
-  started_at: 2026-03-01T01:53:09.621Z
+  started_at: 2026-03-01T02:22:52.837Z
   submitted_at: 2026-03-01T02:04:07.920Z
   notes:
     - _ulid: 01KJDQA0MV956KKZREMG980AE6
