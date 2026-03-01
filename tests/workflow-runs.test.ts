@@ -262,6 +262,47 @@ describe('workflow runs list', () => {
   });
 });
 
+// AC: @workflow-run-foundation ac-2 (trait @trait-json-output ac-2: all data in JSON mode)
+// Verifies that step_results content (notes) and abort_reason are included in --json output
+describe('workflow runs --json includes step_results content', () => {
+  it('should include step_results with notes in --json output', async () => {
+    // Start a run and advance with notes
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    kspec(`workflow next @${run_id} --notes "Checked prerequisites thoroughly"`, tempDir);
+
+    const result = kspec('workflow runs --json', tempDir);
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    // Find the run with step results
+    const run = output.runs.find((r: any) => r._ulid === run_id);
+    expect(run).toBeDefined();
+    expect(run.step_results).toBeDefined();
+    expect(run.step_results.length).toBeGreaterThan(0);
+    // Notes should appear in step_results
+    const stepWithNotes = run.step_results.find((sr: any) => sr.notes);
+    expect(stepWithNotes).toBeDefined();
+    expect(stepWithNotes.notes).toBe('Checked prerequisites thoroughly');
+  });
+
+  it('should include abort_reason in --json output for aborted runs', async () => {
+    const startResult = kspec('workflow start @test-workflow --json', tempDir);
+    const { run_id } = JSON.parse(startResult.stdout);
+
+    kspec(`workflow abort @${run_id} --reason "Cancelled due to upstream failure"`, tempDir);
+
+    const result = kspec('workflow runs --json', tempDir);
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    const run = output.runs.find((r: any) => r._ulid === run_id);
+    expect(run).toBeDefined();
+    expect(run.abort_reason).toBe('Cancelled due to upstream failure');
+  });
+});
+
 // AC: @workflow-run-foundation ac-4
 describe('workflow show', () => {
   let runId: string;
@@ -305,6 +346,21 @@ describe('workflow show', () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain('Workflow Run Details');
+  });
+
+  it('should include step_results with notes in JSON format', async () => {
+    // Advance with notes
+    kspec(`workflow next @${runId} --notes "Verified requirements"`, tempDir);
+
+    const result = kspec(`workflow show @${runId} --json`, tempDir);
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+
+    expect(output.run.step_results).toBeDefined();
+    // After advancing one step in a 3-step workflow, step 0 is complete + step 1 stub
+    const completedStep = output.run.step_results.find((sr: any) => sr.step_index === 0 && sr.status === 'completed');
+    expect(completedStep).toBeDefined();
+    expect(completedStep.notes).toBe('Verified requirements');
   });
 
   it('should error if run does not exist', async () => {
