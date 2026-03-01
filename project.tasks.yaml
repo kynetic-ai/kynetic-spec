@@ -69291,9 +69291,14 @@
   spec_ref: "@trait-websocket-protocol"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
-  closed_reason: null
+  closed_reason: "Merged in PR #623 (commit 64d5e482b). Fixed daemon WebSocket upgrade regression by
+    removing ws beforeHandle return payloads in Elysia 1.4 + derive path and using Request-keyed
+    WeakMap to carry resolved project binding into open(). Local npm test passed (163 files, 3620
+    tests, 0 failures) and CI checks passed on reviewed head
+    7848744c8458750090a28a84346743f6a2e17fdf. Trait AC context @trait-websocket-protocol reviewed
+    and confirmed covered by existing protocol tests/annotations."
   depends_on: []
   context: []
   priority: 3
@@ -69305,7 +69310,7 @@
   created_at: 2026-03-01T15:00:04.110Z
   started_at: 2026-03-01T15:01:54.176Z
   submitted_at: 2026-03-01T15:01:55.514Z
-  completed_at: null
+  completed_at: 2026-03-01T15:20:46.273Z
   notes:
     - _ulid: 01KJMYPZJ7G3Q6NDJATHDMG894
       created_at: 2026-03-01T15:01:48.743Z
