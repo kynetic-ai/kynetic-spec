@@ -70029,7 +70029,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70037,7 +70037,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
+  session_id: null
   created_at: 2026-03-02T01:22:21.575Z
   started_at: 2026-03-02T16:55:01.563Z
   submitted_at: 2026-03-02T17:14:10.866Z
@@ -70086,6 +70086,15 @@
 
         - 18 behavioral tests covering all 12 ACs
       supersedes: null
+    - _ulid: 01KJQT19CHQQVJ4MK6JB1H5B6S
+      created_at: 2026-03-02T17:37:46.898Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: PR #634 review findings: MUST-FIX AC gaps in dispatch
+        engine (retry queue can stall without wake-up, unresolved adapter path does not add required
+        task note, stop() does not send graceful cancel signals, filter matching is bypassed when
+        task data is missing). Additional SHOULD-FIX items on prompt double-expansion and input
+        validation posted inline. Not merged."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
@@ -70106,6 +70115,7 @@
   session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
   created_at: 2026-03-02T01:22:21.957Z
   started_at: 2026-03-02T17:15:06.356Z
+  submitted_at: 2026-03-02T17:24:20.733Z
   notes:
     - _ulid: 01KJP27845ZTBVBC820S79MMN5
       created_at: 2026-03-02T01:22:21.957Z
@@ -70164,7 +70174,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-02T17:24:20.733Z
 - _ulid: 01KJP278FCWB3A8DBKXB84FTAF
   slugs:
     - implement-daemon-agent-dispatch-integration
