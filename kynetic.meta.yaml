@@ -7097,6 +7097,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJQWQ0N27F78Q4PAXYXQ98WM
+    type: friction
+    content: git -C <path> pattern prevents CWD poisoning in recovery scenarios. Agents running git
+      inside .kspec/ via cd poison the shell CWD for the rest of the session (Claude Code persists
+      CWD changes). Always use git -C /path/to/.kspec/ instead of cd .kspec/ && git. Consider adding
+      this to AGENTS.md development conventions.
+    created_at: 2026-03-02T18:24:36.002Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
