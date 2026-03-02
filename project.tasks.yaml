@@ -70166,6 +70166,14 @@
         daemon shutdown is missing. Need to add stopAllEngines() export and call it from server.ts
         shutdown handler. Posted as inline comment on PR #634 (review 3878949264)."
       supersedes: null
+    - _ulid: 01KJRA3AKBG4C0NP2RDS0M38Y8
+      created_at: 2026-03-02T22:18:30.891Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 4] Fix complete. Added stopAllEngines() export to agent-dispatch.ts and called
+        it from server.ts shutdown handler before stopAllWatchers(). Daemon SIGTERM/SIGINT now
+        properly stops all DispatchEngines with graceful cancel signals per AC-11. TypeScript clean,
+        all 24 dispatch engine tests pass. Resolved 2 unresolved PR threads on PR #634."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
