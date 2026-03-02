@@ -1240,3 +1240,13 @@ inbox:
     tags:
       - reflection
     added_by: "@claude"
+  - _ulid: 01KJP2PBKPF711A0QE8XBW0SG1
+    text: CLI has no way to reparent a spec item (move it under a different parent). kspec item set has
+      no --parent flag, kspec item patch doesn't accept parent_ref. If plan import places specs at
+      the wrong level, the only fix is manual YAML editing — violating the 'use CLI, not manual
+      edits' rule. Discovered during agent-runtime plan import review.
+    created_at: 2026-03-02T01:30:37.046Z
+    tags:
+      - cli
+      - spec-management
+    added_by: "@claude"
