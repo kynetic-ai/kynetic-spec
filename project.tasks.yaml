@@ -69660,6 +69660,23 @@
         annotations for @trait-json-output and @trait-shadow-commit in agent-definition-schema
         tests."
       supersedes: null
+    - _ulid: 01KJPH0Y7YC43FV0A4KHA9JJER
+      created_at: 2026-03-02T05:41:03.870Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1 resolved] Fixed all review findings:
+
+        1. AC-11 spec alignment: Updated spec given clause from 'meta remove' to 'meta delete' to
+        match actual command
+
+        2. Fixed test comment: removed duplicate/incorrect 'meta remove' annotation line
+
+        3. Added @trait-shadow-commit ac-1 annotations to meta add/set/delete agent tests
+
+        4. Added @trait-json-output ac-1 and ac-2 annotations to JSON output tests
+
+        5. Added N/A annotations for remaining 10 trait ACs not applicable to schema extension tests
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP276YTPF94VNY0AVCXXH90
