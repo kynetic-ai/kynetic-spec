@@ -1,0 +1,1 @@
+{"ts":1772461818176,"seq":0,"type":"session.start","session_id":"01KJQFA09T9V2A2HY207KGQ7GP","data":{"adapter":"claude-agent-acp","workerAdapter":"claude-agent-acp","reviewerAdapter":"codex-acp","maxLoops":30,"maxRetries":3,"maxFailures":3,"iterationTimeoutMinutes":20,"maxTasks":1,"yolo":true}}
