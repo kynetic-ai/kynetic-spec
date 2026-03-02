@@ -70702,7 +70702,7 @@
   spec_ref: "@batch-write-buffer"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -70771,6 +70771,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-02T23:26:36.972Z
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
   slugs: []
   title: Auto-build dist before CLI subprocess tests run
