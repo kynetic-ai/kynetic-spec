@@ -69614,16 +69614,17 @@
   type: task
   spec_ref: "@agent-definition-schema"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
+  session_id: null
   created_at: 2026-03-02T01:22:20.391Z
   started_at: 2026-03-02T04:41:13.158Z
+  submitted_at: 2026-03-02T05:00:20.632Z
   notes:
     - _ulid: 01KJP276K70GRHAEJZJ3166E31
       created_at: 2026-03-02T01:22:20.391Z
@@ -69651,9 +69652,16 @@
         covering all 11 ACs. Pre-existing test failures in enhanced-setup.test.ts and
         core-skill-install.test.ts are unrelated to these changes.
       supersedes: null
+    - _ulid: 01KJPF87ANV25VEKS9H8R606Z4
+      created_at: 2026-03-02T05:10:05.397Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-11 spec alignment mismatch (spec says meta
+        remove, PR validates meta delete --confirm); MUST-FIX: missing inherited trait AC coverage
+        annotations for @trait-json-output and @trait-shadow-commit in agent-definition-schema
+        tests."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-02T05:00:20.632Z
 - _ulid: 01KJP276YTPF94VNY0AVCXXH90
   slugs:
     - implement-session-model-evolution
