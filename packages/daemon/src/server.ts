@@ -23,7 +23,7 @@ import { createMetaRoutes } from './routes/meta';
 import { createValidationRoutes } from './routes/validation';
 import { createProjectsRoutes } from './routes/projects';
 import { createTriageRoutes } from './routes/triage';
-import { createAgentDispatchRoutes, getDispatchEngine } from './routes/agent-dispatch';
+import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -388,6 +388,9 @@ export async function createServer(options: ServerOptions) {
     try {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
+
+      // AC: @agent-dispatch-engine ac-11 - Stop all dispatch engines before shutting down
+      await stopAllEngines();
 
       // AC: @multi-directory-daemon ac-11b - Stop all file watchers
       await projectContextManager.stopAllWatchers();

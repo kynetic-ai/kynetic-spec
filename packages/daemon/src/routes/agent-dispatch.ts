@@ -125,3 +125,22 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
 export function getDispatchEngine(projectDir: string): DispatchEngine | undefined {
   return engines.get(projectDir);
 }
+
+/**
+ * Stop all active dispatch engines. Called on daemon shutdown.
+ * AC: @agent-dispatch-engine ac-11 - daemon shutdown stops active engines
+ */
+export async function stopAllEngines(): Promise<void> {
+  const stopPromises: Promise<void>[] = [];
+  for (const [projectDir, engine] of engines) {
+    console.log(`[dispatch] Stopping engine for ${projectDir}...`);
+    stopPromises.push(
+      engine.stop().catch((err) => {
+        console.error(`[dispatch] Error stopping engine for ${projectDir}:`, err);
+      })
+    );
+  }
+  await Promise.all(stopPromises);
+  engines.clear();
+  console.log('[dispatch] All engines stopped');
+}
