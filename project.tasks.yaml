@@ -69614,7 +69614,7 @@
   type: task
   spec_ref: "@agent-definition-schema"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -69679,6 +69679,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-02T05:52:20.746Z
+  closed_reason: "Merged in PR #630. Implemented Agent Definition Schema extensions in AgentSchema and
+    meta CLI add/set/delete pathways (adapter, dispatch, skills, budget, concurrency, auto_approve
+    defaults) with integration coverage for all 11 own ACs plus inherited trait AC coverage/N-A
+    annotations. Full local npm test and CI checks passed on merge commit
+    e76b70c7e7dbf39dd06759eb2ef5771fab653a13."
 - _ulid: 01KJP276YTPF94VNY0AVCXXH90
   slugs:
     - implement-session-model-evolution
