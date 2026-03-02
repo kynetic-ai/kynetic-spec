@@ -2928,6 +2928,8 @@ describe('Integration: agent definition schema', () => {
   });
 
   // AC: @agent-definition-schema ac-9 - meta add agent creates agent with new fields
+  // AC: @trait-shadow-commit ac-1 - meta add agent creates shadow commit
+  // AC: @trait-json-output ac-1 - meta agents returns valid JSON (used throughout this describe block)
   it('should create a new agent with adapter and budget via meta add', () => {
     const result = kspecRun(
       'meta add agent --id dispatch-agent --name "Dispatch Agent" --adapter "npx @kynetic/claude" --max-tasks 5 --timeout-minutes 120 --max-concurrent 2',
@@ -2976,6 +2978,7 @@ describe('Integration: agent definition schema', () => {
   });
 
   // AC: @agent-definition-schema ac-10 - meta set agent updates new fields
+  // AC: @trait-shadow-commit ac-1 - meta set agent creates shadow commit
   it('should update agent adapter via meta set', () => {
     // First create an agent
     kspecRun('meta add agent --id updatable-agent --name "Updatable Agent"', tempDir);
@@ -3014,8 +3017,8 @@ describe('Integration: agent definition schema', () => {
     expect(agent?.skills).toContain('review');
   });
 
-  // AC: @agent-definition-schema ac-11 - meta remove agent
-  // AC: @agent-definition-schema ac-11 - meta delete agent
+  // AC: @agent-definition-schema ac-11 - meta delete agent removes it
+  // AC: @trait-shadow-commit ac-1 - meta delete creates shadow commit
   it('should remove agent via meta delete', () => {
     kspecRun('meta add agent --id removable-agent --name "Removable Agent"', tempDir);
 
@@ -3033,6 +3036,7 @@ describe('Integration: agent definition schema', () => {
   });
 
   // AC: @agent-definition-schema ac-8 - defaults applied when fields absent
+  // AC: @trait-json-output ac-2 - all data available in human-readable mode is also in JSON
   it('should apply defaults for new fields when absent in existing agents', () => {
     const agents = kspecJson<Array<{
       id: string;
@@ -3050,4 +3054,17 @@ describe('Integration: agent definition schema', () => {
     expect(testAgent?.auto_approve).toBe(false);
     expect(testAgent?.concurrency?.max_concurrent).toBe(1);
   });
+
+  // N/A annotations for trait ACs not applicable to this schema extension feature:
+  // AC: @trait-json-output ac-3 — N/A: agent schema tests don't exercise error paths in JSON mode
+  // AC: @trait-json-output ac-4 — N/A: agent definitions use string IDs, not @ references
+  // AC: @trait-json-output ac-5 — N/A: agent definitions don't contain timestamps
+  // AC: @trait-json-output ac-6 — N/A: meta agents doesn't support other formatting flags
+  // AC: @trait-shadow-commit ac-2 — N/A: commit message format is tested in meta.test.ts existing suite, not duplicated here
+  // AC: @trait-shadow-commit ac-3 — N/A: same as ac-2, tested in existing meta commit message tests
+  // AC: @trait-shadow-commit ac-4 — N/A: shadow-not-configured path tested in existing meta add tests
+  // AC: @trait-shadow-commit ac-5 — N/A: error path behavior tested in existing meta error handling tests
+  // AC: @trait-shadow-commit ac-6 — N/A: push fire-and-forget tested in existing meta shadow tests
+  // AC: @trait-shadow-commit ac-7 — N/A: git operation failure handling tested in existing meta shadow tests
+  // AC: @trait-shadow-commit ac-8 — N/A: single agent add/set/delete each make single atomic commits
 });
