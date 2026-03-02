@@ -70029,7 +70029,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70186,6 +70186,15 @@
       supersedes: null
   todos: []
   automation: needs_review
+  completed_at: 2026-03-02T22:40:15.661Z
+  closed_reason: "Merged in PR #634. Implemented Agent Dispatch Engine in
+    src/agent-runtime/dispatch.ts with in-memory FIFO queue, configurable concurrency, event
+    deduplication, file watcher integration, and shadow branch mutex. Daemon routes added in
+    packages/daemon/src/routes/agent-dispatch.ts with stopAllEngines() called on SIGTERM/SIGINT. CLI
+    agent commands (list, run, dispatch start/stop/status) implemented in src/cli/commands/agent.ts.
+    All 12 spec ACs covered across 1057-line test file. 4 fix cycles addressed: filter bypass, retry
+    stall, adapter note, abort signals, shutdown race, and dispatched engine stop on daemon
+    shutdown. All CI passing."
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
   slugs:
     - implement-cli-agent-commands
