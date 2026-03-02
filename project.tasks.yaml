@@ -70268,7 +70268,7 @@
   slugs: []
   title: Fix batch exec copying sessions/blobs to temp dir
   type: task
-  spec_ref: null
+  spec_ref: "@batch-write-buffer"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -70308,5 +70308,13 @@
         The recursive grep explosion compound issue: when kspec search commands run inside the batch
         temp dir, they scan blob files, producing large output stored as new blobs, which grow
         exponentially in subsequent searches.
+      supersedes: null
+    - _ulid: 01KJQM9B4M0W3MBW3XRP9QVXHY
+      created_at: 2026-03-02T15:57:19.380Z
+      author: "@claude"
+      content: "Approach decided: replace full fs.cp temp dir with in-memory write buffer overlay. Spec
+        created at @batch-write-buffer. Implementation target: src/cli/batch-exec.ts executeAtomic()
+        — replace lines 643-644 (fs.cp) and lines 690-703 (clear+copy-back) with overlay
+        read/write/commit/rollback."
       supersedes: null
   todos: []

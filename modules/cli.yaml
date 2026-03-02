@@ -384,6 +384,46 @@ features:
             traits: []
             notes: []
             created: 2026-03-02T15:56:41.235Z
+            description: >-
+              Atomic batch isolation is implemented via an in-memory write buffer (overlay), not a
+              full directory copy to /tmp.
+
+
+              The overlay intercepts file writes during batch execution, buffering them in memory.
+              Reads check the buffer first (returning the pending write if present), then fall
+              through to the real .kspec/ directory. On success, all buffered writes are flushed to
+              disk atomically. On failure, the buffer is discarded — real .kspec/ is never touched.
+
+
+              This replaces the current fs.cp(realSpecDir, tempDir) approach in batch-exec.ts, which
+              copies the entire .kspec/ directory including sessions/blobs/ (potentially GBs of
+              data) for every batch run.
+            acceptance_criteria:
+              - id: ac-1
+                given: atomic batch mode is active
+                when: a command writes a file to .kspec/
+                then: the write is stored in the in-memory buffer, not written to disk
+              - id: ac-2
+                given: command A writes a file and command B reads the same file in the same batch
+                when: command B reads the file
+                then: command B sees command A's buffered write (read-after-write consistency)
+              - id: ac-3
+                given: all batch commands succeed
+                when: batch commits
+                then: only the buffered files (those actually written) are flushed to disk — files not touched by
+                  the batch are unchanged
+              - id: ac-4
+                given: any batch command fails in atomic mode
+                when: batch rolls back
+                then: the buffer is discarded with no disk writes — .kspec/ state is identical to before the batch
+              - id: ac-5
+                given: a batch runs against a .kspec/ directory containing large sessions/blobs/ data
+                when: batch executes
+                then: disk usage during batch is proportional to files written, not total .kspec/ size
+              - id: ac-6
+                given: concurrent kspec operations run during a batch
+                when: non-batch operations read .kspec/
+                then: they see the original unmodified state until the batch commits
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
