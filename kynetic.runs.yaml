@@ -10394,6 +10394,7 @@ runs:
     current_step: 1
     total_steps: 10
     started_at: 2026-03-02T16:26:37.323Z
+    completed_at: 2026-03-02T16:34:02.589Z
     step_results:
       - step_index: 0
         status: completed
@@ -10405,4 +10406,11 @@ runs:
         completed_at: 2026-03-02T16:26:50.960Z
     initiated_by: Jacob Chapel
     abort_reason: Review found MUST-FIX items; task kicked back to needs_work.
-    completed_at: 2026-03-02T16:34:02.589Z
+  - _ulid: 01KJQSBTJN9S51KTSXA588KQJR
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    status: active
+    current_step: 0
+    total_steps: 4
+    started_at: 2026-03-02T17:26:03.606Z
+    step_results: []
+    initiated_by: "@claude"
