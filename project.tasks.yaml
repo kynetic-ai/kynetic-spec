@@ -70424,6 +70424,14 @@
         AC annotations for @cmd-tasks-ready coverage; SHOULD-FIX: sort-order test can pass without
         asserting needs_work < pending due conditional check."
       supersedes: null
+    - _ulid: 01KJQV48AAGWPBC230KFGYBVP5
+      created_at: 2026-03-02T17:56:52.683Z
+      author: "@claude"
+      content: "Fix cycle 1 complete: added // AC: @trait-filterable-list ac-N annotations to all 3 tests.
+        Fixed sort test to assert both tasks present (needs_work and pending) before comparing
+        indices — removes conditional check that could silently skip the assertion. All 3 tests
+        pass. Pushed to fix/tasks-ready-needs-work (PR #633)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJQKVZ1J0SBDG9B3A3RAJBZ6
