@@ -12,6 +12,13 @@ import { isAbsolute, join, normalize, relative } from 'path';
 import { KspecWatcher } from './watcher';
 import type { PubSubManager } from './websocket/pubsub';
 
+/**
+ * Optional callback for file change events from the watcher.
+ * Used by the dispatch engine to detect task state transitions.
+ * AC: @agent-dispatch-engine ac-5
+ */
+export type FileChangeCallback = (projectPath: string, file: string, content: string) => void;
+
 export interface ProjectContext {
   path: string;
   registeredAt: Date;
@@ -33,6 +40,8 @@ export class ProjectContextManager {
   private watchers: Map<string, KspecWatcher> = new Map();
   private defaultProjectPath: string | null = null;
   private pubsub: PubSubManager | null = null;
+  /** Optional callback for file changes (used by dispatch engine). AC: @agent-dispatch-engine ac-5 */
+  private fileChangeCallback: FileChangeCallback | null = null;
 
   constructor(defaultProjectPath?: string, pubsub?: PubSubManager) {
     if (defaultProjectPath) {
@@ -41,6 +50,15 @@ export class ProjectContextManager {
     if (pubsub) {
       this.pubsub = pubsub;
     }
+  }
+
+  /**
+   * Register a callback to be invoked on file changes.
+   * Used by the dispatch engine to detect task state transitions.
+   * AC: @agent-dispatch-engine ac-5
+   */
+  setFileChangeCallback(callback: FileChangeCallback | null): void {
+    this.fileChangeCallback = callback;
   }
 
   /**
@@ -83,6 +101,10 @@ export class ProjectContextManager {
               ref: relativePath,
               action: 'modified'
             }, normalizedPath);
+          }
+          // AC: @agent-dispatch-engine ac-5 - Notify dispatch engine of file changes
+          if (this.fileChangeCallback) {
+            this.fileChangeCallback(normalizedPath, file, content);
           }
         },
         onError: (error, file) => {
