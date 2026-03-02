@@ -10600,7 +10600,7 @@ runs:
   - _ulid: 01KJR837T8MYNJ7MFGXB9F55CQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-02T21:43:30.889Z
     step_results:
@@ -10614,5 +10614,15 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-02T21:43:46.652Z
-        completed_at: 2026-03-02T21:43:46.652Z
+        completed_at: 2026-03-02T21:43:59.596Z
+        notes: 1. parseIntOption not discovered when writing new CLI commands — parseInt+isNaN pattern
+          introduced 4 times across this PR (timeout, budget, limit, offset). Recurrence of known
+          friction. 2. Schema stripping silently breaking filter behavior — AgentSchema missing tags
+          field, Zod strips on parse, filter returns nothing with exit 0 and no error. Only
+          catchable via behavioral tests. 3. CLI tests use compiled dist/ binary — schema changes
+          require npm run build before tests reflect reality, causing confusing failures.
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-02T21:43:59.596Z
+        completed_at: 2026-03-02T21:43:59.596Z
     initiated_by: "@claude"
