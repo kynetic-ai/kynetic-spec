@@ -70785,6 +70785,37 @@
         consistency, atomic commit/rollback, and flush failure safety. Root cause and approach
         well-documented in prior notes. Marked eligible.
       supersedes: null
+    - _ulid: 01KJRF752RMZET44SKQ7QSFQ45
+      created_at: 2026-03-02T23:47:59.193Z
+      author: "@claude"
+      content: >-
+        WIP checkpoint: WriteBuffer class and tests complete, batch-exec.ts wiring not yet done.
+
+
+        Done:
+
+        - src/cli/batch-write-buffer.ts: WriteBuffer class with write/read/delete/has/flush/discard,
+        staging-file atomicity for ac-7, module singleton (activate/deactivate/get)
+
+        - tests/batch-write-buffer.test.ts: unit tests for all ACs including integration tests
+        verifying no sessions/ copy and atomic rollback
+
+
+        Remaining (next session):
+
+        - Wire WriteBuffer into src/cli/batch-exec.ts executeAtomic():
+          1. Remove fs.cp(realSpecDir, tempDir) at ~line 643
+          2. Call activateBatchBuffer(realSpecDir) instead
+          3. Replace the fs.writeFile path inside the command runner to call buffer.write() (or intercept via an env var / patched writeFile in the subprocess)
+          4. Replace clear+copy-back block (~lines 690-703) with buffer.flush() on success, buffer.discard() on failure
+          5. Call deactivateBatchBuffer() in finally
+
+        Note: The subprocess model means each command runs in a separate spawnSync call. The buffer
+        singleton won't span across spawned processes. Need to re-evaluate approach — either (a)
+        make batch commands run in-process instead of spawned subprocesses, or (b) use a temp file
+        protocol for buffered writes between parent and child. See batch-exec.ts for the exact spawn
+        model before deciding.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
