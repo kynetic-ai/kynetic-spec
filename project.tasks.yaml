@@ -70104,7 +70104,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70112,7 +70112,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
+  session_id: null
   created_at: 2026-03-02T01:22:21.957Z
   started_at: 2026-03-02T17:15:06.356Z
   submitted_at: 2026-03-02T17:24:20.733Z
@@ -70171,6 +70171,13 @@
         - All 9 tests pass in 2.67s
         - daemon-executable.test.ts failure is pre-existing, unrelated to this task
         - AC coverage: all 10 ACs annotated, 5 traits annotated with N/A where appropriate
+      supersedes: null
+    - _ulid: 01KJQTN4Z9S59C78R9VNJXE3D5
+      created_at: 2026-03-02T17:48:37.737Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @cli-agent-commands AC coverage gaps
+        (ac-2/3/4/5/6/7) and trait gap (@trait-filterable-list ac-1). Spec alignment issue: agent
+        run passes empty task binding for no-task path."
       supersedes: null
   todos: []
   automation: eligible
