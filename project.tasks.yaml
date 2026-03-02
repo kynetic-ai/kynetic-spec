@@ -70230,8 +70230,18 @@
     - bug
     - cli
   vcs_refs: []
-  created_at: 2026-03-02T15:03:12.431Z
-  notes: []
-  todos: []
-  started_at: 2026-03-02T15:03:41.078Z
   session_id: 01KJQFA09T9V2A2HY207KGQ7GP
+  created_at: 2026-03-02T15:03:12.431Z
+  started_at: 2026-03-02T15:03:41.078Z
+  notes:
+    - _ulid: 01KJQJ6WAT6YXGZ4MR2E57PGTV
+      created_at: 2026-03-02T15:21:01.530Z
+      author: "@claude"
+      content: "WIP: Fix implemented but tests not yet run due to shell stdout issue in environment.
+        Changes made: (1) src/parser/yaml.ts isTaskReady() now accepts needs_work status in addition
+        to pending, and getReadyTasks() sorts needs_work before pending. (2)
+        src/cli/commands/tasks.ts empty message updated to mention needs_work. (3)
+        tests/tasks-ready-needs-work.test.ts written with 3 integration tests. Branch:
+        fix/tasks-ready-needs-work. Next: run npm test to verify, then commit and PR."
+      supersedes: null
+  todos: []
