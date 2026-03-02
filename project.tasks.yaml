@@ -69509,7 +69509,7 @@
     for all sessions since ~Feb 24. Fix: normalize command extraction to handle string, array, and
     _meta.claudeCode fallback formats. Affects both countTaskCompletions and extractTaskTransitions
     in store.ts."
-  spec_ref: null
+  spec_ref: "@session-log-list"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -69523,8 +69523,16 @@
     - ralph
   vcs_refs: []
   created_at: 2026-03-01T21:35:32.217Z
-  notes: []
+  notes:
+    - _ulid: 01KJRCDRQ6DPXHZWHXRWBXHBW7
+      created_at: 2026-03-02T22:59:10.183Z
+      author: "@claude"
+      content: Linked to @session-log-list (bug affects tasks-completed count in session log list).
+        Description provides precise implementation detail (store.ts:1654, countTaskCompletions +
+        extractTaskTransitions, handle string/array/meta fallback). Marked eligible.
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
   slugs: []
   title: Design agent runtime architecture — from ralph loop to reactive agent service
@@ -70712,7 +70720,15 @@
       content: Sessions restored from remote origin/kspec-meta after batch copy-back failure that
         partially cleared .kspec/sessions/. 102 sessions recovered.
       supersedes: null
+    - _ulid: 01KJRCDTG0D51THZW49APEECFJ
+      created_at: 2026-03-02T22:59:12.001Z
+      author: "@claude"
+      content: Spec @batch-write-buffer has 7 solid ACs covering write buffer semantics, read-after-write
+        consistency, atomic commit/rollback, and flush failure safety. Root cause and approach
+        well-documented in prior notes. Marked eligible.
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
   slugs: []
   title: Auto-build dist before CLI subprocess tests run
@@ -70733,5 +70749,13 @@
     - testing
   vcs_refs: []
   created_at: 2026-03-02T21:50:16.014Z
-  notes: []
+  notes:
+    - _ulid: 01KJRCDW6CERVGVA89BHZP8DCP
+      created_at: 2026-03-02T22:59:13.740Z
+      author: "@claude"
+      content: "Infra/internal task with no user-visible impact. Description is specific: wire npm build
+        as vitest globalSetup or pretest step to prevent stale dist/ confusion in CLI subprocess
+        tests. Infra exception applied — no spec required. Marked eligible."
+      supersedes: null
   todos: []
+  automation: eligible
