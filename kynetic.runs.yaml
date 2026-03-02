@@ -10462,7 +10462,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJQTEPT04DXMB2ST78VKDZEC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-02T17:45:06.624Z
@@ -10584,5 +10584,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-02T18:26:23.856Z
-        completed_at: 2026-03-02T18:26:23.856Z
+        completed_at: 2026-03-02T18:26:29.138Z
+        notes: All items captured in steps above. Shadow restore → inbox @01KJQWJQ. CWD poisoning → friction
+          observation @01KJQWQ0. Cleanup command → inbox @01KJQWT3.
     initiated_by: "@claude"
+    completed_at: 2026-03-02T18:26:29.138Z
