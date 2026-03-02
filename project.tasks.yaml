@@ -70816,6 +70816,28 @@
         protocol for buffered writes between parent and child. See batch-exec.ts for the exact spawn
         model before deciding.
       supersedes: null
+    - _ulid: 01KJRFCRGMPF9PYFCFBCPSF561
+      created_at: 2026-03-02T23:51:02.932Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Replaced fs.cp(realSpecDir, tempDir) with in-memory WriteBuffer.
+        Changes:
+
+        - src/cli/batch-write-buffer.ts: new WriteBuffer class + module singleton
+        (activateBatchBuffer/deactivateBatchBuffer/getActiveBatchBuffer)
+
+        - src/cli/batch-exec.ts: removed fs.cp/tempDir approach, removed KSPEC_SPEC_DIR redirect,
+        added buffer activate/flush/discard
+
+        - src/parser/yaml.ts: readYamlFile/writeYamlFile/writeYamlFilePreserveFormat check buffer
+        before real fs ops
+
+        - tests/batch-write-buffer.test.ts: 20 tests covering all 7 ACs (unit + integration)
+
+
+        All 166 batch tests pass. Pre-existing failures in cli-serve/daemon-executable are
+        unrelated.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
