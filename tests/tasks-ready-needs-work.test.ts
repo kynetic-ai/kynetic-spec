@@ -24,6 +24,7 @@ describe('Integration: needs_work tasks in tasks ready', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @trait-filterable-list ac-1
   it('needs_work tasks appear in tasks ready output', () => {
     // Move task through: pending -> in_progress -> pending_review -> needs_work
     kspec('task start @test-task-pending', tempDir);
@@ -45,6 +46,8 @@ describe('Integration: needs_work tasks in tasks ready', () => {
     expect(needsWorkTask?.status).toBe('needs_work');
   });
 
+  // AC: @trait-filterable-list ac-1
+  // AC: @trait-filterable-list ac-5
   it('needs_work tasks appear in tasks ready --eligible when automation is eligible', () => {
     kspec('task set @test-task-pending --automation eligible', tempDir);
     kspec('task start @test-task-pending', tempDir);
@@ -62,30 +65,29 @@ describe('Integration: needs_work tasks in tasks ready', () => {
     expect(needsWorkTask?.status).toBe('needs_work');
   });
 
+  // AC: @trait-filterable-list ac-7
   it('needs_work tasks sort before pending tasks in tasks ready', () => {
-    // We need two tasks: one pending, one needs_work
-    // test-task-pending starts as pending; create another task or use existing
-    // First, kick test-task-pending to needs_work
+    // Kick test-task-pending to needs_work; test-task-secondary remains pending
     kspec('task start @test-task-pending', tempDir);
     kspec('task submit @test-task-pending', tempDir);
     kspec('task needs-work @test-task-pending --reason "Fix needed"', tempDir);
 
-    // Now tasks ready should have needs_work tasks first
     const readyTasks = kspecJson<Array<{ slugs: string[]; status: string }>>(
       'tasks ready',
       tempDir,
     );
 
-    // Find the needs_work task position
-    const needsWorkIdx = readyTasks.findIndex((t) => t.status === 'needs_work');
-    const pendingIdx = readyTasks.findIndex((t) => t.status === 'pending');
+    // Both tasks should be present
+    const needsWorkIdx = readyTasks.findIndex((t) =>
+      t.slugs.includes('test-task-pending'),
+    );
+    const pendingIdx = readyTasks.findIndex((t) =>
+      t.slugs.includes('test-task-secondary'),
+    );
 
-    // If both exist, needs_work should come first
-    if (needsWorkIdx !== -1 && pendingIdx !== -1) {
-      expect(needsWorkIdx).toBeLessThan(pendingIdx);
-    }
-
-    // At minimum, the needs_work task must be present
     expect(needsWorkIdx).not.toBe(-1);
+    expect(pendingIdx).not.toBe(-1);
+    // needs_work must appear before pending
+    expect(needsWorkIdx).toBeLessThan(pendingIdx);
   });
 });
