@@ -957,6 +957,78 @@ process.exit(0);
     );
     expect(blockCall).toBeUndefined();
   });
+
+  it("should reset consecutive failure count after a successful invocation", async () => {
+    // AC: @agent-invocation-lifecycle ac-9 — streak resets after success; fail→success→fail is not consecutive
+    // Simulate: task has 2 prior AGENT-FAIL notes then 1 AGENT-SUCCESS note (streak reset).
+    // With retry limit=3, the next failure is count=1 → should NOT block.
+    const captureFile = path.join(testDir, "kspec-calls-reset.json");
+    const taskRef = "@" + testUlid("TASK");
+
+    // Mock kspec CLI: simulate task with AGENT-FAIL, AGENT-FAIL, AGENT-SUCCESS notes.
+    // The last note is AGENT-SUCCESS, so consecutive count (from end) = 0 before this failure.
+    const taskGetMockPath = path.join(testDir, "kspec-reset-mock.cjs");
+    const taskWithResetNotes = {
+      notes: [
+        { content: "[AGENT-FAIL] Invocation failed: first failure" },
+        { content: "[AGENT-FAIL] Invocation failed: second failure" },
+        { content: "[AGENT-SUCCESS] Invocation completed successfully" },
+      ],
+    };
+    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
+'use strict';
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+const captureFile = process.env.KSPEC_CAPTURE_FILE;
+
+if (captureFile) {
+  let calls = [];
+  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
+  calls.push({ args, timestamp: Date.now() });
+  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
+}
+
+if (args.includes('task') && args.includes('get') && args.includes('--json')) {
+  process.stdout.write(JSON.stringify(${JSON.stringify(taskWithResetNotes)}) + '\\n');
+}
+
+process.exit(0);
+`);
+
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const agent = makeTestAgent({
+        adapter: "always-fail-acp",
+        budget: { max_tasks: 3, timeout_minutes: 30 },
+      } as Partial<Agent>);
+
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef,
+        prompt: "Test streak reset after success",
+        trigger: "task.ready",
+        kspecCliPath: taskGetMockPath,
+      });
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+
+    // Failure note should be written
+    const noteCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    );
+    expect(noteCall).toBeDefined();
+
+    // Block should NOT be called — streak was reset by AGENT-SUCCESS, so only 1 consecutive failure now
+    const blockCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    );
+    expect(blockCall).toBeUndefined();
+  });
 });
 
 // ─── Trait: error-guidance ────────────────────────────────────────────────────

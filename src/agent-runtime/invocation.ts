@@ -343,6 +343,15 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Close session as completed ───────────────────────────────────────
     const finalSession = await closeSession(specDir, sessionId, "completed", "Invocation completed normally");
 
+    // Add success note to reset consecutive failure streak
+    // AC: @agent-invocation-lifecycle ac-9
+    addTaskNote(
+      taskRef,
+      `[AGENT-SUCCESS] Invocation completed successfully`,
+      cwd,
+      kspecCliPath,
+    );
+
     return {
       session: finalSession ?? session,
       outcome: "success",
