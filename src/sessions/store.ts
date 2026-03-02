@@ -137,10 +137,13 @@ export async function createSession(
   await fsPromises.mkdir(sessionDir, { recursive: true });
 
   // Build full metadata
+  // AC: @session-model-evolution ac-1 — include trigger and agent_id when provided
   const metadata: SessionMetadata = {
     id: input.id,
     task_id: input.task_id,
     agent_type: input.agent_type,
+    agent_id: input.agent_id,
+    trigger: input.trigger,
     status: input.status ?? "active",
     started_at: input.started_at ?? new Date().toISOString(),
     ended_at: undefined,
@@ -1584,6 +1587,20 @@ export async function applyAutoAbandonMetadata(
 // ─── Session Log Summaries ───────────────────────────────────────────────────
 
 /**
+ * Determine session type from metadata for display.
+ * - "invocation": New agent runtime session (has trigger != "legacy" or agent_id)
+ * - "loop": Legacy ralph loop session (no trigger, or trigger === "legacy")
+ *
+ * AC: @session-model-evolution ac-6
+ */
+function resolveSessionType(metadata: SessionMetadata): "loop" | "invocation" {
+  if (metadata.trigger && metadata.trigger !== "legacy") {
+    return "invocation";
+  }
+  return "loop";
+}
+
+/**
  * Summary data for a session, used by `session log list`.
  */
 export interface SessionLogSummary {
@@ -1593,6 +1610,11 @@ export interface SessionLogSummary {
   status: SessionStatus;
   /** Agent type */
   agent_type: string;
+  /**
+   * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
+   * AC: @session-model-evolution ac-6
+   */
+  session_type: "loop" | "invocation";
   /** When session started (ISO 8601) */
   started_at: string;
   /** When session ended (ISO 8601), if completed */
@@ -1714,6 +1736,7 @@ export async function getSessionLogSummary(
     id: metadata.id,
     status: metadata.status,
     agent_type: metadata.agent_type,
+    session_type: resolveSessionType(metadata),
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,
     duration_ms: durationMs,
@@ -1861,6 +1884,11 @@ export interface SessionLogDetail {
   id: string;
   status: SessionStatus;
   agent_type: string;
+  /**
+   * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
+   * AC: @session-model-evolution ac-6
+   */
+  session_type: "loop" | "invocation";
   task_id?: string;
   started_at: string;
   ended_at?: string;
@@ -2191,6 +2219,7 @@ export async function getSessionLogDetail(
     id: metadata.id,
     status: metadata.status,
     agent_type: metadata.agent_type,
+    session_type: resolveSessionType(metadata),
     task_id: metadata.task_id,
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,
@@ -2290,6 +2319,8 @@ export function computeSessionLogStats(
     active: 0,
     completed: 0,
     abandoned: 0,
+    timed_out: 0,
+    failed: 0,
   };
 
   for (const s of summaries) {
@@ -2304,7 +2335,7 @@ export function computeSessionLogStats(
 
   // Build status breakdown
   const statusBreakdown: { status: SessionStatus; count: number; percentage: number }[] = [];
-  for (const status of ["completed", "active", "abandoned"] as SessionStatus[]) {
+  for (const status of ["completed", "active", "abandoned", "timed_out", "failed"] as SessionStatus[]) {
     const count = statusCounts[status] || 0;
     if (count > 0) {
       statusBreakdown.push({

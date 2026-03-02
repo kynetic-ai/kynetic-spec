@@ -16,11 +16,35 @@ import { z } from "zod";
  * - active: Session is in progress
  * - completed: Session ended normally
  * - abandoned: Session ended without explicit close
+ * - timed_out: Session ended due to timeout
+ * - failed: Session ended due to an error
+ *
+ * AC: @session-model-evolution ac-3
  */
-export const SessionStatusSchema = z.enum(["active", "completed", "abandoned"]);
+export const SessionStatusSchema = z.enum(["active", "completed", "abandoned", "timed_out", "failed"]);
 export type SessionStatus = z.infer<typeof SessionStatusSchema>;
 
 // ─── Session Metadata ────────────────────────────────────────────────────────
+
+/**
+ * Trigger source enum — what caused this agent session to be dispatched.
+ * - manual: Started manually by user
+ * - task.ready: Dispatched because a task became ready
+ * - task.needs_work: Dispatched because a task needs work (fix cycle)
+ * - task.pending_review: Dispatched for PR review
+ * - legacy: Old ralph sessions without explicit trigger
+ *
+ * AC: @session-model-evolution ac-1, ac-2
+ */
+export const SessionTriggerSchema = z.enum([
+  "manual",
+  "task.ready",
+  "task.needs_work",
+  "task.pending_review",
+  "legacy",
+]);
+
+export type SessionTrigger = z.infer<typeof SessionTriggerSchema>;
 
 /**
  * Session metadata stored in session.yaml.
@@ -35,6 +59,20 @@ export const SessionMetadataSchema = z.object({
 
   /** Type of agent running the session */
   agent_type: z.string(),
+
+  /**
+   * Reference to the agent definition that dispatched this session.
+   * For legacy sessions without this field, defaults to agent_type value.
+   * AC: @session-model-evolution ac-1, ac-2
+   */
+  agent_id: z.string().optional(),
+
+  /**
+   * Trigger source — what caused this session to be dispatched.
+   * For legacy sessions without this field, defaults to "legacy".
+   * AC: @session-model-evolution ac-1, ac-2
+   */
+  trigger: SessionTriggerSchema.optional(),
 
   /** Current session status */
   status: SessionStatusSchema,
@@ -75,6 +113,15 @@ export type SessionMetadataInput = z.infer<typeof SessionMetadataInputSchema>;
 
 /**
  * Supported event types for session tracking.
+ *
+ * agent.* events are emitted by the new agent runtime:
+ * - agent.dispatched: Agent was dispatched for a task
+ * - agent.started: Agent started work on a task
+ * - agent.completed: Agent completed work (with structured outcome)
+ * - agent.failed: Agent failed (error or crash)
+ * - agent.timeout: Agent exceeded timeout limit
+ *
+ * AC: @session-model-evolution ac-4
  */
 export const EventTypeSchema = z.enum([
   "session.start",
@@ -86,6 +133,11 @@ export const EventTypeSchema = z.enum([
   "tool.call",
   "tool.result",
   "note",
+  "agent.dispatched",
+  "agent.started",
+  "agent.completed",
+  "agent.failed",
+  "agent.timeout",
 ]);
 
 export type EventType = z.infer<typeof EventTypeSchema>;

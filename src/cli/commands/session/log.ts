@@ -161,6 +161,7 @@ function sortSessions(
  * Format the session log list as a table.
  *
  * AC: @session-log-list ac-1
+ * AC: @session-model-evolution ac-6
  */
 function formatSessionLogList(sessions: SessionLogSummary[]): void {
   if (sessions.length === 0) {
@@ -172,15 +173,18 @@ function formatSessionLogList(sessions: SessionLogSummary[]): void {
   // Table header
   console.log(
     chalk.gray(
-      `${"ID".padEnd(10)} ${"Status".padEnd(11)} ${"Agent".padEnd(20)} ${"Started".padEnd(16)} ${"Duration".padEnd(10)} ${"Events".padEnd(8)} ${"Iters".padEnd(7)} Tasks`,
+      `${"ID".padEnd(10)} ${"Status".padEnd(11)} ${"Type".padEnd(12)} ${"Agent".padEnd(20)} ${"Started".padEnd(16)} ${"Duration".padEnd(10)} ${"Events".padEnd(8)} ${"Iters".padEnd(7)} Tasks`,
     ),
   );
-  console.log(chalk.gray("─".repeat(95)));
+  console.log(chalk.gray("─".repeat(107)));
 
   for (const s of sessions) {
     const id = s.id.slice(0, 8);
     const colorFn = sessionStatusColor(s.status);
     const status = colorFn(s.status.padEnd(11));
+    const sessionType = s.session_type === "invocation"
+      ? chalk.cyan(s.session_type.padEnd(12))
+      : chalk.gray(s.session_type.padEnd(12));
     const agent = s.agent_type.slice(0, 20).padEnd(20);
     const started = formatRelativeTime(new Date(s.started_at)).padEnd(16);
     const duration = formatDurationCompact(s.duration_ms).padEnd(10);
@@ -189,7 +193,7 @@ function formatSessionLogList(sessions: SessionLogSummary[]): void {
     const tasks = String(s.tasks_completed);
 
     console.log(
-      `${chalk.yellow(id)} ${status} ${chalk.gray(agent)} ${chalk.gray(started)} ${duration} ${events} ${iters} ${tasks}`,
+      `${chalk.yellow(id)} ${status} ${sessionType} ${chalk.gray(agent)} ${chalk.gray(started)} ${duration} ${events} ${iters} ${tasks}`,
     );
   }
 
@@ -295,6 +299,8 @@ function formatEventTimestamp(
 /**
  * Summarize event data for display.
  * Returns a short string describing the event payload.
+ *
+ * AC: @session-model-evolution ac-7
  */
 function summarizeEventData(event: SessionEvent): string {
   const data = event.data;
@@ -342,6 +348,39 @@ function summarizeEventData(event: SessionEvent): string {
     return typeof reason === "string" ? `Session ended: ${reason}` : "Session ended";
   }
 
+  // Handle agent.* events with human-readable summaries
+  // AC: @session-model-evolution ac-7
+  if (event.type === "agent.dispatched") {
+    const taskId = data.task_id;
+    return typeof taskId === "string" ? `Dispatched for ${taskId}` : "Agent dispatched";
+  }
+  if (event.type === "agent.started") {
+    const taskId = data.task_id;
+    return typeof taskId === "string" ? `Started work on ${taskId}` : "Agent started";
+  }
+  if (event.type === "agent.completed") {
+    const taskId = data.task_id;
+    const outcome = data.outcome;
+    const durationMs = data.duration_ms;
+    const parts: string[] = [];
+    if (typeof taskId === "string") parts.push(taskId);
+    if (typeof outcome === "string") parts.push(`outcome: ${outcome}`);
+    if (typeof durationMs === "number") parts.push(`${formatDurationCompact(durationMs)}`);
+    return parts.length > 0 ? parts.join(", ") : "Agent completed";
+  }
+  if (event.type === "agent.failed") {
+    const taskId = data.task_id;
+    const reason = data.reason;
+    if (typeof taskId === "string" && typeof reason === "string") {
+      return `${taskId}: ${reason}`;
+    }
+    return typeof reason === "string" ? reason : "Agent failed";
+  }
+  if (event.type === "agent.timeout") {
+    const taskId = data.task_id;
+    return typeof taskId === "string" ? `Timeout on ${taskId}` : "Agent timed out";
+  }
+
   // Default: show first key
   const keys = Object.keys(data);
   if (keys.length > 0) {
@@ -354,6 +393,7 @@ function summarizeEventData(event: SessionEvent): string {
  * Format the session log show output.
  *
  * AC: @session-log-show ac-1
+ * AC: @session-model-evolution ac-6, ac-7
  */
 function formatSessionLogShow(
   detail: SessionLogDetail,
@@ -367,6 +407,11 @@ function formatSessionLogShow(
   console.log(`  ID:        ${detail.id}`);
 
   console.log(`  Status:    ${sessionStatusColor(detail.status)(detail.status)}`);
+  // AC: @session-model-evolution ac-6 — show session type
+  const sessionTypeDisplay = detail.session_type === "invocation"
+    ? chalk.cyan(detail.session_type)
+    : chalk.gray(detail.session_type);
+  console.log(`  Type:      ${sessionTypeDisplay}`);
   console.log(`  Agent:     ${detail.agent_type}`);
   if (detail.task_id) {
     console.log(`  Task:      ${detail.task_id}`);
@@ -408,14 +453,17 @@ function formatSessionLogShow(
       for (const event of events) {
         const timestamp = formatEventTimestamp(event.ts, sessionStartTs);
         const summary = summarizeEventData(event);
+        // AC: @session-model-evolution ac-7 — agent.* events use magenta for visibility
         const typeColor =
           event.type === "session.start" || event.type === "session.end"
             ? chalk.green
             : event.type === "session.update"
               ? chalk.blue
-              : chalk.gray;
+              : event.type.startsWith("agent.")
+                ? chalk.magenta
+                : chalk.gray;
         console.log(
-          `  ${chalk.yellow(timestamp.padEnd(10))} ${typeColor(event.type.padEnd(16))} ${chalk.gray(summary)}`,
+          `  ${chalk.yellow(timestamp.padEnd(10))} ${typeColor(event.type.padEnd(20))} ${chalk.gray(summary)}`,
         );
       }
     }
