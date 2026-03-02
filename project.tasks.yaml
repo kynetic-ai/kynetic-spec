@@ -70127,6 +70127,27 @@
         unresolvable adapter path skips required task note. Also check-unresolved-comments CI gate
         is failing with unresolved review threads."
       supersedes: null
+    - _ulid: 01KJQYX8CRAY6WMNCGH5X7S6FV
+      created_at: 2026-03-02T19:02:57.688Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 complete. All 4 MUST-FIX items addressed:
+
+        1. AC-6 filter bypass: returns false when task data unavailable (already fixed in prior
+        commit, confirmed)
+
+        2. AC-10 task note: spawnSync kspec task note on unresolvable adapter (already fixed,
+        confirmed)
+
+        3. AC-11 cancel signals: AbortController.abort() called on all controllers in stop()
+        (already fixed, confirmed)
+
+        4. AC-9 retry stall: setTimeout wake-up scheduled after re-enqueue (already fixed,
+        confirmed)
+
+
+        Confirmed all 23 dispatch engine tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
@@ -70240,6 +70261,31 @@
         session/agent/task/elapsed detail), 2) dry-run path accepts invalid --timeout/--budget
         values (semantic validation gap), 3) regression gate not green in this environment (12
         failing tests). See inline review comments."
+      supersedes: null
+    - _ulid: 01KJQYX9GS5Y6PCEYJK9AYBGNA
+      created_at: 2026-03-02T19:02:58.841Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 complete. All MUST-FIX items addressed:
+
+        1. AC-3 empty task binding: runInvocation now receives taskRef=undefined (not "") for
+        no-task path
+
+        2. AC-2/3 test coverage: added behavioral tests using runInvocation with mock-acp adapter
+
+        3. AC-4/5/6 test coverage: added programmatic tests mocking PidFileManager and fetch
+
+        4. AC-7 test coverage: added --adapter and --timeout override tests via --dry-run --json
+
+        5. @trait-filterable-list ac-1: added --status filter to agent list + automation field to
+        AgentSchema
+
+        6. SHOULD-FIX: removed double prompt expansion (pass basePrompt to runInvocation), added
+        parseInt validation, validated status values in event route
+
+
+        All 17 CLI agent command tests pass. Full suite: only pre-existing failures
+        (daemon-executable, core-skill-install, enhanced-setup, cli-serve).
       supersedes: null
   todos: []
   automation: eligible
