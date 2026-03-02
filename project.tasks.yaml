@@ -70037,7 +70037,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
   created_at: 2026-03-02T01:22:21.575Z
+  started_at: 2026-03-02T16:55:01.563Z
   notes:
     - _ulid: 01KJP277R7AT1AZBBB1G8JWY3V
       created_at: 2026-03-02T01:22:21.575Z
@@ -70060,8 +70062,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-02T16:55:01.563Z
-  session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
   slugs:
     - implement-cli-agent-commands
@@ -70393,5 +70393,13 @@
         created at @batch-write-buffer. Implementation target: src/cli/batch-exec.ts executeAtomic()
         — replace lines 643-644 (fs.cp) and lines 690-703 (clear+copy-back) with overlay
         read/write/commit/rollback."
+      supersedes: null
+    - _ulid: 01KJQR02KSYEK1ES13V5GSDB16
+      created_at: 2026-03-02T17:02:10.041Z
+      author: "@claude"
+      content: "Spec updated after dual review (codex + subagent): ac-5 now concretely states sessions/
+        must never be copied, ac-6 clarified to process-local buffer visibility (testable without
+        concurrency infra), new ac-7 added for flush failure atomicity — must not leave partial
+        writes on disk."
       supersedes: null
   todos: []

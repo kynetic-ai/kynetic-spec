@@ -418,12 +418,19 @@ features:
                 then: the buffer is discarded with no disk writes — .kspec/ state is identical to before the batch
               - id: ac-5
                 given: a batch runs against a .kspec/ directory containing large sessions/blobs/ data
-                when: batch executes
-                then: disk usage during batch is proportional to files written, not total .kspec/ size
+                when: batch executes in atomic mode
+                then: .kspec/sessions/ is never copied to the temp location — only files actually written by batch
+                  commands exist in the buffer
               - id: ac-6
-                given: concurrent kspec operations run during a batch
-                when: non-batch operations read .kspec/
-                then: they see the original unmodified state until the batch commits
+                given: a batch is executing and has buffered writes not yet flushed
+                when: another kspec process reads .kspec/ from disk
+                then: the reading process sees the original pre-batch state (buffer is process-local and not visible
+                  outside the batch process)
+              - id: ac-7
+                given: all batch commands succeed but writing the buffer to disk fails partway through the flush
+                when: flush encounters a write error
+                then: the error is reported and .kspec/ is left in a consistent pre-batch state — no partial writes
+                  are silently committed
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin

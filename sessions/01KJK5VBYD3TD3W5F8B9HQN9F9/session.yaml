@@ -1,6 +1,0 @@
-id: 01KJK5VBYD3TD3W5F8B9HQN9F9
-agent_type: claude-agent-acp
-status: abandoned
-started_at: 2026-02-28T22:28:03.662Z
-ended_at: 2026-03-02T00:00:57.813Z
-close_reason: auto-abandoned:older-than=2h,inactive-for=6h,liveness-guard=5m,last-activity=2026-02-28T23:08:26.488Z

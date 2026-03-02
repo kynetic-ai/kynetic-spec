@@ -1,6 +1,0 @@
-id: 01KJKCGRAVN1BTZ611MX7EK5H3
-agent_type: codex-acp
-status: abandoned
-started_at: 2026-03-01T00:24:35.931Z
-ended_at: 2026-03-02T00:00:57.813Z
-close_reason: auto-abandoned:older-than=2h,inactive-for=6h,liveness-guard=5m,last-activity=2026-03-01T03:09:35.037Z

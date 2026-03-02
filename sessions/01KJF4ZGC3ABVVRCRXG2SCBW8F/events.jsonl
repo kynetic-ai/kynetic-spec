@@ -1,2 +1,0 @@
-{"ts":1772182552968,"seq":0,"type":"session.start","session_id":"01KJF4ZGC3ABVVRCRXG2SCBW8F","data":{"adapter":"codex-acp","workerAdapter":"codex-acp","reviewerAdapter":"codex-acp","maxLoops":1,"maxRetries":3,"maxFailures":3,"maxTasks":1,"yolo":true}}
-{"ts":1772182553515,"seq":1,"type":"session.end","session_id":"01KJF4ZGC3ABVVRCRXG2SCBW8F","data":{"status":"completed","consecutiveFailures":0,"exitReason":"max_iterations","closeReason":"Completed all 1 iterations"}}
