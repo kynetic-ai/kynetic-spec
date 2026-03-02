@@ -1,0 +1,363 @@
+{
+  "generated_at": "2026-01-23T17:24:46.527Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMZR",
+      "title": "Executable compilation with bun build",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-5",
+        "integration"
+      ]
+    },
+    {
+      "ref": "01KFMMZW",
+      "title": "API integration tests",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "phase-5",
+        "testing"
+      ]
+    },
+    {
+      "ref": "01KFMN01",
+      "title": "E2E integration tests with Playwright",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-5",
+        "testing"
+      ]
+    },
+    {
+      "ref": "01KFMMJ4",
+      "title": "Implement: GitHub Pages Export",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "static",
+        "export",
+        "github"
+      ]
+    },
+    {
+      "ref": "01KFMMXF",
+      "title": "Export command implementation",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    },
+    {
+      "ref": "01KFMMXK",
+      "title": "Static SPA for GitHub Pages",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    },
+    {
+      "ref": "01KFMMXR",
+      "title": "Read-only mode behaviors",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    },
+    {
+      "ref": "01KFMMXW",
+      "title": "GitHub Pages CI workflow",
+      "priority": 3,
+      "spec_ref": "@gh-pages-export",
+      "tags": [
+        "phase-4",
+        "export"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFMMZK",
+      "title": "Daemon auto-start configuration",
+      "completed_at": "2026-01-23T17:24:19.865Z",
+      "closed_reason": "PR #204 merged successfully. Daemon auto-start configuration implemented with Greptile feedback addressed (runtime compatibility, package-relative paths, simplified defaults logic). All CI checks passed. All 1207 tests passing."
+    },
+    {
+      "ref": "01KFNW2K",
+      "title": "Fix ralph OOM by periodic agent restart",
+      "completed_at": "2026-01-23T16:55:46.078Z",
+      "closed_reason": "Merged in PR #203"
+    },
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "completed_at": "2026-01-23T16:39:42.682Z",
+      "closed_reason": "All 8 derived subtasks completed and merged. Web Dashboard fully implemented with 33/33 ACs covered across: SvelteKit scaffold, responsive layout, task management, spec item browsing, inbox, session context, global search, and WebSocket real-time updates. All PRs (#197-202) merged successfully. All 1207 tests passing. Implementation complete."
+    },
+    {
+      "ref": "01KFMMTV",
+      "title": "WebSocketManager with subscriptions",
+      "completed_at": "2026-01-23T16:38:48.233Z",
+      "closed_reason": "PR #202 merged successfully. WebSocketManager implemented with all 6 ACs (ac-28 to ac-33). Fixed Greptile-identified critical bugs: reconnect counter timing, state guard blocking reconnection, connectionLost flag updates, redundant reactivity updates. All CI checks passed (tests, claude-review, Greptile 4/5 confidence). All review threads resolved."
+    },
+    {
+      "ref": "01KFMMTP",
+      "title": "Global search command palette",
+      "completed_at": "2026-01-23T16:13:00.069Z",
+      "closed_reason": "PR #201 merged successfully. Global search command palette implemented with Cmd+K shortcut, debounced search, grouped results, and navigation. Greptile feedback addressed (cleanup function, ulid navigation). All CI checks passed."
+    },
+    {
+      "ref": "01KFMMTJ",
+      "title": "Session context and observations panel",
+      "completed_at": "2026-01-23T15:49:46.991Z",
+      "closed_reason": "PR #200 merged successfully. Session context and observations panel implemented with focus display, observations badge, and type-specific icons. All AC covered: ac-20, ac-21, ac-22."
+    },
+    {
+      "ref": "01KFMMTD",
+      "title": "Inbox view",
+      "completed_at": "2026-01-23T15:31:50.021Z",
+      "closed_reason": "PR #199 merged successfully. Inbox view implemented with add/delete functionality, Greptile feedback addressed (optimized addInboxItem to return created item). All AC covered: ac-16 through ac-19."
+    },
+    {
+      "ref": "01KFMMT9",
+      "title": "Spec item tree and detail views",
+      "completed_at": "2026-01-23T15:14:27.249Z",
+      "closed_reason": "PR #198 merged successfully. Spec item tree and detail views implemented with hierarchical display, expand/collapse, detail panel with AC display, linked tasks, and trait chips. All AC covered: ac-11 through ac-15."
+    },
+    {
+      "ref": "01KFMMT4",
+      "title": "Task list and detail views",
+      "completed_at": "2026-01-23T15:14:18.080Z",
+      "closed_reason": "PR #198 merged successfully. Task list and detail views implemented with filters, status badges, priority indicators, detail panel with notes/todos/dependencies, and task actions (start, add note). All AC covered: ac-4 through ac-10."
+    },
+    {
+      "ref": "01KFMMT0",
+      "title": "Dashboard layout and navigation",
+      "completed_at": "2026-01-23T15:14:08.090Z",
+      "closed_reason": "PR #198 merged successfully. Dashboard layout with responsive navigation (sidebar for desktop, bottom nav for mobile) implemented. All AC covered: ac-26 (layout), ac-27 (responsive navigation). Review threads resolved via gh CLI."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "9a265cd",
+      "full_hash": "9a265cd3f5f77b573043f561de46a9c4a7e622dd",
+      "date": "2026-01-23T17:24:02.000Z",
+      "message": "Add daemon auto-start configuration (#204)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f1adbb2",
+      "full_hash": "f1adbb2ad55733f0e3b545f80fbae675c02b6aca",
+      "date": "2026-01-23T17:18:05.000Z",
+      "message": "fix: address Greptile review feedback",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bacb9a3",
+      "full_hash": "bacb9a3b521625de38703e2f735abc75d0c601a0",
+      "date": "2026-01-23T17:11:10.000Z",
+      "message": "feat: add daemon auto-start configuration",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d07217f",
+      "full_hash": "d07217fbc32dfd4dafb4d0102df75518b832a020",
+      "date": "2026-01-23T16:55:36.000Z",
+      "message": "fix: add periodic agent restart to prevent ralph OOM (#203)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "5f1f48d",
+      "full_hash": "5f1f48d82a35871cb82f88d100dfc77afb2b2292",
+      "date": "2026-01-23T16:49:47.000Z",
+      "message": "fix: add periodic agent restart to prevent ralph OOM",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d50a9d7",
+      "full_hash": "d50a9d77dc8acc2c002745d19e6a3302b8083785",
+      "date": "2026-01-23T16:38:22.000Z",
+      "message": "Implement WebSocketManager with reconnection and real-time updates (#202)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1d8fd63",
+      "full_hash": "1d8fd63791adcd51851baf2f633b967386fae62b",
+      "date": "2026-01-23T16:31:19.000Z",
+      "message": "fix: remove redundant reactivity update in task page",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4f6ab46",
+      "full_hash": "4f6ab4674786aa542584e7feeec210082d6efcb3",
+      "date": "2026-01-23T16:28:49.000Z",
+      "message": "fix: address Greptile critical bugs in WebSocketManager",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "2bf1f6b",
+      "full_hash": "2bf1f6bb954cfbc5ae55dde30a471c01951395ac",
+      "date": "2026-01-23T16:19:56.000Z",
+      "message": "feat: implement WebSocketManager with reconnection and sequence deduplication",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c237cb6",
+      "full_hash": "c237cb601ad36f1876fd3965a9c4797f366217b7",
+      "date": "2026-01-23T16:12:29.000Z",
+      "message": "Implement global search command palette (#201)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 314,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 12,
+    "blocked": 1,
+    "completed": 289,
+    "inbox_items": 49
+  }
+}

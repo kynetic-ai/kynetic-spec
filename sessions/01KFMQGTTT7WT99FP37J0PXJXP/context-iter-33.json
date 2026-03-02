@@ -1,0 +1,395 @@
+{
+  "generated_at": "2026-01-23T14:05:01.517Z",
+  "branch": "feat/shared-types-package",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "started_at": "2026-01-23T13:55:34.628Z",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "note_count": 6,
+      "last_note_at": "2026-01-23T14:04:39.467Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "svelte",
+        "ui",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMSV",
+      "title": "Create SvelteKit scaffold with shadcn-svelte",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT0",
+      "title": "Dashboard layout and navigation",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT4",
+      "title": "Task list and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT9",
+      "title": "Spec item tree and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTD",
+      "title": "Inbox view",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTJ",
+      "title": "Session context and observations panel",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTP",
+      "title": "Global search command palette",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTV",
+      "title": "WebSocketManager with subscriptions",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMZK",
+      "title": "Daemon auto-start configuration",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-5",
+        "integration"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "completed_at": "2026-01-23T13:54:53.830Z",
+      "closed_reason": "All 33 ACs from @api-contract spec successfully implemented and merged across 6 derived subtasks. Subtasks completed: @01KFMMPY (CORS/foundation), @01KFMMQ2 (Task API), @01KFMMQ7 (Spec Item API), @01KFMMQB (Inbox/Meta API), @01KFMMQF (Search/Validation API), @01KFMMQM (Error handling tests). All 1207 tests passing. Implementation includes REST endpoints, WebSocket protocol, CORS, error handling, and comprehensive test coverage with proper AC annotations."
+    },
+    {
+      "ref": "01KFMMQM",
+      "title": "API error handling middleware",
+      "completed_at": "2026-01-23T13:53:58.095Z",
+      "closed_reason": "PR #195 merged successfully. Added comprehensive test coverage for API error handling (ac-22, ac-23, ac-24 from @api-contract spec). All CI checks passed. Greptile: 4/5 confidence. Local review: READY TO MERGE. All 1207 tests pass."
+    },
+    {
+      "ref": "01KFMMQF",
+      "title": "Search and validation API endpoints",
+      "completed_at": "2026-01-23T13:37:02.294Z",
+      "closed_reason": "PR #194 merged successfully. Implemented Search and Validation API endpoints covering ac-19 through ac-21 from @api-contract spec. All CI checks passed. Greptile review: 5/5 confidence. Local review: READY TO MERGE. All 1199 tests pass."
+    },
+    {
+      "ref": "01KFMMQB",
+      "title": "Inbox and meta API endpoints",
+      "completed_at": "2026-01-23T13:21:17.475Z",
+      "closed_reason": "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12 through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
+    },
+    {
+      "ref": "01KFMMQ7",
+      "title": "Spec item API endpoints",
+      "completed_at": "2026-01-23T12:50:59.437Z",
+      "closed_reason": "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8 through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted (code inspection test strategy is consistent with project patterns). All 4 target ACs have test coverage with proper annotations."
+    },
+    {
+      "ref": "01KFMMQ2",
+      "title": "Task API endpoints",
+      "completed_at": "2026-01-23T12:28:24.073Z",
+      "closed_reason": "PR #191 merged successfully. Implemented Task API endpoints covering ac-2 through ac-7 from @api-contract spec. All CI checks passed. Greptile review feedback addressed in commit f49ba72. Local review identified two systemic issues (X-Request-Id header, E2E test strategy) which were documented and deferred as they affect all daemon code. Follow-up items created: @01KFNCZR (X-Request-Id), @01KFND00 (E2E tests)."
+    },
+    {
+      "ref": "01KFMMPY",
+      "title": "API foundation and CORS middleware",
+      "completed_at": "2026-01-23T11:56:41.750Z",
+      "closed_reason": "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe to merge."
+    },
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "completed_at": "2026-01-23T11:43:13.394Z",
+      "closed_reason": "Daemon server mode fully implemented in packages/daemon/src with all 16 ACs covered. Complete with Elysia HTTP server, WebSocket pub/sub, file watching, heartbeat monitoring, graceful shutdown, PID management, and localhost-only security. Comprehensive test coverage with 61 AC annotations across daemon test files. All 1166 tests pass. No code changes needed - implementation was already complete from previous work."
+    },
+    {
+      "ref": "01KFMMJ8",
+      "title": "Implement: CLI Serve Commands",
+      "completed_at": "2026-01-23T11:40:00.391Z",
+      "closed_reason": "PR #189 merged successfully. Implemented kspec serve CLI commands with comprehensive E2E tests and trait coverage. All Greptile review feedback addressed (daemon path, polling, graceful shutdown, port persistence, code duplication documented). Tests: 1166 passed."
+    },
+    {
+      "ref": "01KFMMMH",
+      "title": "Implement daemon process detach",
+      "completed_at": "2026-01-23T10:50:00.496Z",
+      "closed_reason": "PR #188 merged. Implemented PID file management foundation for daemon lifecycle. Provides PidFileManager class with read/write/remove operations and process detection utilities. Integrates into daemon server (writes on start when isDaemon: true, removes on shutdown). Partial coverage of AC-9 and AC-10 - provides infrastructure but CLI commands (kspec serve --daemon, kspec serve stop) still need implementation. Excellent test coverage (11 comprehensive tests, all 1149 tests pass). Local review: PASS. Greptile review: 5/5 confidence. Next: implement actual CLI commands."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "6c5e622",
+      "full_hash": "6c5e6225a3d0071bcb231232d092688141538aaf",
+      "date": "2026-01-23T14:03:55.000Z",
+      "message": "fix: remove unused Zod dependency from shared package",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9e79c23",
+      "full_hash": "9e79c23a9fa96d63667d3b80f363702ef2912497",
+      "date": "2026-01-23T13:59:01.000Z",
+      "message": "feat: create shared types package",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "50d856a",
+      "full_hash": "50d856aeec09a4768e2e6f5b8ed7a851838cc943",
+      "date": "2026-01-23T13:53:41.000Z",
+      "message": "API error handling test coverage (#195)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4c10890",
+      "full_hash": "4c108902ee507ba1d708fddb8c7cbc9fb3deb95f",
+      "date": "2026-01-23T13:45:49.000Z",
+      "message": "docs: clarify test approach in error handling tests",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9215183",
+      "full_hash": "92151830242731908b6ba82285f411ec1176c497",
+      "date": "2026-01-23T13:40:52.000Z",
+      "message": "test: add comprehensive error handling tests for API endpoints",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "f2718ad",
+      "full_hash": "f2718ad3629a52258bc48202ef0dbcb6d162ca9d",
+      "date": "2026-01-23T13:36:52.000Z",
+      "message": "Search and validation API endpoints (#194)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3d9d951",
+      "full_hash": "3d9d9519929f8ffb0044641bf72f09fc8fa619eb",
+      "date": "2026-01-23T13:28:08.000Z",
+      "message": "feat: implement search and validation API endpoints",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0eb5d64",
+      "full_hash": "0eb5d6468b78b5cb2b304ec16c8516cec5a07d6a",
+      "date": "2026-01-23T13:20:59.000Z",
+      "message": "Inbox and meta API endpoints (#193)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "74965f6",
+      "full_hash": "74965f621f4803df285e870f77230b09cdd51473",
+      "date": "2026-01-23T13:15:40.000Z",
+      "message": "fix: use meta.agents and meta.workflows directly instead of filtering meta.items",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9d22fd6",
+      "full_hash": "9d22fd60b4f0a8f79b6f22b9b4e0d40787c5bf51",
+      "date": "2026-01-23T13:07:14.000Z",
+      "message": "chore: trigger CI after resolving review thread",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 312,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 21,
+    "blocked": 1,
+    "completed": 277,
+    "inbox_items": 47
+  }
+}

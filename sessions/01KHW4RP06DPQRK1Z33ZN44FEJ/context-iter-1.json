@@ -1,0 +1,356 @@
+{
+  "generated_at": "2026-02-19T23:46:35.550Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [],
+  "recent_notes": [
+    {
+      "task_ref": "01KHQQV7",
+      "task_title": "Implement: Guard Script and Diff Quality",
+      "task_status": "completed",
+      "note_ulid": "01KHSWRN",
+      "created_at": "2026-02-19T02:48:16.999Z",
+      "author": "@claude",
+      "content": "Completed all 4 items:\n1. ac-1: Guard script now strips quoted strings before matching dangerous patterns — echo \"git reset\" no longer blocked\n2. ac-2: Replaced hand-rolled generateUnifiedDiff with diff library's createTwoFilesPatch — fixes cascade bug on insertions\n3. ac-3 (task note): Converted getKspecPackageVersion, loadCoreSkillsManifest, loadCoreSkillContent from readFileSync to async readFile. Updated all callers in setup.ts, skill-install.ts. Also converted getKspecVersion in export/json.ts.\n4. ac-4 (task note): Added structuredClone before mutation in skill-crud.ts (skill set) and skill-install.ts (skill update) to prevent partial-save corruption.\n\nNew test added: tests/skill-diff.test.ts for ac-2, plus guard execution test in enhanced-setup.test.ts for ac-1."
+    },
+    {
+      "task_ref": "01KHQQV4",
+      "task_title": "Implement: Skill Module Split",
+      "task_status": "completed",
+      "note_ulid": "01KHSJBV",
+      "created_at": "2026-02-18T23:46:31.400Z",
+      "author": "@claude",
+      "content": "Implementation complete:\n\nAC-1: skill.ts (2349 lines) split into:\n  - skill-crud.ts (931 lines): list, add, get, set, delete, import + formatting/frontmatter helpers\n  - skill-install.ts (495 lines): install-core, update + template loading/version helpers\n  - skill-diff.ts (992 lines): render, status, diff, verify + related types/helpers\n  - skill.ts (54 lines): thin orchestrator that imports and delegates\n\nAC-2: Extracted renderSkillBase() in skill-render.ts — shared logic for content loading, frontmatter stripping, idempotency check, file write, hash storage, and supporting dir copy. Both Claude Code and Codex renderers now use it via config objects, eliminating ~100 lines of duplication.\n\nAC-3: skill.ts re-exports all previously-exported symbols (getExpectedRenderedContent, generateUnifiedDiff, loadCoreSkillsManifest, loadCoreSkillContent, getKspecPackageVersion, isKspecManaged, KSPEC_MANAGED_MARKER, renderClaudeCodeSkill). All 221 skill tests pass. setup.ts imports still work."
+    },
+    {
+      "task_ref": "01KHQQV4",
+      "task_title": "Implement: Skill Module Split",
+      "task_status": "completed",
+      "note_ulid": "01KHSHRM",
+      "created_at": "2026-02-18T23:36:01.956Z",
+      "author": "@claude",
+      "content": "Starting implementation. Plan: (1) Split skill.ts into skill-crud.ts, skill-install.ts, skill-diff.ts; (2) Extract shared render base function in skill-render.ts; (3) Keep skill.ts as thin orchestrator with re-exports for backward compat."
+    },
+    {
+      "task_ref": "01KHSC4W",
+      "task_title": "Implement: Skill Drift Detection Improvements",
+      "task_status": "completed",
+      "note_ulid": "01KHSEF7",
+      "created_at": "2026-02-18T22:38:28.321Z",
+      "author": "@claude",
+      "content": "Implementation complete:\n\nAC-1: Modified codex renderer in skill-render.ts to combine SKILL.md + sidecar content when computing drift hash. Updated both hash storage (during render) and hash checking (checkDrift). 3 new tests verify sidecar drift detection.\n\nAC-2: Added 'kspec skill verify' CLI command in skill.ts. Reports drifted skills with actionable guidance (render --force, diff commands). Exits non-zero when drift detected. JSON output supported. 3 new tests verify the command.\n\nTotal: 6 new tests, all passing. Full suite: 2780/2780 tests pass (1 pre-existing failure in daemon-executable unrelated to this work)."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHVK28",
+      "title": "Generalize agent template sections for consumer projects",
+      "priority": 2,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHTAMT",
+      "title": "Add discriminant field for skill type guards",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHTAMX",
+      "title": "Consolidate meta ref lookup patterns",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHVNNW",
+      "title": "Clean up setup.ts tech debt — dedup, legacy render, error handling",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KHVXK2C",
+      "title": "Implement Project Config File",
+      "priority": 3,
+      "spec_ref": "@project-config",
+      "tags": []
+    },
+    {
+      "ref": "01KHW2GZA",
+      "title": "Implement kspec doctor command",
+      "priority": 3,
+      "spec_ref": "@doctor-command",
+      "tags": [
+        "cli",
+        "dx"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHQQV7",
+      "title": "Implement: Guard Script and Diff Quality",
+      "completed_at": "2026-02-19T04:51:17.064Z",
+      "closed_reason": "Merged in PR #412. Guard script now uses dual-view matching (UNQUOTED + STRIPPED + FIRST_CMD) to prevent false positives on quoted patterns while blocking split-quote bypass attempts. Hand-rolled diff replaced with 'diff' library. readFileSync converted to async. structuredClone added before skill mutation. All spec ACs covered with annotated tests."
+    },
+    {
+      "ref": "01KHQQV4",
+      "title": "Implement: Skill Module Split",
+      "completed_at": "2026-02-19T00:11:22.366Z",
+      "closed_reason": "Merged in PR #411. Split 2349-line skill.ts into skill-crud.ts (931 lines), skill-install.ts (495 lines), skill-diff.ts (992 lines) with thin orchestrator. Extracted renderSkillBase() in skill-render.ts eliminating ~100 lines of renderer duplication. All 236 tests pass with full AC coverage (15 dedicated tests for ac-1/ac-2/ac-3). Backward API compatibility verified via re-exports."
+    },
+    {
+      "ref": "01KHSC4W",
+      "title": "Implement: Skill Drift Detection Improvements",
+      "completed_at": "2026-02-18T23:02:40.326Z",
+      "closed_reason": "Merged in PR #410. AC-1: sidecar YAML included in codex drift hash. AC-2: kspec skill verify command with actionable guidance. Codex review feedback addressed (hash gating fix, JSON output fix). 7 new tests."
+    },
+    {
+      "ref": "01KHQQV1",
+      "title": "Implement: New Project Bootstrapping",
+      "completed_at": "2026-02-18T22:24:55.304Z",
+      "closed_reason": "Merged in PR #409. Permission and memory seeding added to setup pipeline with cross-platform support, safe JSON handling, and 28 tests."
+    },
+    {
+      "ref": "01KHQQTY",
+      "title": "Implement: Cross-Platform and Version Robustness",
+      "completed_at": "2026-02-18T17:57:07.893Z",
+      "closed_reason": "Merged in PR #408. All 5 ACs implemented: CRLF-safe frontmatter parsing/stripping, null version detection, setup staleness with template hash comparison, case-insensitive base directory matching. 16 tests, all review findings addressed."
+    },
+    {
+      "ref": "01KHQQTV",
+      "title": "Implement: Setup Pipeline Unification",
+      "completed_at": "2026-02-18T14:44:43.592Z",
+      "closed_reason": "Merged in PR #405. Follow-up fixes for Codex review in PR #406. All 5 ACs implemented: setup uses generateAgentsContent from agents.ts, platform renderer registry, single runSetupPipeline code path, debug logging on all catch blocks, init --setup and setup use same pipeline."
+    },
+    {
+      "ref": "01KHQQTR",
+      "title": "Implement: Dead Code and Deduplication Sweep",
+      "completed_at": "2026-02-18T07:35:14.175Z",
+      "closed_reason": "Merged in PR #403. Removed dead code (SkillRenderResult, SkillStatusResult, getSkillSyncStatus, toKebabCase, EXPECTED_TEMPLATES), deduplicated utilities (contentsEqual, directoriesEqual, copyDirectory now imported from skill-render.ts), and removed redundant manual defaults in skill add/import/install. Net -218 lines. All 5 ACs covered with annotated tests."
+    },
+    {
+      "ref": "01KHHQD7W",
+      "title": "Implement Skill Platform Config CLI",
+      "completed_at": "2026-02-16T01:55:18.359Z",
+      "closed_reason": "Merged in PR #402. Implemented --platform-config CLI option for kspec skill set, supporting format platform.key=value (e.g., claude_code.user_invocable=false). Features: parses true/false as booleans, deep merges into existing platform_config, validation errors show guidance on valid keys. All 4 ACs covered with 12 tests."
+    },
+    {
+      "ref": "01KHHQD74",
+      "title": "Implement Multi-Platform Render CLI",
+      "completed_at": "2026-02-16T01:40:23.293Z",
+      "closed_reason": "Merged in PR #401. Implemented multi-platform render CLI with all 7 ACs: skills render to all platforms in their platforms array, per-platform status rows, --output-dir override, per-platform --clean, Platform column in output, and unregistered platform warnings. Added 18 tests with full AC coverage."
+    },
+    {
+      "ref": "01KHHQD6W",
+      "title": "Implement Codex Skill Renderer",
+      "completed_at": "2026-02-16T01:21:22.731Z",
+      "closed_reason": "Merged in PR #400. Implemented Codex Skill Renderer with PlatformRenderer interface: minimal frontmatter (name+description), sidecar agents/openai.yaml for platform_config.codex, kspec-managed marker, supporting directory copying, and platform-specific render hash. All 6 ACs verified with test coverage."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "e3c10a7",
+      "full_hash": "e3c10a7a1351ab960fc7c20185842185675800fe",
+      "date": "2026-02-19T17:08:13.000Z",
+      "message": "feat: enrich conventions with intro paragraph and good/bad examples (#413)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "44223d8",
+      "full_hash": "44223d8886b1bbfd9a9eb6a67d4012c2e9c39bb4",
+      "date": "2026-02-19T16:56:54.000Z",
+      "message": "fix: strip existing conventions from fixture before appending test data",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bc3f0a3",
+      "full_hash": "bc3f0a34fd1896a91fb932da2782fd3c3ebcd7e4",
+      "date": "2026-02-19T16:49:05.000Z",
+      "message": "fix: address Codex review — AC annotation, E2E staleness test, hash normalization",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3f7cc4d",
+      "full_hash": "3f7cc4de62c95ba18108b616c341aa966ab58fe6",
+      "date": "2026-02-19T14:05:10.000Z",
+      "message": "feat: enrich conventions with intro paragraph and good/bad examples",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "46a9e29",
+      "full_hash": "46a9e294a81441b4fa2e539af209b0cad26542f1",
+      "date": "2026-02-19T04:51:06.000Z",
+      "message": "feat: guard script quote-awareness, diff library, async fs, mutation safety (#412)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "076d793",
+      "full_hash": "076d7938dcbfa3217d7341336139dad2e2235a1d",
+      "date": "2026-02-19T04:37:57.000Z",
+      "message": "fix: guard script split-quote bypass and test quoting",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "49f18a4",
+      "full_hash": "49f18a4157cb4d9c8ebdd73897903a5a10da6fe6",
+      "date": "2026-02-19T04:36:37.000Z",
+      "message": "fix: address guard script review feedback — prevent split-quote bypass",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b4c50cf",
+      "full_hash": "b4c50cf5ce4f4f571f371de14bb73100dc146271",
+      "date": "2026-02-19T02:48:48.000Z",
+      "message": "feat: guard script quote-awareness, diff library, async fs, mutation safety",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3e23103",
+      "full_hash": "3e23103f08b03309806d3e80cc79e92b094daac6",
+      "date": "2026-02-19T00:11:09.000Z",
+      "message": "feat: split skill.ts monolith into focused modules (#411)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "28ab8a2",
+      "full_hash": "28ab8a2d801e5db509493ba9191ca69159dc4144",
+      "date": "2026-02-18T23:55:19.000Z",
+      "message": "test: add AC coverage tests for skill module split",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 541,
+    "in_progress": 0,
+    "pending_review": 0,
+    "ready": 22,
+    "blocked": 0,
+    "completed": 497,
+    "inbox_items": 75
+  }
+}

@@ -1,0 +1,401 @@
+{
+  "generated_at": "2026-01-30T09:40:21.991Z",
+  "branch": "fix/workflow-step-numbering",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KG6ZE0",
+      "title": "Fix workflow show 0-indexed step numbering",
+      "started_at": "2026-01-30T09:37:23.482Z",
+      "priority": 3,
+      "spec_ref": null,
+      "note_count": 4,
+      "last_note_at": "2026-01-30T09:39:52.503Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KG715E",
+      "title": "Handle session checkpoint hook when in .kspec/ directory",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": []
+    },
+    {
+      "ref": "01KG7175",
+      "title": "Auto-set BUN_ENV=production when spawning daemon",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "reflection",
+        "daemon",
+        "small"
+      ]
+    },
+    {
+      "ref": "01KG6ZGQ",
+      "title": "Add 'task list' alias for 'tasks' command",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "reflection",
+        "cli",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KG70TT",
+      "title": "Add --force flag to task complete command",
+      "priority": 4,
+      "spec_ref": "@task-commands",
+      "tags": [
+        "reflection",
+        "cli",
+        "tasks"
+      ]
+    },
+    {
+      "ref": "01KG70WJ",
+      "title": "Add Resolved column to observation list with --all",
+      "priority": 4,
+      "spec_ref": "@obs-list-display",
+      "tags": [
+        "cli",
+        "meta",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KG70XC",
+      "title": "Add 'kspec util ulid' command for ULID generation",
+      "priority": 4,
+      "spec_ref": "@cli-utilities",
+      "tags": [
+        "reflection",
+        "cli",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KG70Z6",
+      "title": "Add multi-ref batch support to meta resolve",
+      "priority": 4,
+      "spec_ref": "@trait-multi-ref-batch",
+      "tags": [
+        "cli",
+        "meta",
+        "batch"
+      ]
+    },
+    {
+      "ref": "01KG71BB",
+      "title": "Add concrete examples to CLI --help for variadic options",
+      "priority": 4,
+      "spec_ref": "@cli-help-examples",
+      "tags": [
+        "reflection",
+        "cli",
+        "dx"
+      ]
+    },
+    {
+      "ref": "01KG71C9",
+      "title": "Document E2E fixture isolation pattern in AGENTS.md",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "reflection",
+        "docs",
+        "e2e"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    },
+    {
+      "ref": "01KFQAEM",
+      "title": "Per-project file watcher tests",
+      "blocked_by": [
+        "Watcher unit tests complete (17 tests, all ACs covered) but skip in CI due to GitHub Actions fs.watch limitations. AC-19 HTTP 503 response verification requires E2E/integration test blocked on @01KFMMZW. Tests pass locally and implementation verified correct."
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KG6ZDE",
+      "title": "Fix help workflow command collision",
+      "completed_at": "2026-01-30T09:37:14.269Z",
+      "closed_reason": "PR #279 merged. Fixed help workflow command collision by renaming helpContent['workflow'] to 'task-workflow'."
+    },
+    {
+      "ref": "01KG6CJQ",
+      "title": "Implement: Ralph max-tasks-per-iteration limiting",
+      "completed_at": "2026-01-30T04:03:21.903Z",
+      "closed_reason": "Implemented --max-tasks flag for ralph. PR #278 merged. Adds soft enforcement (wrap-up message) and hard enforcement (PreToolUse hook). Default is 1 task per iteration, 0 for unlimited."
+    },
+    {
+      "ref": "01KFP5YG",
+      "title": "Improve PR review process enforcement",
+      "completed_at": "2026-01-30T00:20:34.166Z",
+      "closed_reason": "PR #277 merged - added CI re-verification requirements to pr-review-merge and pr-review-loop workflows plus skill documentation"
+    },
+    {
+      "ref": "01KG5VSF",
+      "title": "Fix E2E daemon fixture loading reliability",
+      "completed_at": "2026-01-29T23:14:12.765Z",
+      "closed_reason": "PR #276 merged - E2E reliability improvements: health check polling, staleness detection, PidFileManager sync",
+      "origin": "observation_promotion"
+    },
+    {
+      "ref": "01KFXSGA",
+      "title": "Implement: Reference Normalization in Merges",
+      "completed_at": "2026-01-29T21:06:36.941Z",
+      "closed_reason": "PR #275 merged. Implemented ref normalization in merge driver with full AC coverage."
+    },
+    {
+      "ref": "01KG0G9P",
+      "title": "Implement AC test coverage indicator in Items View",
+      "completed_at": "2026-01-29T18:07:26.476Z",
+      "closed_reason": "PR #274 merged. Implemented AC test coverage indicator in Items View with visual indicators for covered/uncovered/unknown status. Addressed all review comments including code deduplication, recursive test scanning, and error logging. Deferred performance optimization captured as inbox item @01KG5DPP."
+    },
+    {
+      "ref": "01KG1H91",
+      "title": "Update tasks.spec.ts to use correct bits-ui Select selectors",
+      "completed_at": "2026-01-29T10:02:19.484Z",
+      "closed_reason": "Tests already correct - bits-ui uses proper ARIA roles. Skill documentation updated instead."
+    },
+    {
+      "ref": "01KFMMJ4",
+      "title": "Implement: GitHub Pages Export",
+      "completed_at": "2026-01-29T05:46:10.092Z",
+      "closed_reason": "All 20 acceptance criteria fully implemented with comprehensive AC annotations. Subtasks completed: Export command (ACs 1-7), Static SPA (ACs 11-14), Read-only mode (ACs 15-18), CI workflow (ACs 8-10), Static mode detection (ACs 19-20). Full test coverage in tests/export/."
+    },
+    {
+      "ref": "01KG3RS9",
+      "title": "Fix Svelte 5 reactivity in inbox and observations pages",
+      "completed_at": "2026-01-29T02:53:10.511Z",
+      "closed_reason": "PR #270 merged - Svelte 5 reactivity fixed for inbox and observations pages"
+    },
+    {
+      "ref": "01KG3P07",
+      "title": "Fix JSON export stdout contamination",
+      "completed_at": "2026-01-29T01:55:55.860Z",
+      "closed_reason": "PR #269 merged - JSON export stdout contamination fixed"
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "3ac6618",
+      "full_hash": "3ac6618c9f90ae0b572384da8a992f79638f66cc",
+      "date": "2026-01-30T09:39:18.000Z",
+      "message": "fix(workflow): use 1-indexed step numbering in display",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "19289c0",
+      "full_hash": "19289c06b990f29f2ac00efdb0ee5c695f5d3ebd",
+      "date": "2026-01-30T04:03:03.000Z",
+      "message": "feat(ralph): add --max-tasks flag to limit tasks per iteration (#278)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bc47ed5",
+      "full_hash": "bc47ed550ea8137e740c491ad01cd2243dd99adf",
+      "date": "2026-01-30T03:26:16.000Z",
+      "message": "fix(ralph): only skip adapter validation in dry-run for default adapter",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0c6fd6a",
+      "full_hash": "0c6fd6a37141b8d8303edfd6d901dd71ff352b50",
+      "date": "2026-01-30T03:18:18.000Z",
+      "message": "fix(ralph): skip adapter validation in dry-run mode",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a1f701d",
+      "full_hash": "a1f701d297de0d9cb63aafeff5dd17015d8269e0",
+      "date": "2026-01-30T02:58:04.000Z",
+      "message": "feat(ralph): add --max-tasks flag to limit tasks per iteration",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d439bf6",
+      "full_hash": "d439bf67343fa740acfe7499c41b3e4243cb5f48",
+      "date": "2026-01-30T00:20:27.000Z",
+      "message": "fix: enforce CI re-verification in PR review workflows (#277)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7f8a4d6",
+      "full_hash": "7f8a4d684e92eca51215c7f6aaf2508956324ff2",
+      "date": "2026-01-29T23:42:54.000Z",
+      "message": "docs(skills): add CI re-verification requirements to PR skills",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "00554be",
+      "full_hash": "00554be1b5ec549ce61a04da2d43851b73eff83a",
+      "date": "2026-01-29T23:14:03.000Z",
+      "message": "fix(e2e): improve daemon fixture reliability (#276)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "88ed3ee",
+      "full_hash": "88ed3ee7f5c3b32c820077a97ae4d4a95fbe8df0",
+      "date": "2026-01-29T23:05:21.000Z",
+      "message": "fix(e2e): improve daemon fixture reliability",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "4d6d239",
+      "full_hash": "4d6d2399e3ec2f9acd511374911a5b4543eac124",
+      "date": "2026-01-29T21:06:25.000Z",
+      "message": "feat(merge): normalize refs in set array merges (#275)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QE",
+      "text": "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help --exit-codes, kspec help commands --json for programmatic CLI discovery",
+      "created_at": "2026-01-19T02:35:45.411Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFBJM1",
+      "text": "Review RALPH_LOOP_INSTRUCTIONS.md - consolidate into skills or delete. Unique content: PR review workflow for autonomous loops, 'every iteration ends with PR' rule, reflect guidance for loops. Consider codifying loop-specific reflect behavior into /reflect skill.",
+      "created_at": "2026-01-19T16:50:14.589Z",
+      "tags": [
+        "docs",
+        "ralph"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 391,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 13,
+    "blocked": 2,
+    "completed": 361,
+    "inbox_items": 75
+  }
+}

@@ -1,0 +1,358 @@
+{
+  "generated_at": "2026-02-20T03:01:21.634Z",
+  "branch": "feat/configurable-daemon-settings",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHVXK3J",
+      "title": "Implement Configurable Daemon Settings",
+      "started_at": "2026-02-20T02:51:22.680Z",
+      "priority": 3,
+      "spec_ref": "@config-daemon",
+      "note_count": 2,
+      "last_note_at": "2026-02-20T02:58:49.810Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHVXK3J",
+      "task_title": "Implement Configurable Daemon Settings",
+      "task_status": "pending_review",
+      "note_ulid": "01KHWFRP",
+      "created_at": "2026-02-20T02:58:49.810Z",
+      "author": "@claude",
+      "content": "Implementation complete. Changes:\n\n1. **Config schema updated** (src/parser/config.ts):\n   - Added daemon.auto_start boolean field (default: true)\n   - AC annotations added for @config-daemon ac-3\n\n2. **maybeAutoStartDaemon() updated** (src/cli/index.ts):\n   - Now reads from ctx.config.daemon instead of ctx.manifest?.daemon\n   - AC: @config-daemon ac-1 for port from config\n   - AC: @config-daemon ac-3 for auto_start from config\n   - AC: @config-daemon ac-4 for deprecation warning when manifest has daemon block\n\n3. **serve.ts updated** (src/cli/commands/serve.ts):\n   - startServer() now loads config and uses config.daemon.port\n   - CLI --port flag still overrides config value (AC-2)\n   - restartServer() updated to work with optional port\n\n4. **Deprecation warning** (src/cli/index.ts):\n   - Shows warning when manifest has daemon block\n   - Includes migration guidance to kspec.config.yaml\n   - Only shows once per session\n\n5. **Tests added** (tests/parser/daemon-config.test.ts):\n   - 20 tests covering all 4 ACs:\n   - AC-1: daemon.port from config (3 tests)\n   - AC-2: CLI --port override via env var precedence (1 test)\n   - AC-3: daemon.auto_start configuration (4 tests)\n   - AC-4: manifest daemon deprecation (2 tests)\n   - Schema validation tests (6 tests)\n   - Integration tests (4 tests)\n\nAll 2905 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this change)."
+    },
+    {
+      "task_ref": "01KHVXK39",
+      "task_title": "Implement Configurable Validation Defaults",
+      "task_status": "completed",
+      "note_ulid": "01KHWF6M",
+      "created_at": "2026-02-20T02:48:57.615Z",
+      "author": "Jacob Chapel",
+      "content": "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    },
+    {
+      "task_ref": "01KHVXK39",
+      "task_title": "Implement Configurable Validation Defaults",
+      "task_status": "completed",
+      "note_ulid": "01KHWEGV",
+      "created_at": "2026-02-20T02:37:04.312Z",
+      "author": "@claude",
+      "content": "Implementation complete. Changes:\n\n1. **Config schema updated** (src/parser/config.ts):\n   - Changed validation config from strictness/warn_unknown_fields to strict_refs/require_acceptance\n   - strict_refs defaults to true (preserves existing behavior - dangling refs are errors)\n   - require_acceptance defaults to false (preserves existing behavior - missing AC is warning)\n\n2. **Validate function updated** (src/parser/validate.ts):\n   - Added strictRefs and requireAcceptance to ValidateOptions\n   - When strictRefs=false, demotes not_found ref errors to warnings\n   - When requireAcceptance=true, promotes missing_acceptance_criteria warnings to errors\n\n3. **CLI wiring** (src/cli/commands/validate.ts):\n   - Passes ctx.config.validation.strict_refs to validate()\n   - Passes ctx.config.validation.require_acceptance to validate()\n   - CLI --strict flag still overrides config for orphans/staleness\n\n4. **Tests added** (tests/parser/validate-config.test.ts):\n   - 7 tests covering all 4 ACs\n   - Tests for require_acceptance behavior (AC-1)\n   - Tests for strict_refs behavior (AC-2, AC-3)\n   - Tests for CLI override behavior (AC-4)\n   - Tests for combined settings\n\n5. **Existing tests updated** (tests/parser/config.test.ts):\n   - Updated to use new field names\n   - Updated default assertions\n\nAll 2885 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this change)."
+    },
+    {
+      "task_ref": "01KHVXK2P",
+      "task_title": "Implement Configurable Shadow Branch",
+      "task_status": "completed",
+      "note_ulid": "01KHWDAW",
+      "created_at": "2026-02-20T02:16:20.734Z",
+      "author": "Jacob Chapel",
+      "content": "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    },
+    {
+      "task_ref": "01KHVXK2Z",
+      "task_title": "Implement Configurable Author Identity",
+      "task_status": "completed",
+      "note_ulid": "01KHWCKF",
+      "created_at": "2026-02-20T02:03:33.630Z",
+      "author": "@claude",
+      "content": "Implementation complete. Changes:\n\n1. **getAuthor() updated** (src/parser/yaml.ts):\n   - Added optional configAuthor parameter\n   - Priority chain: env var > config author > git user > OS user\n   - AC-1/AC-2/AC-3 annotated in code\n\n2. **createInboxItem() updated** (src/parser/yaml.ts):\n   - Added optional configAuthor parameter\n   - Passes to getAuthor() for fallback chain\n\n3. **createObservation() updated** (src/parser/meta.ts):\n   - Added configAuthor option\n   - Passes to getAuthor() for fallback chain\n\n4. **CLI call sites updated**:\n   - task.ts: 5 locations pass ctx.config.identity.author\n   - derive.ts: passes ctx.config.identity.author\n   - plan.ts: passes ctx.config.identity.author\n   - plan-import.ts: passes ctx.config.identity.author\n   - workflow.ts: passes ctx.config.identity.author\n   - inbox.ts: 2 locations pass ctx.config.identity.author\n   - meta.ts: 2 locations pass ctx.config.identity.author\n\n5. **Daemon routes updated**:\n   - packages/daemon/src/routes/tasks.ts: passes ctx.config.identity.author\n   - packages/daemon/src/routes/inbox.ts: passes ctx.config.identity.author\n\n6. **9 new tests added** (tests/parser/config.test.ts):\n   - Config author loading from file\n   - Env var precedence over config\n   - Null fallback behavior\n   - getAuthor() with config parameter tests\n\nAll 2874 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated)."
+    },
+    {
+      "task_ref": "01KHVXK3J",
+      "task_title": "Implement Configurable Daemon Settings",
+      "task_status": "pending_review",
+      "note_ulid": "01KHVXK3",
+      "created_at": "2026-02-19T21:41:12.399Z",
+      "author": "@claude",
+      "content": "Implementation notes:\n\nUpdate maybeAutoStartDaemon() in src/cli/index.ts to read ctx.config.daemon\ninstead of ctx.manifest?.daemon. Update serve.ts to remove hardcoded '3456'\ndefault — use ctx.config.daemon.port with CLI flag override. Add deprecation\ncomment to ManifestSchema daemon field. New manifests should no longer include\ndaemon block. E2E test infrastructure (port 3456 in packages/web-ui/tests/e2e/)\nmanages its own daemon and must NOT be changed.\n"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHVXK3V",
+      "title": "Implement Clean Up Dead Manifest Config",
+      "priority": 3,
+      "spec_ref": "@config-manifest-cleanup",
+      "tags": []
+    },
+    {
+      "ref": "01KHW2GZA",
+      "title": "Implement kspec doctor command",
+      "priority": 3,
+      "spec_ref": "@doctor-command",
+      "tags": [
+        "cli",
+        "dx"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHVXK39",
+      "title": "Implement Configurable Validation Defaults",
+      "completed_at": "2026-02-20T02:50:02.772Z",
+      "closed_reason": "Merged in PR #420. Implemented configurable validation defaults via kspec.config.yaml:\n\n- validation.strict_refs: When false, dangling refs are warnings instead of errors (default: true)\n- validation.require_acceptance: When true, missing AC is an error instead of warning (default: false)\n- CLI --strict flag continues to override config for orphans/staleness\n\nAll 4 ACs covered with annotated tests (7 tests in validate-config.test.ts):\n- ac-1: require_acceptance promotes missing AC to errors\n- ac-2: strict_refs treats dangling refs as errors\n- ac-3: strict_refs: false treats dangling refs as warnings  \n- ac-4: CLI --strict overrides config strict_refs: false"
+    },
+    {
+      "ref": "01KHVXK2P",
+      "title": "Implement Configurable Shadow Branch",
+      "completed_at": "2026-02-20T02:20:43.193Z",
+      "closed_reason": "Merged in PR #419. Implemented configurable shadow branch settings via kspec.config.yaml:\n\n- shadow.branch: Custom orphan branch name (default: kspec-meta)\n- shadow.directory: Custom worktree directory (default: .kspec)\n- shadow.remote: Flexible remote target (named/path/URL)\n\nAll 9 ACs have test coverage:\n- ac-1: Custom branch name via shadow.branch config\n- ac-2: Custom directory via shadow.directory config\n- ac-3: Named remote (e.g., \"specs-origin\") support\n- ac-4: Local filesystem path remote support\n- ac-5: Git URL remote support\n- ac-6: Error guidance when named remote doesn't exist (added during review)\n- ac-7: Backward compat - functions use constants when no options\n- ac-8: Custom directory detection in detectRunningFromShadowWorktree\n- ac-9: Mismatch detection between config and existing shadow\n\n17 total tests added covering all ACs."
+    },
+    {
+      "ref": "01KHVXK2Z",
+      "title": "Implement Configurable Author Identity",
+      "completed_at": "2026-02-20T02:20:14.885Z",
+      "closed_reason": "Merged in PR #419. Implemented configurable author identity via kspec.config.yaml identity.author field. Priority chain: KSPEC_AUTHOR env var > config author > git user > OS user. All 3 ACs have test coverage (9 tests). Updated getAuthor(), createInboxItem(), createObservation(), and all CLI/daemon call sites."
+    },
+    {
+      "ref": "01KHVXK2C",
+      "title": "Implement Project Config File",
+      "completed_at": "2026-02-20T01:26:49.390Z",
+      "closed_reason": "Merged in PR #418. Implemented project config file (kspec.config.yaml) with shadow branch settings, identity settings, validation settings, and daemon settings. Config is loaded before shadow detection and available on KspecContext.config. Env vars take precedence over file values. All 7 ACs covered with 24 tests."
+    },
+    {
+      "ref": "01KHVNNW",
+      "title": "Clean up setup.ts tech debt — dedup, legacy render, error handling",
+      "completed_at": "2026-02-20T01:07:26.792Z",
+      "closed_reason": "Merged in PR #417. Removed deprecated _installClaudeCodeStopHook function (70 lines of dead code). The function was marked @deprecated and never called - it was superseded by installClaudeCodeHooks which handles all hook types. Audit confirmed that other tech debt items from the task description were already addressed in previous PRs (#405 and #408)."
+    },
+    {
+      "ref": "01KHTAMX",
+      "title": "Consolidate meta ref lookup patterns",
+      "completed_at": "2026-02-20T00:49:05.659Z",
+      "closed_reason": "Merged in PR #416. Added resolveMetaRef() as unified resolver in parser/meta.ts, consolidating 12+ duplicated inline lookup patterns across meta.ts commands (get, set, delete, promote). Reduced ~120 lines of duplicated code and added 9 tests for the new resolver."
+    },
+    {
+      "ref": "01KHTAMT",
+      "title": "Add discriminant field for skill type guards",
+      "completed_at": "2026-02-20T00:30:14.412Z",
+      "closed_reason": "Merged in PR #415. Added _type: 'skill' discriminant field to SkillSchema for reliable type discrimination. Created isSkill() type guard and updated 6 call sites across skill-crud.ts, skill-diff.ts, and validate.ts. Backward compatible via .default('skill'). Added 5 new tests for isSkill() type guard."
+    },
+    {
+      "ref": "01KHVK28",
+      "title": "Generalize agent template sections for consumer projects",
+      "completed_at": "2026-02-20T00:05:45.857Z",
+      "closed_reason": "Merged in PR #414. Generalized agent template sections for consumer projects: (1) 01-quick-start.md now uses generic kspec init/setup pattern instead of kspec-repo-specific bootstrap.cjs, added shadow status tip; (2) 05-commit-convention.md now shows language-agnostic AC annotation examples (JavaScript and Python). Tests updated to verify generic content and reject repo-specific commands."
+    },
+    {
+      "ref": "01KHQQV7",
+      "title": "Implement: Guard Script and Diff Quality",
+      "completed_at": "2026-02-19T04:51:17.064Z",
+      "closed_reason": "Merged in PR #412. Guard script now uses dual-view matching (UNQUOTED + STRIPPED + FIRST_CMD) to prevent false positives on quoted patterns while blocking split-quote bypass attempts. Hand-rolled diff replaced with 'diff' library. readFileSync converted to async. structuredClone added before skill mutation. All spec ACs covered with annotated tests."
+    },
+    {
+      "ref": "01KHQQV4",
+      "title": "Implement: Skill Module Split",
+      "completed_at": "2026-02-19T00:11:22.366Z",
+      "closed_reason": "Merged in PR #411. Split 2349-line skill.ts into skill-crud.ts (931 lines), skill-install.ts (495 lines), skill-diff.ts (992 lines) with thin orchestrator. Extracted renderSkillBase() in skill-render.ts eliminating ~100 lines of renderer duplication. All 236 tests pass with full AC coverage (15 dedicated tests for ac-1/ac-2/ac-3). Backward API compatibility verified via re-exports."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "6f06192",
+      "full_hash": "6f06192bae2f2c49b7a70a41c8c3a6e0947374cb",
+      "date": "2026-02-20T02:59:18.000Z",
+      "message": "feat: implement configurable daemon settings",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "d0f730c",
+      "full_hash": "d0f730c138d941973481c39e881a474a34fdb688",
+      "date": "2026-02-20T02:49:52.000Z",
+      "message": "feat: implement configurable validation defaults (#420)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "04aa667",
+      "full_hash": "04aa66790e8511c324768cee99c303dcc5622d2d",
+      "date": "2026-02-20T02:37:30.000Z",
+      "message": "feat: implement configurable validation defaults",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fc25681",
+      "full_hash": "fc25681cef02496ea34e0d80325d4ef1ed648fb5",
+      "date": "2026-02-20T02:20:02.000Z",
+      "message": "feat: implement configurable shadow branch and author identity (#419)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "01333ac",
+      "full_hash": "01333acc1b73455fa76667171dd30f29fe7663b6",
+      "date": "2026-02-20T02:04:00.000Z",
+      "message": "feat: implement configurable author identity",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "80f7588",
+      "full_hash": "80f7588e1c02373f7d685ccf1a3e5b2bbc3fbad3",
+      "date": "2026-02-20T01:52:12.000Z",
+      "message": "fix: add error guidance for missing named remote (AC-6)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bb3665f",
+      "full_hash": "bb3665f4c1f51231f1f44dd8d78c647ae53f1921",
+      "date": "2026-02-20T01:41:26.000Z",
+      "message": "feat: implement configurable shadow branch settings",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "db49353",
+      "full_hash": "db49353f337af664ae48f43da1caddd07366d5c4",
+      "date": "2026-02-20T01:26:39.000Z",
+      "message": "feat: implement project config file (kspec.config.yaml) (#418)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "85fa165",
+      "full_hash": "85fa165721f0d109db2b7d85640a7d8f690fd172",
+      "date": "2026-02-20T01:16:09.000Z",
+      "message": "feat: implement project config file (kspec.config.yaml)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "fcfb1dc",
+      "full_hash": "fcfb1dc34bb9064716c88eeed0866cdde24eb141",
+      "date": "2026-02-20T01:07:18.000Z",
+      "message": "refactor: remove deprecated _installClaudeCodeStopHook dead code (#417)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 541,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 18,
+    "blocked": 0,
+    "completed": 505,
+    "inbox_items": 75
+  }
+}

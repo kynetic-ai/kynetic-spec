@@ -1,0 +1,488 @@
+{
+  "generated_at": "2026-01-23T13:32:36.615Z",
+  "branch": "feat/search-validation-endpoints",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "started_at": "2026-01-23T11:43:29.972Z",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "note_count": 23,
+      "last_note_at": "2026-01-23T13:32:24.700Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFMMQF",
+      "title": "Search and validation API endpoints",
+      "started_at": "2026-01-23T13:21:51.012Z",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "note_count": 6,
+      "last_note_at": "2026-01-23T13:31:56.747Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNGWP",
+      "created_at": "2026-01-23T13:32:24.700Z",
+      "author": "@claude",
+      "content": "SESSION END - Iteration 29 complete\n\nPARENT TASK STATUS: IN_PROGRESS (correctly remains until all subtasks complete)\n\nThis is a PARENT TASK that coordinates 6 derived subtasks implementing the full @api-contract spec (33 acceptance criteria). It should remain in_progress until ALL subtasks are completed.\n\nOVERALL PROGRESS: 30 of 33 ACs covered (27 merged + 3 in PR #194)\n- ✅ Merged: ac-1 through ac-18, ac-25 through ac-33 (27 ACs)\n- 🔄 In Review: ac-19 through ac-21 (3 ACs) - PR #194\n- ⏳ Ready: ac-22 through ac-24 (3 ACs) - @01KFMMQM\n\nDERIVED SUBTASKS STATUS:\n1. ✅ @01KFMMPY: API foundation and CORS (ac-1) - COMPLETED, merged PR #190\n2. ✅ @01KFMMQ2: Task API endpoints (ac-2 through ac-7) - COMPLETED, merged PR #191\n3. ✅ @01KFMMQ7: Spec item API endpoints (ac-8 through ac-11) - COMPLETED, merged PR #192\n4. ✅ @01KFMMQB: Inbox and meta API endpoints (ac-12 through ac-18) - COMPLETED, merged PR #193\n5. 🔄 @01KFMMQF: Search and validation endpoints (ac-19 through ac-21) - PENDING_REVIEW, PR #194\n6. ⏳ @01KFMMQM: Error handling middleware (ac-22 through ac-24) - READY\n\nITERATION 29 ACCOMPLISHMENTS:\n- Implemented @01KFMMQF from start to finish\n- Created validation.ts with 3 endpoints\n- All 1199 tests pass\n- PR #194 created and local review complete (CONDITIONAL PASS)\n- CI checks running\n\nNEXT SESSION PLAN:\n1. Check CI status on PR #194\n2. Address any review feedback\n3. Merge PR #194 via @pr-review-merge workflow\n4. Complete @01KFMMQF task\n5. Start @01KFMMQM (final subtask - error handling middleware)\n6. Complete this parent task when @01KFMMQM is merged\n\nNO BLOCKERS. Clear path to completion."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNGVC",
+      "created_at": "2026-01-23T13:31:42.283Z",
+      "author": "@claude",
+      "content": "Iteration 29 complete: @01KFMMQF submitted and PR created.\n\nPROGRESS UPDATE:\n- 27 of 33 ACs implemented and merged (ac-1 through ac-18, ac-25 through ac-33)\n- 3 ACs implemented and pending review (ac-19 through ac-21) - PR #194\n- 3 ACs remaining in ready subtask (ac-22 through ac-24)\n\nCOMPLETED THIS ITERATION:\n✅ Implemented @01KFMMQF (Search and validation API endpoints)\n✅ Created packages/daemon/src/routes/validation.ts with 3 endpoints\n✅ Registered routes in server.ts\n✅ Created 6 structure tests in tests/daemon-api-validation.test.ts\n✅ All 1199 tests pass\n✅ PR #194 created and local review: CONDITIONAL PASS\n\nPR STATUS:\n- PR #194 created: Search and validation API endpoints\n- Branch: feat/search-validation-endpoints\n- Local review: CONDITIONAL PASS with manual testing recommended\n- CI checks pending (test, claude-review)\n- Awaiting CI completion and automated review\n\nNEXT SESSION:\n1. Wait for CI checks to complete on PR #194\n2. Review and merge PR #194 via @pr-review-merge workflow\n3. Complete @01KFMMQF task\n4. Start @01KFMMQM (Error handling middleware) to implement ac-22 through ac-24\n5. Then complete this parent task\n\nThis parent task remains in_progress until all derived subtasks complete."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNGCH",
+      "created_at": "2026-01-23T13:23:35.645Z",
+      "author": "@claude",
+      "content": "SESSION CHECKPOINT - Iteration 28 end\n\nPARENT TASK STATUS: IN_PROGRESS (remains until all subtasks complete)\n\nOVERALL PROGRESS: 27 of 33 ACs implemented and merged\n- ✅ Completed: ac-1 through ac-18, ac-25 through ac-33\n- 🔄 In Progress: @01KFMMQF (ac-19 through ac-21) - analysis complete, ready to implement\n- ⏳ Ready: @01KFMMQM (ac-22 through ac-24) - error handling middleware\n\nCOMPLETED SUBTASKS (merged to main):\n1. @01KFMMPY: API foundation and CORS (ac-1) - PR #190\n2. @01KFMMQ2: Task API endpoints (ac-2 through ac-7) - PR #191\n3. @01KFMMQ7: Spec item API endpoints (ac-8 through ac-11) - PR #192\n4. @01KFMMQB: Inbox and meta API endpoints (ac-12 through ac-18) - PR #193 ← JUST MERGED\n\nIN PROGRESS SUBTASKS:\n- @01KFMMQF: Started, analysis complete, implementation ready for next session\n\nREMAINING WORK:\n- Complete @01KFMMQF implementation (3 endpoints: search, validate, alignment)\n- Start and complete @01KFMMQM (error handling middleware)\n- Then complete this parent task\n\nITERATION 28 HIGHLIGHTS:\n- Fixed critical bug in PR #193 (meta.items → meta.agents/workflows)\n- Merged PR #193 after full review workflow\n- All 1193 tests passing\n- No blockers\n\nNEXT SESSION:\nContinue @01KFMMQF - all research done, ready to implement validation.ts routes file."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNG8W",
+      "created_at": "2026-01-23T13:21:36.180Z",
+      "author": "@claude",
+      "content": "Iteration 28 complete: @01KFMMQB merged and completed.\n\nPROGRESS UPDATE:\n- 27 of 33 ACs implemented and merged (ac-1 through ac-18, ac-25 through ac-33)\n- 6 ACs remaining in ready subtasks (ac-19 through ac-24)\n\nCOMPLETED THIS ITERATION:\n✅ Fixed critical bug in PR #193 (meta.items → meta.agents/workflows)\n✅ Addressed all review feedback (Greptile redundant validation comment)\n✅ Resolved all review threads\n✅ All CI checks passed (test, claude-review, check-unresolved-comments)\n✅ Merged PR #193 via @pr-review-merge workflow\n✅ Completed @01KFMMQB task\n✅ All 1193 tests pass\n\nCRITICAL BUG FIXED:\nThe initial implementation accessed meta.items.filter() which doesn't exist on MetaContext.\nFixed to use meta.agents and meta.workflows directly per the type definition.\nUpdated corresponding structure tests to check for correct pattern.\n\nPENDING WORK:\n- @01KFMMQF: Search and validation endpoints (ac-19 through ac-21)\n- @01KFMMQM: Error handling middleware (ac-22 through ac-24)\n\nNEXT SESSION:\nStart @01KFMMQF to implement remaining search and validation API endpoints.\n\nThis parent task remains in_progress until all derived subtasks complete."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNF3W",
+      "created_at": "2026-01-23T13:01:23.812Z",
+      "author": "@claude",
+      "content": "Iteration 27 complete: @01KFMMQB submitted for review.\n\nPROGRESS UPDATE:\n- 20 of 33 ACs implemented and merged (ac-1 through ac-11, ac-25 through ac-33)\n- 7 ACs in pending_review (ac-12 through ac-18) - PR #193\n- 6 ACs remaining in ready subtasks (ac-19 through ac-24)\n\nCOMPLETED THIS ITERATION:\n✅ Implemented inbox API endpoints (ac-12, ac-13, ac-14):\n   - GET /api/inbox - list ordered by created_at desc\n   - POST /api/inbox - create with ULID generation\n   - DELETE /api/inbox/:ref - delete with ref resolution\n\n✅ Implemented meta API endpoints (ac-15, ac-16, ac-17, ac-18):\n   - GET /api/meta/session - session context\n   - GET /api/meta/agents - list agents\n   - GET /api/meta/workflows - list workflows\n   - GET /api/meta/observations - list with resolved filter\n\n✅ Created 13 E2E structure tests (6 inbox + 7 meta)\n✅ All 1193 tests pass\n✅ PR #193 created and local review APPROVED\n\nPENDING REVIEW:\n- PR #193: Inbox and meta API endpoints\n- CI checks: test, claude-review, check-unresolved-comments\n- Awaiting automated review feedback\n\nNEXT SESSION:\n1. Review and address any CI/review feedback on PR #193\n2. Merge PR #193 via @pr-review-merge workflow\n3. Complete @01KFMMQB task\n4. Start @01KFMMQF (Search and validation endpoints) for ac-19 through ac-21\n\nThis parent task remains in_progress until all derived subtasks complete."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNEKZ",
+      "created_at": "2026-01-23T12:52:42.610Z",
+      "author": "@claude",
+      "content": "Iteration 26 complete.\n\nACTIONS TAKEN:\n1. ✅ Resolved Greptile review thread on PR #192 (ItemIndex fix already present)\n2. ✅ All CI checks passed (test, claude-review, check-unresolved-comments)\n3. ✅ Ran local review via subagent - APPROVED (AC coverage 100%, proper isolation)\n4. ✅ Merged PR #192 via @pr-review-merge workflow (merge commit to preserve trailers)\n5. ✅ Completed @01KFMMQ7 task\n6. ✅ Started @01KFMMQB (Inbox and meta API endpoints)\n\nPROGRESS UPDATE:\n- 20 of 33 ACs now implemented and merged (ac-1 through ac-11, ac-25 through ac-33)\n- 13 ACs remaining (ac-12 through ac-24)\n- @01KFMMQB in progress but not code complete (plan documented, research done)\n\nNEXT ITERATION:\n1. Continue @01KFMMQB - implement inbox.ts and meta.ts route files\n2. Create tests and PR when complete\n3. Then move to @01KFMMQF (Search and validation endpoints) for ac-19 through ac-21\n4. Finally @01KFMMQM (Error handling middleware) for ac-22 through ac-24\n\nParent task remains in_progress until all derived subtasks complete."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNEHB",
+      "created_at": "2026-01-23T12:51:16.544Z",
+      "author": "@claude",
+      "content": "Iteration 26 complete. Successfully merged PR #192 and completed @01KFMMQ7 (Spec item API endpoints).\n\nPROGRESS:\n- 20 of 33 ACs implemented and merged (ac-1, ac-2 through ac-11, ac-25 through ac-33)\n- 13 ACs remain in ready subtasks (ac-12 through ac-24)\n\nCOMPLETED THIS ITERATION:\n- Resolved Greptile review thread (ItemIndex fix already present in 58a657a)\n- All CI checks passing (test, claude-review, check-unresolved-comments)\n- Local review: APPROVED (AC coverage 100%, tests properly isolated, consistent with project patterns)\n- Merged PR #192 via @pr-review-merge workflow\n- Completed @01KFMMQ7 task\n- All 1180 tests continue to pass\n\nPR MERGE:\n- PR #192 merged to main (commit e3da36d)\n- Merge strategy: merge commit (preserves trailers)\n- Files changed: +388 lines (routes/items.ts, server.ts, daemon-api-items.test.ts)\n\nNEXT SESSION:\n1. Start @01KFMMQB (Inbox and meta API endpoints) to implement ac-12 through ac-18\n2. Continue with remaining API endpoint tasks\n\nThis parent task remains in_progress until all derived subtasks complete."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNE0Z",
+      "created_at": "2026-01-23T12:42:19.593Z",
+      "author": "@claude",
+      "content": "End of iteration 25 session checkpoint.\n\nThis is a PARENT TASK that coordinates multiple derived subtasks. It should remain in_progress until ALL derived subtasks are complete.\n\nCurrent derived subtasks status:\n- ✅ @01KFMMPY: API foundation and CORS - COMPLETED (merged PR #190)\n- ✅ @01KFMMQ2: Task API endpoints - COMPLETED (merged PR #191)\n- 🔄 @01KFMMQ7: Spec item API endpoints - PENDING_REVIEW (PR #192 awaiting CI)\n- ⏳ @01KFMMQB: Inbox and meta API endpoints - READY\n- ⏳ @01KFMMQF: Search and validation API endpoints - READY\n- ⏳ @01KFMMQM: API error handling middleware - READY\n\nOverall progress: 16 of 33 ACs complete, 4 in review, 13 remaining.\n\nNext session will merge PR #192 and continue with remaining subtasks."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNDYN",
+      "created_at": "2026-01-23T12:41:03.650Z",
+      "author": "@claude",
+      "content": "Iteration 25 complete. Successfully implemented and submitted @01KFMMQ7 (Spec item API endpoints).\n\nPROGRESS:\n- 16 of 33 ACs implemented and merged (ac-1, ac-2 through ac-7, ac-25 through ac-33) - from previous iterations  \n- 4 ACs implemented and awaiting review (ac-8 through ac-11) - this iteration\n- 13 ACs remain in ready subtasks (ac-12 through ac-24)\n\nCOMPLETED THIS ITERATION:\n- Implemented packages/daemon/src/routes/items.ts with 3 REST endpoints\n- Added 6 E2E structure tests in tests/daemon-api-items.test.ts\n- Local review: PASS (AC coverage, test quality, isolation all good)\n- Created PR #192 and submitted for review\n- All 1180 tests pass\n\nPR STATUS:\n- PR #192 created: Spec item API endpoints\n- CI checks running (test, claude-review pending)\n- Awaiting CI completion and automated review\n\nNEXT SESSION:\n1. Wait for CI checks to complete on PR #192\n2. Review and merge PR #192 via @pr-review-merge workflow\n3. Complete @01KFMMQ7 task\n4. Start @01KFMMQB (Inbox and meta API endpoints) to implement ac-12 through ac-18\n\nThis parent task remains in_progress until all derived subtasks complete."
+    },
+    {
+      "task_ref": "01KFMMHX",
+      "task_title": "Implement: REST and WebSocket API Contract",
+      "note_ulid": "01KFNDT8",
+      "created_at": "2026-01-23T12:38:39.377Z",
+      "author": "@claude",
+      "content": "Iteration 24 final checkpoint:\n\nPARENT TASK STATUS: IN PROGRESS\nThis is a large parent task with 33 ACs being implemented via derived subtasks.\n\nPROGRESS: 14 of 33 ACs implemented\n- 10 ACs merged to main\n- 4 ACs in pending review (PR #192)\n- 19 ACs remaining in ready subtasks\n\nCOMPLETED AND MERGED:\n✓ ac-1: CORS for dev server (PR #190)\n✓ ac-2 through ac-7: Task API endpoints (PR #191)\n✓ ac-25 through ac-33: WebSocket protocol (completed in earlier iterations)\n\nIN REVIEW:\n⏳ ac-8 through ac-11: Spec Item API endpoints (PR #192, @01KFMMQ7)\n   - Implementation complete\n   - All tests passing (1180 total)\n   - Awaiting review and merge\n\nREMAINING WORK (derived tasks ready to start):\n○ ac-12 through ac-18: Inbox and meta API endpoints (@01KFMMQB)\n○ ac-19 through ac-21: Search and validation endpoints (@01KFMMQF)\n○ ac-22 through ac-24: API error handling middleware (@01KFMMQM)\n\nNEXT SESSION PLAN:\n1. Review and merge PR #192 (Spec Item APIs)\n2. Complete @01KFMMQ7 after merge\n3. Start @01KFMMQB (Inbox and meta APIs)\n\nThis parent task will remain in_progress until all derived subtasks are completed."
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "svelte",
+        "ui",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-0",
+        "foundation"
+      ]
+    },
+    {
+      "ref": "01KFMMQM",
+      "title": "API error handling middleware",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "phase-2",
+        "api"
+      ]
+    },
+    {
+      "ref": "01KFMMSV",
+      "title": "Create SvelteKit scaffold with shadcn-svelte",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT0",
+      "title": "Dashboard layout and navigation",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT4",
+      "title": "Task list and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMT9",
+      "title": "Spec item tree and detail views",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTD",
+      "title": "Inbox view",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTJ",
+      "title": "Session context and observations panel",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMTP",
+      "title": "Global search command palette",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "phase-3",
+        "dashboard"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFMMQB",
+      "title": "Inbox and meta API endpoints",
+      "completed_at": "2026-01-23T13:21:17.475Z",
+      "closed_reason": "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12 through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items instead of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
+    },
+    {
+      "ref": "01KFMMQ7",
+      "title": "Spec item API endpoints",
+      "completed_at": "2026-01-23T12:50:59.437Z",
+      "closed_reason": "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8 through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted (code inspection test strategy is consistent with project patterns). All 4 target ACs have test coverage with proper annotations."
+    },
+    {
+      "ref": "01KFMMQ2",
+      "title": "Task API endpoints",
+      "completed_at": "2026-01-23T12:28:24.073Z",
+      "closed_reason": "PR #191 merged successfully. Implemented Task API endpoints covering ac-2 through ac-7 from @api-contract spec. All CI checks passed. Greptile review feedback addressed in commit f49ba72. Local review identified two systemic issues (X-Request-Id header, E2E test strategy) which were documented and deferred as they affect all daemon code. Follow-up items created: @01KFNCZR (X-Request-Id), @01KFND00 (E2E tests)."
+    },
+    {
+      "ref": "01KFMMPY",
+      "title": "API foundation and CORS middleware",
+      "completed_at": "2026-01-23T11:56:41.750Z",
+      "closed_reason": "PR #190 merged successfully. Implemented CORS configuration for localhost:5173 dev server with comprehensive E2E tests. All CI checks passed. Greptile review: 5/5 confidence, safe to merge."
+    },
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "completed_at": "2026-01-23T11:43:13.394Z",
+      "closed_reason": "Daemon server mode fully implemented in packages/daemon/src with all 16 ACs covered. Complete with Elysia HTTP server, WebSocket pub/sub, file watching, heartbeat monitoring, graceful shutdown, PID management, and localhost-only security. Comprehensive test coverage with 61 AC annotations across daemon test files. All 1166 tests pass. No code changes needed - implementation was already complete from previous work."
+    },
+    {
+      "ref": "01KFMMJ8",
+      "title": "Implement: CLI Serve Commands",
+      "completed_at": "2026-01-23T11:40:00.391Z",
+      "closed_reason": "PR #189 merged successfully. Implemented kspec serve CLI commands with comprehensive E2E tests and trait coverage. All Greptile review feedback addressed (daemon path, polling, graceful shutdown, port persistence, code duplication documented). Tests: 1166 passed."
+    },
+    {
+      "ref": "01KFMMMH",
+      "title": "Implement daemon process detach",
+      "completed_at": "2026-01-23T10:50:00.496Z",
+      "closed_reason": "PR #188 merged. Implemented PID file management foundation for daemon lifecycle. Provides PidFileManager class with read/write/remove operations and process detection utilities. Integrates into daemon server (writes on start when isDaemon: true, removes on shutdown). Partial coverage of AC-9 and AC-10 - provides infrastructure but CLI commands (kspec serve --daemon, kspec serve stop) still need implementation. Excellent test coverage (11 comprehensive tests, all 1149 tests pass). Local review: PASS. Greptile review: 5/5 confidence. Next: implement actual CLI commands."
+    },
+    {
+      "ref": "01KFMMMD",
+      "title": "Implement WebSocket protocol",
+      "completed_at": "2026-01-23T10:37:48.554Z",
+      "closed_reason": "PR #187 merged. Implemented complete WebSocket protocol with session IDs (ac-1, ac-25), command/ack format (ac-26, ac-27), topic subscription (ac-28), broadcast events with msg_id/seq/timestamp (ac-29), malformed command errors (ac-30), proper close codes (ac-31, ac-7), backpressure handling (ac-32, ac-6), heartbeat ping/timeout (ac-13, ac-14, ac-4, ac-5), and sequence reset on reconnect (ac-8). All 18 ACs from @api-contract, @daemon-server, and @trait-websocket-protocol fully implemented with comprehensive test coverage (51 tests). Local review: PASS (100% AC coverage, excellent test quality). All 1138 tests pass."
+    },
+    {
+      "ref": "01KFMMM9",
+      "title": "Implement file watcher and WebSocket broadcast",
+      "completed_at": "2026-01-23T10:16:01.067Z",
+      "closed_reason": "PR #186 merged. Implemented file watcher with debouncing (ac-5), error handling (ac-6), exponential backoff recovery (ac-7), and Chokidar fallback (ac-8). Broadcast file changes and errors via WebSocket (ac-4). Addressed Greptile review feedback: fixed recursive pattern and cross-platform path handling. All 1087 tests pass."
+    },
+    {
+      "ref": "01KFMMM4",
+      "title": "Implement Elysia server core",
+      "completed_at": "2026-01-23T09:56:42.763Z",
+      "closed_reason": "PR #185 merged. Implemented Elysia server core with localhost enforcement (ac-3) and graceful shutdown (ac-12). Addressed local review feedback by replacing fluff tests with proper unit tests for middleware logic. Fixed IPv6 bracket parsing bug. All 1076 tests pass."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "3d9d951",
+      "full_hash": "3d9d9519929f8ffb0044641bf72f09fc8fa619eb",
+      "date": "2026-01-23T13:28:08.000Z",
+      "message": "feat: implement search and validation API endpoints",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0eb5d64",
+      "full_hash": "0eb5d6468b78b5cb2b304ec16c8516cec5a07d6a",
+      "date": "2026-01-23T13:20:59.000Z",
+      "message": "Inbox and meta API endpoints (#193)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "74965f6",
+      "full_hash": "74965f621f4803df285e870f77230b09cdd51473",
+      "date": "2026-01-23T13:15:40.000Z",
+      "message": "fix: use meta.agents and meta.workflows directly instead of filtering meta.items",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9d22fd6",
+      "full_hash": "9d22fd60b4f0a8f79b6f22b9b4e0d40787c5bf51",
+      "date": "2026-01-23T13:07:14.000Z",
+      "message": "chore: trigger CI after resolving review thread",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3eb1530",
+      "full_hash": "3eb153003d0d4856278fad0752263802eb730917",
+      "date": "2026-01-23T12:58:26.000Z",
+      "message": "feat: implement Inbox and Meta API endpoints",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "e3da36d",
+      "full_hash": "e3da36dd534f36cc4a2853cb33910d1492c4eab9",
+      "date": "2026-01-23T12:50:37.000Z",
+      "message": "Spec item API endpoints (#192)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9d6273d",
+      "full_hash": "9d6273dee8f88e3da5e0cbf3b8a1d5842ff806c2",
+      "date": "2026-01-23T12:43:04.000Z",
+      "message": "chore: trigger CI after resolving review thread",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0c10a93",
+      "full_hash": "0c10a93a5728dab3af7c3b3230fef975ceafbe0f",
+      "date": "2026-01-23T12:36:52.000Z",
+      "message": "feat: implement Spec Item API endpoints",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "58a657a",
+      "full_hash": "58a657a6b4dd0f0ce73b037b949653df80317860",
+      "date": "2026-01-23T12:34:05.000Z",
+      "message": "fix: remove unused ItemIndex import and adjust AlignmentIndex usage",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "25d2a06",
+      "full_hash": "25d2a062c55997eb96c2be756a4f91f8e337c460",
+      "date": "2026-01-23T12:33:48.000Z",
+      "message": "feat: implement Spec Item API endpoints",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 312,
+    "in_progress": 1,
+    "pending_review": 1,
+    "ready": 23,
+    "blocked": 1,
+    "completed": 274,
+    "inbox_items": 47
+  }
+}

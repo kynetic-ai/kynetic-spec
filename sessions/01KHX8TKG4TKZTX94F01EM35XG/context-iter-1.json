@@ -1,0 +1,408 @@
+{
+  "generated_at": "2026-02-20T10:16:47.306Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHWTXE",
+      "title": "Review task-work and pr-review skills for trait AC coverage enforcement",
+      "started_at": "2026-02-20T09:46:27.472Z",
+      "priority": 2,
+      "spec_ref": null,
+      "note_count": 1,
+      "last_note_at": "2026-02-20T09:48:50.189Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHWTXE",
+      "task_title": "Review task-work and pr-review skills for trait AC coverage enforcement",
+      "task_status": "pending_review",
+      "note_ulid": "01KHX77E",
+      "created_at": "2026-02-20T09:48:50.189Z",
+      "author": "@claude",
+      "content": "Updated 4 skill files: task-work, local-review, pr-review, codex. Added trait AC coverage enforcement, code quality gates, regression checks, inline PR comments, and REQUEST_CHANGES→COMMENT fix."
+    },
+    {
+      "task_ref": "01KHWQEJ",
+      "task_title": "Review subagent should post structured GitHub review",
+      "task_status": "completed",
+      "note_ulid": "01KHWS7S",
+      "created_at": "2026-02-20T05:44:21.797Z",
+      "author": "@claude",
+      "content": "Simplified subagent prompt to be data-only — provides task ref, branch, task details, and spec context, then delegates entirely to /pr-review skill. Removed all hardcoded workflow instructions from the prompt. Updated pr-review skill (SKILL.md) to include explicit requirement to post a structured GitHub review (APPROVE or REQUEST_CHANGES) via gh api before merging, with AC coverage checklist template."
+    },
+    {
+      "task_ref": "01KHWQEH",
+      "task_title": "Add merge blocker when review subagent times out",
+      "task_status": "completed",
+      "note_ulid": "01KHWS1E",
+      "created_at": "2026-02-20T05:40:54.246Z",
+      "author": "@claude",
+      "content": "Added commentOnPRReviewIncomplete() function that uses 'gh pr list' to find the open PR on the current branch and posts a warning comment when the review subagent times out or fails. Called from both the timeout and failure paths in processPendingReviewTasks. The comment warns that the PR was not fully reviewed and recommends manual review before merging. This creates a visible GitHub-level marker that the check-unresolved-comments CI check can surface."
+    },
+    {
+      "task_ref": "01KHWQEG",
+      "task_title": "Increase ralph review subagent timeout",
+      "task_status": "completed",
+      "note_ulid": "01KHWRYH",
+      "created_at": "2026-02-20T05:39:19.028Z",
+      "author": "@claude",
+      "content": "Increased DEFAULT_SUBAGENT_TIMEOUT from 10 to 20 minutes. Added --subagent-timeout <minutes> CLI option to ralph command (default: 20). Threaded configurable timeout through processPendingReviewTasks to runSubagent. Updated hardcoded '10 minutes' timeout message to use actual timeout value. Updated test assertion."
+    },
+    {
+      "task_ref": "01KHW2GZA",
+      "task_title": "Implement kspec doctor command",
+      "task_status": "completed",
+      "note_ulid": "01KHWJSF",
+      "created_at": "2026-02-20T03:51:40.904Z",
+      "author": "Jacob Chapel",
+      "content": "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHWQEK",
+      "title": "Fix sync require('fs').statSync() in setup-status.ts",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "cleanup",
+        "code-quality"
+      ]
+    },
+    {
+      "ref": "01KHWQEM",
+      "title": "Fix detectRemoteType() for relative paths",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "bugfix"
+      ]
+    },
+    {
+      "ref": "01KHWQEN",
+      "title": "Reconcile doctor command exit code with spec",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "spec-gap",
+        "bugfix"
+      ]
+    },
+    {
+      "ref": "01KHWQEP3",
+      "title": "Add deprecation warning tests for config-daemon and manifest-cleanup",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "test-gap"
+      ]
+    },
+    {
+      "ref": "01KHWQEQ",
+      "title": "Make /local-review mandatory in task-work skill",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "process",
+        "skill"
+      ]
+    },
+    {
+      "ref": "01KHWQES",
+      "title": "Fix weak doctor ac-exit-zero test",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "test-gap"
+      ]
+    },
+    {
+      "ref": "01KHWTXF",
+      "title": "Clean up existing kspec validate errors",
+      "priority": 3,
+      "spec_ref": null,
+      "tags": [
+        "cleanup",
+        "spec-system"
+      ]
+    },
+    {
+      "ref": "01KHWQEPZ",
+      "title": "Add spec AC for daemon.host configuration",
+      "priority": 4,
+      "spec_ref": null,
+      "tags": [
+        "spec-gap"
+      ]
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHWQEJ",
+      "title": "Review subagent should post structured GitHub review",
+      "completed_at": "2026-02-20T06:05:25.593Z",
+      "closed_reason": "Merged in PR #424. Simplified subagent prompt to data-only delegation to /pr-review skill. Updated skill to require posting structured GitHub review before merge."
+    },
+    {
+      "ref": "01KHWQEH",
+      "title": "Add merge blocker when review subagent times out",
+      "completed_at": "2026-02-20T06:05:23.184Z",
+      "closed_reason": "Merged in PR #424. Added commentOnPRReviewIncomplete() that posts warning comment on PR when review subagent times out or fails, using task's branch for correct PR lookup."
+    },
+    {
+      "ref": "01KHWQEG",
+      "title": "Increase ralph review subagent timeout",
+      "completed_at": "2026-02-20T06:05:20.637Z",
+      "closed_reason": "Merged in PR #424. Increased DEFAULT_SUBAGENT_TIMEOUT from 10 to 20 minutes, added --subagent-timeout CLI option for configurability."
+    },
+    {
+      "ref": "01KHW2GZA",
+      "title": "Implement kspec doctor command",
+      "completed_at": "2026-02-20T03:54:31.134Z",
+      "closed_reason": "Merged in PR #423. Implemented kspec doctor command with unified health checks for shadow branch, setup (hooks, skills, agents.md), and daemon status. Library layer in src/parser/doctor.ts with CLI command in src/cli/commands/doctor.ts. All 14 ACs covered with 27 tests. Fixed ac-daemon-unreachable test coverage during PR review."
+    },
+    {
+      "ref": "01KHVXK3V",
+      "title": "Implement Clean Up Dead Manifest Config",
+      "completed_at": "2026-02-20T03:29:36.697Z",
+      "closed_reason": "Merged in PR #422. Cleaned up dead manifest config blocks: (1) Removed config block template from generateManifest() in init.ts, (2) Removed config block template from generateShadowManifest() in shadow.ts, (3) Added config field as z.any().optional() to ManifestSchema for backward compat, (4) Added deprecation comments for both config and daemon fields. All 4 ACs covered with 8 tests in manifest-cleanup.test.ts."
+    },
+    {
+      "ref": "01KHVXK3J",
+      "title": "Implement Configurable Daemon Settings",
+      "completed_at": "2026-02-20T03:11:15.933Z",
+      "closed_reason": "Merged in PR #421. Implemented configurable daemon settings in kspec.config.yaml: daemon.port (AC-1), CLI --port override (AC-2), daemon.auto_start (AC-3), and deprecation warning for manifest daemon block (AC-4). All 4 acceptance criteria have test coverage in tests/parser/daemon-config.test.ts."
+    },
+    {
+      "ref": "01KHVXK39",
+      "title": "Implement Configurable Validation Defaults",
+      "completed_at": "2026-02-20T02:50:02.772Z",
+      "closed_reason": "Merged in PR #420. Implemented configurable validation defaults via kspec.config.yaml:\n\n- validation.strict_refs: When false, dangling refs are warnings instead of errors (default: true)\n- validation.require_acceptance: When true, missing AC is an error instead of warning (default: false)\n- CLI --strict flag continues to override config for orphans/staleness\n\nAll 4 ACs covered with annotated tests (7 tests in validate-config.test.ts):\n- ac-1: require_acceptance promotes missing AC to errors\n- ac-2: strict_refs treats dangling refs as errors\n- ac-3: strict_refs: false treats dangling refs as warnings  \n- ac-4: CLI --strict overrides config strict_refs: false"
+    },
+    {
+      "ref": "01KHVXK2P",
+      "title": "Implement Configurable Shadow Branch",
+      "completed_at": "2026-02-20T02:20:43.193Z",
+      "closed_reason": "Merged in PR #419. Implemented configurable shadow branch settings via kspec.config.yaml:\n\n- shadow.branch: Custom orphan branch name (default: kspec-meta)\n- shadow.directory: Custom worktree directory (default: .kspec)\n- shadow.remote: Flexible remote target (named/path/URL)\n\nAll 9 ACs have test coverage:\n- ac-1: Custom branch name via shadow.branch config\n- ac-2: Custom directory via shadow.directory config\n- ac-3: Named remote (e.g., \"specs-origin\") support\n- ac-4: Local filesystem path remote support\n- ac-5: Git URL remote support\n- ac-6: Error guidance when named remote doesn't exist (added during review)\n- ac-7: Backward compat - functions use constants when no options\n- ac-8: Custom directory detection in detectRunningFromShadowWorktree\n- ac-9: Mismatch detection between config and existing shadow\n\n17 total tests added covering all ACs."
+    },
+    {
+      "ref": "01KHVXK2Z",
+      "title": "Implement Configurable Author Identity",
+      "completed_at": "2026-02-20T02:20:14.885Z",
+      "closed_reason": "Merged in PR #419. Implemented configurable author identity via kspec.config.yaml identity.author field. Priority chain: KSPEC_AUTHOR env var > config author > git user > OS user. All 3 ACs have test coverage (9 tests). Updated getAuthor(), createInboxItem(), createObservation(), and all CLI/daemon call sites."
+    },
+    {
+      "ref": "01KHVXK2C",
+      "title": "Implement Project Config File",
+      "completed_at": "2026-02-20T01:26:49.390Z",
+      "closed_reason": "Merged in PR #418. Implemented project config file (kspec.config.yaml) with shadow branch settings, identity settings, validation settings, and daemon settings. Config is loaded before shadow detection and available on KspecContext.config. Env vars take precedence over file values. All 7 ACs covered with 24 tests."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "59db9ad",
+      "full_hash": "59db9ad9da498d926b9b2ad5c09f3530573302b5",
+      "date": "2026-02-20T10:10:08.000Z",
+      "message": "feat: enforce trait AC coverage and raise review quality bar in skills (#425)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "3b0d806",
+      "full_hash": "3b0d8065d49b2bd1c624f479591b3bac51f4ecf1",
+      "date": "2026-02-20T09:58:59.000Z",
+      "message": "fix: address review feedback - section numbering and severity consistency",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "593110c",
+      "full_hash": "593110c18e41008a1d99a3fecb9524a32c9ca11a",
+      "date": "2026-02-20T09:50:05.000Z",
+      "message": "feat: enforce trait AC coverage and raise review quality bar in skills",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "7fd6c0d",
+      "full_hash": "7fd6c0daf3059a886ab9ff93687c0f84e06651bb",
+      "date": "2026-02-20T06:05:09.000Z",
+      "message": "feat: improve ralph review subagent reliability (#424)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "70ae487",
+      "full_hash": "70ae487a9cdd8e53d992c4b4ac8b9a28f1f6ad56",
+      "date": "2026-02-20T05:54:15.000Z",
+      "message": "fix: address PR review feedback for ralph subagent changes",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "8a6a444",
+      "full_hash": "8a6a4440eb72a48142b77f4680b62368964f8c32",
+      "date": "2026-02-20T05:44:59.000Z",
+      "message": "feat: improve ralph review subagent reliability",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b651661",
+      "full_hash": "b65166128c5d2aec6d675abf23a3ae67cf0fbbee",
+      "date": "2026-02-20T03:54:12.000Z",
+      "message": "feat: implement kspec doctor command (#423)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "b8e9912",
+      "full_hash": "b8e9912a0fa6cd3b35ae4ecbd39194a77b11039c",
+      "date": "2026-02-20T03:43:22.000Z",
+      "message": "test: add missing test for ac-daemon-unreachable",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "48cccac",
+      "full_hash": "48cccac8304c9210485ce9ede3341038ecf82ccb",
+      "date": "2026-02-20T03:39:28.000Z",
+      "message": "feat: implement kspec doctor command",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c60b2e5",
+      "full_hash": "c60b2e5d64ef7dcf0d0ff10a051ec5cb4826cf05",
+      "date": "2026-02-20T03:29:28.000Z",
+      "message": "feat: clean up dead manifest config blocks (#422)",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 554,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 25,
+    "blocked": 0,
+    "completed": 511,
+    "inbox_items": 80
+  }
+}

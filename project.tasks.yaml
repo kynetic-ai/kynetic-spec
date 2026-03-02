@@ -70402,4 +70402,10 @@
         concurrency infra), new ac-7 added for flush failure atomicity — must not leave partial
         writes on disk."
       supersedes: null
+    - _ulid: 01KJQRESKMEVZ8TKR5YJHT5EQ8
+      created_at: 2026-03-02T17:10:12.340Z
+      author: "@claude"
+      content: Sessions restored from remote origin/kspec-meta after batch copy-back failure that
+        partially cleared .kspec/sessions/. 102 sessions recovered.
+      supersedes: null
   todos: []

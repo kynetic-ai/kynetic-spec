@@ -1,0 +1,397 @@
+{
+  "generated_at": "2026-01-23T06:13:55.119Z",
+  "branch": "feat/merge-driver-foundation",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KFM7FQ",
+      "title": "Merge driver foundation: types and parsing",
+      "started_at": "2026-01-23T06:09:32.788Z",
+      "priority": 2,
+      "spec_ref": "@yaml-merge-driver",
+      "note_count": 2,
+      "last_note_at": "2026-01-23T06:13:07.719Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KFMMHS",
+      "title": "Implement: Daemon Server Mode",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "server",
+        "websocket",
+        "elysia"
+      ]
+    },
+    {
+      "ref": "01KFMMHX",
+      "title": "Implement: REST and WebSocket API Contract",
+      "priority": 2,
+      "spec_ref": "@api-contract",
+      "tags": [
+        "api",
+        "rest",
+        "websocket"
+      ]
+    },
+    {
+      "ref": "01KFMMJ1",
+      "title": "Implement: Web Dashboard",
+      "priority": 2,
+      "spec_ref": "@web-dashboard",
+      "tags": [
+        "svelte",
+        "ui",
+        "dashboard"
+      ]
+    },
+    {
+      "ref": "01KFMMJ8",
+      "title": "Implement: CLI Serve Commands",
+      "priority": 2,
+      "spec_ref": "@cli-serve-commands",
+      "tags": [
+        "cli",
+        "serve"
+      ]
+    },
+    {
+      "ref": "01KFMMJT",
+      "title": "Setup Bun monorepo workspace",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-0",
+        "foundation"
+      ]
+    },
+    {
+      "ref": "01KFMMJY",
+      "title": "Create shared types package",
+      "priority": 2,
+      "spec_ref": "@web-ui",
+      "tags": [
+        "phase-0",
+        "foundation"
+      ]
+    },
+    {
+      "ref": "01KFMMM0",
+      "title": "Create packages/daemon structure",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMM4",
+      "title": "Implement Elysia server core",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMM9",
+      "title": "Implement file watcher and WebSocket broadcast",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    },
+    {
+      "ref": "01KFMMMD",
+      "title": "Implement WebSocket protocol",
+      "priority": 2,
+      "spec_ref": "@daemon-server",
+      "tags": [
+        "phase-1",
+        "daemon"
+      ]
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "ref": "01KFBDQE",
+      "title": "Add spec-schema drift detection to validation",
+      "blocked_by": [
+        "Needs clearer scoping - see latest note for details"
+      ],
+      "unmet_deps": []
+    }
+  ],
+  "recently_completed": [
+    {
+      "ref": "01KFHMK8",
+      "title": "Spec out Web UI and Daemon Mode feature",
+      "completed_at": "2026-01-23T05:26:24.655Z",
+      "closed_reason": "Spec created with ~110 ACs across 5 features. 3 new traits added. 31 granular implementation tasks derived with detailed notes."
+    },
+    {
+      "ref": "01KFKMF9",
+      "title": "Meta resolve and promote commands missing commitIfShadow calls",
+      "completed_at": "2026-01-23T04:08:46.376Z",
+      "closed_reason": "PR #172 merged. Added @trait-shadow-commit trait with 8 AC and fixed 6 missing commitIfShadow calls in meta commands."
+    },
+    {
+      "ref": "01KFM0ZH",
+      "title": "Add --steps flag to kspec meta add workflow",
+      "completed_at": "2026-01-22T23:55:46.588Z",
+      "closed_reason": "Implemented --steps flag for kspec meta add workflow. PR #170 merged."
+    },
+    {
+      "ref": "01KFJ578",
+      "title": "Add skill file linting/validation",
+      "completed_at": "2026-01-22T16:42:52.676Z",
+      "closed_reason": "Merged PR #167. Added skill file validation with frontmatter and table pipe checks."
+    },
+    {
+      "ref": "01KFJ574",
+      "title": "Expand kspec search to cover inbox and meta entities",
+      "completed_at": "2026-01-22T16:42:50.411Z",
+      "closed_reason": "Merged PR #166. Extended kspec search to cover inbox items and meta entities."
+    },
+    {
+      "ref": "01KFJ571",
+      "title": "ACP type safety audit - strengthen typing",
+      "completed_at": "2026-01-22T09:23:37.781Z",
+      "closed_reason": "Merged PR #165. Strengthened ACP type safety by adding typed response methods (respondReadTextFile, respondWriteTextFile) and typed request parameters. All 937 tests pass, all CI checks passed. Compile-time enforcement now prevents response structure bugs."
+    },
+    {
+      "ref": "01KFJ56X",
+      "title": "Add validation warning for manual_only parent with eligible children",
+      "completed_at": "2026-01-22T09:17:33.476Z",
+      "closed_reason": "Merged PR #164. Added validation warning for manual_only parent with eligible children. All CI checks passed (937 tests), automated reviews positive, no issues found."
+    },
+    {
+      "ref": "01KFJ52W",
+      "title": "Improve ACP mock to require permission requests",
+      "completed_at": "2026-01-22T08:55:41.500Z",
+      "closed_reason": "Merged PR #163. Added comprehensive test coverage for mock's handleRequestPermission function with 6 tests covering auto-approval, cancellation, preference ordering, and error cases. All 936 tests pass, all CI checks passed."
+    },
+    {
+      "ref": "01KFJ4W2",
+      "title": "Set up biome for linting (replace eslint)",
+      "completed_at": "2026-01-22T08:42:38.803Z",
+      "closed_reason": "Merged PR #162. Successfully set up Biome for linting and formatting, replacing non-functional ESLint. All CI checks passed, 930/932 tests pass. Formatted 73 files with consistent style. Some acceptable lint warnings documented in PR."
+    },
+    {
+      "ref": "01KFJ4VY",
+      "title": "Fix test helper to capture stderr on success",
+      "completed_at": "2026-01-22T08:33:13.238Z",
+      "closed_reason": "Merged PR #161. All CI checks passed, both Claude and Greptile reviews found no issues. Fix properly captures stderr on successful commands."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "7ba6cb4",
+      "full_hash": "7ba6cb434b17cec97fb21ac77f7d254af2c2ad2c",
+      "date": "2026-01-23T06:13:16.000Z",
+      "message": "feat: add merge driver foundation with types and parsing",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "25338d3",
+      "full_hash": "25338d3625d625712b69ad44240547bbff8da9b8",
+      "date": "2026-01-23T06:07:44.000Z",
+      "message": "refactor: update ralph prompt to use workflows and skills (#173)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "5330b03",
+      "full_hash": "5330b032227a5368470be18e2fbb18c5e8d03171",
+      "date": "2026-01-23T06:00:29.000Z",
+      "message": "fix: use subagent for local-review in ralph prompt",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "60c016e",
+      "full_hash": "60c016e480e5c7b382b5dbc60a8658d75e6e8da1",
+      "date": "2026-01-23T05:56:50.000Z",
+      "message": "refactor: update ralph prompt to use workflows and skills",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "1ed5dd4",
+      "full_hash": "1ed5dd4308543a351c2a3413a0a73ef571716e67",
+      "date": "2026-01-23T04:08:18.000Z",
+      "message": "fix: add missing commitIfShadow calls to meta commands (#172)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "da06368",
+      "full_hash": "da0636814b84e48d987ab72ec6c16b35de4d784c",
+      "date": "2026-01-23T03:56:28.000Z",
+      "message": "fix: add missing commitIfShadow calls to meta commands",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a82ddd6",
+      "full_hash": "a82ddd63b134517f16fab0f2bfc12e0f81cf4126",
+      "date": "2026-01-23T02:43:25.000Z",
+      "message": "feat: add workflow-integrated skills for task work, local review, and PR merge (#171)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "53751a2",
+      "full_hash": "53751a27c28693c6c9cdae514b012827c79db7f4",
+      "date": "2026-01-23T02:38:14.000Z",
+      "message": "fix: align task-work skill step count with workflow (9 → 10)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "01bcb5e",
+      "full_hash": "01bcb5e76dbc380d959b0579d82096cb6e06c6e1",
+      "date": "2026-01-23T02:31:59.000Z",
+      "message": "docs: consolidate and update AGENTS.md for new workflows",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "06d4545",
+      "full_hash": "06d454528d0f09d771bb8da1967d6ca04c2bfbf6",
+      "date": "2026-01-23T02:20:08.000Z",
+      "message": "feat: add inherit existing work guidance to task-work",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KF16XG",
+      "text": "Hook for SessionStart or post-compaction to inject relevant context and subtle instructions. Could auto-run 'kspec session start' or similar to give agent fresh context after memory is compacted.",
+      "created_at": "2026-01-15T16:13:16.998Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF1V53",
+      "text": "Spec review process: 3 parallel agents (internal fit, prior art comparison, external research) before finalizing major specs. Worked well for shadow branch spec design - should be formalized in meta-spec workflows.",
+      "created_at": "2026-01-15T22:06:57.823Z",
+      "tags": [
+        "workflow",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF3PJW",
+      "text": "CLI output parity - JSON and human-readable outputs can drift when adding features. Investigate patterns to keep them in sync by design: unified output formatter, schema-driven rendering, shared data structure that both modes consume. Current pattern: output(data, humanFormatter) - data goes to JSON, formatter handles human. But formatter can show derived/computed info that isn't in data.",
+      "created_at": "2026-01-16T15:25:35.193Z",
+      "tags": [
+        "cli",
+        "dx",
+        "design"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF4DS5",
+      "text": "Investigate ready task ordering beyond priority - creation order may not be ideal. Consider: recency of notes/activity, dependency depth, spec item priority inheritance, manual ordering field, tags for urgency",
+      "created_at": "2026-01-16T22:10:58.273Z",
+      "tags": [
+        "design",
+        "tasks",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF554T",
+      "text": "Ralph Wiggum / Looper Mode - Create a kspec-integrated autonomous loop runner. Core idea: a script that runs Claude Code repeatedly with fresh context, using a templated prompt that instructs it to:\n\n1. Run 'kspec session start' to see ready tasks\n2. Pick a well-defined task (high priority, clear spec, no blockers)\n3. Work on it until completion or stuck\n4. Commit and complete the task\n5. Exit cleanly (the outer loop restarts with fresh context)\n\nKey features from research:\n- Simple core: while :; do cat PROMPT.md | claude ; done\n- Context persists via filesystem/git, not session memory\n- Dual-condition exit: require both completion indicator AND explicit exit signal\n- Circuit breaker: stop after N loops with no progress or repeated errors\n- Rate limiting for API calls\n\nKspec-specific additions:\n- Task selection heuristics (prioritize: clear AC, no blockers, isolated scope)\n- Progress tracking via task notes before each exit\n- Session checkpoint before exit to ensure clean state\n- Maybe: task budget (only attempt tasks under estimated N turns)\n\nThe beauty is each iteration starts fresh but inherits cumulative work. Bad iterations don't compound context - they just waste one run.",
+      "created_at": "2026-01-17T04:59:17.160Z",
+      "tags": [
+        "automation",
+        "workflow",
+        "agents"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF6541",
+      "text": "Ralph TUI mode: Optional terminal UI for ralph that provides real-time visualization of agent progress, event stream, session status. Would build on streaming/ACP foundation. Lower priority than core auditability work.",
+      "created_at": "2026-01-17T14:18:06.435Z",
+      "tags": [
+        "ralph",
+        "tui",
+        "optional"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KF8TQ5",
+      "text": "Transaction/batch mechanics for kspec operations - ability to set a mark point where changes don't auto-commit until a final 'commit' call. Could help with bulk operations, rollback on errors, and atomic multi-item changes. Challenges: managing state across commands, cleanup on abandoned transactions, shadow branch implications. Maybe simpler approach: explicit 'kspec bulk' command that takes a script/list of operations and executes them atomically.",
+      "created_at": "2026-01-18T15:14:02.282Z",
+      "tags": [
+        "idea",
+        "cli",
+        "architecture"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q5",
+      "text": "Phase 1: Implement structured error codes and recovery hints for CLI - define CliError type, map existing error() calls to structured codes, add recovery suggestions for common error scenarios",
+      "created_at": "2026-01-19T02:35:36.152Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1Q9",
+      "text": "Phase 1: Implement unified output envelope for JSON mode - wrap all JSON responses in consistent structure with success/data/metadata/error fields",
+      "created_at": "2026-01-19T02:35:40.491Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-1"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFA1QB",
+      "text": "Phase 2: Add dry-run support to mutating commands - implement --dry-run flag for task add/set, item add/set/delete, derive, inbox promote. Show preview of changes without executing",
+      "created_at": "2026-01-19T02:35:42.815Z",
+      "tags": [
+        "agent-first",
+        "cli",
+        "phase-2"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 312,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 40,
+    "blocked": 1,
+    "completed": 253,
+    "inbox_items": 45
+  }
+}

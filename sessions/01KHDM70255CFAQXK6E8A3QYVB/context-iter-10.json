@@ -1,0 +1,355 @@
+{
+  "generated_at": "2026-02-14T10:47:37.470Z",
+  "branch": "main",
+  "context": {
+    "focus": null,
+    "threads": [],
+    "open_questions": [],
+    "updated_at": "2026-01-22T21:05:45.847Z"
+  },
+  "active_tasks": [],
+  "pending_review_tasks": [
+    {
+      "ref": "01KHA83QZ",
+      "title": "Implement Observation Content Search",
+      "started_at": "2026-02-14T10:40:23.850Z",
+      "priority": 3,
+      "spec_ref": "@observation-content-search",
+      "note_count": 2,
+      "last_note_at": "2026-02-14T10:46:17.724Z",
+      "todo_count": 0,
+      "incomplete_todos": 0
+    }
+  ],
+  "recent_notes": [
+    {
+      "task_ref": "01KHA83QZ",
+      "task_title": "Implement Observation Content Search",
+      "task_status": "pending_review",
+      "note_ulid": "01KHDW4A",
+      "created_at": "2026-02-14T10:46:17.724Z",
+      "author": "@claude",
+      "content": "Implemented observation content search:\n\n- Added --search flag to kspec meta observations command in meta.ts\n- Uses grepItem from utils/grep.ts for regex pattern matching (consistent with kspec search behavior)\n- Added --observations-only flag to kspec search command\n- Added mutual exclusivity validation for scope-only flags (--items-only, --tasks-only, --observations-only)\n- 14 tests covering all 7 ACs:\n  - ac-search-flag: --search filters observations by pattern\n  - ac-regex-support: Pattern treated as regex (e.g., 'friction|success')\n  - ac-combined-filters: AND logic with --type and other filters\n  - ac-search-all-fields: grepItem searches all text fields\n  - ac-search-json: JSON output contains only matching observations\n  - ac-global-search-filter: --observations-only limits search to observations\n  - ac-only-flags-exclusive: Multiple scope flags produce error"
+    },
+    {
+      "task_ref": "01KHA83QK",
+      "task_title": "Implement Unified Cross-Reference Lookup",
+      "task_status": "completed",
+      "note_ulid": "01KHDV98",
+      "created_at": "2026-02-14T10:31:30.600Z",
+      "author": "@claude",
+      "content": "Implemented kspec refs command for unified cross-reference lookup:\n\n- New command file src/cli/commands/refs.ts\n- Scans tasks and spec items for all reference fields: spec_ref, depends_on, meta_ref, plan_ref, blocked_by, implements, relates_to, supersedes, traits, tests\n- Groups output by relationship type (e.g., 'Tasks (spec_ref)', 'Specs (depends_on)')\n- Supports --json flag with structured output containing keys per reference type\n- Uses ReferenceIndex that includes meta items (workflows, agents, etc.) for full reference resolution\n- Supports ULID, slug, and short ULID reference formats\n- Shows 'No references found' message for isolated items (exit code 0)\n\n14 tests covering all 12 ACs:\n- ac-task-spec-ref: Tasks with spec_ref pointing to target\n- ac-task-depends-on: Tasks with depends_on including target\n- ac-spec-depends-on: Specs with depends_on including target\n- ac-spec-implements: Specs with implements including target\n- ac-spec-relates-to: Specs with relates_to including target\n- ac-trait-references: Specs with traits including target\n- ac-meta-ref: Tasks with meta_ref pointing to target\n- ac-supersedes: Specs with supersedes pointing to target\n- ac-grouped-output: Section headers like 'Specs (depends on)'\n- ac-json-structured: JSON keys per reference type with proper structure\n- ac-no-refs: No references found message\n- ac-ref-resolution: ULID, slug, and short ULID formats"
+    },
+    {
+      "task_ref": "01KHA83Q6",
+      "task_title": "Implement Module-Scoped Item Listing",
+      "task_status": "completed",
+      "note_ulid": "01KHDT1H",
+      "created_at": "2026-02-14T10:09:49.237Z",
+      "author": "@claude",
+      "content": "Implemented --under flag for module-scoped item listing:\n\n- Added findDescendantItems() function in parser/items.ts that finds all items sharing the same _sourceFile with a _path prefix matching the parent\n- Updated item list command to accept --under <ref> option\n- Reference resolution with error handling for invalid/task references\n- Proper pagination handling (queries all items, then filters by scope, then applies limit)\n- Works with --tree flag for hierarchical display\n- Works with --count flag to show scoped subtree count\n- Combines with other filters using AND logic\n- JSON output includes all items in subtree\n\n12 tests covering all 8 ACs:\n- ac-under-filter: Only descendants shown\n- ac-under-root-included: Root item included\n- ac-nested-descendants: Multi-level nesting works\n- ac-under-with-tree: Tree display scoped correctly\n- ac-under-with-other-filters: AND logic with type/status filters\n- ac-under-json: Full item data in JSON\n- ac-under-invalid-ref: Error with suggestion message\n- ac-count-with-under: Count reflects scoped subtree"
+    },
+    {
+      "task_ref": "01KHA83PT",
+      "task_title": "Implement Output Format Option",
+      "task_status": "completed",
+      "note_ulid": "01KHDS2W",
+      "created_at": "2026-02-14T09:53:04.810Z",
+      "author": "@claude",
+      "content": "Implemented output format shorthands (--json, --yaml, --raw) as global options.\n\nNote: The --format <format> option cannot be global due to Commander.js limitations - when a parent command defines an option, it shadows child command options with the same name. The export command has its own --format option for different purposes (json, html), so global --format would conflict.\n\nImplementation:\n- Added setYamlMode(), isYamlMode(), isStructuredMode() to output.ts\n- Added YAML output support using the yaml library's stringify()\n- Updated output(), success(), error(), warn(), info() to support YAML format\n- Added --json, --yaml, --raw as global shorthands in index.ts preAction hook\n- Conflict detection for multiple format shorthands\n- 13 tests covering: JSON/YAML output, shorthands equivalence, conflict errors, global scope\n\nACs covered:\n- ac-format-json: --json produces valid JSON ✓\n- ac-format-yaml: --yaml produces valid YAML ✓\n- ac-json-shorthand: --json works globally ✓\n- ac-raw-shorthand: --raw = --json ✓\n- ac-yaml-shorthand: --yaml works globally ✓\n- ac-conflict-error: Multiple format shorthands error ✓\n- ac-yaml-no-ansi: YAML output has no ANSI codes ✓\n- ac-yaml-references: @ prefix preserved in YAML ✓\n- ac-global-scope: Works on item list, tasks ready, session start ✓\n- ac-unsupported-format: Not applicable (--format not global)"
+    },
+    {
+      "task_ref": "01KGVGVJ",
+      "task_title": "Filter superseded notes from default task display",
+      "task_status": "completed",
+      "note_ulid": "01KHDQVQ",
+      "created_at": "2026-02-14T09:31:41.069Z",
+      "author": "@claude",
+      "content": "Implemented note supersession filtering:\n- Added isNoteSuperseded(), filterSupersededNotes(), and annotateNotesWithSuperseded() helper functions in output.ts\n- Updated formatTaskDetails() to filter superseded notes by default, show hidden count message\n- Added --all flag to task get command to show full note history\n- JSON output always includes all notes with 'superseded' computed field\n- Updated session start to filter superseded notes from recent_notes\n- 7 tests covering: hiding superseded notes, --all flag, JSON output, multiple supersessions, session start filtering"
+    },
+    {
+      "task_ref": "01KHA83QZ",
+      "task_title": "Implement Observation Content Search",
+      "task_status": "pending_review",
+      "note_ulid": "01KHA83Q",
+      "created_at": "2026-02-13T00:58:43.571Z",
+      "author": "@claude",
+      "content": "Implementation notes:\n\nReuse the grep utility from src/utils/grep.ts that kspec search already\nuses. Add --search option to the meta observations subcommand in meta.ts.\nApply search filter after type/workflow/status filters. For the global\nsearch --observations-only flag, add a new filter option to search.ts\nalongside existing --items-only and --tasks-only flags. Make the scope-only\nflags mutually exclusive with a validation check before search execution.\n"
+    }
+  ],
+  "active_todos": [],
+  "ready_tasks": [
+    {
+      "ref": "01KHAP9E",
+      "title": "Add --tasks flag to ralph for explicit task scoping",
+      "priority": 3,
+      "spec_ref": "@cli-ralph",
+      "tags": []
+    },
+    {
+      "ref": "01KHAPA9",
+      "title": "Implement ralph wrap-up agent on loop exit",
+      "priority": 3,
+      "spec_ref": "@01KHAP9PZ2WEMV9PRV037MC5Y8",
+      "tags": []
+    }
+  ],
+  "blocked_tasks": [],
+  "recently_completed": [
+    {
+      "ref": "01KHA83QK",
+      "title": "Implement Unified Cross-Reference Lookup",
+      "completed_at": "2026-02-14T10:39:56.612Z",
+      "closed_reason": "Merged in PR #366. Implemented kspec refs command for unified cross-reference lookup:\n\n- New command file src/cli/commands/refs.ts\n- Scans tasks and spec items for all reference fields: spec_ref, depends_on, meta_ref, plan_ref, blocked_by, implements, relates_to, supersedes, traits, tests\n- Groups output by relationship type (e.g., 'Tasks (spec_ref)', 'Specs (depends_on)')\n- Supports --json flag with structured output\n- Uses ReferenceIndex for ULID, slug, and short ULID resolution\n- All 12 acceptance criteria covered by 14 tests"
+    },
+    {
+      "ref": "01KHA83Q6",
+      "title": "Implement Module-Scoped Item Listing",
+      "completed_at": "2026-02-14T10:19:09.277Z",
+      "closed_reason": "Merged in PR #365. Implemented --under flag for module-scoped item listing. Added findDescendantItems() function to find items by _path prefix within same source file. All 8 acceptance criteria have test coverage in tests/item-list-under.test.ts. Flag works with --tree, --count, --json, and combines with other filters using AND logic."
+    },
+    {
+      "ref": "01KHA83PT",
+      "title": "Implement Output Format Option",
+      "completed_at": "2026-02-14T10:02:05.615Z",
+      "closed_reason": "Merged in PR #364. Implemented output format shorthands (--json, --yaml, --raw) as global CLI options. Added YAML output support using the yaml library. Conflict detection for multiple format shorthands. 13 tests covering all ACs except ac-unsupported-format (not applicable since --format is not global due to Commander.js limitations with child command option shadowing)."
+    },
+    {
+      "ref": "01KGVGVJ",
+      "title": "Filter superseded notes from default task display",
+      "completed_at": "2026-02-14T09:39:48.173Z",
+      "closed_reason": "Merged in PR #363. Implemented note supersession filtering: superseded notes are hidden by default in task get output, added --all flag to show full history, JSON output includes 'superseded' computed field, session start also filters superseded notes. 7 tests added covering all scenarios."
+    },
+    {
+      "ref": "01KGGZKQ",
+      "title": "Add AC schema field validation to detect drift",
+      "completed_at": "2026-02-14T09:23:44.756Z",
+      "closed_reason": "Merged in PR #362. Added AC schema drift detection with checkACSchemaReferences() function that extracts field patterns from AC clauses and validates against SpecItem/Task schemas. Detects conceptual fields (children, parent) and ref strings incorrectly treated as objects. Added --drift flag to validate command. Includes 8 tests covering various drift scenarios."
+    },
+    {
+      "ref": "01KGGTYQ",
+      "title": "Cache scanTestCoverage() results for daemon performance",
+      "completed_at": "2026-02-14T09:05:53.346Z",
+      "closed_reason": "Merged in PR #361. Implemented TTL-based caching for scanTestCoverage() results with 60s expiration. Added coverage-cache.ts module with getCachedTestCoverage() and invalidateTestCoverageCache() functions, per-project caching for multi-directory daemon support, and parallel scan protection. Includes 11 tests covering caching, TTL expiration, invalidation, and multi-project scenarios."
+    },
+    {
+      "ref": "01KHAQCH",
+      "title": "Document fenced YAML requirement in plan import help and spec-plan skill",
+      "completed_at": "2026-02-14T08:53:09.925Z",
+      "closed_reason": "Merged in PR #360. Added fenced YAML requirement documentation to plan import --help text (new Format section) and spec-plan skill SKILL.md (Important callout). This improves discoverability of the required format for plan files."
+    },
+    {
+      "ref": "01KHAQC8",
+      "title": "Fix: plan import --update should update acceptance criteria on existing specs",
+      "completed_at": "2026-02-14T08:42:32.667Z",
+      "closed_reason": "Merged in PR #359. Implemented actual update logic for plan import --update flag. Previously the code had a placeholder 'Update logic would go here - for now, skip' with no implementation. Now updateSpecItem() is called with description, type, traits, and acceptance_criteria from the plan. Added 2 new tests verifying AC updates and trait updates work correctly. Addresses ac-26 of @plan-import spec."
+    },
+    {
+      "ref": "01KHARBW",
+      "title": "PR-review-merge fast-path for clean merges",
+      "completed_at": "2026-02-14T03:39:59.852Z",
+      "closed_reason": "Merged in PR #358. Added fast-path section to pr-review skill that skips the full workflow when PR is clean (CI green, no comments, no threads, no changes requested). This is a skill-level guidance change directing subagent behavior - no code implementation needed."
+    },
+    {
+      "ref": "01KHARBR",
+      "title": "Gate reflect phase on meaningful session work during ralph loop",
+      "completed_at": "2026-02-14T03:28:21.762Z",
+      "closed_reason": "Merged in PR #357. Added gating logic to the reflect skill's Loop Mode section - agent now checks session introspection data (recently_completed tasks, working_tree status, recent_commits) before starting reflection. If no meaningful session work detected, reflection is skipped to prevent wasted time on empty reflection runs."
+    }
+  ],
+  "recent_commits": [
+    {
+      "hash": "3fdfa58",
+      "full_hash": "3fdfa5809b932cbbaa43ef476f6d38f34598f125",
+      "date": "2026-02-14T10:39:44.000Z",
+      "message": "feat: add kspec refs command for unified cross-reference lookup (#366)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "9cb8301",
+      "full_hash": "9cb8301693b55ecdd913013545dced9f6df2ed86",
+      "date": "2026-02-14T10:32:09.000Z",
+      "message": "feat: add kspec refs command for unified cross-reference lookup",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0f9f896",
+      "full_hash": "0f9f8967115a9907db0475d7e5fb0bdc7c91ada3",
+      "date": "2026-02-14T10:19:01.000Z",
+      "message": "feat: add --under flag for module-scoped item listing (#365)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "c43bc6f",
+      "full_hash": "c43bc6fbc1a8b899ae01d4d86752d32a83a8d48e",
+      "date": "2026-02-14T10:10:16.000Z",
+      "message": "feat: add --under flag for module-scoped item listing",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "15bce30",
+      "full_hash": "15bce30d70e094344154d2bdd7007fbed8bb2526",
+      "date": "2026-02-14T10:01:56.000Z",
+      "message": "feat: add output format shorthands (--json, --yaml, --raw) (#364)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "ed32586",
+      "full_hash": "ed3258643deefe08127a529bcb5d14a9d1a581b5",
+      "date": "2026-02-14T09:53:22.000Z",
+      "message": "feat: add output format shorthands (--json, --yaml, --raw)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "a75bad0",
+      "full_hash": "a75bad0eb22e2412d59117c12d9697596b8366f5",
+      "date": "2026-02-14T09:39:35.000Z",
+      "message": "feat: filter superseded notes from default task display (#363)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "bcdcd19",
+      "full_hash": "bcdcd19c475c762fb0012296e2e98ad6abfdb07d",
+      "date": "2026-02-14T09:31:59.000Z",
+      "message": "feat: filter superseded notes from default task display",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "14c8aad",
+      "full_hash": "14c8aad02301bcd8e90f36bf7a08724650819aaf",
+      "date": "2026-02-14T09:23:36.000Z",
+      "message": "feat: add AC schema field validation to detect drift (#362)",
+      "author": "Jacob Chapel"
+    },
+    {
+      "hash": "0b5ae56",
+      "full_hash": "0b5ae5621b368e4e90a2e759b15e830e7080a678",
+      "date": "2026-02-14T09:14:43.000Z",
+      "message": "feat: add AC schema field validation to detect drift",
+      "author": "Jacob Chapel"
+    }
+  ],
+  "working_tree": {
+    "clean": true,
+    "staged": [],
+    "unstaged": [],
+    "untracked": []
+  },
+  "inbox_items": [
+    {
+      "ref": "01KFH76C",
+      "text": "Cross-feature requirement pattern: How to express that core features (search, validate, export) must support all entity types. When new entity type added, should automatically imply tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover inbox.",
+      "created_at": "2026-01-21T21:25:59.163Z",
+      "tags": [
+        "design",
+        "spec-model",
+        "meta"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFHJNZ",
+      "text": "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive, helps find already-instrumented code.",
+      "created_at": "2026-01-22T00:46:44.345Z",
+      "tags": [
+        "dx",
+        "tooling",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFPDCY",
+      "text": "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where needed, focus on CLI commands and daemon lifecycle.",
+      "created_at": "2026-01-23T21:50:37.263Z",
+      "tags": [
+        "ci",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFQ517",
+      "text": "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach conflicts with existing daemons. Should use high ephemeral port range and improve cleanup mechanism.",
+      "created_at": "2026-01-24T04:43:39.058Z",
+      "tags": [
+        "e2e",
+        "testing",
+        "reflection"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KFYAHF",
+      "text": "E2E test dev mode - configure Playwright to work with vite dev server instead of requiring full build for faster test iteration (12+ seconds to 1-2 seconds)",
+      "created_at": "2026-01-26T23:34:35.746Z",
+      "tags": [
+        "e2e",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGG6GY",
+      "text": "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to auto-group, (3) implementation_phases field in specs, (4) derive templates for common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI coding assistants.",
+      "created_at": "2026-02-02T22:10:44.331Z",
+      "tags": [],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGEMM",
+      "text": "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D.",
+      "created_at": "2026-02-03T00:32:32.926Z",
+      "tags": [
+        "daemon",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGF4Y",
+      "text": "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable separate repo for specs), feature toggles, default values (author, priority), validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs. Consolidated from @01KFGVVJ, @01KFGVVN.",
+      "created_at": "2026-02-03T00:41:28.272Z",
+      "tags": [
+        "feature",
+        "config",
+        "dx",
+        "deferred"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGFB2",
+      "text": "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6.",
+      "created_at": "2026-02-03T00:44:48.658Z",
+      "tags": [
+        "cli",
+        "testing",
+        "dx"
+      ],
+      "added_by": "@claude"
+    },
+    {
+      "ref": "01KGGG0K",
+      "text": "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4.",
+      "created_at": "2026-02-03T00:56:34.557Z",
+      "tags": [
+        "shadow",
+        "dx",
+        "cli"
+      ],
+      "added_by": "@claude"
+    }
+  ],
+  "stats": {
+    "total_tasks": 482,
+    "in_progress": 0,
+    "pending_review": 1,
+    "ready": 11,
+    "blocked": 0,
+    "completed": 454,
+    "inbox_items": 30
+  }
+}
