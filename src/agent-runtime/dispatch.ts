@@ -564,8 +564,8 @@ export class DispatchEngine {
           queue.unshift(entry);
           break;
         }
-        this._spawnInvocation(agent, entry);
-        slots--;
+        const spawned = this._spawnInvocation(agent, entry);
+        if (spawned) slots--;
       }
 
       this.queues.set(agent.id, queue);
@@ -574,9 +574,10 @@ export class DispatchEngine {
 
   /**
    * Spawn a single invocation for a queue entry.
+   * Returns true if an invocation was actually started, false if skipped.
    * AC: @agent-dispatch-engine ac-9, ac-10, ac-11, ac-12
    */
-  private _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): void {
+  private _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): boolean {
     const agentId = agent.id;
 
     // Increment active count
@@ -600,7 +601,7 @@ export class DispatchEngine {
           `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
         ], { cwd: this.cwd });
       }
-      return;
+      return false;
     }
 
     // AC: @agent-dispatch-engine ac-11 - Create abort controller for graceful cancellation
@@ -693,5 +694,6 @@ export class DispatchEngine {
       });
 
     this.runningInvocations.add(invocationPromise);
+    return true;
   }
 }

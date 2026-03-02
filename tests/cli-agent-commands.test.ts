@@ -337,6 +337,121 @@ describe("trait-filterable-list ac-1: kspec agent list --status filter", () => {
   });
 });
 
+// ─── @trait-filterable-list ac-2/3/4/5/7: tag, pagination, AND logic, summary ─
+
+// AC: @trait-filterable-list ac-2
+// AC: @trait-filterable-list ac-3
+// AC: @trait-filterable-list ac-4
+// AC: @trait-filterable-list ac-5
+// AC: @trait-filterable-list ac-7
+describe("trait-filterable-list ac-2/3/4/5/7: kspec agent list filters and pagination", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-filter-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  function writeProject(agents: object[]): void {
+    const fs_sync = require("node:fs");
+    const path_sync = require("node:path");
+    initGitRepo(testDir);
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({ kynetic_meta: "1.0", agents }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+  }
+
+  it("should filter by --tag and show only matching agents", () => {
+    writeProject([
+      { _ulid: testUlid("AGNT"), id: "cli-worker", name: "CLI Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, tags: ["cli", "infra"] },
+      { _ulid: testUlid("AGNT", 2), id: "review-worker", name: "Review Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, tags: ["review"] },
+      { _ulid: testUlid("AGNT", 3), id: "no-tags-worker", name: "No Tags Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+    ]);
+
+    // AC: @trait-filterable-list ac-2 - tag filter shows only matching agents
+    const result = kspec("agent list --tag cli", testDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("cli-worker");
+    expect(result.stdout).not.toContain("review-worker");
+    expect(result.stdout).not.toContain("no-tags-worker");
+  });
+
+  it("should limit results to --limit N agents", () => {
+    writeProject([
+      { _ulid: testUlid("AGNT"), id: "agent-a", name: "Agent A", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      { _ulid: testUlid("AGNT", 2), id: "agent-b", name: "Agent B", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      { _ulid: testUlid("AGNT", 3), id: "agent-c", name: "Agent C", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+    ]);
+
+    // AC: @trait-filterable-list ac-3 - limit returns at most N results
+    const result = kspec("agent list --limit 2 --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items.length).toBeLessThanOrEqual(2);
+    expect(data.total).toBe(3);
+  });
+
+  it("should skip first N agents with --offset", () => {
+    writeProject([
+      { _ulid: testUlid("AGNT"), id: "first-agent", name: "First Agent", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      { _ulid: testUlid("AGNT", 2), id: "second-agent", name: "Second Agent", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+      { _ulid: testUlid("AGNT", 3), id: "third-agent", name: "Third Agent", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false },
+    ]);
+
+    // AC: @trait-filterable-list ac-4 - offset skips first N results
+    const result = kspec("agent list --offset 1 --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.items.length).toBe(2);
+    expect(data.offset).toBe(1);
+    expect(data.items.map((i: { id: string }) => i.id)).not.toContain("first-agent");
+  });
+
+  it("should apply --status and --tag as AND logic (both must match)", () => {
+    writeProject([
+      { _ulid: testUlid("AGNT"), id: "eligible-cli", name: "Eligible CLI", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, automation: "eligible", tags: ["cli"] },
+      { _ulid: testUlid("AGNT", 2), id: "eligible-review", name: "Eligible Review", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, automation: "eligible", tags: ["review"] },
+      { _ulid: testUlid("AGNT", 3), id: "ineligible-cli", name: "Ineligible CLI", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, tags: ["cli"] },
+    ]);
+
+    // AC: @trait-filterable-list ac-5 - multiple filters are AND logic
+    const result = kspec("agent list --status eligible --tag cli", testDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("eligible-cli");
+    expect(result.stdout).not.toContain("eligible-review");
+    expect(result.stdout).not.toContain("ineligible-cli");
+  });
+
+  it("should include filter state in summary line when filters are active", () => {
+    writeProject([
+      { _ulid: testUlid("AGNT"), id: "eligible-worker", name: "Eligible Worker", dispatch: [], concurrency: { max_concurrent: 1 }, adapter: "claude-agent-acp", auto_approve: false, automation: "eligible" },
+    ]);
+
+    // AC: @trait-filterable-list ac-7 - summary shows total and filter state
+    const result = kspec("agent list --status eligible", testDir);
+
+    expect(result.exitCode).toBe(0);
+    // Summary line must describe the active filter
+    expect(result.stdout).toMatch(/status=eligible/i);
+  });
+});
+
 // ─── AC-7: Override flags ─────────────────────────────────────────────────────
 
 // AC: @cli-agent-commands ac-7
@@ -980,13 +1095,13 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
 // AC: @trait-error-guidance ac-5 — N/A: agent commands don't have field validation errors shown to user
 // AC: @trait-error-guidance ac-6 — N/A: agent commands don't support JSON error mode (no --json on error paths)
 
-// AC: @trait-filterable-list ac-1 — covered in "trait-filterable-list ac-1: kspec agent list --status filter" (filters by automation field)
-// AC: @trait-filterable-list ac-2 — implemented in agent.ts, covered by filter param parsing
-// AC: @trait-filterable-list ac-3 — implemented via --limit option
-// AC: @trait-filterable-list ac-4 — implemented via --offset option
-// AC: @trait-filterable-list ac-5 — implemented (multiple filters are AND logic)
+// AC: @trait-filterable-list ac-1 — covered in "trait-filterable-list ac-1: kspec agent list --status filter"
+// AC: @trait-filterable-list ac-2 — covered in "trait-filterable-list ac-2/3/4/5/7: --tag filter" test
+// AC: @trait-filterable-list ac-3 — covered in "trait-filterable-list ac-2/3/4/5/7: --limit" test
+// AC: @trait-filterable-list ac-4 — covered in "trait-filterable-list ac-2/3/4/5/7: --offset" test
+// AC: @trait-filterable-list ac-5 — covered in "trait-filterable-list ac-2/3/4/5/7: AND logic" test
 // AC: @trait-filterable-list ac-6 — verified: empty list test shows informative message
-// AC: @trait-filterable-list ac-7 — implemented: summary line shows total and filter state
+// AC: @trait-filterable-list ac-7 — covered in "trait-filterable-list ac-2/3/4/5/7: summary" test
 
 // AC: @trait-dry-run ac-4 — N/A for agent run --dry-run: no mutations attempted in dry-run mode
 // AC: @trait-dry-run ac-5 — N/A for agent run: --dry-run --force combination not supported
