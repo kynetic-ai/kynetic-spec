@@ -144,6 +144,19 @@ interface ActiveInvocationRecord {
 type DedupKey = `${string}:${string}:${string}`;
 
 /**
+ * Invocation lifecycle event payload.
+ * AC: @daemon-agent-dispatch ac-3, ac-4
+ */
+export interface InvocationEvent {
+  type: "started" | "completed" | "failed";
+  session_id: string;
+  agent_id: string;
+  task_id: string | undefined;
+  status: "started" | "completed" | "failed";
+  timestamp: number;
+}
+
+/**
  * Options for creating a DispatchEngine.
  */
 export interface DispatchEngineOptions {
@@ -160,6 +173,11 @@ export interface DispatchEngineOptions {
   dedupWindowMs?: number;
   /** Path to kspec CLI binary (for task notes) */
   kspecCliPath?: string;
+  /**
+   * Optional callback invoked on invocation lifecycle events (start, complete, fail).
+   * AC: @daemon-agent-dispatch ac-3, ac-4
+   */
+  onInvocationEvent?: (event: InvocationEvent) => void;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -181,6 +199,7 @@ export class DispatchEngine {
   private cwd: string;
   private dedupWindowMs: number;
   private kspecCliPath?: string;
+  private onInvocationEvent?: (event: InvocationEvent) => void;
 
   /** Queue of pending dispatch entries, per agent id */
   private queues: Map<string, QueueEntry[]> = new Map();
@@ -207,6 +226,7 @@ export class DispatchEngine {
     this.cwd = options.cwd ?? options.projectDir;
     this.dedupWindowMs = options.dedupWindowMs ?? 2000;
     this.kspecCliPath = options.kspecCliPath;
+    this.onInvocationEvent = options.onInvocationEvent;
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
@@ -624,6 +644,16 @@ export class DispatchEngine {
     };
     this.activeInvocationDetails.set(invocationId, trackingRecord);
 
+    // AC: @daemon-agent-dispatch ac-3, ac-4 - Emit started event
+    this.onInvocationEvent?.({
+      type: "started",
+      session_id: preSessionId,
+      agent_id: agentId,
+      task_id: entry.change.taskRef,
+      status: "started",
+      timestamp: Date.now(),
+    });
+
     const options: InvocationOptions = {
       agent,
       specDir: this.specDir,
@@ -644,6 +674,15 @@ export class DispatchEngine {
           await runInvocation(options);
           // Reset retry count on success
           entry.retryCount = 0;
+          // AC: @daemon-agent-dispatch ac-3, ac-4 - Emit completed event
+          this.onInvocationEvent?.({
+            type: "completed",
+            session_id: preSessionId,
+            agent_id: agentId,
+            task_id: entry.change.taskRef,
+            status: "completed",
+            timestamp: Date.now(),
+          });
         } catch (err) {
           const retryLimit = agent.budget?.max_tasks ?? 3;
           if (entry.retryCount < retryLimit) {
@@ -674,6 +713,15 @@ export class DispatchEngine {
               `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
               err,
             );
+            // AC: @daemon-agent-dispatch ac-3, ac-4 - Emit failed event when retry limit exceeded
+            this.onInvocationEvent?.({
+              type: "failed",
+              session_id: preSessionId,
+              agent_id: agentId,
+              task_id: entry.change.taskRef,
+              status: "failed",
+              timestamp: Date.now(),
+            });
           }
         }
       })

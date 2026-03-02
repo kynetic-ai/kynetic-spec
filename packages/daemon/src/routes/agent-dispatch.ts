@@ -2,19 +2,29 @@
  * Agent Dispatch API Routes
  *
  * REST endpoints for agent dispatch engine management:
- * - POST /api/agent/dispatch/start  - Start the dispatch engine
- * - POST /api/agent/dispatch/stop   - Stop the dispatch engine
- * - GET  /api/agent/dispatch/status - Get dispatch engine status
- * - POST /api/agent/event           - Post a task state change event
+ * - POST /api/agent/dispatch/start  - Start the dispatch engine (legacy)
+ * - POST /api/agent/dispatch/stop   - Stop the dispatch engine (legacy)
+ * - GET  /api/agent/dispatch/status - Get dispatch engine status (internal format)
+ * - POST /api/agent/dispatch        - Unified start/stop via action field
+ * - GET  /api/agent/status          - Public status with dispatch_enabled, active_invocations, queue_depth, agent_definitions
+ * - POST /api/agent/events          - Post a task state change event (from CLI)
+ * - POST /api/agent/event           - Alias for /api/agent/events (legacy)
  *
  * AC Coverage:
+ * - @daemon-agent-dispatch ac-2: CLI posts state change event to POST /api/agent/events
+ * - @daemon-agent-dispatch ac-3, ac-4: WebSocket broadcast on invocation start/complete/fail
+ * - @daemon-agent-dispatch ac-5: GET /api/agent/status returns public status shape
+ * - @daemon-agent-dispatch ac-6: POST /api/agent/dispatch with action start|stop
+ * - @daemon-agent-dispatch ac-7: Event emission fails silently when engine not running
  * - @agent-dispatch-engine ac-4: CLI posts state change event to daemon
  */
 
 import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../../agent-runtime/dispatch.js';
-import type { TaskStateChange, TaskStatus } from '../../../agent-runtime/dispatch.js';
+import type { TaskStateChange, TaskStatus, InvocationEvent } from '../../../agent-runtime/dispatch.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../../agent-runtime/invocation.js';
+import { initContext, loadMetaContext } from '../../../parser/index.js';
+import type { PubSubManager } from '../websocket/pubsub.js';
 
 const VALID_TASK_STATUSES = new Set<string>([
   "pending", "in_progress", "pending_review", "needs_work", "blocked", "completed", "cancelled",
@@ -25,50 +35,124 @@ const engines: Map<string, DispatchEngine> = new Map();
 
 export interface AgentDispatchRouteOptions {
   defaultProjectPath?: string;
+  /** PubSubManager for broadcasting agent invocation events to WebSocket clients */
+  pubsub?: PubSubManager;
+}
+
+/**
+ * Create a new dispatch engine with optional WebSocket broadcast wiring.
+ * AC: @daemon-agent-dispatch ac-3, ac-4
+ */
+function createEngine(projectDir: string, pubsub?: PubSubManager): DispatchEngine {
+  return new DispatchEngine({
+    projectDir,
+    kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    onInvocationEvent: pubsub
+      ? (event: InvocationEvent) => {
+          pubsub.broadcast('agents', 'agent_invocation', {
+            session_id: event.session_id,
+            agent_id: event.agent_id,
+            task_id: event.task_id ?? null,
+            status: event.status,
+            timestamp: event.timestamp,
+          }, projectDir);
+        }
+      : undefined,
+  });
+}
+
+const stateChangeBodySchema = t.Object({
+  task_id: t.String(),
+  task_ref: t.Optional(t.String()),
+  from_status: t.String(),
+  to_status: t.String(),
+  timestamp: t.Optional(t.Number()),
+});
+
+type StateChangeBody = {
+  task_id: string;
+  task_ref?: string;
+  from_status: string;
+  to_status: string;
+  timestamp?: number;
+};
+
+function processStateChangeEvent(
+  engine: DispatchEngine | undefined,
+  body: StateChangeBody,
+): { accepted: boolean; reason?: string } {
+  if (!engine || !engine.getStatus().running) {
+    return { accepted: false, reason: 'Dispatch engine not running' };
+  }
+
+  if (!VALID_TASK_STATUSES.has(body.from_status) || !VALID_TASK_STATUSES.has(body.to_status)) {
+    return { accepted: false, reason: `Invalid status: from_status="${body.from_status}" to_status="${body.to_status}". Valid values: ${[...VALID_TASK_STATUSES].join(", ")}` };
+  }
+
+  const change: TaskStateChange = {
+    taskId: body.task_id,
+    taskRef: body.task_ref ?? `@${body.task_id}`,
+    fromStatus: body.from_status as TaskStatus,
+    toStatus: body.to_status as TaskStatus,
+    timestamp: body.timestamp ?? Date.now(),
+  };
+
+  engine.handleStateChange(change).catch((err) => {
+    console.error('[dispatch] Error handling state change event:', err);
+  });
+
+  return { accepted: true };
 }
 
 export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {}) {
+  const { pubsub } = options;
+
   return new Elysia({ prefix: '/api/agent' })
 
-    // AC: @agent-dispatch-engine ac-4 - CLI posts state change event to daemon
-    .post('/event', async ({ body, projectContext }) => {
+    // AC: @daemon-agent-dispatch ac-2, ac-7 - CLI posts state change event to daemon
+    // AC: @agent-dispatch-engine ac-4
+    .post('/events', ({ body, projectContext }) => {
+      return processStateChangeEvent(engines.get(projectContext.path), body);
+    }, { body: stateChangeBodySchema })
+
+    // Legacy alias — same as /events
+    .post('/event', ({ body, projectContext }) => {
+      return processStateChangeEvent(engines.get(projectContext.path), body);
+    }, { body: stateChangeBodySchema })
+
+    // AC: @daemon-agent-dispatch ac-6 - Unified dispatch start/stop via action field
+    .post('/dispatch', async ({ body, projectContext }) => {
       const projectDir = projectContext.path;
-      const engine = engines.get(projectDir);
 
-      if (!engine || !engine.getStatus().running) {
-        return { accepted: false, reason: 'Dispatch engine not running' };
+      if (body.action === 'start') {
+        let engine = engines.get(projectDir);
+        if (engine?.getStatus().running) {
+          return { dispatch_enabled: true, reason: 'Already running' };
+        }
+
+        engine = createEngine(projectDir, pubsub);
+        engines.set(projectDir, engine);
+        await engine.start();
+
+        return { dispatch_enabled: true };
+      } else {
+        const engine = engines.get(projectDir);
+        if (!engine) {
+          return { dispatch_enabled: false, reason: 'No engine running' };
+        }
+
+        await engine.stop();
+        engines.delete(projectDir);
+
+        return { dispatch_enabled: false };
       }
-
-      // Validate status values before casting
-      if (!VALID_TASK_STATUSES.has(body.from_status) || !VALID_TASK_STATUSES.has(body.to_status)) {
-        return { accepted: false, reason: `Invalid status: from_status="${body.from_status}" to_status="${body.to_status}". Valid values: ${[...VALID_TASK_STATUSES].join(", ")}` };
-      }
-
-      const change: TaskStateChange = {
-        taskId: body.task_id,
-        taskRef: body.task_ref ?? `@${body.task_id}`,
-        fromStatus: body.from_status as TaskStatus,
-        toStatus: body.to_status as TaskStatus,
-        timestamp: body.timestamp ?? Date.now(),
-      };
-
-      // Process asynchronously — don't block the HTTP response
-      engine.handleStateChange(change).catch((err) => {
-        console.error('[dispatch] Error handling state change event:', err);
-      });
-
-      return { accepted: true };
     }, {
       body: t.Object({
-        task_id: t.String(),
-        task_ref: t.Optional(t.String()),
-        from_status: t.String(),
-        to_status: t.String(),
-        timestamp: t.Optional(t.Number()),
+        action: t.Union([t.Literal('start'), t.Literal('stop')]),
       }),
     })
 
-    // Start dispatch engine
+    // Start dispatch engine (legacy route)
     .post('/dispatch/start', async ({ projectContext }) => {
       const projectDir = projectContext.path;
 
@@ -78,7 +162,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       }
 
       // AC: @agent-dispatch-engine ac-10 - pass kspecCliPath so task notes work from daemon-started engine
-      engine = new DispatchEngine({ projectDir, kspecCliPath: DEFAULT_KSPEC_CLI_PATH });
+      engine = createEngine(projectDir, pubsub);
       engines.set(projectDir, engine);
 
       await engine.start();
@@ -86,7 +170,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       return { started: true, status: engine.getStatus() };
     })
 
-    // Stop dispatch engine
+    // Stop dispatch engine (legacy route)
     .post('/dispatch/stop', async ({ projectContext }) => {
       const projectDir = projectContext.path;
       const engine = engines.get(projectDir);
@@ -101,10 +185,9 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       return { stopped: true };
     })
 
-    // Get dispatch engine status
-    .get('/dispatch/status', async ({ projectContext }) => {
-      const projectDir = projectContext.path;
-      const engine = engines.get(projectDir);
+    // Get dispatch engine status (internal format)
+    .get('/dispatch/status', ({ projectContext }) => {
+      const engine = engines.get(projectContext.path);
 
       if (!engine) {
         return {
@@ -116,6 +199,37 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       }
 
       return engine.getStatus();
+    })
+
+    // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
+    .get('/status', async ({ projectContext }) => {
+      const projectDir = projectContext.path;
+      const engineStatus = engines.get(projectDir)?.getStatus();
+
+      let agentDefinitions: Array<{ id: string; name: string; adapter: string }> = [];
+      try {
+        const ctx = await initContext(projectDir);
+        const meta = await loadMetaContext(ctx);
+        agentDefinitions = meta.agents.map((a) => ({
+          id: a.id,
+          name: a.name,
+          adapter: a.adapter ?? 'claude-agent-acp',
+        }));
+      } catch {
+        // Agent definitions unavailable — return empty array
+      }
+
+      return {
+        dispatch_enabled: engineStatus?.running ?? false,
+        active_invocations: engineStatus?.invocations?.map((inv) => ({
+          session_id: inv.sessionId,
+          agent_id: inv.agentId,
+          task_ref: inv.taskRef ?? null,
+          elapsed_ms: inv.elapsedMs,
+        })) ?? [],
+        queue_depth: engineStatus?.queuedInvocations ?? 0,
+        agent_definitions: agentDefinitions,
+      };
     });
 }
 

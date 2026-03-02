@@ -226,7 +226,8 @@ export async function createServer(options: ServerOptions) {
     .use(createProjectsRoutes({ projectManager: projectContextManager }))
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
-    .use(createAgentDispatchRoutes())
+    // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
+    .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {

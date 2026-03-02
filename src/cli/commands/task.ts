@@ -48,6 +48,52 @@ import {
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
 import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
+import { PidFileManager } from "../pid-utils.js";
+
+/**
+ * Post a task state change event to the daemon dispatch engine.
+ * Fails silently — dispatch requires a running daemon; if absent, this is a no-op.
+ * AC: @daemon-agent-dispatch ac-2, ac-7
+ */
+async function postDispatchEvent(opts: {
+  taskId: string;
+  taskRef: string;
+  fromStatus: string;
+  toStatus: string;
+  projectPath?: string;
+}): Promise<void> {
+  const pidManager = new PidFileManager();
+  if (!pidManager.isDaemonRunning()) return;
+
+  let port: number;
+  try {
+    port = pidManager.readPort();
+  } catch {
+    return; // Daemon running but port unreadable — silent fail
+  }
+
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (opts.projectPath) {
+    headers['X-Kspec-Dir'] = opts.projectPath;
+  }
+
+  try {
+    await fetch(`http://localhost:${port}/api/agent/events`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        task_id: opts.taskId,
+        task_ref: opts.taskRef,
+        from_status: opts.fromStatus,
+        to_status: opts.toStatus,
+        timestamp: Date.now(),
+      }),
+      signal: AbortSignal.timeout(1000), // 1s timeout — fire-and-forget
+    });
+  } catch {
+    // Silent fail — daemon unreachable or dispatch engine not running
+  }
+}
 
 /**
  * Find a task by reference with detailed error reporting.
@@ -1172,6 +1218,15 @@ Examples:
           await incrementBudget(ctx.specDir, sessionId);
         }
 
+        // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
+        postDispatchEvent({
+          taskId: updatedTask._ulid,
+          taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
+          fromStatus: foundTask.status,
+          toStatus: updatedTask.status,
+          projectPath: ctx.rootDir,
+        });
+
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, {
           task: updatedTask,
         });
@@ -1400,6 +1455,15 @@ Examples:
                 options.reason,
               );
 
+              // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
+              postDispatchEvent({
+                taskId: updatedTask._ulid,
+                taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
+                fromStatus: foundTask.status,
+                toStatus: updatedTask.status,
+                projectPath: ctx.rootDir,
+              });
+
               // Sync spec implementation status (unless --no-sync)
               if (options.sync !== false && foundTask.spec_ref) {
                 const updatedTasks = tasks.map((t) =>
@@ -1522,6 +1586,16 @@ Examples:
           "task-submit",
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
+
+        // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
+        postDispatchEvent({
+          taskId: updatedTask._ulid,
+          taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
+          fromStatus: foundTask.status,
+          toStatus: updatedTask.status,
+          projectPath: ctx.rootDir,
+        });
+
         success(
           `Submitted task for review: ${index.shortUlid(updatedTask._ulid)}`,
           { task: updatedTask },
@@ -1578,6 +1652,16 @@ Examples:
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
           `cycle ${cycleNumber}`,
         );
+
+        // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
+        postDispatchEvent({
+          taskId: updatedTask._ulid,
+          taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
+          fromStatus: foundTask.status,
+          toStatus: updatedTask.status,
+          projectPath: ctx.rootDir,
+        });
+
         success(
           `Kicked back task: ${index.shortUlid(updatedTask._ulid)} (fix cycle ${cycleNumber})`,
           { task: updatedTask },
@@ -1620,6 +1704,16 @@ Examples:
           "task-block",
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
+
+        // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
+        postDispatchEvent({
+          taskId: updatedTask._ulid,
+          taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
+          fromStatus: foundTask.status,
+          toStatus: updatedTask.status,
+          projectPath: ctx.rootDir,
+        });
+
         success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, {
           task: updatedTask,
         });
@@ -1659,6 +1753,16 @@ Examples:
           "task-unblock",
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
+
+        // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
+        postDispatchEvent({
+          taskId: updatedTask._ulid,
+          taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
+          fromStatus: foundTask.status,
+          toStatus: updatedTask.status,
+          projectPath: ctx.rootDir,
+        });
+
         success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, {
           task: updatedTask,
         });
