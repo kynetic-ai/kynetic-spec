@@ -10445,7 +10445,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KJQT7RA3ZEPTQXV20R15WXFR
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
-    status: active
+    status: completed
     current_step: 1
     total_steps: 10
     started_at: 2026-03-02T17:41:18.787Z
@@ -10459,6 +10459,7 @@ runs:
         started_at: 2026-03-02T17:41:28.772Z
         completed_at: 2026-03-02T17:41:28.772Z
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-02T17:48:43.315Z
   - _ulid: 01KJQTEPT04DXMB2ST78VKDZEC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
