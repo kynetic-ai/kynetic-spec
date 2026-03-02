@@ -10279,6 +10279,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-02T06:18:06.230Z
+    completed_at: 2026-03-02T06:20:27.942Z
     step_results:
       - step_index: 0
         status: completed
@@ -10321,12 +10322,19 @@ runs:
         notes: "Captured 2 observations: 1 success (PR base OID diagnostic command), 1 friction (stale base
           masquerades as scope problem). Both via kspec batch."
     initiated_by: "@claude"
-    completed_at: 2026-03-02T06:20:27.942Z
   - _ulid: 01KJPK5K1Z9KWWVVPYW6VQJYN7
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
     current_step: 0
     total_steps: 10
     started_at: 2026-03-02T06:18:33.407Z
+    step_results: []
+    initiated_by: Jacob Chapel
+  - _ulid: 01KJQM23BZCFMCV0KRXMYTKS07
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-02T15:53:22.047Z
     step_results: []
     initiated_by: Jacob Chapel
