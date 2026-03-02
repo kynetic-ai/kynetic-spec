@@ -69616,6 +69616,11 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #630. Implemented Agent Definition Schema extensions in AgentSchema and
+    meta CLI add/set/delete pathways (adapter, dispatch, skills, budget, concurrency, auto_approve
+    defaults) with integration coverage for all 11 own ACs plus inherited trait AC coverage/N-A
+    annotations. Full local npm test and CI checks passed on merge commit
+    e76b70c7e7dbf39dd06759eb2ef5771fab653a13."
   depends_on: []
   context: []
   priority: 3
@@ -69625,6 +69630,7 @@
   created_at: 2026-03-02T01:22:20.391Z
   started_at: 2026-03-02T05:40:56.301Z
   submitted_at: 2026-03-02T05:40:57.568Z
+  completed_at: 2026-03-02T05:52:20.746Z
   notes:
     - _ulid: 01KJP276K70GRHAEJZJ3166E31
       created_at: 2026-03-02T01:22:20.391Z
@@ -69679,12 +69685,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-02T05:52:20.746Z
-  closed_reason: "Merged in PR #630. Implemented Agent Definition Schema extensions in AgentSchema and
-    meta CLI add/set/delete pathways (adapter, dispatch, skills, budget, concurrency, auto_approve
-    defaults) with integration coverage for all 11 own ACs plus inherited trait AC coverage/N-A
-    annotations. Full local npm test and CI checks passed on merge commit
-    e76b70c7e7dbf39dd06759eb2ef5771fab653a13."
 - _ulid: 01KJP276YTPF94VNY0AVCXXH90
   slugs:
     - implement-session-model-evolution
@@ -69692,14 +69692,14 @@
   type: task
   spec_ref: "@session-model-evolution"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
+  session_id: null
   created_at: 2026-03-02T01:22:20.762Z
   started_at: 2026-03-02T05:42:24.768Z
   submitted_at: 2026-03-02T05:42:25.995Z
@@ -69781,6 +69781,14 @@
 
         3. Test updated to assert materialized defaults (trigger='legacy', agent_id='ralph') instead
         of undefined.
+      supersedes: null
+    - _ulid: 01KJPJ48CKYCJJ1JG5CB911SX5
+      created_at: 2026-03-02T06:00:21.139Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #631 still includes @agent-definition-schema
+        scope changes (see inline comment on src/schema/meta.ts) and check-unresolved-comments is
+        failing due unresolved review threads. Keep this PR scoped to @session-model-evolution only,
+        resolve threads, then resubmit."
       supersedes: null
   todos: []
   automation: eligible
