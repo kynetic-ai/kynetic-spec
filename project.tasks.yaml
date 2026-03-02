@@ -69807,6 +69807,64 @@
       created_at: 2026-03-02T01:22:22.683Z
       author: "@claude"
       content: See plan @plan-reactive-agent-runtime for implementation notes
+    - _ulid: 01KJP2JKPYGHGRTT0T7G4E8V2N
+      created_at: 2026-03-02T01:28:34.270Z
+      author: "@claude"
+      content: >-
+        Implementation context:
+
+
+        ## Files to Delete
+
+        - src/cli/commands/ralph.ts (~2257 lines)
+
+        - src/ralph/ directory (subagent.ts, wrap-up.ts, prompts.ts, context.ts, etc.)
+
+        - tests/ralph.test.ts, tests/ralph-loop-errors.test.ts, tests/ralph-wrap-up.test.ts,
+        tests/ralph-context-refresh.test.ts
+
+
+        ## Files to Update
+
+        - Workflow definitions in .kspec/kynetic.meta.yaml: task-work-loop, pr-review-loop,
+        session-reflect-loop
+
+        - Skills: templates/skills/task-work/SKILL.md, .kspec/skills/codex/SKILL.md,
+        .kspec/skills/eval-agents/SKILL.md, .kspec/skills/pr-review/SKILL.md
+
+        - Agent instruction template: templates/agents-sections/06-ralph-loop.md → replace with
+        agent dispatch section
+
+        - kspec-agents.md (regenerate via kspec agents generate after template changes)
+
+
+        ## Files to Create
+
+        - Default agent definitions in kspec setup (worker + reviewer with standard dispatch rules)
+
+        - Deprecation stub: kspec ralph command that shows migration error message
+
+        - Replacement tests for agent runtime covering dispatch, invocation lifecycle, CLI commands
+
+
+        ## Migration Checklist (in order)
+
+        1. Create deprecation stub for kspec ralph (error with migration instructions)
+
+        2. Create built-in worker + reviewer agent definitions in kspec setup
+
+        3. Update workflow definitions to reference agent dispatch concepts
+
+        4. Update skill files to reference kspec agent commands
+
+        5. Replace 06-ralph-loop.md template with agent dispatch section
+
+        6. Replace ralph tests with agent runtime tests
+
+        7. Delete src/cli/commands/ralph.ts and src/ralph/
+
+        8. Regenerate kspec-agents.md
+      supersedes: null
   todos: []
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
