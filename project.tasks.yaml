@@ -70029,7 +70029,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70037,7 +70037,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQT6EXAE3K8FTB2GW2ECCYF
+  session_id: null
   created_at: 2026-03-02T01:22:21.575Z
   started_at: 2026-03-02T19:08:06.052Z
   submitted_at: 2026-03-02T19:08:16.195Z
@@ -70155,6 +70155,16 @@
         dispatch now guards queue draining when engine is not running (early return in _drainQueues
         and post-invocation drain guarded after stop). Added AC-11 regression test ensuring queued
         work is not spawned if drain runs after stop."
+      supersedes: null
+    - _ulid: 01KJR9KVAQSWCH131FS3MM9NKJ
+      created_at: 2026-03-02T22:10:03.735Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 4] Review findings: MUST-FIX (AC-11): Daemon shutdown does not stop active
+        dispatch engines. The engines map in packages/daemon/src/routes/agent-dispatch.ts is never
+        iterated on SIGTERM/SIGINT, so active invocations do not receive graceful cancel signals.
+        AC-11 specifies 'daemon shutdown or explicit stop' — the explicit-stop path is correct but
+        daemon shutdown is missing. Need to add stopAllEngines() export and call it from server.ts
+        shutdown handler. Posted as inline comment on PR #634 (review 3878949264)."
       supersedes: null
   todos: []
   automation: eligible
@@ -70630,24 +70640,24 @@
         partially cleared .kspec/sessions/. 102 sessions recovered.
       supersedes: null
   todos: []
-- title: Auto-build dist before CLI subprocess tests run
+- _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
+  slugs: []
+  title: Auto-build dist before CLI subprocess tests run
+  type: infra
   description: CLI tests use compiled dist/ binary. Source changes (schema, CLI code) silently don't
     apply until npm run build. Wire build as a pretest step or vitest globalSetup so it runs
     automatically. Prevents confusing failures where source is correct but dist is stale.
-  type: infra
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cli
     - testing
-  depends_on: []
-  _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-02T21:50:16.014Z
   notes: []
