@@ -69669,16 +69669,17 @@
   type: task
   spec_ref: "@session-model-evolution"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
+  session_id: null
   created_at: 2026-03-02T01:22:20.762Z
   started_at: 2026-03-02T05:10:54.586Z
+  submitted_at: 2026-03-02T05:26:10.671Z
   notes:
     - _ulid: 01KJP276YTRR82K1S7DCM573YZ
       created_at: 2026-03-02T01:22:20.762Z
@@ -69734,9 +69735,15 @@
         No regressions: 195 session tests pass, shard failures are pre-existing
         (enhanced-setup.test.ts).
       supersedes: null
+    - _ulid: 01KJPGK6ZJSCCPTY24SYGEXD1X
+      created_at: 2026-03-02T05:33:34.066Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-2 spec alignment mismatch (legacy default
+        values not materialized; tests assert undefined). MUST-FIX: PR includes out-of-scope
+        @agent-definition-schema changes while that task is needs_work."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-02T05:26:10.671Z
 - _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
   slugs:
     - implement-agent-invocation-lifecycle
