@@ -638,17 +638,31 @@ describe("AC-6: kspec agent status with running daemon", () => {
     await cleanupTempDir(testDir);
   });
 
-  it("should show active and queued invocation counts from daemon when running", async () => {
+  it("should show per-invocation details (session ID, agent name, task ref, elapsed) from daemon when running", async () => {
+    // AC: @cli-agent-commands ac-6 - active invocations displayed with session IDs, agent names, task refs, elapsed time
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const testSessionId = "01JTEST000SESSION0000001";
+    const testInvocationId = "01JTEST000INVOC00000001";
 
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         running: true,
-        activeInvocations: 2,
-        queuedInvocations: 1,
+        activeInvocations: 1,
+        queuedInvocations: 0,
+        invocations: [
+          {
+            invocationId: testInvocationId,
+            sessionId: testSessionId,
+            agentId: "worker",
+            agentName: "Worker Agent",
+            taskRef: "@01JTASK001",
+            elapsedMs: 45000,
+          },
+        ],
       }),
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
@@ -672,15 +686,19 @@ describe("AC-6: kspec agent status with running daemon", () => {
       console.log = origLog;
     }
 
-    // AC: @cli-agent-commands ac-6 - shows session IDs, agent names, task refs, elapsed time
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/agent/dispatch/status"),
       expect.anything(),
     );
     const combined = logs.join("\n");
-    // Should show the active and queued counts from the daemon response
-    expect(combined).toContain("2");
-    expect(combined).toContain("1");
+    // AC: @cli-agent-commands ac-6 - session ID shown
+    expect(combined).toContain(testSessionId);
+    // AC: @cli-agent-commands ac-6 - agent name shown
+    expect(combined).toContain("Worker Agent");
+    // AC: @cli-agent-commands ac-6 - task ref shown
+    expect(combined).toContain("@01JTASK001");
+    // AC: @cli-agent-commands ac-6 - elapsed time shown (45000ms = 45s)
+    expect(combined).toContain("45s");
   });
 });
 

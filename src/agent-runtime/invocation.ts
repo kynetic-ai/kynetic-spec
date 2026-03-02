@@ -31,7 +31,7 @@ import type { SessionMetadata, SessionTrigger } from "../sessions/types.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const DEFAULT_KSPEC_CLI_PATH = path.resolve(
+export const DEFAULT_KSPEC_CLI_PATH = path.resolve(
   path.dirname(new URL(import.meta.url).pathname),
   "../../bin/kspec.cjs",
 );
@@ -66,6 +66,8 @@ export interface InvocationOptions {
   kspecCliPath?: string;
   /** Abort signal for graceful cancellation (AC-11) */
   abortSignal?: AbortSignal;
+  /** Pre-assigned session ID (generated if not provided) */
+  sessionId?: string;
 }
 
 /**
@@ -195,7 +197,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   } = options;
 
   const startTime = Date.now();
-  const sessionId = ulid();
+  const sessionId = options.sessionId ?? ulid();
 
   // Resolve adapter
   const adapterId = agent.adapter ?? "claude-agent-acp";

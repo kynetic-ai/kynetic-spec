@@ -243,6 +243,17 @@ export function registerAgentCommands(program: Command): void {
           // AC: @cli-agent-commands ac-7 - overrides are visible in dry-run output
           const dryTimeoutOverride = opts.timeout ? parseInt(opts.timeout, 10) : undefined;
           const dryBudgetOverride = opts.budget ? parseInt(opts.budget, 10) : undefined;
+
+          // AC: @trait-semantic-exit-codes ac-2 - validate numeric inputs even in dry-run
+          if (dryTimeoutOverride !== undefined && isNaN(dryTimeoutOverride)) {
+            error("Invalid --timeout value: must be a positive integer (minutes)", { suggestion: "Example: --timeout 30" });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          if (dryBudgetOverride !== undefined && isNaN(dryBudgetOverride)) {
+            error("Invalid --budget value: must be a positive integer", { suggestion: "Example: --budget 10" });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+
           const effectiveTimeoutMinutes = dryTimeoutOverride ?? agentDef.budget?.timeout_minutes;
           const effectiveMaxTasks = dryBudgetOverride ?? agentDef.budget?.max_tasks;
 
@@ -379,10 +390,19 @@ export function registerAgentCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
+        // AC: @cli-agent-commands ac-6
         const data = await response.json() as {
           running: boolean;
           activeInvocations: number;
           queuedInvocations: number;
+          invocations: Array<{
+            invocationId: string;
+            sessionId: string;
+            agentId: string;
+            agentName: string;
+            taskRef: string | undefined;
+            elapsedMs: number;
+          }>;
         };
 
         output(data, () => {
@@ -391,6 +411,18 @@ export function registerAgentCommands(program: Command): void {
           console.log(`  Dispatch engine: ${data.running ? chalk.green("running") : chalk.gray("stopped")}`);
           console.log(`  Active invocations: ${chalk.cyan(String(data.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(data.queuedInvocations))}`);
+
+          const invocations = data.invocations ?? [];
+          if (invocations.length > 0) {
+            console.log();
+            console.log(chalk.bold("Active:"));
+            for (const inv of invocations) {
+              const elapsed = Math.round(inv.elapsedMs / 1000);
+              const taskStr = inv.taskRef ? `  task: ${chalk.yellow(inv.taskRef)}` : "";
+              console.log(`  ${chalk.cyan(inv.agentId)}  ${chalk.gray(inv.agentName)}`);
+              console.log(`    session: ${chalk.gray(inv.sessionId)}  elapsed: ${elapsed}s${taskStr}`);
+            }
+          }
         });
       } catch (err) {
         error("Failed to get agent status", err);

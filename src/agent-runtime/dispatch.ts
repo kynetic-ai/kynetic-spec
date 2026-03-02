@@ -12,6 +12,7 @@
 
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
+import { ulid } from "ulid";
 import {
   initContext,
   loadAllTasks,
@@ -122,6 +123,19 @@ interface QueueEntry {
 }
 
 /**
+ * Tracking record for an active invocation.
+ * AC: @cli-agent-commands ac-6
+ */
+interface ActiveInvocationRecord {
+  invocationId: string;
+  sessionId: string;
+  agentId: string;
+  agentName: string;
+  taskRef: string | undefined;
+  startedAtMs: number;
+}
+
+/**
  * Deduplication key for recent state changes.
  * AC: @agent-dispatch-engine ac-7
  */
@@ -182,6 +196,8 @@ export class DispatchEngine {
   private runningInvocations: Set<Promise<void>> = new Set();
   /** AbortControllers for active invocations (for graceful cancel on stop) */
   private invocationAbortControllers: Set<AbortController> = new Set();
+  /** Per-invocation tracking records for status display */
+  private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -319,6 +335,7 @@ export class DispatchEngine {
     this.activeCount.clear();
     this.recentEvents.clear();
     this.invocationAbortControllers.clear();
+    this.activeInvocationDetails.clear();
   }
 
   /**
@@ -330,18 +347,36 @@ export class DispatchEngine {
   }
 
   /**
-   * Returns current engine status info.
+   * Returns current engine status info including per-invocation details.
+   * AC: @cli-agent-commands ac-6
    */
   getStatus(): {
     running: boolean;
     activeInvocations: number;
     queuedInvocations: number;
+    invocations: Array<{
+      invocationId: string;
+      sessionId: string;
+      agentId: string;
+      agentName: string;
+      taskRef: string | undefined;
+      elapsedMs: number;
+    }>;
   } {
     let active = 0;
     let queued = 0;
     for (const count of this.activeCount.values()) active += count;
     for (const entries of this.queues.values()) queued += entries.length;
-    return { running: this.running, activeInvocations: active, queuedInvocations: queued };
+    const now = Date.now();
+    const invocations = Array.from(this.activeInvocationDetails.values()).map((r) => ({
+      invocationId: r.invocationId,
+      sessionId: r.sessionId,
+      agentId: r.agentId,
+      agentName: r.agentName,
+      taskRef: r.taskRef,
+      elapsedMs: now - r.startedAtMs,
+    }));
+    return { running: this.running, activeInvocations: active, queuedInvocations: queued, invocations };
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────────
@@ -556,6 +591,19 @@ export class DispatchEngine {
     const abortController = new AbortController();
     this.invocationAbortControllers.add(abortController);
 
+    // AC: @cli-agent-commands ac-6 - Pre-assign session ID for status tracking
+    const preSessionId = ulid();
+    const invocationId = ulid();
+    const trackingRecord: ActiveInvocationRecord = {
+      invocationId,
+      sessionId: preSessionId,
+      agentId,
+      agentName: agent.name,
+      taskRef: entry.change.taskRef,
+      startedAtMs: Date.now(),
+    };
+    this.activeInvocationDetails.set(invocationId, trackingRecord);
+
     const options: InvocationOptions = {
       agent,
       specDir: this.specDir,
@@ -565,6 +613,7 @@ export class DispatchEngine {
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
+      sessionId: preSessionId,
     };
 
     // AC: @agent-dispatch-engine ac-12 - Wrap invocation in shadow mutex
@@ -624,6 +673,7 @@ export class DispatchEngine {
       .finally(() => {
         this.runningInvocations.delete(invocationPromise);
         this.invocationAbortControllers.delete(abortController);
+        this.activeInvocationDetails.delete(invocationId);
       });
 
     this.runningInvocations.add(invocationPromise);

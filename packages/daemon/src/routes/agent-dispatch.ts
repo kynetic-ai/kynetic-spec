@@ -14,6 +14,7 @@
 import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../../agent-runtime/dispatch.js';
 import type { TaskStateChange, TaskStatus } from '../../../agent-runtime/dispatch.js';
+import { DEFAULT_KSPEC_CLI_PATH } from '../../../agent-runtime/invocation.js';
 
 const VALID_TASK_STATUSES = new Set<string>([
   "pending", "in_progress", "pending_review", "needs_work", "blocked", "completed", "cancelled",
@@ -76,7 +77,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         return { started: false, reason: 'Already running', status: engine.getStatus() };
       }
 
-      engine = new DispatchEngine({ projectDir });
+      // AC: @agent-dispatch-engine ac-10 - pass kspecCliPath so task notes work from daemon-started engine
+      engine = new DispatchEngine({ projectDir, kspecCliPath: DEFAULT_KSPEC_CLI_PATH });
       engines.set(projectDir, engine);
 
       await engine.start();
@@ -109,6 +111,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           running: false,
           activeInvocations: 0,
           queuedInvocations: 0,
+          invocations: [],
         };
       }
 
