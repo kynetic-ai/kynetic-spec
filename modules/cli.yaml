@@ -1337,13 +1337,14 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
+        description: |-
           kspec tasks ready [options]
 
           Returns all tasks that are ready to work on:
-          - status = pending
+          - status = pending OR needs_work
           - all depends_on completed
           - no blocked_by entries
+          - sorted: needs_work before pending (fix cycles take priority)
 
           THE primary command for agents and humans.
         implements:

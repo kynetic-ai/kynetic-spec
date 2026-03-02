@@ -70218,7 +70218,7 @@
   slugs: []
   title: Fix tasks ready to include needs_work status
   type: task
-  spec_ref: null
+  spec_ref: "@cmd-tasks-ready"
   meta_ref: null
   plan_ref: null
   status: pending_review
@@ -70233,6 +70233,7 @@
   session_id: 01KJQFA09T9V2A2HY207KGQ7GP
   created_at: 2026-03-02T15:03:12.431Z
   started_at: 2026-03-02T15:03:41.078Z
+  submitted_at: 2026-03-02T15:40:46.105Z
   notes:
     - _ulid: 01KJQJ6WAT6YXGZ4MR2E57PGTV
       created_at: 2026-03-02T15:21:01.530Z
@@ -70263,4 +70264,3 @@
         diag-blob-count.txt) - delete these after this session."
       supersedes: null
   todos: []
-  submitted_at: 2026-03-02T15:40:46.105Z

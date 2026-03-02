@@ -267,12 +267,14 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
+        description: |-
           "ready" is a computed view, not stored state:
-          ready = pending + all depends_on completed + no blockers
+          ready = (pending OR needs_work) + all depends_on completed + no blockers
 
           `kspec tasks ready` returns tasks in this state.
           This is the primary query for "what can I work on?"
+
+          needs_work tasks are sorted before pending — fix cycles take priority.
         implements:
           - "@task-states"
       - _ulid: 01KF3H24BBZ5JXXMEP8JJS9SEJ
@@ -771,13 +773,14 @@ features:
         status:
           maturity: draft
           implementation: implemented
-        description: |
+        description: |-
           kspec tasks ready
 
           Returns tasks where:
-          - status = pending
+          - status = pending OR needs_work
           - all depends_on tasks are completed
           - no manual blocked_by entries
+          - sorted: needs_work first, then pending (fix cycles take priority)
 
           This is THE command for "what can I work on next?"
         implements:
