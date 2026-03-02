@@ -69621,7 +69621,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
   created_at: 2026-03-02T01:22:20.391Z
+  started_at: 2026-03-02T04:41:13.158Z
   notes:
     - _ulid: 01KJP276K70GRHAEJZJ3166E31
       created_at: 2026-03-02T01:22:20.391Z
@@ -69640,10 +69642,17 @@
       content: "Automation: eligible. Schema extension with 11 testable ACs. Clear file target
         (src/schema/meta.ts) and existing patterns to follow."
       supersedes: null
+    - _ulid: 01KJPEP8R4DP0FSEP03R5XDM43
+      created_at: 2026-03-02T05:00:17.028Z
+      author: "@claude"
+      content: Extended AgentSchema with dispatch rules, adapter, skills, budget, concurrency, and
+        auto_approve fields. All fields are optional for backward compatibility with existing agent
+        definitions. Updated meta add/set commands to support the new fields. Added 16 tests
+        covering all 11 ACs. Pre-existing test failures in enhanced-setup.test.ts and
+        core-skill-install.test.ts are unrelated to these changes.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-02T04:41:13.158Z
-  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
 - _ulid: 01KJP276YTPF94VNY0AVCXXH90
   slugs:
     - implement-session-model-evolution
