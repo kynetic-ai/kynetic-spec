@@ -70382,7 +70382,7 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-dispatch-engine"
@@ -70390,9 +70390,10 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+  session_id: null
   created_at: 2026-03-02T01:22:22.316Z
   started_at: 2026-03-02T22:48:59.674Z
+  submitted_at: 2026-03-02T23:06:22.429Z
   notes:
     - _ulid: 01KJP278FCYMWFF26JQBC67G1X
       created_at: 2026-03-02T01:22:22.316Z
@@ -70465,9 +70466,16 @@
         Tests: packages/web-ui/tests/e2e/api-agent-dispatch.spec.ts (new E2E tests covering all 7
         ACs)
       supersedes: null
+    - _ulid: 01KJRDZ7KT7JMM3ZWH373YQAA1
+      created_at: 2026-03-02T23:26:11.066Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @trait-api-endpoint ac-2 missing N/A annotation
+        in api-agent-dispatch.spec.ts. SHOULD-FIX: @trait-api-endpoint ac-6 test doesn't actually
+        verify X-Request-Id header (inconsistent with other E2E test files that mark it N/A). See PR
+        #635 review for inline comments."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-02T23:06:22.429Z
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
   slugs:
     - implement-ralph-replacement
