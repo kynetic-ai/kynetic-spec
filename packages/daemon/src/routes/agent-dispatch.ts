@@ -13,7 +13,11 @@
 
 import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../../agent-runtime/dispatch.js';
-import type { TaskStateChange } from '../../../agent-runtime/dispatch.js';
+import type { TaskStateChange, TaskStatus } from '../../../agent-runtime/dispatch.js';
+
+const VALID_TASK_STATUSES = new Set<string>([
+  "pending", "in_progress", "pending_review", "needs_work", "blocked", "completed", "cancelled",
+]);
 
 // Singleton dispatch engine per project path
 const engines: Map<string, DispatchEngine> = new Map();
@@ -34,11 +38,16 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         return { accepted: false, reason: 'Dispatch engine not running' };
       }
 
+      // Validate status values before casting
+      if (!VALID_TASK_STATUSES.has(body.from_status) || !VALID_TASK_STATUSES.has(body.to_status)) {
+        return { accepted: false, reason: `Invalid status: from_status="${body.from_status}" to_status="${body.to_status}". Valid values: ${[...VALID_TASK_STATUSES].join(", ")}` };
+      }
+
       const change: TaskStateChange = {
         taskId: body.task_id,
         taskRef: body.task_ref ?? `@${body.task_id}`,
-        fromStatus: body.from_status as TaskStateChange['fromStatus'],
-        toStatus: body.to_status as TaskStateChange['toStatus'],
+        fromStatus: body.from_status as TaskStatus,
+        toStatus: body.to_status as TaskStatus,
         timestamp: body.timestamp ?? Date.now(),
       };
 

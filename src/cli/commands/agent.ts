@@ -81,7 +81,7 @@ export function registerAgentCommands(program: Command): void {
     .command("list")
     .description("List all agent definitions")
     .option("--json", "Output as JSON")
-    .option("--status <status>", "Filter by automation status")
+    .option("--status <status>", "Filter by automation status (eligible|ineligible)")
     .option("--tag <tag>", "Filter by tag (repeatable)", (val: string, arr: string[]) => [...arr, val], [] as string[])
     .option("--limit <n>", "Maximum number of results")
     .option("--offset <n>", "Skip first N results")
@@ -98,7 +98,7 @@ export function registerAgentCommands(program: Command): void {
         const meta = await loadMetaContext(ctx);
         let agents = meta.agents;
 
-        // AC: @trait-filterable-list ac-1 - status filter
+        // AC: @trait-filterable-list ac-1 - automation status filter
         if (opts.status) {
           agents = agents.filter((a) =>
             (a as LoadedAgent & { automation?: string }).automation === opts.status,
@@ -228,7 +228,10 @@ export function registerAgentCommands(program: Command): void {
           ? `Work on task ${taskRef} according to your configuration and skills.`
           : `Run as requested.`);
 
-        const fullPrompt = await buildPromptWithSkills({
+        // Note: buildPromptWithSkills is called here for the dry-run preview path.
+        // runInvocation also calls buildPromptWithSkills internally, so we pass basePrompt
+        // to runInvocation (not fullPrompt) to avoid double-expansion.
+        const fullPromptForPreview = await buildPromptWithSkills({
           basePrompt,
           skillIds: agentDef.skills ?? [],
           specDir: ctx.specDir,
@@ -236,14 +239,23 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @trait-dry-run ac-1, ac-2, ac-3 - dry run shows prompt, no changes
         if (opts.dryRun) {
+          // Pre-compute overrides so dry-run reflects what the actual invocation would use
+          // AC: @cli-agent-commands ac-7 - overrides are visible in dry-run output
+          const dryTimeoutOverride = opts.timeout ? parseInt(opts.timeout, 10) : undefined;
+          const dryBudgetOverride = opts.budget ? parseInt(opts.budget, 10) : undefined;
+          const effectiveTimeoutMinutes = dryTimeoutOverride ?? agentDef.budget?.timeout_minutes;
+          const effectiveMaxTasks = dryBudgetOverride ?? agentDef.budget?.max_tasks;
+
           // AC: @trait-dry-run ac-6 - JSON output includes dry_run field
           output(
             {
               dry_run: true,
               agent_id: agentId,
               adapter: adapterId,
-              task_ref: taskRef,
-              prompt: fullPrompt,
+              task_ref: taskRef ?? null,
+              timeout_minutes: effectiveTimeoutMinutes ?? null,
+              max_tasks: effectiveMaxTasks ?? null,
+              prompt: fullPromptForPreview,
             },
             () => {
               console.log(chalk.yellow("DRY RUN - No agent will be spawned"));
@@ -253,9 +265,12 @@ export function registerAgentCommands(program: Command): void {
               if (taskRef) {
                 console.log(chalk.gray(`Task:    ${taskRef}`));
               }
+              if (effectiveTimeoutMinutes !== undefined) {
+                console.log(chalk.gray(`Timeout: ${effectiveTimeoutMinutes} min`));
+              }
               console.log();
               console.log(chalk.gray("--- Prompt that would be sent ---"));
-              console.log(fullPrompt);
+              console.log(fullPromptForPreview);
               console.log(chalk.gray("--- End prompt ---"));
             },
           );
@@ -263,29 +278,44 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // AC: @cli-agent-commands ac-2 - one-shot invocation with task binding
-        // AC: @cli-agent-commands ac-3 - one-shot invocation with custom prompt
+        // AC: @cli-agent-commands ac-3 - one-shot invocation with custom prompt (no task binding)
         // AC: @cli-agent-commands ac-7 - CLI overrides agent defaults
+        const timeoutOverride = opts.timeout ? parseInt(opts.timeout, 10) : undefined;
+        const budgetOverride = opts.budget ? parseInt(opts.budget, 10) : undefined;
+
+        // Validate numeric overrides
+        if (timeoutOverride !== undefined && isNaN(timeoutOverride)) {
+          error("Invalid --timeout value: must be a positive integer (minutes)", { suggestion: "Example: --timeout 30" });
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+        if (budgetOverride !== undefined && isNaN(budgetOverride)) {
+          error("Invalid --budget value: must be a positive integer", { suggestion: "Example: --budget 10" });
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         const effectiveAgent = {
           ...agentDef,
           adapter: adapterId,
-          budget: opts.timeout || opts.budget
+          budget: timeoutOverride !== undefined || budgetOverride !== undefined
             ? {
                 ...agentDef.budget,
-                timeout_minutes: opts.timeout ? parseInt(opts.timeout, 10) : agentDef.budget?.timeout_minutes,
-                max_tasks: opts.budget ? parseInt(opts.budget, 10) : agentDef.budget?.max_tasks,
+                timeout_minutes: timeoutOverride ?? agentDef.budget?.timeout_minutes,
+                max_tasks: budgetOverride ?? agentDef.budget?.max_tasks,
               }
             : agentDef.budget,
         };
 
         console.log(chalk.gray(`Running agent "${agentId}"...`));
 
+        // AC: @cli-agent-commands ac-3 - no task binding when --task not provided
+        // Pass basePrompt (not fullPromptForPreview) — runInvocation expands skills internally
         const result = await runInvocation({
           agent: effectiveAgent,
           specDir: ctx.specDir,
           cwd: ctx.rootDir,
-          taskRef: taskRef ?? "",
-          prompt: fullPrompt,
-          trigger: taskRef ? "manual" : "manual",
+          taskRef: taskRef ?? undefined,
+          prompt: basePrompt,
+          trigger: "manual",
         });
 
         output(

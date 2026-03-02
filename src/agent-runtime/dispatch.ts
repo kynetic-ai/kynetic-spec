@@ -11,6 +11,7 @@
  */
 
 import * as path from "node:path";
+import { spawnSync } from "node:child_process";
 import {
   initContext,
   loadAllTasks,
@@ -179,6 +180,8 @@ export class DispatchEngine {
   private running = false;
   /** Set of running invocation promises (for graceful shutdown) */
   private runningInvocations: Set<Promise<void>> = new Set();
+  /** AbortControllers for active invocations (for graceful cancel on stop) */
+  private invocationAbortControllers: Set<AbortController> = new Set();
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -296,13 +299,18 @@ export class DispatchEngine {
   /**
    * Stop the dispatch engine gracefully.
    *
-   * Waits for all active invocations to complete (or be cancelled).
+   * Sends cancel signals to all active invocations and waits for them to finish.
    * AC: @agent-dispatch-engine ac-11
    */
   async stop(): Promise<void> {
     this.running = false;
 
-    // AC: @agent-dispatch-engine ac-11 - Wait for all running invocations
+    // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
+    for (const controller of this.invocationAbortControllers) {
+      controller.abort();
+    }
+
+    // Wait for all running invocations to complete (or abort)
     if (this.runningInvocations.size > 0) {
       await Promise.allSettled(Array.from(this.runningInvocations));
     }
@@ -310,6 +318,7 @@ export class DispatchEngine {
     this.queues.clear();
     this.activeCount.clear();
     this.recentEvents.clear();
+    this.invocationAbortControllers.clear();
   }
 
   /**
@@ -409,8 +418,9 @@ export class DispatchEngine {
   ): boolean {
     if (!rule.filter) return true;
 
-    // We need the task to evaluate filters — if not provided, load from context
-    if (!task) return true; // Can't evaluate without task data
+    // We need the task to evaluate filters — if not provided, reject to avoid
+    // enqueuing non-matching tasks (AC-6: all filters must match)
+    if (!task) return false;
 
     const { filter } = rule;
 
@@ -513,7 +523,7 @@ export class DispatchEngine {
 
   /**
    * Spawn a single invocation for a queue entry.
-   * AC: @agent-dispatch-engine ac-9, ac-10, ac-12
+   * AC: @agent-dispatch-engine ac-9, ac-10, ac-11, ac-12
    */
   private _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): void {
     const agentId = agent.id;
@@ -531,9 +541,20 @@ export class DispatchEngine {
       // Decrement active count since we're not actually running
       const currentActive = this.activeCount.get(agentId) ?? 1;
       this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-      // Note is added via the runInvocation error path when adapter fails at spawn time
+      // AC: @agent-dispatch-engine ac-10 - Add task note for unresolvable adapter
+      if (this.kspecCliPath) {
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "note", entry.change.taskRef,
+          `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
+        ], { cwd: this.cwd });
+      }
       return;
     }
+
+    // AC: @agent-dispatch-engine ac-11 - Create abort controller for graceful cancellation
+    const abortController = new AbortController();
+    this.invocationAbortControllers.add(abortController);
 
     const options: InvocationOptions = {
       agent,
@@ -543,6 +564,7 @@ export class DispatchEngine {
       prompt: agent.prompt_template ?? `Work on task ${entry.change.taskRef}`,
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
+      abortSignal: abortController.signal,
     };
 
     // AC: @agent-dispatch-engine ac-12 - Wrap invocation in shadow mutex
@@ -570,6 +592,14 @@ export class DispatchEngine {
             const queue = this.queues.get(agentId) ?? [];
             queue.unshift(entry);
             this.queues.set(agentId, queue);
+            // AC: @agent-dispatch-engine ac-9 - Schedule wake-up to drain retry
+            setTimeout(() => {
+              if (this.running) {
+                this._loadAgents()
+                  .then((agents) => this._drainQueues(agents))
+                  .catch(() => {/* best effort */});
+              }
+            }, backoffMs);
           } else {
             console.error(
               `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
@@ -593,6 +623,7 @@ export class DispatchEngine {
       })
       .finally(() => {
         this.runningInvocations.delete(invocationPromise);
+        this.invocationAbortControllers.delete(abortController);
       });
 
     this.runningInvocations.add(invocationPromise);

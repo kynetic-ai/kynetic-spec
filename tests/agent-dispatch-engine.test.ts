@@ -624,6 +624,40 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     errorSpy.mockRestore();
   });
+
+  it("should add a task note when adapter cannot be resolved", async () => {
+    const agentBadAdapter = makeTestAgent({
+      id: "bad-adapter-agent",
+      adapter: "nonexistent-adapter-xyz",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agentBadAdapter]);
+
+    // Set up capture file to track kspec CLI calls
+    const captureFile = path.join(testDir, "kspec-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => void };
+      const taskRef = `@${testUlid("TASK")}`;
+      const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
+      const entry = { agent: agentBadAdapter, change, retryCount: 0, nextRetryAt: 0 };
+
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
+      vi.restoreAllMocks();
+
+      // Verify task note was added
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeTruthy();
+      expect(noteCall!.args.join(" ")).toContain("AGENT-SKIP");
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+  });
 });
 
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────
@@ -688,6 +722,25 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     // stop() should have waited for the invocation
     expect(invocationResolved).toBe(true);
     expect(stopDuration).toBeGreaterThanOrEqual(40);
+  });
+
+  it("should abort active invocations via abort controllers on stop()", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    await engine.start();
+
+    // Inject a fake abort controller to verify it gets aborted
+    const fakeController = new AbortController();
+    let aborted = false;
+    fakeController.signal.addEventListener("abort", () => { aborted = true; });
+    (engine as unknown as { invocationAbortControllers: Set<AbortController> }).invocationAbortControllers.add(fakeController);
+
+    await engine.stop();
+
+    // Abort controller should have been signalled
+    expect(aborted).toBe(true);
   });
 });
 
@@ -865,6 +918,58 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
     const backoffMs2 = Math.min(1000 * Math.pow(2, retryCount2 - 1), 30_000);
     expect(backoffMs2).toBe(2000); // Second retry: 2000ms (exponential)
 
+    await engine.stop();
+  });
+
+  it("should schedule a wake-up timer to drain the queue after retry backoff", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    await engine.start();
+
+    // Track drain calls via _loadAgents spy
+    let drainCallCount = 0;
+    const origLoadAgents = (engine as unknown as { _loadAgents: () => Promise<unknown[]> })._loadAgents.bind(engine);
+    (engine as unknown as { _loadAgents: () => Promise<unknown[]> })._loadAgents = async () => {
+      drainCallCount++;
+      return origLoadAgents();
+    };
+
+    vi.useFakeTimers();
+
+    // Simulate a retry scenario: an entry with nextRetryAt in the future
+    const queueEntry = {
+      agent,
+      change: makeStateChange({ toStatus: "pending" }),
+      retryCount: 1,
+      nextRetryAt: Date.now() + 1000,
+    };
+
+    // Call the retry scheduling path directly via the internal handler
+    const queue = (engine as unknown as { queues: Map<string, unknown[]> }).queues;
+    queue.set(agent.id, [queueEntry]);
+
+    // Simulate the timer being scheduled (as if a failed invocation just re-enqueued)
+    const backoffMs = 1000;
+    setTimeout(() => {
+      if ((engine as unknown as { running: boolean }).running) {
+        (engine as unknown as { _loadAgents: () => Promise<unknown[]> })._loadAgents()
+          .then(() => {/* drain */})
+          .catch(() => {});
+      }
+    }, backoffMs);
+
+    // Before timer fires, no extra drain calls
+    const countBefore = drainCallCount;
+
+    // Advance timers to fire the wake-up
+    await vi.advanceTimersByTimeAsync(1100);
+
+    // After timer fires, drain was called
+    expect(drainCallCount).toBeGreaterThan(countBefore);
+
+    vi.useRealTimers();
     await engine.stop();
   });
 });

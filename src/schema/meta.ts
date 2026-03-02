@@ -83,6 +83,8 @@ export const AgentSchema = z.object({
   concurrency: AgentConcurrencySchema.default({ max_concurrent: 1 }),
   auto_approve: z.boolean().default(false),
   prompt_template: z.string().optional(),
+  /** Automation eligibility for agent list filtering (eligible|ineligible) */
+  automation: z.enum(["eligible", "ineligible"]).optional(),
 });
 
 /**
