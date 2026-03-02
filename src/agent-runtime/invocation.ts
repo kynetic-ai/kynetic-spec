@@ -15,11 +15,10 @@ import * as path from "node:path";
 import { spawnSync } from "node:child_process";
 import { ulid } from "ulid";
 import type { Agent } from "../schema/meta.js";
-import type { AgentAdapter } from "../agents/adapters.js";
+import { buildPromptWithSkills } from "./prompts.js";
 import { resolveAdapter } from "../agents/adapters.js";
 import { spawnAndInitialize } from "../agents/spawner.js";
 import type { SpawnedAgent } from "../agents/spawner.js";
-import type { ACPClient } from "../acp/client.js";
 import type { SessionUpdate } from "../acp/index.js";
 import {
   createSession,
@@ -242,8 +241,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   const timeoutMs = timeoutMinutes * 60 * 1000;
 
   // Resolve skill content for prompt
-  const skillsContent = await resolveSkillsForAgent(agent, specDir);
-  const fullPrompt = options.prompt + skillsContent;
+  // AC: @agent-invocation-lifecycle ac-7
+  const fullPrompt = await buildPromptWithSkills({
+    basePrompt: options.prompt,
+    skillIds: agent.skills ?? [],
+    specDir,
+  });
 
   const state: InvocationState = {
     sessionId,
