@@ -70474,6 +70474,20 @@
         verify X-Request-Id header (inconsistent with other E2E test files that mark it N/A). See PR
         #635 review for inline comments."
       supersedes: null
+    - _ulid: 01KJRF612Z61A1R6BS5KJQJ96X
+      created_at: 2026-03-02T23:47:22.335Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1 complete] Addressed both PR #635 review findings:
+
+        - MUST-FIX: Added @trait-api-endpoint ac-2 N/A annotation in the N/A block (agent dispatch
+        endpoints use project context, not item refs)
+
+        - SHOULD-FIX: Replaced @trait-api-endpoint ac-6 test with N/A annotation, consistent with
+        other E2E test files (X-Request-Id is infrastructure concern)
+
+        1 file changed, 2 insertions(+), 10 deletions(-)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
