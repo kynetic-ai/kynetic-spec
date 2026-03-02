@@ -10462,7 +10462,7 @@ runs:
   - _ulid: 01KJQTEPT04DXMB2ST78VKDZEC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-03-02T17:45:06.624Z
     step_results:
@@ -10546,5 +10546,29 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-03-02T17:46:05.322Z
-        completed_at: 2026-03-02T17:46:05.322Z
+        completed_at: 2026-03-02T17:46:14.771Z
+        notes: >-
+          Proposed improvements for untracked friction:
+
+
+          1. kspec shadow restore (medium): A dedicated command for recovery scenarios — restore
+          sessions/, restore specific files, or restore from a specific commit/remote without
+          needing raw git commands. Prevents agents from needing to cd into .kspec/ and running git
+          directly. Would have prevented the cd persistence issue entirely.
+
+
+          2. friction: cd into .kspec/ for git recovery poisons shell CWD (small observation):
+          Capture as friction observation — agents doing manual recovery work tend to cd into
+          .kspec/, which persists as CWD and causes kspec 'inside .kspec/' errors for the rest of
+          the session. Mitigation: document that recovery should always use git -C .kspec/ rather
+          than cd + git.
+
+
+          3. workflow prune not auto-running (small): 40+ stale runs despite @workflow-prune being
+          implemented. Either the command exists but isn't being called, or auto-expiry isn't
+          configured. Capture as inbox item to investigate.
+      - step_index: 4
+        status: completed
+        started_at: 2026-03-02T17:46:14.771Z
+        completed_at: 2026-03-02T17:46:14.771Z
     initiated_by: "@claude"
