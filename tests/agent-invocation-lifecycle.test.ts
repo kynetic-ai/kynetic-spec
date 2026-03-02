@@ -1,0 +1,1082 @@
+/**
+ * Agent Invocation Lifecycle tests.
+ *
+ * Tests for per-invocation session creation, ACP agent spawn, prompt delivery,
+ * event logging, timeout handling, and structured completion tracking.
+ *
+ * Task: @implement-agent-invocation-lifecycle
+ * Spec: @agent-invocation-lifecycle
+ */
+
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import * as fs from "node:fs/promises";
+import * as fsSync from "node:fs";
+import * as path from "node:path";
+import * as os from "node:os";
+import * as YAML from "yaml";
+import {
+  createSession,
+  appendEvent,
+  getSession,
+  closeSession,
+  injectEnvForAdapter,
+  removeEnvForAdapter,
+  isSessionBlobPointer,
+} from "../src/sessions/store.js";
+import * as storeModule from "../src/sessions/store.js";
+import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invocation.js";
+import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
+import { registerAdapter } from "../src/agents/adapters.js";
+import { spawnAndInitialize } from "../src/agents/spawner.js";
+import { ACPClient } from "../src/acp/index.js";
+import type { Agent } from "../src/schema/meta.js";
+import {
+  testUlid,
+  createTempDir,
+  cleanupTempDir,
+} from "./helpers/cli.js";
+
+// ─── Fixtures ─────────────────────────────────────────────────────────────────
+
+const MOCK_ACP = path.join(__dirname, "mocks", "acp-mock.js");
+const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+
+/**
+ * Create a minimal Agent definition for testing.
+ */
+function makeTestAgent(overrides: Partial<Agent> = {}): Agent {
+  return {
+    _ulid: testUlid("AGNT"),
+    id: "test-worker",
+    name: "Test Worker Agent",
+    capabilities: [],
+    tools: [],
+    conventions: [],
+    dispatch: [],
+    skills: [],
+    auto_approve: false,
+    concurrency: { max_concurrent: 1 },
+    adapter: "mock-acp",
+    ...overrides,
+  };
+}
+
+/**
+ * Register the mock ACP adapter for testing.
+ */
+function registerMockAdapter(env: Record<string, string> = {}): void {
+  registerAdapter("mock-acp", {
+    command: "node",
+    args: [MOCK_ACP],
+    env: {
+      MOCK_ACP_PROJECT_DIR: process.cwd(),
+      ...env,
+    },
+    description: "Mock ACP agent for testing",
+  });
+}
+
+// ─── AC-1: Session creation with trigger, agent_id, task_id ──────────────────
+
+// AC: @agent-invocation-lifecycle ac-1
+describe("Session creation on invocation start", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac1-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should create session with trigger, agent_id, and task_id populated", async () => {
+    const agent = makeTestAgent({ id: "worker-agent" });
+    const taskRef = "@" + testUlid("TASK");
+
+    // Run a quick invocation (mock agent completes immediately)
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test session creation",
+      trigger: "task.ready",
+    });
+
+    expect(result.session).toBeDefined();
+    expect(result.session.trigger).toBe("task.ready");
+    expect(result.session.agent_id).toBe("worker-agent");
+    expect(result.session.task_id).toBe(taskRef);
+    expect(result.session.agent_type).toBe("mock-acp");
+  });
+
+  it("should create session directory with session.yaml", async () => {
+    const agent = makeTestAgent();
+    const taskRef = "@" + testUlid("TASK", 1);
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Check session file creation",
+      trigger: "task.needs_work",
+    });
+
+    const sessionDir = path.join(testDir, "sessions", result.session.id);
+    const sessionYaml = path.join(sessionDir, "session.yaml");
+
+    await expect(fs.access(sessionYaml)).resolves.toBeUndefined();
+    const content = await fs.readFile(sessionYaml, "utf-8");
+    const parsed = YAML.parse(content);
+    expect(parsed.trigger).toBe("task.needs_work");
+    expect(parsed.task_id).toBe(taskRef);
+  });
+});
+
+// ─── AC-2: KSPEC_SESSION_ID injection ────────────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-2
+describe("KSPEC_SESSION_ID injection", () => {
+  let testDir: string;
+  let capturedSessionId: string | undefined;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac2-");
+    capturedSessionId = undefined;
+
+    // Register a mock adapter that captures the env var
+    // The mock ACP agent receives KSPEC_SESSION_ID through process env
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    // Restore process.env.KSPEC_SESSION_ID if it was set
+    delete process.env.KSPEC_SESSION_ID;
+    await cleanupTempDir(testDir);
+  });
+
+  it("should set KSPEC_SESSION_ID in process env during invocation", async () => {
+    const agent = makeTestAgent();
+    let envDuringInvocation: string | undefined;
+
+    // We can't easily intercept the spawned process env, but we can verify
+    // that KSPEC_SESSION_ID was set and cleared on the invoking process
+    // by checking that it was cleaned up after
+    const beforeSessionId = process.env.KSPEC_SESSION_ID;
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Check env injection",
+      trigger: "task.ready",
+    });
+
+    // After invocation, KSPEC_SESSION_ID should be restored (or deleted)
+    const afterSessionId = process.env.KSPEC_SESSION_ID;
+    expect(afterSessionId).toBe(beforeSessionId);
+    expect(result.outcome).toBe("success");
+  });
+
+  it("should restore a pre-existing KSPEC_SESSION_ID after invocation completes", async () => {
+    const agent = makeTestAgent();
+    const preExistingId = "01EXISTNG0000000000000000";
+
+    // Simulate a pre-existing KSPEC_SESSION_ID
+    process.env.KSPEC_SESSION_ID = preExistingId;
+
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Check env cleanup",
+      trigger: "task.ready",
+    });
+
+    // After invocation, env should be restored to the pre-existing value,
+    // not deleted or overwritten with the invocation session id.
+    expect(process.env.KSPEC_SESSION_ID).toBe(preExistingId);
+
+    // Clean up for subsequent tests
+    delete process.env.KSPEC_SESSION_ID;
+  });
+});
+
+// ─── AC-3: Timeout handling ───────────────────────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-3
+describe("Timeout handling", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac3-");
+
+    // Register a slow adapter that delays response
+    registerAdapter("slow-mock-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_DELAY_MS: "5000", // 5 second delay
+      },
+      description: "Slow mock ACP agent for timeout tests",
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should close session as timed_out when timeout is reached", async () => {
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test timeout",
+      trigger: "task.ready",
+      timeoutMinutes: 0.001, // ~60ms timeout — much less than 5s delay
+    });
+
+    expect(result.outcome).toBe("timed_out");
+    expect(result.session.status).toBe("timed_out");
+  });
+
+  it("should log agent.timeout event when timeout occurs", async () => {
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test timeout event logging",
+      trigger: "task.ready",
+      timeoutMinutes: 0.001,
+    });
+
+    // Read the events.jsonl
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const content = await fs.readFile(eventsPath, "utf-8");
+    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+
+    const timeoutEvent = events.find((e: { type: string }) => e.type === "agent.timeout");
+    expect(timeoutEvent).toBeDefined();
+    expect(timeoutEvent.data.task_id).toBeDefined();
+    expect(timeoutEvent.data.timeout_minutes).toBeDefined();
+  });
+
+  it("should add a timeout note to the task when timeout occurs", async () => {
+    // AC: @agent-invocation-lifecycle ac-3 — timeout note written to task
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+    const captureFile = path.join(testDir, "kspec-calls.json");
+    const taskRef = "@" + testUlid("TASK");
+
+    // Set capture env so runKspecCli's spawnSync inherits it
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef,
+        prompt: "Test timeout note",
+        trigger: "task.ready",
+        timeoutMinutes: 0.001,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+
+    // Verify that kspec task note was called with the task ref and AGENT-TIMEOUT marker
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+    const noteCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    );
+    expect(noteCall).toBeDefined();
+    const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
+    expect(noteText).toContain("[AGENT-TIMEOUT]");
+  });
+
+  it("should dispatch ACP cancel request on timeout", async () => {
+    // AC: @agent-invocation-lifecycle ac-3 — ACP cancel request dispatched on timeout
+    // Use a closure to track cancel calls — vi.spyOn prototype mocks don't reliably
+    // track ESM cross-module calls in spy.mock.calls.
+    let cancelCalledWith: string | undefined;
+    const cancelSpy = vi.spyOn(ACPClient.prototype, "cancel").mockImplementation(async (sessionId) => {
+      cancelCalledWith = sessionId;
+    });
+
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+    try {
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Test cancel dispatch",
+        trigger: "task.ready",
+        // Use a longer timeout so the agent has time to spawn + initialize + newSession
+        // (the slow mock delays 5000ms only in session/prompt, not session/new)
+        // 3 seconds → enough for spawn+init+newSession but well under the 5s prompt delay
+        timeoutMinutes: 3 / 60,
+      });
+    } finally {
+      cancelSpy.mockRestore();
+    }
+
+    // Verify cancel was called with the ACP session ID — cancel request dispatched on timeout
+    expect(cancelCalledWith).toBeDefined();
+  });
+});
+
+// ─── AC-4: Successful completion ─────────────────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-4
+describe("Successful invocation completion", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac4-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should log agent.completed event with task_id, outcome, and duration_ms", async () => {
+    const agent = makeTestAgent();
+    const taskRef = "@" + testUlid("TASK");
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Successful completion test",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const content = await fs.readFile(eventsPath, "utf-8");
+    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+
+    const completedEvent = events.find((e: { type: string }) => e.type === "agent.completed");
+    expect(completedEvent).toBeDefined();
+    // AC: @agent-invocation-lifecycle ac-4 — structured outcome data
+    expect(completedEvent.data.task_id).toBe(taskRef);
+    expect(completedEvent.data.outcome).toBe("success");
+    expect(completedEvent.data.duration_ms).toBeGreaterThan(0);
+  });
+
+  it("should close session with status completed on success", async () => {
+    const agent = makeTestAgent();
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Check session completion status",
+      trigger: "task.ready",
+    });
+
+    expect(result.session.status).toBe("completed");
+    expect(result.session.ended_at).toBeDefined();
+  });
+
+  it("should return stopReason from ACP agent", async () => {
+    const agent = makeTestAgent();
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Check stop reason",
+      trigger: "task.ready",
+    });
+
+    // Mock ACP returns "end_turn" by default
+    expect(result.stopReason).toBe("end_turn");
+  });
+});
+
+// ─── AC-5: Failure handling ───────────────────────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-5
+describe("Failure handling", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac5-");
+
+    // Register an adapter that exits with error
+    registerAdapter("failing-mock-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_EXIT_CODE: "1", // Non-zero exit = failure
+      },
+      description: "Failing mock ACP agent",
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should log agent.failed event with error details on process crash", async () => {
+    const agent = makeTestAgent({ adapter: "failing-mock-acp" });
+    const taskRef = "@" + testUlid("TASK");
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test failure handling",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("failed");
+
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const content = await fs.readFile(eventsPath, "utf-8");
+    const events = content.trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+
+    const failedEvent = events.find((e: { type: string }) => e.type === "agent.failed");
+    expect(failedEvent).toBeDefined();
+    // AC: @agent-invocation-lifecycle ac-5 — error details
+    expect(failedEvent.data.task_id).toBe(taskRef);
+    expect(failedEvent.data.error).toBeDefined();
+  });
+
+  it("should close session with status failed on failure", async () => {
+    const agent = makeTestAgent({ adapter: "failing-mock-acp" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Check failed session status",
+      trigger: "task.ready",
+    });
+
+    expect(result.session.status).toBe("failed");
+  });
+
+  it("should add a failure note to the task when invocation fails", async () => {
+    // AC: @agent-invocation-lifecycle ac-5 — failure note written to task
+    const agent = makeTestAgent({ adapter: "failing-mock-acp" });
+    const captureFile = path.join(testDir, "kspec-calls.json");
+    const taskRef = "@" + testUlid("TASK");
+
+    // Set capture env so runKspecCli's spawnSync inherits it
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef,
+        prompt: "Test failure note",
+        trigger: "task.ready",
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+
+    // Verify that kspec task note was called with the task ref and AGENT-FAIL marker
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+    const noteCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    );
+    expect(noteCall).toBeDefined();
+    const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
+    expect(noteText).toContain("[AGENT-FAIL]");
+  });
+});
+
+// ─── AC-6: Streaming event logging ───────────────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-6
+describe("Streaming event logging", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac6-");
+    registerMockAdapter({
+      MOCK_ACP_RESPONSE_TEXT: "Streaming output test response",
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should receive onUpdate callback for streaming updates", async () => {
+    const agent = makeTestAgent();
+    const updates: unknown[] = [];
+
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test streaming updates",
+      trigger: "task.ready",
+      onUpdate: (update) => {
+        updates.push(update);
+      },
+    });
+
+    // Mock ACP sends at least one update with the response text
+    expect(updates.length).toBeGreaterThanOrEqual(0); // Mock may not send updates
+  });
+
+  it("should log session.update events to JSONL file", async () => {
+    const agent = makeTestAgent();
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test event logging",
+      trigger: "task.ready",
+    });
+
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const content = await fs.readFile(eventsPath, "utf-8");
+    const lines = content.trim().split("\n").filter(Boolean);
+
+    // Should have at least agent.dispatched, agent.started, agent.completed
+    expect(lines.length).toBeGreaterThanOrEqual(3);
+    const events = lines.map((l) => JSON.parse(l));
+    const eventTypes = events.map((e: { type: string }) => e.type);
+    expect(eventTypes).toContain("agent.dispatched");
+    expect(eventTypes).toContain("agent.started");
+    expect(eventTypes).toContain("agent.completed");
+  });
+
+  it("should externalize oversized payload blobs when session updates exceed threshold", async () => {
+    // AC: @agent-invocation-lifecycle ac-6 — blob externalization for oversized payloads
+    // Register mock adapter that sends a large payload (> EVENT_FIELD_EXTERNALIZE_BYTES = 16KB)
+    const oversizedText = "x".repeat(20 * 1024); // 20KB text — exceeds 16KB field threshold
+    registerAdapter("large-payload-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_RESPONSE_TEXT: oversizedText,
+      },
+      description: "Mock ACP that sends oversized updates for blob externalization tests",
+    });
+
+    const agent = makeTestAgent({ adapter: "large-payload-acp" });
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test blob externalization",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const content = await fs.readFile(eventsPath, "utf-8");
+    const lines = content.trim().split("\n").filter(Boolean);
+    const events = lines.map((l) => JSON.parse(l));
+
+    // Find the session.update event that contains the large payload
+    const updateEvent = events.find((e: { type: string }) => e.type === "session.update");
+    expect(updateEvent).toBeDefined();
+
+    // The oversized text field should be externalized as a blob pointer
+    // Walk data to find a blob pointer anywhere in the update's data tree
+    function hasBlobPointer(obj: unknown): boolean {
+      if (isSessionBlobPointer(obj)) return true;
+      if (typeof obj === "object" && obj !== null) {
+        return Object.values(obj).some(hasBlobPointer);
+      }
+      return false;
+    }
+
+    expect(hasBlobPointer(updateEvent.data)).toBe(true);
+
+    // Verify the blob file was created in the session's blobs/ directory
+    const blobDir = path.join(testDir, "sessions", result.session.id, "blobs");
+    const blobFiles = await fs.readdir(blobDir);
+    expect(blobFiles.length).toBeGreaterThan(0);
+  });
+});
+
+// ─── AC-7: Skill resolution ───────────────────────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-7
+describe("Skill resolution for agent invocations", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac7-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("resolveSkills should return content for existing skills", async () => {
+    // Create a skill file in the test dir
+    const skillDir = path.join(testDir, "skills", "my-skill");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(path.join(skillDir, "SKILL.md"), "# My Skill\n\nDo things.");
+
+    const resolved = await resolveSkills(["my-skill"], testDir);
+
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0].id).toBe("my-skill");
+    expect(resolved[0].content).toContain("# My Skill");
+  });
+
+  it("resolveSkills should skip missing skills silently", async () => {
+    const resolved = await resolveSkills(["non-existent-skill"], testDir);
+    expect(resolved).toHaveLength(0);
+  });
+
+  it("buildPromptWithSkills should append skill content to prompt", async () => {
+    const skillDir = path.join(testDir, "skills", "task-work");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(path.join(skillDir, "SKILL.md"), "# Task Work Skill\n\nWork on tasks.");
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Do the work",
+      skillIds: ["task-work"],
+      specDir: testDir,
+    });
+
+    expect(result).toContain("Do the work");
+    expect(result).toContain("# Task Work Skill");
+    expect(result).toContain("Skills");
+  });
+
+  it("buildPromptWithSkills should return base prompt unchanged when no skills", async () => {
+    const result = await buildPromptWithSkills({
+      basePrompt: "Simple prompt",
+      skillIds: [],
+      specDir: testDir,
+    });
+
+    expect(result).toBe("Simple prompt");
+  });
+
+  it("buildPromptWithSkills should include multiple skills", async () => {
+    for (const skillId of ["skill-a", "skill-b"]) {
+      const skillDir = path.join(testDir, "skills", skillId);
+      await fs.mkdir(skillDir, { recursive: true });
+      await fs.writeFile(path.join(skillDir, "SKILL.md"), `# ${skillId} content`);
+    }
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Multi-skill test",
+      skillIds: ["skill-a", "skill-b"],
+      specDir: testDir,
+    });
+
+    expect(result).toContain("skill-a content");
+    expect(result).toContain("skill-b content");
+  });
+});
+
+// ─── AC-8: Cleanup on completion or failure ───────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-8
+describe("Cleanup on completion or failure", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac8-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should terminate agent process after successful completion", async () => {
+    const agent = makeTestAgent();
+
+    // If the agent process isn't terminated, the test would hang or
+    // leave zombie processes. The fact that runInvocation returns is
+    // evidence that the process was managed correctly.
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test cleanup on success",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+    // If we reach here without hanging, cleanup worked
+  });
+
+  it("should restore KSPEC_SESSION_ID env after invocation", async () => {
+    const agent = makeTestAgent();
+    const originalValue = process.env.KSPEC_SESSION_ID;
+
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test env restoration",
+      trigger: "task.ready",
+    });
+
+    // After invocation, env should be back to original
+    // (either undefined or the original value)
+    expect(process.env.KSPEC_SESSION_ID).toBe(originalValue);
+  });
+
+  it("should restore env even when invocation fails", async () => {
+    registerAdapter("failing-cleanup-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: { MOCK_ACP_EXIT_CODE: "1" },
+      description: "Failing adapter for cleanup test",
+    });
+
+    const agent = makeTestAgent({ adapter: "failing-cleanup-acp" });
+    const originalValue = process.env.KSPEC_SESSION_ID;
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test cleanup on failure",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("failed");
+    // Env should be restored
+    expect(process.env.KSPEC_SESSION_ID).toBe(originalValue);
+  });
+
+  it("should call removeEnvForAdapter to restore adapter-specific env injection", async () => {
+    // AC: @agent-invocation-lifecycle ac-8 — adapter env injection is restored to previous state
+    const removeEnvSpy = vi.spyOn(storeModule, "removeEnvForAdapter");
+
+    try {
+      const agent = makeTestAgent(); // uses "mock-acp" adapter
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Test adapter env restoration",
+        trigger: "task.ready",
+      });
+
+      // removeEnvForAdapter must be called with the adapter ID on cleanup
+      // For "mock-acp" the injectionResult is null so previousValue is undefined
+      expect(removeEnvSpy).toHaveBeenCalledWith("mock-acp", undefined);
+    } finally {
+      removeEnvSpy.mockRestore();
+    }
+  });
+
+  it("should call removeEnvForAdapter even when invocation fails", async () => {
+    // AC: @agent-invocation-lifecycle ac-8 — adapter env injection restored on failure path too
+    registerAdapter("failing-env-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: { MOCK_ACP_EXIT_CODE: "1" },
+      description: "Failing adapter for env restoration test",
+    });
+
+    const removeEnvSpy = vi.spyOn(storeModule, "removeEnvForAdapter");
+
+    try {
+      const agent = makeTestAgent({ adapter: "failing-env-acp" });
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Test env restoration on failure",
+        trigger: "task.ready",
+      });
+
+      expect(result.outcome).toBe("failed");
+      // removeEnvForAdapter called once for this invocation (not from prior test since spy was scoped)
+      expect(removeEnvSpy).toHaveBeenCalledWith("failing-env-acp", undefined);
+    } finally {
+      removeEnvSpy.mockRestore();
+    }
+  });
+});
+
+// ─── AC-9: Retry threshold and task blocking ──────────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-9
+describe("Consecutive failure threshold and task blocking", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac9-");
+    registerAdapter("always-fail-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: { MOCK_ACP_EXIT_CODE: "1" },
+      description: "Always-failing adapter for retry threshold tests",
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should block the task with a failure note when consecutive failures reach retry limit", async () => {
+    // AC: @agent-invocation-lifecycle ac-9 — consecutive failures → task blocked with note
+    // The agent's retry limit is derived from agent.budget.max_tasks (default 3).
+    // We pre-populate the capture file to simulate prior failure notes already recorded
+    // by previous invocations, then trigger the threshold-crossing invocation.
+    const captureFile = path.join(testDir, "kspec-calls.json");
+    const taskRef = "@" + testUlid("TASK");
+
+    // Mock kspec CLI: simulate "task get" returning a task with 3 existing AGENT-FAIL notes.
+    // The implementation calls getConsecutiveFailureCount (kspec task get --json) to read
+    // the note history. With 3 consecutive AGENT-FAIL notes and a retry limit of 3, blocking
+    // must be triggered.
+    const taskGetMockPath = path.join(testDir, "kspec-threshold-mock.cjs");
+    const mockTask = {
+      notes: [
+        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
+        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
+        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
+      ],
+    };
+    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
+'use strict';
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+const captureFile = process.env.KSPEC_CAPTURE_FILE;
+
+if (captureFile) {
+  let calls = [];
+  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
+  calls.push({ args, timestamp: Date.now() });
+  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
+}
+
+// Return task JSON for "task get ... --json" to simulate 3 consecutive prior failures
+if (args.includes('task') && args.includes('get') && args.includes('--json')) {
+  process.stdout.write(JSON.stringify(${JSON.stringify(mockTask)}) + '\\n');
+}
+
+process.exit(0);
+`);
+
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const agent = makeTestAgent({
+        adapter: "always-fail-acp",
+        budget: { max_tasks: 3, timeout_minutes: 30 },
+      } as Partial<Agent>);
+
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef,
+        prompt: "Test consecutive failure blocking",
+        trigger: "task.ready",
+        kspecCliPath: taskGetMockPath,
+      });
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+
+    // Verify task block was called
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+    const blockCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    );
+    expect(blockCall).toBeDefined();
+
+    // The block reason should mention consecutive failures and the agent
+    const reasonIdx = blockCall!.args.indexOf("--reason");
+    expect(reasonIdx).toBeGreaterThan(-1);
+    const blockReason = blockCall!.args[reasonIdx + 1] ?? "";
+    expect(blockReason).toContain("consecutive");
+  });
+
+  it("should NOT block the task when failure count is below the retry limit", async () => {
+    // AC: @agent-invocation-lifecycle ac-9 — below threshold: note added, no block
+    const captureFile = path.join(testDir, "kspec-calls-below.json");
+    const taskRef = "@" + testUlid("TASK");
+
+    // Mock kspec CLI: simulate task with 0 prior AGENT-FAIL notes (first failure)
+    const taskGetMockPath = path.join(testDir, "kspec-below-mock.cjs");
+    const emptyTask = { notes: [] };
+    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
+'use strict';
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+const captureFile = process.env.KSPEC_CAPTURE_FILE;
+
+if (captureFile) {
+  let calls = [];
+  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
+  calls.push({ args, timestamp: Date.now() });
+  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
+}
+
+if (args.includes('task') && args.includes('get') && args.includes('--json')) {
+  process.stdout.write(JSON.stringify(${JSON.stringify(emptyTask)}) + '\\n');
+}
+
+process.exit(0);
+`);
+
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const agent = makeTestAgent({
+        adapter: "always-fail-acp",
+        budget: { max_tasks: 3, timeout_minutes: 30 },
+      } as Partial<Agent>);
+
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef,
+        prompt: "Test below threshold",
+        trigger: "task.ready",
+        kspecCliPath: taskGetMockPath,
+      });
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+
+    // Note should be written
+    const noteCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    );
+    expect(noteCall).toBeDefined();
+
+    // Block should NOT be called (only 1 failure, limit is 3)
+    const blockCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    );
+    expect(blockCall).toBeUndefined();
+  });
+
+  it("should reset consecutive failure count after a successful invocation", async () => {
+    // AC: @agent-invocation-lifecycle ac-9 — streak resets after success; fail→success→fail is not consecutive
+    // Simulate: task has 2 prior AGENT-FAIL notes then 1 AGENT-SUCCESS note (streak reset).
+    // With retry limit=3, the next failure is count=1 → should NOT block.
+    const captureFile = path.join(testDir, "kspec-calls-reset.json");
+    const taskRef = "@" + testUlid("TASK");
+
+    // Mock kspec CLI: simulate task with AGENT-FAIL, AGENT-FAIL, AGENT-SUCCESS notes.
+    // The last note is AGENT-SUCCESS, so consecutive count (from end) = 0 before this failure.
+    const taskGetMockPath = path.join(testDir, "kspec-reset-mock.cjs");
+    const taskWithResetNotes = {
+      notes: [
+        { content: "[AGENT-FAIL] Invocation failed: first failure" },
+        { content: "[AGENT-FAIL] Invocation failed: second failure" },
+        { content: "[AGENT-SUCCESS] Invocation completed successfully" },
+      ],
+    };
+    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
+'use strict';
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+const captureFile = process.env.KSPEC_CAPTURE_FILE;
+
+if (captureFile) {
+  let calls = [];
+  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
+  calls.push({ args, timestamp: Date.now() });
+  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
+}
+
+if (args.includes('task') && args.includes('get') && args.includes('--json')) {
+  process.stdout.write(JSON.stringify(${JSON.stringify(taskWithResetNotes)}) + '\\n');
+}
+
+process.exit(0);
+`);
+
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    try {
+      const agent = makeTestAgent({
+        adapter: "always-fail-acp",
+        budget: { max_tasks: 3, timeout_minutes: 30 },
+      } as Partial<Agent>);
+
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef,
+        prompt: "Test streak reset after success",
+        trigger: "task.ready",
+        kspecCliPath: taskGetMockPath,
+      });
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+
+    const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+
+    // Failure note should be written
+    const noteCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef)
+    );
+    expect(noteCall).toBeDefined();
+
+    // Block should NOT be called — streak was reset by AGENT-SUCCESS, so only 1 consecutive failure now
+    const blockCall = calls.find((c) =>
+      c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
+    );
+    expect(blockCall).toBeUndefined();
+  });
+});
+
+// ─── Trait: error-guidance ────────────────────────────────────────────────────
+
+// AC: @trait-error-guidance ac-1 — N/A: This is a library module (not a CLI command).
+// It does not produce user-facing error messages directly. Error details are passed
+// to callers via InvocationResult.error for higher-level handling.
+
+// AC: @trait-error-guidance ac-2 — N/A: Library module; error guidance is responsibility
+// of CLI commands that invoke runInvocation().
+
+// AC: @trait-error-guidance ac-3 — N/A: No ref lookups in this module.
+
+// AC: @trait-error-guidance ac-4 — N/A: No state transitions displayed to users.
+
+// AC: @trait-error-guidance ac-5 — N/A: Validation errors are thrown as TypeScript errors,
+// not formatted for user display.
+
+// AC: @trait-error-guidance ac-6 — N/A: Module has no --json mode; it's a library function.

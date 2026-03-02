@@ -1,0 +1,21 @@
+/**
+ * Agent Runtime module.
+ *
+ * Provides the core building blocks for per-invocation agent lifecycle:
+ * session creation, ACP agent spawn, prompt delivery, event logging,
+ * timeout handling, and structured completion tracking.
+ */
+
+export {
+  runInvocation,
+  InvocationTimeoutError,
+  type InvocationOptions,
+  type InvocationResult,
+} from "./invocation.js";
+
+export {
+  resolveSkills,
+  buildPromptWithSkills,
+  type ResolvedSkill,
+  type BuildPromptOptions,
+} from "./prompts.js";
