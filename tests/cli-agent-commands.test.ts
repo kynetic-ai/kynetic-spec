@@ -700,6 +700,67 @@ describe("AC-6: kspec agent status with running daemon", () => {
     // AC: @cli-agent-commands ac-6 - elapsed time shown (45000ms = 45s)
     expect(combined).toContain("45s");
   });
+
+  it("should show per-invocation details for queued invocations (agent name, task ref, wait time)", async () => {
+    // AC: @cli-agent-commands ac-6 - queued invocations displayed with agent names, task refs, and elapsed time
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        running: true,
+        activeInvocations: 0,
+        queuedInvocations: 2,
+        invocations: [],
+        queued: [
+          {
+            agentId: "worker",
+            agentName: "Worker Agent",
+            taskRef: "@01QTASK002",
+            waitMs: 12000,
+          },
+          {
+            agentId: "reviewer",
+            agentName: "Reviewer Agent",
+            taskRef: "@01QTASK003",
+            waitMs: 3000,
+          },
+        ],
+      }),
+    } as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const program = createTestProgram();
+    const logs: string[] = [];
+    const origLog = console.log;
+    console.log = (...args) => { logs.push(args.join(" ")); };
+
+    try {
+      const origCwd = process.cwd();
+      process.chdir(testDir);
+      try {
+        await program.parseAsync(["agent", "status"], { from: "user" });
+      } finally {
+        process.chdir(origCwd);
+      }
+    } catch {
+      // suppress exitOverride
+    } finally {
+      console.log = origLog;
+    }
+
+    const combined = logs.join("\n");
+    // AC: @cli-agent-commands ac-6 - queued agent name shown
+    expect(combined).toContain("Worker Agent");
+    expect(combined).toContain("Reviewer Agent");
+    // AC: @cli-agent-commands ac-6 - queued task ref shown
+    expect(combined).toContain("@01QTASK002");
+    expect(combined).toContain("@01QTASK003");
+    // AC: @cli-agent-commands ac-6 - queued wait time shown (12000ms = 12s)
+    expect(combined).toContain("12s");
+  });
 });
 
 // ─── AC-7: Override flags verified via dry-run ────────────────────────────────

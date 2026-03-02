@@ -23,6 +23,7 @@ import { buildPromptWithSkills } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, isJsonMode } from "../output.js";
+import { parseIntOption } from "../validators.js";
 import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
@@ -241,17 +242,24 @@ export function registerAgentCommands(program: Command): void {
         if (opts.dryRun) {
           // Pre-compute overrides so dry-run reflects what the actual invocation would use
           // AC: @cli-agent-commands ac-7 - overrides are visible in dry-run output
-          const dryTimeoutOverride = opts.timeout ? parseInt(opts.timeout, 10) : undefined;
-          const dryBudgetOverride = opts.budget ? parseInt(opts.budget, 10) : undefined;
-
           // AC: @trait-semantic-exit-codes ac-2 - validate numeric inputs even in dry-run
-          if (dryTimeoutOverride !== undefined && isNaN(dryTimeoutOverride)) {
-            error("Invalid --timeout value: must be a positive integer (minutes)", { suggestion: "Example: --timeout 30" });
-            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          let dryTimeoutOverride: number | undefined;
+          if (opts.timeout) {
+            const parsed = parseIntOption(opts.timeout, { min: 1, max: 10080, name: "Timeout" });
+            if (!parsed.ok) {
+              error(`Invalid --timeout value: ${parsed.error}`, { suggestion: "Example: --timeout 30" });
+              process.exit(EXIT_CODES.VALIDATION_FAILED);
+            }
+            dryTimeoutOverride = parsed.value;
           }
-          if (dryBudgetOverride !== undefined && isNaN(dryBudgetOverride)) {
-            error("Invalid --budget value: must be a positive integer", { suggestion: "Example: --budget 10" });
-            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          let dryBudgetOverride: number | undefined;
+          if (opts.budget) {
+            const parsed = parseIntOption(opts.budget, { min: 1, max: 99999, name: "Budget" });
+            if (!parsed.ok) {
+              error(`Invalid --budget value: ${parsed.error}`, { suggestion: "Example: --budget 10" });
+              process.exit(EXIT_CODES.VALIDATION_FAILED);
+            }
+            dryBudgetOverride = parsed.value;
           }
 
           const effectiveTimeoutMinutes = dryTimeoutOverride ?? agentDef.budget?.timeout_minutes;
@@ -291,17 +299,23 @@ export function registerAgentCommands(program: Command): void {
         // AC: @cli-agent-commands ac-2 - one-shot invocation with task binding
         // AC: @cli-agent-commands ac-3 - one-shot invocation with custom prompt (no task binding)
         // AC: @cli-agent-commands ac-7 - CLI overrides agent defaults
-        const timeoutOverride = opts.timeout ? parseInt(opts.timeout, 10) : undefined;
-        const budgetOverride = opts.budget ? parseInt(opts.budget, 10) : undefined;
-
-        // Validate numeric overrides
-        if (timeoutOverride !== undefined && isNaN(timeoutOverride)) {
-          error("Invalid --timeout value: must be a positive integer (minutes)", { suggestion: "Example: --timeout 30" });
-          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        let timeoutOverride: number | undefined;
+        if (opts.timeout) {
+          const parsed = parseIntOption(opts.timeout, { min: 1, max: 10080, name: "Timeout" });
+          if (!parsed.ok) {
+            error(`Invalid --timeout value: ${parsed.error}`, { suggestion: "Example: --timeout 30" });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          timeoutOverride = parsed.value;
         }
-        if (budgetOverride !== undefined && isNaN(budgetOverride)) {
-          error("Invalid --budget value: must be a positive integer", { suggestion: "Example: --budget 10" });
-          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        let budgetOverride: number | undefined;
+        if (opts.budget) {
+          const parsed = parseIntOption(opts.budget, { min: 1, max: 99999, name: "Budget" });
+          if (!parsed.ok) {
+            error(`Invalid --budget value: ${parsed.error}`, { suggestion: "Example: --budget 10" });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          budgetOverride = parsed.value;
         }
 
         const effectiveAgent = {
@@ -403,6 +417,12 @@ export function registerAgentCommands(program: Command): void {
             taskRef: string | undefined;
             elapsedMs: number;
           }>;
+          queued: Array<{
+            agentId: string;
+            agentName: string;
+            taskRef: string | undefined;
+            waitMs: number;
+          }>;
         };
 
         output(data, () => {
@@ -421,6 +441,18 @@ export function registerAgentCommands(program: Command): void {
               const taskStr = inv.taskRef ? `  task: ${chalk.yellow(inv.taskRef)}` : "";
               console.log(`  ${chalk.cyan(inv.agentId)}  ${chalk.gray(inv.agentName)}`);
               console.log(`    session: ${chalk.gray(inv.sessionId)}  elapsed: ${elapsed}s${taskStr}`);
+            }
+          }
+
+          const queuedItems = data.queued ?? [];
+          if (queuedItems.length > 0) {
+            console.log();
+            console.log(chalk.bold("Queued:"));
+            for (const q of queuedItems) {
+              const wait = Math.round(q.waitMs / 1000);
+              const taskStr = q.taskRef ? `  task: ${chalk.yellow(q.taskRef)}` : "";
+              console.log(`  ${chalk.cyan(q.agentId)}  ${chalk.gray(q.agentName)}`);
+              console.log(`    waiting: ${wait}s${taskStr}`);
             }
           }
         });

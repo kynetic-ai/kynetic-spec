@@ -120,6 +120,8 @@ interface QueueEntry {
   change: TaskStateChange;
   retryCount: number;
   nextRetryAt: number;
+  /** When this entry was first enqueued (for wait-time display) */
+  enqueuedAtMs: number;
 }
 
 /**
@@ -362,6 +364,12 @@ export class DispatchEngine {
       taskRef: string | undefined;
       elapsedMs: number;
     }>;
+    queued: Array<{
+      agentId: string;
+      agentName: string;
+      taskRef: string | undefined;
+      waitMs: number;
+    }>;
   } {
     let active = 0;
     let queued = 0;
@@ -376,7 +384,15 @@ export class DispatchEngine {
       taskRef: r.taskRef,
       elapsedMs: now - r.startedAtMs,
     }));
-    return { running: this.running, activeInvocations: active, queuedInvocations: queued, invocations };
+    const queuedItems = Array.from(this.queues.values()).flatMap((entries) =>
+      entries.map((e) => ({
+        agentId: e.agent.id,
+        agentName: e.agent.name,
+        taskRef: e.change.taskRef,
+        waitMs: now - e.enqueuedAtMs,
+      })),
+    );
+    return { running: this.running, activeInvocations: active, queuedInvocations: queued, invocations, queued: queuedItems };
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────────
@@ -526,7 +542,7 @@ export class DispatchEngine {
    */
   private _enqueue(agent: LoadedAgent, change: TaskStateChange): void {
     const queue = this.queues.get(agent.id) ?? [];
-    queue.push({ agent, change, retryCount: 0, nextRetryAt: 0 });
+    queue.push({ agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now() });
     this.queues.set(agent.id, queue);
   }
 
