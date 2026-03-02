@@ -69872,6 +69872,23 @@
 
         - Verification: npm test (unit), kspec validate
       supersedes: null
+    - _ulid: 01KJPMX6BADTCE061MNZ3QVXRR
+      created_at: 2026-03-02T06:48:55.402Z
+      author: "@claude"
+      content: >-
+        Implemented agent invocation lifecycle module:
+
+        - src/agent-runtime/invocation.ts: Core runInvocation() function covering all 9 ACs
+
+        - src/agent-runtime/prompts.ts: resolveSkills() and buildPromptWithSkills() for AC-7
+
+        - src/agent-runtime/index.ts: Public API exports
+
+        - tests/agent-invocation-lifecycle.test.ts: 22 tests covering all ACs
+
+        All 22 tests pass. Pre-existing failures in core-skill-install.test.ts are unrelated to this
+        work.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
