@@ -70394,6 +70394,7 @@
         asserting needs_work < pending due conditional check."
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJQKVZ1J0SBDG9B3A3RAJBZ6
   slugs: []
   title: Fix batch exec copying sessions/blobs to temp dir
