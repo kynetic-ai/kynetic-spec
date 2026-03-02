@@ -2450,8 +2450,7 @@ features:
         then: |
           The specified fields are updated while preserving unmodified fields
       - id: ac-11
-        given: |
-          A user runs kspec meta remove agent <id>
+        given: A user runs kspec meta delete agent <id>
         when: |
           The agent definition exists
         then: |
