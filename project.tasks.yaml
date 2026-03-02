@@ -70332,6 +70332,13 @@
         check-unresolved-comments is also failing due to this unresolved thread. Review posted on PR
         #634."
       supersedes: null
+    - _ulid: 01KJRA3E6AYCBHAKHS7NJTJR2K
+      created_at: 2026-03-02T22:18:34.570Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 4] Fix complete. AC-11 carry-forward resolved: stopAllEngines() in
+        agent-dispatch.ts iterates the engines map on daemon shutdown. All 25 CLI agent command
+        tests pass. Resolved 2 unresolved PR threads on PR #634."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP278FCWB3A8DBKXB84FTAF
