@@ -154,38 +154,6 @@ function getConsecutiveFailureCount(taskRef: string, cwd: string, kspecCliPath: 
 }
 
 /**
- * Resolve skills for the agent and build skill content section for the prompt.
- * AC: @agent-invocation-lifecycle ac-7
- */
-async function resolveSkillsForAgent(
-  agent: Agent,
-  specDir: string,
-): Promise<string> {
-  if (!agent.skills || agent.skills.length === 0) {
-    return "";
-  }
-
-  const skillSections: string[] = [];
-
-  for (const skillId of agent.skills) {
-    try {
-      const skillContentPath = path.join(specDir, "skills", skillId, "SKILL.md");
-      const { readFile } = await import("node:fs/promises");
-      const content = await readFile(skillContentPath, "utf-8");
-      skillSections.push(`<!-- Skill: ${skillId} -->\n${content}`);
-    } catch {
-      // Skill content not found — skip silently
-    }
-  }
-
-  if (skillSections.length === 0) {
-    return "";
-  }
-
-  return `\n\n## Skills\n\n${skillSections.join("\n\n")}`;
-}
-
-/**
  * Dispose a spawned agent, terminating the process if running.
  * AC: @agent-invocation-lifecycle ac-8
  */
