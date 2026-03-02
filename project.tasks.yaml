@@ -69692,7 +69692,7 @@
   type: task
   spec_ref: "@session-model-evolution"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -69810,6 +69810,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-02T06:24:41.037Z
+  closed_reason: "Merged in PR #631 (commit 1274e5a): implemented session model evolution by extending
+    session metadata with trigger/agent_id defaults for legacy reads, adding timed_out/failed
+    statuses and agent.* event types, and updating session log list/show for loop vs invocation +
+    human-readable agent event rendering. AC coverage verified for ac-1..ac-7 in
+    tests/session-model-evolution.test.ts; full regression passed (npm test: 3675 passed, 0
+    failed)."
 - _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
   slugs:
     - implement-agent-invocation-lifecycle
