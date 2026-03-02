@@ -551,6 +551,9 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-3
    */
   private async _drainQueues(agents: LoadedAgent[]): Promise<void> {
+    // Prevent new invocation starts during/after shutdown.
+    if (!this.running) return;
+
     for (const agent of agents) {
       const maxConcurrent = agent.concurrency?.max_concurrent ?? 1;
       const active = this.activeCount.get(agent.id) ?? 0;
@@ -678,6 +681,8 @@ export class DispatchEngine {
         // Decrement active count and drain again
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
+
+        if (!this.running) return;
 
         // Try to drain more items
         try {

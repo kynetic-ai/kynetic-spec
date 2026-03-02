@@ -126,8 +126,33 @@ export function registerAgentCommands(program: Command): void {
         }
 
         // AC: @trait-filterable-list ac-3, ac-4 - pagination
-        const limit = opts.limit ? parseInt(opts.limit, 10) : total;
-        const offset = opts.offset ? parseInt(opts.offset, 10) : 0;
+        // AC: @trait-semantic-exit-codes ac-2 - invalid numeric input exits with validation error
+        let limit = total;
+        if (opts.limit !== undefined) {
+          const parsed = parseIntOption(opts.limit, {
+            min: 0,
+            max: Number.MAX_SAFE_INTEGER,
+            name: "Limit",
+          });
+          if (!parsed.ok) {
+            error(`Invalid --limit value: ${parsed.error}`, { suggestion: "Example: --limit 10" });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          limit = parsed.value;
+        }
+        let offset = 0;
+        if (opts.offset !== undefined) {
+          const parsed = parseIntOption(opts.offset, {
+            min: 0,
+            max: Number.MAX_SAFE_INTEGER,
+            name: "Offset",
+          });
+          if (!parsed.ok) {
+            error(`Invalid --offset value: ${parsed.error}`, { suggestion: "Example: --offset 5" });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          offset = parsed.value;
+        }
         const paginated = agents.slice(offset, offset + limit);
 
         // AC: @trait-semantic-exit-codes ac-5 - empty result set exits 0

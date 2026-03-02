@@ -271,6 +271,76 @@ describe("AC-1: kspec agent list", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stdout.trim()).toBe("1");
   });
+
+  it("should fail validation for invalid --limit values", () => {
+    const agent = makeTestAgent();
+    initGitRepo(testDir);
+    const fs_sync = require("node:fs");
+    const path_sync = require("node:path");
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        agents: [{
+          _ulid: agent._ulid,
+          id: agent.id,
+          name: agent.name,
+          dispatch: agent.dispatch ?? [],
+          concurrency: agent.concurrency,
+          adapter: agent.adapter,
+          auto_approve: false,
+        }],
+      }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+
+    // AC: @trait-semantic-exit-codes ac-2 - invalid numeric input exits 1
+    const result = kspec("agent list --limit 5abc", testDir, { expectFail: true });
+    expect(result.exitCode).toBe(4);
+    expect(result.stderr + result.stdout).toContain("Invalid --limit value");
+  });
+
+  it("should fail validation for invalid --offset values", () => {
+    const agent = makeTestAgent();
+    initGitRepo(testDir);
+    const fs_sync = require("node:fs");
+    const path_sync = require("node:path");
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        agents: [{
+          _ulid: agent._ulid,
+          id: agent.id,
+          name: agent.name,
+          dispatch: agent.dispatch ?? [],
+          concurrency: agent.concurrency,
+          adapter: agent.adapter,
+          auto_approve: false,
+        }],
+      }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+
+    // AC: @trait-semantic-exit-codes ac-2 - invalid numeric input exits 1
+    const result = kspec("agent list --offset xyz", testDir, { expectFail: true });
+    expect(result.exitCode).toBe(4);
+    expect(result.stderr + result.stdout).toContain("Invalid --offset value");
+  });
 });
 
 // ─── @trait-filterable-list ac-1: --status filter ────────────────────────────

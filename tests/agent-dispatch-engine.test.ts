@@ -742,6 +742,37 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     // Abort controller should have been signalled
     expect(aborted).toBe(true);
   });
+
+  it("should not start queued invocations if drain runs after stop()", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    await engine.start();
+    await engine.stop();
+
+    const change = makeStateChange({ toStatus: "pending" });
+    const queueEntry = {
+      agent,
+      change,
+      retryCount: 0,
+      nextRetryAt: 0,
+      enqueuedAtMs: Date.now(),
+    };
+
+    const internal = engine as unknown as {
+      queues: Map<string, unknown[]>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+    };
+    internal.queues.set(agent.id, [queueEntry]);
+
+    const spawnSpy = vi.spyOn(engine as unknown as { _spawnInvocation: (a: unknown, e: unknown) => boolean }, "_spawnInvocation");
+
+    await internal._drainQueues([agent]);
+
+    expect(spawnSpy).not.toHaveBeenCalled();
+    expect(internal.queues.get(agent.id)).toHaveLength(1);
+  });
 });
 
 // ─── AC-12: Shadow branch serialization ──────────────────────────────────────
