@@ -431,6 +431,9 @@ features:
                 when: flush encounters a write error
                 then: the error is reported and .kspec/ is left in a consistent pre-batch state — no partial writes
                   are silently committed
+            status:
+              maturity: draft
+              implementation: in_progress
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
