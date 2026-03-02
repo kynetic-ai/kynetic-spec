@@ -69919,6 +69919,30 @@
         ac-5 task failure note, ac-6 blob externalization, ac-8 adapter env restoration, and ac-9
         retry-threshold task blocking behavior."
       supersedes: null
+    - _ulid: 01KJQGGDZ5XHWBVR3N09KF08RS
+      created_at: 2026-03-02T14:51:17.349Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1 resolved] Fixed all AC coverage gaps:
+
+        1. AC-3: Added test verifying timeout note ([AGENT-TIMEOUT]) is written to task via
+        kspec-capture-mock.cjs
+
+        2. AC-5: Added test verifying failure note ([AGENT-FAIL]) is written to task  
+
+        3. AC-6: Added test with 20KB response text verifying blob externalization
+        (isSessionBlobPointer check + blobs/ dir verification)
+
+        4. AC-8: Added two tests using vi.spyOn(storeModule, 'removeEnvForAdapter') — verifies
+        called on success and failure paths with correct adapterId
+
+        5. AC-9: Replaced InvocationTimeoutError shape test with proper threshold blocking tests
+        using a mock kspec CLI that simulates 3 consecutive AGENT-FAIL notes, plus a below-threshold
+        test
+
+        All 28 tests pass. Pre-existing failures in enhanced-setup and core-skill-install are
+        unrelated.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
