@@ -10462,8 +10462,33 @@ runs:
   - _ulid: 01KJQTEPT04DXMB2ST78VKDZEC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-02T17:45:06.624Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-02T17:45:06.624Z
+        completed_at: 2026-03-02T17:45:20.752Z
+        notes: >-
+          What worked well:
+
+          1. tasks ready/needs_work bug fix — minimal, correct, root cause obvious once found
+
+          2. Spec-first discipline — three specs updated alongside the code change
+
+          3. Dual review (codex + subagent in parallel) caught real issues: missing AC annotations,
+          fragile sort test, missing flush failure AC for batch-write-buffer
+
+          4. Sessions recovery from remote — git checkout origin/kspec-meta -- sessions/ was the
+          right tool
+
+          5. Shadow worktree repair worked cleanly after corruption
+
+          6. ENOSPC root cause found quickly via Write tool error rather than endless shell
+          debugging
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-02T17:45:20.752Z
+        completed_at: 2026-03-02T17:45:20.752Z
     initiated_by: "@claude"
