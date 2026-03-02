@@ -70136,7 +70136,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70144,7 +70144,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQT6EXAE3K8FTB2GW2ECCYF
+  session_id: null
   created_at: 2026-03-02T01:22:21.957Z
   started_at: 2026-03-02T18:22:50.515Z
   submitted_at: 2026-03-02T18:22:51.849Z
@@ -70231,6 +70231,15 @@
         (overrides verified in dry-run JSON), @trait-filterable-list ac-1 (status filter)
 
         Branch: feat/implement-agent-dispatch-engine (PR #634).
+      supersedes: null
+    - _ulid: 01KJQXWSPA8HDYH0110BH2WF02
+      created_at: 2026-03-02T18:45:14.058Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: PR #634 review findings: MUST-FIX 1) @cli-agent-commands
+        ac-6 not satisfied (agent status shows only aggregate counts, missing
+        session/agent/task/elapsed detail), 2) dry-run path accepts invalid --timeout/--budget
+        values (semantic validation gap), 3) regression gate not green in this environment (12
+        failing tests). See inline review comments."
       supersedes: null
   todos: []
   automation: eligible
