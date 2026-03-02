@@ -278,7 +278,7 @@ export function registerTasksCommands(program: Command): void {
               info("No tasks need review");
             } else {
               info(
-                "No tasks ready - all pending tasks are blocked or have unmet dependencies",
+                "No tasks ready - all pending/needs_work tasks are blocked or have unmet dependencies",
               );
             }
           } else {
