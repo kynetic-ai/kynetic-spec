@@ -10600,7 +10600,7 @@ runs:
   - _ulid: 01KJR837T8MYNJ7MFGXB9F55CQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-03-02T21:43:30.889Z
     step_results:
@@ -10640,5 +10640,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-03-02T21:44:58.809Z
-        completed_at: 2026-03-02T21:44:58.809Z
+        completed_at: 2026-03-02T21:51:28.890Z
+        notes: "All three items captured: 1. Inbox 01KJR89E — cli-utilities skill for shared helpers. 2.
+          Task 01KJR8FK — auto-build dist before CLI subprocess tests. 3. Inbox 01KJR8HN — CLI
+          filter options must be backed by schema fields."
+      - step_index: 5
+        status: completed
+        started_at: 2026-03-02T21:51:28.890Z
+        completed_at: 2026-03-02T21:51:28.890Z
     initiated_by: "@claude"
