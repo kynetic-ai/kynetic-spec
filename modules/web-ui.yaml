@@ -134,6 +134,85 @@ features:
     status:
       maturity: draft
       implementation: in_progress
+    features:
+      - _ulid: 01KJP2768T96S8870BH36ZE76K
+        slugs:
+          - daemon-agent-dispatch
+        title: Daemon Agent Dispatch Integration
+        type: feature
+        tags: []
+        description: |
+          Agent dispatch API routes in the daemon, enhanced file watcher with
+          task state diffing for change detection, CLI event emission endpoint,
+          and WebSocket broadcasts for agent invocation status.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              The daemon is running with dispatch enabled
+            when: |
+              The file watcher detects a change in project.tasks.yaml
+            then: |
+              The watcher parses the new task states, diffs against the
+              previously cached states, and emits state change events to
+              the dispatch engine for each detected transition
+          - id: ac-2
+            given: |
+              A CLI command changes task state (e.g. kspec task start)
+            when: |
+              The daemon is running
+            then: |
+              The CLI posts a JSON event to POST /api/agent/events containing
+              task_id, previous_status, new_status, and timestamp
+          - id: ac-3
+            given: |
+              The daemon receives a state change event matching dispatch rules
+            when: |
+              The dispatch engine processes it
+            then: |
+              The agent is dispatched and a status event is broadcast on the
+              agents WebSocket topic
+          - id: ac-4
+            given: |
+              A WebSocket client subscribes to agent status updates
+            when: |
+              An agent invocation starts, completes, or fails
+            then: |
+              A broadcast event is sent containing session_id, agent_id,
+              task_id, status, and timestamp
+          - id: ac-5
+            given: |
+              GET /api/agent/status is called
+            when: |
+              The dispatch engine is running
+            then: |
+              Returns JSON with active invocations array, queue depth number,
+              dispatch_enabled boolean, and agent_definitions array
+          - id: ac-6
+            given: |
+              POST /api/agent/dispatch is called with action start or stop
+            when: |
+              The request is from localhost
+            then: |
+              The dispatch engine starts or stops and returns JSON with the
+              new dispatch_enabled state
+          - id: ac-7
+            given: |
+              The daemon is not running
+            when: |
+              A CLI command changes task state
+            then: |
+              The event emission POST fails silently with no error to the
+              user — dispatch requires a running daemon
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-api-endpoint"
+          - "@trait-localhost-security"
+          - "@trait-websocket-protocol"
+        notes: []
+        created: 2026-03-02T01:22:20.058Z
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract

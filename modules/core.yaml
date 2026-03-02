@@ -799,6 +799,82 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KJP27632FPGSCSMEP0332YDP
+    slugs:
+      - session-model-evolution
+    title: Session Model Evolution
+    type: feature
+    tags: []
+    description: |
+      Extend SessionMetadata with trigger source, agent definition reference,
+      and structured completion tracking. Extend SessionStatusSchema with
+      timed_out and failed statuses. Each agent invocation creates its own
+      session rather than sharing one session across a loop of iterations.
+      Backward compatible with existing sessions.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          A session is created for an agent invocation
+        when: |
+          The session metadata is written
+        then: |
+          It includes trigger (event type that caused dispatch), agent_id
+          (reference to agent definition), and task_id (the task being
+          worked on) fields
+      - id: ac-2
+        given: |
+          A session was created by the old ralph system without trigger/agent_id
+        when: |
+          The session is read by any session command
+        then: |
+          trigger defaults to "legacy" and agent_id defaults to the
+          agent_type value — no error is raised
+      - id: ac-3
+        given: |
+          SessionStatusSchema currently allows active, completed, abandoned
+        when: |
+          The schema is extended
+        then: |
+          timed_out and failed are added as valid status values
+      - id: ac-4
+        given: |
+          New event types agent.dispatched, agent.started, agent.completed,
+          agent.failed, agent.timeout are defined
+        when: |
+          Events with these types are appended to a session log
+        then: |
+          The EventTypeSchema accepts them without error
+      - id: ac-5
+        given: |
+          An agent invocation completes a task
+        when: |
+          The completion is recorded
+        then: |
+          A structured agent.completed event is appended with task_id,
+          outcome (success, blocked, failed), and duration_ms fields
+      - id: ac-6
+        given: |
+          kspec session log list is run
+        when: |
+          Sessions from both old ralph and new agent runtime exist
+        then: |
+          Legacy sessions show type "loop" and new sessions show type
+          "invocation" in the output
+      - id: ac-7
+        given: |
+          kspec session log show is run on a new-style invocation session
+        when: |
+          The session contains agent.* events
+        then: |
+          The events are rendered with human-readable formatting matching
+          the existing event display patterns
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-02T01:22:19.874Z
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z

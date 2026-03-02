@@ -69525,7 +69525,10 @@
   created_at: 2026-03-01T21:35:32.217Z
   notes: []
   todos: []
-- title: Design agent runtime architecture — from ralph loop to reactive agent service
+- _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
+  slugs: []
+  title: Design agent runtime architecture — from ralph loop to reactive agent service
+  type: task
   description: >-
     Replace the ralph batch loop with a reactive agent runtime that dispatches named agents based on
     task state changes. The outcome is a spec plan (importable via kspec plan import).
@@ -69577,24 +69580,233 @@
     A spec plan document suitable for `kspec plan import` covering the module, features,
     requirements, and acceptance criteria for the agent runtime system. Should address migration
     path from current ralph loop.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - design
     - ralph
     - agents
     - architecture
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-03-01T22:03:54.284Z
+  notes: []
+  todos: []
   automation: manual_only
-  _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
+- _ulid: 01KJP276K7PBYD5M3R78P3SFH7
+  slugs:
+    - implement-agent-definition-schema
+  title: Implement Agent Definition Schema
+  type: task
+  spec_ref: "@agent-definition-schema"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:20.391Z
+  notes:
+    - _ulid: 01KJP276K70GRHAEJZJ3166E31
+      created_at: 2026-03-02T01:22:20.391Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Extend AgentSchema in src/schema/meta.ts. Add dispatch (array of
+        {on, filter?}), adapter (string), skills (string[]), budget ({max_tasks?,
+        timeout_minutes?}), concurrency ({max_concurrent?}), auto_approve (boolean),
+        and prompt_template (string?) fields. All new fields optional for backward
+        compatibility. CRUD uses existing meta add/set/remove patterns.
+  todos: []
+- _ulid: 01KJP276YTPF94VNY0AVCXXH90
+  slugs:
+    - implement-session-model-evolution
+  title: Implement Session Model Evolution
+  type: task
+  spec_ref: "@session-model-evolution"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:20.762Z
+  notes:
+    - _ulid: 01KJP276YTRR82K1S7DCM573YZ
+      created_at: 2026-03-02T01:22:20.762Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Extend SessionMetadataSchema in src/sessions/types.ts. Add trigger
+        (enum: manual, task.ready, task.needs_work, task.pending_review, legacy),
+        agent_id (string), as optional fields. Use existing task_id field for
+        task reference (not a new task_ref — maintains backward compat). Extend
+        SessionStatusSchema with timed_out, failed. Extend EventTypeSchema
+        with new agent.* event types. Update session log list/show rendering
+        to distinguish session types.
+  todos: []
+- _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
+  slugs:
+    - implement-agent-invocation-lifecycle
+  title: Implement Agent Invocation Lifecycle
+  type: task
+  spec_ref: "@agent-invocation-lifecycle"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:21.136Z
+  notes:
+    - _ulid: 01KJP277AGQJBW1KKPWCD72RM0
+      created_at: 2026-03-02T01:22:21.136Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Extract reusable prompt building from src/cli/commands/ralph.ts into
+        src/agent-runtime/prompts.ts. Extract tool request handling and streaming
+        into src/agent-runtime/invocation.ts. Reuse existing session store
+        (src/sessions/store.ts), ACP client (src/acp/client.ts), and agent
+        spawner (src/agents/spawner.ts). The invocation module is the core
+        unit — dispatch engine and CLI one-shot both call into it.
+  todos: []
+- _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
+  slugs:
+    - implement-agent-dispatch-engine
+  title: Implement Agent Dispatch Engine
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:21.575Z
+  notes:
+    - _ulid: 01KJP277R7AT1AZBBB1G8JWY3V
+      created_at: 2026-03-02T01:22:21.575Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        New module at src/agent-runtime/dispatch.ts. In-memory queue with
+        configurable concurrency. Event deduplication via a Map of recent
+        (task_id, from_state, to_state) tuples with TTL (e.g. 2 seconds).
+        Bootstrap on start: load all tasks, evaluate dispatch rules, queue
+        matches. Shadow branch serialization: wrap kspec CLI mutations in
+        a queue/lock when concurrent agents are running. Task state diffing
+        stores previous parsed states in memory, compares on file change.
+  todos: []
+- _ulid: 01KJP27845ETXB3B3BPA4K7PTT
+  slugs:
+    - implement-cli-agent-commands
+  title: Implement CLI Agent Commands
+  type: task
+  spec_ref: "@cli-agent-commands"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:21.957Z
+  notes:
+    - _ulid: 01KJP27845ZTBVBC820S79MMN5
+      created_at: 2026-03-02T01:22:21.957Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        New command registration at src/cli/commands/agent.ts. Follow existing
+        command patterns. The run subcommand reuses agent-invocation-lifecycle
+        for session creation and ACP spawn. dispatch start/stop communicates
+        with the daemon via HTTP API (POST /api/agent/dispatch).
+  todos: []
+- _ulid: 01KJP278FCWB3A8DBKXB84FTAF
+  slugs:
+    - implement-daemon-agent-dispatch-integration
+  title: Implement Daemon Agent Dispatch Integration
+  type: task
+  spec_ref: "@daemon-agent-dispatch"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:22.316Z
+  notes:
+    - _ulid: 01KJP278FCYMWFF26JQBC67G1X
+      created_at: 2026-03-02T01:22:22.316Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        New route file at packages/daemon/src/routes/agents.ts following
+        existing route patterns (createAgentRoutes). Enhanced watcher needs
+        a TaskStateDiffCache class that stores last-known parsed task states
+        and computes diffs on change. CLI event POST is fire-and-forget
+        with a short timeout (1s). WebSocket broadcasts use existing
+        pubsub infrastructure with a new "agents" topic.
+  todos: []
+- _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
+  slugs:
+    - implement-ralph-replacement
+  title: Implement Ralph Replacement
+  type: task
+  spec_ref: "@ralph-replacement"
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-02T01:22:22.683Z
+  notes:
+    - _ulid: 01KJP278TV2GKBMD6DMP6PG4PX
+      created_at: 2026-03-02T01:22:22.683Z
+      author: "@claude"
+      content: See plan @plan-reactive-agent-runtime for implementation notes
+  todos: []
+- title: Write migration guide from ralph to agent runtime
+  type: task
+  plan_ref: "@plan-reactive-agent-runtime"
+  priority: 3
+  slugs:
+    - task-ralph-migration-guide
+  tags:
+    - docs
+    - migration
+  depends_on: []
+  notes: []
+  _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-01T22:03:54.284Z
-  notes: []
+  created_at: 2026-03-02T01:22:23.358Z
   todos: []
