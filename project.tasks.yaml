@@ -70382,7 +70382,7 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-agent-dispatch-engine"
@@ -70467,6 +70467,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-02T23:06:22.429Z
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
   slugs:
     - implement-ralph-replacement
