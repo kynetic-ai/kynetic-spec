@@ -69824,7 +69824,7 @@
   type: task
   spec_ref: "@agent-invocation-lifecycle"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-agent-definition-schema"
@@ -69836,7 +69836,7 @@
   session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
   created_at: 2026-03-02T01:22:21.136Z
   started_at: 2026-03-02T16:16:03.059Z
-  submitted_at: 2026-03-02T16:06:42.148Z
+  submitted_at: 2026-03-02T16:26:02.532Z
   notes:
     - _ulid: 01KJP277AGQJBW1KKPWCD72RM0
       created_at: 2026-03-02T01:22:21.136Z
