@@ -69833,7 +69833,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
   created_at: 2026-03-02T01:22:21.136Z
+  started_at: 2026-03-02T06:25:20.835Z
   notes:
     - _ulid: 01KJP277AGQJBW1KKPWCD72RM0
       created_at: 2026-03-02T01:22:21.136Z
@@ -69853,10 +69855,25 @@
       content: "Automation: eligible. Core runtime module with 9 ACs. Implementation notes specify
         extraction from ralph.ts and target modules to create."
       supersedes: null
+    - _ulid: 01KJPKM76XE1GNTGASA004ZRSG
+      created_at: 2026-03-02T06:26:32.797Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Implement Agent Invocation Lifecycle module as a core building block for the
+        reactive agent runtime. Abstracts per-invocation lifecycle from ralph.ts monolith.
+
+        - Scope: Create src/agent-runtime/invocation.ts (lifecycle orchestration) and
+        src/agent-runtime/prompts.ts (prompt building). Extract from ralph.ts, not replace it.
+
+        - Files: New: src/agent-runtime/invocation.ts, src/agent-runtime/prompts.ts,
+        src/agent-runtime/index.ts. Test: tests/agent-runtime/invocation.test.ts
+
+        - Verification: npm test (unit), kspec validate
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-02T06:25:20.835Z
-  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
   slugs:
     - implement-agent-dispatch-engine
