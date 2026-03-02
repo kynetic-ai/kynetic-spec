@@ -1,0 +1,491 @@
+/**
+ * Agent Invocation Lifecycle
+ *
+ * Per-invocation session creation, ACP agent spawn, prompt delivery,
+ * event logging, timeout handling, and structured completion tracking.
+ *
+ * This is the core building block used by both the dispatch engine and
+ * CLI one-shot mode. Each invocation creates an isolated session with
+ * its own event log and metadata.
+ *
+ * AC: @agent-invocation-lifecycle ac-1 through ac-9
+ */
+
+import * as path from "node:path";
+import { spawnSync } from "node:child_process";
+import { ulid } from "ulid";
+import type { Agent } from "../schema/meta.js";
+import type { AgentAdapter } from "../agents/adapters.js";
+import { resolveAdapter } from "../agents/adapters.js";
+import { spawnAndInitialize } from "../agents/spawner.js";
+import type { SpawnedAgent } from "../agents/spawner.js";
+import type { ACPClient } from "../acp/client.js";
+import type { SessionUpdate } from "../acp/index.js";
+import {
+  createSession,
+  closeSession,
+  appendEvent,
+  injectEnvForAdapter,
+  removeEnvForAdapter,
+} from "../sessions/store.js";
+import type { SessionMetadata, SessionTrigger } from "../sessions/types.js";
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const DEFAULT_KSPEC_CLI_PATH = path.resolve(
+  path.dirname(new URL(import.meta.url).pathname),
+  "../../bin/kspec.cjs",
+);
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+/**
+ * Options for running a single agent invocation.
+ */
+export interface InvocationOptions {
+  /** The agent definition describing capabilities and configuration */
+  agent: Agent;
+  /** The spec directory (.kspec/) */
+  specDir: string;
+  /** Working directory for spawned agent */
+  cwd: string;
+  /** Task reference being worked on (e.g., "@01KJP277A") */
+  taskRef: string;
+  /** The prompt to send to the agent */
+  prompt: string;
+  /** Trigger source for this invocation */
+  trigger: SessionTrigger;
+  /** Timeout in minutes (overrides agent.budget.timeout_minutes if set) */
+  timeoutMinutes?: number;
+  /** Whether to use auto-approve (yolo) args for adapter */
+  autoApprove?: boolean;
+  /** Extra environment variables for the spawned agent */
+  env?: Record<string, string>;
+  /** Called for each streaming update from the agent */
+  onUpdate?: (update: SessionUpdate) => void;
+  /** Path to kspec CLI (defaults to resolved bin/kspec.cjs) */
+  kspecCliPath?: string;
+}
+
+/**
+ * Result of a completed agent invocation.
+ */
+export interface InvocationResult {
+  /** Session that was created for this invocation */
+  session: SessionMetadata;
+  /** How the invocation ended */
+  outcome: "success" | "timed_out" | "failed";
+  /** Stop reason from ACP (e.g., "end_turn") if the invocation completed */
+  stopReason?: string;
+  /** Error message if the invocation failed */
+  error?: string;
+  /** Total duration in milliseconds */
+  durationMs: number;
+}
+
+/**
+ * Internal state tracked during invocation execution.
+ */
+interface InvocationState {
+  sessionId: string;
+  specDir: string;
+  taskRef: string;
+  adapterId: string;
+  previousEnvValue?: string | null;
+  agent: SpawnedAgent | null;
+  acpSessionId: string | null;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Run a kspec CLI command synchronously.
+ */
+function runKspecCli(args: string[], cwd: string, kspecCliPath: string): { stdout: string; stderr: string; status: number | null } {
+  const result = spawnSync(process.execPath, [kspecCliPath, ...args], {
+    encoding: "utf-8",
+    stdio: "pipe",
+    cwd,
+  });
+  return {
+    stdout: result.stdout ?? "",
+    stderr: result.stderr ?? "",
+    status: result.status,
+  };
+}
+
+/**
+ * Add a note to a task via kspec CLI.
+ */
+function addTaskNote(taskRef: string, note: string, cwd: string, kspecCliPath: string): void {
+  runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath);
+}
+
+/**
+ * Block a task via kspec CLI.
+ */
+function blockTask(taskRef: string, reason: string, cwd: string, kspecCliPath: string): void {
+  runKspecCli(["task", "block", taskRef, "--reason", reason], cwd, kspecCliPath);
+}
+
+/**
+ * Get the consecutive failure count for a task from its notes.
+ * Looks for AGENT-FAIL notes added by previous invocations.
+ */
+function getConsecutiveFailureCount(taskRef: string, cwd: string, kspecCliPath: string): number {
+  const result = runKspecCli(["task", "get", taskRef, "--json"], cwd, kspecCliPath);
+  if (result.status !== 0) return 0;
+
+  try {
+    const task = JSON.parse(result.stdout);
+    const notes: Array<{ content: string }> = task.notes ?? [];
+    // Count consecutive AGENT-FAIL notes from the end
+    let count = 0;
+    for (let i = notes.length - 1; i >= 0; i--) {
+      if (notes[i].content?.includes("[AGENT-FAIL]")) {
+        count++;
+      } else {
+        break;
+      }
+    }
+    return count;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Resolve skills for the agent and build skill content section for the prompt.
+ * AC: @agent-invocation-lifecycle ac-7
+ */
+async function resolveSkillsForAgent(
+  agent: Agent,
+  specDir: string,
+): Promise<string> {
+  if (!agent.skills || agent.skills.length === 0) {
+    return "";
+  }
+
+  const skillSections: string[] = [];
+
+  for (const skillId of agent.skills) {
+    try {
+      const skillContentPath = path.join(specDir, "skills", skillId, "SKILL.md");
+      const { readFile } = await import("node:fs/promises");
+      const content = await readFile(skillContentPath, "utf-8");
+      skillSections.push(`<!-- Skill: ${skillId} -->\n${content}`);
+    } catch {
+      // Skill content not found — skip silently
+    }
+  }
+
+  if (skillSections.length === 0) {
+    return "";
+  }
+
+  return `\n\n## Skills\n\n${skillSections.join("\n\n")}`;
+}
+
+/**
+ * Dispose a spawned agent, terminating the process if running.
+ * AC: @agent-invocation-lifecycle ac-8
+ */
+function disposeAgent(agent: SpawnedAgent | null): null {
+  if (agent) {
+    try {
+      agent.kill("SIGTERM");
+    } catch {
+      // Best-effort termination
+    }
+  }
+  return null;
+}
+
+// ─── Core Invocation ──────────────────────────────────────────────────────────
+
+/**
+ * Run a single agent invocation for a task.
+ *
+ * Creates a session, spawns the agent, injects KSPEC_SESSION_ID,
+ * sends the prompt, streams events, and closes the session on completion.
+ *
+ * AC: @agent-invocation-lifecycle ac-1 through ac-9
+ */
+export async function runInvocation(options: InvocationOptions): Promise<InvocationResult> {
+  const {
+    agent,
+    specDir,
+    cwd,
+    taskRef,
+    trigger,
+    autoApprove = agent.auto_approve,
+    env = {},
+    onUpdate,
+    kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
+  } = options;
+
+  const startTime = Date.now();
+  const sessionId = ulid();
+
+  // Resolve adapter
+  const adapterId = agent.adapter ?? "claude-agent-acp";
+  const adapter = resolveAdapter(adapterId);
+
+  // Build extra args for auto-approve
+  const extraArgs = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
+
+  // Resolve timeout: option overrides agent budget
+  const timeoutMinutes =
+    options.timeoutMinutes ??
+    agent.budget?.timeout_minutes ??
+    30;
+  const timeoutMs = timeoutMinutes * 60 * 1000;
+
+  // Resolve skill content for prompt
+  const skillsContent = await resolveSkillsForAgent(agent, specDir);
+  const fullPrompt = options.prompt + skillsContent;
+
+  const state: InvocationState = {
+    sessionId,
+    specDir,
+    taskRef,
+    adapterId,
+    previousEnvValue: undefined,
+    agent: null,
+    acpSessionId: null,
+  };
+
+  // ─── Create session ───────────────────────────────────────────────────────
+  // AC: @agent-invocation-lifecycle ac-1
+  const session = await createSession(specDir, {
+    id: sessionId,
+    agent_type: adapterId,
+    agent_id: agent.id,
+    trigger,
+    task_id: taskRef,
+  });
+
+  // ─── Log agent.dispatched event ───────────────────────────────────────────
+  await appendEvent(specDir, {
+    type: "agent.dispatched",
+    session_id: sessionId,
+    data: {
+      task_id: taskRef,
+      agent_id: agent.id,
+      adapter: adapterId,
+      trigger,
+    },
+  });
+
+  try {
+    // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-2
+    const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
+    state.previousEnvValue = injectionResult?.previousValue;
+    process.env.KSPEC_SESSION_ID = sessionId;
+
+    // ─── Spawn agent ──────────────────────────────────────────────────────
+    state.agent = await spawnAndInitialize(adapter, {
+      cwd,
+      env: {
+        ...env,
+        KSPEC_SESSION_ID: sessionId,
+      },
+      extraArgs,
+    });
+
+    // ─── Create ACP session ───────────────────────────────────────────────
+    state.acpSessionId = await state.agent.client.newSession({
+      cwd,
+      mcpServers: [],
+    });
+
+    // ─── Log agent.started event ──────────────────────────────────────────
+    await appendEvent(specDir, {
+      type: "agent.started",
+      session_id: sessionId,
+      data: {
+        task_id: taskRef,
+        agent_id: agent.id,
+        acp_session_id: state.acpSessionId,
+      },
+    });
+
+    // ─── Register update handler ──────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-6
+    const updateHandler = async (acpSessionId: string, update: SessionUpdate) => {
+      if (acpSessionId !== state.acpSessionId) return;
+
+      // Log event to JSONL (with blob externalization from store.ts)
+      await appendEvent(specDir, {
+        type: "session.update",
+        session_id: sessionId,
+        data: update,
+      });
+
+      onUpdate?.(update);
+    };
+
+    state.agent.client.on("update", updateHandler);
+
+    // ─── Send prompt with timeout ─────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-3
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(new InvocationTimeoutError(timeoutMinutes));
+      }, timeoutMs);
+    });
+
+    const promptPromise = state.agent.client.prompt({
+      sessionId: state.acpSessionId,
+      prompt: [{ type: "text", text: fullPrompt }],
+    });
+
+    const promptResult = await Promise.race([promptPromise, timeoutPromise]);
+
+    // ─── Log agent.completed event ────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-4
+    const durationMs = Date.now() - startTime;
+    await appendEvent(specDir, {
+      type: "agent.completed",
+      session_id: sessionId,
+      data: {
+        task_id: taskRef,
+        outcome: "success",
+        stop_reason: promptResult.stopReason,
+        duration_ms: durationMs,
+      },
+    });
+
+    // ─── Close session as completed ───────────────────────────────────────
+    const finalSession = await closeSession(specDir, sessionId, "completed", "Invocation completed normally");
+
+    return {
+      session: finalSession ?? session,
+      outcome: "success",
+      stopReason: promptResult.stopReason,
+      durationMs,
+    };
+  } catch (err) {
+    const durationMs = Date.now() - startTime;
+
+    if (err instanceof InvocationTimeoutError) {
+      // ─── Handle timeout ──────────────────────────────────────────────
+      // AC: @agent-invocation-lifecycle ac-3
+      try {
+        if (state.acpSessionId && state.agent) {
+          await state.agent.client.cancel(state.acpSessionId);
+        }
+      } catch {
+        // Best-effort cancel
+      }
+
+      await appendEvent(specDir, {
+        type: "agent.timeout",
+        session_id: sessionId,
+        data: {
+          task_id: taskRef,
+          timeout_minutes: timeoutMinutes,
+          duration_ms: durationMs,
+        },
+      });
+
+      const finalSession = await closeSession(specDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
+
+      // Add timeout note to task
+      addTaskNote(
+        taskRef,
+        `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
+        cwd,
+        kspecCliPath,
+      );
+
+      return {
+        session: finalSession ?? session,
+        outcome: "timed_out",
+        error: err.message,
+        durationMs,
+      };
+    }
+
+    // ─── Handle failure ──────────────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-5
+    const errorMessage = err instanceof Error ? err.message : String(err);
+
+    await appendEvent(specDir, {
+      type: "agent.failed",
+      session_id: sessionId,
+      data: {
+        task_id: taskRef,
+        error: errorMessage,
+        duration_ms: durationMs,
+      },
+    });
+
+    const finalSession = await closeSession(specDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
+
+    // Add failure note to task
+    addTaskNote(
+      taskRef,
+      `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
+      cwd,
+      kspecCliPath,
+    );
+
+    // ─── Check retry threshold ────────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-9
+    const retryLimit = agent.budget?.max_tasks ?? 3;
+    const consecutiveFailures = getConsecutiveFailureCount(taskRef, cwd, kspecCliPath);
+
+    if (consecutiveFailures >= retryLimit) {
+      blockTask(
+        taskRef,
+        `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
+        cwd,
+        kspecCliPath,
+      );
+    }
+
+    return {
+      session: finalSession ?? session,
+      outcome: "failed",
+      error: errorMessage,
+      durationMs,
+    };
+  } finally {
+    // ─── Cleanup ──────────────────────────────────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-8
+
+    // End ACP session
+    if (state.acpSessionId && state.agent) {
+      try {
+        state.agent.client.endSession(state.acpSessionId);
+      } catch {
+        // Best-effort
+      }
+    }
+
+    // Terminate agent process
+    state.agent = disposeAgent(state.agent);
+
+    // Restore env injection
+    await removeEnvForAdapter(adapterId, state.previousEnvValue);
+
+    // Restore process env
+    if (process.env.KSPEC_SESSION_ID === sessionId) {
+      delete process.env.KSPEC_SESSION_ID;
+    }
+  }
+}
+
+// ─── Error Types ──────────────────────────────────────────────────────────────
+
+/**
+ * Thrown when an invocation exceeds its configured timeout.
+ */
+export class InvocationTimeoutError extends Error {
+  constructor(public readonly timeoutMinutes: number) {
+    super(`Agent invocation timed out after ${timeoutMinutes} minutes`);
+    this.name = "InvocationTimeoutError";
+  }
+}
