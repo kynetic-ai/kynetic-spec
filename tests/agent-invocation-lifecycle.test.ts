@@ -28,6 +28,7 @@ import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invo
 import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import { spawnAndInitialize } from "../src/agents/spawner.js";
+import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 import {
   testUlid,
@@ -302,6 +303,37 @@ describe("Timeout handling", () => {
     expect(noteCall).toBeDefined();
     const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
     expect(noteText).toContain("[AGENT-TIMEOUT]");
+  });
+
+  it("should dispatch ACP cancel request on timeout", async () => {
+    // AC: @agent-invocation-lifecycle ac-3 — ACP cancel request dispatched on timeout
+    // Use a closure to track cancel calls — vi.spyOn prototype mocks don't reliably
+    // track ESM cross-module calls in spy.mock.calls.
+    let cancelCalledWith: string | undefined;
+    const cancelSpy = vi.spyOn(ACPClient.prototype, "cancel").mockImplementation(async (sessionId) => {
+      cancelCalledWith = sessionId;
+    });
+
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+    try {
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Test cancel dispatch",
+        trigger: "task.ready",
+        // Use a longer timeout so the agent has time to spawn + initialize + newSession
+        // (the slow mock delays 5000ms only in session/prompt, not session/new)
+        // 3 seconds → enough for spawn+init+newSession but well under the 5s prompt delay
+        timeoutMinutes: 3 / 60,
+      });
+    } finally {
+      cancelSpy.mockRestore();
+    }
+
+    // Verify cancel was called with the ACP session ID — cancel request dispatched on timeout
+    expect(cancelCalledWith).toBeDefined();
   });
 });
 
