@@ -70060,6 +70060,31 @@
       content: "Automation: eligible. Complex but well-specified with 12 ACs. Implementation notes cover
         queue design, dedup strategy, bootstrap behavior."
       supersedes: null
+    - _ulid: 01KJQRKR4ZE1FPQRZ1E8B9EXXS
+      created_at: 2026-03-02T17:12:54.687Z
+      author: "@claude"
+      content: >-
+        Implemented DispatchEngine in src/agent-runtime/dispatch.ts. Key design decisions:
+
+
+        - In-memory queue with FIFO dispatch per agent, respecting max_concurrent limit
+
+        - Event deduplication via (task_id, from_state, to_state) tuple with configurable TTL
+        (default 2s)
+
+        - Bootstrap on start: loads all tasks, evaluates dispatch rules, queues matches
+
+        - File watcher integration via FileChangeCallback in ProjectContextManager (avoids tight
+        coupling)
+
+        - Shadow branch serialization via simple in-house Mutex (no external dep)
+
+        - specDir is configurable to support both shadow (.kspec/) and traditional mode
+
+        - Daemon routes at /api/agent/dispatch/start|stop|status and /api/agent/event (AC-4)
+
+        - 18 behavioral tests covering all 12 ACs
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
