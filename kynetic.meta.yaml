@@ -7107,6 +7107,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJR425PZWG84H2DJ0HAC6C6P
+    type: friction
+    content: 'agent.ts (PR #634) reimplemented parseInt+isNaN validation instead of using parseIntOption
+      from src/cli/validators.ts — reintroducing the partial-parse bug (parseInt("5abc")===5) that
+      parseIntOption was built to fix. The helper exists and conventions doc was added after
+      @01KGWDPV, but agents implementing new CLI commands still miss it. Suggests validators.ts
+      needs more prominent callout in AGENTS.md or task templates for new CLI commands.'
+    created_at: 2026-03-02T20:33:01.663Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
