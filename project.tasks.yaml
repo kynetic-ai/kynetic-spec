@@ -70095,6 +70095,29 @@
         task data is missing). Additional SHOULD-FIX items on prompt double-expansion and input
         validation posted inline. Not merged."
       supersedes: null
+    - _ulid: 01KJQWM4M3905MYZA62JBG37Z8
+      created_at: 2026-03-02T18:23:01.764Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 complete. Addressed all MUST-FIX review items from PR #634:
+
+        - AC-6: filter returns false (not true) when task data unavailable to prevent spurious
+        dispatch
+
+        - AC-9: added setTimeout wake-up timer after retry backoff so retries don't stall
+
+        - AC-10: added kspec CLI call to add task note when adapter unresolvable
+
+        - AC-11: added AbortController per invocation; stop() aborts all active agents; added
+        InvocationAbortedError in invocation.ts
+
+        Also addressed SHOULD-FIX items: status validation in daemon route, prompt double-expansion
+        fix.
+
+        Added 3 new tests (AC-10 task note, AC-11 abort signal, AC-9 wake-up timer).
+
+        Branch: feat/implement-agent-dispatch-engine (PR #634).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
