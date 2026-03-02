@@ -7078,6 +7078,25 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJPK6MMVG6FNPQQXR5MTXCGY
+    type: success
+    content: "PR scope verification: use gh pr view N --json baseRefOid,headRefOid then git diff
+      <baseRefOid>..<headRefOid> --name-only to verify actual PR diff. This is more reliable than
+      git diff origin/main..branch when the branch base predates recent merges to main."
+    created_at: 2026-03-02T06:19:07.803Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJPK6MRN59TPWERX8J742KW0
+    type: friction
+    content: "Stale PR base masquerades as scope problem: when a feature branch is based on a commit
+      that predates another merged PR, the merged PR files appear in the diff. Review says
+      out-of-scope changes. Fix is rebase onto main, not code changes. Two fix cycles consumed
+      before root cause identified. Consider adding a check in PR workflow to detect stale bases."
+    created_at: 2026-03-02T06:19:07.925Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
