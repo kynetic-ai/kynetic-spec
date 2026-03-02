@@ -69824,7 +69824,7 @@
   type: task
   spec_ref: "@agent-invocation-lifecycle"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-definition-schema"
@@ -69833,7 +69833,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQFA09T9V2A2HY207KGQ7GP
+  session_id: null
   created_at: 2026-03-02T01:22:21.136Z
   started_at: 2026-03-02T14:51:07.443Z
   submitted_at: 2026-03-02T14:51:35.682Z
@@ -69942,6 +69942,15 @@
 
         All 28 tests pass. Pre-existing failures in enhanced-setup and core-skill-install are
         unrelated.
+      supersedes: null
+    - _ulid: 01KJQGQV8DSW4DGEC930TAC47T
+      created_at: 2026-03-02T14:55:20.333Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: src/agent-runtime/invocation.ts leaks timeout
+        timers (setTimeout not cleared after Promise.race), which can leave long-lived timer handles
+        per invocation. MUST-FIX: invocation cleanup clobbers pre-existing KSPEC_SESSION_ID instead
+        of restoring previous value; tests/agent-invocation-lifecycle.test.ts also encodes this
+        incorrect behavior."
       supersedes: null
   todos: []
   automation: eligible
