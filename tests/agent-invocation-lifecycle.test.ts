@@ -181,7 +181,7 @@ describe("KSPEC_SESSION_ID injection", () => {
     expect(result.outcome).toBe("success");
   });
 
-  it("should clean up KSPEC_SESSION_ID after invocation completes", async () => {
+  it("should restore a pre-existing KSPEC_SESSION_ID after invocation completes", async () => {
     const agent = makeTestAgent();
     const preExistingId = "01EXISTNG0000000000000000";
 
@@ -197,11 +197,12 @@ describe("KSPEC_SESSION_ID injection", () => {
       trigger: "task.ready",
     });
 
-    // After invocation, env should be restored (not set to session id)
-    // Note: the invocation restores to undefined (original preExisting is unrelated)
-    // since our implementation only restores if it matches the set session id
-    // The important thing is the invocation-specific id is no longer set
-    expect(process.env.KSPEC_SESSION_ID).not.toBe(preExistingId);
+    // After invocation, env should be restored to the pre-existing value,
+    // not deleted or overwritten with the invocation session id.
+    expect(process.env.KSPEC_SESSION_ID).toBe(preExistingId);
+
+    // Clean up for subsequent tests
+    delete process.env.KSPEC_SESSION_ID;
   });
 });
 

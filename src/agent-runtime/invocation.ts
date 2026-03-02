@@ -216,6 +216,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     specDir,
   });
 
+  // Capture the pre-existing KSPEC_SESSION_ID so we can restore it in finally.
+  // AC: @agent-invocation-lifecycle ac-8
+  const previousKspecSessionId = process.env.KSPEC_SESSION_ID;
+
   const state: InvocationState = {
     sessionId,
     specDir,
@@ -301,8 +305,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // ─── Send prompt with timeout ─────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-3
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => {
+      timeoutHandle = setTimeout(() => {
         reject(new InvocationTimeoutError(timeoutMinutes));
       }, timeoutMs);
     });
@@ -312,7 +317,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       prompt: [{ type: "text", text: fullPrompt }],
     });
 
-    const promptResult = await Promise.race([promptPromise, timeoutPromise]);
+    let promptResult: Awaited<typeof promptPromise>;
+    try {
+      promptResult = await Promise.race([promptPromise, timeoutPromise]);
+    } finally {
+      // Clear the timeout handle to prevent timer leaks whether prompt
+      // resolves normally or the timeout fires.
+      clearTimeout(timeoutHandle);
+    }
 
     // ─── Log agent.completed event ────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-4
@@ -442,9 +454,12 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);
 
-    // Restore process env
-    if (process.env.KSPEC_SESSION_ID === sessionId) {
+    // Restore process.env.KSPEC_SESSION_ID to its pre-invocation value.
+    // AC: @agent-invocation-lifecycle ac-8
+    if (previousKspecSessionId === undefined) {
       delete process.env.KSPEC_SESSION_ID;
+    } else {
+      process.env.KSPEC_SESSION_ID = previousKspecSessionId;
     }
   }
 }
