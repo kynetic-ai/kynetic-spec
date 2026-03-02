@@ -70214,22 +70214,24 @@
       supersedes: null
   todos: []
   automation: manual_only
-- title: Fix tasks ready to include needs_work status
+- _ulid: 01KJQH689FXW590TEFZX98QVZ0
+  slugs: []
+  title: Fix tasks ready to include needs_work status
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - cli
-  depends_on: []
-  _ulid: 01KJQH689FXW590TEFZX98QVZ0
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-02T15:03:12.431Z
   notes: []
   todos: []
+  started_at: 2026-03-02T15:03:41.078Z
+  session_id: 01KJQFA09T9V2A2HY207KGQ7GP
