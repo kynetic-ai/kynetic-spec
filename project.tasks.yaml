@@ -70040,6 +70040,7 @@
   session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
   created_at: 2026-03-02T01:22:21.575Z
   started_at: 2026-03-02T16:55:01.563Z
+  submitted_at: 2026-03-02T17:14:10.866Z
   notes:
     - _ulid: 01KJP277R7AT1AZBBB1G8JWY3V
       created_at: 2026-03-02T01:22:21.575Z
@@ -70087,7 +70088,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-02T17:14:10.866Z
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
   slugs:
     - implement-cli-agent-commands
@@ -70095,7 +70095,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70123,6 +70123,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-02T17:15:06.356Z
+  session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
 - _ulid: 01KJP278FCWB3A8DBKXB84FTAF
   slugs:
     - implement-daemon-agent-dispatch-integration
