@@ -10449,6 +10449,7 @@ runs:
     current_step: 1
     total_steps: 10
     started_at: 2026-03-02T17:41:18.787Z
+    completed_at: 2026-03-02T17:48:43.315Z
     step_results:
       - step_index: 0
         status: completed
@@ -10459,11 +10460,10 @@ runs:
         started_at: 2026-03-02T17:41:28.772Z
         completed_at: 2026-03-02T17:41:28.772Z
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-02T17:48:43.315Z
   - _ulid: 01KJQTEPT04DXMB2ST78VKDZEC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-03-02T17:45:06.624Z
     step_results:
@@ -10571,5 +10571,18 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-03-02T17:46:14.771Z
-        completed_at: 2026-03-02T17:46:14.771Z
+        completed_at: 2026-03-02T18:26:23.856Z
+        notes: >-
+          User approved all 3 items. Captured:
+
+          - inbox @01KJQWJQ: kspec shadow restore command
+
+          - observation @01KJQWQ0: git -C pattern prevents CWD poisoning  
+
+          - inbox @01KJQWT3: kspec cleanup umbrella command (workflow prune + session pruning +
+          more)
+      - step_index: 5
+        status: completed
+        started_at: 2026-03-02T18:26:23.856Z
+        completed_at: 2026-03-02T18:26:23.856Z
     initiated_by: "@claude"
