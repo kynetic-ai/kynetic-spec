@@ -7154,6 +7154,17 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJRF87M7KH4FB3XH7JVAVRRV
+    type: friction
+    content: "batch-write-buffer wiring blocked by subprocess spawn model: WriteBuffer is a
+      process-local singleton but batch-exec.ts runs each command via spawnSync as a separate
+      process. Buffer writes in the parent won't be visible to spawned child processes. Need to
+      evaluate: (a) switch to in-process command execution, or (b) use a temp file protocol where
+      children write to a staging dir and parent collects on success."
+    created_at: 2026-03-02T23:48:34.567Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
