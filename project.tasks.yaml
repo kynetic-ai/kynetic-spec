@@ -69676,7 +69676,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
   created_at: 2026-03-02T01:22:20.762Z
+  started_at: 2026-03-02T05:10:54.586Z
   notes:
     - _ulid: 01KJP276YTRR82K1S7DCM573YZ
       created_at: 2026-03-02T01:22:20.762Z
@@ -69697,10 +69699,43 @@
       content: "Automation: eligible. Schema extension with 7 testable ACs. Clear file target
         (src/sessions/types.ts), backward compat well-specified."
       supersedes: null
+    - _ulid: 01KJPG5GPXJG8Y5KDDEA7KSB0E
+      created_at: 2026-03-02T05:26:05.278Z
+      author: "@claude"
+      content: >-
+        Implemented all 7 ACs:
+
+        - ac-1/ac-2: Added trigger (enum: manual, task.ready, task.needs_work, task.pending_review,
+        legacy) and agent_id fields to SessionMetadataSchema as optional fields. Updated
+        createSession to pass them through. Backward compat: old sessions without these fields parse
+        fine with undefined values.
+
+        - ac-3: Extended SessionStatusSchema with timed_out and failed. Updated statusCounts record
+        in computeSessionLogStats to include new values.
+
+        - ac-4: Extended EventTypeSchema with agent.dispatched, agent.started, agent.completed,
+        agent.failed, agent.timeout.
+
+        - ac-5: appendEvent accepts agent.completed with task_id, outcome, duration_ms payload (no
+        schema enforcement on data - open object).
+
+        - ac-6: Added session_type field to SessionLogSummary and SessionLogDetail (loop vs
+        invocation). resolveSessionType helper: trigger set and not 'legacy' → invocation, else →
+        loop. Updated session log list to show Type column.
+
+        - ac-7: Updated summarizeEventData to render agent.* events with human-readable summaries.
+        Updated event type color handling (magenta for agent.*). Added Type line to session log show
+        metadata.
+
+        Files changed: src/sessions/types.ts, src/sessions/store.ts, src/cli/commands/session/log.ts
+
+        New test file: tests/session-model-evolution.test.ts (24 tests, all passing)
+
+        No regressions: 195 session tests pass, shard failures are pre-existing
+        (enhanced-setup.test.ts).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-02T05:10:54.586Z
-  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
 - _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
   slugs:
     - implement-agent-invocation-lifecycle
