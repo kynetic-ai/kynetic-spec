@@ -70175,7 +70175,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70183,7 +70183,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQT6EXAE3K8FTB2GW2ECCYF
+  session_id: null
   created_at: 2026-03-02T01:22:21.957Z
   started_at: 2026-03-02T19:08:08.516Z
   submitted_at: 2026-03-02T19:08:17.902Z
@@ -70313,6 +70313,16 @@
         on invalid values. Added regression tests for invalid --limit (partial parse) and invalid
         --offset inputs. Targeted suites pass: tests/agent-dispatch-engine.test.ts and
         tests/cli-agent-commands.test.ts."
+      supersedes: null
+    - _ulid: 01KJR9QFJFJ8Z83WGACJB1VBAD
+      created_at: 2026-03-02T22:12:02.767Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 4] Review findings: MUST-FIX (AC-11 carry-forward): daemon shutdown handler in
+        server.ts does not call engine.stop() for active DispatchEngines. The engines map in
+        agent-dispatch.ts is never iterated on SIGTERM/SIGINT. Need to export stopAllEngines() from
+        agent-dispatch.ts and call it from the shutdown handler before stopAllWatchers(). CI
+        check-unresolved-comments is also failing due to this unresolved thread. Review posted on PR
+        #634."
       supersedes: null
   todos: []
   automation: eligible
