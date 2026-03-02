@@ -26,6 +26,11 @@ agents:
       - Add notes when completing significant work
       - Check spec coverage before implementing behavior changes
       - Commit changes before ending session
+    dispatch: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
   - _ulid: 01KF7HMDT7TKRTSD78X6WAGBFV
     id: json-test
     name: JSON Test
@@ -33,6 +38,11 @@ agents:
     capabilities: []
     tools: []
     conventions: []
+    dispatch: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
   - _ulid: 01KF7HN2D6GAAK99TN68N6NXVB
     id: json-test2
     name: JSON Test 2
@@ -40,6 +50,11 @@ agents:
     capabilities: []
     tools: []
     conventions: []
+    dispatch: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
   - _ulid: 01KHXF79VB6VHX1QRX9W4EKBY9
     id: automation-assess
     name: Automation Assess Agent (Historical)
@@ -48,6 +63,11 @@ agents:
     capabilities: []
     tools: []
     conventions: []
+    dispatch: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
@@ -7044,6 +7064,17 @@ observations:
       not a plain string. Tests checking item.status === "implemented" fail silently — must use
       item.status?.implementation. This differs from task status which IS a plain string.'
     created_at: 2026-03-01T17:36:28.089Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJPH4ZBNDCH4J8DWYQES7M6Q
+    type: friction
+    content: "Trait AC annotations (@trait-json-output, @trait-shadow-commit) consistently missed in new
+      test describe blocks. Two consecutive tasks (agent-definition-schema, session-model-evolution)
+      both flagged in fix cycle for missing annotations. Pattern: workers add spec-specific ACs but
+      forget inherited trait ACs. Fix: consider checklist or template reminder when adding new
+      integration test blocks."
+    created_at: 2026-03-02T05:43:16.085Z
     author: "@claude"
     resolved: false
     resolution: null
