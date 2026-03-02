@@ -70221,7 +70221,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -70263,3 +70263,4 @@
         diag-blob-count.txt) - delete these after this session."
       supersedes: null
   todos: []
+  submitted_at: 2026-03-02T15:40:46.105Z
