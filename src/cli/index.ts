@@ -14,6 +14,7 @@ import { setVerboseModeGetter } from "../parser/shadow.js";
 import { initContext } from "../parser/yaml.js";
 import { isBatchMode } from "./batch-context.js";
 import {
+  registerAgentCommands,
   registerAgentsCommands,
   registerBatchCommand,
   registerCloneForTestingCommand,
@@ -246,6 +247,7 @@ registerUtilCommands(program);
 registerBatchCommand(program);
 registerSkillCommands(program);
 registerAgentsCommands(program);
+registerAgentCommands(program);
 
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {
