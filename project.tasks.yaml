@@ -69669,7 +69669,7 @@
   type: task
   spec_ref: "@session-model-evolution"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -69699,6 +69699,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-02T05:10:54.586Z
+  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
 - _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
   slugs:
     - implement-agent-invocation-lifecycle
