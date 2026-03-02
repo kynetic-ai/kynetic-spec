@@ -70148,6 +70148,14 @@
 
         Confirmed all 23 dispatch engine tests pass.
       supersedes: null
+    - _ulid: 01KJR7WR671TB5PKN5CQHA8MR1
+      created_at: 2026-03-02T21:39:58.279Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Addressed latest PR #634 review feedback. MUST-FIX (shutdown race):
+        dispatch now guards queue draining when engine is not running (early return in _drainQueues
+        and post-invocation drain guarded after stop). Added AC-11 regression test ensuring queued
+        work is not spawned if drain runs after stop."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
@@ -70286,6 +70294,15 @@
 
         All 17 CLI agent command tests pass. Full suite: only pre-existing failures
         (daemon-executable, core-skill-install, enhanced-setup, cli-serve).
+      supersedes: null
+    - _ulid: 01KJR7WS1EQM8YJWRESQKB4BFY
+      created_at: 2026-03-02T21:39:59.150Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Addressed latest PR #634 review feedback. MUST-FIX (pagination validation):
+        agent list now validates --limit/--offset with parseIntOption and returns VALIDATION_FAILED
+        on invalid values. Added regression tests for invalid --limit (partial parse) and invalid
+        --offset inputs. Targeted suites pass: tests/agent-dispatch-engine.test.ts and
+        tests/cli-agent-commands.test.ts."
       supersedes: null
   todos: []
   automation: eligible
@@ -70485,6 +70502,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #633. Fixed tasks ready to include needs_work status and sort
+    needs_work before pending."
   depends_on: []
   context: []
   priority: 3
@@ -70496,6 +70515,7 @@
   created_at: 2026-03-02T15:03:12.431Z
   started_at: 2026-03-02T17:56:41.295Z
   submitted_at: 2026-03-02T17:56:43.146Z
+  completed_at: 2026-03-02T19:18:05.312Z
   notes:
     - _ulid: 01KJQJ6WAT6YXGZ4MR2E57PGTV
       created_at: 2026-03-02T15:21:01.530Z
@@ -70542,9 +70562,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-02T19:18:05.312Z
-  closed_reason: "Merged in PR #633. Fixed tasks ready to include needs_work status and sort
-    needs_work before pending."
 - _ulid: 01KJQKVZ1J0SBDG9B3A3RAJBZ6
   slugs: []
   title: Fix batch exec copying sessions/blobs to temp dir
