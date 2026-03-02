@@ -177,7 +177,13 @@ export async function getSession(
   try {
     const content = await fsPromises.readFile(metadataPath, "utf-8");
     const raw = YAML.parse(content);
-    return SessionMetadataSchema.parse(raw);
+    const parsed = SessionMetadataSchema.parse(raw);
+    // AC: @session-model-evolution ac-2 — materialize defaults for legacy sessions
+    return {
+      ...parsed,
+      trigger: parsed.trigger ?? "legacy",
+      agent_id: parsed.agent_id ?? parsed.agent_type,
+    };
   } catch {
     return null;
   }

@@ -178,9 +178,9 @@ describe("Legacy session backward compatibility", () => {
     const loaded = await getSession(testDir, sessionId);
     expect(loaded).not.toBeNull();
     expect(loaded!.agent_type).toBe("ralph");
-    // trigger and agent_id should be undefined (not required, backward compat)
-    expect(loaded!.trigger).toBeUndefined();
-    expect(loaded!.agent_id).toBeUndefined();
+    // AC: @session-model-evolution ac-2 — legacy defaults are materialized on read
+    expect(loaded!.trigger).toBe("legacy");
+    expect(loaded!.agent_id).toBe("ralph"); // defaults to agent_type value
   });
 
   it("should classify legacy session as loop type in summary", async () => {
