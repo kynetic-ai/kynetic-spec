@@ -1272,3 +1272,13 @@ inbox:
       - dx
       - maintenance
     added_by: "@claude"
+  - _ulid: 01KJR89E17N9ZFVEDEG04RJTEH
+    text: Create a 'cli-utilities' skill (or similar) that documents shared CLI helpers —
+      parseIntOption, exit codes, output helpers — with when/how to use each. Add a meta convention
+      reinforcing 'check this skill before implementing new CLI commands'. Prevents agents from
+      reaching for parseInt+isNaN when parseIntOption exists.
+    created_at: 2026-03-02T21:46:53.863Z
+    tags:
+      - cli
+      - skills
+    added_by: "@claude"
