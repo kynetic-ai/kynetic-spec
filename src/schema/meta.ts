@@ -17,7 +17,54 @@ export const SessionProtocolSchema = z.object({
 });
 
 /**
+ * Agent dispatch event types - lifecycle events that can trigger agent spawning
+ * AC: @agent-definition-schema ac-2
+ */
+export const AgentDispatchEventSchema = z.enum([
+  "task.ready",
+  "task.needs_work",
+  "task.pending_review",
+]);
+
+/**
+ * Agent dispatch filter - constraints for matching tasks during dispatch
+ * AC: @agent-definition-schema ac-3
+ */
+export const AgentDispatchFilterSchema = z.object({
+  automation: z.enum(["eligible", "ineligible"]).optional(),
+  tags: z.array(z.string()).optional(),
+  priority: z.number().optional(),
+});
+
+/**
+ * Agent dispatch rule - maps an event type to optional filters
+ * AC: @agent-definition-schema ac-2
+ */
+export const AgentDispatchRuleSchema = z.object({
+  on: AgentDispatchEventSchema,
+  filter: AgentDispatchFilterSchema.optional(),
+});
+
+/**
+ * Agent budget settings - limits on task count and time
+ * AC: @agent-definition-schema ac-4
+ */
+export const AgentBudgetSchema = z.object({
+  max_tasks: z.number().positive().optional(),
+  timeout_minutes: z.number().positive().optional(),
+});
+
+/**
+ * Agent concurrency settings
+ * AC: @agent-definition-schema ac-6
+ */
+export const AgentConcurrencySchema = z.object({
+  max_concurrent: z.number().int().positive().default(1),
+});
+
+/**
  * Agent definition - describes an agent's role and capabilities
+ * AC: @agent-definition-schema ac-1 through ac-8
  */
 export const AgentSchema = z.object({
   _ulid: MetaUlidSchema,
@@ -28,6 +75,14 @@ export const AgentSchema = z.object({
   tools: z.array(z.string()).default([]),
   session_protocol: SessionProtocolSchema.optional(),
   conventions: z.array(z.string()).default([]),
+  // New dispatch/runtime fields (AC: @agent-definition-schema ac-1 through ac-8)
+  adapter: z.string().optional(),
+  dispatch: z.array(AgentDispatchRuleSchema).default([]),
+  skills: z.array(z.string()).default([]),
+  budget: AgentBudgetSchema.optional(),
+  concurrency: AgentConcurrencySchema.default({ max_concurrent: 1 }),
+  auto_approve: z.boolean().default(false),
+  prompt_template: z.string().optional(),
 });
 
 /**
@@ -327,6 +382,11 @@ export const MetaManifestSchema = z.object({
 
 // Type exports
 export type SessionProtocol = z.infer<typeof SessionProtocolSchema>;
+export type AgentDispatchEvent = z.infer<typeof AgentDispatchEventSchema>;
+export type AgentDispatchFilter = z.infer<typeof AgentDispatchFilterSchema>;
+export type AgentDispatchRule = z.infer<typeof AgentDispatchRuleSchema>;
+export type AgentBudget = z.infer<typeof AgentBudgetSchema>;
+export type AgentConcurrency = z.infer<typeof AgentConcurrencySchema>;
 export type Agent = z.infer<typeof AgentSchema>;
 export type WorkflowStepType = z.infer<typeof WorkflowStepTypeSchema>;
 export type StepExecution = z.infer<typeof StepExecutionSchema>;
