@@ -70174,8 +70174,13 @@
         properly stops all DispatchEngines with graceful cancel signals per AC-11. TypeScript clean,
         all 24 dispatch engine tests pass. Resolved 2 unresolved PR threads on PR #634."
       supersedes: null
+    - _ulid: 01KJRBARKM25ZP4R0SMCTME75H
+      created_at: 2026-03-02T22:40:03.188Z
+      author: Jacob Chapel
+      content: "Automation status set to needs_review: Subagent timed out after 20 minutes"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
   slugs:
     - implement-cli-agent-commands
