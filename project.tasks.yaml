@@ -70095,7 +70095,7 @@
   type: task
   spec_ref: "@cli-agent-commands"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70164,6 +70164,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-02T17:24:20.733Z
 - _ulid: 01KJP278FCWB3A8DBKXB84FTAF
   slugs:
     - implement-daemon-agent-dispatch-integration
