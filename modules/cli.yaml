@@ -371,6 +371,19 @@ features:
             status:
               maturity: draft
               implementation: implemented
+          - _ulid: 01KJQM85WKV636RTWZ5EB3WD5Z
+            slugs:
+              - batch-write-buffer
+            title: Atomic isolation via write buffer
+            type: requirement
+            tags: []
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-02T15:56:41.235Z
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
