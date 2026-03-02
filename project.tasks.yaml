@@ -69976,6 +69976,22 @@
         consecutive (failures can remain 'consecutive' across successful invocations), and tests are
         missing the fail->success->fail reset case."
       supersedes: null
+    - _ulid: 01KJQNXHBGGJ5GNBPP4QG8T7RQ
+      created_at: 2026-03-02T16:25:49.680Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 5 resolved] Fixed AC-9 consecutive failure counting:
+
+        1. Added AGENT-SUCCESS note on successful invocation completion - this note breaks the
+        consecutive failure streak so fail→success→fail only counts 1 consecutive failure
+
+        2. Added new test: 'should reset consecutive failure count after a successful invocation' -
+        simulates task with 2 AGENT-FAIL + 1 AGENT-SUCCESS notes, verifies next failure does NOT
+        trigger block (streak was reset)
+
+        All 29 tests pass. Full suite: 3702/3704 pass (2 pre-existing failures in core-skill-install
+        and enhanced-setup, unrelated to this task).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
