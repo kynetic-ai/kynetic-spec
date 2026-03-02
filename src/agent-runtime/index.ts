@@ -19,3 +19,10 @@ export {
   type ResolvedSkill,
   type BuildPromptOptions,
 } from "./prompts.js";
+
+export {
+  DispatchEngine,
+  type DispatchEngineOptions,
+  type TaskStateChange,
+  type TaskStatus,
+} from "./dispatch.js";

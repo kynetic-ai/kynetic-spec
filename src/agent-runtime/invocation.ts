@@ -31,7 +31,7 @@ import type { SessionMetadata, SessionTrigger } from "../sessions/types.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const DEFAULT_KSPEC_CLI_PATH = path.resolve(
+export const DEFAULT_KSPEC_CLI_PATH = path.resolve(
   path.dirname(new URL(import.meta.url).pathname),
   "../../bin/kspec.cjs",
 );
@@ -48,8 +48,8 @@ export interface InvocationOptions {
   specDir: string;
   /** Working directory for spawned agent */
   cwd: string;
-  /** Task reference being worked on (e.g., "@01KJP277A") */
-  taskRef: string;
+  /** Task reference being worked on (e.g., "@01KJP277A"). Optional — omit for unbound invocations. */
+  taskRef?: string;
   /** The prompt to send to the agent */
   prompt: string;
   /** Trigger source for this invocation */
@@ -64,6 +64,10 @@ export interface InvocationOptions {
   onUpdate?: (update: SessionUpdate) => void;
   /** Path to kspec CLI (defaults to resolved bin/kspec.cjs) */
   kspecCliPath?: string;
+  /** Abort signal for graceful cancellation (AC-11) */
+  abortSignal?: AbortSignal;
+  /** Pre-assigned session ID (generated if not provided) */
+  sessionId?: string;
 }
 
 /**
@@ -88,7 +92,7 @@ export interface InvocationResult {
 interface InvocationState {
   sessionId: string;
   specDir: string;
-  taskRef: string;
+  taskRef: string | undefined;
   adapterId: string;
   previousEnvValue?: string | null;
   agent: SpawnedAgent | null;
@@ -189,10 +193,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     env = {},
     onUpdate,
     kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
+    abortSignal,
   } = options;
 
   const startTime = Date.now();
-  const sessionId = ulid();
+  const sessionId = options.sessionId ?? ulid();
 
   // Resolve adapter
   const adapterId = agent.adapter ?? "claude-agent-acp";
@@ -312,6 +317,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }, timeoutMs);
     });
 
+    // AC: @agent-dispatch-engine ac-11 - Abort signal for graceful cancellation
+    const abortPromise = abortSignal
+      ? new Promise<never>((_, reject) => {
+          if (abortSignal.aborted) {
+            reject(new InvocationAbortedError());
+          } else {
+            abortSignal.addEventListener("abort", () => reject(new InvocationAbortedError()), { once: true });
+          }
+        })
+      : null;
+
     const promptPromise = state.agent.client.prompt({
       sessionId: state.acpSessionId,
       prompt: [{ type: "text", text: fullPrompt }],
@@ -319,7 +335,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     let promptResult: Awaited<typeof promptPromise>;
     try {
-      promptResult = await Promise.race([promptPromise, timeoutPromise]);
+      const racers: Array<Promise<typeof promptResult | never>> = [promptPromise, timeoutPromise];
+      if (abortPromise) racers.push(abortPromise);
+      promptResult = await Promise.race(racers);
     } finally {
       // Clear the timeout handle to prevent timer leaks whether prompt
       // resolves normally or the timeout fires.
@@ -343,14 +361,16 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Close session as completed ───────────────────────────────────────
     const finalSession = await closeSession(specDir, sessionId, "completed", "Invocation completed normally");
 
-    // Add success note to reset consecutive failure streak
+    // Add success note to reset consecutive failure streak (only when a task is bound)
     // AC: @agent-invocation-lifecycle ac-9
-    addTaskNote(
-      taskRef,
-      `[AGENT-SUCCESS] Invocation completed successfully`,
-      cwd,
-      kspecCliPath,
-    );
+    if (taskRef) {
+      addTaskNote(
+        taskRef,
+        `[AGENT-SUCCESS] Invocation completed successfully`,
+        cwd,
+        kspecCliPath,
+      );
+    }
 
     return {
       session: finalSession ?? session,
@@ -384,17 +404,40 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
       const finalSession = await closeSession(specDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
 
-      // Add timeout note to task
-      addTaskNote(
-        taskRef,
-        `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
-        cwd,
-        kspecCliPath,
-      );
+      // Add timeout note to task (only when a task is bound)
+      if (taskRef) {
+        addTaskNote(
+          taskRef,
+          `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
+          cwd,
+          kspecCliPath,
+        );
+      }
 
       return {
         session: finalSession ?? session,
         outcome: "timed_out",
+        error: err.message,
+        durationMs,
+      };
+    }
+
+    if (err instanceof InvocationAbortedError) {
+      // ─── Handle graceful abort (shutdown signal) ──────────────────────
+      // AC: @agent-dispatch-engine ac-11
+      try {
+        if (state.acpSessionId && state.agent) {
+          await state.agent.client.cancel(state.acpSessionId);
+        }
+      } catch {
+        // Best-effort cancel
+      }
+
+      const finalSession = await closeSession(specDir, sessionId, "failed", "Invocation aborted by shutdown");
+
+      return {
+        session: finalSession ?? session,
+        outcome: "failed",
         error: err.message,
         durationMs,
       };
@@ -416,26 +459,28 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     const finalSession = await closeSession(specDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
 
-    // Add failure note to task
-    addTaskNote(
-      taskRef,
-      `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
-      cwd,
-      kspecCliPath,
-    );
-
-    // ─── Check retry threshold ────────────────────────────────────────────
-    // AC: @agent-invocation-lifecycle ac-9
-    const retryLimit = agent.budget?.max_tasks ?? 3;
-    const consecutiveFailures = getConsecutiveFailureCount(taskRef, cwd, kspecCliPath);
-
-    if (consecutiveFailures >= retryLimit) {
-      blockTask(
+    // Add failure note to task and check retry threshold (only when a task is bound)
+    if (taskRef) {
+      addTaskNote(
         taskRef,
-        `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
+        `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
       );
+
+      // ─── Check retry threshold ────────────────────────────────────────────
+      // AC: @agent-invocation-lifecycle ac-9
+      const retryLimit = agent.budget?.max_tasks ?? 3;
+      const consecutiveFailures = getConsecutiveFailureCount(taskRef, cwd, kspecCliPath);
+
+      if (consecutiveFailures >= retryLimit) {
+        blockTask(
+          taskRef,
+          `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
+          cwd,
+          kspecCliPath,
+        );
+      }
     }
 
     return {
@@ -482,5 +527,16 @@ export class InvocationTimeoutError extends Error {
   constructor(public readonly timeoutMinutes: number) {
     super(`Agent invocation timed out after ${timeoutMinutes} minutes`);
     this.name = "InvocationTimeoutError";
+  }
+}
+
+/**
+ * Thrown when an invocation is aborted via AbortSignal (graceful shutdown).
+ * AC: @agent-dispatch-engine ac-11
+ */
+export class InvocationAbortedError extends Error {
+  constructor() {
+    super("Agent invocation aborted by shutdown signal");
+    this.name = "InvocationAbortedError";
   }
 }

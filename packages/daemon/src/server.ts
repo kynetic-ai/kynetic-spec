@@ -23,6 +23,7 @@ import { createMetaRoutes } from './routes/meta';
 import { createValidationRoutes } from './routes/validation';
 import { createProjectsRoutes } from './routes/projects';
 import { createTriageRoutes } from './routes/triage';
+import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -224,6 +225,9 @@ export async function createServer(options: ServerOptions) {
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
     .use(createProjectsRoutes({ projectManager: projectContextManager }))
 
+    // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
+    .use(createAgentDispatchRoutes())
+
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
       beforeHandle({ request, store }) {
@@ -352,6 +356,18 @@ export async function createServer(options: ServerOptions) {
   console.log(`[daemon] Server listening on http://localhost:${port} (IPv4: 127.0.0.1, IPv6: ::1)`);
   console.log(`[daemon] WebSocket available at ws://localhost:${port}/ws`);
 
+  // AC: @agent-dispatch-engine ac-5 - Wire file change callback to dispatch engine
+  projectContextManager.setFileChangeCallback((projectPath, file) => {
+    // Only forward changes to project.tasks.yaml
+    if (!file.endsWith('project.tasks.yaml')) return;
+    const engine = getDispatchEngine(projectPath);
+    if (engine) {
+      engine.handleFileChange(projectPath).catch((err) => {
+        console.error('[dispatch] Error handling file change:', err);
+      });
+    }
+  });
+
   // AC: @multi-directory-daemon ac-17 - Start file watcher for startup project
   if (startupProjectPath) {
     try {
@@ -372,6 +388,9 @@ export async function createServer(options: ServerOptions) {
     try {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
+
+      // AC: @agent-dispatch-engine ac-11 - Stop all dispatch engines before shutting down
+      await stopAllEngines();
 
       // AC: @multi-directory-daemon ac-11b - Stop all file watchers
       await projectContextManager.stopAllWatchers();
