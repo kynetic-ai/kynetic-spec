@@ -70483,7 +70483,7 @@
   spec_ref: "@cmd-tasks-ready"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -70542,6 +70542,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-02T19:18:05.312Z
+  closed_reason: "Merged in PR #633. Fixed tasks ready to include needs_work status and sort
+    needs_work before pending."
 - _ulid: 01KJQKVZ1J0SBDG9B3A3RAJBZ6
   slugs: []
   title: Fix batch exec copying sessions/blobs to temp dir
