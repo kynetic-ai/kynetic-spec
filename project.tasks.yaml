@@ -69883,5 +69883,41 @@
     - migration
   vcs_refs: []
   created_at: 2026-03-02T01:22:23.358Z
-  notes: []
+  notes:
+    - _ulid: 01KJP2JZPGF5Z4RGQVTQHQW33N
+      created_at: 2026-03-02T01:28:46.544Z
+      author: "@claude"
+      content: >-
+        Implementation context:
+
+
+        ## Target Location
+
+        docs/migration/ralph-to-agent-runtime.md (new file)
+
+
+        ## Audience
+
+        kspec users who have ralph configurations, workflows, or scripts that invoke kspec ralph.
+
+
+        ## Required Sections
+
+        1. **Command equivalence table**: ralph run → agent dispatch start, ralph --dry-run → agent
+        run --dry-run, ralph end-loop → N/A (reactive model has no loop to end), ralph --adapter →
+        configured in agent definitions, ralph --max-loops → N/A (dispatch is continuous), ralph
+        --tasks → agent run --task
+
+        2. **Configuration migration**: ralph CLI flags → agent definition fields in
+        kynetic.meta.yaml (adapter, dispatch rules, budget, concurrency)
+
+        3. **Behavioral differences**: batch loop vs reactive dispatch, shared session vs
+        per-invocation sessions, iteration-based budget vs invocation-based budget, poll-based task
+        detection vs event-driven dispatch
+
+        4. **Step-by-step migration procedure**: verify agent definitions exist → enable dispatch →
+        validate equivalent behavior → remove ralph references from scripts
+
+        5. **FAQ / troubleshooting**: common issues during migration
+      supersedes: null
   todos: []
