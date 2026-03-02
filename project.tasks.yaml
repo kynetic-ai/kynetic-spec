@@ -69824,7 +69824,7 @@
   type: task
   spec_ref: "@agent-invocation-lifecycle"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-definition-schema"
@@ -69833,7 +69833,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
+  session_id: null
   created_at: 2026-03-02T01:22:21.136Z
   started_at: 2026-03-02T16:16:03.059Z
   submitted_at: 2026-03-02T16:26:02.532Z
@@ -69991,6 +69991,13 @@
 
         All 29 tests pass. Full suite: 3702/3704 pass (2 pre-existing failures in core-skill-install
         and enhanced-setup, unrelated to this task).
+      supersedes: null
+    - _ulid: 01KJQPC5XPXPZAGD1J0S7RCW3E
+      created_at: 2026-03-02T16:33:49.494Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: AC-3 test coverage gap — timeout path does not
+        assert ACP cancel request dispatch. MUST-FIX: PR CI not merge-ready
+        (check-unresolved-comments failing due unresolved review threads)."
       supersedes: null
   todos: []
   automation: eligible
