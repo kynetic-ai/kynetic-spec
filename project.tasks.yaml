@@ -69824,7 +69824,7 @@
   type: task
   spec_ref: "@agent-invocation-lifecycle"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-agent-definition-schema"
@@ -70017,6 +70017,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-02T16:53:23.043Z
+  closed_reason: "Merged in PR #632. Implemented agent invocation lifecycle module (session creation,
+    ACP spawn, timeout/failure handling, event logging, skill-aware prompt building, cleanup, and
+    retry-threshold blocking). AC coverage verified for all 9 own ACs plus trait ACs marked N/A with
+    rationale; local npm test passed and required PR checks were green on current head."
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
   slugs:
     - implement-agent-dispatch-engine
