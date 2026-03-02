@@ -38,8 +38,10 @@
 // AC: @trait-websocket-protocol ac-6 — N/A: backpressure tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-7 — N/A: close codes tested in api-websocket.spec.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: reconnect sequence reset tested in api-websocket.spec.ts
+// AC: @trait-api-endpoint ac-2 — N/A: agent dispatch endpoints use project context, not item refs
 // AC: @trait-api-endpoint ac-4 — N/A: agent dispatch endpoints do not support pagination
 // AC: @trait-api-endpoint ac-5 — N/A: agent dispatch endpoints operate on daemon state, not shadow branch
+// AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is infrastructure concern; not tested in domain E2E tests
 // AC: @daemon-agent-dispatch ac-1 — N/A: file watcher integration is tested implicitly via the dispatch engine; isolated watcher+diffing behavior is covered in unit tests (agent-dispatch-engine.test.ts ac-5)
 // AC: @daemon-agent-dispatch ac-3, ac-4 — N/A: actual invocation broadcasts require a real agent adapter (claude-agent-acp) which cannot run in E2E; the event callback wiring is verified by unit inspection of createEngine() in agent-dispatch.ts
 
@@ -292,15 +294,5 @@ test.describe('Agent Dispatch API', () => {
       expect(response.status()).toBeGreaterThanOrEqual(400);
     });
 
-    // AC: @trait-api-endpoint ac-6 — X-Request-Id header
-    test('responses include X-Request-Id header', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/agent/status`);
-
-      // Note: X-Request-Id is added by middleware if configured
-      // Check that the response is valid JSON (basic health check)
-      expect(response.status()).toBe(200);
-      const body = await response.json();
-      expect(body).toHaveProperty('dispatch_enabled');
-    });
   });
 });
