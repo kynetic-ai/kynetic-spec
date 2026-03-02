@@ -70029,7 +70029,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-agent-invocation-lifecycle"
@@ -70037,7 +70037,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJQT6EXAE3K8FTB2GW2ECCYF
+  session_id: null
   created_at: 2026-03-02T01:22:21.575Z
   started_at: 2026-03-02T18:22:44.564Z
   submitted_at: 2026-03-02T18:22:45.885Z
@@ -70117,6 +70117,15 @@
         Added 3 new tests (AC-10 task note, AC-11 abort signal, AC-9 wake-up timer).
 
         Branch: feat/implement-agent-dispatch-engine (PR #634).
+      supersedes: null
+    - _ulid: 01KJQXD9908W2TCT8TW9B3C5AR
+      created_at: 2026-03-02T18:36:45.728Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #634 does not fully satisfy
+        @agent-dispatch-engine ac-10 on daemon start path.
+        packages/daemon/src/routes/agent-dispatch.ts creates DispatchEngine without kspecCliPath, so
+        unresolvable adapter path skips required task note. Also check-unresolved-comments CI gate
+        is failing with unresolved review threads."
       supersedes: null
   todos: []
   automation: eligible
