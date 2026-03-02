@@ -69665,7 +69665,9 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-definition-schema"
+    - "@implement-session-model-evolution"
   context: []
   priority: 3
   tags: []
@@ -69694,7 +69696,8 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-invocation-lifecycle"
   context: []
   priority: 3
   tags: []
@@ -69724,7 +69727,8 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-invocation-lifecycle"
   context: []
   priority: 3
   tags: []
@@ -69751,7 +69755,8 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-agent-dispatch-engine"
   context: []
   priority: 3
   tags: []
@@ -69780,7 +69785,9 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-cli-agent-commands"
+    - "@implement-daemon-agent-dispatch-integration"
   context: []
   priority: 3
   tags: []
@@ -69792,21 +69799,22 @@
       author: "@claude"
       content: See plan @plan-reactive-agent-runtime for implementation notes
   todos: []
-- title: Write migration guide from ralph to agent runtime
-  type: task
-  plan_ref: "@plan-reactive-agent-runtime"
-  priority: 3
+- _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
     - task-ralph-migration-guide
+  title: Write migration guide from ralph to agent runtime
+  type: task
+  plan_ref: "@plan-reactive-agent-runtime"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-ralph-replacement"
+  context: []
+  priority: 3
   tags:
     - docs
     - migration
-  depends_on: []
-  notes: []
-  _ulid: 01KJP279FYHBM6995ZVMYGM7M2
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-02T01:22:23.358Z
+  notes: []
   todos: []
