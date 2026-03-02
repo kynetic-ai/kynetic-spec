@@ -69694,6 +69694,12 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #631 (commit 1274e5a): implemented session model evolution by extending
+    session metadata with trigger/agent_id defaults for legacy reads, adding timed_out/failed
+    statuses and agent.* event types, and updating session log list/show for loop vs invocation +
+    human-readable agent event rendering. AC coverage verified for ac-1..ac-7 in
+    tests/session-model-evolution.test.ts; full regression passed (npm test: 3675 passed, 0
+    failed)."
   depends_on: []
   context: []
   priority: 3
@@ -69703,6 +69709,7 @@
   created_at: 2026-03-02T01:22:20.762Z
   started_at: 2026-03-02T06:06:59.889Z
   submitted_at: 2026-03-02T06:07:03.210Z
+  completed_at: 2026-03-02T06:24:41.037Z
   notes:
     - _ulid: 01KJP276YTRR82K1S7DCM573YZ
       created_at: 2026-03-02T01:22:20.762Z
@@ -69810,13 +69817,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-02T06:24:41.037Z
-  closed_reason: "Merged in PR #631 (commit 1274e5a): implemented session model evolution by extending
-    session metadata with trigger/agent_id defaults for legacy reads, adding timed_out/failed
-    statuses and agent.* event types, and updating session log list/show for loop vs invocation +
-    human-readable agent event rendering. AC coverage verified for ac-1..ac-7 in
-    tests/session-model-evolution.test.ts; full regression passed (npm test: 3675 passed, 0
-    failed)."
 - _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
   slugs:
     - implement-agent-invocation-lifecycle
@@ -69824,7 +69824,7 @@
   type: task
   spec_ref: "@agent-invocation-lifecycle"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-agent-definition-schema"
@@ -69855,6 +69855,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-02T06:25:20.835Z
+  session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
   slugs:
     - implement-agent-dispatch-engine
