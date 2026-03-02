@@ -70432,6 +70432,39 @@
 
         - Verification: npm run test (unit), npm run test:e2e (E2E for daemon routes)
       supersedes: null
+    - _ulid: 01KJRCTV4DHB6XPZF2FHR6F0X2
+      created_at: 2026-03-02T23:06:18.638Z
+      author: "@claude"
+      content: >-
+        Implemented all 7 ACs:
+
+        - ac-1: File watcher integration already wired in server.ts; dispatch engine
+        handleFileChange() diffs task states (pre-existing)
+
+        - ac-2: Added postDispatchEvent() to task.ts; fires after
+        start/submit/needs-work/complete/block/unblock
+
+        - ac-3/ac-4: Added onInvocationEvent callback to DispatchEngine; agent-dispatch routes wire
+        it to pubsub.broadcast('agents', ...) with session_id/agent_id/task_id/status/timestamp
+
+        - ac-5: Added GET /api/agent/status returning dispatch_enabled, active_invocations,
+        queue_depth, agent_definitions
+
+        - ac-6: Added POST /api/agent/dispatch with action: start|stop returning dispatch_enabled
+        boolean
+
+        - ac-7: postDispatchEvent() checks isDaemonRunning() first; fetch uses 1s
+        AbortSignal.timeout; all errors swallowed silently
+
+        Files changed: src/agent-runtime/dispatch.ts (InvocationEvent type, onInvocationEvent
+        callback), packages/daemon/src/routes/agent-dispatch.ts (new endpoints, pubsub wiring,
+        createEngine helper), packages/daemon/src/server.ts (pass pubsub to
+        createAgentDispatchRoutes), src/cli/commands/task.ts (postDispatchEvent helper + calls in
+        state transitions)
+
+        Tests: packages/web-ui/tests/e2e/api-agent-dispatch.spec.ts (new E2E tests covering all 7
+        ACs)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
