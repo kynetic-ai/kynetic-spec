@@ -70202,6 +70202,27 @@
         (ac-2/3/4/5/6/7) and trait gap (@trait-filterable-list ac-1). Spec alignment issue: agent
         run passes empty task binding for no-task path."
       supersedes: null
+    - _ulid: 01KJQWMCV70XNE1KC54XM7HR2C
+      created_at: 2026-03-02T18:23:10.184Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 complete. Addressed MUST-FIX review items from PR #634:
+
+        - Fixed empty task binding (taskRef ?? '' → taskRef ?? undefined)
+
+        - Fixed double prompt expansion (pass basePrompt, not fullPrompt, to runInvocation)
+
+        - Added --timeout/--budget validation (reject NaN values)
+
+        - Added override fields to dry-run JSON output for AC-7 verification
+
+        - Added automation field to AgentSchema so agent list --status filter works
+
+        - Added tests for AC-2/3 (session binding), AC-4/5/6 (mock daemon via vi.mock), AC-7
+        (overrides verified in dry-run JSON), @trait-filterable-list ac-1 (status filter)
+
+        Branch: feat/implement-agent-dispatch-engine (PR #634).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP278FCWB3A8DBKXB84FTAF
