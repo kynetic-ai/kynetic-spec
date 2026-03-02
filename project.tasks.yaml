@@ -70630,3 +70630,25 @@
         partially cleared .kspec/sessions/. 102 sessions recovered.
       supersedes: null
   todos: []
+- title: Auto-build dist before CLI subprocess tests run
+  description: CLI tests use compiled dist/ binary. Source changes (schema, CLI code) silently don't
+    apply until npm run build. Wire build as a pretest step or vitest globalSetup so it runs
+    automatically. Prevents confusing failures where source is correct but dist is stale.
+  type: infra
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cli
+    - testing
+  depends_on: []
+  _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-02T21:50:16.014Z
+  notes: []
+  todos: []
