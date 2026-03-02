@@ -7128,6 +7128,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJR42MWC2JSTXF3BKHVHJRT5
+    type: success
+    content: /codex pr covering both tasks in a single pass was efficient and caught a subtle bug
+      (parseInt partial-match "5abc"->5) that manual review missed. Dual-spec single-pass review
+      avoids duplicated context-gathering and produces tighter non-redundant findings.
+    created_at: 2026-03-02T20:33:17.196Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
