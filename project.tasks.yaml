@@ -70382,7 +70382,7 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-agent-dispatch-engine"
@@ -70390,9 +70390,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
   created_at: 2026-03-02T01:22:22.316Z
-  started_at: 2026-03-02T22:48:59.674Z
+  started_at: 2026-03-02T23:47:15.293Z
   submitted_at: 2026-03-02T23:06:22.429Z
   notes:
     - _ulid: 01KJP278FCYMWFF26JQBC67G1X
@@ -70712,7 +70712,9 @@
     - batch
     - performance
   vcs_refs: []
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
   created_at: 2026-03-02T15:50:01.010Z
+  started_at: 2026-03-02T23:26:36.972Z
   notes:
     - _ulid: 01KJQKWACN8XCKZ71WZZK413M8
       created_at: 2026-03-02T15:50:12.629Z
@@ -70771,8 +70773,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-02T23:26:36.972Z
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
   slugs: []
   title: Auto-build dist before CLI subprocess tests run
