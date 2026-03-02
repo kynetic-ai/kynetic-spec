@@ -10600,7 +10600,7 @@ runs:
   - _ulid: 01KJR837T8MYNJ7MFGXB9F55CQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-03-02T21:43:30.889Z
     step_results:
@@ -10632,5 +10632,13 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-03-02T21:44:47.203Z
-        completed_at: 2026-03-02T21:44:47.203Z
+        completed_at: 2026-03-02T21:44:58.809Z
+        notes: "1. Add parseIntOption callout to AGENTS.md conventions (small) — one-line rule in cli or
+          development section. 2. Observation: schema fields used by CLI filters must exist in
+          schema — add as development convention (small). 3. Testing convention: npm run build
+          required after source changes before CLI subprocess tests (small)."
+      - step_index: 4
+        status: completed
+        started_at: 2026-03-02T21:44:58.809Z
+        completed_at: 2026-03-02T21:44:58.809Z
     initiated_by: "@claude"
