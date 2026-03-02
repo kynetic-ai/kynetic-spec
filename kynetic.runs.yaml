@@ -10462,7 +10462,7 @@ runs:
   - _ulid: 01KJQTEPT04DXMB2ST78VKDZEC
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-02T17:45:06.624Z
     step_results:
@@ -10520,5 +10520,31 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-02T17:45:34.052Z
-        completed_at: 2026-03-02T17:45:34.052Z
+        completed_at: 2026-03-02T17:46:05.322Z
+        notes: >-
+          Coverage check:
+
+          1. BATCH COPY-BACK / SESSIONS BLOBS: tracked as @01KJQKVZ (Fix batch exec copying
+          sessions/blobs to temp dir), spec @batch-write-buffer. Fully covered.
+
+          2. DISK FULL FROM BATCH BLOBS: same as above — covered by @01KJQKVZ.
+
+          3. CD PERSISTENCE POISONING: not tracked. Systemic agent behavior issue — when running git
+          commands inside .kspec/ for recovery, the cd persists. Should be captured as friction
+          observation.
+
+          4. SHADOW BRANCH DIRECT COMMIT BLOCKED: not tracked. Recovery scenarios (like restoring
+          sessions) have no supported path — need a kspec shadow commit or kspec shadow restore
+          command.
+
+          5. PERMISSIONS ALLOW LIST: not tracked. Project permissions block basic diagnostic
+          commands (echo, pwd, ls) making it hard to diagnose shell/env issues.
+
+          6. STALE WORKFLOW RUNS: tracked in inbox @01KHVCPEXG and @workflow-prune spec is
+          implemented — but 40+ runs still accumulate. May be a bug that prune isn't running or
+          auto-expiry isn't configured.
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-02T17:46:05.322Z
+        completed_at: 2026-03-02T17:46:05.322Z
     initiated_by: "@claude"
