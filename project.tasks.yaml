@@ -69634,7 +69634,14 @@
         timeout_minutes?}), concurrency ({max_concurrent?}), auto_approve (boolean),
         and prompt_template (string?) fields. All new fields optional for backward
         compatibility. CRUD uses existing meta add/set/remove patterns.
+    - _ulid: 01KJPDFFT9K4F5PHN4S8TQETS6
+      created_at: 2026-03-02T04:39:06.313Z
+      author: "@claude"
+      content: "Automation: eligible. Schema extension with 11 testable ACs. Clear file target
+        (src/schema/meta.ts) and existing patterns to follow."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP276YTPF94VNY0AVCXXH90
   slugs:
     - implement-session-model-evolution
@@ -69664,7 +69671,14 @@
         SessionStatusSchema with timed_out, failed. Extend EventTypeSchema
         with new agent.* event types. Update session log list/show rendering
         to distinguish session types.
+    - _ulid: 01KJPDFHDVEW2N068DJ1E47FJV
+      created_at: 2026-03-02T04:39:07.963Z
+      author: "@claude"
+      content: "Automation: eligible. Schema extension with 7 testable ACs. Clear file target
+        (src/sessions/types.ts), backward compat well-specified."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
   slugs:
     - implement-agent-invocation-lifecycle
@@ -69695,7 +69709,14 @@
         (src/sessions/store.ts), ACP client (src/acp/client.ts), and agent
         spawner (src/agents/spawner.ts). The invocation module is the core
         unit — dispatch engine and CLI one-shot both call into it.
+    - _ulid: 01KJPDFK26HKT82FKRYGKWDAK0
+      created_at: 2026-03-02T04:39:09.638Z
+      author: "@claude"
+      content: "Automation: eligible. Core runtime module with 9 ACs. Implementation notes specify
+        extraction from ralph.ts and target modules to create."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
   slugs:
     - implement-agent-dispatch-engine
@@ -69726,7 +69747,14 @@
         matches. Shadow branch serialization: wrap kspec CLI mutations in
         a queue/lock when concurrent agents are running. Task state diffing
         stores previous parsed states in memory, compares on file change.
+    - _ulid: 01KJPDFMP2VXM6TDDB1JG09X5Y
+      created_at: 2026-03-02T04:39:11.298Z
+      author: "@claude"
+      content: "Automation: eligible. Complex but well-specified with 12 ACs. Implementation notes cover
+        queue design, dedup strategy, bootstrap behavior."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP27845ETXB3B3BPA4K7PTT
   slugs:
     - implement-cli-agent-commands
@@ -69754,7 +69782,14 @@
         command patterns. The run subcommand reuses agent-invocation-lifecycle
         for session creation and ACP spawn. dispatch start/stop communicates
         with the daemon via HTTP API (POST /api/agent/dispatch).
+    - _ulid: 01KJPDFP9DDJEPPPT1MAB7XFQK
+      created_at: 2026-03-02T04:39:12.941Z
+      author: "@claude"
+      content: "Automation: eligible. CLI command registration following existing patterns. 10 ACs + 5
+        traits provide comprehensive coverage."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP278FCWB3A8DBKXB84FTAF
   slugs:
     - implement-daemon-agent-dispatch-integration
@@ -69784,7 +69819,14 @@
         and computes diffs on change. CLI event POST is fire-and-forget
         with a short timeout (1s). WebSocket broadcasts use existing
         pubsub infrastructure with a new "agents" topic.
+    - _ulid: 01KJPDFQX67GW110ZVA79PCXYT
+      created_at: 2026-03-02T04:39:14.598Z
+      author: "@claude"
+      content: "Automation: eligible. Daemon routes following existing patterns. 7 ACs + 3 traits.
+        Implementation notes specify file locations."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
   slugs:
     - implement-ralph-replacement
@@ -69865,7 +69907,14 @@
 
         8. Regenerate kspec-agents.md
       supersedes: null
+    - _ulid: 01KJPDFSGYG8KVD33EDSG3CNXE
+      created_at: 2026-03-02T04:39:16.254Z
+      author: "@claude"
+      content: "Automation: eligible. Migration task with enriched implementation note listing files to
+        delete/update/create and ordered migration checklist. 8 ACs cover each surface."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
     - task-ralph-migration-guide
@@ -69920,4 +69969,11 @@
 
         5. **FAQ / troubleshooting**: common issues during migration
       supersedes: null
+    - _ulid: 01KJPDFV5R1ZBDG174AJQZ6YK5
+      created_at: 2026-03-02T04:39:17.944Z
+      author: "@claude"
+      content: "Automation: manual_only. User-facing migration docs benefit from human judgment on tone,
+        completeness, and audience needs. No spec_ref."
+      supersedes: null
   todos: []
+  automation: manual_only
