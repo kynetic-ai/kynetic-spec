@@ -7118,6 +7118,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJR42CJ1TE15HTPGJZQ55HPE
+    type: success
+    content: "Reading actual code before judging PR review threads saved significant work: 11 of 19 open
+      threads on PR #634 were stale (issues already fixed in the latest commit). Manual
+      thread-by-code matching took ~10 minutes but avoided implementing fixes that were already
+      done."
+    created_at: 2026-03-02T20:33:08.674Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
