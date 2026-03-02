@@ -10600,7 +10600,7 @@ runs:
   - _ulid: 01KJR837T8MYNJ7MFGXB9F55CQ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-02T21:43:30.889Z
     step_results:
@@ -10624,5 +10624,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-02T21:43:59.596Z
-        completed_at: 2026-03-02T21:43:59.596Z
+        completed_at: 2026-03-02T21:44:47.203Z
+        notes: "All three untracked: 1. parseIntOption not in kspec system (MEMORY.md notes it needs
+          prominent AGENTS.md callout per @01KGWDPV but not captured in inbox/tasks). 2.
+          Schema-filter mismatch (Zod strips fields that CLI filters use) not tracked. 3. dist
+          rebuild required for CLI test accuracy not tracked."
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-02T21:44:47.203Z
+        completed_at: 2026-03-02T21:44:47.203Z
     initiated_by: "@claude"
