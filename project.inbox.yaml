@@ -1261,3 +1261,14 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KJQWT3RKA1MHS9SJD2BT0ETF
+    text: "kspec cleanup command: umbrella command that runs all stale-data cleanup in one shot —
+      workflow prune (stale runs), session pruning (old blobs), maybe inbox triage of old items.
+      Similar to 'docker system prune'. Could run on session start or as a standalone command. Would
+      have prevented 40+ stale workflow runs accumulating."
+    created_at: 2026-03-02T18:26:17.492Z
+    tags:
+      - cli
+      - dx
+      - maintenance
+    added_by: "@claude"
