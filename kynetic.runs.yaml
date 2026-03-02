@@ -10409,8 +10409,20 @@ runs:
   - _ulid: 01KJQSBTJN9S51KTSXA588KQJR
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 4
     started_at: 2026-03-02T17:26:03.606Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-02T17:26:03.606Z
+        completed_at: 2026-03-02T17:27:02.812Z
+        notes: "Session completed task @implement-cli-agent-commands. Work was mostly done from prior
+          iterations (agent.ts and tests existed as untracked files). Registration in CLI index was
+          the missing piece. 9 tests pass, PR #634 updated. No high-confidence new observations to
+          capture — existing task-work skill already covers checking git history before starting."
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-02T17:27:02.812Z
+        completed_at: 2026-03-02T17:27:02.812Z
     initiated_by: "@claude"
