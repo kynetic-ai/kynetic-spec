@@ -69952,6 +69952,23 @@
         of restoring previous value; tests/agent-invocation-lifecycle.test.ts also encodes this
         incorrect behavior."
       supersedes: null
+    - _ulid: 01KJQMT94J1G1V9TDXVFMQWP0S
+      created_at: 2026-03-02T16:06:34.387Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 3 resolved] Fixed timer leak and KSPEC_SESSION_ID restoration:
+
+        1. Timer leak: added clearTimeout(timeoutHandle) in try/finally after Promise.race —
+        prevents timer handles from leaking per invocation
+
+        2. KSPEC_SESSION_ID: capture previousKspecSessionId before setting it, restore
+        unconditionally in finally block (either restore old value or delete if was undefined)
+
+        3. Corrected test that encoded incorrect behavior — now correctly expects pre-existing value
+        to be restored
+
+        All 28 tests pass. No regressions.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP277R7TP3HWHAMNEV2ZSB3
