@@ -2795,3 +2795,259 @@ describe('Integration: meta context', () => {
     expect(output).toContain('2. Second question');
   });
 });
+
+/**
+ * Integration tests for Agent Definition Schema (new dispatch/runtime fields)
+ * AC: @agent-definition-schema ac-1 through ac-11
+ */
+describe('Integration: agent definition schema', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @agent-definition-schema ac-8 - backward compatibility: existing agents without new fields load OK
+  it('should load existing agent definitions without new fields', () => {
+    // The fixture has agents without dispatch/adapter fields — validate should not fail with schema errors
+    const result = kspecRun('validate', tempDir);
+    // Exit 0 = success, exit 6 = warnings only (alignment warnings from orphaned specs in fixture)
+    // Either is acceptable — what matters is no schema errors (not exit 1 or 4)
+    expect([0, 6]).toContain(result.exitCode);
+  });
+
+  // AC: @agent-definition-schema ac-1 - adapter field accepted as string
+  it('should accept adapter field when added to an agent', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withAdapter = content.replace(
+      '    id: test-agent',
+      '    id: test-agent\n    adapter: "npx @kynetic/claude-adapter"',
+    );
+    await fs.writeFile(metaPath, withAdapter);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-2 - dispatch array with event types
+  it('should accept dispatch rules with valid event types', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withDispatch = content.replace(
+      '    id: test-agent',
+      '    id: test-agent\n    dispatch:\n      - on: task.ready\n      - on: task.needs_work',
+    );
+    await fs.writeFile(metaPath, withDispatch);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-3 - filter fields validated independently
+  it('should accept dispatch filters with automation, tags, and priority', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withFilters = content.replace(
+      '    id: test-agent',
+      [
+        '    id: test-agent',
+        '    dispatch:',
+        '      - on: task.ready',
+        '        filter:',
+        '          automation: eligible',
+        '          tags:',
+        '            - mvp',
+        '          priority: 1',
+      ].join('\n'),
+    );
+    await fs.writeFile(metaPath, withFilters);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-4 - budget fields accepted as optional positive numbers
+  it('should accept budget fields as optional positive numbers', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withBudget = content.replace(
+      '    id: test-agent',
+      '    id: test-agent\n    budget:\n      max_tasks: 10\n      timeout_minutes: 60',
+    );
+    await fs.writeFile(metaPath, withBudget);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-5 - skills accepted as string array
+  it('should accept skills as a string array', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withSkills = content.replace(
+      '    id: test-agent',
+      '    id: test-agent\n    skills:\n      - task-work\n      - review',
+    );
+    await fs.writeFile(metaPath, withSkills);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-6 - max_concurrent defaults to 1
+  it('should accept concurrency settings with max_concurrent', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withConcurrency = content.replace(
+      '    id: test-agent',
+      '    id: test-agent\n    concurrency:\n      max_concurrent: 3',
+    );
+    await fs.writeFile(metaPath, withConcurrency);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-7 - auto_approve defaults to false
+  it('should accept auto_approve boolean field', async () => {
+    const metaPath = path.join(tempDir, 'kynetic.meta.yaml');
+    const content = await fs.readFile(metaPath, 'utf-8');
+    const withAutoApprove = content.replace(
+      '    id: test-agent',
+      '    id: test-agent\n    auto_approve: true',
+    );
+    await fs.writeFile(metaPath, withAutoApprove);
+
+    const output = kspec('validate', tempDir);
+    expect(output).not.toContain('Error');
+  });
+
+  // AC: @agent-definition-schema ac-9 - meta add agent creates agent with new fields
+  it('should create a new agent with adapter and budget via meta add', () => {
+    const result = kspecRun(
+      'meta add agent --id dispatch-agent --name "Dispatch Agent" --adapter "npx @kynetic/claude" --max-tasks 5 --timeout-minutes 120 --max-concurrent 2',
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+
+    // Verify created in JSON output
+    const agents = kspecJson<Array<{ id: string; adapter?: string; budget?: { max_tasks?: number; timeout_minutes?: number }; concurrency?: { max_concurrent: number }; auto_approve: boolean }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'dispatch-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.adapter).toBe('npx @kynetic/claude');
+    expect(agent?.budget?.max_tasks).toBe(5);
+    expect(agent?.budget?.timeout_minutes).toBe(120);
+    expect(agent?.concurrency?.max_concurrent).toBe(2);
+    expect(agent?.auto_approve).toBe(false);
+  });
+
+  // AC: @agent-definition-schema ac-9 - meta add agent with auto_approve
+  it('should create agent with auto_approve enabled', () => {
+    const result = kspecRun(
+      'meta add agent --id auto-agent --name "Auto Agent" --auto-approve',
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; auto_approve: boolean }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'auto-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.auto_approve).toBe(true);
+  });
+
+  // AC: @agent-definition-schema ac-9 - meta add agent with skills
+  it('should create agent with skills array', () => {
+    const result = kspecRun(
+      'meta add agent --id skilled-agent --name "Skilled Agent" --skill task-work --skill review',
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; skills: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'skilled-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.skills).toContain('task-work');
+    expect(agent?.skills).toContain('review');
+  });
+
+  // AC: @agent-definition-schema ac-10 - meta set agent updates new fields
+  it('should update agent adapter via meta set', () => {
+    // First create an agent
+    kspecRun('meta add agent --id updatable-agent --name "Updatable Agent"', tempDir);
+
+    // Then update with new fields
+    const result = kspecRun('meta set updatable-agent --adapter "npx @kynetic/updated"', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; adapter?: string }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'updatable-agent');
+    expect(agent?.adapter).toBe('npx @kynetic/updated');
+  });
+
+  // AC: @agent-definition-schema ac-10 - existing fields preserved during set
+  it('should preserve existing capabilities when updating adapter', () => {
+    kspecRun('meta add agent --id cap-agent --name "Cap Agent" --capability code --capability test', tempDir);
+
+    kspecRun('meta set cap-agent --adapter "my-adapter"', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; capabilities: string[]; adapter?: string }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'cap-agent');
+    expect(agent?.capabilities).toContain('code');
+    expect(agent?.capabilities).toContain('test');
+    expect(agent?.adapter).toBe('my-adapter');
+  });
+
+  // AC: @agent-definition-schema ac-10 - add-skill via meta set
+  it('should add skill to agent via meta set --add-skill', () => {
+    kspecRun('meta add agent --id skill-agent --name "Skill Agent"', tempDir);
+    kspecRun('meta set skill-agent --add-skill task-work', tempDir);
+    kspecRun('meta set skill-agent --add-skill review', tempDir);
+
+    const agents = kspecJson<Array<{ id: string; skills: string[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'skill-agent');
+    expect(agent?.skills).toContain('task-work');
+    expect(agent?.skills).toContain('review');
+  });
+
+  // AC: @agent-definition-schema ac-11 - meta remove agent
+  // AC: @agent-definition-schema ac-11 - meta delete agent
+  it('should remove agent via meta delete', () => {
+    kspecRun('meta add agent --id removable-agent --name "Removable Agent"', tempDir);
+
+    // Verify created
+    let agents = kspecJson<Array<{ id: string }>>('meta agents', tempDir);
+    expect(agents.some(a => a.id === 'removable-agent')).toBe(true);
+
+    // Delete (the correct command is meta delete --confirm)
+    const result = kspecRun('meta delete removable-agent --confirm', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    // Verify removed
+    agents = kspecJson<Array<{ id: string }>>('meta agents', tempDir);
+    expect(agents.some(a => a.id === 'removable-agent')).toBe(false);
+  });
+
+  // AC: @agent-definition-schema ac-8 - defaults applied when fields absent
+  it('should apply defaults for new fields when absent in existing agents', () => {
+    const agents = kspecJson<Array<{
+      id: string;
+      dispatch: unknown[];
+      skills: string[];
+      auto_approve: boolean;
+      concurrency: { max_concurrent: number };
+    }>>('meta agents', tempDir);
+
+    const testAgent = agents.find(a => a.id === 'test-agent');
+    expect(testAgent).toBeDefined();
+    // All new fields should have defaults
+    expect(testAgent?.dispatch).toEqual([]);
+    expect(testAgent?.skills).toEqual([]);
+    expect(testAgent?.auto_approve).toBe(false);
+    expect(testAgent?.concurrency?.max_concurrent).toBe(1);
+  });
+});

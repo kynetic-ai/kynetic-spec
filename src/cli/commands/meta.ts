@@ -430,6 +430,7 @@ export function registerMetaCommands(program: Command): void {
         const agents = metaCtx.agents || [];
 
         // AC-agent-2: JSON output includes full agent details
+        // AC: @agent-definition-schema ac-1 through ac-8 - include new dispatch/runtime fields
         output(
           agents.map((agent) => ({
             id: agent.id,
@@ -439,6 +440,12 @@ export function registerMetaCommands(program: Command): void {
             tools: agent.tools,
             session_protocol: agent.session_protocol,
             conventions: agent.conventions,
+            adapter: agent.adapter,
+            dispatch: agent.dispatch ?? [],
+            skills: agent.skills ?? [],
+            budget: agent.budget,
+            concurrency: agent.concurrency ?? { max_concurrent: 1 },
+            auto_approve: agent.auto_approve ?? false,
           })),
           // AC-agent-1: Table output with ID, Name, Capabilities
           () => formatAgents(agents),
@@ -1231,6 +1238,12 @@ Examples:
     .option("--capability <cap...>", "Capabilities (for agents)")
     .option("--tool <tool...>", "Tools (for agents)")
     .option("--convention <conv...>", "Convention references (for agents)")
+    .option("--adapter <adapter>", "Adapter reference or npx package name (for agents)")
+    .option("--skill <skill...>", "Skill slugs (for agents)")
+    .option("--auto-approve", "Auto-approve tasks without human confirmation (for agents)")
+    .option("--max-tasks <n>", "Maximum tasks budget (for agents)")
+    .option("--timeout-minutes <n>", "Timeout in minutes budget (for agents)")
+    .option("--max-concurrent <n>", "Max concurrent tasks (for agents, default 1)")
     .option("--rule <rule...>", "Rules (for conventions)")
     .option("--steps <json>", "Workflow steps as JSON array (for workflows)")
     .option(
@@ -1275,6 +1288,11 @@ Examples:
             process.exit(EXIT_CODES.ERROR);
           }
 
+          // AC: @agent-definition-schema ac-4, ac-6 — parse integer budget/concurrency fields
+          const maxTasks = options.maxTasks ? parseInt(options.maxTasks, 10) : undefined;
+          const timeoutMinutes = options.timeoutMinutes ? parseInt(options.timeoutMinutes, 10) : undefined;
+          const maxConcurrent = options.maxConcurrent ? parseInt(options.maxConcurrent, 10) : 1;
+
           item = {
             _ulid: itemUlid,
             id: options.id,
@@ -1283,6 +1301,22 @@ Examples:
             capabilities: options.capability || [],
             tools: options.tool || [],
             conventions: options.convention || [],
+            // AC: @agent-definition-schema ac-1 through ac-8
+            ...(options.adapter && { adapter: options.adapter }),
+            dispatch: [],
+            skills: options.skill || [],
+            ...(maxTasks !== undefined || timeoutMinutes !== undefined
+              ? {
+                  budget: {
+                    ...(maxTasks !== undefined && { max_tasks: maxTasks }),
+                    ...(timeoutMinutes !== undefined && {
+                      timeout_minutes: timeoutMinutes,
+                    }),
+                  },
+                }
+              : {}),
+            concurrency: { max_concurrent: maxConcurrent },
+            auto_approve: options.autoApprove ?? false,
           };
         } else if (type === "workflow") {
           // Validate required fields
@@ -1400,6 +1434,13 @@ Examples:
     .option("--add-capability <cap>", "Add capability (for agents)")
     .option("--add-tool <tool>", "Add tool (for agents)")
     .option("--add-convention <conv>", "Add convention reference (for agents)")
+    .option("--adapter <adapter>", "Set adapter reference or npx package (for agents)")
+    .option("--add-skill <skill>", "Add skill slug (for agents)")
+    .option("--auto-approve", "Enable auto-approve (for agents)")
+    .option("--no-auto-approve", "Disable auto-approve (for agents)")
+    .option("--max-tasks <n>", "Set max tasks budget (for agents)")
+    .option("--timeout-minutes <n>", "Set timeout minutes budget (for agents)")
+    .option("--max-concurrent <n>", "Set max concurrent tasks (for agents)")
     .option("--add-rule <rule>", "Add rule (for conventions)")
     .action(async (ref: string, options) => {
       try {
@@ -1444,6 +1485,25 @@ Examples:
             if (!item.conventions.includes(options.addConvention)) {
               item.conventions.push(options.addConvention);
             }
+          }
+          // AC: @agent-definition-schema ac-10 - new fields preserved during set
+          if (options.adapter !== undefined) item.adapter = options.adapter;
+          if (options.addSkill) {
+            if (!item.skills) item.skills = [];
+            if (!item.skills.includes(options.addSkill)) {
+              item.skills.push(options.addSkill);
+            }
+          }
+          if (options.autoApprove === true) item.auto_approve = true;
+          if (options.autoApprove === false) item.auto_approve = false;
+          if (options.maxTasks !== undefined || options.timeoutMinutes !== undefined) {
+            if (!item.budget) item.budget = {};
+            if (options.maxTasks !== undefined) item.budget.max_tasks = parseInt(options.maxTasks, 10);
+            if (options.timeoutMinutes !== undefined) item.budget.timeout_minutes = parseInt(options.timeoutMinutes, 10);
+          }
+          if (options.maxConcurrent !== undefined) {
+            if (!item.concurrency) item.concurrency = { max_concurrent: 1 };
+            item.concurrency.max_concurrent = parseInt(options.maxConcurrent, 10);
           }
         } else if (itemType === "workflow") {
           const item = found as Workflow;
