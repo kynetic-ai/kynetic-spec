@@ -928,27 +928,32 @@ export function areDependenciesMet(
 }
 
 /**
- * Check if task is ready (pending + deps met + not blocked)
+ * Check if task is ready (pending/needs_work + deps met + not blocked)
  */
 export function isTaskReady(task: LoadedTask, allTasks: LoadedTask[]): boolean {
-  if (task.status !== "pending") return false;
+  if (task.status !== "pending" && task.status !== "needs_work") return false;
   if (task.blocked_by.length > 0) return false;
   return areDependenciesMet(task, allTasks);
 }
 
 /**
- * Get ready tasks (pending + deps met + not blocked), sorted by priority then creation time.
- * Within the same priority tier, older tasks come first (FIFO).
+ * Get ready tasks (pending/needs_work + deps met + not blocked), sorted by
+ * status (needs_work first), then priority, then creation time.
+ * Within the same tier, older tasks come first (FIFO).
  */
 export function getReadyTasks(tasks: LoadedTask[]): LoadedTask[] {
   return tasks
     .filter((task) => isTaskReady(task, tasks))
     .sort((a, b) => {
-      // Primary: priority (lower number = higher priority)
+      // Primary: needs_work before pending (fix cycles take priority)
+      const statusOrder = (s: string) => (s === "needs_work" ? 0 : 1);
+      const statusDiff = statusOrder(a.status) - statusOrder(b.status);
+      if (statusDiff !== 0) return statusDiff;
+      // Secondary: priority (lower number = higher priority)
       if (a.priority !== b.priority) {
         return a.priority - b.priority;
       }
-      // Secondary: creation time (older first - FIFO within priority)
+      // Tertiary: creation time (older first - FIFO within priority)
       return (
         new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
