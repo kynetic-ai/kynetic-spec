@@ -71228,6 +71228,7 @@
   created_at: 2026-03-03T06:43:17.421Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
   slugs: []
   title: Shadow branch auto-push silently swallows failures — fire-and-forget push
@@ -71258,6 +71259,7 @@
   created_at: 2026-03-03T06:43:19.153Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
   title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
@@ -71278,6 +71280,7 @@
   created_at: 2026-03-03T06:43:20.809Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
   title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
@@ -71299,6 +71302,7 @@
   created_at: 2026-03-03T06:43:23.015Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
   title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
@@ -71318,6 +71322,7 @@
   created_at: 2026-03-03T06:43:24.752Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
   slugs: []
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
@@ -71337,6 +71342,7 @@
   created_at: 2026-03-03T06:43:26.496Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
   slugs: []
   title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
@@ -71353,6 +71359,7 @@
   created_at: 2026-03-03T06:43:28.265Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS6ZZGM4RYKNYS98PY1CSHQ
   slugs: []
   title: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
@@ -71369,6 +71376,7 @@
   created_at: 2026-03-03T06:43:29.940Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
   slugs: []
   title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
@@ -71385,19 +71393,21 @@
   created_at: 2026-03-03T06:43:31.667Z
   notes: []
   todos: []
-- title: "CLI DX: accept tags as alias for tag in batch commands"
-  type: task
-  priority: 3
-  spec_ref: null
-  tags: []
-  description: "CLI DX: accept tags as alias for tag in batch commands"
-  _ulid: 01KJS702WDPKNN01FQ3CEYB822
+  automation: eligible
+- _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
+  title: "CLI DX: accept tags as alias for tag in batch commands"
+  type: task
+  description: "CLI DX: accept tags as alias for tag in batch commands"
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-03-03T06:43:33.388Z
   notes: []
   todos: []
+  automation: eligible
