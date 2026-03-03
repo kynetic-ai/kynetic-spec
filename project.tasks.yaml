@@ -72675,7 +72675,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -72716,6 +72716,7 @@
         test (3583 passing).
       supersedes: null
   todos: []
+  submitted_at: 2026-03-03T23:33:43.153Z
 - _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
   slugs:
     - task-atomic-plan-inbox-writes
