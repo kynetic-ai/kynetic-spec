@@ -6231,6 +6231,11 @@ features:
           invocation format before injection: /foo for claude-agent-acp (Claude Code slash
           commands), $foo for codex-acp (Codex CLI), and {skill:foo} left as-is for unknown
           adapters"
+      - id: ac-11
+        given: the ACP agent sends a request_permission or other JSON-RPC request during a tool call
+        when: the invocation is running in autonomous dispatch mode
+        then: the ACP client request handler auto-approves the request by sending the appropriate response,
+          so tool calls (Edit, Write, Bash) are never blocked waiting for human confirmation
     depends_on: []
     implements: []
     relates_to: []
