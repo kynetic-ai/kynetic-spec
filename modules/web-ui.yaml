@@ -247,6 +247,10 @@ features:
             given: kspec is installed as an npm package in a non-monorepo project
             when: browser opens http://localhost:3456/
             then: daemon serves the bundled web UI and returns HTTP 200 with HTML content
+          - id: ac-4
+            given: an explicit webUiDir option or WEB_UI_DIR env var or local packages/web-ui/build is present
+            when: daemon starts
+            then: the explicit or local path takes precedence over the bundled dist/web-ui/ fallback
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
