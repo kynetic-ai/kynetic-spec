@@ -90,7 +90,8 @@ agents:
       - on: task.needs_work
         filter:
           automation: eligible
-    skills: []
+    skills:
+      - kspec-task-work
     concurrency:
       max_concurrent: 1
     auto_approve: true
