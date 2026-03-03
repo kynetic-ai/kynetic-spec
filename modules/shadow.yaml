@@ -616,7 +616,9 @@ features:
       - id: ac-1
         given: remote tracking is configured for shadow branch
         when: a state-changing operation commits to shadow branch
-        then: kspec attempts to push to remote (fire-and-forget, errors ignored)
+        then: kspec attempts a fire-and-forget push to remote; if push fails, local operation still succeeds
+          and warning output surfaces sync failure (with higher-visibility warning after repeated
+          consecutive failures).
       - id: ac-2
         given: remote tracking is configured
         when: session start runs
