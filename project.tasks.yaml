@@ -71255,7 +71255,7 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: "@shadow-sync"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -71323,6 +71323,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-03T22:38:57.728Z
+  closed_reason: "Merged in PR #648. Implemented shadow auto-push failure visibility in
+    src/parser/shadow.ts by capturing detached push exit/error details, emitting warning output on
+    failure, and escalating warning visibility after repeated consecutive failures while keeping
+    local commits non-blocking. Added regression tests in tests/shadow.test.ts for single-failure
+    warning and repeated-failure escalation. AC coverage confirmation: @shadow-sync ac-1 behavior is
+    covered by tests with explicit annotations; existing @shadow-sync sync-path coverage
+    (ac-4/ac-6/ac-8) remains intact."
 - _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
   title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
