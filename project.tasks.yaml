@@ -72328,7 +72328,10 @@
   created_at: 2026-03-03T20:48:47.715Z
   notes: []
   todos: []
-- title: Fix out-of-order agent_message_chunk streaming and duplicate session event seqs
+- _ulid: 01KJTQBT1GCPKJWQDK3JK82NPV
+  slugs: []
+  title: Fix out-of-order agent_message_chunk streaming and duplicate session event seqs
+  type: bug
   description: >-
     `kspec agent run` output is occasionally garbled (e.g. `**Also/ 38 ... for`) even though the
     canonical assistant message in `~/.claude/projects/<session>.jsonl` is well-formed. In
@@ -72348,23 +72351,22 @@
     3) add regression tests for concurrent update bursts
 
     4) no behavior regression for `--json` mode
-  type: bug
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - agent
     - runtime
     - events
     - bug
-  depends_on: []
-  _ulid: 01KJTQBT1GCPKJWQDK3JK82NPV
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T20:48:49.200Z
   notes: []
   todos: []
+  started_at: 2026-03-03T20:53:45.276Z
+  session_id: 01KJQT6EXAE3K8FTB2GW2ECCYF
