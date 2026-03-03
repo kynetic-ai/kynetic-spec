@@ -10890,7 +10890,7 @@ runs:
   - _ulid: 01KJTQGQBNTVYCR3GDF8TYEJY1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-03T20:51:30.294Z
     step_results:
@@ -10913,5 +10913,14 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-03T20:51:58.279Z
-        completed_at: 2026-03-03T20:51:58.279Z
+        completed_at: 2026-03-03T20:52:02.517Z
+        notes: "Coverage check results: searched tasks/inbox/specs for both friction points before capture.
+          rate_limit_event noise was already tracked as inbox @01KJ778T and was promoted to task
+          @01KJTQBR (duplicate avoided). Garbled/out-of-order chunk stream had no existing pending
+          task match and was added as new task @01KJTQBT. Evidence includes clean canonical messages
+          in ~/.claude/projects/* sessions vs corrupted local stream/events ordering."
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-03T20:52:02.517Z
+        completed_at: 2026-03-03T20:52:02.517Z
     initiated_by: Jacob Chapel
