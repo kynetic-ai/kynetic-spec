@@ -7347,6 +7347,22 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJV1PFE2XZJSAVDXBJX009KA
+    type: friction
+    content: PR review automation attempted APPROVE on self-authored PR and GitHub rejected it; review
+      event selection should adapt to author/reviewer identity.
+    created_at: 2026-03-03T23:49:24.546Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJV1PFJBTB48Z2TX8Q1TQ0GQ
+    type: success
+    content: Task lifecycle loop (task-work + PR + spawned pr-review) provided clean end-to-end closure
+      with merged PR and task completion in one pass.
+    created_at: 2026-03-03T23:49:24.683Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill

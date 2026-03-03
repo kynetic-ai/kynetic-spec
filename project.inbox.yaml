@@ -1420,3 +1420,21 @@ inbox:
       - cli
       - pr
     added_by: Jacob Chapel
+  - _ulid: 01KJV1PFA7018D2FC5G7AFZYFQ
+    text: "pr-review: when reviewer account authored the PR, avoid GitHub APPROVE event and post COMMENT
+      review with full quality-gate summary instead"
+    created_at: 2026-03-03T23:49:24.423Z
+    tags:
+      - reflection
+      - pr-review
+      - automation
+    added_by: Jacob Chapel
+  - _ulid: 01KJV1PFC8CDMHHJ646R1RB6WB
+    text: "workflow UX: allow `kspec workflow show` to default to the single active run when run-ref is
+      omitted"
+    created_at: 2026-03-03T23:49:24.488Z
+    tags:
+      - reflection
+      - workflow
+      - cli
+    added_by: Jacob Chapel
