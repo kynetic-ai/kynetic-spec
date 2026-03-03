@@ -11542,9 +11542,11 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJV0W7KERXFXHF9VHRGBC37T
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-    status: active
+    status: completed
     current_step: 0
     total_steps: 8
     started_at: 2026-03-03T23:35:04.558Z
     step_results: []
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-03T23:45:27.445Z
+    result: early_exit
