@@ -1368,3 +1368,13 @@ inbox:
       - validation
       - meta
     added_by: Jacob Chapel
+  - _ulid: 01KJTTZT4NXD2W4FAR5DF59V5C
+    text: "Make setup smarter when creating built-in agents: detect environment and choose appropriate
+      default adapters (e.g., codex-acp vs claude-agent-acp), and/or allow explicit adapter
+      overrides during setup."
+    created_at: 2026-03-03T21:52:10.390Z
+    tags:
+      - setup
+      - agents
+      - adapter
+    added_by: Jacob Chapel
