@@ -1361,3 +1361,11 @@ inbox:
       - batch
       - shadow
     added_by: "@claude"
+  - _ulid: 01KJTP6AB8ZDDGWEC8H42CV0XW
+    text: "Codex-only: capture harness guidance to close completed subagents proactively (or auto-close
+      after waits) to avoid thread-limit stalls."
+    created_at: 2026-03-03T20:28:20.712Z
+    tags:
+      - reflection
+      - codex
+    added_by: Jacob Chapel
