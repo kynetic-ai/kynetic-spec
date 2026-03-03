@@ -71255,16 +71255,16 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJTV0BRGKFG8SD35DQZZFH77
   created_at: 2026-03-03T06:43:19.153Z
-  started_at: 2026-03-03T07:28:03.221Z
+  started_at: 2026-03-03T21:53:41.089Z
   notes:
     - _ulid: 01KJS9Q8P8J6TFTTYC7ASFR8MV
       created_at: 2026-03-03T07:31:10.152Z
@@ -72316,6 +72316,11 @@
   spec_ref: "@cli-agent-commands"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #647. Suppressed non-actionable adapter stderr rate_limit_event noise
+    in agent spawner while preserving actionable stderr passthrough, with regression coverage in
+    cli-agent-commands tests and mock ACP stderr toggles. Verified own AC (@cli-agent-commands
+    ac-12) and inherited trait AC coverage mappings; local targeted + full test suites and PR CI all
+    passed on commit 56cbfef5b6c0343415ef2f65fe1a01eabc6cc656."
   depends_on: []
   context: []
   priority: 2
@@ -72328,6 +72333,7 @@
   created_at: 2026-03-03T20:48:47.715Z
   started_at: 2026-03-03T21:30:49.953Z
   submitted_at: 2026-03-03T21:31:00.866Z
+  completed_at: 2026-03-03T21:42:27.698Z
   notes:
     - _ulid: 01KJTSEWZB2HP44QSDBNW2ZC9D
       created_at: 2026-03-03T21:25:27.660Z
@@ -72373,12 +72379,6 @@
         this change.
       supersedes: null
   todos: []
-  completed_at: 2026-03-03T21:42:27.698Z
-  closed_reason: "Merged in PR #647. Suppressed non-actionable adapter stderr rate_limit_event noise
-    in agent spawner while preserving actionable stderr passthrough, with regression coverage in
-    cli-agent-commands tests and mock ACP stderr toggles. Verified own AC (@cli-agent-commands
-    ac-12) and inherited trait AC coverage mappings; local targeted + full test suites and PR CI all
-    passed on commit 56cbfef5b6c0343415ef2f65fe1a01eabc6cc656."
 - _ulid: 01KJTQBT1GCPKJWQDK3JK82NPV
   slugs: []
   title: Fix out-of-order agent_message_chunk streaming and duplicate session event seqs
