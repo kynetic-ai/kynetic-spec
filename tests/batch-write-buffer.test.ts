@@ -147,6 +147,35 @@ describe("WriteBuffer.flush()", () => {
     expect(stagingFiles).toHaveLength(0);
   });
 
+  // AC: @batch-write-buffer ac-7 — flush failure: error reported, pre-batch state preserved
+  it("flush() reports error and leaves no partial writes when staging write fails", async () => {
+    const buf = new WriteBuffer(tempDir);
+
+    // Pre-existing file that should remain unchanged
+    const existingFile = path.join(tempDir, "existing.yaml");
+    await fs.writeFile(existingFile, "original: true", "utf-8");
+
+    // Buffer a write to a path whose parent is a FILE (not a dir) — mkdir will fail,
+    // causing Phase 1 to throw. This exercises the "staging failed, nothing committed" path.
+    const blockingFile = path.join(tempDir, "not-a-dir");
+    await fs.writeFile(blockingFile, "i am a file, not a directory", "utf-8");
+    const fileInsideBlocker = path.join(blockingFile, "nested.yaml");
+
+    buf.write(fileInsideBlocker, "should not appear");
+
+    // flush() should throw with "staging failed" message
+    await expect(buf.flush()).rejects.toThrow("Batch flush staging failed");
+
+    // existingFile should be completely unchanged
+    const content = await fs.readFile(existingFile, "utf-8");
+    expect(content).toBe("original: true");
+
+    // No staging files should remain after cleanup
+    const entries = await fs.readdir(tempDir);
+    const stagingFiles = entries.filter((e) => e.includes(".kspec-batch-staging"));
+    expect(stagingFiles).toHaveLength(0);
+  });
+
   // AC: @batch-write-buffer ac-4 — discard leaves disk unchanged
   it("discard() does not write anything to disk", async () => {
     const buf = new WriteBuffer(tempDir);

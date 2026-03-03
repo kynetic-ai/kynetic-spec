@@ -108,6 +108,13 @@ export class WriteBuffer {
    * 3. Rename all staging files to final paths
    * 4. If any rename fails: report error with committed/uncommitted file list
    *
+   * Phase 1 is fully atomic: a staging write failure means no files reach disk.
+   * Phase 2 is best-effort: rename failures are reported with a detailed error, but
+   * files already renamed in Phase 2 before the failure are committed. On healthy
+   * filesystems, Phase 2 rename failures are extremely rare (same-device, same-dir
+   * renames are near-atomic). Partial Phase 2 failure is always an explicit error,
+   * never a silent commit.
+   *
    * AC: @batch-write-buffer ac-3 — only buffered files are written
    * AC: @batch-write-buffer ac-7 — flush failure reported; .kspec/ not silently corrupted
    */
