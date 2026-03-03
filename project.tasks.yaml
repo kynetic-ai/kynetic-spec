@@ -70573,7 +70573,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
   created_at: 2026-03-02T01:22:22.683Z
+  started_at: 2026-03-03T01:44:47.390Z
   notes:
     - _ulid: 01KJP278TV2GKBMD6DMP6PG4PX
       created_at: 2026-03-02T01:22:22.683Z
@@ -70643,10 +70645,16 @@
       content: "Automation: eligible. Migration task with enriched implementation note listing files to
         delete/update/create and ordered migration checklist. 8 ACs cover each surface."
       supersedes: null
+    - _ulid: 01KJRPC3DWTRET08VQM3TSEDGG
+      created_at: 2026-03-03T01:53:01.373Z
+      author: "@claude"
+      content: "Updated workflow definitions: task-work-loop, pr-review-loop, and task-work-session steps
+        now reference agent dispatch instead of ralph. Changes include: description updates via
+        kspec meta set, and direct YAML step content updates (kspec meta set doesn't support
+        updating workflow steps)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-03T01:44:47.390Z
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
     - task-ralph-migration-guide

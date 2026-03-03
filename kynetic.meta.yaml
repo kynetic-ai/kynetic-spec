@@ -311,7 +311,7 @@ workflows:
           Otherwise (new work):
             1. Submit task: kspec task submit @task
             2. Create PR: /pr skill
-            3. Stop responding — ralph handles PR review via separate subagent
+            3. Stop responding — pr-reviewer agent handles PR review via dispatch
       - type: check
         content: PR merged to main
         on_fail: Wait for PR review and merge before completing task.
@@ -930,16 +930,16 @@ workflows:
           4. Highest priority ready task (lowest number = higher priority)
 
 
-          Note: pending_review tasks are handled externally by ralph spawning PR review subagents.
+          Note: pending_review tasks are handled by the pr-reviewer agent via dispatch.
         options:
           - needs_work task exists -> fix review feedback (fix cycle)
           - in_progress task exists -> continue that task
           - Ready task unblocks others -> select that task
           - Only isolated ready tasks -> select highest priority (lowest number)
-          - "`kspec tasks ready --eligible` returned empty -> stop responding (ralph exits
-            automatically)"
-          - "`kspec tasks ready --eligible` shows all blocked -> stop responding (ralph exits
-            automatically)"
+          - "`kspec tasks ready --eligible` returned empty -> stop responding (agent dispatch
+            exits automatically)"
+          - "`kspec tasks ready --eligible` shows all blocked -> stop responding (agent dispatch
+            exits automatically)"
         execution:
           mode: silent
       - type: check
@@ -1047,7 +1047,7 @@ workflows:
           Otherwise (new work):
             1. Submit task: kspec task submit @task
             2. Create PR: /pr skill
-            3. Stop responding — ralph handles PR review via separate subagent
+            3. Stop responding — pr-reviewer agent handles PR review via dispatch
         execution:
           mode: silent
 conventions:
