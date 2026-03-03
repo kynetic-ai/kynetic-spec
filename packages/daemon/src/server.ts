@@ -45,8 +45,10 @@ export interface ServerOptions {
  * 5. Bundled dist/web-ui/ relative to this module (npm package installs)
  *
  * AC: @daemon-web-ui-bundle ac-2, ac-4
+ *
+ * Exported for testing only.
  */
-function resolveWebUiPath(webUiDir?: string): string | null {
+export function resolveWebUiPath(webUiDir?: string): string | null {
   // 1. Explicit option
   if (webUiDir && existsSync(webUiDir)) {
     return webUiDir;
@@ -73,7 +75,7 @@ function resolveWebUiPath(webUiDir?: string): string | null {
 
   // 5. Bundled assets: dist/web-ui/ relative to daemon module location
   // Covers npm package installs where no local web UI build exists.
-  // __filename resolves to dist/daemon/server.ts → parent is dist/web-ui/
+  // import.meta.url resolves to dist/daemon/server.js → sibling is dist/web-ui/
   const selfDir = dirname(fileURLToPath(import.meta.url));
   const bundledPath = join(selfDir, '..', 'web-ui');
   if (existsSync(bundledPath)) {
