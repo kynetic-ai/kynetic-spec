@@ -71218,7 +71218,7 @@
     scenario content was updated in PR #640 but table label was not. Update to Agent dispatch
     continuation."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71229,6 +71229,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-03T07:22:38.739Z
+  session_id: 01KJS96YJT5JC69KYTAX487YG5
 - _ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
   slugs: []
   title: Shadow branch auto-push silently swallows failures — fire-and-forget push
