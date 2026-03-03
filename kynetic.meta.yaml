@@ -7311,6 +7311,16 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJTFVPR2VPHVWPAFXA5CYK4D
+    type: friction
+    content: package-lock.json drift from npm test / npx tsc --noEmit triggers session checkpoint stop
+      hook every session. The right action is always git checkout package-lock.json (unless an
+      actual install was run). Consider adding package-lock.json to stop hook ignore list or
+      auto-restoring it before checkpoint.
+    created_at: 2026-03-03T18:37:41.506Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
