@@ -6453,6 +6453,11 @@ features:
         when: the invocation produces text output
         then: streaming output is suppressed; the JSON result object includes outcome, session_id,
           duration_ms, and stop_reason only
+      - id: ac-12
+        given: kspec agent run is used in interactive mode (not --json)
+        when: the agent produces text output during the invocation
+        then: text content streams to stdout as it is received, so the user sees the response live without
+          waiting for completion
     depends_on: []
     implements: []
     relates_to: []
