@@ -72598,6 +72598,22 @@
     - concurrency
   vcs_refs: []
   created_at: 2026-03-03T22:17:33.082Z
-  notes: []
-  todos: []
   started_at: 2026-03-03T22:49:52.539Z
+  notes:
+    - _ulid: 01KJTY9GHH3BWJ0XT4QTHQ5CVB
+      created_at: 2026-03-03T22:49:53.969Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: concurrent task mutations from parallel agent tool calls can lose updates and
+        revert status.
+
+        - Scope: serialize runtime task mutation writes so state transitions/notes are not
+        clobbered.
+
+        - Files: agent runtime/mutation code and corresponding tests.
+
+        - Verification: targeted tests + full npm test + kspec validate.
+      supersedes: null
+  todos: []
