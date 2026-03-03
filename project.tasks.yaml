@@ -71480,12 +71480,22 @@
     - agent
     - dx
   vcs_refs: []
+  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
   created_at: 2026-03-03T06:55:30.474Z
-  notes: []
+  started_at: 2026-03-03T17:38:28.572Z
+  notes:
+    - _ulid: 01KJTCXHYW2G9EZ34699P5GHZF
+      created_at: 2026-03-03T17:46:16.413Z
+      author: "@claude"
+      content: "Implemented ac-11 and ac-12: added onUpdate handler to runInvocation call in
+        src/cli/commands/agent.ts. In interactive mode, streams agent_message_chunk text content to
+        stdout as it arrives. In --json mode, onUpdate is undefined so nothing streams. Added a
+        newline after streaming to separate output from the completion summary. Tests added to
+        cli-agent-commands.test.ts using existing mock ACP adapter with MOCK_ACP_RESPONSE_TEXT env
+        var."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-03T17:38:28.572Z
-  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
 - _ulid: 01KJS7PDW5GQQX9WQ2C7C1JNRX
   slugs: []
   title: Add --text flag to kspec session log show to replay agent output
