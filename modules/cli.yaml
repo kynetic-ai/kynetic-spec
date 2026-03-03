@@ -6223,6 +6223,14 @@ features:
         then: |
           The task is blocked with a failure note describing the
           consecutive failures and the agent definition that failed
+      - id: ac-10
+        given: an agent definition references skills and the agent uses a specific adapter (e.g.
+          claude-agent-acp or codex-acp)
+        when: skill content is injected into the prompt via buildPromptWithSkills
+        then: "cross-skill references using {skill:foo} notation are rewritten to the adapter-appropriate
+          invocation format before injection: /foo for claude-agent-acp (Claude Code slash
+          commands), $foo for codex-acp (Codex CLI), and {skill:foo} left as-is for unknown
+          adapters"
     depends_on: []
     implements: []
     relates_to: []
