@@ -70712,6 +70712,33 @@
         SHOULD-FIX: .agents/skills/ rendered files not updated via kspec skill render; ac-8 test too
         weak. Details in PR review."
       supersedes: null
+    - _ulid: 01KJRR42AR2BFDP4H4WG6QW7G6
+      created_at: 2026-03-03T02:23:35.256Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 2] Addressed all review findings from PR #640:
+
+        MUST-FIX:
+
+        1. Deleted tests/ralph/task-limit.test.ts (tested flags that no longer exist)
+
+        2. Updated tests/agents-instruction-gen.test.ts: 4 lines changed from 'Ralph Loop Mode' →
+        'Agent Dispatch Mode'
+
+        3. Committed regenerated kspec-agents.md (was generated but not committed)
+
+
+        SHOULD-FIX:
+
+        4. Ran kspec skill render — updated codex, eval-agents, pr-review in .agents/skills/ and
+        .claude/skills/
+
+        5. Strengthened ac-8 test: now parses JSON output and verifies decision='block' + reason
+        contains 'uncommitted changes'
+
+
+        All 9 replacement tests pass, all 40 agents-instruction-gen tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
