@@ -71924,9 +71924,36 @@
     - dispatch
     - acp
   vcs_refs: []
+  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
   created_at: 2026-03-03T07:37:29.340Z
-  notes: []
+  started_at: 2026-03-03T07:40:03.365Z
+  notes:
+    - _ulid: 01KJSAQWYRAH4HBRZKMMAYHA0E
+      created_at: 2026-03-03T07:48:59.480Z
+      author: "@claude"
+      content: >-
+        Implemented ACP permission request handler in invocation.ts.
+
+
+        Root cause: invocation.ts only registered a 'update' event handler but never registered a
+        'request' event handler. When the ACP agent sends a session/request_permission JSON-RPC
+        request, it sat unanswered causing the agent to hang.
+
+
+        Fix: Added a 'request' handler that:
+
+        - In auto-approve mode: finds an allow_always or allow_once option and calls
+        respondPermission with the selected optionId
+
+        - In non-auto-approve mode: denies with outcome cancelled
+
+
+        Also updated tests/mocks/acp-mock.js to support bidirectional RPC (agent→client requests),
+        enabling integration tests via MOCK_ACP_SEND_PERMISSION_REQUEST=true.
+
+
+        Tests: 2 new tests in ac-11 section, all 32 tests pass. Shard 1 clean; shard 2 failure in
+        enhanced-setup.test.ts is pre-existing on main (unrelated).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-03T07:40:03.365Z
-  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
