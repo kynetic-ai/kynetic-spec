@@ -71255,7 +71255,7 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: null
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71264,7 +71264,7 @@
   vcs_refs: []
   session_id: null
   created_at: 2026-03-03T06:43:19.153Z
-  started_at: 2026-03-03T22:17:57.538Z
+  started_at: 2026-03-03T22:27:35.346Z
   submitted_at: 2026-03-03T22:20:31.082Z
   notes:
     - _ulid: 01KJS9Q8P8J6TFTTYC7ASFR8MV
