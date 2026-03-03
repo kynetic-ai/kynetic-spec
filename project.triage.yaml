@@ -2216,11 +2216,13 @@ triage:
     item_snapshot: "eval-agents/SKILL.md line 144: scenario table label still reads Ralph continuation —
       scenario content was updated in PR #640 but table label was not. Update to Agent dispatch
       continuation."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Tiny doc fix: eval-agents/SKILL.md line 144 has stale scenario table label. One-liner
       change. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-03T06:43:08.059Z
-    updated_at: 2026-03-03T06:43:08.082Z
+    updated_at: 2026-03-03T06:43:18.716Z
+    acted_at: 2026-03-03T06:43:18.695Z
+    result_ref: "@01KJS6ZK"
