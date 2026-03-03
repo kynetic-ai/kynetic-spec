@@ -71255,7 +71255,7 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -71265,6 +71265,7 @@
   session_id: null
   created_at: 2026-03-03T06:43:19.153Z
   started_at: 2026-03-03T22:17:57.538Z
+  submitted_at: 2026-03-03T22:20:31.082Z
   notes:
     - _ulid: 01KJS9Q8P8J6TFTTYC7ASFR8MV
       created_at: 2026-03-03T07:31:10.152Z
@@ -71306,9 +71307,15 @@
         single-failure warning and repeated-failure escalation. Verification: npm run test --
         tests/shadow.test.ts (86 passed)."
       supersedes: null
+    - _ulid: 01KJTWYYBXQHAY4TEAE4PD1VVP
+      created_at: 2026-03-03T22:26:39.101Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #648 changes @shadow-sync ac-1 behavior
+        (errors ignored -> warning/escalation) without aligned spec update; AC annotation coverage
+        is semantically mismatched."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-03T22:20:31.082Z
 - _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
   title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
