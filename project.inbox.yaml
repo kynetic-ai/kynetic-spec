@@ -1410,3 +1410,13 @@ inbox:
       - friction
       - session-reflect
     added_by: "@claude"
+  - _ulid: 01KJTY4BRADKK8YZZXBK990KGE
+    text: "Improve PR creation resilience: when gh pr create returns false-negative GraphQL errors
+      (blank sha/no commits) but branch compare is ahead, automatically fall back to REST
+      create-pull and report deterministic recovery."
+    created_at: 2026-03-03T22:47:05.226Z
+    tags:
+      - reflection
+      - cli
+      - pr
+    added_by: Jacob Chapel
