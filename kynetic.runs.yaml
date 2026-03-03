@@ -10832,7 +10832,7 @@ runs:
   - _ulid: 01KJTNVWMTF6ADRMB21HV67NZY
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-03T20:22:39.002Z
     step_results:
@@ -10847,5 +10847,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-03T20:23:13.232Z
-        completed_at: 2026-03-03T20:23:13.232Z
+        completed_at: 2026-03-03T20:23:17.803Z
+        notes: "Friction points: (1) Test determinism depended on ambient machine state (daemon PID/port in
+          ~/.config), which caused AC-10 behavior drift until HOME was isolated in tests. (2)
+          Several tests used fixed sleeps or tight default timeouts, creating intermittent
+          full-suite failures under load. (3) Subagent thread-limit friction surfaced because many
+          completed agents stayed open until manually closed."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-03T20:23:17.803Z
+        completed_at: 2026-03-03T20:23:17.803Z
     initiated_by: Jacob Chapel
