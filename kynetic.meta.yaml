@@ -95,6 +95,7 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
+    adapter: codex-acp
   - _ulid: 01KJS8JC35KPCJP6A4C1VJAWF9
     id: reviewer
     name: Reviewer Agent
@@ -107,6 +108,7 @@ agents:
       - git
       - gh
     conventions: []
+    adapter: codex-acp
     dispatch:
       - on: task.pending_review
     skills:
@@ -114,7 +116,6 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
-    adapter: codex-acp
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
