@@ -72184,7 +72184,7 @@
         before automation"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KJTHAB6NRKQE12JJ7Q7V80CK
   slugs: []
   title: Fix core-skill-install test flakiness in shard 3
@@ -72214,7 +72214,7 @@
         before automation"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KJTHACWHYNBEQ09GCHYH00H4
   slugs: []
   title: Fix cli-serve test flakiness in shard 3
@@ -72244,7 +72244,7 @@
         before automation"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KJTP68SV9VZ37KXF6TCEEKWB
   slugs: []
   title: Add isolated HOME helper for daemon-sensitive CLI tests
@@ -72273,7 +72273,7 @@
         automation"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
 - _ulid: 01KJTP69W21Z3GQE8J2HAXC4WV
   slugs: []
   title: Create wait-for-startup helper for process/daemon tests
@@ -72302,4 +72302,4 @@
         automation"
       supersedes: null
   todos: []
-  automation: needs_review
+  automation: eligible
