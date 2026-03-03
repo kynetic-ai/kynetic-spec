@@ -70671,6 +70671,35 @@
         - .kspec/skills/eval-agents/SKILL.md (and skills/): updated ralph loop references to agent
         dispatch
       supersedes: null
+    - _ulid: 01KJRQ45HXXV8DNK289YAHG0HD
+      created_at: 2026-03-03T02:06:09.981Z
+      author: "@claude"
+      content: >-
+        Implementation complete. All 8 ACs covered:
+
+        - ac-1: ralph.ts replaced with deprecation stub showing migration error with kspec agent
+        equivalents
+
+        - ac-2: setup.ts ensureBuiltInAgents() creates task-worker + pr-reviewer in
+        kynetic.meta.yaml (idempotent)
+
+        - ac-3: Dispatch rules match ralph behavior (worker: task.ready + task.needs_work eligible,
+        reviewer: task.pending_review)
+
+        - ac-4: Workflows updated in previous session (task-work-loop, pr-review-loop,
+        session-reflect-loop)
+
+        - ac-5: Skills updated in previous session (task-work, codex, eval-agents, pr-review)
+
+        - ac-6: 06-ralph-loop.md rewritten as agent dispatch section referencing pr-reviewer agent
+
+        - ac-7: 4 ralph test files deleted (~4400 lines), replaced with
+        tests/ralph-replacement.test.ts (9 tests)
+
+        - ac-8: Uncommitted changes detection test added via session checkpoint
+
+        All 9 replacement tests pass. Build succeeds.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
