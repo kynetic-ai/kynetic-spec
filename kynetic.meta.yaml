@@ -936,8 +936,8 @@ workflows:
           - in_progress task exists -> continue that task
           - Ready task unblocks others -> select that task
           - Only isolated ready tasks -> select highest priority (lowest number)
-          - "`kspec tasks ready --eligible` returned empty -> stop responding (agent dispatch
-            exits automatically)"
+          - "`kspec tasks ready --eligible` returned empty -> stop responding (agent dispatch exits
+            automatically)"
           - "`kspec tasks ready --eligible` shows all blocked -> stop responding (agent dispatch
             exits automatically)"
         execution:
@@ -7162,6 +7162,29 @@ observations:
       evaluate: (a) switch to in-process command execution, or (b) use a temp file protocol where
       children write to a staging dir and parent collects on success."
     created_at: 2026-03-02T23:48:34.567Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJRR5DCM4JHW1N84M9ZFSKB7
+    type: friction
+    content: "Fix cycle had two SHOULD-FIX items from regenerated files not committed: (1) kspec agents
+      generate was run locally but not committed to the PR branch — reviewer caught stale
+      kspec-agents.md with ralph references; (2) kspec skill render was not run at all —
+      .agents/skills/ rendered files still had ralph references. Both are easy to miss because the
+      commands succeed but leave uncommitted artifacts. Consider adding these steps to the pre-PR
+      local-review checklist or the implementation checklist notes when working on migrations that
+      touch templates/skills."
+    created_at: 2026-03-03T02:24:19.348Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJRR5DGFPKAMM0WXG58S835R
+    type: success
+    content: "Fix cycle search-before-capture pattern worked well: searched for existing tracking of
+      both friction points before capturing observations, confirmed neither was already tracked,
+      then captured a single consolidated observation. This prevented duplication and kept the
+      reflection tight."
+    created_at: 2026-03-03T02:24:19.471Z
     author: "@claude"
     resolved: false
     resolution: null
