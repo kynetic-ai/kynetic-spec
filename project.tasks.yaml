@@ -71369,19 +71369,35 @@
   created_at: 2026-03-03T06:43:29.940Z
   notes: []
   todos: []
-- title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
+- _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
+  slugs: []
+  title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
+  type: task
+  description: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-03T06:43:31.667Z
+  notes: []
+  todos: []
+- title: "CLI DX: accept tags as alias for tag in batch commands"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
-  _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
+  description: "CLI DX: accept tags as alias for tag in batch commands"
+  _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T06:43:31.667Z
+  created_at: 2026-03-03T06:43:33.388Z
   notes: []
   todos: []
