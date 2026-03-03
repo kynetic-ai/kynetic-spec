@@ -288,6 +288,11 @@ features:
             given: a disconnected session was previously in heartbeat monitoring
             when: the next heartbeat interval executes
             then: the daemon does not attempt to ping that session and emits no stale heartbeat ping log for it
+          - id: ac-2
+            given: a WebSocket client disconnects unexpectedly with close code 1006
+            when: the daemon close handler runs
+            then: the session is removed from pubsub connection tracking and the disconnect log includes that
+              session id rather than undefined
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
