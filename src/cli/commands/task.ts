@@ -14,6 +14,7 @@ import {
   type LoadedTask,
   loadAllItems,
   loadAllTasks,
+  mutateTaskAtomically,
   ReferenceIndex,
   saveTask,
   scanTestCoverage,
@@ -1195,14 +1196,17 @@ Examples:
 
         // Update status
         // AC: @session-scoped-task-claiming ac-stamp, ac-no-env
-        const updatedTask: Task = {
-          ...foundTask,
-          status: "in_progress",
-          started_at: new Date().toISOString(),
-          ...(sessionId ? { session_id: sessionId } : {}),
-        };
+        let transitionFromStatus: Task["status"] = foundTask.status;
+        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+          transitionFromStatus = latestTask.status;
+          return {
+            ...latestTask,
+            status: "in_progress",
+            started_at: new Date().toISOString(),
+            ...(sessionId ? { session_id: sessionId } : {}),
+          };
+        });
 
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-start",
@@ -1214,7 +1218,7 @@ Examples:
         // genuine pending→in_progress transitions. Resume case returns early
         // above. needs_work→in_progress is a fix cycle (task already consumed
         // a budget slot when originally started) — don't double-count it.
-        if (sessionId && foundTask.status === "pending") {
+        if (sessionId && transitionFromStatus === "pending") {
           await incrementBudget(ctx.specDir, sessionId);
         }
 
@@ -1222,7 +1226,7 @@ Examples:
         postDispatchEvent({
           taskId: updatedTask._ulid,
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
-          fromStatus: foundTask.status,
+          fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
           projectPath: ctx.rootDir,
         });
@@ -2071,12 +2075,10 @@ Examples:
 
         const note = createNote(message, options.author, options.supersedes);
 
-        const updatedTask: Task = {
-          ...foundTask,
-          notes: [...foundTask.notes, note],
-        };
-
-        await saveTask(ctx, updatedTask);
+        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => ({
+          ...latestTask,
+          notes: [...latestTask.notes, note],
+        }));
         await commitIfShadow(
           ctx.shadow,
           "task-note",
