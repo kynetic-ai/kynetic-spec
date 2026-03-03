@@ -11416,6 +11416,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T22:45:44.011Z
+    completed_at: 2026-03-03T22:47:10.391Z
     step_results:
       - step_index: 0
         status: completed
@@ -11467,4 +11468,11 @@ runs:
           GraphQL errors). No duplicate captures created for already-tracked friction (task mutation
           race, daemon-test isolation, stale session budget context)."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-03T22:47:10.391Z
+  - _ulid: 01KJTZW1VRXHCFPXV6ENF5HP7H
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-03-03T23:17:30.104Z
+    step_results: []
+    initiated_by: Jacob Chapel
