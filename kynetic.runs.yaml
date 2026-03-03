@@ -10893,6 +10893,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T20:51:30.294Z
+    completed_at: 2026-03-03T20:52:17.235Z
     step_results:
       - step_index: 0
         status: completed
@@ -10943,4 +10944,11 @@ runs:
           was promoted to task @01KJTQBR; untracked chunk-ordering issue captured as task @01KJTQBT.
           No additional inbox/meta entries added to avoid noise."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-03T20:52:17.235Z
+  - _ulid: 01KJTR6TDQ2T7F5EA49W0ZJ9TM
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-03T21:03:34.327Z
+    step_results: []
+    initiated_by: Jacob Chapel
