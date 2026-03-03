@@ -1,3 +1,4 @@
+import { spawn } from "node:child_process";
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   createNote,
@@ -5,7 +6,39 @@ import {
   loadAllTasks,
   mutateTaskAtomically,
 } from '../src/parser/index.js';
-import { cleanupTempDir, setupTempFixtures } from './helpers/cli.js';
+import {
+  cleanupTempDir,
+  CLI_PATH,
+  kspec,
+  setupTempFixtures,
+} from './helpers/cli.js';
+
+function runKspecAsync(args: string, cwd: string): Promise<{ exitCode: number; stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
+      cwd,
+      env: { ...process.env, KSPEC_AUTHOR: "@test" },
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout.on("data", (data: Buffer) => {
+      stdout += data.toString("utf-8");
+    });
+    child.stderr.on("data", (data: Buffer) => {
+      stderr += data.toString("utf-8");
+    });
+    child.on("error", reject);
+    child.on("close", (exitCode) => {
+      resolve({
+        exitCode: exitCode ?? 1,
+        stdout: stdout.trim(),
+        stderr: stderr.trim(),
+      });
+    });
+  });
+}
 
 describe('Task Mutation Serialization', () => {
   let tempDir: string;
@@ -78,5 +111,98 @@ describe('Task Mutation Serialization', () => {
 
     expect(contents).toContain(noteA.content);
     expect(contents).toContain(noteB.content);
+  });
+
+  it("preserves concurrent notes during task submit", async () => {
+    tempDir = await setupTempFixtures();
+    kspec("task start @test-task-pending", tempDir);
+
+    const ctx = await initContext(tempDir);
+    const tasks = await loadAllTasks(ctx);
+    const target = tasks.find((task) => task.slugs.includes("test-task-pending"));
+    expect(target).toBeDefined();
+
+    const note = createNote("concurrent note during submit", "@test");
+    const [submitResult] = await Promise.all([
+      runKspecAsync("task submit @test-task-pending", tempDir),
+      mutateTaskAtomically(ctx, target!, async (latestTask) => {
+        await new Promise((resolve) => setTimeout(resolve, 15));
+        return {
+          ...latestTask,
+          notes: [...latestTask.notes, note],
+        };
+      }),
+    ]);
+
+    expect(submitResult.exitCode).toBe(0);
+    const refreshed = (await loadAllTasks(ctx)).find((task) => task._ulid === target!._ulid);
+    expect(refreshed?.status).toBe("pending_review");
+    expect(refreshed?.notes.some((entry) => entry.content === note.content)).toBe(true);
+  });
+
+  it("preserves concurrent notes during task set --refs batch updates", async () => {
+    tempDir = await setupTempFixtures();
+
+    const ctx = await initContext(tempDir);
+    const tasks = await loadAllTasks(ctx);
+    const target = tasks.find((task) => task.slugs.includes("test-task-pending"));
+    expect(target).toBeDefined();
+
+    const note = createNote("concurrent note during set --refs", "@test");
+    const [setResult] = await Promise.all([
+      runKspecAsync("task set --refs @test-task-pending @test-task-blocked --priority 1", tempDir),
+      mutateTaskAtomically(ctx, target!, async (latestTask) => {
+        await new Promise((resolve) => setTimeout(resolve, 15));
+        return {
+          ...latestTask,
+          notes: [...latestTask.notes, note],
+        };
+      }),
+    ]);
+
+    expect(setResult.exitCode).toBe(0);
+    const refreshedTasks = await loadAllTasks(ctx);
+    const pendingTask = refreshedTasks.find((task) => task.slugs.includes("test-task-pending"));
+    const blockedTask = refreshedTasks.find((task) => task.slugs.includes("test-task-blocked"));
+
+    expect(pendingTask?.priority).toBe(1);
+    expect(blockedTask?.priority).toBe(1);
+    expect(pendingTask?.notes.some((entry) => entry.content === note.content)).toBe(true);
+  });
+
+  it("preserves concurrent notes during task complete --refs batch transitions", async () => {
+    tempDir = await setupTempFixtures();
+    kspec('task add --title "Batch Complete One" --slug batch-complete-one', tempDir);
+    kspec('task add --title "Batch Complete Two" --slug batch-complete-two', tempDir);
+    kspec("task start @batch-complete-one", tempDir);
+    kspec("task submit @batch-complete-one", tempDir);
+    kspec("task start @batch-complete-two", tempDir);
+    kspec("task submit @batch-complete-two", tempDir);
+
+    const ctx = await initContext(tempDir);
+    const tasks = await loadAllTasks(ctx);
+    const target = tasks.find((task) => task.slugs.includes("batch-complete-one"));
+    expect(target).toBeDefined();
+
+    const note = createNote("concurrent note during complete --refs", "@test");
+    const [completeResult] = await Promise.all([
+      runKspecAsync('task complete --refs @batch-complete-one @batch-complete-two --reason "Batch complete"', tempDir),
+      mutateTaskAtomically(ctx, target!, async (latestTask) => {
+        await new Promise((resolve) => setTimeout(resolve, 15));
+        return {
+          ...latestTask,
+          notes: [...latestTask.notes, note],
+        };
+      }),
+    ]);
+
+    expect(completeResult.exitCode).toBe(0);
+    const refreshedTasks = await loadAllTasks(ctx);
+    const completedOne = refreshedTasks.find((task) => task.slugs.includes("batch-complete-one"));
+    const completedTwo = refreshedTasks.find((task) => task.slugs.includes("batch-complete-two"));
+
+    expect(completedOne?.status).toBe("completed");
+    expect(completedTwo?.status).toBe("completed");
+    expect(completedOne?.notes.some((entry) => entry.content === note.content)).toBe(true);
   });
 });
