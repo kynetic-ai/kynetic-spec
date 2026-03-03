@@ -71733,7 +71733,10 @@
   notes: []
   todos: []
   automation: manual_only
-- title: Evaluate and improve dispatch prompt for worker and reviewer agents
+- _ulid: 01KJS8V7THVJ8GRF1M6XVZH9FY
+  slugs: []
+  title: Evaluate and improve dispatch prompt for worker and reviewer agents
+  type: task
   description: >-
     When the dispatch engine fires an agent, the base prompt is either agent.prompt_template or
     'Work on task @ref' (dispatch.ts:662). The skill content is then appended by
@@ -71776,22 +71779,20 @@
 
     This is intentionally a manual evaluation task — run a real invocation first, then decide what
     to fix.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - agent
     - dx
     - dispatch
-  depends_on: []
-  _ulid: 01KJS8V7THVJ8GRF1M6XVZH9FY
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T07:15:51.761Z
   notes: []
   todos: []
+  automation: manual_only
