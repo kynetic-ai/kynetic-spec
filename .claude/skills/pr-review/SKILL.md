@@ -8,7 +8,7 @@ description: Review a PR linked to a kspec task, post findings as inline
 
 # PR Review Skill
 
-Review a PR linked to a kspec task, post findings as inline comments, and merge only when all quality gates pass. This skill runs in **subagent context** (spawned by ralph). The goal is to find problems and verify quality — not to rubber-stamp merges.
+Review a PR linked to a kspec task, post findings as inline comments, and merge only when all quality gates pass. This skill runs in **subagent context** (spawned by the pr-reviewer agent). The goal is to find problems and verify quality — not to rubber-stamp merges.
 
 ## Role Boundary
 
@@ -261,8 +261,8 @@ If a SHOULD-FIX item persists after re-review (worker chose not to fix):
 ## Subagent Context
 
 This skill runs in **ACP subagent context**:
-- Spawned by ralph for PR review
-- Runs sequentially (ralph waits for completion)
+- Spawned by the pr-reviewer agent for PR review
+- Runs sequentially (agent dispatch waits for completion)
 - No human interaction expected
 - Auto-resolves decisions based on quality gate outcomes
 

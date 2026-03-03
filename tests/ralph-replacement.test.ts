@@ -249,15 +249,17 @@ describe("uncommitted changes detection", () => {
       "utf-8",
     );
 
-    // Session checkpoint should report dirty working tree
+    // Session checkpoint should detect the dirty working tree and block
     const result = await kspec(
       "session checkpoint --json",
       tempDir,
     );
 
-    // The checkpoint may or may not exit 0, but the JSON output should indicate dirty state
-    // or the command should succeed — we're checking the session records the state
-    // Note: session checkpoint is a kspec-managed operation that records git state
+    // In JSON mode, checkpoint exits 0 but outputs {"decision": "block", "reason": "..."}
+    // when uncommitted changes are detected
     expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout.trim()) as { decision: string; reason: string };
+    expect(output.decision).toBe("block");
+    expect(output.reason).toContain("uncommitted changes");
   });
 });
