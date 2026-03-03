@@ -10786,7 +10786,7 @@ runs:
   - _ulid: 01KJTB1675NJGYVGN8QV2CPXXS
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-03T17:13:18.309Z
     step_results:
@@ -10800,5 +10800,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-03T17:13:45.217Z
-        completed_at: 2026-03-03T17:13:45.217Z
+        completed_at: 2026-03-03T17:14:13.337Z
+        notes: "Branch check: started on wrong branch, user had to remind me to go to main. Mock
+          bidirectional RPC: acp-mock.js was unidirectional, adding agent→client request support was
+          non-trivial plumbing. Pre-existing failure verification: needed git stash/unstash
+          round-trip to prove failure was pre-existing."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-03T17:14:13.337Z
+        completed_at: 2026-03-03T17:14:13.337Z
     initiated_by: "@claude"
