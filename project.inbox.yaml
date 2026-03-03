@@ -1399,3 +1399,14 @@ inbox:
       - friction
       - session-reflect
     added_by: "@claude"
+  - _ulid: 01KJTXY9NS1DHR04VY0NTQ6ZKK
+    text: "kspec batch format for triage commands: args expects object but triage record uses positional
+      ref — tried to batch-triage 11 items and hit validation error 'Expected object, received array
+      at args'. Need either documentation of correct batch format for triage or fixing the args
+      shape."
+    created_at: 2026-03-03T22:43:46.489Z
+    tags:
+      - batch
+      - friction
+      - session-reflect
+    added_by: "@claude"
