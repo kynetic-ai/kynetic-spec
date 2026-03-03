@@ -71318,22 +71318,38 @@
   created_at: 2026-03-03T06:43:24.752Z
   notes: []
   todos: []
-- title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
+- _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
+  slugs: []
+  title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
     with a cle
+  type: task
+  description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
+    fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
+    with empty string arg.
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-03T06:43:26.496Z
+  notes: []
+  todos: []
+- title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
-    fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
-    with empty string arg.
-  _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
+  description: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+  _ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T06:43:26.496Z
+  created_at: 2026-03-03T06:43:28.265Z
   notes: []
   todos: []

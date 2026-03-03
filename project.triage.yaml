@@ -1035,14 +1035,16 @@ triage:
   - _ulid: 01KJ4SZJH467QW0CKV7GCJJWC3
     inbox_ref: 01KHWWMDCV6NBYK8D8EMYBZEPV
     item_snapshot: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Missing --description flag on task set is a friction point. Small, well-scoped CLI
       addition. Automation eligible.
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-23T08:31:16.516Z
-    updated_at: 2026-03-03T06:43:07.433Z
+    updated_at: 2026-03-03T06:43:29.522Z
+    acted_at: 2026-03-03T06:43:29.498Z
+    result_ref: "@01KJS6ZX"
   - _ulid: 01KJ4SZJHXJEMH8ZM7HQ6KBRTP
     inbox_ref: 01KJ0K9CEX5EJYT9YYA9D04GX7
     item_snapshot: "inbox promote missing --slug option: cannot set task slug during promotion, must use
@@ -1714,10 +1716,10 @@ triage:
       time. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.598Z
-    updated_at: 2026-03-03T06:43:27.829Z
     acted_at: 2026-03-03T06:43:27.809Z
     result_ref: "@01KJS6ZW"
+    created_at: 2026-02-26T19:02:52.598Z
+    updated_at: 2026-03-03T06:43:27.829Z
   - _ulid: 01KJDNA7EJT5VVGV2W3DM9R5HR
     inbox_ref: 01KJ76Y81G54ASMF0A18Z5G35Y
     item_snapshot: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering
