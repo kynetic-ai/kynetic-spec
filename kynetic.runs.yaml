@@ -11359,7 +11359,7 @@ runs:
   - _ulid: 01KJTTFW8CVJX39ACNB0K0E9V1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-03-03T21:43:28.269Z
     step_results:
@@ -11397,7 +11397,13 @@ runs:
           and missing observations skill content so per-task validation failures are actionable
           (medium/large)."
       - step_index: 4
-        status: completed
+        status: skipped
         started_at: 2026-03-03T21:44:51.915Z
-        completed_at: 2026-03-03T21:44:51.915Z
+        completed_at: 2026-03-03T21:44:58.819Z
+        notes: Discussion step skipped in this direct-command run; applying high-confidence capture only for
+          one untracked systemic item and avoiding duplicates.
+      - step_index: 5
+        status: completed
+        started_at: 2026-03-03T21:44:58.819Z
+        completed_at: 2026-03-03T21:44:58.819Z
     initiated_by: Jacob Chapel
