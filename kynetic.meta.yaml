@@ -7319,8 +7319,11 @@ observations:
       auto-restoring it before checkpoint.
     created_at: 2026-03-03T18:37:41.506Z
     author: "@claude"
-    resolved: false
-    resolution: null
+    resolved: true
+    resolution: "Retracted: stop hook behavior is correct. package-lock.json changes should be committed
+      if intentional (install), cleared if noise (test side-effect). Not friction."
+    resolved_at: 2026-03-03T18:39:32.641Z
+    resolved_by: "@claude"
   - _ulid: 01KJTFVY4HT1BDGHYP2JPVKW5Q
     type: friction
     content: "Testing CLI-layer decisions (e.g. isJsonMode() → onUpdate suppression) requires knowing
