@@ -70566,6 +70566,14 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #640. Replaced ralph with kspec agent dispatch: (1) ralph.ts replaced
+    with deprecation stub listing equivalent kspec agent commands, (2) setup.ts creates built-in
+    task-worker + pr-reviewer agents via ensureBuiltInAgents(), (3) dispatch rules match ralph
+    behavior, (4) workflows/skills/templates updated, (5) 4 ralph test files deleted (~7400 lines),
+    replaced with ralph-replacement.test.ts (9 tests). All 8 ACs covered with annotations and N/A
+    declarations. Went through 4 review cycles fixing test file deletion miss,
+    agents-instruction-gen expectations, kspec-agents.md commit, kspec skill render, and AC/trait
+    N/A annotations."
   depends_on:
     - "@implement-cli-agent-commands"
     - "@implement-daemon-agent-dispatch-integration"
@@ -70577,6 +70585,7 @@
   created_at: 2026-03-02T01:22:22.683Z
   started_at: 2026-03-03T02:35:21.401Z
   submitted_at: 2026-03-03T02:35:22.674Z
+  completed_at: 2026-03-03T02:59:55.285Z
   notes:
     - _ulid: 01KJP278TV2GKBMD6DMP6PG4PX
       created_at: 2026-03-02T01:22:22.683Z
@@ -70773,15 +70782,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-03T02:59:55.285Z
-  closed_reason: "Merged in PR #640. Replaced ralph with kspec agent dispatch: (1) ralph.ts replaced
-    with deprecation stub listing equivalent kspec agent commands, (2) setup.ts creates built-in
-    task-worker + pr-reviewer agents via ensureBuiltInAgents(), (3) dispatch rules match ralph
-    behavior, (4) workflows/skills/templates updated, (5) 4 ralph test files deleted (~7400 lines),
-    replaced with ralph-replacement.test.ts (9 tests). All 8 ACs covered with annotations and N/A
-    declarations. Went through 4 review cycles fixing test file deletion miss,
-    agents-instruction-gen expectations, kspec-agents.md commit, kspec skill render, and AC/trait
-    N/A annotations."
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
     - task-ralph-migration-guide
@@ -71112,3 +71112,52 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: "Implement: Web UI assets bundled in npm package"
+  type: task
+  spec_ref: "@daemon-web-ui-bundle"
+  derivation: auto
+  priority: 2
+  slugs:
+    - task-web-ui-assets-bundled-in-npm-package
+  tags: []
+  depends_on:
+    - "@task-daemon-server-mode"
+  notes:
+    - _ulid: 01KJRZX94PHX2YXWXBQPXX139G
+      created_at: 2026-03-03T04:39:41.462Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        The kspec npm package bundles the pre-built web UI static assets so the daemon can serve the
+        web UI when installed in any project, without requiring a local web UI build. The build
+        pipeline copies packages/web-ui/build to dist/web-ui/, and resolveWebUiPath falls back to
+        that location relative to the daemon module.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given npm run build is executed, when build completes, then packages/web-ui/build
+        output is copied to dist/web-ui/ in the package
+
+        - ac-2: Given kspec is installed in a project with no local web UI build, when daemon starts
+        and resolves web UI path, then resolveWebUiPath returns the bundled dist/web-ui/ path
+        relative to the daemon module location
+
+        - ac-3: Given kspec is installed as an npm package in a non-monorepo project, when browser
+        opens http://localhost:3456/, then daemon serves the bundled web UI and returns HTTP 200
+        with HTML content
+
+        - ac-4: Given an explicit webUiDir option or WEB_UI_DIR env var or local
+        packages/web-ui/build is present, when daemon starts, then the explicit or local path takes
+        precedence over the bundled dist/web-ui/ fallback
+      supersedes: null
+  _ulid: 01KJRZX94P11XTX7352GCWXA7J
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-03T04:39:41.462Z
+  todos: []
