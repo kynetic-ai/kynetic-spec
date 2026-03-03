@@ -6471,6 +6471,11 @@ features:
         when: the agent produces text output during the invocation
         then: text content streams to stdout as it is received, so the user sees the response live without
           waiting for completion
+      - id: ac-13
+        given: kspec agent dispatch watch is run while the daemon has active or future agent invocations
+        when: An agent produces text output
+        then: Text chunks are printed to stdout in real time, prefixed with [agent-id session-id] so output
+          from concurrent agents can be distinguished
     depends_on: []
     implements: []
     relates_to: []
