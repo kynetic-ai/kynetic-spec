@@ -71796,7 +71796,10 @@
   notes: []
   todos: []
   automation: manual_only
-- title: Rewrite {skill:foo} references to adapter-specific format when injecting skills into agent prompt
+- _ulid: 01KJS90FR4GQVQQYA4QM2XJZ1W
+  slugs: []
+  title: Rewrite {skill:foo} references to adapter-specific format when injecting skills into agent prompt
+  type: task
   description: >-
     When buildPromptWithSkills injects skill content into the agent prompt, cross-skill references
     like {skill:writing-specs} or {skill:plan} are passed through as-is. These are meaningless to
@@ -71835,22 +71838,20 @@
 
 
     Spec AC: @agent-invocation-lifecycle ac-10
-  type: task
   spec_ref: "@agent-invocation-lifecycle"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - agent
     - skills
     - dx
-  depends_on: []
-  _ulid: 01KJS90FR4GQVQQYA4QM2XJZ1W
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T07:18:43.716Z
   notes: []
   todos: []
+  automation: eligible
