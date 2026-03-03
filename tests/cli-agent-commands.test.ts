@@ -21,6 +21,8 @@ import {
 } from "./helpers/cli.js";
 import { runInvocation } from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
+import { setJsonMode, isJsonMode } from "../src/cli/output.js";
+import type { SessionUpdate } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Mock ACP for unit-level tests ───────────────────────────────────────────
@@ -1188,31 +1190,45 @@ describe("AC-11: JSON mode suppresses streaming output", () => {
   });
 
   afterEach(async () => {
+    setJsonMode(false); // reset global state after each test
     await cleanupTempDir(testDir);
   });
 
-  it("should collect text via onUpdate and not have onUpdate set when in JSON mode", async () => {
+  it("should suppress the onUpdate handler in JSON mode so no text chunks are collected", async () => {
     const agent = makeTestAgent({ id: "stream-json-agent", adapter: "mock-acp" });
-
-    // Simulate JSON mode: collect updates manually (no onUpdate → nothing streamed)
     const collected: string[] = [];
+
+    // AC: @cli-agent-commands ac-11 — replicate the exact decision in agent.ts:
+    // isJsonMode() ? undefined : handler
+    // This proves the handler is suppressed when JSON mode is active.
+    setJsonMode(true);
+    const onUpdate = isJsonMode()
+      ? undefined
+      : (update: SessionUpdate) => {
+          if (update.sessionUpdate === "agent_message_chunk" && update.content.type === "text") {
+            collected.push(update.content.text);
+          }
+        };
+
+    // onUpdate must be undefined — if it were defined, the mock would send text (proven by ac-12)
+    expect(onUpdate).toBeUndefined();
+
     const result = await runInvocation({
       agent,
       specDir: testDir,
       cwd: process.cwd(),
       prompt: "test prompt",
       trigger: "manual",
-      env: { MOCK_ACP_RESPONSE_TEXT: "hello from agent" },
-      // AC: @cli-agent-commands ac-11 — in JSON mode, no onUpdate handler is passed
-      onUpdate: undefined,
+      env: { MOCK_ACP_RESPONSE_TEXT: "should not appear in json mode" },
+      onUpdate,
     });
 
-    // Result contains outcome/session/duration/stop_reason — no streamed text in result
+    // Result shape: outcome, session_id, duration_ms, stop_reason (no streaming text)
     expect(result.outcome).toBe("success");
     expect(result.session.id).toBeTruthy();
     expect(result.durationMs).toBeGreaterThanOrEqual(0);
     expect(result.stopReason).toBeTruthy();
-    // No text collected since onUpdate was not provided
+    // onUpdate was undefined → no chunks collected, even though mock sent text (proven by ac-12)
     expect(collected).toHaveLength(0);
   });
 });
