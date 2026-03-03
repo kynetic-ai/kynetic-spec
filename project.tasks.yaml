@@ -71251,7 +71251,7 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71262,6 +71262,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-03T07:28:03.221Z
+  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
 - _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
   title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
