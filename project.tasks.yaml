@@ -72314,7 +72314,7 @@
     filtering/handling so informational rate-limit events do not pollute normal CLI output, while
     preserving actionable adapter errors.'
   spec_ref: "@cli-agent-commands"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -72371,6 +72371,7 @@
         this change.
       supersedes: null
   todos: []
+  started_at: 2026-03-03T21:30:49.953Z
 - _ulid: 01KJTQBT1GCPKJWQDK3JK82NPV
   slugs: []
   title: Fix out-of-order agent_message_chunk streaming and duplicate session event seqs
