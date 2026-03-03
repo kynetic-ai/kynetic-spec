@@ -72706,6 +72706,15 @@
         - Verification: run focused vitest for task mutation serialization and task command suites,
         then run full npm test before PR/review.
       supersedes: null
+    - _ulid: 01KJV0S2WGPT6H0YFX8D1939X2
+      created_at: 2026-03-03T23:33:21.424Z
+      author: Jacob Chapel
+      content: Migrated stale task mutators to atomic latest-state updates via mutateTaskAtomically in
+        src/cli/commands/task.ts for submit, complete (--refs path), needs-work, block, unblock,
+        reset, patch, set (single + --refs), and todo add/done/undone. Added command-level
+        concurrency regressions in tests/task-mutation-serialization.test.ts and verified with npm
+        test (3583 passing).
+      supersedes: null
   todos: []
 - _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
   slugs:
