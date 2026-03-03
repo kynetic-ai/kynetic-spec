@@ -72162,7 +72162,7 @@
     running on port 3456. Error: 400 - undefined is not an object. Tests use kspec CLI subprocess
     which connects to any real daemon. Fix by mocking the daemon at CLI level or ensuring
     isolation."
-  spec_ref: null
+  spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -72193,7 +72193,7 @@
     is related to codex config: expected codex config to contain project_doc_fallback_filenames and
     kspec-agents.md but the test fails. May be related to parallel test execution or file state
     issues."
-  spec_ref: null
+  spec_ref: "@new-project-bootstrapping"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -72222,7 +72222,7 @@
   description: tests/cli-serve.test.ts has 1 test failure when run in shard 3 (71s duration, likely
     timeout). Need to investigate whether it is a daemon port conflict or timing issue in parallel
     shard execution. The test takes 71s which suggests it may be waiting on a timeout.
-  spec_ref: null
+  spec_ref: "@cli-serve-commands"
   meta_ref: null
   plan_ref: null
   status: pending
