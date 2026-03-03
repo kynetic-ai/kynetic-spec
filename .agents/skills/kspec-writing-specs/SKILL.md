@@ -350,5 +350,5 @@ The derived task gets `spec_ref: @feature-slug` automatically.
 - **`$kspec-plan`** — Plans create specs via import or manual creation
 - **`$kspec-task-work`** — Tasks reference specs; AC guides implementation
 - **`$kspec-triage`** — Inbox items may reveal spec gaps
-- **`$kspec-observations`** — Friction may indicate missing specs
+- **`$kspec-observe`** — Friction may indicate missing specs
 - **`$kspec-review`** — Reviews check AC coverage

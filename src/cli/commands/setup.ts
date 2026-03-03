@@ -1050,6 +1050,102 @@ async function renderSkillsForSetup(
 }
 
 /**
+ * Ensure built-in worker and reviewer agent definitions exist in the project meta.
+ *
+ * Creates task-worker and pr-reviewer agents with dispatch rules that match
+ * ralph's behavior. Skips creation if agents already exist (idempotent).
+ *
+ * AC: @ralph-replacement ac-2 — built-in worker and reviewer agent definitions
+ * created in kynetic.meta.yaml with default dispatch rules matching ralph's behavior
+ */
+async function ensureBuiltInAgents(
+  projectDir: string,
+  dryRun: boolean,
+): Promise<{ created: string[]; skipped: string[] }> {
+  const { initContext } = await import("../../parser/index.js");
+  const { loadMetaContext, saveMetaItem } = await import(
+    "../../parser/meta.js"
+  );
+  const { ulid } = await import("ulid");
+
+  const created: string[] = [];
+  const skipped: string[] = [];
+
+  try {
+    const ctx = await initContext();
+    if (!ctx.manifestPath) {
+      return { created, skipped };
+    }
+
+    const meta = await loadMetaContext(ctx);
+    const existingIds = new Set((meta.agents || []).map((a) => a.id));
+
+    // Built-in agent definitions — match ralph's dispatch behavior
+    const builtInAgents = [
+      {
+        id: "task-worker",
+        name: "Task Worker",
+        description:
+          "Autonomous task worker. Picks up automation-eligible ready and needs_work tasks.",
+        capabilities: ["code", "test", "refactor"],
+        tools: ["kspec", "git", "npm"],
+        dispatch: [
+          { on: "task.ready", filter: { automation: "eligible" } },
+          { on: "task.needs_work", filter: { automation: "eligible" } },
+        ],
+        skills: ["task-work"],
+        concurrency: { max_concurrent: 1 },
+        auto_approve: true,
+      },
+      {
+        id: "pr-reviewer",
+        name: "PR Reviewer",
+        description:
+          "Automated PR reviewer. Reviews pending_review tasks and merges when quality gates pass.",
+        capabilities: ["review"],
+        tools: ["kspec", "git", "gh"],
+        dispatch: [{ on: "task.pending_review" }],
+        skills: ["pr-review"],
+        concurrency: { max_concurrent: 1 },
+        auto_approve: false,
+      },
+    ] as const;
+
+    for (const def of builtInAgents) {
+      if (existingIds.has(def.id)) {
+        skipped.push(def.id);
+        continue;
+      }
+
+      if (!dryRun) {
+        await saveMetaItem(
+          ctx,
+          {
+            _ulid: ulid(),
+            id: def.id,
+            name: def.name,
+            description: def.description,
+            capabilities: [...def.capabilities],
+            tools: [...def.tools],
+            conventions: [],
+            dispatch: def.dispatch.map((r) => ({ ...r })),
+            skills: [...def.skills],
+            concurrency: { ...def.concurrency },
+            auto_approve: def.auto_approve,
+          },
+          "agent",
+        );
+      }
+      created.push(def.id);
+    }
+  } catch (err) {
+    debugLog("ensureBuiltInAgents failed", err);
+  }
+
+  return { created, skipped };
+}
+
+/**
  * Generate kspec-agents.md using the canonical implementation from agents.ts
  * AC: @setup-pipeline-unification ac-1 - calls generateAgentsContent() from agents.ts
  * AC: @setup-pipeline-unification ac-4 - errors logged at debug level
@@ -1490,6 +1586,24 @@ export async function runSetupPipeline(
         status: "skipped",
         message: "--skip-skills flag",
       });
+    }
+
+    // Step 4b: Ensure built-in worker and reviewer agent definitions exist
+    // AC: @ralph-replacement ac-2 — built-in agents created in kynetic.meta.yaml
+    {
+      const agentsBuiltIn = await ensureBuiltInAgents(projectDir, dryRun);
+      const totalNew = agentsBuiltIn.created.length;
+      const totalSkipped = agentsBuiltIn.skipped.length;
+      if (totalNew > 0 || totalSkipped > 0) {
+        steps.push({
+          name: "Ensure built-in agents",
+          status: "done",
+          message:
+            totalNew > 0
+              ? `created: ${agentsBuiltIn.created.join(", ")}`
+              : `already exist: ${agentsBuiltIn.skipped.join(", ")}`,
+        });
+      }
     }
 
     // Step 5: Generate kspec-agents.md

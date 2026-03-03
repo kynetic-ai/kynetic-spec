@@ -1,19 +1,14 @@
 /**
- * Behavioral integration tests for ralph session budget integration.
+ * Behavioral integration tests for session budget integration.
  *
- * Tests verify that the session budget lifecycle works correctly
- * when exercised in the same sequence ralph uses:
+ * Tests verify that the session budget lifecycle works correctly:
  * create session with budget → reset at iteration boundary →
  * budget enforcement via task start → cleanup on exit.
  *
- * Producer-side tests use a mock ACP agent (tests/fixtures/mock-acp-agent.mjs)
- * to verify env injection and cleanup through the real ralph code paths.
- *
  * AC: @ralph-session-budget-integration ac-create-budget, ac-reset-iteration,
- *     ac-env-inject, ac-remove-marker-code, ac-session-close-all-paths
+ *     ac-env-inject, ac-remove-marker-code
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { execSync, spawn as nodeSpawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
@@ -30,9 +25,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   testUlid,
-  CLI_PATH,
   FIXTURES_DIR,
-  initGitRepo,
 } from "../helpers/cli";
 
 /** Path to the mock ACP agent script */
@@ -132,7 +125,7 @@ describe("ac-reset-iteration: budget reset at iteration boundary", () => {
     let budget = await getBudget(specDir, sessionId);
     expect(budget!.started_this_cycle).toBe(2);
 
-    // Simulate ralph calling resetBudget at iteration boundary
+    // Simulate calling resetBudget at iteration boundary
     await resetBudget(specDir, sessionId);
 
     budget = await getBudget(specDir, sessionId);
@@ -235,7 +228,7 @@ describe("ac-env-inject: spawnAgent passes KSPEC_SESSION_ID to child process", (
   it("should pass KSPEC_SESSION_ID to spawned agent via env", async () => {
     const sessionId = testUlid("RSPAWN", 1);
 
-    // Spawn mock agent with the same env pattern ralph uses
+    // Spawn mock agent with the same env pattern the agent runtime uses
     const agent = spawnAgent(
       { command: "node", args: [MOCK_AGENT_PATH], description: "mock" },
       {
@@ -288,257 +281,4 @@ describe("ac-env-inject: spawnAgent passes KSPEC_SESSION_ID to child process", (
       }
     }
   });
-});
-
-// ─── Session Close All Paths (ac-session-close-all-paths) ───────────────────
-
-describe("ac-session-close-all-paths: ralph cleans up budget on exit", () => {
-  let tempDir: string;
-
-  beforeEach(async () => {
-    tempDir = await setupTempFixtures();
-    // Initialize a clean git repo so getWorkingTreeStatus() returns clean.
-    // This prevents the wrap-up agent from spawning (2-min timeout) and
-    // causing flaky test timeouts. The .gitignore ensures session artifacts
-    // created by ralph during the test don't dirty the working tree.
-    initGitRepo(tempDir);
-    await fs.writeFile(path.join(tempDir, ".gitignore"), "sessions/\n");
-    execSync("git add -A && git commit -m 'init'", { cwd: tempDir, stdio: "pipe" });
-  });
-
-  afterEach(async () => {
-    await cleanupTempDir(tempDir);
-  });
-
-  /**
-   * Helper: spawn kspec ralph as a subprocess.
-   * Watches combined output for a marker string, then resolves.
-   * Ralph may not exit cleanly due to open Node handles, so we
-   * kill the process after the marker is seen and cleanup has occurred.
-   */
-  function spawnRalphUntil(
-    args: string[],
-    marker: string,
-    env: Record<string, string> = {},
-  ): Promise<{ output: string }> {
-    return new Promise((resolve, reject) => {
-      const child = nodeSpawn("node", [CLI_PATH, "ralph", ...args], {
-        cwd: tempDir,
-        env: {
-          ...process.env,
-          KSPEC_AUTHOR: "@test",
-          ...env,
-        },
-        stdio: ["pipe", "pipe", "pipe"],
-      });
-
-      let output = "";
-      let resolved = false;
-
-      const onData = (d: Buffer) => {
-        output += d.toString();
-        // Once we see the marker, cleanup is done — give a small grace period then kill
-        if (!resolved && output.includes(marker)) {
-          resolved = true;
-          setTimeout(() => {
-            child.kill("SIGKILL");
-            resolve({ output });
-          }, 500);
-        }
-      };
-      child.stdout!.on("data", onData);
-      child.stderr!.on("data", onData);
-
-      child.on("close", () => {
-        if (!resolved) {
-          resolved = true;
-          resolve({ output });
-        }
-      });
-
-      // Safety timeout
-      setTimeout(() => {
-        if (!resolved) {
-          resolved = true;
-          child.kill("SIGKILL");
-          reject(new Error(`Timed out waiting for marker "${marker}"\noutput: ${output}`));
-        }
-      }, 25_000);
-    });
-  }
-
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  // AC: @session-end-loop-signal ac-session-close-normal
-  it("should clean up budget.json after normal exit (max-iterations reached)", async () => {
-    // Run ralph with mock agent for 1 iteration.
-    // Wait for "Ralph loop completed" which appears after all cleanup.
-    const result = await spawnRalphUntil(
-      ["--adapter-cmd", `node ${MOCK_AGENT_PATH}`, "--max-loops", "1", "--max-tasks", "2"],
-      "Ralph loop completed",
-    );
-
-    expect(result.output).toContain("Completed iteration 1");
-
-    // Find the session directory ralph created
-    const sessionsDir = path.join(tempDir, "sessions");
-    const sessionDirs = await fs.readdir(sessionsDir);
-
-    // Ralph should have created exactly one session
-    expect(sessionDirs.length).toBe(1);
-
-    // Budget.json should NOT exist after ralph cleanup
-    const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
-    const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
-    expect(budgetExists).toBe(false);
-
-    // Session should be closed as completed with a descriptive close_reason
-    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
-    const content = await fs.readFile(sessionPath, "utf-8");
-    expect(content).toContain("status: completed");
-    expect(content).toContain("close_reason:");
-    expect(content).toMatch(/Completed all|No eligible tasks/);
-  }, 30_000);
-
-  /**
-   * Helper: spawn ralph, wait for it to start, send a signal, verify cleanup.
-   */
-  async function testSignalCleanup(signal: "SIGINT" | "SIGTERM") {
-    const child = nodeSpawn(
-      "node",
-      [CLI_PATH, "ralph", "--adapter-cmd", `node ${MOCK_AGENT_PATH}`, "--max-loops", "999", "--max-tasks", "2"],
-      {
-        cwd: tempDir,
-        env: {
-          ...process.env,
-          KSPEC_AUTHOR: "@test",
-        },
-        stdio: ["pipe", "pipe", "pipe"],
-      },
-    );
-
-    let output = "";
-    const onData = (d: Buffer) => { output += d.toString(); };
-    child.stdout!.on("data", onData);
-    child.stderr!.on("data", onData);
-
-    // Wait for ralph to create the session and start working
-    await new Promise<void>((resolve) => {
-      const check = () => {
-        if (output.includes("Creating ACP session")) {
-          resolve();
-        } else {
-          setTimeout(check, 50);
-        }
-      };
-      check();
-      setTimeout(resolve, 5_000);
-    });
-
-    // Send the signal
-    child.kill(signal);
-
-    // Wait for process to exit
-    await new Promise<void>((resolve) => {
-      child.on("close", () => resolve());
-      setTimeout(() => {
-        child.kill("SIGKILL");
-        resolve();
-      }, 10_000);
-    });
-
-    // Verify budget.json was cleaned up
-    const sessionsDir = path.join(tempDir, "sessions");
-    const sessionDirs = await fs.readdir(sessionsDir);
-    expect(sessionDirs.length).toBe(1);
-
-    const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
-    const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
-    expect(budgetExists).toBe(false);
-
-    // Session should be closed as abandoned with signal name in close_reason
-    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
-    const content = await fs.readFile(sessionPath, "utf-8");
-    expect(content).toContain("status: abandoned");
-    expect(content).toContain(signal);
-    // AC: @session-end-loop-signal ac-session-close-signal
-    expect(content).toContain("close_reason:");
-    expect(content).toContain(`Received ${signal}`);
-  }
-
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  // AC: @ralph-task-limit ac-signal-cleanup
-  // AC: @session-end-loop-signal ac-session-close-signal
-  it("should clean up budget.json after signal (SIGINT)", async () => {
-    await testSignalCleanup("SIGINT");
-  }, 30_000);
-
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  // AC: @ralph-task-limit ac-signal-cleanup
-  // AC: @session-end-loop-signal ac-session-close-signal
-  it("should clean up budget.json after signal (SIGTERM)", async () => {
-    await testSignalCleanup("SIGTERM");
-  }, 30_000);
-
-  // AC: @ralph-session-budget-integration ac-session-close-all-paths
-  it("should clean up budget.json after agent crash (error path)", async () => {
-    const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
-
-    // Ralph with a crashing agent — retries exhaust, then finally block cleans up.
-    // Wait for "Ralph loop completed" (capital R) which appears after all cleanup.
-    const result = await spawnRalphUntil(
-      ["--adapter-cmd", `node ${crashAgent}`, "--max-loops", "1", "--max-tasks", "2"],
-      "Ralph loop completed",
-    );
-
-    // Depending on fixture state, failures may occur in either iteration work
-    // or pending-review subagent processing. Either path is valid here.
-    const hasExpectedFailureSignal =
-      result.output.includes("Iteration failed") ||
-      result.output.includes("Reached max failures");
-    expect(hasExpectedFailureSignal).toBe(true);
-
-    // Find the session directory ralph created
-    const sessionsDir = path.join(tempDir, "sessions");
-    const sessionDirs = await fs.readdir(sessionsDir);
-    expect(sessionDirs.length).toBe(1);
-
-    // Budget.json should be cleaned up by finally block
-    const budgetPath = path.join(sessionsDir, sessionDirs[0], "budget.json");
-    const budgetExists = await fs.access(budgetPath).then(() => true).catch(() => false);
-    expect(budgetExists).toBe(false);
-
-    // Session is closed with a close_reason regardless of exit path.
-    // Note: with --max-loops 1, ralph exits after one iteration even if it failed,
-    // so the close_reason is typically "Completed all 1 iterations" not "Max failures".
-    // @session-end-loop-signal ac-session-close-error needs --max-failures testing to
-    // reliably trigger the abandoned+error path.
-    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
-    const content = await fs.readFile(sessionPath, "utf-8");
-    expect(content).toContain("close_reason:");
-  }, 30_000);
-
-  // AC: @session-end-loop-signal ac-session-close-error
-  it("should close session as abandoned with error reason on max failures", async () => {
-    const crashAgent = path.join(FIXTURES_DIR, "mock-acp-agent-crash.mjs");
-
-    // Use --max-failures 1 so ralph exits due to failure rather than completing iterations.
-    // The crash agent always exits immediately, causing every attempt (iteration or review
-    // subagent) to fail. With --max-failures 1, the first consecutive failure exits the loop.
-    await spawnRalphUntil(
-      ["--adapter-cmd", `node ${crashAgent}`, "--max-loops", "999", "--max-failures", "1", "--max-tasks", "2"],
-      "Ralph loop completed",
-    );
-
-    const sessionsDir = path.join(tempDir, "sessions");
-    const sessionDirs = await fs.readdir(sessionsDir);
-    expect(sessionDirs.length).toBe(1);
-
-    // Session should be closed as abandoned with Max failures close_reason.
-    // AC: @session-end-loop-signal ac-session-close-error
-    const sessionPath = path.join(sessionsDir, sessionDirs[0], "session.yaml");
-    const content = await fs.readFile(sessionPath, "utf-8");
-    expect(content).toContain("status: abandoned");
-    expect(content).toContain("close_reason:");
-    expect(content).toContain("Max failures");
-  }, 30_000);
 });

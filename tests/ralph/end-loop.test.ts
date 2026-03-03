@@ -7,7 +7,7 @@
  * AC: @trait-error-guidance ac-3 N/A — no ref resolution in end-loop command
  * AC: @trait-error-guidance ac-4 N/A — no state transitions in end-loop command
  * AC: @trait-error-guidance ac-5 N/A — no field-level validation in end-loop command
- * AC: @trait-error-guidance ac-6 N/A — ralph end-loop does not support --json output mode
+ * AC: @trait-error-guidance ac-6 N/A — agent end-loop does not support --json output mode
  * AC: @session-end-loop-signal ac-detect — N/A: tested implicitly via ac-block-task; task start
  *     and ralph both call isEndLoopRequested(). Integration verified in session-budget-integration.test.ts.
  * AC: @session-end-loop-signal ac-remove-markers — N/A: static absence check for removed code
@@ -88,7 +88,7 @@ describe("Session-scoped end-loop signal", () => {
     it("should write end_requested=true to session metadata", async () => {
       await createTestSession(tempDir, SESSION_ID);
 
-      const result = kspec("ralph end-loop", tempDir, {
+      const result = kspec("agent end-loop", tempDir, {
         env: { KSPEC_SESSION_ID: SESSION_ID },
       });
 
@@ -106,7 +106,7 @@ describe("Session-scoped end-loop signal", () => {
 
       // AC: @session-end-loop-signal ac-signal
       const result = kspec(
-        'ralph end-loop --reason "No eligible tasks"',
+        'agent end-loop --reason "No eligible tasks"',
         tempDir,
         { env: { KSPEC_SESSION_ID: SESSION_ID } },
       );
@@ -121,7 +121,7 @@ describe("Session-scoped end-loop signal", () => {
 
     it("should fail with exit code 4 when KSPEC_SESSION_ID is not set", async () => {
       // AC: @trait-error-guidance ac-1, ac-2
-      const result = kspec("ralph end-loop", tempDir, {
+      const result = kspec("agent end-loop", tempDir, {
         expectFail: true,
         env: { KSPEC_SESSION_ID: "" },
       });
@@ -134,7 +134,7 @@ describe("Session-scoped end-loop signal", () => {
 
     it("should fail with exit code 3 when session not found", async () => {
       // AC: @trait-error-guidance ac-1, ac-2
-      const result = kspec("ralph end-loop", tempDir, {
+      const result = kspec("agent end-loop", tempDir, {
         expectFail: true,
         env: { KSPEC_SESSION_ID: "NONEXISTENT_SESSION" },
       });
@@ -271,7 +271,7 @@ describe("Session store: requestEndLoop and isEndLoopRequested", () => {
 
     // Use end-loop command with session
     const result = kspec(
-      'ralph end-loop --reason "Testing"',
+      'agent end-loop --reason "Testing"',
       tempDir,
       { env: { KSPEC_SESSION_ID: SESSION_ID } },
     );

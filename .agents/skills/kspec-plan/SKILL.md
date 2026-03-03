@@ -350,4 +350,4 @@ kspec validate --alignment
 - **`$kspec-writing-specs`** — Spec authoring details (types, AC format, traits)
 - **`$kspec-task-work`** — After specs are created, work on derived tasks
 - **`$kspec-triage`** — Inbox items may trigger plan creation
-- **`$kspec-observations`** — Friction during planning becomes observations
+- **`$kspec-observe`** — Friction during planning becomes observations

@@ -550,7 +550,7 @@ describe('Agent Instruction Generation', () => {
         expect(content).toContain('## Task Lifecycle');
         expect(content).toContain('## PR Workflow');
         expect(content).toContain('## Commit Convention');
-        expect(content).toContain('## Ralph Loop Mode');
+        expect(content).toContain('## Agent Dispatch Mode');
         expect(content).toContain('## Batch Usage');
       });
 
@@ -566,15 +566,15 @@ describe('Agent Instruction Generation', () => {
         const taskLifecyclePos = content.indexOf('## Task Lifecycle');
         const prWorkflowPos = content.indexOf('## PR Workflow');
         const commitConventionPos = content.indexOf('## Commit Convention');
-        const ralphLoopPos = content.indexOf('## Ralph Loop Mode');
+        const agentDispatchPos = content.indexOf('## Agent Dispatch Mode');
         const batchUsagePos = content.indexOf('## Batch Usage');
 
         expect(quickStartPos).toBeLessThan(shadowBranchPos);
         expect(shadowBranchPos).toBeLessThan(taskLifecyclePos);
         expect(taskLifecyclePos).toBeLessThan(prWorkflowPos);
         expect(prWorkflowPos).toBeLessThan(commitConventionPos);
-        expect(commitConventionPos).toBeLessThan(ralphLoopPos);
-        expect(ralphLoopPos).toBeLessThan(batchUsagePos);
+        expect(commitConventionPos).toBeLessThan(agentDispatchPos);
+        expect(agentDispatchPos).toBeLessThan(batchUsagePos);
       });
     });
 
@@ -646,14 +646,14 @@ describe('Agent Instruction Generation', () => {
         expect(content).toContain('# AC: @spec-item ac-N');
       });
 
-      it('should include ralph-loop template content', async () => {
+      it('should include agent-dispatch template content', async () => {
         kspecFull('agents generate', tempDir);
 
         const filePath = path.join(tempDir, 'kspec-agents.md');
         const content = await fs.readFile(filePath, 'utf-8');
 
-        // Verify ralph-loop specific content
-        expect(content).toContain('Ralph Loop Mode');
+        // Verify agent dispatch specific content (AC: @ralph-replacement ac-6)
+        expect(content).toContain('Agent Dispatch Mode');
         expect(content).toContain('pending_review');
         expect(content).toContain('kspec task block');
       });
