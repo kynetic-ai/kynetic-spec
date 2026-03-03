@@ -7206,6 +7206,34 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJS6ESQD5RJMMPHPK782X97E
+    type: friction
+    content: shx cp -r <src> <dest> is non-idempotent when dest already exists — creates nested
+      subdirectory on repeated runs. Build scripts must always shx rm -rf <dest> before copying. Add
+      to build/ci convention.
+    created_at: 2026-03-03T06:34:06.957Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJS6ESVRYZTGMA6S4E2B2TTT
+    type: friction
+    content: "Daemon packages/daemon/src/server.ts cannot be imported directly in vitest — transitive
+      Bun/Elysia imports break module resolution. Pattern: recreate the logic as a pure function in
+      the test file (see daemon-server.test.ts and daemon-web-ui-bundle.test.ts). Worth documenting
+      as a testing convention for daemon code."
+    created_at: 2026-03-03T06:34:07.096Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJS6ESZJ9YX93GGQP6CZMXM9
+    type: friction
+    content: "check-unresolved-comments CI check goes stale when review threads are resolved after the
+      check already ran for that push. Fix: gh run rerun <run-id>. Reminder: resolve threads BEFORE
+      or immediately after pushing to avoid this."
+    created_at: 2026-03-03T06:34:07.218Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
