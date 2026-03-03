@@ -69512,7 +69512,7 @@
   spec_ref: "@session-log-list"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -69533,6 +69533,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-03T00:04:46.823Z
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
 - _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
   slugs: []
   title: Design agent runtime architecture — from ralph loop to reactive agent service
@@ -70384,6 +70386,11 @@
   plan_ref: "@plan-reactive-agent-runtime"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #635. Implemented daemon agent dispatch integration: added
+    InvocationEvent type and onInvocationEvent callback to DispatchEngine, GET /api/agent/status and
+    POST /api/agent/dispatch endpoints, POST /api/agent/events for CLI event emission, WebSocket
+    broadcasts via pubsub on invocation lifecycle, and postDispatchEvent() fire-and-forget helper in
+    CLI task commands. All 7 ACs covered. E2E test suite added in api-agent-dispatch.spec.ts."
   depends_on:
     - "@implement-agent-dispatch-engine"
   context: []
@@ -70394,6 +70401,7 @@
   created_at: 2026-03-02T01:22:22.316Z
   started_at: 2026-03-02T23:47:15.293Z
   submitted_at: 2026-03-02T23:47:16.648Z
+  completed_at: 2026-03-03T00:04:16.320Z
   notes:
     - _ulid: 01KJP278FCYMWFF26JQBC67G1X
       created_at: 2026-03-02T01:22:22.316Z
@@ -70490,12 +70498,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-03T00:04:16.320Z
-  closed_reason: "Merged in PR #635. Implemented daemon agent dispatch integration: added
-    InvocationEvent type and onInvocationEvent callback to DispatchEngine, GET /api/agent/status and
-    POST /api/agent/dispatch endpoints, POST /api/agent/events for CLI event emission, WebSocket
-    broadcasts via pubsub on invocation lifecycle, and postDispatchEvent() fire-and-forget helper in
-    CLI task commands. All 7 ACs covered. E2E test suite added in api-agent-dispatch.spec.ts."
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
   slugs:
     - implement-ralph-replacement
