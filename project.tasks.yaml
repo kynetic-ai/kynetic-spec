@@ -70914,6 +70914,14 @@
         SHOULD-FIX: Phase 2 partial commit not fully roll-backable — document limitation in flush()
         JSDoc. See PR #636 review for details."
       supersedes: null
+    - _ulid: 01KJRKXNM9Z4SW1HXEMJ420MMV
+      created_at: 2026-03-03T01:10:11.337Z
+      author: "@claude"
+      content: "Fix cycle complete. Added ac-7 flush failure test: uses mkdir-fails-on-non-dir approach
+        (ESM can't spy fs.writeFile directly). Documented Phase 2 partial commit limitation in
+        JSDoc. 21/21 batch-write-buffer tests pass. Pre-existing daemon-executable.test.ts failure
+        unchanged."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
