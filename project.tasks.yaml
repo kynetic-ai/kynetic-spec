@@ -71255,22 +71255,39 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: null
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJTV0BRGKFG8SD35DQZZFH77
+  session_id: null
   created_at: 2026-03-03T06:43:19.153Z
-  started_at: 2026-03-03T21:53:41.089Z
+  started_at: 2026-03-03T07:28:03.221Z
   notes:
     - _ulid: 01KJS9Q8P8J6TFTTYC7ASFR8MV
       created_at: 2026-03-03T07:31:10.152Z
       author: "@claude"
       content: Task picked up by dispatch worker in session 01KJS9H7 which was killed when serve was
         stopped. No changes were made. Resetting to pending for future automation.
+      supersedes: null
+    - _ulid: 01KJTV2JQNX9EG3S1EKW3Q71P2
+      created_at: 2026-03-03T21:53:41.109Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: shadow auto-push failures are currently silent because git push is detached
+        with stdio ignored.
+
+        - Scope: keep auto-commit non-blocking while surfacing push failures and escalating repeated
+        failures.
+
+        - Files: src/parser/shadow.ts and tests/shadow.test.ts (plus related call sites only if
+        required).
+
+        - Verification: targeted shadow tests, full test suite shard/full run, and kspec validate.
       supersedes: null
   todos: []
   automation: eligible
