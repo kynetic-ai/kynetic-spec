@@ -1361,3 +1361,13 @@ inbox:
       - batch
       - shadow
     added_by: "@claude"
+  - _ulid: 01KJTH9DTYS6G9GY3J2KBG9FKH
+    text: Investigate and fix AC-10 test flakiness in cli-agent-commands.test.ts — tests fail with '400
+      - undefined is not an object (evaluating projectContext.path)' when a daemon is running on the
+      same port from another test in parallel shard execution. Affects 'should error with daemon
+      suggestion when daemon is not running' and 'should show dispatch status as disabled when
+      daemon is not running'. These tests use kspec CLI subprocess which hits a real daemon if one
+      happens to be running.
+    created_at: 2026-03-03T19:02:39.710Z
+    tags: []
+    added_by: "@claude"
