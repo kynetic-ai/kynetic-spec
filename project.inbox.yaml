@@ -1358,3 +1358,13 @@ inbox:
       - reflection
       - codex
     added_by: Jacob Chapel
+  - _ulid: 01KJTTJRPD26GASZAVBQHNM47C
+    text: "Restore clean kspec validate baseline: resolve duplicate @observations references, fix
+      missing observations skill content, and clear orphan-skill warnings so validation output can
+      reliably signal task-specific issues."
+    created_at: 2026-03-03T21:45:02.925Z
+    tags:
+      - reflection
+      - validation
+      - meta
+    added_by: Jacob Chapel
