@@ -72365,8 +72365,25 @@
     - events
     - bug
   vcs_refs: []
-  created_at: 2026-03-03T20:48:49.200Z
-  notes: []
-  todos: []
-  started_at: 2026-03-03T20:53:45.276Z
   session_id: 01KJQT6EXAE3K8FTB2GW2ECCYF
+  created_at: 2026-03-03T20:48:49.200Z
+  started_at: 2026-03-03T20:53:45.276Z
+  notes:
+    - _ulid: 01KJTQN45TNP7DWJHCXVTF4VKG
+      created_at: 2026-03-03T20:53:54.490Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Streaming chunks and event seq values can race under concurrent update
+        callbacks.
+
+        - Scope: Enforce per-session ordered processing in invocation update handling; keep --json
+        behavior unchanged.
+
+        - Files: src/agent-runtime/invocation.ts, tests/agent-invocation-lifecycle.test.ts,
+        tests/cli-agent-commands.test.ts (as needed).
+
+        - Verification: Targeted invocation tests, then full npm test and kspec validate.
+      supersedes: null
+  todos: []
