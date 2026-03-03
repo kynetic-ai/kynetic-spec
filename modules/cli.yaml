@@ -3691,6 +3691,11 @@ features:
             then: Per-iteration event counts are determined by prompt.sent boundary positions (array indices),
               not data.iteration fields on individual events. Legacy sessions without prompt.sent
               boundaries fall back to data.iteration grouping.
+          - id: ac-11
+            given: a completed invocation session exists
+            when: kspec session log show is run with --text flag
+            then: the assistant text output is extracted from session.update events and printed to stdout in
+              order, allowing replay of the agent response
         depends_on: []
         implements: []
         relates_to: []
@@ -6443,6 +6448,11 @@ features:
         then: |
           An error message explains that the daemon must be running and
           suggests kspec serve to start it
+      - id: ac-11
+        given: kspec agent run completes with --json flag
+        when: the invocation produces text output
+        then: streaming output is suppressed; the JSON result object includes outcome, session_id,
+          duration_ms, and stop_reason only
     depends_on: []
     implements: []
     relates_to: []
