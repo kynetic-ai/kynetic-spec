@@ -1108,11 +1108,60 @@ export interface ShadowSyncResult {
   error?: string;
 }
 
+const SHADOW_PUSH_FAILURE_ESCALATION_THRESHOLD = 3;
+const shadowPushFailureCounts = new Map<string, number>();
+
+function summarizeShadowPushError(
+  stderr: string,
+  code: number | null,
+  signal: NodeJS.Signals | null,
+): string {
+  const lines = stderr
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length > 0) {
+    const lastLine = lines[lines.length - 1];
+    if (lastLine.length <= 240) {
+      return lastLine;
+    }
+    return `${lastLine.slice(0, 237)}...`;
+  }
+
+  if (code !== null) {
+    return `git push exited with code ${code}`;
+  }
+  if (signal) {
+    return `git push terminated by signal ${signal}`;
+  }
+  return "git push failed";
+}
+
+function noteShadowPushFailure(worktreeDir: string, reason: string): void {
+  const nextCount = (shadowPushFailureCounts.get(worktreeDir) ?? 0) + 1;
+  shadowPushFailureCounts.set(worktreeDir, nextCount);
+
+  console.error(
+    `[WARN] Shadow auto-push failed (consecutive: ${nextCount}). Local shadow commits were kept. ${reason}`,
+  );
+
+  if (nextCount >= SHADOW_PUSH_FAILURE_ESCALATION_THRESHOLD) {
+    console.error(
+      `[WARN] Shadow auto-push has failed ${nextCount} times in a row. Remote shadow state is stale. Run \`kspec shadow sync\` (or \`kspec shadow resolve\` if conflicts are reported).`,
+    );
+  }
+}
+
+function noteShadowPushSuccess(worktreeDir: string): void {
+  shadowPushFailureCounts.delete(worktreeDir);
+}
+
 /**
  * Fire-and-forget push to remote.
  * AC-1: Called after each auto-commit when tracking is configured.
  * AC-8: Automatically sets up tracking if main branch has remote.
- * Silently ignores errors - the local commit succeeded regardless.
+ * Push failures are surfaced as warnings, but local commits still succeed.
  *
  * AC: @config-shadow ac-7 — backward compat when called without config
  *
@@ -1154,18 +1203,72 @@ export async function shadowPushAsync(
       console.error(`[DEBUG] Shadow push: git push (cwd: ${worktreeDir})`);
     }
 
-    // Fire and forget: spawn with stdio ignored so no pipes keep the event loop alive.
-    // detached + unref lets Node exit without waiting for git push to complete.
+    // Fire and forget: detached + unref allows CLI exit without waiting for push.
+    // We still collect stderr and exit code while process is alive to surface failures.
     const child = spawn("git", ["push"], {
       cwd: worktreeDir,
-      stdio: "ignore",
+      stdio: ["ignore", "ignore", "pipe"],
       detached: true,
     });
+
+    const stderrChunks: string[] = [];
+    child.stderr?.setEncoding("utf-8");
+    child.stderr?.on("data", (chunk) => {
+      stderrChunks.push(chunk);
+    });
+    child.stderr?.resume();
+
+    (child.stderr as { unref?: () => void } | null)?.unref?.();
     child.unref();
     if (debug) {
       console.error("[DEBUG] Shadow push: spawned background git push");
     }
+
+    const exit = await new Promise<{
+      code: number | null;
+      signal: NodeJS.Signals | null;
+      error?: Error;
+    }>((resolve) => {
+      let settled = false;
+      const finish = (result: {
+        code: number | null;
+        signal: NodeJS.Signals | null;
+        error?: Error;
+      }) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        resolve(result);
+      };
+
+      child.once("error", (error) => finish({ code: null, signal: null, error }));
+      child.once("close", (code, signal) => finish({ code, signal }));
+    });
+
+    if (exit.error) {
+      noteShadowPushFailure(worktreeDir, exit.error.message);
+      if (debug) {
+        console.error("[DEBUG] Shadow push spawn error:", exit.error);
+      }
+      return;
+    }
+
+    if (exit.code !== 0) {
+      const reason = summarizeShadowPushError(
+        stderrChunks.join(""),
+        exit.code,
+        exit.signal,
+      );
+      noteShadowPushFailure(worktreeDir, reason);
+      return;
+    }
+
+    noteShadowPushSuccess(worktreeDir);
   } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    noteShadowPushFailure(worktreeDir, reason);
+
     if (debug) {
       console.error("[DEBUG] Shadow push error:", err);
     }
