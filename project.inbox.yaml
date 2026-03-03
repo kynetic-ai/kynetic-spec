@@ -1162,27 +1162,6 @@ inbox:
       - cli
       - tasks
     added_by: "@claude"
-  - _ulid: 01KJKC9TKVE2Z4B74A0AMBJNHE
-    text: "Shadow branch auto-push silently swallows failures — fire-and-forget push
-      (shadow.ts:1159-1164) uses spawn with stdio:ignore and detached:true, making divergence errors
-      completely invisible. In a 4-hour ralph container session, 50+ commits accumulated locally
-      with no indication pushes were failing. The push fails because host and container both commit
-      to kspec-meta concurrently, causing divergence on the first push attempt, and every subsequent
-      auto-push also fails silently. Fix should: (1) capture push exit code even in fire-and-forget
-      mode (spawn with stdio:pipe, read stderr, unref after), (2) on push failure, log warning to
-      stderr so it appears in agent output and JSON mode, (3) consider returning a result from
-      autoCommit/shadowPush indicating push status so callers can surface it (e.g. kspec batch could
-      include push_failed:true in response), (4) on repeated failures, escalate visibility — e.g.
-      after 3 consecutive push failures, emit a prominent warning. The local commit always succeeds
-      regardless — this is about VISIBILITY of sync failures, not blocking commits. Related: the
-      merge driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path
-      works — the problem is purely that nobody knows recovery is needed."
-    created_at: 2026-03-01T00:20:48.891Z
-    tags:
-      - fix
-      - shadow
-      - ralph
-    added_by: "@claude"
   - _ulid: 01KJKDBKNYSC80EW2ZGEKCPGRT
     text: "tests/cli/session-note-limit.test.ts has reproducible timeout instability in current
       baseline. During this iteration: full npm test timed out at lines 34/70/104, and isolated run
