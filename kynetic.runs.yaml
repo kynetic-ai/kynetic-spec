@@ -11362,6 +11362,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T21:43:28.269Z
+    completed_at: 2026-03-03T21:45:08.082Z
     step_results:
       - step_index: 0
         status: completed
@@ -11409,4 +11410,11 @@ runs:
         notes: "Captured one new untracked item: inbox @01KJTTJR (clean validate baseline). Did not
           duplicate stale-session budget issue because it is already tracked at inbox @01KJG5A7."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-03T21:45:08.082Z
+  - _ulid: 01KJTY1WEBYSRD5V7ETM6A3AZJ
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-03-03T22:45:44.011Z
+    step_results: []
+    initiated_by: Jacob Chapel
