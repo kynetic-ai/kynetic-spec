@@ -2166,13 +2166,14 @@ triage:
     item_snapshot: "task set --description: task set has no --description option, making it impossible
       to update task descriptions after creation. Workaround: add detailed task notes. Came up when
       plan-derived task had null description and needed standalone context for automation."
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: Duplicate of 01KHWWMDCV6NBYK8D8EMYBZEPV (task set --description missing flag).
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-03T06:43:07.500Z
-    updated_at: 2026-03-03T06:43:07.524Z
+    updated_at: 2026-03-03T06:43:22.656Z
+    acted_at: 2026-03-03T06:43:22.629Z
   - _ulid: 01KJS6Z9RYRR1KQ40SVQVFT2CN
     inbox_ref: 01KJDXC04W8C4JMCKD7KX78TXA
     item_snapshot: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
@@ -2185,10 +2186,10 @@ triage:
       straightforward error handling fix. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-03T06:43:07.678Z
-    updated_at: 2026-03-03T06:43:22.135Z
     acted_at: 2026-03-03T06:43:22.114Z
     result_ref: "@01KJS6ZP"
+    created_at: 2026-03-03T06:43:07.678Z
+    updated_at: 2026-03-03T06:43:22.135Z
   - _ulid: 01KJS6Z9VNAWSJ3TCKN508JXJC
     inbox_ref: 01KJKC9TKVE2Z4B74A0AMBJNHE
     item_snapshot: "Shadow branch auto-push silently swallows failures — fire-and-forget push

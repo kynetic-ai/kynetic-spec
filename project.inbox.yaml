@@ -1043,16 +1043,6 @@ inbox:
       - skills
       - setup
     added_by: Jacob Chapel
-  - _ulid: 01KJGAE24345STWVS3RMKNC838
-    text: "task set --description: task set has no --description option, making it impossible to update
-      task descriptions after creation. Workaround: add detailed task notes. Came up when
-      plan-derived task had null description and needed standalone context for automation."
-    created_at: 2026-02-27T19:50:27.203Z
-    tags:
-      - cli
-      - tasks
-      - friction
-    added_by: "@claude"
   - _ulid: 01KJGAE25EBJWC0NAWGN3Z89YE
     text: "derive_from_specs produces sparse tasks: derived tasks get null description, no tags,
       automation unassessed. Agents picking up these tasks lack context to work independently.
