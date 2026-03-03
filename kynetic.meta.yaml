@@ -109,7 +109,8 @@ agents:
     conventions: []
     dispatch:
       - on: task.pending_review
-    skills: []
+    skills:
+      - pr-review
     concurrency:
       max_concurrent: 1
     auto_approve: true
