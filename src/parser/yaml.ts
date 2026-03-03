@@ -747,6 +747,74 @@ export async function saveTask(
 }
 
 /**
+ * Atomically mutate a task using the latest on-disk state.
+ *
+ * The callback receives the current task value while holding the task file lock,
+ * so concurrent writers cannot clobber unrelated fields (for example status vs notes).
+ */
+export async function mutateTaskAtomically(
+  ctx: KspecContext,
+  task: LoadedTask,
+  mutate: (latestTask: LoadedTask) => Task | LoadedTask | Promise<Task | LoadedTask>,
+): Promise<LoadedTask> {
+  const taskFilePath = task._sourceFile || getDefaultTaskFilePath(ctx);
+  let updatedTask: LoadedTask | undefined;
+
+  await withFileLock(taskFilePath, async () => {
+    // Ensure directory exists (important for default path in new repos)
+    const dir = path.dirname(taskFilePath);
+    await fs.mkdir(dir, { recursive: true });
+
+    // Preserve existing file format (tasks wrapper vs plain array)
+    let existingRaw: unknown = null;
+    let useTasksWrapper = false;
+    try {
+      existingRaw = await readYamlFile<unknown>(taskFilePath);
+      if (
+        existingRaw &&
+        typeof existingRaw === "object" &&
+        "tasks" in existingRaw
+      ) {
+        useTasksWrapper = true;
+      }
+    } catch {
+      throw new Error(`Task file not found: ${taskFilePath}`);
+    }
+
+    const fileTasks = await loadTasksFromFile(taskFilePath);
+    const taskIndex = fileTasks.findIndex((t) => t._ulid === task._ulid);
+    if (taskIndex === -1) {
+      throw new Error(`Task not found in file: ${task._ulid}`);
+    }
+
+    const latestTask = fileTasks[taskIndex];
+    const mutatedTask = await mutate(latestTask);
+    const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
+
+    const serializedTasks = fileTasks.map((fileTask, index) =>
+      index === taskIndex ? cleanMutatedTask : stripRuntimeMetadata(fileTask),
+    );
+
+    if (useTasksWrapper) {
+      await writeYamlFilePreserveFormat(taskFilePath, { tasks: serializedTasks });
+    } else {
+      await writeYamlFilePreserveFormat(taskFilePath, serializedTasks);
+    }
+
+    updatedTask = {
+      ...cleanMutatedTask,
+      _sourceFile: taskFilePath,
+    };
+  });
+
+  if (!updatedTask) {
+    throw new Error(`Failed to mutate task atomically: ${task._ulid}`);
+  }
+
+  return updatedTask;
+}
+
+/**
  * Delete a task from its source file.
  * Requires _sourceFile to know which file to modify.
  */
