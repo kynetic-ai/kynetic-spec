@@ -71913,7 +71913,7 @@
   spec_ref: "@agent-invocation-lifecycle"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71928,3 +71928,5 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-03T07:40:03.365Z
+  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
