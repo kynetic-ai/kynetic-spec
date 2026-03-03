@@ -88,6 +88,23 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
+  - _ulid: 01KJS8JC35KPCJP6A4C1VJAWF9
+    id: reviewer
+    name: Reviewer Agent
+    description: Autonomous PR review agent. Reviews pending_review tasks for AC coverage and code
+      quality, posts GitHub review, and merges when all quality gates pass.
+    capabilities:
+      - review
+    tools:
+      - kspec
+      - git
+      - gh
+    conventions: []
+    dispatch: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: true
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
