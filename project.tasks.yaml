@@ -72049,23 +72049,43 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Implement kspec agent dispatch watch command
+- _ulid: 01KJTDBHV914S6MDRW4CDZ0YFP
+  slugs: []
+  title: Implement kspec agent dispatch watch command
   type: task
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - agent
     - dx
-  depends_on: []
-  _ulid: 01KJTDBHV914S6MDRW4CDZ0YFP
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T17:53:55.048Z
-  notes: []
+  notes:
+    - _ulid: 01KJTDBVQAZ0K2FGJ83BN3S107
+      created_at: 2026-03-03T17:54:05.163Z
+      author: "@claude"
+      content: >-
+        Two implementation pieces:
+
+        1. Daemon: in packages/daemon/src/routes/agent-dispatch.ts, pass onUpdate to runInvocation
+        in the dispatch engine that broadcasts agent_text_chunk events via existing WebSocket PubSub
+        (see createDispatchEngine - it already has pubsub.broadcast for InvocationEvents). Extend to
+        broadcast { type: 'agent_text_chunk', session_id, agent_id, task_id, text, timestamp } on
+        the 'agents' channel.
+
+        2. CLI: new kspec agent dispatch watch subcommand in src/cli/commands/agent.ts that connects
+        to ws://localhost:<port>/ws, subscribes to the agents channel, filters and prints text
+        chunks with [agent-id session-id] prefix, supports --agent and --session flags,
+        auto-reconnects on drop with configurable retries.
+
+
+        Covers: @cli-agent-commands ac-13, ac-14, ac-15, ac-16 and @daemon-agent-dispatch ac-8
+      supersedes: null
   todos: []
