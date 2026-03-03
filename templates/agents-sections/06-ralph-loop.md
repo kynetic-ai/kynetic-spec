@@ -1,24 +1,23 @@
-## Ralph Loop Mode
+## Agent Dispatch Mode
 
-When running in automated loop mode (ralph):
+When running as an automated agent via the dispatch engine:
 
-### The Loop
+### Dispatch Loop
 
 ```
-for each iteration:
-  1. Ralph checks eligible tasks — if none, exits loop
+for each dispatched invocation:
+  1. Agent runtime checks eligible tasks — if none, invocation ends
   2. Agent works on tasks, may create PR(s)
   3. Agent stops responding (turn complete)
-  4. Ralph sends reflection prompt
-  5. Ralph processes pending_review via subagent
-  6. Continue
+  4. pr-reviewer agent handles pending_review tasks via separate dispatch
+  5. Continue
 ```
 
-**When you stop responding, ralph continues automatically.** Do NOT call `end-loop` after creating a PR.
+**When you stop responding, the dispatch engine continues automatically.** Do NOT call `end-loop` after creating a PR.
 
 ### Task Inheritance
 
-Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work before starting new tasks. (`pending_review` tasks are handled by the review subagent, not the worker.)
+Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work before starting new tasks. (`pending_review` tasks are handled by the pr-reviewer agent, not the worker.)
 
 ### Blocking Rules
 
@@ -39,7 +38,7 @@ Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work
 kspec task block @task --reason "Reason..."
 kspec tasks ready --eligible
 # If tasks returned: work on next one
-# If empty: stop responding — ralph auto-exits
+# If empty: stop responding — dispatch engine auto-exits
 ```
 
 **One blocked task is NOT "no more work."** `kspec tasks ready --eligible` output is authoritative.

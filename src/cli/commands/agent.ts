@@ -22,11 +22,12 @@ import { runInvocation } from "../../agent-runtime/invocation.js";
 import { buildPromptWithSkills } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, output, success, isJsonMode } from "../output.js";
+import { error, info, output, success, warn, isJsonMode } from "../output.js";
 import { parseIntOption } from "../validators.js";
 import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
+import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -675,6 +676,58 @@ export function registerAgentCommands(program: Command): void {
         });
       } catch (err) {
         error("Failed to get dispatch status", err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // ─── kspec agent end-loop ─────────────────────────────────────────────────
+
+  // AC: @ralph-replacement ac-1 — equivalent to kspec ralph end-loop
+  // AC: @session-end-loop-signal ac-signal
+  agent
+    .command("end-loop")
+    .description("Signal the agent dispatch engine to stop after current iteration")
+    .option("--reason <reason>", "Reason for ending the loop")
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+        const sessionId = process.env.KSPEC_SESSION_ID;
+
+        if (!sessionId) {
+          // AC: @trait-error-guidance ac-1, ac-2
+          warn("No active agent session detected (KSPEC_SESSION_ID not set).");
+          info(
+            "This command requires an active session. It is designed to be called by agents during a dispatch invocation.",
+          );
+          info(
+            "Suggestion: Ensure KSPEC_SESSION_ID is set, or start a session with: kspec session create",
+          );
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+          return;
+        }
+
+        // Write end-loop state to session
+        const updated = await requestEndLoop(
+          ctx.specDir,
+          sessionId,
+          options.reason,
+        );
+
+        if (!updated) {
+          // AC: @trait-error-guidance ac-1, ac-2
+          error(`Session not found: ${sessionId}`);
+          info("Suggestion: Check session ID with: kspec session log list");
+          process.exit(EXIT_CODES.NOT_FOUND);
+          return;
+        }
+
+        success("Loop end signal sent");
+        if (options.reason) {
+          info(`Reason: ${options.reason}`);
+        }
+      } catch (err) {
+        // AC: @trait-error-guidance ac-1
+        error("Failed to signal end-loop", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
