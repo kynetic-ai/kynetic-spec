@@ -71958,7 +71958,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: "Fix pre-existing test failure: enhanced-setup codex config.toml not created"
+- _ulid: 01KJSATPZHFFX6MMK7YKSYN008
+  slugs: []
+  title: "Fix pre-existing test failure: enhanced-setup codex config.toml not created"
+  type: bug
   description: >-
     Test: tests/enhanced-setup.test.ts > kspec setup (enhanced) > skill rendering > should render
     core skills to codex output when codex is detected
@@ -71979,24 +71982,44 @@
 
     Investigate: src/cli/setup.ts (or similar) to find where .codex/config.toml is written and why
     it is not being created in the temp dir fixture.
-  type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - bug
     - setup
     - codex
     - testing
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJSATPZHFFX6MMK7YKSYN008
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T07:50:31.664Z
-  notes: []
+  notes:
+    - _ulid: 01KJSATY4AV9YYAYF2KEC7TF5F
+      created_at: 2026-03-03T07:50:38.986Z
+      author: "@claude"
+      content: >-
+        Pre-existing failure confirmed on main branch before any changes from task @01KJSA2T (PR
+        #643). Verified by running: git stash && npx vitest run tests/enhanced-setup.test.ts and
+        confirming the same ENOENT failure on the pristine main branch.
+
+
+        Failure details:
+
+        - Test file: tests/enhanced-setup.test.ts:385
+
+        - Expects: .codex/config.toml to exist in temp dir
+
+        - Actual: file not created
+
+        - Error: ENOENT: no such file or directory
+
+
+        The setup command should write .codex/config.toml when codex is detected in the environment.
+        The test simulates codex being present but the config file is never created.
+      supersedes: null
   todos: []
+  automation: eligible
