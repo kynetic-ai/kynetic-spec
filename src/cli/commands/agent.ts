@@ -726,8 +726,19 @@ export function registerAgentCommands(program: Command): void {
         return;
       }
 
-      const maxRetries = parseInt(opts.retries, 10);
-      const retryLimit = isNaN(maxRetries) ? DEFAULT_RETRIES : maxRetries;
+      const parsedRetries = parseIntOption(opts.retries, {
+        min: 0,
+        max: Number.MAX_SAFE_INTEGER,
+        name: "Retries",
+      });
+      if (!parsedRetries.ok) {
+        error(`Invalid --retries value: ${parsedRetries.error}`, {
+          suggestion: "Example: --retries 5",
+        });
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+        return;
+      }
+      const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
 

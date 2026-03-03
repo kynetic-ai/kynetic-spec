@@ -701,6 +701,7 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     await cleanupTempDir(testDir);
   });
 
@@ -765,6 +766,7 @@ describe("AC-5: kspec agent dispatch stop graceful shutdown", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     await cleanupTempDir(testDir);
   });
 
@@ -822,6 +824,7 @@ describe("AC-6: kspec agent status with running daemon", () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     await cleanupTempDir(testDir);
   });
 
@@ -1108,7 +1111,10 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
     // AC: @cli-agent-commands ac-10 - error when daemon not running
     // AC: @trait-error-guidance ac-1 - describes what went wrong
     // AC: @trait-error-guidance ac-2 - suggests action (kspec serve)
-    const result = kspec("agent dispatch start", testDir, { expectFail: true });
+    const result = kspec("agent dispatch start", testDir, {
+      expectFail: true,
+      env: { HOME: testDir },
+    });
 
     expect(result.exitCode).not.toBe(0);
     const combined = result.stderr + result.stdout;
@@ -1134,7 +1140,9 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
     );
 
     // AC: @cli-agent-commands ac-9 - dispatch status shows info
-    const result = kspec("agent dispatch status", testDir);
+    const result = kspec("agent dispatch status", testDir, {
+      env: { HOME: testDir },
+    });
 
     expect(result.exitCode).toBe(0);
     const combined = result.stdout + result.stderr;
@@ -1319,7 +1327,10 @@ async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void>
 
 // AC: @cli-agent-commands ac-15
 describe("AC-15: dispatch watch — daemon not running", () => {
-  afterEach(() => { vi.restoreAllMocks(); });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it("should print error and exit code 3 when daemon is not running", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
@@ -1354,7 +1365,10 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — prints text chunks with prefix", () => {
-  afterEach(() => { vi.restoreAllMocks(); });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it("should print [agent-id session-id] prefix before text chunks", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
@@ -1410,7 +1424,10 @@ describe("AC-13: dispatch watch — prints text chunks with prefix", () => {
 
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
-  afterEach(() => { vi.restoreAllMocks(); });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it("should only show chunks matching --agent filter, drop others", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
@@ -1512,7 +1529,11 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
 
 // AC: @cli-agent-commands ac-14
 describe("AC-14: dispatch watch — reconnect on disconnect", () => {
-  afterEach(() => { vi.restoreAllMocks(); });
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it("should print reconnecting message and retry on connection drop", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
@@ -1610,5 +1631,51 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(exitCode).toBe(3);
 
     runPromise.catch(() => {/* ignore */});
+  });
+
+  it.each(["foo", "-1"])("should exit code 4 for invalid --retries value %s", async (retriesValue) => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const wsCtor = vi.fn();
+    class GuardWs implements FakeWsInstance {
+      send = vi.fn();
+      onopen: ((e: unknown) => void) | null = null;
+      onmessage: ((e: { data: string }) => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      constructor(_url: string) { wsCtor(); }
+    }
+    vi.stubGlobal("WebSocket", GuardWs);
+
+    const consoleErrors: string[] = [];
+    const origError = console.error;
+    console.error = (...args) => {
+      consoleErrors.push(args.join(" "));
+    };
+
+    let exitCode: number | undefined;
+    vi.spyOn(process, "exit").mockImplementation((code?: number) => {
+      exitCode = code as number;
+      throw new Error(`process.exit(${code})`);
+    });
+
+    const program = createTestProgram();
+    try {
+      await program.parseAsync(
+        ["agent", "dispatch", "watch", "--retries", retriesValue],
+        { from: "user" },
+      );
+    } catch {
+      // expected: mocked process.exit throws
+    } finally {
+      console.error = origError;
+    }
+
+    // AC: @trait-semantic-exit-codes ac-2 - invalid numeric input exits with validation error
+    expect(exitCode).toBe(4);
+    expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
+    expect(wsCtor).not.toHaveBeenCalled();
   });
 });

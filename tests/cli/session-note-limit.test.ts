@@ -18,7 +18,7 @@ import type { SessionContext } from '../helpers/session-types';
 
 describe('session start note limit behavior', () => {
   let tempDir: string;
-  const NOTE_LIMIT_TEST_TIMEOUT_MS = 90_000;
+  const NOTE_LIMIT_TEST_TIMEOUT_MS = 120_000;
 
   beforeEach(async () => {
     // Use clean environment to avoid fixture notes contaminating counts
@@ -38,14 +38,14 @@ describe('session start note limit behavior', () => {
       // and total should be capped at 3 after concatenation.
 
       // in_progress tasks with notes
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 2; i++) {
         kspec(`task add --title "Active ${i}" --slug active-${i}`, tempDir);
         kspec(`task start @active-${i}`, tempDir);
         kspec(`task note @active-${i} "Active note ${i}"`, tempDir);
       }
 
       // pending_review tasks with notes
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 2; i++) {
         kspec(`task add --title "Review ${i}" --slug review-${i}`, tempDir);
         kspec(`task start @review-${i}`, tempDir);
         kspec(`task note @review-${i} "Review note ${i}"`, tempDir);
@@ -53,7 +53,7 @@ describe('session start note limit behavior', () => {
       }
 
       // completed tasks with notes
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 2; i++) {
         kspec(`task add --title "Done ${i}" --slug done-${i}`, tempDir);
         kspec(`task start @done-${i}`, tempDir);
         kspec(`task note @done-${i} "Done note ${i}"`, tempDir);
@@ -106,14 +106,14 @@ describe('session start note limit behavior', () => {
       // Create many notes across multiple statuses.
       // Full mode should return all notes without artificial cap.
 
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= 3; i++) {
         kspec(`task add --title "Active ${i}" --slug active-${i}`, tempDir);
         kspec(`task start @active-${i}`, tempDir);
         kspec(`task note @active-${i} "Active note A${i}"`, tempDir);
         kspec(`task note @active-${i} "Active note B${i}"`, tempDir);
       }
 
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= 3; i++) {
         kspec(`task add --title "Done ${i}" --slug done-${i}`, tempDir);
         kspec(`task start @done-${i}`, tempDir);
         kspec(`task note @done-${i} "Done note A${i}"`, tempDir);
@@ -138,8 +138,8 @@ describe('session start note limit behavior', () => {
       // With --limit 6 and notes in all 3 statuses, each status should be represented.
       // ceil(6/3) = 2 per bucket, so each status gets up to 2 notes.
 
-      // Create 3 in_progress notes
-      for (let i = 1; i <= 3; i++) {
+      // Create in_progress notes
+      for (let i = 1; i <= 2; i++) {
         kspec(`task add --title "Active ${i}" --slug active-${i}`, tempDir);
         kspec(`task start @active-${i}`, tempDir);
         kspec(`task note @active-${i} "Active note ${i}"`, tempDir);

@@ -127,18 +127,38 @@ describe('kspec serve commands', () => {
       output += data.toString();
     });
 
-    // Wait for server to start
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Wait for startup message (CI can be slower than local runs)
+    const started = await new Promise<boolean>((resolve) => {
+      const start = Date.now();
+      const interval = setInterval(() => {
+        if (
+          output.includes('Starting server in foreground')
+          && output.includes(`port ${port}`)
+        ) {
+          clearInterval(interval);
+          resolve(true);
+          return;
+        }
+        if (Date.now() - start > 15_000 || child.exitCode !== null) {
+          clearInterval(interval);
+          resolve(false);
+        }
+      }, 100);
+    });
 
-    // Verify output mentions foreground and port
-    expect(output).toContain('Starting server in foreground');
-    expect(output).toContain(`port ${port}`);
+    expect(started, `foreground startup output missing:\n${output}`).toBe(true);
 
     // Send SIGINT (Ctrl+C)
-    child.kill('SIGINT');
+    if (child.exitCode === null) {
+      child.kill('SIGINT');
+    }
 
     // Wait for shutdown
     await new Promise<void>((resolve) => {
+      if (child.exitCode !== null) {
+        resolve();
+        return;
+      }
       child.on('exit', () => resolve());
     });
 
