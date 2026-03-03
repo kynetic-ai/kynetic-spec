@@ -71255,15 +71255,14 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: null
-  status: blocked
-  blocked_by:
-    - temp
+  status: pending
+  blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
+  session_id: null
   created_at: 2026-03-03T06:43:19.153Z
   started_at: 2026-03-03T07:28:03.221Z
   notes:
