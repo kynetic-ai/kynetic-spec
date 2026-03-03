@@ -234,6 +234,11 @@ features:
           serve the web UI when installed in any project, without requiring a local web UI build.
           The build pipeline copies packages/web-ui/build to dist/web-ui/, and resolveWebUiPath
           falls back to that location relative to the daemon module.
+        acceptance_criteria:
+          - id: ac-1
+            given: npm run build is executed
+            when: build completes
+            then: packages/web-ui/build output is copied to dist/web-ui/ in the package
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
