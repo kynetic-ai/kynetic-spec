@@ -2455,6 +2455,13 @@ features:
           The agent definition exists
         then: |
           The agent definition is removed from kynetic.meta.yaml
+      - id: ac-12
+        given: a user runs kspec meta add agent or kspec meta set <agent-id>
+        when: --add-dispatch-rule flag is provided with a JSON object containing on and optional filter
+          fields
+        then: the dispatch rule is appended to the agent definition; --remove-dispatch-rule <on> removes
+          rules matching that event type; --clear-dispatch-rules removes all dispatch rules from the
+          agent
     depends_on: []
     implements: []
     relates_to: []

@@ -71539,3 +71539,175 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KJS8B9QSQS53CT4DR2YHP1A8
+  slugs: []
+  title: Add dispatch rule flags to kspec meta add agent / meta set
+  type: task
+  description: "kspec meta add agent and kspec meta set have no way to set dispatch rules — the most
+    critical field for wiring agents to task lifecycle events. Direct YAML editing is required,
+    violating the CLI-only convention. Add --add-dispatch-rule <json>, --remove-dispatch-rule <on>,
+    --clear-dispatch-rules to both commands. Schema in src/schema/meta.ts (AgentDispatchRuleSchema).
+    Relevant files: src/cli/commands/meta.ts. Spec AC: @agent-definition-schema ac-12"
+  spec_ref: "@agent-definition-schema"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - agent
+    - dx
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:09.433Z
+  notes: []
+  todos: []
+- _ulid: 01KJS8BAWP2WNCD003DQX75GKY
+  slugs: []
+  title: Deprecate kspec ralph — show migration message pointing to kspec agent
+  type: task
+  description: "kspec ralph still exists in src/cli/commands/ralph.ts. Per @ralph-replacement ac-1,
+    replace the command body with a deprecation message listing equivalent kspec agent commands:
+    kspec ralph run -> kspec agent dispatch start, kspec ralph end-loop -> kspec agent end-loop.
+    Exit with code 1. Relevant file: src/cli/commands/ralph.ts. Spec AC: @ralph-replacement ac-1"
+  spec_ref: "@ralph-replacement"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - agent
+    - deprecation
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:10.614Z
+  notes: []
+  todos: []
+- _ulid: 01KJS8BC1W5Y4Z2Y23GQSD4EFS
+  slugs: []
+  title: kspec setup seeds built-in worker and reviewer agent definitions
+  type: task
+  description: "Per @ralph-replacement ac-2, kspec setup should create worker and reviewer agents in
+    kynetic.meta.yaml if they do not already exist. Worker: id=worker,
+    dispatch=[{on:task.ready,filter:{automation:eligible}},{on:task.needs_work,filter:{automation:e\
+    ligible}}], auto_approve=true, capabilities=[code,test,refactor], tools=[kspec,git,npm,vitest].
+    Reviewer: id=reviewer, dispatch=[{on:task.pending_review}], auto_approve=true,
+    capabilities=[review], tools=[kspec,git,gh]. Idempotent — skip if already defined. Relevant
+    files: src/cli/commands/setup.ts, src/schema/meta.ts. Spec AC: @ralph-replacement ac-2"
+  spec_ref: "@ralph-replacement"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - agent
+    - setup
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:11.804Z
+  notes: []
+  todos: []
+- _ulid: 01KJS8BD53N1Z14PPWJ4B0B7N7
+  slugs: []
+  title: Replace 06-ralph-loop.md template with agent dispatch documentation
+  type: task
+  description: "Replace templates/agents-sections/06-ralph-loop.md with agent dispatch docs covering:
+    kspec agent dispatch start/stop, built-in worker/reviewer agents, dispatch rules and trigger
+    events, one-shot invocation via kspec agent run. Keep 06- prefix for section order. Run kspec
+    agents generate after. Spec AC: @ralph-replacement ac-6"
+  spec_ref: "@ralph-replacement"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - docs
+    - agent
+    - templates
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:12.931Z
+  notes: []
+  todos: []
+- _ulid: 01KJS8BEAE9ADEY2HGWDRFGVDK
+  slugs: []
+  title: Migrate ralph tests to agent runtime equivalents
+  type: task
+  description: "Replace ralph.test.ts, ralph-loop-errors.test.ts, ralph-wrap-up.test.ts,
+    ralph-context-refresh.test.ts with agent dispatch/invocation tests. Mapping: ralph dispatch loop
+    -> agent-dispatch.test.ts, ralph invocation -> agent-invocation.test.ts, ralph CLI ->
+    agent-cli.test.ts. Delete ralph test files only after equivalent coverage exists. Relevant test
+    files in tests/. Spec AC: @ralph-replacement ac-7"
+  spec_ref: "@ralph-replacement"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - testing
+    - agent
+    - ralph
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:14.126Z
+  notes: []
+  todos: []
+- _ulid: 01KJS8BFDFFNC3PVTNHRRPZSVZ
+  slugs: []
+  title: Update workflows to remove ralph references and use agent dispatch concepts
+  type: task
+  description: "Workflow definitions task-work-loop, pr-review-loop, session-reflect-loop still
+    reference ralph concepts. Per @ralph-replacement ac-4, update to reference kspec agent dispatch
+    commands. Also regenerate kspec-agents.md after. Spec AC: @ralph-replacement ac-4"
+  spec_ref: "@ralph-replacement"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - docs
+    - workflow
+    - ralph
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:15.247Z
+  notes: []
+  todos: []
+- title: Update skills to reference agent runtime instead of ralph
+  description: "Skills kspec:task-work, codex, eval-agents, pr-review still reference kspec ralph
+    commands. Per @ralph-replacement ac-5, update to reference kspec agent commands and agent
+    dispatch concepts. Core skills in templates/skills/, project skills in .kspec/skills/. Run kspec
+    skill render after. Spec AC: @ralph-replacement ac-5"
+  type: task
+  spec_ref: "@ralph-replacement"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - docs
+    - skills
+    - ralph
+  depends_on: []
+  _ulid: 01KJS8BGJA457W8X7F28MWFYBP
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-03T07:07:16.426Z
+  notes: []
+  todos: []
