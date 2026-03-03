@@ -11471,7 +11471,7 @@ runs:
   - _ulid: 01KJTZW1VRXHCFPXV6ENF5HP7H
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-03T23:17:30.104Z
     step_results:
@@ -11485,5 +11485,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-03T23:18:14.545Z
-        completed_at: 2026-03-03T23:18:14.545Z
+        completed_at: 2026-03-03T23:18:18.846Z
+        notes: "Friction points: composing long gh pr body text directly in shell caused interpolation side
+          effects and accidental command execution; this reinforces the need to always use
+          file-based payloads for multiline/rich content. Secondary friction: kspec validate has
+          substantial pre-existing noise, so it is hard to use as a strict local gate for
+          single-task changes."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-03T23:18:18.846Z
+        completed_at: 2026-03-03T23:18:18.846Z
     initiated_by: Jacob Chapel
