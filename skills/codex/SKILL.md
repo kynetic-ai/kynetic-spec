@@ -410,30 +410,30 @@ Quoted heredocs (`<<'DELIM'...DELIM`) handle quotes, backticks, and `$` literall
 
 For simple prompts, heredocs work fine. Use prompt-files when prompts are complex, generated dynamically, or need inspection before use.
 
-## Ralph Loop Safety Guard
+## Agent Dispatch Safety Guard
 
-When invoking Codex from inside a ralph loop session, you **MUST** inject safety constraints into every codex prompt. Codex runs with `danger-full-access` and has no awareness of the ralph process hosting it.
+When invoking Codex from inside an agent dispatch session, you **MUST** inject safety constraints into every codex prompt. Codex runs with `danger-full-access` and has no awareness of the agent runtime hosting it.
 
 ### Detection
 
-Before running any `codex exec` command, check for ralph loop context:
+Before running any `codex exec` command, check for agent dispatch context:
 
 ```bash
-# Env var set by ralph on spawned agent processes
-if [ -n "$KSPEC_RALPH_SESSION" ]; then
-  # We're inside a ralph loop — inject safety guard
+# Env var set by agent runtime on spawned agent processes
+if [ -n "$KSPEC_SESSION_ID" ]; then
+  # We're inside an agent dispatch session — inject safety guard
 fi
 ```
 
 ### Required Safety Preamble
 
-When ralph context is detected, **prepend** this safety block to every codex prompt:
+When agent dispatch context is detected, **prepend** this safety block to every codex prompt:
 
 ```
-SAFETY CONSTRAINTS (you are running inside a kspec ralph automation loop):
-- NEVER start kspec ralph, kspec serve, or any long-running kspec process
+SAFETY CONSTRAINTS (you are running inside a kspec agent dispatch session):
+- NEVER start kspec agent run, kspec serve, or any long-running kspec process
 - NEVER use pkill, kill, killall, or any process-killing command targeting kspec processes
-- NEVER run commands that would terminate or interfere with the parent ralph session
+- NEVER run commands that would terminate or interfere with the parent agent session
 - Do NOT run CLI spot-checks that start background services
 - If you need to verify CLI behavior, use non-destructive read-only commands only
 Violating these constraints will kill the automation session hosting you.
@@ -442,13 +442,13 @@ Violating these constraints will kill the automation session hosting you.
 ### Example (PR review with safety guard)
 
 ```bash
-# Detect ralph context
-RALPH_GUARD=""
-if [ -n "$KSPEC_RALPH_SESSION" ]; then
-  RALPH_GUARD="SAFETY CONSTRAINTS (you are running inside a kspec ralph automation loop):
-- NEVER start kspec ralph, kspec serve, or any long-running kspec process
+# Detect agent dispatch context
+AGENT_GUARD=""
+if [ -n "$KSPEC_SESSION_ID" ]; then
+  AGENT_GUARD="SAFETY CONSTRAINTS (you are running inside a kspec agent dispatch session):
+- NEVER start kspec agent run, kspec serve, or any long-running kspec process
 - NEVER use pkill, kill, killall, or any process-killing command targeting kspec processes
-- NEVER run commands that would terminate or interfere with the parent ralph session
+- NEVER run commands that would terminate or interfere with the parent agent session
 - Do NOT run CLI spot-checks that start background services
 - If you need to verify CLI behavior, use non-destructive read-only commands only
 Violating these constraints will kill the automation session hosting you.
@@ -461,12 +461,12 @@ codex exec \
   -c model_reasoning_effort="high" \
   -s danger-full-access \
   --skip-git-repo-check \
-  "${RALPH_GUARD}Review PR #123 in this repository. ..."
+  "${AGENT_GUARD}Review PR #123 in this repository. ..."
 ```
 
 ### Why This Matters
 
-In a previous ralph loop session, Codex ran a "CLI spot-check" that accidentally started `kspec ralph`, then ran `pkill -f 'kspec ralph'` to clean up — which killed the actual ralph loop process hosting it. The ralph session died mid-tool-call with no clean exit.
+In a previous automation session, Codex ran a "CLI spot-check" that accidentally started a long-running kspec process, then ran `pkill` to clean up — which killed the actual automation session hosting it. The session died mid-tool-call with no clean exit.
 
 ## Tips
 

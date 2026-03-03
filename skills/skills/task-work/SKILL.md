@@ -281,12 +281,12 @@ After blocking:
 kspec task block @ref --reason "Reason..."
 kspec tasks ready --eligible  # Check for other work
 # If tasks exist: work on the next one
-# If empty: stop responding (ralph auto-exits)
+# If empty: stop responding (agent dispatch exits automatically)
 ```
 
 ### Turn Completion
 
-After creating a PR, **stop responding**. Ralph continues automatically — it checks for remaining eligible tasks and exits the loop when none remain.
+After creating a PR, **stop responding**. The agent dispatch engine continues automatically — it checks for remaining eligible tasks and exits when none remain.
 
 **Do NOT call `end-loop`** after creating a PR. That ends ALL remaining iterations. It's a rare escape hatch for when work is stalling across multiple iterations.
 
