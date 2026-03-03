@@ -72484,27 +72484,53 @@
         this task.
       supersedes: null
   todos: []
-- title: Fix daemon WebSocket disconnect cleanup for dropped clients
+- _ulid: 01KJTVMWF9J8V4SZ9H98Z0WFF2
+  slugs: []
+  title: Fix daemon WebSocket disconnect cleanup for dropped clients
+  type: bug
   description: Daemon currently logs disconnects with undefined session ids on abnormal closes (1006)
     and may retain stale tracked clients, which inflates connection totals and heartbeat activity.
     Ensure disconnect cleanup uses stable session identity across open/close callbacks, removes
     stale entries, and add regression coverage for close code 1006 and health connection counts.
-  type: bug
   spec_ref: "@ws-disconnect-lifecycle-cleanup"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - daemon
     - websocket
     - bug
+  vcs_refs: []
+  created_at: 2026-03-03T22:03:40.905Z
+  notes: []
+  todos: []
+- title: Prevent cli-serve tests from killing unrelated running daemon
+  description: tests/cli-serve.test.ts currently manipulates global ~/.config/kspec daemon state in
+    beforeEach/afterEach (serve stop plus PID SIGTERM cleanup). This can terminate an
+    already-running local daemon outside the test run. Update daemon-sensitive CLI tests to use
+    isolated HOME/config and project-scoped daemon lifecycle so tests never stop or kill external
+    daemon processes.
+  type: bug
+  spec_ref: "@daemon-sensitive-cli-test-determinism"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-cli-serve-daemon-isolation
+  tags:
+    - test
+    - daemon
+    - bug
   depends_on: []
-  _ulid: 01KJTVMWF9J8V4SZ9H98Z0WFF2
+  _ulid: 01KJTW3BKQ597Y5KMB4GRZ87BA
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T22:03:40.905Z
+  created_at: 2026-03-03T22:11:35.159Z
   notes: []
   todos: []
