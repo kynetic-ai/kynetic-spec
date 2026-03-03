@@ -7213,3 +7213,21 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KJTPN4MJM1VZZ9PW00YX456V
+    slugs:
+      - daemon-sensitive-cli-test-determinism
+    title: Daemon-Sensitive CLI Test Determinism
+    type: requirement
+    tags:
+      - cli
+      - test
+      - daemon
+    description: Define deterministic testing patterns for daemon-sensitive CLI tests so parallel shard
+      execution and ambient machine daemon state do not create flaky failures.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-03T20:36:26.387Z
