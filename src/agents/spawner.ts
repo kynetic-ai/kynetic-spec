@@ -35,6 +35,55 @@ export interface SpawnedAgent {
   kill: (signal?: NodeJS.Signals) => void;
 }
 
+const UNEXPECTED_CASE_PREFIX = "Unexpected case:";
+const RATE_LIMIT_EVENT_TYPE = "rate_limit_event";
+
+function isNonActionableAdapterStderrLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith(UNEXPECTED_CASE_PREFIX)) return false;
+
+  const payload = trimmed.slice(UNEXPECTED_CASE_PREFIX.length).trim();
+  if (!payload) return false;
+
+  try {
+    const parsed = JSON.parse(payload) as { type?: string };
+    return parsed.type === RATE_LIMIT_EVENT_TYPE;
+  } catch {
+    // Keep a narrow fallback pattern in case adapter logs malformed JSON.
+    return /"type"\s*:\s*"rate_limit_event"/.test(payload);
+  }
+}
+
+function forwardFilteredAdapterStderr(child: ChildProcess): void {
+  if (!child.stderr) return;
+
+  child.stderr.setEncoding("utf-8");
+  let pending = "";
+
+  const forward = (line: string, withNewline: boolean): void => {
+    if (isNonActionableAdapterStderrLine(line)) return;
+    process.stderr.write(withNewline ? `${line}\n` : line);
+  };
+
+  child.stderr.on("data", (chunk: string | Buffer) => {
+    pending += chunk.toString();
+    let newlineIndex = pending.indexOf("\n");
+
+    while (newlineIndex !== -1) {
+      const line = pending.slice(0, newlineIndex);
+      pending = pending.slice(newlineIndex + 1);
+      forward(line, true);
+      newlineIndex = pending.indexOf("\n");
+    }
+  });
+
+  child.stderr.on("end", () => {
+    if (pending.length > 0) {
+      forward(pending, false);
+    }
+  });
+}
+
 /**
  * Spawn an ACP agent using the specified adapter.
  *
@@ -66,8 +115,11 @@ export function spawnAgent(
     cwd,
     env: processEnv,
     shell: adapter.shell,
-    stdio: ["pipe", "pipe", "inherit"], // pipe stdin/stdout, inherit stderr
+    stdio: ["pipe", "pipe", "pipe"], // pipe all stdio so stderr can be filtered
   });
+
+  // Keep actionable adapter stderr visible while dropping known non-actionable noise.
+  forwardFilteredAdapterStderr(child);
 
   // Ensure stdin/stdout are available
   if (!child.stdin || !child.stdout) {
