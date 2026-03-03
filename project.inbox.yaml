@@ -1275,3 +1275,17 @@ inbox:
       - cli
       - bug
     added_by: "@claude"
+  - _ulid: 01KJS7BGC9GX1E66JYK3QDH8R3
+    text: "kspec agent run produces no visible output: (1) runInvocation is called without onUpdate, so
+      no streaming to stdout during execution. (2) kspec session log show does not display
+      session.update text content after the fact. Fix: add --stream flag to agent run (or stream by
+      default for interactive use), print text blocks as they arrive. Also: session log show should
+      support a --output or --text mode that replays the assistant text from session.update events.
+      Workaround: jq/python one-liner on events.jsonl."
+    created_at: 2026-03-03T06:49:47.657Z
+    tags:
+      - cli
+      - dx
+      - agent
+      - ux
+    added_by: "@claude"
