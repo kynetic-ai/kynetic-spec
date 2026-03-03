@@ -11471,7 +11471,7 @@ runs:
   - _ulid: 01KJTZW1VRXHCFPXV6ENF5HP7H
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-03T23:17:30.104Z
     step_results:
@@ -11494,5 +11494,14 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-03T23:18:18.846Z
-        completed_at: 2026-03-03T23:18:18.846Z
+        completed_at: 2026-03-03T23:18:27.043Z
+        notes: "Coverage check via kspec search: file-based payload guidance is already tracked (observation
+          @01KJEVM2 and inbox @01KJKKCB), and is also codified in current conventions.
+          Validate-noise friction is already tracked (observation @01KGP16H, prior stabilization
+          task @01KJGGRE completed, and pending task @01KGRPS for alignment baseline
+          reconciliation). No duplicate capture needed for these two points."
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-03T23:18:27.043Z
+        completed_at: 2026-03-03T23:18:27.043Z
     initiated_by: Jacob Chapel
