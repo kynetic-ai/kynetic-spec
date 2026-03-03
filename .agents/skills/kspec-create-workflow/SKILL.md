@@ -241,5 +241,5 @@ kspec agents generate
 ## Integration
 
 - **`$kspec-reflect`** — Session reflections surface patterns worth formalizing
-- **`$kspec-observations`** — Friction observations may reveal missing workflows
+- **`$kspec-observe`** — Friction observations may reveal missing workflows
 - **`kspec agents generate`** — Regenerate after creating workflows

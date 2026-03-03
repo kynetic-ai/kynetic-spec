@@ -263,3 +263,17 @@ describe("uncommitted changes detection", () => {
     expect(output.reason).toContain("uncommitted changes");
   });
 });
+
+// ─── AC Coverage Annotations ─────────────────────────────────────────────────
+//
+// Own ACs covered indirectly (no dedicated test needed):
+// AC: @ralph-replacement ac-3 — covered by ac-2 dispatch rule tests verifying worker+reviewer lifecycle match ralph behavior
+// AC: @ralph-replacement ac-4 — N/A: workflow updates are configuration-only changes in .kspec/; verified by kspec-agents.md content, no unit test needed
+// AC: @ralph-replacement ac-5 — N/A: skill file content changes verified by kspec-agents.md generation; no unit test needed
+// AC: @ralph-replacement ac-7 — N/A: AC is satisfied by deletion of ralph test files; verified by CI passing without them
+//
+// Inherited trait ACs (@trait-error-guidance) that do not apply to the ralph deprecation stub:
+// AC: @trait-error-guidance ac-3 — N/A: ralph stub does not perform ref lookups; no 'not found' error paths
+// AC: @trait-error-guidance ac-4 — N/A: ralph stub has no state machine transitions; only shows migration error
+// AC: @trait-error-guidance ac-5 — N/A: ralph stub has no field validation; only shows migration error
+// AC: @trait-error-guidance ac-6 — N/A: ralph stub has no --json mode
