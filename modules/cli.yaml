@@ -433,7 +433,7 @@ features:
                   are silently committed
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
