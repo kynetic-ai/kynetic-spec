@@ -72745,9 +72745,25 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-03T22:54:38.153Z
-  notes: []
-  todos: []
   started_at: 2026-03-03T23:51:01.416Z
+  notes:
+    - _ulid: 01KJV1SVPHP1WW53V1VVQTHP6F
+      created_at: 2026-03-03T23:51:15.409Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Prevent lost updates from stale object snapshots during plan/inbox writes.
+
+        - Scope: Add atomic mutate helpers for plan and inbox item updates; migrate CLI/task write
+        paths that currently replace full objects.
+
+        - Files: parser/store and command/task mutation call sites related to plan/inbox updates.
+
+        - Verification: targeted tests for stale-snapshot safety plus full test suite and kspec
+        validate.
+      supersedes: null
+  todos: []
 - _ulid: 01KJTYJ7K2D41X2S9K0V8FAT7T
   slugs:
     - task-harden-spec-item-save-concurrency
