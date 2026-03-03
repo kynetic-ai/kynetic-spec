@@ -10831,7 +10831,7 @@ runs:
     initiated_by: "@claude"
   - _ulid: 01KJTNVWMTF6ADRMB21HV67NZY
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T20:22:39.002Z
@@ -10881,5 +10881,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-03T20:28:11.790Z
-        completed_at: 2026-03-03T20:28:11.790Z
+        completed_at: 2026-03-03T20:28:32.093Z
+        notes: "Captured approved items: task @01KJTP68 (HOME/config isolation helper for daemon-sensitive
+          tests), task @01KJTP69 (wait-for-startup helper to replace fixed sleeps), inbox @01KJTP6A
+          (Codex-only subagent auto-close/limit guidance)."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-03T20:28:32.093Z
