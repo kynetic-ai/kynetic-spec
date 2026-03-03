@@ -746,17 +746,6 @@ inbox:
       - workflows
       - dx
     added_by: "@claude"
-  - _ulid: 01KJ778T2MZ63PJ6MF46X2J2S9
-    text: "Ralph loop logs 'Unexpected case' for rate_limit_event messages from Claude API. These are
-      informational SSE events (status: allowed) that the event handler doesn't recognize. Should
-      either handle gracefully (ignore/log at debug level) or add to known event types. Currently
-      noisy in ralph output."
-    created_at: 2026-02-24T07:01:59.509Z
-    tags:
-      - ralph
-      - dx
-      - cli
-    added_by: "@claude"
   - _ulid: 01KJ77S4BZYW0CYX68JHNAQ31X
     text: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
       hanging on stdin), ralph has no mechanism to detect or recover. A configurable per-iteration
