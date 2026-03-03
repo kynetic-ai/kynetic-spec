@@ -11412,7 +11412,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJTY1WEBYSRD5V7ETM6A3AZJ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T22:45:44.011Z
@@ -11462,5 +11462,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-03T22:46:58.100Z
-        completed_at: 2026-03-03T22:46:58.100Z
+        completed_at: 2026-03-03T22:47:10.391Z
+        notes: "Captured one approved improvement: inbox @01KJTY4B (PR create fallback for false-negative
+          GraphQL errors). No duplicate captures created for already-tracked friction (task mutation
+          race, daemon-test isolation, stale session budget context)."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-03T22:47:10.391Z
