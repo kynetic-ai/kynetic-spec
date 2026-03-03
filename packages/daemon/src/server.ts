@@ -44,8 +44,6 @@ export interface ServerOptions {
  * 4. web-ui/build in current working directory
  * 5. Bundled dist/web-ui/ relative to this module (npm package installs)
  *
- * AC: @daemon-web-ui-bundle ac-2, ac-4
- *
  * Exported for testing only.
  */
 export function resolveWebUiPath(webUiDir?: string): string | null {

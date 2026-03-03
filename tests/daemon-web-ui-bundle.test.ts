@@ -4,9 +4,12 @@
  *
  * Follows the same pattern as daemon-server.test.ts — recreates the logic
  * as a pure function so it can be tested without the Bun/Elysia runtime.
- * E2E coverage for ac-3 (HTTP 200 from bundled assets) is in
- * packages/web-ui/tests/e2e/api-server.spec.ts.
  */
+
+// AC: @daemon-web-ui-bundle ac-3 — N/A: requires npm-installed package running outside the
+// monorepo to exercise the bundled path end-to-end. ac-1 proves dist/web-ui/ is populated,
+// ac-2 proves the daemon resolves it, and existing E2E in api-server.spec.ts confirms
+// the daemon returns HTTP 200 from / when a web UI build is present.
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { existsSync, mkdirSync, rmSync } from 'fs';
@@ -18,10 +21,13 @@ const DIST_WEB_UI = join(PROJECT_ROOT, 'dist', 'web-ui');
 
 /**
  * Recreates resolveWebUiPath from packages/daemon/src/server.ts for unit testing.
- * The bundled path is computed relative to dist/daemon/server.ts (as it would be
- * at runtime), which resolves to dist/web-ui/ — the same as DIST_WEB_UI above.
+ * Accepts cwd override so tests can simulate a non-monorepo working directory.
  */
-function resolveWebUiPath(webUiDir?: string, envOverride?: Record<string, string | undefined>): string | null {
+function resolveWebUiPath(
+  webUiDir?: string,
+  envOverride?: Record<string, string | undefined>,
+  cwd = process.cwd()
+): string | null {
   const env = envOverride ?? process.env;
 
   // 1. Explicit option
@@ -36,18 +42,18 @@ function resolveWebUiPath(webUiDir?: string, envOverride?: Record<string, string
   }
 
   // 3. Monorepo development: packages/web-ui/build from cwd
-  const monorepoPath = join(process.cwd(), 'packages', 'web-ui', 'build');
+  const monorepoPath = join(cwd, 'packages', 'web-ui', 'build');
   if (existsSync(monorepoPath)) {
     return monorepoPath;
   }
 
   // 4. Alternate location: web-ui/build in cwd
-  const altPath = join(process.cwd(), 'web-ui', 'build');
+  const altPath = join(cwd, 'web-ui', 'build');
   if (existsSync(altPath)) {
     return altPath;
   }
 
-  // 5. Bundled assets: dist/web-ui/ relative to daemon module (dist/daemon/server.ts)
+  // 5. Bundled assets: dist/web-ui/ relative to daemon module (dist/daemon/server.js)
   const daemonModuleDir = join(PROJECT_ROOT, 'dist', 'daemon');
   const bundledPath = join(daemonModuleDir, '..', 'web-ui');
   if (existsSync(bundledPath)) {
@@ -70,6 +76,7 @@ describe('Web UI asset bundling (@daemon-web-ui-bundle)', () => {
 
     beforeEach(() => {
       tempDir = join(PROJECT_ROOT, '.tmp-web-ui-test-' + Date.now());
+      mkdirSync(tempDir, { recursive: true });
     });
 
     afterEach(() => {
@@ -80,38 +87,29 @@ describe('Web UI asset bundling (@daemon-web-ui-bundle)', () => {
 
     // AC: @daemon-web-ui-bundle ac-2
     it('falls back to bundled dist/web-ui/ when no local or env build exists', () => {
-      // Simulate a non-monorepo project: skip monorepo path (packages/web-ui/build exists
-      // in this repo, so we test the logic by verifying the bundled path itself resolves)
-      const bundledPath = join(PROJECT_ROOT, 'dist', 'web-ui');
-      expect(existsSync(bundledPath)).toBe(true);
-      // The function returns the first match; in a project without packages/web-ui/build,
-      // resolveWebUiPath returns the bundled path. Verify that path is correctly formed.
-      expect(bundledPath).toBe(DIST_WEB_UI);
+      // Use tempDir as cwd so steps 3 (packages/web-ui/build) and 4 (web-ui/build)
+      // find nothing — forces resolution to reach step 5 (bundled dist/web-ui/).
+      const result = resolveWebUiPath(undefined, {}, tempDir);
+      expect(result).toBe(DIST_WEB_UI);
+      expect(existsSync(result!)).toBe(true);
     });
 
     // AC: @daemon-web-ui-bundle ac-4
     it('explicit webUiDir option takes precedence over bundled fallback', () => {
-      mkdirSync(tempDir, { recursive: true });
-      const result = resolveWebUiPath(tempDir, {});
+      const result = resolveWebUiPath(tempDir, {}, tempDir);
       expect(result).toBe(tempDir);
     });
 
     // AC: @daemon-web-ui-bundle ac-4
     it('WEB_UI_DIR env var takes precedence over bundled fallback', () => {
-      mkdirSync(tempDir, { recursive: true });
-      const result = resolveWebUiPath(undefined, { WEB_UI_DIR: tempDir });
+      const result = resolveWebUiPath(undefined, { WEB_UI_DIR: tempDir }, tempDir);
       expect(result).toBe(tempDir);
     });
 
     // AC: @daemon-web-ui-bundle ac-4
     it('non-existent explicit webUiDir is skipped and falls through to bundled', () => {
-      // Explicit path that does not exist should be ignored
-      const result = resolveWebUiPath('/non/existent/path', {});
-      // Should resolve to the bundled dist/web-ui/ (step 5) since no monorepo/alt path
-      // exists in an env with empty WEB_UI_DIR — but in this monorepo packages/web-ui/build
-      // exists (step 3), so it returns that. Either way, it does NOT return the bogus path.
-      expect(result).not.toBe('/non/existent/path');
-      expect(result).not.toBeNull();
+      const result = resolveWebUiPath('/non/existent/path', {}, tempDir);
+      expect(result).toBe(DIST_WEB_UI);
     });
   });
 });
