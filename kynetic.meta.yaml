@@ -7280,6 +7280,37 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJSA69R3VQ1PZSGTTV6Y20S6
+    type: friction
+    content: "Skill slug namespace confusion: .agents/skills/ uses kspec- prefix (kspec-task-work) for
+      rendered output, but .kspec/skills/ uses bare slug (task-work) for runtime injection. Agent
+      definitions must use the bare slug — but nothing in the CLI or docs makes this distinction
+      clear. Easy to wire up agents with wrong slug and get silent skill injection failure (skills
+      silently skipped when file not found)."
+    created_at: 2026-03-03T07:39:22.755Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJSA69X3SW4Z5TMANZ9NKHQS
+    type: friction
+    content: meta set has --add-skill but no --remove-skill. To fix a wrong skill slug on an agent, had
+      to edit .kspec/kynetic.meta.yaml directly and trigger commit via task note. This is the second
+      time a missing remove/clear flag forced a YAML edit (dispatch rules also have no CLI). These
+      gaps accumulate quickly when wiring up new agents.
+    created_at: 2026-03-03T07:39:22.915Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJSA6A118B26MQJG527V9GWT
+    type: success
+    content: "Session log analysis for agent failure diagnosis: Python one-liner over events.jsonl
+      extracted the exact tool call sequence and identified the ACP permission request gap in 2
+      minutes. The structured event log format made root cause analysis fast — tool_call
+      status:pending -> 5min gap -> agent.failed was immediately diagnostic."
+    created_at: 2026-03-03T07:39:23.041Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
