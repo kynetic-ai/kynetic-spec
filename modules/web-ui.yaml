@@ -253,7 +253,7 @@ features:
             then: the explicit or local path takes precedence over the bundled dist/web-ui/ fallback
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
