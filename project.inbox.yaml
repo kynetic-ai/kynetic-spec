@@ -1301,3 +1301,51 @@ inbox:
       - cli
       - docs
     added_by: "@claude"
+  - _ulid: 01KJS1XVF32VNP2P1E7ZEKYDC9
+    text: "kspec validate --json appends human-readable summary text after JSON payload, causing invalid
+      JSON for downstream jq parsing. Expected: pure JSON when --json is set. Workaround: pipe
+      through head or sed to strip trailing text. Reported from imgen project."
+    created_at: 2026-03-03T05:14:57.379Z
+    tags:
+      - validate
+      - json
+      - dx
+    added_by: "@claude"
+  - _ulid: 01KJS1XVH2AV1JX8X1QT9RMFC3
+    text: kspec commands should support manifest discovery from nested task worktrees (or accept
+      explicit --project-root). Running kspec validate/note/submit from isolated worktrees (e.g.,
+      /tmp task worktrees) fails with No kspec manifest found. KSPEC_SPEC_DIR env var exists for
+      batch mode but general CLI commands dont use it. Reported from imgen project task-work
+      automation.
+    created_at: 2026-03-03T05:14:57.442Z
+    tags:
+      - worktree
+      - manifest
+      - dx
+      - automation
+    added_by: "@claude"
+  - _ulid: 01KJS1XVJEAFZ5F9KNSRHZ92ZS
+    text: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
+      non-zero when only warnings present (e.g., exit 6). Downstream automation cant distinguish
+      warnings-only from real failures. Add explicit mode/flag for warning-only-is-success, or make
+      output clearly state non-zero is from warnings. Reported from imgen project."
+    created_at: 2026-03-03T05:14:57.486Z
+    tags:
+      - validate
+      - exit-codes
+      - automation
+      - dx
+    added_by: "@claude"
+  - _ulid: 01KJS1XVKM3TH3RBDTPW065MTB
+    text: "kspec validate trait AC coverage: inherited trait AC annotations in provider tests (e.g., //
+      AC: @trait-slug ac-N in test files) are present but still reported as uncovered.
+      Parser/indexer may not recognize trait annotations in Vitest files or may require specific
+      file patterns. Distinct from behavioral-vs-testable AC distinction (01KHYTNNFY) — this is
+      about annotations that ARE in test code but not detected. Reported from imgen project."
+    created_at: 2026-03-03T05:14:57.524Z
+    tags:
+      - validate
+      - traits
+      - ac-coverage
+      - bug
+    added_by: "@claude"
