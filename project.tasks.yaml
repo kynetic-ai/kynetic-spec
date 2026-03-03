@@ -71515,6 +71515,15 @@
         is valid JSON with no streaming text, similar to the dry-run --json test at line 609. The
         isJsonMode() conditional in agent.ts is currently untested at the CLI level."
       supersedes: null
+    - _ulid: 01KJTEG2P14VC6GRKZ3ZP1E137
+      created_at: 2026-03-03T18:13:51.937Z
+      author: "@claude"
+      content: "Fix cycle 1: replaced false-positive ac-11 test. Old test passed onUpdate:undefined
+        manually and asserted empty collected array (trivially true). New test uses
+        setJsonMode(true)+isJsonMode() to replicate agent.ts decision logic, then asserts
+        expect(onUpdate).toBeUndefined(). Combined with ac-12 (proves mock sends chunks when
+        onUpdate is real), the pair is non-trivially true."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS7PDW5GQQX9WQ2C7C1JNRX
