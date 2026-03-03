@@ -72617,28 +72617,52 @@
         - Verification: targeted tests + full npm test + kspec validate.
       supersedes: null
   todos: []
-- title: Migrate remaining task update commands to atomic task mutation
+- _ulid: 01KJTYJ4GP0ATCCX1RRTEF4RR3
+  slugs:
+    - task-migrate-task-mutators-atomic
+  title: Migrate remaining task update commands to atomic task mutation
+  type: bug
   description: Most task mutators still use loadAllTasks -> mutate stale object -> saveTask full
     replacement. Convert remaining update paths
     (submit/complete/needs-work/block/unblock/reset/todo/set/patch and multi-ref variants) to mutate
     against latest on-disk task state under one lock so concurrent writes cannot clobber fields.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - concurrency
+    - parser
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-03T22:54:36.566Z
+  notes: []
+  todos: []
+- title: Add atomic update helpers for plan and inbox writes
+  description: savePlan and saveInboxItem replace full objects and can overwrite concurrent updates
+    when callers pass stale snapshots. Add mutatePlanAtomically/mutateInboxItemAtomically-style APIs
+    and migrate update commands to use them.
   type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
   priority: 2
   slugs:
-    - task-migrate-task-mutators-atomic
+    - task-atomic-plan-inbox-writes
   tags:
     - concurrency
     - parser
     - cli
   depends_on: []
-  _ulid: 01KJTYJ4GP0ATCCX1RRTEF4RR3
+  _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T22:54:36.566Z
+  created_at: 2026-03-03T22:54:38.153Z
   notes: []
   todos: []
