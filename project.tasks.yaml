@@ -72176,8 +72176,15 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-03T19:03:02.559Z
-  notes: []
+  notes:
+    - _ulid: 01KJTPG6P49VG4TENB5ZGJ7JX4
+      created_at: 2026-03-03T20:33:44.644Z
+      author: Jacob Chapel
+      content: "Automation status set to needs_review: Missing spec_ref; add/attach spec with AC coverage
+        before automation"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KJTHAB6NRKQE12JJ7Q7V80CK
   slugs: []
   title: Fix core-skill-install test flakiness in shard 3
@@ -72199,8 +72206,15 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-03T19:03:09.781Z
-  notes: []
+  notes:
+    - _ulid: 01KJTPG7NHPE436M5FV7SFCMG7
+      created_at: 2026-03-03T20:33:45.649Z
+      author: Jacob Chapel
+      content: "Automation status set to needs_review: Missing spec_ref; add/attach spec with AC coverage
+        before automation"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KJTHACWHYNBEQ09GCHYH00H4
   slugs: []
   title: Fix cli-serve test flakiness in shard 3
@@ -72222,8 +72236,15 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-03T19:03:11.504Z
-  notes: []
+  notes:
+    - _ulid: 01KJTPG8KNPTW4X1SEAQNJN5ZW
+      created_at: 2026-03-03T20:33:46.613Z
+      author: Jacob Chapel
+      content: "Automation status set to needs_review: Missing spec_ref; add/attach spec with AC coverage
+        before automation"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KJTP68SV9VZ37KXF6TCEEKWB
   slugs: []
   title: Add isolated HOME helper for daemon-sensitive CLI tests
@@ -72244,27 +72265,41 @@
     - reflection
   vcs_refs: []
   created_at: 2026-03-03T20:28:19.131Z
-  notes: []
+  notes:
+    - _ulid: 01KJTPG9KC5G4MNP4KPD5G4AWT
+      created_at: 2026-03-03T20:33:47.629Z
+      author: Jacob Chapel
+      content: "Automation status set to needs_review: Missing spec_ref; task needs spec and ACs before
+        automation"
+      supersedes: null
   todos: []
-- title: Create wait-for-startup helper for process/daemon tests
+  automation: needs_review
+- _ulid: 01KJTP69W21Z3GQE8J2HAXC4WV
+  slugs: []
+  title: Create wait-for-startup helper for process/daemon tests
+  type: infra
   description: Add a reusable wait-for-startup utility and apply guidance to replace fixed sleep
     assertions in process/daemon tests, reducing CI timing flakes.
-  type: infra
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - test
     - daemon
     - reflection
-  depends_on: []
-  _ulid: 01KJTP69W21Z3GQE8J2HAXC4WV
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T20:28:20.226Z
-  notes: []
+  notes:
+    - _ulid: 01KJTPGAGEHQY6YGPJNHRSCWQ3
+      created_at: 2026-03-03T20:33:48.558Z
+      author: Jacob Chapel
+      content: "Automation status set to needs_review: Missing spec_ref; task needs spec and ACs before
+        automation"
+      supersedes: null
   todos: []
+  automation: needs_review
