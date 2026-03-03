@@ -7236,3 +7236,7 @@ requirements:
         given: a readiness wait exceeds its timeout
         when: a startup condition is not reached in time
         then: the failing assertion includes actionable process output/context for diagnosis
+      - id: ac-3
+        given: process or daemon tests need startup synchronization
+        when: tests wait for server or foreground process readiness
+        then: tests use bounded polling/wait helpers instead of fixed sleep delays
