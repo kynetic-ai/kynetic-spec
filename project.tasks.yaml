@@ -71119,7 +71119,7 @@
   type: task
   spec_ref: "@daemon-web-ui-bundle"
   derivation: auto
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-daemon-server-mode"
@@ -71127,9 +71127,10 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+  session_id: null
   created_at: 2026-03-03T04:39:41.462Z
   started_at: 2026-03-03T04:53:13.385Z
+  submitted_at: 2026-03-03T05:00:27.575Z
   notes:
     - _ulid: 01KJRZX94PHX2YXWXBQPXX139G
       created_at: 2026-03-03T04:39:41.462Z
@@ -71187,6 +71188,13 @@
         Also update package.json 'files' array if dist/web-ui/ isn't already covered by the 'dist'
         glob — it should be, but worth confirming.
       supersedes: null
+    - _ulid: 01KJS35F3X23QYG637RS82ZZ6G
+      created_at: 2026-03-03T05:36:35.453Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: CI broken — build:web-ui step added to main
+        build script breaks Node.js 18 CI (Vite requires Node 20+). MUST-FIX: All 4 ACs (ac-1
+        through ac-4) have zero test coverage. AC annotation in server.ts is in a JSDoc block
+        comment, not a test file. Posted findings as inline comments on PR #642."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-03T05:00:27.575Z
