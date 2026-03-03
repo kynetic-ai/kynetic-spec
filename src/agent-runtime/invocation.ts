@@ -27,7 +27,7 @@ import {
   injectEnvForAdapter,
   removeEnvForAdapter,
 } from "../sessions/store.js";
-import type { SessionMetadata, SessionTrigger } from "../sessions/types.js";
+import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -235,6 +235,33 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     acpSessionId: null,
   };
 
+  // Serialize all per-session event writes so seq assignment and append order
+  // are deterministic even when ACP update callbacks fire concurrently.
+  let eventWriteQueue: Promise<void> = Promise.resolve();
+  let nextEventSeq: number | undefined;
+
+  const queueEventWrite = <T>(write: () => Promise<T>): Promise<T> => {
+    const run = eventWriteQueue.then(write, write);
+    eventWriteQueue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  };
+
+  const appendSessionEvent = async (
+    input: Omit<SessionEventInput, "session_id" | "seq">,
+  ): Promise<void> => {
+    const event = await queueEventWrite(() =>
+      appendEvent(specDir, {
+        ...input,
+        session_id: sessionId,
+        seq: nextEventSeq,
+      }),
+    );
+    nextEventSeq = event.seq + 1;
+  };
+
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
   const session = await createSession(specDir, {
@@ -246,9 +273,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   });
 
   // ─── Log agent.dispatched event ───────────────────────────────────────────
-  await appendEvent(specDir, {
+  await appendSessionEvent({
     type: "agent.dispatched",
-    session_id: sessionId,
     data: {
       task_id: taskRef,
       agent_id: agent.id,
@@ -281,9 +307,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     // ─── Log agent.started event ──────────────────────────────────────────
-    await appendEvent(specDir, {
+    await appendSessionEvent({
       type: "agent.started",
-      session_id: sessionId,
       data: {
         task_id: taskRef,
         agent_id: agent.id,
@@ -297,9 +322,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       if (acpSessionId !== state.acpSessionId) return;
 
       // Log event to JSONL (with blob externalization from store.ts)
-      await appendEvent(specDir, {
+      await appendSessionEvent({
         type: "session.update",
-        session_id: sessionId,
         data: update,
       });
 
@@ -379,9 +403,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Log agent.completed event ────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-4
     const durationMs = Date.now() - startTime;
-    await appendEvent(specDir, {
+    await appendSessionEvent({
       type: "agent.completed",
-      session_id: sessionId,
       data: {
         task_id: taskRef,
         outcome: "success",
@@ -424,9 +447,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         // Best-effort cancel
       }
 
-      await appendEvent(specDir, {
+      await appendSessionEvent({
         type: "agent.timeout",
-        session_id: sessionId,
         data: {
           task_id: taskRef,
           timeout_minutes: timeoutMinutes,
@@ -479,9 +501,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // AC: @agent-invocation-lifecycle ac-5
     const errorMessage = err instanceof Error ? err.message : String(err);
 
-    await appendEvent(specDir, {
+    await appendSessionEvent({
       type: "agent.failed",
-      session_id: sessionId,
       data: {
         task_id: taskRef,
         error: errorMessage,
