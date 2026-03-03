@@ -215,7 +215,7 @@ features:
         created: 2026-03-02T01:22:20.058Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
