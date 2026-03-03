@@ -1708,14 +1708,16 @@ triage:
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
       fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling
       batch with empty string arg.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug: empty --commands string hangs instead of failing fast. Simple guard at arg parse
       time. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-26T19:02:52.598Z
-    updated_at: 2026-03-03T06:43:07.610Z
+    updated_at: 2026-03-03T06:43:27.829Z
+    acted_at: 2026-03-03T06:43:27.809Z
+    result_ref: "@01KJS6ZW"
   - _ulid: 01KJDNA7EJT5VVGV2W3DM9R5HR
     inbox_ref: 01KJ76Y81G54ASMF0A18Z5G35Y
     item_snapshot: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering
@@ -2144,10 +2146,10 @@ triage:
       jq parsing fail. Clear fix, automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-03T06:43:07.198Z
-    updated_at: 2026-03-03T06:43:26.050Z
     acted_at: 2026-03-03T06:43:26.029Z
     result_ref: "@01KJS6ZT"
+    created_at: 2026-03-03T06:43:07.198Z
+    updated_at: 2026-03-03T06:43:26.050Z
   - _ulid: 01KJS6Z9DE1HK35729ADS9EMXB
     inbox_ref: 01KJS1XVJEAFZ5F9KNSRHZ92ZS
     item_snapshot: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but

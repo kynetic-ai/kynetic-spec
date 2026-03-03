@@ -763,13 +763,6 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
-  - _ulid: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
-    text: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast with
-      a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch with
-      empty string arg.
-    created_at: 2026-02-24T04:53:24.637Z
-    tags: []
-    added_by: "@claude"
   - _ulid: 01KJ76Y81G54ASMF0A18Z5G35Y
     text: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering workflow
       show/list to current session by default. Session end could auto-close orphaned runs. Reduces
