@@ -114,6 +114,7 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
+    adapter: codex-acp
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
