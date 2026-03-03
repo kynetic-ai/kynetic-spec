@@ -10832,7 +10832,7 @@ runs:
   - _ulid: 01KJTNVWMTF6ADRMB21HV67NZY
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-03T20:22:39.002Z
     step_results:
@@ -10856,5 +10856,14 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-03T20:23:17.803Z
-        completed_at: 2026-03-03T20:23:17.803Z
+        completed_at: 2026-03-03T20:23:21.525Z
+        notes: "Coverage check via kspec search: broad daemon/serve/timeout queries returned many related
+          historical specs/tasks, but no explicit tracking found for (a) isolating HOME/config for
+          daemon-related CLI tests, or (b) operational guidance/automation to close completed
+          subagents and avoid thread-limit blocking. Flake-related patterns exist historically, but
+          these two points appear untracked or only indirectly covered."
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-03T20:23:21.525Z
+        completed_at: 2026-03-03T20:23:21.525Z
     initiated_by: Jacob Chapel
