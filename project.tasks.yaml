@@ -71337,19 +71337,35 @@
   created_at: 2026-03-03T06:43:26.496Z
   notes: []
   todos: []
-- title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+- _ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
+  slugs: []
+  title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+  type: task
+  description: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-03T06:43:28.265Z
+  notes: []
+  todos: []
+- title: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
-  _ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
+  description: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
+  _ulid: 01KJS6ZZGM4RYKNYS98PY1CSHQ
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T06:43:28.265Z
+  created_at: 2026-03-03T06:43:29.940Z
   notes: []
   todos: []

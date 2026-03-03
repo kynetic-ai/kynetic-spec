@@ -1024,14 +1024,16 @@ triage:
   - _ulid: 01KJ4SZJGB553H18AY8DZREF4Z
     inbox_ref: 01KHWWMC2P592NMM8N63TDGZ0Q
     item_snapshot: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Small CLI DX: accept P1/P2/P3 as alias for numeric priority. Aligns docs with CLI usage.
       Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-02-23T08:31:16.491Z
-    updated_at: 2026-03-03T06:43:08.008Z
+    updated_at: 2026-03-03T06:43:31.250Z
+    acted_at: 2026-03-03T06:43:31.231Z
+    result_ref: "@01KJS6ZZ"
   - _ulid: 01KJ4SZJH467QW0CKV7GCJJWC3
     inbox_ref: 01KHWWMDCV6NBYK8D8EMYBZEPV
     item_snapshot: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
@@ -1041,10 +1043,10 @@ triage:
       addition. Automation eligible.
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-23T08:31:16.516Z
-    updated_at: 2026-03-03T06:43:29.522Z
     acted_at: 2026-03-03T06:43:29.498Z
     result_ref: "@01KJS6ZX"
+    created_at: 2026-02-23T08:31:16.516Z
+    updated_at: 2026-03-03T06:43:29.522Z
   - _ulid: 01KJ4SZJHXJEMH8ZM7HQ6KBRTP
     inbox_ref: 01KJ0K9CEX5EJYT9YYA9D04GX7
     item_snapshot: "inbox promote missing --slug option: cannot set task slug during promotion, must use
