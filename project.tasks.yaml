@@ -72251,7 +72251,7 @@
   type: infra
   description: Create a shared test helper/pattern that forces HOME/config isolation for
     daemon-related CLI tests to avoid ambient ~/.config/kspec PID/port interference.
-  spec_ref: null
+  spec_ref: "@daemon-sensitive-cli-test-determinism"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -72280,7 +72280,7 @@
   type: infra
   description: Add a reusable wait-for-startup utility and apply guidance to replace fixed sleep
     assertions in process/daemon tests, reducing CI timing flakes.
-  spec_ref: null
+  spec_ref: "@daemon-sensitive-cli-test-determinism"
   meta_ref: null
   plan_ref: null
   status: pending
