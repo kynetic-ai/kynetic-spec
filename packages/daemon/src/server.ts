@@ -10,6 +10,8 @@ import { cors } from '@elysiajs/cors';
 import { staticPlugin } from '@elysiajs/static';
 import { ulid } from 'ulidx';
 import { existsSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
@@ -40,6 +42,9 @@ export interface ServerOptions {
  * 2. WEB_UI_DIR environment variable
  * 3. packages/web-ui/build in current working directory (monorepo dev)
  * 4. web-ui/build in current working directory
+ * 5. Bundled dist/web-ui/ relative to this module (npm package installs)
+ *
+ * AC: @daemon-web-ui-bundle ac-2, ac-4
  */
 function resolveWebUiPath(webUiDir?: string): string | null {
   // 1. Explicit option
@@ -64,6 +69,15 @@ function resolveWebUiPath(webUiDir?: string): string | null {
   const altPath = join(process.cwd(), 'web-ui', 'build');
   if (existsSync(altPath)) {
     return altPath;
+  }
+
+  // 5. Bundled assets: dist/web-ui/ relative to daemon module location
+  // Covers npm package installs where no local web UI build exists.
+  // __filename resolves to dist/daemon/server.ts → parent is dist/web-ui/
+  const selfDir = dirname(fileURLToPath(import.meta.url));
+  const bundledPath = join(selfDir, '..', 'web-ui');
+  if (existsSync(bundledPath)) {
+    return bundledPath;
   }
 
   return null;
