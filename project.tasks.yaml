@@ -70382,7 +70382,7 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-agent-dispatch-engine"
@@ -70490,6 +70490,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-03T00:04:16.320Z
+  closed_reason: "Merged in PR #635. Implemented daemon agent dispatch integration: added
+    InvocationEvent type and onInvocationEvent callback to DispatchEngine, GET /api/agent/status and
+    POST /api/agent/dispatch endpoints, POST /api/agent/events for CLI event emission, WebSocket
+    broadcasts via pubsub on invocation lifecycle, and postDispatchEvent() fire-and-forget helper in
+    CLI task commands. All 7 ACs covered. E2E test suite added in api-agent-dispatch.spec.ts."
 - _ulid: 01KJP278TVFK6CV3BSDYPFVRJF
   slugs:
     - implement-ralph-replacement
@@ -70729,6 +70735,7 @@
   session_id: 01KJR8JA0CQXS951PDBEBRA3CW
   created_at: 2026-03-02T15:50:01.010Z
   started_at: 2026-03-02T23:26:36.972Z
+  submitted_at: 2026-03-02T23:51:11.280Z
   notes:
     - _ulid: 01KJQKWACN8XCKZ71WZZK413M8
       created_at: 2026-03-02T15:50:12.629Z
@@ -70840,7 +70847,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-02T23:51:11.280Z
 - _ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
   slugs: []
   title: Auto-build dist before CLI subprocess tests run
