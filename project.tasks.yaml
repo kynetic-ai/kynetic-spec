@@ -72060,7 +72060,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 2
+  priority: 1
   tags:
     - cli
     - agent
