@@ -71470,7 +71470,7 @@
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71506,6 +71506,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-03T17:53:32.198Z
 - _ulid: 01KJS7PDW5GQQX9WQ2C7C1JNRX
   slugs: []
   title: Add --text flag to kspec session log show to replay agent output
