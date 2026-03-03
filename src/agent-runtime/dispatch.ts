@@ -178,6 +178,12 @@ export interface DispatchEngineOptions {
    * AC: @daemon-agent-dispatch ac-3, ac-4
    */
   onInvocationEvent?: (event: InvocationEvent) => void;
+  /**
+   * Optional callback invoked for each text chunk produced by a running agent.
+   * AC: @cli-agent-commands ac-13 (broadcast to watch subscribers)
+   * AC: @daemon-agent-dispatch ac-8
+   */
+  onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -200,6 +206,7 @@ export class DispatchEngine {
   private dedupWindowMs: number;
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
+  private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
 
   /** Queue of pending dispatch entries, per agent id */
   private queues: Map<string, QueueEntry[]> = new Map();
@@ -227,6 +234,7 @@ export class DispatchEngine {
     this.dedupWindowMs = options.dedupWindowMs ?? 2000;
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
+    this.onTextChunk = options.onTextChunk;
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
@@ -654,6 +662,19 @@ export class DispatchEngine {
       timestamp: Date.now(),
     });
 
+    // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream text chunks to watchers
+    const taskId = entry.change.taskRef ?? null;
+    const onUpdate = this.onTextChunk
+      ? (update: import("../acp/index.js").SessionUpdate) => {
+          if (
+            update.sessionUpdate === "agent_message_chunk" &&
+            update.content.type === "text"
+          ) {
+            this.onTextChunk!(preSessionId, agentId, taskId, update.content.text);
+          }
+        }
+      : undefined;
+
     const options: InvocationOptions = {
       agent,
       specDir: this.specDir,
@@ -664,6 +685,7 @@ export class DispatchEngine {
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
       sessionId: preSessionId,
+      onUpdate,
     };
 
     // AC: @agent-dispatch-engine ac-12 - Wrap invocation in shadow mutex

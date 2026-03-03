@@ -1277,3 +1277,338 @@ describe("AC-12: Interactive mode streams text as it arrives", () => {
     expect(receivedChunks[0]).toBe(responseText);
   });
 });
+
+// ─── AC-13 through AC-16: kspec agent dispatch watch ─────────────────────────
+
+// Helper: create a fake WebSocket instance for testing
+interface FakeWsInstance {
+  send: ReturnType<typeof vi.fn>;
+  onopen: ((e: unknown) => void) | null;
+  onmessage: ((e: { data: string }) => void) | null;
+  onerror: ((e: unknown) => void) | null;
+  onclose: (() => void) | null;
+}
+
+function makeFakeWsClass(): { FakeWs: new (url: string) => FakeWsInstance; getLastInstance: () => FakeWsInstance | null } {
+  let last: FakeWsInstance | null = null;
+  class FakeWs implements FakeWsInstance {
+    send = vi.fn();
+    onopen: ((e: unknown) => void) | null = null;
+    onmessage: ((e: { data: string }) => void) | null = null;
+    onerror: ((e: unknown) => void) | null = null;
+    onclose: (() => void) | null = null;
+    constructor(_url: string) {
+      last = this;
+    }
+  }
+  return { FakeWs: FakeWs as new (url: string) => FakeWsInstance, getLastInstance: () => last };
+}
+
+/**
+ * Poll for a condition to become true, up to maxWaitMs.
+ * Used to handle async initContext() completing before WebSocket is created.
+ */
+async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void> {
+  const interval = 10;
+  let elapsed = 0;
+  while (!condition() && elapsed < maxWaitMs) {
+    await new Promise((r) => setTimeout(r, interval));
+    elapsed += interval;
+  }
+}
+
+// AC: @cli-agent-commands ac-15
+describe("AC-15: dispatch watch — daemon not running", () => {
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it("should print error and exit code 3 when daemon is not running", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(false);
+
+    const program = createTestProgram();
+    const errors: string[] = [];
+    const origError = console.error;
+    console.error = (...args) => { errors.push(args.join(" ")); };
+
+    let exitCode: number | undefined;
+    vi.spyOn(process, "exit").mockImplementation((code?: number) => {
+      exitCode = code as number;
+      throw new Error(`process.exit(${code})`);
+    });
+
+    try {
+      await program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+    } catch {
+      // expected: mocked exit throws
+    } finally {
+      console.error = origError;
+    }
+
+    // AC: @cli-agent-commands ac-15 - exit code 3 and error message
+    expect(exitCode).toBe(3);
+    // Error should mention daemon
+    const allOutput = errors.join(" ");
+    expect(allOutput.toLowerCase()).toMatch(/daemon/);
+  });
+});
+
+// AC: @cli-agent-commands ac-13
+describe("AC-13: dispatch watch — prints text chunks with prefix", () => {
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it("should print [agent-id session-id] prefix before text chunks", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+
+    // Start command — will hang on the infinite promise
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    // Poll until WebSocket is created (initContext() needs several async ticks)
+    await waitFor(() => getLastInstance() !== null);
+
+    const ws = getLastInstance();
+    expect(ws).not.toBeNull();
+
+    // Simulate connected + subscribed
+    ws!.onopen?.({});
+
+    // Send an agent_text_chunk event
+    ws!.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: {
+          session_id: "sess-abc",
+          agent_id: "worker",
+          text: "hello from agent",
+        },
+      }),
+    });
+
+    await new Promise((r) => setTimeout(r, 10));
+
+    // AC: @cli-agent-commands ac-13 - output prefixed with [agent-id session-id]
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc]");
+    expect(output).toContain("hello from agent");
+
+    // Clean up — the promise never resolves, but that's expected
+    runPromise.catch(() => {/* ignore */});
+  });
+});
+
+// AC: @cli-agent-commands ac-16
+describe("AC-16: dispatch watch — filter by agent or session", () => {
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it("should only show chunks matching --agent filter, drop others", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--agent", "target-agent"],
+      { from: "user" },
+    );
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    // Send chunk from non-matching agent — should be dropped
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "s1", agent_id: "other-agent", text: "ignored" },
+      }),
+    });
+
+    // Send chunk from matching agent — should be printed
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "s2", agent_id: "target-agent", text: "visible" },
+      }),
+    });
+
+    await new Promise((r) => setTimeout(r, 10));
+
+    const output = written.join("");
+    // AC: @cli-agent-commands ac-16 - non-matching chunks silently dropped
+    expect(output).not.toContain("ignored");
+    expect(output).toContain("visible");
+    expect(output).toContain("[target-agent s2]");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should only show chunks matching --session filter, drop others", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--session", "target-session"],
+      { from: "user" },
+    );
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "other-session", agent_id: "a1", text: "dropped" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "target-session", agent_id: "a2", text: "shown" },
+      }),
+    });
+
+    await new Promise((r) => setTimeout(r, 10));
+
+    const output = written.join("");
+    expect(output).not.toContain("dropped");
+    expect(output).toContain("shown");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+});
+
+// AC: @cli-agent-commands ac-14
+describe("AC-14: dispatch watch — reconnect on disconnect", () => {
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  it("should print reconnecting message and retry on connection drop", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const instances: FakeWsInstance[] = [];
+    class TrackingFakeWs implements FakeWsInstance {
+      send = vi.fn();
+      onopen: ((e: unknown) => void) | null = null;
+      onmessage: ((e: { data: string }) => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      constructor(_url: string) { instances.push(this); }
+    }
+    vi.stubGlobal("WebSocket", TrackingFakeWs);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    const stderrLines: string[] = [];
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+      stderrLines.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--retries", "2"],
+      { from: "user" },
+    );
+
+    // Poll for first WebSocket to be created (initContext is async)
+    await vi.runAllTimersAsync();
+    await waitFor(() => instances.length >= 1, 1000);
+
+    instances[0].onopen?.({});
+
+    // Simulate connection drop
+    instances[0].onclose?.();
+
+    // Advance timers to trigger reconnect (base 1s backoff for first retry)
+    await vi.advanceTimersByTimeAsync(2000);
+
+    // AC: @cli-agent-commands ac-14 - reconnecting message printed
+    expect(stderrLines.some((l) => /reconnect/i.test(l))).toBe(true);
+    // A second WebSocket was created
+    expect(instances.length).toBeGreaterThanOrEqual(2);
+
+    vi.useRealTimers();
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should exit code 3 when retries exhausted (--retries 0)", async () => {
+    // With --retries 0, the very first close triggers the exit immediately (no setTimeout)
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const instances: FakeWsInstance[] = [];
+    class CaptureFakeWs implements FakeWsInstance {
+      send = vi.fn();
+      onopen: ((e: unknown) => void) | null = null;
+      onmessage: ((e: { data: string }) => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      constructor(_url: string) { instances.push(this); }
+    }
+    vi.stubGlobal("WebSocket", CaptureFakeWs);
+
+    let exitCode: number | undefined;
+    vi.spyOn(process, "exit").mockImplementation((code?: number) => {
+      exitCode = code as number;
+      throw new Error(`process.exit(${code})`);
+    });
+    vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const program = createTestProgram();
+    // --retries 0: retryLimit=0, so first close immediately exits
+    const runPromise = program
+      .parseAsync(["agent", "dispatch", "watch", "--retries", "0"], { from: "user" })
+      .catch(() => {/* mocked exit throws */});
+
+    // Wait for WebSocket to be created
+    await waitFor(() => instances.length >= 1);
+
+    // First connection drops — retryCount(0) >= retryLimit(0), so exit immediately
+    // process.exit mock throws synchronously, so wrap in try/catch
+    try {
+      instances[0]?.onclose?.();
+    } catch {
+      // expected: mocked process.exit throws
+    }
+
+    // AC: @cli-agent-commands ac-14 - exit code 3 on reconnection failure
+    expect(exitCode).toBe(3);
+
+    runPromise.catch(() => {/* ignore */});
+  });
+});

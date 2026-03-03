@@ -58,6 +58,18 @@ function createEngine(projectDir: string, pubsub?: PubSubManager): DispatchEngin
           }, projectDir);
         }
       : undefined,
+    // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8
+    onTextChunk: pubsub
+      ? (sessionId: string, agentId: string, taskId: string | null, text: string) => {
+          pubsub.broadcast('agents', 'agent_text_chunk', {
+            session_id: sessionId,
+            agent_id: agentId,
+            task_id: taskId,
+            text,
+            timestamp: Date.now(),
+          }, projectDir);
+        }
+      : undefined,
   });
 }
 
