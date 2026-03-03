@@ -83,6 +83,7 @@ agents:
       - npm
       - vitest
     conventions: []
+    adapter: codex-acp
     dispatch:
       - on: task.ready
         filter:
@@ -95,7 +96,6 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
-    adapter: codex-acp
   - _ulid: 01KJS8JC35KPCJP6A4C1VJAWF9
     id: reviewer
     name: Reviewer Agent
@@ -7336,6 +7336,15 @@ observations:
       testing CLI mode-gating behavior."
     created_at: 2026-03-03T18:37:49.074Z
     author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJTZYE8BB3HRACG81Y4TSJR5
+    type: success
+    content: "Concurrency fix pattern: isolate race to a narrow atomic helper, migrate only hot mutation
+      paths first, verify with targeted race regressions before full-suite run, then close via
+      worker+review-agent loop."
+    created_at: 2026-03-03T23:18:48.331Z
+    author: Jacob Chapel
     resolved: false
     resolution: null
 skills:
