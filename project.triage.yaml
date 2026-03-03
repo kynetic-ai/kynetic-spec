@@ -2138,14 +2138,16 @@ triage:
     item_snapshot: "kspec validate --json appends human-readable summary text after JSON payload,
       causing invalid JSON for downstream jq parsing. Expected: pure JSON when --json is set.
       Workaround: pipe through head or sed to strip trailing text. Reported from imgen project."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug breaking automation: --json appends human-readable text after JSON payload, making
       jq parsing fail. Clear fix, automation eligible."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-03T06:43:07.198Z
-    updated_at: 2026-03-03T06:43:07.232Z
+    updated_at: 2026-03-03T06:43:26.050Z
+    acted_at: 2026-03-03T06:43:26.029Z
+    result_ref: "@01KJS6ZT"
   - _ulid: 01KJS6Z9DE1HK35729ADS9EMXB
     inbox_ref: 01KJS1XVJEAFZ5F9KNSRHZ92ZS
     item_snapshot: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but
@@ -2159,10 +2161,10 @@ triage:
       codes prevent reliable CI automation. Clear fix, automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-03T06:43:07.310Z
-    updated_at: 2026-03-03T06:43:24.319Z
     acted_at: 2026-03-03T06:43:24.295Z
     result_ref: "@01KJS6ZR"
+    created_at: 2026-03-03T06:43:07.310Z
+    updated_at: 2026-03-03T06:43:24.319Z
   - _ulid: 01KJS6Z9KCGMWNFJP8KRJM86E0
     inbox_ref: 01KJGAE24345STWVS3RMKNC838
     item_snapshot: "task set --description: task set has no --description option, making it impossible

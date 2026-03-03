@@ -71278,24 +71278,43 @@
   created_at: 2026-03-03T06:43:20.809Z
   notes: []
   todos: []
-- title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
+- _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
+  slugs: []
+  title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
     non-zer"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but
     returns non-zero when only warnings present (e.g., exit 6). Downstream automation cant
     distinguish warnings-only from real failures. Add explicit mode/flag for
     warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
     imgen project."
-  _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-03T06:43:23.015Z
+  notes: []
+  todos: []
+- title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
+    JSON f
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "kspec validate --json appends human-readable summary text after JSON payload, causing
+    invalid JSON for downstream jq parsing. Expected: pure JSON when --json is set. Workaround: pipe
+    through head or sed to strip trailing text. Reported from imgen project."
+  _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T06:43:23.015Z
+  created_at: 2026-03-03T06:43:24.752Z
   notes: []
   todos: []
