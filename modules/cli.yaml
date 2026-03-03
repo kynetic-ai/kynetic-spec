@@ -7240,3 +7240,7 @@ requirements:
         given: process or daemon tests need startup synchronization
         when: tests wait for server or foreground process readiness
         then: tests use bounded polling/wait helpers instead of fixed sleep delays
+      - id: ac-2
+        given: daemon-sensitive CLI tests run in parallel with ambient daemon state
+        when: tests invoke CLI commands via shared helpers
+        then: HOME/config is isolated so ambient daemon PID/port files do not affect outcomes
