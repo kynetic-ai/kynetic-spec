@@ -11413,8 +11413,20 @@ runs:
   - _ulid: 01KJTY1WEBYSRD5V7ETM6A3AZJ
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-03T22:45:44.011Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-03T22:45:44.011Z
+        completed_at: 2026-03-03T22:46:27.877Z
+        notes: "Worked well: (1) using session logs + shadow log gave clear provenance of task mutations and
+          dispatch behavior, (2) explicit task-work flow (start/note/test/commit/submit) kept
+          recovery from interrupted agents straightforward, (3) targeted test command (npm run test
+          -- tests/shadow.test.ts) gave fast confidence for scoped changes."
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-03T22:46:27.877Z
+        completed_at: 2026-03-03T22:46:27.877Z
     initiated_by: Jacob Chapel
