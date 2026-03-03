@@ -10890,7 +10890,7 @@ runs:
   - _ulid: 01KJTQGQBNTVYCR3GDF8TYEJY1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-03-03T20:51:30.294Z
     step_results:
@@ -10922,5 +10922,14 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-03-03T20:52:02.517Z
-        completed_at: 2026-03-03T20:52:02.517Z
+        completed_at: 2026-03-03T20:52:06.794Z
+        notes: "Proposed improvements: (A) Adapter-noise suppression for known non-actionable stderr
+          patterns (rate_limit_event) in agent run path while still surfacing actionable adapter
+          failures; scope small/medium. (B) Serialize invocation update handling and enforce
+          deterministic session event sequencing so streamed text and event logs stay in-order; add
+          regression tests for concurrent update bursts; scope medium."
+      - step_index: 4
+        status: completed
+        started_at: 2026-03-03T20:52:06.794Z
+        completed_at: 2026-03-03T20:52:06.794Z
     initiated_by: Jacob Chapel
