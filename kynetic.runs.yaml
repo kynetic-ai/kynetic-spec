@@ -11474,6 +11474,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T23:17:30.104Z
+    completed_at: 2026-03-03T23:18:52.244Z
     step_results:
       - step_index: 0
         status: completed
@@ -11523,4 +11524,11 @@ runs:
           because payload-format and validate-noise issues are already tracked and have active/past
           tasks.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-03T23:18:52.244Z
+  - _ulid: 01KJV0VS32DGJ6ET18Z5Q6HH74
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-03T23:34:49.698Z
+    step_results: []
+    initiated_by: Jacob Chapel
