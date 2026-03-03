@@ -71255,7 +71255,7 @@
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
   spec_ref: "@shadow-sync"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71265,7 +71265,7 @@
   session_id: null
   created_at: 2026-03-03T06:43:19.153Z
   started_at: 2026-03-03T22:27:35.346Z
-  submitted_at: 2026-03-03T22:20:31.082Z
+  submitted_at: 2026-03-03T22:28:03.013Z
   notes:
     - _ulid: 01KJS9Q8P8J6TFTTYC7ASFR8MV
       created_at: 2026-03-03T07:31:10.152Z
