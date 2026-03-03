@@ -13,6 +13,7 @@ import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
+import { EventEmitter } from "node:events";
 import * as YAML from "yaml";
 import {
   createSession,
@@ -27,7 +28,7 @@ import * as storeModule from "../src/sessions/store.js";
 import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invocation.js";
 import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
 import { registerAdapter } from "../src/agents/adapters.js";
-import { spawnAndInitialize } from "../src/agents/spawner.js";
+import * as spawnerModule from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 import {
@@ -570,6 +571,102 @@ describe("Streaming event logging", () => {
     expect(eventTypes).toContain("agent.dispatched");
     expect(eventTypes).toContain("agent.started");
     expect(eventTypes).toContain("agent.completed");
+  });
+
+  it("should preserve update chunk order and strict seq monotonicity during concurrent bursts", async () => {
+    // AC: @cli-agent-commands ac-12
+    // Regression for @01KJTQBT:
+    // Ensure concurrent update callbacks cannot reorder streamed chunks or
+    // produce duplicate/non-monotonic sequence numbers in events.jsonl.
+    const chunks = ["chunk-0", "chunk-1", "chunk-2", "chunk-3", "chunk-4"];
+    const agent = makeTestAgent();
+    const receivedChunks: string[] = [];
+    const updateSessionId = "mock-acp-session";
+    const emitter = new EventEmitter();
+
+    const spawnedAgent = {
+      client: {
+        on: (event: string, handler: (...args: unknown[]) => void) => {
+          emitter.on(event, handler);
+        },
+        newSession: vi.fn(async () => updateSessionId),
+        prompt: vi.fn(async () => {
+          for (const chunk of chunks) {
+            emitter.emit("update", updateSessionId, {
+              sessionUpdate: "agent_message_chunk",
+              content: { type: "text", text: chunk },
+            });
+          }
+          return { stopReason: "end_turn" };
+        }),
+        cancel: vi.fn(async () => undefined),
+        endSession: vi.fn(async () => undefined),
+        respondPermission: vi.fn(async () => undefined),
+      },
+      kill: vi.fn(() => undefined),
+    };
+
+    const spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+
+    const originalAppendEvent = storeModule.appendEvent;
+    let inFlightUpdateWrites = 0;
+    let maxInFlightUpdateWrites = 0;
+    const appendSpy = vi.spyOn(storeModule, "appendEvent").mockImplementation(async (specDir, input) => {
+      if (input.type !== "session.update") {
+        return originalAppendEvent(specDir, input);
+      }
+
+      const update = input.data as { sessionUpdate?: string; content?: { type?: string; text?: string } };
+      const text = update.sessionUpdate === "agent_message_chunk" && update.content?.type === "text"
+        ? update.content.text ?? ""
+        : "";
+      const index = Number.parseInt(text.replace("chunk-", ""), 10);
+      const delayMs = Number.isNaN(index) ? 0 : (chunks.length - index) * 8;
+
+      inFlightUpdateWrites += 1;
+      maxInFlightUpdateWrites = Math.max(maxInFlightUpdateWrites, inFlightUpdateWrites);
+      try {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        return originalAppendEvent(specDir, input);
+      } finally {
+        inFlightUpdateWrites -= 1;
+      }
+    });
+
+    try {
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Concurrent update burst ordering",
+        trigger: "task.ready",
+        onUpdate: (update) => {
+          if (update.sessionUpdate === "agent_message_chunk" && update.content.type === "text") {
+            receivedChunks.push(update.content.text);
+          }
+        },
+      });
+
+      expect(result.outcome).toBe("success");
+      expect(receivedChunks).toEqual(chunks);
+      expect(maxInFlightUpdateWrites).toBe(1);
+
+      const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+      const content = await fs.readFile(eventsPath, "utf-8");
+      const events = content.trim().split("\n").filter(Boolean).map((line) => JSON.parse(line));
+      const seqs = events.map((event: { seq: number }) => event.seq);
+      const uniqueSeqCount = new Set(seqs).size;
+      expect(uniqueSeqCount).toBe(seqs.length);
+      for (let i = 1; i < seqs.length; i++) {
+        expect(seqs[i]).toBeGreaterThan(seqs[i - 1]);
+      }
+    } finally {
+      appendSpy.mockRestore();
+      spawnSpy.mockRestore();
+    }
   });
 
   it("should externalize oversized payload blobs when session updates exceed threshold", async () => {
