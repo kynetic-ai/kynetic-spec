@@ -243,6 +243,10 @@ features:
             given: kspec is installed in a project with no local web UI build
             when: daemon starts and resolves web UI path
             then: resolveWebUiPath returns the bundled dist/web-ui/ path relative to the daemon module location
+          - id: ac-3
+            given: kspec is installed as an npm package in a non-monorepo project
+            when: browser opens http://localhost:3456/
+            then: daemon serves the bundled web UI and returns HTTP 200 with HTML content
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
