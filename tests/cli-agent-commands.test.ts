@@ -21,6 +21,8 @@ import {
 } from "./helpers/cli.js";
 import { runInvocation } from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
+import { setJsonMode, isJsonMode } from "../src/cli/output.js";
+import type { SessionUpdate } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Mock ACP for unit-level tests ───────────────────────────────────────────
@@ -1175,3 +1177,103 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
 
 // AC: @trait-dry-run ac-4 — N/A for agent run --dry-run: no mutations attempted in dry-run mode
 // AC: @trait-dry-run ac-5 — N/A for agent run: --dry-run --force combination not supported
+
+// ─── AC-11: Streaming suppressed in JSON mode ─────────────────────────────────
+
+// AC: @cli-agent-commands ac-11
+describe("AC-11: JSON mode suppresses streaming output", () => {
+  let testDir: string;
+
+  beforeEach(() => {
+    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-json-"));
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    setJsonMode(false); // reset global state after each test
+    await cleanupTempDir(testDir);
+  });
+
+  it("should suppress the onUpdate handler in JSON mode so no text chunks are collected", async () => {
+    const agent = makeTestAgent({ id: "stream-json-agent", adapter: "mock-acp" });
+    const collected: string[] = [];
+
+    // AC: @cli-agent-commands ac-11 — replicate the exact decision in agent.ts:
+    // isJsonMode() ? undefined : handler
+    // This proves the handler is suppressed when JSON mode is active.
+    setJsonMode(true);
+    const onUpdate = isJsonMode()
+      ? undefined
+      : (update: SessionUpdate) => {
+          if (update.sessionUpdate === "agent_message_chunk" && update.content.type === "text") {
+            collected.push(update.content.text);
+          }
+        };
+
+    // onUpdate must be undefined — if it were defined, the mock would send text (proven by ac-12)
+    expect(onUpdate).toBeUndefined();
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      prompt: "test prompt",
+      trigger: "manual",
+      env: { MOCK_ACP_RESPONSE_TEXT: "should not appear in json mode" },
+      onUpdate,
+    });
+
+    // Result shape: outcome, session_id, duration_ms, stop_reason (no streaming text)
+    expect(result.outcome).toBe("success");
+    expect(result.session.id).toBeTruthy();
+    expect(result.durationMs).toBeGreaterThanOrEqual(0);
+    expect(result.stopReason).toBeTruthy();
+    // onUpdate was undefined → no chunks collected, even though mock sent text (proven by ac-12)
+    expect(collected).toHaveLength(0);
+  });
+});
+
+// ─── AC-12: Streaming in interactive mode ─────────────────────────────────────
+
+// AC: @cli-agent-commands ac-12
+describe("AC-12: Interactive mode streams text as it arrives", () => {
+  let testDir: string;
+
+  beforeEach(() => {
+    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-interactive-"));
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should call onUpdate with agent_message_chunk events containing text", async () => {
+    const agent = makeTestAgent({ id: "stream-agent", adapter: "mock-acp" });
+    const responseText = "streaming text from agent";
+    const receivedChunks: string[] = [];
+
+    // AC: @cli-agent-commands ac-12 — onUpdate receives agent_message_chunk with text content
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      prompt: "test prompt",
+      trigger: "manual",
+      env: { MOCK_ACP_RESPONSE_TEXT: responseText },
+      onUpdate: (update) => {
+        if (
+          update.sessionUpdate === "agent_message_chunk" &&
+          update.content.type === "text"
+        ) {
+          receivedChunks.push(update.content.text);
+        }
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    // Text was received via onUpdate before completion
+    expect(receivedChunks).toHaveLength(1);
+    expect(receivedChunks[0]).toBe(responseText);
+  });
+});

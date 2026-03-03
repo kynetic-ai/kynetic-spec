@@ -19,6 +19,7 @@ import {
   loadMetaContext,
 } from "../../parser/index.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
+import type { SessionUpdate } from "../../acp/index.js";
 import { buildPromptWithSkills } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
@@ -358,6 +359,21 @@ export function registerAgentCommands(program: Command): void {
 
         console.log(chalk.gray(`Running agent "${agentId}"...`));
 
+        // AC: @cli-agent-commands ac-12 — stream text to stdout in interactive mode
+        // AC: @cli-agent-commands ac-11 — suppress streaming in --json mode
+        let didStream = false;
+        const onUpdate = isJsonMode()
+          ? undefined
+          : (update: SessionUpdate) => {
+              if (
+                update.sessionUpdate === "agent_message_chunk" &&
+                update.content.type === "text"
+              ) {
+                process.stdout.write(update.content.text);
+                didStream = true;
+              }
+            };
+
         // AC: @cli-agent-commands ac-3 - no task binding when --task not provided
         // Pass basePrompt (not fullPromptForPreview) — runInvocation expands skills internally
         const result = await runInvocation({
@@ -367,7 +383,11 @@ export function registerAgentCommands(program: Command): void {
           taskRef: taskRef ?? undefined,
           prompt: basePrompt,
           trigger: "manual",
+          onUpdate,
         });
+
+        // Ensure summary starts on its own line after streamed content
+        if (didStream) process.stdout.write("\n");
 
         output(
           {
