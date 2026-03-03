@@ -251,6 +251,9 @@ features:
             given: an explicit webUiDir option or WEB_UI_DIR env var or local packages/web-ui/build is present
             when: daemon starts
             then: the explicit or local path takes precedence over the bundled dist/web-ui/ fallback
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
