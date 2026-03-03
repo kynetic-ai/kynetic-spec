@@ -71119,7 +71119,7 @@
   type: task
   spec_ref: "@daemon-web-ui-bundle"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-daemon-server-mode"
@@ -71187,3 +71187,5 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-03T04:53:13.385Z
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
