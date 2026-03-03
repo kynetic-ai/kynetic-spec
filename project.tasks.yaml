@@ -71733,3 +71733,65 @@
   notes: []
   todos: []
   automation: manual_only
+- title: Evaluate and improve dispatch prompt for worker and reviewer agents
+  description: >-
+    When the dispatch engine fires an agent, the base prompt is either agent.prompt_template or
+    'Work on task @ref' (dispatch.ts:662). The skill content is then appended by
+    buildPromptWithSkills.
+
+
+    Evaluate whether this is sufficient context for the agent to orient itself, or whether the
+    dispatch prompt should include richer context such as:
+
+    - Task title and description
+
+    - Spec ref and AC summary
+
+    - Trigger event (task.ready vs task.needs_work) so agent knows if it is starting fresh or
+    handling a fix cycle
+
+    - For reviewer: the PR URL if already known
+
+
+    Suggested approach:
+
+    1. Run a real dispatch invocation (kspec agent run worker --task @some-eligible-task) and
+    observe behavior in session log
+
+    2. If agent struggles to orient: enrich the prompt template in dispatch.ts or add
+    prompt_template to worker/reviewer agent definitions in kynetic.meta.yaml
+
+    3. Consider whether prompt_template should support interpolation variables (e.g. {{task_ref}},
+    {{task_title}}, {{trigger}})
+
+
+    Relevant files:
+
+    - src/agent-runtime/dispatch.ts line 662 — prompt construction
+
+    - src/agent-runtime/prompts.ts — buildPromptWithSkills
+
+    - .kspec/kynetic.meta.yaml — worker/reviewer agent definitions (prompt_template field)
+
+
+    This is intentionally a manual evaluation task — run a real invocation first, then decide what
+    to fix.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - agent
+    - dx
+    - dispatch
+  depends_on: []
+  _ulid: 01KJS8V7THVJ8GRF1M6XVZH9FY
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-03T07:15:51.761Z
+  notes: []
+  todos: []
