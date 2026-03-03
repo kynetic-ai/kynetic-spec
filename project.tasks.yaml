@@ -72588,6 +72588,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #649. Added mutateTaskAtomically and switched task start/note to
+    latest-state atomic writes to prevent concurrent status/note lost updates; added regression
+    tests for concurrent mutation races. AC coverage for @agent-invocation-lifecycle remains covered
+    (with new ac-5 concurrency regression)."
   depends_on: []
   context: []
   priority: 2
@@ -72600,6 +72604,7 @@
   created_at: 2026-03-03T22:17:33.082Z
   started_at: 2026-03-03T22:49:52.539Z
   submitted_at: 2026-03-03T22:59:52.972Z
+  completed_at: 2026-03-03T23:15:55.170Z
   notes:
     - _ulid: 01KJTY9GHH3BWJ0XT4QTHQ5CVB
       created_at: 2026-03-03T22:49:53.969Z
@@ -72658,11 +72663,6 @@
         task (existing skill/ref/alignment warnings/errors).
       supersedes: null
   todos: []
-  completed_at: 2026-03-03T23:15:55.170Z
-  closed_reason: "Merged in PR #649. Added mutateTaskAtomically and switched task start/note to
-    latest-state atomic writes to prevent concurrent status/note lost updates; added regression
-    tests for concurrent mutation races. AC coverage for @agent-invocation-lifecycle remains covered
-    (with new ac-5 concurrency regression)."
 - _ulid: 01KJTYJ4GP0ATCCX1RRTEF4RR3
   slugs:
     - task-migrate-task-mutators-atomic
@@ -72675,7 +72675,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -72688,6 +72688,7 @@
   created_at: 2026-03-03T22:54:36.566Z
   notes: []
   todos: []
+  started_at: 2026-03-03T23:23:29.858Z
 - _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
   slugs:
     - task-atomic-plan-inbox-writes
