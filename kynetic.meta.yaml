@@ -7188,6 +7188,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJRSMRASSHD5DG8FVYFPG171
+    type: friction
+    content: "check-unresolved-comments CI check is triggered by push. If review threads are resolved
+      AFTER a push (not before), CI does not re-run automatically. Workaround: empty commit to
+      trigger fresh run. Correct order: resolve threads FIRST, then push code."
+    created_at: 2026-03-03T02:50:10.649Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJRSMREM5HV58J1NZFCAA2ZF
+    type: success
+    content: "GraphQL thread resolution + empty commit pattern worked for stale CI: (1) kspec task
+      submit → (2) resolve threads via GraphQL mutation → (3) push code or empty commit → (4) CI
+      re-runs with threads resolved. Resolving threads before push avoids needing the empty commit."
+    created_at: 2026-03-03T02:50:10.772Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
