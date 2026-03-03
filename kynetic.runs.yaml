@@ -11555,7 +11555,7 @@ runs:
   - _ulid: 01KJV1K736FZ3TY4ZWZ83EY0EF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-03T23:47:37.703Z
     step_results:
@@ -11577,5 +11577,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-03T23:48:50.002Z
-        completed_at: 2026-03-03T23:48:50.002Z
+        completed_at: 2026-03-03T23:48:56.415Z
+        notes: "Coverage check performed with kspec search: approve/own-PR/pr-review-loop queries had no
+          matches (untracked). workflow show active-run convenience query had no matches
+          (untracked). full npm test slowness is already tracked by observation @01KJJT519, so no
+          duplicate capture for that point."
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-03T23:48:56.415Z
+        completed_at: 2026-03-03T23:48:56.415Z
     initiated_by: Jacob Chapel
