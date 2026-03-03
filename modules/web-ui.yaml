@@ -239,6 +239,10 @@ features:
             given: npm run build is executed
             when: build completes
             then: packages/web-ui/build output is copied to dist/web-ui/ in the package
+          - id: ac-2
+            given: kspec is installed in a project with no local web UI build
+            when: daemon starts and resolves web UI path
+            then: resolveWebUiPath returns the bundled dist/web-ui/ path relative to the daemon module location
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
