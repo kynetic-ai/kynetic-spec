@@ -11555,7 +11555,7 @@ runs:
   - _ulid: 01KJV1K736FZ3TY4ZWZ83EY0EF
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-03T23:47:37.703Z
     step_results:
@@ -11570,5 +11570,12 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-03T23:48:45.466Z
-        completed_at: 2026-03-03T23:48:45.466Z
+        completed_at: 2026-03-03T23:48:50.002Z
+        notes: "Friction points: (1) pr-review attempted GitHub APPROVE on a self-authored PR and the API
+          rejected it, creating avoidable noise and fallback handling; (2) workflow UX
+          friction:  requires run-ref even when there is exactly one active workflow run."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-03T23:48:50.002Z
+        completed_at: 2026-03-03T23:48:50.002Z
     initiated_by: Jacob Chapel
