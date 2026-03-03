@@ -156,6 +156,45 @@ describe('getSessionLogSummary', () => {
     expect(summary!.tasks_completed).toBe(2);
     expect(summary!.event_count).toBe(3); // session.start + 2 tool_call updates
   });
+
+  // AC: @session-log-list ac-1 (claude-agent-acp: commands in tool_call_update events)
+  it('should count task completions from tool_call_update events (claude-agent-acp format)', async () => {
+    const sessionId = testUlid('SESS', 3);
+    await createSession(testDir, { id: sessionId, agent_type: 'claude-agent-acp' });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    // claude-agent-acp: initial tool_call has empty rawInput, command arrives in tool_call_update
+    const emptyToolCall = JSON.stringify({
+      ts: Date.now(), seq: 1, type: 'session.update', session_id: sessionId,
+      data: { update: { sessionUpdate: 'tool_call', rawInput: {}, toolCallId: 'tc-1' } },
+    });
+    await fs.appendFile(eventsPath, emptyToolCall + '\n');
+    const populatedUpdate = JSON.stringify({
+      ts: Date.now(), seq: 2, type: 'session.update', session_id: sessionId,
+      data: { update: { sessionUpdate: 'tool_call_update', rawInput: { command: 'kspec task complete @my-task --reason "Done"', description: 'Complete task' }, toolCallId: 'tc-1' } },
+    });
+    await fs.appendFile(eventsPath, populatedUpdate + '\n');
+
+    const summary = await getSessionLogSummary(testDir, sessionId);
+    expect(summary!.tasks_completed).toBe(1);
+  });
+
+  // AC: @session-log-list ac-1 (codex-acp: command is array in tool_call events)
+  it('should count task completions from array commands (codex-acp format)', async () => {
+    const sessionId = testUlid('SESS', 4);
+    await createSession(testDir, { id: sessionId, agent_type: 'codex-acp' });
+
+    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    // codex-acp: command is ['/usr/bin/bash', '-lc', 'kspec task complete @ref']
+    const arrayCommandEvent = JSON.stringify({
+      ts: Date.now(), seq: 1, type: 'session.update', session_id: sessionId,
+      data: { update: { sessionUpdate: 'tool_call', rawInput: { command: ['/usr/bin/bash', '-lc', 'kspec task complete @my-task'] } } },
+    });
+    await fs.appendFile(eventsPath, arrayCommandEvent + '\n');
+
+    const summary = await getSessionLogSummary(testDir, sessionId);
+    expect(summary!.tasks_completed).toBe(1);
+  });
 });
 
 describe('getAllSessionLogSummaries', () => {
