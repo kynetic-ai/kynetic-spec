@@ -10890,7 +10890,7 @@ runs:
   - _ulid: 01KJTQGQBNTVYCR3GDF8TYEJY1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-03T20:51:30.294Z
     step_results:
@@ -10905,5 +10905,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-03T20:51:54.312Z
-        completed_at: 2026-03-03T20:51:54.312Z
+        completed_at: 2026-03-03T20:51:58.279Z
+        notes: "Friction points: (1) non-actionable adapter stderr (rate_limit_event) leaks into normal
+          agent-run output and degrades UX; (2) agent_message_chunk stream ordering is unstable
+          under concurrent async event appends, producing garbled text and duplicated/non-monotonic
+          seq values in session events."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-03T20:51:58.279Z
+        completed_at: 2026-03-03T20:51:58.279Z
     initiated_by: Jacob Chapel
