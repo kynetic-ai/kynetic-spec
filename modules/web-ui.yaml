@@ -230,6 +230,10 @@ features:
         traits: []
         notes: []
         created: 2026-03-03T04:39:13.036Z
+        description: The kspec npm package bundles the pre-built web UI static assets so the daemon can
+          serve the web UI when installed in any project, without requiring a local web UI build.
+          The build pipeline copies packages/web-ui/build to dist/web-ui/, and resolveWebUiPath
+          falls back to that location relative to the daemon module.
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
