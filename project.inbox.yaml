@@ -1333,3 +1333,20 @@ inbox:
       - observability
       - idea
     added_by: "@claude"
+  - _ulid: 01KJTBNHYM8CTAG9Q9SWY87W2M
+    text: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe for
+      concurrent multi-project agent dispatch. invocation.ts saves/restores KSPEC_SESSION_ID in
+      finally, and the per-engine mutex serializes within a project — but two projects running
+      agents concurrently both mutate the same process-level env var. The injectEnvForAdapter() path
+      (writing to .claude/settings.local.json etc.) largely mitigates this in practice, but the
+      process.env mutation remains as a race vector. Fix: either remove the process.env mutation
+      entirely (rely solely on adapter config injection + spawn env), or add a process-level lock
+      around the env mutation window."
+    created_at: 2026-03-03T17:24:25.685Z
+    tags:
+      - bug
+      - agent
+      - dispatch
+      - multi-project
+      - concurrency
+    added_by: "@claude"
