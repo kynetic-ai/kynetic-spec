@@ -1299,3 +1299,23 @@ inbox:
       - agent
       - dispatch
     added_by: "@claude"
+  - _ulid: 01KJTB75HJSW19JMBHTE4390HQ
+    text: Add branch check warning to kspec task start — when current branch is not main and does not
+      match the task slug, warn the agent. Would catch starting work on the wrong branch without a
+      manual git branch check.
+    created_at: 2026-03-03T17:16:34.226Z
+    tags:
+      - cli
+      - ux
+      - reflection
+    added_by: "@claude"
+  - _ulid: 01KJTB75K1532350ZAG271VC3X
+    text: Document acp-mock.js bidirectional RPC pattern in testing conventions — the
+      MOCK_ACP_SEND_PERMISSION_REQUEST env var and the pending-requests map pattern for agent→client
+      requests. Prevents future developers rediscovering this from scratch.
+    created_at: 2026-03-03T17:16:34.273Z
+    tags:
+      - testing
+      - docs
+      - reflection
+    added_by: "@claude"
