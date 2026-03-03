@@ -964,15 +964,6 @@ inbox:
       - cli
       - reflection
     added_by: "@claude"
-  - _ulid: 01KJDXC04W8C4JMCKD7KX78TXA
-    text: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when child
-      process pipe is dead during shutdown. Should catch EPIPE and treat as connection-closed.
-      Currently requires process-level uncaughtException handlers in tests that spawn/kill agents.
-    created_at: 2026-02-26T21:23:39.292Z
-    tags:
-      - bug
-      - acp
-    added_by: "@claude"
   - _ulid: 01KJDZBAH3SPDFYWC8KX90P6TR
     text: "Add second mock adapter registration for ralph tests. Currently --adapter-cmd registers a
       single 'custom' adapter, making it impossible to test different adapter IDs in real

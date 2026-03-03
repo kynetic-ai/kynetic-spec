@@ -71228,12 +71228,11 @@
   created_at: 2026-03-03T06:43:17.421Z
   notes: []
   todos: []
-- title: Shadow branch auto-push silently swallows failures — fire-and-forget push
+- _ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
+  slugs: []
+  title: Shadow branch auto-push silently swallows failures — fire-and-forget push
     (shadow.ts:1159-1164) uses
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Shadow branch auto-push silently swallows failures — fire-and-forget push
     (shadow.ts:1159-1164) uses spawn with stdio:ignore and detached:true, making divergence errors
     completely invisible. In a 4-hour ralph container session, 50+ commits accumulated locally with
@@ -71248,13 +71247,34 @@
     regardless — this is about VISIBILITY of sync failures, not blocking commits. Related: the merge
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
-  _ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-03T06:43:19.153Z
+  notes: []
+  todos: []
+- title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
+    child proce
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
+    when child process pipe is dead during shutdown. Should catch EPIPE and treat as
+    connection-closed. Currently requires process-level uncaughtException handlers in tests that
+    spawn/kill agents.
+  _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T06:43:19.153Z
+  created_at: 2026-03-03T06:43:20.809Z
   notes: []
   todos: []
