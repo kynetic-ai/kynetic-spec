@@ -71564,6 +71564,7 @@
   created_at: 2026-03-03T07:07:09.433Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS8BAWP2WNCD003DQX75GKY
   slugs: []
   title: Deprecate kspec ralph — show migration message pointing to kspec agent
@@ -71588,6 +71589,7 @@
   created_at: 2026-03-03T07:07:10.614Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS8BC1W5Y4Z2Y23GQSD4EFS
   slugs: []
   title: kspec setup seeds built-in worker and reviewer agent definitions
@@ -71615,6 +71617,7 @@
   created_at: 2026-03-03T07:07:11.804Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS8BD53N1Z14PPWJ4B0B7N7
   slugs: []
   title: Replace 06-ralph-loop.md template with agent dispatch documentation
@@ -71639,6 +71642,7 @@
   created_at: 2026-03-03T07:07:12.931Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS8BEAE9ADEY2HGWDRFGVDK
   slugs: []
   title: Migrate ralph tests to agent runtime equivalents
@@ -71664,6 +71668,7 @@
   created_at: 2026-03-03T07:07:14.126Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KJS8BFDFFNC3PVTNHRRPZSVZ
   slugs: []
   title: Update workflows to remove ralph references and use agent dispatch concepts
@@ -71687,27 +71692,29 @@
   created_at: 2026-03-03T07:07:15.247Z
   notes: []
   todos: []
-- title: Update skills to reference agent runtime instead of ralph
+  automation: manual_only
+- _ulid: 01KJS8BGJA457W8X7F28MWFYBP
+  slugs: []
+  title: Update skills to reference agent runtime instead of ralph
+  type: task
   description: "Skills kspec:task-work, codex, eval-agents, pr-review still reference kspec ralph
     commands. Per @ralph-replacement ac-5, update to reference kspec agent commands and agent
     dispatch concepts. Core skills in templates/skills/, project skills in .kspec/skills/. Run kspec
     skill render after. Spec AC: @ralph-replacement ac-5"
-  type: task
   spec_ref: "@ralph-replacement"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - docs
     - skills
     - ralph
-  depends_on: []
-  _ulid: 01KJS8BGJA457W8X7F28MWFYBP
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T07:07:16.426Z
   notes: []
   todos: []
+  automation: manual_only
