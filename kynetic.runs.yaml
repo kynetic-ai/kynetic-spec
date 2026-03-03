@@ -11359,7 +11359,7 @@ runs:
   - _ulid: 01KJTTFW8CVJX39ACNB0K0E9V1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-03T21:43:28.269Z
     step_results:
@@ -11373,5 +11373,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-03T21:44:39.758Z
-        completed_at: 2026-03-03T21:44:39.758Z
+        completed_at: 2026-03-03T21:44:43.441Z
+        notes: "Friction points: (1) stale KSPEC_SESSION_ID in shell triggered task-budget guard outside
+          active loop context, requiring repeated env -u workaround; (2) project-level kspec
+          validate baseline is noisy (duplicate @observations slug + missing observations skill file
+          + broad alignment/completeness warnings), reducing confidence signal for task-scoped
+          validation."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-03T21:44:43.441Z
+        completed_at: 2026-03-03T21:44:43.441Z
     initiated_by: Jacob Chapel
