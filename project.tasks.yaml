@@ -71571,6 +71571,13 @@
         automation:eligible filter. Reviewer: task.pending_review. This task still needed to add CLI
         flag support."
       supersedes: null
+    - _ulid: 01KJS8RV6V9KG4Y1E63ZFFHQPZ
+      created_at: 2026-03-03T07:14:33.307Z
+      author: "@claude"
+      content: "Fixed worker skill slug: kspec-task-work -> task-work. Runtime resolves from
+        .kspec/skills/<id>/SKILL.md so bare slug is required, not the kspec- prefixed rendered name.
+        Also need --remove-skill on meta set (no way to remove skills via CLI currently)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BAWP2WNCD003DQX75GKY
