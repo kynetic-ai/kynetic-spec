@@ -70751,6 +70751,26 @@
         covered indirectly, ac-4/5 are config-only changes, ac-7 is a deletion — all need either
         annotations or N/A declarations. See PR #640 review comment."
       supersedes: null
+    - _ulid: 01KJRRSCWQMSM5BJAQQR73J67S
+      created_at: 2026-03-03T02:35:14.199Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 4] Addressed cycle 3 findings:
+
+        SHOULD-FIX:
+
+        1. Ran kspec skill render for task-work skill (was missed in cycle 2) —
+        .agents/skills/kspec-task-work/SKILL.md now shows 'agent dispatch exits automatically'
+        instead of 'ralph auto-exits'
+
+        2. Added N/A declarations for @trait-error-guidance ac-3, ac-4, ac-5, ac-6 (ralph stub has
+        no ref lookups, state transitions, field validation, or --json mode)
+
+        3. Added coverage annotations for own ac-3 (covered by dispatch rule tests), ac-4/5
+        (config-only, N/A), ac-7 (deletion, N/A)
+
+        All review threads resolved.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
