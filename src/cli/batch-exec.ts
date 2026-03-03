@@ -8,7 +8,6 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import * as os from "node:os";
 import chalk from "chalk";
 import type { Command, CommanderError } from "commander";
 import { ZodError } from "zod";
@@ -35,6 +34,10 @@ import {
   setBatchMode,
   isBatchMode,
 } from "./batch-context.js";
+import {
+  activateBatchBuffer,
+  deactivateBatchBuffer,
+} from "./batch-write-buffer.js";
 
 // ── Input Source Types ───────────────────────────────────────────────
 
@@ -622,12 +625,21 @@ export async function executeBatch(
 }
 
 /**
- * Atomic execution: copy specDir to temp, run all, copy back on success.
+ * Atomic execution: buffer all writes in memory, flush to disk on success.
+ *
+ * Replaces the old fs.cp(realSpecDir, tempDir) approach with an in-memory
+ * write buffer. Writes during batch execution are intercepted by yaml.ts and
+ * stored in the buffer. On success, the buffer is flushed to the real specDir.
+ * On failure, the buffer is discarded — the real .kspec/ is never touched.
  *
  * AC: @batch-exec ac-default-atomic
  * AC: @batch-exec ac-atomic-rollback
  * AC: @batch-exec ac-atomic-isolation
  * AC: @batch-exec ac-single-commit
+ * AC: @batch-write-buffer ac-1 — writes buffered in memory, not on disk
+ * AC: @batch-write-buffer ac-4 — rollback discards buffer
+ * AC: @batch-write-buffer ac-5 — sessions/ never copied (buffer is per-file)
+ * AC: @batch-write-buffer ac-6 — real .kspec/ unchanged until flush
  */
 async function executeAtomic(
   commands: BatchCommand[],
@@ -635,30 +647,23 @@ async function executeAtomic(
   tree: CommandMeta,
   options: ExecuteBatchOptions,
 ): Promise<BatchExecResult> {
-  // Get the real context for copy-back
   const ctx = await initContext();
   const realSpecDir = ctx.specDir;
 
-  // Create temp copy using mkdtemp for safe, collision-free naming
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-batch-"));
-  await fs.cp(realSpecDir, tempDir, { recursive: true });
-
-  // Remove .git from temp copy to prevent worktree pointer leaks
-  await fs.rm(path.join(tempDir, ".git"), { force: true, recursive: true });
+  // Activate in-memory write buffer — writes to specDir go to buffer
+  const buffer = activateBatchBuffer(realSpecDir);
 
   // Set up atomic context
   const savedChalkLevel = chalk.level;
-  const savedSpecDir = process.env.KSPEC_SPEC_DIR;
   const savedBatchProjectRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
-  // AC: @project-config ac-7 — set real project root before redirecting spec dir
+  // AC: @project-config ac-7 — set real project root for config resolution
   process.env.KSPEC_BATCH_PROJECT_ROOT = ctx.rootDir;
-  process.env.KSPEC_SPEC_DIR = tempDir;
   setBatchMode(true);
   chalk.level = 0;
 
   const results: BatchCommandResult[] = [];
   let allSucceeded = true;
-  let copyBackFailed = false;
+  let flushFailed = false;
 
   try {
     for (let i = 0; i < commands.length; i++) {
@@ -668,7 +673,7 @@ async function executeAtomic(
 
       if (!result.success) {
         allSucceeded = false;
-        // Atomic mode: stop on first failure, discard everything
+        // Atomic mode: stop on first failure, discard buffer
         // Fill remaining as not-executed
         for (let j = i + 1; j < commands.length; j++) {
           results.push({
@@ -683,24 +688,12 @@ async function executeAtomic(
       }
     }
 
-    // Copy back on success
+    // Flush buffer to disk on success
+    // AC: @batch-write-buffer ac-3 — only written files flushed
+    // AC: @batch-write-buffer ac-7 — flush failure reported, pre-batch state preserved
     if (allSucceeded) {
       try {
-        // Clear real specDir contents (except .git and .gitattributes) before copy-back
-        const entries = await fs.readdir(realSpecDir);
-        for (const entry of entries) {
-          if (entry === ".git" || entry === ".gitattributes") continue;
-          await fs.rm(path.join(realSpecDir, entry), { recursive: true, force: true });
-        }
-        // Copy temp contents back
-        const tempEntries = await fs.readdir(tempDir);
-        for (const entry of tempEntries) {
-          await fs.cp(
-            path.join(tempDir, entry),
-            path.join(realSpecDir, entry),
-            { recursive: true },
-          );
-        }
+        await buffer.flush();
 
         // Single shadow commit for all changes
         if (ctx.shadow?.enabled) {
@@ -711,34 +704,28 @@ async function executeAtomic(
           );
           shadowPushAsync(ctx.shadow.worktreeDir);
         }
-      } catch (copyErr) {
-        // Copy-back failed — preserve tempDir for manual recovery
-        copyBackFailed = true;
+      } catch (flushErr) {
+        flushFailed = true;
         allSucceeded = false;
         console.error(
-          `Batch copy-back failed: ${copyErr instanceof Error ? copyErr.message : copyErr}`,
+          `Batch flush failed: ${flushErr instanceof Error ? flushErr.message : flushErr}`,
         );
-        console.error(`Temp dir preserved for recovery: ${tempDir}`);
       }
     }
   } finally {
-    // Clean up
+    // Always deactivate buffer (discard if not flushed)
+    if (!allSucceeded || flushFailed) {
+      buffer.discard();
+    }
+    deactivateBatchBuffer();
+
     setBatchMode(false);
     chalk.level = savedChalkLevel;
-    if (savedSpecDir !== undefined) {
-      process.env.KSPEC_SPEC_DIR = savedSpecDir;
-    } else {
-      delete process.env.KSPEC_SPEC_DIR;
-    }
     // AC: @project-config ac-7 — restore batch project root env var
     if (savedBatchProjectRoot !== undefined) {
       process.env.KSPEC_BATCH_PROJECT_ROOT = savedBatchProjectRoot;
     } else {
       delete process.env.KSPEC_BATCH_PROJECT_ROOT;
-    }
-    // Only remove temp dir if copy-back succeeded (or commands failed)
-    if (!copyBackFailed) {
-      await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
     }
   }
 

@@ -1675,8 +1675,13 @@ async function countIterations(
  * Count task completions by scanning events for tool calls that invoke
  * `kspec task complete` or `npm run dev -- task complete`.
  *
- * Real sessions record task completions as session.update events with
- * sessionUpdate: "tool_call" and rawInput.command containing the complete command.
+ * Handles multiple adapter formats:
+ * - claude-code-acp: rawInput.command is a string in tool_call_update events
+ * - claude-agent-acp: rawInput.command is a string in tool_call_update events
+ *   (initial tool_call event has empty rawInput {})
+ * - codex-acp: rawInput.command is an array ['/usr/bin/bash', '-lc', 'kspec task complete @ref']
+ *   in tool_call events; actual command is at index 2
+ *
  * We use a fast substring check before JSON parsing for performance.
  */
 async function countTaskCompletions(
@@ -1692,11 +1697,16 @@ async function countTaskCompletions(
     for (const line of lines) {
       // Quick substring pre-filter: only parse lines that might contain task complete commands
       if (!line.includes("task complete")) continue;
-      // Must be a tool_call event (session.update with sessionUpdate: "tool_call")
-      if (!line.includes('"tool_call"')) continue;
       try {
         const event = JSON.parse(line);
-        const command = event?.data?.update?.rawInput?.command;
+        const rawCommand = event?.data?.update?.rawInput?.command;
+        // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
+        const command =
+          typeof rawCommand === "string"
+            ? rawCommand
+            : Array.isArray(rawCommand) && rawCommand.length > 0
+              ? rawCommand[rawCommand.length - 1]
+              : undefined;
         if (typeof command === "string" && /\btask complete\b/.test(command)) {
           count++;
         }
@@ -2010,10 +2020,17 @@ function extractTaskTransitions(events: SessionEvent[]): {
       const data = event.data as {
         update?: {
           sessionUpdate?: string;
-          rawInput?: { command?: string };
+          rawInput?: { command?: string | string[] };
         };
       } | null;
-      const command = data?.update?.rawInput?.command;
+      const rawCommand = data?.update?.rawInput?.command;
+      // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
+      const command =
+        typeof rawCommand === "string"
+          ? rawCommand
+          : Array.isArray(rawCommand) && rawCommand.length > 0
+            ? rawCommand[rawCommand.length - 1]
+            : undefined;
       if (typeof command === "string") {
         if (/\btask start\b/.test(command)) {
           const ref = extractTaskRef(command);

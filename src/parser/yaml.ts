@@ -4,6 +4,7 @@ import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
 import { withFileLock } from "./file-lock.js";
+import { getActiveBatchBuffer } from "../cli/batch-write-buffer.js";
 import {
   InboxFileSchema,
   type InboxItem,
@@ -133,6 +134,20 @@ export function toYaml(obj: unknown): string {
  * Read and parse a YAML file
  */
 export async function readYamlFile<T>(filePath: string): Promise<T> {
+  // AC: @batch-write-buffer ac-2 — check buffer first for read-after-write consistency
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    const buffered = buffer.read(filePath);
+    if (buffered !== undefined) {
+      if (buffered === null) {
+        // File was deleted in this batch
+        throw Object.assign(new Error(`ENOENT: no such file or directory, open '${filePath}'`), {
+          code: "ENOENT",
+        });
+      }
+      return parseYaml<T>(buffered);
+    }
+  }
   const content = await fs.readFile(filePath, "utf-8");
   return parseYaml<T>(content);
 }
@@ -145,6 +160,12 @@ export async function writeYamlFile(
   data: unknown,
 ): Promise<void> {
   const content = toYaml(data);
+  // AC: @batch-write-buffer ac-1 — buffer write if in batch mode
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    buffer.write(filePath, content);
+    return;
+  }
   await fs.writeFile(filePath, content, "utf-8");
 }
 
@@ -160,6 +181,12 @@ export async function writeYamlFilePreserveFormat(
   data: unknown,
 ): Promise<void> {
   const content = toYaml(data);
+  // AC: @batch-write-buffer ac-1 — buffer write if in batch mode
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    buffer.write(filePath, content);
+    return;
+  }
   await fs.writeFile(filePath, content, "utf-8");
 }
 
