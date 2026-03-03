@@ -6486,6 +6486,11 @@ features:
         when: The daemon is not running
         then: An error message explains the daemon must be running and suggests kspec serve to start it;
           exits with code 3
+      - id: ac-16
+        given: kspec agent dispatch watch is run with --agent <name> or --session <id>
+        when: Output arrives from multiple concurrent invocations
+        then: Only output matching the specified agent name or session ID is shown; unmatched chunks are
+          silently dropped
     depends_on: []
     implements: []
     relates_to: []
