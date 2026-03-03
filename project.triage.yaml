@@ -1002,47 +1002,47 @@ triage:
   - _ulid: 01KJ4SZJEJC4Z6KTSBEZ1PACQ1
     inbox_ref: 01KHWWM9CW2H4F94BXKNJ127EA
     item_snapshot: "CLI DX: accept tags as alias for tag in batch commands"
-    status: acted_on
-    action: defer
-    reasoning: "Nice-to-have: CLI DX accept tags as alias for tag in batch. Quick fix when touching batch."
+    status: triaged
+    action: promote
+    reasoning: "Small CLI DX: accept tags as alias for tag in batch commands. Tiny, well-scoped.
+      Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.704Z
     created_at: 2026-02-23T08:31:16.434Z
-    updated_at: 2026-02-23T08:31:28.714Z
+    updated_at: 2026-03-03T06:43:07.854Z
   - _ulid: 01KJ4SZJFKCZ62JK5Z7ZZ3SGCG
     inbox_ref: 01KHWWMANX9JFMPRK9TWM2PDQE
     item_snapshot: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
-    status: acted_on
-    action: defer
-    reasoning: "Nice-to-have: CLI DX accept spec_ref as alias for spec-ref in batch. Quick fix."
+    status: triaged
+    action: promote
+    reasoning: "Small CLI DX: accept spec_ref as alias for spec-ref in batch commands. Tiny,
+      well-scoped. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.669Z
     created_at: 2026-02-23T08:31:16.467Z
-    updated_at: 2026-02-23T08:31:28.678Z
+    updated_at: 2026-03-03T06:43:07.932Z
   - _ulid: 01KJ4SZJGB553H18AY8DZREF4Z
     inbox_ref: 01KHWWMC2P592NMM8N63TDGZ0Q
     item_snapshot: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
-    status: acted_on
-    action: defer
-    reasoning: "Nice-to-have: CLI DX accept P1/P2/P3 format for priority in batch. Quick fix."
+    status: triaged
+    action: promote
+    reasoning: "Small CLI DX: accept P1/P2/P3 as alias for numeric priority. Aligns docs with CLI usage.
+      Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.640Z
     created_at: 2026-02-23T08:31:16.491Z
-    updated_at: 2026-02-23T08:31:28.650Z
+    updated_at: 2026-03-03T06:43:08.008Z
   - _ulid: 01KJ4SZJH467QW0CKV7GCJJWC3
     inbox_ref: 01KHWWMDCV6NBYK8D8EMYBZEPV
     item_snapshot: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
-    status: acted_on
-    action: defer
-    reasoning: "Nice-to-have: CLI DX add --description flag to task set. Quick win when touching task set."
+    status: triaged
+    action: promote
+    reasoning: Missing --description flag on task set is a friction point. Small, well-scoped CLI
+      addition. Automation eligible.
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.610Z
     created_at: 2026-02-23T08:31:16.516Z
-    updated_at: 2026-02-23T08:31:28.622Z
+    updated_at: 2026-03-03T06:43:07.433Z
   - _ulid: 01KJ4SZJHXJEMH8ZM7HQ6KBRTP
     inbox_ref: 01KJ0K9CEX5EJYT9YYA9D04GX7
     item_snapshot: "inbox promote missing --slug option: cannot set task slug during promotion, must use
@@ -1524,10 +1524,10 @@ triage:
     reasoning: "Bug: WebSocket unreliable, disconnects/reconnects. Needs investigation."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-26T19:02:52.168Z
-    updated_at: 2026-02-26T19:33:05.310Z
     acted_at: 2026-02-26T19:33:05.296Z
     result_ref: "@01KJDQ1GZ"
+    created_at: 2026-02-26T19:02:52.168Z
+    updated_at: 2026-02-26T19:33:05.310Z
   - _ulid: 01KJDNA725H4FZMFZH92R3ADM7
     inbox_ref: 01KJ4TETP5C44S2YDBCR1P3075
     item_snapshot: "Web UI triage page: add filter controls for triage action types (promote, delete,
@@ -1708,15 +1708,14 @@ triage:
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
       fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling
       batch with empty string arg.
-    status: acted_on
+    status: triaged
     action: promote
-    reasoning: "Bug: batch --commands '' hangs on stdin. Caused ralph loop to get stuck."
+    reasoning: "Bug: empty --commands string hangs instead of failing fast. Simple guard at arg parse
+      time. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-26T19:32:56.998Z
-    result_ref: "@01KJDQ18"
     created_at: 2026-02-26T19:02:52.598Z
-    updated_at: 2026-02-26T19:32:57.017Z
+    updated_at: 2026-03-03T06:43:07.610Z
   - _ulid: 01KJDNA7EJT5VVGV2W3DM9R5HR
     inbox_ref: 01KJ76Y81G54ASMF0A18Z5G35Y
     item_snapshot: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering
@@ -2134,3 +2133,94 @@ triage:
     acted_at: 2026-02-26T19:32:45.916Z
     created_at: 2026-02-26T19:02:53.473Z
     updated_at: 2026-02-26T19:32:45.935Z
+  - _ulid: 01KJS6Z99YDKCXMXY41AN7EKY4
+    inbox_ref: 01KJS1XVF32VNP2P1E7ZEKYDC9
+    item_snapshot: "kspec validate --json appends human-readable summary text after JSON payload,
+      causing invalid JSON for downstream jq parsing. Expected: pure JSON when --json is set.
+      Workaround: pipe through head or sed to strip trailing text. Reported from imgen project."
+    status: triaged
+    action: promote
+    reasoning: "Bug breaking automation: --json appends human-readable text after JSON payload, making
+      jq parsing fail. Clear fix, automation eligible."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-03T06:43:07.198Z
+    updated_at: 2026-03-03T06:43:07.232Z
+  - _ulid: 01KJS6Z9DE1HK35729ADS9EMXB
+    inbox_ref: 01KJS1XVJEAFZ5F9KNSRHZ92ZS
+    item_snapshot: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but
+      returns non-zero when only warnings present (e.g., exit 6). Downstream automation cant
+      distinguish warnings-only from real failures. Add explicit mode/flag for
+      warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
+      imgen project."
+    status: triaged
+    action: promote
+    reasoning: "Bug breaking automation: non-zero exit even when only warnings present. Ambiguous exit
+      codes prevent reliable CI automation. Clear fix, automation eligible."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-03T06:43:07.310Z
+    updated_at: 2026-03-03T06:43:07.341Z
+  - _ulid: 01KJS6Z9KCGMWNFJP8KRJM86E0
+    inbox_ref: 01KJGAE24345STWVS3RMKNC838
+    item_snapshot: "task set --description: task set has no --description option, making it impossible
+      to update task descriptions after creation. Workaround: add detailed task notes. Came up when
+      plan-derived task had null description and needed standalone context for automation."
+    status: triaged
+    action: duplicate
+    reasoning: Duplicate of 01KHWWMDCV6NBYK8D8EMYBZEPV (task set --description missing flag).
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-03T06:43:07.500Z
+    updated_at: 2026-03-03T06:43:07.524Z
+  - _ulid: 01KJS6Z9RYRR1KQ40SVQVFT2CN
+    inbox_ref: 01KJDXC04W8C4JMCKD7KX78TXA
+    item_snapshot: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
+      when child process pipe is dead during shutdown. Should catch EPIPE and treat as
+      connection-closed. Currently requires process-level uncaughtException handlers in tests that
+      spawn/kill agents.
+    status: triaged
+    action: promote
+    reasoning: "Crash bug: uncaught EPIPE in ACP framing layer. Specific file (src/acp/framing.ts),
+      straightforward error handling fix. Automation eligible."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-03T06:43:07.678Z
+    updated_at: 2026-03-03T06:43:07.711Z
+  - _ulid: 01KJS6Z9VNAWSJ3TCKN508JXJC
+    inbox_ref: 01KJKC9TKVE2Z4B74A0AMBJNHE
+    item_snapshot: "Shadow branch auto-push silently swallows failures — fire-and-forget push
+      (shadow.ts:1159-1164) uses spawn with stdio:ignore and detached:true, making divergence errors
+      completely invisible. In a 4-hour ralph container session, 50+ commits accumulated locally
+      with no indication pushes were failing. The push fails because host and container both commit
+      to kspec-meta concurrently, causing divergence on the first push attempt, and every subsequent
+      auto-push also fails silently. Fix should: (1) capture push exit code even in fire-and-forget
+      mode (spawn with stdio:pipe, read stderr, unref after), (2) on push failure, log warning to
+      stderr so it appears in agent output and JSON mode, (3) consider returning a result from
+      autoCommit/shadowPush indicating push status so callers can surface it (e.g. kspec batch could
+      include push_failed:true in response), (4) on repeated failures, escalate visibility — e.g.
+      after 3 consecutive push failures, emit a prominent warning. The local commit always succeeds
+      regardless — this is about VISIBILITY of sync failures, not blocking commits. Related: the
+      merge driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path
+      works — the problem is purely that nobody knows recovery is needed."
+    status: triaged
+    action: promote
+    reasoning: "Reliability bug: shadow auto-push silently swallows failures. Fire-and-forget spawn
+      drops errors. Specific location (shadow.ts:1159-1164). Automation eligible."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-03T06:43:07.765Z
+    updated_at: 2026-03-03T06:43:07.784Z
+  - _ulid: 01KJS6ZA4TVKXA6ZHKFR0DSY5V
+    inbox_ref: 01KJRT6KR1T8P1A7N4XGAPMTQS
+    item_snapshot: "eval-agents/SKILL.md line 144: scenario table label still reads Ralph continuation —
+      scenario content was updated in PR #640 but table label was not. Update to Agent dispatch
+      continuation."
+    status: triaged
+    action: promote
+    reasoning: "Tiny doc fix: eval-agents/SKILL.md line 144 has stale scenario table label. One-liner
+      change. Automation eligible."
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-03T06:43:08.059Z
+    updated_at: 2026-03-03T06:43:08.082Z
