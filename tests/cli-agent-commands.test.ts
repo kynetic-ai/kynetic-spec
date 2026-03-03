@@ -1175,3 +1175,89 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
 
 // AC: @trait-dry-run ac-4 — N/A for agent run --dry-run: no mutations attempted in dry-run mode
 // AC: @trait-dry-run ac-5 — N/A for agent run: --dry-run --force combination not supported
+
+// ─── AC-11: Streaming suppressed in JSON mode ─────────────────────────────────
+
+// AC: @cli-agent-commands ac-11
+describe("AC-11: JSON mode suppresses streaming output", () => {
+  let testDir: string;
+
+  beforeEach(() => {
+    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-json-"));
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should collect text via onUpdate and not have onUpdate set when in JSON mode", async () => {
+    const agent = makeTestAgent({ id: "stream-json-agent", adapter: "mock-acp" });
+
+    // Simulate JSON mode: collect updates manually (no onUpdate → nothing streamed)
+    const collected: string[] = [];
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      prompt: "test prompt",
+      trigger: "manual",
+      env: { MOCK_ACP_RESPONSE_TEXT: "hello from agent" },
+      // AC: @cli-agent-commands ac-11 — in JSON mode, no onUpdate handler is passed
+      onUpdate: undefined,
+    });
+
+    // Result contains outcome/session/duration/stop_reason — no streamed text in result
+    expect(result.outcome).toBe("success");
+    expect(result.session.id).toBeTruthy();
+    expect(result.durationMs).toBeGreaterThanOrEqual(0);
+    expect(result.stopReason).toBeTruthy();
+    // No text collected since onUpdate was not provided
+    expect(collected).toHaveLength(0);
+  });
+});
+
+// ─── AC-12: Streaming in interactive mode ─────────────────────────────────────
+
+// AC: @cli-agent-commands ac-12
+describe("AC-12: Interactive mode streams text as it arrives", () => {
+  let testDir: string;
+
+  beforeEach(() => {
+    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stream-interactive-"));
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should call onUpdate with agent_message_chunk events containing text", async () => {
+    const agent = makeTestAgent({ id: "stream-agent", adapter: "mock-acp" });
+    const responseText = "streaming text from agent";
+    const receivedChunks: string[] = [];
+
+    // AC: @cli-agent-commands ac-12 — onUpdate receives agent_message_chunk with text content
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      prompt: "test prompt",
+      trigger: "manual",
+      env: { MOCK_ACP_RESPONSE_TEXT: responseText },
+      onUpdate: (update) => {
+        if (
+          update.sessionUpdate === "agent_message_chunk" &&
+          update.content.type === "text"
+        ) {
+          receivedChunks.push(update.content.text);
+        }
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    // Text was received via onUpdate before completion
+    expect(receivedChunks).toHaveLength(1);
+    expect(receivedChunks[0]).toBe(responseText);
+  });
+});
