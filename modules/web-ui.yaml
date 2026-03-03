@@ -203,6 +203,11 @@ features:
             then: |
               The event emission POST fails silently with no error to the
               user — dispatch requires a running daemon
+          - id: ac-8
+            given: The dispatch engine runs an agent invocation
+            when: The agent produces text output (agent_message_chunk events)
+            then: The daemon broadcasts each text chunk on the agents WebSocket topic with type
+              agent_text_chunk, session_id, agent_id, task_id, text, and timestamp
         depends_on: []
         implements: []
         relates_to: []
