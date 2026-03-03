@@ -1319,3 +1319,17 @@ inbox:
       - docs
       - reflection
     added_by: "@claude"
+  - _ulid: 01KJTBAHJ6Z2R14KEWQ9PNKZ5C
+    text: "CLI usage telemetry: track kspec commands at a per-user level — command name, arguments shape
+      (metadata, not full call data), success/error outcomes, and error messages. Goal: surface
+      which commands have high error rates (bad args, wrong state, etc.) to identify friction and
+      prioritize UX improvements. Distinguish metadata (command + flag names) from actual call data
+      (values) for privacy. Could be opt-in or local-only (written to shadow branch alongside
+      tasks)."
+    created_at: 2026-03-03T17:18:24.838Z
+    tags:
+      - cli
+      - analytics
+      - observability
+      - idea
+    added_by: "@claude"
