@@ -1286,6 +1286,50 @@ describe("AC-12: Interactive mode streams text as it arrives", () => {
   });
 });
 
+// AC: @cli-agent-commands ac-12
+describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
+  let testDir: string;
+
+  beforeEach(() => {
+    testDir = require("node:fs").mkdtempSync(require("node:path").join(require("node:os").tmpdir(), "kspec-agent-stderr-filter-"));
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("suppresses non-actionable rate_limit_event lines while preserving actionable adapter stderr", async () => {
+    const agent = makeTestAgent({ id: "stderr-filter-agent", adapter: "mock-acp" });
+    const stderrLines: string[] = [];
+
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+      stderrLines.push(String(chunk));
+      return true;
+    });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      prompt: "test prompt",
+      trigger: "manual",
+      env: {
+        MOCK_ACP_RESPONSE_TEXT: "streaming text from agent",
+        MOCK_ACP_EMIT_RATE_LIMIT_EVENT: "true",
+        MOCK_ACP_EMIT_ACTIONABLE_STDERR: "Actionable adapter error: auth expired",
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+
+    const stderrOutput = stderrLines.join("");
+    expect(stderrOutput).not.toContain("rate_limit_event");
+    expect(stderrOutput).toContain("Actionable adapter error: auth expired");
+  });
+});
+
 // ─── AC-13 through AC-16: kspec agent dispatch watch ─────────────────────────
 
 // Helper: create a fake WebSocket instance for testing

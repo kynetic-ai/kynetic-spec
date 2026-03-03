@@ -20,6 +20,8 @@
  * - MOCK_ACP_PROJECT_DIR: Working directory for kspec commands
  * - MOCK_ACP_CLI_PATH: Path to kspec CLI entry point (required in CI where kspec isn't global)
  * - MOCK_ACP_VERIFY_ARGS_FILE: Write process.argv to this file for verifying command-line args
+ * - MOCK_ACP_EMIT_RATE_LIMIT_EVENT: If true, emit a simulated non-actionable rate_limit_event stderr line
+ * - MOCK_ACP_EMIT_ACTIONABLE_STDERR: Emit this stderr line during prompt handling
  */
 
 import * as fs from 'node:fs';
@@ -51,6 +53,8 @@ const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated v
 // Write process.argv to a file for verifying command-line args
 const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
 const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === 'true';
+const emitRateLimitEvent = process.env.MOCK_ACP_EMIT_RATE_LIMIT_EVENT === 'true';
+const actionableStderr = process.env.MOCK_ACP_EMIT_ACTIONABLE_STDERR;
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -170,6 +174,14 @@ async function handlePrompt(id, params) {
   if (shouldFail()) {
     sendError(id, -32000, "Mock failure");
     return;
+  }
+
+  if (emitRateLimitEvent) {
+    console.error('Unexpected case: {"type":"rate_limit_event","detail":"mock rate limit info"}');
+  }
+
+  if (actionableStderr) {
+    console.error(actionableStderr);
   }
 
   // Optionally send a permission request before responding (for ac-11 tests)
