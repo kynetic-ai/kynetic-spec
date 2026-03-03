@@ -71470,7 +71470,7 @@
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71484,6 +71484,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-03T17:38:28.572Z
+  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
 - _ulid: 01KJS7PDW5GQQX9WQ2C7C1JNRX
   slugs: []
   title: Add --text flag to kspec session log show to replay agent output
@@ -71915,6 +71917,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #643. Registered ACP request handler in invocation.ts to auto-approve
+    session/request_permission in dispatch mode. Fixes agent hang on Edit/Write/Bash tool calls."
   depends_on: []
   context: []
   priority: 1
@@ -71928,6 +71932,7 @@
   created_at: 2026-03-03T07:37:29.340Z
   started_at: 2026-03-03T07:40:03.365Z
   submitted_at: 2026-03-03T07:49:11.078Z
+  completed_at: 2026-03-03T17:11:49.924Z
   notes:
     - _ulid: 01KJSAQWYRAH4HBRZKMMAYHA0E
       created_at: 2026-03-03T07:48:59.480Z
@@ -71958,9 +71963,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-03T17:11:49.924Z
-  closed_reason: "Merged in PR #643. Registered ACP request handler in invocation.ts to auto-approve
-    session/request_permission in dispatch mode. Fixes agent hang on Edit/Write/Bash tool calls."
 - _ulid: 01KJSATPZHFFX6MMK7YKSYN008
   slugs: []
   title: "Fix pre-existing test failure: enhanced-setup codex config.toml not created"
