@@ -69522,7 +69522,9 @@
     - sessions
     - ralph
   vcs_refs: []
+  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
   created_at: 2026-03-01T21:35:32.217Z
+  started_at: 2026-03-03T00:04:46.823Z
   notes:
     - _ulid: 01KJRCDRQ6DPXHZWHXRWBXHBW7
       created_at: 2026-03-02T22:59:10.183Z
@@ -69531,10 +69533,41 @@
         Description provides precise implementation detail (store.ts:1654, countTaskCompletions +
         extractTaskTransitions, handle string/array/meta fallback). Marked eligible.
       supersedes: null
+    - _ulid: 01KJRGMA8F1NC085YR94MXFY09
+      created_at: 2026-03-03T00:12:39.056Z
+      author: "@claude"
+      content: >-
+        Root cause analysis complete:
+
+
+        countTaskCompletions (store.ts:1682) has two bugs:
+
+        1. Line 1696: quick-filter checks !line.includes('"tool_call"') which excludes
+        'tool_call_update' events — but for claude-agent-acp, the command data arrives in
+        tool_call_update events (rawInput is empty {} in the initial tool_call event)
+
+        2. Line 1700: only handles typeof command === 'string' — codex-acp sets command as an array
+        like ['/usr/bin/bash', '-lc', 'kspec task complete @ref'], actual command is at index 2
+
+
+        extractTaskTransitions (store.ts:2001) has similar bug: only handles string command, not
+        array format.
+
+
+        Fix:
+
+        - countTaskCompletions: remove the '"tool_call"' filter restriction (allow tool_call_update
+        too), and normalize array commands to extract command[2]
+
+        - extractTaskTransitions: same array normalization
+
+
+        Evidence: working session 01KJ6NFBH (feb 24, claude-code-acp) stores commands as strings in
+        tool_call_update events. Session 01KJMTEA (codex-acp) stores commands as arrays in tool_call
+        events.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-03T00:04:46.823Z
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
 - _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
   slugs: []
   title: Design agent runtime architecture — from ralph loop to reactive agent service
