@@ -69512,7 +69512,7 @@
   spec_ref: "@session-log-list"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -69587,6 +69587,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-03T00:59:50.830Z
+  closed_reason: "Merged in PR #637. Fixed task count=0 bug in kspec session log list for
+    claude-agent-acp and codex-acp adapters. Two root causes addressed: (1) removed narrow
+    'tool_call' event filter that blocked tool_call_update events used by claude-agent-acp, (2)
+    added array command normalization for codex-acp format [bash, -lc, cmd]. Both
+    countTaskCompletions and extractTaskTransitions updated consistently. 2 new unit tests added.
+    All 30 session-log-list tests pass; CI clean."
 - _ulid: 01KJNPVVHJ0V5WESFGHFF1A0WC
   slugs: []
   title: Design agent runtime architecture — from ralph loop to reactive agent service
