@@ -16152,3 +16152,5 @@
 {"ts":1772506213740,"seq":16151,"type":"session.update","session_id":"01KJR8JA0CQXS951PDBEBRA3CW","data":{"iteration":9,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" st"}}}}
 {"ts":1772506213741,"seq":16152,"type":"session.update","session_id":"01KJR8JA0CQXS951PDBEBRA3CW","data":{"iteration":9,"update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"ale CI issue entirely"}}}}
 {"ts":1772506214450,"seq":16153,"type":"session.update","session_id":"01KJR8JA0CQXS951PDBEBRA3CW","data":{"iteration":9,"phase":"reflect","stopReason":"end_turn","completed":true}}
+{"ts":1772506808883,"seq":16154,"type":"session.wrapup","session_id":"01KJR8JA0CQXS951PDBEBRA3CW","data":{"exitReason":"no_tasks","result":{"success":true,"timedOut":false,"skipped":true,"skipReason":"Working tree is clean and no tasks in progress"}}}
+{"ts":1772506808884,"seq":16155,"type":"session.end","session_id":"01KJR8JA0CQXS951PDBEBRA3CW","data":{"status":"completed","consecutiveFailures":0,"exitReason":"no_tasks","closeReason":"No eligible tasks remaining"}}

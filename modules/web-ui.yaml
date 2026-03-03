@@ -216,6 +216,20 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    requirements:
+      - _ulid: 01KJRZWDCC8W2WT0Q3A9CZAAGY
+        slugs:
+          - daemon-web-ui-bundle
+        title: Web UI assets bundled in npm package
+        type: requirement
+        tags: []
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-03T04:39:13.036Z
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
