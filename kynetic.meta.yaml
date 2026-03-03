@@ -83,7 +83,13 @@ agents:
       - npm
       - vitest
     conventions: []
-    dispatch: []
+    dispatch:
+      - on: task.ready
+        filter:
+          automation: eligible
+      - on: task.needs_work
+        filter:
+          automation: eligible
     skills: []
     concurrency:
       max_concurrent: 1
@@ -100,7 +106,8 @@ agents:
       - git
       - gh
     conventions: []
-    dispatch: []
+    dispatch:
+      - on: task.pending_review
     skills: []
     concurrency:
       max_concurrent: 1

@@ -71562,7 +71562,15 @@
     - dx
   vcs_refs: []
   created_at: 2026-03-03T07:07:09.433Z
-  notes: []
+  notes:
+    - _ulid: 01KJS8K98W47H65FHCDBV2KESR
+      created_at: 2026-03-03T07:11:31.100Z
+      author: "@claude"
+      content: "Manually added dispatch rules to worker and reviewer agents in kynetic.meta.yaml since CLI
+        does not yet support --add-dispatch-rule. Worker: task.ready + task.needs_work with
+        automation:eligible filter. Reviewer: task.pending_review. This task still needed to add CLI
+        flag support."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BAWP2WNCD003DQX75GKY
