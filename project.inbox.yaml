@@ -1349,3 +1349,25 @@ inbox:
       - ac-coverage
       - bug
     added_by: "@claude"
+  - _ulid: 01KJS6CJSNQD6DPQRR31FCWRP3
+    text: "kspec batch atomic mode cannot resolve refs created within the same batch — e.g., item add
+      creates @new-slug but item trait add @new-slug in the same batch fails with item not found.
+      Workaround: split into separate commands. Consider deferred ref resolution within batch
+      execution or explicit batch-local ID aliases."
+    created_at: 2026-03-03T06:32:54.325Z
+    tags:
+      - batch
+      - dx
+      - reflection
+    added_by: "@claude"
+  - _ulid: 01KJS6CJW0KB7WW3EAS57N7XC4
+    text: kspec triage act has no bulk mode — no --all or --status triaged flag to execute all pending
+      triage decisions at once. Processing 42 items required manually listing all 42 refs across 4
+      batch calls. Add kspec triage act --all or kspec triage act --status triaged for bulk
+      execution.
+    created_at: 2026-03-03T06:32:54.400Z
+    tags:
+      - triage
+      - dx
+      - reflection
+    added_by: "@claude"
