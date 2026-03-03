@@ -71258,23 +71258,44 @@
   created_at: 2026-03-03T06:43:19.153Z
   notes: []
   todos: []
-- title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
+- _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
+  slugs: []
+  title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
     child proce
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
     when child process pipe is dead during shutdown. Should catch EPIPE and treat as
     connection-closed. Currently requires process-level uncaughtException handlers in tests that
     spawn/kill agents.
-  _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-03T06:43:20.809Z
+  notes: []
+  todos: []
+- title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
+    non-zer"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but
+    returns non-zero when only warnings present (e.g., exit 6). Downstream automation cant
+    distinguish warnings-only from real failures. Add explicit mode/flag for
+    warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
+    imgen project."
+  _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T06:43:20.809Z
+  created_at: 2026-03-03T06:43:23.015Z
   notes: []
   todos: []

@@ -2153,14 +2153,16 @@ triage:
       distinguish warnings-only from real failures. Add explicit mode/flag for
       warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
       imgen project."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug breaking automation: non-zero exit even when only warnings present. Ambiguous exit
       codes prevent reliable CI automation. Clear fix, automation eligible."
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-03T06:43:07.310Z
-    updated_at: 2026-03-03T06:43:07.341Z
+    updated_at: 2026-03-03T06:43:24.319Z
+    acted_at: 2026-03-03T06:43:24.295Z
+    result_ref: "@01KJS6ZR"
   - _ulid: 01KJS6Z9KCGMWNFJP8KRJM86E0
     inbox_ref: 01KJGAE24345STWVS3RMKNC838
     item_snapshot: "task set --description: task set has no --description option, making it impossible
@@ -2171,9 +2173,9 @@ triage:
     reasoning: Duplicate of 01KHWWMDCV6NBYK8D8EMYBZEPV (task set --description missing flag).
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-03-03T06:43:22.629Z
     created_at: 2026-03-03T06:43:07.500Z
     updated_at: 2026-03-03T06:43:22.656Z
-    acted_at: 2026-03-03T06:43:22.629Z
   - _ulid: 01KJS6Z9RYRR1KQ40SVQVFT2CN
     inbox_ref: 01KJDXC04W8C4JMCKD7KX78TXA
     item_snapshot: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
