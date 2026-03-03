@@ -71470,7 +71470,7 @@
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -71480,7 +71480,7 @@
     - agent
     - dx
   vcs_refs: []
-  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
+  session_id: null
   created_at: 2026-03-03T06:55:30.474Z
   started_at: 2026-03-03T17:38:28.572Z
   submitted_at: 2026-03-03T17:53:32.198Z
@@ -71504,6 +71504,16 @@
         agent_text_chunk events via existing WebSocket PubSub when dispatch engine text arrives, (2)
         new kspec agent dispatch watch subcommand that connects to daemon WS and tails output. Will
         be a separate task."
+      supersedes: null
+    - _ulid: 01KJTE14Z9CNQCMHQFPVK0S7AY
+      created_at: 2026-03-03T18:05:42.761Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: AC-11 test does not exercise the CLI-level isJsonMode()
+        branch. The collected array is declared but never populated — onUpdate: undefined means
+        nothing fills it, so expect(collected).toHaveLength(0) is trivially true. The test should
+        call kspec('agent run <agent> prompt --json', testDir) via the CLI runner and assert stdout
+        is valid JSON with no streaming text, similar to the dry-run --json test at line 609. The
+        isJsonMode() conditional in agent.ts is currently untested at the CLI level."
       supersedes: null
   todos: []
   automation: eligible
