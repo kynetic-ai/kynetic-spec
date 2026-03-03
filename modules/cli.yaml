@@ -6476,6 +6476,11 @@ features:
         when: An agent produces text output
         then: Text chunks are printed to stdout in real time, prefixed with [agent-id session-id] so output
           from concurrent agents can be distinguished
+      - id: ac-14
+        given: kspec agent dispatch watch is run
+        when: The WebSocket connection to the daemon drops
+        then: The command automatically attempts to reconnect and prints a reconnecting message; exits with
+          code 3 if reconnection fails after retries
     depends_on: []
     implements: []
     relates_to: []
