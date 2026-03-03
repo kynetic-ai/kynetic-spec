@@ -72686,9 +72686,27 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-03T22:54:36.566Z
-  notes: []
-  todos: []
   started_at: 2026-03-03T23:23:29.858Z
+  notes:
+    - _ulid: 01KJV075PYH2SVEJ7DMPTEBHT0
+      created_at: 2026-03-03T23:23:34.494Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Remaining task mutators still do stale loadAllTasks -> saveTask writes,
+        causing clobber risk under concurrent updates.
+
+        - Scope: Migrate submit/complete/needs-work/block/unblock/reset/todo/set/patch (including
+        multi-ref set/complete paths) to atomic latest-state mutation.
+
+        - Files: src/cli/commands/task.ts plus targeted concurrency regression coverage in
+        tests/task-mutation-serialization.test.ts.
+
+        - Verification: run focused vitest for task mutation serialization and task command suites,
+        then run full npm test before PR/review.
+      supersedes: null
+  todos: []
 - _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
   slugs:
     - task-atomic-plan-inbox-writes
