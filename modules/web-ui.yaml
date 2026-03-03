@@ -284,6 +284,10 @@ features:
             given: multiple clients are connected and one disconnects
             when: GET /api/health is requested
             then: the connections field reflects only currently active sessions
+          - id: ac-3
+            given: a disconnected session was previously in heartbeat monitoring
+            when: the next heartbeat interval executes
+            then: the daemon does not attempt to ping that session and emits no stale heartbeat ping log for it
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
