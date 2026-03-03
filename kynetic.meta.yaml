@@ -449,8 +449,8 @@ workflows:
       code quality), verifies spec alignment, reviews code quality, checks for regressions, fixes
       issues, waits for CI, posts structured GitHub review with inline comments, and merges with
       quality gates. The goal is to find problems and verify quality — not to rubber-stamp merges.
-      Sequential execution (ralph waits). CRITICAL: After ANY push, must re-verify CI passes before
-      merge."
+      Sequential execution (agent dispatch waits). CRITICAL: After ANY push, must re-verify CI
+      passes before merge."
     steps:
       - type: action
         content: |
@@ -902,8 +902,8 @@ workflows:
       automation-eligible tasks, auto-resolves decisions. Task selection: needs_work > in_progress >
       unblocking > priority. Includes local-review subagent step and fix cycle handling for
       needs_work tasks. Verifies work needed including trait AC coverage. Implementation quality:
-      search for existing utilities, match code style, run full test suite. PR review handled
-      externally by ralph."
+      search for existing utilities, match code style, run full test suite. PR review handled by
+      pr-reviewer agent dispatch."
     steps:
       - type: action
         content: |
