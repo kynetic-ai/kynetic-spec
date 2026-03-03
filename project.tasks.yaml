@@ -72081,7 +72081,7 @@
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -72091,7 +72091,7 @@
     - agent
     - dx
   vcs_refs: []
-  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
+  session_id: null
   created_at: 2026-03-03T17:53:55.048Z
   started_at: 2026-03-03T18:40:23.034Z
   submitted_at: 2026-03-03T19:02:43.908Z
@@ -72143,6 +72143,12 @@
         exhaustion), AC-15 (daemon not running), AC-16 (filter by agent/session). Used polling
         helper for timing-sensitive WebSocket mock tests.
       supersedes: null
+    - _ulid: 01KJTJNVZHY3WW640N9P0ZWB6S
+      created_at: 2026-03-03T19:26:55.986Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: validate --retries input in agent dispatch
+        watch; regression gate not green (full npm test has failing suites/timeouts)."
+      supersedes: null
   todos: []
 - _ulid: 01KJTHA450TCVJ7D7GMDQFGRCY
   slugs: []
@@ -72191,25 +72197,25 @@
   created_at: 2026-03-03T19:03:09.781Z
   notes: []
   todos: []
-- title: Fix cli-serve test flakiness in shard 3
+- _ulid: 01KJTHACWHYNBEQ09GCHYH00H4
+  slugs: []
+  title: Fix cli-serve test flakiness in shard 3
+  type: task
   description: tests/cli-serve.test.ts has 1 test failure when run in shard 3 (71s duration, likely
     timeout). Need to investigate whether it is a daemon port conflict or timing issue in parallel
     shard execution. The test takes 71s which suggests it may be waiting on a timeout.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - testing
     - bug
     - cli
-  depends_on: []
-  _ulid: 01KJTHACWHYNBEQ09GCHYH00H4
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-03T19:03:11.504Z
   notes: []
