@@ -70564,7 +70564,7 @@
   type: task
   spec_ref: "@ralph-replacement"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-cli-agent-commands"
@@ -70573,7 +70573,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+  session_id: null
   created_at: 2026-03-02T01:22:22.683Z
   started_at: 2026-03-03T02:21:46.549Z
   submitted_at: 2026-03-03T02:23:38.779Z
@@ -70738,6 +70738,18 @@
 
 
         All 9 replacement tests pass, all 40 agents-instruction-gen tests pass.
+      supersedes: null
+    - _ulid: 01KJRRN3T0M145EFNJW8RNQS7Y
+      created_at: 2026-03-03T02:32:53.824Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 3] Review findings: SHOULD-FIX (cycle 2): (1)
+        .agents/skills/kspec-task-work/SKILL.md still has stale 'ralph auto-exits' comment at line
+        291 — kspec skill render was not run for task-work skill despite template source being
+        correct; (2) Missing N/A declarations for @trait-error-guidance ac-3, ac-4, ac-5, ac-6 in
+        tests/ralph-replacement.test.ts — these don't apply to the deprecation stub but need
+        explicit N/A annotations; (3) Missing AC annotations/N/A for own ACs 3, 4, 5, 7 — ac-3
+        covered indirectly, ac-4/5 are config-only changes, ac-7 is a deletion — all need either
+        annotations or N/A declarations. See PR #640 review comment."
       supersedes: null
   todos: []
   automation: eligible
