@@ -22,6 +22,7 @@ import {
   hasRemoteTracking,
   ensureRemoteTracking,
   shadowPull,
+  shadowPushAsync,
   shadowSync,
   isDebugMode,
   setVerboseModeGetter,
@@ -857,6 +858,49 @@ describe('Shadow Branch', () => {
 
       const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
       expect(await hasRemoteTracking(worktreeDir)).toBe(true);
+    });
+
+    // AC: @shadow-sync ac-1 - Auto-push failures are visible in stderr warnings
+    it('shadowPushAsync logs warning when background push fails', async () => {
+      await setupSyncTest();
+
+      // Break the remote so git push fails while tracking is still configured.
+      await fs.rm(remoteDir, { recursive: true, force: true });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      try {
+        await shadowPushAsync(worktreeDir);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          expect.stringContaining('[WARN] Shadow auto-push failed')
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
+
+    // AC: @shadow-sync ac-1 - Repeated failures escalate visibility
+    it('shadowPushAsync emits escalation warning after repeated failures', async () => {
+      await setupSyncTest();
+
+      // Break the remote so each push attempt fails.
+      await fs.rm(remoteDir, { recursive: true, force: true });
+
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      try {
+        await shadowPushAsync(worktreeDir);
+        await shadowPushAsync(worktreeDir);
+        await shadowPushAsync(worktreeDir);
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          expect.stringContaining('times in a row')
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
     });
 
     // AC: @shadow-sync ac-4 - shadowPull succeeds immediately when no tracking
