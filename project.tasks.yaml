@@ -71218,7 +71218,7 @@
     scenario content was updated in PR #640 but table label was not. Update to Agent dispatch
     continuation."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71231,6 +71231,7 @@
   notes: []
   todos: []
   automation: eligible
+  submitted_at: 2026-03-03T07:30:41.675Z
 - _ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
   slugs: []
   title: Shadow branch auto-push silently swallows failures — fire-and-forget push
@@ -71258,12 +71259,12 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
   created_at: 2026-03-03T06:43:19.153Z
+  started_at: 2026-03-03T07:28:03.221Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-03T07:28:03.221Z
-  session_id: 01KJS9H76EZZB742ZEV9GGR8XB
 - _ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
   slugs: []
   title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
