@@ -72642,27 +72642,51 @@
   created_at: 2026-03-03T22:54:36.566Z
   notes: []
   todos: []
-- title: Add atomic update helpers for plan and inbox writes
+- _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
+  slugs:
+    - task-atomic-plan-inbox-writes
+  title: Add atomic update helpers for plan and inbox writes
+  type: bug
   description: savePlan and saveInboxItem replace full objects and can overwrite concurrent updates
     when callers pass stale snapshots. Add mutatePlanAtomically/mutateInboxItemAtomically-style APIs
     and migrate update commands to use them.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - concurrency
+    - parser
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-03T22:54:38.153Z
+  notes: []
+  todos: []
+- title: Harden spec item save/update path against stale full-object writes
+  description: saveSpecItem currently forwards the full LoadedSpecItem into updateSpecItem, which can
+    overwrite concurrent edits to the same item. Refactor save/update flow to patch only intended
+    fields from latest on-disk state and add conflict-safe behavior.
   type: bug
   spec_ref: null
   meta_ref: null
   plan_ref: null
   priority: 2
   slugs:
-    - task-atomic-plan-inbox-writes
+    - task-harden-spec-item-save-concurrency
   tags:
     - concurrency
     - parser
     - cli
   depends_on: []
-  _ulid: 01KJTYJ629NSVHMN2PWAADJNPS
+  _ulid: 01KJTYJ7K2D41X2S9K0V8FAT7T
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-03T22:54:38.153Z
+  created_at: 2026-03-03T22:54:39.714Z
   notes: []
   todos: []
