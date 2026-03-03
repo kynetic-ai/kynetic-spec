@@ -10889,7 +10889,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJTQGQBNTVYCR3GDF8TYEJY1
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T20:51:30.294Z
@@ -10938,5 +10938,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-03T20:52:13.130Z
-        completed_at: 2026-03-03T20:52:13.130Z
+        completed_at: 2026-03-03T20:52:17.235Z
+        notes: "Capture complete (no duplicate captures created during reflection): existing inbox @01KJ778T
+          was promoted to task @01KJTQBR; untracked chunk-ordering issue captured as task @01KJTQBT.
+          No additional inbox/meta entries added to avoid noise."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-03T20:52:17.235Z
