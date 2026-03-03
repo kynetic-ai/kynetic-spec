@@ -216,21 +216,12 @@ async function setTaskFields(
       }
     }
 
-    // Build updated task with only provided options
-    const updatedTask: Task = { ...foundTask };
     const changes: string[] = [];
-
-    if (options.title) {
-      updatedTask.title = options.title;
-      changes.push("title");
-    }
+    let noChangesMessage: string | undefined;
 
     if (options.specRef !== undefined) {
       // Handle 'null' string to clear spec_ref
-      if (options.specRef === "null") {
-        updatedTask.spec_ref = null;
-        changes.push("spec_ref: cleared");
-      } else {
+      if (options.specRef !== "null") {
         // Validate the spec ref exists and is a spec item
         const specResult = index.resolve(options.specRef);
         if (!specResult.ok) {
@@ -247,17 +238,12 @@ async function setTaskFields(
             error: errors.reference.specRefIsTask(options.specRef),
           };
         }
-        updatedTask.spec_ref = normalizeRefInput(options.specRef);
-        changes.push("spec_ref");
       }
     }
 
     if (options.metaRef !== undefined) {
       // Handle 'null' string to clear meta_ref
-      if (options.metaRef === "null") {
-        updatedTask.meta_ref = null;
-        changes.push("meta_ref: cleared");
-      } else {
+      if (options.metaRef !== "null") {
         // Validate the meta ref exists and is a meta item
         const metaRefResult = index.resolve(options.metaRef);
         if (!metaRefResult.ok) {
@@ -277,18 +263,12 @@ async function setTaskFields(
             error: errors.reference.metaRefPointsToSpec(options.metaRef),
           };
         }
-
-        updatedTask.meta_ref = normalizeRefInput(options.metaRef);
-        changes.push("meta_ref");
       }
     }
 
     if (options.planRef !== undefined) {
       // Handle 'null' string to clear plan_ref
-      if (options.planRef === "null") {
-        updatedTask.plan_ref = null;
-        changes.push("plan_ref: cleared");
-      } else {
+      if (options.planRef !== "null") {
         // First check if it's a task or spec item (wrong type)
         const cleanRef = options.planRef.startsWith("@")
           ? options.planRef.slice(1)
@@ -324,38 +304,19 @@ async function setTaskFields(
             error: `Plan reference not found: ${options.planRef}`,
           };
         }
-
-        updatedTask.plan_ref = normalizeRefInput(options.planRef);
-        changes.push("plan_ref");
       }
     }
 
+    let parsedPriority: number | undefined;
     if (options.priority) {
       const priorityResult = parsePriority(options.priority);
       if (!priorityResult.ok) {
         return { success: false, error: priorityResult.error };
       }
-      updatedTask.priority = priorityResult.value;
-      changes.push("priority");
+      parsedPriority = priorityResult.value;
     }
 
-    if (options.slug) {
-      if (!updatedTask.slugs.includes(options.slug)) {
-        updatedTask.slugs = [...updatedTask.slugs, options.slug];
-        changes.push("slug");
-      }
-    }
-
-    if (options.tag) {
-      const parsedTags = parseTagsArray(options.tag);
-      const newTags = parsedTags.filter(
-        (t: string) => !updatedTask.tags.includes(t),
-      );
-      if (newTags.length > 0) {
-        updatedTask.tags = [...updatedTask.tags, ...newTags];
-        changes.push("tags");
-      }
-    }
+    const parsedTags = options.tag ? parseTagsArray(options.tag) : [];
 
     if (options.dependsOn) {
       // Validate all dependency refs
@@ -376,39 +337,13 @@ async function setTaskFields(
           };
         }
       }
-      updatedTask.depends_on = options.dependsOn.map(normalizeRefInput);
-      changes.push("depends_on");
-    }
-
-    // AC: @spec-task-clear-deps ac-1, ac-2 - Clear all dependencies
-    if (options.clearDeps) {
-      if (foundTask.depends_on.length === 0) {
-        // AC: @spec-task-clear-deps ac-2 - No changes needed
-        return {
-          success: true,
-          message: "No changes: task has no dependencies to clear",
-        };
-      }
-      updatedTask.depends_on = [];
-      changes.push("depends_on");
-
-      // Add note documenting the change
-      // AC: @task-set ac-author
-      const note = createNote(
-        `Dependencies cleared (was: ${foundTask.depends_on.join(", ")})`,
-        getAuthor(ctx.config?.identity?.author),
-      );
-      updatedTask.notes = [...updatedTask.notes, note];
     }
 
     // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
     // Handle automation status changes
     // Note: --no-automation sets options.automation to false, so check that first
-    if (options.automation === false) {
-      // --no-automation flag clears the automation status (AC: ac-12)
-      delete updatedTask.automation;
-      changes.push("automation");
-    } else if (options.automation !== undefined) {
+    let validatedAutomation: "eligible" | "needs_review" | "manual_only" | undefined;
+    if (options.automation !== undefined && options.automation !== false) {
       const automationResult = validateEnumOption(
         options.automation,
         ["eligible", "needs_review", "manual_only"] as const,
@@ -427,19 +362,118 @@ async function setTaskFields(
         };
       }
 
-      updatedTask.automation = automationResult.value;
-      changes.push("automation");
+      validatedAutomation = automationResult.value;
+    }
 
-      // If reason provided, add a note documenting the change
-      // AC: @task-set ac-author
-      if (options.reason) {
+    let updatedTask = foundTask;
+    updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+      const nextTask: Task = { ...latestTask };
+      const mutationChanges: string[] = [];
+
+      if (options.title) {
+        nextTask.title = options.title;
+        mutationChanges.push("title");
+      }
+
+      if (options.specRef !== undefined) {
+        if (options.specRef === "null") {
+          nextTask.spec_ref = null;
+          mutationChanges.push("spec_ref: cleared");
+        } else {
+          nextTask.spec_ref = normalizeRefInput(options.specRef);
+          mutationChanges.push("spec_ref");
+        }
+      }
+
+      if (options.metaRef !== undefined) {
+        if (options.metaRef === "null") {
+          nextTask.meta_ref = null;
+          mutationChanges.push("meta_ref: cleared");
+        } else {
+          nextTask.meta_ref = normalizeRefInput(options.metaRef);
+          mutationChanges.push("meta_ref");
+        }
+      }
+
+      if (options.planRef !== undefined) {
+        if (options.planRef === "null") {
+          nextTask.plan_ref = null;
+          mutationChanges.push("plan_ref: cleared");
+        } else {
+          nextTask.plan_ref = normalizeRefInput(options.planRef);
+          mutationChanges.push("plan_ref");
+        }
+      }
+
+      if (parsedPriority !== undefined) {
+        nextTask.priority = parsedPriority;
+        mutationChanges.push("priority");
+      }
+
+      if (options.slug && !nextTask.slugs.includes(options.slug)) {
+        nextTask.slugs = [...nextTask.slugs, options.slug];
+        mutationChanges.push("slug");
+      }
+
+      if (parsedTags.length > 0) {
+        const newTags = parsedTags.filter(
+          (tag: string) => !nextTask.tags.includes(tag),
+        );
+        if (newTags.length > 0) {
+          nextTask.tags = [...nextTask.tags, ...newTags];
+          mutationChanges.push("tags");
+        }
+      }
+
+      if (options.dependsOn) {
+        nextTask.depends_on = options.dependsOn.map(normalizeRefInput);
+        mutationChanges.push("depends_on");
+      }
+
+      if (options.clearDeps) {
+        if (latestTask.depends_on.length === 0) {
+          // AC: @spec-task-clear-deps ac-2 - No changes needed
+          noChangesMessage = "No changes: task has no dependencies to clear";
+          return latestTask;
+        }
+        nextTask.depends_on = [];
+        mutationChanges.push("depends_on");
+
+        // AC: @task-set ac-author
         const note = createNote(
-          `Automation status set to ${automationResult.value}: ${options.reason}`,
+          `Dependencies cleared (was: ${latestTask.depends_on.join(", ")})`,
           getAuthor(ctx.config?.identity?.author),
         );
-        updatedTask.notes = [...updatedTask.notes, note];
-        changes.push("note");
+        nextTask.notes = [...nextTask.notes, note];
       }
+
+      if (options.automation === false) {
+        delete nextTask.automation;
+        mutationChanges.push("automation");
+      } else if (validatedAutomation) {
+        nextTask.automation = validatedAutomation;
+        mutationChanges.push("automation");
+
+        if (options.reason) {
+          const note = createNote(
+            `Automation status set to ${validatedAutomation}: ${options.reason}`,
+            getAuthor(ctx.config?.identity?.author),
+          );
+          nextTask.notes = [...nextTask.notes, note];
+          mutationChanges.push("note");
+        }
+      }
+
+      changes.splice(0, changes.length, ...mutationChanges);
+      return nextTask;
+    });
+
+    if (noChangesMessage) {
+      return {
+        success: true,
+        message: noChangesMessage,
+        data: { task: updatedTask },
+      };
     }
 
     // AC: @spec-task-set-batch ac-4 - Warn on no changes, don't fail
@@ -451,7 +485,6 @@ async function setTaskFields(
       };
     }
 
-    await saveTask(ctx, updatedTask);
     await commitIfShadow(
       ctx.shadow,
       "task-set",
@@ -1097,23 +1130,28 @@ Examples:
           }
         }
 
-        // Build updated task
-        const updatedTask: Task = { ...foundTask, ...validatedPatch };
-
         // Track changes for output
         const changes = Object.keys(validatedPatch);
 
         if (options.dryRun) {
+          const dryRunTask: Task = { ...foundTask, ...validatedPatch };
           info("Dry run - no changes will be written");
           info(`Would update: ${changes.join(", ")}`);
-          output({ changes, updated: updatedTask }, () => {
+          output({ changes, updated: dryRunTask }, () => {
             console.log(`\nChanges: ${changes.join(", ")}\n`);
-            return formatTaskDetails(updatedTask, index);
+            return formatTaskDetails(dryRunTask, index);
           });
           return;
         }
 
-        await saveTask(ctx, updatedTask);
+        const updatedTask = await mutateTaskAtomically(
+          ctx,
+          foundTask,
+          (latestTask) => ({
+            ...latestTask,
+            ...validatedPatch,
+          }),
+        );
         await commitIfShadow(
           ctx.shadow,
           "task-patch",
@@ -1352,106 +1390,93 @@ Examples:
             { ctx, tasks, items, index, options },
           ) => {
             try {
-              // AC: @spec-completion-enforcement ac-6
-              if (foundTask.status === "completed") {
-                return {
-                  success: false,
-                  error: errors.status.completeAlreadyCompleted,
-                };
-              }
-
-              // AC: @task-commands ac-1 - Allow --force to bypass all state checks
               const forcingCompletion = options.force;
-
-              // AC: @spec-completion-enforcement ac-7 - Allow skip-review bypass
-              if (!options.skipReview && !forcingCompletion) {
-                // AC: @spec-completion-enforcement ac-2
-                if (foundTask.status === "in_progress") {
-                  return {
-                    success: false,
-                    error: errors.status.completeRequiresReview,
-                  };
-                }
-
-                // AC: @spec-completion-enforcement ac-3
-                if (foundTask.status === "pending") {
-                  return {
-                    success: false,
-                    error: errors.status.completeRequiresStart,
-                  };
-                }
-
-                // AC: @spec-completion-enforcement ac-4
-                if (foundTask.status === "blocked") {
-                  return {
-                    success: false,
-                    error: errors.status.completeBlockedTask,
-                  };
-                }
-
-                // AC: @spec-completion-enforcement ac-5
-                if (foundTask.status === "cancelled") {
-                  return {
-                    success: false,
-                    error: errors.status.completeCancelledTask,
-                  };
-                }
-
-                // AC: @spec-completion-enforcement ac-1 - Only pending_review allowed
-                if (foundTask.status !== "pending_review") {
-                  return {
-                    success: false,
-                    error: errors.status.cannotComplete(foundTask.status),
-                  };
-                }
-              }
-
               const now = new Date().toISOString();
-
-              // AC: @spec-completion-enforcement ac-7 - Document skip-review reason
-              // AC: @spec-completion-enforcement ac-author
-              let taskNotes = foundTask.notes;
-              if (options.skipReview && options.reason) {
-                const skipNote = createNote(
-                  `Completed with --skip-review: ${options.reason}`,
-                  getAuthor(ctx.config?.identity?.author),
-                );
-                taskNotes = [...taskNotes, skipNote];
-              }
-
-              // AC: @task-commands ac-1 - Document force completion from non-standard state
-              const forcedFromNonStandard =
-                forcingCompletion &&
-                foundTask.status !== "pending_review";
+              let transitionFromStatus: Task["status"] = foundTask.status;
+              let forcedFromNonStandard = false;
               let forceStateDetail: string | undefined;
-              if (forcedFromNonStandard) {
-                forceStateDetail = `from ${foundTask.status} state`;
-                if (foundTask.status === "blocked") {
-                  const blockedBy = foundTask.blocked_by.join("; ");
-                  forceStateDetail += `. Was blocked by: ${blockedBy || "(dependency-blocked)"}`;
-                }
-                let forceMessage = `Completed with --force ${forceStateDetail}`;
-                if (options.reason) {
-                  forceMessage += `. Reason: ${options.reason}`;
-                }
-                const forceNote = createNote(
-                  forceMessage,
-                  getAuthor(ctx.config?.identity?.author),
-                );
-                taskNotes = [...taskNotes, forceNote];
-              }
+              const updatedTask = await mutateTaskAtomically(
+                ctx,
+                foundTask,
+                (latestTask) => {
+                  transitionFromStatus = latestTask.status;
 
-              // Update status
-              const updatedTask: Task = {
-                ...foundTask,
-                status: "completed",
-                completed_at: now,
-                closed_reason: options.reason || null,
-                started_at: foundTask.started_at || now,
-                notes: taskNotes,
-              };
+                  // AC: @spec-completion-enforcement ac-6
+                  if (latestTask.status === "completed") {
+                    throw new Error(errors.status.completeAlreadyCompleted);
+                  }
 
-              await saveTask(ctx, updatedTask);
+                  // AC: @spec-completion-enforcement ac-7 - Allow skip-review bypass
+                  if (!options.skipReview && !forcingCompletion) {
+                    // AC: @spec-completion-enforcement ac-2
+                    if (latestTask.status === "in_progress") {
+                      throw new Error(errors.status.completeRequiresReview);
+                    }
+
+                    // AC: @spec-completion-enforcement ac-3
+                    if (latestTask.status === "pending") {
+                      throw new Error(errors.status.completeRequiresStart);
+                    }
+
+                    // AC: @spec-completion-enforcement ac-4
+                    if (latestTask.status === "blocked") {
+                      throw new Error(errors.status.completeBlockedTask);
+                    }
+
+                    // AC: @spec-completion-enforcement ac-5
+                    if (latestTask.status === "cancelled") {
+                      throw new Error(errors.status.completeCancelledTask);
+                    }
+
+                    // AC: @spec-completion-enforcement ac-1 - Only pending_review allowed
+                    if (latestTask.status !== "pending_review") {
+                      throw new Error(errors.status.cannotComplete(latestTask.status));
+                    }
+                  }
+
+                  // AC: @spec-completion-enforcement ac-7 - Document skip-review reason
+                  // AC: @spec-completion-enforcement ac-author
+                  let taskNotes = latestTask.notes;
+                  if (options.skipReview && options.reason) {
+                    const skipNote = createNote(
+                      `Completed with --skip-review: ${options.reason}`,
+                      getAuthor(ctx.config?.identity?.author),
+                    );
+                    taskNotes = [...taskNotes, skipNote];
+                  }
+
+                  // AC: @task-commands ac-1 - Document force completion from non-standard state
+                  forcedFromNonStandard =
+                    forcingCompletion &&
+                    latestTask.status !== "pending_review";
+                  if (forcedFromNonStandard) {
+                    forceStateDetail = `from ${latestTask.status} state`;
+                    if (latestTask.status === "blocked") {
+                      const blockedBy = latestTask.blocked_by.join("; ");
+                      forceStateDetail += `. Was blocked by: ${blockedBy || "(dependency-blocked)"}`;
+                    }
+                    let forceMessage = `Completed with --force ${forceStateDetail}`;
+                    if (options.reason) {
+                      forceMessage += `. Reason: ${options.reason}`;
+                    }
+                    const forceNote = createNote(
+                      forceMessage,
+                      getAuthor(ctx.config?.identity?.author),
+                    );
+                    taskNotes = [...taskNotes, forceNote];
+                  }
+
+                  return {
+                    ...latestTask,
+                    status: "completed",
+                    completed_at: now,
+                    closed_reason: options.reason || null,
+                    started_at: latestTask.started_at || now,
+                    notes: taskNotes,
+                  };
+                },
+              );
+
               await commitIfShadow(
                 ctx.shadow,
                 "task-complete",
@@ -1463,7 +1488,7 @@ Examples:
               postDispatchEvent({
                 taskId: updatedTask._ulid,
                 taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
-                fromStatus: foundTask.status,
+                fromStatus: transitionFromStatus,
                 toStatus: updatedTask.status,
                 projectPath: ctx.rootDir,
               });
@@ -1571,20 +1596,30 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        if (foundTask.status !== "in_progress") {
+        let transitionFromStatus: Task["status"] = foundTask.status;
+        const updatedTask = await mutateTaskAtomically(
+          ctx,
+          foundTask,
+          (latestTask) => {
+            transitionFromStatus = latestTask.status;
+            if (latestTask.status !== "in_progress") {
+              return latestTask;
+            }
+
+            return {
+              ...latestTask,
+              status: "pending_review",
+              submitted_at: new Date().toISOString(),
+            };
+          },
+        );
+
+        if (transitionFromStatus !== "in_progress") {
           error(
-            `Cannot submit task with status: ${foundTask.status}. Task must be in_progress.`,
+            `Cannot submit task with status: ${transitionFromStatus}. Task must be in_progress.`,
           );
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-
-        const updatedTask: Task = {
-          ...foundTask,
-          status: "pending_review",
-          submitted_at: new Date().toISOString(),
-        };
-
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-submit",
@@ -1595,7 +1630,7 @@ Examples:
         postDispatchEvent({
           taskId: updatedTask._ulid,
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
-          fromStatus: foundTask.status,
+          fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
           projectPath: ctx.rootDir,
         });
@@ -1625,31 +1660,43 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        if (foundTask.status !== "pending_review") {
-          error(errors.status.cannotNeedsWork(foundTask.status));
+        let transitionFromStatus: Task["status"] = foundTask.status;
+        let cycleNumber = 0;
+        const updatedTask = await mutateTaskAtomically(
+          ctx,
+          foundTask,
+          (latestTask) => {
+            transitionFromStatus = latestTask.status;
+            if (latestTask.status !== "pending_review") {
+              return latestTask;
+            }
+
+            // Track fix cycle count from existing kickback notes
+            const existingKickbacks = latestTask.notes.filter((note) =>
+              note.content.includes("[FIX_CYCLE:"),
+            ).length;
+            cycleNumber = existingKickbacks + 1;
+
+            const note = createNote(
+              `[FIX_CYCLE: ${cycleNumber}] Review findings: ${options.reason}`,
+              getAuthor(ctx.config?.identity?.author),
+            );
+
+            // AC: @session-scoped-task-claiming ac-claim-clear
+            return {
+              ...latestTask,
+              status: "needs_work",
+              session_id: null,
+              notes: [...latestTask.notes, note],
+            };
+          },
+        );
+
+        if (transitionFromStatus !== "pending_review") {
+          error(errors.status.cannotNeedsWork(transitionFromStatus));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
-        // Track fix cycle count from existing kickback notes
-        const existingKickbacks = foundTask.notes.filter((n) =>
-          n.content.includes("[FIX_CYCLE:"),
-        ).length;
-        const cycleNumber = existingKickbacks + 1;
-
-        const note = createNote(
-          `[FIX_CYCLE: ${cycleNumber}] Review findings: ${options.reason}`,
-          getAuthor(ctx.config?.identity?.author),
-        );
-
-        // AC: @session-scoped-task-claiming ac-claim-clear
-        const updatedTask: Task = {
-          ...foundTask,
-          status: "needs_work",
-          session_id: null,
-          notes: [...foundTask.notes, note],
-        };
-
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-needs-work",
@@ -1661,7 +1708,7 @@ Examples:
         postDispatchEvent({
           taskId: updatedTask._ulid,
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
-          fromStatus: foundTask.status,
+          fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
           projectPath: ctx.rootDir,
         });
@@ -1688,21 +1735,34 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        let transitionFromStatus: Task["status"] = foundTask.status;
+        const updatedTask = await mutateTaskAtomically(
+          ctx,
+          foundTask,
+          (latestTask) => {
+            transitionFromStatus = latestTask.status;
+            if (
+              latestTask.status === "completed" ||
+              latestTask.status === "cancelled"
+            ) {
+              return latestTask;
+            }
+
+            return {
+              ...latestTask,
+              status: "blocked",
+              blocked_by: [...latestTask.blocked_by, options.reason],
+            };
+          },
+        );
+
         if (
-          foundTask.status === "completed" ||
-          foundTask.status === "cancelled"
+          transitionFromStatus === "completed" ||
+          transitionFromStatus === "cancelled"
         ) {
-          error(errors.status.cannotBlock(foundTask.status));
+          error(errors.status.cannotBlock(transitionFromStatus));
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
-
-        const updatedTask: Task = {
-          ...foundTask,
-          status: "blocked",
-          blocked_by: [...foundTask.blocked_by, options.reason],
-        };
-
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-block",
@@ -1713,7 +1773,7 @@ Examples:
         postDispatchEvent({
           taskId: updatedTask._ulid,
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
-          fromStatus: foundTask.status,
+          fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
           projectPath: ctx.rootDir,
         });
@@ -1738,20 +1798,30 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        if (foundTask.status !== "blocked") {
+        let transitionFromStatus: Task["status"] = foundTask.status;
+        const updatedTask = await mutateTaskAtomically(
+          ctx,
+          foundTask,
+          (latestTask) => {
+            transitionFromStatus = latestTask.status;
+            if (latestTask.status !== "blocked") {
+              return latestTask;
+            }
+
+            // AC: @session-scoped-task-claiming ac-claim-clear
+            return {
+              ...latestTask,
+              status: "pending",
+              blocked_by: [],
+              session_id: null,
+            };
+          },
+        );
+
+        if (transitionFromStatus !== "blocked") {
           warn("Task is not blocked");
           return;
         }
-
-        // AC: @session-scoped-task-claiming ac-claim-clear
-        const updatedTask: Task = {
-          ...foundTask,
-          status: "pending",
-          blocked_by: [],
-          session_id: null,
-        };
-
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-unblock",
@@ -1762,7 +1832,7 @@ Examples:
         postDispatchEvent({
           taskId: updatedTask._ulid,
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
-          fromStatus: foundTask.status,
+          fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
           projectPath: ctx.rootDir,
         });
@@ -1865,66 +1935,77 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        // AC: @spec-task-reset ac-2 - Error if already pending
-        if (foundTask.status === "pending") {
+        let previousStatus: Task["status"] = foundTask.status;
+        const clearedFields: string[] = [];
+        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+          previousStatus = latestTask.status;
+
+          // AC: @spec-task-reset ac-2 - Error if already pending
+          if (latestTask.status === "pending") {
+            return latestTask;
+          }
+
+          // AC: @spec-task-reset ac-1 - Reset to pending, clear completion-related fields
+          const nextTask: Task = {
+            ...latestTask,
+            status: "pending",
+          };
+          clearedFields.splice(0, clearedFields.length);
+
+          // Clear timestamps and reasons based on previous status
+          if (
+            latestTask.completed_at !== undefined &&
+            latestTask.completed_at !== null
+          ) {
+            nextTask.completed_at = null;
+            clearedFields.push("completed_at");
+          }
+          if (
+            latestTask.started_at !== undefined &&
+            latestTask.started_at !== null
+          ) {
+            nextTask.started_at = null;
+            clearedFields.push("started_at");
+          }
+          if (
+            latestTask.closed_reason !== undefined &&
+            latestTask.closed_reason !== null
+          ) {
+            nextTask.closed_reason = null;
+            clearedFields.push("closed_reason");
+          }
+          if (latestTask.blocked_by.length > 0) {
+            nextTask.blocked_by = [];
+            clearedFields.push("blocked_by");
+          }
+          // AC: @session-scoped-task-claiming ac-claim-clear
+          if (latestTask.session_id) {
+            nextTask.session_id = null;
+            clearedFields.push("session_id");
+          }
+
+          // AC: @spec-task-reset ac-4 - Add note documenting the reset
+          // AC: @spec-task-reset ac-author
+          const hadCancelReason =
+            latestTask.closed_reason && latestTask.status === "cancelled";
+          const cancelReasonText = hadCancelReason
+            ? ` (was cancelled: ${latestTask.closed_reason})`
+            : "";
+          const noteContent = `Reset from ${latestTask.status} to pending${cancelReasonText}`;
+          const note = createNote(
+            noteContent,
+            getAuthor(ctx.config?.identity?.author),
+          );
+          nextTask.notes = [...nextTask.notes, note];
+
+          return nextTask;
+        });
+
+        if (previousStatus === "pending") {
           error("Task is already pending");
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
-        // Track previous status and reason for note (AC-4)
-        const previousStatus = foundTask.status;
-        const hadCancelReason =
-          foundTask.closed_reason && foundTask.status === "cancelled";
-        const cancelReasonText = hadCancelReason
-          ? ` (was cancelled: ${foundTask.closed_reason})`
-          : "";
-
-        // AC: @spec-task-reset ac-1 - Reset to pending, clear completion-related fields
-        const clearedFields: string[] = [];
-        const updatedTask: Task = {
-          ...foundTask,
-          status: "pending",
-        };
-
-        // Clear timestamps and reasons based on previous status
-        if (
-          foundTask.completed_at !== undefined &&
-          foundTask.completed_at !== null
-        ) {
-          updatedTask.completed_at = null;
-          clearedFields.push("completed_at");
-        }
-        if (
-          foundTask.started_at !== undefined &&
-          foundTask.started_at !== null
-        ) {
-          updatedTask.started_at = null;
-          clearedFields.push("started_at");
-        }
-        if (
-          foundTask.closed_reason !== undefined &&
-          foundTask.closed_reason !== null
-        ) {
-          updatedTask.closed_reason = null;
-          clearedFields.push("closed_reason");
-        }
-        if (foundTask.blocked_by.length > 0) {
-          updatedTask.blocked_by = [];
-          clearedFields.push("blocked_by");
-        }
-        // AC: @session-scoped-task-claiming ac-claim-clear
-        if (foundTask.session_id) {
-          updatedTask.session_id = null;
-          clearedFields.push("session_id");
-        }
-
-        // AC: @spec-task-reset ac-4 - Add note documenting the reset
-        // AC: @spec-task-reset ac-author
-        const noteContent = `Reset from ${previousStatus} to pending${cancelReasonText}`;
-        const note = createNote(noteContent, getAuthor(ctx.config?.identity?.author));
-        updatedTask.notes = [...updatedTask.notes, note];
-
-        await saveTask(ctx, updatedTask);
         // AC: @spec-task-reset ac-3 - Shadow commit with message task-reset
         await commitIfShadow(
           ctx.shadow,
@@ -2377,20 +2458,22 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        // Calculate next ID (max existing + 1, or 1 if none)
-        const nextId =
-          foundTask.todos.length > 0
-            ? Math.max(...foundTask.todos.map((t) => t.id)) + 1
-            : 1;
+        let todo = createTodo(1, text, options.author);
+        const updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+          // Calculate next ID (max existing + 1, or 1 if none)
+          const nextId =
+            latestTask.todos.length > 0
+              ? Math.max(...latestTask.todos.map((entry) => entry.id)) + 1
+              : 1;
 
-        const todo = createTodo(nextId, text, options.author);
+          todo = createTodo(nextId, text, options.author);
 
-        const updatedTask: Task = {
-          ...foundTask,
-          todos: [...foundTask.todos, todo],
-        };
+          return {
+            ...latestTask,
+            todos: [...latestTask.todos, todo],
+          };
+        });
 
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-note",
@@ -2423,37 +2506,50 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
-        const todoIndex = foundTask.todos.findIndex((t) => t.id === id);
-        if (todoIndex === -1) {
+        let todoState: "not_found" | "already_done" | "updated" | undefined;
+        let updatedTodo: Task["todos"][number] | undefined;
+        await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+          const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
+          if (todoIndex === -1) {
+            todoState = "not_found";
+            return latestTask;
+          }
+
+          if (latestTask.todos[todoIndex].done) {
+            todoState = "already_done";
+            updatedTodo = latestTask.todos[todoIndex];
+            return latestTask;
+          }
+
+          const updatedTodos = [...latestTask.todos];
+          updatedTodos[todoIndex] = {
+            ...updatedTodos[todoIndex],
+            done: true,
+            done_at: new Date().toISOString(),
+          };
+          updatedTodo = updatedTodos[todoIndex];
+          return {
+            ...latestTask,
+            todos: updatedTodos,
+          };
+        });
+
+        if (todoState === "not_found") {
           error(errors.todo.notFound(id));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        if (foundTask.todos[todoIndex].done) {
+        if (todoState === "already_done") {
           warn(`Todo #${id} is already done`);
           return;
         }
-
-        const updatedTodos = [...foundTask.todos];
-        updatedTodos[todoIndex] = {
-          ...updatedTodos[todoIndex],
-          done: true,
-          done_at: new Date().toISOString(),
-        };
-
-        const updatedTask: Task = {
-          ...foundTask,
-          todos: updatedTodos,
-        };
-
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-note",
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
         success(`Marked todo #${id} as done`, {
-          todo: updatedTodos[todoIndex],
+          todo: updatedTodo,
         });
       } catch (err) {
         error(errors.failures.markTodoDone, err);
@@ -2478,37 +2574,54 @@ Examples:
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
-        const todoIndex = foundTask.todos.findIndex((t) => t.id === id);
-        if (todoIndex === -1) {
+        let todoState:
+          | "not_found"
+          | "already_not_done"
+          | "updated"
+          | undefined;
+        let updatedTodo: Task["todos"][number] | undefined;
+        await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
+          const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
+          if (todoIndex === -1) {
+            todoState = "not_found";
+            return latestTask;
+          }
+
+          if (!latestTask.todos[todoIndex].done) {
+            todoState = "already_not_done";
+            updatedTodo = latestTask.todos[todoIndex];
+            return latestTask;
+          }
+
+          const updatedTodos = [...latestTask.todos];
+          updatedTodos[todoIndex] = {
+            ...updatedTodos[todoIndex],
+            done: false,
+            done_at: undefined,
+          };
+          updatedTodo = updatedTodos[todoIndex];
+          return {
+            ...latestTask,
+            todos: updatedTodos,
+          };
+        });
+
+        if (todoState === "not_found") {
           error(errors.todo.notFound(id));
           process.exit(EXIT_CODES.NOT_FOUND);
         }
 
-        if (!foundTask.todos[todoIndex].done) {
+        if (todoState === "already_not_done") {
           warn(`Todo #${id} is not done`);
           return;
         }
-
-        const updatedTodos = [...foundTask.todos];
-        updatedTodos[todoIndex] = {
-          ...updatedTodos[todoIndex],
-          done: false,
-          done_at: undefined,
-        };
-
-        const updatedTask: Task = {
-          ...foundTask,
-          todos: updatedTodos,
-        };
-
-        await saveTask(ctx, updatedTask);
         await commitIfShadow(
           ctx.shadow,
           "task-note",
           foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         );
         success(`Marked todo #${id} as not done`, {
-          todo: updatedTodos[todoIndex],
+          todo: updatedTodo,
         });
       } catch (err) {
         error(errors.failures.markTodoNotDone, err);
