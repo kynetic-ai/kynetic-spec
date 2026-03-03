@@ -259,6 +259,26 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KJTVMGPNP3HN9B9SRF6MEER7
+        slugs:
+          - ws-disconnect-lifecycle-cleanup
+        title: WebSocket Disconnect Lifecycle Cleanup
+        type: requirement
+        tags:
+          - daemon
+          - websocket
+          - reliability
+        description: Ensure daemon WebSocket disconnect handling is accurate for abnormal closes. Disconnect
+          events must reliably identify the same session created on connect, remove that session
+          from in-memory registries, and prevent stale heartbeat/client counts after client
+          disconnect or process termination.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-03T22:03:28.854Z
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
