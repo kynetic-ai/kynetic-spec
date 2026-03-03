@@ -71254,7 +71254,7 @@
     regardless — this is about VISIBILITY of sync failures, not blocking commits. Related: the merge
     driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works —
     the problem is purely that nobody knows recovery is needed."
-  spec_ref: null
+  spec_ref: "@shadow-sync"
   status: in_progress
   blocked_by: []
   depends_on: []
