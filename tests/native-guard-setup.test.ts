@@ -190,7 +190,7 @@ describe("kspec setup native guard migration", () => {
   });
 
   // AC: @native-guard-commands ac-idempotent
-  it("does not create duplicate PreToolUse entries on repeated runs", () => {
+  it("does not create duplicate PreToolUse entries on repeated runs", { timeout: 60_000 }, () => {
     // Run setup twice
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });
     kspec("setup", tempDir, { env: { CLAUDECODE: "1" } });

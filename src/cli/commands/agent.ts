@@ -700,6 +700,140 @@ export function registerAgentCommands(program: Command): void {
       }
     });
 
+  // ─── kspec agent dispatch watch ───────────────────────────────────────────
+
+  // AC: @cli-agent-commands ac-13 through ac-16
+  dispatch
+    .command("watch")
+    .description("Stream agent text output from the dispatch engine in real time")
+    .option("--agent <name>", "Only show output from this agent")
+    .option("--session <id>", "Only show output from this session")
+    .option("--retries <n>", "Number of reconnect attempts on disconnect (default 5)", "5")
+    .action(async (opts) => {
+      const DEFAULT_RETRIES = 5;
+      const RETRY_BASE_MS = 1000;
+      const MAX_RETRY_MS = 30_000;
+
+      // AC: @cli-agent-commands ac-15 — error when daemon not running
+      const daemonConn = getDaemonUrl();
+      if (!daemonConn) {
+        error(
+          "Daemon is not running. The watch command requires the daemon.",
+        );
+        info("Suggestion: Start the daemon with: kspec serve");
+        // AC: @cli-agent-commands ac-15 — exit code 3
+        process.exit(EXIT_CODES.NOT_FOUND);
+        return;
+      }
+
+      const parsedRetries = parseIntOption(opts.retries, {
+        min: 0,
+        max: Number.MAX_SAFE_INTEGER,
+        name: "Retries",
+      });
+      if (!parsedRetries.ok) {
+        error(`Invalid --retries value: ${parsedRetries.error}`, {
+          suggestion: "Example: --retries 5",
+        });
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+        return;
+      }
+      const retryLimit = parsedRetries.value;
+      const agentFilter: string | undefined = opts.agent;
+      const sessionFilter: string | undefined = opts.session;
+
+      // Resolve project dir for WebSocket project binding
+      let projectDir: string | undefined;
+      try {
+        const ctx = await initContext();
+        projectDir = ctx.rootDir;
+      } catch {
+        // non-fatal: WebSocket will use daemon default
+      }
+
+      let retryCount = 0;
+
+      function connect(): void {
+        const wsUrl = new URL(`ws://localhost:${daemonConn!.port}/ws`);
+        if (projectDir) {
+          wsUrl.searchParams.set("project", projectDir);
+        }
+
+        // AC: @cli-agent-commands ac-15 — Node 22+ has global WebSocket
+        const ws = new WebSocket(wsUrl.toString());
+
+        ws.onopen = () => {
+          retryCount = 0;
+          // Subscribe to agents topic
+          ws.send(JSON.stringify({
+            action: "subscribe",
+            request_id: "watch-subscribe",
+            payload: { topics: ["agents"] },
+          }));
+        };
+
+        ws.onmessage = (event: MessageEvent) => {
+          let msg: Record<string, unknown>;
+          try {
+            msg = JSON.parse(event.data as string);
+          } catch {
+            return;
+          }
+
+          // AC: @cli-agent-commands ac-13 — print text chunks with [agent-id session-id] prefix
+          if (msg.event === "agent_text_chunk" && msg.data) {
+            const data = msg.data as {
+              session_id?: string;
+              agent_id?: string;
+              text?: string;
+            };
+            const sessionId = data.session_id ?? "";
+            const agentId = data.agent_id ?? "";
+            const text = data.text ?? "";
+
+            // AC: @cli-agent-commands ac-16 — filter by agent/session if specified
+            if (agentFilter && agentId !== agentFilter) return;
+            if (sessionFilter && sessionId !== sessionFilter) return;
+
+            process.stdout.write(`[${agentId} ${sessionId}] ${text}`);
+          }
+        };
+
+        ws.onerror = () => {
+          // error event fires before close, handled in onclose
+        };
+
+        ws.onclose = () => {
+          if (retryCount >= retryLimit) {
+            // AC: @cli-agent-commands ac-14 — exit code 3 when retries exhausted
+            error(
+              `WebSocket connection lost and reconnection failed after ${retryLimit} attempt(s).`,
+            );
+            info("Suggestion: Verify the daemon is still running with: kspec serve");
+            process.exit(EXIT_CODES.NOT_FOUND);
+            return;
+          }
+
+          retryCount++;
+          const backoffMs = Math.min(
+            RETRY_BASE_MS * Math.pow(2, retryCount - 1),
+            MAX_RETRY_MS,
+          );
+          // AC: @cli-agent-commands ac-14 — print reconnecting message
+          process.stderr.write(
+            `[watch] Connection lost. Reconnecting in ${Math.round(backoffMs / 1000)}s (attempt ${retryCount}/${retryLimit})...\n`,
+          );
+          setTimeout(connect, backoffMs);
+        };
+      }
+
+      connect();
+
+      // Keep process alive (WebSocket is non-blocking in Node)
+      // Users interrupt with Ctrl+C
+      await new Promise<void>(() => {/* intentionally never resolves */});
+    });
+
   // ─── kspec agent end-loop ─────────────────────────────────────────────────
 
   // AC: @ralph-replacement ac-1 — equivalent to kspec ralph end-loop
