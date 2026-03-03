@@ -10832,7 +10832,7 @@ runs:
   - _ulid: 01KJTNVWMTF6ADRMB21HV67NZY
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 3
+    current_step: 4
     total_steps: 6
     started_at: 2026-03-03T20:22:39.002Z
     step_results:
@@ -10865,5 +10865,15 @@ runs:
       - step_index: 3
         status: completed
         started_at: 2026-03-03T20:23:21.525Z
-        completed_at: 2026-03-03T20:23:21.525Z
+        completed_at: 2026-03-03T20:23:25.603Z
+        notes: "Proposed improvements for untracked friction: (1) Add helper path for daemon-sensitive CLI
+          tests to force isolated HOME/config (small; prevents ambient daemon interference). (2) Add
+          shared wait-for-startup utility + guidance to avoid fixed sleeps in process/daemon tests
+          (small-medium; reduces CI flakes). (3) Add reviewer/worker skill note to close completed
+          subagents proactively or use an auto-close pattern after waits (small; avoids thread-limit
+          stalls)."
+      - step_index: 4
+        status: completed
+        started_at: 2026-03-03T20:23:25.603Z
+        completed_at: 2026-03-03T20:23:25.603Z
     initiated_by: Jacob Chapel
