@@ -71119,7 +71119,7 @@
   type: task
   spec_ref: "@daemon-web-ui-bundle"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-daemon-server-mode"
@@ -71206,3 +71206,6 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-03T06:18:47.485Z
+  closed_reason: "Merged in PR #642. Added build:web-ui pipeline step, resolveWebUiPath bundled
+    fallback via import.meta.url, 5 unit tests covering all ACs, and upgraded CI to Node 22."
