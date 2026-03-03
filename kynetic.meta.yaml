@@ -68,6 +68,26 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: false
+  - _ulid: 01KJS8HR86PJCAS00PQFFX1C6F
+    id: worker
+    name: Worker Agent
+    description: Autonomous task implementation agent. Picks up automation-eligible tasks, implements
+      them following spec ACs, and submits for review.
+    capabilities:
+      - code
+      - test
+      - refactor
+    tools:
+      - kspec
+      - git
+      - npm
+      - vitest
+    conventions: []
+    dispatch: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: true
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
