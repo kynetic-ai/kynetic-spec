@@ -8,7 +8,7 @@
  * CLI one-shot mode. Each invocation creates an isolated session with
  * its own event log and metadata.
  *
- * AC: @agent-invocation-lifecycle ac-1 through ac-9
+ * AC: @agent-invocation-lifecycle ac-1 through ac-11
  */
 
 import * as path from "node:path";
@@ -19,7 +19,7 @@ import { buildPromptWithSkills } from "./prompts.js";
 import { resolveAdapter } from "../agents/adapters.js";
 import { spawnAndInitialize } from "../agents/spawner.js";
 import type { SpawnedAgent } from "../agents/spawner.js";
-import type { SessionUpdate } from "../acp/index.js";
+import type { RequestPermissionRequest, SessionUpdate } from "../acp/index.js";
 import {
   createSession,
   closeSession,
@@ -180,7 +180,7 @@ function disposeAgent(agent: SpawnedAgent | null): null {
  * Creates a session, spawns the agent, injects KSPEC_SESSION_ID,
  * sends the prompt, streams events, and closes the session on completion.
  *
- * AC: @agent-invocation-lifecycle ac-1 through ac-9
+ * AC: @agent-invocation-lifecycle ac-1 through ac-11
  */
 export async function runInvocation(options: InvocationOptions): Promise<InvocationResult> {
   const {
@@ -307,6 +307,38 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     };
 
     state.agent.client.on("update", updateHandler);
+
+    // ─── Register permission request handler ──────────────────────────────
+    // AC: @agent-invocation-lifecycle ac-11
+    const requestHandler = (id: string | number, method: string, params: unknown) => {
+      if (method === "session/request_permission") {
+        if (autoApprove) {
+          // Auto-approve: prefer allow_always, fall back to allow_once
+          const permParams = params as RequestPermissionRequest;
+          const allowOption =
+            permParams.options?.find((o) => o.kind === "allow_always") ??
+            permParams.options?.find((o) => o.kind === "allow_once");
+
+          if (allowOption) {
+            state.agent!.client.respondPermission(id, {
+              outcome: { outcome: "selected", optionId: allowOption.optionId },
+            });
+          } else {
+            state.agent!.client.respondPermission(id, {
+              outcome: { outcome: "cancelled" },
+            });
+          }
+        } else {
+          // Non-auto-approve: deny the request
+          state.agent!.client.respondPermission(id, {
+            outcome: { outcome: "cancelled" },
+          });
+        }
+      }
+      // Other request types (ReadTextFile, WriteTextFile, etc.) are not handled here
+    };
+
+    state.agent.client.on("request", requestHandler);
 
     // ─── Send prompt with timeout ─────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-3

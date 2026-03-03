@@ -30,6 +30,8 @@ import { execSync } from 'node:child_process';
 
 let sessionId = null;
 let initialized = false;
+/** Map of pending outgoing requests: id → { resolve, reject } */
+const pendingRequests = new Map();
 
 // ─── Environment Config ──────────────────────────────────────────────────────
 
@@ -48,12 +50,27 @@ const verifyEnvFile = process.env.MOCK_ACP_VERIFY_ENV_FILE;
 const verifyEnvVars = process.env.MOCK_ACP_VERIFY_ENV_VARS; // comma-separated var names
 // Write process.argv to a file for verifying command-line args
 const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
+const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === 'true';
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
 function sendResponse(id, result) {
   const response = { jsonrpc: '2.0', id, result };
   console.log(JSON.stringify(response));
+}
+
+let nextRequestId = 1;
+/**
+ * Send a JSON-RPC request FROM the agent TO the client and await the response.
+ * Used for permission requests where the agent asks the client to approve a tool call.
+ */
+function sendOutgoingRequest(method, params) {
+  return new Promise((resolve, reject) => {
+    const id = `mock-req-${nextRequestId++}`;
+    pendingRequests.set(id, { resolve, reject });
+    const request = { jsonrpc: '2.0', id, method, params };
+    console.log(JSON.stringify(request));
+  });
 }
 
 function sendError(id, code, message) {
@@ -155,6 +172,23 @@ async function handlePrompt(id, params) {
     return;
   }
 
+  // Optionally send a permission request before responding (for ac-11 tests)
+  if (sendPermissionRequest) {
+    await sendOutgoingRequest("session/request_permission", {
+      sessionId: params.sessionId,
+      toolCall: {
+        toolCallUpdate: "tool_use",
+        toolCallId: "mock-tool-1",
+        toolName: "Edit",
+        input: { path: "/some/file.ts", content: "new content" },
+      },
+      options: [
+        { optionId: "allow-once-id", kind: "allow_once", name: "Allow once" },
+        { optionId: "allow-always-id", kind: "allow_always", name: "Allow always" },
+      ],
+    });
+  }
+
   // Send streaming update notification (ACP SessionUpdate format)
   // SessionUpdate is a discriminated union with sessionUpdate as the discriminator
   sendNotification("session/update", {
@@ -238,7 +272,26 @@ async function handleMessage(line) {
   try {
     const msg = JSON.parse(line);
 
-    if (msg.jsonrpc !== "2.0" || !msg.method) {
+    if (msg.jsonrpc !== "2.0") {
+      sendError(msg.id || null, -32600, "Invalid Request");
+      return;
+    }
+
+    // Handle responses to outgoing requests (no 'method' field, has 'result' or 'error')
+    if (!msg.method && msg.id !== undefined) {
+      const pending = pendingRequests.get(msg.id);
+      if (pending) {
+        pendingRequests.delete(msg.id);
+        if (msg.error) {
+          pending.reject(new Error(msg.error.message || 'Request failed'));
+        } else {
+          pending.resolve(msg.result);
+        }
+      }
+      return;
+    }
+
+    if (!msg.method) {
       sendError(msg.id || null, -32600, "Invalid Request");
       return;
     }

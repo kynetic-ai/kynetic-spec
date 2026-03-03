@@ -1063,6 +1063,77 @@ process.exit(0);
   });
 });
 
+// ─── AC-11: ACP permission request auto-approval ─────────────────────────────
+
+// AC: @agent-invocation-lifecycle ac-11
+describe("ACP permission request handling", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac11-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should auto-approve permission requests in auto-approve mode", async () => {
+    // Register adapter that sends a permission request during the prompt
+    registerAdapter("permission-mock-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_SEND_PERMISSION_REQUEST: "true",
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+      },
+      description: "Mock ACP that sends permission requests",
+    });
+
+    const agent = makeTestAgent({ adapter: "permission-mock-acp", auto_approve: true });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test permission auto-approval",
+      trigger: "task.ready",
+      autoApprove: true,
+    });
+
+    // Invocation should complete successfully — not hang waiting for permission
+    expect(result.outcome).toBe("success");
+    expect(result.stopReason).toBe("end_turn");
+  });
+
+  it("should deny permission requests in non-auto-approve mode and still complete", async () => {
+    registerAdapter("permission-deny-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_SEND_PERMISSION_REQUEST: "true",
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+      },
+      description: "Mock ACP for permission deny test",
+    });
+
+    const agent = makeTestAgent({ adapter: "permission-deny-acp", auto_approve: false });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test permission denial",
+      trigger: "task.ready",
+      autoApprove: false,
+    });
+
+    // Invocation should complete (not hang) — mock proceeds after receiving any response
+    expect(result.outcome).toBe("success");
+  });
+});
+
 // ─── Trait: error-guidance ────────────────────────────────────────────────────
 
 // AC: @trait-error-guidance ac-1 — N/A: This is a library module (not a CLI command).
