@@ -70564,7 +70564,7 @@
   type: task
   spec_ref: "@ralph-replacement"
   plan_ref: "@plan-reactive-agent-runtime"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-cli-agent-commands"
@@ -70573,9 +70573,10 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+  session_id: null
   created_at: 2026-03-02T01:22:22.683Z
   started_at: 2026-03-03T01:44:47.390Z
+  submitted_at: 2026-03-03T02:06:17.110Z
   notes:
     - _ulid: 01KJP278TV2GKBMD6DMP6PG4PX
       created_at: 2026-03-02T01:22:22.683Z
@@ -70700,9 +70701,19 @@
 
         All 9 replacement tests pass. Build succeeds.
       supersedes: null
+    - _ulid: 01KJRQYES980E4QWV5PJ2G49D4
+      created_at: 2026-03-03T02:20:31.401Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: 3 issues causing CI failure (shard 2/3 failing,
+        12 test failures): (1) tests/ralph/task-limit.test.ts not deleted - tests removed kspec
+        ralph --max-tasks flags (8 failures); (2) tests/agents-instruction-gen.test.ts not updated -
+        expects '## Ralph Loop Mode' but template renamed to '## Agent Dispatch Mode' (3 failures);
+        (3) kspec-agents.md not committed with regenerated content - still has ralph references.
+        SHOULD-FIX: .agents/skills/ rendered files not updated via kspec skill render; ac-8 test too
+        weak. Details in PR review."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-03T02:06:17.110Z
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
     - task-ralph-migration-guide
