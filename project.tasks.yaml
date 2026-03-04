@@ -72469,7 +72469,15 @@
     - ralph
   vcs_refs: []
   created_at: 2026-03-03T07:07:15.247Z
-  notes: []
+  notes:
+    - _ulid: 01KJX36BZ6G4KZGDZ3B2FDD30T
+      created_at: 2026-03-04T18:54:02.726Z
+      author: Jacob Chapel
+      content: "Carry-forward requirement from PR #664: when replacing ralph loop wording with agent
+        dispatch concepts, preserve explicit per-task branch isolation guidance (create/switch
+        dedicated task branch before file edits) so worker/reviewer/fix-cycle flows avoid cross-task
+        branch contamination."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJS8BGJA457W8X7F28MWFYBP
@@ -72494,7 +72502,14 @@
     - ralph
   vcs_refs: []
   created_at: 2026-03-03T07:07:16.426Z
-  notes: []
+  notes:
+    - _ulid: 01KJX36D7GEYZVQVGV5RJV02T2
+      created_at: 2026-03-04T18:54:04.017Z
+      author: Jacob Chapel
+      content: "Carry-forward requirement from PR #664: keep branch-isolation step in
+        task-work/pr-review/codex/eval-agents skill updates. Runtime guidance must state: after task
+        start and before edits, create/switch to dedicated task branch."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJS8V7THVJ8GRF1M6XVZH9FY
@@ -74928,6 +74943,12 @@
   plan_ref: "@01KJWX2B"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #677. Implemented full buffer-aware .kspec read/write overlay for
+    atomic batch mode: added readFile/readdir/access/write helpers, routed parser/meta/CLI
+    skill+module paths through buffer-aware I/O, fixed rollback consistency for supporting-file copy
+    paths, and closed directory delete overlay edge cases. Added regression coverage including
+    repeated item ac add preservation and rollback safety for skill supporting files. AC coverage
+    for @batch-write-buffer verified in targeted and full test runs."
   depends_on: []
   context: []
   priority: 2
@@ -74940,6 +74961,7 @@
   created_at: 2026-03-04T15:31:50.331Z
   started_at: 2026-03-04T17:45:25.580Z
   submitted_at: 2026-03-04T17:45:28.876Z
+  completed_at: 2026-03-04T18:26:50.372Z
   notes:
     - _ulid: 01KJWX9Q4BEZ7GX76TARHRN5ZG
       created_at: 2026-03-04T17:11:01.004Z
@@ -75029,10 +75051,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T18:26:50.372Z
-  closed_reason: "Merged in PR #677. Implemented full buffer-aware .kspec read/write overlay for
-    atomic batch mode: added readFile/readdir/access/write helpers, routed parser/meta/CLI
-    skill+module paths through buffer-aware I/O, fixed rollback consistency for supporting-file copy
-    paths, and closed directory delete overlay edge cases. Added regression coverage including
-    repeated item ac add preservation and rollback safety for skill supporting files. AC coverage
-    for @batch-write-buffer verified in targeted and full test runs."
