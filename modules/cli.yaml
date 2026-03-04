@@ -988,6 +988,10 @@ features:
             given: no --priority provided
             when: kspec task add --title 'T' runs
             then: task created with priority 3 (default)
+          - id: ac-priority-valid
+            given: --priority is provided with valid value
+            when: kspec task add --title 'T' --priority 1 (or --priority P1) runs
+            then: task created with specified priority; P-notation normalized to numeric
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
