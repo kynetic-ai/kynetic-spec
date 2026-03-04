@@ -74523,7 +74523,7 @@
   spec_ref: "@task-add"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -74535,6 +74535,7 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-04T14:15:27.041Z
   started_at: 2026-03-04T15:12:40.008Z
+  submitted_at: 2026-03-04T15:15:22.171Z
   notes:
     - _ulid: 01KJWPNWQ96TZAGYNT80TAPX48
       created_at: 2026-03-04T15:15:19.913Z
@@ -74549,7 +74550,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T15:15:22.171Z
+  completed_at: 2026-03-04T15:15:23.281Z
+  closed_reason: "Spec fully documented: 11 options in description, 20 ACs covering all options with
+    happy path and validation error cases."
 - _ulid: 01KJWK890YHTS5PSG2JMS36J31
   slugs: []
   title: "Fill spec gap: task set command options and acceptance criteria"
