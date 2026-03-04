@@ -11994,7 +11994,7 @@ runs:
   - _ulid: 01KJVP16H42RT002P7QM560RTD
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-04T05:44:47.396Z
     step_results:
@@ -12016,5 +12016,17 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-04T05:45:45.832Z
-        completed_at: 2026-03-04T05:45:45.832Z
+        completed_at: 2026-03-04T05:45:50.507Z
+        notes: >-
+          Friction points:
+
+          - Validation signal-to-noise: kspec validate output still includes known repo-wide
+          schema/reference/alignment debt, which weakens use as a per-task gate.
+
+          - Minor workflow UX friction: kspec workflow show requires an explicit run ref even when
+          one active run exists; this adds extra lookup/typing during guided workflows.
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-04T05:45:50.507Z
+        completed_at: 2026-03-04T05:45:50.507Z
     initiated_by: Jacob Chapel
