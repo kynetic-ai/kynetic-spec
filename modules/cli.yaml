@@ -6474,8 +6474,10 @@ features:
       - id: ac-13
         given: kspec agent dispatch watch is run while the daemon has active or future agent invocations
         when: An agent produces text output
-        then: Text chunks are printed to stdout in real time, prefixed with [agent-id session-id] so output
-          from concurrent agents can be distinguished
+        then: Text output streams to stdout in real time. Prefix [agent-id session-id] is applied at line
+          boundaries (once per output line), not repeated for every token-sized chunk; when output
+          switches between streams mid-line, watch starts a new prefixed line so concurrent agent
+          output remains readable.
       - id: ac-14
         given: kspec agent dispatch watch is run
         when: The WebSocket connection to the daemon drops
