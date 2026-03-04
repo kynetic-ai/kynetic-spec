@@ -6474,12 +6474,11 @@ features:
       - id: ac-13
         given: kspec agent dispatch watch is run while the daemon has active or future agent invocations
         when: An agent produces text output
-        then: Text output streams to stdout in real time with [agent-id session-id] prefixed once per
+        then: "Text output streams to stdout in real time with [agent-id session-id] prefixed once per
           rendered line. Continuation chunks append to the current line, and watch starts a new
-          prefixed line at newline characters, ACP empty-chunk message boundaries, or stream
-          switches. When adapters omit empty-chunk delimiters, watch may also split at conservative
-          sentence boundaries (previous chunk ends with sentence punctuation and next chunk starts a
-          capitalized token).
+          prefixed line at explicit boundaries only: newline characters, stream switches, and ACP
+          boundary sentinels (empty chunks, including those emitted between logical runs such as
+          tool-call update transitions)."
       - id: ac-14
         given: kspec agent dispatch watch is run
         when: The WebSocket connection to the daemon drops
