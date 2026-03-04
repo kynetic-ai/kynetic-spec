@@ -73586,5 +73586,20 @@
         in_progress first, seed setup built-in task-worker with in_progress+eligible rule, and add
         regression tests for scheduler order/bootstrap/defaults."
       supersedes: null
+    - _ulid: 01KJVW9JJSX6YR2VT2N012B87G
+      created_at: 2026-03-04T07:34:13.337Z
+      author: Jacob Chapel
+      content: "Implemented dispatch in_progress support end-to-end: added task.in_progress to
+        dispatch/session schemas, mapped in_progress status in dispatch runtime, added deterministic
+        queue precedence so in_progress dispatch entries are selected first, and updated built-in
+        task-worker setup defaults to include task.in_progress with automation: eligible filter.
+        Added regression coverage in tests/agent-dispatch-engine.test.ts,
+        tests/ralph-replacement.test.ts, tests/meta.test.ts, and
+        tests/session-model-evolution.test.ts (with AC annotations for
+        @dispatch-in-progress-priority ac-1..ac-3). Verification: npm test passes (173 files, 3622
+        tests). kspec validate currently fails due pre-existing project meta/reference issues around
+        duplicate @observations and missing .kspec/skills/observations/SKILL.md, unrelated to this
+        task."
+      supersedes: null
   todos: []
   automation: eligible
