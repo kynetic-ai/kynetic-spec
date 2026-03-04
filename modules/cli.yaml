@@ -2847,6 +2847,10 @@ features:
             given: inbox ref does not exist
             when: kspec inbox note @nonexistent 'text' runs
             then: exits with not-found error
+          - id: ac-1
+            given: inbox item @ref exists
+            when: kspec inbox note @ref 'additional context' runs
+            then: note text appended to item text separated by newline-separator-newline
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
