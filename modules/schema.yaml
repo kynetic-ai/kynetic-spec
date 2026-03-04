@@ -830,7 +830,8 @@ features:
             when: syncSpecImplementationStatus is called
             then: Spec implementation status is 'in_progress' (partial completion)
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFA4KB1QBJ1KFT5KEXQCATGQ
         slugs:
           - alignment-index
@@ -854,7 +855,8 @@ features:
             when: getSpecForTask(taskUlid, refIndex) is called
             then: Returns the LoadedSpecItem that task implements
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFA4KTKFC1JW1F4002Q58VT9
         slugs:
           - alignment-warnings
@@ -878,7 +880,8 @@ features:
             when: findAlignmentWarnings is called
             then: Returns warning with type='status_mismatch' explaining the discrepancy
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFA4M9J3FDXJ50PTMQQK82PT
         slugs:
           - alignment-summaries
@@ -899,7 +902,8 @@ features:
             then: Returns SpecImplementationSummary with currentStatus, expectedStatus, linkedTasks array, and
               isAligned boolean
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KFA4MKV8QHT9ZAJQGZ8F7MQF
         slugs:
           - alignment-stats
@@ -919,7 +923,8 @@ features:
             when: getStats is called
             then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
         status:
-          implementation: implemented
+          maturity: draft
+          implementation: in_progress
     status:
       maturity: draft
       implementation: implemented
