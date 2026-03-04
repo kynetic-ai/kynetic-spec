@@ -11724,7 +11724,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJV977N8YRSPNFDH1ZYHFR7G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-04T02:00:53.672Z
@@ -11803,7 +11803,10 @@ runs:
           coverage is sufficient (convention @01KHYXJV, observation @01KFFZSM, and pending
           validation stream @01KHF2BN)."
       - step_index: 5
-        status: completed
+        status: skipped
         started_at: 2026-03-04T02:02:13.600Z
-        completed_at: 2026-03-04T02:02:13.600Z
+        completed_at: 2026-03-04T02:02:17.850Z
+        notes: "No new captures added this session. Reflection findings mapped to existing tracking:
+          convention @01KHYXJV, observation @01KFFZSM, and pending task stream @01KHF2BN."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-04T02:02:17.850Z
