@@ -71683,12 +71683,20 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJVXPW876HS5DEF0SF5N218F
   created_at: 2026-03-03T06:43:31.667Z
-  notes: []
+  started_at: 2026-03-04T08:00:19.688Z
+  notes:
+    - _ulid: 01KJVXSBJD5V09MAAVJJPTYA7S
+      created_at: 2026-03-04T08:00:19.021Z
+      author: Jacob Chapel
+      content: "Execution context:\\n- Background: task asks for spec_ref alias compatibility in batch
+        command args.\\n- Scope: verify alias behavior and add/fix code only if failing.\\n- Files:
+        src/cli/batch-exec.ts and tests/batch-exec-engine.test.ts if changes are needed.\\n-
+        Verification: batch dry-run command(s) + focused vitest coverage."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T08:00:19.688Z
-  session_id: 01KJVXPW876HS5DEF0SF5N218F
 - _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
   title: "CLI DX: accept tags as alias for tag in batch commands"
