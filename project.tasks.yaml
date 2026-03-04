@@ -72947,6 +72947,7 @@
   session_id: 01KJWD6PVCFRET92JHW9GRPE70
   created_at: 2026-03-03T19:03:02.559Z
   started_at: 2026-03-04T12:32:34.844Z
+  submitted_at: 2026-03-04T12:34:19.653Z
   notes:
     - _ulid: 01KJTPG6P49VG4TENB5ZGJ7JX4
       created_at: 2026-03-03T20:33:44.644Z
@@ -72986,9 +72987,15 @@
         currently fails due unrelated pre-existing repo issues (duplicate @observations refs,
         missing .kspec/skills/observations/SKILL.md, existing alignment/completeness warnings)."
       supersedes: null
+    - _ulid: 01KJWDGRN647ACW1SX06RYNKQS
+      created_at: 2026-03-04T12:35:14.726Z
+      author: Jacob Chapel
+      content: "PR opened: https://github.com/kynetic-ai/kynetic-spec/pull/672 (branch
+        fix/ac10-cli-daemon-test-isolation). Includes AC-10 daemon isolation fixture updates and
+        focused/full test evidence."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T12:34:19.653Z
 - _ulid: 01KJTHAB6NRKQE12JJ7Q7V80CK
   slugs: []
   title: Fix core-skill-install test flakiness in shard 3
