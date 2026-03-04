@@ -18,6 +18,7 @@ import {
   type LoadedPlan,
   loadAllTasks,
   loadPlans,
+  mutatePlanAtomically,
   savePlan,
   saveTask,
   shortestUniqueUlid,
@@ -275,33 +276,9 @@ Examples:
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
         const foundPlanRef = shortPlanRef(foundPlan, plans);
-
-        // AC: @plan-crud ac-4 - prevent transitions from terminal states
-        if (
-          options.status &&
-          (foundPlan.status === "completed" || foundPlan.status === "rejected")
-        ) {
-          error("Cannot transition from terminal status");
-          process.exit(EXIT_CODES.CONFLICT);
-        }
+        const terminalTransitionError = "__PLAN_TERMINAL_STATUS_TRANSITION__";
 
         const changes: string[] = [];
-
-        if (options.title) {
-          foundPlan.title = options.title;
-          changes.push("title");
-        }
-
-        if (options.status) {
-          const oldStatus = foundPlan.status;
-          foundPlan.status = options.status;
-          changes.push(`status: ${oldStatus} → ${options.status}`);
-
-          // AC: @plan-crud ac-3 - set approved_at timestamp when transitioning to approved
-          if (options.status === "approved" && !foundPlan.approved_at) {
-            foundPlan.approved_at = new Date().toISOString();
-          }
-        }
 
         if (options.slug) {
           if (!foundPlan.slugs.includes(options.slug)) {
@@ -311,9 +288,66 @@ Examples:
               error(`Slug "${options.slug}" collides with existing item. Use a different slug.`);
               process.exit(EXIT_CODES.CONFLICT);
             }
-            foundPlan.slugs.push(options.slug);
-            changes.push(`slug: +${options.slug}`);
           }
+        }
+
+        if (!options.title && !options.status && !options.slug) {
+          info("No changes specified");
+          return;
+        }
+
+        let updatedPlan: LoadedPlan;
+        try {
+          updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {
+            // AC: @plan-crud ac-4 - prevent transitions from terminal states
+            if (
+              options.status &&
+              (latestPlan.status === "completed" ||
+                latestPlan.status === "rejected")
+            ) {
+              throw new Error(terminalTransitionError);
+            }
+
+            const nextPlan: LoadedPlan = {
+              ...latestPlan,
+              slugs: [...latestPlan.slugs],
+              derived_tasks: [...latestPlan.derived_tasks],
+              derived_specs: [...latestPlan.derived_specs],
+              notes: [...latestPlan.notes],
+            };
+
+            if (options.title) {
+              nextPlan.title = options.title;
+              changes.push("title");
+            }
+
+            if (options.status) {
+              const oldStatus = latestPlan.status;
+              nextPlan.status = options.status;
+              changes.push(`status: ${oldStatus} → ${options.status}`);
+
+              // AC: @plan-crud ac-3 - set approved_at timestamp when transitioning to approved
+              if (options.status === "approved" && !nextPlan.approved_at) {
+                nextPlan.approved_at = new Date().toISOString();
+              }
+            }
+
+            if (options.slug && !nextPlan.slugs.includes(options.slug)) {
+              nextPlan.slugs.push(options.slug);
+              changes.push(`slug: +${options.slug}`);
+            }
+
+            return nextPlan;
+          });
+        } catch (err) {
+          if (
+            err instanceof Error &&
+            err.message === terminalTransitionError
+          ) {
+            error("Cannot transition from terminal status");
+            process.exit(EXIT_CODES.CONFLICT);
+          }
+          throw err;
         }
 
         if (changes.length === 0) {
@@ -321,17 +355,16 @@ Examples:
           return;
         }
 
-        await savePlan(ctx, foundPlan);
         await commitIfShadow(
           ctx.shadow,
           "plan-set",
-          foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
+          updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
           changes.join(", "),
         );
 
         success(`Updated plan: ${foundPlanRef}`, {
           changes,
-          plan: foundPlan,
+          plan: updatedPlan,
         });
       } catch (err) {
         error(errors.failures.updatePlan, err);
@@ -418,12 +451,19 @@ Examples:
           content: text,
         };
 
-        foundPlan.notes.push(note);
-        await savePlan(ctx, foundPlan);
+        const updatedPlan = await mutatePlanAtomically(
+          ctx,
+          foundPlan,
+          (latestPlan) => ({
+            ...latestPlan,
+            notes: [...latestPlan.notes, note],
+          }),
+        );
+
         await commitIfShadow(
           ctx.shadow,
           "plan-note",
-          foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
+          updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
         );
 
         success(`Added note to plan: ${foundPlanRef}`, {
@@ -521,27 +561,41 @@ Examples:
 
         // AC: @plan-derive ac-5 - update plan's derived_tasks array
         const taskRef = `@${taskSlug}`;
-        if (!foundPlan.derived_tasks.includes(taskRef)) {
-          foundPlan.derived_tasks.push(taskRef);
-        }
+        const updatedPlan = await mutatePlanAtomically(
+          ctx,
+          foundPlan,
+          (latestPlan) => {
+            const nextPlan: LoadedPlan = {
+              ...latestPlan,
+              slugs: [...latestPlan.slugs],
+              derived_tasks: [...latestPlan.derived_tasks],
+              derived_specs: [...latestPlan.derived_specs],
+              notes: [...latestPlan.notes],
+            };
 
-        // AC: @plan-derive ac-5 - transition plan to active if not already
-        if (foundPlan.status === "approved") {
-          foundPlan.status = "active";
-        }
+            if (!nextPlan.derived_tasks.includes(taskRef)) {
+              nextPlan.derived_tasks.push(taskRef);
+            }
 
-        await savePlan(ctx, foundPlan);
+            // AC: @plan-derive ac-5 - transition plan to active if not already
+            if (nextPlan.status === "approved") {
+              nextPlan.status = "active";
+            }
+
+            return nextPlan;
+          },
+        );
 
         await commitIfShadow(
           ctx.shadow,
           "plan-derive",
-          foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
+          updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
           taskTitle,
         );
 
         success(`Created task from plan: ${taskRef}`, {
           task: newTask,
-          plan: foundPlan,
+          plan: updatedPlan,
         });
       } catch (err) {
         error("Failed to derive task from plan", err);

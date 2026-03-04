@@ -41,6 +41,51 @@ export function getPlansFilePath(ctx: KspecContext): string {
 }
 
 /**
+ * Parse plans from raw YAML payload.
+ *
+ * Supports the canonical { kynetic_plans, plans } shape and a fallback
+ * { plans } shape for older files without version metadata.
+ */
+function parsePlansFromRaw(raw: unknown): Plan[] {
+  const parsed = PlansFileSchema.safeParse(raw);
+  if (parsed.success) {
+    return parsed.data.plans;
+  }
+
+  if (raw && typeof raw === "object" && "plans" in raw) {
+    const fallbackPlans = (raw as { plans?: unknown }).plans;
+    if (Array.isArray(fallbackPlans)) {
+      const plans: Plan[] = [];
+      for (const plan of fallbackPlans) {
+        const planResult = PlanSchema.safeParse(plan);
+        if (planResult.success) {
+          plans.push(planResult.data);
+        }
+      }
+      return plans;
+    }
+  }
+
+  return [];
+}
+
+/**
+ * Load plans from an explicit file path.
+ */
+async function loadPlansFromFile(plansPath: string): Promise<Plan[]> {
+  const raw = await readYamlFile<unknown>(plansPath);
+  return parsePlansFromRaw(raw);
+}
+
+/**
+ * Strip runtime metadata before serialization.
+ */
+function stripPlanMetadata(plan: Plan | LoadedPlan): Plan {
+  const { _sourceFile, ...cleanPlan } = plan as LoadedPlan;
+  return cleanPlan as Plan;
+}
+
+/**
  * Load all plans from the project.
  * AC: @plan-crud ac-7, ac-31 - listing plans
  */
@@ -48,16 +93,8 @@ export async function loadPlans(ctx: KspecContext): Promise<LoadedPlan[]> {
   const plansPath = getPlansFilePath(ctx);
 
   try {
-    const raw = await readYamlFile<unknown>(plansPath);
-
-    // Validate and parse plans file
-    const parsed = PlansFileSchema.safeParse(raw);
-    if (!parsed.success) {
-      return [];
-    }
-
-    // Add source file metadata to each plan
-    return parsed.data.plans.map((plan) => ({
+    const plans = await loadPlansFromFile(plansPath);
+    return plans.map((plan) => ({
       ...plan,
       _sourceFile: plansPath,
     }));
@@ -130,27 +167,90 @@ export async function savePlan(
     await fs.mkdir(dir, { recursive: true });
 
     // Load existing plans (inside lock to prevent TOCTOU)
-    const plans = await loadPlans(ctx);
+    let plans: Plan[] = [];
+    try {
+      plans = await loadPlansFromFile(plansPath);
+    } catch {
+      // File doesn't exist yet, start fresh
+    }
 
-    // Strip runtime metadata before saving
-    const { _sourceFile, ...cleanPlan } = plan;
+    const cleanPlan = stripPlanMetadata(plan);
 
     // Update or add
     const existingIndex = plans.findIndex((p) => p._ulid === plan._ulid);
     if (existingIndex >= 0) {
-      plans[existingIndex] = cleanPlan as Plan;
+      plans[existingIndex] = cleanPlan;
     } else {
-      plans.push(cleanPlan as Plan);
+      plans.push(cleanPlan);
     }
 
     // Save back to file
     const plansFile: PlansFile = {
       kynetic_plans: "1.0",
-      plans: plans.map(({ _sourceFile, ...p }) => p as Plan),
+      plans,
     };
 
     await writeYamlFilePreserveFormat(plansPath, plansFile);
   });
+}
+
+/**
+ * Atomically mutate a plan using the latest on-disk state.
+ *
+ * The callback receives the current plan value while holding the plan file lock,
+ * so concurrent writers do not clobber unrelated fields (for example status vs notes).
+ */
+export async function mutatePlanAtomically(
+  ctx: KspecContext,
+  plan: LoadedPlan,
+  mutate: (latestPlan: LoadedPlan) => Plan | LoadedPlan | Promise<Plan | LoadedPlan>,
+): Promise<LoadedPlan> {
+  const plansPath = plan._sourceFile || getPlansFilePath(ctx);
+  let updatedPlan: LoadedPlan | undefined;
+
+  await withFileLock(plansPath, async () => {
+    // Ensure directory exists (important for default path in new repos)
+    const dir = path.dirname(plansPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    let plans: Plan[] = [];
+    try {
+      plans = await loadPlansFromFile(plansPath);
+    } catch {
+      throw new Error(`Plans file not found: ${plansPath}`);
+    }
+
+    const planIndex = plans.findIndex((candidate) => candidate._ulid === plan._ulid);
+    if (planIndex === -1) {
+      throw new Error(`Plan not found in file: ${plan._ulid}`);
+    }
+
+    const latestPlan: LoadedPlan = {
+      ...plans[planIndex],
+      _sourceFile: plansPath,
+    };
+
+    const mutatedPlan = await mutate(latestPlan);
+    const cleanMutatedPlan = stripPlanMetadata(mutatedPlan);
+    plans[planIndex] = cleanMutatedPlan;
+
+    const plansFile: PlansFile = {
+      kynetic_plans: "1.0",
+      plans,
+    };
+    await writeYamlFilePreserveFormat(plansPath, plansFile);
+
+    updatedPlan = {
+      ...cleanMutatedPlan,
+      _sourceFile: plansPath,
+    };
+  });
+
+  if (!updatedPlan) {
+    throw new Error(`Failed to mutate plan atomically: ${plan._ulid}`);
+  }
+
+  return updatedPlan;
 }
 
 /**
@@ -165,7 +265,7 @@ export async function deletePlan(
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(plansPath, async () => {
     try {
-      const plans = await loadPlans(ctx);
+      const plans = await loadPlansFromFile(plansPath);
 
       // Find plan to delete
       const index = plans.findIndex((p) => p._ulid === planUlid);
@@ -179,7 +279,7 @@ export async function deletePlan(
       // Save back
       const plansFile: PlansFile = {
         kynetic_plans: "1.0",
-        plans: plans.map(({ _sourceFile, ...p }) => p as Plan),
+        plans,
       };
 
       await writeYamlFilePreserveFormat(plansPath, plansFile);

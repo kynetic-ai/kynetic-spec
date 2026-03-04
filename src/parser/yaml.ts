@@ -1795,6 +1795,55 @@ export function getInboxFilePath(ctx: KspecContext): string {
 }
 
 /**
+ * Parse inbox items from raw YAML payload.
+ *
+ * Supports canonical { inbox: [...] } shape and legacy plain-array shape.
+ */
+function parseInboxItemsFromRaw(raw: unknown): InboxItem[] {
+  // Handle { inbox: [...] } format
+  if (raw && typeof raw === "object" && "inbox" in raw) {
+    const parsed = InboxFileSchema.safeParse(raw);
+    if (parsed.success) {
+      return parsed.data.inbox;
+    }
+
+    const fallbackItems = (raw as { inbox?: unknown }).inbox;
+    if (Array.isArray(fallbackItems)) {
+      const items: InboxItem[] = [];
+      for (const item of fallbackItems) {
+        const result = InboxItemSchema.safeParse(item);
+        if (result.success) {
+          items.push(result.data);
+        }
+      }
+      return items;
+    }
+  }
+
+  // Handle plain array format
+  if (Array.isArray(raw)) {
+    const items: InboxItem[] = [];
+    for (const item of raw) {
+      const result = InboxItemSchema.safeParse(item);
+      if (result.success) {
+        items.push(result.data);
+      }
+    }
+    return items;
+  }
+
+  return [];
+}
+
+/**
+ * Load inbox items from an explicit file path.
+ */
+async function loadInboxItemsFromFile(inboxPath: string): Promise<InboxItem[]> {
+  const raw = await readYamlFile<unknown>(inboxPath);
+  return parseInboxItemsFromRaw(raw);
+}
+
+/**
  * Load all inbox items from the project.
  */
 export async function loadInboxItems(
@@ -1803,32 +1852,11 @@ export async function loadInboxItems(
   const inboxPath = getInboxFilePath(ctx);
 
   try {
-    const raw = await readYamlFile<unknown>(inboxPath);
-
-    // Handle { inbox: [...] } format
-    if (raw && typeof raw === "object" && "inbox" in raw) {
-      const parsed = InboxFileSchema.safeParse(raw);
-      if (parsed.success) {
-        return parsed.data.inbox.map((item) => ({
-          ...item,
-          _sourceFile: inboxPath,
-        }));
-      }
-    }
-
-    // Handle plain array format
-    if (Array.isArray(raw)) {
-      const items: LoadedInboxItem[] = [];
-      for (const item of raw) {
-        const result = InboxItemSchema.safeParse(item);
-        if (result.success) {
-          items.push({ ...result.data, _sourceFile: inboxPath });
-        }
-      }
-      return items;
-    }
-
-    return [];
+    const items = await loadInboxItemsFromFile(inboxPath);
+    return items.map((item) => ({
+      ...item,
+      _sourceFile: inboxPath,
+    }));
   } catch {
     // File doesn't exist or parse error
     return [];
@@ -1859,8 +1887,8 @@ export function createInboxItem(
 /**
  * Strip runtime metadata before serialization.
  */
-function stripInboxMetadata(item: LoadedInboxItem): InboxItem {
-  const { _sourceFile, ...cleanItem } = item;
+function stripInboxMetadata(item: LoadedInboxItem | InboxItem): InboxItem {
+  const { _sourceFile, ...cleanItem } = item as LoadedInboxItem;
   return cleanItem as InboxItem;
 }
 
@@ -1883,20 +1911,7 @@ export async function saveInboxItem(
     let existingItems: InboxItem[] = [];
 
     try {
-      const raw = await readYamlFile<unknown>(inboxPath);
-      if (raw && typeof raw === "object" && "inbox" in raw) {
-        const parsed = InboxFileSchema.safeParse(raw);
-        if (parsed.success) {
-          existingItems = parsed.data.inbox;
-        }
-      } else if (Array.isArray(raw)) {
-        for (const i of raw) {
-          const result = InboxItemSchema.safeParse(i);
-          if (result.success) {
-            existingItems.push(result.data);
-          }
-        }
-      }
+      existingItems = await loadInboxItemsFromFile(inboxPath);
     } catch {
       // File doesn't exist, start fresh
     }
@@ -1919,6 +1934,65 @@ export async function saveInboxItem(
 }
 
 /**
+ * Atomically mutate an inbox item using the latest on-disk state.
+ *
+ * The callback receives the current item value while holding the inbox file lock,
+ * so concurrent writers do not clobber unrelated fields (for example text vs tags).
+ */
+export async function mutateInboxItemAtomically(
+  ctx: KspecContext,
+  item: LoadedInboxItem,
+  mutate: (
+    latestItem: LoadedInboxItem,
+  ) => InboxItem | LoadedInboxItem | Promise<InboxItem | LoadedInboxItem>,
+): Promise<LoadedInboxItem> {
+  const inboxPath = item._sourceFile || getInboxFilePath(ctx);
+  let updatedItem: LoadedInboxItem | undefined;
+
+  await withFileLock(inboxPath, async () => {
+    // Ensure directory exists (important for default path in new repos)
+    const dir = path.dirname(inboxPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    let existingItems: InboxItem[] = [];
+    try {
+      existingItems = await loadInboxItemsFromFile(inboxPath);
+    } catch {
+      throw new Error(`Inbox file not found: ${inboxPath}`);
+    }
+
+    const itemIndex = existingItems.findIndex(
+      (existingItem) => existingItem._ulid === item._ulid,
+    );
+    if (itemIndex === -1) {
+      throw new Error(`Inbox item not found in file: ${item._ulid}`);
+    }
+
+    const latestItem: LoadedInboxItem = {
+      ...existingItems[itemIndex],
+      _sourceFile: inboxPath,
+    };
+
+    const mutatedItem = await mutate(latestItem);
+    const cleanMutatedItem = stripInboxMetadata(mutatedItem);
+    existingItems[itemIndex] = cleanMutatedItem;
+
+    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+
+    updatedItem = {
+      ...cleanMutatedItem,
+      _sourceFile: inboxPath,
+    };
+  });
+
+  if (!updatedItem) {
+    throw new Error(`Failed to mutate inbox item atomically: ${item._ulid}`);
+  }
+
+  return updatedItem;
+}
+
+/**
  * Delete an inbox item by ULID.
  */
 export async function deleteInboxItem(
@@ -1930,15 +2004,7 @@ export async function deleteInboxItem(
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(inboxPath, async () => {
     try {
-      const raw = await readYamlFile<unknown>(inboxPath);
-      let existingItems: InboxItem[] = [];
-
-      if (raw && typeof raw === "object" && "inbox" in raw) {
-        const parsed = InboxFileSchema.safeParse(raw);
-        if (parsed.success) {
-          existingItems = parsed.data.inbox;
-        }
-      }
+      const existingItems = await loadInboxItemsFromFile(inboxPath);
 
       const index = existingItems.findIndex((i) => i._ulid === ulid);
       if (index < 0) {
