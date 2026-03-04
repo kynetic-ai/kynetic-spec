@@ -74045,12 +74045,30 @@
     - cli
     - websocket
   vcs_refs: []
+  session_id: 01KJWHG8FRV2G5Q0HTRC3PGSRN
   created_at: 2026-03-04T03:10:57.977Z
-  notes: []
+  started_at: 2026-03-04T13:46:02.902Z
+  notes:
+    - _ulid: 01KJWHJECEN8C65X1RE4V0D1RF
+      created_at: 2026-03-04T13:46:04.046Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch watch can silently show no output when websocket subscribe ack
+        returns success=false.
+
+        - Scope: add explicit AC + tests + implementation so watch fails fast with actionable
+        guidance on subscribe handshake failure.
+
+        - Files: src/cli/commands/agent.ts, tests/cli-agent-commands.test.ts, spec item
+        @cli-agent-commands.
+
+        - Verification: targeted cli-agent-commands tests, then kspec validate and relevant test
+        suite.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T13:46:02.902Z
-  session_id: 01KJWHG8FRV2G5Q0HTRC3PGSRN
 - _ulid: 01KJVF3KTW4SR8PFXG6R08GCSE
   slugs:
     - task-dispatch-watch-line-prefix-rendering
