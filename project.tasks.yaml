@@ -74251,12 +74251,29 @@
     - websocket
     - tests
   vcs_refs: []
+  session_id: 01KJWKJDY3BC7C21HQEX3RE9S0
   created_at: 2026-03-04T05:13:42.595Z
-  notes: []
+  started_at: 2026-03-04T14:23:12.297Z
+  notes:
+    - _ulid: 01KJWKPKFWEH516Z2D2ZBQS5YV
+      created_at: 2026-03-04T14:23:17.500Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch-watch rendering had recent boundary/reconnect fixes; task hardens
+        behavior via transcript fixtures for known adapter chunk patterns.
+
+        - Scope: add transcript-style fixtures and tests for empty-before-text, repeated non-text
+        boundaries, interleaved multi-stream switching, and reconnect-line boundary behavior.
+
+        - Files: tests/cli-agent-commands.test.ts plus new fixture files under tests/fixtures.
+
+        - Verification: run targeted cli-agent-commands tests, then kspec validate and full test
+        suite shard(s) covering agent CLI where practical.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T14:23:12.297Z
-  session_id: 01KJWKJDY3BC7C21HQEX3RE9S0
 - _ulid: 01KJVPTJPKZWMMMBEH23N30D8F
   slugs:
     - task-dispatch-in-progress-priority
