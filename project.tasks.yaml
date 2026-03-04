@@ -71644,7 +71644,24 @@
   session_id: 01KJVT52QN7EH1GVPZ9QP1SD53
   created_at: 2026-03-03T06:43:29.940Z
   started_at: 2026-03-04T07:06:09.618Z
-  notes: []
+  notes:
+    - _ulid: 01KJVTVNW9D7CEF66BV6APX2V1
+      created_at: 2026-03-04T07:09:09.385Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Batch payloads currently fail when priority is provided as P-notation for
+        commands that expect numeric 1-5.
+
+        - Scope: Add batch-layer normalization so priority values P1/P2/P3 (and existing P1-P5
+        format) are accepted where numeric priority options are expected.
+
+        - Files: src/cli/batch-exec.ts and tests/batch-exec-engine.test.ts.
+
+        - Verification: run targeted Vitest for batch exec engine, then run kspec validate and full
+        tests as needed for confidence.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
