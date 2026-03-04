@@ -6403,6 +6403,9 @@ features:
             when: dispatch event types are validated and built-in worker defaults are seeded
             then: in_progress-compatible dispatch configuration is supported and can be constrained to
               automation-eligible tasks
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y
     slugs:
       - cli-agent-commands
