@@ -72817,6 +72817,7 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-03T22:54:39.714Z
+  started_at: 2026-03-04T00:18:55.098Z
   notes:
     - _ulid: 01KJV3CEWQVE6VM10AT128AK4G
       created_at: 2026-03-04T00:18:53.463Z
@@ -72835,8 +72836,25 @@
         - Verification: targeted vitest for spec-item concurrency coverage, then broader
         test/validation checks before submit.
       supersedes: null
+    - _ulid: 01KJV3PT6JW0RX9AAMHAA0Q8T5
+      created_at: 2026-03-04T00:24:32.723Z
+      author: Jacob Chapel
+      content: >-
+        Implemented concurrency hardening for spec item writes:
+
+        - saveSpecItem now requires an explicit patch payload and rejects empty updates, preventing
+        stale full-object writeback.
+
+        - updateSpecItem now validates patch shape and rejects LoadedSpecItem-style payloads
+        (runtime metadata keys).
+
+        - updateSpecItem now verifies _path target ULID and falls back to ULID lookup when path
+        index becomes stale after concurrent structural edits.
+
+        - Added regression tests in tests/spec-item-mutation-serialization.test.ts for stale _path
+        fallback, patch-only save behavior, and guardrails.
+      supersedes: null
   todos: []
-  started_at: 2026-03-04T00:18:55.098Z
 - _ulid: 01KJTYJ92M7NWFQGMQYBFKMF7K
   slugs:
     - task-concurrent-mutation-regression-suite
