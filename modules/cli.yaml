@@ -1008,6 +1008,10 @@ features:
             given: --tag is provided (repeatable)
             when: kspec task add --title 'T' --tag cli --tag urgent runs
             then: task created with both tags; comma-separated values also supported
+          - id: ac-depends-on
+            given: --depends-on is provided
+            when: kspec task add --title 'T' --depends-on @task1 @task2 runs
+            then: task created with depends_on containing both refs; each ref validated as a task
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
