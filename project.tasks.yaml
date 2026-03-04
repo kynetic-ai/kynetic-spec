@@ -71399,6 +71399,7 @@
   session_id: 01KJVP83PDXQH6YBFSVXG5M79A
   created_at: 2026-03-03T06:43:23.015Z
   started_at: 2026-03-04T05:49:50.333Z
+  submitted_at: 2026-03-04T05:56:01.633Z
   notes:
     - _ulid: 01KJVPAF4TEPYF7APZDWC6MQ9G
       created_at: 2026-03-04T05:49:51.131Z
@@ -71440,7 +71441,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T05:56:01.633Z
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
   title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
@@ -73373,5 +73373,54 @@
   vcs_refs: []
   created_at: 2026-03-04T05:13:42.595Z
   notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJVPTJPKZWMMMBEH23N30D8F
+  slugs:
+    - task-dispatch-in-progress-priority
+  title: Implement in_progress-first dispatch scheduling
+  type: bug
+  description: Dispatch currently maps pending/needs_work/pending_review events but does not
+    prioritize or bootstrap in_progress work. Implement spec @dispatch-in-progress-priority so
+    active in-progress tasks are dispatched first, including at engine start. Update event
+    schema/mapping, scheduling order, built-in worker dispatch defaults, and regression tests to
+    make behavior deterministic and align with task-work-loop intent.
+  spec_ref: "@dispatch-in-progress-priority"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - daemon
+    - priority
+    - automation
+  vcs_refs: []
+  created_at: 2026-03-04T05:58:39.059Z
+  notes:
+    - _ulid: 01KJVPTKY916RMSHB11ZBEDYEQ
+      created_at: 2026-03-04T05:58:40.329Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Why: current dispatch cannot prioritize active in_progress work because no in_progress
+        dispatch event exists and queueing is FIFO by arrival.
+
+        - Scope:
+          1) add/validate in_progress-compatible dispatch event semantics in schema/runtime mapping,
+          2) apply deterministic status precedence with in_progress at top,
+          3) include bootstrap handling for existing in_progress tasks,
+          4) update built-in worker defaults from setup seeding if needed,
+          5) add/adjust tests in dispatch engine and setup/agent-seeding coverage.
+        - Candidate files: src/schema/meta.ts, src/agent-runtime/dispatch.ts,
+        src/cli/commands/setup.ts, tests/agent-dispatch-engine.test.ts,
+        tests/ralph-replacement.test.ts.
+
+        - Verification: targeted dispatch tests + setup seeding tests + full npm test.
+      supersedes: null
   todos: []
   automation: eligible
