@@ -2714,6 +2714,11 @@ features:
           - "@trait-error-guidance"
         notes: []
         created: 2026-03-04T16:40:58.386Z
+        acceptance_criteria:
+          - id: ac-3
+            given: ref is a short ULID prefix
+            when: kspec inbox get @shortprefix runs
+            then: resolves to matching item via case-insensitive prefix match
       - _ulid: 01KJWVJQF0T4PMD44YB7P0J3DJ
         slugs:
           - cmd-inbox-set
@@ -2742,6 +2747,11 @@ features:
           - "@trait-shadow-commit"
         notes: []
         created: 2026-03-04T16:40:59.104Z
+        acceptance_criteria:
+          - id: ac-5
+            given: concurrent processes update different fields of the same item
+            when: both mutations complete
+            then: both changes preserved via atomic mutation with file locking
       - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
         slugs:
           - cmd-inbox-note
@@ -2766,6 +2776,11 @@ features:
           - "@trait-shadow-commit"
         notes: []
         created: 2026-03-04T16:40:59.797Z
+        acceptance_criteria:
+          - id: ac-3
+            given: inbox ref does not exist
+            when: kspec inbox note @nonexistent 'text' runs
+            then: exits with not-found error
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
