@@ -61,6 +61,7 @@ Common flags:
 for each dispatched invocation:
   1. Agent runtime checks eligible tasks — if none, invocation ends
   2. Agent works on tasks, may create PR(s)
+     - Before editing files on a selected task, create/switch to a dedicated task branch
   3. Agent stops responding (turn complete)
   4. pr-reviewer agent handles pending_review tasks via separate dispatch
   5. Continue
