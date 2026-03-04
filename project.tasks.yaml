@@ -73164,5 +73164,14 @@
         vitest run tests/cli-agent-commands.test.ts -t 'dispatch watch'; npx vitest run
         tests/cli-serve.test.ts; npm test (173 files passed)."
       supersedes: null
+    - _ulid: 01KJVHR7N2JTNTW2TTFZ425C17
+      created_at: 2026-03-04T04:29:59.330Z
+      author: Jacob Chapel
+      content: "Aligned dispatch watch rendering to legacy Ralph parser semantics: removed heuristic line
+        splitting, now break lines on explicit boundaries (newline, stream switch, ACP empty chunk
+        sentinel) so message chunks coalesce naturally. Updated @cli-agent-commands AC-13/14 and
+        added AC-17 for short session-id prefix behavior. Added regression coverage for empty-chunk
+        boundary handling; cli-agent-commands tests pass."
+      supersedes: null
   todos: []
   automation: eligible
