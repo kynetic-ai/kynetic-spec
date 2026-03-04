@@ -73219,7 +73219,7 @@
   spec_ref: "@daemon-sensitive-cli-test-determinism"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -73279,6 +73279,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-04T13:40:50.438Z
+  closed_reason: "Merged in PR #674 (commit 26b870c2): added reusable waitForStartup helper in
+    tests/helpers/cli.ts and replaced ad-hoc/fixed-delay startup waits in daemon/process tests
+    (cli-serve and cli-agent-commands). Verified spec alignment for
+    @daemon-sensitive-cli-test-determinism with AC coverage: ac-1 timeout includes actionable last
+    observation context; ac-2 HOME/config isolation validated via isolated daemon pid/port paths;
+    ac-3 bounded polling helper used for startup/readiness waits. Full regression gate passed via
+    npm test (3641 passed, 3 skipped)."
 - _ulid: 01KJTQBRK5HDQKWER3Z2JXKF6B
   slugs: []
   title: Suppress non-actionable rate_limit_event noise in agent run output
