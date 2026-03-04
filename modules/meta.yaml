@@ -2206,6 +2206,8 @@ features:
           - "@meta-commands"
         traits:
           - "@trait-shadow-commit"
+    traits:
+      - "@trait-priority-parameter"
   - _ulid: 01KF1XREF00000000000000000
     slugs:
       - meta-ref
