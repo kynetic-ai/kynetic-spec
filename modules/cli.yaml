@@ -939,6 +939,11 @@ features:
             kspec task add --title "Multi-tag task" --tag cli urgent
         implements:
           - "@task-commands"
+        acceptance_criteria:
+          - id: ac-automation-invalid
+            given: --automation is provided with invalid value
+            when: kspec task add --title 'T' --automation invalid runs
+            then: exits with validation error listing valid values
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
