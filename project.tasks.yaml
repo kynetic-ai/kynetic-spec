@@ -72130,6 +72130,30 @@
 
         - Verification: targeted meta command tests + full validate/test command before submit.
       supersedes: null
+    - _ulid: 01KJW6ZWD0S7794F456BX9S582
+      created_at: 2026-03-04T10:41:10.048Z
+      author: Jacob Chapel
+      content: >-
+        Implemented AC-12 dispatch rule CLI mutations:
+
+        - Added --add-dispatch-rule (repeatable JSON), --remove-dispatch-rule <event>, and
+        --clear-dispatch-rules to both meta add agent and meta set.
+
+        - Parsed/validated add payloads with AgentDispatchRuleSchema and remove event with
+        AgentDispatchEventSchema.
+
+        - Added integration tests for append/remove/clear and invalid JSON/event errors in
+        tests/meta.test.ts.
+
+        Verification:
+
+        - npx vitest run tests/meta.test.ts (pass)
+
+        - npm test (pass: 173 files, 3641 tests)
+
+        - kspec validate still reports pre-existing repo-wide schema/reference/alignment issues
+        unrelated to this task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BAWP2WNCD003DQX75GKY
