@@ -2806,6 +2806,10 @@ features:
             given: inbox item @ref exists
             when: kspec inbox set @ref --content 'new text' runs
             then: item text replaced; ULID, created_at, and tags preserved
+          - id: ac-2
+            given: inbox item @ref has existing tags
+            when: kspec inbox set @ref --tag newtag runs
+            then: new tag added to existing tags; duplicates avoided
       - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
         slugs:
           - cmd-inbox-note
