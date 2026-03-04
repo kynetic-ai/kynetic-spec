@@ -75017,5 +75017,15 @@
         regression tests for deleted directory overlay behavior and skill import supporting-file
         rollback on failed atomic batch"
       supersedes: null
+    - _ulid: 01KJX0TAYH5GQSQPV67HTNENFG
+      created_at: 2026-03-04T18:12:31.313Z
+      author: Jacob Chapel
+      content: "Addressed second review pass findings:\\n- Fixed remaining .kspec destination read bypass
+        in skill-install sourceMatchesDest by using buffer-aware binary reads during in-batch
+        comparisons\\n- Fixed directory overlay precedence bug where delete after child write could
+        reintroduce directory in parent listing\\n- Added regressions for both: (1)
+        copyCoreSkillFiles read-after-write consistency under active buffer, (2)
+        delete-after-child-write directory listing behavior"
+      supersedes: null
   todos: []
   automation: eligible
