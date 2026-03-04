@@ -71789,6 +71789,8 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #667. Added batch argument alias support for tags->tag with tests
+    covering argv translation and persisted tags."
   depends_on: []
   context: []
   priority: 3
@@ -71798,6 +71800,7 @@
   created_at: 2026-03-03T06:43:33.388Z
   started_at: 2026-03-04T08:59:50.030Z
   submitted_at: 2026-03-04T09:07:46.868Z
+  completed_at: 2026-03-04T09:39:54.655Z
   notes:
     - _ulid: 01KJW16F2CNHXAFZ4XFHWPZ8G3
       created_at: 2026-03-04T08:59:54.316Z
@@ -71831,9 +71834,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T09:39:54.655Z
-  closed_reason: "Merged in PR #667. Added batch argument alias support for tags->tag with tests
-    covering argv translation and persisted tags."
 - _ulid: 01KJS7NZ5AVXWVS04A7CDF9JG9
   slugs: []
   title: Stream agent text output to stdout in kspec agent run
@@ -72007,7 +72007,24 @@
     - dx
   vcs_refs: []
   created_at: 2026-03-03T06:55:45.541Z
-  notes: []
+  notes:
+    - _ulid: 01KJW3KEPZ323FHC2SJ5QCZQMP
+      created_at: 2026-03-04T09:41:57.088Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: replaying assistant response text from session logs currently requires manual
+        parsing of events.jsonl.
+
+        - Scope: add --text to session log show, extract text from session.update content
+        structures, support blob resolution parity, and add integration tests.
+
+        - Files: src/cli/commands/session/commands.ts, src/cli/commands/session/log.ts,
+        tests/session-log-show.test.ts.
+
+        - Verification: targeted session-log-show tests plus kspec validate and relevant test shard.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8B9QSQS53CT4DR2YHP1A8
