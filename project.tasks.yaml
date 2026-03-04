@@ -71676,7 +71676,7 @@
   type: task
   description: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71687,6 +71687,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-04T08:00:19.688Z
+  session_id: 01KJVXPW876HS5DEF0SF5N218F
 - _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
   title: "CLI DX: accept tags as alias for tag in batch commands"
@@ -73545,6 +73547,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #663 (merge commit d80157c). Added task.in_progress dispatch support in
+    schema/session/runtime, prioritized scheduler order as in_progress > needs_work > pending >
+    pending_review, added bootstrap in_progress candidate support, seeded built-in task-worker
+    defaults with automation-filtered task.in_progress rule, and covered
+    @dispatch-in-progress-priority ac-1..ac-3 via dispatch/setup/meta/session tests."
   depends_on: []
   context: []
   priority: 1
@@ -73558,6 +73565,7 @@
   created_at: 2026-03-04T05:58:39.059Z
   started_at: 2026-03-04T07:39:38.224Z
   submitted_at: 2026-03-04T07:40:29.598Z
+  completed_at: 2026-03-04T07:52:54.298Z
   notes:
     - _ulid: 01KJVPTKY916RMSHB11ZBEDYEQ
       created_at: 2026-03-04T05:58:40.329Z
@@ -73625,9 +73633,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T07:52:54.298Z
-  closed_reason: "Merged in PR #663 (merge commit d80157c). Added task.in_progress dispatch support in
-    schema/session/runtime, prioritized scheduler order as in_progress > needs_work > pending >
-    pending_review, added bootstrap in_progress candidate support, seeded built-in task-worker
-    defaults with automation-filtered task.in_progress rule, and covered
-    @dispatch-in-progress-priority ac-1..ac-3 via dispatch/setup/meta/session tests."
