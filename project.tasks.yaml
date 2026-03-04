@@ -71821,6 +71821,13 @@
         Added unit and integration coverage in batch-exec-engine tests; verified alias emits --tag
         and persists inbox tags.
       supersedes: null
+    - _ulid: 01KJW1MD1KMA0JRNQ57DPM2DVH
+      created_at: 2026-03-04T09:07:30.996Z
+      author: Jacob Chapel
+      content: "Validation check: kspec validate currently fails from pre-existing project
+        metadata/reference issues (duplicate @observations slug and missing skills.observations
+        content), unrelated to this task's batch alias changes."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS7NZ5AVXWVS04A7CDF9JG9
