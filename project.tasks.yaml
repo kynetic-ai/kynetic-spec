@@ -73043,6 +73043,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: null
   depends_on: []
   context: []
   priority: 1
@@ -73054,6 +73055,7 @@
   created_at: 2026-03-04T03:04:52.168Z
   started_at: 2026-03-04T03:04:57.392Z
   submitted_at: 2026-03-04T03:14:14.688Z
+  completed_at: 2026-03-04T03:26:27.055Z
   notes:
     - _ulid: 01KJVCWPV8R5DKBKZHVH2S4CSF
       created_at: 2026-03-04T03:05:03.081Z
@@ -73087,8 +73089,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T03:26:27.055Z
-  closed_reason: null
 - _ulid: 01KJVD7HDS5HVJ4JAE6M7SPV9R
   slugs: []
   title: Add explicit dispatch watch subscribe-handshake failure behavior
@@ -73112,3 +73112,30 @@
   notes: []
   todos: []
   automation: eligible
+- title: Fix dispatch watch line-prefix rendering for chunked output
+  description: "kspec agent dispatch watch currently receives token-sized agent_text_chunk events.
+    Prefixes must be applied at line boundaries (once per line), not once per chunk. When stream
+    switches mid-line, emit newline before new stream prefix to keep output readable. Update CLI
+    rendering logic and add regression tests for token chunking + interleaved streams. AC:
+    @cli-agent-commands ac-13"
+  type: bug
+  spec_ref: "@cli-agent-commands"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs:
+    - task-dispatch-watch-line-prefix-rendering
+  tags:
+    - cli
+    - agent
+    - websocket
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJVF3KTW4SR8PFXG6R08GCSE
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T03:43:46.511Z
+  notes: []
+  todos: []
