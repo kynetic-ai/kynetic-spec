@@ -226,8 +226,8 @@ export class AlignmentIndex {
         });
       }
 
-      // Status mismatch
-      if (currentStatus !== expectedStatus) {
+      // Status mismatch (only when tasks exist — no-task specs emit orphaned_spec instead)
+      if (taskUlids.length > 0 && currentStatus !== expectedStatus) {
         warnings.push({
           type: "status_mismatch",
           specUlid,
