@@ -71960,7 +71960,7 @@
   spec_ref: "@agent-invocation-lifecycle"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -71972,6 +71972,7 @@
   vcs_refs: []
   created_at: 2026-03-03T07:18:43.716Z
   started_at: 2026-03-04T00:44:07.706Z
+  submitted_at: 2026-03-04T00:49:18.835Z
   notes:
     - _ulid: 01KJV4TMERCY7KDMJE36P4QY1E
       created_at: 2026-03-04T00:44:06.488Z
@@ -72016,7 +72017,8 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T00:49:18.835Z
+  completed_at: 2026-03-04T00:58:20.181Z
+  closed_reason: null
 - _ulid: 01KJSA2TZWD88MG76PZ7KFKVFY
   slugs: []
   title: Handle ACP permission requests in invocation — auto-approve tool calls in dispatch mode
