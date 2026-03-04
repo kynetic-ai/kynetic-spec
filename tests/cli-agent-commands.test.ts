@@ -1330,7 +1330,7 @@ describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
   });
 });
 
-// ─── AC-13 through AC-17: kspec agent dispatch watch ─────────────────────────
+// ─── AC-13 through AC-18: kspec agent dispatch watch ─────────────────────────
 
 // Helper: create a fake WebSocket instance for testing
 interface FakeWsInstance {
@@ -1409,6 +1409,74 @@ describe("AC-15: dispatch watch — daemon not running", () => {
     // Error should mention daemon
     const allOutput = errors.join(" ");
     expect(allOutput.toLowerCase()).toMatch(/daemon/);
+  });
+});
+
+// AC: @cli-agent-commands ac-18
+describe("AC-18: dispatch watch — subscribe handshake failure", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it("should exit code 3 with actionable guidance when subscribe ack fails", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const errors: string[] = [];
+    const infos: string[] = [];
+    vi.spyOn(console, "error").mockImplementation((...args) => {
+      errors.push(args.join(" "));
+    });
+    vi.spyOn(console, "log").mockImplementation((...args) => {
+      infos.push(args.join(" "));
+    });
+
+    let exitCode: number | undefined;
+    vi.spyOn(process, "exit").mockImplementation((code?: number) => {
+      exitCode = code as number;
+      throw new Error(`process.exit(${code})`);
+    });
+
+    const program = createTestProgram();
+    const runPromise = program
+      .parseAsync(["agent", "dispatch", "watch"], { from: "user" })
+      .catch(() => {/* mocked process.exit throws */});
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    try {
+      ws.onmessage?.({
+        data: JSON.stringify({
+          ack: true,
+          request_id: "watch-subscribe",
+          success: false,
+          error: "validation_error",
+          details: "Missing or invalid topics array",
+        }),
+      });
+    } catch {
+      // expected: mocked process.exit throws
+    }
+
+    await Promise.resolve();
+
+    expect(exitCode).toBe(3);
+    const allErrors = errors.join(" ");
+    const allInfo = infos.join(" ");
+    expect(allErrors).toContain("Failed to subscribe to daemon agent output stream");
+    expect(allErrors).toContain("Missing or invalid topics array");
+    expect(allInfo).toContain("Suggestion:");
+    expect(allInfo).toContain("kspec serve");
+    expect(allInfo).toContain("daemon logs");
+
+    runPromise.catch(() => {/* ignore */});
   });
 });
 
