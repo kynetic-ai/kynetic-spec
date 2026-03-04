@@ -7415,6 +7415,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJW9QY0RV4R5Z2KTKSAEKDMW
+    type: friction
+    content: Dispatch invocation targeted @01KJS8BAWP2WNCD003DQX75GKY as task.in_progress after it had
+      already been merged/completed; worker had to run a no-op verification pass.
+    workflow_ref: "@task-work-loop"
+    created_at: 2026-03-04T11:29:15.289Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
