@@ -948,7 +948,7 @@ features:
                 then: errors indicating run is not paused, shows current status
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
       - _ulid: 01KFR7JANHFZ3Y3QQMAS9H8XYE
         slugs:
           - loop-mode-workflows
