@@ -263,6 +263,7 @@ export function registerAgentCommands(program: Command): void {
           basePrompt,
           skillIds: agentDef.skills ?? [],
           specDir: ctx.specDir,
+          adapterId,
         });
 
         // AC: @trait-dry-run ac-1, ac-2, ac-3 - dry run shows prompt, no changes
