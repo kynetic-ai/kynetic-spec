@@ -71689,6 +71689,7 @@
   session_id: 01KJVT52QN7EH1GVPZ9QP1SD53
   created_at: 2026-03-03T06:43:29.940Z
   started_at: 2026-03-04T07:06:09.618Z
+  submitted_at: 2026-03-04T08:49:57.796Z
   notes:
     - _ulid: 01KJVTVNW9D7CEF66BV6APX2V1
       created_at: 2026-03-04T07:09:09.385Z
@@ -71724,9 +71725,15 @@
         Context: moved work from stale branch base to clean branch
         feat/task-batch-priority-p-alias-clean to avoid PR conflation."
       supersedes: null
+    - _ulid: 01KJW0NKN3Q9GW9MQS2YBBCBN2
+      created_at: 2026-03-04T08:50:41.955Z
+      author: Jacob Chapel
+      content: "Submitted for review in PR #666 (https://github.com/kynetic-ai/kynetic-spec/pull/666) from
+        branch feat/task-batch-priority-p-alias-clean. Commits: 14af23c14 (batch alias
+        normalization) and 1af52786b (test robustness update)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T08:49:57.796Z
 - _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
   slugs: []
   title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
