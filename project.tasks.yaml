@@ -74926,7 +74926,7 @@
   spec_ref: "@batch-write-buffer"
   meta_ref: null
   plan_ref: "@01KJWX2B"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -74989,6 +74989,13 @@
         parser/CLI .kspec paths use buffer-aware helpers (readFile/readdir/access/write helpers).
         Verification: npx vitest run tests/batch-write-buffer.test.ts (pass); kspec validate --json
         no longer reports @batch-write-buffer coverage warning."
+      supersedes: null
+    - _ulid: 01KJWZ0BBTFMHNQA340C967RDA
+      created_at: 2026-03-04T17:40:51.194Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: ac-8 coverage test uses static source scanning
+        and fails tests/lint/no-static-analysis.test.ts; replace with behavior-level coverage and
+        re-run npm test."
       supersedes: null
   todos: []
   automation: eligible
