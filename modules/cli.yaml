@@ -948,6 +948,10 @@ features:
             given: --title is provided
             when: kspec task add --title 'New task' runs with no other options
             then: "task created in pending status with priority 3, type task; outputs 'Created task: <ref>'"
+          - id: ac-title-required
+            given: no --title flag provided
+            when: kspec task add runs
+            then: exits with usage error; title is required
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
