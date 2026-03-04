@@ -71389,7 +71389,7 @@
     warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
     imgen project."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71418,8 +71418,29 @@
         - Verification: run focused validate exit-code tests, then run kspec validate for
         project-level sanity.
       supersedes: null
+    - _ulid: 01KJVPNPX84EA0QQJWECY0RAHC
+      created_at: 2026-03-04T05:55:59.528Z
+      author: Jacob Chapel
+      content: >-
+        Implemented warning-only automation clarity for validate/lint.
+
+        - Added --warnings-ok flag to validate and lint: warning-only results can return exit 0 when
+        explicitly requested.
+
+        - Added explicit warning exit messaging for default warning-only path (exit 6) and
+        warnings-ok path (exit 0).
+
+        - Updated help/README docs and validate-exit-codes tests for new behavior.
+
+        - Verification: npm run build; npx vitest run tests/validate-exit-codes.test.ts (9/9 pass);
+        npm test (173 files, 3615 passed, 3 skipped).
+
+        - Project-level validate currently fails for pre-existing meta/reference issues unrelated to
+        this task (missing observations skill file, duplicate @observations slug refs).
+      supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-04T05:56:01.633Z
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
   title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
