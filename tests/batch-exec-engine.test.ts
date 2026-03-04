@@ -607,27 +607,18 @@ describe("batch command integration", () => {
   });
 
   it("accepts P1/P2/P3 aliases for numeric priority args in batch commands", () => {
-    kspec(
-      'module add --title "Batch Priority Alias Module" --slug batch-priority-alias-module',
-      tempDir,
-    );
-    kspec(
-      'item add --under @batch-priority-alias-module --title "Priority Alias Feature" --type feature --slug priority-alias-feature',
-      tempDir,
-    );
-
     const commands = JSON.stringify([
       {
-        command: "derive",
-        args: { ref: "@priority-alias-feature", title: "batch priority alias 1", priority: "P1" },
+        command: "task add",
+        args: { title: "batch priority alias 1", priority: "P1" },
       },
       {
-        command: "derive",
-        args: { ref: "@priority-alias-feature", title: "batch priority alias 2", priority: "P2" },
+        command: "task add",
+        args: { title: "batch priority alias 2", priority: "P2" },
       },
       {
-        command: "derive",
-        args: { ref: "@priority-alias-feature", title: "batch priority alias 3", priority: "P3" },
+        command: "task add",
+        args: { title: "batch priority alias 3", priority: "P3" },
       },
     ]);
     const result = kspecJson<BatchExecResult>(
@@ -637,15 +628,16 @@ describe("batch command integration", () => {
 
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(3);
-    expect(
-      kspecJson<{ priority: number }>("task get @batch-priority-alias-1", tempDir).priority,
-    ).toBe(1);
-    expect(
-      kspecJson<{ priority: number }>("task get @batch-priority-alias-2", tempDir).priority,
-    ).toBe(2);
-    expect(
-      kspecJson<{ priority: number }>("task get @batch-priority-alias-3", tempDir).priority,
-    ).toBe(3);
+    const tasks = kspecJson<Array<{ title: string; priority: number }>>(
+      "tasks list --json",
+      tempDir,
+    );
+    const prioritiesByTitle = new Map(
+      tasks.map((task) => [task.title, task.priority] as const),
+    );
+    expect(prioritiesByTitle.get("batch priority alias 1")).toBe(1);
+    expect(prioritiesByTitle.get("batch priority alias 2")).toBe(2);
+    expect(prioritiesByTitle.get("batch priority alias 3")).toBe(3);
   });
 
   // AC: @plan-import ac-34
