@@ -71351,6 +71351,7 @@
   session_id: 01KJVMAFWCEM76H9DCJN1QFRN6
   created_at: 2026-03-03T06:43:20.809Z
   started_at: 2026-03-04T05:15:58.455Z
+  submitted_at: 2026-03-04T08:32:10.516Z
   notes:
     - _ulid: 01KJVMCDDVQHN85FJ6DMACDJ29
       created_at: 2026-03-04T05:15:57.756Z
@@ -71396,9 +71397,14 @@
         kspec validate (fails due pre-existing repo meta/reference/alignment issues unrelated to
         this task)."
       supersedes: null
+    - _ulid: 01KJVZMG2QAFP3Z6K98XNRMA13
+      created_at: 2026-03-04T08:32:36.951Z
+      author: Jacob Chapel
+      content: "Submitted for review via PR #665: https://github.com/kynetic-ai/kynetic-spec/pull/665
+        (branch fix/task-01kjs6zp-acp-epipe, commit f05177cb7)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T08:32:10.516Z
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
   title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
