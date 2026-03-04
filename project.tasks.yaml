@@ -74428,3 +74428,265 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KJWK8821AN0M759BMX4FK3NX
+  slugs: []
+  title: "Fill spec gap: task add command options and acceptance criteria"
+  type: task
+  description: >-
+    The @task-add requirement spec is incomplete. It was written early in the project when the
+    command had fewer options, and has never been updated as flags were added over time. The
+    description lists only 5 of 11 options, and there are zero acceptance criteria.
+
+
+    This matters because traits like @trait-priority-parameter inherit ACs into parent specs, but
+    those ACs only make sense when the spec itself documents the command's full surface. Without
+    complete specs, agents working on task add changes have no authoritative reference for expected
+    behavior, and trait AC coverage checks are meaningless against an incomplete baseline.
+
+
+    Current description documents: --title, --type, --spec-ref, --depends-on, --priority (listed as
+    1-5, should be 1-5 or P1-P5).
+
+
+    Missing from description: --description, --meta-ref, --plan-ref, --slug, --tag, --automation.
+
+
+    No acceptance criteria exist at all. Needs ACs covering: successful creation with required
+    options, default values (priority 3, type task, status pending), validation errors for invalid
+    inputs, each optional flag's behavior, and interaction between flags.
+
+
+    Reference the actual command implementation at src/cli/commands/task.ts (task add definition
+    around line 678-710) and existing test coverage at tests/ to understand current behavior before
+    writing ACs.
+  spec_ref: "@task-add"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - spec-hygiene
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-04T14:15:27.041Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJWK890YHTS5PSG2JMS36J31
+  slugs: []
+  title: "Fill spec gap: task set command options and acceptance criteria"
+  type: task
+  description: >-
+    The @task-set requirement spec is partially documented but significantly behind the
+    implementation. It has 9 ACs covering basic operations (title, spec-ref, priority, no-op
+    warning, author, clear-ref) but the description lists only 6 of 14+ options.
+
+
+    This matters because task set is one of the most heavily used commands — agents and humans use
+    it constantly to update tasks. Incomplete spec means new feature additions have no baseline to
+    check against, and the existing ACs don't cover the full option surface.
+
+
+    Current description documents: --title, --spec-ref, --depends-on, --priority (listed as 1-5,
+    should be 1-5 or P1-P5), --slug, --tag.
+
+
+    Missing from description: --description (with null-to-clear), --meta-ref (with null-to-clear),
+    --plan-ref (with null-to-clear), --clear-deps, --automation, --no-automation, --reason (required
+    for needs_review), --refs (batch mode), --status (rejected with guidance to use state commands).
+
+
+    Existing ACs to preserve: ac-task-set-1 through ac-task-set-7, ac-author, ac-clear-ref. Need new
+    ACs for: description updates, meta/plan ref management, dependency clearing, automation
+    eligibility setting/clearing, batch multi-ref mode, and the --status rejection guard.
+
+
+    Reference implementation at src/cli/commands/task.ts (task set definition around line 895-941).
+  spec_ref: "@task-set"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - spec-hygiene
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-04T14:15:28.030Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJWK89YMH01SAC8ECSHRJ5BC
+  slugs: []
+  title: "Fill spec gap: derive command options and fix spec/code mismatches"
+  type: task
+  description: >-
+    The @cmd-derive requirement spec has good AC coverage (15 ACs) but the description has spec/code
+    mismatches and missing options.
+
+
+    This matters because derive is a critical command for the spec-first workflow — it's how specs
+    become tasks. Mismatches between spec and code create confusion for agents trying to verify
+    behavior.
+
+
+    Issues to fix:
+
+    1. Description lists --json as an option, but --json is not defined on the derive command itself
+    — it comes via trait inheritance (@trait-json-output). The description should not list it as a
+    direct option (the trait handles it).
+
+    2. Description lists --recursive as an option, but the code uses recursive as the DEFAULT
+    behavior — there is no --recursive flag, only --flat to disable it. Description should clarify
+    this.
+
+    3. Missing --priority option from description (exists in code at
+    src/cli/commands/derive.ts:424). Priority description should say '1-5 or P1-P5'.
+
+    4. Missing --title option from description (exists in code, allows overriding the default
+    'Implement: {spec title}' pattern). There is a separate @derive-title-override spec for this,
+    but the main command description should at least list the option.
+
+
+    Existing ACs are solid and should be preserved. May need a new AC for --priority behavior
+    (derived tasks get specified priority instead of default).
+
+
+    Reference implementation at src/cli/commands/derive.ts (command definition around line 414-426).
+  spec_ref: "@cmd-derive"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - spec-hygiene
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-04T14:15:28.980Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KJWK8AWMEP2D3PHNKH726NNR
+  slugs: []
+  title: "Fill spec gap: inbox commands — add child requirement specs"
+  type: task
+  description: >-
+    The @inbox-commands feature spec exists but has no acceptance criteria of its own and no child
+    requirement specs for individual subcommands. It only has a description paragraph.
+
+
+    This matters because inbox is a key part of the capture workflow. Without requirement-level
+    specs, there's no authoritative reference for what inbox add, inbox list, inbox get, inbox
+    promote, inbox delete, and inbox defer actually do. Trait ACs (like @trait-priority-parameter)
+    inherit at the feature level but can't be validated against specific command behaviors without
+    requirement specs.
+
+
+    Needed child requirements:
+
+    - inbox add: captures text with optional --tag, --priority, --source flags
+
+    - inbox list: lists inbox items with filtering (--status, --tag, --limit, --offset)
+
+    - inbox get: shows single inbox item detail
+
+    - inbox promote: converts inbox item to task or spec item (accepts --priority, --spec-ref,
+    --description, --type)
+
+    - inbox delete: removes inbox item (with confirmation)
+
+    - inbox defer: defers an inbox item for later triage
+
+
+    Each requirement should have ACs covering the command's options, validation, output format, and
+    error cases.
+
+
+    Reference implementation at src/cli/commands/inbox.ts. Check existing test coverage to
+    understand current behavior before writing ACs.
+
+
+    Note: @trait-priority-parameter applies at the feature level, but only inbox add and inbox
+    promote actually accept --priority. The other subcommands don't. This is fine — trait ACs that
+    don't apply to a specific requirement should be annotated as N/A per project convention.
+  spec_ref: "@inbox-commands"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - spec-hygiene
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-04T14:15:29.940Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: "Fill spec gap: meta commands — add child requirement specs"
+  description: >-
+    The @meta-commands feature spec exists but has no acceptance criteria and no child requirement
+    specs for individual subcommands. Like @inbox-commands, it's a feature-level shell.
+
+
+    This matters because meta commands manage conventions, workflows, agents, skills, and
+    observations — the entire meta-spec layer. Without requirement specs, agents adding or modifying
+    meta commands have no baseline to verify against.
+
+
+    The meta command surface is large. Priority subcommands to spec (those that accept --priority or
+    are most commonly used):
+
+    - meta derive-task: derives a task from a meta item (accepts --priority, currently using
+    parseIntOption instead of parsePriority)
+
+    - meta observe: captures observations (friction, success, question, idea)
+
+    - meta set: updates meta-spec fields
+
+    - meta add: adds new meta items (workflow, agent, convention, skill)
+
+    - meta show: displays meta-spec content
+
+    - meta promote: promotes observation to inbox or task
+
+
+    Each requirement should have ACs covering options, validation, output, and error cases. Start
+    with meta derive-task since it's directly relevant to the priority alias work.
+
+
+    Reference implementation at src/cli/commands/meta.ts. The file is large — meta derive-task is
+    around line 1050-1120.
+
+
+    Note: @trait-priority-parameter applies at the feature level, but only meta derive-task actually
+    accepts --priority. Other subcommands should annotate the trait ACs as N/A per convention.
+  type: task
+  spec_ref: "@meta-commands"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - spec-hygiene
+    - cli
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJWK8BV8JD4D9AHEQR74TXP9
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T14:15:30.920Z
+  notes: []
+  todos: []
