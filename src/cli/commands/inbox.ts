@@ -13,6 +13,7 @@ import {
   loadAllItems,
   loadAllTasks,
   loadInboxItems,
+  mutateInboxItemAtomically,
   ReferenceIndex,
   saveInboxItem,
   saveTask,
@@ -388,29 +389,21 @@ Examples:
         const items = await loadInboxItems(ctx);
         const item = resolveInboxRef(ref, items);
         const itemRef = shortInboxRef(item, items);
+        const newTags = options.tag ? parseTagsArray(options.tag) : [];
 
         // Track what was updated
         const updates: string[] = [];
 
         // AC: @inbox-set ac-1 - Update content if provided
         if (options.content !== undefined) {
-          item.text = options.content;
           updates.push("content");
         }
 
         // AC: @inbox-set ac-2 - Update tags if provided
         if (options.clearTags) {
-          item.tags = [];
           updates.push("cleared tags");
         }
-        if (options.tag) {
-          const newTags = parseTagsArray(options.tag);
-          // Append new tags, avoiding duplicates
-          for (const tag of newTags) {
-            if (!item.tags.includes(tag)) {
-              item.tags.push(tag);
-            }
-          }
+        if (newTags.length > 0) {
           updates.push("tags");
         }
 
@@ -419,15 +412,42 @@ Examples:
           return;
         }
 
-        await saveInboxItem(ctx, item);
+        const updatedItem = await mutateInboxItemAtomically(
+          ctx,
+          item,
+          (latestItem) => {
+            const nextItem: LoadedInboxItem = {
+              ...latestItem,
+              tags: [...latestItem.tags],
+            };
+
+            if (options.content !== undefined) {
+              nextItem.text = options.content;
+            }
+
+            if (options.clearTags) {
+              nextItem.tags = [];
+            }
+
+            // Append new tags, avoiding duplicates
+            for (const tag of newTags) {
+              if (!nextItem.tags.includes(tag)) {
+                nextItem.tags.push(tag);
+              }
+            }
+
+            return nextItem;
+          },
+        );
+
         await commitIfShadow(
           ctx.shadow,
           "inbox-set",
-          item._ulid.slice(0, 8),
+          updatedItem._ulid.slice(0, 8),
           updates.join(", "),
         );
 
-        success(`Updated inbox item: ${itemRef}`, { item });
+        success(`Updated inbox item: ${itemRef}`, { item: updatedItem });
       } catch (err) {
         error(errors.failures.updateInboxItem, err);
         process.exit(EXIT_CODES.ERROR);
@@ -454,12 +474,22 @@ Examples:
 
         // Append note with separator
         const separator = "\n\n---\n\n";
-        item.text = item.text + separator + text;
+        const updatedItem = await mutateInboxItemAtomically(
+          ctx,
+          item,
+          (latestItem) => ({
+            ...latestItem,
+            text: latestItem.text + separator + text,
+          }),
+        );
 
-        await saveInboxItem(ctx, item);
-        await commitIfShadow(ctx.shadow, "inbox-note", item._ulid.slice(0, 8));
+        await commitIfShadow(
+          ctx.shadow,
+          "inbox-note",
+          updatedItem._ulid.slice(0, 8),
+        );
 
-        success(`Added note to inbox item: ${itemRef}`, { item });
+        success(`Added note to inbox item: ${itemRef}`, { item: updatedItem });
       } catch (err) {
         error(errors.failures.addInboxNote, err);
         process.exit(EXIT_CODES.ERROR);
