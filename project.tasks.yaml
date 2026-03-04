@@ -74525,6 +74525,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Spec fully documented: 11 options in description, 20 ACs covering all options with
+    happy path and validation error cases."
   depends_on: []
   context: []
   priority: 2
@@ -74536,6 +74538,7 @@
   created_at: 2026-03-04T14:15:27.041Z
   started_at: 2026-03-04T15:12:40.008Z
   submitted_at: 2026-03-04T15:15:22.171Z
+  completed_at: 2026-03-04T15:15:23.281Z
   notes:
     - _ulid: 01KJWPNWQ96TZAGYNT80TAPX48
       created_at: 2026-03-04T15:15:19.913Z
@@ -74550,9 +74553,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T15:15:23.281Z
-  closed_reason: "Spec fully documented: 11 options in description, 20 ACs covering all options with
-    happy path and validation error cases."
 - _ulid: 01KJWK890YHTS5PSG2JMS36J31
   slugs: []
   title: "Fill spec gap: task set command options and acceptance criteria"
@@ -74788,3 +74788,113 @@
   notes: []
   todos: []
   automation: eligible
+- title: Fix batch write buffer bypass — loadSpecFile and other read paths skip buffer
+  description: >-
+    The batch write buffer (ac-2) requires read-after-write consistency: if command A writes a file
+    and command B reads it in the same atomic batch, B must see A's write. This contract is violated
+    because multiple read paths use raw fs.readFile/fs.readdir instead of buffer-aware helpers.
+
+
+    ## Observed symptom
+
+
+    Batch with multiple item ac add commands targeting the same spec item: only the last AC
+    survives. Each command loads the item via loadSpecFile (raw fs.readFile), sees the pre-batch
+    state with no ACs, builds its single AC, then writes to the buffer — overwriting the previous
+    command's buffered write.
+
+
+    ## Root cause
+
+
+    readYamlFile() checks getActiveBatchBuffer() before fs.readFile (yaml.ts:138-150). But
+    loadSpecFile() at yaml.ts:1279 uses fs.readFile directly, bypassing the buffer entirely. Several
+    other read paths have the same issue.
+
+
+    ## Fix approach
+
+
+    Extract a shared buffer-aware file read helper and wire it into all .kspec/ read paths. Two
+    categories:
+
+
+    ### HIGH priority (cause data loss in common batch operations):
+
+
+    1. yaml.ts:1279 — loadSpecFile() uses raw fs.readFile
+       - Called by loadAllItems() which is used by nearly every command
+       - This is the confirmed cause of the AC overwrite bug
+
+    2. yaml.ts:200 — findTaskFiles() uses raw fs.readdir
+       - Called by loadAllTasks(); batch task mutations could miss new task files
+
+    3. yaml.ts:461 — findManifest() uses raw fs.readdir
+       - Manifest discovery; unlikely to change during batch but still a bypass
+
+    4. yaml.ts:1117 — expandGlobRecursive() uses raw fs.readdir
+       - Glob expansion for manifest includes; could miss buffered files
+
+    5. meta.ts:128 — findMetaManifest() uses raw fs.readdir
+       - Meta manifest discovery during batch
+
+    ### MEDIUM priority (affect less common batch paths):
+
+
+    6. meta.ts:601,668,716,722 — skill loading (loadSkillContent, loadSkillDocs,
+    loadSkillSupportingFiles)
+
+    7. shadow.ts:318 — detectRunningFromShadowWorktree uses fs.readdir
+
+    8. skill-render.ts:341,354,390 — copyDirectory and readRenderHash
+
+    9. validate.ts:1417 — checkOrphanedSkillDirs
+
+    10. setup-seeding.ts:320 — getModuleNames
+
+    11. prompts.ts:63,118 — loadKspecSkillIds, resolveSkills
+
+
+    ### LOW priority (read git metadata, not spec data):
+
+    12. shadow.ts:246,287 — isWorktree, detectRunningFromShadowWorktree (.git file reads)
+
+
+    ## Implementation guidance
+
+
+    - Create a readFileBufferAware(filePath) helper next to readYamlFile that checks the buffer for
+    raw string reads (not parsed YAML)
+
+    - For fs.readdir bypasses, the buffer doesn't currently support directory listing. Options: (a)
+    add a listDir method to WriteBuffer that overlays buffered paths onto real readdir results, or
+    (b) accept the limitation and document that batch commands cannot create new files that need to
+    be discovered by readdir in subsequent commands (this is less common than read-after-write on
+    existing files)
+
+    - Focus on HIGH priority items first — loadSpecFile is the confirmed bug
+
+    - Search exhaustively: grep for all fs.readFile and fs.readdir in src/parser/ and src/cli/ to
+    ensure nothing is missed beyond this list
+
+    - Add tests: batch with two item ac add commands to same item should preserve both ACs
+  type: task
+  spec_ref: "@batch-write-buffer"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - bug
+    - batch
+    - cli
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJWQM3XZ6P3TYHBCFRCBJ9DZ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T15:31:50.331Z
+  notes: []
+  todos: []
