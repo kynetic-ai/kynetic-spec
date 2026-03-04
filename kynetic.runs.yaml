@@ -11993,7 +11993,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJVP16H42RT002P7QM560RTD
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-04T05:44:47.396Z
@@ -12065,5 +12065,17 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-04T05:46:03.517Z
-        completed_at: 2026-03-04T05:46:03.517Z
+        completed_at: 2026-03-04T05:46:17.745Z
+        notes: >-
+          Captured:
+
+          - Inbox item (reflection/workflow/cli-ux): Workflow UX fallback to sole active run for
+          workflow commands.
+
+          - Meta observation (success): branch+task-note checkpoint pattern for safe context
+          switching.
+
+          Skipped duplicate capture for validate-baseline friction because it is already tracked at
+          @01KJTTJR.
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-04T05:46:17.745Z
