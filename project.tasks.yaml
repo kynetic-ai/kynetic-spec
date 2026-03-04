@@ -71376,6 +71376,13 @@
       content: Paused task to address daemon-isolation priority work. Checkpoint saved on branch
         fix/acp-framing-epipe at commit e0559fdd8.
       supersedes: null
+    - _ulid: 01KJVZDC7TKVN0DXABC9S3B9C8
+      created_at: 2026-03-04T08:28:43.643Z
+      author: Jacob Chapel
+      content: Resumed work on dedicated branch fix/task-01kjs6zp-acp-epipe to avoid PR conflation;
+        isolated prior checkpoint by cherry-picking only ACP EPIPE commit onto latest origin/main
+        before verification.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
@@ -71585,6 +71592,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #661. Added --description support to task set for single-ref and --refs
+    batch mode, including clear behavior for null/whitespace input and integration tests for
+    update/clear flows. AC coverage: task has no spec_ref, so own/trait AC checks were N/A;
+    regression validated via npm test and passing PR CI."
   depends_on: []
   context: []
   priority: 3
@@ -71594,6 +71605,7 @@
   created_at: 2026-03-03T06:43:28.265Z
   started_at: 2026-03-04T06:50:38.008Z
   submitted_at: 2026-03-04T06:55:53.221Z
+  completed_at: 2026-03-04T08:20:59.027Z
   notes:
     - _ulid: 01KJVSSQWP1NG26CD2XHMRH1SX
       created_at: 2026-03-04T06:50:37.334Z
@@ -71635,11 +71647,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T08:20:59.027Z
-  closed_reason: "Merged in PR #661. Added --description support to task set for single-ref and --refs
-    batch mode, including clear behavior for null/whitespace input and integration tests for
-    update/clear flows. AC coverage: task has no spec_ref, so own/trait AC checks were N/A;
-    regression validated via npm test and passing PR CI."
 - _ulid: 01KJS6ZZGM4RYKNYS98PY1CSHQ
   slugs: []
   title: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
