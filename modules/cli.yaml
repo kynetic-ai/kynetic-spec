@@ -2587,6 +2587,10 @@ features:
             when: text is provided as positional argument
             then: inbox item created with auto-generated ULID, created_at timestamp, and added_by from
               config/env
+          - id: ac-2
+            given: user runs kspec inbox add <text> --tag a --tag b
+            when: one or more --tag flags provided
+            then: inbox item created with specified tags array
       - _ulid: 01KF15N59E5B55QEM6KVJHGSN5
         slugs:
           - cmd-inbox-list
