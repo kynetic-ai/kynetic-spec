@@ -1012,6 +1012,10 @@ features:
             given: --depends-on is provided
             when: kspec task add --title 'T' --depends-on @task1 @task2 runs
             then: task created with depends_on containing both refs; each ref validated as a task
+          - id: ac-depends-on-invalid
+            given: --depends-on ref points to a spec item or does not exist
+            when: kspec task add --title 'T' --depends-on @spec-item runs
+            then: exits with error; dependency must reference a task
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
