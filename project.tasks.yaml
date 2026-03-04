@@ -71787,7 +71787,7 @@
   type: task
   description: "CLI DX: accept tags as alias for tag in batch commands"
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -71797,6 +71797,7 @@
   session_id: 01KJW0P89KS67VP1G9QWW6QCWJ
   created_at: 2026-03-03T06:43:33.388Z
   started_at: 2026-03-04T08:59:50.030Z
+  submitted_at: 2026-03-04T09:07:46.868Z
   notes:
     - _ulid: 01KJW16F2CNHXAFZ4XFHWPZ8G3
       created_at: 2026-03-04T08:59:54.316Z
@@ -71830,7 +71831,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T09:07:46.868Z
+  completed_at: 2026-03-04T09:39:54.655Z
+  closed_reason: "Merged in PR #667. Added batch argument alias support for tags->tag with tests
+    covering argv translation and persisted tags."
 - _ulid: 01KJS7NZ5AVXWVS04A7CDF9JG9
   slugs: []
   title: Stream agent text output to stdout in kspec agent run
