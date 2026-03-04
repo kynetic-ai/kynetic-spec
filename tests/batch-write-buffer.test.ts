@@ -206,34 +206,6 @@ describe("buffer-aware fs helpers", () => {
   });
 });
 
-describe("read path bypass prevention", () => {
-  // AC: @batch-write-buffer ac-8 — .kspec read/write paths must use buffer-aware helpers
-  it("keeps critical parser and CLI paths wired to buffer-aware helpers", async () => {
-    const yamlSource = await fs.readFile(new URL("../src/parser/yaml.ts", import.meta.url), "utf-8");
-    const metaSource = await fs.readFile(new URL("../src/parser/meta.ts", import.meta.url), "utf-8");
-    const moduleSource = await fs.readFile(new URL("../src/cli/commands/module.ts", import.meta.url), "utf-8");
-    const skillCrudSource = await fs.readFile(new URL("../src/cli/commands/skill-crud.ts", import.meta.url), "utf-8");
-    const skillInstallSource = await fs.readFile(new URL("../src/cli/commands/skill-install.ts", import.meta.url), "utf-8");
-
-    expect(yamlSource).toContain("export async function readFileBufferAware(filePath: string): Promise<string>");
-    expect(yamlSource).toContain("const entries = await readdirBufferAware(dir, { withFileTypes: true }) as Dirent[];");
-    expect(yamlSource).toContain("await accessBufferAware(fullPattern);");
-    expect(yamlSource).toContain("const content = await readFileBufferAware(filePath);");
-
-    expect(metaSource).toContain("await accessBufferAware(priorityPath);");
-    expect(metaSource).toContain("const entries = await readdirBufferAware(specDir) as string[];");
-    expect(metaSource).toContain("const content = await readFileBufferAware(contentPath);");
-
-    expect(moduleSource).toContain("await accessBufferAware(moduleFilePath);");
-    expect(skillCrudSource).toContain("await writeFileBufferAware(skillMdPath, initialContent);");
-    expect(skillCrudSource).toContain("await writeFileBufferAware(skillMdPath, bodyOnlyContent);");
-
-    expect(skillInstallSource).toContain("const destEntries = new Set(await readdirBufferAware(dest) as string[]);");
-    expect(skillInstallSource).toContain("existingContent = await readFileBufferAware(targetSkillMd);");
-    expect(skillInstallSource).toContain("await writeFileBufferAware(targetSkillMd, content);");
-  });
-});
-
 // ── WriteBuffer Flush Tests ──────────────────────────────────────────
 
 describe("WriteBuffer.flush()", () => {
@@ -446,6 +418,7 @@ describe("batch write buffer integration", () => {
   });
 
   // AC: @batch-write-buffer ac-2 — repeated item ac add in one batch preserves both writes
+  // AC: @batch-write-buffer ac-8 — loadSpecFile must read buffered state, not stale fs.readFile disk state
   it("two item ac add commands against the same item keep both AC entries", () => {
     kspec(`module add --title "Batch Buffer Test Module" --slug batch-buffer-test-module`, tempDir);
 
