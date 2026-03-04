@@ -473,7 +473,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           "A blocks B" means B cannot proceed while A is unresolved.
           The inverse of depends_on, used for explicit blocking issues.
