@@ -71508,6 +71508,7 @@
   session_id: 01KJVRWMC2T7XBYTBAHTDQHK8R
   created_at: 2026-03-03T06:43:26.496Z
   started_at: 2026-03-04T06:35:58.472Z
+  submitted_at: 2026-03-04T06:41:06.321Z
   notes:
     - _ulid: 01KJVRYZ0P8SHBM41J76C5S17Q
       created_at: 2026-03-04T06:35:59.895Z
@@ -71550,9 +71551,13 @@
         - kspec validate currently fails due pre-existing project meta/reference issues unrelated to
         this task (duplicate @observations + missing skill file).
       supersedes: null
+    - _ulid: 01KJVS8BKBJP7JPBVAM9YA46QE
+      created_at: 2026-03-04T06:41:07.692Z
+      author: Jacob Chapel
+      content: "Submitted for review in PR #660: https://github.com/kynetic-ai/kynetic-spec/pull/660"
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T06:41:06.321Z
 - _ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
   slugs: []
   title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
