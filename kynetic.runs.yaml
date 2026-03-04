@@ -11994,8 +11994,27 @@ runs:
   - _ulid: 01KJVP16H42RT002P7QM560RTD
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-04T05:44:47.396Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-04T05:44:47.396Z
+        completed_at: 2026-03-04T05:45:45.832Z
+        notes: >-
+          What worked well:
+
+          - Branch hygiene under interruption: checkpointed dirty main changes to
+          fix/acp-framing-epipe with task note before switching focus.
+
+          - Task workflow discipline: start/note/submit/PR/review/complete flow executed cleanly for
+          @task-cli-serve-daemon-isolation.
+
+          - Verification depth: focused test runs plus full npm test prevented regressions while
+          changing daemon-sensitive tests.
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-04T05:45:45.832Z
+        completed_at: 2026-03-04T05:45:45.832Z
     initiated_by: Jacob Chapel
