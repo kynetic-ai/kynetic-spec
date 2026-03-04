@@ -72783,7 +72783,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -72794,7 +72794,9 @@
     - codex
     - testing
   vcs_refs: []
+  session_id: 01KJWCX0B1M519AJ0RJVRJRT9C
   created_at: 2026-03-03T07:50:31.664Z
+  started_at: 2026-03-04T12:26:19.906Z
   notes:
     - _ulid: 01KJSATY4AV9YYAYF2KEC7TF5F
       created_at: 2026-03-03T07:50:38.986Z
@@ -72837,8 +72839,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T12:26:19.906Z
-  session_id: 01KJWCX0B1M519AJ0RJVRJRT9C
+  submitted_at: 2026-03-04T12:26:21.507Z
 - _ulid: 01KJTDBHV914S6MDRW4CDZ0YFP
   slugs: []
   title: Implement kspec agent dispatch watch command
