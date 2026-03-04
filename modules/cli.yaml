@@ -6494,6 +6494,11 @@ features:
         when: Output arrives from multiple concurrent invocations
         then: Only output matching the specified agent name or session ID is shown; unmatched chunks are
           silently dropped
+      - id: ac-17
+        given: kspec agent dispatch watch receives text events containing full session ULIDs
+        when: A watch line prefix is rendered
+        then: The session component in [agent-id session-id] uses the first 8 characters of the session ULID
+          for readability.
     depends_on: []
     implements: []
     relates_to: []
