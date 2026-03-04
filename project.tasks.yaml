@@ -74347,7 +74347,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Universalize P-notation priority aliases across all CLI commands
+- _ulid: 01KJWJ4J038V4M03RNV8PXN33T
+  slugs: []
+  title: Universalize P-notation priority aliases across all CLI commands
+  type: task
   description: >-
     PR #666 added P-notation (P1-P5) support only in the batch layer (normalizePriorityAlias in
     batch-exec.ts). But parsePriority() in src/cli/validators.ts already handles this correctly. The
@@ -74399,21 +74402,19 @@
     - ac-7: P-notation accepted and normalized via shared parsePriority
 
     - ac-8: Single normalization point (parsePriority), no batch-layer duplication
-  type: task
   spec_ref: "@trait-priority-parameter"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - dx
-  depends_on: []
-  _ulid: 01KJWJ4J038V4M03RNV8PXN33T
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-04T13:55:57.570Z
   notes: []
   todos: []
+  automation: eligible
