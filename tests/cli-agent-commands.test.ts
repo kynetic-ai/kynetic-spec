@@ -1330,7 +1330,7 @@ describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
   });
 });
 
-// ─── AC-13 through AC-16: kspec agent dispatch watch ─────────────────────────
+// ─── AC-13 through AC-17: kspec agent dispatch watch ─────────────────────────
 
 // Helper: create a fake WebSocket instance for testing
 interface FakeWsInstance {
@@ -1554,7 +1554,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     runPromise.catch(() => {/* ignore */});
   });
 
-  it("should place distinct same-stream updates on separate lines", async () => {
+  it("should place distinct same-stream messages on separate lines at empty-chunk boundary", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
@@ -1581,6 +1581,13 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
         data: { session_id: "sess-abc", agent_id: "worker", text: "First update." },
       }),
     });
+    // ACP message boundary sentinel (matches legacy Ralph parser semantics).
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
     await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
 
     ws.onmessage?.({
@@ -1597,6 +1604,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     runPromise.catch(() => {/* ignore */});
   });
 
+  // AC: @cli-agent-commands ac-17
   it("should display shortened session id in prefix", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);

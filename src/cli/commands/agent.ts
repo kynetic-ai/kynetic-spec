@@ -747,7 +747,6 @@ export function registerAgentCommands(program: Command): void {
         atLineStart: boolean;
         pendingText: string;
         flushTimer: NodeJS.Timeout | null;
-        lastPrintedChar: string;
       };
       const streamRenderStates = new Map<string, StreamRenderState>();
       const streamPrefixes = new Map<string, string>();
@@ -760,7 +759,6 @@ export function registerAgentCommands(program: Command): void {
             atLineStart: true,
             pendingText: "",
             flushTimer: null,
-            lastPrintedChar: "",
           };
           streamRenderStates.set(streamKey, state);
         }
@@ -782,7 +780,6 @@ export function registerAgentCommands(program: Command): void {
           if (part === "\n" || part === "\r\n") {
             output += part;
             state.atLineStart = true;
-            state.lastPrintedChar = "\n";
             continue;
           }
 
@@ -793,7 +790,6 @@ export function registerAgentCommands(program: Command): void {
           } else {
             output += part;
           }
-          state.lastPrintedChar = part[part.length - 1] ?? state.lastPrintedChar;
         }
 
         if (output) {
@@ -826,32 +822,7 @@ export function registerAgentCommands(program: Command): void {
         if (!state.atLineStart) {
           process.stdout.write("\n");
           state.atLineStart = true;
-          state.lastPrintedChar = "\n";
         }
-      }
-
-      function startsNewLogicalMessage(
-        state: StreamRenderState,
-        text: string,
-      ): boolean {
-        if (state.atLineStart) return false;
-        const first = text[0] ?? "";
-        if (!first) return false;
-
-        // Most continuation chunks begin with whitespace/punctuation.
-        if (/^\s/.test(first)) return false;
-        if (/^[\]\)\}\.,;:!?'’"`-]/.test(first)) return false;
-        if (/\s/.test(state.lastPrintedChar)) return false;
-
-        // Split identifiers/tokens should not force a new line.
-        if (
-          /[A-Za-z0-9]/.test(first) &&
-          /[A-Za-z0-9`@#\/]/.test(state.lastPrintedChar)
-        ) {
-          return false;
-        }
-
-        return true;
       }
 
       // Coalesce tiny token chunks so messages render naturally.
@@ -869,9 +840,6 @@ export function registerAgentCommands(program: Command): void {
         activeStreamKey = streamKey;
 
         const state = getStreamState(streamKey);
-        if (startsNewLogicalMessage(state, text)) {
-          endStreamLine(streamKey);
-        }
         streamPrefixes.set(streamKey, prefix);
         state.pendingText += text;
         if (state.flushTimer) {
@@ -882,7 +850,22 @@ export function registerAgentCommands(program: Command): void {
         }, CHUNK_COALESCE_MS);
       }
 
+      function markMessageBoundary(
+        streamKey: string,
+        prefix: string,
+      ): void {
+        streamPrefixes.set(streamKey, prefix);
+        if (activeStreamKey && activeStreamKey !== streamKey) {
+          flushStream(activeStreamKey);
+          endStreamLine(activeStreamKey);
+        }
+        activeStreamKey = streamKey;
+        flushStream(streamKey);
+        endStreamLine(streamKey);
+      }
+
       function formatSessionIdForDisplay(sessionId: string): string {
+        // AC: @cli-agent-commands ac-17 — shorten session ULID in watch prefix.
         return sessionId ? sessionId.slice(0, 8) : "";
       }
 
@@ -941,7 +924,13 @@ export function registerAgentCommands(program: Command): void {
 
             const streamKey = `${agentId}\u0000${sessionId}`;
             const displaySessionId = formatSessionIdForDisplay(sessionId);
-            queuePrefixedChunk(streamKey, `[${agentId} ${displaySessionId}]`, text);
+            const prefix = `[${agentId} ${displaySessionId}]`;
+            // Match old Ralph rendering semantics: empty chunk marks message end.
+            if (text.length === 0) {
+              markMessageBoundary(streamKey, prefix);
+              return;
+            }
+            queuePrefixedChunk(streamKey, prefix, text);
           }
         };
 
