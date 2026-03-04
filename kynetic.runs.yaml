@@ -13026,6 +13026,7 @@ runs:
     current_step: 9
     total_steps: 10
     started_at: 2026-03-04T14:04:17.965Z
+    completed_at: 2026-03-04T14:16:54.719Z
     step_results:
       - step_index: 0
         status: completed
@@ -13068,11 +13069,10 @@ runs:
         started_at: 2026-03-04T14:16:53.973Z
         completed_at: 2026-03-04T14:16:54.718Z
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-04T14:16:54.719Z
   - _ulid: 01KJWJM3BV0J2GPWTH96WZF34H
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 8
     started_at: 2026-03-04T14:04:26.876Z
     step_results:
@@ -13085,5 +13085,9 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-04T14:04:33.191Z
-        completed_at: 2026-03-04T14:04:33.191Z
+        completed_at: 2026-03-04T14:17:00.303Z
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-04T14:17:00.303Z
+        completed_at: 2026-03-04T14:17:00.303Z
     initiated_by: Jacob Chapel
