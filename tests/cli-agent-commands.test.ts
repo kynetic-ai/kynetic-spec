@@ -14,6 +14,7 @@ import * as fsSync from "node:fs";
 import * as YAML from "yaml";
 import {
   createTempDir,
+  createIsolatedKspecHome,
   cleanupTempDir,
   kspec,
   testUlid,
@@ -1082,6 +1083,7 @@ describe("AC-2/3: kspec agent run error handling", () => {
 // AC: @trait-error-guidance ac-1, ac-2
 describe("AC-10: kspec agent dispatch start without daemon", () => {
   let testDir: string;
+  let isolatedDaemonEnv: Record<string, string>;
   const fs_sync = require("node:fs");
   const path_sync = require("node:path");
 
@@ -1108,6 +1110,7 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-agent-dispatch-");
+    isolatedDaemonEnv = (await createIsolatedKspecHome(testDir)).env;
   });
 
   afterEach(async () => {
@@ -1122,7 +1125,7 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
     // AC: @trait-error-guidance ac-2 - suggests action (kspec serve)
     const result = kspec("agent dispatch start", testDir, {
       expectFail: true,
-      env: { HOME: testDir, USERPROFILE: testDir },
+      env: isolatedDaemonEnv,
     });
 
     expect(result.exitCode).not.toBe(0);
@@ -1137,7 +1140,7 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
 
     // AC: @cli-agent-commands ac-9 - dispatch status shows info
     const result = kspec("agent dispatch status", testDir, {
-      env: { HOME: testDir, USERPROFILE: testDir },
+      env: isolatedDaemonEnv,
     });
 
     expect(result.exitCode).toBe(0);

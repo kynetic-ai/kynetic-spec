@@ -4,7 +4,14 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createTempDir, cleanupTempDir, initGitRepo, kspec, type KspecOptions } from './helpers/cli';
+import {
+  createTempDir,
+  cleanupTempDir,
+  createIsolatedKspecHome,
+  initGitRepo,
+  kspec,
+  type KspecOptions,
+} from './helpers/cli';
 import { spawn, execSync } from 'child_process';
 import { join } from 'path';
 import { readFileSync, existsSync, mkdirSync } from 'fs';
@@ -130,14 +137,11 @@ describe('kspec serve commands', () => {
     tempDir = await createTempDir();
     await initGitRepo(tempDir);
     mkdirSync(join(tempDir, '.kspec'), { recursive: true });
-    isolatedHome = join(tempDir, '.home');
-    mkdirSync(isolatedHome, { recursive: true });
-    testEnv = { HOME: isolatedHome };
-
-    // Isolated PID/port files are under test HOME/.config/kspec.
-    const configDir = join(isolatedHome, '.config', 'kspec');
-    globalPidFilePath = join(configDir, 'daemon.pid');
-    globalPortFilePath = join(configDir, 'daemon.port');
+    const isolated = await createIsolatedKspecHome(tempDir);
+    isolatedHome = isolated.homeDir;
+    testEnv = isolated.env;
+    globalPidFilePath = isolated.daemonPidFilePath;
+    globalPortFilePath = isolated.daemonPortFilePath;
 
     // Ensure this test HOME starts from clean daemon state.
     try {
@@ -470,9 +474,8 @@ describe('kspec serve commands', () => {
     // Create temp directory WITHOUT .kspec/ to avoid auto-registration
     const emptyTempDir = await createTempDir();
     await initGitRepo(emptyTempDir);
-    const isolatedHomeForEmptyProject = join(emptyTempDir, '.home');
-    mkdirSync(isolatedHomeForEmptyProject, { recursive: true });
-    const env = { HOME: isolatedHomeForEmptyProject };
+    const isolated = await createIsolatedKspecHome(emptyTempDir);
+    const env = isolated.env;
 
     const port = await getAvailablePort();
 
