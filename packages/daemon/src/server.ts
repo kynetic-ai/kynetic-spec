@@ -15,6 +15,7 @@ import { dirname } from 'path';
 import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
+import { handleWebSocketClose } from './websocket/lifecycle';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { PidFileManager } from './pid';
 import { projectContextMiddleware } from './middleware/project-context';
@@ -298,10 +299,12 @@ export async function createServer(options: ServerOptions) {
       open(ws) {
         // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
         const sessionId = ulid();
+        const openContext = ws.data as { id?: unknown; request?: unknown } | undefined;
+        const contextId = typeof openContext?.id === 'string' ? openContext.id : undefined;
 
         // AC: @multi-directory-daemon ac-21 - Get bound project path
         // Retrieve project path from WeakMap via the request object on ws.data
-        const request = (ws.data as Record<string, unknown>).request as Request | undefined;
+        const request = openContext?.request as Request | undefined;
         const projectPath = request ? wsProjectPaths.get(request) || startupProjectPath : startupProjectPath;
 
         ws.data = {
@@ -313,7 +316,7 @@ export async function createServer(options: ServerOptions) {
           projectPath // AC: @multi-directory-daemon ac-21 - immutable binding
         };
 
-        pubsubManager.addConnection(sessionId, ws);
+        pubsubManager.addConnection(sessionId, ws, contextId);
         console.log(`[daemon] WebSocket client connected: ${sessionId} bound to ${projectPath} (${pubsubManager.getConnectionCount()} total)`);
 
         // Send connected event with session_id
@@ -334,8 +337,7 @@ export async function createServer(options: ServerOptions) {
         heartbeatManager.recordPong(ws);
       },
       close(ws, code, reason) {
-        pubsubManager.removeConnection(ws.data.sessionId);
-        console.log(`[daemon] WebSocket client disconnected: ${ws.data.sessionId} (code: ${code}, reason: ${reason})`);
+        handleWebSocketClose(pubsubManager, ws, code, reason);
       }
     });
 

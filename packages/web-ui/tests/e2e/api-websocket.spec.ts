@@ -319,6 +319,106 @@ test.describe('WebSocket Protocol API', () => {
       expect(sessionIds).toHaveLength(2);
       expect(sessionIds[0]).not.toBe(sessionIds[1]);
     });
+
+    // AC: @ws-disconnect-lifecycle-cleanup ac-1
+    test('api health connection count decrements after one of multiple clients disconnects', async ({
+      page,
+      daemon,
+      request,
+    }) => {
+      await page.goto(DAEMON_HTTP_URL + '/api/health');
+
+      const baselineResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+      expect(baselineResponse.ok()).toBe(true);
+      const baseline = await baselineResponse.json();
+      const baselineConnections = baseline.connections as number;
+
+      await page.evaluate((wsUrl: string) => {
+        return new Promise<void>((resolve, reject) => {
+          const sockets: WebSocket[] = [];
+          let connected = 0;
+
+          const timeout = setTimeout(() => {
+            reject(new Error('Timed out waiting for two websocket connections'));
+          }, 5000);
+
+          const onConnected = () => {
+            connected++;
+            if (connected === 2) {
+              clearTimeout(timeout);
+              (window as unknown as Record<string, unknown>).__disconnectCountSockets = sockets;
+              resolve();
+            }
+          };
+
+          for (let i = 0; i < 2; i++) {
+            const ws = new WebSocket(wsUrl);
+            sockets.push(ws);
+
+            ws.onmessage = (event) => {
+              try {
+                const data = JSON.parse(event.data);
+                if (data.event === 'connected' && data.data?.session_id) {
+                  onConnected();
+                }
+              } catch {
+                // ignore
+              }
+            };
+
+            ws.onerror = () => {
+              clearTimeout(timeout);
+              reject(new Error('WebSocket error while opening connection-count test clients'));
+            };
+          }
+        });
+      }, DAEMON_WS_URL);
+
+      const afterConnectResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+      expect(afterConnectResponse.ok()).toBe(true);
+      const afterConnect = await afterConnectResponse.json();
+      expect(afterConnect.connections).toBe(baselineConnections + 2);
+
+      await page.evaluate(() => {
+        return new Promise<void>((resolve, reject) => {
+          const sockets = (window as unknown as Record<string, WebSocket[]>).__disconnectCountSockets;
+          const first = sockets?.[0];
+          if (!first) {
+            reject(new Error('Missing first socket'));
+            return;
+          }
+
+          const timeout = setTimeout(() => reject(new Error('Timed out waiting for first socket close')), 5000);
+          first.onclose = () => {
+            clearTimeout(timeout);
+            resolve();
+          };
+          first.close(1000, 'count test close');
+        });
+      });
+
+      let finalConnections: number | null = null;
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const healthResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+        const health = await healthResponse.json();
+        finalConnections = health.connections as number;
+        if (finalConnections === baselineConnections + 1) {
+          break;
+        }
+        await page.waitForTimeout(100);
+      }
+      expect(finalConnections).toBe(baselineConnections + 1);
+
+      // Cleanup second connection to avoid leaking state into later tests.
+      await page.evaluate(() => {
+        const sockets = (window as unknown as Record<string, WebSocket[]>).__disconnectCountSockets;
+        const second = sockets?.[1];
+        if (second && second.readyState === WebSocket.OPEN) {
+          second.close(1000, 'cleanup');
+        }
+        delete (window as unknown as Record<string, unknown>).__disconnectCountSockets;
+      });
+    });
   });
 
   test.describe('Command Protocol', () => {

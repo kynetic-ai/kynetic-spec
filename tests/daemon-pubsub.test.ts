@@ -148,6 +148,7 @@ describe('PubSubManager', () => {
   });
 
   describe('Connection Management', () => {
+    // AC: @ws-disconnect-lifecycle-cleanup ac-1
     it('should track connection count', () => {
       const ws1 = createMockWebSocket('conn-1', '/tmp/project-a', []);
       const ws2 = createMockWebSocket('conn-2', '/tmp/project-b', []);
@@ -162,6 +163,51 @@ describe('PubSubManager', () => {
 
       manager.removeConnection('conn-1');
       expect(manager.getConnectionCount()).toBe(1);
+    });
+
+    // AC: @ws-disconnect-lifecycle-cleanup ac-2
+    it('removes connection by socket using stable session mapping when ws.data loses sessionId', () => {
+      const ws = createMockWebSocket('conn-1', '/tmp/project-a', ['tasks:updates']);
+      manager.addConnection('conn-1', ws);
+
+      // Simulate close callback race where data no longer has sessionId.
+      (ws.data as unknown as { sessionId?: string }).sessionId = undefined;
+
+      const removedSessionId = manager.removeConnectionBySocket(ws);
+
+      expect(removedSessionId).toBe('conn-1');
+      expect(manager.getConnectionCount()).toBe(0);
+      expect(manager.getSessionIdBySocket(ws)).toBeUndefined();
+    });
+
+    it('resolves session id from internal subscription topic when close callback socket wrapper differs', () => {
+      const ws = createMockWebSocket('conn-1', '/tmp/project-a', ['tasks:updates']);
+      manager.addConnection('conn-1', ws);
+
+      const closeSocketWrapper = {
+        data: {},
+        subscriptions: ['__kspec_session:conn-1'],
+      } as unknown as ServerWebSocket<ConnectionData>;
+
+      const removedSessionId = manager.removeConnectionBySocket(closeSocketWrapper);
+
+      expect(removedSessionId).toBe('conn-1');
+      expect(manager.getConnectionCount()).toBe(0);
+    });
+
+    it('resolves session id from websocket context id when close callback loses data/subscriptions', () => {
+      const ws = createMockWebSocket('conn-1', '/tmp/project-a', ['tasks:updates']);
+      manager.addConnection('conn-1', ws, 'ctx-1');
+
+      const closeSocketWrapper = {
+        data: {},
+        subscriptions: [],
+      } as unknown as ServerWebSocket<ConnectionData>;
+
+      const removedSessionId = manager.removeConnectionBySocket(closeSocketWrapper, 'ctx-1');
+
+      expect(removedSessionId).toBe('conn-1');
+      expect(manager.getConnectionCount()).toBe(0);
     });
 
     it('should clean up connection when removed', () => {
@@ -195,10 +241,22 @@ function createMockWebSocket(
     projectPath: projectPath as any, // Type assertion for test
   };
 
-  return {
+  const activeSubscriptions = new Set<string>();
+  const ws = {
     data,
     send: vi.fn(),
     close: vi.fn(),
+    subscribe: vi.fn((topic: string) => {
+      activeSubscriptions.add(topic);
+    }),
+    unsubscribe: vi.fn((topic: string) => {
+      activeSubscriptions.delete(topic);
+    }),
+    get subscriptions() {
+      return Array.from(activeSubscriptions);
+    },
     // Add minimal required ServerWebSocket properties
-  } as unknown as ServerWebSocket<ConnectionData>;
+  };
+
+  return ws as unknown as ServerWebSocket<ConnectionData>;
 }
