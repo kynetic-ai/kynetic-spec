@@ -1008,10 +1008,10 @@ triage:
       Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-02-23T08:31:16.434Z
-    updated_at: 2026-03-03T06:43:34.670Z
     acted_at: 2026-03-03T06:43:34.653Z
     result_ref: "@01KJS702"
+    created_at: 2026-02-23T08:31:16.434Z
+    updated_at: 2026-03-03T06:43:34.670Z
   - _ulid: 01KJ4SZJFKCZ62JK5Z7ZZ3SGCG
     inbox_ref: 01KHWWMANX9JFMPRK9TWM2PDQE
     item_snapshot: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
@@ -2245,3 +2245,16 @@ triage:
     result_ref: "@01KJS6ZK"
     created_at: 2026-03-03T06:43:08.059Z
     updated_at: 2026-03-03T06:43:18.716Z
+  - _ulid: 01KJX36RPSBATAHFRZ3K459QE0
+    inbox_ref: 01KJTB75HJSW19JMBHTE4390HQ
+    item_snapshot: Add branch check warning to kspec task start — when current branch is not main and
+      does not match the task slug, warn the agent. Would catch starting work on the wrong branch
+      without a manual git branch check.
+    status: triaged
+    action: promote
+    reasoning: "Clear actionable guardrail for wrong-branch starts; aligns with unresolved
+      branch-friction observations and PR #664 branch-isolation guidance."
+    decided_by: Jacob Chapel
+    evidence_refs: []
+    created_at: 2026-03-04T18:54:15.770Z
+    updated_at: 2026-03-04T18:54:15.796Z
