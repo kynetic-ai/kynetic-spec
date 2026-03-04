@@ -6369,6 +6369,24 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    requirements:
+      - _ulid: 01KJVPSXJDA0X7QW622DDD00R3
+        slugs:
+          - dispatch-in-progress-priority
+        title: In-Progress Dispatch Priority
+        type: requirement
+        tags: []
+        description: Define dispatch behavior so tasks already in progress are prioritized ahead of pending,
+          needs_work, and pending_review when dispatch scheduling chooses what to run next. This
+          preserves continuity and prevents partially executed work from being pre-empted by newly
+          queued items.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-04T05:58:17.421Z
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y
     slugs:
       - cli-agent-commands
