@@ -74569,6 +74569,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Spec updated: description now matches code exactly (6 options, no phantom
+    --recursive/--json), added ac-priority and ac-title ACs, P-notation documented."
   depends_on: []
   context: []
   priority: 2
@@ -74580,6 +74582,7 @@
   created_at: 2026-03-04T14:15:28.980Z
   started_at: 2026-03-04T14:15:40.964Z
   submitted_at: 2026-03-04T14:16:41.591Z
+  completed_at: 2026-03-04T14:16:42.729Z
   notes:
     - _ulid: 01KJWKA78347W96YH23FCCKRKF
       created_at: 2026-03-04T14:16:31.748Z
@@ -74589,11 +74592,14 @@
         description to show P-notation (1-5 or P1-P5). (3) Added ac-priority and ac-title ACs. (4)
         Added P1 example. (5) Reset implementation status back to implemented."
       supersedes: null
+    - _ulid: 01KJWKHT8XTZDHWF3Q8X0NJAWX
+      created_at: 2026-03-04T14:20:40.606Z
+      author: Jacob Chapel
+      content: "Autonomous dispatch check on 2026-03-04: task was already completed before this
+        invocation; no additional implementation changes were required."
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T14:16:42.729Z
-  closed_reason: "Spec updated: description now matches code exactly (6 options, no phantom
-    --recursive/--json), added ac-priority and ac-title ACs, P-notation documented."
 - _ulid: 01KJWK8AWMEP2D3PHNKH726NNR
   slugs: []
   title: "Fill spec gap: inbox commands — add child requirement specs"
