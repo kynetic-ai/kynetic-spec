@@ -1004,6 +1004,10 @@ features:
             given: --slug conflicts with existing slug
             when: kspec task add --title 'T' --slug existing-slug runs
             then: exits with conflict error; slug must be unique
+          - id: ac-tags
+            given: --tag is provided (repeatable)
+            when: kspec task add --title 'T' --tag cli --tag urgent runs
+            then: task created with both tags; comma-separated values also supported
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
