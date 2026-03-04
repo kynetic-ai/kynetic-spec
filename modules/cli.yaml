@@ -992,6 +992,10 @@ features:
             given: --priority is provided with valid value
             when: kspec task add --title 'T' --priority 1 (or --priority P1) runs
             then: task created with specified priority; P-notation normalized to numeric
+          - id: ac-priority-invalid
+            given: --priority is provided with out-of-range value
+            when: kspec task add --title 'T' --priority 6 runs
+            then: exits with validation error; priority must be 1-5
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
