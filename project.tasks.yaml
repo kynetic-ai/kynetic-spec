@@ -71641,12 +71641,12 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJVT52QN7EH1GVPZ9QP1SD53
   created_at: 2026-03-03T06:43:29.940Z
+  started_at: 2026-03-04T07:06:09.618Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-04T07:06:09.618Z
-  session_id: 01KJVT52QN7EH1GVPZ9QP1SD53
 - _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
   slugs: []
   title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
@@ -73556,3 +73556,20 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: batch p test
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags: []
+  depends_on: []
+  _ulid: 01KJVTR2KTZVDEXV87ES3MKYT1
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T07:07:11.354Z
+  notes: []
+  todos: []
