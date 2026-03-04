@@ -74254,6 +74254,7 @@
   session_id: 01KJWKJDY3BC7C21HQEX3RE9S0
   created_at: 2026-03-04T05:13:42.595Z
   started_at: 2026-03-04T14:23:12.297Z
+  submitted_at: 2026-03-04T14:27:49.919Z
   notes:
     - _ulid: 01KJWKPKFWEH516Z2D2ZBQS5YV
       created_at: 2026-03-04T14:23:17.500Z
@@ -74291,9 +74292,17 @@
         - Ran kspec validate; current failure is pre-existing project meta/reference drift unrelated
         to this task changes.
       supersedes: null
+    - _ulid: 01KJWKZBCB7S50MDZD078AFCH1
+      created_at: 2026-03-04T14:28:04.107Z
+      author: Jacob Chapel
+      content: |-
+        Submitted for review.
+        - Branch: fix/dispatch-watch-transcript-fixtures
+        - Commit: b657a7170
+        - PR: https://github.com/kynetic-ai/kynetic-spec/pull/676
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T14:27:49.919Z
 - _ulid: 01KJVPTJPKZWMMMBEH23N30D8F
   slugs:
     - task-dispatch-in-progress-priority
