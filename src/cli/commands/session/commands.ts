@@ -275,6 +275,7 @@ export function registerSessionCommands(program: Command): void {
     .command("show <session-id>")
     .description("Show detailed view of a single session")
     .option("-e, --events", "Include chronological event timeline")
+    .option("--text", "Replay assistant text output from session.update events")
     .option("-t, --type <type>", "Filter events by type (e.g., tool.call)")
     .option("-n, --limit <n>", "Show only the last N events")
     .option("-c, --context <n>", "Show context snapshot for iteration N")
