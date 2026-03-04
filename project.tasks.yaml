@@ -73257,6 +73257,20 @@
         - Verification: targeted vitest for changed tests, then full suite sharded runs as required
         by project conventions, plus kspec validate.
       supersedes: null
+    - _ulid: 01KJWGRYAQXGJ429R5VRX7YWB2
+      created_at: 2026-03-04T13:32:08.407Z
+      author: Jacob Chapel
+      content: Implemented reusable startup wait helper and migrated daemon/process startup
+        synchronization tests to bounded polling with diagnostics.\n\nChanges:\n- Added
+        tests/helpers/cli.ts::waitForStartup() with timeout + last-observation failure context.\n-
+        Replaced file-local wait logic in tests/cli-serve.test.ts with shared helper for
+        health/uptime/readiness waits.\n- Updated tests/cli-agent-commands.test.ts to use shared
+        helper for async readiness checks and replaced fixed 10ms reconnect assertion wait with
+        condition-based polling.\n\nVerification:\n- npm run test -- tests/cli-serve.test.ts
+        tests/cli-agent-commands.test.ts\n- npm run test:shard1\n- npm run test:shard2\n- npm run
+        test:shard3\n- kspec validate (fails due pre-existing repository-level
+        meta/reference/alignment issues unrelated to this task)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJTQBRK5HDQKWER3Z2JXKF6B
