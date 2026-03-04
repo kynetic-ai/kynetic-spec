@@ -1597,7 +1597,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker sess-abc] First update.\n[worker sess-abc] Second update.");
+    expect(output).toContain("[worker sess-abc] First update.\n\n[worker sess-abc] Second update.");
 
     runPromise.catch(() => {/* ignore */});
   });
@@ -1702,8 +1702,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker sess-abc] First statement.\n[worker sess-abc] Second statement.");
-    expect(output).not.toContain("\n\n[worker sess-abc] Second statement.");
+    expect(output).toContain("[worker sess-abc] First statement.\n\n[worker sess-abc] Second statement.");
     expect(output.startsWith("\n")).toBe(false);
 
     runPromise.catch(() => {/* ignore */});

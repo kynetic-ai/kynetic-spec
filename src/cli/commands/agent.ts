@@ -744,6 +744,8 @@ export function registerAgentCommands(program: Command): void {
       const sessionFilter: string | undefined = opts.session;
       type StreamRenderState = {
         atLineStart: boolean;
+        hasRenderedLine: boolean;
+        spacerPending: boolean;
       };
       const streamRenderStates = new Map<string, StreamRenderState>();
       let activeStreamKey: string | null = null;
@@ -753,6 +755,8 @@ export function registerAgentCommands(program: Command): void {
         if (!state) {
           state = {
             atLineStart: true,
+            hasRenderedLine: false,
+            spacerPending: false,
           };
           streamRenderStates.set(streamKey, state);
         }
@@ -779,8 +783,13 @@ export function registerAgentCommands(program: Command): void {
 
           if (!part) continue;
           if (state.atLineStart) {
+            if (state.spacerPending && state.hasRenderedLine) {
+              output += "\n";
+            }
+            state.spacerPending = false;
             output += `${prefix} ${part}`;
             state.atLineStart = false;
+            state.hasRenderedLine = true;
           } else {
             output += part;
           }
@@ -814,9 +823,13 @@ export function registerAgentCommands(program: Command): void {
       }
 
       function markMessageBoundary(streamKey: string): void {
+        const state = getStreamState(streamKey);
         // Boundary signals are stream-local. Do not force a newline on a
         // different active stream that may still be mid-line.
         endStreamLine(streamKey);
+        if (state.hasRenderedLine) {
+          state.spacerPending = true;
+        }
       }
 
       function formatSessionIdForDisplay(sessionId: string): string {
