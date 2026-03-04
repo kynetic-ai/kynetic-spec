@@ -980,6 +980,10 @@ features:
             given: --plan-ref is provided
             when: kspec task add --title 'T' --plan-ref @plan-ref runs
             then: task created with plan_ref linked; ref validated as a plan (not task or spec)
+          - id: ac-plan-ref-invalid
+            given: --plan-ref points to a task or spec item
+            when: kspec task add --title 'T' --plan-ref @some-task runs
+            then: exits with error; plan ref must point to a plan
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
