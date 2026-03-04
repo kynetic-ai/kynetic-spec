@@ -73208,5 +73208,13 @@
         boundary spacing and stream-local boundary handling. Updated AC-13 wording and refreshed
         watch tests; targeted suites remain green."
       supersedes: null
+    - _ulid: 01KJVKDRMQ8AJ5CDR4RZTANYRF
+      created_at: 2026-03-04T04:59:13.431Z
+      author: Jacob Chapel
+      content: Collapsed repeated ACP boundary events in dispatch watch to one pending spacer line per
+        stream between text updates. This fixes large vertical gaps when many tool-call/non-text
+        updates occur before the next text chunk. Added regression test ('collapse repeated boundary
+        events to a single spacer line'). Targeted watch + dispatch test suites pass.
+      supersedes: null
   todos: []
   automation: eligible
