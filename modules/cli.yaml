@@ -976,6 +976,10 @@ features:
             given: --meta-ref points to a spec item or task
             when: kspec task add --title 'T' --meta-ref @some-spec runs
             then: exits with error; meta ref must point to a meta item
+          - id: ac-plan-ref
+            given: --plan-ref is provided
+            when: kspec task add --title 'T' --plan-ref @plan-ref runs
+            then: task created with plan_ref linked; ref validated as a plan (not task or spec)
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
