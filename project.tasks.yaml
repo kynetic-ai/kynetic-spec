@@ -75006,5 +75006,16 @@
         tests/lint/no-static-analysis.test.ts tests/batch-write-buffer.test.ts (pass), npm test
         (pass)."
       supersedes: null
+    - _ulid: 01KJX08EEVYQ1J7921MM3W4QKF
+      created_at: 2026-03-04T18:02:45.083Z
+      author: Jacob Chapel
+      content: "Addressed review findings from PR #677:\\n- Fixed atomic rollback bypass for skill
+        supporting files by routing recursive copy writes through writeFileBufferAware and avoiding
+        in-batch directory creation side effects with mkdirBufferAware\\n- Updated WriteBuffer to
+        handle binary content for buffered copy paths\\n- Fixed directory deletion overlay
+        semantics: listDir/access now treat self/ancestor overlay deletes as ENOENT\\n- Added
+        regression tests for deleted directory overlay behavior and skill import supporting-file
+        rollback on failed atomic batch"
+      supersedes: null
   todos: []
   automation: eligible
