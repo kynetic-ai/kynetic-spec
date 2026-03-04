@@ -107,6 +107,7 @@ export class JsonRpcFraming extends EventEmitter {
     );
     this.stdin.on("end", () => this.handleEnd());
     this.stdin.on("error", (err) => this.handleError(err));
+    this.stdout.on("error", (err) => this.handleOutputError(err));
   }
 
   /**
@@ -269,11 +270,12 @@ export class JsonRpcFraming extends EventEmitter {
    * Send a JSON-RPC message
    */
   private send(message: JsonRpcMessage): void {
+    const json = JSON.stringify(message);
+
     try {
-      const json = JSON.stringify(message);
       this.stdout.write(`${json}\n`);
     } catch (err) {
-      console.error(`Error sending message: ${err}`);
+      this.handleOutputError(err);
     }
   }
 
@@ -412,6 +414,26 @@ export class JsonRpcFraming extends EventEmitter {
   private handleError(err: Error): void {
     console.error(`Stdin error: ${err.message}`);
     this.emit("error", err);
+    this.close();
+  }
+
+  /**
+   * Handle stdout write/pipe errors.
+   *
+   * EPIPE (or destroyed stream) means the peer is gone. Treat this as a
+   * closed connection instead of surfacing an uncaught exception.
+   */
+  private handleOutputError(err: unknown): void {
+    const error = err instanceof Error ? err : new Error(String(err));
+    const code = (error as NodeJS.ErrnoException).code;
+
+    if (code === "EPIPE" || code === "ERR_STREAM_DESTROYED") {
+      this.close();
+      return;
+    }
+
+    console.error(`Stdout error: ${error.message}`);
+    this.emit("error", error);
     this.close();
   }
 }
