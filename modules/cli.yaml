@@ -2717,6 +2717,10 @@ features:
             given: inbox ref does not exist
             when: kspec inbox delete @nonexistent runs
             then: exits with not-found error and helpful message
+          - id: ac-1
+            given: inbox item @ref exists
+            when: kspec inbox delete @ref runs without --force
+            then: confirmation prompt shown; item deleted only if user confirms
       - _ulid: 01KJWVJPRJ0WK2A5292XFZND1S
         slugs:
           - cmd-inbox-get
