@@ -74048,6 +74048,7 @@
   session_id: 01KJWHG8FRV2G5Q0HTRC3PGSRN
   created_at: 2026-03-04T03:10:57.977Z
   started_at: 2026-03-04T13:46:02.902Z
+  submitted_at: 2026-03-04T14:02:45.320Z
   notes:
     - _ulid: 01KJWHJECEN8C65X1RE4V0D1RF
       created_at: 2026-03-04T13:46:04.046Z
@@ -74089,9 +74090,17 @@
         meta/reference/alignment issues unrelated to this change (e.g., duplicate @observations slug
         and existing alignment warnings).
       supersedes: null
+    - _ulid: 01KJWJH53KA2WPKS3S4J0M7880
+      created_at: 2026-03-04T14:02:50.355Z
+      author: Jacob Chapel
+      content: |-
+        Submitted for review.
+        - Branch: fix/dispatch-watch-subscribe-ack-failure
+        - Commit: 32e8209f2
+        - PR: https://github.com/kynetic-ai/kynetic-spec/pull/675
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T14:02:45.320Z
 - _ulid: 01KJVF3KTW4SR8PFXG6R08GCSE
   slugs:
     - task-dispatch-watch-line-prefix-rendering
