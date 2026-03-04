@@ -72603,6 +72603,7 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-03T07:15:51.761Z
   started_at: 2026-03-04T21:54:21.249Z
+  submitted_at: 2026-03-04T22:06:46.767Z
   notes:
     - _ulid: 01KJXE0B8B8JHZSDBN2VD2S99Z
       created_at: 2026-03-04T22:02:59.728Z
@@ -72616,7 +72617,7 @@
       supersedes: null
   todos: []
   automation: manual_only
-  submitted_at: 2026-03-04T22:06:46.767Z
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/679
 - _ulid: 01KJS90FR4GQVQQYA4QM2XJZ1W
   slugs: []
   title: Rewrite {skill:foo} references to adapter-specific format when injecting skills into agent prompt
