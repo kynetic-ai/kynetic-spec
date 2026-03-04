@@ -796,6 +796,65 @@ describe("Skill resolution for agent invocations", () => {
     expect(result).toContain("skill-a content");
     expect(result).toContain("skill-b content");
   });
+
+  // AC: @agent-invocation-lifecycle ac-10
+  it("buildPromptWithSkills should rewrite skill references for claude adapter", async () => {
+    const skillDir = path.join(testDir, "skills", "task-work");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(
+      path.join(skillDir, "SKILL.md"),
+      "# Task Work\n\nRun {skill:task-work} then {skill:pr}.",
+    );
+
+    await fs.mkdir(path.join(testDir, ".agents", "skills", "kspec-task-work"), { recursive: true });
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Base prompt",
+      skillIds: ["task-work"],
+      specDir: testDir,
+      adapterId: "claude-agent-acp",
+    });
+
+    expect(result).toContain("/kspec:task-work");
+    expect(result).toContain("/pr");
+    expect(result).not.toContain("{skill:task-work}");
+    expect(result).not.toContain("{skill:pr}");
+  });
+
+  // AC: @agent-invocation-lifecycle ac-10
+  it("buildPromptWithSkills should rewrite skill references for codex adapter", async () => {
+    const skillDir = path.join(testDir, "skills", "task-work");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(path.join(skillDir, "SKILL.md"), "# Task Work\n\nRun {skill:task-work}.");
+
+    await fs.mkdir(path.join(testDir, ".agents", "skills", "kspec-task-work"), { recursive: true });
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Base prompt",
+      skillIds: ["task-work"],
+      specDir: testDir,
+      adapterId: "codex-acp",
+    });
+
+    expect(result).toContain("$kspec-task-work");
+    expect(result).not.toContain("{skill:task-work}");
+  });
+
+  // AC: @agent-invocation-lifecycle ac-10
+  it("buildPromptWithSkills should leave skill references unchanged for unknown adapters", async () => {
+    const skillDir = path.join(testDir, "skills", "task-work");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(path.join(skillDir, "SKILL.md"), "# Task Work\n\nRun {skill:task-work}.");
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Base prompt",
+      skillIds: ["task-work"],
+      specDir: testDir,
+      adapterId: "mock-acp",
+    });
+
+    expect(result).toContain("{skill:task-work}");
+  });
 });
 
 // ─── AC-8: Cleanup on completion or failure ───────────────────────────────────

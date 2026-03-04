@@ -219,6 +219,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     basePrompt: options.prompt,
     skillIds: agent.skills ?? [],
     specDir,
+    adapterId,
   });
 
   // Capture the pre-existing KSPEC_SESSION_ID so we can restore it in finally.
