@@ -70802,8 +70802,12 @@
 - _ulid: 01KJP279FYHBM6995ZVMYGM7M2
   slugs:
     - task-ralph-migration-guide
-  title: Write migration guide from ralph to agent runtime
+  title: Purge remaining ralph traces from codebase
   type: task
+  description: "Remove all remaining ralph references: rename 06-ralph-loop.md template to
+    06-agent-dispatch-mode.md, rename RalphConfigSchema, clean up legacy session type comments,
+    remove ralphLoop error string, update any remaining code comments. This is the final cleanup
+    after ralph→agent dispatch migration. No migration guide needed — ralph was internal tooling."
   plan_ref: "@plan-reactive-agent-runtime"
   status: pending
   blocked_by: []
@@ -70858,6 +70862,13 @@
       author: "@claude"
       content: "Automation: manual_only. User-facing migration docs benefit from human judgment on tone,
         completeness, and audience needs. No spec_ref."
+      supersedes: null
+    - _ulid: 01KJX7VVG5CF8M4ZV5ME1JAJ4A
+      created_at: 2026-03-04T20:15:41.061Z
+      author: "@claude"
+      content: Repurposed from migration guide to trace purge. Ralph was internal tooling — no external
+        users need a guide. Task now covers final cleanup of ralph references in code, templates,
+        and config.
       supersedes: null
   todos: []
   automation: manual_only
@@ -72321,6 +72332,7 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Already implemented. setup.ts creates task-worker and pr-reviewer agents with dispatch rules.
   depends_on: []
   context: []
   priority: 2
@@ -72333,7 +72345,6 @@
   notes: []
   todos: []
   automation: eligible
-  closed_reason: Already implemented. setup.ts creates task-worker and pr-reviewer agents with dispatch rules.
 - _ulid: 01KJS8BD53N1Z14PPWJ4B0B7N7
   slugs: []
   title: Replace 06-ralph-loop.md template with agent dispatch documentation
