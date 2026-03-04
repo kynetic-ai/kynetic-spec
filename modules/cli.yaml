@@ -1920,14 +1920,14 @@ features:
         status:
           maturity: draft
           implementation: in_progress
-        description: |
-          kspec derive <ref> [options]
+        description: |-
+          kspec derive [ref] [options]
           kspec derive --all [options]
 
           Derives implementation tasks from spec items.
 
           Behavior:
-          - Recursively creates tasks for item and all children
+          - Recursively creates tasks for item and all children (default)
           - Features create feature tasks
           - Requirements create requirement tasks under feature
           - Auto-sets depends_on based on spec hierarchy:
@@ -1936,11 +1936,14 @@ features:
           - Skips items that already have tasks (unless --force)
 
           Options:
-          - --recursive: Derive for item and all children (default)
-          - --flat: Only derive for the specified item, no children
-          - --force: Create even if task exists
-          - --dry-run: Show what would be created
-          - --json: Output created tasks as JSON
+          - --all: Derive tasks for all spec items without linked tasks
+          - --flat: Only derive for the specified item, not children (default: recursive)
+          - --force: Create task even if one already exists for the spec
+          - --dry-run: Show what would be created without making changes
+          - --priority <n>: Set priority for created task(s) (1-5 or P1-P5)
+          - --title <title>: Override task title (default: 'Implement: {spec title}')
+
+          Note: --json output comes via @trait-json-output, not a direct command option.
 
           Examples:
             kspec derive @shadow-branch
@@ -1949,6 +1952,9 @@ features:
 
             kspec derive @shadow-concept --flat
             # Creates single task for just that feature
+
+            kspec derive @feature --priority P1
+            # Creates task with priority 1
 
           Idempotent by default.
         implements:
