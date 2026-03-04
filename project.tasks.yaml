@@ -72748,6 +72748,14 @@
         - Verification: run focused cli-serve tests, then validate and broader test checks before
         PR.
       supersedes: null
+    - _ulid: 01KJVMV83HFA0CG3YS99KKKKRC
+      created_at: 2026-03-04T05:24:03.825Z
+      author: Jacob Chapel
+      content: "Implemented daemon-test isolation in tests/cli-serve.test.ts: all CLI invocations now run
+        with per-test HOME via runKspec wrapper, removed global PID SIGTERM/unlink cleanup, and
+        replaced fixed startup sleeps with bounded wait helpers (health/uptime polling) that emit
+        actionable timeout context."
+      supersedes: null
   todos: []
 - _ulid: 01KJTWE94TKMSKGAVAHTWEMRFW
   slugs:
