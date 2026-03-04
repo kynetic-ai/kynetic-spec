@@ -7537,6 +7537,30 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJX28RC3RDA460PW8Z091QNM
+    type: friction
+    content: PR merge gating can remain blocked by stale failed runs when duplicate required check names
+      exist on the same head SHA, requiring manual reruns even after a later successful run.
+    created_at: 2026-03-04T18:37:52.387Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJX28RGB5KN4W5C6VYJA8K01
+    type: friction
+    content: Reviewer agent dispatch via ACP can fail on parse/hang paths, forcing manual retries with
+      limited diagnostics during pr-review loops.
+    created_at: 2026-03-04T18:37:52.523Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJX28RKW0QCDZ03JZ323JBZ1
+    type: success
+    content: Strict review-fix loops with targeted regression tests before full suite runs reduced
+      turnaround time while still catching integration defects before merge.
+    created_at: 2026-03-04T18:37:52.636Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
