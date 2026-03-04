@@ -73154,5 +73154,15 @@
         GitHub for own PR, so clean review was posted as COMMENT. CI checks still pending before
         merge."
       supersedes: null
+    - _ulid: 01KJVH6S81SK82S4TFKM6DWJX0
+      created_at: 2026-03-04T04:20:27.521Z
+      author: Jacob Chapel
+      content: "Follow-up fix after manual watch validation: coalesce tiny token chunks (50ms) so each
+        logical update renders on its own line, flush active line before reconnect messages, and
+        display shortened 8-char session IDs in watch prefixes. Added regressions for same-stream
+        line separation, short session ID display, and reconnect flush behavior. Validation: npx
+        vitest run tests/cli-agent-commands.test.ts -t 'dispatch watch'; npx vitest run
+        tests/cli-serve.test.ts; npm test (173 files passed)."
+      supersedes: null
   todos: []
   automation: eligible
