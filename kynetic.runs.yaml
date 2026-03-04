@@ -12990,6 +12990,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-04T13:42:00.743Z
+    completed_at: 2026-03-04T13:42:28.045Z
     step_results:
       - step_index: 0
         status: completed
@@ -13019,4 +13020,11 @@ runs:
         notes: No unique high-confidence items passed step-3 evaluation, so no new
           observations/questions/inbox items were captured in step 4.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-04T13:42:28.045Z
+  - _ulid: 01KJWJKTNCGCERKG1X7EWAEQB6
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-04T14:04:17.965Z
+    step_results: []
+    initiated_by: Jacob Chapel
