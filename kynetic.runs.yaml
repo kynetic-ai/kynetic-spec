@@ -12328,8 +12328,16 @@ runs:
   - _ulid: 01KJW79BZYTXYWBE1JXQ00PKNM
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 10
     started_at: 2026-03-04T10:46:20.926Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-04T10:46:20.926Z
+        completed_at: 2026-03-04T10:46:30.182Z
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-04T10:46:30.182Z
+        completed_at: 2026-03-04T10:46:30.182Z
     initiated_by: Jacob Chapel
