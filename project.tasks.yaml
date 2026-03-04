@@ -71814,6 +71814,13 @@
 
         - Verification: targeted batch tests plus full test suite checks.
       supersedes: null
+    - _ulid: 01KJW1M8T3QMPGAVWFX0YZ9E5X
+      created_at: 2026-03-04T09:07:26.659Z
+      author: Jacob Chapel
+      content: Implemented batch arg alias resolution for tags->tag in validation and argv translation.
+        Added unit and integration coverage in batch-exec-engine tests; verified alias emits --tag
+        and persists inbox tags.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS7NZ5AVXWVS04A7CDF9JG9
