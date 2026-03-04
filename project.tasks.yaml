@@ -74272,6 +74272,25 @@
         - Verification: run targeted cli-agent-commands tests, then kspec validate and full test
         suite shard(s) covering agent CLI where practical.
       supersedes: null
+    - _ulid: 01KJWKXGV687R75TZQ805SEFTZ
+      created_at: 2026-03-04T14:27:04.166Z
+      author: Jacob Chapel
+      content: >-
+        Implemented transcript-style dispatch-watch regression fixtures and replay tests.
+
+        - Added fixtures under tests/fixtures/dispatch-watch-transcripts for empty-before-text,
+        repeated boundary coalescing, interleaved multi-stream switching, and reconnect boundary
+        formatting.
+
+        - Added shared fixture loader/chunk emitter helpers and fixture-driven AC-13/AC-14 tests in
+        tests/cli-agent-commands.test.ts.
+
+        - Verified: npx vitest run tests/cli-agent-commands.test.ts (50/50 passing), npm run
+        test:shard3 (1067 tests passing).
+
+        - Ran kspec validate; current failure is pre-existing project meta/reference drift unrelated
+        to this task changes.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJVPTJPKZWMMMBEH23N30D8F
