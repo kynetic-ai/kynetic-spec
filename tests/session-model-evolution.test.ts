@@ -133,7 +133,14 @@ describe("SessionMetadata trigger and agent_id fields", () => {
   });
 
   it("should accept all trigger enum values", () => {
-    const triggers = ["manual", "task.ready", "task.needs_work", "task.pending_review", "legacy"];
+    const triggers = [
+      "manual",
+      "task.in_progress",
+      "task.ready",
+      "task.needs_work",
+      "task.pending_review",
+      "legacy",
+    ];
     for (const trigger of triggers) {
       const result = SessionMetadataSchema.safeParse({
         id: "01SESS00000000000000000001",
