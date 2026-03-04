@@ -266,6 +266,19 @@ function normalizeArgKey(key: string): string {
 }
 
 /**
+ * Batch-only argument aliases for common plural forms.
+ * Keys and values are canonical kebab-case.
+ */
+const BATCH_ARG_ALIASES: Record<string, string> = {
+  tags: "tag",
+};
+
+function resolveBatchArgAlias(key: string): string {
+  const canonical = normalizeArgKey(key);
+  return BATCH_ARG_ALIASES[canonical] ?? canonical;
+}
+
+/**
  * Get all known argument and option names for a command, returning both
  * kebab-case, camelCase, and underscore variants.
  */
@@ -405,7 +418,7 @@ export function validateBatchCommands(
     const knownNamesArray = Array.from(knownNames);
 
     for (const argKey of Object.keys(cmd.args)) {
-      if (!knownCanonicalNames.has(normalizeArgKey(argKey))) {
+      if (!knownCanonicalNames.has(resolveBatchArgAlias(argKey))) {
         const suggestion = findClosestCommand(argKey, knownNamesArray);
         errors.push({
           index: i,
@@ -423,7 +436,7 @@ export function validateBatchCommands(
       const normalizedReqName = normalizeArgKey(reqName);
       if (
         !Object.keys(cmd.args).some(
-          (k) => normalizeArgKey(k) === normalizedReqName,
+          (k) => resolveBatchArgAlias(k) === normalizedReqName,
         )
       ) {
         errors.push({
@@ -582,7 +595,7 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
   for (const argDef of positionalDefs) {
     const canonicalName = normalizeArgKey(argDef.name);
     const matchedKey = Object.keys(cmd.args).find(
-      (k) => normalizeArgKey(k) === canonicalName,
+      (k) => resolveBatchArgAlias(k) === canonicalName,
     );
     const value = matchedKey ? cmd.args[matchedKey] : undefined;
     if (value === undefined) continue;
@@ -605,7 +618,7 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
       continue;
     }
 
-    const canonicalKey = normalizeArgKey(key);
+    const canonicalKey = resolveBatchArgAlias(key);
     // Skip positional args (already emitted)
     if (positionalCanonicalNameSet.has(canonicalKey)) {
       continue;
