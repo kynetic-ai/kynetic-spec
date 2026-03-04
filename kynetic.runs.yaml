@@ -12512,7 +12512,7 @@ runs:
   - _ulid: 01KJW960JG5RKXF4HA236JC2A8
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 10
     started_at: 2026-03-04T11:19:28.081Z
     step_results:
@@ -12523,7 +12523,11 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-04T11:19:32.112Z
-        completed_at: 2026-03-04T11:19:32.112Z
+        completed_at: 2026-03-04T11:27:43.082Z
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-04T11:27:43.082Z
+        completed_at: 2026-03-04T11:27:43.082Z
     initiated_by: Jacob Chapel
   - _ulid: 01KJW968M82JKAFM4H7CHFW858
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
@@ -12531,6 +12535,7 @@ runs:
     current_step: 7
     total_steps: 8
     started_at: 2026-03-04T11:19:36.329Z
+    completed_at: 2026-03-04T11:27:39.922Z
     step_results:
       - step_index: 0
         status: completed
@@ -12567,4 +12572,3 @@ runs:
         started_at: 2026-03-04T11:27:39.251Z
         completed_at: 2026-03-04T11:27:39.921Z
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-04T11:27:39.922Z
