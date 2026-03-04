@@ -74981,5 +74981,14 @@
         in tests/batch-write-buffer.test.ts, then rerun focused tests/validate and push for
         re-review."
       supersedes: null
+    - _ulid: 01KJWYPE2WPWF1SE7X91M3611P
+      created_at: 2026-03-04T17:35:26.301Z
+      author: Jacob Chapel
+      content: "Addressed PR #677 MUST-FIX: added explicit AC coverage for @batch-write-buffer ac-8 in
+        tests/batch-write-buffer.test.ts via a static bypass-guard test that asserts critical
+        parser/CLI .kspec paths use buffer-aware helpers (readFile/readdir/access/write helpers).
+        Verification: npx vitest run tests/batch-write-buffer.test.ts (pass); kspec validate --json
+        no longer reports @batch-write-buffer coverage warning."
+      supersedes: null
   todos: []
   automation: eligible
