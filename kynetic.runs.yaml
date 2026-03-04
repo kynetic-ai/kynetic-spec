@@ -11813,8 +11813,27 @@ runs:
   - _ulid: 01KJVB5B6PMCWV1386XMC54DN6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-04T02:34:48.918Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-04T02:34:48.918Z
+        completed_at: 2026-03-04T02:35:04.897Z
+        notes: >-
+          What worked well:
+
+          - Running a strict worker/reviewer loop caught AC coverage gaps before merge.
+
+          - Subagent PR-review handoff produced actionable MUST-FIX findings and clear fix-cycle
+          notes.
+
+          - Fast local repro (temporary daemon + websocket script) quickly surfaced that close
+          callbacks receive framework context rather than ConnectionData, which directly informed
+          the final robust fix.
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-04T02:35:04.897Z
+        completed_at: 2026-03-04T02:35:04.897Z
     initiated_by: Jacob Chapel
