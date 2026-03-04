@@ -220,8 +220,8 @@ describe("Dispatch in-progress priority", () => {
     const queue = internal.queues.get(agent.id) ?? [];
     expect(queue.map((entry) => entry.change.toStatus)).toEqual([
       "in_progress",
-      "pending",
       "needs_work",
+      "pending",
       "pending_review",
     ]);
 

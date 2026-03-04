@@ -108,8 +108,8 @@ const STATUS_TO_EVENT: Record<TaskStatus, string | undefined> = {
  */
 const STATUS_PRECEDENCE: Record<TaskStatus, number> = {
   in_progress: 0,
-  pending: 1,
-  needs_work: 2,
+  needs_work: 1,
+  pending: 2,
   pending_review: 3,
   blocked: 4,
   completed: 5,
