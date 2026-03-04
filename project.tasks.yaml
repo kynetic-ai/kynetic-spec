@@ -71341,7 +71341,7 @@
     connection-closed. Currently requires process-level uncaughtException handlers in tests that
     spawn/kill agents.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71398,6 +71398,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-04T08:32:10.516Z
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
   title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
