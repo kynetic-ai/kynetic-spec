@@ -703,7 +703,7 @@ export function registerAgentCommands(program: Command): void {
 
   // ─── kspec agent dispatch watch ───────────────────────────────────────────
 
-  // AC: @cli-agent-commands ac-13 through ac-16
+  // AC: @cli-agent-commands ac-13 through ac-18
   dispatch
     .command("watch")
     .description("Stream agent text output from the dispatch engine in real time")
@@ -834,6 +834,7 @@ export function registerAgentCommands(program: Command): void {
       }
 
       let retryCount = 0;
+      let shouldReconnect = true;
 
       function connect(): void {
         const wsUrl = new URL(`ws://localhost:${daemonConn!.port}/ws`);
@@ -859,6 +860,23 @@ export function registerAgentCommands(program: Command): void {
           try {
             msg = JSON.parse(event.data as string);
           } catch {
+            return;
+          }
+
+          // AC: @cli-agent-commands ac-18 — fail fast on subscribe handshake rejection.
+          if (msg.ack === true && msg.request_id === "watch-subscribe") {
+            if (msg.success === false) {
+              shouldReconnect = false;
+              const reasonParts = [msg.error, msg.details]
+                .filter((value): value is string => typeof value === "string" && value.length > 0);
+              const reason = reasonParts.length > 0 ? ` (${reasonParts.join(": ")})` : "";
+              if (activeStreamKey) {
+                ensureLineBreak();
+              }
+              error(`Failed to subscribe to daemon agent output stream${reason}.`);
+              info("Suggestion: Verify daemon logs for subscribe errors, then restart with: kspec serve");
+              process.exit(EXIT_CODES.NOT_FOUND);
+            }
             return;
           }
 
@@ -894,6 +912,8 @@ export function registerAgentCommands(program: Command): void {
         };
 
         ws.onclose = () => {
+          if (!shouldReconnect) return;
+
           if (activeStreamKey) {
             ensureLineBreak();
           }
