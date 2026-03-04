@@ -1016,6 +1016,10 @@ features:
             given: --depends-on ref points to a spec item or does not exist
             when: kspec task add --title 'T' --depends-on @spec-item runs
             then: exits with error; dependency must reference a task
+          - id: ac-automation
+            given: --automation is provided
+            when: kspec task add --title 'T' --automation eligible runs
+            then: "task created with automation status set; valid values: eligible, needs_review, manual_only"
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
