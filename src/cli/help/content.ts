@@ -99,6 +99,7 @@ What it checks:
   - Orphans: Items not referenced by any task (warning)
 
 Use --strict to treat orphan and staleness warnings as errors (exit 4).
+Use --warnings-ok to treat warning-only validation as success (exit 0).
 
 Alias: 'kspec lint' does the same thing.
 `,
@@ -106,6 +107,7 @@ Alias: 'kspec lint' does the same thing.
       "kspec validate",
       "kspec validate --refs",
       "kspec validate --strict",
+      "kspec validate --warnings-ok",
       "kspec validate --json",
     ],
     seeAlso: ["refs", "exit-codes"],
@@ -345,6 +347,9 @@ Scripting Examples:
     echo "Validation failed"
     exit 1
   fi
+
+  # Equivalent shortcut: warnings are success
+  kspec validate --warnings-ok
 `,
     seeAlso: ["task", "validate", "item"],
   },

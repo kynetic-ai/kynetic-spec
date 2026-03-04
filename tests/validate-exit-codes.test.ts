@@ -92,6 +92,9 @@ items:
       const result = kspec('validate', tempDir);
       expect(result.exitCode).toBe(6);
       expect(result.stderr + result.stdout).toContain('Completeness warnings');
+      expect(result.stderr + result.stdout).toContain(
+        'Validation produced warnings; exiting 6'
+      );
     });
 
     it('should exit 6 when orphan warnings are added', async () => {
@@ -124,6 +127,15 @@ items:
       expect(result.exitCode).toBe(6);
       expect(result.stderr + result.stdout).toContain('Orphan');
     });
+
+    it('should exit 0 with --warnings-ok when only warnings are present', () => {
+      const result = kspec('validate --warnings-ok', tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stderr + result.stdout).toContain('Completeness warnings');
+      expect(result.stderr + result.stdout).toContain(
+        'exiting 0 due to --warnings-ok'
+      );
+    });
   });
 
   describe('lint command exit codes', () => {
@@ -132,6 +144,14 @@ items:
       const validateResult = kspec('validate', tempDir);
       const lintResult = kspec('lint', tempDir);
       expect(lintResult.exitCode).toBe(validateResult.exitCode);
+    });
+
+    it('should support --warnings-ok and exit 0 on warnings-only', () => {
+      const lintResult = kspec('lint --warnings-ok', tempDir);
+      expect(lintResult.exitCode).toBe(0);
+      expect(lintResult.stderr + lintResult.stdout).toContain(
+        'exiting 0 due to --warnings-ok'
+      );
     });
   });
 

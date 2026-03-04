@@ -301,11 +301,12 @@ kspec validate --alignment        # Spec-task alignment
 kspec validate --completeness     # Spec completeness
 kspec validate --orphans          # Orphaned items
 kspec validate --strict           # Treat warnings as errors
+kspec validate --warnings-ok      # Treat warnings-only as success (exit 0)
 kspec validate --fix              # Auto-fix (invalid ULIDs, missing timestamps)
 kspec validate -v                 # Verbose output
 ```
 
-**Exit codes:** `0` = success, `4` = validation errors, `6` = warnings only.
+**Exit codes:** `0` = success, `4` = validation errors, `6` = warnings only (unless `--warnings-ok`).
 
 ## Session Log
 

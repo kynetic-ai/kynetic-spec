@@ -27,7 +27,7 @@ import {
 } from "../../parser/validate-skills.js";
 import { validation as validationStrings } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, output } from "../output.js";
+import { error, output, warn } from "../output.js";
 
 /**
  * Staleness warning types
@@ -828,6 +828,10 @@ export function registerValidateCommand(program: Command): void {
     )
     .option("-v, --verbose", "Show detailed output")
     .option("--strict", "Treat orphans and staleness warnings as errors")
+    .option(
+      "--warnings-ok",
+      "Return success exit code (0) when warnings are present but no errors",
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -1025,6 +1029,15 @@ export function registerValidateCommand(program: Command): void {
         if (hasErrors) {
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         } else if (hasWarnings) {
+          if (options.warningsOk) {
+            warn(
+              `Validation produced warnings; exiting 0 due to --warnings-ok (default is ${EXIT_CODES.VALIDATION_WARNINGS}).`,
+            );
+            process.exit(EXIT_CODES.SUCCESS);
+          }
+          warn(
+            `Validation produced warnings; exiting ${EXIT_CODES.VALIDATION_WARNINGS}. Use --warnings-ok to treat warnings as success.`,
+          );
           process.exit(EXIT_CODES.VALIDATION_WARNINGS);
         }
         // Otherwise exit 0 (success)
@@ -1051,6 +1064,10 @@ export function registerValidateCommand(program: Command): void {
     )
     .option("-v, --verbose", "Show detailed output")
     .option("--strict", "Treat orphans as errors")
+    .option(
+      "--warnings-ok",
+      "Return success exit code (0) when warnings are present but no errors",
+    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
@@ -1118,6 +1135,15 @@ export function registerValidateCommand(program: Command): void {
         if (hasErrors) {
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         } else if (hasWarnings) {
+          if (options.warningsOk) {
+            warn(
+              `Validation produced warnings; exiting 0 due to --warnings-ok (default is ${EXIT_CODES.VALIDATION_WARNINGS}).`,
+            );
+            process.exit(EXIT_CODES.SUCCESS);
+          }
+          warn(
+            `Validation produced warnings; exiting ${EXIT_CODES.VALIDATION_WARNINGS}. Use --warnings-ok to treat warnings as success.`,
+          );
           process.exit(EXIT_CODES.VALIDATION_WARNINGS);
         }
         // Otherwise exit 0 (success)
