@@ -2859,6 +2859,8 @@ features:
             given: inbox item already has appended notes
             when: kspec inbox note @ref 'another note' runs
             then: new note appended after existing notes with same separator
+        status:
+          implementation: implemented
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
