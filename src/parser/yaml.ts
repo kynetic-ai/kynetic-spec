@@ -1,10 +1,15 @@
 import { execSync } from "node:child_process";
+import type { Dirent } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
 import { withFileLock } from "./file-lock.js";
-import { getActiveBatchBuffer } from "../cli/batch-write-buffer.js";
+import {
+  accessBufferAware,
+  getActiveBatchBuffer,
+  readdirBufferAware,
+} from "../cli/batch-write-buffer.js";
 import {
   InboxFileSchema,
   type InboxItem,
@@ -131,9 +136,9 @@ export function toYaml(obj: unknown): string {
 }
 
 /**
- * Read and parse a YAML file
+ * Read a text file with batch buffer overlay semantics.
  */
-export async function readYamlFile<T>(filePath: string): Promise<T> {
+export async function readFileBufferAware(filePath: string): Promise<string> {
   // AC: @batch-write-buffer ac-2 — check buffer first for read-after-write consistency
   const buffer = getActiveBatchBuffer();
   if (buffer?.isInScope(filePath)) {
@@ -145,10 +150,18 @@ export async function readYamlFile<T>(filePath: string): Promise<T> {
           code: "ENOENT",
         });
       }
-      return parseYaml<T>(buffered);
+      return buffered;
     }
   }
-  const content = await fs.readFile(filePath, "utf-8");
+
+  return fs.readFile(filePath, "utf-8");
+}
+
+/**
+ * Read and parse a YAML file.
+ */
+export async function readYamlFile<T>(filePath: string): Promise<T> {
+  const content = await readFileBufferAware(filePath);
   return parseYaml<T>(content);
 }
 
@@ -197,7 +210,7 @@ export async function findTaskFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
 
   try {
-    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const entries = await readdirBufferAware(dir, { withFileTypes: true }) as Dirent[];
 
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
@@ -449,7 +462,7 @@ async function findManifestInDir(dir: string): Promise<string | null> {
   for (const candidate of priorityCandidates) {
     const filePath = path.join(dir, candidate);
     try {
-      await fs.access(filePath);
+      await accessBufferAware(filePath);
       return filePath;
     } catch {
       // File doesn't exist, try next
@@ -458,7 +471,7 @@ async function findManifestInDir(dir: string): Promise<string | null> {
 
   // AC: @manifest-discovery ac-3, ac-4, ac-5 - glob fallback with validation
   try {
-    const entries = await fs.readdir(dir);
+    const entries = await readdirBufferAware(dir) as string[];
     // AC: @manifest-discovery ac-4 - alphabetical order
     const candidates = entries.filter(isManifestCandidate).sort();
 
@@ -552,7 +565,7 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
 
     for (const loc of standaloneLocations) {
       try {
-        await fs.access(loc);
+        await accessBufferAware(loc);
         if (!taskFiles.includes(loc)) {
           taskFiles.push(loc);
         }
@@ -596,7 +609,7 @@ export async function loadAllTasks(ctx: KspecContext): Promise<LoadedTask[]> {
 
   for (const loc of standaloneLocations) {
     try {
-      await fs.access(loc);
+      await accessBufferAware(loc);
       if (!taskFiles.includes(loc)) {
         taskFiles.push(loc);
       }
@@ -1074,7 +1087,7 @@ export async function expandIncludePattern(
   // If no glob characters, just return the path if it exists
   if (!pattern.includes("*")) {
     try {
-      await fs.access(fullPattern);
+      await accessBufferAware(fullPattern);
       return [fullPattern];
     } catch {
       return [];
@@ -1114,7 +1127,7 @@ async function expandGlobRecursive(
   const remainingPattern = parts.slice(1).join("/");
 
   try {
-    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const entries = await readdirBufferAware(dir, { withFileTypes: true }) as Dirent[];
 
     for (const entry of entries) {
       const matches = matchGlobPart(entry.name, currentPattern);
@@ -1276,7 +1289,7 @@ export async function loadSpecFile(
   filePath: string,
 ): Promise<LoadedSpecItem[]> {
   try {
-    const content = await fs.readFile(filePath, "utf-8");
+    const content = await readFileBufferAware(filePath);
     const items: LoadedSpecItem[] = [];
 
     // Parse all YAML documents in the file (handles files with ---)

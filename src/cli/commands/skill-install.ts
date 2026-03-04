@@ -24,9 +24,14 @@ import yaml from "yaml";
 import { detectAgentFromEnv } from "../../parser/agent-detection.js";
 import { markMutating } from "../command-annotations.js";
 import {
+  readdirBufferAware,
+  writeFileBufferAware,
+} from "../batch-write-buffer.js";
+import {
   getSkillContentPath,
   initContext,
   loadMetaContext,
+  readFileBufferAware,
   type LoadedSkill,
   saveMetaItem,
 } from "../../parser/index.js";
@@ -190,7 +195,7 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
 async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
   try {
     const srcEntries = await fs.readdir(src);
-    const destEntries = new Set(await fs.readdir(dest));
+    const destEntries = new Set(await readdirBufferAware(dest) as string[]);
 
     for (const name of srcEntries) {
       if (!destEntries.has(name)) return false;
@@ -247,14 +252,14 @@ export async function copyCoreSkillFiles(
   const targetSkillMd = path.join(targetDir, "SKILL.md");
   let existingContent: string | null = null;
   try {
-    existingContent = await fs.readFile(targetSkillMd, "utf-8");
+    existingContent = await readFileBufferAware(targetSkillMd);
   } catch {
     // Target doesn't exist yet
   }
 
   if (existingContent !== content) {
     await fs.mkdir(targetDir, { recursive: true });
-    await fs.writeFile(targetSkillMd, content, "utf-8");
+    await writeFileBufferAware(targetSkillMd, content);
     changed = true;
   }
 

@@ -17,7 +17,66 @@
  */
 
 import * as fs from "node:fs/promises";
+import type { Dirent } from "node:fs";
 import * as path from "node:path";
+
+type OverlayEntryKind = "file" | "directory";
+
+interface BufferedDirectoryOverlay {
+  directWrites: Map<string, "file" | "deleted">;
+  inferredDirectories: Set<string>;
+}
+
+function isNotFoundError(err: unknown): boolean {
+  return err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT";
+}
+
+function createNotFoundError(filePath: string): NodeJS.ErrnoException {
+  return Object.assign(
+    new Error(`ENOENT: no such file or directory, open '${filePath}'`),
+    { code: "ENOENT" },
+  ) as NodeJS.ErrnoException;
+}
+
+export class SyntheticDirent {
+  name: string;
+  readonly parentPath = "";
+  readonly path = "";
+  private readonly _isFile: boolean;
+
+  constructor(name: string, isFile: boolean) {
+    this.name = name;
+    this._isFile = isFile;
+  }
+
+  isFile(): boolean {
+    return this._isFile;
+  }
+
+  isDirectory(): boolean {
+    return !this._isFile;
+  }
+
+  isBlockDevice(): boolean {
+    return false;
+  }
+
+  isCharacterDevice(): boolean {
+    return false;
+  }
+
+  isSymbolicLink(): boolean {
+    return false;
+  }
+
+  isFIFO(): boolean {
+    return false;
+  }
+
+  isSocket(): boolean {
+    return false;
+  }
+}
 
 /**
  * In-memory write buffer for a single batch execution.
@@ -97,6 +156,92 @@ export class WriteBuffer {
    */
   get size(): number {
     return this.entries.size;
+  }
+
+  private _buildDirectoryOverlay(directory: string): BufferedDirectoryOverlay {
+    const resolvedDir = path.resolve(directory);
+    const directWrites = new Map<string, "file" | "deleted">();
+    const inferredDirectories = new Set<string>();
+
+    for (const [bufferedPath, content] of this.entries) {
+      const relative = path.relative(resolvedDir, bufferedPath);
+      if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+        continue;
+      }
+
+      const parts = relative.split(path.sep).filter(Boolean);
+      if (parts.length === 0) continue;
+
+      const rootName = parts[0];
+      if (parts.length === 1) {
+        directWrites.set(rootName, content === null ? "deleted" : "file");
+      } else if (content !== null) {
+        inferredDirectories.add(rootName);
+      }
+    }
+
+    return { directWrites, inferredDirectories };
+  }
+
+  /**
+   * List a directory with buffered entries overlaid on disk entries.
+   * Used to keep batch read-after-write semantics for readdir callers.
+   */
+  async listDir(
+    directory: string,
+    options?: { withFileTypes?: boolean },
+  ): Promise<string[] | Dirent[]> {
+    const resolvedDir = path.resolve(directory);
+    const withFileTypes = options?.withFileTypes === true;
+
+    let diskEntries: Dirent[] = [];
+    try {
+      diskEntries = await fs.readdir(resolvedDir, { withFileTypes: true });
+    } catch (err) {
+      if (!isNotFoundError(err)) {
+        throw err;
+      }
+    }
+
+    const diskDirentsByName = new Map<string, Dirent>();
+    const mergedKinds = new Map<string, OverlayEntryKind>();
+    for (const entry of diskEntries) {
+      diskDirentsByName.set(entry.name, entry);
+      mergedKinds.set(entry.name, entry.isDirectory() ? "directory" : "file");
+    }
+
+    const overlay = this._buildDirectoryOverlay(resolvedDir);
+
+    for (const [name, state] of overlay.directWrites) {
+      if (state === "deleted") {
+        mergedKinds.delete(name);
+      } else {
+        mergedKinds.set(name, "file");
+      }
+    }
+
+    for (const name of overlay.inferredDirectories) {
+      mergedKinds.set(name, "directory");
+    }
+
+    const names = [...mergedKinds.keys()].sort((a, b) => a.localeCompare(b));
+    if (!withFileTypes) {
+      return names;
+    }
+
+    return names.map((name) => {
+      const mergedKind = mergedKinds.get(name);
+      const diskDirent = diskDirentsByName.get(name);
+      if (
+        mergedKind &&
+        diskDirent &&
+        ((mergedKind === "directory" && diskDirent.isDirectory()) ||
+          (mergedKind === "file" && diskDirent.isFile()))
+      ) {
+        return diskDirent;
+      }
+      return new SyntheticDirent(name, mergedKind === "file") as unknown as Dirent;
+    });
   }
 
   /**
@@ -220,4 +365,58 @@ export function deactivateBatchBuffer(): void {
  */
 export function getActiveBatchBuffer(): WriteBuffer | null {
   return _activeBuffer;
+}
+
+export async function readdirBufferAware(
+  directory: string,
+  options?: { withFileTypes?: boolean },
+): Promise<string[] | Dirent[]> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(directory)) {
+    return buffer.listDir(directory, options);
+  }
+
+  if (options?.withFileTypes) {
+    return fs.readdir(directory, { withFileTypes: true });
+  }
+  return fs.readdir(directory);
+}
+
+export async function accessBufferAware(
+  filePath: string,
+  mode?: number,
+): Promise<void> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    const buffered = buffer.read(filePath);
+    if (buffered === null) {
+      throw createNotFoundError(filePath);
+    }
+    if (buffered !== undefined) {
+      return;
+    }
+
+    const resolved = path.resolve(filePath);
+    const prefix = `${resolved}${path.sep}`;
+    for (const bufferedPath of buffer.getPaths()) {
+      if (bufferedPath.startsWith(prefix) && buffer.read(bufferedPath) !== null) {
+        return;
+      }
+    }
+  }
+
+  await fs.access(filePath, mode);
+}
+
+export async function writeFileBufferAware(
+  filePath: string,
+  content: string,
+): Promise<void> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    buffer.write(filePath, content);
+    return;
+  }
+
+  await fs.writeFile(filePath, content, "utf-8");
 }

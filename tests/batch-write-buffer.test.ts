@@ -8,7 +8,17 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
-import { WriteBuffer, activateBatchBuffer, deactivateBatchBuffer, getActiveBatchBuffer } from "../src/cli/batch-write-buffer.js";
+import {
+  WriteBuffer,
+  SyntheticDirent,
+  accessBufferAware,
+  activateBatchBuffer,
+  deactivateBatchBuffer,
+  getActiveBatchBuffer,
+  readdirBufferAware,
+  writeFileBufferAware,
+} from "../src/cli/batch-write-buffer.js";
+import { readFileBufferAware } from "../src/parser/yaml.js";
 import {
   kspec,
   kspecJson,
@@ -81,6 +91,118 @@ describe("WriteBuffer", () => {
     expect(paths).toHaveLength(2);
     expect(paths).toContain(path.resolve(`${specDir}/a.yaml`));
     expect(paths).toContain(path.resolve(`${specDir}/b.yaml`));
+  });
+});
+
+describe("WriteBuffer.listDir() and helper dirents", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+    await fs.mkdir(path.join(tempDir, "existing-dir"), { recursive: true });
+    await fs.writeFile(path.join(tempDir, "disk.yaml"), "disk: true", "utf-8");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it("SyntheticDirent exposes file/directory shape", () => {
+    const fileDirent = new SyntheticDirent("file.md", true);
+    const folderDirent = new SyntheticDirent("docs", false);
+
+    expect(fileDirent.name).toBe("file.md");
+    expect(fileDirent.isFile()).toBe(true);
+    expect(fileDirent.isDirectory()).toBe(false);
+    expect(folderDirent.isFile()).toBe(false);
+    expect(folderDirent.isDirectory()).toBe(true);
+  });
+
+  it("listDir() overlays buffered writes, deletions, and inferred directories", async () => {
+    const buf = new WriteBuffer(tempDir);
+
+    buf.write(path.join(tempDir, "new.yaml"), "new: true");
+    buf.write(path.join(tempDir, "new-dir", "nested.yaml"), "nested: true");
+    buf.delete(path.join(tempDir, "disk.yaml"));
+
+    const entries = await buf.listDir(tempDir, { withFileTypes: true });
+    const names = entries.map((e) => e.name);
+
+    expect(names).toContain("new.yaml");
+    expect(names).toContain("new-dir");
+    expect(names).toContain("existing-dir");
+    expect(names).not.toContain("disk.yaml");
+
+    const newFile = entries.find((e) => e.name === "new.yaml");
+    const inferredDir = entries.find((e) => e.name === "new-dir");
+    expect(newFile?.isFile()).toBe(true);
+    expect(inferredDir?.isDirectory()).toBe(true);
+  });
+
+  it("listDir() returns buffered entries even when directory is missing on disk", async () => {
+    const buf = new WriteBuffer(tempDir);
+    const missingDir = path.join(tempDir, "from-buffer-only");
+    buf.write(path.join(missingDir, "child.yaml"), "x: 1");
+
+    const plainEntries = await buf.listDir(missingDir);
+    expect(plainEntries).toEqual(["child.yaml"]);
+
+    const direntEntries = await buf.listDir(missingDir, { withFileTypes: true });
+    expect(direntEntries).toHaveLength(1);
+    expect(direntEntries[0].name).toBe("child.yaml");
+    expect(direntEntries[0].isFile()).toBe(true);
+  });
+});
+
+describe("buffer-aware fs helpers", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir();
+  });
+
+  afterEach(async () => {
+    deactivateBatchBuffer();
+    await cleanupTempDir(tempDir);
+  });
+
+  it("readdirBufferAware() returns buffered directory entries with file types", async () => {
+    activateBatchBuffer(tempDir);
+    const bufferedFile = path.join(tempDir, "docs", "note.md");
+    getActiveBatchBuffer()!.write(bufferedFile, "# note\n");
+
+    const entries = await readdirBufferAware(path.join(tempDir, "docs"), {
+      withFileTypes: true,
+    });
+    expect(entries).toHaveLength(1);
+    expect(entries[0].name).toBe("note.md");
+    expect(entries[0].isFile()).toBe(true);
+  });
+
+  it("accessBufferAware() checks buffered writes and deletions", async () => {
+    const buffer = activateBatchBuffer(tempDir);
+    const filePath = path.join(tempDir, "buffered.txt");
+
+    buffer.write(filePath, "buffered");
+    await expect(accessBufferAware(filePath)).resolves.toBeUndefined();
+
+    buffer.delete(filePath);
+    await expect(accessBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
+
+    buffer.write(path.join(tempDir, "nested", "child.md"), "hello");
+    await expect(accessBufferAware(path.join(tempDir, "nested"))).resolves.toBeUndefined();
+  });
+
+  it("writeFileBufferAware()/readFileBufferAware() use active buffer", async () => {
+    activateBatchBuffer(tempDir);
+    const filePath = path.join(tempDir, "buffered.md");
+
+    await writeFileBufferAware(filePath, "hello from buffer");
+    await expect(fs.readFile(filePath, "utf-8")).rejects.toThrow();
+    await expect(readFileBufferAware(filePath)).resolves.toBe("hello from buffer");
+
+    getActiveBatchBuffer()!.delete(filePath);
+    await expect(readFileBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
   });
 });
 
@@ -293,6 +415,22 @@ describe("batch write buffer integration", () => {
     const inbox = kspec("inbox list", tempDir);
     expect(inbox.stdout).toContain("first buf item");
     expect(inbox.stdout).toContain("second buf item");
+  });
+
+  // AC: @batch-write-buffer ac-2 — repeated item ac add in one batch preserves both writes
+  it("two item ac add commands against the same item keep both AC entries", () => {
+    kspec(`module add --title "Batch Buffer Test Module" --slug batch-buffer-test-module`, tempDir);
+
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '[{"command":"item ac add","args":{"ref":"@batch-buffer-test-module","given":"first given","when":"first when","then":"first then"}},{"command":"item ac add","args":{"ref":"@batch-buffer-test-module","given":"second given","when":"second when","then":"second then"}}]'`,
+      tempDir,
+    );
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(2);
+
+    const item = kspec("item get @batch-buffer-test-module", tempDir);
+    expect(item.stdout).toContain("first then");
+    expect(item.stdout).toContain("second then");
   });
 
   // AC: @batch-write-buffer ac-4 — rollback on failure leaves .kspec/ unchanged
