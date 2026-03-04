@@ -7865,7 +7865,7 @@ skills:
     description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The
       feedback loop that drives process improvement.
     origin: core
-    version: 0.9.0
+    version: 0.9.1
     platforms:
       - claude-code
       - codex
