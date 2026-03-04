@@ -74997,5 +74997,14 @@
         and fails tests/lint/no-static-analysis.test.ts; replace with behavior-level coverage and
         re-run npm test."
       supersedes: null
+    - _ulid: 01KJWZ8RBVM8BT6XNE8M7G2QXH
+      created_at: 2026-03-04T17:45:26.651Z
+      author: Jacob Chapel
+      content: "Fix cycle 2: removed static-analysis source scanning (violated no-static-analysis lint)
+        and retained ac-8 coverage via behavior-level integration annotation on the repeated
+        item-ac-add buffered-read test. Verification: npx vitest run
+        tests/lint/no-static-analysis.test.ts tests/batch-write-buffer.test.ts (pass), npm test
+        (pass)."
+      supersedes: null
   todos: []
   automation: eligible
