@@ -956,6 +956,10 @@ features:
             given: --description is provided
             when: kspec task add --title 'T' --description 'Details here' runs
             then: task created with description field set; empty string descriptions are omitted
+          - id: ac-type
+            given: --type is provided
+            when: kspec task add --title 'T' --type bug runs
+            then: "task created with type set to bug; valid types: task, epic, bug, spike, infra"
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
