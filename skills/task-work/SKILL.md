@@ -54,6 +54,7 @@ Use CLI commands to find information. **Do NOT search `.kspec/` YAML files manua
 | List by type | `kspec item list --type feature` |
 | All traits | `kspec trait list` |
 | Task's linked spec | `kspec task get @ref` → read `spec_ref` field |
+| Task's linked plan | `kspec task get @ref` → if `plan_ref` is non-null, run `kspec plan get @plan-ref` |
 
 **Key pattern:** When `kspec item get` output shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the trait's ACs. One command — do not grep YAML files.
 
@@ -86,8 +87,29 @@ If already implemented: verify tests pass, AC coverage exists, then `kspec task 
 ### 3. Start Task
 
 ```bash
+# Check task links first
+kspec task get @ref
+
+# If plan_ref is non-null, load implementation context from the plan
+kspec plan get @plan-ref
+
+# Then start work
 kspec task start @ref
 ```
+
+### 3.5 Branch Isolation (Required Before Edits)
+
+Immediately after `kspec task start` and before any file edits, create or switch to a dedicated branch for that task. Do not keep implementing on a branch that is tied to another pending-review task.
+
+```bash
+# Example naming from task intent/slug
+TASK_BRANCH="fix/<task-slug>"
+
+# Create the branch if missing, otherwise switch to it
+git checkout -b "$TASK_BRANCH" 2>/dev/null || git checkout "$TASK_BRANCH"
+```
+
+This keeps each task's commits scoped to its own PR and prevents cross-task contamination.
 
 ### 4. Work and Note
 
@@ -259,6 +281,7 @@ kspec tasks ready --eligible  # Only automation-eligible tasks
 ### Key Behaviors
 
 - Verify work is needed before starting (prevent duplicates)
+- Create/switch to a dedicated task branch before making code edits
 - Decisions auto-resolve without prompts
 - PR review handled externally (not this workflow)
 - All actions are logged and auditable
