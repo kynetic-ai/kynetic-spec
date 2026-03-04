@@ -1095,6 +1095,19 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-submit-1
+            given: A task is in_progress
+            when: kspec task submit @ref is run
+            then: Status transitions to pending_review and submitted_at is set
+          - id: ac-submit-2
+            given: --review-url <url> is provided with a valid URL
+            when: Task is submitted
+            then: review_url is persisted on the task object
+          - id: ac-submit-3
+            given: --review-url is provided with an invalid URL
+            when: Task submit runs
+            then: Validation error is returned before any state change occurs
       - _ulid: 01JHNKA9W0CTSK400000000000
         slugs:
           - task-block
@@ -6688,6 +6701,25 @@ features:
         then: |
           The dispatch engine serializes shadow branch commit operations
           to prevent worktree corruption from concurrent git commits
+      - id: ac-13
+        given: The dispatch engine builds a prompt for an agent invocation
+        when: Task data is available on the state change
+        then: The prompt includes the task title and human-readable trigger context (new assignment, fix
+          cycle, continuing work, or review)
+      - id: ac-14
+        given: A task.needs_work trigger fires
+        when: The dispatch engine builds the prompt
+        then: The last 3 task notes are included in the prompt, each truncated to 200 characters, so the
+          agent can see reviewer feedback
+      - id: ac-15
+        given: A task.pending_review trigger fires and the task has a review_url
+        when: The dispatch engine builds the prompt
+        then: The prompt includes the review URL for the reviewer agent
+      - id: ac-16
+        given: An agent definition has a prompt_template with {{variable}} placeholders
+        when: The dispatch engine builds the prompt
+        then: Placeholders are interpolated with task_ref, task_title, trigger, and review_url values;
+          unresolved placeholders pass through unchanged
     depends_on: []
     implements: []
     relates_to: []
