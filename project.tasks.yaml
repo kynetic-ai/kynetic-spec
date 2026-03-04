@@ -74926,7 +74926,7 @@
   spec_ref: "@batch-write-buffer"
   meta_ref: null
   plan_ref: "@01KJWX2B"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -74936,9 +74936,10 @@
     - batch
     - cli
   vcs_refs: []
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  session_id: null
   created_at: 2026-03-04T15:31:50.331Z
   started_at: 2026-03-04T16:45:19.932Z
+  submitted_at: 2026-03-04T17:21:46.701Z
   notes:
     - _ulid: 01KJWX9Q4BEZ7GX76TARHRN5ZG
       created_at: 2026-03-04T17:11:01.004Z
@@ -74967,6 +74968,11 @@
         repo validation debt unrelated to this change: existing
         skill/reference/alignment/completeness issues)"
       supersedes: null
+    - _ulid: 01KJWYKDVJ3RXB7GHM0AGKBJ8X
+      created_at: 2026-03-04T17:33:47.763Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @batch-write-buffer ac-8 test coverage is
+        missing (kspec validate reports Uncovered: ac-8). See PR #677 review comments."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T17:21:46.701Z
