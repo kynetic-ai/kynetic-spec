@@ -72970,6 +72970,14 @@
 
         - Verification: run AC-10 focused test selection plus kspec validate.
       supersedes: null
+    - _ulid: 01KJWDEDP1W65X8237823RSZS4
+      created_at: 2026-03-04T12:33:57.953Z
+      author: Jacob Chapel
+      content: Implemented AC-10 test isolation in tests/cli-agent-commands.test.ts by creating a
+        dedicated fixture setup that disables daemon auto_start via kspec.config.yaml and forces
+        HOME/USERPROFILE to the temp project directory for subprocess runs. This removes leakage
+        from external daemons running on 3456 in parallel shards.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJTHAB6NRKQE12JJ7Q7V80CK
