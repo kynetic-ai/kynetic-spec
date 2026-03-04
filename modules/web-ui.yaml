@@ -293,6 +293,9 @@ features:
             when: the daemon close handler runs
             then: the session is removed from pubsub connection tracking and the disconnect log includes that
               session id rather than undefined
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
