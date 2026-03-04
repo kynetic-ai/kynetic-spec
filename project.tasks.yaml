@@ -74242,6 +74242,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #676 (commit 80d0c628). Added dispatch-watch transcript regression
+    fixtures for empty-before-text boundaries, repeated boundary coalescing, interleaved
+    multi-stream switching, and reconnect output flush behavior, with fixture-driven AC-13/AC-14
+    tests in tests/cli-agent-commands.test.ts. Review verified own AC annotations for
+    @cli-agent-commands ac-1..ac-18 and trait AC coverage annotations/N-A declarations; regression
+    gate npm test passed (3646/3646)."
   depends_on: []
   context: []
   priority: 2
@@ -74255,6 +74261,7 @@
   created_at: 2026-03-04T05:13:42.595Z
   started_at: 2026-03-04T14:23:12.297Z
   submitted_at: 2026-03-04T14:27:49.919Z
+  completed_at: 2026-03-04T14:39:24.907Z
   notes:
     - _ulid: 01KJWKPKFWEH516Z2D2ZBQS5YV
       created_at: 2026-03-04T14:23:17.500Z
@@ -74303,13 +74310,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T14:39:24.907Z
-  closed_reason: "Merged in PR #676 (commit 80d0c628). Added dispatch-watch transcript regression
-    fixtures for empty-before-text boundaries, repeated boundary coalescing, interleaved
-    multi-stream switching, and reconnect output flush behavior, with fixture-driven AC-13/AC-14
-    tests in tests/cli-agent-commands.test.ts. Review verified own AC annotations for
-    @cli-agent-commands ac-1..ac-18 and trait AC coverage annotations/N-A declarations; regression
-    gate npm test passed (3646/3646)."
 - _ulid: 01KJVPTJPKZWMMMBEH23N30D8F
   slugs:
     - task-dispatch-in-progress-priority
@@ -74523,7 +74523,7 @@
   spec_ref: "@task-add"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -74536,6 +74536,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-04T15:12:40.008Z
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
 - _ulid: 01KJWK890YHTS5PSG2JMS36J31
   slugs: []
   title: "Fill spec gap: task set command options and acceptance criteria"
