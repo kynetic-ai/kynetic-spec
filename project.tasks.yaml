@@ -72582,6 +72582,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #655. Hardened daemon WebSocket disconnect cleanup by resolving session
+    identity via Elysia websocket context id + pubsub fallbacks, added /api/health connection
+    decrement E2E coverage, and added abnormal-close (1006) close-handler/log regression tests. AC
+    coverage confirmed for ac-1, ac-2, and ac-3 with passing local regression and green CI checks."
   depends_on: []
   context: []
   priority: 2
@@ -72594,6 +72598,7 @@
   created_at: 2026-03-03T22:03:40.905Z
   started_at: 2026-03-04T02:23:52.691Z
   submitted_at: 2026-03-04T02:24:13.457Z
+  completed_at: 2026-03-04T02:32:40.039Z
   notes:
     - _ulid: 01KJV9KEX4MQSP9MKNHKPGYFYG
       created_at: 2026-03-04T02:07:34.308Z
@@ -72674,11 +72679,6 @@
         health connection count decrements" (pass).
       supersedes: null
   todos: []
-  completed_at: 2026-03-04T02:32:40.039Z
-  closed_reason: "Merged in PR #655. Hardened daemon WebSocket disconnect cleanup by resolving session
-    identity via Elysia websocket context id + pubsub fallbacks, added /api/health connection
-    decrement E2E coverage, and added abnormal-close (1006) close-handler/log regression tests. AC
-    coverage confirmed for ac-1, ac-2, and ac-3 with passing local regression and green CI checks."
 - _ulid: 01KJTW3BKQ597Y5KMB4GRZ87BA
   slugs:
     - task-cli-serve-daemon-isolation
@@ -73029,5 +73029,29 @@
     - parser
   vcs_refs: []
   created_at: 2026-03-03T22:54:41.236Z
+  notes: []
+  todos: []
+- title: Fix agent dispatch watch WebSocket subscribe decoding for Node clients
+  description: kspec agent dispatch watch silently receives no text because daemon websocket handler
+    rejects Node client subscribe frames as invalid JSON. Decode ArrayBuffer/typed-array messages
+    correctly, add regression tests, and ensure watch surfaces subscribe failures.
+  type: bug
+  spec_ref: "@cli-agent-commands"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - cli
+    - daemon
+    - websocket
+  depends_on: []
+  automation: eligible
+  _ulid: 01KJVCWC68CMQZXE387YNF8EYZ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T03:04:52.168Z
   notes: []
   todos: []
