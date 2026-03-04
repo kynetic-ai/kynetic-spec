@@ -11725,7 +11725,7 @@ runs:
   - _ulid: 01KJV977N8YRSPNFDH1ZYHFR7G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-04T02:00:53.672Z
     step_results:
@@ -11746,5 +11746,22 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-04T02:01:10.969Z
-        completed_at: 2026-03-04T02:01:10.969Z
+        completed_at: 2026-03-04T02:01:16.727Z
+        notes: >-
+          Friction points:
+
+          - PR body creation via inline shell string failed when markdown contained backticks and
+          special characters; needed a retry using --body-file/heredoc to avoid command
+          substitution.
+
+          - Initial implementation duplicated existing skill-reference formatting logic in
+          agent-runtime instead of reusing parser utilities, causing immediate follow-up refactor
+          work.
+
+          - Existing broad kspec validate repo failures reduce signal during task-local validation
+          because unrelated errors dominate output.
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-04T02:01:16.727Z
+        completed_at: 2026-03-04T02:01:16.727Z
     initiated_by: Jacob Chapel
