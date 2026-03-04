@@ -742,70 +742,34 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
-      type StreamRenderState = {
-        atLineStart: boolean;
-        hasRenderedLine: boolean;
-        spacerPending: boolean;
-      };
-      const streamRenderStates = new Map<string, StreamRenderState>();
       let activeStreamKey: string | null = null;
+      let outputAtLineStart = true;
 
-      function getStreamState(streamKey: string): StreamRenderState {
-        let state = streamRenderStates.get(streamKey);
-        if (!state) {
-          state = {
-            atLineStart: true,
-            hasRenderedLine: false,
-            spacerPending: false,
-          };
-          streamRenderStates.set(streamKey, state);
-        }
-        return state;
+      function writeRaw(text: string): void {
+        if (!text) return;
+        process.stdout.write(text);
+        outputAtLineStart = text.endsWith("\n");
       }
 
-      function writePrefixedText(
-        streamKey: string,
-        prefix: string,
-        text: string,
-      ): void {
+      function writeSpeakerText(text: string): void {
         if (!text) return;
 
-        const state = getStreamState(streamKey);
-        const parts = text.split(/(\r?\n)/);
-        let output = "";
+        writeRaw(text);
+      }
 
-        for (const part of parts) {
-          if (part === "\n" || part === "\r\n") {
-            output += part;
-            state.atLineStart = true;
-            continue;
-          }
-
-          if (!part) continue;
-          if (state.atLineStart) {
-            if (state.spacerPending && state.hasRenderedLine) {
-              output += "\n";
-            }
-            state.spacerPending = false;
-            output += `${prefix} ${part}`;
-            state.atLineStart = false;
-            state.hasRenderedLine = true;
-          } else {
-            output += part;
-          }
-        }
-
-        if (output) {
-          process.stdout.write(output);
+      function ensureLineBreak(): void {
+        if (!outputAtLineStart) {
+          writeRaw("\n");
         }
       }
 
-      function endStreamLine(streamKey: string): void {
-        const state = getStreamState(streamKey);
-        if (!state.atLineStart) {
-          process.stdout.write("\n");
-          state.atLineStart = true;
+      function startSpeakerSection(streamKey: string, prefix: string): void {
+        if (activeStreamKey === streamKey) return;
+        if (activeStreamKey) {
+          ensureLineBreak();
         }
+        writeRaw(`${prefix}\n`);
+        activeStreamKey = streamKey;
       }
 
       function queuePrefixedChunk(
@@ -815,20 +779,17 @@ export function registerAgentCommands(program: Command): void {
       ): void {
         if (!text) return;
 
-        if (activeStreamKey && activeStreamKey !== streamKey) {
-          endStreamLine(activeStreamKey);
-        }
-        activeStreamKey = streamKey;
-        writePrefixedText(streamKey, prefix, text);
+        startSpeakerSection(streamKey, prefix);
+        writeSpeakerText(text);
       }
 
       function markMessageBoundary(streamKey: string): void {
-        const state = getStreamState(streamKey);
-        // Boundary signals are stream-local. Do not force a newline on a
-        // different active stream that may still be mid-line.
-        endStreamLine(streamKey);
-        if (state.hasRenderedLine) {
-          state.spacerPending = true;
+        // Boundary signals are stream-local; ignore inactive streams.
+        if (activeStreamKey !== streamKey) return;
+        ensureLineBreak();
+        // Add one spacer line between logical sections for readability.
+        if (activeStreamKey) {
+          writeRaw("\n");
         }
       }
 
@@ -908,7 +869,7 @@ export function registerAgentCommands(program: Command): void {
 
         ws.onclose = () => {
           if (activeStreamKey) {
-            endStreamLine(activeStreamKey);
+            ensureLineBreak();
           }
 
           if (retryCount >= retryLimit) {

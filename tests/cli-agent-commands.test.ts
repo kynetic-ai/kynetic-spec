@@ -1408,13 +1408,13 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 });
 
 // AC: @cli-agent-commands ac-13
-describe("AC-13: dispatch watch — streams line-prefixed output", () => {
+describe("AC-13: dispatch watch — streams section-marked output", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
-  it("should print [agent-id session-id] prefix before streamed output", async () => {
+  it("should print [agent-id session-id] section marker before streamed output", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
@@ -1456,7 +1456,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
 
     await Promise.resolve();
 
-    // AC: @cli-agent-commands ac-13 - output is prefixed with [agent-id session-id]
+    // AC: @cli-agent-commands ac-13 - output includes [agent-id session-id] marker
     const output = written.join("");
     expect(output).toContain("[worker sess-abc]");
     expect(output).toContain("hello from agent");
@@ -1465,7 +1465,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     runPromise.catch(() => {/* ignore */});
   });
 
-  it("should prefix once per line when text arrives as token-sized chunks", async () => {
+  it("should render one section header and stream token-sized chunks as body text", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
@@ -1503,9 +1503,9 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker sess-abc] I am streaming");
-    expect(output).toContain("\n[worker sess-abc] Next line");
-    expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(2);
+    expect(output).toContain("[worker sess-abc]\nI am streaming");
+    expect(output).toContain("\nNext line");
+    expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(1);
 
     runPromise.catch(() => {/* ignore */});
   });
@@ -1547,7 +1547,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker-a sess-a] hello\n[worker-b sess-b] world");
+    expect(output).toContain("[worker-a sess-a]\nhello\n[worker-b sess-b]\nworld");
 
     runPromise.catch(() => {/* ignore */});
   });
@@ -1597,7 +1597,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker sess-abc] First update.\n\n[worker sess-abc] Second update.");
+    expect(output).toContain("[worker sess-abc]\nFirst update.\n\nSecond update.");
 
     runPromise.catch(() => {/* ignore */});
   });
@@ -1645,8 +1645,8 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker-a sess-a] hello world");
-    expect(output).not.toContain("\n[worker-a sess-a] world");
+    expect(output).toContain("[worker-a sess-a]\nhello world");
+    expect(output).not.toContain("\nworld\n[worker-a sess-a]");
     expect(output).not.toContain("[worker-b sess-b]");
 
     runPromise.catch(() => {/* ignore */});
@@ -1702,7 +1702,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker sess-abc] First statement.\n\n[worker sess-abc] Second statement.");
+    expect(output).toContain("[worker sess-abc]\nFirst statement.\n\nSecond statement.");
     expect(output.startsWith("\n")).toBe(false);
 
     runPromise.catch(() => {/* ignore */});
@@ -1743,7 +1743,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     await Promise.resolve();
 
     const output = written.join("");
-    expect(output).toContain("[worker 01KJVFYR] hello");
+    expect(output).toContain("[worker 01KJVFYR]\nhello");
     expect(output).not.toContain("01KJVFYRKXXQG7N3BYC68KSX6H");
 
     runPromise.catch(() => {/* ignore */});
@@ -1788,7 +1788,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
     const output = written.join("");
     expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(1);
     expect(output).toContain(
-      "[worker sess-abc] I’m taking ownership with the `kspec-task-work` flow first, and I’ll explicitly load project instructions before editing.",
+      "[worker sess-abc]\nI’m taking ownership with the `kspec-task-work` flow first, and I’ll explicitly load project instructions before editing.",
     );
 
     runPromise.catch(() => {/* ignore */});
@@ -2004,7 +2004,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     await new Promise((r) => setTimeout(r, 10));
 
     const stdout = stdoutWrites.join("");
-    expect(stdout).toContain("[worker sess-abc] line without newline\n");
+    expect(stdout).toContain("[worker sess-abc]\nline without newline\n");
     expect(stderrWrites.some((l) => l.includes("[watch] Connection lost"))).toBe(true);
 
     runPromise.catch(() => {/* ignore */});
