@@ -73041,7 +73041,7 @@
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -73086,26 +73086,27 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Add explicit dispatch watch subscribe-handshake failure behavior
+  submitted_at: 2026-03-04T03:14:14.688Z
+- _ulid: 01KJVD7HDS5HVJ4JAE6M7SPV9R
+  slugs: []
+  title: Add explicit dispatch watch subscribe-handshake failure behavior
+  type: task
   description: "Spec gap: @cli-agent-commands covers chunk streaming and reconnect, but not initial
     subscribe handshake failure semantics. Add AC and tests so watch fails fast with actionable
     error when subscribe ack returns success=false, preventing silent no-output failures."
-  type: task
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - websocket
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJVD7HDS5HVJ4JAE6M7SPV9R
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-04T03:10:57.977Z
   notes: []
   todos: []
+  automation: eligible
