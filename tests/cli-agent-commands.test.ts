@@ -1602,6 +1602,61 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     runPromise.catch(() => {/* ignore */});
   });
 
+  it("should collapse repeated boundary events to a single spacer line", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "First block." },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "Second block." },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc]\nFirst block.\n\nSecond block.");
+    expect(output).not.toContain("First block.\n\n\nSecond block.");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
   it("should ignore empty-boundary events from other streams while current stream is mid-line", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);

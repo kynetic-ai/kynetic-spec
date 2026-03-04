@@ -742,8 +742,22 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
+      type StreamRenderState = {
+        hasRenderedBody: boolean;
+        spacerPending: boolean;
+      };
+      const streamStates = new Map<string, StreamRenderState>();
       let activeStreamKey: string | null = null;
       let outputAtLineStart = true;
+
+      function getStreamState(streamKey: string): StreamRenderState {
+        let state = streamStates.get(streamKey);
+        if (!state) {
+          state = { hasRenderedBody: false, spacerPending: false };
+          streamStates.set(streamKey, state);
+        }
+        return state;
+      }
 
       function writeRaw(text: string): void {
         if (!text) return;
@@ -778,18 +792,30 @@ export function registerAgentCommands(program: Command): void {
         text: string,
       ): void {
         if (!text) return;
-
+        const switchingSpeaker = activeStreamKey !== null && activeStreamKey !== streamKey;
         startSpeakerSection(streamKey, prefix);
+        const state = getStreamState(streamKey);
+        if (switchingSpeaker) {
+          // Marker change already separates context; don't carry stale spacer
+          // into the top of a newly active speaker section.
+          state.spacerPending = false;
+        } else if (state.spacerPending && state.hasRenderedBody) {
+          ensureLineBreak();
+          writeRaw("\n");
+          state.spacerPending = false;
+        }
         writeSpeakerText(text);
+        state.hasRenderedBody = true;
       }
 
       function markMessageBoundary(streamKey: string): void {
         // Boundary signals are stream-local; ignore inactive streams.
         if (activeStreamKey !== streamKey) return;
+        const state = getStreamState(streamKey);
         ensureLineBreak();
-        // Add one spacer line between logical sections for readability.
-        if (activeStreamKey) {
-          writeRaw("\n");
+        // Coalesce repeated boundary events into one pending spacer.
+        if (state.hasRenderedBody) {
+          state.spacerPending = true;
         }
       }
 
