@@ -2577,6 +2577,11 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-3
+            given: user runs kspec inbox add with empty text
+            when: text argument is missing or empty
+            then: validation error with usage guidance
       - _ulid: 01KF15N59E5B55QEM6KVJHGSN5
         slugs:
           - cmd-inbox-list
@@ -2602,6 +2607,11 @@ features:
           - "@trait-filterable-list"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-5
+            given: inbox has items
+            when: --count flag provided
+            then: outputs only the total number of matching items as a plain integer
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
@@ -2651,6 +2661,10 @@ features:
             given: inbox item @ref exists
             when: kspec inbox promote @ref --title 'X' --priority 2 --tag 'backend' --spec-ref '@some-spec' runs
             then: created task has the specified priority, tags, and spec_ref fields set
+          - id: ac-7
+            given: inbox item @ref exists
+            when: kspec inbox promote @ref --title 'X' --keep runs
+            then: task created but inbox item is preserved (not deleted)
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
@@ -2673,6 +2687,11 @@ features:
           - "@trait-confirmation-prompt"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-3
+            given: inbox ref does not exist
+            when: kspec inbox delete @nonexistent runs
+            then: exits with not-found error and helpful message
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
