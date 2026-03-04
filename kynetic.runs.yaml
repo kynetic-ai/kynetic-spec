@@ -13231,7 +13231,7 @@ runs:
   - _ulid: 01KJX1YXVNN8RPDBHX0V2X30FB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-03-04T18:32:30.325Z
     step_results:
@@ -13269,5 +13269,12 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-03-04T18:36:27.616Z
-        completed_at: 2026-03-04T18:36:27.616Z
+        completed_at: 2026-03-04T18:38:12.833Z
+        notes: "Captured reflection items via batch: friction @01KJX28RC (stale duplicate required-check
+          runs), friction @01KJX28RG (ACP reviewer parse/hang retry/diagnostics gap), success
+          @01KJX28RK (review-fix loop + targeted regression tests)."
+      - step_index: 5
+        status: completed
+        started_at: 2026-03-04T18:38:12.833Z
+        completed_at: 2026-03-04T18:38:12.833Z
     initiated_by: Jacob Chapel
