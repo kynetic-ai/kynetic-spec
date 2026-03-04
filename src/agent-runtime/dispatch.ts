@@ -116,6 +116,103 @@ const STATUS_PRECEDENCE: Record<TaskStatus, number> = {
   cancelled: 6,
 };
 
+// ─── Prompt Helpers (exported for testing) ───────────────────────────────────
+
+/**
+ * Interpolate {{variable}} placeholders in a prompt template.
+ * Unresolved variables pass through unchanged.
+ *
+ * AC: @agent-dispatch-engine ac-16
+ */
+export function interpolateTemplate(
+  template: string,
+  vars: Record<string, string>,
+): string {
+  return template.replace(
+    /\{\{(\w+)\}\}/g,
+    (match, key: string) => vars[key] ?? match,
+  );
+}
+
+/**
+ * Human-readable trigger description for orientation context.
+ */
+function triggerDescription(trigger: string): string {
+  switch (trigger) {
+    case "task.ready":
+      return "New task assignment.";
+    case "task.in_progress":
+      return "Continuing in-progress work.";
+    case "task.needs_work":
+      return "Fix cycle \u2014 this task was kicked back from review. Address the feedback below.";
+    case "task.pending_review":
+      return "Task submitted for review.";
+    default:
+      return `Trigger: ${trigger}`;
+  }
+}
+
+/**
+ * Format recent notes for inclusion in dispatch prompts.
+ * Takes last N notes, truncates each to maxLen characters, strips newlines.
+ */
+function formatRecentNotes(
+  notes: Array<{ created_at: string; author?: string; content: string }>,
+  count = 3,
+  maxLen = 200,
+): string {
+  if (!notes || notes.length === 0) return "";
+  const recent = notes.slice(-count);
+  const lines = recent.map((n) => {
+    const date = n.created_at.slice(0, 10);
+    const author = n.author ? `@${n.author}` : "unknown";
+    const content = n.content.replace(/\n/g, " ").slice(0, maxLen);
+    return `- [${date}] ${author}: ${content}`;
+  });
+  return lines.join("\n");
+}
+
+/**
+ * Build orientation context block for a dispatch prompt.
+ * Provides the agent with task title, trigger meaning, and relevant context.
+ *
+ * AC: @agent-dispatch-engine ac-13, ac-14, ac-15
+ */
+export function buildOrientationContext(
+  taskRef: string,
+  trigger: string,
+  task?: {
+    title: string;
+    notes?: Array<{ created_at: string; author?: string; content: string }>;
+    review_url?: string;
+  },
+): string {
+  const title = task?.title ?? "(unavailable)";
+  const lines = [
+    "## Task Context",
+    `Task: ${taskRef} \u2014 "${title}"`,
+    `Trigger: ${triggerDescription(trigger)}`,
+  ];
+
+  // AC: @agent-dispatch-engine ac-14 - Include recent notes for fix cycles
+  if (trigger === "task.needs_work" && task?.notes && task.notes.length > 0) {
+    const noteText = formatRecentNotes(task.notes);
+    if (noteText) {
+      lines.push("", "Recent notes:", noteText);
+    }
+  }
+
+  // AC: @agent-dispatch-engine ac-15 - Include review URL for reviewer
+  if (trigger === "task.pending_review") {
+    const url = task?.review_url ?? "Not provided \u2014 find PR via task notes or git log.";
+    lines.push(`Review URL: ${url}`);
+  }
+
+  return lines.join("\n");
+}
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
 /**
  * A state change event for a single task.
  */
@@ -302,6 +399,10 @@ export class DispatchEngine {
       } catch {
         // Can't load task, filter evaluation will be lenient
       }
+    }
+    // Make loaded task available for prompt building (AC: @agent-dispatch-engine ac-13)
+    if (taskData && !change.task) {
+      change.task = taskData;
     }
 
     for (const agent of agents) {
@@ -658,11 +759,25 @@ export class DispatchEngine {
   /**
    * Build dispatch-mode prompt guardrails to keep autonomous agents from
    * stopping with handoff text instead of performing required actions.
+   *
+   * AC: @agent-dispatch-engine ac-13, ac-14, ac-15, ac-16
    */
   private _buildDispatchPrompt(agent: LoadedAgent, change: TaskStateChange): string {
     const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
-    const basePrompt = agent.prompt_template ?? `Work on task ${change.taskRef}`;
     const taskRef = change.taskRef;
+
+    // AC: @agent-dispatch-engine ac-16 - Interpolate prompt_template variables
+    const templateVars: Record<string, string> = {
+      task_ref: taskRef,
+      task_title: change.task?.title ?? "(unavailable)",
+      trigger,
+      review_url: change.task?.review_url ?? "",
+    };
+    const rawTemplate = agent.prompt_template ?? `Work on task ${taskRef}`;
+    const basePrompt = interpolateTemplate(rawTemplate, templateVars);
+
+    // AC: @agent-dispatch-engine ac-13 - Orientation context
+    const orientation = buildOrientationContext(taskRef, trigger, change.task);
 
     const autonomousPreamble = [
       "AUTONOMOUS DISPATCH MODE (no interactive user is available).",
@@ -676,21 +791,19 @@ export class DispatchEngine {
     const triggerSpecific =
       trigger === "task.pending_review"
         ? [
-            `Trigger context: ${trigger} for ${taskRef}.`,
             `Review flow completion criteria for ${taskRef}:`,
             "- Execute your configured review workflow directly (no handoff).",
             `- If blocking issues are found, transition ${taskRef} out of pending_review appropriately (for example needs_work).`,
             `- If review gates are clean, perform your workflow's completion actions directly in this invocation.`,
           ]
         : [
-            `Trigger context: ${trigger} for ${taskRef}.`,
             `Work flow completion criteria for ${taskRef}:`,
             "- Execute your configured work workflow directly (no handoff).",
             `- Perform the required commands to move ${taskRef} to the next appropriate state in this same invocation.`,
             "- If your workflow includes git or PR steps, execute them directly instead of deferring to a human.",
           ];
 
-    return `${basePrompt}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
+    return `${basePrompt}\n\n${orientation}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
   /**
