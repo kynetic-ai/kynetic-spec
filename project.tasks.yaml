@@ -72266,6 +72266,19 @@
         - kspec validate exits 4 due pre-existing project-wide schema/reference issues unrelated to
         this task (missing .kspec/skills/observations/SKILL.md and duplicate @observations refs).
       supersedes: null
+    - _ulid: 01KJW94FADSDH8KZXRT53EKGQS
+      created_at: 2026-03-04T11:18:37.646Z
+      author: Jacob Chapel
+      content: >-
+        Fix-cycle update pushed to PR #670.
+
+        - Commit: 676e03b38
+
+        - Branch: fix/ralph-deprecation-dispatch-migration
+
+        - MUST-FIX review items addressed (dry-run mapping restored in deprecation output and AC
+        test coverage).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BC1W5Y4Z2Y23GQSD4EFS
