@@ -2625,6 +2625,10 @@ features:
             given: inbox has items
             when: kspec inbox list runs with no flags
             then: items displayed sorted oldest first (created_at ascending) to encourage triaging older items
+          - id: ac-2
+            given: inbox has items
+            when: --newest flag provided
+            then: items displayed sorted newest first (created_at descending)
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
