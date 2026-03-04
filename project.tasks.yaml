@@ -74010,8 +74010,15 @@
     - parser
   vcs_refs: []
   created_at: 2026-03-03T22:54:41.236Z
-  notes: []
+  notes:
+    - _ulid: 01KJX7Y46S0M5HDYJMM7TJ8PJY
+      created_at: 2026-03-04T20:16:55.513Z
+      author: "@claude"
+      content: "Automation: eligible. Testing task — no spec needed. Clear scope: add concurrency tests
+        for task/plan/inbox/spec mutations."
+      supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KJVCWC68CMQZXE387YNF8EYZ
   slugs: []
   title: Fix agent dispatch watch WebSocket subscribe decoding for Node clients
@@ -75097,8 +75104,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-04T18:54:20.369Z
-  notes: []
+  notes:
+    - _ulid: 01KJX7Y5VZWHGSHEF4E7XC0AY1
+      created_at: 2026-03-04T20:16:57.215Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Changes CLI behavior (task start warning). Needs
+        spec coverage on task-start requirement before automation."
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KJX5HGXTWCZ9JV7S4R9VD684
   slugs: []
   title: Fix codex platform detection tests leaking Claude Code env vars
@@ -75123,5 +75137,12 @@
     - testing
   vcs_refs: []
   created_at: 2026-03-04T19:35:05.396Z
-  notes: []
+  notes:
+    - _ulid: 01KJX7Y7KHS2J0W4YAYA4TZ9FE
+      created_at: 2026-03-04T20:16:58.993Z
+      author: "@claude"
+      content: "Automation: eligible. Bug fix with clear root cause — tests must clear
+        CLAUDE_CODE_ENTRYPOINT/CLAUDE_PROJECT_DIR/CLAUDE_CODE env vars."
+      supersedes: null
   todos: []
+  automation: eligible
