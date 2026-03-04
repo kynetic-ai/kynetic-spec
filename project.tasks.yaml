@@ -71676,7 +71676,7 @@
   type: task
   description: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -71686,6 +71686,7 @@
   session_id: 01KJVXPW876HS5DEF0SF5N218F
   created_at: 2026-03-03T06:43:31.667Z
   started_at: 2026-03-04T08:00:19.688Z
+  submitted_at: 2026-03-04T08:00:56.210Z
   notes:
     - _ulid: 01KJVXSBJD5V09MAAVJJPTYA7S
       created_at: 2026-03-04T08:00:19.021Z
@@ -71705,7 +71706,10 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T08:00:56.210Z
+  completed_at: 2026-03-04T08:01:00.569Z
+  closed_reason: No implementation delta required. Verified on 2026-03-03 that batch args accept
+    spec_ref alias for --spec-ref in task add/task set (dry-run succeeds) and existing focused test
+    coverage passes.
 - _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
   title: "CLI DX: accept tags as alias for tag in batch commands"
