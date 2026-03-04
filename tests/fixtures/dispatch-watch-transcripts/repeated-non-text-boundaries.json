@@ -1,0 +1,11 @@
+{
+  "description": "Multiple consecutive non-text/tool boundaries should collapse to one blank spacer line.",
+  "chunks": [
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "First block." },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "" },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "" },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "" },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "Second block." }
+  ],
+  "expected_stdout": "[worker sess-abc]\nFirst block.\n\nSecond block."
+}

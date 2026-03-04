@@ -1,0 +1,10 @@
+{
+  "description": "Adapter emits an empty boundary chunk before first visible text, then another boundary between statements.",
+  "chunks": [
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "" },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "First statement." },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "" },
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "Second statement." }
+  ],
+  "expected_stdout": "[worker sess-abc]\nFirst statement.\n\nSecond statement."
+}

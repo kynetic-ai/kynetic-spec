@@ -1,0 +1,13 @@
+{
+  "description": "Interleaved stream switching with cross-stream boundaries should preserve speaker sections and avoid stale spacer carry-over.",
+  "chunks": [
+    { "session_id": "sess-a", "agent_id": "worker-a", "text": "alpha" },
+    { "session_id": "sess-b", "agent_id": "worker-b", "text": "" },
+    { "session_id": "sess-a", "agent_id": "worker-a", "text": " beta" },
+    { "session_id": "sess-a", "agent_id": "worker-a", "text": "" },
+    { "session_id": "sess-b", "agent_id": "worker-b", "text": "bravo" },
+    { "session_id": "sess-b", "agent_id": "worker-b", "text": "" },
+    { "session_id": "sess-a", "agent_id": "worker-a", "text": "charlie" }
+  ],
+  "expected_stdout": "[worker-a sess-a]\nalpha beta\n[worker-b sess-b]\nbravo\n[worker-a sess-a]\ncharlie"
+}
