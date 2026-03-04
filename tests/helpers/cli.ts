@@ -240,6 +240,50 @@ export async function createTempDir(prefix = 'kspec-test-'): Promise<string> {
 }
 
 /**
+ * Isolated HOME/config paths for daemon-sensitive CLI tests.
+ */
+export interface IsolatedKspecHome {
+  /** Home directory used for HOME/USERPROFILE overrides */
+  homeDir: string;
+  /** kspec config directory under the isolated home */
+  configDir: string;
+  /** Global daemon PID file path under isolated HOME */
+  daemonPidFilePath: string;
+  /** Global daemon port file path under isolated HOME */
+  daemonPortFilePath: string;
+  /** Environment overrides for running commands in isolated HOME */
+  env: Record<string, string>;
+}
+
+/**
+ * Create isolated HOME/config paths for daemon-sensitive CLI tests.
+ *
+ * This avoids ambient ~/.config/kspec PID/port state leaking into tests.
+ *
+ * @param rootDir - Root directory where isolated home will be created
+ * @param homeDirName - Optional isolated home subdirectory name
+ */
+export async function createIsolatedKspecHome(
+  rootDir: string,
+  homeDirName = '.home'
+): Promise<IsolatedKspecHome> {
+  const homeDir = path.join(rootDir, homeDirName);
+  const configDir = path.join(homeDir, '.config', 'kspec');
+  await fs.mkdir(configDir, { recursive: true });
+
+  return {
+    homeDir,
+    configDir,
+    daemonPidFilePath: path.join(configDir, 'daemon.pid'),
+    daemonPortFilePath: path.join(configDir, 'daemon.port'),
+    env: {
+      HOME: homeDir,
+      USERPROFILE: homeDir,
+    },
+  };
+}
+
+/**
  * Initialize a git repo in a directory (useful for tests that need git)
  *
  * @param dir - Directory to initialize
