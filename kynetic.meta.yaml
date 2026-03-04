@@ -7441,6 +7441,14 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJWER00G8GYQRTMCG2VM9TF5
+    type: friction
+    content: Agent dispatch triggered task @01KJTHAB6NRKQE12JJ7Q7V80CK via in_progress context even
+      though task was already completed by runtime start; caused redundant verification pass.
+    created_at: 2026-03-04T12:56:40.209Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
