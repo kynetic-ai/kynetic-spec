@@ -2721,6 +2721,10 @@ features:
             given: inbox item @ref exists
             when: kspec inbox delete @ref runs without --force
             then: confirmation prompt shown; item deleted only if user confirms
+          - id: ac-2
+            given: inbox item @ref exists
+            when: kspec inbox delete @ref --force runs
+            then: item deleted immediately without confirmation
       - _ulid: 01KJWVJPRJ0WK2A5292XFZND1S
         slugs:
           - cmd-inbox-get
