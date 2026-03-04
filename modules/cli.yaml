@@ -2760,6 +2760,11 @@ features:
             given: ref is a short ULID prefix
             when: kspec inbox get @shortprefix runs
             then: resolves to matching item via case-insensitive prefix match
+          - id: ac-1
+            given: inbox item @ref exists
+            when: kspec inbox get @ref runs
+            then: displays ULID, created_at (with relative time), added_by (if present), tags (if present), and
+              full text
       - _ulid: 01KJWVJQF0T4PMD44YB7P0J3DJ
         slugs:
           - cmd-inbox-set
