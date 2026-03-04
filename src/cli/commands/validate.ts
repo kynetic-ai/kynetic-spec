@@ -27,7 +27,7 @@ import {
 } from "../../parser/validate-skills.js";
 import { validation as validationStrings } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, output, warn } from "../output.js";
+import { error, isStructuredMode, output, warn } from "../output.js";
 
 /**
  * Staleness warning types
@@ -835,6 +835,7 @@ export function registerValidateCommand(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
+        const structuredOutput = isStructuredMode();
 
         if (!ctx.manifestPath) {
           error(validationStrings.noManifest);
@@ -889,16 +890,22 @@ export function registerValidateCommand(program: Command): void {
         if (options.fix) {
           const filesToFix = await collectFixableFiles(ctx);
           const fixResult = await fixFiles(filesToFix);
-          formatFixResult(fixResult);
+          if (!structuredOutput) {
+            formatFixResult(fixResult);
+          }
 
           // Re-run validation after fixes to show updated status
           if (fixResult.fixesApplied.length > 0) {
-            console.log(validationStrings.revalidating);
+            if (!structuredOutput) {
+              console.log(validationStrings.revalidating);
+            }
             const revalidateResult = await validate(ctx, validateOptions);
-            if (revalidateResult.valid) {
-              console.log(validationStrings.nowPasses);
-            } else {
-              console.log(validationStrings.issuesRemain);
+            if (!structuredOutput) {
+              if (revalidateResult.valid) {
+                console.log(validationStrings.nowPasses);
+              } else {
+                console.log(validationStrings.issuesRemain);
+              }
             }
             // Update result for exit code
             result.valid = revalidateResult.valid;
@@ -916,23 +923,27 @@ export function registerValidateCommand(program: Command): void {
           alignmentIndex.buildLinks(refIndex);
 
           const alignmentWarnings = alignmentIndex.findAlignmentWarnings();
-          formatAlignmentWarnings(alignmentWarnings, options.verbose);
+          if (!structuredOutput) {
+            formatAlignmentWarnings(alignmentWarnings, options.verbose);
+          }
           additionalWarningCount += alignmentWarnings.length;
 
           // Show alignment stats
-          const stats = alignmentIndex.getStats();
-          console.log(
-            validationStrings.alignmentStats(
-              stats.specsWithTasks,
-              stats.totalSpecs,
-              stats.alignedSpecs,
-            ),
-          );
+          if (!structuredOutput) {
+            const stats = alignmentIndex.getStats();
+            console.log(
+              validationStrings.alignmentStats(
+                stats.specsWithTasks,
+                stats.totalSpecs,
+                stats.alignedSpecs,
+              ),
+            );
+          }
         }
 
         // Show completeness warnings if any
         // AC: @spec-completeness ac-4
-        if (result.completenessWarnings.length > 0) {
+        if (!structuredOutput && result.completenessWarnings.length > 0) {
           formatCompletenessWarnings(
             result.completenessWarnings,
             options.verbose,
@@ -952,22 +963,26 @@ export function registerValidateCommand(program: Command): void {
                 metaCtx.conventions,
                 {},
               );
-              formatConventionValidationResult(conventionResult);
+              if (!structuredOutput) {
+                formatConventionValidationResult(conventionResult);
+              }
 
               if (!conventionResult.valid) {
                 result.valid = false;
               }
-            } else {
+            } else if (!structuredOutput) {
               console.log(
                 chalk.gray("No conventions defined in meta manifest"),
               );
             }
           } catch (_err) {
-            console.log(
-              chalk.yellow(
-                "Warning: Could not load meta manifest for convention validation",
-              ),
-            );
+            if (!structuredOutput) {
+              console.log(
+                chalk.yellow(
+                  "Warning: Could not load meta manifest for convention validation",
+                ),
+              );
+            }
           }
         }
 
@@ -980,7 +995,9 @@ export function registerValidateCommand(program: Command): void {
           const refIndex = new ReferenceIndex(tasks, items);
 
           const stalenessWarnings = checkStaleness(items, tasks, refIndex);
-          formatStalenessWarnings(stalenessWarnings, options.verbose);
+          if (!structuredOutput) {
+            formatStalenessWarnings(stalenessWarnings, options.verbose);
+          }
           stalenessWarningCount = stalenessWarnings.length;
 
           // AC: @stale-status-detection ac-5 (staleness-exit-code)
@@ -993,7 +1010,9 @@ export function registerValidateCommand(program: Command): void {
         // Run skill file validation if requested or running all checks
         if (runAll || selectedChecks.skills) {
           const skillResult = await validateSkills(ctx.rootDir);
-          formatSkillValidationResult(skillResult, options.verbose);
+          if (!structuredOutput) {
+            formatSkillValidationResult(skillResult, options.verbose);
+          }
 
           if (!skillResult.valid) {
             result.valid = false;
@@ -1005,7 +1024,9 @@ export function registerValidateCommand(program: Command): void {
         if (selectedChecks.drift) {
           const items = await loadAllItems(ctx);
           const driftWarnings = checkACSchemaReferences(items);
-          formatDriftWarnings(driftWarnings, options.verbose);
+          if (!structuredOutput) {
+            formatDriftWarnings(driftWarnings, options.verbose);
+          }
           driftWarningCount = driftWarnings.length;
 
           // With --strict, drift warnings cause validation failure
@@ -1071,6 +1092,7 @@ export function registerValidateCommand(program: Command): void {
     .action(async (options) => {
       try {
         const ctx = await initContext();
+        const structuredOutput = isStructuredMode();
 
         if (!ctx.manifestPath) {
           error(validationStrings.noManifest);
@@ -1110,16 +1132,22 @@ export function registerValidateCommand(program: Command): void {
         if (options.fix) {
           const filesToFix = await collectFixableFiles(ctx);
           const fixResult = await fixFiles(filesToFix);
-          formatFixResult(fixResult);
+          if (!structuredOutput) {
+            formatFixResult(fixResult);
+          }
 
           // Re-run validation after fixes
           if (fixResult.fixesApplied.length > 0) {
-            console.log(validationStrings.revalidating);
+            if (!structuredOutput) {
+              console.log(validationStrings.revalidating);
+            }
             const revalidateResult = await validate(ctx, validateOptions);
-            if (revalidateResult.valid) {
-              console.log(validationStrings.nowPasses);
-            } else {
-              console.log(validationStrings.issuesRemain);
+            if (!structuredOutput) {
+              if (revalidateResult.valid) {
+                console.log(validationStrings.nowPasses);
+              } else {
+                console.log(validationStrings.issuesRemain);
+              }
             }
             result.valid = revalidateResult.valid;
           }

@@ -155,6 +155,16 @@ items:
     });
   });
 
+  describe('JSON output purity', () => {
+    it('should emit parseable JSON only for validate --json', () => {
+      const result = kspec('validate --json', tempDir);
+
+      expect(() => JSON.parse(result.stdout)).not.toThrow();
+      expect(result.stdout).not.toContain('Alignment warnings:');
+      expect(result.stdout).not.toContain('Completeness warnings:');
+    });
+  });
+
   // AC: @cli-exit-codes (exit 0 for clean validation)
   describe('exit code 0 (SUCCESS)', () => {
     let cleanDir: string;
