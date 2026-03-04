@@ -75051,3 +75051,22 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Add branch check warning to kspec task start — when current branch is not main and does not
+    match th
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Add branch check warning to kspec task start — when current branch is not main and does
+    not match the task slug, warn the agent. Would catch starting work on the wrong branch without a
+    manual git branch check.
+  _ulid: 01KJX36X6HDRWZ4H39XSVSMNK9
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T18:54:20.369Z
+  notes: []
+  todos: []
