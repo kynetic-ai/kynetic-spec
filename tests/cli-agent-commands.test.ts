@@ -1409,7 +1409,7 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — streams line-prefixed output", () => {
-  const STREAM_FLUSH_MS = 90;
+  const STREAM_FLUSH_MS = 170;
 
   afterEach(() => {
     vi.restoreAllMocks();
@@ -1636,11 +1636,56 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
 
     runPromise.catch(() => {/* ignore */});
   });
+
+  it("should keep continuation bursts on one line when chunks split mid-token", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    const parts = [
+      "I’m taking ownership with the `kspec",
+      "-task-work` flow first, and I’ll ",
+      "explicitly load project instructions before editing.",
+    ];
+    for (const text of parts) {
+      ws.onmessage?.({
+        data: JSON.stringify({
+          event: "agent_text_chunk",
+          data: { session_id: "sess-abc", agent_id: "worker", text },
+        }),
+      });
+      await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    }
+
+    const output = written.join("");
+    expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(1);
+    expect(output).toContain(
+      "[worker sess-abc] I’m taking ownership with the `kspec-task-work` flow first, and I’ll explicitly load project instructions before editing.",
+    );
+
+    runPromise.catch(() => {/* ignore */});
+  });
 });
 
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
-  const STREAM_FLUSH_MS = 90;
+  const STREAM_FLUSH_MS = 170;
 
   afterEach(() => {
     vi.restoreAllMocks();

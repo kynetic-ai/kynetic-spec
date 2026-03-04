@@ -742,11 +742,12 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
-      const CHUNK_COALESCE_MS = 50;
+      const CHUNK_COALESCE_MS = 120;
       type StreamRenderState = {
         atLineStart: boolean;
         pendingText: string;
         flushTimer: NodeJS.Timeout | null;
+        lastPrintedChar: string;
       };
       const streamRenderStates = new Map<string, StreamRenderState>();
       const streamPrefixes = new Map<string, string>();
@@ -755,7 +756,12 @@ export function registerAgentCommands(program: Command): void {
       function getStreamState(streamKey: string): StreamRenderState {
         let state = streamRenderStates.get(streamKey);
         if (!state) {
-          state = { atLineStart: true, pendingText: "", flushTimer: null };
+          state = {
+            atLineStart: true,
+            pendingText: "",
+            flushTimer: null,
+            lastPrintedChar: "",
+          };
           streamRenderStates.set(streamKey, state);
         }
         return state;
@@ -776,6 +782,7 @@ export function registerAgentCommands(program: Command): void {
           if (part === "\n" || part === "\r\n") {
             output += part;
             state.atLineStart = true;
+            state.lastPrintedChar = "\n";
             continue;
           }
 
@@ -786,6 +793,7 @@ export function registerAgentCommands(program: Command): void {
           } else {
             output += part;
           }
+          state.lastPrintedChar = part[part.length - 1] ?? state.lastPrintedChar;
         }
 
         if (output) {
@@ -805,18 +813,45 @@ export function registerAgentCommands(program: Command): void {
         state.pendingText = "";
         const prefix = streamPrefixes.get(streamKey) ?? `[${streamKey}]`;
         writePrefixedText(streamKey, prefix, text);
-
-        // Treat each buffered burst as a logical message.
-        if (!state.atLineStart) {
-          process.stdout.write("\n");
-          state.atLineStart = true;
-        }
       }
 
       function flushAllStreams(): void {
         for (const streamKey of streamRenderStates.keys()) {
           flushStream(streamKey);
         }
+      }
+
+      function endStreamLine(streamKey: string): void {
+        const state = getStreamState(streamKey);
+        if (!state.atLineStart) {
+          process.stdout.write("\n");
+          state.atLineStart = true;
+          state.lastPrintedChar = "\n";
+        }
+      }
+
+      function startsNewLogicalMessage(
+        state: StreamRenderState,
+        text: string,
+      ): boolean {
+        if (state.atLineStart) return false;
+        const first = text[0] ?? "";
+        if (!first) return false;
+
+        // Most continuation chunks begin with whitespace/punctuation.
+        if (/^\s/.test(first)) return false;
+        if (/^[\]\)\}\.,;:!?'’"`-]/.test(first)) return false;
+        if (/\s/.test(state.lastPrintedChar)) return false;
+
+        // Split identifiers/tokens should not force a new line.
+        if (
+          /[A-Za-z0-9]/.test(first) &&
+          /[A-Za-z0-9`@#\/]/.test(state.lastPrintedChar)
+        ) {
+          return false;
+        }
+
+        return true;
       }
 
       // Coalesce tiny token chunks so messages render naturally.
@@ -829,10 +864,14 @@ export function registerAgentCommands(program: Command): void {
 
         if (activeStreamKey && activeStreamKey !== streamKey) {
           flushStream(activeStreamKey);
+          endStreamLine(activeStreamKey);
         }
         activeStreamKey = streamKey;
 
         const state = getStreamState(streamKey);
+        if (startsNewLogicalMessage(state, text)) {
+          endStreamLine(streamKey);
+        }
         streamPrefixes.set(streamKey, prefix);
         state.pendingText += text;
         if (state.flushTimer) {
@@ -912,6 +951,9 @@ export function registerAgentCommands(program: Command): void {
 
         ws.onclose = () => {
           flushAllStreams();
+          if (activeStreamKey) {
+            endStreamLine(activeStreamKey);
+          }
 
           if (retryCount >= retryLimit) {
             // AC: @cli-agent-commands ac-14 — exit code 3 when retries exhausted
