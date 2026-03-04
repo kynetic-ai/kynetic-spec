@@ -73216,5 +73216,12 @@
         updates occur before the next text chunk. Added regression test ('collapse repeated boundary
         events to a single spacer line'). Targeted watch + dispatch test suites pass.
       supersedes: null
+    - _ulid: 01KJVKN4XS682KF9YS4TRVR8N9
+      created_at: 2026-03-04T05:03:15.385Z
+      author: Jacob Chapel
+      content: During review-loop/spec-gap check, found AC-17 wording lagged behind section-marker
+        refactor ('line prefix' wording). Updated AC-17 to speaker section marker terminology so
+        spec matches implemented/validated behavior.
+      supersedes: null
   todos: []
   automation: eligible
