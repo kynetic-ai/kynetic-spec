@@ -72589,7 +72589,7 @@
     to fix.
   spec_ref: null
   meta_ref: null
-  plan_ref: null
+  plan_ref: "@01KJXDGN"
   status: in_progress
   blocked_by: []
   depends_on: []
@@ -72600,12 +72600,12 @@
     - dx
     - dispatch
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-03T07:15:51.761Z
+  started_at: 2026-03-04T21:54:21.249Z
   notes: []
   todos: []
   automation: manual_only
-  started_at: 2026-03-04T21:54:21.249Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
 - _ulid: 01KJS90FR4GQVQQYA4QM2XJZ1W
   slugs: []
   title: Rewrite {skill:foo} references to adapter-specific format when injecting skills into agent prompt
