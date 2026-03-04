@@ -71971,6 +71971,7 @@
     - dx
   vcs_refs: []
   created_at: 2026-03-03T07:18:43.716Z
+  started_at: 2026-03-04T00:44:07.706Z
   notes:
     - _ulid: 01KJV4TMERCY7KDMJE36P4QY1E
       created_at: 2026-03-04T00:44:06.488Z
@@ -71990,9 +71991,31 @@
         - Verification: npm test -- tests/agent-invocation-lifecycle.test.ts and targeted CLI
         dry-run checks via tests for prompt building.
       supersedes: null
+    - _ulid: 01KJV53DW3TSK6HJ5SRC8PC78Z
+      created_at: 2026-03-04T00:48:54.659Z
+      author: Jacob Chapel
+      content: >-
+        Implemented adapter-aware skill token rewriting in buildPromptWithSkills.
+
+        - Added adapterId-aware substitution of {skill:foo} for claude-agent-acp/claude-code-acp and
+        codex-acp.
+
+        - Mapping checks .agents/skills naming (kspec-* directories) so core skills become
+        /kspec:<id> (Claude) and -<id> (Codex); non-core references become /<id> or $<id>.
+
+        - Unknown adapters keep portable {skill:foo} tokens unchanged.
+
+        - Passed adapterId from runtime invocation and CLI agent dry-run path.
+
+        - Added AC-10 tests in tests/agent-invocation-lifecycle.test.ts for Claude, Codex, and
+        unknown adapter behavior.
+
+        Verification: npm test -- tests/agent-invocation-lifecycle.test.ts (pass), npm test (pass).
+        kspec validate currently reports pre-existing repo-level validation failures unrelated to
+        this task.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T00:44:07.706Z
 - _ulid: 01KJSA2TZWD88MG76PZ7KFKVFY
   slugs: []
   title: Handle ACP permission requests in invocation — auto-approve tool calls in dispatch mode
