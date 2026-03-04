@@ -7488,11 +7488,21 @@ observations:
     resolution: null
   - _ulid: 01KJWHWS4D92HAX2A1CPFCV6V1
     type: friction
+    workflow_ref: "@task-work-session"
     content: Task-level kspec validate gating is noisy because global pre-existing reference/alignment
       errors (e.g., duplicate @observations slug) obscure whether a local task introduced new
       validation regressions.
-    workflow_ref: "@task-work-session"
     created_at: 2026-03-04T13:51:42.734Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJWKZVE1SB4W4CFPPP3195XE
+    type: friction
+    content: Full kspec validate output is dominated by known unrelated repo-level
+      meta/reference/alignment failures, which obscures task-local validation signal during
+      implementation work.
+    workflow_ref: "@task-work-loop"
+    created_at: 2026-03-04T14:28:20.546Z
     author: Jacob Chapel
     resolved: false
     resolution: null
