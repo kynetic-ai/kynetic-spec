@@ -795,7 +795,7 @@ features:
         then: fails with clear error message suggesting --port flag
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
   - _ulid: 01KFQ84FVYMN3Z0HXWZ5AK7CQD
     slugs:
       - multi-directory-daemon
