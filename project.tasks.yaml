@@ -73182,5 +73182,15 @@
         remains line-prefix based using explicit boundaries only. Added tests for dispatch boundary
         emission and empty-first boundary handling; dispatch + cli-agent command suites pass.
       supersedes: null
+    - _ulid: 01KJVK02QGMMKMRS1VJD5RWTT4
+      created_at: 2026-03-04T04:51:45.008Z
+      author: Jacob Chapel
+      content: "Implemented structural boundary rendering for dispatch watch: dispatch emits empty
+        sentinels on non-text ACP updates (tool-call transitions), and watch treats boundaries as
+        stream-local line breaks. Removed punctuation-based guessing. Added regression tests for
+        cross-stream empty-boundary interleaving and strengthened dispatch boundary order
+        assertions. Peer review pass returned CLEAN; targeted tests (cli-agent-commands +
+        agent-dispatch-engine) all pass."
+      supersedes: null
   todos: []
   automation: eligible
