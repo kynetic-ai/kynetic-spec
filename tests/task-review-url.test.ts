@@ -88,6 +88,27 @@ describe("Integration: task review_url field", () => {
     expect(task.status).toBe("in_progress");
   });
 
+  // AC: @task-submit ac-submit-3 - empty string is invalid URL
+  it("should reject empty review URL without changing state", () => {
+    kspec('task add --title "Empty URL test" --slug empty-url', tempDir);
+    kspec("task start @empty-url", tempDir);
+
+    const result = kspecRun(
+      'task submit @empty-url --review-url ""',
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Invalid review URL");
+
+    // Task should still be in_progress
+    const task = kspecJson<{ status: string }>(
+      "task get @empty-url --json",
+      tempDir,
+    );
+    expect(task.status).toBe("in_progress");
+  });
+
   it("should submit without --review-url and leave field undefined", () => {
     kspec('task add --title "No URL test" --slug no-url', tempDir);
     kspec("task start @no-url", tempDir);

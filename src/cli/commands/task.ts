@@ -1628,7 +1628,7 @@ Examples:
     .action(async (ref: string, options: { reviewUrl?: string }) => {
       try {
         // AC: @task-submit ac-submit-3 - Validate URL before any state change
-        if (options.reviewUrl) {
+        if (options.reviewUrl !== undefined) {
           try {
             new URL(options.reviewUrl);
           } catch {
@@ -1658,7 +1658,7 @@ Examples:
               status: "pending_review",
               submitted_at: new Date().toISOString(),
               // AC: @task-submit ac-submit-2
-              ...(options.reviewUrl && { review_url: options.reviewUrl }),
+              ...(options.reviewUrl !== undefined && { review_url: options.reviewUrl }),
             };
           },
         );
