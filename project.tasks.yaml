@@ -74974,5 +74974,12 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @batch-write-buffer ac-8 test coverage is
         missing (kspec validate reports Uncovered: ac-8). See PR #677 review comments."
       supersedes: null
+    - _ulid: 01KJWYMSN30PYB1AHG6CNZ00SZ
+      created_at: 2026-03-04T17:34:32.611Z
+      author: Jacob Chapel
+      content: "Fix cycle from PR #677 review: add explicit own-AC coverage for @batch-write-buffer ac-8
+        in tests/batch-write-buffer.test.ts, then rerun focused tests/validate and push for
+        re-review."
+      supersedes: null
   todos: []
   automation: eligible
