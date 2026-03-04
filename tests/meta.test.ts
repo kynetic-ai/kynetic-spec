@@ -2840,7 +2840,7 @@ describe('Integration: agent definition schema', () => {
     const content = await fs.readFile(metaPath, 'utf-8');
     const withDispatch = content.replace(
       '    id: test-agent',
-      '    id: test-agent\n    dispatch:\n      - on: task.ready\n      - on: task.needs_work',
+      '    id: test-agent\n    dispatch:\n      - on: task.in_progress\n      - on: task.ready\n      - on: task.needs_work',
     );
     await fs.writeFile(metaPath, withDispatch);
 

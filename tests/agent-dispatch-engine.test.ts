@@ -142,6 +142,174 @@ function makeStateChange(overrides: Partial<TaskStateChange> = {}): TaskStateCha
   };
 }
 
+// ─── Dispatch In-Progress Priority ───────────────────────────────────────────
+
+describe("Dispatch in-progress priority", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-in-progress-priority-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @dispatch-in-progress-priority ac-1
+  it("should prioritize in_progress entries ahead of pending/needs_work/pending_review", async () => {
+    const agent = makeTestAgent({
+      id: "priority-worker",
+      dispatch: [
+        { on: "task.in_progress" },
+        { on: "task.ready" },
+        { on: "task.needs_work" },
+        { on: "task.pending_review" },
+      ],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+    await engine.start();
+
+    const internal = engine as unknown as {
+      activeCount: Map<string, number>;
+      queues: Map<string, Array<{ change: TaskStateChange }>>;
+    };
+
+    // Hold dispatching so we can inspect queue ordering.
+    internal.activeCount.set(agent.id, 1);
+
+    await engine.handleStateChange(
+      makeStateChange({
+        taskId: testUlid("TASK", 10),
+        taskRef: `@${testUlid("TASK", 10)}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+      }),
+    );
+    await engine.handleStateChange(
+      makeStateChange({
+        taskId: testUlid("TASK", 11),
+        taskRef: `@${testUlid("TASK", 11)}`,
+        fromStatus: "pending_review",
+        toStatus: "needs_work",
+      }),
+    );
+    await engine.handleStateChange(
+      makeStateChange({
+        taskId: testUlid("TASK", 12),
+        taskRef: `@${testUlid("TASK", 12)}`,
+        fromStatus: "in_progress",
+        toStatus: "pending_review",
+      }),
+    );
+    await engine.handleStateChange(
+      makeStateChange({
+        taskId: testUlid("TASK", 13),
+        taskRef: `@${testUlid("TASK", 13)}`,
+        fromStatus: "pending",
+        toStatus: "in_progress",
+      }),
+    );
+
+    const queue = internal.queues.get(agent.id) ?? [];
+    expect(queue.map((entry) => entry.change.toStatus)).toEqual([
+      "in_progress",
+      "needs_work",
+      "pending",
+      "pending_review",
+    ]);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-in-progress-priority ac-2
+  it("should enqueue existing in_progress tasks during bootstrap", async () => {
+    const agent = makeTestAgent({
+      id: "bootstrap-worker",
+      dispatch: [{ on: "task.in_progress" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK", 20);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    expect(enqueueCount).toBeGreaterThanOrEqual(1);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-in-progress-priority ac-3
+  it("should match task.in_progress dispatch rules with automation filters", async () => {
+    const agent = makeTestAgent({
+      id: "filtered-worker",
+      dispatch: [{ on: "task.in_progress", filter: { automation: "eligible" } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(
+      engine as unknown as { _enqueue: (a: unknown, c: unknown) => void },
+      "_enqueue",
+    ).mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await engine.handleStateChange({
+      ...makeStateChange({
+        taskId: testUlid("TASK", 30),
+        taskRef: `@${testUlid("TASK", 30)}`,
+        fromStatus: "pending",
+        toStatus: "in_progress",
+      }),
+      task: { automation: "ineligible", tags: [] } as any,
+    });
+    expect(enqueueCount).toBe(0);
+
+    await engine.handleStateChange({
+      ...makeStateChange({
+        taskId: testUlid("TASK", 31),
+        taskRef: `@${testUlid("TASK", 31)}`,
+        fromStatus: "pending",
+        toStatus: "in_progress",
+      }),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+    expect(enqueueCount).toBe(1);
+
+    await engine.stop();
+  });
+});
+
 // ─── AC-1: Matching agents queued for dispatch ────────────────────────────────
 
 // AC: @agent-dispatch-engine ac-1

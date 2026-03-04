@@ -139,7 +139,7 @@ describe("kspec setup built-in agents", () => {
     expect(agentIds).toContain("pr-reviewer");
   });
 
-  it("task-worker has dispatch rules for task.ready and task.needs_work with eligible filter", async () => {
+  it("task-worker has dispatch rules for task.in_progress/task.ready/task.needs_work with eligible filter", async () => {
     await kspec("setup --no-hooks --skip-skills", tempDir);
 
     const metaPath = path.join(tempDir, "kynetic.meta.yaml");
@@ -156,11 +156,14 @@ describe("kspec setup built-in agents", () => {
     const dispatch = worker!.dispatch || [];
     const events = dispatch.map((r) => r.on);
 
-    // AC: @ralph-replacement ac-2 — worker: task.ready + task.needs_work with eligible filter
+    // AC: @ralph-replacement ac-2 — worker: task.in_progress + task.ready + task.needs_work with eligible filter
+    expect(events).toContain("task.in_progress");
     expect(events).toContain("task.ready");
     expect(events).toContain("task.needs_work");
 
     // Should have automation: eligible filter
+    const inProgressRule = dispatch.find((r) => r.on === "task.in_progress");
+    expect(inProgressRule?.filter?.automation).toBe("eligible");
     const readyRule = dispatch.find((r) => r.on === "task.ready");
     expect(readyRule?.filter?.automation).toBe("eligible");
     const needsWorkRule = dispatch.find((r) => r.on === "task.needs_work");

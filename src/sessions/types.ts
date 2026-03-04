@@ -29,6 +29,7 @@ export type SessionStatus = z.infer<typeof SessionStatusSchema>;
 /**
  * Trigger source enum — what caused this agent session to be dispatched.
  * - manual: Started manually by user
+ * - task.in_progress: Dispatched because a task is already in progress
  * - task.ready: Dispatched because a task became ready
  * - task.needs_work: Dispatched because a task needs work (fix cycle)
  * - task.pending_review: Dispatched for PR review
@@ -38,6 +39,7 @@ export type SessionStatus = z.infer<typeof SessionStatusSchema>;
  */
 export const SessionTriggerSchema = z.enum([
   "manual",
+  "task.in_progress",
   "task.ready",
   "task.needs_work",
   "task.pending_review",

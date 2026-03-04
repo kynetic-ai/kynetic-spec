@@ -1090,6 +1090,7 @@ async function ensureBuiltInAgents(
         capabilities: ["code", "test", "refactor"],
         tools: ["kspec", "git", "npm"],
         dispatch: [
+          { on: "task.in_progress", filter: { automation: "eligible" } },
           { on: "task.ready", filter: { automation: "eligible" } },
           { on: "task.needs_work", filter: { automation: "eligible" } },
         ],

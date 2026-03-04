@@ -21,6 +21,7 @@ export const SessionProtocolSchema = z.object({
  * AC: @agent-definition-schema ac-2
  */
 export const AgentDispatchEventSchema = z.enum([
+  "task.in_progress",
   "task.ready",
   "task.needs_work",
   "task.pending_review",

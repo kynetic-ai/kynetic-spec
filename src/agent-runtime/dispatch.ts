@@ -84,19 +84,36 @@ export type TaskStatus =
  * AC: @agent-dispatch-engine ac-1
  */
 const EVENT_TO_STATUS: Record<string, TaskStatus> = {
+  "task.in_progress": "in_progress",
   "task.ready": "pending",
   "task.needs_work": "needs_work",
   "task.pending_review": "pending_review",
 };
 
 const STATUS_TO_EVENT: Record<TaskStatus, string | undefined> = {
+  in_progress: "task.in_progress",
   pending: "task.ready",
   needs_work: "task.needs_work",
   pending_review: "task.pending_review",
-  in_progress: undefined,
   blocked: undefined,
   completed: undefined,
   cancelled: undefined,
+};
+
+/**
+ * Dispatch precedence for runnable task statuses.
+ * Lower number = higher scheduling priority.
+ *
+ * AC: @dispatch-in-progress-priority ac-1
+ */
+const STATUS_PRECEDENCE: Record<TaskStatus, number> = {
+  in_progress: 0,
+  needs_work: 1,
+  pending: 2,
+  pending_review: 3,
+  blocked: 4,
+  completed: 5,
+  cancelled: 6,
 };
 
 /**
@@ -122,6 +139,8 @@ interface QueueEntry {
   nextRetryAt: number;
   /** When this entry was first enqueued (for wait-time display) */
   enqueuedAtMs: number;
+  /** Monotonic sequence for deterministic tie-breaking */
+  sequence: number;
 }
 
 /**
@@ -226,6 +245,8 @@ export class DispatchEngine {
   private invocationAbortControllers: Set<AbortController> = new Set();
   /** Per-invocation tracking records for status display */
   private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
+  /** Monotonic enqueue sequence for deterministic queue ordering */
+  private nextQueueSequence = 0;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -570,8 +591,39 @@ export class DispatchEngine {
    */
   private _enqueue(agent: LoadedAgent, change: TaskStateChange): void {
     const queue = this.queues.get(agent.id) ?? [];
-    queue.push({ agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now() });
+    const entry: QueueEntry = {
+      agent,
+      change,
+      retryCount: 0,
+      nextRetryAt: 0,
+      enqueuedAtMs: Date.now(),
+      sequence: this.nextQueueSequence++,
+    };
+    this._insertQueueEntry(queue, entry);
     this.queues.set(agent.id, queue);
+  }
+
+  /**
+   * Insert an entry into an agent queue using deterministic status precedence.
+   * AC: @dispatch-in-progress-priority ac-1
+   */
+  private _insertQueueEntry(queue: QueueEntry[], entry: QueueEntry): void {
+    const insertAt = queue.findIndex((queued) => this._compareQueueEntries(entry, queued) < 0);
+    if (insertAt === -1) {
+      queue.push(entry);
+      return;
+    }
+    queue.splice(insertAt, 0, entry);
+  }
+
+  /**
+   * Compare queue entries by dispatch precedence, then by enqueue sequence.
+   * AC: @dispatch-in-progress-priority ac-1
+   */
+  private _compareQueueEntries(a: QueueEntry, b: QueueEntry): number {
+    const statusDelta = STATUS_PRECEDENCE[a.change.toStatus] - STATUS_PRECEDENCE[b.change.toStatus];
+    if (statusDelta !== 0) return statusDelta;
+    return a.sequence - b.sequence;
   }
 
   /**
@@ -589,12 +641,12 @@ export class DispatchEngine {
 
       let slots = maxConcurrent - active;
       while (slots > 0 && queue.length > 0) {
-        const entry = queue.shift()!;
-        if (entry.nextRetryAt > Date.now()) {
-          // Not ready for retry yet; put back at front
-          queue.unshift(entry);
+        const now = Date.now();
+        const nextReadyIndex = queue.findIndex((entry) => entry.nextRetryAt <= now);
+        if (nextReadyIndex === -1) {
           break;
         }
+        const [entry] = queue.splice(nextReadyIndex, 1);
         const spawned = this._spawnInvocation(agent, entry);
         if (spawned) slots--;
       }
@@ -761,9 +813,9 @@ export class DispatchEngine {
               `[dispatch] Invocation for agent "${agentId}" failed (attempt ${entry.retryCount}/${retryLimit}), retrying in ${backoffMs}ms`,
               err,
             );
-            // Re-enqueue at front for retry
+            // Re-enqueue for retry while preserving status precedence ordering.
             const queue = this.queues.get(agentId) ?? [];
-            queue.unshift(entry);
+            this._insertQueueEntry(queue, entry);
             this.queues.set(agentId, queue);
             // AC: @agent-dispatch-engine ac-9 - Schedule wake-up to drain retry
             setTimeout(() => {
