@@ -66587,7 +66587,31 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-02-27T23:59:53.084Z
   started_at: 2026-03-04T23:41:51.989Z
-  notes: []
+  notes:
+    - _ulid: 01KJXMCRPM1TNQZAB3BTA1JY3R
+      created_at: 2026-03-04T23:54:38.164Z
+      author: "@claude"
+      content: >-
+        Completed reconciliation. Results: 150 alignment warnings → 17 (all remaining are legitimate
+        orphaned-spec warnings for unplanned future features).
+
+
+        Changes made:
+
+        1. alignment.ts: added taskUlids.length > 0 guard to status mismatch check — mismatches only
+        fire when tasks exist. No-task specs already covered by orphaned_spec warning. Eliminates
+        ~117 false positives for legacy specs marked implemented before task system existed.
+
+        2. 20 spec status updates via kspec item set:
+           - 19 specs updated from in_progress → implemented (tasks completed, spec stale-low)
+           - 1 spec (kspec task set) updated from implemented → in_progress (has active tasks)
+        3. Shadow Branch module (cancelled task only): cleared spec_ref from cancelled task
+        @task-shadow-branch so alignment system treats it correctly.
+
+
+        Orphaned specs (17 remain): legitimate future work not yet tasked — Confirmation Prompt,
+        REST API, Fuzzy Matching, hooks, etc. These are correct warnings.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJGRPX87E756YE1VFKXCWEZ3
