@@ -48561,6 +48561,8 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Ralph loop gone. Dispatch invocations are discrete — no iteration delta. Reflection
+    gating is a skill concern now.
   depends_on: []
   context: []
   priority: 2
@@ -48575,8 +48577,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  closed_reason: Ralph loop gone. Dispatch invocations are discrete — no iteration delta. Reflection
-    gating is a skill concern now.
 - _ulid: 01KHFBSZ4A4M52HPYKZS0ZVY09
   slugs:
     - implement-skill-meta-type
@@ -69663,7 +69663,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -69687,6 +69687,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  closed_reason: "Already implemented. Agent dispatch engine fully built: CLI, daemon dispatch,
+    invocation lifecycle, sessions, budget."
 - _ulid: 01KJP276K7PBYD5M3R78P3SFH7
   slugs:
     - implement-agent-definition-schema
