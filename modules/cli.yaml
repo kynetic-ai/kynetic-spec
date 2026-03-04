@@ -972,6 +972,10 @@ features:
             given: --meta-ref is provided
             when: kspec task add --title 'T' --meta-ref @workflow-ref runs
             then: task created with meta_ref linked; ref validated as meta item (not spec or task)
+          - id: ac-meta-ref-invalid
+            given: --meta-ref points to a spec item or task
+            when: kspec task add --title 'T' --meta-ref @some-spec runs
+            then: exits with error; meta ref must point to a meta item
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
