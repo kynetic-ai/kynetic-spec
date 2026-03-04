@@ -2820,6 +2820,8 @@ features:
             given: no update options provided
             when: kspec inbox set @ref runs with no --content or --tag flags
             then: informative message indicating no updates specified
+        status:
+          implementation: implemented
       - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
         slugs:
           - cmd-inbox-note
