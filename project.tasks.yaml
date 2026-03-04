@@ -73221,6 +73221,13 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #674 (commit 26b870c2): added reusable waitForStartup helper in
+    tests/helpers/cli.ts and replaced ad-hoc/fixed-delay startup waits in daemon/process tests
+    (cli-serve and cli-agent-commands). Verified spec alignment for
+    @daemon-sensitive-cli-test-determinism with AC coverage: ac-1 timeout includes actionable last
+    observation context; ac-2 HOME/config isolation validated via isolated daemon pid/port paths;
+    ac-3 bounded polling helper used for startup/readiness waits. Full regression gate passed via
+    npm test (3641 passed, 3 skipped)."
   depends_on: []
   context: []
   priority: 3
@@ -73233,6 +73240,7 @@
   created_at: 2026-03-03T20:28:20.226Z
   started_at: 2026-03-04T13:24:34.274Z
   submitted_at: 2026-03-04T13:32:22.771Z
+  completed_at: 2026-03-04T13:40:50.438Z
   notes:
     - _ulid: 01KJTPGAGEHQY6YGPJNHRSCWQ3
       created_at: 2026-03-03T20:33:48.558Z
@@ -73277,16 +73285,15 @@
       author: Jacob Chapel
       content: "Submitted for review in PR #674: https://github.com/kynetic-ai/kynetic-spec/pull/674"
       supersedes: null
+    - _ulid: 01KJWHFCQS26ZGBRQG9CNEDVTX
+      created_at: 2026-03-04T13:44:24.058Z
+      author: Jacob Chapel
+      content: "Autonomous dispatch run at 2026-03-04: verified task already completed. PR #674 merged on
+        2026-03-04T13:40:39Z (merge commit 26b870c2f) and commit is on main; no further lifecycle
+        transition required."
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T13:40:50.438Z
-  closed_reason: "Merged in PR #674 (commit 26b870c2): added reusable waitForStartup helper in
-    tests/helpers/cli.ts and replaced ad-hoc/fixed-delay startup waits in daemon/process tests
-    (cli-serve and cli-agent-commands). Verified spec alignment for
-    @daemon-sensitive-cli-test-determinism with AC coverage: ac-1 timeout includes actionable last
-    observation context; ac-2 HOME/config isolation validated via isolated daemon pid/port paths;
-    ac-3 bounded polling helper used for startup/readiness waits. Full regression gate passed via
-    npm test (3641 passed, 3 skipped)."
 - _ulid: 01KJTQBRK5HDQKWER3Z2JXKF6B
   slugs: []
   title: Suppress non-actionable rate_limit_event noise in agent run output
