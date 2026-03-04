@@ -73016,6 +73016,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Already implemented on main (commit 5818b63152dc6d38a7a0c95747264714b8995b0b on
+    2026-02-26). Verified by 15 repeated runs of tests/core-skill-install.test.ts with 0 failures;
+    observed shard-3 failure is unrelated and in tests/cli-serve.test.ts.
   depends_on: []
   context: []
   priority: 3
@@ -73027,6 +73030,7 @@
   created_at: 2026-03-03T19:03:09.781Z
   started_at: 2026-03-04T12:49:50.073Z
   submitted_at: 2026-03-04T12:49:54.611Z
+  completed_at: 2026-03-04T12:49:58.488Z
   notes:
     - _ulid: 01KJTPG7NHPE436M5FV7SFCMG7
       created_at: 2026-03-03T20:33:45.649Z
@@ -73055,12 +73059,17 @@
         - Conclusion: this task’s target flake appears already resolved on main; no code changes
         required for this task.
       supersedes: null
+    - _ulid: 01KJWER0H3JXBQKEX9MT74QRF4
+      created_at: 2026-03-04T12:56:40.739Z
+      author: Jacob Chapel
+      content: "Dispatch follow-up verification (2026-03-04): re-ran npx vitest run
+        tests/core-skill-install.test.ts (25/25 passing). No code changes required; task remains
+        completed. Also ran kspec validate: fails due pre-existing global meta/spec issues
+        (duplicate @observations slug, missing .kspec/skills/observations/SKILL.md, widespread
+        alignment/completeness warnings) not caused by this task scope."
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T12:49:58.488Z
-  closed_reason: Already implemented on main (commit 5818b63152dc6d38a7a0c95747264714b8995b0b on
-    2026-02-26). Verified by 15 repeated runs of tests/core-skill-install.test.ts with 0 failures;
-    observed shard-3 failure is unrelated and in tests/cli-serve.test.ts.
 - _ulid: 01KJTHACWHYNBEQ09GCHYH00H4
   slugs: []
   title: Fix cli-serve test flakiness in shard 3
