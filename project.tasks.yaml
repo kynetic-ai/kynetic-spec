@@ -74925,7 +74925,7 @@
     - Add tests: batch with two item ac add commands to same item should preserve both ACs
   spec_ref: "@batch-write-buffer"
   meta_ref: null
-  plan_ref: null
+  plan_ref: "@01KJWX2B"
   status: in_progress
   blocked_by: []
   depends_on: []
@@ -74936,9 +74936,9 @@
     - batch
     - cli
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-04T15:31:50.331Z
+  started_at: 2026-03-04T16:45:19.932Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-04T16:45:19.932Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
