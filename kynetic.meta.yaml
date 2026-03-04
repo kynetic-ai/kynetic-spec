@@ -85,6 +85,9 @@ agents:
     conventions: []
     adapter: codex-acp
     dispatch:
+      - on: task.in_progress
+        filter:
+          automation: eligible
       - on: task.ready
         filter:
           automation: eligible
