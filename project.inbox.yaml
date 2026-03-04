@@ -1447,3 +1447,12 @@ inbox:
       - pr-review
       - workflow
     added_by: Jacob Chapel
+  - _ulid: 01KJV4R7S4BQBS9CGQTVHC5PFY
+    text: "pr-review loop: detect self-authored PR and avoid APPROVE event (GitHub forbids approving own
+      PR); use COMMENT and continue merge path when quality gates are clean."
+    created_at: 2026-03-04T00:42:47.973Z
+    tags:
+      - reflection
+      - pr-review
+      - github
+    added_by: Jacob Chapel
