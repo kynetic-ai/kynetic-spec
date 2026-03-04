@@ -742,6 +742,87 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
+      type StreamRenderState = {
+        hasRenderedBody: boolean;
+        spacerPending: boolean;
+      };
+      const streamStates = new Map<string, StreamRenderState>();
+      let activeStreamKey: string | null = null;
+      let outputAtLineStart = true;
+
+      function getStreamState(streamKey: string): StreamRenderState {
+        let state = streamStates.get(streamKey);
+        if (!state) {
+          state = { hasRenderedBody: false, spacerPending: false };
+          streamStates.set(streamKey, state);
+        }
+        return state;
+      }
+
+      function writeRaw(text: string): void {
+        if (!text) return;
+        process.stdout.write(text);
+        outputAtLineStart = text.endsWith("\n");
+      }
+
+      function writeSpeakerText(text: string): void {
+        if (!text) return;
+
+        writeRaw(text);
+      }
+
+      function ensureLineBreak(): void {
+        if (!outputAtLineStart) {
+          writeRaw("\n");
+        }
+      }
+
+      function startSpeakerSection(streamKey: string, prefix: string): void {
+        if (activeStreamKey === streamKey) return;
+        if (activeStreamKey) {
+          ensureLineBreak();
+        }
+        writeRaw(`${prefix}\n`);
+        activeStreamKey = streamKey;
+      }
+
+      function queuePrefixedChunk(
+        streamKey: string,
+        prefix: string,
+        text: string,
+      ): void {
+        if (!text) return;
+        const switchingSpeaker = activeStreamKey !== null && activeStreamKey !== streamKey;
+        startSpeakerSection(streamKey, prefix);
+        const state = getStreamState(streamKey);
+        if (switchingSpeaker) {
+          // Marker change already separates context; don't carry stale spacer
+          // into the top of a newly active speaker section.
+          state.spacerPending = false;
+        } else if (state.spacerPending && state.hasRenderedBody) {
+          ensureLineBreak();
+          writeRaw("\n");
+          state.spacerPending = false;
+        }
+        writeSpeakerText(text);
+        state.hasRenderedBody = true;
+      }
+
+      function markMessageBoundary(streamKey: string): void {
+        // Boundary signals are stream-local; ignore inactive streams.
+        if (activeStreamKey !== streamKey) return;
+        const state = getStreamState(streamKey);
+        ensureLineBreak();
+        // Coalesce repeated boundary events into one pending spacer.
+        if (state.hasRenderedBody) {
+          state.spacerPending = true;
+        }
+      }
+
+      function formatSessionIdForDisplay(sessionId: string): string {
+        // AC: @cli-agent-commands ac-17 — shorten session ULID in watch prefix.
+        return sessionId ? sessionId.slice(0, 8) : "";
+      }
 
       // Resolve project dir for WebSocket project binding
       let projectDir: string | undefined;
@@ -781,7 +862,7 @@ export function registerAgentCommands(program: Command): void {
             return;
           }
 
-          // AC: @cli-agent-commands ac-13 — print text chunks with [agent-id session-id] prefix
+          // AC: @cli-agent-commands ac-13 — stream text with per-line [agent-id session-id] prefixes
           if (msg.event === "agent_text_chunk" && msg.data) {
             const data = msg.data as {
               session_id?: string;
@@ -796,7 +877,15 @@ export function registerAgentCommands(program: Command): void {
             if (agentFilter && agentId !== agentFilter) return;
             if (sessionFilter && sessionId !== sessionFilter) return;
 
-            process.stdout.write(`[${agentId} ${sessionId}] ${text}`);
+            const streamKey = `${agentId}\u0000${sessionId}`;
+            const displaySessionId = formatSessionIdForDisplay(sessionId);
+            const prefix = `[${agentId} ${displaySessionId}]`;
+            // Match old Ralph rendering semantics: empty chunk marks message end.
+            if (text.length === 0) {
+              markMessageBoundary(streamKey);
+              return;
+            }
+            queuePrefixedChunk(streamKey, prefix, text);
           }
         };
 
@@ -805,6 +894,10 @@ export function registerAgentCommands(program: Command): void {
         };
 
         ws.onclose = () => {
+          if (activeStreamKey) {
+            ensureLineBreak();
+          }
+
           if (retryCount >= retryLimit) {
             // AC: @cli-agent-commands ac-14 — exit code 3 when retries exhausted
             error(

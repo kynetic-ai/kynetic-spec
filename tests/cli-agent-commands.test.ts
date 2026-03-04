@@ -1330,7 +1330,7 @@ describe("AC-12: suppress adapter rate_limit_event noise on stderr", () => {
   });
 });
 
-// ─── AC-13 through AC-16: kspec agent dispatch watch ─────────────────────────
+// ─── AC-13 through AC-17: kspec agent dispatch watch ─────────────────────────
 
 // Helper: create a fake WebSocket instance for testing
 interface FakeWsInstance {
@@ -1408,13 +1408,13 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 });
 
 // AC: @cli-agent-commands ac-13
-describe("AC-13: dispatch watch — prints text chunks with prefix", () => {
+describe("AC-13: dispatch watch — streams section-marked output", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
-  it("should print [agent-id session-id] prefix before text chunks", async () => {
+  it("should print [agent-id session-id] section marker before streamed output", async () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
@@ -1454,14 +1454,398 @@ describe("AC-13: dispatch watch — prints text chunks with prefix", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await Promise.resolve();
 
-    // AC: @cli-agent-commands ac-13 - output prefixed with [agent-id session-id]
+    // AC: @cli-agent-commands ac-13 - output includes [agent-id session-id] marker
     const output = written.join("");
     expect(output).toContain("[worker sess-abc]");
     expect(output).toContain("hello from agent");
 
     // Clean up — the promise never resolves, but that's expected
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should render one section header and stream token-sized chunks as body text", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    // Simulate token-level chunking from one stream (no newlines until later).
+    for (const token of ["I", " am", " streaming", "\nNext", " line"]) {
+      ws.onmessage?.({
+        data: JSON.stringify({
+          event: "agent_text_chunk",
+          data: {
+            session_id: "sess-abc",
+            agent_id: "worker",
+            text: token,
+          },
+        }),
+      });
+    }
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc]\nI am streaming");
+    expect(output).toContain("\nNext line");
+    expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(1);
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should start a new prefixed line when output switches between streams", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-a", agent_id: "worker-a", text: "hello" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-b", agent_id: "worker-b", text: "world" },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker-a sess-a]\nhello\n[worker-b sess-b]\nworld");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should place distinct same-stream messages on separate lines at empty-chunk boundary", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "First update." },
+      }),
+    });
+    // ACP message boundary sentinel (matches legacy Ralph parser semantics).
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    await Promise.resolve();
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "Second update." },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc]\nFirst update.\n\nSecond update.");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should collapse repeated boundary events to a single spacer line", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "First block." },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "Second block." },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc]\nFirst block.\n\nSecond block.");
+    expect(output).not.toContain("First block.\n\n\nSecond block.");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should ignore empty-boundary events from other streams while current stream is mid-line", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-a", agent_id: "worker-a", text: "hello" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-b", agent_id: "worker-b", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-a", agent_id: "worker-a", text: " world" },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker-a sess-a]\nhello world");
+    expect(output).not.toContain("\nworld\n[worker-a sess-a]");
+    expect(output).not.toContain("[worker-b sess-b]");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should handle empty-first statement boundaries without adding blank lines", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    // Claude ACP often emits empty chunk before a new statement's text stream.
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "First statement." },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "Second statement." },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc]\nFirst statement.\n\nSecond statement.");
+    expect(output.startsWith("\n")).toBe(false);
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @cli-agent-commands ac-17
+  it("should display shortened session id in prefix", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: {
+          session_id: "01KJVFYRKXXQG7N3BYC68KSX6H",
+          agent_id: "worker",
+          text: "hello",
+        },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker 01KJVFYR]\nhello");
+    expect(output).not.toContain("01KJVFYRKXXQG7N3BYC68KSX6H");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should keep continuation bursts on one line when chunks split mid-token", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    const parts = [
+      "I’m taking ownership with the `kspec",
+      "-task-work` flow first, and I’ll ",
+      "explicitly load project instructions before editing.",
+    ];
+    for (const text of parts) {
+      ws.onmessage?.({
+        data: JSON.stringify({
+          event: "agent_text_chunk",
+          data: { session_id: "sess-abc", agent_id: "worker", text },
+        }),
+      });
+      await Promise.resolve();
+    }
+
+    const output = written.join("");
+    expect((output.match(/\[worker sess-abc\]/g) ?? []).length).toBe(1);
+    expect(output).toContain(
+      "[worker sess-abc]\nI’m taking ownership with the `kspec-task-work` flow first, and I’ll explicitly load project instructions before editing.",
+    );
+
     runPromise.catch(() => {/* ignore */});
   });
 });
@@ -1513,7 +1897,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await Promise.resolve();
 
     const output = written.join("");
     // AC: @cli-agent-commands ac-16 - non-matching chunks silently dropped
@@ -1561,7 +1945,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await Promise.resolve();
 
     const output = written.join("");
     expect(output).not.toContain("dropped");
@@ -1626,6 +2010,58 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(instances.length).toBeGreaterThanOrEqual(2);
 
     vi.useRealTimers();
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should flush active output line before reconnect message", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const instances: FakeWsInstance[] = [];
+    class CaptureWs implements FakeWsInstance {
+      send = vi.fn();
+      onopen: ((e: unknown) => void) | null = null;
+      onmessage: ((e: { data: string }) => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      constructor(_url: string) { instances.push(this); }
+    }
+    vi.stubGlobal("WebSocket", CaptureWs);
+
+    const stdoutWrites: string[] = [];
+    const stderrWrites: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      stdoutWrites.push(String(chunk));
+      return true;
+    });
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--retries", "1"],
+      { from: "user" },
+    );
+
+    await waitFor(() => instances.length >= 1, 1000);
+    instances[0].onopen?.({});
+    instances[0].onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "line without newline" },
+      }),
+    });
+    // Trigger close before coalesced timer flushes naturally.
+    instances[0].onclose?.();
+    await new Promise((r) => setTimeout(r, 10));
+
+    const stdout = stdoutWrites.join("");
+    expect(stdout).toContain("[worker sess-abc]\nline without newline\n");
+    expect(stderrWrites.some((l) => l.includes("[watch] Connection lost"))).toBe(true);
+
     runPromise.catch(() => {/* ignore */});
   });
 
