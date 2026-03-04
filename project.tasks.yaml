@@ -73153,6 +73153,7 @@
   session_id: 01KJWF789H1G68TWHT02XSVAQ5
   created_at: 2026-03-03T20:28:19.131Z
   started_at: 2026-03-04T13:06:11.447Z
+  submitted_at: 2026-03-04T13:08:54.212Z
   notes:
     - _ulid: 01KJTPG9KC5G4MNP4KPD5G4AWT
       created_at: 2026-03-03T20:33:47.629Z
@@ -73195,9 +73196,14 @@
         (pass, 67 tests). kspec validate currently fails due pre-existing workspace
         metadata/reference issues unrelated to this task.
       supersedes: null
+    - _ulid: 01KJWFGFEMC395QP2SZHBV7FRY
+      created_at: 2026-03-04T13:10:02.452Z
+      author: Jacob Chapel
+      content: "Submitted for review in PR #673: https://github.com/kynetic-ai/kynetic-spec/pull/673
+        (branch fix/task-01KJTP68-home-isolation-helper, commit 24123696c)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T13:08:54.212Z
 - _ulid: 01KJTP69W21Z3GQE8J2HAXC4WV
   slugs: []
   title: Create wait-for-startup helper for process/daemon tests
