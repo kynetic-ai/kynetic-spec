@@ -12,7 +12,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
-import { markMutating } from "../command-annotations.js";
+import { z } from "zod";
 import {
   type Agent,
   type Convention,
@@ -40,15 +40,18 @@ import {
   type Workflow,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import { normalizeRefInput } from "../../schema/index.js";
-import { z } from "zod";
 import {
+  AgentDispatchEventSchema,
+  type AgentDispatchRule,
+  AgentDispatchRuleSchema,
+  normalizeRefInput,
   type ObservationType,
   type WorkflowStep,
   WorkflowStepSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/errors.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
+import { markMutating } from "../command-annotations.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
@@ -69,6 +72,77 @@ function resolveMetaRefToUlid(
   const result = resolveMetaRef(metaCtx, ref);
   if (!result) return null;
   return { ulid: result.ulid, type: result.type };
+}
+
+function collectRepeatedOptionValues(
+  value: string,
+  previous: string[] = [],
+): string[] {
+  return [...previous, value];
+}
+
+function parseDispatchRuleOption(rawRule: string): AgentDispatchRule {
+  let parsedRule: unknown;
+  try {
+    parsedRule = JSON.parse(rawRule);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`Invalid JSON in --add-dispatch-rule: ${message}`);
+  }
+
+  const parsed = AgentDispatchRuleSchema.safeParse(parsedRule);
+  if (!parsed.success) {
+    const issues = parsed.error.issues
+      .map((issue) => `${issue.path.join(".") || "rule"}: ${issue.message}`)
+      .join("; ");
+    throw new Error(`Invalid dispatch rule in --add-dispatch-rule: ${issues}`);
+  }
+
+  return parsed.data;
+}
+
+function parseDispatchEventOption(
+  rawEvent: string,
+): z.infer<typeof AgentDispatchEventSchema> {
+  const parsed = AgentDispatchEventSchema.safeParse(rawEvent);
+  if (!parsed.success) {
+    throw new Error(
+      `Invalid dispatch event in --remove-dispatch-rule: ${rawEvent}. Valid values: ${AgentDispatchEventSchema.options.join(", ")}`,
+    );
+  }
+  return parsed.data;
+}
+
+function applyDispatchRuleMutations(
+  existingRules: AgentDispatchRule[] | undefined,
+  options: {
+    addDispatchRule?: string[] | string;
+    removeDispatchRule?: string;
+    clearDispatchRules?: boolean;
+  },
+): AgentDispatchRule[] {
+  let nextRules = [...(existingRules ?? [])];
+
+  if (options.clearDispatchRules) {
+    nextRules = [];
+  }
+
+  if (options.removeDispatchRule) {
+    const eventToRemove = parseDispatchEventOption(options.removeDispatchRule);
+    nextRules = nextRules.filter((rule) => rule.on !== eventToRemove);
+  }
+
+  const addRules = Array.isArray(options.addDispatchRule)
+    ? options.addDispatchRule
+    : options.addDispatchRule
+      ? [options.addDispatchRule]
+      : [];
+
+  for (const rawRule of addRules) {
+    nextRules.push(parseDispatchRuleOption(rawRule));
+  }
+
+  return nextRules;
 }
 
 /**
@@ -1005,7 +1079,9 @@ export function registerMetaCommands(program: Command): void {
         }
 
         if (resolved.type !== "observation") {
-          error(`Cannot promote ${resolved.type}. Only observations can be promoted to tasks.`);
+          error(
+            `Cannot promote ${resolved.type}. Only observations can be promoted to tasks.`,
+          );
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1238,12 +1314,32 @@ Examples:
     .option("--capability <cap...>", "Capabilities (for agents)")
     .option("--tool <tool...>", "Tools (for agents)")
     .option("--convention <conv...>", "Convention references (for agents)")
-    .option("--adapter <adapter>", "Adapter reference or npx package name (for agents)")
+    .option(
+      "--adapter <adapter>",
+      "Adapter reference or npx package name (for agents)",
+    )
     .option("--skill <skill...>", "Skill slugs (for agents)")
-    .option("--auto-approve", "Auto-approve tasks without human confirmation (for agents)")
+    .option(
+      "--add-dispatch-rule <json>",
+      "Append dispatch rule JSON (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
+    .option(
+      "--remove-dispatch-rule <on>",
+      "Remove dispatch rules by event type (for agents)",
+    )
+    .option("--clear-dispatch-rules", "Remove all dispatch rules (for agents)")
+    .option(
+      "--auto-approve",
+      "Auto-approve tasks without human confirmation (for agents)",
+    )
     .option("--max-tasks <n>", "Maximum tasks budget (for agents)")
     .option("--timeout-minutes <n>", "Timeout in minutes budget (for agents)")
-    .option("--max-concurrent <n>", "Max concurrent tasks (for agents, default 1)")
+    .option(
+      "--max-concurrent <n>",
+      "Max concurrent tasks (for agents, default 1)",
+    )
     .option("--rule <rule...>", "Rules (for conventions)")
     .option("--steps <json>", "Workflow steps as JSON array (for workflows)")
     .option(
@@ -1289,9 +1385,23 @@ Examples:
           }
 
           // AC: @agent-definition-schema ac-4, ac-6 — parse integer budget/concurrency fields
-          const maxTasks = options.maxTasks ? parseInt(options.maxTasks, 10) : undefined;
-          const timeoutMinutes = options.timeoutMinutes ? parseInt(options.timeoutMinutes, 10) : undefined;
-          const maxConcurrent = options.maxConcurrent ? parseInt(options.maxConcurrent, 10) : 1;
+          const maxTasks = options.maxTasks
+            ? parseInt(options.maxTasks, 10)
+            : undefined;
+          const timeoutMinutes = options.timeoutMinutes
+            ? parseInt(options.timeoutMinutes, 10)
+            : undefined;
+          const maxConcurrent = options.maxConcurrent
+            ? parseInt(options.maxConcurrent, 10)
+            : 1;
+          let dispatchRules: AgentDispatchRule[] = [];
+          try {
+            dispatchRules = applyDispatchRuleMutations([], options);
+          } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            error(message);
+            process.exit(EXIT_CODES.ERROR);
+          }
 
           item = {
             _ulid: itemUlid,
@@ -1303,7 +1413,8 @@ Examples:
             conventions: options.convention || [],
             // AC: @agent-definition-schema ac-1 through ac-8
             ...(options.adapter && { adapter: options.adapter }),
-            dispatch: [],
+            // AC: @agent-definition-schema ac-12
+            dispatch: dispatchRules,
             skills: options.skill || [],
             ...(maxTasks !== undefined || timeoutMinutes !== undefined
               ? {
@@ -1377,7 +1488,8 @@ Examples:
             steps,
             ...(options.mode && { mode: options.mode }),
             ...(options.basedOn && { based_on: options.basedOn }),
-            ...(options.tag && options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
+            ...(options.tag &&
+              options.tag.length > 0 && { tags: parseTagsArray(options.tag) }),
           };
         } else {
           // convention
@@ -1434,8 +1546,22 @@ Examples:
     .option("--add-capability <cap>", "Add capability (for agents)")
     .option("--add-tool <tool>", "Add tool (for agents)")
     .option("--add-convention <conv>", "Add convention reference (for agents)")
-    .option("--adapter <adapter>", "Set adapter reference or npx package (for agents)")
+    .option(
+      "--adapter <adapter>",
+      "Set adapter reference or npx package (for agents)",
+    )
     .option("--add-skill <skill>", "Add skill slug (for agents)")
+    .option(
+      "--add-dispatch-rule <json>",
+      "Append dispatch rule JSON (for agents)",
+      collectRepeatedOptionValues,
+      [],
+    )
+    .option(
+      "--remove-dispatch-rule <on>",
+      "Remove dispatch rules by event type (for agents)",
+    )
+    .option("--clear-dispatch-rules", "Remove all dispatch rules (for agents)")
     .option("--auto-approve", "Enable auto-approve (for agents)")
     .option("--no-auto-approve", "Disable auto-approve (for agents)")
     .option("--max-tasks <n>", "Set max tasks budget (for agents)")
@@ -1458,8 +1584,14 @@ Examples:
         // meta set only supports agent, workflow, convention
         // Skills have their own `kspec skill set` command
         const { item, type: itemType } = resolved;
-        if (itemType !== "agent" && itemType !== "workflow" && itemType !== "convention") {
-          error(`Cannot use 'meta set' with ${itemType}. Use 'kspec ${itemType === "skill" ? "skill" : "meta"} ${itemType === "observation" ? "resolve" : "set"} ${ref}' instead.`);
+        if (
+          itemType !== "agent" &&
+          itemType !== "workflow" &&
+          itemType !== "convention"
+        ) {
+          error(
+            `Cannot use 'meta set' with ${itemType}. Use 'kspec ${itemType === "skill" ? "skill" : "meta"} ${itemType === "observation" ? "resolve" : "set"} ${ref}' instead.`,
+          );
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -1488,6 +1620,24 @@ Examples:
           }
           // AC: @agent-definition-schema ac-10 - new fields preserved during set
           if (options.adapter !== undefined) item.adapter = options.adapter;
+          if (
+            options.clearDispatchRules ||
+            options.removeDispatchRule ||
+            (Array.isArray(options.addDispatchRule) &&
+              options.addDispatchRule.length > 0)
+          ) {
+            try {
+              // AC: @agent-definition-schema ac-12
+              item.dispatch = applyDispatchRuleMutations(
+                item.dispatch,
+                options,
+              );
+            } catch (err) {
+              const message = err instanceof Error ? err.message : String(err);
+              error(message);
+              process.exit(EXIT_CODES.ERROR);
+            }
+          }
           if (options.addSkill) {
             if (!item.skills) item.skills = [];
             if (!item.skills.includes(options.addSkill)) {
@@ -1496,14 +1646,25 @@ Examples:
           }
           if (options.autoApprove === true) item.auto_approve = true;
           if (options.autoApprove === false) item.auto_approve = false;
-          if (options.maxTasks !== undefined || options.timeoutMinutes !== undefined) {
+          if (
+            options.maxTasks !== undefined ||
+            options.timeoutMinutes !== undefined
+          ) {
             if (!item.budget) item.budget = {};
-            if (options.maxTasks !== undefined) item.budget.max_tasks = parseInt(options.maxTasks, 10);
-            if (options.timeoutMinutes !== undefined) item.budget.timeout_minutes = parseInt(options.timeoutMinutes, 10);
+            if (options.maxTasks !== undefined)
+              item.budget.max_tasks = parseInt(options.maxTasks, 10);
+            if (options.timeoutMinutes !== undefined)
+              item.budget.timeout_minutes = parseInt(
+                options.timeoutMinutes,
+                10,
+              );
           }
           if (options.maxConcurrent !== undefined) {
             if (!item.concurrency) item.concurrency = { max_concurrent: 1 };
-            item.concurrency.max_concurrent = parseInt(options.maxConcurrent, 10);
+            item.concurrency.max_concurrent = parseInt(
+              options.maxConcurrent,
+              10,
+            );
           }
         } else if (itemType === "workflow") {
           const item = found as Workflow;
@@ -1567,11 +1728,17 @@ Examples:
 
         // meta delete does not support skills - they use `kspec skill delete`
         if (resolved.type === "skill") {
-          error(`Cannot use 'meta delete' with skills. Use 'kspec skill delete ${ref}' instead.`);
+          error(
+            `Cannot use 'meta delete' with skills. Use 'kspec skill delete ${ref}' instead.`,
+          );
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const itemType = resolved.type as "agent" | "workflow" | "convention" | "observation";
+        const itemType = resolved.type as
+          | "agent"
+          | "workflow"
+          | "convention"
+          | "observation";
         const itemUlid = resolved.ulid;
 
         // Build human-readable label for the item
