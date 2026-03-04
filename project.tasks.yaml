@@ -71477,6 +71477,15 @@
         - Verification: targeted validate tests plus full suite shard where feasible, and a direct
         validate --json parse check.
       supersedes: null
+    - _ulid: 01KJVQGWKXMRRV3PWQV1VQS434
+      created_at: 2026-03-04T06:10:50.109Z
+      author: Jacob Chapel
+      content: "Implemented fix: validate/lint now suppress all post-result human-readable console output
+        when structured output mode is active (--json/--yaml), preventing appended text on stdout.
+        Added regression test in validate-exit-codes to assert validate --json stdout is parseable
+        and contains no appended summary sections. Verified with npm run build and targeted vitest
+        test file."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
