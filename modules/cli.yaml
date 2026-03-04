@@ -996,6 +996,10 @@ features:
             given: --priority is provided with out-of-range value
             when: kspec task add --title 'T' --priority 6 runs
             then: exits with validation error; priority must be 1-5
+          - id: ac-slug
+            given: --slug is provided
+            when: kspec task add --title 'T' --slug my-task runs
+            then: task created with slug alias; slug checked for uniqueness across all items
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
