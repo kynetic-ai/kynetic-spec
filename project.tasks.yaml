@@ -74570,12 +74570,20 @@
     - spec-hygiene
     - cli
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-04T14:15:28.980Z
-  notes: []
+  started_at: 2026-03-04T14:15:40.964Z
+  notes:
+    - _ulid: 01KJWKA78347W96YH23FCCKRKF
+      created_at: 2026-03-04T14:16:31.748Z
+      author: "@claude"
+      content: "Updated @cmd-derive spec: (1) Fixed description — removed --recursive (not a flag),
+        removed --json (comes via trait), added --priority and --title. (2) Updated priority
+        description to show P-notation (1-5 or P1-P5). (3) Added ac-priority and ac-title ACs. (4)
+        Added P1 example. (5) Reset implementation status back to implemented."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T14:15:40.964Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
 - _ulid: 01KJWK8AWMEP2D3PHNKH726NNR
   slugs: []
   title: "Fill spec gap: inbox commands — add child requirement specs"
