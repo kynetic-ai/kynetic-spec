@@ -582,6 +582,11 @@ export function formatTaskDetails(
     console.log(`Plan ref:  ${task.plan_ref}`);
   }
 
+  // AC: @task-submit ac-submit-2 - display review_url
+  if (task.review_url) {
+    console.log(`Review:    ${chalk.blue(task.review_url)}`);
+  }
+
   if (task.depends_on.length > 0) {
     if (index) {
       console.log(fieldLabels.depends);

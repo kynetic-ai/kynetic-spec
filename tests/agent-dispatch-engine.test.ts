@@ -85,6 +85,7 @@ async function setupProjectWithAgents(
         adapter: a.adapter,
         budget: a.budget,
         auto_approve: a.auto_approve ?? false,
+        ...(a.prompt_template && { prompt_template: a.prompt_template }),
       })),
     }),
     "utf-8",
@@ -1214,6 +1215,244 @@ describe("Autonomous dispatch prompt guardrails", () => {
     expect(invocationOpts.prompt).toContain("configured review workflow");
 
     await engine.stop();
+  });
+});
+
+// ─── AC-13 through AC-16: Dispatch prompt orientation context ────────────────
+
+describe("Dispatch prompt orientation context and interpolation", () => {
+  // AC: @agent-dispatch-engine ac-16
+  describe("interpolateTemplate", () => {
+    // Import the exported helpers directly
+    let interpolateTemplate: typeof import("../src/agent-runtime/dispatch.js").interpolateTemplate;
+    let buildOrientationContext: typeof import("../src/agent-runtime/dispatch.js").buildOrientationContext;
+
+    beforeEach(async () => {
+      const mod = await import("../src/agent-runtime/dispatch.js");
+      interpolateTemplate = mod.interpolateTemplate;
+      buildOrientationContext = mod.buildOrientationContext;
+    });
+
+    it("should replace known variables", () => {
+      const result = interpolateTemplate("Work on {{task_ref}} — {{task_title}}", {
+        task_ref: "@my-task",
+        task_title: "Fix the bug",
+      });
+      expect(result).toBe('Work on @my-task — Fix the bug');
+    });
+
+    it("should pass through unresolved variables unchanged", () => {
+      const result = interpolateTemplate("{{task_ref}} and {{unknown}}", {
+        task_ref: "@task",
+      });
+      expect(result).toBe("@task and {{unknown}}");
+    });
+
+    it("should handle template with no variables", () => {
+      const result = interpolateTemplate("Work on this task", { task_ref: "@task" });
+      expect(result).toBe("Work on this task");
+    });
+
+    it("should handle empty vars object", () => {
+      const result = interpolateTemplate("{{task_ref}}", {});
+      expect(result).toBe("{{task_ref}}");
+    });
+  });
+
+  // AC: @agent-dispatch-engine ac-13
+  describe("buildOrientationContext", () => {
+    let buildOrientationContext: typeof import("../src/agent-runtime/dispatch.js").buildOrientationContext;
+
+    beforeEach(async () => {
+      const mod = await import("../src/agent-runtime/dispatch.js");
+      buildOrientationContext = mod.buildOrientationContext;
+    });
+
+    it("should include task title and trigger for task.ready", () => {
+      const result = buildOrientationContext("@my-task", "task.ready", {
+        title: "Implement feature X",
+      });
+      expect(result).toContain("## Task Context");
+      expect(result).toContain("@my-task");
+      expect(result).toContain("Implement feature X");
+      expect(result).toContain("New task assignment");
+    });
+
+    it("should include trigger for task.in_progress", () => {
+      const result = buildOrientationContext("@my-task", "task.in_progress", {
+        title: "Continue work",
+      });
+      expect(result).toContain("Continuing in-progress work");
+    });
+
+    // AC: @agent-dispatch-engine ac-14
+    it("should include last 3 notes for task.needs_work", () => {
+      const notes = [
+        { created_at: "2026-01-01T00:00:00Z", author: "alice", content: "Note 1" },
+        { created_at: "2026-01-02T00:00:00Z", author: "bob", content: "Note 2" },
+        { created_at: "2026-01-03T00:00:00Z", author: "carol", content: "Note 3" },
+        { created_at: "2026-01-04T00:00:00Z", author: "dave", content: "Note 4" },
+      ];
+      const result = buildOrientationContext("@my-task", "task.needs_work", {
+        title: "Fix it",
+        notes,
+      });
+      expect(result).toContain("Fix cycle");
+      expect(result).toContain("Recent notes:");
+      // Should include last 3, not first
+      expect(result).not.toContain("Note 1");
+      expect(result).toContain("Note 2");
+      expect(result).toContain("Note 3");
+      expect(result).toContain("Note 4");
+    });
+
+    it("should truncate long notes to 200 characters", () => {
+      const longContent = "x".repeat(300);
+      const notes = [
+        { created_at: "2026-01-01T00:00:00Z", author: "reviewer", content: longContent },
+      ];
+      const result = buildOrientationContext("@my-task", "task.needs_work", {
+        title: "Fix it",
+        notes,
+      });
+      // Should not contain full 300-char content
+      expect(result).not.toContain(longContent);
+      // Should contain truncated version (200 chars)
+      expect(result).toContain("x".repeat(200));
+    });
+
+    it("should omit notes section when no notes for fix cycle", () => {
+      const result = buildOrientationContext("@my-task", "task.needs_work", {
+        title: "Fix it",
+        notes: [],
+      });
+      expect(result).toContain("Fix cycle");
+      expect(result).not.toContain("Recent notes:");
+    });
+
+    // AC: @agent-dispatch-engine ac-15
+    it("should include review_url for task.pending_review", () => {
+      const result = buildOrientationContext("@my-task", "task.pending_review", {
+        title: "Review this",
+        review_url: "https://github.com/org/repo/pull/42",
+      });
+      expect(result).toContain("Task submitted for review");
+      expect(result).toContain("https://github.com/org/repo/pull/42");
+    });
+
+    it("should show fallback when review_url missing for reviewer", () => {
+      const result = buildOrientationContext("@my-task", "task.pending_review", {
+        title: "Review this",
+      });
+      expect(result).toContain("Not provided");
+      expect(result).toContain("task notes or git log");
+    });
+
+    it("should handle undefined task data gracefully", () => {
+      const result = buildOrientationContext("@my-task", "task.ready", undefined);
+      expect(result).toContain("(unavailable)");
+      expect(result).toContain("## Task Context");
+    });
+  });
+
+  // Integration: prompt includes orientation context via dispatch engine
+  describe("dispatch engine prompt integration", () => {
+    let testDir: string;
+
+    beforeEach(async () => {
+      testDir = await createTempDir("kspec-dispatch-orientation-");
+    });
+
+    afterEach(async () => {
+      vi.restoreAllMocks();
+      await cleanupTempDir(testDir);
+    });
+
+    // AC: @agent-dispatch-engine ac-13
+    it("should include orientation context in dispatched prompt", async () => {
+      const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+      await setupProjectWithAgents(testDir, [agent]);
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      await engine.start();
+      const taskId = testUlid("TASK");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "Test task title", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString() } as any,
+      });
+
+      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+
+      expect(runSpy).toHaveBeenCalled();
+      const prompt = runSpy.mock.calls[0][0].prompt;
+      expect(prompt).toContain("## Task Context");
+      expect(prompt).toContain("Test task title");
+      expect(prompt).toContain("New task assignment");
+
+      await engine.stop();
+    });
+
+    // AC: @agent-dispatch-engine ac-16
+    it("should interpolate prompt_template variables", async () => {
+      const agent = makeTestAgent({
+        id: "worker",
+        dispatch: [{ on: "task.ready" }],
+        prompt_template: "Handle {{task_ref}} ({{task_title}}) triggered by {{trigger}}",
+      });
+      await setupProjectWithAgents(testDir, [agent]);
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      await engine.start();
+      const taskId = testUlid("TASK");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "My task", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString() } as any,
+      });
+
+      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+
+      expect(runSpy).toHaveBeenCalled();
+      const prompt = runSpy.mock.calls[0][0].prompt;
+      expect(prompt).toContain(`Handle @${taskId}`);
+      expect(prompt).toContain("(My task)");
+      expect(prompt).toContain("triggered by task.ready");
+
+      await engine.stop();
+    });
   });
 });
 

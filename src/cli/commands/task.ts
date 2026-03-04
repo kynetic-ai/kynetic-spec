@@ -307,6 +307,15 @@ async function setTaskFields(
       }
     }
 
+    // Validate review URL if provided and not clearing
+    if (options.reviewUrl !== undefined && options.reviewUrl !== "null") {
+      try {
+        new URL(options.reviewUrl);
+      } catch {
+        return { success: false, error: `Invalid review URL: ${options.reviewUrl}` };
+      }
+    }
+
     let parsedPriority: number | undefined;
     if (options.priority) {
       const priorityResult = parsePriority(options.priority);
@@ -412,6 +421,16 @@ async function setTaskFields(
         } else {
           nextTask.plan_ref = normalizeRefInput(options.planRef);
           mutationChanges.push("plan_ref");
+        }
+      }
+
+      if (options.reviewUrl !== undefined) {
+        if (options.reviewUrl === "null") {
+          delete nextTask.review_url;
+          mutationChanges.push("review_url: cleared");
+        } else {
+          nextTask.review_url = options.reviewUrl;
+          mutationChanges.push("review_url");
         }
       }
 
@@ -910,6 +929,7 @@ Examples:
       "Link to meta item (use 'null' to clear)",
     )
     .option("--plan-ref <ref>", "Link to plan (use 'null' to clear)")
+    .option("--review-url <url>", "Set review URL (use 'null' to clear)")
     .option("--priority <n>", "Set priority (1-5 or P1-P5)")
     .option("--slug <slug>", "Add a slug alias")
     .option("--tag <tag...>", "Add tags")
@@ -1601,10 +1621,22 @@ Examples:
 
   // kspec task submit <ref>
   // Transitions in_progress → pending_review (code done, awaiting merge)
+  // AC: @task-submit ac-submit-1, ac-submit-2, ac-submit-3
   markMutating(task.command("submit <ref>"))
     .description("Submit task for review (transitions to pending_review)")
-    .action(async (ref: string) => {
+    .option("--review-url <url>", "PR or review URL")
+    .action(async (ref: string, options: { reviewUrl?: string }) => {
       try {
+        // AC: @task-submit ac-submit-3 - Validate URL before any state change
+        if (options.reviewUrl) {
+          try {
+            new URL(options.reviewUrl);
+          } catch {
+            error(`Invalid review URL: ${options.reviewUrl}`);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+        }
+
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
@@ -1625,6 +1657,8 @@ Examples:
               ...latestTask,
               status: "pending_review",
               submitted_at: new Date().toISOString(),
+              // AC: @task-submit ac-submit-2
+              ...(options.reviewUrl && { review_url: options.reviewUrl }),
             };
           },
         );

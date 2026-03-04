@@ -93,6 +93,10 @@ export const TaskSchema = z.object({
   // VCS references
   vcs_refs: z.array(VcsRefSchema).default([]),
 
+  // Review URL (PR, MR, or external review link — set at submit time)
+  // AC: @task-submit ac-submit-2
+  review_url: z.string().url().optional(),
+
   // Session scoping (advisory, not enforced)
   // AC: @session-scoped-task-claiming ac-schema
   session_id: z.string().nullable().optional(),
@@ -158,6 +162,9 @@ export const TaskInputSchema = z.object({
 
   // VCS references
   vcs_refs: z.array(VcsRefSchema).optional(),
+
+  // Review URL
+  review_url: z.string().url().optional(),
 
   // Session scoping
   session_id: z.string().nullable().optional(),
