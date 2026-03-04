@@ -6499,9 +6499,9 @@ features:
           silently dropped
       - id: ac-17
         given: kspec agent dispatch watch receives text events containing full session ULIDs
-        when: A watch line prefix is rendered
-        then: The session component in [agent-id session-id] uses the first 8 characters of the session ULID
-          for readability.
+        when: A watch speaker section marker is rendered
+        then: The session component in the [agent-id session-id] marker uses the first 8 characters of the
+          session ULID for readability.
     depends_on: []
     implements: []
     relates_to: []
