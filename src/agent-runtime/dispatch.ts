@@ -604,6 +604,44 @@ export class DispatchEngine {
   }
 
   /**
+   * Build dispatch-mode prompt guardrails to keep autonomous agents from
+   * stopping with handoff text instead of performing required actions.
+   */
+  private _buildDispatchPrompt(agent: LoadedAgent, change: TaskStateChange): string {
+    const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
+    const basePrompt = agent.prompt_template ?? `Work on task ${change.taskRef}`;
+    const taskRef = change.taskRef;
+
+    const autonomousPreamble = [
+      "AUTONOMOUS DISPATCH MODE (no interactive user is available).",
+      "- Do not ask for confirmation, approval, or next-step handoff.",
+      "- Execute required commands directly in this invocation.",
+      "- Do not end your turn with a recommendations-only summary. Perform the next required action yourself.",
+      "- Do not end your turn until the expected task transition is complete, or you have explicitly blocked the task with `kspec task block <task> --reason \"...\"`.",
+      "- If you find an open PR/branch from a different task, create or switch to a dedicated branch for this task before committing to avoid PR conflation.",
+    ];
+
+    const triggerSpecific =
+      trigger === "task.pending_review"
+        ? [
+            `Trigger context: ${trigger} for ${taskRef}.`,
+            `Review flow completion criteria for ${taskRef}:`,
+            "- Execute your configured review workflow directly (no handoff).",
+            `- If blocking issues are found, transition ${taskRef} out of pending_review appropriately (for example needs_work).`,
+            `- If review gates are clean, perform your workflow's completion actions directly in this invocation.`,
+          ]
+        : [
+            `Trigger context: ${trigger} for ${taskRef}.`,
+            `Work flow completion criteria for ${taskRef}:`,
+            "- Execute your configured work workflow directly (no handoff).",
+            `- Perform the required commands to move ${taskRef} to the next appropriate state in this same invocation.`,
+            "- If your workflow includes git or PR steps, execute them directly instead of deferring to a human.",
+          ];
+
+    return `${basePrompt}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
+  }
+
+  /**
    * Spawn a single invocation for a queue entry.
    * Returns true if an invocation was actually started, false if skipped.
    * AC: @agent-dispatch-engine ac-9, ac-10, ac-11, ac-12
@@ -685,7 +723,7 @@ export class DispatchEngine {
       specDir: this.specDir,
       cwd: this.cwd,
       taskRef: entry.change.taskRef,
-      prompt: agent.prompt_template ?? `Work on task ${entry.change.taskRef}`,
+      prompt: this._buildDispatchPrompt(agent, entry.change),
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,

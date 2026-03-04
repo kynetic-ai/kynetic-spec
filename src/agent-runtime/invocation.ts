@@ -212,6 +212,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     agent.budget?.timeout_minutes ??
     30;
   const timeoutMs = timeoutMinutes * 60 * 1000;
+  // Keep ACP request timeout slightly above invocation timeout so the outer
+  // lifecycle controls timeout behavior (cancel + timeout note), not framing.
+  const promptRequestTimeoutMs = Math.max(1, Math.ceil(timeoutMs + 5_000));
 
   // Resolve skill content for prompt
   // AC: @agent-invocation-lifecycle ac-7
@@ -299,6 +302,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         KSPEC_SESSION_ID: sessionId,
       },
       extraArgs,
+      clientOptions: {
+        methodTimeouts: {
+          "session/prompt": promptRequestTimeoutMs,
+        },
+      },
     });
 
     // ─── Create ACP session ───────────────────────────────────────────────
