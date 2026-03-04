@@ -7600,4 +7600,11 @@ plans:
     created_at: 2026-03-04T21:54:25.649Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KJXDJAQZ6BF9RK02TYSEARZ0
+        created_at: 2026-03-04T21:55:20.447Z
+        author: "@claude"
+        content: "Plan details: Add review_url field to task schema + dispatch prompt orientation context
+          (task title, trigger meaning, fix-cycle notes, review URL, template interpolation). Spec
+          ACs added to @task-submit (ac-submit-1 through ac-submit-3) and @agent-dispatch-engine
+          (ac-13 through ac-16). Full plan at ~/.claude/plans/resilient-wiggling-token.md"
