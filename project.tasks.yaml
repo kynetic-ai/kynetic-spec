@@ -18680,6 +18680,8 @@
   derivation: auto
   status: cancelled
   blocked_by: []
+  closed_reason: Already implemented. workflow start/next/show/complete/abort/pause/resume all exist
+    with entry/exit criteria and enforcement modes.
   depends_on:
     - "@task-workflow-definitions"
   context: []
@@ -18714,8 +18716,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  closed_reason: Already implemented. workflow start/next/show/complete/abort/pause/resume all exist
-    with entry/exit criteria and enforcement modes.
 - _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
   slugs:
     - task-workflow-run-foundation
@@ -46882,7 +46882,7 @@
     override. Ephemeral runs: no file storage, no shadow commits, not shown in 'workflow runs',
     state only in session context or just sequential display. Reduces noise for simple flows."
   spec_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -46918,6 +46918,8 @@
       supersedes: null
   todos: []
   automation: needs_review
+  closed_reason: Workflow prune with --older-than/--status/--abandoned solves the noise problem.
+    Ephemeral mode adds complexity for marginal gain.
 - _ulid: 01KGVGZHRPK2782D02FF83XC6K
   slugs: []
   title: Add kspec worktree command to spawn isolated agent workspaces
