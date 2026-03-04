@@ -1430,6 +1430,18 @@ function stripSpecItemMetadata(item: LoadedSpecItem): SpecItem {
   return cleanItem as SpecItem;
 }
 
+function assertSpecItemPatch(
+  updates: Partial<SpecItemInput>,
+  operation: "updateSpecItem" | "saveSpecItem",
+): void {
+  const patch = updates as Record<string, unknown>;
+  if ("_sourceFile" in patch || "_path" in patch) {
+    throw new Error(
+      `${operation} expects a patch object, not a full LoadedSpecItem. Pass only intended fields to update.`,
+    );
+  }
+}
+
 /**
  * Parse a path string into segments.
  * e.g., "features[0].requirements[2]" -> [["features", 0], ["requirements", 2]]
@@ -1629,6 +1641,7 @@ export async function updateSpecItem(
   if (!item._sourceFile) {
     throw new Error("Item has no source file");
   }
+  assertSpecItemPatch(updates, "updateSpecItem");
 
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(item._sourceFile, async () => {
@@ -1640,10 +1653,22 @@ export async function updateSpecItem(
 
     if (item._path) {
       const nav = navigateToPath(raw, item._path);
-      if (!nav) {
-        throw new Error(`Could not navigate to path: ${item._path}`);
+      const candidate = nav?.array[nav.index];
+      if (
+        candidate &&
+        typeof candidate === "object" &&
+        (candidate as Record<string, unknown>)._ulid === item._ulid
+      ) {
+        targetObj = candidate as Record<string, unknown>;
+      } else {
+        const found = findItemInStructure(raw, item._ulid);
+        if (!found) {
+          throw new Error(
+            `Could not find item ${item._ulid} in structure (path: ${item._path})`,
+          );
+        }
+        targetObj = found.item;
       }
-      targetObj = nav.array[nav.index] as Record<string, unknown>;
     } else {
       // Item might be the root, or we need to find it
       const found = findItemInStructure(raw, item._ulid);
@@ -1760,10 +1785,17 @@ export async function deleteSpecItem(
 export async function saveSpecItem(
   ctx: KspecContext,
   item: LoadedSpecItem,
+  updates: Partial<SpecItemInput>,
 ): Promise<void> {
+  assertSpecItemPatch(updates, "saveSpecItem");
+
+  if (Object.keys(updates).length === 0) {
+    throw new Error("Cannot save spec item without updates. Pass a patch.");
+  }
+
   // If item has a source file and path, it's an update
   if (item._sourceFile && item._path) {
-    await updateSpecItem(ctx, item, item);
+    await updateSpecItem(ctx, item, updates);
     return;
   }
 
