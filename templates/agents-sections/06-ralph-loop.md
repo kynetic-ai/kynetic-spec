@@ -2,7 +2,60 @@
 
 When running as an automated agent via the dispatch engine:
 
-### Dispatch Loop
+### Dispatch Engine Commands
+
+```bash
+# Start background dispatch (daemon must be running)
+kspec agent dispatch start
+
+# Inspect active/queued work and loaded agents
+kspec agent dispatch status
+
+# Stream live text output from running invocations
+kspec agent dispatch watch
+
+# Stop dispatch gracefully
+kspec agent dispatch stop
+```
+
+### Built-In Agents
+
+`kspec setup` ensures default worker/reviewer agent definitions exist in `kynetic.meta.yaml`:
+
+- `task-worker` — handles automation-eligible `task.ready`, `task.in_progress`, and `task.needs_work`
+- `pr-reviewer` — handles `task.pending_review`
+
+Inspect current definitions with:
+
+```bash
+kspec agent list
+```
+
+### Dispatch Rules and Trigger Events
+
+| Trigger event | Typical handler | Notes |
+|---------------|-----------------|-------|
+| `task.ready` | `task-worker` | Worker picks up newly ready automation-eligible tasks |
+| `task.in_progress` | `task-worker` | Worker can continue existing automation-eligible tasks |
+| `task.needs_work` | `task-worker` | Fix-cycle tasks return to worker |
+| `task.pending_review` | `pr-reviewer` | Review/merge workflow runs in separate invocation |
+
+### One-Shot Invocation
+
+Run a single agent directly (outside dispatch):
+
+```bash
+kspec agent run <agent-id> [prompt]
+```
+
+Common flags:
+
+- `--task @task-ref` to target a specific task
+- `--dry-run` to preview prompt without spawning
+- `--json` for structured output
+- `--timeout <minutes>` and `--budget <n>` for execution limits
+
+### Dispatch Loop Behavior
 
 ```
 for each dispatched invocation:
@@ -13,7 +66,7 @@ for each dispatched invocation:
   5. Continue
 ```
 
-**When you stop responding, the dispatch engine continues automatically.** Do NOT call `end-loop` after creating a PR.
+**When you stop responding, the dispatch engine continues automatically.** Do NOT call `kspec agent end-loop` after creating a PR.
 
 ### Task Inheritance
 
