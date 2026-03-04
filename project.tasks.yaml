@@ -71498,7 +71498,7 @@
     fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
     with empty string arg.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71552,6 +71552,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-04T06:41:06.321Z
 - _ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
   slugs: []
   title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
