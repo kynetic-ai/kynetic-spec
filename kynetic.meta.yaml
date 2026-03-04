@@ -7451,10 +7451,20 @@ observations:
     resolution: null
   - _ulid: 01KJWF6S5QZQBN47YB637MEKJ1
     type: friction
+    workflow_ref: "@task-work-loop"
     content: Autonomous dispatch triggered task @01KJTHACWHYNBEQ09GCHYH00H4 as in_progress, but task
       status was already completed (2026-03-04T13:02:37Z), causing redundant execution.
-    workflow_ref: "@task-work-loop"
     created_at: 2026-03-04T13:04:44.727Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJWFH8KS1B8NE1D689EJRQM5
+    type: friction
+    content: Task-level local review is noisy because kspec validate currently surfaces many unrelated
+      global meta/reference errors, making it hard to distinguish task regressions from baseline
+      repo issues.
+    workflow_ref: "@task-work-loop"
+    created_at: 2026-03-04T13:10:28.217Z
     author: Jacob Chapel
     resolved: false
     resolution: null
