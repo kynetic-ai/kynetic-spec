@@ -2582,6 +2582,11 @@ features:
             given: user runs kspec inbox add with empty text
             when: text argument is missing or empty
             then: validation error with usage guidance
+          - id: ac-1
+            given: user runs kspec inbox add <text>
+            when: text is provided as positional argument
+            then: inbox item created with auto-generated ULID, created_at timestamp, and added_by from
+              config/env
       - _ulid: 01KF15N59E5B55QEM6KVJHGSN5
         slugs:
           - cmd-inbox-list
