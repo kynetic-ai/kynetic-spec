@@ -72611,6 +72611,28 @@
         - Verification: targeted vitest for daemon websocket/pubsub/heartbeat plus repo validation
         (kspec validate).
       supersedes: null
+    - _ulid: 01KJV9NQTQSHEA7BXWAG7WD9VN
+      created_at: 2026-03-04T02:08:48.983Z
+      author: Jacob Chapel
+      content: >-
+        Implemented disconnect lifecycle cleanup:
+
+        - Added stable socket->session tracking in PubSubManager via WeakMap and new
+        removeConnectionBySocket()/getSessionIdBySocket().
+
+        - Updated daemon WebSocket close handler to remove by socket identity and log resolved
+        session id (prevents undefined session ids when ws.data races).
+
+        - Added regression tests:
+          - tests/daemon-pubsub.test.ts covers ac-1 (connection count accuracy) and ac-2 (abnormal-close-style cleanup with missing ws.data.sessionId).
+          - tests/daemon-heartbeat.test.ts covers ac-3 (removed/disconnected sessions are not pinged on subsequent heartbeat tick).
+        Verification:
+
+        - npm test -- tests/daemon-pubsub.test.ts tests/daemon-heartbeat.test.ts (pass)
+
+        - kspec validate currently fails due pre-existing project meta/reference issues unrelated to
+        this task (duplicate @observations + missing observations skill file).
+      supersedes: null
   todos: []
 - _ulid: 01KJTW3BKQ597Y5KMB4GRZ87BA
   slugs:
