@@ -2629,6 +2629,10 @@ features:
             given: inbox has items
             when: --newest flag provided
             then: items displayed sorted newest first (created_at descending)
+          - id: ac-3
+            given: inbox has items with various tags
+            when: --tag <value> provided
+            then: only items containing that tag are shown
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
