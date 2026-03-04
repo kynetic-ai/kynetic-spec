@@ -60,6 +60,7 @@ function showRalphDeprecationError(): void {
     "",
     chalk.bold("Equivalent commands:"),
     `  ${chalk.yellow("kspec ralph run")}      → ${chalk.cyan("kspec agent dispatch start")}`,
+    `  ${chalk.yellow("kspec ralph --dry-run")} → ${chalk.cyan("kspec agent dispatch start --dry-run")}`,
     `  ${chalk.yellow("kspec ralph end-loop")} → ${chalk.cyan("kspec agent end-loop")}`,
     "",
     chalk.bold("Getting started:"),

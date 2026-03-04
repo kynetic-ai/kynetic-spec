@@ -87,6 +87,8 @@ describe("kspec ralph deprecation", () => {
     expect(result.stderr).toMatch(
       /kspec ralph run\s+→\s+kspec agent dispatch start/,
     );
+    expect(result.stderr).toContain("kspec ralph --dry-run");
+    expect(result.stderr).toContain("kspec agent dispatch start --dry-run");
   });
 
   it("shows migration error when kspec ralph end-loop is invoked", () => {
