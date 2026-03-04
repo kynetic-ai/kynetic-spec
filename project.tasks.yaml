@@ -75051,22 +75051,48 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Add branch check warning to kspec task start — when current branch is not main and does not
+- _ulid: 01KJX36X6HDRWZ4H39XSVSMNK9
+  slugs: []
+  title: Add branch check warning to kspec task start — when current branch is not main and does not
     match th
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Add branch check warning to kspec task start — when current branch is not main and does
     not match the task slug, warn the agent. Would catch starting work on the wrong branch without a
     manual git branch check.
-  _ulid: 01KJX36X6HDRWZ4H39XSVSMNK9
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-03-04T18:54:20.369Z
+  notes: []
+  todos: []
+- title: Fix codex platform detection tests leaking Claude Code env vars
+  description: "core-skill-install.test.ts:280 and enhanced-setup.test.ts:368 fail when run inside
+    Claude Code. Both tests set CLAUDECODE='' to simulate non-Claude-Code env, but
+    detectAgentFromEnv() (agent-detection.ts:32-52) checks 4 env vars: CLAUDECODE,
+    CLAUDE_CODE_ENTRYPOINT, CLAUDE_PROJECT_DIR, CLAUDE_CODE. When running inside Claude Code,
+    CLAUDE_CODE_ENTRYPOINT=cli leaks from the parent process and triggers Claude Code detection
+    before codex detection. Fix: tests must also set CLAUDE_CODE_ENTRYPOINT='',
+    CLAUDE_PROJECT_DIR='', CLAUDE_CODE='' in their env overrides."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - testing
+  depends_on: []
+  _ulid: 01KJX5HGXTWCZ9JV7S4R9VD684
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-04T19:35:05.396Z
   notes: []
   todos: []
