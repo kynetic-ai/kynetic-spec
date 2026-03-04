@@ -1356,6 +1356,45 @@ function makeFakeWsClass(): { FakeWs: new (url: string) => FakeWsInstance; getLa
   return { FakeWs: FakeWs as new (url: string) => FakeWsInstance, getLastInstance: () => last };
 }
 
+const DISPATCH_WATCH_FIXTURE_DIR = path.join(
+  __dirname,
+  "fixtures",
+  "dispatch-watch-transcripts",
+);
+
+type DispatchWatchTextChunk = {
+  session_id: string;
+  agent_id: string;
+  text: string;
+};
+
+type DispatchWatchTranscriptFixture = {
+  description: string;
+  chunks: DispatchWatchTextChunk[];
+  expected_stdout: string;
+};
+
+type DispatchWatchReconnectFixture = {
+  description: string;
+  chunks_before_close: DispatchWatchTextChunk[];
+  expected_stdout: string;
+  expected_stderr_substring: string;
+};
+
+function loadDispatchWatchFixture<T>(fileName: string): T {
+  const fixturePath = path.join(DISPATCH_WATCH_FIXTURE_DIR, fileName);
+  return JSON.parse(fsSync.readFileSync(fixturePath, "utf-8")) as T;
+}
+
+function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): void {
+  ws.onmessage?.({
+    data: JSON.stringify({
+      event: "agent_text_chunk",
+      data: chunk,
+    }),
+  });
+}
+
 /**
  * Poll for a condition to become true, up to maxWaitMs.
  * Used to handle async initContext() completing before WebSocket is created.
@@ -1923,6 +1962,68 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
   });
 });
 
+// AC: @cli-agent-commands ac-13
+describe("AC-13: dispatch watch — transcript fixture regressions", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it.each([
+    "empty-before-text-boundary.json",
+    "repeated-non-text-boundaries.json",
+    "interleaved-multi-stream-switching.json",
+  ])("should preserve rendering semantics for fixture %s", async (fixtureFile) => {
+    const fixture = loadDispatchWatchFixture<DispatchWatchTranscriptFixture>(fixtureFile);
+
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    for (const chunk of fixture.chunks) {
+      emitAgentTextChunk(ws, chunk);
+    }
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain(fixture.expected_stdout);
+
+    // No leading blank line when first event is an ACP boundary sentinel.
+    if (fixtureFile === "empty-before-text-boundary.json") {
+      expect(output.startsWith("\n")).toBe(false);
+    }
+
+    // Repeated boundary events collapse into one spacer line.
+    if (fixtureFile === "repeated-non-text-boundaries.json") {
+      expect(output).not.toContain("First block.\n\n\nSecond block.");
+    }
+
+    // Interleaving streams keeps one marker per active section transition.
+    if (fixtureFile === "interleaved-multi-stream-switching.json") {
+      expect((output.match(/\[worker-a sess-a\]/g) ?? []).length).toBe(2);
+      expect((output.match(/\[worker-b sess-b\]/g) ?? []).length).toBe(1);
+    }
+
+    runPromise.catch(() => {/* ignore */});
+  });
+});
+
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
   afterEach(() => {
@@ -2146,6 +2247,61 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const stdout = stdoutWrites.join("");
     expect(stdout).toContain("[worker sess-abc]\nline without newline\n");
     expect(stderrWrites.some((l) => l.includes("[watch] Connection lost"))).toBe(true);
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should preserve reconnect boundary formatting from transcript fixture", async () => {
+    const fixture = loadDispatchWatchFixture<DispatchWatchReconnectFixture>(
+      "reconnect-boundary.json",
+    );
+
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const instances: FakeWsInstance[] = [];
+    class CaptureWs implements FakeWsInstance {
+      send = vi.fn();
+      onopen: ((e: unknown) => void) | null = null;
+      onmessage: ((e: { data: string }) => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      constructor(_url: string) { instances.push(this); }
+    }
+    vi.stubGlobal("WebSocket", CaptureWs);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    const stdoutWrites: string[] = [];
+    const stderrWrites: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      stdoutWrites.push(String(chunk));
+      return true;
+    });
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--retries", "1"],
+      { from: "user" },
+    );
+
+    await waitFor(() => instances.length >= 1, 1000);
+    instances[0].onopen?.({});
+    for (const chunk of fixture.chunks_before_close) {
+      emitAgentTextChunk(instances[0], chunk);
+    }
+    instances[0].onclose?.();
+    await vi.advanceTimersByTimeAsync(1100);
+
+    const stdout = stdoutWrites.join("");
+    const stderr = stderrWrites.join("");
+    expect(stdout).toContain(fixture.expected_stdout);
+    expect(stderr).toContain(fixture.expected_stderr_substring);
+    expect(stdout.endsWith("\n")).toBe(true);
 
     runPromise.catch(() => {/* ignore */});
   });

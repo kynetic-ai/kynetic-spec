@@ -1,0 +1,8 @@
+{
+  "description": "Reconnect notices should not append to active speaker output; active output line is flushed before reconnect logging.",
+  "chunks_before_close": [
+    { "session_id": "sess-abc", "agent_id": "worker", "text": "line without newline" }
+  ],
+  "expected_stdout": "[worker sess-abc]\nline without newline\n",
+  "expected_stderr_substring": "[watch] Connection lost. Reconnecting in 1s"
+}
