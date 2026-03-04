@@ -73543,7 +73543,7 @@
   spec_ref: "@dispatch-in-progress-priority"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -73625,3 +73625,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-04T07:52:54.298Z
+  closed_reason: "Merged in PR #663 (merge commit d80157c). Added task.in_progress dispatch support in
+    schema/session/runtime, prioritized scheduler order as in_progress > needs_work > pending >
+    pending_review, added bootstrap in_progress candidate support, seeded built-in task-worker
+    defaults with automation-filtered task.in_progress rule, and covered
+    @dispatch-in-progress-priority ac-1..ac-3 via dispatch/setup/meta/session tests."
