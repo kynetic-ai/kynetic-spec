@@ -14652,6 +14652,7 @@
   meta_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Ralph deprecated. Permission model now per-agent auto_approve in agent definitions.
   depends_on: []
   context: []
   priority: 3
@@ -14684,7 +14685,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  closed_reason: Ralph deprecated. Permission model now per-agent auto_approve in agent definitions.
 - _ulid: 01KFBM8EMBQWHDTRN8CGCRFYK4
   slugs:
     - consolidate-short-ulid
@@ -18678,7 +18678,7 @@
   type: task
   spec_ref: "@guided-workflow-execution"
   derivation: auto
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on:
     - "@task-workflow-definitions"
@@ -18714,6 +18714,8 @@
       supersedes: null
   todos: []
   automation: needs_review
+  closed_reason: Already implemented. workflow start/next/show/complete/abort/pause/resume all exist
+    with entry/exit criteria and enforcement modes.
 - _ulid: 01KFESYSK4HTYP0JTR92BTMWW4
   slugs:
     - task-workflow-run-foundation
