@@ -46926,7 +46926,7 @@
   type: task
   description: Add feature to spawn worktree for an agent to work in
   spec_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -46960,6 +46960,8 @@
       supersedes: null
   todos: []
   automation: needs_review
+  closed_reason: Under-defined (one line, no spec, no ACs). Dispatch handles branch isolation via
+    task-work skill. Claude Code worktree covers agent isolation.
 - _ulid: 01KGWDPVD3JXNSDHWDHVYQGVQX
   slugs: []
   title: Create shared CLI validation helpers (parseIntOption, validateRefExists, validateEnumOption)
@@ -69665,6 +69667,8 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: "Already implemented. Agent dispatch engine fully built: CLI, daemon dispatch,
+    invocation lifecycle, sessions, budget."
   depends_on: []
   context: []
   priority: 2
@@ -69687,8 +69691,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  closed_reason: "Already implemented. Agent dispatch engine fully built: CLI, daemon dispatch,
-    invocation lifecycle, sessions, budget."
 - _ulid: 01KJP276K7PBYD5M3R78P3SFH7
   slugs:
     - implement-agent-definition-schema
