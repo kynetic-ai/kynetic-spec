@@ -71695,6 +71695,14 @@
         src/cli/batch-exec.ts and tests/batch-exec-engine.test.ts if changes are needed.\\n-
         Verification: batch dry-run command(s) + focused vitest coverage."
       supersedes: null
+    - _ulid: 01KJVXT5G087NTVWZRJ1NTZQ0V
+      created_at: 2026-03-04T08:00:45.568Z
+      author: Jacob Chapel
+      content: "Verified behavior already implemented on main:\\n- kspec batch --dry-run with
+        args.spec_ref for task add succeeds.\\n- kspec batch --dry-run with args.spec_ref for task
+        set succeeds.\\n- Focused regression test passes: vitest batch-exec-engine 'handles
+        underscore args for kebab-case options'.\\nNo code changes required for this task."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS702WDPKNN01FQ3CEYB822
