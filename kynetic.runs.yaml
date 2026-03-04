@@ -11669,7 +11669,7 @@ runs:
   - _ulid: 01KJV4NYFAG858SJQK7CKRJ2DG
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-03-04T00:41:32.906Z
     step_results:
@@ -11711,5 +11711,11 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-03-04T00:42:28.720Z
-        completed_at: 2026-03-04T00:42:28.720Z
+        completed_at: 2026-03-04T00:42:42.919Z
+        notes: "Decision: one net-new improvement selected for capture (self-approval handling in pr-review
+          workflow). Other friction items were already tracked, so no duplicate captures."
+      - step_index: 5
+        status: completed
+        started_at: 2026-03-04T00:42:42.919Z
+        completed_at: 2026-03-04T00:42:42.919Z
     initiated_by: Jacob Chapel
