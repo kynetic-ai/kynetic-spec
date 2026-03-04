@@ -340,6 +340,42 @@ describe('JsonRpcFraming', () => {
     await expect(requestPromise).rejects.toThrow('Subagent process exited with signal SIGKILL');
   });
 
+  it('should treat EPIPE write failures as connection closed', async () => {
+    const epipeError = new Error('broken pipe') as NodeJS.ErrnoException;
+    epipeError.code = 'EPIPE';
+
+    const brokenStdout = new PassThrough();
+    brokenStdout.write = (() => {
+      throw epipeError;
+    }) as typeof brokenStdout.write;
+
+    const epipeFraming = new JsonRpcFraming({
+      stdin,
+      stdout: brokenStdout,
+      timeout: 1000,
+    });
+
+    const requestPromise = epipeFraming.sendRequest('test/method');
+    await expect(requestPromise).rejects.toThrow('JsonRpcFraming closed');
+    expect(epipeFraming.isClosed()).toBe(true);
+  });
+
+  it('should suppress emitted EPIPE output errors as connection close', async () => {
+    const onError = vi.fn();
+    framing.on('error', onError);
+
+    const requestPromise = framing.sendRequest('test/method');
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    const epipeError = new Error('broken pipe') as NodeJS.ErrnoException;
+    epipeError.code = 'EPIPE';
+    stdout.emit('error', epipeError);
+
+    await expect(requestPromise).rejects.toThrow('JsonRpcFraming closed');
+    expect(framing.isClosed()).toBe(true);
+    expect(onError).not.toHaveBeenCalled();
+  });
+
   // AC: @acp-client ac-6
   it('should reset pending timers on incoming activity', async () => {
     // Create framing with short timeout

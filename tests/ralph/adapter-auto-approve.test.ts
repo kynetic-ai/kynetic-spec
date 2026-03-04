@@ -6,7 +6,7 @@
  *
  * AC: @ralph-adapter-auto-approve
  */
-import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import {
@@ -18,20 +18,6 @@ import { spawnAgent, type SpawnedAgent } from "../../src/agents/spawner.js";
 import { setupTempFixtures, cleanupTempDir } from "../helpers/cli";
 
 const MOCK_ACP = path.join(__dirname, "..", "mocks", "acp-mock.js");
-
-// Suppress EPIPE errors from ACP framing during test cleanup
-// The framing layer may try to write to a dead child process pipe during shutdown
-const originalListeners = process.listeners("uncaughtException");
-function epipeHandler(err: Error & { code?: string }) {
-  if (err.code === "EPIPE") return; // Suppress EPIPE during cleanup
-  throw err;
-}
-beforeAll(() => {
-  process.on("uncaughtException", epipeHandler);
-});
-afterAll(() => {
-  process.removeListener("uncaughtException", epipeHandler);
-});
 
 /**
  * Helper to cleanly shut down a spawned agent, waiting for process exit.
