@@ -72096,7 +72096,9 @@
     - agent
     - dx
   vcs_refs: []
+  session_id: 01KJW67S4NJE0CPDCB3YWPD4KX
   created_at: 2026-03-03T07:07:09.433Z
+  started_at: 2026-03-04T10:28:38.127Z
   notes:
     - _ulid: 01KJS8K98W47H65FHCDBV2KESR
       created_at: 2026-03-03T07:11:31.100Z
@@ -72113,10 +72115,23 @@
         .kspec/skills/<id>/SKILL.md so bare slug is required, not the kspec- prefixed rendered name.
         Also need --remove-skill on meta set (no way to remove skills via CLI currently)."
       supersedes: null
+    - _ulid: 01KJW6931NHWTJZ45NXSV7NKCH
+      created_at: 2026-03-04T10:28:43.189Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: CLI currently requires manual YAML edits to manage agent dispatch rules.
+
+        - Scope: add dispatch rule mutation flags to both meta add agent and meta set, with
+        validation + tests.
+
+        - Files: src/cli/commands/meta.ts and related tests under tests/.
+
+        - Verification: targeted meta command tests + full validate/test command before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T10:28:38.127Z
-  session_id: 01KJW67S4NJE0CPDCB3YWPD4KX
 - _ulid: 01KJS8BAWP2WNCD003DQX75GKY
   slugs: []
   title: Deprecate kspec ralph — show migration message pointing to kspec agent
