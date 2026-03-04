@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Command } from "commander";
 import { ulid } from "ulid";
+import { accessBufferAware } from "../batch-write-buffer.js";
 import { markMutating } from "../command-annotations.js";
 import {
   buildIndexes,
@@ -89,7 +90,7 @@ Examples:
 
         // Check if module file already exists
         try {
-          await fs.access(moduleFilePath);
+          await accessBufferAware(moduleFilePath);
           error(errors.conflict.moduleFileExists(moduleFilePath));
           process.exit(EXIT_CODES.CONFLICT);
         } catch {

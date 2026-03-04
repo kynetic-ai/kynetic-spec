@@ -24,9 +24,16 @@ import yaml from "yaml";
 import { detectAgentFromEnv } from "../../parser/agent-detection.js";
 import { markMutating } from "../command-annotations.js";
 import {
+  getActiveBatchBuffer,
+  mkdirBufferAware,
+  readdirBufferAware,
+  writeFileBufferAware,
+} from "../batch-write-buffer.js";
+import {
   getSkillContentPath,
   initContext,
   loadMetaContext,
+  readFileBufferAware,
   type LoadedSkill,
   saveMetaItem,
 } from "../../parser/index.js";
@@ -170,16 +177,45 @@ const SKILL_SUPPORTING_DIRS = ["docs", "references", "scripts", "assets"] as con
  */
 async function copyDirRecursive(src: string, dest: string): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
-  await fs.mkdir(dest, { recursive: true });
+  await mkdirBufferAware(dest);
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
       await copyDirRecursive(srcPath, destPath);
     } else if (entry.isFile()) {
-      await fs.copyFile(srcPath, destPath);
+      const srcContent = await fs.readFile(srcPath);
+      await writeFileBufferAware(destPath, srcContent);
     }
   }
+}
+
+function createNotFoundError(filePath: string): NodeJS.ErrnoException {
+  return Object.assign(
+    new Error(`ENOENT: no such file or directory, open '${filePath}'`),
+    { code: "ENOENT" },
+  ) as NodeJS.ErrnoException;
+}
+
+async function readBinaryBufferAware(filePath: string): Promise<Buffer> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    if (buffer.isDeletedInOverlay(filePath)) {
+      throw createNotFoundError(filePath);
+    }
+
+    const buffered = buffer.read(filePath);
+    if (buffered !== undefined) {
+      if (buffered === null) {
+        throw createNotFoundError(filePath);
+      }
+      return typeof buffered === "string"
+        ? Buffer.from(buffered, "utf-8")
+        : Buffer.from(buffered);
+    }
+  }
+
+  return fs.readFile(filePath);
 }
 
 /**
@@ -189,23 +225,21 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
  */
 async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
   try {
-    const srcEntries = await fs.readdir(src);
-    const destEntries = new Set(await fs.readdir(dest));
+    const srcEntries = await fs.readdir(src, { withFileTypes: true });
+    const destEntries = new Set(await readdirBufferAware(dest) as string[]);
 
-    for (const name of srcEntries) {
-      if (!destEntries.has(name)) return false;
+    for (const srcEntry of srcEntries) {
+      if (!destEntries.has(srcEntry.name)) return false;
 
-      const srcPath = path.join(src, name);
-      const destPath = path.join(dest, name);
-      const srcStat = await fs.stat(srcPath);
-      const destStat = await fs.stat(destPath);
+      const srcPath = path.join(src, srcEntry.name);
+      const destPath = path.join(dest, srcEntry.name);
 
-      if (srcStat.isDirectory() && destStat.isDirectory()) {
+      if (srcEntry.isDirectory()) {
         if (!(await sourceMatchesDest(srcPath, destPath))) return false;
-      } else if (srcStat.isFile() && destStat.isFile()) {
+      } else if (srcEntry.isFile()) {
         // Use Buffer comparison for binary safety (assets/ may contain images)
         const srcBuf = await fs.readFile(srcPath);
-        const destBuf = await fs.readFile(destPath);
+        const destBuf = await readBinaryBufferAware(destPath);
         if (!srcBuf.equals(destBuf)) return false;
       } else {
         return false; // Type mismatch
@@ -247,14 +281,14 @@ export async function copyCoreSkillFiles(
   const targetSkillMd = path.join(targetDir, "SKILL.md");
   let existingContent: string | null = null;
   try {
-    existingContent = await fs.readFile(targetSkillMd, "utf-8");
+    existingContent = await readFileBufferAware(targetSkillMd);
   } catch {
     // Target doesn't exist yet
   }
 
   if (existingContent !== content) {
-    await fs.mkdir(targetDir, { recursive: true });
-    await fs.writeFile(targetSkillMd, content, "utf-8");
+    await mkdirBufferAware(targetDir);
+    await writeFileBufferAware(targetSkillMd, content);
     changed = true;
   }
 

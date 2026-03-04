@@ -9,8 +9,10 @@
  */
 
 import * as fs from "node:fs/promises";
+import type { Dirent } from "node:fs";
 import * as path from "node:path";
 import { ulid } from "ulid";
+import { accessBufferAware, readdirBufferAware } from "../cli/batch-write-buffer.js";
 import {
   type Agent,
   AgentSchema,
@@ -38,6 +40,7 @@ import type { KspecContext } from "./yaml.js";
 import {
   expandIncludePattern,
   getAuthor,
+  readFileBufferAware,
   readYamlFile,
   writeYamlFilePreserveFormat,
 } from "./yaml.js";
@@ -117,7 +120,7 @@ export async function findMetaManifest(
   // AC: @meta-manifest-discovery ac-1, ac-3 - explicit name has priority
   const priorityPath = path.join(specDir, "kynetic.meta.yaml");
   try {
-    await fs.access(priorityPath);
+    await accessBufferAware(priorityPath);
     return priorityPath;
   } catch {
     // Continue to glob fallback
@@ -125,7 +128,7 @@ export async function findMetaManifest(
 
   // AC: @meta-manifest-discovery ac-2, ac-3 - glob fallback with validation
   try {
-    const entries = await fs.readdir(specDir);
+    const entries = await readdirBufferAware(specDir) as string[];
     // AC: @meta-manifest-discovery ac-3 - alphabetical order
     const candidates = entries
       .filter((f) => f.endsWith(".meta.yaml"))
@@ -598,7 +601,7 @@ export async function loadSkillContent(
 ): Promise<string | null> {
   const contentPath = getSkillContentPath(ctx, skill.id);
   try {
-    const content = await fs.readFile(contentPath, "utf-8");
+    const content = await readFileBufferAware(contentPath);
     return content;
   } catch {
     return null;
@@ -659,13 +662,13 @@ export async function loadSkillDocs(
   const docs: SkillDoc[] = [];
 
   try {
-    const entries = await fs.readdir(docsPath, { withFileTypes: true });
+    const entries = await readdirBufferAware(docsPath, { withFileTypes: true }) as Dirent[];
 
     for (const entry of entries) {
       if (entry.isFile() && entry.name.endsWith(".md")) {
         const filePath = path.join(docsPath, entry.name);
         try {
-          const content = await fs.readFile(filePath, "utf-8");
+          const content = await readFileBufferAware(filePath);
           docs.push({
             name: entry.name,
             path: filePath,
@@ -713,13 +716,13 @@ export async function loadSkillSupportingFiles(
   const files: SupportingFile[] = [];
 
   try {
-    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    const entries = await readdirBufferAware(dirPath, { withFileTypes: true }) as Dirent[];
 
     for (const entry of entries) {
       if (entry.isFile()) {
         const filePath = path.join(dirPath, entry.name);
         try {
-          const content = await fs.readFile(filePath, "utf-8");
+          const content = await readFileBufferAware(filePath);
           files.push({
             name: entry.name,
             path: filePath,

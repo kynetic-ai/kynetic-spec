@@ -18,6 +18,7 @@ import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
 import yaml from "yaml";
+import { mkdirBufferAware, writeFileBufferAware } from "../batch-write-buffer.js";
 import { markMutating } from "../command-annotations.js";
 import {
   deleteMetaItem,
@@ -384,7 +385,7 @@ export function registerSkillCrudCommands(skill: Command): void {
           initialContent = `# ${skill.name}\n\n${skill.description || "Add skill content here."}\n`;
         }
 
-        await fs.writeFile(skillMdPath, initialContent, "utf-8");
+        await writeFileBufferAware(skillMdPath, initialContent);
 
         // Commit changes
         await commitIfShadow(ctx.shadow, "skill-add", skill.id, skill.name);
@@ -901,7 +902,7 @@ export function registerSkillCrudCommands(skill: Command): void {
 
         // AC: @skill-import ac-2 - Copy content to .kspec/skills/<id>/SKILL.md
         const skillMdPath = getSkillContentPath(ctx, skill.id);
-        await fs.writeFile(skillMdPath, bodyOnlyContent, "utf-8");
+        await writeFileBufferAware(skillMdPath, bodyOnlyContent);
 
         // AC: @import-frontmatter-strip ac-4, ac-5 - Copy all supporting directories
         const supportingDirs = ["references", "scripts", "assets", "docs"];
@@ -911,7 +912,7 @@ export function registerSkillCrudCommands(skill: Command): void {
             const stats = await fs.stat(sourceSubDir);
             if (stats.isDirectory()) {
               const targetSubDir = path.join(ctx.specDir, "skills", skill.id, dirName);
-              await fs.mkdir(targetSubDir, { recursive: true });
+              await mkdirBufferAware(targetSubDir);
               await copyDirectory(sourceSubDir, targetSubDir);
             }
           } catch {
