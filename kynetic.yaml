@@ -192,6 +192,11 @@ traits:
         given: legacy priority values exist
         when: command encounters high/medium/low
         then: mapped to 1/3/5 respectively
+      - id: ac-7
+        given: command accepts priority
+        when: --priority P1 through P5 (case-insensitive) provided
+        then: P-notation normalized to numeric equivalent (P1→1, P2→2, etc.) using shared parsePriority
+          helper
   - _ulid: 01KFDZSHFA5KYRM58WCP6RJCQE
     slugs:
       - trait-dry-run
