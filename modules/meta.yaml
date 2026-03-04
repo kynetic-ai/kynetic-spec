@@ -1916,7 +1916,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           kspec meta observations [options]
 
