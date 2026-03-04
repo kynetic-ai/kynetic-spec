@@ -4157,6 +4157,8 @@ features:
           - "@trait-semantic-exit-codes"
         notes: []
         created: 2026-02-06T23:37:16.756Z
+        status:
+          implementation: implemented
       - _ulid: 01KJG4QB2QSQZ11J5D1GNFED86
         slugs:
           - session-compact
