@@ -12082,7 +12082,7 @@ runs:
   - _ulid: 01KJVXWRM0BZW3556AZGV2QP28
     workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
     status: active
-    current_step: 6
+    current_step: 7
     total_steps: 10
     started_at: 2026-03-04T08:02:10.688Z
     step_results:
@@ -12120,13 +12120,10 @@ runs:
       - step_index: 6
         status: completed
         started_at: 2026-03-04T08:08:37.568Z
-        completed_at: 2026-03-04T08:08:37.568Z
-    initiated_by: Jacob Chapel
-  - _ulid: 01KJVY8S8T9BVBXYQHEJDACATW
-    workflow_ref: "@01KFM9G3BR4VFNBM2G7BGE5BZY"
-    status: active
-    current_step: 0
-    total_steps: 10
-    started_at: 2026-03-04T08:08:44.570Z
-    step_results: []
+        completed_at: 2026-03-04T08:08:44.690Z
+        notes: Started @pr-review-merge gates and verified equivalent checks manually for this PR.
+      - step_index: 7
+        status: completed
+        started_at: 2026-03-04T08:08:44.690Z
+        completed_at: 2026-03-04T08:08:44.690Z
     initiated_by: Jacob Chapel
