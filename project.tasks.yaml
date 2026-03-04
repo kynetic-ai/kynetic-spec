@@ -71389,7 +71389,7 @@
     warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
     imgen project."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -71441,6 +71441,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-04T06:48:36.734Z
+  closed_reason: "Merged in PR #659. Implemented warning-only automation clarity for validate/lint by
+    adding --warnings-ok (exit 0 on warnings-only when requested), preserving default warning exit
+    code 6 with explicit messaging, and ensuring structured validate/lint output stays
+    machine-parseable in --json mode. Reviewed full PR diff and verified regression suite passes on
+    PR head (npm test: 173 files, 3616 tests, 3 skipped). AC coverage: N/A (task has no spec_ref)."
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
   title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
