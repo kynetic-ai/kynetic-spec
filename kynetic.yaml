@@ -197,6 +197,11 @@ traits:
         when: --priority P1 through P5 (case-insensitive) provided
         then: P-notation normalized to numeric equivalent (P1→1, P2→2, etc.) using shared parsePriority
           helper
+      - id: ac-8
+        given: command accepts priority via batch or CLI
+        when: priority value uses P-notation
+        then: normalization handled by shared parsePriority validator, not per-layer conversion; batch layer
+          does not duplicate normalization logic
   - _ulid: 01KFDZSHFA5KYRM58WCP6RJCQE
     slugs:
       - trait-dry-run
