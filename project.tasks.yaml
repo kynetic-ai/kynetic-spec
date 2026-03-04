@@ -72357,6 +72357,14 @@
         - Verification: run kspec agents generate, validate generated section content, and run
         targeted checks.
       supersedes: null
+    - _ulid: 01KJWBNKNH6AKMB7XG63AYNQKC
+      created_at: 2026-03-04T12:02:56.306Z
+      author: Jacob Chapel
+      content: Updated templates/agents-sections/06-ralph-loop.md to document dispatch engine
+        start/stop/status/watch commands, built-in task-worker/pr-reviewer definitions,
+        trigger-event mapping, and one-shot kspec agent run usage. Regenerated kspec-agents.md via
+        kspec agents generate.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BEAE9ADEY2HGWDRFGVDK
