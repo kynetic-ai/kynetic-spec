@@ -2690,6 +2690,10 @@ features:
             given: inbox item @ref exists
             when: kspec inbox promote @ref --title 'X' --keep runs
             then: task created but inbox item is preserved (not deleted)
+          - id: ac-5
+            given: inbox item has text and --description is not provided
+            when: kspec inbox promote @ref --title 'X' runs
+            then: created task uses inbox item text as description
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
