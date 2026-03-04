@@ -655,6 +655,97 @@ describe('kspec session log show (CLI)', () => {
     expect(result.stderr).toContain('Session not found');
   });
 
+  // AC: @session-log-show ac-11
+  it('should replay assistant text from session.update events with --text', async () => {
+    const s1Dir = path.join(tempDir, 'sessions', sessionId1);
+    const textBlobRelPath = 'blobs/session-show-text.blob';
+    await fs.writeFile(path.join(s1Dir, textBlobRelPath), 'world', 'utf-8');
+
+    await fs.writeFile(path.join(s1Dir, 'events.jsonl'), [
+      JSON.stringify({
+        ts: 1000,
+        seq: 0,
+        type: 'session.update',
+        session_id: sessionId1,
+        data: {
+          content: [
+            { type: 'text', text: 'Hello ' },
+            {
+              type: 'text',
+              text: {
+                path: textBlobRelPath,
+                bytes: 5,
+                sha256: 'text-blob-hash',
+                truncated: true,
+                preview: 'wor',
+              },
+            },
+          ],
+        },
+      }),
+      JSON.stringify({
+        ts: 2000,
+        seq: 1,
+        type: 'session.update',
+        session_id: sessionId1,
+        data: {
+          content: { type: 'text', text: '!' },
+        },
+      }),
+      JSON.stringify({
+        ts: 3000,
+        seq: 2,
+        type: 'session.update',
+        session_id: sessionId1,
+        data: {
+          sessionUpdate: 'tool_call_update',
+          content: [{ type: 'content', content: { type: 'text', text: 'TOOL_NOISE' } }],
+        },
+      }),
+    ].join('\n') + '\n');
+
+    const result = kspec(`session log show ${sessionId1} --text`, tempDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toBe('Hello world!');
+    expect(result.stdout).not.toContain('TOOL_NOISE');
+    expect(result.stdout).not.toContain('Session');
+  });
+
+  // AC: @session-log-show ac-11
+  // AC: @trait-json-output ac-6
+  it('should support --text and --events together in JSON output', async () => {
+    const s1Dir = path.join(tempDir, 'sessions', sessionId1);
+    await fs.writeFile(path.join(s1Dir, 'events.jsonl'), [
+      JSON.stringify({
+        ts: 1000,
+        seq: 0,
+        type: 'session.update',
+        session_id: sessionId1,
+        data: { content: [{ type: 'text', text: 'alpha' }] },
+      }),
+      JSON.stringify({
+        ts: 2000,
+        seq: 1,
+        type: 'session.update',
+        session_id: sessionId1,
+        data: { content: [{ type: 'text', text: 'beta' }] },
+      }),
+    ].join('\n') + '\n');
+
+    const detail = kspecJson<SessionLogDetail & {
+      text?: string;
+      events?: Array<{ type: string }>;
+    }>(
+      `session log show ${sessionId1} --json --text --events`,
+      tempDir,
+    );
+    expect(detail.text).toBe('alphabeta');
+    expect(detail.events).toBeDefined();
+    expect(detail.events!.length).toBe(2);
+    expect(detail.events![0].type).toBe('session.update');
+    expect(detail.events![1].type).toBe('session.update');
+  });
+
   // AC: @trait-json-output ac-1
   it('should have no ANSI codes in JSON output', () => {
     const result = kspec(`session log show ${sessionId1} --json`, tempDir);

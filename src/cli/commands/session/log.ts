@@ -35,7 +35,7 @@ import {
 } from "../../../utils/index.js";
 import { isObject } from "../../../acp/types.js";
 import { EXIT_CODES } from "../../exit-codes.js";
-import { error, output, warn } from "../../output.js";
+import { error, isStructuredMode, output, warn } from "../../output.js";
 
 // ─── Shared Helpers ─────────────────────────────────────────────────────────
 
@@ -273,10 +273,47 @@ export async function sessionLogListAction(
 
 interface SessionLogShowOptions {
   events?: boolean;
+  text?: boolean;
   type?: string;
   limit?: string;
   context?: string;
   resolveBlobs?: boolean;
+}
+
+/**
+ * Extract replayable assistant text from a top-level content block.
+ * Text payloads may be plain strings or resolved blob pointers.
+ */
+function extractContentBlockText(block: unknown): string {
+  if (!isObject(block) || block.type !== "text") {
+    return "";
+  }
+  const textValue = block.text;
+  if (typeof textValue === "string") {
+    return textValue;
+  }
+  if (isObject(textValue) && typeof textValue.content === "string") {
+    return textValue.content;
+  }
+  return "";
+}
+
+/**
+ * Extract assistant text from a session.update payload.
+ *
+ * `session.update` payloads can carry content as:
+ * - `data.content: ContentBlock[]` (full message events)
+ * - `data.content: ContentBlock`   (chunk events)
+ */
+function extractReplayTextFromSessionUpdate(data: unknown): string {
+  if (!isObject(data)) {
+    return "";
+  }
+  const content = data.content;
+  if (Array.isArray(content)) {
+    return content.map((block) => extractContentBlockText(block)).join("");
+  }
+  return extractContentBlockText(content);
 }
 
 /**
@@ -513,7 +550,7 @@ export async function sessionLogShowAction(
       process.exit(EXIT_CODES.NOT_FOUND);
     }
 
-    if (options.resolveBlobs && !options.events) {
+    if (options.resolveBlobs && !options.events && !options.text) {
       warn("--resolve-blobs has no effect without --events; showing metadata only.");
     }
 
@@ -554,6 +591,28 @@ export async function sessionLogShowAction(
       events = allEvents;
     }
 
+    // AC: @session-log-show ac-11 - Replay assistant text from session.update content blocks
+    let replayText: string | null = null;
+    if (options.text) {
+      const allEvents = await readEvents(ctx.specDir, sessionId);
+      const chunks: string[] = [];
+      for (const event of allEvents) {
+        if (event.type !== "session.update") {
+          continue;
+        }
+        const resolvedData = await resolveSessionBlobPointers(
+          ctx.specDir,
+          sessionId,
+          event.data,
+        );
+        const textChunk = extractReplayTextFromSessionUpdate(resolvedData);
+        if (textChunk.length > 0) {
+          chunks.push(textChunk);
+        }
+      }
+      replayText = chunks.join("");
+    }
+
     // AC: @session-log-show ac-6 - Context snapshot
     let contextSnapshot: unknown = null;
     if (options.context) {
@@ -580,12 +639,29 @@ export async function sessionLogShowAction(
     const jsonOutput = {
       ...detail,
       ...(events !== null ? { events } : {}),
+      ...(replayText !== null ? { text: replayText } : {}),
       ...(contextSnapshot !== null ? { context: contextSnapshot } : {}),
     };
 
-    output(jsonOutput, () =>
-      formatSessionLogShow(detail, events, contextSnapshot, sessionStartTs),
-    );
+    output(jsonOutput, () => {
+      // In text mode, `--text` alone behaves like a raw replay stream.
+      if (options.text && !options.events && !options.context && !isStructuredMode()) {
+        process.stdout.write(replayText ?? "");
+        return;
+      }
+
+      formatSessionLogShow(detail, events, contextSnapshot, sessionStartTs);
+
+      // Keep --events/--context independent from --text in text mode.
+      if (
+        options.text &&
+        !isStructuredMode() &&
+        (options.events || options.context) &&
+        (replayText?.length ?? 0) > 0
+      ) {
+        process.stdout.write(`\n${replayText}`);
+      }
+    });
   } catch (err) {
     error("Failed to show session log", err);
     process.exit(EXIT_CODES.ERROR);
