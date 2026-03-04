@@ -3,5 +3,7 @@ task_id: "@01KJS6ZZGM4RYKNYS98PY1CSHQ"
 agent_type: codex-acp
 agent_id: worker
 trigger: task.in_progress
-status: active
+status: completed
 started_at: 2026-03-04T08:43:15.835Z
+ended_at: 2026-03-04T08:51:02.825Z
+close_reason: Invocation completed normally
