@@ -286,6 +286,7 @@ features:
           - "@trait-error-guidance"
           - "@trait-dry-run"
           - "@trait-shadow-commit"
+          - "@trait-priority-parameter"
         notes: []
         created: 2026-02-05T22:53:37.029Z
         requirements:
