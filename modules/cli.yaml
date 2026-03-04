@@ -944,6 +944,10 @@ features:
             given: --automation is provided with invalid value
             when: kspec task add --title 'T' --automation invalid runs
             then: exits with validation error listing valid values
+          - id: ac-create
+            given: --title is provided
+            when: kspec task add --title 'New task' runs with no other options
+            then: "task created in pending status with priority 3, type task; outputs 'Created task: <ref>'"
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
