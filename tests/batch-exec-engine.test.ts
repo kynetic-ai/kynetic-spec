@@ -72,6 +72,13 @@ function createTestProgram(): Command {
       .option("--tag <tag...>", "Tags"),
   );
 
+  const item = program.command("item").description("Items");
+  markMutating(
+    item.command("add")
+      .description("Add an item")
+      .option("--priority <priority>", "Priority (high, medium, low)"),
+  );
+
   program.command("validate").description("Validate spec files");
 
   return program;
@@ -110,6 +117,32 @@ describe("buildCommandArgv", () => {
     expect(argv).toContain("My Task");
     expect(argv).toContain("--priority");
     expect(argv).toContain("2");
+  });
+
+  it("normalizes P-notation aliases for numeric priority options", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "add")!;
+    const argv = buildCommandArgv(
+      { command: "task add", args: { title: "Alias Task", priority: "P2" } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--priority");
+    expect(argv).toContain("2");
+    expect(argv).not.toContain("P2");
+  });
+
+  it("does not normalize priority aliases for non-numeric priority options", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "item")!
+      .subcommands.find((c) => c.name === "add")!;
+    const argv = buildCommandArgv(
+      { command: "item add", args: { priority: "P2" } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--priority");
+    expect(argv).toContain("P2");
+    expect(argv).not.toContain("2");
   });
 
   it("handles boolean options (true)", () => {
@@ -571,6 +604,48 @@ describe("batch command integration", () => {
     expect(result.success).toBe(true);
     expect(result.mode).toBe("atomic");
     expect(result.summary.succeeded).toBe(1);
+  });
+
+  it("accepts P1/P2/P3 aliases for numeric priority args in batch commands", () => {
+    kspec(
+      'module add --title "Batch Priority Alias Module" --slug batch-priority-alias-module',
+      tempDir,
+    );
+    kspec(
+      'item add --under @batch-priority-alias-module --title "Priority Alias Feature" --type feature --slug priority-alias-feature',
+      tempDir,
+    );
+
+    const commands = JSON.stringify([
+      {
+        command: "derive",
+        args: { ref: "@priority-alias-feature", title: "batch priority alias 1", priority: "P1" },
+      },
+      {
+        command: "derive",
+        args: { ref: "@priority-alias-feature", title: "batch priority alias 2", priority: "P2" },
+      },
+      {
+        command: "derive",
+        args: { ref: "@priority-alias-feature", title: "batch priority alias 3", priority: "P3" },
+      },
+    ]);
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${commands}'`,
+      tempDir,
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(3);
+    expect(
+      kspecJson<{ priority: number }>("task get @batch-priority-alias-1", tempDir).priority,
+    ).toBe(1);
+    expect(
+      kspecJson<{ priority: number }>("task get @batch-priority-alias-2", tempDir).priority,
+    ).toBe(2);
+    expect(
+      kspecJson<{ priority: number }>("task get @batch-priority-alias-3", tempDir).priority,
+    ).toBe(3);
   });
 
   // AC: @plan-import ac-34

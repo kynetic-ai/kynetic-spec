@@ -520,6 +520,35 @@ function toArgString(value: unknown): string {
   return String(value);
 }
 
+function normalizePriorityAlias(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((v) => normalizePriorityAlias(v));
+  }
+  if (typeof value !== "string") {
+    return value;
+  }
+  const match = value.match(/^[Pp]([1-5])$/);
+  return match ? match[1] : value;
+}
+
+function isNumericPriorityOption(
+  option: { name: string; flags: string; description?: string } | undefined,
+): boolean {
+  if (!option || normalizeArgKey(option.name) !== "priority") {
+    return false;
+  }
+  const hasNumericPlaceholder = /<n(?:umber)?>/.test(option.flags);
+  const hasNumericRangeHint = /\b1-5\b/.test(option.description ?? "");
+  return hasNumericPlaceholder || hasNumericRangeHint;
+}
+
+function isNumericPriorityArgument(arg: { name: string; description?: string }): boolean {
+  if (normalizeArgKey(arg.name) !== "priority") {
+    return false;
+  }
+  return /\b1-5\b/.test(arg.description ?? "");
+}
+
 export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): string[] {
   const argv: string[] = [...cmd.command.trim().split(/\s+/)];
   const consumedKeys = new Set<string>();
@@ -531,7 +560,12 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
     positionalCanonicalNameSet.add(normalizeArgKey(arg.name));
   }
 
-  const optionMap = new Map<string, { flags: string; variadic: boolean; name: string }>();
+  const optionMap = new Map<string, {
+    flags: string;
+    variadic: boolean;
+    name: string;
+    description: string;
+  }>();
   for (const opt of cmdMeta.options) {
     const name = extractOptionName(opt.flags);
     if (name) {
@@ -539,6 +573,7 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
         flags: opt.flags,
         variadic: opt.variadic,
         name,
+        description: opt.description,
       });
     }
   }
@@ -553,10 +588,14 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
     if (value === undefined) continue;
     consumedKeys.add(matchedKey!);
 
-    if (Array.isArray(value)) {
-      for (const v of value) argv.push(toArgString(v));
+    const normalizedValue = isNumericPriorityArgument(argDef)
+      ? normalizePriorityAlias(value)
+      : value;
+
+    if (Array.isArray(normalizedValue)) {
+      for (const v of normalizedValue) argv.push(toArgString(v));
     } else {
-      argv.push(toArgString(value));
+      argv.push(toArgString(normalizedValue));
     }
   }
 
@@ -574,19 +613,22 @@ export function buildCommandArgv(cmd: BatchCommand, cmdMeta: CommandMeta): strin
 
     const knownOption = optionMap.get(canonicalKey);
     const flagName = `--${knownOption?.name ?? canonicalKey}`;
+    const normalizedValue = isNumericPriorityOption(knownOption)
+      ? normalizePriorityAlias(value)
+      : value;
 
-    if (typeof value === "boolean") {
-      if (value) {
+    if (typeof normalizedValue === "boolean") {
+      if (normalizedValue) {
         argv.push(flagName);
       }
       // false booleans: omit (Commander treats absence as false)
-    } else if (Array.isArray(value)) {
+    } else if (Array.isArray(normalizedValue)) {
       // Variadic or repeated options
-      for (const v of value) {
+      for (const v of normalizedValue) {
         argv.push(flagName, toArgString(v));
       }
-    } else if (value !== null && value !== undefined) {
-      argv.push(flagName, toArgString(value));
+    } else if (normalizedValue !== null && normalizedValue !== undefined) {
+      argv.push(flagName, toArgString(normalizedValue));
     }
   }
 
