@@ -72408,6 +72408,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Already implemented and merged previously in PR #640 as part of
+    @implement-ralph-replacement. Verified legacy ralph tests were removed and replacement
+    agent-runtime suites pass (dispatch, invocation lifecycle, and CLI/deprecation coverage)."
   depends_on: []
   context: []
   priority: 3
@@ -72420,6 +72423,7 @@
   created_at: 2026-03-03T07:07:14.126Z
   started_at: 2026-03-04T12:16:17.140Z
   submitted_at: 2026-03-04T12:17:01.652Z
+  completed_at: 2026-03-04T12:17:11.246Z
   notes:
     - _ulid: 01KJWCFC71WJDS9380BPDV99YT
       created_at: 2026-03-04T12:17:00.641Z
@@ -72433,12 +72437,17 @@
         validate currently reports pre-existing repository-wide schema/reference issues unrelated to
         this task (duplicate @observations slug and missing .kspec/skills/observations/SKILL.md)."
       supersedes: null
+    - _ulid: 01KJWCTTXX04ATJGCQDYAZ8GQB
+      created_at: 2026-03-04T12:23:16.157Z
+      author: Jacob Chapel
+      content: "Autonomous pending_review dispatch processed on 2026-03-04. Task was already completed
+        (completed_at 2026-03-04T12:17:11.246Z) with closure linked to merged PR #640. Verified no
+        active PR for this task scope, confirmed PR #640 is MERGED, and reran full regression suite
+        (npm test: 173 files passed, 3641 tests passed, 3 skipped). No additional transition
+        required."
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T12:17:11.246Z
-  closed_reason: "Already implemented and merged previously in PR #640 as part of
-    @implement-ralph-replacement. Verified legacy ralph tests were removed and replacement
-    agent-runtime suites pass (dispatch, invocation lifecycle, and CLI/deprecation coverage)."
 - _ulid: 01KJS8BFDFFNC3PVTNHRRPZSVZ
   slugs: []
   title: Update workflows to remove ralph references and use agent dispatch concepts
