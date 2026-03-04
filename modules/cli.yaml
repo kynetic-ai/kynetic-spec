@@ -7294,4 +7294,4 @@ requirements:
         then: HOME/config is isolated so ambient daemon PID/port files do not affect outcomes
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
