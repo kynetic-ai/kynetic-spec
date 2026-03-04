@@ -73031,27 +73031,28 @@
   created_at: 2026-03-03T22:54:41.236Z
   notes: []
   todos: []
-- title: Fix agent dispatch watch WebSocket subscribe decoding for Node clients
+- _ulid: 01KJVCWC68CMQZXE387YNF8EYZ
+  slugs: []
+  title: Fix agent dispatch watch WebSocket subscribe decoding for Node clients
+  type: bug
   description: kspec agent dispatch watch silently receives no text because daemon websocket handler
     rejects Node client subscribe frames as invalid JSON. Decode ArrayBuffer/typed-array messages
     correctly, add regression tests, and ensure watch surfaces subscribe failures.
-  type: bug
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - cli
     - daemon
     - websocket
-  depends_on: []
-  automation: eligible
-  _ulid: 01KJVCWC68CMQZXE387YNF8EYZ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-04T03:04:52.168Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-03-04T03:04:57.392Z
