@@ -18,6 +18,7 @@ import {
   readdirBufferAware,
   writeFileBufferAware,
 } from "../src/cli/batch-write-buffer.js";
+import { copyCoreSkillFiles } from "../src/cli/commands/skill-install.js";
 import { readFileBufferAware } from "../src/parser/yaml.js";
 import {
   kspec,
@@ -160,6 +161,17 @@ describe("WriteBuffer.listDir() and helper dirents", () => {
 
     await expect(buf.listDir(existingDir)).rejects.toMatchObject({ code: "ENOENT" });
   });
+
+  it("listDir() does not resurrect a deleted directory after buffered child writes", async () => {
+    const buf = new WriteBuffer(tempDir);
+    const deletedDir = path.join(tempDir, "deleted-dir");
+
+    buf.write(path.join(deletedDir, "child.txt"), "hello");
+    buf.delete(deletedDir);
+
+    const entries = await buf.listDir(tempDir);
+    expect(entries).not.toContain("deleted-dir");
+  });
 });
 
 describe("buffer-aware fs helpers", () => {
@@ -216,6 +228,18 @@ describe("buffer-aware fs helpers", () => {
 
     getActiveBatchBuffer()!.delete(filePath);
     await expect(readFileBufferAware(filePath)).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("copyCoreSkillFiles() is read-after-write consistent within one active buffer", async () => {
+    const specDir = path.join(tempDir, ".kspec");
+    const targetDir = path.join(specDir, "skills", "triage");
+    activateBatchBuffer(specDir);
+
+    const first = await copyCoreSkillFiles("triage", targetDir);
+    const second = await copyCoreSkillFiles("triage", targetDir);
+
+    expect(first.changed).toBe(true);
+    expect(second.changed).toBe(false);
   });
 });
 

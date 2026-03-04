@@ -24,6 +24,7 @@ import yaml from "yaml";
 import { detectAgentFromEnv } from "../../parser/agent-detection.js";
 import { markMutating } from "../command-annotations.js";
 import {
+  getActiveBatchBuffer,
   mkdirBufferAware,
   readdirBufferAware,
   writeFileBufferAware,
@@ -189,6 +190,34 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
   }
 }
 
+function createNotFoundError(filePath: string): NodeJS.ErrnoException {
+  return Object.assign(
+    new Error(`ENOENT: no such file or directory, open '${filePath}'`),
+    { code: "ENOENT" },
+  ) as NodeJS.ErrnoException;
+}
+
+async function readBinaryBufferAware(filePath: string): Promise<Buffer> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(filePath)) {
+    if (buffer.isDeletedInOverlay(filePath)) {
+      throw createNotFoundError(filePath);
+    }
+
+    const buffered = buffer.read(filePath);
+    if (buffered !== undefined) {
+      if (buffered === null) {
+        throw createNotFoundError(filePath);
+      }
+      return typeof buffered === "string"
+        ? Buffer.from(buffered, "utf-8")
+        : Buffer.from(buffered);
+    }
+  }
+
+  return fs.readFile(filePath);
+}
+
 /**
  * Check if all source entries exist in dest with identical content.
  * Uses subset comparison: extra files in dest are ignored since
@@ -196,23 +225,21 @@ async function copyDirRecursive(src: string, dest: string): Promise<void> {
  */
 async function sourceMatchesDest(src: string, dest: string): Promise<boolean> {
   try {
-    const srcEntries = await fs.readdir(src);
+    const srcEntries = await fs.readdir(src, { withFileTypes: true });
     const destEntries = new Set(await readdirBufferAware(dest) as string[]);
 
-    for (const name of srcEntries) {
-      if (!destEntries.has(name)) return false;
+    for (const srcEntry of srcEntries) {
+      if (!destEntries.has(srcEntry.name)) return false;
 
-      const srcPath = path.join(src, name);
-      const destPath = path.join(dest, name);
-      const srcStat = await fs.stat(srcPath);
-      const destStat = await fs.stat(destPath);
+      const srcPath = path.join(src, srcEntry.name);
+      const destPath = path.join(dest, srcEntry.name);
 
-      if (srcStat.isDirectory() && destStat.isDirectory()) {
+      if (srcEntry.isDirectory()) {
         if (!(await sourceMatchesDest(srcPath, destPath))) return false;
-      } else if (srcStat.isFile() && destStat.isFile()) {
+      } else if (srcEntry.isFile()) {
         // Use Buffer comparison for binary safety (assets/ may contain images)
         const srcBuf = await fs.readFile(srcPath);
-        const destBuf = await fs.readFile(destPath);
+        const destBuf = await readBinaryBufferAware(destPath);
         if (!srcBuf.equals(destBuf)) return false;
       } else {
         return false; // Type mismatch

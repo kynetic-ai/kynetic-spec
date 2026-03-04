@@ -205,6 +205,13 @@ export class WriteBuffer {
       }
     }
 
+    // A direct delete always wins over inferred directory presence.
+    for (const [name, state] of directWrites) {
+      if (state === "deleted") {
+        inferredDirectories.delete(name);
+      }
+    }
+
     return { directWrites, inferredDirectories };
   }
 
