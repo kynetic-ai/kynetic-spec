@@ -6388,6 +6388,16 @@ features:
         notes: []
         created: 2026-03-04T05:58:17.421Z
         acceptance_criteria:
+          - id: ac-1
+            given: the dispatch engine has in_progress tasks and also has pending, needs_work, or pending_review
+              tasks
+            when: the scheduler decides which eligible invocation to dispatch next
+            then: in_progress work is selected before lower-priority status buckets
+          - id: ac-2
+            given: the daemon or dispatch engine starts while tasks are already in_progress
+            when: bootstrap evaluation runs
+            then: in_progress tasks are considered dispatch candidates and can be queued without waiting for a
+              new external state transition
           - id: ac-3
             given: agent definitions include dispatch rules and filters
             when: dispatch event types are validated and built-in worker defaults are seeded
