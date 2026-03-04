@@ -13231,7 +13231,7 @@ runs:
   - _ulid: 01KJX1YXVNN8RPDBHX0V2X30FB
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-04T18:32:30.325Z
     step_results:
@@ -13245,5 +13245,13 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-04T18:33:42.241Z
-        completed_at: 2026-03-04T18:33:42.241Z
+        completed_at: 2026-03-04T18:36:15.522Z
+        notes: "Coverage check: searched for unresolved-thread and reviewer-run friction. Existing related
+          items found: @01KGY73W8 (friction) and @01KJBW3RS (success) for GraphQL
+          resolveReviewThread. New gap identified: no tracking for duplicate/stale required check
+          runs with the same check name still blocking merge after a later successful run."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-04T18:36:15.522Z
+        completed_at: 2026-03-04T18:36:15.522Z
     initiated_by: Jacob Chapel
