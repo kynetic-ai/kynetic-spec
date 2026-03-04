@@ -7,6 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { Command } from "commander";
+import { spawn } from "node:child_process";
 import {
   buildCommandArgv,
   resetCommandTree,
@@ -28,6 +29,7 @@ import {
   setupTempFixtures,
   cleanupTempDir,
   initGitRepo,
+  CLI_PATH,
 } from "./helpers/cli.js";
 import type { BatchExecResult, BatchCommandResult } from "../src/schema/batch.js";
 
@@ -496,6 +498,40 @@ describe("batch command integration", () => {
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("Invalid JSON");
     expect(result.stderr).not.toContain("No input received on stdin");
+  });
+
+  // AC: @batch-exec ac-stdin — fail fast when stdin pipe is open but empty
+  // AC: @trait-semantic-exit-codes ac-2 — missing input exits non-zero
+  it("fails fast when stdin is open but no input ever arrives", async () => {
+    const child = spawn(process.execPath, [CLI_PATH, "batch"], {
+      cwd: tempDir,
+      stdio: ["pipe", "pipe", "pipe"],
+      env: { ...process.env, KSPEC_AUTHOR: "@test" },
+    });
+
+    let stderr = "";
+    child.stderr.on("data", (chunk: Buffer | string) => {
+      stderr += chunk.toString();
+    });
+
+    const exitResult = await Promise.race([
+      new Promise<{ code: number | null; signal: NodeJS.Signals | null }>((resolve) => {
+        child.on("exit", (code, signal) => resolve({ code, signal }));
+      }),
+      new Promise<"timeout">((resolve) => {
+        setTimeout(() => resolve("timeout"), 3_000);
+      }),
+    ]);
+
+    if (exitResult === "timeout") {
+      child.kill("SIGKILL");
+      throw new Error("batch command hung waiting on stdin");
+    }
+
+    expect(exitResult.signal).toBeNull();
+    expect(exitResult.code).toBe(1);
+    expect(stderr).toContain("No input received on stdin");
+    expect(stderr).toContain("--commands <json>");
   });
 
   // AC: @batch-exec ac-invalid-json — JSON mode returns structured error

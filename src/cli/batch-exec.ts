@@ -46,6 +46,8 @@ export type BatchInputSource =
   | { type: "file"; path: string }
   | { type: "inline"; json: string };
 
+const BATCH_STDIN_IDLE_TIMEOUT_MS = 1000;
+
 // ── Error Types ─────────────────────────────────────────────────────
 
 export class BatchParseError extends Error {
@@ -98,6 +100,59 @@ export interface ValidateBatchOptions {
 // ── Parsing ─────────────────────────────────────────────────────────
 
 /**
+ * Read stdin with an idle timeout so non-interactive callers that keep
+ * stdin open without writing do not block forever.
+ */
+async function readStdinWithIdleTimeout(timeoutMs: number): Promise<string> {
+  return new Promise((resolve) => {
+    let data = "";
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+
+    const cleanup = () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      process.stdin.removeListener("data", onData);
+      process.stdin.removeListener("end", onEnd);
+      process.stdin.removeListener("error", onError);
+    };
+
+    const armTimeout = () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        cleanup();
+        resolve(data);
+      }, timeoutMs);
+      timeout.unref?.();
+    };
+
+    const onData = (chunk: string) => {
+      data += chunk;
+      armTimeout();
+    };
+
+    const onEnd = () => {
+      cleanup();
+      resolve(data);
+    };
+
+    const onError = () => {
+      cleanup();
+      resolve(data);
+    };
+
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", onData);
+    process.stdin.on("end", onEnd);
+    process.stdin.on("error", onError);
+    process.stdin.resume();
+    armTimeout();
+  });
+}
+
+/**
  * Read raw text from a batch input source.
  */
 async function readSource(source: BatchInputSource): Promise<string> {
@@ -115,13 +170,20 @@ async function readSource(source: BatchInputSource): Promise<string> {
       }
 
     case "stdin": {
-      const chunks: Buffer[] = [];
-      for await (const chunk of process.stdin) {
-        chunks.push(chunk as Buffer);
-      }
-      const text = Buffer.concat(chunks).toString("utf-8");
+      const text = process.stdin.isTTY
+        ? await (async () => {
+            const chunks: Buffer[] = [];
+            for await (const chunk of process.stdin) {
+              chunks.push(chunk as Buffer);
+            }
+            return Buffer.concat(chunks).toString("utf-8");
+          })()
+        : await readStdinWithIdleTimeout(BATCH_STDIN_IDLE_TIMEOUT_MS);
+
       if (!text.trim()) {
-        throw new BatchParseError("No input received on stdin");
+        throw new BatchParseError(
+          `No input received on stdin. Provide --commands <json>, --file <path>, or pipe JSON via stdin.`,
+        );
       }
       return text;
     }
