@@ -2026,6 +2026,10 @@ features:
             given: parent spec has task in cancelled state
             when: derive creates child task with depends_on
             then: cancelled parent task is excluded from depends_on; only active/completed tasks used
+          - id: ac-priority
+            given: derive creates tasks
+            when: --priority N (or P-notation) is provided
+            then: all created tasks have the specified priority instead of the default
       - _ulid: 01KG97RZRPWSSF09C2J394RJK2
         slugs:
           - derive-title-override
