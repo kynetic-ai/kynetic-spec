@@ -375,6 +375,16 @@ async function setTaskFields(
         mutationChanges.push("title");
       }
 
+      if (options.description !== undefined) {
+        if (options.description === "null" || options.description.trim() === "") {
+          delete nextTask.description;
+          mutationChanges.push("description: cleared");
+        } else {
+          nextTask.description = options.description;
+          mutationChanges.push("description");
+        }
+      }
+
       if (options.specRef !== undefined) {
         if (options.specRef === "null") {
           nextTask.spec_ref = null;
@@ -890,6 +900,10 @@ Examples:
       "Update multiple tasks (AC: @spec-task-set-batch ac-1)",
     )
     .option("--title <title>", "Update task title")
+    .option(
+      "--description <description>",
+      "Update task description (use 'null' to clear)",
+    )
     .option("--spec-ref <ref>", "Link to spec item (use 'null' to clear)")
     .option(
       "--meta-ref <ref>",
@@ -919,6 +933,7 @@ Examples:
       `
 Examples:
   $ kspec task set @task-slug --priority 2
+  $ kspec task set @task-slug --description "Updated context"
   $ kspec task set @task-slug --depends-on @dep1 @dep2
   $ kspec task set @task-slug --tag cli urgent
   $ kspec task set --refs @task1 @task2 --priority 3`,

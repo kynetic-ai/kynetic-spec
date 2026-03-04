@@ -341,6 +341,36 @@ describe('Integration: task set', () => {
     expect(task.title).toBe('Updated Title');
   });
 
+  it('should update task description', () => {
+    const output = kspec('task set @test-task-pending --description "Updated description"', tempDir);
+    expect(output).toContain('Updated task');
+    expect(output).toContain('(description)');
+
+    const task = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
+    expect(task.description).toBe('Updated description');
+  });
+
+  it('should clear description with null', () => {
+    kspec('task set @test-task-pending --description "Needs clearing"', tempDir);
+    const before = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
+    expect(before.description).toBe('Needs clearing');
+
+    const output = kspec('task set @test-task-pending --description null', tempDir);
+    expect(output).toContain('description: cleared');
+
+    const after = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
+    expect(after.description).toBeUndefined();
+  });
+
+  it('should clear description when whitespace-only value is provided', () => {
+    kspec('task set @test-task-pending --description "Needs clearing"', tempDir);
+    const output = kspec('task set @test-task-pending --description "   "', tempDir);
+    expect(output).toContain('description: cleared');
+
+    const task = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
+    expect(task.description).toBeUndefined();
+  });
+
   // AC: @task-set ac-task-set-2
   it('should set spec_ref on task', () => {
     const output = kspec('task set @test-task-pending --spec-ref @test-feature', tempDir);

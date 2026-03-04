@@ -50,6 +50,20 @@ describe('Integration: task set batch support', () => {
     expect(taskE.tags).toContain('urgent');
   });
 
+  it('should update descriptions in batch mode', () => {
+    kspec('task add --title "Batch Desc A" --slug batch-desc-a', tempDir);
+    kspec('task add --title "Batch Desc B" --slug batch-desc-b', tempDir);
+
+    const result = kspec('task set --refs @batch-desc-a @batch-desc-b --description "Shared description"', tempDir);
+    expect(result.stdout).toContain('Setd 2 of 2');
+
+    const taskA = kspecJson<{ description?: string }>('task get @batch-desc-a', tempDir);
+    const taskB = kspecJson<{ description?: string }>('task get @batch-desc-b', tempDir);
+
+    expect(taskA.description).toBe('Shared description');
+    expect(taskB.description).toBe('Shared description');
+  });
+
   // AC: @spec-task-set-batch ac-3
   it('should reject --status flag with error message', () => {
     kspec('task add --title "Status Test" --slug status-test', tempDir);
