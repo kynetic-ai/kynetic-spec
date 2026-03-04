@@ -11725,8 +11725,26 @@ runs:
   - _ulid: 01KJV977N8YRSPNFDH1ZYHFR7G
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-04T02:00:53.672Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-04T02:00:53.672Z
+        completed_at: 2026-03-04T02:01:10.969Z
+        notes: >-
+          What worked well:
+
+          - Task lifecycle commands kept state clear: start -> submit -> complete on @01KJS90F.
+
+          - Spawning a dedicated reviewer subagent for -review gave a reliable review/merge gate
+          without manual polling.
+
+          - Focused AC tests plus full npm test before submit reduced review churn (no MUST-FIX
+          cycle required).
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-04T02:01:10.969Z
+        completed_at: 2026-03-04T02:01:10.969Z
     initiated_by: Jacob Chapel
