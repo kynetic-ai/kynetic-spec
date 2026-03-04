@@ -71678,6 +71678,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: No implementation delta required. Verified on 2026-03-03 that batch args accept
+    spec_ref alias for --spec-ref in task add/task set (dry-run succeeds) and existing focused test
+    coverage passes.
   depends_on: []
   context: []
   priority: 3
@@ -71687,6 +71690,7 @@
   created_at: 2026-03-03T06:43:31.667Z
   started_at: 2026-03-04T08:00:19.688Z
   submitted_at: 2026-03-04T08:00:56.210Z
+  completed_at: 2026-03-04T08:01:00.569Z
   notes:
     - _ulid: 01KJVXSBJD5V09MAAVJJPTYA7S
       created_at: 2026-03-04T08:00:19.021Z
@@ -71706,10 +71710,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T08:01:00.569Z
-  closed_reason: No implementation delta required. Verified on 2026-03-03 that batch args accept
-    spec_ref alias for --spec-ref in task add/task set (dry-run succeeds) and existing focused test
-    coverage passes.
 - _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
   title: "CLI DX: accept tags as alias for tag in batch commands"
@@ -73651,6 +73651,13 @@
       content: "Fix cycle update: adjusted dispatch status precedence to keep needs_work ahead of pending
         while still prioritizing in_progress first. Updated priority-order regression expectation
         accordingly and re-ran tests: npm test -- tests/agent-dispatch-engine.test.ts."
+      supersedes: null
+    - _ulid: 01KJVXZXJFAFEMWHY01D7TN70X
+      created_at: 2026-03-04T08:03:54.064Z
+      author: Jacob Chapel
+      content: "Post-merge runtime config fix: updated @worker dispatch rules to include task.in_progress
+        with automation: eligible filter so active in-progress tasks are eligible for worker
+        dispatch in running loop mode."
       supersedes: null
   todos: []
   automation: eligible
