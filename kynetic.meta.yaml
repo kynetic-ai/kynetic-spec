@@ -7498,12 +7498,22 @@ observations:
     resolution: null
   - _ulid: 01KJWKZVE1SB4W4CFPPP3195XE
     type: friction
+    workflow_ref: "@task-work-loop"
     content: Full kspec validate output is dominated by known unrelated repo-level
       meta/reference/alignment failures, which obscures task-local validation signal during
       implementation work.
-    workflow_ref: "@task-work-loop"
     created_at: 2026-03-04T14:28:20.546Z
     author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJWPP62M2EHE1EPSGH0C35MQ
+    type: friction
+    content: "Batch item ac add with multiple adds to the same item in atomic mode: each command loads
+      the same initial state snapshot, so only the last AC survives. Workaround: use sequential
+      individual commands instead of batch for multiple ac adds to the same item. Root cause is
+      atomic batch isolation — writes don't see prior writes within the same batch."
+    created_at: 2026-03-04T15:15:29.492Z
+    author: "@claude"
     resolved: false
     resolution: null
 skills:
