@@ -10,6 +10,7 @@ import {
   createIsolatedKspecHome,
   initGitRepo,
   kspec,
+  waitForStartup,
   type KspecOptions,
 } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
@@ -62,31 +63,8 @@ describe('kspec serve commands', () => {
     });
   }
 
-  async function waitForCondition(
-    description: string,
-    check: () => Promise<{ ok: boolean; details: string }>,
-    timeoutMs = 5_000,
-    intervalMs = 100
-  ): Promise<void> {
-    const startedAt = Date.now();
-    let lastDetails = 'no observation collected';
-
-    while (Date.now() - startedAt < timeoutMs) {
-      const result = await check();
-      lastDetails = result.details;
-      if (result.ok) {
-        return;
-      }
-      await new Promise((resolve) => setTimeout(resolve, intervalMs));
-    }
-
-    throw new Error(
-      `Timed out waiting for ${description} after ${timeoutMs}ms. Last observation: ${lastDetails}`
-    );
-  }
-
   async function waitForDaemonHealth(port: number): Promise<void> {
-    await waitForCondition(`daemon health endpoint on port ${port}`, async () => {
+    await waitForStartup(`daemon health endpoint on port ${port}`, async () => {
       const url = `http://localhost:${port}/api/health`;
       try {
         const response = await fetch(url);
@@ -100,11 +78,11 @@ describe('kspec serve commands', () => {
         const message = error instanceof Error ? error.message : String(error);
         return { ok: false, details: `fetch error=${message}` };
       }
-    }, 10_000);
+    }, { timeoutMs: 10_000 });
   }
 
   async function waitForDaemonUptime(minUptimeSeconds: number): Promise<void> {
-    await waitForCondition(
+    await waitForStartup(
       `daemon uptime >= ${minUptimeSeconds}s`,
       async () => {
         const result = runKspec(`serve status --json --kspec-dir ${join(tempDir, '.kspec')}`, tempDir, {
@@ -129,7 +107,7 @@ describe('kspec serve commands', () => {
           return { ok: false, details: `invalid-json=${message}` };
         }
       },
-      10_000
+      { timeoutMs: 10_000 }
     );
   }
 
@@ -164,11 +142,10 @@ describe('kspec serve commands', () => {
 
   // AC: @daemon-sensitive-cli-test-determinism ac-1
   it('should include actionable context when readiness wait times out', async () => {
-    await expect(waitForCondition(
+    await expect(waitForStartup(
       'synthetic daemon readiness',
       async () => ({ ok: false, details: 'status=503 body=warming-up' }),
-      120,
-      20
+      { timeoutMs: 120, intervalMs: 20 }
     )).rejects.toThrow(/Last observation: status=503 body=warming-up/);
   });
 

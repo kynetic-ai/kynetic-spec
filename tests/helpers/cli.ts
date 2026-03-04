@@ -62,6 +62,26 @@ export interface KspecResult {
 }
 
 /**
+ * Result from one startup/readiness probe.
+ */
+export interface StartupProbeResult {
+  /** Whether startup/readiness condition is satisfied */
+  ok: boolean;
+  /** Diagnostic detail for timeout errors */
+  details: string;
+}
+
+/**
+ * Options for startup/readiness wait helper.
+ */
+export interface WaitForStartupOptions {
+  /** Maximum wait duration before failing */
+  timeoutMs?: number;
+  /** Poll interval between probe checks */
+  intervalMs?: number;
+}
+
+/**
  * Run a kspec CLI command
  *
  * @param args - CLI arguments (e.g., "task list --json")
@@ -158,6 +178,37 @@ export function kspecOutput(args: string, cwd: string, options: KspecOptions = {
 export function kspecJson<T>(args: string, cwd: string, options: KspecOptions = {}): T {
   const result = kspec(`${args} --json`, cwd, options);
   return JSON.parse(result.stdout);
+}
+
+/**
+ * Bounded polling helper for startup/readiness checks in daemon/process tests.
+ *
+ * Throws with the most recent probe details to make timeout failures actionable.
+ */
+export async function waitForStartup(
+  description: string,
+  probe: () => StartupProbeResult | Promise<StartupProbeResult>,
+  options: WaitForStartupOptions = {}
+): Promise<void> {
+  const timeoutMs = options.timeoutMs ?? 5_000;
+  const intervalMs = options.intervalMs ?? 100;
+  const startedAt = Date.now();
+  let lastDetails = 'no observation collected';
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const result = await probe();
+    lastDetails = result.details;
+
+    if (result.ok) {
+      return;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+
+  throw new Error(
+    `Timed out waiting for ${description} after ${timeoutMs}ms. Last observation: ${lastDetails}`
+  );
 }
 
 // Legacy aliases for backwards compatibility
