@@ -1000,6 +1000,10 @@ features:
             given: --slug is provided
             when: kspec task add --title 'T' --slug my-task runs
             then: task created with slug alias; slug checked for uniqueness across all items
+          - id: ac-slug-conflict
+            given: --slug conflicts with existing slug
+            when: kspec task add --title 'T' --slug existing-slug runs
+            then: exits with conflict error; slug must be unique
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
