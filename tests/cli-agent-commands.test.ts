@@ -1409,8 +1409,6 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — streams line-prefixed output", () => {
-  const STREAM_FLUSH_MS = 170;
-
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -1456,7 +1454,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     // AC: @cli-agent-commands ac-13 - output is prefixed with [agent-id session-id]
     const output = written.join("");
@@ -1502,7 +1500,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
       });
     }
 
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     const output = written.join("");
     expect(output).toContain("[worker sess-abc] I am streaming");
@@ -1546,7 +1544,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     const output = written.join("");
     expect(output).toContain("[worker-a sess-a] hello\n[worker-b sess-b] world");
@@ -1588,7 +1586,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
         data: { session_id: "sess-abc", agent_id: "worker", text: "" },
       }),
     });
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     ws.onmessage?.({
       data: JSON.stringify({
@@ -1596,10 +1594,117 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
         data: { session_id: "sess-abc", agent_id: "worker", text: "Second update." },
       }),
     });
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     const output = written.join("");
     expect(output).toContain("[worker sess-abc] First update.\n[worker sess-abc] Second update.");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should ignore empty-boundary events from other streams while current stream is mid-line", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-a", agent_id: "worker-a", text: "hello" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-b", agent_id: "worker-b", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-a", agent_id: "worker-a", text: " world" },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker-a sess-a] hello world");
+    expect(output).not.toContain("\n[worker-a sess-a] world");
+    expect(output).not.toContain("[worker-b sess-b]");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should handle empty-first statement boundaries without adding blank lines", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    // Claude ACP often emits empty chunk before a new statement's text stream.
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "First statement." },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "Second statement." },
+      }),
+    });
+
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc] First statement.\n[worker sess-abc] Second statement.");
+    expect(output).not.toContain("\n\n[worker sess-abc] Second statement.");
+    expect(output.startsWith("\n")).toBe(false);
 
     runPromise.catch(() => {/* ignore */});
   });
@@ -1636,7 +1741,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
         },
       }),
     });
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     const output = written.join("");
     expect(output).toContain("[worker 01KJVFYR] hello");
@@ -1678,7 +1783,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
           data: { session_id: "sess-abc", agent_id: "worker", text },
         }),
       });
-      await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+      await Promise.resolve();
     }
 
     const output = written.join("");
@@ -1693,8 +1798,6 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
 
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
-  const STREAM_FLUSH_MS = 170;
-
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -1740,7 +1843,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     const output = written.join("");
     // AC: @cli-agent-commands ac-16 - non-matching chunks silently dropped
@@ -1788,7 +1891,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+    await Promise.resolve();
 
     const output = written.join("");
     expect(output).not.toContain("dropped");

@@ -742,14 +742,10 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
-      const CHUNK_COALESCE_MS = 120;
       type StreamRenderState = {
         atLineStart: boolean;
-        pendingText: string;
-        flushTimer: NodeJS.Timeout | null;
       };
       const streamRenderStates = new Map<string, StreamRenderState>();
-      const streamPrefixes = new Map<string, string>();
       let activeStreamKey: string | null = null;
 
       function getStreamState(streamKey: string): StreamRenderState {
@@ -757,8 +753,6 @@ export function registerAgentCommands(program: Command): void {
         if (!state) {
           state = {
             atLineStart: true,
-            pendingText: "",
-            flushTimer: null,
           };
           streamRenderStates.set(streamKey, state);
         }
@@ -797,26 +791,6 @@ export function registerAgentCommands(program: Command): void {
         }
       }
 
-      function flushStream(streamKey: string): void {
-        const state = getStreamState(streamKey);
-        if (state.flushTimer) {
-          clearTimeout(state.flushTimer);
-          state.flushTimer = null;
-        }
-        if (!state.pendingText) return;
-
-        const text = state.pendingText;
-        state.pendingText = "";
-        const prefix = streamPrefixes.get(streamKey) ?? `[${streamKey}]`;
-        writePrefixedText(streamKey, prefix, text);
-      }
-
-      function flushAllStreams(): void {
-        for (const streamKey of streamRenderStates.keys()) {
-          flushStream(streamKey);
-        }
-      }
-
       function endStreamLine(streamKey: string): void {
         const state = getStreamState(streamKey);
         if (!state.atLineStart) {
@@ -825,7 +799,6 @@ export function registerAgentCommands(program: Command): void {
         }
       }
 
-      // Coalesce tiny token chunks so messages render naturally.
       function queuePrefixedChunk(
         streamKey: string,
         prefix: string,
@@ -834,33 +807,15 @@ export function registerAgentCommands(program: Command): void {
         if (!text) return;
 
         if (activeStreamKey && activeStreamKey !== streamKey) {
-          flushStream(activeStreamKey);
           endStreamLine(activeStreamKey);
         }
         activeStreamKey = streamKey;
-
-        const state = getStreamState(streamKey);
-        streamPrefixes.set(streamKey, prefix);
-        state.pendingText += text;
-        if (state.flushTimer) {
-          clearTimeout(state.flushTimer);
-        }
-        state.flushTimer = setTimeout(() => {
-          flushStream(streamKey);
-        }, CHUNK_COALESCE_MS);
+        writePrefixedText(streamKey, prefix, text);
       }
 
-      function markMessageBoundary(
-        streamKey: string,
-        prefix: string,
-      ): void {
-        streamPrefixes.set(streamKey, prefix);
-        if (activeStreamKey && activeStreamKey !== streamKey) {
-          flushStream(activeStreamKey);
-          endStreamLine(activeStreamKey);
-        }
-        activeStreamKey = streamKey;
-        flushStream(streamKey);
+      function markMessageBoundary(streamKey: string): void {
+        // Boundary signals are stream-local. Do not force a newline on a
+        // different active stream that may still be mid-line.
         endStreamLine(streamKey);
       }
 
@@ -927,7 +882,7 @@ export function registerAgentCommands(program: Command): void {
             const prefix = `[${agentId} ${displaySessionId}]`;
             // Match old Ralph rendering semantics: empty chunk marks message end.
             if (text.length === 0) {
-              markMessageBoundary(streamKey, prefix);
+              markMessageBoundary(streamKey);
               return;
             }
             queuePrefixedChunk(streamKey, prefix, text);
@@ -939,7 +894,6 @@ export function registerAgentCommands(program: Command): void {
         };
 
         ws.onclose = () => {
-          flushAllStreams();
           if (activeStreamKey) {
             endStreamLine(activeStreamKey);
           }

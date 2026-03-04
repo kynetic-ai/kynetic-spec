@@ -18,6 +18,7 @@ import {
   type TaskStateChange,
   type DispatchEngineOptions,
 } from "../src/agent-runtime/dispatch.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
 import {
   createTempDir,
   cleanupTempDir,
@@ -884,6 +885,71 @@ describe("AC-4: CLI posts state change event via handleStateChange", () => {
     // Agent should have been enqueued via direct API event
     expect(enqueueCount).toBeGreaterThanOrEqual(1);
 
+    await engine.stop();
+  });
+});
+
+// ─── AC-8 (daemon-agent-dispatch): structural boundaries for watch rendering ──
+
+describe("Text chunk boundary signaling", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-boundary-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should emit empty chunk boundary on non-text updates between text chunks", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const seenChunks: string[] = [];
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
+      opts.onUpdate?.({
+        sessionUpdate: "agent_message_chunk",
+        content: { type: "text", text: "before tool" },
+      } as unknown as import("../src/acp/index.js").SessionUpdate);
+      opts.onUpdate?.({
+        sessionUpdate: "tool_call",
+        toolCallId: "tool-1",
+        name: "Bash",
+        input: {},
+      } as unknown as import("../src/acp/index.js").SessionUpdate);
+      opts.onUpdate?.({
+        sessionUpdate: "agent_message_chunk",
+        content: { type: "text", text: "after tool" },
+      } as unknown as import("../src/acp/index.js").SessionUpdate);
+      return {
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      onTextChunk: (_sessionId, _agentId, _taskId, text) => {
+        seenChunks.push(text);
+      },
+    });
+
+    await engine.start();
+    const taskId = testUlid("TASK");
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    });
+
+    expect(seenChunks).toEqual(["before tool", "", "after tool"]);
     await engine.stop();
   });
 });

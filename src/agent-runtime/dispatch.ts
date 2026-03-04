@@ -671,7 +671,12 @@ export class DispatchEngine {
             update.content.type === "text"
           ) {
             this.onTextChunk!(preSessionId, agentId, taskId, update.content.text);
+            return;
           }
+          // Non-text updates (especially tool events) delimit logical message runs.
+          // Emit an empty sentinel so watch renderers can end the current line
+          // without needing to infer boundaries from prose punctuation.
+          this.onTextChunk!(preSessionId, agentId, taskId, "");
         }
       : undefined;
 
