@@ -895,17 +895,48 @@ features:
         status:
           maturity: draft
           implementation: in_progress
-        description: |
+        description: >-
           kspec task add [options]
 
-          Options:
-          - --title <title>: Task title
-          - --type <type>: task, epic, bug, spike, infra
-          - --spec-ref <ref>: Link to spec item
-          - --depends-on <refs>: Dependencies
-          - --priority <n>: Priority (1-5)
 
-          Creates task in pending status.
+          Creates a new task in pending status.
+
+
+          Required:
+
+          - --title <title>: Task title
+
+
+          Options:
+
+          - --description <description>: Task description (omitted if empty string)
+
+          - --type <type>: Task type — task, epic, bug, spike, infra (default: task)
+
+          - --spec-ref <ref>: Link to spec item (validated: must be a spec item, not a task or meta
+          item)
+
+          - --meta-ref <ref>: Link to meta item — workflow, agent, or convention (validated: must be
+          a meta item)
+
+          - --plan-ref <ref>: Link to plan this task is derived from (validated: must be a plan, not
+          a task or spec)
+
+          - --priority <n>: Priority 1-5 or P1-P5 (default: 3)
+
+          - --slug <slug>: Human-friendly slug alias (validated for uniqueness)
+
+          - --tag <tag...>: Tags (repeatable, supports comma-separated)
+
+          - --depends-on <refs...>: Task dependencies (validated: each ref must resolve to a task)
+
+          - --automation <status>: Automation eligibility — eligible, needs_review, manual_only
+
+
+          Examples:
+            kspec task add --title "Implement feature" --spec-ref @feature-spec
+            kspec task add --title "Fix bug" --type bug --priority P1
+            kspec task add --title "Multi-tag task" --tag cli urgent
         implements:
           - "@task-commands"
       - _ulid: 01JHNKA8W8CTSK200000000000
