@@ -73199,5 +73199,14 @@
         rendered section now gets a blank spacer line (while still avoiding leading blank lines).
         Updated AC-13 wording and adjusted watch tests accordingly; targeted suites pass."
       supersedes: null
+    - _ulid: 01KJVK7YSFS227K89WF88XVVNK
+      created_at: 2026-03-04T04:56:03.119Z
+      author: Jacob Chapel
+      content: "Changed dispatch watch display to speaker-section markers: [agent-id session-id] now
+        renders once when a stream becomes active, body text streams without per-line prefix
+        repetition, and marker appears again only when speaker changes. Preserved explicit ACP
+        boundary spacing and stream-local boundary handling. Updated AC-13 wording and refreshed
+        watch tests; targeted suites remain green."
+      supersedes: null
   todos: []
   automation: eligible
