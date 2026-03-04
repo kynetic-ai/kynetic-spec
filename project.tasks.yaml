@@ -72419,10 +72419,22 @@
   session_id: 01KJWCBPYBR3FZX556ZFPZ1DY3
   created_at: 2026-03-03T07:07:14.126Z
   started_at: 2026-03-04T12:16:17.140Z
-  notes: []
+  submitted_at: 2026-03-04T12:17:01.652Z
+  notes:
+    - _ulid: 01KJWCFC71WJDS9380BPDV99YT
+      created_at: 2026-03-04T12:17:00.641Z
+      author: Jacob Chapel
+      content: "Verification result: this task’s scope is already implemented on main via prior migration
+        work (PR #640). Confirmed deleted legacy tests: tests/ralph.test.ts,
+        tests/ralph-loop-errors.test.ts, tests/ralph-wrap-up.test.ts,
+        tests/ralph-context-refresh.test.ts. Confirmed equivalent replacement coverage by running:
+        npm run test -- tests/agent-dispatch-engine.test.ts tests/agent-invocation-lifecycle.test.ts
+        tests/cli-agent-commands.test.ts tests/ralph-replacement.test.ts (121 tests passed). kspec
+        validate currently reports pre-existing repository-wide schema/reference issues unrelated to
+        this task (duplicate @observations slug and missing .kspec/skills/observations/SKILL.md)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-04T12:17:01.652Z
 - _ulid: 01KJS8BFDFFNC3PVTNHRRPZSVZ
   slugs: []
   title: Update workflows to remove ralph references and use agent dispatch concepts
