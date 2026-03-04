@@ -71391,6 +71391,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #659. Implemented warning-only automation clarity for validate/lint by
+    adding --warnings-ok (exit 0 on warnings-only when requested), preserving default warning exit
+    code 6 with explicit messaging, and ensuring structured validate/lint output stays
+    machine-parseable in --json mode. Reviewed full PR diff and verified regression suite passes on
+    PR head (npm test: 173 files, 3616 tests, 3 skipped). AC coverage: N/A (task has no spec_ref)."
   depends_on: []
   context: []
   priority: 3
@@ -71400,6 +71405,7 @@
   created_at: 2026-03-03T06:43:23.015Z
   started_at: 2026-03-04T05:49:50.333Z
   submitted_at: 2026-03-04T05:56:01.633Z
+  completed_at: 2026-03-04T06:48:36.734Z
   notes:
     - _ulid: 01KJVPAF4TEPYF7APZDWC6MQ9G
       created_at: 2026-03-04T05:49:51.131Z
@@ -71441,12 +71447,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T06:48:36.734Z
-  closed_reason: "Merged in PR #659. Implemented warning-only automation clarity for validate/lint by
-    adding --warnings-ok (exit 0 on warnings-only when requested), preserving default warning exit
-    code 6 with explicit messaging, and ensuring structured validate/lint output stays
-    machine-parseable in --json mode. Reviewed full PR diff and verified regression suite passes on
-    PR head (npm test: 173 files, 3616 tests, 3 skipped). AC coverage: N/A (task has no spec_ref)."
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
   slugs: []
   title: kspec validate --json appends human-readable summary text after JSON payload, causing invalid
@@ -71570,7 +71570,7 @@
   type: task
   description: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71581,6 +71581,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-04T06:50:38.008Z
+  session_id: 01KJVS8ZP3DGFDH98G8AT7K627
 - _ulid: 01KJS6ZZGM4RYKNYS98PY1CSHQ
   slugs: []
   title: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
