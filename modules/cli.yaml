@@ -2765,6 +2765,10 @@ features:
             when: kspec inbox get @ref runs
             then: displays ULID, created_at (with relative time), added_by (if present), tags (if present), and
               full text
+          - id: ac-2
+            given: inbox ref does not exist
+            when: kspec inbox get @nonexistent runs
+            then: exits with not-found error and helpful message
       - _ulid: 01KJWVJQF0T4PMD44YB7P0J3DJ
         slugs:
           - cmd-inbox-set
