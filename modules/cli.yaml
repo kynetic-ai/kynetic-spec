@@ -6481,8 +6481,9 @@ features:
       - id: ac-14
         given: kspec agent dispatch watch is run
         when: The WebSocket connection to the daemon drops
-        then: The command automatically attempts to reconnect and prints a reconnecting message; exits with
-          code 3 if reconnection fails after retries
+        then: The command automatically attempts to reconnect and prints a reconnecting message; reconnect
+          notices are emitted on their own line (not appended to active agent output), and the
+          command exits with code 3 if reconnection fails after retries.
       - id: ac-15
         given: kspec agent dispatch watch is run
         when: The daemon is not running
