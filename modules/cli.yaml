@@ -2810,6 +2810,10 @@ features:
             given: inbox item @ref has existing tags
             when: kspec inbox set @ref --tag newtag runs
             then: new tag added to existing tags; duplicates avoided
+          - id: ac-3
+            given: inbox item @ref has existing tags
+            when: kspec inbox set @ref --clear-tags --tag fresh runs
+            then: all existing tags removed, then new tags added
       - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
         slugs:
           - cmd-inbox-note
