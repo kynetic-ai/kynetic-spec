@@ -48400,6 +48400,8 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Ralph deprecated. Wrap-up agent concept doesn't apply to dispatch model — invocations
+    are independent.
   depends_on: []
   context: []
   priority: 2
@@ -48414,8 +48416,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  closed_reason: Ralph deprecated. Wrap-up agent concept doesn't apply to dispatch model — invocations
-    are independent.
 - _ulid: 01KHF2BNVZSQV12C2DRK57C5P2
   slugs: []
   title: Create spec for validate --drift feature
@@ -48559,7 +48559,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -48575,6 +48575,8 @@
       supersedes: null
   todos: []
   automation: needs_review
+  closed_reason: Ralph loop gone. Dispatch invocations are discrete — no iteration delta. Reflection
+    gating is a skill concern now.
 - _ulid: 01KHFBSZ4A4M52HPYKZS0ZVY09
   slugs:
     - implement-skill-meta-type
