@@ -24,6 +24,7 @@ import yaml from "yaml";
 import { detectAgentFromEnv } from "../../parser/agent-detection.js";
 import { markMutating } from "../command-annotations.js";
 import {
+  mkdirBufferAware,
   readdirBufferAware,
   writeFileBufferAware,
 } from "../batch-write-buffer.js";
@@ -175,14 +176,15 @@ const SKILL_SUPPORTING_DIRS = ["docs", "references", "scripts", "assets"] as con
  */
 async function copyDirRecursive(src: string, dest: string): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
-  await fs.mkdir(dest, { recursive: true });
+  await mkdirBufferAware(dest);
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
       await copyDirRecursive(srcPath, destPath);
     } else if (entry.isFile()) {
-      await fs.copyFile(srcPath, destPath);
+      const srcContent = await fs.readFile(srcPath);
+      await writeFileBufferAware(destPath, srcContent);
     }
   }
 }
@@ -258,7 +260,7 @@ export async function copyCoreSkillFiles(
   }
 
   if (existingContent !== content) {
-    await fs.mkdir(targetDir, { recursive: true });
+    await mkdirBufferAware(targetDir);
     await writeFileBufferAware(targetSkillMd, content);
     changed = true;
   }

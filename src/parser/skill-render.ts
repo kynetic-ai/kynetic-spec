@@ -36,6 +36,7 @@ import * as crypto from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import yaml from "yaml";
+import { mkdirBufferAware, writeFileBufferAware } from "../cli/batch-write-buffer.js";
 import type { KspecContext } from "./yaml.js";
 import { loadMetaContext, loadSkillContent, type LoadedSkill } from "./meta.js";
 
@@ -340,13 +341,14 @@ export async function copyDirectory(
 ): Promise<void> {
   const entries = await fs.readdir(src, { withFileTypes: true });
   const baseSrc = options?.baseSrc || src;
+  await mkdirBufferAware(dest);
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
 
     if (entry.isDirectory()) {
-      await fs.mkdir(destPath, { recursive: true });
+      await mkdirBufferAware(destPath);
       await copyDirectory(srcPath, destPath, { ...options, baseSrc });
     } else {
       const transformFileContent = options?.transformFileContent;
@@ -354,9 +356,10 @@ export async function copyDirectory(
         const srcContent = await fs.readFile(srcPath, "utf-8");
         const relativePath = path.relative(baseSrc, srcPath).replaceAll(path.sep, "/");
         const transformed = transformFileContent(relativePath, srcContent);
-        await fs.writeFile(destPath, transformed, "utf-8");
+        await writeFileBufferAware(destPath, transformed);
       } else {
-        await fs.copyFile(srcPath, destPath);
+        const srcContent = await fs.readFile(srcPath);
+        await writeFileBufferAware(destPath, srcContent);
       }
     }
   }

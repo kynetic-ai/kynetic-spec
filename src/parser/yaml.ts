@@ -150,7 +150,9 @@ export async function readFileBufferAware(filePath: string): Promise<string> {
           code: "ENOENT",
         });
       }
-      return buffered;
+      return typeof buffered === "string"
+        ? buffered
+        : Buffer.from(buffered).toString("utf-8");
     }
   }
 

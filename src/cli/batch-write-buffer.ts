@@ -21,6 +21,7 @@ import type { Dirent } from "node:fs";
 import * as path from "node:path";
 
 type OverlayEntryKind = "file" | "directory";
+type BufferedFileContent = string | Uint8Array;
 
 interface BufferedDirectoryOverlay {
   directWrites: Map<string, "file" | "deleted">;
@@ -89,7 +90,7 @@ export class WriteBuffer {
   readonly specDir: string;
 
   /** buffered writes: path → content (null = deleted) */
-  private readonly entries = new Map<string, string | null>();
+  private readonly entries = new Map<string, BufferedFileContent | null>();
 
   constructor(specDir: string) {
     this.specDir = path.resolve(specDir);
@@ -107,7 +108,7 @@ export class WriteBuffer {
    * Write a file to the buffer.
    * AC: @batch-write-buffer ac-1
    */
-  write(filePath: string, content: string): void {
+  write(filePath: string, content: BufferedFileContent): void {
     this.entries.set(path.resolve(filePath), content);
   }
 
@@ -138,10 +139,34 @@ export class WriteBuffer {
    * or undefined if not in buffer (caller should fall back to disk).
    * AC: @batch-write-buffer ac-2
    */
-  read(filePath: string): string | null | undefined {
+  read(filePath: string): BufferedFileContent | null | undefined {
     const resolved = path.resolve(filePath);
     if (!this.entries.has(resolved)) return undefined;
     return this.entries.get(resolved)!;
+  }
+
+  /**
+   * True when filePath or any ancestor directory has been deleted in the overlay.
+   */
+  isDeletedInOverlay(filePath: string): boolean {
+    if (!this.isInScope(filePath)) return false;
+
+    let current = path.resolve(filePath);
+    while (true) {
+      if (this.entries.get(current) === null) {
+        return true;
+      }
+      if (current === this.specDir) {
+        break;
+      }
+      const parent = path.dirname(current);
+      if (parent === current) {
+        break;
+      }
+      current = parent;
+    }
+
+    return false;
   }
 
   /**
@@ -193,14 +218,19 @@ export class WriteBuffer {
   ): Promise<string[] | Dirent[]> {
     const resolvedDir = path.resolve(directory);
     const withFileTypes = options?.withFileTypes === true;
+    if (this.isDeletedInOverlay(resolvedDir)) {
+      throw createNotFoundError(resolvedDir);
+    }
 
     let diskEntries: Dirent[] = [];
+    let diskMissing = false;
     try {
       diskEntries = await fs.readdir(resolvedDir, { withFileTypes: true });
     } catch (err) {
       if (!isNotFoundError(err)) {
         throw err;
       }
+      diskMissing = true;
     }
 
     const diskDirentsByName = new Map<string, Dirent>();
@@ -222,6 +252,10 @@ export class WriteBuffer {
 
     for (const name of overlay.inferredDirectories) {
       mergedKinds.set(name, "directory");
+    }
+
+    if (diskMissing && mergedKinds.size === 0) {
+      throw createNotFoundError(resolvedDir);
     }
 
     const names = [...mergedKinds.keys()].sort((a, b) => a.localeCompare(b));
@@ -388,6 +422,10 @@ export async function accessBufferAware(
 ): Promise<void> {
   const buffer = getActiveBatchBuffer();
   if (buffer?.isInScope(filePath)) {
+    if (buffer.isDeletedInOverlay(filePath)) {
+      throw createNotFoundError(filePath);
+    }
+
     const buffered = buffer.read(filePath);
     if (buffered === null) {
       throw createNotFoundError(filePath);
@@ -410,7 +448,7 @@ export async function accessBufferAware(
 
 export async function writeFileBufferAware(
   filePath: string,
-  content: string,
+  content: BufferedFileContent,
 ): Promise<void> {
   const buffer = getActiveBatchBuffer();
   if (buffer?.isInScope(filePath)) {
@@ -418,5 +456,19 @@ export async function writeFileBufferAware(
     return;
   }
 
-  await fs.writeFile(filePath, content, "utf-8");
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  if (typeof content === "string") {
+    await fs.writeFile(filePath, content, "utf-8");
+  } else {
+    await fs.writeFile(filePath, content);
+  }
+}
+
+export async function mkdirBufferAware(directoryPath: string): Promise<void> {
+  const buffer = getActiveBatchBuffer();
+  if (buffer?.isInScope(directoryPath)) {
+    return;
+  }
+
+  await fs.mkdir(directoryPath, { recursive: true });
 }

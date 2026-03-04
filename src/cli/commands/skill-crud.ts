@@ -18,7 +18,7 @@ import Table from "cli-table3";
 import type { Command } from "commander";
 import { ulid } from "ulid";
 import yaml from "yaml";
-import { writeFileBufferAware } from "../batch-write-buffer.js";
+import { mkdirBufferAware, writeFileBufferAware } from "../batch-write-buffer.js";
 import { markMutating } from "../command-annotations.js";
 import {
   deleteMetaItem,
@@ -912,7 +912,7 @@ export function registerSkillCrudCommands(skill: Command): void {
             const stats = await fs.stat(sourceSubDir);
             if (stats.isDirectory()) {
               const targetSubDir = path.join(ctx.specDir, "skills", skill.id, dirName);
-              await fs.mkdir(targetSubDir, { recursive: true });
+              await mkdirBufferAware(targetSubDir);
               await copyDirectory(sourceSubDir, targetSubDir);
             }
           } catch {

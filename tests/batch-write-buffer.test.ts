@@ -152,6 +152,14 @@ describe("WriteBuffer.listDir() and helper dirents", () => {
     expect(direntEntries[0].name).toBe("child.yaml");
     expect(direntEntries[0].isFile()).toBe(true);
   });
+
+  it("listDir() throws ENOENT when directory is deleted in the overlay", async () => {
+    const buf = new WriteBuffer(tempDir);
+    const existingDir = path.join(tempDir, "existing-dir");
+    buf.delete(existingDir);
+
+    await expect(buf.listDir(existingDir)).rejects.toMatchObject({ code: "ENOENT" });
+  });
 });
 
 describe("buffer-aware fs helpers", () => {
@@ -191,6 +199,11 @@ describe("buffer-aware fs helpers", () => {
 
     buffer.write(path.join(tempDir, "nested", "child.md"), "hello");
     await expect(accessBufferAware(path.join(tempDir, "nested"))).resolves.toBeUndefined();
+
+    buffer.delete(path.join(tempDir, "gone"));
+    await expect(accessBufferAware(path.join(tempDir, "gone", "child.md"))).rejects.toMatchObject({
+      code: "ENOENT",
+    });
   });
 
   it("writeFileBufferAware()/readFileBufferAware() use active buffer", async () => {
@@ -432,6 +445,52 @@ describe("batch write buffer integration", () => {
     const item = kspec("item get @batch-buffer-test-module", tempDir);
     expect(item.stdout).toContain("first then");
     expect(item.stdout).toContain("second then");
+  });
+
+  // AC: @batch-write-buffer ac-1, ac-4 — supporting file writes rollback in atomic batch failures
+  it("skill import supporting files do not persist when later batch command fails", async () => {
+    const sourceDir = path.join(tempDir, "skill-import-source");
+    const docsDir = path.join(sourceDir, "docs");
+    const skillMdSource = path.join(sourceDir, "SKILL.md");
+    await fs.mkdir(docsDir, { recursive: true });
+    await fs.writeFile(skillMdSource, "# Rollback Skill\n\nUsed for rollback test.\n", "utf-8");
+    await fs.writeFile(path.join(docsDir, "guide.md"), "guide text", "utf-8");
+
+    const commands = [
+      {
+        command: "skill import",
+        args: {
+          file: skillMdSource,
+          id: "rollback-skill",
+          name: "Rollback Skill",
+          description: "Rollback test skill",
+          origin: "local",
+        },
+      },
+      {
+        command: "task start",
+        args: {
+          ref: "@does-not-exist-task",
+        },
+      },
+    ];
+
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${JSON.stringify(commands)}'`,
+      tempDir,
+      { expectFail: true },
+    );
+    expect(result.success).toBe(false);
+    expect(result.summary.succeeded).toBe(1);
+    expect(result.summary.failed).toBe(1);
+
+    const importedSkillMd = path.join(tempDir, ".kspec", "skills", "rollback-skill", "SKILL.md");
+    const importedDoc = path.join(tempDir, ".kspec", "skills", "rollback-skill", "docs", "guide.md");
+    await expect(fs.access(importedSkillMd)).rejects.toThrow();
+    await expect(fs.access(importedDoc)).rejects.toThrow();
+
+    const skills = kspec("skill list", tempDir);
+    expect(skills.stdout).not.toContain("rollback-skill");
   });
 
   // AC: @batch-write-buffer ac-4 — rollback on failure leaves .kspec/ unchanged
