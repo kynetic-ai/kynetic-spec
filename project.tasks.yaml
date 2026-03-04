@@ -72622,6 +72622,14 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: task submit accepts empty --review-url and still
         transitions state, violating @task-submit ac-submit-3."
       supersedes: null
+    - _ulid: 01KJXFJ1M137HGMEZWW8EM3RPS
+      created_at: 2026-03-04T22:30:08.258Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Fixed empty --review-url bypass: changed truthy check to !== undefined in
+        task submit (line 1631), matching existing pattern in task set. Also fixed spread at line
+        1661. Added test for empty-string rejection. All 9 review_url tests + 44 dispatch tests
+        pass."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJS90FR4GQVQQYA4QM2XJZ1W
