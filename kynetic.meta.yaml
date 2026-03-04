@@ -7417,10 +7417,19 @@ observations:
     resolution: null
   - _ulid: 01KJW9QY0RV4R5Z2KTKSAEKDMW
     type: friction
+    workflow_ref: "@task-work-loop"
     content: Dispatch invocation targeted @01KJS8BAWP2WNCD003DQX75GKY as task.in_progress after it had
       already been merged/completed; worker had to run a no-op verification pass.
-    workflow_ref: "@task-work-loop"
     created_at: 2026-03-04T11:29:15.289Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJW9T2NDDR53WCNBXCGZYXAN
+    type: friction
+    content: "Dispatch trigger indicated task.needs_work for @01KJS8BAWP2WNCD003DQX75GKY after the task
+      had already transitioned to completed and PR #670 was merged; worker invocation ran as a
+      no-op."
+    created_at: 2026-03-04T11:30:25.581Z
     author: Jacob Chapel
     resolved: false
     resolution: null
