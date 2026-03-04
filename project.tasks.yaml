@@ -71450,15 +71450,33 @@
     invalid JSON for downstream jq parsing. Expected: pure JSON when --json is set. Workaround: pipe
     through head or sed to strip trailing text. Reported from imgen project."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJVPPKAS8S5XY11KQ6CBTHT4
   created_at: 2026-03-03T06:43:24.752Z
-  notes: []
+  started_at: 2026-03-04T06:08:56.339Z
+  notes:
+    - _ulid: 01KJVQDEA47KER24GTNRA1GQ4S
+      created_at: 2026-03-04T06:08:57.157Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: validate --json must emit pure JSON for downstream parsers (jq, tooling).
+
+        - Scope: fix validate/lint structured output so no human text is appended to stdout in JSON
+        mode; add regression tests.
+
+        - Files: src/cli/commands/validate.ts and validate-related tests.
+
+        - Verification: targeted validate tests plus full suite shard where feasible, and a direct
+        validate --json parse check.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
