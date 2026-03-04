@@ -17,6 +17,7 @@ import {
   createIsolatedKspecHome,
   cleanupTempDir,
   kspec,
+  waitForStartup,
   testUlid,
   initGitRepo,
 } from "./helpers/cli.js";
@@ -1360,12 +1361,17 @@ function makeFakeWsClass(): { FakeWs: new (url: string) => FakeWsInstance; getLa
  * Used to handle async initContext() completing before WebSocket is created.
  */
 async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void> {
-  const interval = 10;
-  let elapsed = 0;
-  while (!condition() && elapsed < maxWaitMs) {
-    await new Promise((r) => setTimeout(r, interval));
-    elapsed += interval;
-  }
+  await waitForStartup(
+    "dispatch watch test readiness",
+    async () => {
+      const ok = condition();
+      return {
+        ok,
+        details: ok ? "condition met" : "condition still false",
+      };
+    },
+    { timeoutMs: maxWaitMs, intervalMs: 10 },
+  );
 }
 
 // AC: @cli-agent-commands ac-15
@@ -2055,7 +2061,19 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     });
     // Trigger close before coalesced timer flushes naturally.
     instances[0].onclose?.();
-    await new Promise((r) => setTimeout(r, 10));
+    await waitForStartup(
+      "dispatch watch reconnect output flush",
+      async () => {
+        const stdout = stdoutWrites.join("");
+        const reconnectLogged = stderrWrites.some((l) => l.includes("[watch] Connection lost"));
+        const flushed = stdout.includes("[worker sess-abc]\nline without newline\n");
+        return {
+          ok: reconnectLogged && flushed,
+          details: `stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
+        };
+      },
+      { timeoutMs: 1_000, intervalMs: 10 },
+    );
 
     const stdout = stdoutWrites.join("");
     expect(stdout).toContain("[worker sess-abc]\nline without newline\n");
