@@ -74067,6 +74067,28 @@
         - Verification: targeted cli-agent-commands tests, then kspec validate and relevant test
         suite.
       supersedes: null
+    - _ulid: 01KJWHWN28JER3BMGJ5T0X6YQ8
+      created_at: 2026-03-04T13:51:38.568Z
+      author: Jacob Chapel
+      content: >-
+        Implemented subscribe-handshake failure handling for agent dispatch watch.
+
+        - Added @cli-agent-commands ac-18 to define failure semantics when subscribe ack returns
+        success=false.
+
+        - Added AC-18 test coverage in tests/cli-agent-commands.test.ts for immediate exit with
+        actionable guidance.
+
+        - Updated src/cli/commands/agent.ts to inspect subscribe ack (request_id=watch-subscribe),
+        fail fast on success=false, print guidance, and exit code 3 without reconnect loop.
+
+        - Verification: npx vitest run tests/cli-agent-commands.test.ts (pass, 46 tests); npx vitest
+        run . (pass, 173 files / 3642 tests).
+
+        - Note: kspec validate currently fails in this repo due pre-existing
+        meta/reference/alignment issues unrelated to this change (e.g., duplicate @observations slug
+        and existing alignment warnings).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJVF3KTW4SR8PFXG6R08GCSE
