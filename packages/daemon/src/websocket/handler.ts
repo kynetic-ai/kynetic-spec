@@ -12,6 +12,49 @@ import type { ServerWebSocket } from 'bun';
 import type { WebSocketCommand, CommandAck, ConnectionData } from './types';
 import type { PubSubManager } from './pubsub';
 
+type WebSocketRawMessage =
+  | string
+  | Buffer
+  | ArrayBuffer
+  | ArrayBufferView
+  | Blob
+  | Record<string, unknown>;
+
+/**
+ * Decode inbound WebSocket payloads into UTF-8 text.
+ *
+ * Node/WebSocket clients may deliver command frames as Uint8Array/ArrayBuffer
+ * or Blob instead of plain strings.
+ */
+async function decodeWebSocketMessage(rawMessage: WebSocketRawMessage): Promise<string> {
+  if (typeof rawMessage === 'string') {
+    return rawMessage;
+  }
+
+  if (typeof rawMessage === 'object' && rawMessage !== null && !ArrayBuffer.isView(rawMessage)) {
+    if (rawMessage instanceof ArrayBuffer) {
+      return Buffer.from(rawMessage).toString('utf-8');
+    }
+
+    if (rawMessage instanceof Blob) {
+      return await rawMessage.text();
+    }
+
+    // Some runtimes already JSON-decode inbound websocket command payloads.
+    return JSON.stringify(rawMessage);
+  }
+
+  if (ArrayBuffer.isView(rawMessage)) {
+    return Buffer.from(
+      rawMessage.buffer,
+      rawMessage.byteOffset,
+      rawMessage.byteLength,
+    ).toString('utf-8');
+  }
+
+  return String(rawMessage);
+}
+
 export class WebSocketHandler {
   constructor(private pubsub: PubSubManager) {}
 
@@ -19,12 +62,22 @@ export class WebSocketHandler {
    * Handle incoming WebSocket command
    * AC: @api-contract ac-26, ac-27, ac-28, ac-30
    */
-  handleMessage(ws: ServerWebSocket<ConnectionData>, rawMessage: string | Buffer) {
+  handleMessage(
+    ws: ServerWebSocket<ConnectionData>,
+    rawMessage: WebSocketRawMessage,
+  ): Promise<void> {
+    return this.handleMessageInternal(ws, rawMessage);
+  }
+
+  private async handleMessageInternal(
+    ws: ServerWebSocket<ConnectionData>,
+    rawMessage: WebSocketRawMessage,
+  ): Promise<void> {
     let command: WebSocketCommand;
 
     try {
       // Parse command
-      const messageStr = typeof rawMessage === 'string' ? rawMessage : rawMessage.toString();
+      const messageStr = await decodeWebSocketMessage(rawMessage);
       command = JSON.parse(messageStr);
 
       // Validate command structure
@@ -76,11 +129,12 @@ export class WebSocketHandler {
       return;
     }
 
-    const success = this.pubsub.subscribe(ws.data.sessionId, topics);
+    const sessionId = this.resolveSessionId(ws);
+    const success = sessionId ? this.pubsub.subscribe(sessionId, topics) : false;
 
     if (success) {
       this.sendAck(ws, command.request_id, true);
-      console.log(`[ws] ${ws.data.sessionId} subscribed to: ${topics.join(', ')}`);
+      console.log(`[ws] ${sessionId} subscribed to: ${topics.join(', ')}`);
     } else {
       this.sendAck(ws, command.request_id, false, 'not_found', 'Session not found');
     }
@@ -97,11 +151,12 @@ export class WebSocketHandler {
       return;
     }
 
-    const success = this.pubsub.unsubscribe(ws.data.sessionId, topics);
+    const sessionId = this.resolveSessionId(ws);
+    const success = sessionId ? this.pubsub.unsubscribe(sessionId, topics) : false;
 
     if (success) {
       this.sendAck(ws, command.request_id, true);
-      console.log(`[ws] ${ws.data.sessionId} unsubscribed from: ${topics.join(', ')}`);
+      console.log(`[ws] ${sessionId} unsubscribed from: ${topics.join(', ')}`);
     } else {
       this.sendAck(ws, command.request_id, false, 'not_found', 'Session not found');
     }
@@ -112,6 +167,12 @@ export class WebSocketHandler {
    */
   private handlePing(ws: ServerWebSocket<ConnectionData>, command: WebSocketCommand) {
     this.sendAck(ws, command.request_id, true);
+  }
+
+  private resolveSessionId(ws: ServerWebSocket<ConnectionData>): string | undefined {
+    const data = ws.data as { id?: unknown } | undefined;
+    const contextId = typeof data?.id === 'string' ? data.id : undefined;
+    return this.pubsub.getSessionIdBySocket(ws, contextId);
   }
 
   /**
