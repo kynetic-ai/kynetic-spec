@@ -442,7 +442,7 @@ features:
                   checks getActiveBatchBuffer() before falling back to disk
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
         acceptance_criteria:
           - id: ac-stdin
             given: JSON array piped via stdin
