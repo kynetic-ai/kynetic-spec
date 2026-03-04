@@ -742,35 +742,31 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
-      type StreamRenderState = { atLineStart: boolean };
+      const CHUNK_COALESCE_MS = 50;
+      type StreamRenderState = {
+        atLineStart: boolean;
+        pendingText: string;
+        flushTimer: NodeJS.Timeout | null;
+      };
       const streamRenderStates = new Map<string, StreamRenderState>();
+      const streamPrefixes = new Map<string, string>();
       let activeStreamKey: string | null = null;
 
       function getStreamState(streamKey: string): StreamRenderState {
         let state = streamRenderStates.get(streamKey);
         if (!state) {
-          state = { atLineStart: true };
+          state = { atLineStart: true, pendingText: "", flushTimer: null };
           streamRenderStates.set(streamKey, state);
         }
         return state;
       }
 
-      // Prefix once per line, not once per token-sized chunk.
-      function writePrefixedChunk(
+      function writePrefixedText(
         streamKey: string,
         prefix: string,
         text: string,
       ): void {
         if (!text) return;
-
-        if (activeStreamKey && activeStreamKey !== streamKey) {
-          const prevState = getStreamState(activeStreamKey);
-          if (!prevState.atLineStart) {
-            process.stdout.write("\n");
-            prevState.atLineStart = true;
-          }
-        }
-        activeStreamKey = streamKey;
 
         const state = getStreamState(streamKey);
         const parts = text.split(/(\r?\n)/);
@@ -795,6 +791,60 @@ export function registerAgentCommands(program: Command): void {
         if (output) {
           process.stdout.write(output);
         }
+      }
+
+      function flushStream(streamKey: string): void {
+        const state = getStreamState(streamKey);
+        if (state.flushTimer) {
+          clearTimeout(state.flushTimer);
+          state.flushTimer = null;
+        }
+        if (!state.pendingText) return;
+
+        const text = state.pendingText;
+        state.pendingText = "";
+        const prefix = streamPrefixes.get(streamKey) ?? `[${streamKey}]`;
+        writePrefixedText(streamKey, prefix, text);
+
+        // Treat each buffered burst as a logical message.
+        if (!state.atLineStart) {
+          process.stdout.write("\n");
+          state.atLineStart = true;
+        }
+      }
+
+      function flushAllStreams(): void {
+        for (const streamKey of streamRenderStates.keys()) {
+          flushStream(streamKey);
+        }
+      }
+
+      // Coalesce tiny token chunks so messages render naturally.
+      function queuePrefixedChunk(
+        streamKey: string,
+        prefix: string,
+        text: string,
+      ): void {
+        if (!text) return;
+
+        if (activeStreamKey && activeStreamKey !== streamKey) {
+          flushStream(activeStreamKey);
+        }
+        activeStreamKey = streamKey;
+
+        const state = getStreamState(streamKey);
+        streamPrefixes.set(streamKey, prefix);
+        state.pendingText += text;
+        if (state.flushTimer) {
+          clearTimeout(state.flushTimer);
+        }
+        state.flushTimer = setTimeout(() => {
+          flushStream(streamKey);
+        }, CHUNK_COALESCE_MS);
+      }
+
+      function formatSessionIdForDisplay(sessionId: string): string {
+        return sessionId ? sessionId.slice(0, 8) : "";
       }
 
       // Resolve project dir for WebSocket project binding
@@ -851,7 +901,8 @@ export function registerAgentCommands(program: Command): void {
             if (sessionFilter && sessionId !== sessionFilter) return;
 
             const streamKey = `${agentId}\u0000${sessionId}`;
-            writePrefixedChunk(streamKey, `[${agentId} ${sessionId}]`, text);
+            const displaySessionId = formatSessionIdForDisplay(sessionId);
+            queuePrefixedChunk(streamKey, `[${agentId} ${displaySessionId}]`, text);
           }
         };
 
@@ -860,6 +911,8 @@ export function registerAgentCommands(program: Command): void {
         };
 
         ws.onclose = () => {
+          flushAllStreams();
+
           if (retryCount >= retryLimit) {
             // AC: @cli-agent-commands ac-14 — exit code 3 when retries exhausted
             error(

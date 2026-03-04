@@ -1409,6 +1409,8 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — streams line-prefixed output", () => {
+  const STREAM_FLUSH_MS = 90;
+
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -1454,7 +1456,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
 
     // AC: @cli-agent-commands ac-13 - output is prefixed with [agent-id session-id]
     const output = written.join("");
@@ -1500,7 +1502,7 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
       });
     }
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
 
     const output = written.join("");
     expect(output).toContain("[worker sess-abc] I am streaming");
@@ -1544,10 +1546,93 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
 
     const output = written.join("");
     expect(output).toContain("[worker-a sess-a] hello\n[worker-b sess-b] world");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should place distinct same-stream updates on separate lines", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "First update." },
+      }),
+    });
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "Second update." },
+      }),
+    });
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-abc] First update.\n[worker sess-abc] Second update.");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should display shortened session id in prefix", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    vi.stubGlobal("WebSocket", FakeWs);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: {
+          session_id: "01KJVFYRKXXQG7N3BYC68KSX6H",
+          agent_id: "worker",
+          text: "hello",
+        },
+      }),
+    });
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
+
+    const output = written.join("");
+    expect(output).toContain("[worker 01KJVFYR] hello");
+    expect(output).not.toContain("01KJVFYRKXXQG7N3BYC68KSX6H");
 
     runPromise.catch(() => {/* ignore */});
   });
@@ -1555,6 +1640,8 @@ describe("AC-13: dispatch watch — streams line-prefixed output", () => {
 
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
+  const STREAM_FLUSH_MS = 90;
+
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -1600,7 +1687,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
 
     const output = written.join("");
     // AC: @cli-agent-commands ac-16 - non-matching chunks silently dropped
@@ -1648,7 +1735,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
       }),
     });
 
-    await new Promise((r) => setTimeout(r, 10));
+    await new Promise((r) => setTimeout(r, STREAM_FLUSH_MS));
 
     const output = written.join("");
     expect(output).not.toContain("dropped");
@@ -1713,6 +1800,58 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(instances.length).toBeGreaterThanOrEqual(2);
 
     vi.useRealTimers();
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  it("should flush active output line before reconnect message", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const instances: FakeWsInstance[] = [];
+    class CaptureWs implements FakeWsInstance {
+      send = vi.fn();
+      onopen: ((e: unknown) => void) | null = null;
+      onmessage: ((e: { data: string }) => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      onclose: (() => void) | null = null;
+      constructor(_url: string) { instances.push(this); }
+    }
+    vi.stubGlobal("WebSocket", CaptureWs);
+
+    const stdoutWrites: string[] = [];
+    const stderrWrites: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      stdoutWrites.push(String(chunk));
+      return true;
+    });
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--retries", "1"],
+      { from: "user" },
+    );
+
+    await waitFor(() => instances.length >= 1, 1000);
+    instances[0].onopen?.({});
+    instances[0].onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-abc", agent_id: "worker", text: "line without newline" },
+      }),
+    });
+    // Trigger close before coalesced timer flushes naturally.
+    instances[0].onclose?.();
+    await new Promise((r) => setTimeout(r, 10));
+
+    const stdout = stdoutWrites.join("");
+    expect(stdout).toContain("[worker sess-abc] line without newline\n");
+    expect(stderrWrites.some((l) => l.includes("[watch] Connection lost"))).toBe(true);
+
     runPromise.catch(() => {/* ignore */});
   });
 
