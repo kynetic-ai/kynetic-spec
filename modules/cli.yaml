@@ -984,6 +984,10 @@ features:
             given: --plan-ref points to a task or spec item
             when: kspec task add --title 'T' --plan-ref @some-task runs
             then: exits with error; plan ref must point to a plan
+          - id: ac-priority-default
+            given: no --priority provided
+            when: kspec task add --title 'T' runs
+            then: task created with priority 3 (default)
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
