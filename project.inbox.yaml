@@ -1519,3 +1519,13 @@ inbox:
       - cli
       - workflow
     added_by: Jacob Chapel
+  - _ulid: 01KJVP7W2N189NDC4SMQHR18GM
+    text: "Reflection: Improve task note readability by supporting filtered views for superseded history
+      (for example latest-only and/or hide-superseded) to reduce stale guidance noise during
+      implementation."
+    created_at: 2026-03-04T05:48:26.069Z
+    tags:
+      - reflection
+      - cli
+      - notes
+    added_by: Jacob Chapel
