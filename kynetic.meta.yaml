@@ -7387,6 +7387,14 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJVT2QBNCGDKF3KRD288AK9Z
+    type: friction
+    content: CLI integration tests run against dist binary, so editing command options requires a full
+      build before vitest; failures initially look like unknown-option regressions.
+    created_at: 2026-03-04T06:55:31.701Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
