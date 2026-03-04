@@ -7516,6 +7516,27 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KJWQWB8KK0DYD966TXMA7C03
+    type: friction
+    content: "Batch reports success (20/20) when buffer bypass causes silent data loss. The batch engine
+      has no mechanism to detect that command B overwrote command A via stale read. At minimum,
+      batch should warn when multiple commands write to the same file — that is the signal for
+      potential read-after-write violations. Related: task @01KJWQM3 (buffer bypass fix)."
+    created_at: 2026-03-04T15:36:19.988Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KJWQWBCSB96Y4R9H3HZ3DWYP
+    type: friction
+    content: "kspec task start auto-syncs spec implementation status to in_progress. For
+      spec-documentation tasks (filling in descriptions/ACs on an already-implemented spec), this is
+      wrong — the spec IS implemented, we are just documenting it retroactively. task start should
+      not change spec status when the task is purely about spec documentation, not code changes.
+      Workaround: manually reset with kspec item set @ref --status implemented after starting."
+    created_at: 2026-03-04T15:36:20.122Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
