@@ -71597,6 +71597,21 @@
 
         - Verification: focused vitest for task set/integration/batch-schema, then kspec validate.
       supersedes: null
+    - _ulid: 01KJVT2R1KP4HJXN155BSM2AHK
+      created_at: 2026-03-04T06:55:32.403Z
+      author: Jacob Chapel
+      content: >-
+        Implemented task set CLI DX:
+
+        - Added --description <description> to task set (single + --refs batch).
+
+        - Supports clearing description via --description null or whitespace-only value.
+
+        - Added integration coverage for set/update/clear and batch description updates.
+
+        - Verified with npx vitest run tests/integration.test.ts tests/task-set-batch.test.ts
+        tests/help-examples.test.ts (all passing).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS6ZZGM4RYKNYS98PY1CSHQ
