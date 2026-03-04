@@ -1535,14 +1535,3 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJX5DGT39NRF42PKH743R3BV
-    text: "Codex platform detection tests fail when run inside Claude Code —
-      core-skill-install.test.ts:280 and enhanced-setup.test.ts:368 set CLAUDECODE='' but don't
-      clear CLAUDE_CODE_ENTRYPOINT, which leaks from the parent env and causes detectAgentFromEnv()
-      to return claude-code instead of codex. Fix: tests must also set CLAUDE_CODE_ENTRYPOINT='' and
-      CLAUDE_PROJECT_DIR='' and CLAUDE_CODE='' to fully suppress Claude Code detection."
-    created_at: 2026-03-04T19:32:54.211Z
-    tags:
-      - bug
-      - testing
-    added_by: "@claude"
