@@ -12295,6 +12295,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-04T10:27:11.283Z
+    completed_at: 2026-03-04T10:27:46.237Z
     step_results:
       - step_index: 0
         status: completed
@@ -12324,4 +12325,11 @@ runs:
         notes: No captures performed in this run. All identified candidates were duplicates of existing
           tracked items; retained high-confidence/no-noise policy.
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-04T10:27:46.237Z
+  - _ulid: 01KJW79BZYTXYWBE1JXQ00PKNM
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-04T10:46:20.926Z
+    step_results: []
+    initiated_by: Jacob Chapel
