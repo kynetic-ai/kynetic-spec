@@ -2769,6 +2769,8 @@ features:
             given: inbox ref does not exist
             when: kspec inbox get @nonexistent runs
             then: exits with not-found error and helpful message
+        status:
+          implementation: implemented
       - _ulid: 01KJWVJQF0T4PMD44YB7P0J3DJ
         slugs:
           - cmd-inbox-set
