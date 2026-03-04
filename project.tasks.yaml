@@ -72243,6 +72243,29 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @ralph-replacement ac-1 regression in PR #670;
         deprecation message and tests removed required dry-run migration mapping."
       supersedes: null
+    - _ulid: 01KJW93QVKPK8CQX2V190EMN60
+      created_at: 2026-03-04T11:18:13.619Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 1] Restored dry-run migration guidance required by @ralph-replacement ac-1.
+
+        - Added deprecation mapping: 'kspec ralph --dry-run' -> 'kspec agent dispatch start
+        --dry-run' in src/cli/commands/ralph.ts.
+
+        - Updated tests/ralph-replacement.test.ts to assert dry-run mapping is present (using
+        resilient substring assertions to avoid ANSI formatting brittleness).
+
+        Verification:
+
+        - npm run build (pass)
+
+        - npx vitest run tests/ralph-replacement.test.ts (pass: 9/9)
+
+        - npx vitest run (pass: 173 files, 3641 passed, 3 skipped)
+
+        - kspec validate exits 4 due pre-existing project-wide schema/reference issues unrelated to
+        this task (missing .kspec/skills/observations/SKILL.md and duplicate @observations refs).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BC1W5Y4Z2Y23GQSD4EFS
