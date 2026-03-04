@@ -73555,6 +73555,7 @@
     - automation
   vcs_refs: []
   created_at: 2026-03-04T05:58:39.059Z
+  started_at: 2026-03-04T07:21:56.889Z
   notes:
     - _ulid: 01KJVPTKY916RMSHB11ZBEDYEQ
       created_at: 2026-03-04T05:58:40.329Z
@@ -73577,6 +73578,13 @@
 
         - Verification: targeted dispatch tests + setup seeding tests + full npm test.
       supersedes: null
+    - _ulid: 01KJVVMP971A1W84RFMRFZER98
+      created_at: 2026-03-04T07:22:48.999Z
+      author: Jacob Chapel
+      content: "Implementation plan: add task.in_progress as a valid dispatch/session trigger, wire
+        status↔event mapping in dispatch runtime, enforce deterministic queue precedence with
+        in_progress first, seed setup built-in task-worker with in_progress+eligible rule, and add
+        regression tests for scheduler order/bootstrap/defaults."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T07:21:56.889Z
