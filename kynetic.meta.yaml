@@ -7477,6 +7477,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJWHFC61WS9FX62EGYHS28KT
+    type: friction
+    content: Autonomous dispatch invoked @01KJTP69W21Z3GQE8J2HAXC4WV with trigger context
+      task.in_progress after task was already completed and merged; dispatch source should
+      re-validate task state before assignment.
+    created_at: 2026-03-04T13:44:23.490Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
