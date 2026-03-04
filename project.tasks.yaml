@@ -71348,12 +71348,30 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJVMAFWCEM76H9DCJN1QFRN6
   created_at: 2026-03-03T06:43:20.809Z
-  notes: []
+  started_at: 2026-03-04T05:15:58.455Z
+  notes:
+    - _ulid: 01KJVMCDDVQHN85FJ6DMACDJ29
+      created_at: 2026-03-04T05:15:57.756Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: ACP framing send() currently logs but does not treat EPIPE as a clean
+        connection close when child stdin is already closed.
+
+        - Scope: Handle EPIPE in src/acp/framing.ts send() path, remove process-level
+        uncaughtException workaround in tests, and add framing-level regression coverage.
+
+        - Files: src/acp/framing.ts, tests/acp.test.ts, tests/ralph/adapter-auto-approve.test.ts (as
+        needed).
+
+        - Verification: run focused ACP/adapter tests, then run full test suite or equivalent
+        project standard checks.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T05:15:58.455Z
-  session_id: 01KJVMAFWCEM76H9DCJN1QFRN6
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
   title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
