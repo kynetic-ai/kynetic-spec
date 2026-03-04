@@ -72944,7 +72944,9 @@
     - testing
     - bug
   vcs_refs: []
+  session_id: 01KJWD6PVCFRET92JHW9GRPE70
   created_at: 2026-03-03T19:03:02.559Z
+  started_at: 2026-03-04T12:32:34.844Z
   notes:
     - _ulid: 01KJTPG6P49VG4TENB5ZGJ7JX4
       created_at: 2026-03-03T20:33:44.644Z
@@ -72952,10 +72954,24 @@
       content: "Automation status set to needs_review: Missing spec_ref; add/attach spec with AC coverage
         before automation"
       supersedes: null
+    - _ulid: 01KJWDC0Q2SJG2AYE10SQYGVBE
+      created_at: 2026-03-04T12:32:39.138Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: AC-10 tests for agent dispatch start can intermittently hit real daemon state
+        in parallel runs.
+
+        - Scope: Stabilize AC-10 coverage in tests by removing external daemon dependencies.
+
+        - Files: tests/cli-agent-commands.test.ts (and minimal helper/support files only if
+        required).
+
+        - Verification: run AC-10 focused test selection plus kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T12:32:34.844Z
-  session_id: 01KJWD6PVCFRET92JHW9GRPE70
 - _ulid: 01KJTHAB6NRKQE12JJ7Q7V80CK
   slugs: []
   title: Fix core-skill-install test flakiness in shard 3
