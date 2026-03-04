@@ -2814,6 +2814,10 @@ features:
             given: inbox item @ref has existing tags
             when: kspec inbox set @ref --clear-tags --tag fresh runs
             then: all existing tags removed, then new tags added
+          - id: ac-4
+            given: no update options provided
+            when: kspec inbox set @ref runs with no --content or --tag flags
+            then: informative message indicating no updates specified
       - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
         slugs:
           - cmd-inbox-note
