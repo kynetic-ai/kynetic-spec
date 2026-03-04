@@ -185,6 +185,23 @@ describe("buildCommandArgv", () => {
     expect(argv[tagIndices[1] + 1]).toBe("b");
   });
 
+  it("accepts tags alias for variadic --tag option", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "inbox")!
+      .subcommands.find((c) => c.name === "add")!;
+    const argv = buildCommandArgv(
+      { command: "inbox add", args: { text: "idea", tags: ["cli", "dx"] } },
+      cmdMeta,
+    );
+    const tagIndices = argv
+      .map((v, i) => (v === "--tag" ? i : -1))
+      .filter((i) => i >= 0);
+    expect(tagIndices).toHaveLength(2);
+    expect(argv[tagIndices[0] + 1]).toBe("cli");
+    expect(argv[tagIndices[1] + 1]).toBe("dx");
+    expect(argv).not.toContain("--tags");
+  });
+
   it("handles camelCase args", () => {
     const cmdMeta = tree.subcommands
       .find((c) => c.name === "task")!
@@ -638,6 +655,34 @@ describe("batch command integration", () => {
     expect(prioritiesByTitle.get("batch priority alias 1")).toBe(1);
     expect(prioritiesByTitle.get("batch priority alias 2")).toBe(2);
     expect(prioritiesByTitle.get("batch priority alias 3")).toBe(3);
+  });
+
+  it("accepts tags alias for tag args in batch commands", () => {
+    const commands = JSON.stringify([
+      {
+        command: "inbox add",
+        args: {
+          text: "batch tags alias check",
+          tags: ["cli", "dx"],
+        },
+      },
+    ]);
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${commands}'`,
+      tempDir,
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(1);
+
+    const listOutput = kspec("inbox list --json", tempDir);
+    const parsed = JSON.parse(listOutput.stdout);
+    const items = Array.isArray(parsed) ? parsed : parsed.items ?? [];
+    const createdItem = items.find(
+      (item: any) => item?.text === "batch tags alias check",
+    );
+    expect(createdItem).toBeTruthy();
+    expect(createdItem.tags).toEqual(expect.arrayContaining(["cli", "dx"]));
   });
 
   // AC: @plan-import ac-34
