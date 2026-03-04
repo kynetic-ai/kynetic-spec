@@ -2038,6 +2038,8 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    traits:
+      - "@trait-priority-parameter"
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
