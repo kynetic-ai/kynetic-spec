@@ -1082,6 +1082,29 @@ describe("AC-2/3: kspec agent run error handling", () => {
 // AC: @trait-error-guidance ac-1, ac-2
 describe("AC-10: kspec agent dispatch start without daemon", () => {
   let testDir: string;
+  const fs_sync = require("node:fs");
+  const path_sync = require("node:path");
+
+  function setupDispatchFixture(dir: string): void {
+    initGitRepo(dir);
+    fs_sync.writeFileSync(
+      path_sync.join(dir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(dir, "kynetic.meta.yaml"),
+      YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(dir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+    // Keep this fixture fully isolated from daemon state outside the test process.
+    fs_sync.writeFileSync(
+      path_sync.join(dir, "kspec.config.yaml"),
+      YAML.stringify({ daemon: { auto_start: false } }),
+    );
+  }
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-agent-dispatch-");
@@ -1092,56 +1115,29 @@ describe("AC-10: kspec agent dispatch start without daemon", () => {
   });
 
   it("should error with daemon suggestion when daemon is not running", () => {
-    initGitRepo(testDir);
-    const fs_sync = require("node:fs");
-    const path_sync = require("node:path");
-    fs_sync.writeFileSync(
-      path_sync.join(testDir, "kynetic.yaml"),
-      YAML.stringify({ kynetic: "1", title: "Test" }),
-    );
-    fs_sync.writeFileSync(
-      path_sync.join(testDir, "kynetic.meta.yaml"),
-      YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
-    );
-    fs_sync.writeFileSync(
-      path_sync.join(testDir, "project.tasks.yaml"),
-      YAML.stringify({ tasks: [] }),
-    );
+    setupDispatchFixture(testDir);
 
     // AC: @cli-agent-commands ac-10 - error when daemon not running
     // AC: @trait-error-guidance ac-1 - describes what went wrong
     // AC: @trait-error-guidance ac-2 - suggests action (kspec serve)
     const result = kspec("agent dispatch start", testDir, {
       expectFail: true,
-      env: { HOME: testDir },
+      env: { HOME: testDir, USERPROFILE: testDir },
     });
 
     expect(result.exitCode).not.toBe(0);
     const combined = result.stderr + result.stdout;
     expect(combined).toMatch(/daemon|not running/i);
     expect(combined).toMatch(/kspec serve|start/i);
+    expect(combined).not.toMatch(/\b400\b/);
   });
 
   it("should show dispatch status as disabled when daemon is not running", () => {
-    initGitRepo(testDir);
-    const fs_sync = require("node:fs");
-    const path_sync = require("node:path");
-    fs_sync.writeFileSync(
-      path_sync.join(testDir, "kynetic.yaml"),
-      YAML.stringify({ kynetic: "1", title: "Test" }),
-    );
-    fs_sync.writeFileSync(
-      path_sync.join(testDir, "kynetic.meta.yaml"),
-      YAML.stringify({ kynetic_meta: "1.0", agents: [] }),
-    );
-    fs_sync.writeFileSync(
-      path_sync.join(testDir, "project.tasks.yaml"),
-      YAML.stringify({ tasks: [] }),
-    );
+    setupDispatchFixture(testDir);
 
     // AC: @cli-agent-commands ac-9 - dispatch status shows info
     const result = kspec("agent dispatch status", testDir, {
-      env: { HOME: testDir },
+      env: { HOME: testDir, USERPROFILE: testDir },
     });
 
     expect(result.exitCode).toBe(0);
