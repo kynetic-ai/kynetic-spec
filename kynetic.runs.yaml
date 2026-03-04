@@ -11668,7 +11668,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJV4NYFAG858SJQK7CKRJ2DG
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-04T00:41:32.906Z
@@ -11717,5 +11717,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-04T00:42:42.919Z
-        completed_at: 2026-03-04T00:42:42.919Z
+        completed_at: 2026-03-04T00:42:50.941Z
+        notes: "Captured 1 new reflection item: inbox @01KJV4R7 for pr-review self-approval handling in
+          clean review flows. No additional captures; remaining points already tracked."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-04T00:42:50.941Z
