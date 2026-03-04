@@ -71971,7 +71971,25 @@
     - dx
   vcs_refs: []
   created_at: 2026-03-03T07:18:43.716Z
-  notes: []
+  notes:
+    - _ulid: 01KJV4TMERCY7KDMJE36P4QY1E
+      created_at: 2026-03-04T00:44:06.488Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Skill references in injected prompts currently remain in portable {skill:foo}
+        form and are not adapter-friendly for invocation agents.
+
+        - Scope: Add adapter-aware skill reference rewriting during prompt build and cover behavior
+        with AC-annotated tests.
+
+        - Files: src/agent-runtime/prompts.ts, src/agent-runtime/invocation.ts,
+        src/cli/commands/agent.ts, tests/agent-invocation-lifecycle.test.ts.
+
+        - Verification: npm test -- tests/agent-invocation-lifecycle.test.ts and targeted CLI
+        dry-run checks via tests for prompt building.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJSA2TZWD88MG76PZ7KFKVFY
@@ -72808,6 +72826,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #652. Hardened spec item mutation serialization by enforcing patch-only
+    save/update payloads, guarding against LoadedSpecItem full-object writes, and adding stale _path
+    ULID fallback for safe concurrent edits. Added regression tests in
+    tests/spec-item-mutation-serialization.test.ts. AC coverage: N/A (task has no spec_ref; reviewed
+    under infra/internal quality gates)."
   depends_on: []
   context: []
   priority: 2
@@ -72819,6 +72842,7 @@
   created_at: 2026-03-03T22:54:39.714Z
   started_at: 2026-03-04T00:18:55.098Z
   submitted_at: 2026-03-04T00:24:53.024Z
+  completed_at: 2026-03-04T00:40:22.363Z
   notes:
     - _ulid: 01KJV3CEWQVE6VM10AT128AK4G
       created_at: 2026-03-04T00:18:53.463Z
@@ -72871,12 +72895,6 @@
         slug refs, existing alignment/completeness warnings).
       supersedes: null
   todos: []
-  completed_at: 2026-03-04T00:40:22.363Z
-  closed_reason: "Merged in PR #652. Hardened spec item mutation serialization by enforcing patch-only
-    save/update payloads, guarding against LoadedSpecItem full-object writes, and adding stale _path
-    ULID fallback for safe concurrent edits. Added regression tests in
-    tests/spec-item-mutation-serialization.test.ts. AC coverage: N/A (task has no spec_ref; reviewed
-    under infra/internal quality gates)."
 - _ulid: 01KJTYJ92M7NWFQGMQYBFKMF7K
   slugs:
     - task-concurrent-mutation-regression-suite
