@@ -25,18 +25,18 @@ export function registerRalphCommand(program: Command): void {
     .description("[deprecated] Use kspec agent end-loop instead")
     .option("--reason <reason>", "Reason for ending the loop")
     .action(() => {
-      showRalphDeprecationError("end-loop");
+      showRalphDeprecationError();
     });
 
   // Main ralph run command (default behavior)
   // AC: @ralph-replacement ac-1
   ralph
     .command("run", { isDefault: true })
-    .description("[deprecated] Use kspec agent run instead")
+    .description("[deprecated] Use kspec agent dispatch start instead")
     .argument("[args...]", "")
     .allowUnknownOption()
     .action(() => {
-      showRalphDeprecationError("run");
+      showRalphDeprecationError();
     });
 }
 
@@ -48,7 +48,7 @@ export function registerRalphCommand(program: Command): void {
  * AC: @trait-error-guidance ac-1 — includes description of what went wrong
  * AC: @trait-error-guidance ac-2 — includes suggested action to resolve
  */
-function showRalphDeprecationError(subcommand: string): void {
+function showRalphDeprecationError(): void {
   const header = chalk.red("✗ kspec ralph has been replaced by kspec agent");
   const msg = [
     header,
@@ -59,10 +59,8 @@ function showRalphDeprecationError(subcommand: string): void {
       " for equivalent functionality.",
     "",
     chalk.bold("Equivalent commands:"),
-    `  ${chalk.yellow("kspec ralph")}                    → ${chalk.cyan("kspec agent run <agent-id>")}`,
-    `  ${chalk.yellow("kspec ralph --dry-run")}          → ${chalk.cyan("kspec agent run <agent-id> --dry-run")}`,
-    `  ${chalk.yellow("kspec ralph end-loop")}           → ${chalk.cyan("kspec agent end-loop")}`,
-    `  ${chalk.yellow("kspec ralph --worker-adapter X")} → configure adapter in agent definition`,
+    `  ${chalk.yellow("kspec ralph run")}      → ${chalk.cyan("kspec agent dispatch start")}`,
+    `  ${chalk.yellow("kspec ralph end-loop")} → ${chalk.cyan("kspec agent end-loop")}`,
     "",
     chalk.bold("Getting started:"),
     `  List configured agents:  ${chalk.cyan("kspec agent list")}`,

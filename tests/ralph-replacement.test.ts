@@ -73,24 +73,27 @@ async function setupMinimalProject(dir: string): Promise<void> {
 // AC: @ralph-replacement ac-1
 describe("kspec ralph deprecation", () => {
   it("shows migration error when kspec ralph run is invoked", () => {
-    const result = runCli(["ralph"], process.cwd());
+    const result = runCli(["ralph", "run"], process.cwd());
 
-    // Should exit with non-zero code
-    expect(result.exitCode).not.toBe(0);
+    // Should exit with code 1
+    expect(result.exitCode).toBe(1);
 
     // AC: @trait-error-guidance ac-1 — description of what went wrong
     expect(result.stderr).toMatch(/kspec ralph has been replaced/i);
 
     // AC: @ralph-replacement ac-1 — lists equivalent commands
-    expect(result.stderr).toContain("kspec agent run");
+    expect(result.stderr).toContain("kspec ralph run");
     expect(result.stderr).toContain("kspec agent dispatch start");
+    expect(result.stderr).toMatch(
+      /kspec ralph run\s+→\s+kspec agent dispatch start/,
+    );
   });
 
   it("shows migration error when kspec ralph end-loop is invoked", () => {
     const result = runCli(["ralph", "end-loop"], process.cwd());
 
-    // Should exit with non-zero code
-    expect(result.exitCode).not.toBe(0);
+    // Should exit with code 1
+    expect(result.exitCode).toBe(1);
 
     // AC: @trait-error-guidance ac-1 — description of what went wrong
     expect(result.stderr).toMatch(/kspec ralph has been replaced/i);
