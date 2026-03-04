@@ -6478,8 +6478,9 @@ features:
           renders [agent-id session-id] as a section marker when a stream becomes active, then
           streams that speaker's body text without repeating the marker on every line. A new marker
           is shown when output switches to a different stream. Explicit ACP boundary sentinels
-          (empty chunks) insert spacing between logical sections for readability, without leading
-          blank lines at stream start.
+          (empty chunks) insert spacing between logical sections for readability, and repeated
+          boundary events are coalesced to at most one blank spacer line between text updates
+          (without leading blank lines at stream start).
       - id: ac-14
         given: kspec agent dispatch watch is run
         when: The WebSocket connection to the daemon drops
