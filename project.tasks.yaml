@@ -74948,5 +74948,24 @@
         batch-write-buffer helpers + yaml/meta parser + module/skill commands + batch-write-buffer
         tests\\n- Verification: targeted batch buffer tests, broader vitest run, kspec validate"
       supersedes: null
+    - _ulid: 01KJWXWYQP38N43D449CQF56TR
+      created_at: 2026-03-04T17:21:31.382Z
+      author: Jacob Chapel
+      content: "Implemented buffer-aware filesystem overlay across .kspec read/write paths for batch
+        consistency:\\n- Added in src/cli/batch-write-buffer.ts: SyntheticDirent,
+        WriteBuffer.listDir(), readdirBufferAware(), accessBufferAware(), writeFileBufferAware()\\n-
+        Added readFileBufferAware() in src/parser/yaml.ts and routed
+        loadSpecFile/findTaskFiles/findManifestInDir/loadAllTasks/expandIncludePattern/expandGlobRe\
+        cursive through buffer-aware helpers\\n- Routed src/parser/meta.ts read paths
+        (findMetaManifest/loadSkillContent/loadSkillDocs/loadSkillSupportingFiles) through
+        buffer-aware helpers\\n- Routed CLI bypasses: module add existence check, skill add/import
+        SKILL.md writes, skill install core SKILL.md read/write and destination directory reads\\n-
+        Extended tests/batch-write-buffer.test.ts with helper unit coverage and regression test for
+        two item ac add commands in one batch preserving both ACs\\n\\nVerification:\\n- npm run
+        build (passes)\\n- npx vitest run tests/batch-write-buffer.test.ts (passes)\\n- npx vitest
+        run (passes: 173 files, 3653 passed, 3 skipped)\\n- kspec validate (fails due pre-existing
+        repo validation debt unrelated to this change: existing
+        skill/reference/alignment/completeness issues)"
+      supersedes: null
   todos: []
   automation: eligible
