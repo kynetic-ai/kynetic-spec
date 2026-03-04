@@ -952,6 +952,10 @@ features:
             given: no --title flag provided
             when: kspec task add runs
             then: exits with usage error; title is required
+          - id: ac-description
+            given: --description is provided
+            when: kspec task add --title 'T' --description 'Details here' runs
+            then: task created with description field set; empty string descriptions are omitted
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
