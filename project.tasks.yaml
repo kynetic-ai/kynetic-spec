@@ -71676,7 +71676,7 @@
   type: task
   description: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71705,6 +71705,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-04T08:00:56.210Z
 - _ulid: 01KJS702WDPKNN01FQ3CEYB822
   slugs: []
   title: "CLI DX: accept tags as alias for tag in batch commands"
