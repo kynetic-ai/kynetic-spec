@@ -14,17 +14,30 @@ import type { ServerWebSocket } from 'bun';
 import { ulid } from 'ulidx';
 import type { BroadcastEvent, ConnectionData } from './types';
 
+const SESSION_TOPIC_PREFIX = '__kspec_session:';
+
+function sessionTopic(sessionId: string): string {
+  return `${SESSION_TOPIC_PREFIX}${sessionId}`;
+}
+
 export class PubSubManager {
   private connections = new Map<string, ServerWebSocket<ConnectionData>>();
   private sessionIdsBySocket = new WeakMap<ServerWebSocket<ConnectionData>, string>();
+  private sessionIdsByContextId = new Map<string, string>();
+  private contextIdsBySessionId = new Map<string, string>();
 
   /**
    * Register a new WebSocket connection
    * AC: @trait-websocket-protocol ac-1
    */
-  addConnection(sessionId: string, ws: ServerWebSocket<ConnectionData>) {
+  addConnection(sessionId: string, ws: ServerWebSocket<ConnectionData>, contextId?: string) {
     this.connections.set(sessionId, ws);
     this.sessionIdsBySocket.set(ws, sessionId);
+    if (contextId) {
+      this.sessionIdsByContextId.set(contextId, sessionId);
+      this.contextIdsBySessionId.set(sessionId, contextId);
+    }
+    ws.subscribe?.(sessionTopic(sessionId));
   }
 
   /**
@@ -33,7 +46,13 @@ export class PubSubManager {
   removeConnection(sessionId: string): boolean {
     const ws = this.connections.get(sessionId);
     if (ws) {
+      ws.unsubscribe?.(sessionTopic(sessionId));
       this.sessionIdsBySocket.delete(ws);
+    }
+    const contextId = this.contextIdsBySessionId.get(sessionId);
+    if (contextId) {
+      this.contextIdsBySessionId.delete(sessionId);
+      this.sessionIdsByContextId.delete(contextId);
     }
     return this.connections.delete(sessionId);
   }
@@ -42,8 +61,8 @@ export class PubSubManager {
    * Resolve a stable session ID for a socket and remove that connection.
    * This is resilient when ws.data.sessionId is missing in close callbacks.
    */
-  removeConnectionBySocket(ws: ServerWebSocket<ConnectionData>): string | undefined {
-    const sessionId = this.getSessionIdBySocket(ws);
+  removeConnectionBySocket(ws: ServerWebSocket<ConnectionData>, contextId?: string): string | undefined {
+    const sessionId = this.getSessionIdBySocket(ws, contextId);
     if (!sessionId) {
       return undefined;
     }
@@ -55,14 +74,33 @@ export class PubSubManager {
   /**
    * Get stable session ID for socket from registration mapping.
    */
-  getSessionIdBySocket(ws: ServerWebSocket<ConnectionData>): string | undefined {
+  getSessionIdBySocket(ws: ServerWebSocket<ConnectionData>, contextId?: string): string | undefined {
     const mappedSessionId = this.sessionIdsBySocket.get(ws);
     if (mappedSessionId) {
       return mappedSessionId;
     }
 
     const data = ws.data as Partial<ConnectionData> | undefined;
-    return data?.sessionId;
+    if (data?.sessionId) {
+      return data.sessionId;
+    }
+
+    const subscriptions = (ws as Partial<ServerWebSocket<ConnectionData>>).subscriptions;
+    if (Array.isArray(subscriptions)) {
+      const sessionSubscription = subscriptions.find((topic) => topic.startsWith(SESSION_TOPIC_PREFIX));
+      if (sessionSubscription) {
+        return sessionSubscription.slice(SESSION_TOPIC_PREFIX.length);
+      }
+    }
+
+    if (contextId) {
+      const sessionFromContext = this.sessionIdsByContextId.get(contextId);
+      if (sessionFromContext) {
+        return sessionFromContext;
+      }
+    }
+
+    return undefined;
   }
 
   /**
