@@ -71343,6 +71343,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #665 (merge commit 6607641a4390ef5e00f9f945fc0eb4cf2a63409d).
+    Implemented ACP framing output error handling so EPIPE/ERR_STREAM_DESTROYED are treated as clean
+    connection closure, added regression tests for sync and emitted EPIPE paths, and removed
+    process-level uncaughtException EPIPE workaround from adapter tests. Infra/internal task has no
+    spec_ref; AC coverage gate N/A. Full local regression and CI checks passed on PR HEAD."
   depends_on: []
   context: []
   priority: 3
@@ -71352,6 +71357,7 @@
   created_at: 2026-03-03T06:43:20.809Z
   started_at: 2026-03-04T05:15:58.455Z
   submitted_at: 2026-03-04T08:32:10.516Z
+  completed_at: 2026-03-04T08:41:37.230Z
   notes:
     - _ulid: 01KJVMCDDVQHN85FJ6DMACDJ29
       created_at: 2026-03-04T05:15:57.756Z
@@ -71405,12 +71411,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T08:41:37.230Z
-  closed_reason: "Merged in PR #665 (merge commit 6607641a4390ef5e00f9f945fc0eb4cf2a63409d).
-    Implemented ACP framing output error handling so EPIPE/ERR_STREAM_DESTROYED are treated as clean
-    connection closure, added regression tests for sync and emitted EPIPE paths, and removed
-    process-level uncaughtException EPIPE workaround from adapter tests. Infra/internal task has no
-    spec_ref; AC coverage gate N/A. Full local regression and CI checks passed on PR HEAD."
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
   slugs: []
   title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
@@ -71712,6 +71712,17 @@
       author: Jacob Chapel
       content: "WIP checkpoint committed on branch feat/task-batch-priority-p-alias at commit 6946452be.
         Files: src/cli/batch-exec.ts, tests/batch-exec-engine.test.ts."
+      supersedes: null
+    - _ulid: 01KJW0KWKCTT4R91RZZYDZBE4G
+      created_at: 2026-03-04T08:49:45.580Z
+      author: Jacob Chapel
+      content: "Implemented batch-layer priority alias normalization for numeric priority params in
+        src/cli/batch-exec.ts (accepts P1-P5 / p1-p5 -> 1-5 only when command metadata indicates
+        numeric priority). Added unit/integration coverage in tests/batch-exec-engine.test.ts,
+        including guard that non-numeric priority options keep literal values. Validation: npm run
+        test -- tests/batch-exec-engine.test.ts (pass), npm test (pass: 173 files, 3632 tests).
+        Context: moved work from stale branch base to clean branch
+        feat/task-batch-priority-p-alias-clean to avoid PR conflation."
       supersedes: null
   todos: []
   automation: eligible
