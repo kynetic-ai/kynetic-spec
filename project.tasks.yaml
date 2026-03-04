@@ -72006,7 +72006,9 @@
     - session
     - dx
   vcs_refs: []
+  session_id: 01KJW3GKF2X1NY0RC6N3AXQM49
   created_at: 2026-03-03T06:55:45.541Z
+  started_at: 2026-03-04T09:41:58.390Z
   notes:
     - _ulid: 01KJW3KEPZ323FHC2SJ5QCZQMP
       created_at: 2026-03-04T09:41:57.088Z
@@ -72025,10 +72027,44 @@
 
         - Verification: targeted session-log-show tests plus kspec validate and relevant test shard.
       supersedes: null
+    - _ulid: 01KJW425QR95RQZ54W0GX1Z36A
+      created_at: 2026-03-04T09:49:59.416Z
+      author: Jacob Chapel
+      content: >-
+        Implemented --text replay for session log show:
+
+        - Added --text flag to session log show command.
+
+        - Extracts text from session.update data.content blocks in event order.
+
+        - Resolves externalized blob pointers before extracting text, so replay includes full
+        content.
+
+        - Kept --events and --text independent; JSON output can include both events and text.
+
+        - In text mode, --text alone outputs raw replay content with no extra formatting.
+
+
+        Tests:
+
+        - Added AC coverage in tests/session-log-show.test.ts for @session-log-show ac-11 and --json
+        --text --events coexistence.
+
+        - Verified with npx vitest run tests/session-log-show.test.ts.
+
+        - Verified full suite via npm run test:shard1, npm run test:shard2, npm run test:shard3.
+
+        - npm run typecheck passes.
+
+
+        Validation note:
+
+        - kspec validate currently fails due pre-existing repo-wide meta/reference issues unrelated
+        to this task (missing observations skill file, duplicate @observations slug, existing
+        alignment/completeness warnings).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-04T09:41:58.390Z
-  session_id: 01KJW3GKF2X1NY0RC6N3AXQM49
 - _ulid: 01KJS8B9QSQS53CT4DR2YHP1A8
   slugs: []
   title: Add dispatch rule flags to kspec meta add agent / meta set
