@@ -71787,7 +71787,7 @@
   type: task
   description: "CLI DX: accept tags as alias for tag in batch commands"
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71830,6 +71830,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-04T09:07:46.868Z
 - _ulid: 01KJS7NZ5AVXWVS04A7CDF9JG9
   slugs: []
   title: Stream agent text output to stdout in kspec agent run
