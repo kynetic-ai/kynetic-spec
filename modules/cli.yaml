@@ -4590,6 +4590,7 @@ features:
       - "@trait-error-guidance"
       - "@trait-shadow-commit"
       - "@trait-filterable-list"
+      - "@trait-priority-parameter"
     notes: []
     created: 2026-02-04T07:43:15.186Z
     acceptance_criteria:
