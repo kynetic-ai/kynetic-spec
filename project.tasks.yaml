@@ -72208,6 +72208,29 @@
 
         - Verification: targeted vitest for ralph replacement, then kspec validate.
       supersedes: null
+    - _ulid: 01KJW83C4Z9XMYTW2X5MZJVMES
+      created_at: 2026-03-04T11:00:33.055Z
+      author: Jacob Chapel
+      content: >-
+        Implemented deprecation-message alignment for ralph command.
+
+        - Updated src/cli/commands/ralph.ts to map 'kspec ralph run' -> 'kspec agent dispatch start'
+        and keep 'kspec ralph end-loop' -> 'kspec agent end-loop'.
+
+        - Kept deprecation behavior exiting with code 1 (EXIT_CODES.ERROR).
+
+        - Updated tests/ralph-replacement.test.ts to assert explicit exit code 1 and verify the new
+        mapping line.
+
+        Verification:
+
+        - npx vitest run tests/ralph-replacement.test.ts (pass: 9 tests)
+
+        - npx vitest run (pass: 173 files, 3641 passed, 3 skipped)
+
+        - kspec validate exits 4 due pre-existing project-wide meta/reference issues unrelated to
+        this task (missing .kspec/skills/observations/SKILL.md and duplicate @observations slug).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BC1W5Y4Z2Y23GQSD4EFS
