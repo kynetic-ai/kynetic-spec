@@ -2621,6 +2621,10 @@ features:
             given: inbox has items
             when: --count flag provided
             then: outputs only the total number of matching items as a plain integer
+          - id: ac-1
+            given: inbox has items
+            when: kspec inbox list runs with no flags
+            then: items displayed sorted oldest first (created_at ascending) to encourage triaging older items
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
