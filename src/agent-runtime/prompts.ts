@@ -10,6 +10,8 @@
 
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
+import { resolveSkillReferenceTokensForPlatform } from "../parser/skill-render.js";
+import type { LoadedSkill } from "../parser/meta.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,17 +39,15 @@ export interface BuildPromptOptions {
   adapterId?: string;
 }
 
-const SKILL_REFERENCE_TOKEN_RE = /\{skill:([a-z0-9][a-z0-9-]*)\}/g;
-
-function getSkillReferenceFormat(adapterId?: string): "claude" | "codex" | "none" {
+function getSkillReferencePlatform(adapterId?: string): "claude-code" | "codex" | null {
   switch (adapterId) {
     case "claude-agent-acp":
     case "claude-code-acp":
-      return "claude";
+      return "claude-code";
     case "codex-acp":
       return "codex";
     default:
-      return "none";
+      return null;
   }
 }
 
@@ -77,37 +77,23 @@ async function loadKspecSkillIds(specDir: string): Promise<Set<string>> {
   }
 }
 
-function formatSkillReference(
-  refId: string,
-  format: "claude" | "codex" | "none",
-  kspecSkillIds: Set<string>,
-): string {
-  if (format === "none") {
-    return `{skill:${refId}}`;
-  }
-
-  const isKspecSkill = kspecSkillIds.has(refId);
-  if (format === "claude") {
-    return isKspecSkill ? `/kspec:${refId}` : `/${refId}`;
-  }
-
-  return isKspecSkill ? `$kspec-${refId}` : `$${refId}`;
-}
-
 async function rewriteSkillReferences(
   text: string,
   specDir: string,
   adapterId?: string,
 ): Promise<string> {
-  const format = getSkillReferenceFormat(adapterId);
-  if (format === "none") {
+  const platform = getSkillReferencePlatform(adapterId);
+  if (!platform) {
     return text;
   }
 
   const kspecSkillIds = await loadKspecSkillIds(specDir);
-  return text.replace(SKILL_REFERENCE_TOKEN_RE, (_match, refId: string) =>
-    formatSkillReference(refId, format, kspecSkillIds),
-  );
+  const skillOrigins = new Map<string, LoadedSkill["origin"]>();
+  for (const skillId of kspecSkillIds) {
+    skillOrigins.set(skillId, "core");
+  }
+
+  return resolveSkillReferenceTokensForPlatform(text, platform, skillOrigins);
 }
 
 // ─── Skill Resolution ─────────────────────────────────────────────────────────
