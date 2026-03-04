@@ -72,6 +72,13 @@ function createTestProgram(): Command {
       .option("--tag <tag...>", "Tags"),
   );
 
+  const item = program.command("item").description("Items");
+  markMutating(
+    item.command("add")
+      .description("Add an item")
+      .option("--priority <priority>", "Priority (high, medium, low)"),
+  );
+
   program.command("validate").description("Validate spec files");
 
   return program;
@@ -110,6 +117,32 @@ describe("buildCommandArgv", () => {
     expect(argv).toContain("My Task");
     expect(argv).toContain("--priority");
     expect(argv).toContain("2");
+  });
+
+  it("normalizes P-notation aliases for numeric priority options", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "task")!
+      .subcommands.find((c) => c.name === "add")!;
+    const argv = buildCommandArgv(
+      { command: "task add", args: { title: "Alias Task", priority: "P2" } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--priority");
+    expect(argv).toContain("2");
+    expect(argv).not.toContain("P2");
+  });
+
+  it("does not normalize priority aliases for non-numeric priority options", () => {
+    const cmdMeta = tree.subcommands
+      .find((c) => c.name === "item")!
+      .subcommands.find((c) => c.name === "add")!;
+    const argv = buildCommandArgv(
+      { command: "item add", args: { priority: "P2" } },
+      cmdMeta,
+    );
+    expect(argv).toContain("--priority");
+    expect(argv).toContain("P2");
+    expect(argv).not.toContain("2");
   });
 
   it("handles boolean options (true)", () => {
@@ -571,6 +604,40 @@ describe("batch command integration", () => {
     expect(result.success).toBe(true);
     expect(result.mode).toBe("atomic");
     expect(result.summary.succeeded).toBe(1);
+  });
+
+  it("accepts P1/P2/P3 aliases for numeric priority args in batch commands", () => {
+    const commands = JSON.stringify([
+      {
+        command: "task add",
+        args: { title: "batch priority alias 1", priority: "P1" },
+      },
+      {
+        command: "task add",
+        args: { title: "batch priority alias 2", priority: "P2" },
+      },
+      {
+        command: "task add",
+        args: { title: "batch priority alias 3", priority: "P3" },
+      },
+    ]);
+    const result = kspecJson<BatchExecResult>(
+      `batch --commands '${commands}'`,
+      tempDir,
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.summary.succeeded).toBe(3);
+    const tasks = kspecJson<Array<{ title: string; priority: number }>>(
+      "tasks list --json",
+      tempDir,
+    );
+    const prioritiesByTitle = new Map(
+      tasks.map((task) => [task.title, task.priority] as const),
+    );
+    expect(prioritiesByTitle.get("batch priority alias 1")).toBe(1);
+    expect(prioritiesByTitle.get("batch priority alias 2")).toBe(2);
+    expect(prioritiesByTitle.get("batch priority alias 3")).toBe(3);
   });
 
   // AC: @plan-import ac-34
