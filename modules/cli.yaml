@@ -6539,6 +6539,12 @@ features:
         when: A watch speaker section marker is rendered
         then: The session component in the [agent-id session-id] marker uses the first 8 characters of the
           session ULID for readability.
+      - id: ac-18
+        given: kspec agent dispatch watch is run and daemon subscribe handshake returns ack with
+          success=false
+        when: the command receives the subscribe acknowledgement
+        then: watch exits immediately with code 3 and prints an actionable error explaining the subscribe
+          failure with guidance to verify daemon/logs or restart kspec serve
     depends_on: []
     implements: []
     relates_to: []
