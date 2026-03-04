@@ -11607,7 +11607,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KJV329M2G4JTSA1TVZQ13NJT
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-04T00:13:20.386Z
@@ -11653,5 +11653,8 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-04T00:15:09.342Z
-        completed_at: 2026-03-04T00:15:09.342Z
+        completed_at: 2026-03-04T00:15:29.183Z
+        notes: Captured untracked item as inbox @01KJV35Z. Did not duplicate shell payload friction because
+          already tracked in @01KJKKCB and @01KJEVM2.
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-04T00:15:29.184Z
