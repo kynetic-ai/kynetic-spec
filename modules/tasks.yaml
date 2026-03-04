@@ -35,7 +35,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           type: task
 
@@ -60,7 +60,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           type: epic
 
@@ -84,7 +84,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           type: bug
 
@@ -109,7 +109,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           type: spike
 
@@ -133,7 +133,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           type: infra
 

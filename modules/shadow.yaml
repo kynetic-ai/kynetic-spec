@@ -52,7 +52,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           Directory layout for shadow branch:
 
@@ -142,7 +142,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |-
           All state-changing kspec commands automatically commit to shadow branch.
 
@@ -215,7 +215,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           All kspec read operations target .kspec/ directory.
 
@@ -239,7 +239,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           All kspec write operations target .kspec/ directory.
 
@@ -255,7 +255,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           Clear error messages for common failure scenarios:
 
@@ -331,7 +331,7 @@ features:
             then: no error output is shown (silent failure)
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init

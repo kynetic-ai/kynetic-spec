@@ -46,7 +46,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           Every item MUST have:
           - _ulid: Canonical unique identifier (auto-generated)
@@ -62,7 +62,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           Items MAY include:
           - slugs: Human-friendly aliases (array)

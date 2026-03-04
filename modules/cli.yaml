@@ -57,7 +57,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           All commands support --json flag for structured output:
 
@@ -157,7 +157,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: verified
+          implementation: implemented
         description: |
           Features for agent/script usage:
 
