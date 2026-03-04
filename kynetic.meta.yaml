@@ -7363,6 +7363,22 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KJVB7XDP515J89X4QJABGBYT
+    type: success
+    content: "Worker/reviewer loop with explicit MUST-FIX feedback improved quality: first review caught
+      behavior-level AC gaps, second pass merged cleanly with clear audit trail."
+    created_at: 2026-03-04T02:36:13.110Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KJVB7XHEKCZYNSS1AEMHEC08
+    type: friction
+    content: Behavior-level AC intent can be missed when tests only verify internals. Add endpoint/log
+      effect assertions earlier in task implementation to reduce fix-cycle churn.
+    created_at: 2026-03-04T02:36:13.230Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
