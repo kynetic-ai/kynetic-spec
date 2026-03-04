@@ -11558,6 +11558,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-03-03T23:47:37.703Z
+    completed_at: 2026-03-03T23:49:29.949Z
     step_results:
       - step_index: 0
         status: completed
@@ -11604,4 +11605,11 @@ runs:
           approve guard; workflow show single-active-run default) plus one friction observation and
           one success observation."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-03T23:49:29.949Z
+  - _ulid: 01KJV329M2G4JTSA1TVZQ13NJT
+    workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
+    status: active
+    current_step: 0
+    total_steps: 6
+    started_at: 2026-03-04T00:13:20.386Z
+    step_results: []
+    initiated_by: Jacob Chapel
