@@ -73543,7 +73543,7 @@
   spec_ref: "@dispatch-in-progress-priority"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -73557,7 +73557,7 @@
   session_id: null
   created_at: 2026-03-04T05:58:39.059Z
   started_at: 2026-03-04T07:39:38.224Z
-  submitted_at: 2026-03-04T07:34:40.634Z
+  submitted_at: 2026-03-04T07:40:29.598Z
   notes:
     - _ulid: 01KJVPTKY916RMSHB11ZBEDYEQ
       created_at: 2026-03-04T05:58:40.329Z
