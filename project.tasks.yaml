@@ -72365,6 +72365,14 @@
         trigger-event mapping, and one-shot kspec agent run usage. Regenerated kspec-agents.md via
         kspec agents generate.
       supersedes: null
+    - _ulid: 01KJWBNN39N508WHQRR500VW09
+      created_at: 2026-03-04T12:02:57.769Z
+      author: Jacob Chapel
+      content: "Verification: npx vitest run tests/ralph-replacement.test.ts
+        tests/agents-instruction-gen.test.ts (49 passing). kspec validate currently fails due
+        pre-existing repo meta/alignment issues unrelated to this task (duplicate @observations slug
+        + missing .kspec/skills/observations/SKILL.md)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS8BEAE9ADEY2HGWDRFGVDK
