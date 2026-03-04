@@ -2694,6 +2694,10 @@ features:
             given: inbox item has text and --description is not provided
             when: kspec inbox promote @ref --title 'X' runs
             then: created task uses inbox item text as description
+          - id: ac-6
+            given: inbox item has tags and no --tag flags provided
+            when: kspec inbox promote @ref --title 'X' runs
+            then: created task inherits tags from the inbox item
       - _ulid: 01KF15N59ER8D2XAGND1003ZSH
         slugs:
           - cmd-inbox-delete
