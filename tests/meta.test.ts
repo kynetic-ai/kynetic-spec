@@ -3017,6 +3017,90 @@ describe('Integration: agent definition schema', () => {
     expect(agent?.skills).toContain('review');
   });
 
+  // AC: @agent-definition-schema ac-12 - append dispatch rules via meta add/meta set
+  it('should append dispatch rules via meta add and meta set', () => {
+    const addResult = kspecRun(
+      'meta add agent --id dispatch-rules-agent --name "Dispatch Rules Agent" --add-dispatch-rule "{\\"on\\":\\"task.ready\\"}"',
+      tempDir,
+    );
+    expect(addResult.exitCode).toBe(0);
+
+    const setResult = kspecRun(
+      'meta set dispatch-rules-agent --add-dispatch-rule "{\\"on\\":\\"task.needs_work\\",\\"filter\\":{\\"automation\\":\\"eligible\\",\\"tags\\":[\\"cli\\"],\\"priority\\":2}}"',
+      tempDir,
+    );
+    expect(setResult.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; dispatch: Array<{ on: string; filter?: { automation?: string; tags?: string[]; priority?: number } }> }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'dispatch-rules-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.dispatch).toEqual([
+      { on: 'task.ready' },
+      { on: 'task.needs_work', filter: { automation: 'eligible', tags: ['cli'], priority: 2 } },
+    ]);
+  });
+
+  // AC: @agent-definition-schema ac-12 - remove dispatch rules by event type
+  it('should remove dispatch rules by event type via meta set', () => {
+    kspecRun(
+      'meta add agent --id removable-dispatch-agent --name "Removable Dispatch Agent" --add-dispatch-rule "{\\"on\\":\\"task.ready\\"}" --add-dispatch-rule "{\\"on\\":\\"task.needs_work\\"}"',
+      tempDir,
+    );
+
+    const result = kspecRun(
+      'meta set removable-dispatch-agent --remove-dispatch-rule task.ready',
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; dispatch: Array<{ on: string }> }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'removable-dispatch-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.dispatch).toEqual([{ on: 'task.needs_work' }]);
+  });
+
+  // AC: @agent-definition-schema ac-12 - clear dispatch rules via meta set
+  it('should clear dispatch rules via meta set', () => {
+    kspecRun(
+      'meta add agent --id clear-dispatch-agent --name "Clear Dispatch Agent" --add-dispatch-rule "{\\"on\\":\\"task.pending_review\\"}"',
+      tempDir,
+    );
+
+    const result = kspecRun('meta set clear-dispatch-agent --clear-dispatch-rules', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; dispatch: unknown[] }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'clear-dispatch-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.dispatch).toEqual([]);
+  });
+
+  // AC: @agent-definition-schema ac-12 - invalid dispatch rule JSON returns error
+  it('should fail when --add-dispatch-rule contains invalid JSON', () => {
+    const result = kspecRun(
+      'meta add agent --id invalid-dispatch-json-agent --name "Invalid Dispatch JSON Agent" --add-dispatch-rule "{invalid}"',
+      tempDir,
+      { expectFail: true },
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid JSON in --add-dispatch-rule');
+  });
+
+  // AC: @agent-definition-schema ac-12 - invalid remove event returns error
+  it('should fail when --remove-dispatch-rule event is invalid', () => {
+    kspecRun('meta add agent --id invalid-dispatch-event-agent --name "Invalid Dispatch Event Agent"', tempDir);
+
+    const result = kspecRun(
+      'meta set invalid-dispatch-event-agent --remove-dispatch-rule task.done',
+      tempDir,
+      { expectFail: true },
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Invalid dispatch event in --remove-dispatch-rule');
+  });
+
   // AC: @agent-definition-schema ac-11 - meta delete agent removes it
   // AC: @trait-shadow-commit ac-1 - meta delete creates shadow commit
   it('should remove agent via meta delete', () => {
