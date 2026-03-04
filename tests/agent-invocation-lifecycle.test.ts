@@ -336,6 +336,52 @@ describe("Timeout handling", () => {
     // Verify cancel was called with the ACP session ID — cancel request dispatched on timeout
     expect(cancelCalledWith).toBeDefined();
   });
+
+  it("should set ACP session/prompt timeout above invocation timeout budget", async () => {
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+    const mockSessionId = "mock-acp-session";
+    const emitter = new EventEmitter();
+    const timeoutMinutes = 12;
+
+    const spawnedAgent = {
+      client: {
+        on: (event: string, handler: (...args: unknown[]) => void) => {
+          emitter.on(event, handler);
+        },
+        newSession: vi.fn(async () => mockSessionId),
+        prompt: vi.fn(async () => ({ stopReason: "end_turn" })),
+        cancel: vi.fn(async () => undefined),
+        endSession: vi.fn(async () => undefined),
+        respondPermission: vi.fn(async () => undefined),
+      },
+      kill: vi.fn(() => undefined),
+    };
+
+    const spawnSpy = vi.spyOn(spawnerModule, "spawnAndInitialize").mockResolvedValue(
+      spawnedAgent as unknown as Awaited<ReturnType<typeof spawnerModule.spawnAndInitialize>>,
+    );
+    let spawnOptions: Parameters<typeof spawnerModule.spawnAndInitialize>[1] | undefined;
+
+    try {
+      await runInvocation({
+        agent,
+        specDir: testDir,
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Test ACP prompt timeout alignment",
+        trigger: "task.ready",
+        timeoutMinutes,
+      });
+      spawnOptions = spawnSpy.mock.calls[0]?.[1];
+    } finally {
+      spawnSpy.mockRestore();
+    }
+
+    expect(spawnOptions).toBeDefined();
+    expect(spawnOptions.clientOptions?.methodTimeouts?.["session/prompt"]).toBe(
+      timeoutMinutes * 60 * 1000 + 5_000,
+    );
+  });
 });
 
 // ─── AC-4: Successful completion ─────────────────────────────────────────────

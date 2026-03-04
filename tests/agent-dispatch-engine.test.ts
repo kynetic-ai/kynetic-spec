@@ -954,6 +954,101 @@ describe("Text chunk boundary signaling", () => {
   });
 });
 
+describe("Autonomous dispatch prompt guardrails", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-prompt-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should include worker completion guardrails for task.ready triggers", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+    const taskId = testUlid("TASK");
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    });
+
+    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocationOpts = runSpy.mock.calls[0][0];
+    expect(invocationOpts.prompt).toContain("AUTONOMOUS DISPATCH MODE");
+    expect(invocationOpts.prompt).toContain("Do not ask for confirmation");
+    expect(invocationOpts.prompt).toContain("Perform the required commands");
+    expect(invocationOpts.prompt).toContain("avoid PR conflation");
+
+    await engine.stop();
+  });
+
+  it("should include reviewer completion guardrails for task.pending_review triggers", async () => {
+    const reviewer = makeTestAgent({
+      id: "reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [reviewer]);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+    const taskId = testUlid("TASK");
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending_review",
+      timestamp: Date.now(),
+    });
+
+    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocationOpts = runSpy.mock.calls[0][0];
+    expect(invocationOpts.prompt).toContain("AUTONOMOUS DISPATCH MODE");
+    expect(invocationOpts.prompt).toContain("Review flow completion criteria");
+    expect(invocationOpts.prompt).toContain("configured review workflow");
+
+    await engine.stop();
+  });
+});
+
 // ─── AC-9: Retry with exponential backoff ─────────────────────────────────────
 
 // AC: @agent-dispatch-engine ac-9
