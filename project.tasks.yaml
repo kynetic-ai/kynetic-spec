@@ -71389,15 +71389,35 @@
     warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
     imgen project."
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJVP83PDXQH6YBFSVXG5M79A
   created_at: 2026-03-03T06:43:23.015Z
-  notes: []
+  started_at: 2026-03-04T05:49:50.333Z
+  notes:
+    - _ulid: 01KJVPAF4TEPYF7APZDWC6MQ9G
+      created_at: 2026-03-04T05:49:51.131Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: validate currently exits 6 for warnings-only while printing a generic success
+        header, which is confusing in automation.
+
+        - Scope: add explicit warning-success mode/flag and clear warning-exit messaging; keep
+        default exit semantics backward-compatible.
+
+        - Files: src/cli/commands/validate.ts, src/cli/help/content.ts,
+        tests/validate-exit-codes.test.ts, README.md (if CLI docs changed).
+
+        - Verification: run focused validate exit-code tests, then run kspec validate for
+        project-level sanity.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS6ZTEGGSXT60KYK4YDRANY
@@ -72720,6 +72740,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #658. Isolated cli-serve daemon tests to per-test HOME/config, replaced
+    global PID kill cleanup with scoped serve stop, and switched fixed startup sleeps to bounded
+    readiness polling with actionable timeout diagnostics. AC coverage added for
+    @daemon-sensitive-cli-test-determinism ac-1/ac-2/ac-3 in tests/cli-serve.test.ts."
   depends_on: []
   context: []
   priority: 2
@@ -72731,6 +72755,7 @@
   created_at: 2026-03-03T22:11:35.159Z
   started_at: 2026-03-04T05:21:03.020Z
   submitted_at: 2026-03-04T05:35:05.161Z
+  completed_at: 2026-03-04T05:43:24.116Z
   notes:
     - _ulid: 01KJVMQ73EWZ3JRP4BZ4Q8T9RY
       created_at: 2026-03-04T05:21:51.727Z
@@ -72774,11 +72799,6 @@
         .kspec/skills/observations/SKILL.md).
       supersedes: null
   todos: []
-  completed_at: 2026-03-04T05:43:24.116Z
-  closed_reason: "Merged in PR #658. Isolated cli-serve daemon tests to per-test HOME/config, replaced
-    global PID kill cleanup with scoped serve stop, and switched fixed startup sleeps to bounded
-    readiness polling with actionable timeout diagnostics. AC coverage added for
-    @daemon-sensitive-cli-test-determinism ac-1/ac-2/ac-3 in tests/cli-serve.test.ts."
 - _ulid: 01KJTWE94TKMSKGAVAHTWEMRFW
   slugs:
     - task-agent-task-mutation-serialization
