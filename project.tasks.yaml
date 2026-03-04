@@ -71370,6 +71370,12 @@
         - Verification: run focused ACP/adapter tests, then run full test suite or equivalent
         project standard checks.
       supersedes: null
+    - _ulid: 01KJVMNH96A4WG3DTKDFYJ3612
+      created_at: 2026-03-04T05:20:56.614Z
+      author: Jacob Chapel
+      content: Paused task to address daemon-isolation priority work. Checkpoint saved on branch
+        fix/acp-framing-epipe at commit e0559fdd8.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
