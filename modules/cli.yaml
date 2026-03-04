@@ -2802,6 +2802,10 @@ features:
             given: concurrent processes update different fields of the same item
             when: both mutations complete
             then: both changes preserved via atomic mutation with file locking
+          - id: ac-1
+            given: inbox item @ref exists
+            when: kspec inbox set @ref --content 'new text' runs
+            then: item text replaced; ULID, created_at, and tags preserved
       - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
         slugs:
           - cmd-inbox-note
