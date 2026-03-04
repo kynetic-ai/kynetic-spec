@@ -1377,6 +1377,8 @@ features:
         when: running 'kspec task complete @ref --force'
         then: the task is completed from any state (in_progress, pending, blocked, cancelled), bypassing
           submit/review requirements, with a warning and note documenting the prior state
+    traits:
+      - "@trait-priority-parameter"
   - _ulid: 01JHNKA9W3CQRY000000000000
     slugs:
       - query-commands
