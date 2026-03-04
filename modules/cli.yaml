@@ -2851,6 +2851,10 @@ features:
             given: inbox item @ref exists
             when: kspec inbox note @ref 'additional context' runs
             then: note text appended to item text separated by newline-separator-newline
+          - id: ac-2
+            given: inbox item already has appended notes
+            when: kspec inbox note @ref 'another note' runs
+            then: new note appended after existing notes with same separator
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
