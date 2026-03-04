@@ -2633,6 +2633,10 @@ features:
             given: inbox has items with various tags
             when: --tag <value> provided
             then: only items containing that tag are shown
+          - id: ac-4
+            given: inbox has more items than limit
+            when: --limit N provided
+            then: at most N items shown
       - _ulid: 01KF15N59E6WMGPHZ8END163G6
         slugs:
           - cmd-inbox-promote
