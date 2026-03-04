@@ -12607,6 +12607,7 @@ runs:
     current_step: 3
     total_steps: 4
     started_at: 2026-03-04T12:03:31.348Z
+    completed_at: 2026-03-04T12:03:56.176Z
     step_results:
       - step_index: 0
         status: completed
@@ -12632,4 +12633,11 @@ runs:
         completed_at: 2026-03-04T12:03:56.176Z
         notes: "Capture: recorded one success observation and no additional follow-up items required."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-04T12:03:56.176Z
+  - _ulid: 01KJWBSZEY9148FWKK7QNK78KD
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-04T12:05:19.454Z
+    step_results: []
+    initiated_by: Jacob Chapel
