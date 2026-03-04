@@ -742,6 +742,60 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
+      type StreamRenderState = { atLineStart: boolean };
+      const streamRenderStates = new Map<string, StreamRenderState>();
+      let activeStreamKey: string | null = null;
+
+      function getStreamState(streamKey: string): StreamRenderState {
+        let state = streamRenderStates.get(streamKey);
+        if (!state) {
+          state = { atLineStart: true };
+          streamRenderStates.set(streamKey, state);
+        }
+        return state;
+      }
+
+      // Prefix once per line, not once per token-sized chunk.
+      function writePrefixedChunk(
+        streamKey: string,
+        prefix: string,
+        text: string,
+      ): void {
+        if (!text) return;
+
+        if (activeStreamKey && activeStreamKey !== streamKey) {
+          const prevState = getStreamState(activeStreamKey);
+          if (!prevState.atLineStart) {
+            process.stdout.write("\n");
+            prevState.atLineStart = true;
+          }
+        }
+        activeStreamKey = streamKey;
+
+        const state = getStreamState(streamKey);
+        const parts = text.split(/(\r?\n)/);
+        let output = "";
+
+        for (const part of parts) {
+          if (part === "\n" || part === "\r\n") {
+            output += part;
+            state.atLineStart = true;
+            continue;
+          }
+
+          if (!part) continue;
+          if (state.atLineStart) {
+            output += `${prefix} ${part}`;
+            state.atLineStart = false;
+          } else {
+            output += part;
+          }
+        }
+
+        if (output) {
+          process.stdout.write(output);
+        }
+      }
 
       // Resolve project dir for WebSocket project binding
       let projectDir: string | undefined;
@@ -781,7 +835,7 @@ export function registerAgentCommands(program: Command): void {
             return;
           }
 
-          // AC: @cli-agent-commands ac-13 — print text chunks with [agent-id session-id] prefix
+          // AC: @cli-agent-commands ac-13 — stream text with per-line [agent-id session-id] prefixes
           if (msg.event === "agent_text_chunk" && msg.data) {
             const data = msg.data as {
               session_id?: string;
@@ -796,7 +850,8 @@ export function registerAgentCommands(program: Command): void {
             if (agentFilter && agentId !== agentFilter) return;
             if (sessionFilter && sessionId !== sessionFilter) return;
 
-            process.stdout.write(`[${agentId} ${sessionId}] ${text}`);
+            const streamKey = `${agentId}\u0000${sessionId}`;
+            writePrefixedChunk(streamKey, `[${agentId} ${sessionId}]`, text);
           }
         };
 
