@@ -2692,6 +2692,80 @@ features:
             given: inbox ref does not exist
             when: kspec inbox delete @nonexistent runs
             then: exits with not-found error and helpful message
+      - _ulid: 01KJWVJPRJ0WK2A5292XFZND1S
+        slugs:
+          - cmd-inbox-get
+        title: kspec inbox get
+        type: requirement
+        tags:
+          - cli
+        description: |-
+          kspec inbox get <ref>
+
+          Shows full details of a single inbox item: ULID, created_at, added_by, tags, and text.
+          Ref can be full ULID or shortest unique prefix, with or without @ prefix.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-04T16:40:58.386Z
+      - _ulid: 01KJWVJQF0T4PMD44YB7P0J3DJ
+        slugs:
+          - cmd-inbox-set
+        title: kspec inbox set
+        type: requirement
+        tags:
+          - cli
+        description: |-
+          kspec inbox set <ref> [options]
+
+          Options:
+          - --content <text>: Replace item text
+          - --tag <tag...>: Add tags (repeatable, deduplicates)
+          - --clear-tags: Clear all tags before adding new ones
+
+          Updates an inbox item in place. At least one update option required.
+          Uses atomic mutation with file locking to prevent concurrent write races.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-shadow-commit"
+        notes: []
+        created: 2026-03-04T16:40:59.104Z
+      - _ulid: 01KJWVJR4NSTMDV0QEWFAGZ9TM
+        slugs:
+          - cmd-inbox-note
+        title: kspec inbox note
+        type: requirement
+        tags:
+          - cli
+        description: |-
+          kspec inbox note <ref> <text>
+
+          Appends a note to an inbox item's text, separated by \n\n---\n\n.
+          Uses atomic mutation with file locking to prevent concurrent write races.
+          Multiple notes can be appended sequentially.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-shadow-commit"
+        notes: []
+        created: 2026-03-04T16:40:59.797Z
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
