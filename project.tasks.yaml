@@ -71662,6 +71662,12 @@
         - Verification: run targeted Vitest for batch exec engine, then run kspec validate and full
         tests as needed for confidence.
       supersedes: null
+    - _ulid: 01KJVVD621RDA18JVDRYXF8B2W
+      created_at: 2026-03-04T07:18:43.010Z
+      author: Jacob Chapel
+      content: "WIP checkpoint committed on branch feat/task-batch-priority-p-alias at commit 6946452be.
+        Files: src/cli/batch-exec.ts, tests/batch-exec-engine.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
