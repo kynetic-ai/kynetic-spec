@@ -434,6 +434,12 @@ features:
                 when: flush encounters a write error
                 then: the error is reported and .kspec/ is left in a consistent pre-batch state — no partial writes
                   are silently committed
+              - id: ac-8
+                given: a new function or code path is added that reads files from .kspec/
+                when: the function uses fs.readFile or fs.readdir directly instead of a buffer-aware helper
+                then: the read bypasses the write buffer, violating ac-2; all .kspec/ file reads MUST go through a
+                  buffer-aware helper (e.g. readYamlFile or a shared readFileBufferAware) that
+                  checks getActiveBatchBuffer() before falling back to disk
             status:
               maturity: draft
               implementation: implemented
