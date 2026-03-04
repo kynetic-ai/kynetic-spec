@@ -148,6 +148,7 @@ describe('PubSubManager', () => {
   });
 
   describe('Connection Management', () => {
+    // AC: @ws-disconnect-lifecycle-cleanup ac-1
     it('should track connection count', () => {
       const ws1 = createMockWebSocket('conn-1', '/tmp/project-a', []);
       const ws2 = createMockWebSocket('conn-2', '/tmp/project-b', []);
@@ -162,6 +163,21 @@ describe('PubSubManager', () => {
 
       manager.removeConnection('conn-1');
       expect(manager.getConnectionCount()).toBe(1);
+    });
+
+    // AC: @ws-disconnect-lifecycle-cleanup ac-2
+    it('removes connection by socket using stable session mapping when ws.data loses sessionId', () => {
+      const ws = createMockWebSocket('conn-1', '/tmp/project-a', ['tasks:updates']);
+      manager.addConnection('conn-1', ws);
+
+      // Simulate close callback race where data no longer has sessionId.
+      (ws.data as unknown as { sessionId?: string }).sessionId = undefined;
+
+      const removedSessionId = manager.removeConnectionBySocket(ws);
+
+      expect(removedSessionId).toBe('conn-1');
+      expect(manager.getConnectionCount()).toBe(0);
+      expect(manager.getSessionIdBySocket(ws)).toBeUndefined();
     });
 
     it('should clean up connection when removed', () => {

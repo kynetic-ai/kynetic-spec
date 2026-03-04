@@ -16,6 +16,7 @@ import type { BroadcastEvent, ConnectionData } from './types';
 
 export class PubSubManager {
   private connections = new Map<string, ServerWebSocket<ConnectionData>>();
+  private sessionIdsBySocket = new WeakMap<ServerWebSocket<ConnectionData>, string>();
 
   /**
    * Register a new WebSocket connection
@@ -23,13 +24,45 @@ export class PubSubManager {
    */
   addConnection(sessionId: string, ws: ServerWebSocket<ConnectionData>) {
     this.connections.set(sessionId, ws);
+    this.sessionIdsBySocket.set(ws, sessionId);
   }
 
   /**
    * Remove a WebSocket connection
    */
-  removeConnection(sessionId: string) {
-    this.connections.delete(sessionId);
+  removeConnection(sessionId: string): boolean {
+    const ws = this.connections.get(sessionId);
+    if (ws) {
+      this.sessionIdsBySocket.delete(ws);
+    }
+    return this.connections.delete(sessionId);
+  }
+
+  /**
+   * Resolve a stable session ID for a socket and remove that connection.
+   * This is resilient when ws.data.sessionId is missing in close callbacks.
+   */
+  removeConnectionBySocket(ws: ServerWebSocket<ConnectionData>): string | undefined {
+    const sessionId = this.getSessionIdBySocket(ws);
+    if (!sessionId) {
+      return undefined;
+    }
+
+    this.removeConnection(sessionId);
+    return sessionId;
+  }
+
+  /**
+   * Get stable session ID for socket from registration mapping.
+   */
+  getSessionIdBySocket(ws: ServerWebSocket<ConnectionData>): string | undefined {
+    const mappedSessionId = this.sessionIdsBySocket.get(ws);
+    if (mappedSessionId) {
+      return mappedSessionId;
+    }
+
+    const data = ws.data as Partial<ConnectionData> | undefined;
+    return data?.sessionId;
   }
 
   /**

@@ -334,8 +334,8 @@ export async function createServer(options: ServerOptions) {
         heartbeatManager.recordPong(ws);
       },
       close(ws, code, reason) {
-        pubsubManager.removeConnection(ws.data.sessionId);
-        console.log(`[daemon] WebSocket client disconnected: ${ws.data.sessionId} (code: ${code}, reason: ${reason})`);
+        const sessionId = pubsubManager.removeConnectionBySocket(ws) ?? 'unknown';
+        console.log(`[daemon] WebSocket client disconnected: ${sessionId} (code: ${code}, reason: ${reason})`);
       }
     });
 
