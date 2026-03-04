@@ -407,7 +407,9 @@ features:
               - id: ac-2
                 given: command A writes a file and command B reads the same file in the same batch
                 when: command B reads the file
-                then: command B sees command A's buffered write (read-after-write consistency)
+                then: command B sees command A's buffered write (read-after-write consistency); this applies to ALL
+                  read paths — readYamlFile, loadSpecFile, loadAllItems, loadAllTasks, and any other
+                  function that reads .kspec/ files — not just the primary readYamlFile helper
               - id: ac-3
                 given: all batch commands succeed
                 when: batch commits
