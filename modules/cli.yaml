@@ -960,6 +960,10 @@ features:
             given: --type is provided
             when: kspec task add --title 'T' --type bug runs
             then: "task created with type set to bug; valid types: task, epic, bug, spike, infra"
+          - id: ac-spec-ref
+            given: --spec-ref is provided
+            when: kspec task add --title 'T' --spec-ref @valid-spec runs
+            then: task created with spec_ref linked; ref validated as spec item (not task or meta)
       - _ulid: 01JHNKA8W8CTSK200000000000
         slugs:
           - task-start
