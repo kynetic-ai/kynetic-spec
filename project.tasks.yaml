@@ -71458,6 +71458,11 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #659. Implemented structured-output purity fix for validate/lint so
+    --json/--yaml no longer appends human-readable post-result sections; added regression coverage
+    in tests/validate-exit-codes.test.ts for parseable validate --json output and warnings-only
+    messaging behavior. Notable: task has no spec_ref, so AC coverage is N/A; quality gates verified
+    via PR checks and full npm test (173 files, 3616 passed, 3 skipped)."
   depends_on: []
   context: []
   priority: 3
@@ -71467,6 +71472,7 @@
   created_at: 2026-03-03T06:43:24.752Z
   started_at: 2026-03-04T06:08:56.339Z
   submitted_at: 2026-03-04T06:11:09.628Z
+  completed_at: 2026-03-04T07:05:06.027Z
   notes:
     - _ulid: 01KJVQDEA47KER24GTNRA1GQ4S
       created_at: 2026-03-04T06:08:57.157Z
@@ -71495,12 +71501,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-04T07:05:06.027Z
-  closed_reason: "Merged in PR #659. Implemented structured-output purity fix for validate/lint so
-    --json/--yaml no longer appends human-readable post-result sections; added regression coverage
-    in tests/validate-exit-codes.test.ts for parseable validate --json output and warnings-only
-    messaging behavior. Notable: task has no spec_ref, so AC coverage is N/A; quality gates verified
-    via PR checks and full npm test (173 files, 3616 passed, 3 skipped)."
 - _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
   slugs: []
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
@@ -71634,7 +71634,7 @@
   type: task
   description: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -71645,6 +71645,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-04T07:06:09.618Z
+  session_id: 01KJVT52QN7EH1GVPZ9QP1SD53
 - _ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
   slugs: []
   title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
