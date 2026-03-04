@@ -12821,8 +12821,18 @@ runs:
   - _ulid: 01KJWFMFA9V48SG9MZ4HME0TAE
     workflow_ref: "@01KFM9X3C64AHJAD6J2YJZ3YA6"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 8
     started_at: 2026-03-04T13:12:13.386Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-04T13:12:13.386Z
+        completed_at: 2026-03-04T13:12:18.975Z
+        inputs:
+          spec_ref: "@daemon-sensitive-cli-test-determinism"
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-04T13:12:18.975Z
+        completed_at: 2026-03-04T13:12:18.975Z
     initiated_by: Jacob Chapel
