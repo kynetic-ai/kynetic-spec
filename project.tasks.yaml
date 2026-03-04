@@ -43720,7 +43720,7 @@
     detailed info. Applies to: validate (orphaned specs, mismatches), tasks list, inbox list, item
     list. Ensures consistent flag naming and behavior across CLI."
   spec_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -43752,6 +43752,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  closed_reason: Under-defined trait with no spec. --verbose/-v already consistent across commands.
+    Formalizing adds bureaucracy without behavior change.
 - _ulid: 01KGGZKQDSPMJ2242BCMJX48K6
   slugs: []
   title: Add AC schema field validation to detect drift
@@ -46928,6 +46930,8 @@
   spec_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Under-defined (one line, no spec, no ACs). Dispatch handles branch isolation via
+    task-work skill. Claude Code worktree covers agent isolation.
   depends_on: []
   context: []
   priority: 3
@@ -46960,8 +46964,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  closed_reason: Under-defined (one line, no spec, no ACs). Dispatch handles branch isolation via
-    task-work skill. Claude Code worktree covers agent isolation.
 - _ulid: 01KGWDPVD3JXNSDHWDHVYQGVQX
   slugs: []
   title: Create shared CLI validation helpers (parseIntOption, validateRefExists, validateEnumOption)
