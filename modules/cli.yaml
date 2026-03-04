@@ -2536,6 +2536,8 @@ features:
           - "@trait-confirmation-prompt"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+    traits:
+      - "@trait-priority-parameter"
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
