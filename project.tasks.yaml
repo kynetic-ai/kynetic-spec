@@ -71450,7 +71450,7 @@
     invalid JSON for downstream jq parsing. Expected: pure JSON when --json is set. Workaround: pipe
     through head or sed to strip trailing text. Reported from imgen project."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -71488,6 +71488,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-04T06:11:09.628Z
 - _ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
   slugs: []
   title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
