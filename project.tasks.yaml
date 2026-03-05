@@ -75960,6 +75960,73 @@
 
         Tests: 50/50 passing. Full suite: 3815/3820 passing (2 pre-existing codex failures).
       supersedes: null
+    - _ulid: 01KJYPGW8GEGMJRWHGPF6T4DZS
+      created_at: 2026-03-05T09:51:04.464Z
+      author: Jacob Chapel
+      content: >-
+        Review findings (MUST-FIX):
+
+
+        1) Branch scope contamination:
+
+        - git diff feat/ui-revamp...HEAD includes unrelated task-board commit/work.
+
+        - Evidence: git log feat/ui-revamp..HEAD shows both:
+          - fe405773e feat(web-ui): implement task board (kanban) view
+          - 221daa8d5 feat(web-ui): implement session stream view
+        - This task branch must contain only @implement-session-stream-view changes.
+
+
+        2) Spec alignment gap for AC-4 (@ui-session-stream ac-4):
+
+        - Session context panel does not implement "spec context with AC checklist, files changed
+        during session, and budget info".
+
+        - Current panel renders Session/Stats/Timeline only.
+
+        - Evidence: packages/web-ui/src/lib/components/session/SessionContextPanel.svelte:59-153
+
+
+        3) Design-token rule violations (raw Tailwind colors in new session UI):
+
+        - packages/web-ui/src/routes/sessions/[id]/+page.svelte:136-137 (bg-emerald-500,
+        text-emerald-500)
+
+        - packages/web-ui/src/lib/components/session/SessionContextPanel.svelte:85 (bg-emerald-500)
+
+        - packages/web-ui/src/lib/components/session/ThinkingBlock.svelte:19,31,32 (purple color
+        classes)
+
+        - packages/web-ui/src/lib/components/session/ToolCallView.svelte:18-21,76,78,80,109,112
+        (emerald/red/blue raw classes)
+
+
+        4) Accessibility gap for live streaming region:
+
+        - Streaming output container lacks aria-live/announcement semantics.
+
+        - Evidence: packages/web-ui/src/lib/components/session/SessionStream.svelte:97-110
+
+
+        5) AC test quality gap (fluff/static-source checks):
+
+        - Most AC tests assert source string presence via readFileSync(...).toContain(...), which
+        can pass without exercising runtime behavior.
+
+        - AC-4 tests also do not validate spec-context checklist/files-changed/budget requirements.
+
+        - Evidence: tests/web-ui-session-stream.test.ts:45-57, 69-207, 213-250
+
+
+        Validation/tests run:
+
+        - kspec validate: fails globally due existing project-level meta/reference issues unrelated
+        to this spec; no direct @ui-session-stream warning surfaced.
+
+        - Required regression command passed:
+          - npm test: pass (3817 passed, 3 skipped)
+          - packages/web-ui npm test: pass (113 passed)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
