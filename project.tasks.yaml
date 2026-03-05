@@ -77004,7 +77004,9 @@
     - ui
     - web-ui
   vcs_refs: []
+  session_id: 01KJZZQE4PSQSWFABW1YWKPPMD
   created_at: 2026-03-05T01:30:45.138Z
+  started_at: 2026-03-05T21:58:26.832Z
   notes:
     - _ulid: 01KJXSX0DNC87CF9RR1ZCMMR5A
       created_at: 2026-03-05T01:30:53.238Z
@@ -77023,10 +77025,33 @@
 
         5. Consolidate 3 task detail implementations into one component
       supersedes: null
+    - _ulid: 01KK00TW2A2EKBZDN3AN4AP5PY
+      created_at: 2026-03-05T22:10:32.138Z
+      author: "@claude"
+      content: |-
+        Completed UI Revamp Prerequisites (Quick Wins):
+
+        1. **needs_work status added** to all status color/label maps across 5 components:
+           TaskList.svelte, tasks page, ItemDetail.svelte, TaskFilters.svelte, dashboard.
+           Color scheme aligned with spec: pending=amber, in_progress=orange,
+           pending_review=blue, needs_work=yellow, blocked=red, completed=emerald.
+
+        2. **type and automation fields** added to task list API response (daemon/routes/tasks.ts)
+           and TaskSummary shared type.
+
+        3. **taskDetailStore** was already migrated to Svelte 5 runes — no work needed.
+
+        4. **Observations nav item** was already always visible (ac-4 covered) — no work needed.
+
+        5. **Consolidated task detail**: Removed dead TaskDetail.svelte, TaskDetailPanel.svelte,
+           and taskDetailStore.svelte.ts. The tasks page already has its own inline implementation;
+           the removed components had zero imports.
+
+        Tests: 176 suites / 3794 tests pass. 2 pre-existing failures (codex platform detection)
+        are unrelated to this task.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T21:58:26.832Z
-  session_id: 01KJZZQE4PSQSWFABW1YWKPPMD
 - _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
   slugs: []
   title: Fix dispatch engine re-triggering workers on completed tasks
