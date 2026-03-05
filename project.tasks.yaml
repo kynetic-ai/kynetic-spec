@@ -75983,6 +75983,43 @@
       content: "Rebased feat/task-board-kanban onto main (incorporated 6 commits including PR #682 e2e
         daemon isolation fix). Branch is now 0 behind main, 11 ahead."
       supersedes: null
+    - _ulid: 01KJZQPTGD3021E5R4KF1BD5WQ
+      created_at: 2026-03-05T19:31:02.285Z
+      author: "@claude"
+      content: >-
+        Fix cycle 4 interrupted: dispatch worker agent killed its own host daemon while debugging
+        E2E test failures.
+
+
+        The agent was trying to manually start a daemon to test against fixture data after E2E tests
+        showed 'Failed to fetch' errors. Running kspec serve (stop/start/restart) from a dispatch
+        worker kills the global daemon at ~/.config/kspec/daemon.pid, which is the same daemon
+        hosting the dispatch engine. No env guard exists to prevent this.
+
+
+        WIP commit (b06bc63ab) contains partial but untested changes:
+
+        - Added type field to daemon task list/detail API responses
+
+        - Fixed todo rendering to use actual schema fields (done/text vs status/content)
+
+        - Serialized vcs_refs objects to string format for frontend
+
+        - Enriched E2E fixtures with full AC-3 required fields
+
+        - Expanded AC-3 test to verify type, deps, todos, automation, VCS, plan, session
+
+        - Fixed constants.ts for same-origin API in production builds
+
+        - Fixed hardcoded localhost:3456 in AC-5 test
+
+
+        Root cause of E2E failures likely: fixture data schema mismatch (agent used wrong
+        todo/vcs_refs shapes initially, then fixed but daemon was killed before re-testing).
+
+
+        Created separate task for dispatch daemon self-protection guard.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
