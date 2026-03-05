@@ -75977,6 +75977,12 @@
         missing from task detail API response; AC-3 tests only partially verify required modal
         fields)."
       supersedes: null
+    - _ulid: 01KJZNXEGNAQBWJQGXAAV030XT
+      created_at: 2026-03-05T18:59:42.230Z
+      author: "@claude"
+      content: "Rebased feat/task-board-kanban onto main (incorporated 6 commits including PR #682 e2e
+        daemon isolation fix). Branch is now 0 behind main, 11 ahead."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
@@ -76636,6 +76642,13 @@
         pre-existing failures matching base branch ratio). Project tests: 3843 pass, 2 pre-existing
         failures (codex config detection, unrelated)."
       supersedes: null
+    - _ulid: 01KJZNXFR5H511RBTBQGQSKVTK
+      created_at: 2026-03-05T18:59:43.493Z
+      author: "@claude"
+      content: "Rebased feat/enhanced-inbox-view-v2 onto main via feat/ui-revamp rebase (incorporated 6
+        commits including PR #682 e2e daemon isolation fix). Deleted superseded v1 branch
+        (feat/enhanced-inbox-view). Branch is now 0 behind main, 17 ahead."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
@@ -76697,6 +76710,13 @@
       content: "Work paused mid-review on branch feat/plans-view (HEAD: 4838036a5). E2E test daemon
         isolation regression discovered — daemon-killing cleanupExistingDaemon() in test-base.ts
         needs to be fixed on main first, then merged into this branch before continuing."
+      supersedes: null
+    - _ulid: 01KJZNXGXGG183DRY3Y2QDQXTX
+      created_at: 2026-03-05T18:59:44.688Z
+      author: "@claude"
+      content: "Rebased feat/plans-view onto main via feat/ui-revamp → feat/enhanced-inbox-view-v2 rebase
+        chain (incorporated 6 commits including PR #682 e2e daemon isolation fix). Branch is now 0
+        behind main, 19 ahead."
       supersedes: null
   todos: []
   automation: eligible
@@ -76841,6 +76861,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #682. Removed cleanupExistingDaemon(), added ephemeral ports, HOME
+    isolation, and scoped cleanup. All 5 ACs covered. Reviewed by Claude, Codex, and CI — all
+    clean."
   depends_on: []
   context: []
   priority: 1
@@ -76854,6 +76877,7 @@
   created_at: 2026-03-05T17:36:04.580Z
   started_at: 2026-03-05T17:46:25.390Z
   submitted_at: 2026-03-05T18:35:35.073Z
+  completed_at: 2026-03-05T18:49:53.615Z
   notes:
     - _ulid: 01KJZH4BDBX3TKDQHKTTEEQBG9
       created_at: 2026-03-05T17:36:05.547Z
@@ -76908,7 +76932,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-05T18:49:53.615Z
-  closed_reason: "Merged in PR #682. Removed cleanupExistingDaemon(), added ephemeral ports, HOME
-    isolation, and scoped cleanup. All 5 ACs covered. Reviewed by Claude, Codex, and CI — all
-    clean."
