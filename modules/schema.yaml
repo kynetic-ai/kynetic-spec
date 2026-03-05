@@ -1224,7 +1224,7 @@ features:
             then: shows 'No traits defined' message
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
     status:
       maturity: draft
       implementation: implemented
