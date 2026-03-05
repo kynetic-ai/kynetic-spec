@@ -75605,6 +75605,12 @@
         feat/ui-revamp in ea25b70a8. No remaining kspec validate warnings for @ui-design-system. No
         further work needed.
       supersedes: null
+    - _ulid: 01KJYBC14PCR7Z4SWKG1JAK9FE
+      created_at: 2026-03-05T06:36:11.287Z
+      author: "@claude"
+      content: No work remaining. Task was already completed and merged in ea25b70a8. Dispatch
+        re-triggered on a completed task — no action taken.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
