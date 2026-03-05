@@ -75500,6 +75500,18 @@
         validate for @ui-design-system (status mismatch implementation in_progress vs expected
         not_started)."
       supersedes: null
+    - _ulid: 01KJY75X0NP8M654Y1XQG54CZD
+      created_at: 2026-03-05T05:22:56.150Z
+      author: "@claude"
+      content: "Fix cycle 3: The status mismatch warning was caused by the task being in needs_work state
+        (which maps to expected spec status not_started in alignment.ts calculateExpectedStatus),
+        while the spec remained at in_progress. Running kspec task start transitions the task back
+        to in_progress, which aligns with the spec's in_progress status. Previous fix cycles were
+        setting spec to not_started but that got overridden when task start re-ran. The fix is
+        simply that the task is now properly in in_progress state. kspec validate confirms no status
+        mismatch warning for @ui-design-system. All 18 design system tests pass. 4 pre-existing
+        failures unrelated (codex platform detection + session-start timeout)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
