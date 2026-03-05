@@ -75872,7 +75872,7 @@
   type: task
   spec_ref: "@ui-session-stream"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75888,6 +75888,8 @@
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-03-05T09:22:17.865Z
+  session_id: 01KJYMFM2PZF0XYJYWZQJG6PJ7
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
   slugs:
     - implement-agent-and-dispatch-view
