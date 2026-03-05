@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75766,7 +75766,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KJYTXQ0BKX4PTXJ83VN0RG2R
+  session_id: null
   created_at: 2026-03-05T01:30:04.123Z
   started_at: 2026-03-05T11:20:00.470Z
   submitted_at: 2026-03-05T11:20:05.749Z
@@ -75969,6 +75969,13 @@
         automation, VCS links, plan ref, session link); current AC-3 E2E assertions in
         packages/web-ui/tests/e2e/task-board.spec.ts:82-107 only check description/notes/status, so
         AC text is only partially enforced."
+      supersedes: null
+    - _ulid: 01KJZFB24VPKW5HDMVH5EJ6J29
+      created_at: 2026-03-05T17:04:48.283Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: Review issues: AC-3 spec/test gaps remain (task type
+        missing from task detail API response; AC-3 tests only partially verify required modal
+        fields)."
       supersedes: null
   todos: []
   automation: eligible
