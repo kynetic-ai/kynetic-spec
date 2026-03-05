@@ -1271,6 +1271,9 @@ features:
     traits: []
     notes: []
     created: 2026-03-05T01:30:02.782Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KJXSVF5CPD38NH05CPXG4NFY
     slugs:
       - ui-session-history
