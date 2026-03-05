@@ -76467,6 +76467,18 @@
         sessions.spec.ts (incorrect sort assertion for ac-1; ac-2 test does not verify stream view
         and has ineffective detail/events route stubbing)."
       supersedes: null
+    - _ulid: 01KJZ1JQ29MQP9Q9M82S9BKSSK
+      created_at: 2026-03-05T13:04:19.017Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) packages/web-ui/tests/e2e/sessions.spec.ts:202-223 'sessions
+        are sorted by most recent first' does not validate AC-1 correctly. The mock data order is
+        not most-recent-first (03-05 item is second), comments contradict the assertion, and
+        assertion expects session 1 first. This can pass while violating the required sort behavior.
+        MUST-FIX 2) packages/web-ui/tests/e2e/sessions.spec.ts:228-256 AC-2 test only asserts URL
+        change and does not assert session stream view rendering; additionally, route pattern
+        '**/api/sessions' does not match '/api/sessions/:id' or '/events', so the conditional
+        branches are effectively dead for detail API mocking."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
