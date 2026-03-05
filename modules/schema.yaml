@@ -1021,7 +1021,7 @@ features:
             then: warning emitted (duplicate)
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
       - _ulid: 01KFC1B8DT80QA3V46340MT1BJ
         slugs:
           - trait-index
