@@ -75377,7 +75377,7 @@
   type: task
   spec_ref: "@ui-design-system"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@01KJXSWR"
@@ -75413,6 +75413,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T04:31:50.269Z
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
   slugs:
     - implement-app-shell-and-navigation
