@@ -1079,8 +1079,13 @@ describe("auto-scroll behavior (@ui-session-stream ac-3)", () => {
     });
 
     // AC: @ui-session-stream ac-3
-    it("returns false at exactly the threshold (100px from bottom)", () => {
-      expect(shouldAutoScrollFn(1000, 500, 400)).toBe(false);
+    it("returns true at exactly the threshold (100px from bottom — spec says >100px pauses)", () => {
+      expect(shouldAutoScrollFn(1000, 500, 400)).toBe(true);
+    });
+
+    // AC: @ui-session-stream ac-3
+    it("returns false just beyond the threshold (101px from bottom)", () => {
+      expect(shouldAutoScrollFn(1000, 499, 400)).toBe(false);
     });
 
     // AC: @ui-session-stream ac-3

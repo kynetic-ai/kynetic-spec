@@ -378,7 +378,7 @@ export function computeScrollDistance(scrollHeight: number, scrollTop: number, c
 export const AUTO_SCROLL_THRESHOLD = 100;
 
 export function shouldAutoScroll(scrollHeight: number, scrollTop: number, clientHeight: number): boolean {
-	return computeScrollDistance(scrollHeight, scrollTop, clientHeight) < AUTO_SCROLL_THRESHOLD;
+	return computeScrollDistance(scrollHeight, scrollTop, clientHeight) <= AUTO_SCROLL_THRESHOLD;
 }
 
 /**
