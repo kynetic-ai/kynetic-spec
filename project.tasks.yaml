@@ -76794,7 +76794,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76851,6 +76851,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T20:52:07.413Z
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
   slugs:
     - implement-dashboard-overview
