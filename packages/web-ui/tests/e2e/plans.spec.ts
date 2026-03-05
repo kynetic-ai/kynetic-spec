@@ -168,6 +168,40 @@ test.describe('Plans View', () => {
 		await expect(page.getByText('No matching plans')).toBeVisible();
 	});
 
+	// ── Accessibility ──
+
+	test('status filter has an accessible label', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const label = page.locator('label[for="plans-status-filter"]');
+		await expect(label).toBeVisible();
+		await expect(label).toHaveText('Status');
+	});
+
+	// ── Navigation actions ──
+
+	// AC: @ui-plans-view ac-1
+	test('shows View Specs and View Tasks navigation links on plan cards', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		// The active plan has both specs and tasks
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		await expect(activePlan).toBeVisible();
+
+		const actions = activePlan.getByTestId('plan-actions');
+		await expect(actions).toBeVisible();
+
+		const viewSpecs = activePlan.getByTestId('plan-view-specs');
+		await expect(viewSpecs).toBeVisible();
+		await expect(viewSpecs).toContainText('View Specs');
+
+		const viewTasks = activePlan.getByTestId('plan-view-tasks');
+		await expect(viewTasks).toBeVisible();
+		await expect(viewTasks).toContainText('View Tasks');
+	});
+
 	// ── UI states ──
 
 	test('shows loading skeletons while fetching data', async ({ page }) => {

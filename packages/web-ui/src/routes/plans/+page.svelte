@@ -3,6 +3,7 @@
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { base } from '$app/paths';
 	import type { PlanSummary } from '@kynetic-ai/shared';
 	import { fetchPlans } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -10,7 +11,10 @@
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import MapIcon from '@lucide/svelte/icons/map';
+	import FileTextIcon from '@lucide/svelte/icons/file-text';
+	import ListTodoIcon from '@lucide/svelte/icons/list-todo';
 
 	// ── Data state ──
 	let plans = $state<PlanSummary[]>([]);
@@ -59,15 +63,17 @@
 		await loadData();
 
 		if (!isStaticMode()) {
-			subscribe(['plans:updates']);
-			on('plans:updates', handleUpdate);
+			// Plan progress is derived from task statuses, so subscribe to tasks:updates
+			// to refresh when task status changes (e.g., task completed → plan progress updates)
+			subscribe(['tasks:updates']);
+			on('tasks:updates', handleUpdate);
 		}
 	});
 
 	onDestroy(() => {
 		if (!isStaticMode()) {
-			off('plans:updates', handleUpdate);
-			unsubscribe(['plans:updates']);
+			off('tasks:updates', handleUpdate);
+			unsubscribe(['tasks:updates']);
 		}
 	});
 
@@ -146,7 +152,9 @@
 
 	<!-- Filter controls -->
 	<div class="flex flex-wrap gap-2 items-center" data-testid="plans-filters">
+		<label for="plans-status-filter" class="text-sm font-medium text-muted-foreground">Status</label>
 		<select
+			id="plans-status-filter"
 			bind:value={filterStatus}
 			class="rounded-md border bg-background px-3 py-1.5 text-sm"
 			data-testid="plans-status-filter"
@@ -266,6 +274,34 @@
 									<code class="text-xs bg-muted px-1 py-0.5 rounded" data-testid="plan-slug">@{plan.slugs[0]}</code>
 								{/if}
 							</div>
+						</div>
+
+						<!-- Navigation actions -->
+						<div class="flex items-center gap-2 pt-1" data-testid="plan-actions">
+							{#if plan.spec_count > 0}
+								<Button
+									variant="outline"
+									size="sm"
+									href="{base}/items?plan={encodeURIComponent(plan.slugs[0] ?? plan._ulid)}"
+									class="h-7 gap-1.5 text-xs"
+									data-testid="plan-view-specs"
+								>
+									<FileTextIcon class="size-3.5" />
+									View Specs
+								</Button>
+							{/if}
+							{#if plan.task_count > 0}
+								<Button
+									variant="outline"
+									size="sm"
+									href="{base}/tasks?plan={encodeURIComponent(plan.slugs[0] ?? plan._ulid)}"
+									class="h-7 gap-1.5 text-xs"
+									data-testid="plan-view-tasks"
+								>
+									<ListTodoIcon class="size-3.5" />
+									View Tasks
+								</Button>
+							{/if}
 						</div>
 					</CardContent>
 				</Card>
