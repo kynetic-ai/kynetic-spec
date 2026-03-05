@@ -801,7 +801,7 @@ features:
           a non-zero exit code
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
   - _ulid: 01KFQ84FVYMN3Z0HXWZ5AK7CQD
     slugs:
       - multi-directory-daemon
