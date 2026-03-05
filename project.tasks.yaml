@@ -76078,6 +76078,34 @@
         changes, AC-4 incomplete, design-token violations, missing aria-live, and AC tests rely on
         static source-string checks."
       supersedes: null
+    - _ulid: 01KJYRQRZ8M8RNMZNM61B8DB9V
+      created_at: 2026-03-05T10:29:47.624Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1: Addressing review feedback.
+
+
+        Changes:
+
+        1. Branch scope: Created clean branch from feat/ui-revamp, cherry-picked only session stream
+        commit (no task-board contamination)
+
+        2. AC-4 completion: Added spec context (title, ref, AC checklist), files changed (extracted
+        from tool call events), and budget info to SessionContextPanel. Added daemon endpoint
+        enrichment (spec lookup via ReferenceIndex, getBudget).
+
+        3. Design tokens: Replaced all raw Tailwind colors (emerald, red, blue, purple) with design
+        system tokens (status-completed, status-blocked, status-pending-review, design-ring,
+        destructive).
+
+        4. Accessibility: Added aria-live=polite and role=log to streaming output region.
+
+        5. Tests: Added extractFilesChanged unit tests (7 tests), design-token regression tests,
+        AC-4 spec-context/budget/files-changed assertions, aria-live verification. Total: 60 tests.
+
+        6. Also added formatElapsed/formatAge to session-utils.ts to avoid cross-task dependency on
+        board-utils.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
