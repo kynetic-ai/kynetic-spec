@@ -76284,6 +76284,7 @@
   session_id: 01KJYXWPDVQ0RBQ29GGJMMDTCY
   created_at: 2026-03-05T01:30:04.991Z
   started_at: 2026-03-05T12:06:48.730Z
+  submitted_at: 2026-03-05T12:20:14.209Z
   notes:
     - _ulid: 01KJXSVH9Z0H25B1K8PR9V7T13
       created_at: 2026-03-05T01:30:04.991Z
@@ -76332,9 +76333,26 @@
 
         - Build passes, 3748/3753 tests pass (2 pre-existing codex failures, 3 skips)
       supersedes: null
+    - _ulid: 01KJYZB266DZA2EDE1096SDV6W
+      created_at: 2026-03-05T12:25:11.110Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Active invocation updates are streamed via WebSocket but the
+        live-updating region has no aria-live announcement path; screen readers won't be notified of
+        invocation changes (packages/web-ui/src/routes/agents/+page.svelte:187). MUST-FIX 2) Active
+        Invocations list has no empty state when dispatch is enabled but there are zero active
+        invocations, violating the checklist requirement that collection views provide actionable
+        empty guidance (packages/web-ui/src/routes/agents/+page.svelte:187). MUST-FIX 3) E2E
+        error-boundary coverage is currently documentary/fluff: the test named 'error message
+        displays on API failure' never induces failure and only asserts no error is shown; this does
+        not validate the failure path (packages/web-ui/tests/e2e/agents.spec.ts:213). SHOULD-FIX 4)
+        Loading-state test is nondeterministic because it passes if either loaded content or
+        skeleton is visible, so it can pass without proving skeleton behavior
+        (packages/web-ui/tests/e2e/agents.spec.ts:203). Validation/tests run: kspec validate (global
+        pre-existing repo issues, none specific to @ui-agent-dispatch), npm test (root pass: 3750
+        passed, 3 skipped), packages/web-ui npm test pass (63 passed)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T12:20:14.209Z
 - _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
   slugs:
     - implement-session-history
