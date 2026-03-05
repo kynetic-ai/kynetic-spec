@@ -76887,16 +76887,35 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJZWBQJWYWMNSH7X620F3FKT
   created_at: 2026-03-05T01:30:07.172Z
+  started_at: 2026-03-05T21:02:14.985Z
   notes:
     - _ulid: 01KJXSVKE4KK0MKFP61JZBR1DD
       created_at: 2026-03-05T01:30:07.172Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
+    - _ulid: 01KJZWY21HJ7M4PBNA85TD6KPC
+      created_at: 2026-03-05T21:02:22.257Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Dashboard is the home view (/) providing at-a-glance overview of project state
+
+        - Scope: Three sections — Active Work (reuses ActiveFleetRow), Status Summary (clickable
+        count cards per status), Needs Attention (inbox untriaged + observations unresolved +
+        validation warnings + blocked tasks)
+
+        - Files: packages/web-ui/src/routes/+page.svelte (main page), packages/web-ui/src/lib/api.ts
+        (may need fetchValidation/fetchAlignment)
+
+        - Verification: npm test + AC annotation tests
+
+        - Branch: feat/dashboard-overview
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T21:02:14.985Z
-  session_id: 01KJZWBQJWYWMNSH7X620F3FKT
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
   slugs: []
   title: UI Revamp Prerequisites (Quick Wins)
