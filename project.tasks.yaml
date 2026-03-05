@@ -75377,7 +75377,7 @@
   type: task
   spec_ref: "@ui-design-system"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@01KJXSWR"
@@ -75385,7 +75385,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KJY8R2HX793W799AKTGNPVJG
+  session_id: null
   created_at: 2026-03-05T01:30:03.199Z
   started_at: 2026-03-05T06:04:05.973Z
   submitted_at: 2026-03-05T06:04:28.251Z
@@ -75578,6 +75578,13 @@
         annotations present for @ui-design-system ac-1..ac-4 in tests/web-ui-design-system.test.ts;
         no inherited trait ACs shown by kspec item get @ui-design-system; required test commands
         passed (root npm test and cd packages/web-ui && npm test).'
+      supersedes: null
+    - _ulid: 01KJY9VPYY1B9D8K6RN3P7RAKJ
+      created_at: 2026-03-05T06:09:47.998Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Review findings: Review issues: MUST-FIX spec-specific kspec validate
+        warning remains for @ui-design-system (status mismatch implementation in_progress vs
+        expected not_started)."
       supersedes: null
   todos: []
   automation: eligible
