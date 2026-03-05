@@ -76488,7 +76488,7 @@
   type: task
   spec_ref: "@ui-inbox-enhanced"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76532,6 +76532,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T13:14:42.061Z
 - _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
   slugs:
     - implement-plans-view
