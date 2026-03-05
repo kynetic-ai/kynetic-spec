@@ -9,7 +9,7 @@ import {
   testUlid,
 } from "./helpers/cli";
 
-// AC: @alignment-validation-warnings ac-1 — no-task spec policy for alignment warnings
+// AC: @alignment-warnings ac-1
 
 describe("validate alignment: no-task spec warning policy", () => {
   let tmpDir: string;
@@ -91,6 +91,7 @@ tasks:
     expect(output).not.toContain("Status mismatches");
   });
 
+  // AC: @alignment-warnings ac-3
   it("emits no alignment warning for no-task spec with implemented status (baseline trust)", async () => {
     await writeProject("implemented", false);
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -102,6 +103,7 @@ tasks:
     expect(hasAlignmentWarnings).toBe(false);
   });
 
+  // AC: @alignment-warnings ac-3
   it("emits no alignment warning for no-task spec with verified status (baseline trust)", async () => {
     await writeProject("verified", false);
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -112,6 +114,7 @@ tasks:
     expect(hasAlignmentWarnings).toBe(false);
   });
 
+  // AC: @alignment-warnings ac-2
   it("emits status_mismatch when tasks exist but progress disagrees with spec status", async () => {
     // spec says implemented, but task is still pending → expected not_started → mismatch
     await writeProject("implemented", true, "pending");
