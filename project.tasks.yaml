@@ -66587,6 +66587,7 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-02-27T23:59:53.084Z
   started_at: 2026-03-04T23:41:51.989Z
+  submitted_at: 2026-03-04T23:54:55.876Z
   notes:
     - _ulid: 01KJXMCRPM1TNQZAB3BTA1JY3R
       created_at: 2026-03-04T23:54:38.164Z
@@ -66612,9 +66613,35 @@
         Orphaned specs (17 remain): legitimate future work not yet tasked — Confirmation Prompt,
         REST API, Fuzzy Matching, hooks, etc. These are correct warnings.
       supersedes: null
+    - _ulid: 01KJXMXMFMRKT7A6WQMKWHY2HA
+      created_at: 2026-03-05T00:03:50.901Z
+      author: "@claude"
+      content: >-
+        Codex review found two MUST-FIX issues, both addressed:
+
+
+        1. No-task in_progress specs were silently unreported — extended orphaned_spec warning to
+        also fire for in_progress (not just not_started). Policy clarified: not_started/in_progress
+        + no tasks = warn; implemented/verified + no tasks = trust (baseline). Commit ae0864c.
+
+
+        2. No test coverage for new suppression behavior — added
+        tests/validate-alignment-no-task-policy.test.ts with 5 tests covering all four no-task
+        status combinations. All pass.
+
+
+        Also added @alignment-warnings ac-3 to spec to codify the baseline trust policy.
+
+
+        SHOULD-FIX: @alignment-warnings AC-2 was already accurate (scoped to 'based on linked
+        tasks'). No spec update needed there.
+
+
+        Final state: 24 orphaned spec warnings (24 legit future-work items, 7 previously silently
+        missed in_progress ones now correctly surfaced), 0 status mismatches.
+      supersedes: null
   todos: []
   automation: manual_only
-  submitted_at: 2026-03-04T23:54:55.876Z
 - _ulid: 01KJGRPX87E756YE1VFKXCWEZ3
   slugs:
     - task-triage-automation-eligible-missing-spec-ref
