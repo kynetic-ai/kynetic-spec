@@ -75560,6 +75560,15 @@
         (tests/validate-alignment-no-task-policy.test.ts:128) and out-of-scope global alignment
         behavior change in src/parser/alignment.ts:154-167 on this UI design-system task branch."
       supersedes: null
+    - _ulid: 01KJY9HS58MJ5BX08055JR2SR5
+      created_at: 2026-03-05T06:04:22.569Z
+      author: "@claude"
+      content: "Fix cycle 5: Reverted out-of-scope alignment.ts changes (needs_work/pending_review
+        active-work logic) and removed incorrect AC annotation (@ui-design-system ac-1 on alignment
+        tests). These changes belong on a dedicated alignment task — captured as inbox item
+        01KJY9H2. All tests pass: root (3701/3701 + 2 pre-existing codex failures), web-ui (18/18),
+        alignment tests (5/5). kspec validate clean for @ui-design-system."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
