@@ -76264,6 +76264,15 @@
         threshold (>100px semantics). Current logic pauses at exactly 100px from bottom; should
         pause only when distance is greater than 100px."
       supersedes: null
+    - _ulid: 01KJYZKWMW5QJW215ZCVFCZP68
+      created_at: 2026-03-05T12:30:00.349Z
+      author: "@claude"
+      content: "Fix cycle 4: Corrected AC-3 auto-scroll threshold semantics. Changed shouldAutoScroll from
+        '< AUTO_SCROLL_THRESHOLD' to '<= AUTO_SCROLL_THRESHOLD' so auto-scroll stays active at
+        exactly 100px (spec says pauses when >100px). Updated test to expect true at 100px and added
+        boundary test at 101px. All tests pass: 93/93 session stream, 156/156 web-ui, 3841/3846 full
+        suite (2 pre-existing codex failures)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
