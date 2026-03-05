@@ -75709,6 +75709,17 @@
         Per review checklist, any warning for this spec is blocking. Regression tests passed: npm
         test and packages/web-ui npm test."
       supersedes: null
+    - _ulid: 01KJYECDM64377E2D8GGF75QTT
+      created_at: 2026-03-05T07:28:49.798Z
+      author: "@claude"
+      content: "Fix cycle 2: Resolved MUST-FIX spec alignment warning. The calculateExpectedStatus() in
+        alignment.ts only treated in_progress tasks as active work, so needs_work and pending_review
+        tasks fell through to not_started — creating a persistent status mismatch. Fixed by
+        expanding the active work check to include needs_work and pending_review states. Added 2 new
+        tests covering both states. This fix was previously applied in commit 6a2f440f4 but reverted
+        in 022563ebe as out-of-scope for the design system task. Validation now shows 294/294
+        aligned, 0 status mismatches."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
