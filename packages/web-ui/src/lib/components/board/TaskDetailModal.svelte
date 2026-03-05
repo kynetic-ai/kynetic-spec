@@ -20,6 +20,7 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Input } from '$lib/components/ui/input';
 	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { getStatusClasses, formatAge, formatVcsRef } from './board-utils';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
@@ -151,8 +152,37 @@
 <Dialog.Root bind:open>
 	<Dialog.Content class="max-w-2xl max-h-[85vh] overflow-y-auto" data-testid="task-detail-modal">
 		{#if loading}
-			<div class="flex items-center justify-center py-12">
-				<p class="text-muted-foreground">Loading task...</p>
+			<div class="flex flex-col gap-4 py-4" data-testid="task-detail-skeleton">
+				<!-- Title skeleton -->
+				<Skeleton class="h-6 w-3/4 ds-shimmer" />
+				<Skeleton class="h-3 w-24 ds-shimmer" />
+
+				<!-- Status/priority badges skeleton -->
+				<div class="flex gap-2">
+					<Skeleton class="h-5 w-20 rounded-full ds-shimmer" />
+					<Skeleton class="h-5 w-24 rounded-full ds-shimmer" />
+				</div>
+
+				<!-- Spec ref skeleton -->
+				<div>
+					<Skeleton class="h-3 w-10 mb-1 ds-shimmer" />
+					<Skeleton class="h-4 w-32 ds-shimmer" />
+				</div>
+
+				<!-- Tags skeleton -->
+				<div class="flex gap-1">
+					<Skeleton class="h-5 w-12 rounded-full ds-shimmer" />
+					<Skeleton class="h-5 w-16 rounded-full ds-shimmer" />
+				</div>
+
+				<!-- Separator -->
+				<Skeleton class="h-px w-full ds-shimmer" />
+
+				<!-- Notes skeleton -->
+				<div>
+					<Skeleton class="h-3 w-16 mb-2 ds-shimmer" />
+					<Skeleton class="h-16 w-full rounded-md ds-shimmer" />
+				</div>
 			</div>
 		{:else if error}
 			<div class="bg-destructive/10 text-destructive p-4 rounded-lg" role="alert">
@@ -449,15 +479,25 @@
 
 					<!-- Notes list -->
 					<div class="space-y-3">
-						{#each task.notes ?? [] as note}
-							<div class="border rounded-md p-2.5" data-testid="note-item">
-								<div class="flex justify-between items-start mb-1">
-									<span class="text-[10px] text-muted-foreground">{note.author}</span>
-									<span class="text-[10px] text-muted-foreground">{formatDate(note.created_at)}</span>
-								</div>
-								<p class="text-sm whitespace-pre-wrap">{note.content}</p>
+						{#if (task.notes ?? []).length === 0}
+							<div class="text-center py-4 text-muted-foreground text-xs" data-testid="notes-empty">
+								{#if isStaticMode()}
+									No notes recorded. Use <code class="bg-muted px-1 rounded">kspec task note</code> to add context.
+								{:else}
+									Add a note above to document decisions, progress, or findings.
+								{/if}
 							</div>
-						{/each}
+						{:else}
+							{#each task.notes ?? [] as note}
+								<div class="border rounded-md p-2.5" data-testid="note-item">
+									<div class="flex justify-between items-start mb-1">
+										<span class="text-[10px] text-muted-foreground">{note.author}</span>
+										<span class="text-[10px] text-muted-foreground">{formatDate(note.created_at)}</span>
+									</div>
+									<p class="text-sm whitespace-pre-wrap">{note.content}</p>
+								</div>
+							{/each}
+						{/if}
 					</div>
 				</div>
 			</div>

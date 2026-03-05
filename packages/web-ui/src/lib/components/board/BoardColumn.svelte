@@ -34,8 +34,25 @@
 	<!-- Cards -->
 	<div class="flex flex-col gap-2 overflow-y-auto flex-1 pb-4 pr-1">
 		{#if column.tasks.length === 0}
-			<div class="flex items-center justify-center py-8 text-muted-foreground text-xs">
-				No tasks
+			<div class="flex flex-col items-center justify-center py-8 text-muted-foreground text-xs text-center px-2" data-testid="column-empty">
+				{#if column.id === 'backlog'}
+					<p>No backlog tasks.</p>
+					<p class="mt-1">Create tasks with <code class="bg-muted px-1 rounded">kspec task add</code></p>
+				{:else if column.id === 'ready'}
+					<p>No tasks ready for work.</p>
+					<p class="mt-1">Mark tasks eligible with <code class="bg-muted px-1 rounded">kspec task set --automation eligible</code></p>
+				{:else if column.id === 'in_progress'}
+					<p>No active work.</p>
+					<p class="mt-1">Start a task with <code class="bg-muted px-1 rounded">kspec task start</code></p>
+				{:else if column.id === 'review'}
+					<p>Nothing awaiting review.</p>
+					<p class="mt-1">Submit work with <code class="bg-muted px-1 rounded">kspec task submit</code></p>
+				{:else if column.id === 'done'}
+					<p>No completed tasks yet.</p>
+					<p class="mt-1">Tasks appear here after completion.</p>
+				{:else}
+					<p>No tasks in this column.</p>
+				{/if}
 			</div>
 		{:else}
 			{#each column.tasks as task (task._ulid)}
