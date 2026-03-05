@@ -75965,7 +75965,7 @@
   type: task
   spec_ref: "@ui-session-stream"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75973,7 +75973,7 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KJYVMBVEY1SES31G54F70297
+  session_id: null
   created_at: 2026-03-05T01:30:04.544Z
   started_at: 2026-03-05T11:59:35.648Z
   submitted_at: 2026-03-05T11:59:40.399Z
@@ -76256,6 +76256,13 @@
         packages/web-ui/src/lib/components/session/session-utils.ts:380-382. Test suite currently
         encodes the incorrect behavior (expects false at exactly 100px), so this regression is not
         caught against spec intent. Evidence: tests/web-ui-session-stream.test.ts:1081-1084."
+      supersedes: null
+    - _ulid: 01KJYY8QER8SXCB9GD20CPA3TG
+      created_at: 2026-03-05T12:06:26.008Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: Review issues: MUST-FIX spec mismatch in AC-3 auto-scroll
+        threshold (>100px semantics). Current logic pauses at exactly 100px from bottom; should
+        pause only when distance is greater than 100px."
       supersedes: null
   todos: []
   automation: eligible
