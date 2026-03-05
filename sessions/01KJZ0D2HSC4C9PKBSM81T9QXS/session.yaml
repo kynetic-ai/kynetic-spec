@@ -3,5 +3,7 @@ task_id: "@implement-agent-and-dispatch-view"
 agent_type: codex-acp
 agent_id: ux-reviewer
 trigger: task.pending_review
-status: active
+status: completed
 started_at: 2026-03-05T12:44:05.991Z
+ended_at: 2026-03-05T12:49:36.413Z
+close_reason: Invocation completed normally
