@@ -17,7 +17,9 @@
 	},
 	"dependencies": {
 		"@kynetic-ai/shared": "*",
-		"lucide-svelte": "^0.563.0"
+		"isomorphic-dompurify": "^3.0.0",
+		"lucide-svelte": "^0.563.0",
+		"marked": "^17.0.4"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.1",

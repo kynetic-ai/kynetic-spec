@@ -4,8 +4,11 @@
 <script lang="ts">
 	import type { MessageBlock as MessageBlockType } from './session-utils';
 	import { formatTime } from './session-utils';
+	import { renderMarkdown } from '$lib/utils/markdown';
 
 	let { block }: { block: MessageBlockType } = $props();
+
+	const html = $derived(renderMarkdown(block.content));
 </script>
 
 <div class="py-2" data-testid="message-block">
@@ -18,8 +21,11 @@
 				<span class="text-xs font-medium text-muted-foreground">Agent</span>
 				<span class="text-[10px] text-muted-foreground/60 font-mono">{formatTime(block.timestamp)}</span>
 			</div>
-			<div class="text-sm whitespace-pre-wrap break-words leading-relaxed prose prose-sm prose-invert max-w-none">
-				{block.content}
+			<div
+				class="text-sm break-words leading-relaxed prose prose-sm prose-invert max-w-none"
+				data-testid="message-content"
+			>
+				{@html html}
 			</div>
 		</div>
 	</div>
