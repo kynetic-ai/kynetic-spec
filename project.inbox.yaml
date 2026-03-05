@@ -1568,3 +1568,13 @@ inbox:
     tags:
       - cli
     added_by: "@claude"
+  - _ulid: 01KJXP9CS7E3GJ27DM8970MM46
+    text: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
+      comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec.
+      Surface as completeness warnings. Catches typos like @alignment-validation-warnings before
+      review."
+    created_at: 2026-03-05T00:27:44.807Z
+    tags:
+      - cli
+      - validation
+    added_by: "@claude"
