@@ -76069,6 +76069,23 @@
       content: "[FIX_CYCLE: 5] Review findings: Review issues: broken session link target in AC-3 modal
         and insufficient AC-4 behavior coverage for active fleet running-state."
       supersedes: null
+    - _ulid: 01KJZZPYSFFJVW4BZ446FSR59T
+      created_at: 2026-03-05T21:50:55.279Z
+      author: "@claude"
+      content: >-
+        Fix cycle 5 — addressed all 2 review findings:
+
+        1. AC-3 session link bug: Changed href from /session?ref=... to /sessions?ref=... to match
+        the actual /sessions route. Added E2E assertion verifying the href pattern.
+
+        2. AC-4 coverage: Added E2E test for active fleet running-state behavior using Playwright
+        page.route() to mock agent status API with active invocations. Test verifies task title,
+        agent name, and elapsed time render correctly when dispatch is active.
+
+
+        All 15 task board E2E tests pass. Full E2E suite (290 tests) passes. 3777 unit tests pass (2
+        pre-existing codex failures).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
