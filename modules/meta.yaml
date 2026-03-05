@@ -2324,7 +2324,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
         description: |
           meta_ref field validation rules:
 
