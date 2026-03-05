@@ -76403,7 +76403,7 @@
   type: task
   spec_ref: "@ui-session-history"
   plan_ref: "@plan-ui-ux-revamp"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-session-stream-view"
@@ -76411,9 +76411,9 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KJZ264KG3H4DT5A00PNWAJED
   created_at: 2026-03-05T01:30:05.410Z
-  started_at: 2026-03-05T12:49:46.900Z
+  started_at: 2026-03-05T13:26:40.897Z
   submitted_at: 2026-03-05T12:59:46.170Z
   notes:
     - _ulid: 01KJXSVHQ2D10H7SMMCRYTA7CZ
