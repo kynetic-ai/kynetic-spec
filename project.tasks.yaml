@@ -75737,6 +75737,16 @@
         ac-1. AC annotations must map to the AC text they claim to cover; this creates false
         traceability in AC coverage checks."
       supersedes: null
+    - _ulid: 01KJYF2P491M1XFPJWRW00WNA9
+      created_at: 2026-03-05T07:40:59.401Z
+      author: "@claude"
+      content: "Fix cycle 3: Corrected AC annotation mismatch. The test 'treats needs_work task as active
+        work' at tests/validate-alignment-no-task-policy.test.ts:128 was annotated with '// AC:
+        @ui-app-shell ac-1' (sidebar navigation grouping) but actually tests alignment
+        status-mismatch behavior. Changed to '// AC: @alignment-warnings ac-2'. Also added missing
+        annotation for the analogous pending_review test. All 63 web-ui tests pass, kspec validate
+        shows no alignment warnings for @ui-app-shell."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
