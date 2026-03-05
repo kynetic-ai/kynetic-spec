@@ -76284,7 +76284,7 @@
   type: task
   spec_ref: "@ui-agent-dispatch"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76394,6 +76394,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-05T12:49:25.368Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
   slugs:
     - implement-session-history
