@@ -77072,5 +77072,25 @@
 
         - templates/agents-sections/ or kspec meta (add convention rule)
       supersedes: null
+    - _ulid: 01KJZRVWQ54NMW6KDXPD55QWNQ
+      created_at: 2026-03-05T19:51:16.965Z
+      author: "@claude"
+      content: >-
+        Implementation complete (500377d60):
+
+        - Added guardAgentContext() to src/cli/commands/serve.ts — checks KSPEC_SESSION_ID at top of
+        startServer, stopServer, restartServer
+
+        - 4 tests in tests/cli-serve.test.ts covering start/stop/restart refusal + JSON error output
+
+        - Convention rule added to kspec-agents.md via kspec meta
+
+        - All 26 serve tests pass (0 regressions)
+
+        - No changes needed to invocation.ts — KSPEC_SESSION_ID already injected for all agent
+        spawns
+
+        - Removed unnecessary ac-12 from @agent-invocation-lifecycle (KSPEC_DAEMON_PID not needed)
+      supersedes: null
   todos: []
   automation: eligible
