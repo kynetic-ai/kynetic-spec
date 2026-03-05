@@ -76969,3 +76969,41 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Prevent dispatch agents from killing host daemon
+  description: >-
+    Dispatch worker agents can accidentally kill the daemon hosting the dispatch engine by running
+    kspec serve stop/restart. This happened in practice during fix cycle 4 of
+    @implement-task-board-kanban — the agent tried to debug E2E failures by manually starting a
+    daemon, which killed the dispatch daemon and severed the WebSocket connection.
+
+
+    Fix requires two changes:
+
+    1. Inject KSPEC_DAEMON_PID into spawned agent environment (in invocation.ts alongside
+    KSPEC_SESSION_ID)
+
+    2. Guard kspec serve stop/restart/start to refuse when KSPEC_DAEMON_PID is set, with clear error
+    message
+
+
+    Also update agent instructions to add convention: never run kspec serve stop/restart/start when
+    running under dispatch.
+  type: task
+  spec_ref: "@cli-serve-commands"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - cli
+    - dispatch
+    - bug
+  depends_on: []
+  _ulid: 01KJZQRKK3DJQ0KSDT7EZ2V892
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-05T19:32:00.739Z
+  notes: []
+  todos: []
