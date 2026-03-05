@@ -66574,7 +66574,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -66650,6 +66650,10 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-03-05T00:23:04.272Z
+  closed_reason: "Merged in PR #680. Reduced alignment warnings from 150 to 24 (all orphaned specs, 0
+    mismatches). Fixed alignment.ts suppression logic, corrected 20 spec statuses, added 5
+    behavioral tests with proper AC annotations."
 - _ulid: 01KJGRPX87E756YE1VFKXCWEZ3
   slugs:
     - task-triage-automation-eligible-missing-spec-ref
