@@ -75953,7 +75953,7 @@
   type: task
   spec_ref: "@ui-session-stream"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75961,7 +75961,7 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KJYSNR404R2EDJ54V1KBA9CR
+  session_id: null
   created_at: 2026-03-05T01:30:04.544Z
   started_at: 2026-03-05T11:07:32.208Z
   submitted_at: 2026-03-05T11:07:44.385Z
@@ -76199,6 +76199,13 @@
         component logic can still pass. Required regression tests passed: npm test and
         packages/web-ui npm test. kspec validate has no @ui-session-stream-specific warnings, but
         global repo issues remain unrelated."
+      supersedes: null
+    - _ulid: 01KJYV94HEFAT4CAVDPKCZY5RP
+      created_at: 2026-03-05T11:14:13.678Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: Review issues: session routes use throw-based errors
+        instead of structured API responses, and AC-2/AC-3 tests still rely on test-local logic
+        simulations rather than runtime component behavior coverage."
       supersedes: null
   todos: []
   automation: eligible
