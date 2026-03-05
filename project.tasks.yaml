@@ -76273,7 +76273,7 @@
   type: task
   spec_ref: "@ui-agent-dispatch"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76281,7 +76281,7 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KJYXWPDVQ0RBQ29GGJMMDTCY
+  session_id: null
   created_at: 2026-03-05T01:30:04.991Z
   started_at: 2026-03-05T12:06:48.730Z
   submitted_at: 2026-03-05T12:20:14.209Z
@@ -76350,6 +76350,13 @@
         (packages/web-ui/tests/e2e/agents.spec.ts:203). Validation/tests run: kspec validate (global
         pre-existing repo issues, none specific to @ui-agent-dispatch), npm test (root pass: 3750
         passed, 3 skipped), packages/web-ui npm test pass (63 passed)."
+      supersedes: null
+    - _ulid: 01KJYZB72E8TXCAK2VT3BZXNQZ
+      created_at: 2026-03-05T12:25:16.111Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: missing aria-live handling for streamed
+        invocation updates, missing actionable empty state for active-invocation collection, and
+        fluff/non-failing error-boundary E2E coverage."
       supersedes: null
   todos: []
   automation: eligible
