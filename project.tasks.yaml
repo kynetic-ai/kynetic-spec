@@ -76830,6 +76830,21 @@
         does not refresh when task status changes because plans:updates is never emitted; wireframe
         navigation actions missing."
       supersedes: null
+    - _ulid: 01KK003YXNE758T82W0THN7XCK
+      created_at: 2026-03-05T21:58:01.397Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) packages/web-ui/src/routes/plans/+page.svelte:149 adds the
+        plans status filter as an unlabeled <select>; there is no visible label or aria-label, so
+        screen-reader users get an unnamed combobox. This fails the accessibility gate in the review
+        checklist. MUST-FIX 2) packages/web-ui/src/routes/plans/+page.svelte:61 subscribes to
+        plans:updates, but the daemon never emits that topic (see
+        packages/daemon/src/project-context.ts:96-103 and packages/daemon/src/server.ts:385-388).
+        Plan progress is derived from task status, so task status changes will leave /plans stale
+        until manual reload. SHOULD-FIX 3) The plans cards stop at metadata/progress and omit the
+        per-plan navigation actions shown in the revamp wireframe ([View Specs] / [View Tasks]).
+        Tests passed (npm test; cd packages/web-ui && npm test), and kspec validate showed no
+        warnings specific to @ui-plans-view, but the issues above block approval."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
