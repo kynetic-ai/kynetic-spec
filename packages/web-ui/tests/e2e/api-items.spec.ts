@@ -14,13 +14,11 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-
 test.describe('Items API', () => {
   test.describe('GET /api/items', () => {
     // AC: @api-contract ac-8
     test('returns spec items with required fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items`);
+      const response = await request.get(`${daemon.baseUrl}/api/items`);
 
       expect(response.status()).toBe(200);
 
@@ -47,7 +45,7 @@ test.describe('Items API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items`);
+      const response = await request.get(`${daemon.baseUrl}/api/items`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -63,7 +61,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-8 - slugs field is present
     test('items include slugs array', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items`);
+      const response = await request.get(`${daemon.baseUrl}/api/items`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -76,7 +74,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-9 - single type filter
     test('filters items by single type value', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items?type=feature`);
+      const response = await request.get(`${daemon.baseUrl}/api/items?type=feature`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -95,7 +93,7 @@ test.describe('Items API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items?type=feature&type=requirement`);
+      const response = await request.get(`${daemon.baseUrl}/api/items?type=feature&type=requirement`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -116,7 +114,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-9 - type filter excludes non-matching types
     test('type filter excludes items of non-matching types', async ({ request, daemon }) => {
       // Filter for only modules — should not return features or requirements
-      const response = await request.get(`${DAEMON_URL}/api/items?type=module`);
+      const response = await request.get(`${daemon.baseUrl}/api/items?type=module`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -135,7 +133,7 @@ test.describe('Items API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items?offset=0&limit=2`);
+      const response = await request.get(`${daemon.baseUrl}/api/items?offset=0&limit=2`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -153,16 +151,16 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-8 (pagination) - pagination offsets work
     test('respects offset parameter for pagination', async ({ request, daemon }) => {
       // Get total count first
-      const allResponse = await request.get(`${DAEMON_URL}/api/items`);
+      const allResponse = await request.get(`${daemon.baseUrl}/api/items`);
       const allBody = await allResponse.json();
       const total = allBody.total;
 
       // Only test pagination if there are more than 2 items
       if (total > 2) {
-        const page1 = await request.get(`${DAEMON_URL}/api/items?offset=0&limit=2`);
+        const page1 = await request.get(`${daemon.baseUrl}/api/items?offset=0&limit=2`);
         const body1 = await page1.json();
 
-        const page2 = await request.get(`${DAEMON_URL}/api/items?offset=2&limit=2`);
+        const page2 = await request.get(`${daemon.baseUrl}/api/items?offset=2&limit=2`);
         const body2 = await page2.json();
 
         // Pages should have different items
@@ -182,7 +180,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-10 - resolve item by slug
     test('resolves item by slug and returns full item', async ({ request, daemon }) => {
       // Use known fixture slug
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature`);
       expect(response.status()).toBe(200);
 
       const item = await response.json();
@@ -196,7 +194,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-10 - returns acceptance_criteria
     test('returns item with acceptance_criteria array', async ({ request, daemon }) => {
       // test-feature has 2 ACs in the fixture
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature`);
       expect(response.status()).toBe(200);
 
       const item = await response.json();
@@ -214,7 +212,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-10 - returns traits
     test('returns item with traits array', async ({ request, daemon }) => {
       // test-feature has the @test-trait in its traits
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature`);
       expect(response.status()).toBe(200);
 
       const item = await response.json();
@@ -227,7 +225,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-10 - returns description
     test('returns item with description field', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature`);
       expect(response.status()).toBe(200);
 
       const item = await response.json();
@@ -239,7 +237,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-10 - resolve by full ULID
     test('resolves item by full ULID', async ({ request, daemon }) => {
       // First, get the item list to find a ULID
-      const listResponse = await request.get(`${DAEMON_URL}/api/items?type=feature`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/items?type=feature`);
       const listBody = await listResponse.json();
       expect(listBody.items.length).toBeGreaterThan(0);
 
@@ -247,7 +245,7 @@ test.describe('Items API', () => {
       expect(firstItem._ulid).toBeTruthy();
 
       // Get by full ULID
-      const response = await request.get(`${DAEMON_URL}/api/items/@${firstItem._ulid}`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@${firstItem._ulid}`);
       expect(response.status()).toBe(200);
 
       const item = await response.json();
@@ -257,7 +255,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-10 (error handling) - 404 for invalid ref
     test('returns 404 for non-existent item ref', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@nonexistent-item-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@nonexistent-item-xyz`);
       expect(response.status()).toBe(404);
 
       const body = await response.json();
@@ -269,7 +267,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-10 - returns JSON content type
     test('returns JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature`);
       expect(response.status()).toBe(200);
 
       const contentType = response.headers()['content-type'] || '';
@@ -281,7 +279,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-11 - returns tasks linked via AlignmentIndex
     test('returns tasks linked to spec item', async ({ request, daemon }) => {
       // test-feature has tasks with spec_ref: "@test-feature" in the fixture
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature/tasks`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -294,7 +292,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-11 - linked tasks have summary fields
     test('linked tasks include required summary fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature/tasks`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -310,7 +308,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-11 - total matches items count
     test('total matches number of linked tasks', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature/tasks`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -322,7 +320,7 @@ test.describe('Items API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-feature/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-feature/tasks`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -336,7 +334,7 @@ test.describe('Items API', () => {
 
     // AC: @api-contract ac-11 (error handling) - 404 for invalid ref
     test('returns 404 for non-existent item ref', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@nonexistent-item-xyz/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@nonexistent-item-xyz/tasks`);
       expect(response.status()).toBe(404);
 
       const body = await response.json();
@@ -350,7 +348,7 @@ test.describe('Items API', () => {
       daemon,
     }) => {
       // test-trait is a trait with no tasks linked to it
-      const response = await request.get(`${DAEMON_URL}/api/items/@test-trait/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@test-trait/tasks`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -365,7 +363,7 @@ test.describe('Items API', () => {
   test.describe('Content-Type and Response Format', () => {
     // AC: @api-contract ac-8 - JSON content type for GET /api/items
     test('returns JSON content type for list endpoint', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items`);
+      const response = await request.get(`${daemon.baseUrl}/api/items`);
       expect(response.status()).toBe(200);
 
       const contentType = response.headers()['content-type'] || '';
@@ -375,7 +373,7 @@ test.describe('Items API', () => {
     // AC: @api-contract ac-8, ac-10 - list and detail responses consistent
     test('list and detail responses have consistent item fields', async ({ request, daemon }) => {
       // Get list
-      const listResponse = await request.get(`${DAEMON_URL}/api/items?type=feature`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/items?type=feature`);
       const listBody = await listResponse.json();
       expect(listBody.items.length).toBeGreaterThan(0);
 
@@ -383,7 +381,7 @@ test.describe('Items API', () => {
       expect(listItem._ulid).toBeTruthy();
 
       // Get detail by ULID
-      const detailResponse = await request.get(`${DAEMON_URL}/api/items/@${listItem._ulid}`);
+      const detailResponse = await request.get(`${daemon.baseUrl}/api/items/@${listItem._ulid}`);
       expect(detailResponse.status()).toBe(200);
       const detailItem = await detailResponse.json();
 

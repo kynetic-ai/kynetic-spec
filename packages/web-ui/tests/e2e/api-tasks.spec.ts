@@ -16,13 +16,11 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-
 test.describe('Tasks API', () => {
   test.describe('GET /api/tasks', () => {
     // AC: @api-contract ac-2
     test('returns tasks with required fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks`);
 
       expect(response.status()).toBe(200);
 
@@ -48,7 +46,7 @@ test.describe('Tasks API', () => {
 
     // AC: @api-contract ac-2 - spec_ref field
     test('returns spec_ref on tasks that have it', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -67,7 +65,7 @@ test.describe('Tasks API', () => {
 
     // AC: @api-contract ac-3 - status filter (single value)
     test('filters tasks by single status value', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks?status=pending`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks?status=pending`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -87,7 +85,7 @@ test.describe('Tasks API', () => {
       daemon,
     }) => {
       const response = await request.get(
-        `${DAEMON_URL}/api/tasks?status=pending&status=in_progress`
+        `${daemon.baseUrl}/api/tasks?status=pending&status=in_progress`
       );
       expect(response.status()).toBe(200);
 
@@ -105,7 +103,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-3 - comma-separated status filter
     test('filters tasks by comma-separated status values', async ({ request, daemon }) => {
       const response = await request.get(
-        `${DAEMON_URL}/api/tasks?status=pending,in_progress`
+        `${daemon.baseUrl}/api/tasks?status=pending,in_progress`
       );
       expect(response.status()).toBe(200);
 
@@ -125,7 +123,7 @@ test.describe('Tasks API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks?offset=0&limit=2`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks?offset=0&limit=2`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -143,7 +141,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-4 - pagination offset
     test('respects offset parameter for pagination', async ({ request, daemon }) => {
       // Get first page
-      const page1 = await request.get(`${DAEMON_URL}/api/tasks?offset=0&limit=2`);
+      const page1 = await request.get(`${daemon.baseUrl}/api/tasks?offset=0&limit=2`);
       expect(page1.status()).toBe(200);
       const body1 = await page1.json();
 
@@ -152,7 +150,7 @@ test.describe('Tasks API', () => {
       expect(body1.items.length).toBe(2);
 
       // Get second page
-      const page2 = await request.get(`${DAEMON_URL}/api/tasks?offset=2&limit=2`);
+      const page2 = await request.get(`${daemon.baseUrl}/api/tasks?offset=2&limit=2`);
       expect(page2.status()).toBe(200);
       const body2 = await page2.json();
 
@@ -167,8 +165,8 @@ test.describe('Tasks API', () => {
 
     // AC: @api-contract ac-4 - total count is consistent
     test('total count is consistent across paginated requests', async ({ request, daemon }) => {
-      const response1 = await request.get(`${DAEMON_URL}/api/tasks?offset=0&limit=2`);
-      const response2 = await request.get(`${DAEMON_URL}/api/tasks?offset=2&limit=2`);
+      const response1 = await request.get(`${daemon.baseUrl}/api/tasks?offset=0&limit=2`);
+      const response2 = await request.get(`${daemon.baseUrl}/api/tasks?offset=2&limit=2`);
 
       const body1 = await response1.json();
       const body2 = await response2.json();
@@ -182,7 +180,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-5 - resolve by slug
     test('resolves task by slug and returns full task', async ({ request, daemon }) => {
       // Use a known task slug from fixtures
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@test-task-ready`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-ready`);
       expect(response.status()).toBe(200);
 
       const task = await response.json();
@@ -198,7 +196,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-5 - returns notes array
     test('returns task with notes array', async ({ request, daemon }) => {
       // test-task-in-progress has a note in the fixture
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@test-task-in-progress`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-in-progress`);
       expect(response.status()).toBe(200);
 
       const task = await response.json();
@@ -214,7 +212,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-5 - returns dependencies
     test('returns task with depends_on array', async ({ request, daemon }) => {
       // test-task-blocked depends on test-task-ready
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@test-task-blocked`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@test-task-blocked`);
       expect(response.status()).toBe(200);
 
       const task = await response.json();
@@ -225,7 +223,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-5 - resolve by full ULID
     test('resolves task by full ULID', async ({ request, daemon }) => {
       // First get the task list to find a ULID
-      const listResponse = await request.get(`${DAEMON_URL}/api/tasks`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const body = await listResponse.json();
       expect(body.items.length).toBeGreaterThan(0);
 
@@ -233,7 +231,7 @@ test.describe('Tasks API', () => {
       expect(firstTask._ulid).toBeTruthy();
 
       // Get by full ULID
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@${firstTask._ulid}`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@${firstTask._ulid}`);
       expect(response.status()).toBe(200);
 
       const task = await response.json();
@@ -243,7 +241,7 @@ test.describe('Tasks API', () => {
 
     // AC: @api-contract ac-5 (error handling) - 404 for invalid ref
     test('returns 404 for non-existent task ref', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@nonexistent-task-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz`);
       expect(response.status()).toBe(404);
 
       const body = await response.json();
@@ -257,7 +255,7 @@ test.describe('Tasks API', () => {
     test('transitions pending task to in_progress', async ({ request, daemon }) => {
       // Use a fresh fixture — test-task-ready starts as pending (daemon fixture is test-scoped)
       const startResponse = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-ready/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-ready/start`,
         { data: {} }
       );
       expect(startResponse.status()).toBe(200);
@@ -272,7 +270,7 @@ test.describe('Tasks API', () => {
     test('response includes full task shape after start', async ({ request, daemon }) => {
       // Each test gets a fresh daemon fixture (test-scoped), so test-task-ready is pending again
       const startResponse = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-ready/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-ready/start`,
         { data: {} }
       );
       // Fresh fixture — test-task-ready must be pending, so this must return 200
@@ -289,7 +287,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-6 (error handling) - 404 for invalid ref
     test('returns 404 for non-existent task', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@nonexistent-task-xyz/start`,
+        `${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz/start`,
         { data: {} }
       );
       expect(response.status()).toBe(404);
@@ -305,7 +303,7 @@ test.describe('Tasks API', () => {
     }) => {
       // test-task-completed is in completed state — cannot be started
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-completed/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-completed/start`,
         { data: {} }
       );
       expect(response.status()).toBe(409);
@@ -325,7 +323,7 @@ test.describe('Tasks API', () => {
     test('appends note to task and returns {success, note, task}', async ({ request, daemon }) => {
       const noteContent = `E2E test note ${Date.now()}`;
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/note`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/note`,
         {
           data: { content: noteContent, author: '@test' },
         }
@@ -354,7 +352,7 @@ test.describe('Tasks API', () => {
     test('created note has _ulid, content, created_at', async ({ request, daemon }) => {
       const noteContent = `Note field check ${Date.now()}`;
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/note`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/note`,
         {
           data: { content: noteContent },
         }
@@ -376,7 +374,7 @@ test.describe('Tasks API', () => {
     // Elysia validates body schema before handler runs, returning 422 (not 400)
     test('returns 422 validation error when content is missing', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/note`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/note`,
         { data: {} }
       );
       expect(response.status()).toBe(422);
@@ -385,7 +383,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-7 (error handling) - 404 for invalid ref
     test('returns 404 for non-existent task', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@nonexistent-task-xyz/note`,
+        `${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz/note`,
         { data: { content: 'test note' } }
       );
       expect(response.status()).toBe(404);
@@ -399,8 +397,8 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-1 (partial) - JSON content type for GET endpoints
     test('returns JSON content type for GET endpoints', async ({ request, daemon }) => {
       const responses = await Promise.all([
-        request.get(`${DAEMON_URL}/api/tasks`),
-        request.get(`${DAEMON_URL}/api/tasks/@test-task-ready`),
+        request.get(`${daemon.baseUrl}/api/tasks`),
+        request.get(`${daemon.baseUrl}/api/tasks/@test-task-ready`),
       ]);
 
       for (const response of responses) {
@@ -412,7 +410,7 @@ test.describe('Tasks API', () => {
     // AC: @api-contract ac-2 - items have consistent shape across list and detail
     test('list and detail responses have consistent task fields', async ({ request, daemon }) => {
       // Get list
-      const listResponse = await request.get(`${DAEMON_URL}/api/tasks`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const listBody = await listResponse.json();
       expect(listBody.items.length).toBeGreaterThan(0);
 
@@ -420,7 +418,7 @@ test.describe('Tasks API', () => {
       expect(listTask._ulid).toBeTruthy();
 
       // Get detail by ULID
-      const detailResponse = await request.get(`${DAEMON_URL}/api/tasks/@${listTask._ulid}`);
+      const detailResponse = await request.get(`${daemon.baseUrl}/api/tasks/@${listTask._ulid}`);
       expect(detailResponse.status()).toBe(200);
       const detailTask = await detailResponse.json();
 

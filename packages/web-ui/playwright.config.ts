@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: 1, // Required: daemon uses fixed port 3456
+  workers: 1, // Sequential: each test gets its own ephemeral-port daemon
   reporter: process.env.CI ? 'github' : 'html',
   timeout: 30_000,
 
@@ -14,8 +14,8 @@ export default defineConfig({
   },
 
   use: {
-    // Connect directly to daemon which serves both API and UI
-    baseURL: 'http://localhost:3456',
+    // No baseURL — each test gets a daemon on an ephemeral port via the daemon fixture
+    // Tests use daemon.baseUrl for API calls and page.goto(`${daemon.baseUrl}/...`) for navigation
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

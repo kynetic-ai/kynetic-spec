@@ -31,9 +31,6 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-const DAEMON_WS_URL = 'ws://localhost:3456/ws';
-
 // Fixture ULIDs defined in project.triage.yaml
 // TRIAGED record: inbox_ref = 01KJNBX0CA45ZT43W2T6HJMVA1 ("First inbox item for testing"), status=triaged
 const FIXTURE_TRIAGE_TRIAGED_ULID = '01KJC3NZ8Y268B3KFD2NVS6613';
@@ -47,8 +44,8 @@ const INBOX_ITEM_1_ULID = '01KJNBX0CA45ZT43W2T6HJMVA1'; // First inbox item — 
 const INBOX_ITEM_2_ULID = '01KJNBX1CC9N4YGP991WD7XS8S'; // Second inbox item — already acted_on
 const INBOX_ITEM_3_ULID = '01KJNBX2CB8N4YGP991WD7XS9R'; // Third inbox item — pending triage record
 
-async function subscribeToTriageUpdates(page: import('@playwright/test').Page): Promise<void> {
-  await page.goto(DAEMON_URL + '/api/health');
+async function subscribeToTriageUpdates(page: import('@playwright/test').Page, baseUrl: string, wsUrl: string): Promise<void> {
+  await page.goto(baseUrl + '/api/health');
 
   await page.evaluate((wsUrl: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -92,7 +89,7 @@ async function subscribeToTriageUpdates(page: import('@playwright/test').Page): 
         reject(new Error('WebSocket error while subscribing to triage:updates'));
       };
     });
-  }, DAEMON_WS_URL);
+  }, wsUrl + '/ws');
 }
 
 async function waitForTriageBroadcast(
@@ -163,7 +160,7 @@ test.describe('Triage API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage`);
 
       expect(response.status()).toBe(200);
 
@@ -180,7 +177,7 @@ test.describe('Triage API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -196,7 +193,7 @@ test.describe('Triage API', () => {
 
     // AC: @triage-daemon-api ac-1 — fixture records loaded
     test('returns fixture triage records with correct fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -214,14 +211,14 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-1 — JSON content type
     // AC: @trait-api-endpoint ac-1
     test('returns JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage`);
       const contentType = response.headers()['content-type'] || '';
       expect(contentType).toContain('application/json');
     });
 
     // AC: @triage-daemon-api ac-2 — status filter
     test('filters records by status query parameter', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage?status=triaged`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage?status=triaged`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -235,7 +232,7 @@ test.describe('Triage API', () => {
 
     // AC: @triage-daemon-api ac-2 — filter for acted_on
     test('filters records by acted_on status', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage?status=acted_on`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage?status=acted_on`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -246,7 +243,7 @@ test.describe('Triage API', () => {
 
     // AC: @triage-daemon-api ac-2 — filter for pending
     test('filters records by pending status', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage?status=pending`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage?status=pending`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -258,12 +255,12 @@ test.describe('Triage API', () => {
     // AC: @trait-api-endpoint ac-4 — pagination
     test('supports limit and offset pagination', async ({ request, daemon }) => {
       // Get all records first
-      const allResponse = await request.get(`${DAEMON_URL}/api/triage`);
+      const allResponse = await request.get(`${daemon.baseUrl}/api/triage`);
       const allBody = await allResponse.json();
       const totalCount = allBody.total;
 
       // Get first page with limit=1
-      const pagedResponse = await request.get(`${DAEMON_URL}/api/triage?limit=1&offset=0`);
+      const pagedResponse = await request.get(`${daemon.baseUrl}/api/triage?limit=1&offset=0`);
       expect(pagedResponse.status()).toBe(200);
 
       const pagedBody = await pagedResponse.json();
@@ -275,8 +272,8 @@ test.describe('Triage API', () => {
 
     // AC: @trait-api-endpoint ac-4 — pagination offset
     test('pagination offset skips records', async ({ request, daemon }) => {
-      const firstResponse = await request.get(`${DAEMON_URL}/api/triage?limit=1&offset=0`);
-      const secondResponse = await request.get(`${DAEMON_URL}/api/triage?limit=1&offset=1`);
+      const firstResponse = await request.get(`${daemon.baseUrl}/api/triage?limit=1&offset=0`);
+      const secondResponse = await request.get(`${daemon.baseUrl}/api/triage?limit=1&offset=1`);
 
       expect(firstResponse.status()).toBe(200);
       expect(secondResponse.status()).toBe(200);
@@ -292,7 +289,7 @@ test.describe('Triage API', () => {
   test.describe('GET /api/triage/export', () => {
     // AC: @triage-daemon-api ac-6 — JSON export format
     test('exports triage records as JSON by default', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage/export`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage/export`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -306,7 +303,7 @@ test.describe('Triage API', () => {
 
     // AC: @triage-daemon-api ac-6 — JSON format explicit
     test('exports triage records as JSON when format=json', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage/export?format=json`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage/export?format=json`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -322,7 +319,7 @@ test.describe('Triage API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage/export?format=context`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage/export?format=context`);
       expect(response.status()).toBe(200);
 
       // Context format: {format: "context", content: "# Triage Decisions\n..."}
@@ -338,7 +335,7 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-6 — export with status filter
     test('supports status filter on export', async ({ request, daemon }) => {
       const response = await request.get(
-        `${DAEMON_URL}/api/triage/export?format=json&status=triaged`
+        `${daemon.baseUrl}/api/triage/export?format=json&status=triaged`
       );
       expect(response.status()).toBe(200);
 
@@ -356,7 +353,7 @@ test.describe('Triage API', () => {
     // AC: @trait-api-endpoint ac-1 — single record retrieval
     test('returns single triage record by ULID ref', async ({ request, daemon }) => {
       const response = await request.get(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}`
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}`
       );
       expect(response.status()).toBe(200);
 
@@ -371,7 +368,7 @@ test.describe('Triage API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/triage/@nonexistent-triage-ref-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/triage/@nonexistent-triage-ref-xyz`);
       expect(response.status()).toBe(404);
 
       const body = await response.json();
@@ -391,7 +388,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Use inbox item 1 which already has a "triaged" fixture record — upsert case
-      const response = await request.post(`${DAEMON_URL}/api/triage`, {
+      const response = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${INBOX_ITEM_1_ULID}`,
           action: 'defer',
@@ -421,7 +418,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Create a fresh inbox item first
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Fresh item for triage ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
@@ -429,7 +426,7 @@ test.describe('Triage API', () => {
       const newInboxUlid = inbox.item._ulid;
 
       // Create a triage record for it
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${newInboxUlid}`,
           action: 'defer',
@@ -451,7 +448,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Create a fresh inbox item
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Triage list check ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
@@ -459,7 +456,7 @@ test.describe('Triage API', () => {
       const newInboxUlid = inbox.item._ulid;
 
       // Create triage record
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${newInboxUlid}`,
           action: 'spec-gap',
@@ -470,7 +467,7 @@ test.describe('Triage API', () => {
       const created = await triageResponse.json();
 
       // Verify it appears in the list
-      const listResponse = await request.get(`${DAEMON_URL}/api/triage`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/triage`);
       expect(listResponse.status()).toBe(200);
       const list = await listResponse.json();
 
@@ -482,13 +479,13 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-3 — supports optional decided_by
     test('creates record with optional decided_by field', async ({ request, daemon }) => {
       // Create fresh inbox item
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Decided by test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
-      const response = await request.post(`${DAEMON_URL}/api/triage`, {
+      const response = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'delete',
@@ -509,17 +506,17 @@ test.describe('Triage API', () => {
       page,
       daemon,
     }) => {
-      await subscribeToTriageUpdates(page);
+      await subscribeToTriageUpdates(page, daemon.baseUrl, daemon.wsUrl);
 
       // Create a fresh inbox item for deterministic broadcast data
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Broadcast create test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
       const broadcastPromise = waitForTriageBroadcast(page, 'triage_record_created');
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'defer',
@@ -543,7 +540,7 @@ test.describe('Triage API', () => {
 
     // AC: @triage-daemon-api ac-7 — 404 for nonexistent inbox item
     test('returns 404 for nonexistent inbox item reference', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/triage`, {
+      const response = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: '@01ZZZZZZZZZZZZZZZZZZZZZZZY',
           action: 'defer',
@@ -564,7 +561,7 @@ test.describe('Triage API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.post(`${DAEMON_URL}/api/triage`, {
+      const response = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${INBOX_ITEM_1_ULID}`,
           action: 'invalid-action-xyz',
@@ -583,7 +580,7 @@ test.describe('Triage API', () => {
 
     // AC: @trait-api-endpoint ac-3 — missing required fields → Elysia validation
     test('returns 422 when required fields are missing', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/triage`, {
+      const response = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           // Missing inbox_ref, action, reasoning
         },
@@ -600,7 +597,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`,
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`,
         {
           data: {
             action: 'promote',
@@ -628,7 +625,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_ACTED_ULID}/override`,
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_ACTED_ULID}/override`,
         {
           data: {
             action: 'defer',
@@ -649,7 +646,7 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-4 — override with custom override_by
     test('accepts optional override_by field', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`,
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`,
         {
           data: {
             action: 'delete',
@@ -673,13 +670,13 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Create a record first so this test is not fixture-dependent.
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Broadcast override test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'defer',
@@ -689,11 +686,11 @@ test.describe('Triage API', () => {
       expect(triageResponse.status()).toBe(200);
       const triage = await triageResponse.json();
 
-      await subscribeToTriageUpdates(page);
+      await subscribeToTriageUpdates(page, daemon.baseUrl, daemon.wsUrl);
 
       const broadcastPromise = waitForTriageBroadcast(page, 'triage_record_updated');
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${triage.record._ulid}/override`,
+        `${daemon.baseUrl}/api/triage/@${triage.record._ulid}/override`,
         {
           data: {
             action: 'promote',
@@ -716,7 +713,7 @@ test.describe('Triage API', () => {
     // AC: @trait-api-endpoint ac-2 — 404 for nonexistent ref
     test('returns 404 for nonexistent triage record ref', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@nonexistent-triage-ref-xyz/override`,
+        `${daemon.baseUrl}/api/triage/@nonexistent-triage-ref-xyz/override`,
         {
           data: {
             action: 'defer',
@@ -736,7 +733,7 @@ test.describe('Triage API', () => {
     // AC: @trait-api-endpoint ac-3 — invalid action validation
     test('returns 400 for invalid action on override', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`,
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`,
         {
           data: {
             action: 'invalid-action',
@@ -757,14 +754,14 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-5 — execute action on triaged record
     test('executes action and transitions record to acted_on', async ({ request, daemon }) => {
       // First create a fresh inbox item and triage record in 'triaged' status
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Act test item ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
       // Create triage record
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'delete',
@@ -777,7 +774,7 @@ test.describe('Triage API', () => {
 
       // Act on it (delete action — removes the inbox item)
       const actResponse = await request.post(
-        `${DAEMON_URL}/api/triage/@${triageRef}/act`
+        `${daemon.baseUrl}/api/triage/@${triageRef}/act`
       );
 
       expect(actResponse.status()).toBe(200);
@@ -791,13 +788,13 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-5 — defer action
     test('executes defer action successfully', async ({ request, daemon }) => {
       // Create a fresh inbox item + triage record for defer action
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Defer act test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'defer',
@@ -808,7 +805,7 @@ test.describe('Triage API', () => {
       const triage = await triageResponse.json();
 
       const actResponse = await request.post(
-        `${DAEMON_URL}/api/triage/@${triage.record._ulid}/act`
+        `${daemon.baseUrl}/api/triage/@${triage.record._ulid}/act`
       );
 
       expect(actResponse.status()).toBe(200);
@@ -823,12 +820,12 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Create fresh inbox item + triage + act
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `List verification act ${Date.now()}` },
       });
       const inbox = await inboxResponse.json();
 
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'defer',
@@ -837,11 +834,11 @@ test.describe('Triage API', () => {
       });
       const triage = await triageResponse.json();
 
-      await request.post(`${DAEMON_URL}/api/triage/@${triage.record._ulid}/act`);
+      await request.post(`${daemon.baseUrl}/api/triage/@${triage.record._ulid}/act`);
 
       // Verify the list reflects acted_on status
       const listResponse = await request.get(
-        `${DAEMON_URL}/api/triage?status=acted_on`
+        `${daemon.baseUrl}/api/triage?status=acted_on`
       );
       const list = await listResponse.json();
       const found = list.items.find((r: { _ulid: string }) => r._ulid === triage.record._ulid);
@@ -857,13 +854,13 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Create inbox item + triaged record with promote action so act yields result_ref
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Broadcast act test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
-      const triageResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'promote',
@@ -873,11 +870,11 @@ test.describe('Triage API', () => {
       expect(triageResponse.status()).toBe(200);
       const triage = await triageResponse.json();
 
-      await subscribeToTriageUpdates(page);
+      await subscribeToTriageUpdates(page, daemon.baseUrl, daemon.wsUrl);
 
       const broadcastPromise = waitForTriageBroadcast(page, 'triage_record_acted');
       const actResponse = await request.post(
-        `${DAEMON_URL}/api/triage/@${triage.record._ulid}/act`
+        `${daemon.baseUrl}/api/triage/@${triage.record._ulid}/act`
       );
       expect(actResponse.status()).toBe(200);
       const acted = await actResponse.json();
@@ -894,7 +891,7 @@ test.describe('Triage API', () => {
     // AC: @triage-daemon-api ac-8 — 409 for already acted_on record
     test('returns 409 when acting on already acted_on record', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_ACTED_ULID}/act`
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_ACTED_ULID}/act`
       );
 
       expect(response.status()).toBe(409);
@@ -913,7 +910,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@${FIXTURE_TRIAGE_PENDING_ULID}/act`
+        `${daemon.baseUrl}/api/triage/@${FIXTURE_TRIAGE_PENDING_ULID}/act`
       );
 
       expect(response.status()).toBe(422);
@@ -928,7 +925,7 @@ test.describe('Triage API', () => {
     // AC: @trait-api-endpoint ac-2 — 404 for nonexistent ref
     test('returns 404 for nonexistent triage record ref', async ({ request, daemon }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/triage/@nonexistent-triage-xyz/act`
+        `${daemon.baseUrl}/api/triage/@nonexistent-triage-xyz/act`
       );
 
       expect(response.status()).toBe(404);
@@ -947,7 +944,7 @@ test.describe('Triage API', () => {
       daemon,
     }) => {
       // Create fresh inbox item
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Upsert test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
@@ -955,7 +952,7 @@ test.describe('Triage API', () => {
       const inboxUlid = inbox.item._ulid;
 
       // First triage — defer
-      const firstResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const firstResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inboxUlid}`,
           action: 'defer',
@@ -967,7 +964,7 @@ test.describe('Triage API', () => {
       const firstUlid = firstBody.record._ulid;
 
       // Second triage — spec-gap (should upsert, same ULID)
-      const secondResponse = await request.post(`${DAEMON_URL}/api/triage`, {
+      const secondResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inboxUlid}`,
           action: 'spec-gap',
@@ -982,7 +979,7 @@ test.describe('Triage API', () => {
       expect(secondBody.record.action).toBe('spec-gap');
 
       // Only 1 record for this inbox item
-      const listResponse = await request.get(`${DAEMON_URL}/api/triage`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/triage`);
       const list = await listResponse.json();
       const recordsForItem = list.items.filter(
         (r: { inbox_ref: string }) => r.inbox_ref === inboxUlid

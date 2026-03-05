@@ -6,7 +6,7 @@
  * which only read source files and check string patterns.
  *
  * Covered ACs:
- * - @daemon-server ac-1: Elysia HTTP server starts on port 3456 (verified by health check)
+ * - @daemon-server ac-1: Elysia HTTP server starts on configured port (verified by health check)
  * - @daemon-server ac-2: Binds to localhost only (verified by daemon accessibility)
  * - @daemon-server ac-11: GET /api/health returns {status, uptime, connections, version}
  * - @daemon-server ac-15: Plugin pattern middleware (CORS verified via response headers)
@@ -49,9 +49,6 @@
 import { test, expect } from '../fixtures/test-base';
 import * as http from 'http';
 
-const DAEMON_PORT = 3456;
-const DAEMON_URL = `http://localhost:${DAEMON_PORT}`;
-
 /**
  * Make a raw HTTP request with explicit Host header control.
  * Node's built-in http.request allows overriding the Host header,
@@ -61,12 +58,13 @@ const DAEMON_URL = `http://localhost:${DAEMON_PORT}`;
 function rawHttpRequest(options: {
   path: string;
   host: string; // The Host header value to send
+  port: number;
 }): Promise<{ status: number; body: unknown }> {
   return new Promise((resolve, reject) => {
     const req = http.request(
       {
         hostname: 'localhost',
-        port: DAEMON_PORT,
+        port: options.port,
         path: options.path,
         method: 'GET',
         headers: {
@@ -105,7 +103,7 @@ test.describe('Server Core API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/health`);
+      const response = await request.get(`${daemon.baseUrl}/api/health`);
 
       expect(response.status()).toBe(200);
 
@@ -126,13 +124,13 @@ test.describe('Server Core API', () => {
 
     // AC: @daemon-server ac-11
     test('uptime increases over time', async ({ request, daemon }) => {
-      const first = await request.get(`${DAEMON_URL}/api/health`);
+      const first = await request.get(`${daemon.baseUrl}/api/health`);
       const firstBody = await first.json();
 
       // Wait briefly to ensure uptime ticks
       await new Promise((r) => setTimeout(r, 100));
 
-      const second = await request.get(`${DAEMON_URL}/api/health`);
+      const second = await request.get(`${daemon.baseUrl}/api/health`);
       const secondBody = await second.json();
 
       expect(secondBody.uptime).toBeGreaterThanOrEqual(firstBody.uptime);
@@ -142,7 +140,7 @@ test.describe('Server Core API', () => {
   test.describe('CORS Headers', () => {
     // AC: @daemon-server ac-15, @api-contract ac-1
     test('allows requests from localhost:5173 origin', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/health`, {
+      const response = await request.get(`${daemon.baseUrl}/api/health`, {
         headers: {
           Origin: 'http://localhost:5173',
         },
@@ -158,7 +156,7 @@ test.describe('Server Core API', () => {
 
     // AC: @api-contract ac-1
     test('allows requests from 127.0.0.1:5173 origin', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/health`, {
+      const response = await request.get(`${daemon.baseUrl}/api/health`, {
         headers: {
           Origin: 'http://127.0.0.1:5173',
         },
@@ -173,7 +171,7 @@ test.describe('Server Core API', () => {
 
     // AC: @daemon-server ac-15, @api-contract ac-1
     test('supports credentials (CORS credentials mode)', async ({ request, daemon }) => {
-      const response = await request.fetch(`${DAEMON_URL}/api/health`, {
+      const response = await request.fetch(`${daemon.baseUrl}/api/health`, {
         method: 'OPTIONS',
         headers: {
           Origin: 'http://localhost:5173',
@@ -195,7 +193,7 @@ test.describe('Server Core API', () => {
     // If the daemon is not bound to localhost, none of the other E2E tests would pass.
     test('daemon is accessible from localhost (binding works)', async ({ request, daemon }) => {
       // AC: @daemon-server ac-1
-      const response = await request.get(`${DAEMON_URL}/api/health`);
+      const response = await request.get(`${daemon.baseUrl}/api/health`);
       expect(response.status()).toBe(200);
     });
 
@@ -207,6 +205,7 @@ test.describe('Server Core API', () => {
       const result = await rawHttpRequest({
         path: '/api/health',
         host: 'evil.example.com',
+        port: daemon.port,
       });
 
       expect(result.status).toBe(403);
@@ -222,7 +221,8 @@ test.describe('Server Core API', () => {
     test('rejects requests with external IP Host header with 403', async ({ daemon }) => {
       const result = await rawHttpRequest({
         path: '/api/health',
-        host: '192.168.1.100:3456',
+        host: `192.168.1.100:${daemon.port}`,
+        port: daemon.port,
       });
 
       expect(result.status).toBe(403);
