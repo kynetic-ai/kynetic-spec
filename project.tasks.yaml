@@ -75780,6 +75780,65 @@
       content: Starting implementation on branch feat/task-board-kanban. Will implement Kanban board with
         columns, task cards, detail modal, active fleet row, WebSocket updates, and task actions.
       supersedes: null
+    - _ulid: 01KJYMEWQ1Z54KMPWMCVBZ18KP
+      created_at: 2026-03-05T09:15:02.242Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created:
+
+
+        **Components** (packages/web-ui/src/lib/components/board/):
+
+        - board-utils.ts: Column distribution logic, status colors, formatters
+
+        - TaskCard.svelte: Card with priority badge, tags, title, slug, spec ref, metadata footer
+
+        - TaskDetailModal.svelte: Dialog-based modal with full info + action buttons
+
+        - ActiveFleetRow.svelte: Running agent cards with pulse/breathe animation
+
+        - BoardColumn.svelte: Column wrapper with count
+
+        - BoardSkeleton.svelte: Loading skeleton with shimmer
+
+
+        **Route**: /tasks/board with SSR disabled, WebSocket subscriptions, agent polling
+
+
+        **Daemon additions**:
+
+        - POST /api/tasks/:ref/submit (→ pending_review)
+
+        - POST /api/tasks/:ref/complete (→ completed)
+
+        - POST /api/tasks/:ref/block (→ blocked)
+
+        - automation field added to task list response
+
+
+        **Tests**: 17 unit tests for board-utils, 9 E2E tests for board page
+
+
+        **AC coverage**:
+
+        - AC-1: Column distribution (backlog/ready/in_progress/review/done)
+
+        - AC-2: Task card metadata (priority, tags, title, slug, spec ref, footer)
+
+        - AC-3: Detail modal with full info on click
+
+        - AC-4: Active Fleet row with agent cards + pulse
+
+        - AC-5: WebSocket real-time updates for tasks + agents
+
+        - AC-6: Action buttons (Start, Submit, Complete, Block, Add Note)
+
+
+        All states have visual treatment: empty state, loading skeleton, error boundary.
+
+        Status colors use design system tokens (oklch). Animations gated behind
+        prefers-reduced-motion.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
