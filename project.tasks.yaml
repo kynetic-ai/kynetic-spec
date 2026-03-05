@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75841,6 +75841,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T09:15:08.754Z
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
   slugs:
     - implement-session-stream-view
