@@ -76281,16 +76281,34 @@
   priority: 2
   tags: []
   vcs_refs: []
+  session_id: 01KJYXWPDVQ0RBQ29GGJMMDTCY
   created_at: 2026-03-05T01:30:04.991Z
+  started_at: 2026-03-05T12:06:48.730Z
   notes:
     - _ulid: 01KJXSVH9Z0H25B1K8PR9V7T13
       created_at: 2026-03-05T01:30:04.991Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
+    - _ulid: 01KJYYJJAD7V9KWSMRX0C38B7H
+      created_at: 2026-03-05T12:11:48.429Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Implement the /agents route showing agent definitions, dispatch status, and
+        active invocations
+
+        - Scope: API client functions, AgentCard/DispatchStatus/ActiveInvocationRow components,
+        /agents page with all 3 ACs
+
+        - Files: lib/api.ts (add functions), lib/components/agents/ (new feature dir),
+        routes/agents/+page.svelte, tests/e2e/agents.spec.ts
+
+        - Verification: E2E tests covering ac-1 (agent definitions), ac-2 (dispatch running), ac-3
+        (dispatch stopped)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T12:06:48.730Z
-  session_id: 01KJYXWPDVQ0RBQ29GGJMMDTCY
 - _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
   slugs:
     - implement-session-history
