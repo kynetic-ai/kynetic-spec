@@ -1002,3 +1002,398 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KJXSVF2ZKQRVKRZYZVGP10EN
+    slugs:
+      - ui-design-system
+    title: UI Design System
+    type: feature
+    tags: []
+    description: |
+      Port imgen's design token architecture into kspec's Tailwind-based web UI.
+      Map oklch color tokens, spacing, radii, z-index, typography, and animation
+      keyframes as Tailwind theme extensions. Establish consistent visual language
+      across all views.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          The web UI app.css file
+        when: |
+          imgen token-contract.css values are mapped as Tailwind @theme inline extensions
+        then: |
+          All 16 color tokens, 4 radii, 7 spacing, 7 z-index, and 3 font families
+          are available as Tailwind utility classes (e.g. bg-design-surface, border-design-border)
+      - id: ac-2
+        given: |
+          A component using design tokens
+        when: |
+          The dark theme tokens are applied
+        then: |
+          oklch colors render correctly and status colors (pending=amber, in_progress=orange,
+          pending_review=blue, needs_work=yellow, completed=emerald, blocked=red, cancelled=gray)
+          are visually distinct
+      - id: ac-3
+        given: |
+          A view with loading states
+        when: |
+          Content is loading
+        then: |
+          Shimmer animation plays on skeleton elements, gated behind prefers-reduced-motion
+      - id: ac-4
+        given: |
+          An active agent task card
+        when: |
+          The agent is working
+        then: |
+          Breathing/pulse animation plays on the card border, gated behind prefers-reduced-motion
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.719Z
+  - _ulid: 01KJXSVF3J5HTWWDRHWM3C42DJ
+    slugs:
+      - ui-app-shell
+    title: App Shell and Navigation
+    type: feature
+    tags: []
+    description: |
+      Restructure the web UI layout with collapsible sidebar navigation, header bar
+      with command palette and connection status, and grouped navigation sections.
+      Preserve existing functionality during migration.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          The web UI loaded in daemon mode
+        when: |
+          The app shell renders
+        then: |
+          A collapsible sidebar shows grouped navigation: Work (Dashboard, Tasks, Agents, Sessions),
+          Specs (Specs, Plans, Validate), Capture (Inbox, Observations, Triage),
+          Config (Workflows, Settings)
+      - id: ac-2
+        given: |
+          Sidebar navigation items
+        when: |
+          Items have actionable counts (inbox items, unresolved observations, pending review tasks)
+        then: |
+          Badge counts display next to the relevant nav items
+      - id: ac-3
+        given: |
+          The /items route
+        when: |
+          A user navigates to /items
+        then: |
+          They are redirected to /specs preserving any query parameters
+      - id: ac-4
+        given: |
+          The Observations nav item
+        when: |
+          There are zero unresolved observations
+        then: |
+          The nav item is still visible (not hidden)
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.738Z
+  - _ulid: 01KJXSVF40T8KCJHMT0JVYMVV7
+    slugs:
+      - ui-task-board
+    title: Task Board (Kanban)
+    type: feature
+    tags: []
+    description: |
+      Kanban-style task board with columns mapping to kspec task states.
+      Active Fleet row shows currently running agent work with live output.
+      Task cards show key metadata, clicking opens detail modal.
+      Not drag-and-drop — tasks transition via agents/CLI.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          Tasks in various states
+        when: |
+          The task board renders
+        then: |
+          Tasks are distributed into columns: Backlog (pending, manual_only/unassessed),
+          Ready (pending, eligible), In Progress (in_progress, needs_work),
+          Review (pending_review), Done (completed recent), with blocked and cancelled
+          handled as sections/indicators
+      - id: ac-2
+        given: |
+          A task card on the board
+        when: |
+          The card renders
+        then: |
+          It shows priority badge, tag chips, title, slug (mono), spec ref link,
+          and metadata footer (notes count, dependency count, age)
+      - id: ac-3
+        given: |
+          A task card
+        when: |
+          The user clicks it
+        then: |
+          A detail modal opens showing full task info: title, description, status,
+          priority, type, spec ref, tags, dependencies, blocked-by, notes, todos,
+          automation status, VCS info (branch, PR link), plan ref, session link
+      - id: ac-4
+        given: |
+          Agents actively working on tasks (dispatch running)
+        when: |
+          The task board renders
+        then: |
+          An Active Fleet row appears at the top showing cards with task title,
+          agent name, elapsed time with pulse indicator, and last few lines of output
+      - id: ac-5
+        given: |
+          The task board with WebSocket connected
+        when: |
+          A task state changes
+        then: |
+          The board updates in real-time without page refresh
+      - id: ac-6
+        given: |
+          The task detail modal in daemon mode
+        when: |
+          The user clicks action buttons (Start, Submit, Complete, Block, Add Note)
+        then: |
+          The corresponding task transition or mutation is executed via API
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.752Z
+  - _ulid: 01KJXSVF4FP4GY593BCW3XZHQM
+    slugs:
+      - ui-session-stream
+    title: Session Stream View
+    type: feature
+    tags: []
+    description: |
+      View for watching agent work — both historical and live. Renders structured
+      session events (messages, tool calls, thinking blocks) from events.jsonl.
+      Live sessions show streaming text with periodic structured refresh.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          A completed session with events.jsonl
+        when: |
+          The user navigates to /sessions/:id
+        then: |
+          The session events render as structured blocks: agent messages (markdown),
+          tool calls (collapsible with icon, input/output, timing), and thinking blocks
+          (collapsed by default, expandable)
+      - id: ac-2
+        given: |
+          An active session with streaming output
+        when: |
+          The user views the session
+        then: |
+          Live text streams in real-time via agent_text_chunk WebSocket events,
+          with periodic structured refresh from events.jsonl
+      - id: ac-3
+        given: |
+          The session stream view
+        when: |
+          New content arrives while auto-scrolling
+        then: |
+          The view auto-scrolls to follow new content, pauses when user scrolls up
+          (>100px from bottom), and resumes when scrolled back. A "jump to bottom"
+          button appears when paused.
+      - id: ac-4
+        given: |
+          The session stream view
+        when: |
+          A session context panel is shown on the left
+        then: |
+          It displays session metadata, spec context with AC checklist,
+          files changed during session, and budget info
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.767Z
+  - _ulid: 01KJXSVF4YR57EJQTNSHFQKZHE
+    slugs:
+      - ui-agent-dispatch
+    title: Agent and Dispatch View
+    type: feature
+    tags: []
+    description: |
+      View showing agent definitions, dispatch status (running/stopped),
+      and active invocations with links to session streams.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          The /agents route
+        when: |
+          Agent definitions exist in meta
+        then: |
+          Each agent shows name, triggers, active invocation count, and completed count
+      - id: ac-2
+        given: |
+          The dispatch engine is running
+        when: |
+          The agents page renders
+        then: |
+          Dispatch status shows as running with a stop button, and active invocations
+          show task ref, elapsed time, and link to session stream
+      - id: ac-3
+        given: |
+          The dispatch engine is stopped
+        when: |
+          The agents page renders
+        then: |
+          Dispatch status shows as stopped with no active invocations
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.782Z
+  - _ulid: 01KJXSVF5CPD38NH05CPXG4NFY
+    slugs:
+      - ui-session-history
+    title: Session History
+    type: feature
+    tags: []
+    description: |
+      List view of past agent sessions with filtering and navigation to session detail.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          Sessions exist on disk
+        when: |
+          The user navigates to /sessions
+        then: |
+          A list of sessions shows ID, agent type, task ref, status,
+          duration, and age, sorted by most recent first
+      - id: ac-2
+        given: |
+          The session list
+        when: |
+          The user clicks a session
+        then: |
+          They navigate to /sessions/:id showing the session stream view
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.796Z
+  - _ulid: 01KJXSVF5VWDHKVSJ51JSZDSPN
+    slugs:
+      - ui-inbox-enhanced
+    title: Enhanced Inbox View
+    type: feature
+    tags: []
+    description: |
+      Enhanced inbox with triage status inline, quick actions, filtering, and bulk selection.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          Inbox items with varying triage states
+        when: |
+          The inbox view renders
+        then: |
+          Each item shows triage status inline (untriaged/triaged/acted_on)
+          with quick triage action links
+      - id: ac-2
+        given: |
+          The inbox view
+        when: |
+          The user applies filters (status, tags, age)
+        then: |
+          The list filters accordingly
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.811Z
+  - _ulid: 01KJXSVF6C8W98RNSGH5V0EM4G
+    slugs:
+      - ui-plans-view
+    title: Plans View
+    type: feature
+    tags: []
+    description: |
+      View for browsing plan records with progress tracking via linked specs and tasks.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          Plan records exist
+        when: |
+          The user navigates to /plans
+        then: |
+          Each plan shows title, status, creation date, linked spec/task counts,
+          and progress based on task completion status
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.828Z
+  - _ulid: 01KJXSVF6TWXS4Z07QE6R2JEG8
+    slugs:
+      - ui-validation-view
+    title: Validation and Alignment View
+    type: feature
+    tags: []
+    description: |
+      View showing validation results, alignment statistics, and issues.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          The user navigates to /validate
+        when: |
+          Validation data loads
+        then: |
+          Summary shows error count, warning count, valid item count.
+          Alignment section shows spec coverage %, AC coverage %,
+          orphaned tasks/specs counts. Issues list grouped by severity.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.842Z
+  - _ulid: 01KJXSVF7944GT0W021545WRPK
+    slugs:
+      - ui-dashboard-overview
+    title: Dashboard Overview
+    type: feature
+    tags: []
+    description: |
+      Home view answering "what's happening right now?" with active work,
+      status summary, recent activity, and needs-attention aggregation.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          The user navigates to /
+        when: |
+          The dashboard renders
+        then: |
+          Active work section shows currently running agent tasks (if any),
+          status summary shows clickable count cards per status,
+          needs-attention section aggregates untriaged inbox, unresolved observations,
+          validation warnings, and blocked tasks
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T01:30:02.857Z

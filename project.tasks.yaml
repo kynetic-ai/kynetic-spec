@@ -75313,3 +75313,213 @@
         full implementation. Full review at .kspec/artifacts/ui-revamp-codex-review.md"
       supersedes: null
   todos: []
+- _ulid: 01KJXSVFHZ2FHQND06AEGFC3FF
+  slugs:
+    - implement-ui-design-system
+  title: Implement UI Design System
+  type: task
+  spec_ref: "@ui-design-system"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:03.199Z
+  notes:
+    - _ulid: 01KJXSVFHZFJTJAWT37FDADBZM
+      created_at: 2026-03-05T01:30:03.199Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVG0226PJPNCGMG4N1383
+  slugs:
+    - implement-app-shell-and-navigation
+  title: Implement App Shell and Navigation
+  type: task
+  spec_ref: "@ui-app-shell"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:03.650Z
+  notes:
+    - _ulid: 01KJXSVG020RA509FAG9DPVHD6
+      created_at: 2026-03-05T01:30:03.650Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
+  slugs:
+    - implement-task-board-kanban
+  title: Implement Task Board (Kanban)
+  type: task
+  spec_ref: "@ui-task-board"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:04.123Z
+  notes:
+    - _ulid: 01KJXSVGEVEFWJGDKKH9MRT736
+      created_at: 2026-03-05T01:30:04.123Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
+  slugs:
+    - implement-session-stream-view
+  title: Implement Session Stream View
+  type: task
+  spec_ref: "@ui-session-stream"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:04.544Z
+  notes:
+    - _ulid: 01KJXSVGW0MZHVDM69995M87W1
+      created_at: 2026-03-05T01:30:04.544Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
+  slugs:
+    - implement-agent-and-dispatch-view
+  title: Implement Agent and Dispatch View
+  type: task
+  spec_ref: "@ui-agent-dispatch"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:04.991Z
+  notes:
+    - _ulid: 01KJXSVH9Z0H25B1K8PR9V7T13
+      created_at: 2026-03-05T01:30:04.991Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
+  slugs:
+    - implement-session-history
+  title: Implement Session History
+  type: task
+  spec_ref: "@ui-session-history"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:05.410Z
+  notes:
+    - _ulid: 01KJXSVHQ2D10H7SMMCRYTA7CZ
+      created_at: 2026-03-05T01:30:05.410Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
+  slugs:
+    - implement-enhanced-inbox-view
+  title: Implement Enhanced Inbox View
+  type: task
+  spec_ref: "@ui-inbox-enhanced"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:05.834Z
+  notes:
+    - _ulid: 01KJXSVJ4AXCYJC5QJKDJ3QNVC
+      created_at: 2026-03-05T01:30:05.834Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
+  slugs:
+    - implement-plans-view
+  title: Implement Plans View
+  type: task
+  spec_ref: "@ui-plans-view"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:06.311Z
+  notes:
+    - _ulid: 01KJXSVJK7RK2HWN05Q26NYP6M
+      created_at: 2026-03-05T01:30:06.311Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
+  slugs:
+    - implement-validation-and-alignment-view
+  title: Implement Validation and Alignment View
+  type: task
+  spec_ref: "@ui-validation-view"
+  plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:06.740Z
+  notes:
+    - _ulid: 01KJXSVK0MH0J1XWEDB0HMS4MT
+      created_at: 2026-03-05T01:30:06.740Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  todos: []
+- title: Implement Dashboard Overview
+  type: task
+  spec_ref: "@ui-dashboard-overview"
+  plan_ref: "@plan-ui-ux-revamp"
+  priority: 3
+  slugs:
+    - implement-dashboard-overview
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KJXSVKE4KK0MKFP61JZBR1DD
+      created_at: 2026-03-05T01:30:07.172Z
+      author: "@claude"
+      content: See plan @plan-ui-ux-revamp for implementation notes
+  _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:07.172Z
+  todos: []
