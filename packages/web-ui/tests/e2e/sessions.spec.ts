@@ -201,6 +201,40 @@ test.describe('Session History View', () => {
 
 		// AC: @ui-session-history ac-1 — Sorted by most recent first
 		test('sessions are sorted by most recent first', async ({ page, daemon }) => {
+			// Provide mock data in most-recent-first order (as daemon would return).
+			// Session 2 (Mar 5) > Session 1 (Mar 4) > Session 3 (Mar 3).
+			const sorted = mockSessions();
+			sorted.items = [sorted.items[1], sorted.items[0], sorted.items[2]];
+
+			await page.route('**/api/sessions', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(sorted),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Verify rendered order matches daemon's most-recent-first sort:
+			// First row = session 2 (Mar 5), second = session 1 (Mar 4), third = session 3 (Mar 3)
+			const rows = page.getByTestId('session-row');
+			await expect(rows.nth(0)).toHaveAttribute('data-session-id', '01JTEST0000000000000000002');
+			await expect(rows.nth(1)).toHaveAttribute('data-session-id', '01JTEST0000000000000000001');
+			await expect(rows.nth(2)).toHaveAttribute('data-session-id', '01JTEST0000000000000000003');
+		});
+	});
+
+	test.describe('Session Navigation (AC-2)', () => {
+		// AC: @ui-session-history ac-2
+		test('clicking a session navigates to /sessions/:id and shows stream view', async ({ page, daemon }) => {
+			const sessionDetail = mockSessions().items[0];
+
+			// Register routes from least-specific to most-specific.
+			// Playwright checks LIFO, so the last-registered (most specific) is checked first.
+
+			// 1. Session list: /api/sessions
 			await page.route('**/api/sessions', (route) => {
 				route.fulfill({
 					status: 200,
@@ -209,42 +243,22 @@ test.describe('Session History View', () => {
 				});
 			});
 
-			await page.goto('/sessions');
-			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			// 2. Session detail: /api/sessions/:id
+			await page.route('**/api/sessions/01JTEST0000000000000000001', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(sessionDetail),
+				});
+			});
 
-			// The mock data is already sorted most-recent-first by the daemon
-			// Verify the order matches: session 1 (Mar 4), session 2 (Mar 5), session 3 (Mar 3)
-			// Daemon sorts descending by started_at, so: session 2, session 1, session 3
-			const rows = page.getByTestId('session-row');
-			const firstRowId = rows.nth(0).getAttribute('data-session-id');
-			// Mock data comes pre-sorted from daemon, test verifies UI preserves order
-			expect(firstRowId).resolves.toBe('01JTEST0000000000000000001');
-		});
-	});
-
-	test.describe('Session Navigation (AC-2)', () => {
-		// AC: @ui-session-history ac-2
-		test('clicking a session navigates to /sessions/:id', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				if (route.request().url().includes('/events')) {
-					route.fulfill({
-						status: 200,
-						contentType: 'application/json',
-						body: JSON.stringify({ events: [], total: 0 }),
-					});
-				} else if (route.request().url().match(/\/api\/sessions\/[^/]+$/)) {
-					route.fulfill({
-						status: 200,
-						contentType: 'application/json',
-						body: JSON.stringify(mockSessions().items[0]),
-					});
-				} else {
-					route.fulfill({
-						status: 200,
-						contentType: 'application/json',
-						body: JSON.stringify(mockSessions()),
-					});
-				}
+			// 3. Session events: /api/sessions/:id/events
+			await page.route('**/api/sessions/01JTEST0000000000000000001/events', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({ events: [], total: 0 }),
+				});
 			});
 
 			await page.goto('/sessions');
@@ -253,7 +267,11 @@ test.describe('Session History View', () => {
 			const firstRow = page.getByTestId('session-row').first();
 			await firstRow.click();
 
+			// Verify navigation to session detail URL
 			await expect(page).toHaveURL(/\/sessions\/01JTEST0000000000000000001/);
+
+			// Verify session stream view renders (not just URL change)
+			await expect(page.getByTestId('session-stream')).toBeVisible({ timeout: 5000 });
 		});
 
 		// AC: @ui-session-history ac-2
