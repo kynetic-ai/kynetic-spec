@@ -76488,7 +76488,7 @@
   type: task
   spec_ref: "@ui-inbox-enhanced"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76496,7 +76496,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJZ1AWSWMSY7YJYTKTAZ0JAZ
+  session_id: null
   created_at: 2026-03-05T01:30:05.834Z
   started_at: 2026-03-05T13:06:28.677Z
   submitted_at: 2026-03-05T13:14:42.061Z
@@ -76544,6 +76544,14 @@
         correctly validate most-recent-first ordering and AC-2 navigation test stubbing is
         ineffective for detail/events routes (known fix-cycle findings). Split this branch to
         include only inbox task changes before re-submit."
+      supersedes: null
+    - _ulid: 01KJZ2FBD0DFJJPE65SBEZEW13
+      created_at: 2026-03-05T13:19:57.345Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: branch includes out-of-scope
+        @ui-session-history changes (task @implement-session-history is still needs_work) and
+        unresolved MUST-FIX quality issues in packages/web-ui/tests/e2e/sessions.spec.ts. Split to
+        inbox-only changes and re-submit."
       supersedes: null
   todos: []
   automation: eligible
