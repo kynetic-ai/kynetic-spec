@@ -76839,7 +76839,7 @@
   spec_ref: "@e2e-test-daemon-isolation"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -76850,8 +76850,10 @@
     - e2e
     - regression
   vcs_refs: []
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/682
   created_at: 2026-03-05T17:36:04.580Z
   started_at: 2026-03-05T17:46:25.390Z
+  submitted_at: 2026-03-05T18:35:35.073Z
   notes:
     - _ulid: 01KJZH4BDBX3TKDQHKTTEEQBG9
       created_at: 2026-03-05T17:36:05.547Z
@@ -76906,5 +76908,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T18:35:35.073Z
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/682
+  completed_at: 2026-03-05T18:49:53.615Z
+  closed_reason: "Merged in PR #682. Removed cleanupExistingDaemon(), added ephemeral ports, HOME
+    isolation, and scoped cleanup. All 5 ACs covered. Reviewed by Claude, Codex, and CI — all
+    clean."
