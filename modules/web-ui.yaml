@@ -1054,7 +1054,7 @@ features:
     created: 2026-03-05T01:30:02.719Z
     status:
       maturity: draft
-      implementation: not_started
+      implementation: implemented
   - _ulid: 01KJXSVF3J5HTWWDRHWM3C42DJ
     slugs:
       - ui-app-shell
