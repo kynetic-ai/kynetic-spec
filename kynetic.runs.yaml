@@ -13284,7 +13284,7 @@ runs:
   - _ulid: 01KJXP1ZSSJNDMP3TSZ9M6KK93
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-05T00:23:42.137Z
     step_results:
@@ -13299,5 +13299,15 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-05T00:23:57.391Z
-        completed_at: 2026-03-05T00:23:57.391Z
+        completed_at: 2026-03-05T00:24:11.881Z
+        notes: 1. kspec batch blocks on item set cascade prompts — had to use yes | kspec item set 20 times
+          sequentially; batch needs --no-cascade or --yes flag. 2. check-unresolved-comments CI
+          doesn't re-trigger on thread resolution — needed manual gh run rerun. 3. kspec item list
+          --json has unusual nested structure, took 3 parse attempts before falling back to kspec
+          search. 4. AC annotation slug @alignment-validation-warnings typo undetected locally —
+          kspec validate doesn't check annotation slug correctness.
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-05T00:24:11.881Z
+        completed_at: 2026-03-05T00:24:11.881Z
     initiated_by: "@claude"
