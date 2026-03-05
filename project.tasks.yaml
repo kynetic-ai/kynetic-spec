@@ -76691,6 +76691,13 @@
         handling. Created project.plans.yaml fixture with 3 plans (active/draft/completed) for test
         data."
       supersedes: null
+    - _ulid: 01KJZGQATXXG803RZ81ZVSWAHF
+      created_at: 2026-03-05T17:28:58.973Z
+      author: "@claude"
+      content: "Work paused mid-review on branch feat/plans-view (HEAD: 4838036a5). E2E test daemon
+        isolation regression discovered — daemon-killing cleanupExistingDaemon() in test-base.ts
+        needs to be fixed on main first, then merged into this branch before continuing."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
