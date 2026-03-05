@@ -119,6 +119,51 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
+  - _ulid: 01KJY2FNZ6DG45GGS7D4V2ZADF
+    id: ui-worker
+    name: UI Worker Agent
+    description: Autonomous UI implementation agent specializing in Svelte 5, SvelteKit, and design
+      system work. Implements UI features following spec ACs with focus on visual quality,
+      accessibility, and design token consistency.
+    capabilities:
+      - code
+      - test
+      - refactor
+    tools:
+      - kspec
+      - git
+      - npm
+      - vitest
+    conventions: []
+    adapter: codex-acp
+    dispatch:
+      - on: task.ready
+        filter:
+          automation: eligible
+    skills:
+      - task-work
+    concurrency:
+      max_concurrent: 1
+    auto_approve: true
+  - _ulid: 01KJY2FP38QGAGFE27XKDBG7XN
+    id: ux-reviewer
+    name: UX Reviewer Agent
+    description: Autonomous UX review agent. Reviews UI implementation for design quality,
+      accessibility, spec AC coverage, and visual consistency with imgen design system tokens.
+    capabilities:
+      - review
+    tools:
+      - kspec
+      - git
+    conventions: []
+    adapter: codex-acp
+    dispatch:
+      - on: task.pending_review
+    skills:
+      - pr-review
+    concurrency:
+      max_concurrent: 1
+    auto_approve: true
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
