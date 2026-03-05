@@ -566,6 +566,61 @@ describe('kspec serve commands', () => {
     expect(result.stderr).toContain('Try: kspec serve --port');
   });
 
+  // AC: @cli-serve-commands ac-11
+  describe('dispatch agent guard', () => {
+    it('should refuse serve start when KSPEC_SESSION_ID is set', async () => {
+      const result = runKspec(
+        `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain('Cannot start daemon from inside an agent invocation');
+      expect(result.stderr).toContain('dispatch engine');
+    });
+
+    it('should refuse serve stop when KSPEC_SESSION_ID is set', async () => {
+      const result = runKspec(
+        `serve stop --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain('Cannot stop daemon from inside an agent invocation');
+      expect(result.stderr).toContain('dispatch engine');
+    });
+
+    it('should refuse serve restart when KSPEC_SESSION_ID is set', async () => {
+      const result = runKspec(
+        `serve restart --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain('Cannot restart daemon from inside an agent invocation');
+      expect(result.stderr).toContain('dispatch engine');
+    });
+
+    // AC: @trait-json-output ac-3 — JSON error output for dispatch guard
+    it('should output JSON error when guard triggers with --json', async () => {
+      const result = runKspec(
+        `serve start --json --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).not.toBe(0);
+      const output = JSON.parse(result.stdout);
+      expect(output).toHaveProperty('error');
+      expect(output.error).toContain('Cannot start daemon');
+      expect(output).toHaveProperty('reason');
+      expect(output).toHaveProperty('suggestion');
+    });
+  });
+
   // Trait tests: @trait-json-output
   describe('JSON output mode', () => {
     // AC: @trait-json-output ac-1, ac-2
