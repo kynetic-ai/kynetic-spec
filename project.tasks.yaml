@@ -76941,6 +76941,31 @@
         misses required valid item count / AC coverage / orphaned tasks data from
         @ui-validation-view ac-1; raw Tailwind colors used instead of design tokens."
       supersedes: null
+    - _ulid: 01KK038AHY7KCNG2DQZQR9DEWD
+      created_at: 2026-03-05T22:52:50.110Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1: Addressed all three MUST-FIX items from review.
+
+
+        1. AC test coverage: Added 13 E2E tests (validate.spec.ts) covering summary cards, alignment
+        section, issues list grouped by severity, loading/empty/error states, and navigation. All
+        annotated with // AC: @ui-validation-view ac-1.
+
+
+        2. Spec mismatch fixes:
+           - Replaced 'Overall Status' card with 'Valid Items' card showing actual count (total items minus items with errors)
+           - Replaced 'Alignment %' with 'AC Coverage %' (computed from missing_test_coverage completeness warnings)
+           - Replaced 'Alignment Warnings' with 'Orphaned Tasks' (tasks without spec_ref)
+           - Kept 'Orphaned Specs' (already correct)
+
+        3. Design token gate:
+           - Added severity tokens (error/warning/info/success) to design system tokens.css with light/dark mode variants using oklch color space
+           - Added Tailwind theme extensions for severity tokens in app.css
+           - Replaced all raw Tailwind colors (bg-red-50, text-yellow-600, bg-emerald-500, bg-blue-50, etc.) with semantic severity tokens
+
+        Additional: Added /validate plus other missing routes to daemon SPA fallback routes.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
