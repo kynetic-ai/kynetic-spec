@@ -20,12 +20,16 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import Bot from '@lucide/svelte/icons/bot';
+	import Zap from '@lucide/svelte/icons/zap';
 
 	let agentDefinitions = $state<AgentDefinition[]>([]);
 	let dispatchStatus = $state<AgentDispatchStatus | null>(null);
 	let loading = $state(true);
 	let error = $state('');
 	let isToggling = $state(false);
+
+	// Screen reader announcement for live invocation updates
+	let invocationAnnouncement = $state('');
 
 	// Track completed invocations per agent (incremented by WebSocket events)
 	let completedCounts = $state<Record<string, number>>({});
@@ -117,6 +121,15 @@
 					[data.agent_id]: (completedCounts[data.agent_id] || 0) + 1
 				};
 			}
+			// Announce change to screen readers
+			const agentLabel = data.agent_id || 'Agent';
+			if (data.status === 'started') {
+				invocationAnnouncement = `${agentLabel} invocation started`;
+			} else if (data.status === 'completed') {
+				invocationAnnouncement = `${agentLabel} invocation completed`;
+			} else if (data.status === 'failed') {
+				invocationAnnouncement = `${agentLabel} invocation failed`;
+			}
 			// Refresh status to update active invocations
 			fetchAgentStatus()
 				.then((status) => {
@@ -184,16 +197,36 @@
 
 		<!-- Active Invocations Section -->
 		<!-- AC: @ui-agent-dispatch ac-2 -->
-		{#if dispatchStatus?.dispatch_enabled && dispatchStatus.active_invocations.length > 0}
-			<section data-testid="active-invocations-section">
+		{#if dispatchStatus?.dispatch_enabled}
+			<section data-testid="active-invocations-section" aria-live="polite" aria-relevant="additions removals">
 				<h2 class="text-lg font-semibold mb-3">Active Invocations</h2>
-				<div class="flex flex-col gap-2">
-					{#each dispatchStatus.active_invocations as invocation (invocation.session_id)}
-						<ActiveInvocationRow {invocation} />
-					{/each}
-				</div>
+				{#if dispatchStatus.active_invocations.length > 0}
+					<div class="flex flex-col gap-2">
+						{#each dispatchStatus.active_invocations as invocation (invocation.session_id)}
+							<ActiveInvocationRow {invocation} />
+						{/each}
+					</div>
+				{:else}
+					<div
+						class="flex flex-col items-center justify-center py-8 text-center border rounded-lg"
+						data-testid="active-invocations-empty"
+					>
+						<Zap class="h-10 w-10 text-muted-foreground mb-3" />
+						<h3 class="text-sm font-medium mb-1">No active invocations</h3>
+						<p class="text-xs text-muted-foreground max-w-sm">
+							Dispatch is running and waiting for eligible tasks. Use
+							<code class="bg-muted px-1 py-0.5 rounded">kspec tasks ready --eligible</code>
+							to check for work.
+						</p>
+					</div>
+				{/if}
 			</section>
 		{/if}
+
+		<!-- Screen reader live announcement for invocation changes -->
+		<div class="sr-only" aria-live="assertive" aria-atomic="true" data-testid="invocation-live-region">
+			{invocationAnnouncement}
+		</div>
 
 		<Separator />
 

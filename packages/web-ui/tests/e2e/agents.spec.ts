@@ -201,36 +201,119 @@ test.describe('Agent and Dispatch View', () => {
 
   test.describe('Loading and Error States', () => {
     test('shows loading skeleton initially', async ({ page, daemon }) => {
-      // Navigate and check immediately before data loads
+      // Delay API responses so the skeleton is reliably visible
+      await page.route('**/api/agent/status', async (route) => {
+        await new Promise((r) => setTimeout(r, 500));
+        await route.continue();
+      });
+      await page.route('**/api/meta/agents', async (route) => {
+        await new Promise((r) => setTimeout(r, 500));
+        await route.continue();
+      });
+
       await page.goto('/agents');
 
-      // The skeleton should appear briefly; we check the section renders
-      const section = page.getByTestId('dispatch-section');
-      // Wait for either loading or content
-      await expect(section.or(page.getByTestId('agents-loading'))).toBeVisible();
+      // Skeleton should be visible while API calls are delayed
+      const skeleton = page.getByTestId('agents-loading');
+      await expect(skeleton).toBeVisible();
+
+      // Eventually loading finishes and content appears
+      await expect(page.getByTestId('dispatch-section')).toBeVisible({ timeout: 5000 });
     });
 
     test('error message displays on API failure', async ({ page, daemon }) => {
-      // This test is documentary - verifying error boundary exists
-      // A real API failure would show the error-message testid
-      await page.goto('/agents');
-      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+      // Intercept API calls and return errors
+      await page.route('**/api/agent/status', (route) => {
+        route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'internal_error', message: 'Daemon unavailable' }),
+        });
+      });
+      await page.route('**/api/meta/agents', (route) => {
+        route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'internal_error', message: 'Daemon unavailable' }),
+        });
+      });
 
-      // Page should have loaded without error
+      await page.goto('/agents');
+
+      // Error message should be displayed with API error message
       const errorMessage = page.getByTestId('error-message');
-      await expect(errorMessage).toHaveCount(0);
+      await expect(errorMessage).toBeVisible();
+      await expect(errorMessage).toContainText('Daemon unavailable');
     });
   });
 
   test.describe('Empty State', () => {
-    // This test verifies the empty state renders properly when no agents are defined
-    // The fixture now includes agents, so we verify the non-empty state
     test('shows agent definitions section', async ({ page, daemon }) => {
       await page.goto('/agents');
       await expect(page.getByTestId('agents-loading')).toHaveCount(0);
 
       const section = page.getByTestId('agent-definitions-section');
       await expect(section).toBeVisible();
+    });
+
+    // AC: @ui-agent-dispatch ac-2 — Empty state for active invocations when dispatch is running
+    test('shows actionable empty state when dispatch is running with no active invocations', async ({ page, daemon, request }) => {
+      // Start dispatch so it's enabled
+      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+        data: { action: 'start' },
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      // Active invocations section should be visible (dispatch is running)
+      const invocationsSection = page.getByTestId('active-invocations-section');
+      await expect(invocationsSection).toBeVisible();
+
+      // Empty state should be shown with actionable guidance
+      const emptyState = page.getByTestId('active-invocations-empty');
+      await expect(emptyState).toBeVisible();
+      await expect(emptyState).toContainText('No active invocations');
+      await expect(emptyState).toContainText('kspec tasks ready --eligible');
+
+      // Clean up
+      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+        data: { action: 'stop' },
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+  });
+
+  test.describe('Accessibility', () => {
+    test('has aria-live region for invocation announcements', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      // The live region should exist for screen reader announcements
+      const liveRegion = page.getByTestId('invocation-live-region');
+      await expect(liveRegion).toBeAttached();
+      await expect(liveRegion).toHaveAttribute('aria-live', 'assertive');
+    });
+
+    test('active invocations section has aria-live attribute', async ({ page, daemon, request }) => {
+      // Start dispatch to make the section appear
+      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+        data: { action: 'start' },
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      const invocationsSection = page.getByTestId('active-invocations-section');
+      await expect(invocationsSection).toHaveAttribute('aria-live', 'polite');
+
+      // Clean up
+      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+        data: { action: 'stop' },
+        headers: { 'Content-Type': 'application/json' },
+      });
     });
   });
 
