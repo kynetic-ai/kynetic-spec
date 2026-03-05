@@ -1578,3 +1578,11 @@ inbox:
       - cli
       - validation
     added_by: "@claude"
+  - _ulid: 01KJXPG80VDQWGT01KTJ7GGWYW
+    text: 'Fix kspec item list --json output structure: currently returns nested [items, count] pairs
+      which are difficult to parse programmatically. Should return flat { "items": [...], "total": N
+      } shape consistent with other JSON commands. Check for existing consumers before changing.'
+    created_at: 2026-03-05T00:31:29.308Z
+    tags:
+      - cli
+    added_by: "@claude"
