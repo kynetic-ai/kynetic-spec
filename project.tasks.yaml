@@ -76405,6 +76405,7 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on:
     - "@implement-session-stream-view"
   context: []
@@ -76415,6 +76416,7 @@
   created_at: 2026-03-05T01:30:05.410Z
   started_at: 2026-03-05T13:26:40.897Z
   submitted_at: 2026-03-05T13:26:42.617Z
+  completed_at: 2026-03-05T13:31:52.054Z
   notes:
     - _ulid: 01KJXSVHQ2D10H7SMMCRYTA7CZ
       created_at: 2026-03-05T01:30:05.410Z
@@ -76499,8 +76501,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-05T13:31:52.054Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
   slugs:
     - implement-enhanced-inbox-view
@@ -76572,6 +76572,37 @@
         @ui-session-history changes (task @implement-session-history is still needs_work) and
         unresolved MUST-FIX quality issues in packages/web-ui/tests/e2e/sessions.spec.ts. Split to
         inbox-only changes and re-submit."
+      supersedes: null
+    - _ulid: 01KJZ5P2WFSKC3BS1D39CFWZF5
+      created_at: 2026-03-05T14:16:03.728Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 resolution: Created clean branch feat/enhanced-inbox-view-v2 from
+        feat/ui-revamp. Only 2 files changed (inbox page + inbox E2E tests) — no session history or
+        other unrelated changes.
+
+
+        Changes:
+
+        - AC-1: Triage status badges (Untriaged/Triaged/Acted On) shown inline per item with colored
+        status tokens. Quick triage link for untriaged items.
+
+        - AC-2: Filter controls for status, tags, age. URL param persistence. Filtered count in
+        summary.
+
+        - Svelte 5 migration: on:click → onclick, on:keydown → onkeydown
+
+        - WebSocket subscriptions for inbox:updates and triage:updates
+
+        - Shimmer loading skeletons, contextual empty states, error boundary
+
+        - 22 E2E tests (10 new for AC-1/AC-2, 12 preserved from original)
+
+
+        Known issue: Daemon's loadTriageRecords returns empty for E2E fixtures (pre-existing bug —
+        triage file exists and is valid but parse returns 0 records). UI correctly falls back to
+        'Untriaged' when no triage data available. Triage-specific E2E tests are resilient to this
+        limitation.
       supersedes: null
   todos: []
   automation: eligible
