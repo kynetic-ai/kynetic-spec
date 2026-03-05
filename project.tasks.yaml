@@ -75458,6 +75458,15 @@
         by resetting @ui-design-system implementation to not_started, and restored 19 unrelated
         specs that were incorrectly cascaded to not_started by the item set command."
       supersedes: null
+    - _ulid: 01KJY5Z3SYWX2RM9ZKGMM4KRBR
+      created_at: 2026-03-05T05:01:45.150Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX - kspec validate reports a warning for this spec: UI Design
+        System status mismatch (spec implementation='in_progress' but expected 'not_started' based
+        on task progress). Required test sequence passed: root npm test (176 files, 3703 tests) and
+        packages/web-ui npm test (18 tests). AC annotations for @ui-design-system ac-1..ac-4 are
+        present in tests/web-ui-design-system.test.ts; no inherited trait ACs for this spec."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
