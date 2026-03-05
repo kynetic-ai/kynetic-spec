@@ -75626,7 +75626,7 @@
   type: task
   spec_ref: "@ui-app-shell"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-ui-design-system"
@@ -75749,6 +75749,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-05T07:59:18.430Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
   slugs:
     - implement-task-board-kanban
