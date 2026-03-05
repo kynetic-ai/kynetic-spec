@@ -76479,6 +76479,24 @@
         '**/api/sessions' does not match '/api/sessions/:id' or '/events', so the conditional
         branches are effectively dead for detail API mocking."
       supersedes: null
+    - _ulid: 01KJZ2VAGQQR4330DZPV7863KX
+      created_at: 2026-03-05T13:26:29.655Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed:
+
+        - MUST-FIX 1: Sort assertion corrected. Mock data now provided in most-recent-first order
+        (Mar 5, Mar 4, Mar 3) and assertions verify all three rows match via data-session-id
+        attributes instead of using a single resolves.toBe check on first row.
+
+        - MUST-FIX 2: AC-2 navigation test rewritten with three separate Playwright route handlers
+        (list, detail, events) instead of one handler with dead conditional branches. Test now
+        asserts session-stream component renders after navigation, verifying the stream view loads
+        rather than just checking URL change.
+
+        - All existing tests pass (2 pre-existing failures in core-skill-install and enhanced-setup
+        are unrelated).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
