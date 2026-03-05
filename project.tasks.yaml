@@ -75312,6 +75312,26 @@
         per-phase requirements not Phase 5 audit. Codex also recommended 3 prototype spikes before
         full implementation. Full review at .kspec/artifacts/ui-revamp-codex-review.md"
       supersedes: null
+    - _ulid: 01KJY1QWKHB316A8TKMX8MP7WN
+      created_at: 2026-03-05T03:47:54.097Z
+      author: "@claude"
+      content: |-
+        Plan imported and environment set up.
+
+        Created:
+        - Plan: @plan-ui-ux-revamp (10 specs, 10 tasks)
+        - Prereq task: @01KJXSWR (quick wins)
+        - Clone: ~/Projects/kynetic-spec-ui on feat/ui-revamp branch
+        - Shadow branch shared — tasks visible from both locations
+
+        Task dependency chain:
+          Prerequisites → Design System → App Shell → Task Board → Dashboard
+                                                    → Session Stream → Session History
+                                                    → Agent/Dispatch
+                                                    → Inbox/Plans/Validation (parallel)
+
+        Ready for work to begin.
+      supersedes: null
   todos: []
 - _ulid: 01KJXSVFHZ2FHQND06AEGFC3FF
   slugs:
