@@ -74099,7 +74099,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -74119,6 +74119,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-05T04:06:27.922Z
+  session_id: 01KJY2SENQW3EBHH1R8PJ6F2DZ
 - _ulid: 01KJVCWC68CMQZXE387YNF8EYZ
   slugs: []
   title: Fix agent dispatch watch WebSocket subscribe decoding for Node clients
