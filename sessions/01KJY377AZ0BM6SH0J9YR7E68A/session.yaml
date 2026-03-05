@@ -3,5 +3,7 @@ task_id: "@01KJTYJ92M7NWFQGMQYBFKMF7K"
 agent_type: claude-agent-acp
 agent_id: ui-worker
 trigger: task.ready
-status: active
+status: failed
 started_at: 2026-03-05T04:13:45.188Z
+ended_at: 2026-03-05T04:14:23.932Z
+close_reason: Invocation aborted by shutdown
