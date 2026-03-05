@@ -1586,3 +1586,13 @@ inbox:
     tags:
       - cli
     added_by: "@claude"
+  - _ulid: 01KJY9H27H9HRBH303RQJCKH4B
+    text: Alignment status calculation should treat needs_work and pending_review as active work states
+      (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
+      @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
+      task.
+    created_at: 2026-03-05T06:03:59.089Z
+    tags:
+      - validate
+      - alignment
+    added_by: "@claude"
