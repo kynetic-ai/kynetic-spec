@@ -76839,7 +76839,7 @@
   spec_ref: "@e2e-test-daemon-isolation"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -76906,3 +76906,5 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T18:35:35.073Z
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/682
