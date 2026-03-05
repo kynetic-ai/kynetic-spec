@@ -76845,6 +76845,15 @@
         Tests passed (npm test; cd packages/web-ui && npm test), and kspec validate showed no
         warnings specific to @ui-plans-view, but the issues above block approval."
       supersedes: null
+    - _ulid: 01KK01JKMC2CC5CWM581AGQT57
+      created_at: 2026-03-05T22:23:29.932Z
+      author: "@claude"
+      content: "Fix cycle 1 addressed: (1) Added visible <label> element for plans status filter — fixes
+        accessibility gate failure. (2) Changed WebSocket subscription from plans:updates to
+        tasks:updates — plan progress is derived from task statuses, so task changes now trigger
+        plan view refresh. (3) Added View Specs / View Tasks navigation buttons to plan cards per
+        wireframe. (4) Added E2E tests for accessible label and navigation actions."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
