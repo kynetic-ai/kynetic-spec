@@ -195,6 +195,31 @@ export interface Observation {
 }
 
 /**
+ * Plan summary for list endpoints
+ * AC: @ui-plans-view ac-1
+ */
+export interface PlanSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  created_at: string;
+  approved_at?: string;
+  completed_at?: string;
+  derived_specs: string[];
+  derived_tasks: string[];
+  spec_count: number;
+  task_count: number;
+  task_progress: {
+    total: number;
+    completed: number;
+    in_progress: number;
+    pending: number;
+    blocked: number;
+  };
+}
+
+/**
  * Search result
  * AC: @api-contract ac-19
  * AC: @web-dashboard ac-24
