@@ -75872,7 +75872,7 @@
   type: task
   spec_ref: "@ui-session-stream"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75880,7 +75880,7 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KJYMFM2PZF0XYJYWZQJG6PJ7
+  session_id: null
   created_at: 2026-03-05T01:30:04.544Z
   started_at: 2026-03-05T09:22:17.865Z
   submitted_at: 2026-03-05T09:45:10.368Z
@@ -76026,6 +76026,13 @@
         - Required regression command passed:
           - npm test: pass (3817 passed, 3 skipped)
           - packages/web-ui npm test: pass (113 passed)
+      supersedes: null
+    - _ulid: 01KJYPH0KFJ268EXATQA0NE68Y
+      created_at: 2026-03-05T09:51:08.911Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: branch contains unrelated task-board
+        changes, AC-4 incomplete, design-token violations, missing aria-live, and AC tests rely on
+        static source-string checks."
       supersedes: null
   todos: []
   automation: eligible
