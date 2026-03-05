@@ -685,6 +685,8 @@ export interface SessionSummary {
 	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
 	agent_type: string;
 	session_type: 'loop' | 'invocation';
+	/** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
+	task_id?: string;
 	started_at: string;
 	ended_at?: string;
 	duration_ms: number;
