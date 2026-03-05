@@ -75883,6 +75883,7 @@
   session_id: 01KJYMFM2PZF0XYJYWZQJG6PJ7
   created_at: 2026-03-05T01:30:04.544Z
   started_at: 2026-03-05T09:22:17.865Z
+  submitted_at: 2026-03-05T09:45:10.368Z
   notes:
     - _ulid: 01KJXSVGW0MZHVDM69995M87W1
       created_at: 2026-03-05T01:30:04.544Z
@@ -75906,9 +75907,61 @@
 
         - Verification: npm test, npm run test in packages/web-ui
       supersedes: null
+    - _ulid: 01KJYP6E9SD1QY47QFJ11X4KXY
+      created_at: 2026-03-05T09:45:22.489Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Summary:
+
+
+        Files created:
+
+        - packages/daemon/src/routes/sessions.ts: Daemon API routes (list, get, events)
+
+        - packages/web-ui/src/lib/components/session/session-utils.ts: Event parsing, display block
+        types, utilities
+
+        - packages/web-ui/src/lib/components/session/SessionStream.svelte: Main stream with
+        auto-scroll (AC-3)
+
+        - packages/web-ui/src/lib/components/session/ToolCallView.svelte: Collapsible tool calls
+        with icon/input/output/timing (AC-1)
+
+        - packages/web-ui/src/lib/components/session/ThinkingBlock.svelte: Collapsed by default,
+        expandable (AC-1)
+
+        - packages/web-ui/src/lib/components/session/MessageBlock.svelte: Agent message blocks
+        (AC-1)
+
+        - packages/web-ui/src/lib/components/session/SystemBlock.svelte: Session lifecycle events
+        (AC-1)
+
+        - packages/web-ui/src/lib/components/session/SessionContextPanel.svelte: Left panel with
+        metadata/stats (AC-4)
+
+        - packages/web-ui/src/lib/components/session/SessionStreamSkeleton.svelte: Loading state
+
+        - packages/web-ui/src/routes/sessions/[id]/+page.svelte: Session detail page with live
+        streaming (AC-2)
+
+        - tests/web-ui-session-stream.test.ts: 50 tests covering all 4 ACs
+
+
+        Files modified:
+
+        - packages/daemon/src/server.ts: Register session routes
+
+        - packages/web-ui/src/lib/api.ts: Add fetchSessions, fetchSession, fetchSessionEvents
+
+        - packages/web-ui/src/routes/sessions/+page.svelte: Sessions list (was placeholder)
+
+        - packages/web-ui/package.json: Add session stream test to test script
+
+
+        Tests: 50/50 passing. Full suite: 3815/3820 passing (2 pre-existing codex failures).
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T09:45:10.368Z
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
   slugs:
     - implement-agent-and-dispatch-view
