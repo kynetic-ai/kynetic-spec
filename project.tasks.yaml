@@ -75626,7 +75626,7 @@
   type: task
   spec_ref: "@ui-app-shell"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-ui-design-system"
@@ -75634,7 +75634,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KJYD58FJ4K6C6FQ322FCZ2KS
+  session_id: null
   created_at: 2026-03-05T01:30:03.650Z
   started_at: 2026-03-05T07:29:01.049Z
   submitted_at: 2026-03-05T07:29:03.261Z
@@ -75719,6 +75719,13 @@
         tests covering both states. This fix was previously applied in commit 6a2f440f4 but reverted
         in 022563ebe as out-of-scope for the design system task. Validation now shows 294/294
         aligned, 0 status mismatches."
+      supersedes: null
+    - _ulid: 01KJYES2RBS2ZWXRB136S5DZRV
+      created_at: 2026-03-05T07:35:44.651Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: Review issues: MUST-FIX AC annotation mismatch
+        (tests/validate-alignment-no-task-policy.test.ts:128 uses @ui-app-shell ac-1 for
+        non-app-shell behavior)."
       supersedes: null
   todos: []
   automation: eligible
