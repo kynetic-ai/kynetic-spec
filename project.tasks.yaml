@@ -76499,6 +76499,7 @@
   session_id: 01KJZ1AWSWMSY7YJYTKTAZ0JAZ
   created_at: 2026-03-05T01:30:05.834Z
   started_at: 2026-03-05T13:06:28.677Z
+  submitted_at: 2026-03-05T13:14:42.061Z
   notes:
     - _ulid: 01KJXSVJ4AXCYJC5QJKDJ3QNVC
       created_at: 2026-03-05T01:30:05.834Z
@@ -76530,9 +76531,22 @@
 
         - E2E tests: 7 new tests covering AC-1 and AC-2, preserved all existing tests.
       supersedes: null
+    - _ulid: 01KJZ2F72FCNRB5PC90YRSB2CC
+      created_at: 2026-03-05T13:19:52.912Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Branch scope conflation: feat/enhanced-inbox-view includes
+        unrelated Session History changes in packages/web-ui/src/routes/sessions/+page.svelte,
+        packages/web-ui/tests/e2e/sessions.spec.ts, packages/web-ui/src/lib/api.ts,
+        src/sessions/store.ts, and tests/session-log-list.test.ts. This task is scoped to
+        @ui-inbox-enhanced and diff against feat/ui-revamp would merge @ui-session-history work.
+        MUST-FIX 2) Unrelated session history work is still in needs_work and carries unresolved
+        quality findings: packages/web-ui/tests/e2e/sessions.spec.ts sort assertion does not
+        correctly validate most-recent-first ordering and AC-2 navigation test stubbing is
+        ineffective for detail/events routes (known fix-cycle findings). Split this branch to
+        include only inbox task changes before re-submit."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T13:14:42.061Z
 - _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
   slugs:
     - implement-plans-view

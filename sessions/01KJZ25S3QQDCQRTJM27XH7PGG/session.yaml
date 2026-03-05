@@ -1,0 +1,7 @@
+id: 01KJZ25S3QQDCQRTJM27XH7PGG
+task_id: "@implement-enhanced-inbox-view"
+agent_type: codex-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-05T13:14:54.994Z
