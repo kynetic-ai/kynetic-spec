@@ -1,0 +1,7 @@
+id: 01KJYQBZKRSZQVDY5CS5GGNV5E
+task_id: "@implement-task-board-kanban"
+agent_type: codex-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-05T10:06:06.705Z
