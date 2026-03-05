@@ -355,7 +355,7 @@
 					<div data-testid="task-spec-ref-link">
 						<p class="text-sm font-medium mb-1">Spec Reference:</p>
 						<a
-							href="{base}/items?ref={encodeURIComponent(panel.task.spec_ref)}"
+							href="{base}/specs?ref={encodeURIComponent(panel.task.spec_ref)}"
 							class="text-sm text-primary hover:underline"
 						>
 							{panel.task.spec_ref}

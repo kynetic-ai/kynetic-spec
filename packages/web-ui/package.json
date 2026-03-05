@@ -10,7 +10,7 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "cd ../.. && npx vitest run tests/web-ui-design-system.test.ts",
+		"test": "cd ../.. && npx vitest run tests/web-ui-design-system.test.ts tests/web-ui-app-shell.test.ts",
 		"test:e2e": "npm run build && playwright test",
 		"test:e2e:ui": "npm run build && playwright test --ui",
 		"test:e2e:headed": "npm run build && playwright test --headed"
