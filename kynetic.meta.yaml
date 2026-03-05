@@ -1329,6 +1329,9 @@ conventions:
         manual git worktree commands inside .kspec/.
       - When command payloads include $, <, >, or multi-line text, use file-based payloads or quoted
         heredocs to avoid shell interpolation.
+      - When running under dispatch (KSPEC_SESSION_ID is set), NEVER run kspec serve stop, kspec
+        serve restart, or kspec serve start. The daemon is the host process — killing it kills the
+        dispatch engine and the agent.
     examples: []
   - _ulid: 01KHYXJYDW2FWSYRVDR9J5A6XM
     domain: ci
