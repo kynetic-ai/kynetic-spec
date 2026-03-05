@@ -75355,6 +75355,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
   slugs:
     - implement-app-shell-and-navigation
@@ -75377,6 +75378,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
   slugs:
     - implement-task-board-kanban
@@ -75399,6 +75401,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
   slugs:
     - implement-session-stream-view
@@ -75421,6 +75424,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
   slugs:
     - implement-agent-and-dispatch-view
@@ -75443,6 +75447,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
   slugs:
     - implement-session-history
@@ -75465,6 +75470,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
   slugs:
     - implement-enhanced-inbox-view
@@ -75487,6 +75493,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
   slugs:
     - implement-plans-view
@@ -75509,6 +75516,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
   slugs:
     - implement-validation-and-alignment-view
@@ -75531,6 +75539,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
   slugs:
     - implement-dashboard-overview
@@ -75554,6 +75563,7 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
   slugs: []
   title: UI Revamp Prerequisites (Quick Wins)
@@ -75590,3 +75600,4 @@
         5. Consolidate 3 task detail implementations into one component
       supersedes: null
   todos: []
+  automation: eligible
