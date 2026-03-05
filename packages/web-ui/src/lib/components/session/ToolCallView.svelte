@@ -15,10 +15,10 @@
 
 	let borderColor = $derived(
 		block.status === 'completed'
-			? 'border-l-emerald-500'
+			? 'border-l-status-completed'
 			: block.status === 'failed'
-				? 'border-l-red-500'
-				: 'border-l-blue-500'
+				? 'border-l-status-blocked'
+				: 'border-l-status-pending-review'
 	);
 
 	let icon = $derived(getToolIcon(block.toolName));
@@ -73,11 +73,11 @@
 		</span>
 
 		{#if block.status === 'running'}
-			<Loader class="size-3.5 text-blue-500 ds-tool-spin" />
+			<Loader class="size-3.5 text-status-pending-review ds-tool-spin" />
 		{:else if block.status === 'completed'}
-			<Check class="size-3.5 text-emerald-500" />
+			<Check class="size-3.5 text-status-completed" />
 		{:else if block.status === 'failed'}
-			<X class="size-3.5 text-red-500" />
+			<X class="size-3.5 text-status-blocked" />
 		{/if}
 
 		{#if !expanded && preview}
@@ -106,10 +106,10 @@
 					<p class="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">
 						Output
 						{#if block.status === 'failed'}
-							<span class="text-red-500">(error)</span>
+							<span class="text-destructive">(error)</span>
 						{/if}
 					</p>
-					<pre class="text-xs font-mono bg-secondary/50 rounded p-2 overflow-x-auto max-h-80 whitespace-pre-wrap break-words {block.status === 'failed' ? 'text-red-400' : ''}">{showFullOutput ? outputText : truncatedOutput}</pre>
+					<pre class="text-xs font-mono bg-secondary/50 rounded p-2 overflow-x-auto max-h-80 whitespace-pre-wrap break-words {block.status === 'failed' ? 'text-destructive' : ''}">{showFullOutput ? outputText : truncatedOutput}</pre>
 					{#if isOutputTruncated && !showFullOutput}
 						<button
 							class="text-xs text-primary hover:underline mt-1"

@@ -8,7 +8,7 @@
  *
  * AC Coverage:
  * - @ui-session-stream ac-1: Session events as structured blocks
- * - @ui-session-stream ac-4: Session metadata for context panel
+ * - @ui-session-stream ac-4: Session metadata, spec context, budget for context panel
  */
 
 import { Elysia, t } from 'elysia';
@@ -20,8 +20,14 @@ import {
   getSessionLogSummary,
   getAllSessionLogSummaries,
   resolveSessionId,
+  getBudget,
 } from '../../sessions/store.js';
-import { initContext } from '../../parser/index.js';
+import {
+  initContext,
+  loadAllTasks,
+  loadAllItems,
+  ReferenceIndex,
+} from '../../parser/index.js';
 
 export function createSessionRoutes() {
   return new Elysia({ prefix: '/api/sessions' })
@@ -43,6 +49,7 @@ export function createSessionRoutes() {
     })
 
     // Get single session metadata
+    // AC: @ui-session-stream ac-4 — Includes spec context, budget, and task info
     .get('/:id', async ({ params, projectContext }) => {
       const ctx = await initContext(projectContext.path);
 
@@ -62,11 +69,59 @@ export function createSessionRoutes() {
 
       const metadata = await getSession(ctx.specDir, resolution.id);
 
+      // AC: @ui-session-stream ac-4 — Resolve spec context from task's spec_ref
+      let spec_context: {
+        spec_ref: string;
+        title: string;
+        acceptance_criteria: Array<{ id: string; description: string }>;
+      } | null = null;
+
+      if (metadata?.task_id) {
+        try {
+          const tasks = await loadAllTasks(ctx);
+          const items = await loadAllItems(ctx);
+          const index = new ReferenceIndex(tasks, items);
+          const taskResult = index.resolve(metadata.task_id);
+          if (taskResult.ok) {
+            const task = taskResult.item as { spec_ref?: string };
+            if (task.spec_ref) {
+              const specResult = index.resolve(task.spec_ref);
+              if (specResult.ok) {
+                const specItem = specResult.item as {
+                  title: string;
+                  acceptance_criteria?: Array<{ description?: string; given?: string }>;
+                };
+                spec_context = {
+                  spec_ref: task.spec_ref,
+                  title: specItem.title,
+                  acceptance_criteria: (specItem.acceptance_criteria ?? []).map((ac, i) => ({
+                    id: `ac-${i + 1}`,
+                    description: ac.description ?? ac.given ?? '',
+                  })),
+                };
+              }
+            }
+          }
+        } catch {
+          // Non-critical — spec context is optional
+        }
+      }
+
+      // AC: @ui-session-stream ac-4 — Include budget info
+      let budget: { max_per_cycle: number; started_this_cycle: number } | null = null;
+      try {
+        budget = await getBudget(ctx.specDir, resolution.id);
+      } catch {
+        // No budget configured — that's fine
+      }
+
       return {
         ...detail,
         task_id: metadata?.task_id,
         agent_id: metadata?.agent_id,
         trigger: metadata?.trigger ?? 'legacy',
+        spec_context,
+        budget,
       };
     })
 

@@ -81,6 +81,9 @@
 		class="absolute inset-0 overflow-y-auto px-4 py-2"
 		onscroll={handleScroll}
 		data-testid="session-stream"
+		aria-live={isLive ? 'polite' : undefined}
+		aria-label="Session event stream"
+		role="log"
 	>
 		{#each blocks as block (block.seq)}
 			{#if block.type === 'message'}

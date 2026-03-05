@@ -16,7 +16,7 @@
 	);
 </script>
 
-<div class="border-l-2 border-l-purple-500/50 rounded-r-md bg-card/30" data-testid="thinking-block">
+<div class="border-l-2 border-l-design-ring rounded-r-md bg-card/30" data-testid="thinking-block">
 	<button
 		class="flex items-center gap-2 w-full px-3 py-2 text-left text-sm hover:bg-accent/30 transition-colors"
 		onclick={() => (expanded = !expanded)}
@@ -28,8 +28,8 @@
 
 		<span class="text-xs text-muted-foreground font-mono">{formatTime(block.timestamp)}</span>
 
-		<Brain class="size-3.5 text-purple-500" />
-		<span class="text-xs text-purple-400">Thinking</span>
+		<Brain class="size-3.5 text-design-ring" />
+		<span class="text-xs text-design-muted-fg">Thinking</span>
 
 		{#if !expanded}
 			<span class="text-xs text-muted-foreground/60 truncate flex-1 italic">{preview}</span>

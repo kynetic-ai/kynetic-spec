@@ -321,3 +321,55 @@ export function formatTime(ts: number): string {
 	const d = new Date(ts);
 	return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
+
+/**
+ * Format elapsed milliseconds to human-readable string (e.g. "2h 5m", "30s").
+ */
+export function formatElapsed(ms: number): string {
+	const secs = Math.floor(ms / 1000);
+	const mins = Math.floor(secs / 60);
+	const hours = Math.floor(mins / 60);
+
+	if (hours > 0) return `${hours}h ${mins % 60}m`;
+	if (mins > 0) return `${mins}m ${secs % 60}s`;
+	return `${secs}s`;
+}
+
+/**
+ * Format a relative age string from a date (e.g. "5m", "2h", "3d").
+ */
+export function formatAge(dateStr: string): string {
+	const now = Date.now();
+	const then = new Date(dateStr).getTime();
+	const diffMs = now - then;
+	const diffMins = Math.floor(diffMs / 60000);
+	const diffHours = Math.floor(diffMins / 60);
+	const diffDays = Math.floor(diffHours / 24);
+
+	if (diffMins < 1) return 'just now';
+	if (diffMins < 60) return `${diffMins}m`;
+	if (diffHours < 24) return `${diffHours}h`;
+	if (diffDays < 30) return `${diffDays}d`;
+	return `${Math.floor(diffDays / 30)}mo`;
+}
+
+/**
+ * Extract unique file paths that were changed during a session.
+ * Looks at Write, Edit, and NotebookEdit tool calls.
+ *
+ * AC: @ui-session-stream ac-4 — Files changed during session.
+ */
+const WRITE_TOOLS = new Set(['Write', 'Edit', 'NotebookEdit']);
+
+export function extractFilesChanged(blocks: DisplayBlock[]): string[] {
+	const files = new Set<string>();
+	for (const block of blocks) {
+		if (block.type !== 'tool_call') continue;
+		if (!WRITE_TOOLS.has(block.toolName)) continue;
+		const input = block.input as Record<string, unknown> | null;
+		if (!input) continue;
+		const filePath = (input.file_path ?? input.notebook_path) as string | undefined;
+		if (filePath) files.add(filePath);
+	}
+	return [...files].sort();
+}

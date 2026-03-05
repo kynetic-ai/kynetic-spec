@@ -586,12 +586,34 @@ export interface SessionSummary {
 }
 
 /**
+ * Spec context with acceptance criteria checklist.
+ * AC: @ui-session-stream ac-4
+ */
+export interface SessionSpecContext {
+	spec_ref: string;
+	title: string;
+	acceptance_criteria: Array<{ id: string; description: string }>;
+}
+
+/**
+ * Session budget info.
+ * AC: @ui-session-stream ac-4
+ */
+export interface SessionBudget {
+	max_per_cycle: number;
+	started_this_cycle: number;
+}
+
+/**
  * Session detail with additional metadata.
+ * AC: @ui-session-stream ac-4
  */
 export interface SessionDetail extends SessionSummary {
 	task_id?: string;
 	agent_id?: string;
 	trigger?: string;
+	spec_context?: SessionSpecContext | null;
+	budget?: SessionBudget | null;
 }
 
 /**

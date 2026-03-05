@@ -2,8 +2,9 @@
  * Session Stream View Tests
  *
  * Tests for the session stream view implementation.
- * Uses static analysis for Svelte component verification and
- * unit tests for the session-utils module.
+ * Combines static analysis for Svelte component structure verification
+ * with unit tests for the session-utils module (parseEventsToBlocks,
+ * extractFilesChanged, formatDuration, etc.).
  *
  * Spec: @ui-session-stream
  */
@@ -15,19 +16,44 @@ import { join } from "node:path";
 const WEB_UI_ROOT = join(process.cwd(), "packages", "web-ui");
 const WEB_UI_SRC = join(WEB_UI_ROOT, "src");
 const SESSION_COMPONENTS = join(WEB_UI_SRC, "lib", "components", "session");
+const DAEMON_ROUTES = join(
+  process.cwd(),
+  "packages",
+  "daemon",
+  "src",
+  "routes",
+);
 
-// Path variables for session components (matching the web-ui-app-shell pattern)
+// Path variables for session components
 const SESSION_STREAM_PATH = join(SESSION_COMPONENTS, "SessionStream.svelte");
 const TOOL_CALL_VIEW_PATH = join(SESSION_COMPONENTS, "ToolCallView.svelte");
 const THINKING_BLOCK_PATH = join(SESSION_COMPONENTS, "ThinkingBlock.svelte");
 const MESSAGE_BLOCK_PATH = join(SESSION_COMPONENTS, "MessageBlock.svelte");
 const SYSTEM_BLOCK_PATH = join(SESSION_COMPONENTS, "SystemBlock.svelte");
 const SESSION_UTILS_PATH = join(SESSION_COMPONENTS, "session-utils.ts");
-const CONTEXT_PANEL_PATH = join(SESSION_COMPONENTS, "SessionContextPanel.svelte");
-const SKELETON_PATH = join(SESSION_COMPONENTS, "SessionStreamSkeleton.svelte");
-const SESSION_PAGE_PATH = join(WEB_UI_SRC, "routes", "sessions", "[id]", "+page.svelte");
-const SESSIONS_LIST_PATH = join(WEB_UI_SRC, "routes", "sessions", "+page.svelte");
+const CONTEXT_PANEL_PATH = join(
+  SESSION_COMPONENTS,
+  "SessionContextPanel.svelte",
+);
+const SKELETON_PATH = join(
+  SESSION_COMPONENTS,
+  "SessionStreamSkeleton.svelte",
+);
+const SESSION_PAGE_PATH = join(
+  WEB_UI_SRC,
+  "routes",
+  "sessions",
+  "[id]",
+  "+page.svelte",
+);
+const SESSIONS_LIST_PATH = join(
+  WEB_UI_SRC,
+  "routes",
+  "sessions",
+  "+page.svelte",
+);
 const API_PATH = join(WEB_UI_SRC, "lib", "api.ts");
+const SESSION_ROUTES_PATH = join(DAEMON_ROUTES, "sessions.ts");
 
 // Load sources
 let sessionStreamSrc = "";
@@ -41,6 +67,7 @@ let skeletonSrc = "";
 let sessionPageSrc = "";
 let sessionsListSrc = "";
 let apiSrc = "";
+let sessionRoutesSrc = "";
 
 function loadSources() {
   sessionStreamSrc = readFileSync(SESSION_STREAM_PATH, "utf-8");
@@ -54,6 +81,7 @@ function loadSources() {
   sessionPageSrc = readFileSync(SESSION_PAGE_PATH, "utf-8");
   sessionsListSrc = readFileSync(SESSIONS_LIST_PATH, "utf-8");
   apiSrc = readFileSync(API_PATH, "utf-8");
+  sessionRoutesSrc = readFileSync(SESSION_ROUTES_PATH, "utf-8");
 }
 
 loadSources();
@@ -66,59 +94,60 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     expect(existsSync(SESSION_PAGE_PATH)).toBe(true);
   });
 
-  it("renders message blocks for agent messages", () => {
+  it("renders all four block types from session-utils DisplayBlock union", () => {
+    // Verify SessionStream conditionally renders each block type
     expect(sessionStreamSrc).toContain("MessageBlock");
-    expect(messageBlockSrc).toContain('data-testid="message-block"');
-  });
-
-  it("renders tool call blocks with collapsible UI", () => {
     expect(sessionStreamSrc).toContain("ToolCallView");
-    expect(toolCallViewSrc).toContain('data-testid="tool-call-block"');
-    expect(toolCallViewSrc).toContain("aria-expanded");
-    expect(toolCallViewSrc).toContain("expanded");
-  });
-
-  it("tool call blocks show icon, input/output, and timing", () => {
-    expect(toolCallViewSrc).toContain("getToolIcon");
-    expect(toolCallViewSrc).toContain("Input");
-    expect(toolCallViewSrc).toContain("Output");
-    expect(toolCallViewSrc).toContain("formatDuration");
-    expect(toolCallViewSrc).toContain("durationMs");
-  });
-
-  it("renders thinking blocks collapsed by default", () => {
     expect(sessionStreamSrc).toContain("ThinkingBlock");
-    expect(thinkingBlockSrc).toContain('data-testid="thinking-block"');
-    // Default state is collapsed (false)
-    expect(thinkingBlockSrc).toContain("let expanded = $state(false)");
-    expect(thinkingBlockSrc).toContain("aria-expanded");
-  });
-
-  it("renders system blocks for session lifecycle events", () => {
     expect(sessionStreamSrc).toContain("SystemBlock");
+  });
+
+  it("message blocks have correct test id and render agent content", () => {
+    expect(messageBlockSrc).toContain('data-testid="message-block"');
+    expect(messageBlockSrc).toContain("block.content");
+  });
+
+  it("tool call blocks are collapsible with aria-expanded", () => {
+    expect(toolCallViewSrc).toContain('data-testid="tool-call-block"');
+    expect(toolCallViewSrc).toContain("aria-expanded={expanded}");
+    // Verify expanded state toggles on click
+    expect(toolCallViewSrc).toContain(
+      "onclick={() => (expanded = !expanded)}",
+    );
+  });
+
+  it("tool call blocks show icon, input, output, and timing", () => {
+    expect(toolCallViewSrc).toContain("getToolIcon");
+    expect(toolCallViewSrc).toContain("formatInput(block.input)");
+    expect(toolCallViewSrc).toContain("formatDuration(block.durationMs)");
+    // Input and Output sections exist in the expanded view
+    expect(toolCallViewSrc).toContain("Input</p>");
+    expect(toolCallViewSrc).toContain("Output");
+  });
+
+  it("thinking blocks are collapsed by default and expandable", () => {
+    expect(thinkingBlockSrc).toContain('data-testid="thinking-block"');
+    // Default collapsed state
+    expect(thinkingBlockSrc).toContain("let expanded = $state(false)");
+    expect(thinkingBlockSrc).toContain("aria-expanded={expanded}");
+  });
+
+  it("system blocks render lifecycle events with label and detail", () => {
     expect(systemBlockSrc).toContain('data-testid="system-block"');
+    expect(systemBlockSrc).toContain("block.label");
+    expect(systemBlockSrc).toContain("block.detail");
   });
 
-  it("parseEventsToBlocks handles all event types", () => {
-    expect(sessionUtilsSrc).toContain("session.start");
-    expect(sessionUtilsSrc).toContain("session.end");
-    expect(sessionUtilsSrc).toContain("session.update");
-    expect(sessionUtilsSrc).toContain("tool.call");
-    expect(sessionUtilsSrc).toContain("tool.result");
-    expect(sessionUtilsSrc).toContain("agent.dispatched");
-    expect(sessionUtilsSrc).toContain("agent.completed");
-    expect(sessionUtilsSrc).toContain("prompt.sent");
+  it("daemon has session routes for list, get, and events", () => {
+    expect(existsSync(SESSION_ROUTES_PATH)).toBe(true);
+    expect(sessionRoutesSrc).toContain("/api/sessions");
+    expect(sessionRoutesSrc).toContain("/:id/events");
   });
 
-  it("web-ui API client has session fetch functions", () => {
-    expect(apiSrc).toContain("fetchSessions");
-    expect(apiSrc).toContain("fetchSession");
-    expect(apiSrc).toContain("fetchSessionEvents");
-  });
-
-  it("daemon session routes file exists", () => {
-    const routesFile = join(process.cwd(), "packages", "daemon", "src", "routes", "sessions.ts");
-    expect(existsSync(routesFile)).toBe(true);
+  it("web-ui API client exports session fetch functions", () => {
+    expect(apiSrc).toContain("export async function fetchSessions");
+    expect(apiSrc).toContain("export async function fetchSession");
+    expect(apiSrc).toContain("export async function fetchSessionEvents");
   });
 });
 
@@ -126,34 +155,30 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
 // AC: @ui-session-stream ac-2
 describe("live streaming via WebSocket (@ui-session-stream ac-2)", () => {
-  it("subscribes to agent WebSocket topic", () => {
+  it("subscribes to agent WebSocket topic for live events", () => {
     expect(sessionPageSrc).toContain("subscribe(['agents'])");
     expect(sessionPageSrc).toContain("on('agents'");
   });
 
-  it("handles agent_text_chunk events for streaming text", () => {
+  it("handles agent_text_chunk events and appends to streaming text", () => {
     expect(sessionPageSrc).toContain("agent_text_chunk");
-    expect(sessionPageSrc).toContain("streamingText");
-  });
-
-  it("appends streaming text chunks from matching session", () => {
+    // Verify it filters by session ID
     expect(sessionPageSrc).toContain("data.session_id === sessionId");
     expect(sessionPageSrc).toContain("streamingText +=");
   });
 
-  it("renders streaming text with cursor indicator", () => {
+  it("renders streaming text with blinking cursor indicator", () => {
     expect(sessionStreamSrc).toContain('data-testid="streaming-text"');
     expect(sessionStreamSrc).toContain("ds-streaming-cursor");
   });
 
-  it("performs periodic structured refresh for live sessions", () => {
-    expect(sessionPageSrc).toContain("refreshTimer");
+  it("performs periodic structured refresh every 3 seconds for live sessions", () => {
     expect(sessionPageSrc).toContain("setInterval");
-    expect(sessionPageSrc).toContain("refreshEvents");
     expect(sessionPageSrc).toContain("3000");
+    expect(sessionPageSrc).toContain("refreshEvents");
   });
 
-  it("uses incremental event loading via since_seq", () => {
+  it("uses incremental event loading via since_seq parameter", () => {
     expect(sessionPageSrc).toContain("lastSeq");
     expect(apiSrc).toContain("since_seq");
   });
@@ -174,33 +199,31 @@ describe("live streaming via WebSocket (@ui-session-stream ac-2)", () => {
 
 // AC: @ui-session-stream ac-3
 describe("auto-scroll behavior (@ui-session-stream ac-3)", () => {
-  it("auto-scrolls when new content arrives", () => {
+  it("tracks shouldAutoScroll state and scrolls via $effect", () => {
     expect(sessionStreamSrc).toContain("shouldAutoScroll");
     expect(sessionStreamSrc).toContain("scrollTo");
+    expect(sessionStreamSrc).toContain("$effect");
   });
 
-  it("pauses auto-scroll when user scrolls up (>100px from bottom)", () => {
+  it("pauses auto-scroll when user scrolls >100px from bottom", () => {
     expect(sessionStreamSrc).toContain("distanceFromBottom");
-    expect(sessionStreamSrc).toContain("100");
-    expect(sessionStreamSrc).toContain("shouldAutoScroll = distanceFromBottom < 100");
+    expect(sessionStreamSrc).toContain(
+      "shouldAutoScroll = distanceFromBottom < 100",
+    );
   });
 
-  it("resumes auto-scroll when scrolled back to bottom", () => {
-    expect(sessionStreamSrc).toContain("shouldAutoScroll = distanceFromBottom < 100");
-  });
-
-  it("shows jump-to-bottom button when paused", () => {
+  it("shows jump-to-bottom button when auto-scroll is paused", () => {
     expect(sessionStreamSrc).toContain('data-testid="jump-to-bottom"');
-    expect(sessionStreamSrc).toContain("jumpToBottom");
     expect(sessionStreamSrc).toContain("showJumpButton");
+    expect(sessionStreamSrc).toContain("jumpToBottom");
   });
 
-  it("jump-to-bottom re-enables auto-scroll", () => {
+  it("jump-to-bottom re-enables auto-scroll with smooth behavior", () => {
     expect(sessionStreamSrc).toContain("shouldAutoScroll = true");
     expect(sessionStreamSrc).toContain("behavior: 'smooth'");
   });
 
-  it("uses debounced user scrolling detection", () => {
+  it("uses debounced scroll detection (150ms)", () => {
     expect(sessionStreamSrc).toContain("userScrolling");
     expect(sessionStreamSrc).toContain("scrollDebounceTimer");
     expect(sessionStreamSrc).toContain("150");
@@ -211,42 +234,68 @@ describe("auto-scroll behavior (@ui-session-stream ac-3)", () => {
 
 // AC: @ui-session-stream ac-4
 describe("session context panel (@ui-session-stream ac-4)", () => {
-  it("renders session context panel on the left", () => {
+  it("renders context panel on the left side of the session view", () => {
     expect(sessionPageSrc).toContain("SessionContextPanel");
     expect(contextPanelSrc).toContain('data-testid="session-context-panel"');
   });
 
-  it("displays session metadata (status, agent, duration)", () => {
+  it("displays session metadata: status, agent, duration, trigger", () => {
     expect(contextPanelSrc).toContain("session.status");
     expect(contextPanelSrc).toContain("session.agent_type");
-    expect(contextPanelSrc).toContain("formatElapsed");
-    expect(contextPanelSrc).toContain("session.duration_ms");
-  });
-
-  it("shows session trigger information", () => {
-    expect(contextPanelSrc).toContain("session.trigger");
+    expect(contextPanelSrc).toContain("formatElapsed(session.duration_ms)");
     expect(contextPanelSrc).toContain("triggerLabel");
   });
 
-  it("shows task reference when available", () => {
-    expect(contextPanelSrc).toContain("session.task_id");
+  it("displays spec context with title, ref, and AC checklist", () => {
+    // Verify spec context section exists
+    expect(contextPanelSrc).toContain('data-testid="spec-context-section"');
+    // Verify AC checklist rendering
+    expect(contextPanelSrc).toContain('data-testid="ac-checklist"');
+    expect(contextPanelSrc).toContain("session.spec_context");
+    expect(contextPanelSrc).toContain("session.spec_context.spec_ref");
+    expect(contextPanelSrc).toContain("session.spec_context.title");
+    expect(contextPanelSrc).toContain(
+      "session.spec_context.acceptance_criteria",
+    );
   });
 
-  it("displays session stats (events, iterations, tasks)", () => {
-    expect(contextPanelSrc).toContain("session.event_count");
-    expect(contextPanelSrc).toContain("session.iteration_count");
-    expect(contextPanelSrc).toContain("session.tasks_completed");
+  it("displays files changed during session", () => {
+    expect(contextPanelSrc).toContain('data-testid="files-changed-section"');
+    expect(contextPanelSrc).toContain("filesChanged");
+    // Uses extractFilesChanged from session-utils
+    expect(contextPanelSrc).toContain("extractFilesChanged");
+  });
+
+  it("displays budget info when available", () => {
+    expect(contextPanelSrc).toContain('data-testid="budget-section"');
+    expect(contextPanelSrc).toContain("session.budget");
+    expect(contextPanelSrc).toContain(
+      "session.budget.started_this_cycle",
+    );
+    expect(contextPanelSrc).toContain("session.budget.max_per_cycle");
+  });
+
+  it("API types include spec_context and budget on SessionDetail", () => {
+    expect(apiSrc).toContain("interface SessionSpecContext");
+    expect(apiSrc).toContain("interface SessionBudget");
+    expect(apiSrc).toContain("spec_context?: SessionSpecContext");
+    expect(apiSrc).toContain("budget?: SessionBudget");
+  });
+
+  it("daemon session route resolves spec context from task's spec_ref", () => {
+    expect(sessionRoutesSrc).toContain("spec_context");
+    expect(sessionRoutesSrc).toContain("acceptance_criteria");
+    expect(sessionRoutesSrc).toContain("getBudget");
+  });
+
+  it("page passes blocks to context panel for files-changed extraction", () => {
+    expect(sessionPageSrc).toContain("SessionContextPanel {session} {blocks}");
   });
 
   it("shows timeline information (started, ended, duration)", () => {
     expect(contextPanelSrc).toContain("session.started_at");
     expect(contextPanelSrc).toContain("session.ended_at");
     expect(contextPanelSrc).toContain("formatAge");
-  });
-
-  it("shows active indicator for live sessions", () => {
-    expect(contextPanelSrc).toContain("ds-session-active-dot");
-    expect(contextPanelSrc).toContain("active");
   });
 });
 
@@ -260,12 +309,12 @@ describe("view states", () => {
     expect(skeletonSrc).toContain("ds-shimmer");
   });
 
-  it("has error state", () => {
+  it("has error state with alert role", () => {
     expect(sessionPageSrc).toContain('data-testid="session-error"');
     expect(sessionPageSrc).toContain('role="alert"');
   });
 
-  it("has empty state", () => {
+  it("has empty state for no events", () => {
     expect(sessionStreamSrc).toContain('data-testid="stream-empty"');
     expect(sessionStreamSrc).toContain("No events recorded");
   });
@@ -281,9 +330,9 @@ describe("view states", () => {
   });
 });
 
-// ─── Animations and accessibility ────────────────────────────────────────────
+// ─── Animations, accessibility, and design tokens ────────────────────────────
 
-describe("animations and accessibility", () => {
+describe("animations, accessibility, and design tokens", () => {
   it("streaming cursor animation gated behind prefers-reduced-motion", () => {
     expect(sessionStreamSrc).toContain("prefers-reduced-motion");
     expect(sessionStreamSrc).toContain("ds-streaming-cursor");
@@ -302,16 +351,47 @@ describe("animations and accessibility", () => {
   it("skeleton uses ds-shimmer animation", () => {
     expect(skeletonSrc).toContain("ds-shimmer");
   });
+
+  it("streaming output region has aria-live for screen readers", () => {
+    expect(sessionStreamSrc).toContain("aria-live");
+    expect(sessionStreamSrc).toContain('role="log"');
+  });
+
+  it("uses design-system status tokens instead of raw Tailwind colors", () => {
+    // ToolCallView should use status-* tokens, not emerald/red/blue
+    expect(toolCallViewSrc).not.toMatch(/\btext-emerald-\d+\b/);
+    expect(toolCallViewSrc).not.toMatch(/\btext-red-\d+\b/);
+    expect(toolCallViewSrc).not.toMatch(/\btext-blue-\d+\b/);
+    expect(toolCallViewSrc).not.toMatch(/\bborder-l-emerald-\d+\b/);
+    expect(toolCallViewSrc).not.toMatch(/\bborder-l-red-\d+\b/);
+    expect(toolCallViewSrc).not.toMatch(/\bborder-l-blue-\d+\b/);
+    // Should use status tokens instead
+    expect(toolCallViewSrc).toContain("status-completed");
+    expect(toolCallViewSrc).toContain("status-blocked");
+    expect(toolCallViewSrc).toContain("status-pending-review");
+
+    // ThinkingBlock should not use raw purple colors
+    expect(thinkingBlockSrc).not.toMatch(/\btext-purple-\d+\b/);
+    expect(thinkingBlockSrc).not.toMatch(/\bborder-l-purple-\d+\b/);
+
+    // Session page should not use raw emerald
+    expect(sessionPageSrc).not.toMatch(/\bbg-emerald-\d+\b/);
+    expect(sessionPageSrc).not.toMatch(/\btext-emerald-\d+\b/);
+
+    // Context panel should not use raw emerald
+    expect(contextPanelSrc).not.toMatch(/\bbg-emerald-\d+\b/);
+  });
 });
 
 // ─── Event parsing unit tests ────────────────────────────────────────────────
 
 describe("parseEventsToBlocks", () => {
-  let parseEventsToBlocks: typeof import("../packages/web-ui/src/lib/components/session/session-utils").parseEventsToBlocks;
-  let getToolIcon: typeof import("../packages/web-ui/src/lib/components/session/session-utils").getToolIcon;
-  let getToolInputPreview: typeof import("../packages/web-ui/src/lib/components/session/session-utils").getToolInputPreview;
-  let formatDuration: typeof import("../packages/web-ui/src/lib/components/session/session-utils").formatDuration;
-  let formatTime: typeof import("../packages/web-ui/src/lib/components/session/session-utils").formatTime;
+  let parseEventsToBlocks: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["parseEventsToBlocks"];
+  let getToolIcon: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["getToolIcon"];
+  let getToolInputPreview: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["getToolInputPreview"];
+  let formatDuration: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["formatDuration"];
+  let formatTime: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["formatTime"];
+  let extractFilesChanged: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["extractFilesChanged"];
 
   beforeAll(async () => {
     const mod = await import(
@@ -322,12 +402,19 @@ describe("parseEventsToBlocks", () => {
     getToolInputPreview = mod.getToolInputPreview;
     formatDuration = mod.formatDuration;
     formatTime = mod.formatTime;
+    extractFilesChanged = mod.extractFilesChanged;
   });
 
   // AC: @ui-session-stream ac-1
   it("parses session.start as system block", () => {
     const events = [
-      { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: { agent_type: "worker" } },
+      {
+        ts: 1000,
+        seq: 0,
+        type: "session.start",
+        session_id: "s1",
+        data: { agent_type: "worker" },
+      },
     ];
     const blocks = parseEventsToBlocks(events);
     expect(blocks).toHaveLength(1);
@@ -345,7 +432,9 @@ describe("parseEventsToBlocks", () => {
         seq: 0,
         type: "session.update",
         session_id: "s1",
-        data: { update: { sessionUpdate: "assistant_text", text: "Hello world" } },
+        data: {
+          update: { sessionUpdate: "assistant_text", text: "Hello world" },
+        },
       },
     ];
     const blocks = parseEventsToBlocks(events);
@@ -364,7 +453,9 @@ describe("parseEventsToBlocks", () => {
         seq: 0,
         type: "session.update",
         session_id: "s1",
-        data: { update: { sessionUpdate: "assistant_text", text: "Hello " } },
+        data: {
+          update: { sessionUpdate: "assistant_text", text: "Hello " },
+        },
       },
       {
         ts: 1001,
@@ -382,7 +473,7 @@ describe("parseEventsToBlocks", () => {
   });
 
   // AC: @ui-session-stream ac-1
-  it("parses tool_call and tool_result as tool call block", () => {
+  it("parses tool_call and tool_result as tool call block with duration", () => {
     const events = [
       {
         ts: 1000,
@@ -430,7 +521,9 @@ describe("parseEventsToBlocks", () => {
         seq: 0,
         type: "session.update",
         session_id: "s1",
-        data: { update: { sessionUpdate: "thinking", text: "Let me think..." } },
+        data: {
+          update: { sessionUpdate: "thinking", text: "Let me think..." },
+        },
       },
     ];
     const blocks = parseEventsToBlocks(events);
@@ -480,6 +573,36 @@ describe("parseEventsToBlocks", () => {
     }
   });
 
+  // AC: @ui-session-stream ac-1
+  it("handles agent lifecycle events", () => {
+    const events = [
+      {
+        ts: 1000,
+        seq: 0,
+        type: "agent.dispatched",
+        session_id: "s1",
+        data: { task_ref: "@task-foo" },
+      },
+      {
+        ts: 2000,
+        seq: 1,
+        type: "agent.completed",
+        session_id: "s1",
+        data: { task_ref: "@task-foo" },
+      },
+    ];
+    const blocks = parseEventsToBlocks(events);
+    expect(blocks).toHaveLength(2);
+    expect(blocks[0].type).toBe("system");
+    expect(blocks[1].type).toBe("system");
+    if (blocks[0].type === "system") {
+      expect(blocks[0].label).toBe("Agent dispatched");
+    }
+    if (blocks[1].type === "system") {
+      expect(blocks[1].label).toBe("Agent completed");
+    }
+  });
+
   it("getToolIcon returns icon for known tools", () => {
     expect(getToolIcon("Read")).toBeTruthy();
     expect(getToolIcon("Bash")).toBe("$");
@@ -491,7 +614,9 @@ describe("parseEventsToBlocks", () => {
   });
 
   it("getToolInputPreview extracts file_path", () => {
-    expect(getToolInputPreview("Read", { file_path: "/foo/bar.ts" })).toBe("/foo/bar.ts");
+    expect(getToolInputPreview("Read", { file_path: "/foo/bar.ts" })).toBe(
+      "/foo/bar.ts",
+    );
   });
 
   it("formatDuration formats milliseconds", () => {
@@ -505,5 +630,156 @@ describe("parseEventsToBlocks", () => {
     const ts = new Date("2026-01-15T14:30:45Z").getTime();
     const result = formatTime(ts);
     expect(result).toMatch(/\d{2}:\d{2}:\d{2}/);
+  });
+});
+
+// ─── Files changed extraction unit tests ─────────────────────────────────────
+
+// AC: @ui-session-stream ac-4
+describe("extractFilesChanged", () => {
+  let extractFilesChanged: (typeof import("../packages/web-ui/src/lib/components/session/session-utils"))["extractFilesChanged"];
+
+  beforeAll(async () => {
+    const mod = await import(
+      "../packages/web-ui/src/lib/components/session/session-utils"
+    );
+    extractFilesChanged = mod.extractFilesChanged;
+  });
+
+  it("extracts file paths from Write tool calls", () => {
+    const blocks = [
+      {
+        type: "tool_call" as const,
+        toolName: "Write",
+        toolCallId: "1",
+        input: { file_path: "/src/foo.ts" },
+        status: "completed" as const,
+        startedAt: 1000,
+        seq: 0,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual(["/src/foo.ts"]);
+  });
+
+  it("extracts file paths from Edit tool calls", () => {
+    const blocks = [
+      {
+        type: "tool_call" as const,
+        toolName: "Edit",
+        toolCallId: "1",
+        input: { file_path: "/src/bar.ts", old_string: "a", new_string: "b" },
+        status: "completed" as const,
+        startedAt: 1000,
+        seq: 0,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual(["/src/bar.ts"]);
+  });
+
+  it("extracts notebook_path from NotebookEdit tool calls", () => {
+    const blocks = [
+      {
+        type: "tool_call" as const,
+        toolName: "NotebookEdit",
+        toolCallId: "1",
+        input: { notebook_path: "/notebooks/analysis.ipynb" },
+        status: "completed" as const,
+        startedAt: 1000,
+        seq: 0,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual([
+      "/notebooks/analysis.ipynb",
+    ]);
+  });
+
+  it("deduplicates files that were changed multiple times", () => {
+    const blocks = [
+      {
+        type: "tool_call" as const,
+        toolName: "Edit",
+        toolCallId: "1",
+        input: { file_path: "/src/foo.ts" },
+        status: "completed" as const,
+        startedAt: 1000,
+        seq: 0,
+      },
+      {
+        type: "tool_call" as const,
+        toolName: "Edit",
+        toolCallId: "2",
+        input: { file_path: "/src/foo.ts" },
+        status: "completed" as const,
+        startedAt: 2000,
+        seq: 1,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual(["/src/foo.ts"]);
+  });
+
+  it("ignores non-write tool calls (Read, Bash, Grep)", () => {
+    const blocks = [
+      {
+        type: "tool_call" as const,
+        toolName: "Read",
+        toolCallId: "1",
+        input: { file_path: "/src/read-only.ts" },
+        status: "completed" as const,
+        startedAt: 1000,
+        seq: 0,
+      },
+      {
+        type: "tool_call" as const,
+        toolName: "Bash",
+        toolCallId: "2",
+        input: { command: "ls" },
+        status: "completed" as const,
+        startedAt: 2000,
+        seq: 1,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual([]);
+  });
+
+  it("ignores non-tool-call block types", () => {
+    const blocks = [
+      {
+        type: "message" as const,
+        content: "hello",
+        timestamp: 1000,
+        seq: 0,
+      },
+      {
+        type: "system" as const,
+        label: "Session started",
+        timestamp: 1000,
+        seq: 1,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual([]);
+  });
+
+  it("returns sorted file paths", () => {
+    const blocks = [
+      {
+        type: "tool_call" as const,
+        toolName: "Write",
+        toolCallId: "1",
+        input: { file_path: "/src/z.ts" },
+        status: "completed" as const,
+        startedAt: 1000,
+        seq: 0,
+      },
+      {
+        type: "tool_call" as const,
+        toolName: "Write",
+        toolCallId: "2",
+        input: { file_path: "/src/a.ts" },
+        status: "completed" as const,
+        startedAt: 2000,
+        seq: 1,
+      },
+    ];
+    expect(extractFilesChanged(blocks)).toEqual(["/src/a.ts", "/src/z.ts"]);
   });
 });

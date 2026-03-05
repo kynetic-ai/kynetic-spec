@@ -133,8 +133,8 @@
 				<p class="text-xs text-muted-foreground">
 					{session.agent_type}
 					{#if isLive}
-						<span class="ds-session-active-dot size-1.5 rounded-full bg-emerald-500 inline-block ml-1"></span>
-						<span class="text-emerald-500">Live</span>
+						<span class="ds-session-active-dot size-1.5 rounded-full bg-status-completed inline-block ml-1"></span>
+						<span class="text-status-completed">Live</span>
 					{/if}
 				</p>
 			{/if}
@@ -154,8 +154,8 @@
 	{:else if session}
 		<!-- Main content: context panel + stream -->
 		<div class="flex flex-1 min-h-0">
-			<!-- AC: @ui-session-stream ac-4 — Context panel -->
-			<SessionContextPanel {session} />
+			<!-- AC: @ui-session-stream ac-4 — Context panel with spec context, files, budget -->
+			<SessionContextPanel {session} {blocks} />
 
 			<!-- AC: @ui-session-stream ac-1, ac-2, ac-3 — Event stream -->
 			<SessionStream {blocks} {isLive} {streamingText} />

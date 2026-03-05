@@ -7,7 +7,7 @@
 	import type { SessionSummary } from '$lib/api';
 	import { fetchSessions } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
-	import { formatElapsed, formatAge } from '$lib/components/board/board-utils';
+	import { formatElapsed, formatAge } from '$lib/components/session/session-utils';
 	import { Badge } from '$lib/components/ui/badge';
 	import Activity from '@lucide/svelte/icons/activity';
 
