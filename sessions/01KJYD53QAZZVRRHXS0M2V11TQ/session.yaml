@@ -1,0 +1,7 @@
+id: 01KJYD53QAZZVRRHXS0M2V11TQ
+task_id: "@implement-app-shell-and-navigation"
+agent_type: codex-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-05T07:07:26.399Z

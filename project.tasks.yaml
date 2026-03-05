@@ -75626,7 +75626,7 @@
   type: task
   spec_ref: "@ui-app-shell"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-ui-design-system"
@@ -75634,7 +75634,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KJYCD8JV5J8SFCA268NKR7CH
+  session_id: null
   created_at: 2026-03-05T01:30:03.650Z
   started_at: 2026-03-05T07:07:15.052Z
   submitted_at: 2026-03-05T07:07:20.254Z
@@ -75694,6 +75694,12 @@
         status from 'in_progress' to 'not_started' to match task progress (needs_work). Also
         restored 16 child specs that were incorrectly cascaded to not_started back to 'implemented'.
         Validation now shows 0 status mismatches (294/294 aligned). Web-UI tests pass (63/63)."
+      supersedes: null
+    - _ulid: 01KJYDF4CA60J27M668DJZX5EK
+      created_at: 2026-03-05T07:12:50.058Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: Review issues: MUST-FIX kspec validate warning for
+        @ui-app-shell (status mismatch)."
       supersedes: null
   todos: []
   automation: eligible
