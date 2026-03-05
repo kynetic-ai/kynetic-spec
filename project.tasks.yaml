@@ -76914,6 +76914,36 @@
 
         - Branch: feat/dashboard-overview
       supersedes: null
+    - _ulid: 01KJZY1K8308Y371AE74YQX0FA
+      created_at: 2026-03-05T21:21:46.755Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+        - Replaced basic 5-card dashboard with full overview: Active Work (fleet cards), Status
+        Summary (7 statuses), Needs Attention (4 aggregated categories)
+
+        - Added fetchValidation() API client for validation warning counts
+
+        - Used design system tokens (bg-status-*, text-status-*-fg) for status dots
+
+        - Active fleet shows agent invocations with pulse indicator, task title, elapsed time, and
+        session stream link
+
+        - Needs Attention links to inbox, observations, validate, and filtered tasks views
+
+        - Loading skeleton uses ds-shimmer, error boundary with retry button
+
+        - Empty states for no-active-work and no-attention-needed
+
+        - 19 E2E tests all passing: structure/interaction tests + API contract verification
+
+        - Pre-existing E2E port issue (hardcoded 3456 in build) means browser-side data tests use
+        API contract pattern
+
+        - board/ components don't exist on this branch (task-board is on separate branch), so active
+        fleet is inlined
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
