@@ -320,7 +320,7 @@
 					<div data-testid="modal-session-link">
 						<p class="text-xs font-medium text-muted-foreground mb-0.5">Session</p>
 						<a
-							href="{base}/session?ref={encodeURIComponent(task.session_ref)}"
+							href="{base}/sessions?ref={encodeURIComponent(task.session_ref)}"
 							class="text-sm text-primary hover:underline font-mono"
 						>
 							{task.session_ref}

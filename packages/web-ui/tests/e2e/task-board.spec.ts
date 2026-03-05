@@ -129,6 +129,10 @@ test.describe('Task Board (Kanban)', () => {
 
 		// Session link (fixture has session_id: session-abc123)
 		await expect(page.getByTestId('modal-session-link')).toBeVisible();
+		// Verify session link targets /sessions route (not /session)
+		const sessionLink = page.getByTestId('modal-session-link').locator('a');
+		await expect(sessionLink).toHaveAttribute('href', /\/sessions\?ref=/);
+
 
 		// Todos (fixture has 2 todos)
 		await expect(page.getByTestId('modal-todos')).toBeVisible();
@@ -352,6 +356,60 @@ test.describe('Task Board (Kanban)', () => {
 
 		// Active fleet should NOT be visible when no agents running
 		await expect(page.getByTestId('active-fleet-row')).not.toBeVisible();
+	});
+
+	// AC: @ui-task-board ac-4
+	test('active fleet row shows running agents with title, name, elapsed, and output', async ({
+		page,
+		daemon
+	}) => {
+		// Mock agent status endpoint to return active invocations
+		// Use the in-progress fixture task ULID so taskTitles lookup resolves
+		const mockAgentStatus = {
+			dispatch_enabled: true,
+			active_invocations: [
+				{
+					session_id: 'test-session-001',
+					agent_id: 'task-worker',
+					task_ref: '@01KG0RR8CB8N4YGP991WD7XS9R',
+					elapsed_ms: 125000 // 2m 5s
+				}
+			],
+			queue_depth: 0,
+			agent_definitions: [
+				{ id: 'task-worker', name: 'Task Worker', adapter: 'claude-agent-acp' }
+			]
+		};
+
+		await page.route('**/api/agent/status', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(mockAgentStatus)
+			});
+		});
+
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Active Fleet row should be visible
+		const fleetRow = page.getByTestId('active-fleet-row');
+		await expect(fleetRow).toBeVisible();
+
+		// Fleet card should exist
+		const fleetCard = page.getByTestId('fleet-card');
+		await expect(fleetCard).toBeVisible();
+
+		// Agent name should be shown
+		await expect(fleetCard.getByText('task-worker')).toBeVisible();
+
+		// Task title should be shown (resolved from taskTitles lookup: "In progress task")
+		const taskTitle = page.getByTestId('fleet-task-title');
+		await expect(taskTitle).toBeVisible();
+		await expect(taskTitle).toHaveText('In progress task');
+
+		// Elapsed time should be shown (2m 5s)
+		await expect(fleetCard.getByText('2m 5s')).toBeVisible();
 	});
 
 	// View toggle navigation
