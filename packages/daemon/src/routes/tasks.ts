@@ -88,6 +88,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           _ulid: task._ulid,
           slugs: task.slugs,
           title: task.title,
+          type: task.type || 'task',
           status: task.status,
           priority: task.priority,
           spec_ref: task.spec_ref,
@@ -154,11 +155,12 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         }
 
         // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
-        // AC: @ui-task-board ac-3 - Include description, blocked_by, vcs_refs, plan_ref, session_ref
+        // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
         return {
           _ulid: task._ulid,
           slugs: task.slugs,
           title: task.title,
+          type: task.type || 'task',
           status: task.status,
           priority: task.priority,
           spec_ref: task.spec_ref,
@@ -169,11 +171,15 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           depends_on: task.depends_on,
           blocked_by: task.blocked_by || [],
           context: task.context || [],
-          vcs_refs: task.vcs_refs || [],
+          vcs_refs: (task.vcs_refs || []).map((v) =>
+            typeof v === 'string' ? v : v.type ? `${v.type}:${v.ref}` : v.ref
+          ),
           plan_ref: task.plan_ref,
           session_ref: task.session_id,
           notes: task.notes,
+          notes_count: task.notes?.length || 0,
           todos: task.todos,
+          todos_count: task.todos?.length || 0,
           started_at: task.started_at,
           completed_at: task.completed_at,
           cancelled_at: task.cancelled_at,

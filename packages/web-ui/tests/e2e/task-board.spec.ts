@@ -79,13 +79,13 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-3
-	test('detail modal shows full task info including description and notes', async ({
+	test('detail modal shows full task info: type, deps, todos, automation, VCS, plan, session', async ({
 		page,
 		daemon
 	}) => {
 		await page.goto('/tasks/board');
 
-		// Click the in-progress task card (it has notes and description)
+		// Click the in-progress task card — enriched fixture with all AC-3 required fields
 		const inProgressColumn = page.locator('[data-column-id="in_progress"]');
 		await expect(inProgressColumn).toBeVisible();
 		const card = inProgressColumn.getByTestId('task-card').first();
@@ -95,15 +95,46 @@ test.describe('Task Board (Kanban)', () => {
 		const modal = page.getByTestId('task-detail-modal');
 		await expect(modal).toBeVisible();
 
-		// Check description is visible
+		// Title
+		await expect(page.getByTestId('modal-task-title')).toHaveText('In progress task');
+
+		// Description
 		await expect(page.getByTestId('modal-description')).toBeVisible();
 
-		// Check notes section exists
-		await expect(page.getByTestId('modal-notes')).toBeVisible();
+		// Status badge
+		await expect(page.getByTestId('modal-status-badge')).toHaveText('In Progress');
 
-		// Check automation badge is visible
-		// (automation may or may not be set — verify the badge section at least renders)
-		await expect(page.getByTestId('modal-status-badge')).toBeVisible();
+		// Priority
+		await expect(page.getByTestId('modal-priority')).toContainText('Priority');
+
+		// Type (AC-3 requires type to be shown)
+		await expect(page.getByTestId('modal-type')).toBeVisible();
+		await expect(page.getByTestId('modal-type')).toHaveText('task');
+
+		// Spec ref
+		await expect(page.getByTestId('modal-spec-ref')).toBeVisible();
+
+		// Automation status
+		await expect(page.getByTestId('modal-automation')).toBeVisible();
+		await expect(page.getByTestId('modal-automation')).toHaveText('eligible');
+
+		// Dependencies (fixture has depends_on: @test-task-ready)
+		await expect(page.getByTestId('modal-dependencies')).toBeVisible();
+
+		// VCS info (fixture has branch + PR refs)
+		await expect(page.getByTestId('modal-vcs')).toBeVisible();
+
+		// Plan ref (fixture has plan_ref: @test-plan)
+		await expect(page.getByTestId('modal-plan-ref')).toBeVisible();
+
+		// Session link (fixture has session_id: session-abc123)
+		await expect(page.getByTestId('modal-session-link')).toBeVisible();
+
+		// Todos (fixture has 2 todos)
+		await expect(page.getByTestId('modal-todos')).toBeVisible();
+
+		// Notes section
+		await expect(page.getByTestId('modal-notes')).toBeVisible();
 	});
 
 	// AC: @ui-task-board ac-1
@@ -134,7 +165,7 @@ test.describe('Task Board (Kanban)', () => {
 		// Start a pending task via API directly (simulating external state change)
 		// Use the ready task which is in pending status
 		const startResponse = await page.request.post(
-			'http://localhost:3456/api/tasks/01KG0RR6CA45ZT43W2T6HJMVA1/start'
+			`${daemon.baseUrl}/api/tasks/01KG0RR6CA45ZT43W2T6HJMVA1/start`
 		);
 		expect(startResponse.ok()).toBeTruthy();
 

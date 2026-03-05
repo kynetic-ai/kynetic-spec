@@ -210,9 +210,7 @@
 						{statusInfo.label}
 					</Badge>
 					<Badge variant="outline" data-testid="modal-priority">Priority {task.priority}</Badge>
-					{#if task.type !== 'task'}
-						<Badge variant="outline">{task.type}</Badge>
-					{/if}
+					<Badge variant="outline" data-testid="modal-type">{task.type}</Badge>
 					{#if task.automation}
 						<Badge variant="secondary" data-testid="modal-automation">
 							{task.automation}
@@ -433,16 +431,14 @@
 							{#each task.todos as todo}
 								<li class="flex items-start gap-2 text-sm">
 									<span class="mt-0.5 text-xs">
-										{#if todo.status === 'completed'}
+										{#if todo.done}
 											&#x2705;
-										{:else if todo.status === 'in_progress'}
-											&#x23F3;
 										{:else}
 											&#x23F8;&#xFE0F;
 										{/if}
 									</span>
-									<span class:line-through={todo.status === 'completed'}>
-										{todo.content}
+									<span class:line-through={todo.done}>
+										{todo.text}
 									</span>
 								</li>
 							{/each}
