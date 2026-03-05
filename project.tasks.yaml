@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75766,7 +75766,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KJYK5PHSNB2K4V68FF0XXA0R
+  session_id: null
   created_at: 2026-03-05T01:30:04.123Z
   started_at: 2026-03-05T08:56:24.350Z
   submitted_at: 2026-03-05T09:15:08.754Z
@@ -75856,6 +75856,12 @@
         (packages/web-ui/tests/e2e/task-board.spec.ts:109-126). 5) UX checklist token violation: raw
         Tailwind color class text-white used instead of tokenized foreground
         (packages/web-ui/src/lib/components/board/TaskCard.svelte:38)."
+      supersedes: null
+    - _ulid: 01KJYMVD9M7C08MFXXQNMAK8B0
+      created_at: 2026-03-05T09:21:52.436Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: missing AC-5 coverage, ac-3/ac-4 spec
+        mismatches, and blocking UX/test-quality gaps in board implementation."
       supersedes: null
   todos: []
   automation: eligible
