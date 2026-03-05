@@ -793,6 +793,12 @@ features:
         given: port already in use
         when: kspec serve attempts to start
         then: fails with clear error message suggesting --port flag
+      - id: ac-11
+        given: a dispatched agent invocation is running (KSPEC_SESSION_ID is set in the environment)
+        when: the agent runs kspec serve stop, kspec serve restart, or kspec serve start
+        then: the command detects the dispatch context, refuses to modify the host daemon with a clear error
+          message explaining that stopping the daemon would kill the dispatch engine, and exits with
+          a non-zero exit code
     status:
       maturity: draft
       implementation: implemented
