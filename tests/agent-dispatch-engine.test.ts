@@ -22,9 +22,13 @@ import * as invocationModule from "../src/agent-runtime/invocation.js";
 import {
   createTempDir,
   cleanupTempDir,
+  createIsolatedKspecHome,
   testUlid,
+  testUlids,
+  kspec,
   initGitRepo,
 } from "./helpers/cli.js";
+import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
@@ -1621,5 +1625,324 @@ describe("getStatus", () => {
     expect(status.running).toBe(true);
 
     await engine.stop();
+  });
+});
+
+// ─── Stale Queue Entry Discard ───────────────────────────────────────────────
+
+describe("Stale queue entry discard", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-stale-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-17
+  it("should discard queued entries when task has moved to a different state", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.in_progress" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    // Task starts as in_progress
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
+
+    // Block runInvocation so the first invocation holds the slot
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await firstBlock;
+        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+      })
+      .mockResolvedValue({
+        session: {} as any,
+        outcome: "success" as const,
+        durationMs: 1,
+      });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    // First invocation is running (bootstrap picked up in_progress task)
+    // Wait for first invocation to start
+    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    // Enqueue another event for the same task while first is running
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "in_progress",
+      timestamp: Date.now(),
+    });
+
+    // Verify it was enqueued
+    expect(engine.getStatus().queuedInvocations).toBe(1);
+
+    // Now update the task to completed (simulating the task finishing)
+    await writeTasks(testDir, [{ _ulid: taskId, status: "completed" }]);
+
+    // Release the first invocation
+    resolveFirst();
+
+    // Wait for drain to process
+    await new Promise((r) => setTimeout(r, 200));
+
+    // The stale entry should have been discarded — only 1 invocation total
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-17
+  it("should keep queued entries when task state still matches", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.in_progress" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [taskId1, taskId2] = testUlids("TASK", 2);
+    // Both tasks in_progress
+    await writeTasks(testDir, [
+      { _ulid: taskId1, status: "in_progress" },
+      { _ulid: taskId2, status: "in_progress" },
+    ]);
+
+    // Block first invocation
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await firstBlock;
+        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+      })
+      .mockResolvedValue({
+        session: {} as any,
+        outcome: "success" as const,
+        durationMs: 1,
+      });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    // Wait for bootstrap to fire first invocation
+    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    // task2 is still in_progress — its queue entry should survive
+    expect(engine.getStatus().queuedInvocations).toBeGreaterThanOrEqual(1);
+
+    // Release first invocation
+    resolveFirst();
+
+    // Wait for second invocation to start
+    for (let i = 0; i < 50 && runSpy.mock.calls.length < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    // Second invocation should have been spawned (task2 still in_progress)
+    expect(runSpy).toHaveBeenCalledTimes(2);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-17
+  it("should discard queued entries when task has been deleted", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.in_progress" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
+
+    // Block first invocation
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await firstBlock;
+        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+      })
+      .mockResolvedValue({
+        session: {} as any,
+        outcome: "success" as const,
+        durationMs: 1,
+      });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    // Enqueue another event while first is running
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "in_progress",
+      timestamp: Date.now(),
+    });
+
+    expect(engine.getStatus().queuedInvocations).toBe(1);
+
+    // Delete the task (write empty tasks list)
+    await writeTasks(testDir, []);
+
+    // Release first invocation
+    resolveFirst();
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Entry for deleted task should have been discarded
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    await engine.stop();
+  });
+});
+
+// ─── Self-trigger suppression ────────────────────────────────────────────────
+
+describe("Self-trigger suppression", () => {
+  let testDir: string;
+  let server: http.Server;
+  let serverPort: number;
+  let receivedEvents: unknown[];
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-selftrigger-");
+    receivedEvents = [];
+
+    // Start a minimal HTTP server to capture dispatch events
+    server = http.createServer((req, res) => {
+      if (req.url === "/api/agent/events" && req.method === "POST") {
+        let body = "";
+        req.on("data", (chunk: Buffer) => { body += chunk.toString(); });
+        req.on("end", () => {
+          try { receivedEvents.push(JSON.parse(body)); } catch { /* ignore */ }
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ accepted: true }));
+        });
+        return;
+      }
+      res.writeHead(404);
+      res.end();
+    });
+
+    await new Promise<void>((resolve) => {
+      server.listen(0, "127.0.0.1", () => resolve());
+    });
+    serverPort = (server.address() as { port: number }).port;
+  });
+
+  afterEach(async () => {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-18
+  it("should suppress dispatch events when KSPEC_SESSION_ID is set", async () => {
+    // Set up a minimal kspec project with a task
+    initGitRepo(testDir);
+    const taskId = testUlid("TASK");
+    await fs.writeFile(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    await fs.writeFile(
+      path.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({
+        tasks: [{
+          _ulid: taskId,
+          type: "task",
+          title: "Test task",
+          status: "pending",
+          tags: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+        }],
+      }),
+    );
+    // Initial git commit so kspec commands work
+    await fs.writeFile(path.join(testDir, ".gitignore"), "");
+    const { execSync } = await import("node:child_process");
+    execSync("git add -A && git commit -m init", { cwd: testDir, stdio: "pipe" });
+
+    // Create isolated home with fake daemon PID/port pointing at our server
+    const isolated = await createIsolatedKspecHome(testDir);
+    await fs.writeFile(isolated.daemonPidFilePath, String(process.pid));
+    await fs.writeFile(isolated.daemonPortFilePath, String(serverPort));
+
+    const specDirEnv = { KSPEC_SPEC_DIR: testDir };
+
+    // Run task start WITHOUT KSPEC_SESSION_ID — event should be posted
+    kspec(`task start @${taskId}`, testDir, {
+      env: { ...isolated.env, ...specDirEnv },
+    });
+    // Give async fire-and-forget fetch time to complete
+    await new Promise((r) => setTimeout(r, 200));
+    expect(receivedEvents.length).toBe(1);
+
+    // Reset task to pending for the next test
+    receivedEvents = [];
+    await fs.writeFile(
+      path.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({
+        tasks: [{
+          _ulid: taskId,
+          type: "task",
+          title: "Test task",
+          status: "pending",
+          tags: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+        }],
+      }),
+    );
+    execSync("git add -A && git commit -m reset", { cwd: testDir, stdio: "pipe" });
+
+    // Run task start WITH KSPEC_SESSION_ID — event should be suppressed
+    kspec(`task start @${taskId}`, testDir, {
+      env: { ...isolated.env, ...specDirEnv, KSPEC_SESSION_ID: "test-session-id" },
+    });
+    await new Promise((r) => setTimeout(r, 200));
+    expect(receivedEvents.length).toBe(0);
   });
 });
