@@ -1,0 +1,67 @@
+<script lang="ts">
+	// AC: @ui-agent-dispatch ac-1 — Agent card showing name, triggers, active/completed counts
+	import type { AgentDefinition } from '$lib/api';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Card } from '$lib/components/ui/card';
+	import Bot from '@lucide/svelte/icons/bot';
+	import Zap from '@lucide/svelte/icons/zap';
+
+	interface Props {
+		agent: AgentDefinition;
+		activeCount: number;
+		completedCount: number;
+	}
+
+	let { agent, activeCount, completedCount }: Props = $props();
+</script>
+
+<!-- AC: @ui-agent-dispatch ac-1 -->
+<Card
+	class="p-4 flex flex-col gap-3"
+	data-testid="agent-card-{agent.id}"
+>
+	<div class="flex items-start justify-between gap-2">
+		<div class="flex items-center gap-2 min-w-0">
+			<Bot class="h-5 w-5 shrink-0 text-muted-foreground" />
+			<div class="min-w-0">
+				<h3 class="font-semibold truncate" data-testid="agent-name">{agent.name}</h3>
+				<p class="text-xs text-muted-foreground font-mono" data-testid="agent-id">{agent.id}</p>
+			</div>
+		</div>
+		{#if activeCount > 0}
+			<span class="ds-breathe inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-status-in-progress text-status-in-progress-fg" data-testid="agent-active-badge">
+				{activeCount} active
+			</span>
+		{/if}
+	</div>
+
+	{#if agent.description}
+		<p class="text-sm text-muted-foreground">{agent.description}</p>
+	{/if}
+
+	<div class="flex flex-wrap gap-1.5">
+		{#if agent.dispatch.length > 0}
+			{#each agent.dispatch as trigger}
+				<Badge variant="secondary" class="text-xs gap-1" data-testid="agent-trigger">
+					<Zap class="h-3 w-3" />
+					{trigger.on.replace('task.', '')}
+				</Badge>
+			{/each}
+		{:else}
+			<span class="text-xs text-muted-foreground">No triggers configured</span>
+		{/if}
+	</div>
+
+	<div class="flex items-center gap-4 text-sm border-t pt-3 mt-auto">
+		<div class="flex items-center gap-1.5" data-testid="agent-active-count">
+			<span class="inline-block h-2 w-2 rounded-full bg-status-in-progress"></span>
+			<span class="text-muted-foreground">Active:</span>
+			<span class="font-medium">{activeCount}</span>
+		</div>
+		<div class="flex items-center gap-1.5" data-testid="agent-completed-count">
+			<span class="inline-block h-2 w-2 rounded-full bg-status-completed"></span>
+			<span class="text-muted-foreground">Completed:</span>
+			<span class="font-medium">{completedCount}</span>
+		</div>
+	</div>
+</Card>

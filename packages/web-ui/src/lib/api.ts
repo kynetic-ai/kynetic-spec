@@ -544,6 +544,114 @@ export async function overrideTriageRecord(
 	return response.json();
 }
 
+// ============================================================
+// Agent & Dispatch API Functions
+// AC: @ui-agent-dispatch ac-1, ac-2, ac-3
+// ============================================================
+
+/**
+ * Agent definition from GET /api/meta/agents
+ */
+export interface AgentDefinition {
+	_ulid: string;
+	id: string;
+	name: string;
+	description?: string;
+	adapter?: string;
+	dispatch: Array<{
+		on: string;
+		filter?: {
+			automation?: string;
+			tags?: string[];
+			priority?: number;
+		};
+	}>;
+	capabilities: string[];
+	tools: string[];
+	skills: string[];
+	budget?: {
+		max_tasks?: number;
+		timeout_minutes?: number;
+	};
+	concurrency: {
+		max_concurrent: number;
+	};
+	auto_approve: boolean;
+}
+
+/**
+ * Active invocation from GET /api/agent/status
+ */
+export interface ActiveInvocation {
+	session_id: string;
+	agent_id: string;
+	task_ref: string | null;
+	elapsed_ms: number;
+}
+
+/**
+ * Agent dispatch status from GET /api/agent/status
+ */
+export interface AgentDispatchStatus {
+	dispatch_enabled: boolean;
+	active_invocations: ActiveInvocation[];
+	queue_depth: number;
+	agent_definitions: Array<{
+		id: string;
+		name: string;
+		adapter: string;
+	}>;
+}
+
+/**
+ * Fetch agent dispatch status (dispatch state + active invocations)
+ * AC: @ui-agent-dispatch ac-1, ac-2, ac-3
+ */
+export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
+	const response = await fetch(`${API_BASE}/api/agent/status`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch full agent definitions from meta
+ * AC: @ui-agent-dispatch ac-1
+ */
+export async function fetchAgentDefinitions(): Promise<{ items: AgentDefinition[]; total: number }> {
+	const response = await fetch(`${API_BASE}/api/meta/agents`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Start or stop the dispatch engine
+ * AC: @ui-agent-dispatch ac-2
+ */
+export async function controlDispatch(action: 'start' | 'stop'): Promise<{ dispatch_enabled: boolean }> {
+	assertWritable('control dispatch');
+
+	const response = await fetch(`${API_BASE}/api/agent/dispatch`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ action })
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
 /**
  * Execute a triage action
  * AC: @interactive-triage-ui ac-3
