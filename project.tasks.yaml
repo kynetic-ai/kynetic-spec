@@ -75626,7 +75626,7 @@
   type: task
   spec_ref: "@ui-app-shell"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-ui-design-system"
@@ -75673,6 +75673,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T06:53:56.759Z
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
   slugs:
     - implement-task-board-kanban
