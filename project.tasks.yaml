@@ -75973,7 +75973,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix dispatch engine re-triggering workers on completed tasks
+- _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
+  slugs: []
+  title: Fix dispatch engine re-triggering workers on completed tasks
+  type: task
   description: "The dispatch engine repeatedly spawns stale worker invocations for tasks that have
     already been completed. Root cause: (1) no staleness check at dequeue time - queue entries
     created from intermediate state transitions are never validated against the task's current state
@@ -75981,22 +75984,20 @@
     spawned the current invocation, creating redundant queue entries for every state transition an
     agent makes during its work. Over 3 fix cycles this produced 4+ wasteful invocations that each
     spawn a full agent process only to discover the task is already completed."
-  type: task
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - dispatch
     - mvp
-  depends_on: []
-  _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-05T08:19:23.588Z
   notes: []
   todos: []
+  started_at: 2026-03-05T08:19:28.836Z
