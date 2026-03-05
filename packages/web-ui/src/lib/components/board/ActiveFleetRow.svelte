@@ -13,10 +13,12 @@
 
 	let {
 		status,
-		outputLines = {}
+		outputLines = {},
+		taskTitles = {}
 	}: {
 		status: AgentStatus | null;
 		outputLines?: Record<string, string[]>;
+		taskTitles?: Record<string, string>;
 	} = $props();
 
 	let activeInvocations = $derived(status?.active_invocations ?? []);
@@ -33,6 +35,7 @@
 		<div class="flex gap-3 overflow-x-auto pb-2">
 			{#each activeInvocations as invocation (invocation.session_id)}
 				{@const lines = outputLines[invocation.session_id] ?? []}
+				{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
 				<div
 					class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
 					data-testid="fleet-card"
@@ -43,9 +46,18 @@
 					</div>
 
 					{#if invocation.task_ref}
-						<p class="text-xs text-muted-foreground font-mono truncate mb-1">
-							{invocation.task_ref}
-						</p>
+						{#if title}
+							<p class="text-xs text-foreground truncate mb-0.5" data-testid="fleet-task-title">
+								{title}
+							</p>
+							<p class="text-[10px] text-muted-foreground font-mono truncate mb-1">
+								{invocation.task_ref}
+							</p>
+						{:else}
+							<p class="text-xs text-muted-foreground font-mono truncate mb-1">
+								{invocation.task_ref}
+							</p>
+						{/if}
 					{/if}
 
 					<div class="flex items-center gap-1.5 text-[10px] text-muted-foreground mb-1.5">
@@ -63,6 +75,8 @@
 					{#if lines.length > 0}
 						<div
 							class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-14"
+							aria-live="polite"
+							aria-label="Agent output for {title ?? invocation.agent_id}"
 							data-testid="fleet-output"
 						>
 							{#each lines as line}
@@ -72,6 +86,8 @@
 					{:else}
 						<div
 							class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
+							aria-live="polite"
+							aria-label="Agent output for {title ?? invocation.agent_id}"
 							data-testid="fleet-output-empty"
 						>
 							<Terminal class="size-3" />

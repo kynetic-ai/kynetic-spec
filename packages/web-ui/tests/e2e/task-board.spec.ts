@@ -238,6 +238,78 @@ test.describe('Task Board (Kanban)', () => {
 		});
 	});
 
+	// AC: @ui-task-board ac-6
+	test('Complete action transitions task to completed with reason', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click a task in the review column (pending_review supports Complete)
+		const reviewColumn = page.locator('[data-column-id="review"]');
+		await expect(reviewColumn).toBeVisible();
+
+		const card = reviewColumn.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should open
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Click the Complete toggle button
+		const completeToggle = page.getByTestId('action-complete-toggle');
+		await expect(completeToggle).toBeVisible();
+		await completeToggle.click();
+
+		// Reason input should appear
+		const reasonInput = page.getByTestId('reason-input');
+		await expect(reasonInput).toBeVisible();
+
+		// Enter a completion reason and confirm
+		await reasonInput.locator('input').fill('E2E test: task completed successfully');
+		await reasonInput.getByRole('button', { name: 'Confirm' }).click();
+
+		// Status badge should update to Completed
+		await expect(page.getByTestId('modal-status-badge')).toHaveText('Completed', {
+			timeout: 5000
+		});
+	});
+
+	// AC: @ui-task-board ac-6
+	test('Block action transitions task to blocked with reason', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click a pending task from backlog column (Block is available for non-terminal statuses)
+		const backlogColumn = page.locator('[data-column-id="backlog"]');
+		await expect(backlogColumn).toBeVisible();
+
+		const card = backlogColumn.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should open
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Click the Block toggle button
+		const blockToggle = page.getByTestId('action-block-toggle');
+		await expect(blockToggle).toBeVisible();
+		await blockToggle.click();
+
+		// Reason input should appear
+		const reasonInput = page.getByTestId('reason-input');
+		await expect(reasonInput).toBeVisible();
+
+		// Enter a block reason and confirm
+		await reasonInput.locator('input').fill('E2E test: blocked on external dependency');
+		await reasonInput.getByRole('button', { name: 'Confirm' }).click();
+
+		// Status badge should update to Blocked
+		await expect(page.getByTestId('modal-status-badge')).toHaveText('Blocked', {
+			timeout: 5000
+		});
+	});
+
 	// AC: @ui-task-board ac-4
 	test('active fleet row is hidden when no agents are running', async ({ page, daemon }) => {
 		await page.goto('/tasks/board');
