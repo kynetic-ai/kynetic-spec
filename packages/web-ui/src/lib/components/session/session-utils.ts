@@ -1,0 +1,323 @@
+/**
+ * Session stream utility functions.
+ *
+ * Parses raw session events from events.jsonl into structured display blocks.
+ *
+ * AC: @ui-session-stream ac-1 — Structured event blocks
+ */
+
+import type { SessionEvent } from '$lib/api';
+
+export type BlockType = 'message' | 'tool_call' | 'tool_result' | 'thinking' | 'system';
+
+export interface MessageBlock {
+	type: 'message';
+	content: string;
+	timestamp: number;
+	seq: number;
+}
+
+export interface ToolCallBlock {
+	type: 'tool_call';
+	toolName: string;
+	toolCallId: string;
+	input: unknown;
+	output?: unknown;
+	status: 'pending' | 'running' | 'completed' | 'failed';
+	startedAt: number;
+	completedAt?: number;
+	durationMs?: number;
+	seq: number;
+}
+
+export interface ThinkingBlock {
+	type: 'thinking';
+	content: string;
+	timestamp: number;
+	seq: number;
+}
+
+export interface SystemBlock {
+	type: 'system';
+	label: string;
+	detail?: string;
+	timestamp: number;
+	seq: number;
+}
+
+export type DisplayBlock = MessageBlock | ToolCallBlock | ThinkingBlock | SystemBlock;
+
+/**
+ * Tool name to icon mapping.
+ */
+const TOOL_ICONS: Record<string, string> = {
+	Read: '\u{1F4C4}',
+	Write: '\u{270F}\u{FE0F}',
+	Edit: '\u{270F}\u{FE0F}',
+	Bash: '$',
+	Grep: '\u{1F50D}',
+	Glob: '\u{1F4C1}',
+	WebFetch: '\u{1F310}',
+	WebSearch: '\u{1F310}',
+	Task: '\u{1F916}',
+	TodoWrite: '\u{2705}',
+	NotebookEdit: '\u{1F4D3}',
+};
+
+export function getToolIcon(toolName: string): string {
+	return TOOL_ICONS[toolName] ?? '\u{1F527}';
+}
+
+/**
+ * Extract a short preview of tool input for collapsed display.
+ */
+export function getToolInputPreview(toolName: string, input: unknown): string {
+	if (!input || typeof input !== 'object') return '';
+	const obj = input as Record<string, unknown>;
+
+	if (obj.command && typeof obj.command === 'string') {
+		return truncate(obj.command, 80);
+	}
+	if (obj.file_path && typeof obj.file_path === 'string') {
+		return String(obj.file_path);
+	}
+	if (obj.pattern && typeof obj.pattern === 'string') {
+		return `pattern: ${truncate(String(obj.pattern), 60)}`;
+	}
+	if (obj.query && typeof obj.query === 'string') {
+		return truncate(String(obj.query), 80);
+	}
+	if (obj.content && typeof obj.content === 'string') {
+		return truncate(String(obj.content), 80);
+	}
+
+	const keys = Object.keys(obj);
+	if (keys.length <= 3) return keys.join(', ');
+	return `${keys.length} params`;
+}
+
+function truncate(str: string, max: number): string {
+	if (str.length <= max) return str;
+	return str.slice(0, max) + '\u2026';
+}
+
+/**
+ * Parse raw session events into structured display blocks.
+ *
+ * AC: @ui-session-stream ac-1
+ */
+export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
+	const blocks: DisplayBlock[] = [];
+	const toolCalls = new Map<string, ToolCallBlock>();
+
+	for (const event of events) {
+		const data = event.data as Record<string, unknown> | null;
+		if (!data) continue;
+
+		switch (event.type) {
+			case 'session.start': {
+				blocks.push({
+					type: 'system',
+					label: 'Session started',
+					detail: data.agent_type ? `Agent: ${data.agent_type}` : undefined,
+					timestamp: event.ts,
+					seq: event.seq,
+				});
+				break;
+			}
+
+			case 'session.end':
+			case 'session.wrapup': {
+				blocks.push({
+					type: 'system',
+					label: event.type === 'session.end' ? 'Session ended' : 'Session wrapping up',
+					detail: data.reason ? String(data.reason) : undefined,
+					timestamp: event.ts,
+					seq: event.seq,
+				});
+				break;
+			}
+
+			case 'session.update': {
+				const update = data.update as Record<string, unknown> | undefined;
+				if (!update) break;
+
+				const sessionUpdate = update.sessionUpdate as string | undefined;
+
+				if (sessionUpdate === 'assistant_text' || sessionUpdate === 'assistant') {
+					const content = (update.text ?? update.content ?? '') as string;
+					if (content) {
+						// Merge consecutive message blocks
+						const lastBlock = blocks[blocks.length - 1];
+						if (lastBlock?.type === 'message') {
+							lastBlock.content += content;
+						} else {
+							blocks.push({
+								type: 'message',
+								content,
+								timestamp: event.ts,
+								seq: event.seq,
+							});
+						}
+					}
+				} else if (sessionUpdate === 'thinking' || sessionUpdate === 'assistant_thinking') {
+					const content = (update.text ?? update.content ?? '') as string;
+					if (content) {
+						const lastBlock = blocks[blocks.length - 1];
+						if (lastBlock?.type === 'thinking') {
+							lastBlock.content += content;
+						} else {
+							blocks.push({
+								type: 'thinking',
+								content,
+								timestamp: event.ts,
+								seq: event.seq,
+							});
+						}
+					}
+				} else if (sessionUpdate === 'tool_call') {
+					const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
+					const toolName = (update.tool ?? update.toolName ?? update.name ?? 'unknown') as string;
+					const rawInput = update.rawInput ?? update.input;
+
+					const block: ToolCallBlock = {
+						type: 'tool_call',
+						toolName,
+						toolCallId,
+						input: rawInput,
+						status: 'running',
+						startedAt: event.ts,
+						seq: event.seq,
+					};
+
+					toolCalls.set(toolCallId, block);
+					blocks.push(block);
+				} else if (sessionUpdate === 'tool_result') {
+					const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
+					const existing = toolCalls.get(toolCallId);
+
+					if (existing) {
+						existing.output = update.output ?? update.rawOutput ?? update.content;
+						existing.status = (update.error || update.isError) ? 'failed' : 'completed';
+						existing.completedAt = event.ts;
+						existing.durationMs = event.ts - existing.startedAt;
+					}
+				}
+				break;
+			}
+
+			case 'tool.call': {
+				const toolName = (data.tool ?? data.name ?? 'unknown') as string;
+				const toolCallId = (data.toolCallId ?? data.tool_call_id ?? data.id ?? `tool-${event.seq}`) as string;
+
+				const block: ToolCallBlock = {
+					type: 'tool_call',
+					toolName,
+					toolCallId,
+					input: data.input ?? data.rawInput ?? data.args,
+					status: 'running',
+					startedAt: event.ts,
+					seq: event.seq,
+				};
+
+				toolCalls.set(toolCallId, block);
+				blocks.push(block);
+				break;
+			}
+
+			case 'tool.result': {
+				const toolCallId = (data.toolCallId ?? data.tool_call_id ?? data.id ?? '') as string;
+				const existing = toolCalls.get(toolCallId);
+
+				if (existing) {
+					existing.output = data.output ?? data.rawOutput ?? data.content;
+					existing.status = (data.error || data.isError) ? 'failed' : 'completed';
+					existing.completedAt = event.ts;
+					existing.durationMs = event.ts - existing.startedAt;
+				}
+				break;
+			}
+
+			case 'note': {
+				blocks.push({
+					type: 'system',
+					label: 'Note',
+					detail: typeof data.message === 'string' ? data.message : JSON.stringify(data),
+					timestamp: event.ts,
+					seq: event.seq,
+				});
+				break;
+			}
+
+			case 'agent.dispatched':
+			case 'agent.started':
+			case 'agent.completed':
+			case 'agent.failed':
+			case 'agent.timeout': {
+				const labelMap: Record<string, string> = {
+					'agent.dispatched': 'Agent dispatched',
+					'agent.started': 'Agent started',
+					'agent.completed': 'Agent completed',
+					'agent.failed': 'Agent failed',
+					'agent.timeout': 'Agent timed out',
+				};
+				blocks.push({
+					type: 'system',
+					label: labelMap[event.type] ?? event.type,
+					detail: data.task_ref ? `Task: ${data.task_ref}` : undefined,
+					timestamp: event.ts,
+					seq: event.seq,
+				});
+				break;
+			}
+
+			case 'prompt.sent': {
+				const phase = data.phase as string | undefined;
+				const iteration = data.iteration as number | undefined;
+				if (phase) {
+					blocks.push({
+						type: 'system',
+						label: `Iteration ${iteration ?? '?'}`,
+						detail: `Phase: ${phase}`,
+						timestamp: event.ts,
+						seq: event.seq,
+					});
+				}
+				break;
+			}
+
+			case 'iteration.timeout': {
+				blocks.push({
+					type: 'system',
+					label: 'Iteration timeout',
+					timestamp: event.ts,
+					seq: event.seq,
+				});
+				break;
+			}
+		}
+	}
+
+	return blocks;
+}
+
+/**
+ * Format a duration in milliseconds to a human-readable string.
+ */
+export function formatDuration(ms: number): string {
+	if (ms < 1000) return `${ms}ms`;
+	const secs = Math.floor(ms / 1000);
+	const mins = Math.floor(secs / 60);
+	const hours = Math.floor(mins / 60);
+	if (hours > 0) return `${hours}h ${mins % 60}m`;
+	if (mins > 0) return `${mins}m ${secs % 60}s`;
+	return `${secs}s`;
+}
+
+/**
+ * Format a timestamp to a time string.
+ */
+export function formatTime(ts: number): string {
+	const d = new Date(ts);
+	return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}

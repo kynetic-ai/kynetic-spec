@@ -563,3 +563,110 @@ export async function actOnTriageRecord(
 
 	return response.json();
 }
+
+// ============================================================
+// Session API Functions
+// AC: @ui-session-stream ac-1, ac-2, ac-4
+// ============================================================
+
+/**
+ * Session summary from the daemon API.
+ */
+export interface SessionSummary {
+	id: string;
+	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
+	agent_type: string;
+	session_type: 'loop' | 'invocation';
+	started_at: string;
+	ended_at?: string;
+	duration_ms: number;
+	event_count: number;
+	iteration_count: number;
+	tasks_completed: number;
+}
+
+/**
+ * Session detail with additional metadata.
+ */
+export interface SessionDetail extends SessionSummary {
+	task_id?: string;
+	agent_id?: string;
+	trigger?: string;
+}
+
+/**
+ * A single event from events.jsonl.
+ */
+export interface SessionEvent {
+	ts: number;
+	seq: number;
+	type: string;
+	session_id: string;
+	trace_id?: string;
+	data: unknown;
+}
+
+/**
+ * Fetch all sessions with summaries.
+ * AC: @ui-session-stream ac-1
+ */
+export async function fetchSessions(): Promise<{ items: SessionSummary[]; total: number }> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
+
+	const response = await fetch(`${API_BASE}/api/sessions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch a single session by ID.
+ * AC: @ui-session-stream ac-4
+ */
+export async function fetchSession(id: string): Promise<SessionDetail> {
+	if (isStaticMode()) {
+		throw new Error('Session data not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/sessions/${id}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch session events (optionally incremental via since_seq).
+ * AC: @ui-session-stream ac-1, ac-2
+ */
+export async function fetchSessionEvents(
+	id: string,
+	sinceSeq?: number
+): Promise<{ events: SessionEvent[]; total: number }> {
+	if (isStaticMode()) {
+		return { events: [], total: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/sessions/${id}/events`);
+	if (sinceSeq !== undefined) {
+		url.searchParams.set('since_seq', String(sinceSeq));
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}

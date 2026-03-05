@@ -27,6 +27,7 @@ import { createValidationRoutes } from './routes/validation';
 import { createProjectsRoutes } from './routes/projects';
 import { createTriageRoutes } from './routes/triage';
 import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
+import { createSessionRoutes } from './routes/sessions';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -239,6 +240,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
     .use(createProjectsRoutes({ projectManager: projectContextManager }))
+
+    // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
+    .use(createSessionRoutes())
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
