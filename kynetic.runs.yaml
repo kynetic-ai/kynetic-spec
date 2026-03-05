@@ -13284,7 +13284,7 @@ runs:
   - _ulid: 01KJXP1ZSSJNDMP3TSZ9M6KK93
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 2
+    current_step: 3
     total_steps: 6
     started_at: 2026-03-05T00:23:42.137Z
     step_results:
@@ -13309,5 +13309,13 @@ runs:
       - step_index: 2
         status: completed
         started_at: 2026-03-05T00:24:11.881Z
-        completed_at: 2026-03-05T00:24:11.881Z
+        completed_at: 2026-03-05T00:24:33.062Z
+        notes: "All four friction points are untracked: 1. kspec batch + item set cascade - no existing
+          tracking. 2. check-unresolved-comments CI re-trigger - no existing tracking. 3. kspec item
+          list --json structure - no existing tracking. 4. AC annotation slug validation - no
+          existing tracking."
+      - step_index: 3
+        status: completed
+        started_at: 2026-03-05T00:24:33.062Z
+        completed_at: 2026-03-05T00:24:33.062Z
     initiated_by: "@claude"
