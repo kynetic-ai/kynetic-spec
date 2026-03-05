@@ -75377,7 +75377,7 @@
   type: task
   spec_ref: "@ui-design-system"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@01KJXSWR"
@@ -75385,7 +75385,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KJY76DWCZG13S8FR20X8NH9M
+  session_id: null
   created_at: 2026-03-05T01:30:03.199Z
   started_at: 2026-03-05T05:49:59.368Z
   submitted_at: 2026-03-05T05:50:01.567Z
@@ -75552,6 +75552,13 @@
         test sequence passed: npm test (3706 passed) and packages/web-ui npm test (18 passed). kspec
         validate run completed; no spec-specific warning shown for @ui-design-system, but global
         repo validation errors/warnings remain unrelated to this task."
+      supersedes: null
+    - _ulid: 01KJY924MTXTNG2EC54YEDY4JA
+      created_at: 2026-03-05T05:55:50.042Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Review findings: Review issues: MUST-FIX incorrect AC annotation mapping
+        (tests/validate-alignment-no-task-policy.test.ts:128) and out-of-scope global alignment
+        behavior change in src/parser/alignment.ts:154-167 on this UI design-system task branch."
       supersedes: null
   todos: []
   automation: eligible
