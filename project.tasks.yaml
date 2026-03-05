@@ -76020,6 +76020,36 @@
 
         Created separate task for dispatch daemon self-protection guard.
       supersedes: null
+    - _ulid: 01KJZRDAZJSVSXZ40JWCAR8J3H
+      created_at: 2026-03-05T19:43:20.050Z
+      author: "@claude"
+      content: >-
+        Fix cycle 4 — addressed all 2 review findings:
+
+        1. AC-3 API bug: Added type field to both daemon task list and detail endpoints (task.type
+        || 'task'). Modal now always shows type badge with data-testid.
+
+        2. AC-3 test coverage: Expanded E2E test to verify all required modal fields: title,
+        description, status, priority, type, spec ref, automation, dependencies, VCS info, plan ref,
+        session link, todos, and notes. Enriched in-progress fixture task with all these fields.
+
+
+        Additional fixes discovered during testing:
+
+        - Fixed todo rendering to use actual schema fields (done/text vs status/content)
+
+        - Serialized vcs_refs objects to string format for frontend formatVcsRef()
+
+        - Fixed DAEMON_API_BASE to use window.location.origin in production builds (ephemeral port
+        compatibility from PR #682)
+
+        - Fixed hardcoded localhost:3456 in AC-5 test to use daemon.baseUrl
+
+        - Added notes_count/todos_count to detail API response
+
+
+        All 14 task board E2E tests pass. 3777 unit tests pass (2 pre-existing codex failures).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
@@ -77006,6 +77036,7 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-05T19:32:00.739Z
+  started_at: 2026-03-05T19:32:39.048Z
   notes:
     - _ulid: 01KJZQS871W22QPR27A6TZDXTA
       created_at: 2026-03-05T19:32:21.857Z
@@ -77043,4 +77074,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T19:32:39.048Z
