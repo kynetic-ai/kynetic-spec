@@ -6724,6 +6724,18 @@ features:
         when: The dispatch engine builds the prompt
         then: Placeholders are interpolated with task_ref, task_title, trigger, and review_url values;
           unresolved placeholders pass through unchanged
+      - id: ac-17
+        given: A queued dispatch entry is about to be spawned as an invocation
+        when: The dispatch engine dequeues the entry and prepares to run it
+        then: The engine loads the task current state and verifies it still matches the dispatch rule
+          trigger event; if the task has moved to a different state, the entry is discarded without
+          spawning
+      - id: ac-18
+        given: A CLI command transitions a task state while running inside a dispatched agent invocation
+          (KSPEC_SESSION_ID is set)
+        when: The CLI would normally post a state change event to the daemon
+        then: The event is suppressed to prevent self-triggering, since the file watcher will independently
+          detect the change
     depends_on: []
     implements: []
     relates_to: []
