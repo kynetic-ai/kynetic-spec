@@ -1,0 +1,7 @@
+id: 01KJZS03BM28P86MSC7G8BRB9A
+task_id: "@task-dispatch-daemon-guard"
+agent_type: codex-acp
+agent_id: reviewer
+trigger: manual
+status: active
+started_at: 2026-03-05T19:53:34.837Z
