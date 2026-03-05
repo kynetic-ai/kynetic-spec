@@ -1191,7 +1191,7 @@ features:
             then: valid traits are still added; errors reported for unresolved refs; exit code 1
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
       - _ulid: 01KFC1FGKR7S29HE1DYX8KJ8KT
         slugs:
           - trait-edge-cases
