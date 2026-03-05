@@ -76411,16 +76411,33 @@
   priority: 2
   tags: []
   vcs_refs: []
+  session_id: 01KJZ0DPX8NJETRJDA399P76S7
   created_at: 2026-03-05T01:30:05.410Z
+  started_at: 2026-03-05T12:49:46.900Z
   notes:
     - _ulid: 01KJXSVHQ2D10H7SMMCRYTA7CZ
       created_at: 2026-03-05T01:30:05.410Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
+    - _ulid: 01KJZ0YE7TD5R95ZDXZFP3WWK7
+      created_at: 2026-03-05T12:53:14.618Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Session history view needs to show task ref per AC-1. The /sessions page
+        already exists with most required fields but is missing task_ref.
+
+        - Scope: Add task_id to SessionLogSummary in store.ts, update daemon list endpoint, update
+        web-ui types and session list display. Write E2E-oriented tests.
+
+        - Files: src/sessions/store.ts, packages/daemon/src/routes/sessions.ts,
+        packages/web-ui/src/lib/api.ts, packages/web-ui/src/routes/sessions/+page.svelte
+
+        - Verification: npm test (root), npm run test (web-ui)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T12:49:46.900Z
-  session_id: 01KJZ0DPX8NJETRJDA399P76S7
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
   slugs:
     - implement-enhanced-inbox-view
