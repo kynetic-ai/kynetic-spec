@@ -77006,6 +77006,40 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-05T19:32:00.739Z
-  notes: []
+  notes:
+    - _ulid: 01KJZQS871W22QPR27A6TZDXTA
+      created_at: 2026-03-05T19:32:21.857Z
+      author: "@claude"
+      content: >-
+        Spec coverage: spans two specs:
+
+        - @cli-serve-commands ac-11 (new): guard serve stop/restart/start when KSPEC_DAEMON_PID is
+        set
+
+        - @agent-invocation-lifecycle ac-12 (new): inject KSPEC_DAEMON_PID into agent env
+
+
+        Implementation approach:
+
+        1. In src/agent-runtime/invocation.ts: add KSPEC_DAEMON_PID to the env object alongside
+        KSPEC_SESSION_ID (get daemon PID from PidFileManager or process.ppid)
+
+        2. In src/cli/commands/serve.ts: add guard at top of stopServer() and restartServer()
+        checking process.env.KSPEC_DAEMON_PID, refuse with error message
+
+        3. In startServer(): also guard — if KSPEC_DAEMON_PID is set, the agent shouldn't be trying
+        to start daemons either
+
+        4. Update kspec-agents.md development convention to warn about this
+
+
+        Files to modify:
+
+        - src/agent-runtime/invocation.ts (env injection)
+
+        - src/cli/commands/serve.ts (guard in stop/restart/start)
+
+        - templates/agents-sections/ or kspec meta (add convention rule)
+      supersedes: null
   todos: []
   automation: eligible
