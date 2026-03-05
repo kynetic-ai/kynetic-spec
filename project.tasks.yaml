@@ -75322,7 +75322,8 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KJXSWR"
   context: []
   priority: 1
   tags: []
@@ -75533,22 +75534,39 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
-- title: UI Revamp Prerequisites (Quick Wins)
+- _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
+  slugs: []
+  title: UI Revamp Prerequisites (Quick Wins)
   type: task
   spec_ref: "@ui-app-shell"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - ui
     - web-ui
-  depends_on: []
-  _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:45.138Z
-  notes: []
+  notes:
+    - _ulid: 01KJXSX0DNC87CF9RR1ZCMMR5A
+      created_at: 2026-03-05T01:30:53.238Z
+      author: "@claude"
+      content: >-
+        Quick wins to fix before main UI work:
+
+        1. Add needs_work to status color/label maps in TaskList.svelte and tasks page
+
+        2. Add type and automation fields to task list API response
+        (packages/daemon/src/routes/tasks.ts)
+
+        3. Migrate taskDetailStore from Svelte 4 writable to Svelte 5 runes
+
+        4. Make Observations a permanent sidebar nav item (visible even at count 0)
+
+        5. Consolidate 3 task detail implementations into one component
+      supersedes: null
   todos: []
