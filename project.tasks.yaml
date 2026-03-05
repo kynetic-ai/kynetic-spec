@@ -75324,7 +75324,7 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:03.199Z
@@ -75343,9 +75343,10 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-ui-design-system"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:03.650Z
@@ -75364,9 +75365,10 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-app-shell-and-navigation"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:04.123Z
@@ -75385,9 +75387,10 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-app-shell-and-navigation"
   context: []
-  priority: 3
+  priority: 2
   tags: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:04.544Z
@@ -75406,9 +75409,10 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-app-shell-and-navigation"
   context: []
-  priority: 3
+  priority: 2
   tags: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:04.991Z
@@ -75427,9 +75431,10 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-session-stream-view"
   context: []
-  priority: 3
+  priority: 2
   tags: []
   vcs_refs: []
   created_at: 2026-03-05T01:30:05.410Z
@@ -75448,7 +75453,8 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-app-shell-and-navigation"
   context: []
   priority: 3
   tags: []
@@ -75469,7 +75475,8 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-app-shell-and-navigation"
   context: []
   priority: 3
   tags: []
@@ -75490,7 +75497,8 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-app-shell-and-navigation"
   context: []
   priority: 3
   tags: []
@@ -75502,24 +75510,26 @@
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
-- title: Implement Dashboard Overview
+- _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
+  slugs:
+    - implement-dashboard-overview
+  title: Implement Dashboard Overview
   type: task
   spec_ref: "@ui-dashboard-overview"
   plan_ref: "@plan-ui-ux-revamp"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-task-board-kanban"
+    - "@implement-session-stream-view"
+  context: []
   priority: 3
-  slugs:
-    - implement-dashboard-overview
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-03-05T01:30:07.172Z
   notes:
     - _ulid: 01KJXSVKE4KK0MKFP61JZBR1DD
       created_at: 2026-03-05T01:30:07.172Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
-  _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-03-05T01:30:07.172Z
   todos: []
