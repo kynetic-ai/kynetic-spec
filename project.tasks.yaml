@@ -75687,6 +75687,14 @@
         Regression tests passed (root npm test and packages/web-ui npm test), and AC annotations for
         ac-1..ac-4 are present.'
       supersedes: null
+    - _ulid: 01KJYD4J4ZB6XEVYKC706B6JZE
+      created_at: 2026-03-05T07:07:03.712Z
+      author: "@claude"
+      content: "Fix cycle: Resolved MUST-FIX spec alignment warning. Set @ui-app-shell implementation
+        status from 'in_progress' to 'not_started' to match task progress (needs_work). Also
+        restored 16 child specs that were incorrectly cascaded to not_started back to 'implemented'.
+        Validation now shows 0 status mismatches (294/294 aligned). Web-UI tests pass (63/63)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
