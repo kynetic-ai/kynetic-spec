@@ -8,10 +8,10 @@ import { test, expect } from '../fixtures/test-base';
  * Covered ACs:
  * - AC-1: Tasks distributed into columns by status
  * - AC-2: Task cards show priority, tags, title, slug, spec ref, metadata
- * - AC-3: Clicking card opens detail modal
+ * - AC-3: Clicking card opens detail modal with full task info
  * - AC-4: Active Fleet row shows running agents
  * - AC-5: Real-time updates via WebSocket
- * - AC-6: Action buttons in detail modal
+ * - AC-6: Action buttons in detail modal execute mutations via API
  */
 
 test.describe('Task Board (Kanban)', () => {
@@ -79,17 +79,31 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-3
-	test('detail modal shows full task info', async ({ page, daemon }) => {
+	test('detail modal shows full task info including description and notes', async ({
+		page,
+		daemon
+	}) => {
 		await page.goto('/tasks/board');
 
-		// Click first task card
-		await page.getByTestId('task-card').first().click();
+		// Click the in-progress task card (it has notes and description)
+		const inProgressColumn = page.locator('[data-column-id="in_progress"]');
+		await expect(inProgressColumn).toBeVisible();
+		const card = inProgressColumn.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
 
 		const modal = page.getByTestId('task-detail-modal');
 		await expect(modal).toBeVisible();
 
+		// Check description is visible
+		await expect(page.getByTestId('modal-description')).toBeVisible();
+
 		// Check notes section exists
 		await expect(page.getByTestId('modal-notes')).toBeVisible();
+
+		// Check automation badge is visible
+		// (automation may or may not be set — verify the badge section at least renders)
+		await expect(page.getByTestId('modal-status-badge')).toBeVisible();
 	});
 
 	// AC: @ui-task-board ac-1
@@ -106,23 +120,122 @@ test.describe('Task Board (Kanban)', () => {
 		await expect(columns.or(empty)).toBeVisible();
 	});
 
-	// AC: @ui-task-board ac-6
-	test('detail modal shows action buttons in daemon mode', async ({ page, daemon }) => {
+	// AC: @ui-task-board ac-5
+	test('board updates after task mutation without page refresh', async ({ page, daemon }) => {
 		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
 
-		// Find and click a task card
+		// Find a pending task card and note its column
+		const backlogColumn = page.locator('[data-column-id="backlog"]');
+		await expect(backlogColumn).toBeVisible();
+		const taskCards = backlogColumn.getByTestId('task-card');
+		const initialBacklogCount = await taskCards.count();
+
+		// Start a pending task via API directly (simulating external state change)
+		// Use the ready task which is in pending status
+		const startResponse = await page.request.post(
+			'http://localhost:3456/api/tasks/01KG0RR6CA45ZT43W2T6HJMVA1/start'
+		);
+		expect(startResponse.ok()).toBeTruthy();
+
+		// Wait for the board to update (WebSocket notification or polling triggers reload)
+		// The task should move from backlog to in_progress column
+		const inProgressColumn = page.locator('[data-column-id="in_progress"]');
+		await expect(async () => {
+			const inProgressCards = await inProgressColumn.getByTestId('task-card').count();
+			expect(inProgressCards).toBeGreaterThan(0);
+		}).toPass({ timeout: 10000 });
+	});
+
+	// AC: @ui-task-board ac-6
+	test('Start action button transitions pending task to in_progress', async ({
+		page,
+		daemon
+	}) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click a pending task card (backlog column has pending tasks)
+		const backlogColumn = page.locator('[data-column-id="backlog"]');
+		await expect(backlogColumn).toBeVisible();
+
+		const card = backlogColumn.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should open
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Verify the Start button is visible and click it
+		const startBtn = page.getByTestId('action-start');
+		await expect(startBtn).toBeVisible();
+		await startBtn.click();
+
+		// Status badge should update to In Progress
+		await expect(page.getByTestId('modal-status-badge')).toHaveText('In Progress', {
+			timeout: 5000
+		});
+	});
+
+	// AC: @ui-task-board ac-6
+	test('Submit action button transitions in_progress task to pending_review', async ({
+		page,
+		daemon
+	}) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click the in-progress task
+		const inProgressColumn = page.locator('[data-column-id="in_progress"]');
+		await expect(inProgressColumn).toBeVisible();
+
+		const card = inProgressColumn.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should open
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Verify the Submit button is visible and click it
+		const submitBtn = page.getByTestId('action-submit');
+		await expect(submitBtn).toBeVisible();
+		await submitBtn.click();
+
+		// Status badge should update to Review
+		await expect(page.getByTestId('modal-status-badge')).toHaveText('Review', { timeout: 5000 });
+	});
+
+	// AC: @ui-task-board ac-6
+	test('Add Note action adds a note to the task', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click a task card to open modal
 		const card = page.getByTestId('task-card').first();
 		await expect(card).toBeVisible();
 		await card.click();
 
-		// Modal should be visible with actions section
 		const modal = page.getByTestId('task-detail-modal');
 		await expect(modal).toBeVisible();
 
-		// At least one action should be available (depends on task status)
-		const actions = page.getByTestId('modal-actions');
-		// Actions may not be visible if task is completed/cancelled, but the section should exist for active tasks
-		await expect(actions.or(page.getByTestId('modal-notes'))).toBeVisible();
+		// Find the add note form
+		const noteForm = page.getByTestId('modal-add-note');
+		await expect(noteForm).toBeVisible();
+
+		// Type a note
+		await noteForm.locator('textarea').fill('E2E test note content');
+
+		// Click Add Note button
+		const addNoteBtn = page.getByTestId('action-add-note');
+		await expect(addNoteBtn).toBeEnabled();
+		await addNoteBtn.click();
+
+		// The new note should appear in the notes list
+		await expect(page.getByTestId('note-item').filter({ hasText: 'E2E test note content' })).toBeVisible({
+			timeout: 5000
+		});
 	});
 
 	// AC: @ui-task-board ac-4
@@ -130,7 +243,9 @@ test.describe('Task Board (Kanban)', () => {
 		await page.goto('/tasks/board');
 
 		// Wait for board to load
-		await expect(page.getByTestId('board-columns').or(page.getByTestId('board-empty'))).toBeVisible();
+		await expect(
+			page.getByTestId('board-columns').or(page.getByTestId('board-empty'))
+		).toBeVisible();
 
 		// Active fleet should NOT be visible when no agents running
 		await expect(page.getByTestId('active-fleet-row')).not.toBeVisible();

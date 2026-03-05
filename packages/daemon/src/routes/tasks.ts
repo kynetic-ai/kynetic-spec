@@ -154,6 +154,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         }
 
         // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
+        // AC: @ui-task-board ac-3 - Include description, blocked_by, vcs_refs, plan_ref, session_ref
         return {
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -164,7 +165,13 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           meta_ref: task.meta_ref,
           tags: task.tags,
           description: task.description,
+          derivation: task.derivation,
           depends_on: task.depends_on,
+          blocked_by: task.blocked_by || [],
+          context: task.context || [],
+          vcs_refs: task.vcs_refs || [],
+          plan_ref: task.plan_ref,
+          session_ref: task.session_id,
           notes: task.notes,
           todos: task.todos,
           started_at: task.started_at,

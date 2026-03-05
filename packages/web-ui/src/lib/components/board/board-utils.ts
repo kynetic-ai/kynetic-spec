@@ -165,3 +165,43 @@ export function formatElapsed(ms: number): string {
 	if (mins > 0) return `${mins}m ${secs % 60}s`;
 	return `${secs}s`;
 }
+
+/**
+ * Parse a VCS ref string into a display label and optional URL.
+ *
+ * AC: @ui-task-board ac-3 — VCS info with branch/PR links.
+ *
+ * VCS refs can be:
+ * - "branch:feat/my-feature" → branch label
+ * - "pr:123" or "pr:https://github.com/..." → PR link
+ * - "https://github.com/..." → direct URL
+ * - Plain text → displayed as-is
+ */
+export function formatVcsRef(ref: string): { label: string; url: string | null } {
+	// "branch:name" format
+	if (ref.startsWith('branch:')) {
+		return { label: ref.slice(7), url: null };
+	}
+
+	// "pr:123" or "pr:URL" format
+	if (ref.startsWith('pr:')) {
+		const value = ref.slice(3);
+		if (value.startsWith('http')) {
+			return { label: `PR ${value.split('/').pop()}`, url: value };
+		}
+		return { label: `PR #${value}`, url: null };
+	}
+
+	// Direct URL
+	if (ref.startsWith('http')) {
+		// Extract meaningful label from GitHub-style URLs
+		const prMatch = ref.match(/\/pull\/(\d+)/);
+		if (prMatch) {
+			return { label: `PR #${prMatch[1]}`, url: ref };
+		}
+		return { label: ref.split('/').slice(-1)[0] || ref, url: ref };
+	}
+
+	// Plain text
+	return { label: ref, url: null };
+}

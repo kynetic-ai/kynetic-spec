@@ -35,7 +35,7 @@
 		<!-- Priority badge -->
 		<span
 			class="inline-flex items-center justify-center size-5 rounded-full text-[10px] font-bold leading-none {task.priority === 1
-				? 'bg-destructive text-white'
+				? 'bg-destructive text-primary-foreground'
 				: task.priority === 2
 					? 'bg-status-in-progress text-status-in-progress-fg'
 					: 'bg-muted text-muted-foreground'}"

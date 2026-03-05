@@ -9,8 +9,15 @@
 	import { formatElapsed } from './board-utils';
 	import Bot from '@lucide/svelte/icons/bot';
 	import Activity from '@lucide/svelte/icons/activity';
+	import Terminal from '@lucide/svelte/icons/terminal';
 
-	let { status }: { status: AgentStatus | null } = $props();
+	let {
+		status,
+		outputLines = {}
+	}: {
+		status: AgentStatus | null;
+		outputLines?: Record<string, string[]>;
+	} = $props();
 
 	let activeInvocations = $derived(status?.active_invocations ?? []);
 	let isVisible = $derived(status?.dispatch_enabled && activeInvocations.length > 0);
@@ -25,8 +32,9 @@
 		</div>
 		<div class="flex gap-3 overflow-x-auto pb-2">
 			{#each activeInvocations as invocation (invocation.session_id)}
+				{@const lines = outputLines[invocation.session_id] ?? []}
 				<div
-					class="flex-shrink-0 w-64 rounded-lg border bg-card p-3 ds-breathe"
+					class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
 					data-testid="fleet-card"
 				>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -40,7 +48,7 @@
 						</p>
 					{/if}
 
-					<div class="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+					<div class="flex items-center gap-1.5 text-[10px] text-muted-foreground mb-1.5">
 						<!-- Pulse indicator -->
 						<span class="relative flex size-2">
 							<span
@@ -50,6 +58,26 @@
 						</span>
 						<span>{formatElapsed(invocation.elapsed_ms)}</span>
 					</div>
+
+					<!-- AC: @ui-task-board ac-4 — Last few lines of output -->
+					{#if lines.length > 0}
+						<div
+							class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-14"
+							data-testid="fleet-output"
+						>
+							{#each lines as line}
+								<div class="truncate">{line}</div>
+							{/each}
+						</div>
+					{:else}
+						<div
+							class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
+							data-testid="fleet-output-empty"
+						>
+							<Terminal class="size-3" />
+							<span>Awaiting output...</span>
+						</div>
+					{/if}
 				</div>
 			{/each}
 		</div>

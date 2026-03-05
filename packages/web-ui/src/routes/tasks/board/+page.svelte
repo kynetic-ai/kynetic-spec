@@ -29,6 +29,10 @@
 	let error = $state('');
 	let agentStatus = $state<AgentStatus | null>(null);
 
+	// AC: @ui-task-board ac-4 — Accumulated output lines per agent session
+	const MAX_OUTPUT_LINES = 3;
+	let agentOutputLines = $state<Record<string, string[]>>({});
+
 	// Detail modal state
 	let modalOpen = $state(false);
 	let selectedTaskRef = $state<string | null>(null);
@@ -92,9 +96,31 @@
 
 	// AC: @ui-task-board ac-4 — Refresh agent status on agent events
 	function handleAgentUpdate(event: BroadcastEvent) {
+		// AC: @ui-task-board ac-4 — Accumulate text chunks for last few lines of output
+		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
+			const sessionId = event.data.session_id as string;
+			const text = event.data.text as string;
+			const newLines = text.split('\n').filter((l: string) => l.trim().length > 0);
+			if (newLines.length > 0) {
+				const existing = agentOutputLines[sessionId] ?? [];
+				agentOutputLines[sessionId] = [...existing, ...newLines].slice(-MAX_OUTPUT_LINES);
+			}
+			return;
+		}
+
+		// Invocation lifecycle events — refresh status and clean up stale output
 		fetchAgentStatus()
 			.then((status) => {
 				agentStatus = status;
+				// Clean up output lines for sessions no longer active
+				const activeSessions = new Set(
+					status.active_invocations.map((inv) => inv.session_id)
+				);
+				for (const sessionId of Object.keys(agentOutputLines)) {
+					if (!activeSessions.has(sessionId)) {
+						delete agentOutputLines[sessionId];
+					}
+				}
 			})
 			.catch(() => {});
 	}
@@ -179,7 +205,7 @@
 	{:else}
 		<!-- AC: @ui-task-board ac-4 — Active Fleet Row -->
 		<div class="px-6 pt-4">
-			<ActiveFleetRow status={agentStatus} />
+			<ActiveFleetRow status={agentStatus} outputLines={agentOutputLines} />
 		</div>
 
 		<!-- AC: @ui-task-board ac-1 — Kanban Columns -->

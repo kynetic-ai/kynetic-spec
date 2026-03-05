@@ -55,11 +55,14 @@ export interface TaskSummary {
  * AC: @api-contract ac-5
  */
 export interface TaskDetail extends TaskSummary {
+  description?: string;
   derivation?: string;
   blocked_by: string[];
   depends_on: string[];
   context: string[];
   vcs_refs: string[];
+  plan_ref?: string;
+  session_ref?: string;
   notes: Note[];
   todos?: Todo[];
 }

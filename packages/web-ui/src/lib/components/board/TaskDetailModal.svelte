@@ -20,7 +20,9 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Input } from '$lib/components/ui/input';
 	import { Separator } from '$lib/components/ui/separator';
-	import { getStatusClasses, formatAge } from './board-utils';
+	import { getStatusClasses, formatAge, formatVcsRef } from './board-utils';
+	import GitBranch from '@lucide/svelte/icons/git-branch';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
 
 	let {
 		open = $bindable(false),
@@ -165,6 +167,13 @@
 			</Dialog.Header>
 
 			<div class="flex flex-col gap-4">
+				<!-- AC: @ui-task-board ac-3 — Description -->
+				{#if task.description}
+					<p class="text-sm text-muted-foreground" data-testid="modal-description">
+						{task.description}
+					</p>
+				{/if}
+
 				<!-- Status, priority, type -->
 				<div class="flex flex-wrap gap-2 items-center">
 					<Badge class="{statusInfo.bg} {statusInfo.fg}" data-testid="modal-status-badge">
@@ -237,23 +246,57 @@
 					</div>
 				{/if}
 
-				<!-- VCS refs -->
+				<!-- AC: @ui-task-board ac-3 — VCS info (branch, PR link) -->
 				{#if task.vcs_refs?.length > 0}
 					<div data-testid="modal-vcs">
 						<p class="text-xs font-medium text-muted-foreground mb-1">VCS</p>
-						<ul class="text-sm space-y-0.5">
+						<ul class="text-sm space-y-1">
 							{#each task.vcs_refs as ref}
-								<li class="text-muted-foreground font-mono text-xs">{ref}</li>
+								{@const vcsInfo = formatVcsRef(ref)}
+								<li class="flex items-center gap-1.5">
+									<GitBranch class="size-3 text-muted-foreground flex-shrink-0" />
+									{#if vcsInfo.url}
+										<a
+											href={vcsInfo.url}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="text-xs text-primary hover:underline font-mono inline-flex items-center gap-1"
+										>
+											{vcsInfo.label}
+											<ExternalLink class="size-3" />
+										</a>
+									{:else}
+										<span class="text-muted-foreground font-mono text-xs">{vcsInfo.label}</span>
+									{/if}
+								</li>
 							{/each}
 						</ul>
 					</div>
 				{/if}
 
-				<!-- Plan ref (via derivation) -->
-				{#if task.derivation}
+				<!-- AC: @ui-task-board ac-3 — Plan ref -->
+				{#if task.plan_ref}
+					<div data-testid="modal-plan-ref">
+						<p class="text-xs font-medium text-muted-foreground mb-0.5">Plan</p>
+						<span class="text-sm text-primary font-mono">{task.plan_ref}</span>
+					</div>
+				{:else if task.derivation}
 					<div data-testid="modal-plan-ref">
 						<p class="text-xs font-medium text-muted-foreground mb-0.5">Derivation</p>
 						<p class="text-sm text-muted-foreground">{task.derivation}</p>
+					</div>
+				{/if}
+
+				<!-- AC: @ui-task-board ac-3 — Session link -->
+				{#if task.session_ref}
+					<div data-testid="modal-session-link">
+						<p class="text-xs font-medium text-muted-foreground mb-0.5">Session</p>
+						<a
+							href="{base}/session?ref={encodeURIComponent(task.session_ref)}"
+							class="text-sm text-primary hover:underline font-mono"
+						>
+							{task.session_ref}
+						</a>
 					</div>
 				{/if}
 

@@ -10,7 +10,8 @@ import {
 	distributeToColumns,
 	getStatusClasses,
 	formatAge,
-	formatElapsed
+	formatElapsed,
+	formatVcsRef
 } from '../src/lib/components/board/board-utils';
 import type { TaskSummary } from '../../shared/src/api';
 
@@ -190,5 +191,84 @@ describe('formatElapsed', () => {
 	// AC: @ui-task-board ac-4
 	it('formats hours and minutes', () => {
 		expect(formatElapsed(3725000)).toBe('1h 2m');
+	});
+});
+
+describe('formatVcsRef', () => {
+	// AC: @ui-task-board ac-3
+	it('parses branch: prefix into label without URL', () => {
+		const result = formatVcsRef('branch:feat/my-feature');
+		expect(result.label).toBe('feat/my-feature');
+		expect(result.url).toBeNull();
+	});
+
+	// AC: @ui-task-board ac-3
+	it('parses pr: prefix with number', () => {
+		const result = formatVcsRef('pr:42');
+		expect(result.label).toBe('PR #42');
+		expect(result.url).toBeNull();
+	});
+
+	// AC: @ui-task-board ac-3
+	it('parses pr: prefix with URL', () => {
+		const result = formatVcsRef('pr:https://github.com/org/repo/pull/42');
+		expect(result.label).toBe('PR 42');
+		expect(result.url).toBe('https://github.com/org/repo/pull/42');
+	});
+
+	// AC: @ui-task-board ac-3
+	it('parses direct GitHub PR URL', () => {
+		const result = formatVcsRef('https://github.com/org/repo/pull/99');
+		expect(result.label).toBe('PR #99');
+		expect(result.url).toBe('https://github.com/org/repo/pull/99');
+	});
+
+	// AC: @ui-task-board ac-3
+	it('parses direct URL without PR pattern', () => {
+		const result = formatVcsRef('https://github.com/org/repo');
+		expect(result.label).toBe('repo');
+		expect(result.url).toBe('https://github.com/org/repo');
+	});
+
+	// AC: @ui-task-board ac-3
+	it('returns plain text for unknown format', () => {
+		const result = formatVcsRef('some-ref');
+		expect(result.label).toBe('some-ref');
+		expect(result.url).toBeNull();
+	});
+});
+
+describe('real-time update support', () => {
+	// AC: @ui-task-board ac-5
+	it('distributeToColumns is a pure function that can be re-called on data changes', () => {
+		// The board re-derives columns from $effect whenever tasks array changes.
+		// Verify that distributeToColumns produces correct output when called
+		// with updated data (simulating a WebSocket-triggered reload).
+		const initial = [makeTask({ status: 'pending', automation: 'eligible' })];
+		const columnsV1 = distributeToColumns(initial);
+		expect(columnsV1.find((c) => c.id === 'ready')!.tasks).toHaveLength(1);
+		expect(columnsV1.find((c) => c.id === 'in_progress')!.tasks).toHaveLength(0);
+
+		// After a state change event, the tasks array is updated
+		const updated = [makeTask({ ...initial[0], status: 'in_progress' })];
+		const columnsV2 = distributeToColumns(updated);
+		expect(columnsV2.find((c) => c.id === 'ready')!.tasks).toHaveLength(0);
+		expect(columnsV2.find((c) => c.id === 'in_progress')!.tasks).toHaveLength(1);
+	});
+
+	// AC: @ui-task-board ac-5
+	it('handles empty-to-populated transitions for real-time updates', () => {
+		// Board starts empty, then tasks arrive via WebSocket-triggered reload
+		const empty = distributeToColumns([]);
+		expect(empty.every((c) => c.tasks.length === 0)).toBe(true);
+
+		const populated = distributeToColumns([
+			makeTask({ status: 'pending', automation: 'eligible' }),
+			makeTask({ status: 'in_progress' }),
+			makeTask({ status: 'pending_review' })
+		]);
+		expect(populated.find((c) => c.id === 'ready')!.tasks).toHaveLength(1);
+		expect(populated.find((c) => c.id === 'in_progress')!.tasks).toHaveLength(1);
+		expect(populated.find((c) => c.id === 'review')!.tasks).toHaveLength(1);
 	});
 });
