@@ -4,15 +4,10 @@
 	import {
 		fetchValidation,
 		fetchAlignment,
+		fetchItems,
+		fetchTasks,
 		type ValidationResponse,
-		type AlignmentResponse,
-		type SchemaValidationError,
-		type RefValidationError,
-		type RefValidationWarning,
-		type CompletenessWarning,
-		type TraitCycleError,
-		type OrphanItem,
-		type AlignmentWarning
+		type AlignmentResponse
 	} from '$lib/api';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -33,6 +28,8 @@
 
 	let validation = $state<ValidationResponse | null>(null);
 	let alignment = $state<AlignmentResponse | null>(null);
+	let totalItemCount = $state(0);
+	let orphanedTaskCount = $state(0);
 	let loading = $state(true);
 	let error = $state('');
 
@@ -57,7 +54,22 @@
 		);
 	});
 
-	let validItemCount = $derived(validation?.valid ? 1 : 0);
+	// AC: @ui-validation-view ac-1 — valid item count
+	// Count unique items that have errors, subtract from total
+	let validItemCount = $derived.by(() => {
+		if (!validation) return 0;
+		const itemsWithErrors = new Set<string>();
+		for (const e of validation.schemaErrors) {
+			if (e.file) itemsWithErrors.add(e.file);
+		}
+		for (const e of validation.refErrors) {
+			if (e.ref) itemsWithErrors.add(e.ref);
+		}
+		for (const e of validation.traitCycles) {
+			if (e.traitRef) itemsWithErrors.add(e.traitRef);
+		}
+		return Math.max(0, totalItemCount - itemsWithErrors.size);
+	});
 
 	// AC: @ui-validation-view ac-1 — spec coverage %, AC coverage %
 	let specCoverage = $derived.by(() => {
@@ -67,11 +79,21 @@
 		);
 	});
 
-	let alignmentPct = $derived.by(() => {
-		if (!alignment || alignment.stats.totalSpecs === 0) return 0;
-		return Math.round(
-			(alignment.stats.alignedSpecs / alignment.stats.totalSpecs) * 100
-		);
+	// AC: @ui-validation-view ac-1 — AC coverage %
+	// Computed from completeness warnings: items with missing_test_coverage
+	let acCoverage = $derived.by(() => {
+		if (!validation || totalItemCount === 0) return 0;
+		const itemsWithMissingCoverage = new Set<string>();
+		for (const w of validation.completenessWarnings) {
+			if (w.type === 'missing_test_coverage') {
+				itemsWithMissingCoverage.add(w.itemRef);
+			}
+		}
+		// Items with ACs that are fully covered = total items - items with missing coverage
+		// AC coverage % = covered items / total items that have ACs
+		// Since not all items have ACs, use totalItems as denominator for simplicity
+		const coveredItems = totalItemCount - itemsWithMissingCoverage.size;
+		return Math.round((coveredItems / totalItemCount) * 100);
 	});
 
 	// --- Group issues by severity ---
@@ -173,9 +195,17 @@
 		try {
 			loading = true;
 			error = '';
-			const [v, a] = await Promise.all([fetchValidation(), fetchAlignment()]);
+			const [v, a, itemsRes, tasksRes] = await Promise.all([
+				fetchValidation(),
+				fetchAlignment(),
+				fetchItems({ limit: 1 }),
+				fetchTasks({ limit: 999 })
+			]);
 			validation = v;
 			alignment = a;
+			totalItemCount = itemsRes.total;
+			// Orphaned tasks = tasks without a spec_ref
+			orphanedTaskCount = tasksRes.items.filter((t) => !t.spec_ref).length;
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load validation data';
 		} finally {
@@ -205,24 +235,6 @@
 		};
 		return labels[type] ?? type;
 	}
-
-	function severityIcon(severity: 'error' | 'warning' | 'info') {
-		if (severity === 'error') return AlertCircle;
-		if (severity === 'warning') return AlertTriangle;
-		return Info;
-	}
-
-	function severityColor(severity: 'error' | 'warning' | 'info') {
-		if (severity === 'error') return 'text-red-600';
-		if (severity === 'warning') return 'text-yellow-600';
-		return 'text-blue-500';
-	}
-
-	function severityBg(severity: 'error' | 'warning' | 'info') {
-		if (severity === 'error') return 'bg-red-50 border-red-200';
-		if (severity === 'warning') return 'bg-yellow-50 border-yellow-200';
-		return 'bg-blue-50 border-blue-200';
-	}
 </script>
 
 <!-- AC: @ui-validation-view ac-1 -->
@@ -232,12 +244,12 @@
 			<h1 class="text-3xl font-bold">Validate</h1>
 			{#if !loading && validation}
 				{#if validation.valid && errorCount === 0}
-					<Badge class="bg-emerald-500 text-white" data-testid="status-valid">
+					<Badge class="bg-severity-success text-severity-success-fg" data-testid="status-valid">
 						<CheckCircle2 class="mr-1 h-3 w-3" />
 						Valid
 					</Badge>
 				{:else}
-					<Badge class="bg-red-500 text-white" data-testid="status-invalid">
+					<Badge class="bg-severity-error text-severity-error-fg" data-testid="status-invalid">
 						<ShieldAlert class="mr-1 h-3 w-3" />
 						Issues Found
 					</Badge>
@@ -260,7 +272,7 @@
 	<!-- Error banner -->
 	{#if error}
 		<div
-			class="rounded-md bg-red-50 p-4 text-sm text-red-800"
+			class="rounded-md bg-severity-error-muted p-4 text-sm text-severity-error-muted-fg"
 			role="alert"
 			data-testid="error"
 		>
@@ -311,10 +323,10 @@
 			<Card data-testid="error-count-card">
 				<CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
 					<CardTitle class="text-sm font-medium">Errors</CardTitle>
-					<AlertCircle class="h-4 w-4 text-red-500" />
+					<AlertCircle class="h-4 w-4 text-severity-error" />
 				</CardHeader>
 				<CardContent>
-					<div class="text-2xl font-bold" class:text-red-600={errorCount > 0}>
+					<div class="text-2xl font-bold" class:text-severity-error={errorCount > 0}>
 						{errorCount}
 					</div>
 					<p class="text-xs text-muted-foreground">
@@ -326,10 +338,10 @@
 			<Card data-testid="warning-count-card">
 				<CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
 					<CardTitle class="text-sm font-medium">Warnings</CardTitle>
-					<AlertTriangle class="h-4 w-4 text-yellow-500" />
+					<AlertTriangle class="h-4 w-4 text-severity-warning" />
 				</CardHeader>
 				<CardContent>
-					<div class="text-2xl font-bold" class:text-yellow-600={warningCount > 0}>
+					<div class="text-2xl font-bold" class:text-severity-warning={warningCount > 0}>
 						{warningCount}
 					</div>
 					<p class="text-xs text-muted-foreground">
@@ -338,28 +350,24 @@
 				</CardContent>
 			</Card>
 
-			<Card data-testid="valid-card">
+			<Card data-testid="valid-count-card">
 				<CardHeader class="flex flex-row items-center justify-between pb-2 space-y-0">
-					<CardTitle class="text-sm font-medium">Overall Status</CardTitle>
-					{#if validation?.valid}
-						<CheckCircle2 class="h-4 w-4 text-emerald-500" />
-					{:else}
-						<ShieldAlert class="h-4 w-4 text-red-500" />
-					{/if}
+					<CardTitle class="text-sm font-medium">Valid Items</CardTitle>
+					<CheckCircle2 class="h-4 w-4 text-severity-success" />
 				</CardHeader>
 				<CardContent>
-					<div class="text-2xl font-bold">
-						{validation?.valid ? 'Valid' : 'Invalid'}
+					<div class="text-2xl font-bold" data-testid="valid-item-count">
+						{validItemCount}
 					</div>
 					<p class="text-xs text-muted-foreground">
-						{errorCount} errors, {warningCount} warnings
+						{validItemCount} of {totalItemCount} items passing validation
 					</p>
 				</CardContent>
 			</Card>
 		</div>
 
 		<!-- Alignment Section -->
-		<!-- AC: @ui-validation-view ac-1 — spec coverage %, AC coverage %, orphaned counts -->
+		<!-- AC: @ui-validation-view ac-1 — spec coverage %, AC coverage %, orphaned tasks/specs counts -->
 		{#if alignment}
 			<Card data-testid="alignment-section">
 				<CardHeader>
@@ -380,52 +388,52 @@
 							</div>
 							<div class="h-2 w-full rounded-full bg-muted overflow-hidden">
 								<div
-									class="h-full rounded-full transition-all bg-emerald-500"
+									class="h-full rounded-full transition-all bg-severity-success"
 									style="width: {specCoverage}%"
 								></div>
 							</div>
 						</div>
 
-						<div class="space-y-1" data-testid="alignment-pct">
-							<p class="text-sm text-muted-foreground">Alignment</p>
+						<div class="space-y-1" data-testid="ac-coverage">
+							<p class="text-sm text-muted-foreground">AC Coverage</p>
 							<div class="flex items-baseline gap-2">
-								<span class="text-2xl font-bold">{alignmentPct}%</span>
+								<span class="text-2xl font-bold">{acCoverage}%</span>
 								<span class="text-xs text-muted-foreground">
-									{alignment.stats.alignedSpecs}/{alignment.stats.totalSpecs} specs aligned
+									items with test coverage
 								</span>
 							</div>
 							<div class="h-2 w-full rounded-full bg-muted overflow-hidden">
 								<div
-									class="h-full rounded-full transition-all bg-blue-500"
-									style="width: {alignmentPct}%"
+									class="h-full rounded-full transition-all bg-severity-info"
+									style="width: {acCoverage}%"
 								></div>
 							</div>
 						</div>
 
 						<div class="space-y-1" data-testid="orphaned-tasks">
+							<p class="text-sm text-muted-foreground">Orphaned Tasks</p>
+							<div class="flex items-baseline gap-2">
+								<span class="text-2xl font-bold"
+									class:text-severity-warning={orphanedTaskCount > 0}
+								>
+									{orphanedTaskCount}
+								</span>
+								<span class="text-xs text-muted-foreground">
+									tasks without linked specs
+								</span>
+							</div>
+						</div>
+
+						<div class="space-y-1" data-testid="orphaned-specs">
 							<p class="text-sm text-muted-foreground">Orphaned Specs</p>
 							<div class="flex items-baseline gap-2">
 								<span class="text-2xl font-bold"
-									class:text-yellow-600={alignment.stats.orphanedSpecs > 0}
+									class:text-severity-warning={alignment.stats.orphanedSpecs > 0}
 								>
 									{alignment.stats.orphanedSpecs}
 								</span>
 								<span class="text-xs text-muted-foreground">
 									specs without linked tasks
-								</span>
-							</div>
-						</div>
-
-						<div class="space-y-1" data-testid="alignment-warnings">
-							<p class="text-sm text-muted-foreground">Alignment Warnings</p>
-							<div class="flex items-baseline gap-2">
-								<span class="text-2xl font-bold"
-									class:text-yellow-600={alignment.warnings.length > 0}
-								>
-									{alignment.warnings.length}
-								</span>
-								<span class="text-xs text-muted-foreground">
-									mismatches detected
 								</span>
 							</div>
 						</div>
@@ -446,15 +454,15 @@
 				<!-- Errors group -->
 				{#if errorIssues.length > 0}
 					<div data-testid="error-issues">
-						<h3 class="text-sm font-medium text-red-600 mb-2 flex items-center gap-1.5">
+						<h3 class="text-sm font-medium text-severity-error mb-2 flex items-center gap-1.5">
 							<AlertCircle class="h-4 w-4" />
 							Errors ({errorIssues.length})
 						</h3>
 						<div class="space-y-2">
 							{#each errorIssues as issue}
-								<div class="rounded-md border p-3 bg-red-50 border-red-200" data-testid="issue-error">
+								<div class="rounded-md border p-3 bg-severity-error-muted border-severity-error-border" data-testid="issue-error">
 									<div class="flex items-start gap-2">
-										<AlertCircle class="h-4 w-4 mt-0.5 text-red-600 shrink-0" />
+										<AlertCircle class="h-4 w-4 mt-0.5 text-severity-error shrink-0" />
 										<div class="min-w-0">
 											<div class="flex items-center gap-2 flex-wrap">
 												<Badge variant="outline" class="text-xs">{issue.category}</Badge>
@@ -476,15 +484,15 @@
 				<!-- Warnings group -->
 				{#if warningIssues.length > 0}
 					<div data-testid="warning-issues">
-						<h3 class="text-sm font-medium text-yellow-600 mb-2 flex items-center gap-1.5">
+						<h3 class="text-sm font-medium text-severity-warning-muted-fg mb-2 flex items-center gap-1.5">
 							<AlertTriangle class="h-4 w-4" />
 							Warnings ({warningIssues.length})
 						</h3>
 						<div class="space-y-2">
 							{#each warningIssues as issue}
-								<div class="rounded-md border p-3 bg-yellow-50 border-yellow-200" data-testid="issue-warning">
+								<div class="rounded-md border p-3 bg-severity-warning-muted border-severity-warning-border" data-testid="issue-warning">
 									<div class="flex items-start gap-2">
-										<AlertTriangle class="h-4 w-4 mt-0.5 text-yellow-600 shrink-0" />
+										<AlertTriangle class="h-4 w-4 mt-0.5 text-severity-warning-muted-fg shrink-0" />
 										<div class="min-w-0">
 											<div class="flex items-center gap-2 flex-wrap">
 												<Badge variant="outline" class="text-xs">{issue.category}</Badge>
@@ -506,15 +514,15 @@
 				<!-- Info group -->
 				{#if infoIssues.length > 0}
 					<div data-testid="info-issues">
-						<h3 class="text-sm font-medium text-blue-500 mb-2 flex items-center gap-1.5">
+						<h3 class="text-sm font-medium text-severity-info mb-2 flex items-center gap-1.5">
 							<Info class="h-4 w-4" />
 							Info ({infoIssues.length})
 						</h3>
 						<div class="space-y-2">
 							{#each infoIssues as issue}
-								<div class="rounded-md border p-3 bg-blue-50 border-blue-200" data-testid="issue-info">
+								<div class="rounded-md border p-3 bg-severity-info-muted border-severity-info-border" data-testid="issue-info">
 									<div class="flex items-start gap-2">
-										<Info class="h-4 w-4 mt-0.5 text-blue-500 shrink-0" />
+										<Info class="h-4 w-4 mt-0.5 text-severity-info shrink-0" />
 										<div class="min-w-0">
 											<div class="flex items-center gap-2 flex-wrap">
 												<Badge variant="outline" class="text-xs">{issue.category}</Badge>
@@ -537,7 +545,7 @@
 			<Card data-testid="no-issues">
 				<CardContent class="py-8">
 					<div class="text-center text-muted-foreground">
-						<CheckCircle2 class="mx-auto h-12 w-12 mb-4 text-emerald-500 opacity-75" />
+						<CheckCircle2 class="mx-auto h-12 w-12 mb-4 text-severity-success opacity-75" />
 						<p class="font-medium">No issues found</p>
 						<p class="text-sm">All validation checks passed.</p>
 					</div>

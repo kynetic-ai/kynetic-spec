@@ -162,6 +162,28 @@
   --font-design-heading: var(--font-design-secondary);
   --font-mono: var(--font-design-mono);
 
+  /* ── Design System: 4 severity colors ── */
+  --color-severity-error: var(--design-severity-error);
+  --color-severity-error-fg: var(--design-severity-error-fg);
+  --color-severity-error-muted: var(--design-severity-error-muted);
+  --color-severity-error-muted-fg: var(--design-severity-error-muted-fg);
+  --color-severity-error-border: var(--design-severity-error-border);
+  --color-severity-warning: var(--design-severity-warning);
+  --color-severity-warning-fg: var(--design-severity-warning-fg);
+  --color-severity-warning-muted: var(--design-severity-warning-muted);
+  --color-severity-warning-muted-fg: var(--design-severity-warning-muted-fg);
+  --color-severity-warning-border: var(--design-severity-warning-border);
+  --color-severity-info: var(--design-severity-info);
+  --color-severity-info-fg: var(--design-severity-info-fg);
+  --color-severity-info-muted: var(--design-severity-info-muted);
+  --color-severity-info-muted-fg: var(--design-severity-info-muted-fg);
+  --color-severity-info-border: var(--design-severity-info-border);
+  --color-severity-success: var(--design-severity-success);
+  --color-severity-success-fg: var(--design-severity-success-fg);
+  --color-severity-success-muted: var(--design-severity-success-muted);
+  --color-severity-success-muted-fg: var(--design-severity-success-muted-fg);
+  --color-severity-success-border: var(--design-severity-success-border);
+
   /* ── Design System: 7 status colors ── */
   --color-status-pending: var(--design-status-pending);
   --color-status-pending-fg: var(--design-status-pending-fg);

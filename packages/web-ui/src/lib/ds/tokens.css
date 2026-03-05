@@ -11,6 +11,7 @@
  * Z-Index (7): layer stack
  * Fonts (3): typography families
  * Status (7): task status semantic colors
+ * Severity (4): validation severity colors (error, warning, info, success)
  */
 
 :root {
@@ -76,6 +77,28 @@
   --design-status-blocked-fg: oklch(0.985 0.003 247);
   --design-status-cancelled: oklch(0.556 0.015 264);
   --design-status-cancelled-fg: oklch(0.985 0.003 247);
+
+  /* ── Severity Colors (4) ── */
+  --design-severity-error: oklch(0.577 0.245 27.3);
+  --design-severity-error-fg: oklch(0.985 0.003 247);
+  --design-severity-error-muted: oklch(0.96 0.02 27);
+  --design-severity-error-muted-fg: oklch(0.45 0.2 27);
+  --design-severity-error-border: oklch(0.88 0.06 27);
+  --design-severity-warning: oklch(0.769 0.188 70.08);
+  --design-severity-warning-fg: oklch(0.21 0.034 46);
+  --design-severity-warning-muted: oklch(0.97 0.02 85);
+  --design-severity-warning-muted-fg: oklch(0.5 0.16 55);
+  --design-severity-warning-border: oklch(0.88 0.08 85);
+  --design-severity-info: oklch(0.623 0.214 259);
+  --design-severity-info-fg: oklch(0.985 0.003 247);
+  --design-severity-info-muted: oklch(0.96 0.02 255);
+  --design-severity-info-muted-fg: oklch(0.5 0.15 259);
+  --design-severity-info-border: oklch(0.88 0.06 255);
+  --design-severity-success: oklch(0.648 0.2 156);
+  --design-severity-success-fg: oklch(0.985 0.003 247);
+  --design-severity-success-muted: oklch(0.96 0.02 156);
+  --design-severity-success-muted-fg: oklch(0.45 0.16 156);
+  --design-severity-success-border: oklch(0.88 0.06 156);
 }
 
 .dark {
@@ -112,4 +135,26 @@
   --design-status-blocked-fg: oklch(0.985 0.003 247);
   --design-status-cancelled: oklch(0.704 0.04 256);
   --design-status-cancelled-fg: oklch(0.985 0.003 247);
+
+  /* ── Severity Colors (4) ── */
+  --design-severity-error: oklch(0.704 0.191 22.2);
+  --design-severity-error-fg: oklch(0.985 0.003 247);
+  --design-severity-error-muted: oklch(0.25 0.06 22);
+  --design-severity-error-muted-fg: oklch(0.78 0.12 22);
+  --design-severity-error-border: oklch(0.4 0.1 22);
+  --design-severity-warning: oklch(0.828 0.189 84.4);
+  --design-severity-warning-fg: oklch(0.21 0.034 46);
+  --design-severity-warning-muted: oklch(0.25 0.06 80);
+  --design-severity-warning-muted-fg: oklch(0.82 0.12 80);
+  --design-severity-warning-border: oklch(0.4 0.1 80);
+  --design-severity-info: oklch(0.488 0.243 264.4);
+  --design-severity-info-fg: oklch(0.985 0.003 247);
+  --design-severity-info-muted: oklch(0.22 0.06 264);
+  --design-severity-info-muted-fg: oklch(0.72 0.12 264);
+  --design-severity-info-border: oklch(0.4 0.1 264);
+  --design-severity-success: oklch(0.696 0.17 162.5);
+  --design-severity-success-fg: oklch(0.985 0.003 247);
+  --design-severity-success-muted: oklch(0.22 0.06 156);
+  --design-severity-success-muted-fg: oklch(0.75 0.12 156);
+  --design-severity-success-border: oklch(0.4 0.1 156);
 }
