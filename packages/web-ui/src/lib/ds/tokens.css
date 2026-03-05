@@ -1,0 +1,115 @@
+/*
+ * Design Token Contract
+ *
+ * Ported from imgen design-system token-contract.css.
+ * Defines the --design-* CSS custom properties that provide a consistent
+ * visual language across all kspec web UI views.
+ *
+ * Colors (16): oklch color space for perceptual uniformity
+ * Radii (4): border-radius scale
+ * Spacing (7): spacing scale
+ * Z-Index (7): layer stack
+ * Fonts (3): typography families
+ * Status (7): task status semantic colors
+ */
+
+:root {
+  /* ── Colors (16 core tokens) ── */
+  --design-bg: oklch(1 0 0);
+  --design-fg: oklch(0.145 0.024 264);
+  --design-card: oklch(0.985 0.003 247);
+  --design-card-fg: oklch(0.145 0.024 264);
+  --design-primary: oklch(0.205 0.042 265);
+  --design-primary-fg: oklch(0.985 0.003 247);
+  --design-secondary: oklch(0.965 0.007 247);
+  --design-secondary-fg: oklch(0.205 0.042 265);
+  --design-muted: oklch(0.965 0.007 247);
+  --design-muted-fg: oklch(0.556 0.046 257);
+  --design-accent: oklch(0.965 0.007 247);
+  --design-accent-fg: oklch(0.205 0.042 265);
+  --design-destructive: oklch(0.577 0.245 27.3);
+  --design-border: oklch(0.929 0.013 255);
+  --design-input: oklch(0.929 0.013 255);
+  --design-ring: oklch(0.704 0.04 256);
+
+  /* ── Radii (4) ── */
+  --design-radius-sm: 0.25rem;
+  --design-radius-md: 0.375rem;
+  --design-radius-lg: 0.5rem;
+  --design-radius-xl: 0.75rem;
+
+  /* ── Spacing (7) ── */
+  --design-spacing-xs: 0.25rem;
+  --design-spacing-sm: 0.5rem;
+  --design-spacing-md: 1rem;
+  --design-spacing-lg: 1.5rem;
+  --design-spacing-xl: 2rem;
+  --design-spacing-2xl: 3rem;
+  --design-spacing-3xl: 4rem;
+
+  /* ── Z-Index Layers (7) ── */
+  --design-z-base: 0;
+  --design-z-dropdown: 10;
+  --design-z-sticky: 20;
+  --design-z-overlay: 30;
+  --design-z-modal: 40;
+  --design-z-popover: 50;
+  --design-z-toast: 60;
+
+  /* ── Fonts (3) ── */
+  --font-design-primary: ui-sans-serif, system-ui, sans-serif;
+  --font-design-secondary: ui-sans-serif, system-ui, sans-serif;
+  --font-design-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+
+  /* ── Status Colors (7) ── */
+  --design-status-pending: oklch(0.769 0.188 70.08);
+  --design-status-pending-fg: oklch(0.21 0.034 46);
+  --design-status-in-progress: oklch(0.705 0.213 47.6);
+  --design-status-in-progress-fg: oklch(0.21 0.034 46);
+  --design-status-pending-review: oklch(0.623 0.214 259);
+  --design-status-pending-review-fg: oklch(0.985 0.003 247);
+  --design-status-needs-work: oklch(0.852 0.199 91.9);
+  --design-status-needs-work-fg: oklch(0.21 0.034 46);
+  --design-status-completed: oklch(0.648 0.2 156);
+  --design-status-completed-fg: oklch(0.985 0.003 247);
+  --design-status-blocked: oklch(0.577 0.245 27.3);
+  --design-status-blocked-fg: oklch(0.985 0.003 247);
+  --design-status-cancelled: oklch(0.556 0.015 264);
+  --design-status-cancelled-fg: oklch(0.985 0.003 247);
+}
+
+.dark {
+  /* ── Colors (16 core tokens) ── */
+  --design-bg: oklch(0.129 0.042 264);
+  --design-fg: oklch(0.985 0.003 247);
+  --design-card: oklch(0.208 0.042 265);
+  --design-card-fg: oklch(0.985 0.003 247);
+  --design-primary: oklch(0.929 0.013 255);
+  --design-primary-fg: oklch(0.208 0.042 265);
+  --design-secondary: oklch(0.279 0.041 260);
+  --design-secondary-fg: oklch(0.985 0.003 247);
+  --design-muted: oklch(0.279 0.041 260);
+  --design-muted-fg: oklch(0.704 0.04 256);
+  --design-accent: oklch(0.279 0.041 260);
+  --design-accent-fg: oklch(0.985 0.003 247);
+  --design-destructive: oklch(0.704 0.191 22.2);
+  --design-border: oklch(1 0 0 / 10%);
+  --design-input: oklch(1 0 0 / 15%);
+  --design-ring: oklch(0.551 0.027 264);
+
+  /* ── Status Colors (7) ── */
+  --design-status-pending: oklch(0.828 0.189 84.4);
+  --design-status-pending-fg: oklch(0.21 0.034 46);
+  --design-status-in-progress: oklch(0.75 0.183 55.9);
+  --design-status-in-progress-fg: oklch(0.21 0.034 46);
+  --design-status-pending-review: oklch(0.488 0.243 264.4);
+  --design-status-pending-review-fg: oklch(0.985 0.003 247);
+  --design-status-needs-work: oklch(0.905 0.182 98.1);
+  --design-status-needs-work-fg: oklch(0.21 0.034 46);
+  --design-status-completed: oklch(0.696 0.17 162.5);
+  --design-status-completed-fg: oklch(0.985 0.003 247);
+  --design-status-blocked: oklch(0.704 0.191 22.2);
+  --design-status-blocked-fg: oklch(0.985 0.003 247);
+  --design-status-cancelled: oklch(0.704 0.04 256);
+  --design-status-cancelled-fg: oklch(0.985 0.003 247);
+}

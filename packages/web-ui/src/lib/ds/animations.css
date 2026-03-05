@@ -1,0 +1,65 @@
+/*
+ * Design System Animations
+ *
+ * All animations are gated behind @media (prefers-reduced-motion: reduce)
+ * to respect user accessibility preferences.
+ *
+ * Keyframes use the ds- prefix to avoid collisions.
+ */
+
+/* ── Shimmer (skeleton loading) ── */
+
+@keyframes ds-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Breathing / Pulse (active agent indicator) ── */
+
+@keyframes ds-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 color-mix(in oklch, var(--design-accent) 10%, transparent),
+      inset 0 0 20px color-mix(in oklch, var(--design-accent) 5%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 20px 2px color-mix(in oklch, var(--design-accent) 20%, transparent),
+      inset 0 0 30px color-mix(in oklch, var(--design-accent) 10%, transparent);
+  }
+}
+
+/* ── Utility classes ── */
+
+.ds-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, var(--design-accent) 8%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: ds-shimmer 2s ease-in-out infinite;
+}
+
+.ds-breathe {
+  animation: ds-breathe 3s ease-in-out infinite;
+}
+
+/* ── Reduced motion: disable all ds- animations ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-shimmer {
+    animation: none;
+    background: color-mix(in oklch, var(--design-accent) 8%, transparent);
+  }
+
+  .ds-breathe {
+    animation: none;
+  }
+}
