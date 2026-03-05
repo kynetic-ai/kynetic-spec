@@ -1,0 +1,7 @@
+id: 01KJZ2VRNRBF24S58X998T3WB7
+task_id: "@implement-session-history"
+agent_type: codex-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-05T13:26:54.314Z
