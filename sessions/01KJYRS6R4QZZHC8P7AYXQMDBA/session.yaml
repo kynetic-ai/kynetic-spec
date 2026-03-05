@@ -1,0 +1,7 @@
+id: 01KJYRS6R4QZZHC8P7AYXQMDBA
+task_id: "@implement-session-stream-view"
+agent_type: codex-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-05T10:30:53.408Z
