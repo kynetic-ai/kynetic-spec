@@ -76632,16 +76632,36 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KJZE5WPH5XAAT9F96WNF0MF0
   created_at: 2026-03-05T01:30:06.311Z
+  started_at: 2026-03-05T16:47:32.319Z
   notes:
     - _ulid: 01KJXSVJK7RK2HWN05Q26NYP6M
       created_at: 2026-03-05T01:30:06.311Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
+    - _ulid: 01KJZEF5AMKGES2NEJMWZHB0PB
+      created_at: 2026-03-05T16:49:34.036Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Plans view shows plan records with progress tracking. No daemon /api/plans
+        route exists yet - need to create one.
+
+        - Scope: Create daemon plans route, add PlanSummary to shared types, add fetchPlans API
+        client, implement Plans view page with status, dates, linked spec/task counts, and task
+        completion progress.
+
+        - Files: packages/daemon/src/routes/plans.ts (new), packages/daemon/src/server.ts,
+        packages/shared/src/api.ts, packages/web-ui/src/lib/api.ts,
+        packages/web-ui/src/lib/api-static.ts, packages/web-ui/src/routes/plans/+page.svelte,
+        packages/web-ui/src/routes/plans/+page.ts (new)
+
+        - Verification: npm test in root, npm run test in web-ui
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T16:47:32.319Z
-  session_id: 01KJZE5WPH5XAAT9F96WNF0MF0
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
   slugs:
     - implement-validation-and-alignment-view
