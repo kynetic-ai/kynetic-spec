@@ -76995,7 +76995,7 @@
   spec_ref: "@ui-app-shell"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -77052,6 +77052,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T22:10:38.290Z
 - _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
   slugs: []
   title: Fix dispatch engine re-triggering workers on completed tasks
