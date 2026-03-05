@@ -77136,6 +77136,25 @@
         Tests: 176 suites / 3794 tests pass. 2 pre-existing failures (codex platform detection)
         are unrelated to this task.
       supersedes: null
+    - _ulid: 01KK03ZP3QC8WC8VV6SFN2FK6D
+      created_at: 2026-03-05T23:05:35.607Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) This branch includes unrelated /plans feature work outside
+        the task scope: packages/daemon/src/routes/plans.ts:1,
+        packages/web-ui/src/routes/plans/+page.svelte:1, packages/web-ui/tests/e2e/plans.spec.ts:1
+        (commits 9a585d815, 55d6e05f6). The task was limited to quick wins for @ui-app-shell. 2)
+        Touched UI files use raw Tailwind status colors instead of design tokens, violating the
+        design-token gate: packages/web-ui/src/lib/components/TaskList.svelte:34-45,
+        packages/web-ui/src/lib/components/ItemDetail.svelte:57-68,
+        packages/web-ui/src/routes/+page.svelte:108-120. Use the existing bg-status-* /
+        text-status-* token classes defined in packages/web-ui/src/app.css and
+        packages/web-ui/src/lib/ds/tokens.css. 3)
+        packages/web-ui/src/lib/components/ItemDetail.svelte:53 still uses legacy Svelte reactivity
+        (`$:`) in a touched file; review gate requires Svelte 5 rune patterns only. 4) Full
+        regression suite failed on this branch: npm test -> tests/cli-serve.test.ts:222 (`kspec
+        serve commands > should start in foreground mode with Ctrl+C support`), expected exitCode 0
+        but got null. packages/web-ui npm test passed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
