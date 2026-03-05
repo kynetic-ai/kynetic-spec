@@ -77025,7 +77025,7 @@
   spec_ref: "@cli-serve-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -77122,3 +77122,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-05T20:39:50.447Z
+  closed_reason: "Merged in PR #683. Added guardAgentContext() to serve start/stop/restart that checks
+    KSPEC_SESSION_ID and refuses with VALIDATION_FAILED. 4 tests, convention rule added. Fix cycle
+    addressed foreground test env sanitization and exact exit code assertions."
