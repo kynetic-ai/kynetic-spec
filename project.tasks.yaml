@@ -76763,7 +76763,7 @@
   type: task
   spec_ref: "@ui-plans-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76771,7 +76771,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJZE5WPH5XAAT9F96WNF0MF0
+  session_id: null
   created_at: 2026-03-05T01:30:06.311Z
   started_at: 2026-03-05T16:47:32.319Z
   submitted_at: 2026-03-05T16:57:24.447Z
@@ -76822,6 +76822,13 @@
       content: "Rebased feat/plans-view onto main via feat/ui-revamp → feat/enhanced-inbox-view-v2 rebase
         chain (incorporated 6 commits including PR #682 e2e daemon isolation fix). Branch is now 0
         behind main, 19 ahead."
+      supersedes: null
+    - _ulid: 01KK003ZF1V8XEFB94507WKVCJ
+      created_at: 2026-03-05T21:58:01.953Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: unlabeled plans filter control; plans view
+        does not refresh when task status changes because plans:updates is never emitted; wireframe
+        navigation actions missing."
       supersedes: null
   todos: []
   automation: eligible
