@@ -1468,3 +1468,6 @@ requirements:
         given: the test daemon port is dynamically assigned
         when: Playwright tests make API calls or navigate browser pages
         then: the port is propagated to all test fixtures and page URLs via the daemon fixture context
+    status:
+      maturity: draft
+      implementation: in_progress
