@@ -2546,7 +2546,7 @@ features:
             then: skips npm link
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
