@@ -75377,7 +75377,7 @@
   type: task
   spec_ref: "@ui-design-system"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@01KJXSWR"
@@ -75598,6 +75598,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-05T06:23:49.642Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
   slugs:
     - implement-app-shell-and-navigation
