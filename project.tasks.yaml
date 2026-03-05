@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75774,6 +75774,8 @@
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-03-05T08:56:24.350Z
+  session_id: 01KJYK5PHSNB2K4V68FF0XXA0R
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
   slugs:
     - implement-session-stream-view
@@ -75989,6 +75991,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #681. Two-pronged fix: staleness check at dequeue time discards stale
+    queue entries, and KSPEC_SESSION_ID guard suppresses self-triggering from dispatched agents. All
+    review issues resolved."
   depends_on: []
   context: []
   priority: 3
@@ -76000,6 +76005,7 @@
   created_at: 2026-03-05T08:19:23.588Z
   started_at: 2026-03-05T08:19:28.836Z
   submitted_at: 2026-03-05T08:28:53.561Z
+  completed_at: 2026-03-05T08:51:19.952Z
   notes:
     - _ulid: 01KJYHSDMFR12E8CT5FEWHPY23
       created_at: 2026-03-05T08:28:21.520Z
@@ -76011,7 +76017,3 @@
         @agent-dispatch-engine spec. Tests pass."
       supersedes: null
   todos: []
-  completed_at: 2026-03-05T08:51:19.952Z
-  closed_reason: "Merged in PR #681. Two-pronged fix: staleness check at dequeue time discards stale
-    queue entries, and KSPEC_SESSION_ID guard suppresses self-triggering from dispatched agents. All
-    review issues resolved."
