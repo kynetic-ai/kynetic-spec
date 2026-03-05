@@ -76273,7 +76273,7 @@
   type: task
   spec_ref: "@ui-agent-dispatch"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76334,6 +76334,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T12:20:14.209Z
 - _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
   slugs:
     - implement-session-history
