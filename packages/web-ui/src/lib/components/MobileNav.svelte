@@ -1,31 +1,45 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
+	import {
+		LayoutDashboard,
+		ListTodo,
+		FileText,
+		Inbox,
+		MoreHorizontal
+	} from 'lucide-svelte';
 
-	// Navigation items matching Sidebar - paths are relative, prefixed with base in template
-	const navItems = [
-		{ path: '/', label: 'Dashboard', icon: '🏠' },
-		{ path: '/tasks', label: 'Tasks', icon: '✓' },
-		{ path: '/items', label: 'Items', icon: '📄' },
-		{ path: '/inbox', label: 'Inbox', icon: '📥' },
-		{ path: '/triage', label: 'Triage', icon: '🔍' }
+	// Primary mobile nav items — most-used routes
+	const primaryItems = [
+		{ path: '/', label: 'Home', icon: LayoutDashboard },
+		{ path: '/tasks', label: 'Tasks', icon: ListTodo },
+		{ path: '/specs', label: 'Specs', icon: FileText },
+		{ path: '/inbox', label: 'Inbox', icon: Inbox }
 	];
+
+	function isActive(itemPath: string): boolean {
+		const currentPath = $page.url.pathname;
+		const fullPath = `${base}${itemPath}`;
+		if (itemPath === '/') {
+			return currentPath === fullPath || currentPath === '/';
+		}
+		return currentPath === fullPath || currentPath.startsWith(`${fullPath}/`);
+	}
 </script>
 
-<!-- AC: @web-dashboard ac-26 -->
 <nav
 	class="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden"
 	aria-label="Mobile navigation"
 >
 	<div class="flex justify-around">
-		{#each navItems as item}
+		{#each primaryItems as item}
 			<a
 				href="{base}{item.path}"
 				class="flex flex-1 flex-col items-center justify-center gap-1 px-2 py-3 text-xs transition-colors hover:bg-accent"
-				class:text-primary={$page.url.pathname === `${base}${item.path}` || $page.url.pathname === item.path}
-				class:font-semibold={$page.url.pathname === `${base}${item.path}` || $page.url.pathname === item.path}
+				class:text-primary={isActive(item.path)}
+				class:font-semibold={isActive(item.path)}
 			>
-				<span class="text-lg">{item.icon}</span>
+				<item.icon class="h-5 w-5" />
 				<span>{item.label}</span>
 			</a>
 		{/each}
