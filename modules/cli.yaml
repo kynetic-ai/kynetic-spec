@@ -2052,7 +2052,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |-
           kspec derive [ref] [options]
           kspec derive --all [options]
@@ -2187,7 +2187,7 @@ features:
             then: task title uses provided value instead of spec title
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
