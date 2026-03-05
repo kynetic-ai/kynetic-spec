@@ -11,7 +11,7 @@
 	import { fetchSession, fetchSessionEvents } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
-	import { parseEventsToBlocks, type DisplayBlock } from '$lib/components/session/session-utils';
+	import { parseEventsToBlocks, accumulateStreamingText, getLastSeq, type DisplayBlock } from '$lib/components/session/session-utils';
 	import SessionStream from '$lib/components/session/SessionStream.svelte';
 	import SessionContextPanel from '$lib/components/session/SessionContextPanel.svelte';
 	import SessionStreamSkeleton from '$lib/components/session/SessionStreamSkeleton.svelte';
@@ -43,7 +43,7 @@
 			session = sessionData;
 			events = eventsData.events;
 			blocks = parseEventsToBlocks(events);
-			lastSeq = events.length > 0 ? events[events.length - 1].seq : -1;
+			lastSeq = getLastSeq(events);
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load session';
 		} finally {
@@ -59,7 +59,7 @@
 			if (eventsData.events.length > 0) {
 				events = [...events, ...eventsData.events];
 				blocks = parseEventsToBlocks(events);
-				lastSeq = events[events.length - 1].seq;
+				lastSeq = getLastSeq(events);
 				// Clear streaming text when we get structured data
 				streamingText = '';
 			}
@@ -74,12 +74,8 @@
 
 	// AC: @ui-session-stream ac-2 — WebSocket handler for live text chunks
 	function handleAgentEvent(event: BroadcastEvent) {
-		if (event.event === 'agent_text_chunk') {
-			const data = event.data as { session_id?: string; text?: string };
-			if (data.session_id === sessionId && data.text) {
-				streamingText += data.text;
-			}
-		}
+		// Uses extracted utility for session-filtered text accumulation
+		streamingText = accumulateStreamingText(streamingText, event, sessionId);
 
 		if (event.event === 'agent_invocation') {
 			const data = event.data as { session_id?: string; status?: string };

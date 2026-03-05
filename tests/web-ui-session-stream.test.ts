@@ -31,6 +31,12 @@ let formatTime: SessionUtils["formatTime"];
 let formatElapsed: SessionUtils["formatElapsed"];
 let formatAge: SessionUtils["formatAge"];
 let extractFilesChanged: SessionUtils["extractFilesChanged"];
+let computeScrollDistance: SessionUtils["computeScrollDistance"];
+let shouldAutoScrollFn: SessionUtils["shouldAutoScroll"];
+let AUTO_SCROLL_THRESHOLD: SessionUtils["AUTO_SCROLL_THRESHOLD"];
+let shouldShowJumpButton: SessionUtils["shouldShowJumpButton"];
+let accumulateStreamingText: SessionUtils["accumulateStreamingText"];
+let getLastSeq: SessionUtils["getLastSeq"];
 let renderMarkdown: MarkdownUtils["renderMarkdown"];
 
 beforeAll(async () => {
@@ -45,6 +51,12 @@ beforeAll(async () => {
   formatElapsed = sessionMod.formatElapsed;
   formatAge = sessionMod.formatAge;
   extractFilesChanged = sessionMod.extractFilesChanged;
+  computeScrollDistance = sessionMod.computeScrollDistance;
+  shouldAutoScrollFn = sessionMod.shouldAutoScroll;
+  AUTO_SCROLL_THRESHOLD = sessionMod.AUTO_SCROLL_THRESHOLD;
+  shouldShowJumpButton = sessionMod.shouldShowJumpButton;
+  accumulateStreamingText = sessionMod.accumulateStreamingText;
+  getLastSeq = sessionMod.getLastSeq;
 
   const markdownMod = await import(
     "../packages/web-ui/src/lib/utils/markdown"
@@ -893,7 +905,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
 // AC: @ui-session-stream ac-2
 describe("live streaming logic (@ui-session-stream ac-2)", () => {
-  describe("incremental event loading", () => {
+  describe("incremental event loading via parseEventsToBlocks", () => {
     // AC: @ui-session-stream ac-2
     it("parseEventsToBlocks handles incremental event appending", () => {
       // Simulate first load
@@ -922,73 +934,102 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
         expect(blocks[2].durationMs).toBe(300);
       }
     });
+  });
+
+  describe("getLastSeq — sequence tracking for incremental loading", () => {
+    // AC: @ui-session-stream ac-2
+    it("returns -1 for empty events", () => {
+      expect(getLastSeq([])).toBe(-1);
+    });
 
     // AC: @ui-session-stream ac-2
-    it("lastSeq tracking: new events have higher seq than previous batch", () => {
+    it("returns the seq of the last event", () => {
       const events = [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: {} },
-        { ts: 2000, seq: 5, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "assistant_text", text: "msg" } } },
-        { ts: 3000, seq: 10, type: "session.end", session_id: "s1", data: {} },
+        { seq: 0 },
+        { seq: 5 },
+        { seq: 10 },
       ];
-      // Verify events are ordered by seq and we can track lastSeq
-      const lastSeq = events[events.length - 1].seq;
-      expect(lastSeq).toBe(10);
+      expect(getLastSeq(events)).toBe(10);
+    });
 
-      // Subsequent events should have seq > lastSeq
-      const newEvents = [
-        { ts: 3100, seq: 11, type: "note", session_id: "s1", data: { message: "late note" } },
-      ];
-      expect(newEvents.every((e) => e.seq > lastSeq)).toBe(true);
+    // AC: @ui-session-stream ac-2
+    it("works with single event", () => {
+      expect(getLastSeq([{ seq: 42 }])).toBe(42);
+    });
+
+    // AC: @ui-session-stream ac-2
+    it("tracks incremental batches correctly", () => {
+      const batch1 = [{ seq: 0 }, { seq: 1 }, { seq: 2 }];
+      const lastAfterBatch1 = getLastSeq(batch1);
+      expect(lastAfterBatch1).toBe(2);
+
+      const batch2 = [{ seq: 3 }, { seq: 4 }];
+      const allEvents = [...batch1, ...batch2];
+      const lastAfterBatch2 = getLastSeq(allEvents);
+      expect(lastAfterBatch2).toBe(4);
+      expect(lastAfterBatch2).toBeGreaterThan(lastAfterBatch1);
     });
   });
 
-  describe("streaming text accumulation", () => {
+  describe("accumulateStreamingText — WebSocket text chunk handling", () => {
     // AC: @ui-session-stream ac-2
-    it("agent_text_chunk events accumulate text for matching session_id", () => {
-      // Simulate the handleAgentEvent logic from the page component
-      let streamingText = "";
-      const sessionId = "s1";
-
-      const chunks = [
-        { event: "agent_text_chunk", data: { session_id: "s1", text: "Hello " } },
-        { event: "agent_text_chunk", data: { session_id: "s1", text: "world" } },
-        { event: "agent_text_chunk", data: { session_id: "s2", text: "other session" } },
-      ];
-
-      for (const chunk of chunks) {
-        if (chunk.event === "agent_text_chunk") {
-          const data = chunk.data as { session_id?: string; text?: string };
-          if (data.session_id === sessionId && data.text) {
-            streamingText += data.text;
-          }
-        }
-      }
-
-      expect(streamingText).toBe("Hello world");
+    it("accumulates text from matching session chunks", () => {
+      let text = "";
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "Hello " } }, "s1");
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "world" } }, "s1");
+      expect(text).toBe("Hello world");
     });
 
     // AC: @ui-session-stream ac-2
-    it("streaming text clears when structured refresh provides new blocks", () => {
-      // Simulate the refresh pattern: streaming text accumulates, then clears
-      let streamingText = "partial text from chunks";
+    it("ignores chunks from other sessions", () => {
+      let text = "existing";
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s2", text: "other" } }, "s1");
+      expect(text).toBe("existing");
+    });
 
-      // On refresh with new events, streaming text resets
+    // AC: @ui-session-stream ac-2
+    it("ignores non-text-chunk events", () => {
+      let text = "existing";
+      text = accumulateStreamingText(text, { event: "agent_invocation", data: { session_id: "s1" } }, "s1");
+      expect(text).toBe("existing");
+    });
+
+    // AC: @ui-session-stream ac-2
+    it("ignores chunks with empty/missing text", () => {
+      let text = "existing";
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "" } }, "s1");
+      expect(text).toBe("existing");
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1" } }, "s1");
+      expect(text).toBe("existing");
+    });
+
+    // AC: @ui-session-stream ac-2
+    it("handles null data gracefully", () => {
+      let text = "existing";
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: null }, "s1");
+      expect(text).toBe("existing");
+    });
+  });
+
+  describe("streaming text refresh pattern", () => {
+    // AC: @ui-session-stream ac-2
+    it("streaming text clears when structured refresh provides new blocks", () => {
+      // parseEventsToBlocks produces blocks from the refreshed events
       const newEvents = [
         { ts: 5000, seq: 50, type: "session.update", session_id: "s1", data: { update: { sessionUpdate: "assistant_text", text: "partial text from chunks" } } },
       ];
       const blocks = parseEventsToBlocks(newEvents);
-      if (blocks.length > 0) {
-        streamingText = "";
-      }
-
-      expect(streamingText).toBe("");
+      expect(blocks.length).toBeGreaterThan(0);
       expect(blocks[0]).toMatchObject({ type: "message", content: "partial text from chunks" });
+      // When blocks arrive, streaming text resets (component behavior verified by the logic:
+      // if (eventsData.events.length > 0) streamingText = '')
     });
   });
 
   describe("session activity detection", () => {
     // AC: @ui-session-stream ac-2
     it("isLive is determined by session status being active", () => {
+      // This matches the $derived in +page.svelte: isLive = session?.status === 'active'
       const activeSession = { status: "active" as const };
       const completedSession = { status: "completed" as const };
       expect(activeSession.status === "active").toBe(true);
@@ -1001,84 +1042,79 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
 
 // AC: @ui-session-stream ac-3
 describe("auto-scroll behavior (@ui-session-stream ac-3)", () => {
-  // AC: @ui-session-stream ac-3
-  it("auto-scroll threshold is 100px from bottom", () => {
-    // Test the scroll distance calculation used for auto-scroll detection
-    const scrollHeight = 1000;
-    const clientHeight = 400;
+  describe("computeScrollDistance — distance from bottom calculation", () => {
+    // AC: @ui-session-stream ac-3
+    it("returns 0 when scrolled to bottom", () => {
+      // scrollTop = scrollHeight - clientHeight means at bottom
+      expect(computeScrollDistance(1000, 600, 400)).toBe(0);
+    });
 
-    // The component uses: distanceFromBottom = scrollHeight - scrollTop - clientHeight
-    // shouldAutoScroll = distanceFromBottom < 100
-    function calcDistance(scrollTop: number): number {
-      return scrollHeight - scrollTop - clientHeight;
-    }
+    // AC: @ui-session-stream ac-3
+    it("returns positive distance when scrolled up", () => {
+      expect(computeScrollDistance(1000, 550, 400)).toBe(50);
+      expect(computeScrollDistance(1000, 400, 400)).toBe(200);
+    });
 
-    // At bottom (scrollTop = scrollHeight - clientHeight = 600)
-    expect(calcDistance(600)).toBe(0);
-    expect(calcDistance(600) < 100).toBe(true); // auto-scroll ON
-
-    // 50px from bottom
-    expect(calcDistance(550)).toBe(50);
-    expect(calcDistance(550) < 100).toBe(true); // auto-scroll ON
-
-    // 100px from bottom (exactly at threshold)
-    expect(calcDistance(500)).toBe(100);
-    expect(calcDistance(500) < 100).toBe(false); // auto-scroll OFF
-
-    // 200px from bottom
-    expect(calcDistance(400)).toBe(200);
-    expect(calcDistance(400) < 100).toBe(false); // auto-scroll OFF
+    // AC: @ui-session-stream ac-3
+    it("handles edge case of content shorter than viewport", () => {
+      // scrollHeight <= clientHeight: can't scroll
+      expect(computeScrollDistance(400, 0, 400)).toBe(0);
+    });
   });
 
-  // AC: @ui-session-stream ac-3
-  it("jump-to-bottom button visibility depends on auto-scroll state", () => {
-    // The component uses: showJumpButton = !shouldAutoScroll && (isLive || blocks.length > 0)
-    function showJumpButton(
-      shouldAutoScroll: boolean,
-      isLive: boolean,
-      blockCount: number,
-    ): boolean {
-      return !shouldAutoScroll && (isLive || blockCount > 0);
-    }
+  describe("shouldAutoScroll — threshold-based auto-scroll detection", () => {
+    // AC: @ui-session-stream ac-3
+    it("threshold is 100px", () => {
+      expect(AUTO_SCROLL_THRESHOLD).toBe(100);
+    });
 
-    // Auto-scrolling: button hidden
-    expect(showJumpButton(true, true, 10)).toBe(false);
-    expect(showJumpButton(true, false, 10)).toBe(false);
+    // AC: @ui-session-stream ac-3
+    it("returns true when at bottom (0px from bottom)", () => {
+      expect(shouldAutoScrollFn(1000, 600, 400)).toBe(true);
+    });
 
-    // Not auto-scrolling + live: button shown
-    expect(showJumpButton(false, true, 10)).toBe(true);
+    // AC: @ui-session-stream ac-3
+    it("returns true when within threshold (50px from bottom)", () => {
+      expect(shouldAutoScrollFn(1000, 550, 400)).toBe(true);
+    });
 
-    // Not auto-scrolling + has blocks: button shown
-    expect(showJumpButton(false, false, 5)).toBe(true);
+    // AC: @ui-session-stream ac-3
+    it("returns false at exactly the threshold (100px from bottom)", () => {
+      expect(shouldAutoScrollFn(1000, 500, 400)).toBe(false);
+    });
 
-    // Not auto-scrolling + no content: button hidden
-    expect(showJumpButton(false, false, 0)).toBe(false);
+    // AC: @ui-session-stream ac-3
+    it("returns false when scrolled well above threshold (200px from bottom)", () => {
+      expect(shouldAutoScrollFn(1000, 400, 400)).toBe(false);
+    });
+
+    // AC: @ui-session-stream ac-3
+    it("returns true when content fits in viewport (no scrolling needed)", () => {
+      expect(shouldAutoScrollFn(400, 0, 400)).toBe(true);
+    });
   });
 
-  // AC: @ui-session-stream ac-3
-  it("scroll debounce uses 150ms timer", () => {
-    // Verify the debounce logic: rapid scroll events should be debounced
-    let userScrolling = false;
-    let timer: ReturnType<typeof setTimeout> | undefined;
+  describe("shouldShowJumpButton — button visibility logic", () => {
+    // AC: @ui-session-stream ac-3
+    it("hides button when auto-scrolling (regardless of content)", () => {
+      expect(shouldShowJumpButton(true, true, 10)).toBe(false);
+      expect(shouldShowJumpButton(true, false, 10)).toBe(false);
+    });
 
-    function handleScroll() {
-      if (timer) clearTimeout(timer);
-      userScrolling = true;
-      timer = setTimeout(() => {
-        userScrolling = false;
-      }, 150);
-    }
+    // AC: @ui-session-stream ac-3
+    it("shows button when not auto-scrolling and live", () => {
+      expect(shouldShowJumpButton(false, true, 10)).toBe(true);
+    });
 
-    // Simulate rapid scrolling
-    handleScroll();
-    expect(userScrolling).toBe(true);
+    // AC: @ui-session-stream ac-3
+    it("shows button when not auto-scrolling and has blocks", () => {
+      expect(shouldShowJumpButton(false, false, 5)).toBe(true);
+    });
 
-    // Before debounce resolves
-    handleScroll();
-    expect(userScrolling).toBe(true);
-
-    // Cleanup
-    if (timer) clearTimeout(timer);
+    // AC: @ui-session-stream ac-3
+    it("hides button when not auto-scrolling but no content", () => {
+      expect(shouldShowJumpButton(false, false, 0)).toBe(false);
+    });
   });
 });
 

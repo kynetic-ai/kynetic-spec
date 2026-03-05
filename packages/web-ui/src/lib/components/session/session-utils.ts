@@ -359,6 +359,66 @@ export function formatAge(dateStr: string): string {
  *
  * AC: @ui-session-stream ac-4 — Files changed during session.
  */
+/**
+ * Compute the distance from the bottom of a scroll container.
+ * Used by SessionStream.svelte for auto-scroll detection.
+ *
+ * AC: @ui-session-stream ac-3
+ */
+export function computeScrollDistance(scrollHeight: number, scrollTop: number, clientHeight: number): number {
+	return scrollHeight - scrollTop - clientHeight;
+}
+
+/**
+ * Determine whether auto-scroll should be active based on scroll position.
+ * Returns true when the user is within the threshold of the bottom.
+ *
+ * AC: @ui-session-stream ac-3
+ */
+export const AUTO_SCROLL_THRESHOLD = 100;
+
+export function shouldAutoScroll(scrollHeight: number, scrollTop: number, clientHeight: number): boolean {
+	return computeScrollDistance(scrollHeight, scrollTop, clientHeight) < AUTO_SCROLL_THRESHOLD;
+}
+
+/**
+ * Determine whether the "jump to bottom" button should be visible.
+ * Shown when not auto-scrolling AND there is content to jump to.
+ *
+ * AC: @ui-session-stream ac-3
+ */
+export function shouldShowJumpButton(autoScrolling: boolean, isLive: boolean, blockCount: number): boolean {
+	return !autoScrolling && (isLive || blockCount > 0);
+}
+
+/**
+ * Accumulate streaming text from agent_text_chunk WebSocket events.
+ * Only accumulates for the target session. Returns updated streaming text.
+ *
+ * AC: @ui-session-stream ac-2
+ */
+export function accumulateStreamingText(
+	currentText: string,
+	event: { event: string; data: unknown },
+	targetSessionId: string,
+): string {
+	if (event.event !== 'agent_text_chunk') return currentText;
+	const data = event.data as { session_id?: string; text?: string } | null;
+	if (!data || data.session_id !== targetSessionId || !data.text) return currentText;
+	return currentText + data.text;
+}
+
+/**
+ * Determine the last sequence number from an events array.
+ * Returns -1 if the array is empty.
+ *
+ * AC: @ui-session-stream ac-2
+ */
+export function getLastSeq(events: Array<{ seq: number }>): number {
+	if (events.length === 0) return -1;
+	return events[events.length - 1].seq;
+}
+
 const WRITE_TOOLS = new Set(['Write', 'Edit', 'NotebookEdit']);
 
 export function extractFilesChanged(blocks: DisplayBlock[]): string[] {

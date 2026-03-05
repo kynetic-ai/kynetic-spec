@@ -3,7 +3,7 @@
   AC: @ui-session-stream ac-3 — Auto-scroll behavior with jump-to-bottom button.
 -->
 <script lang="ts">
-	import type { DisplayBlock } from './session-utils';
+	import { type DisplayBlock, shouldAutoScroll as computeShouldAutoScroll, shouldShowJumpButton as computeShowJumpButton } from './session-utils';
 	import MessageBlock from './MessageBlock.svelte';
 	import ToolCallView from './ToolCallView.svelte';
 	import ThinkingBlock from './ThinkingBlock.svelte';
@@ -21,7 +21,7 @@
 	} = $props();
 
 	let scrollContainer: HTMLDivElement | undefined = $state();
-	let shouldAutoScroll = $state(true);
+	let autoScrollActive = $state(true);
 	let userScrolling = $state(false);
 	let scrollDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -30,7 +30,6 @@
 		if (!scrollContainer) return;
 
 		const { scrollHeight, scrollTop, clientHeight } = scrollContainer;
-		const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
 		// Clear existing debounce
 		if (scrollDebounceTimer) clearTimeout(scrollDebounceTimer);
@@ -40,8 +39,8 @@
 			userScrolling = false;
 		}, 150);
 
-		// AC: @ui-session-stream ac-3 — 100px threshold for re-enabling auto-scroll
-		shouldAutoScroll = distanceFromBottom < 100;
+		// AC: @ui-session-stream ac-3 — Uses extracted utility for threshold calculation
+		autoScrollActive = computeShouldAutoScroll(scrollHeight, scrollTop, clientHeight);
 	}
 
 	// AC: @ui-session-stream ac-3 — Auto-scroll to follow new content
@@ -50,7 +49,7 @@
 		const _blockCount = blocks.length;
 		const _text = streamingText;
 
-		if (shouldAutoScroll && !userScrolling && scrollContainer) {
+		if (autoScrollActive && !userScrolling && scrollContainer) {
 			requestAnimationFrame(() => {
 				if (scrollContainer) {
 					scrollContainer.scrollTo({
@@ -63,7 +62,7 @@
 	});
 
 	function jumpToBottom() {
-		shouldAutoScroll = true;
+		autoScrollActive = true;
 		if (scrollContainer) {
 			scrollContainer.scrollTo({
 				top: scrollContainer.scrollHeight,
@@ -72,7 +71,8 @@
 		}
 	}
 
-	let showJumpButton = $derived(!shouldAutoScroll && (isLive || blocks.length > 0));
+	// AC: @ui-session-stream ac-3 — Uses extracted utility for button visibility
+	let showJumpButton = $derived(computeShowJumpButton(autoScrollActive, isLive, blocks.length));
 </script>
 
 <div class="relative flex-1 min-h-0">

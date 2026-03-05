@@ -50,21 +50,33 @@ export function createSessionRoutes() {
 
     // Get single session metadata
     // AC: @ui-session-stream ac-4 — Includes spec context, budget, and task info
-    .get('/:id', async ({ params, projectContext }) => {
+    .get('/:id', async ({ params, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
 
       // Resolve session ID (supports prefix matching)
       const resolution = await resolveSessionId(ctx.specDir, params.id);
       if (!resolution.ok) {
         if (resolution.error === 'ambiguous') {
-          throw new Error(`Ambiguous session ID: ${params.id} matches ${resolution.matches.length} sessions`);
+          return errorResponse(400, {
+            error: 'ambiguous_id',
+            message: `Ambiguous session ID: ${params.id} matches ${resolution.matches.length} sessions`,
+            suggestion: 'Provide a longer prefix to uniquely identify the session',
+          });
         }
-        throw new Error(`Session not found: ${params.id}`);
+        return errorResponse(404, {
+          error: 'not_found',
+          message: `Session not found: ${params.id}`,
+          suggestion: 'Use GET /api/sessions to list available sessions',
+        });
       }
 
       const detail = await getSessionLogSummary(ctx.specDir, resolution.id);
       if (!detail) {
-        throw new Error(`Session not found: ${params.id}`);
+        return errorResponse(404, {
+          error: 'not_found',
+          message: `Session not found: ${params.id}`,
+          suggestion: 'Use GET /api/sessions to list available sessions',
+        });
       }
 
       const metadata = await getSession(ctx.specDir, resolution.id);
@@ -126,15 +138,23 @@ export function createSessionRoutes() {
     })
 
     // Get session events
-    .get('/:id/events', async ({ params, query, projectContext }) => {
+    .get('/:id/events', async ({ params, query, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
 
       const resolution = await resolveSessionId(ctx.specDir, params.id);
       if (!resolution.ok) {
         if (resolution.error === 'ambiguous') {
-          throw new Error(`Ambiguous session ID: ${params.id} matches ${resolution.matches.length} sessions`);
+          return errorResponse(400, {
+            error: 'ambiguous_id',
+            message: `Ambiguous session ID: ${params.id} matches ${resolution.matches.length} sessions`,
+            suggestion: 'Provide a longer prefix to uniquely identify the session',
+          });
         }
-        throw new Error(`Session not found: ${params.id}`);
+        return errorResponse(404, {
+          error: 'not_found',
+          message: `Session not found: ${params.id}`,
+          suggestion: 'Use GET /api/sessions to list available sessions',
+        });
       }
 
       let events = await readEvents(ctx.specDir, resolution.id);
