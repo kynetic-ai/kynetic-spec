@@ -1,0 +1,7 @@
+id: 01KJYRSSN5J6X4Y2E2A96X6KB4
+task_id: "@implement-task-board-kanban"
+agent_type: claude-agent-acp
+agent_id: ui-worker
+trigger: task.needs_work
+status: active
+started_at: 2026-03-05T10:36:38.236Z
