@@ -76403,7 +76403,7 @@
   type: task
   spec_ref: "@ui-session-history"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-stream-view"
@@ -76411,9 +76411,10 @@
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KJZ0DPX8NJETRJDA399P76S7
+  session_id: null
   created_at: 2026-03-05T01:30:05.410Z
   started_at: 2026-03-05T12:49:46.900Z
+  submitted_at: 2026-03-05T12:59:46.170Z
   notes:
     - _ulid: 01KJXSVHQ2D10H7SMMCRYTA7CZ
       created_at: 2026-03-05T01:30:05.410Z
@@ -76459,9 +76460,15 @@
 
         - All existing tests pass (2 pre-existing failures unrelated to changes)
       supersedes: null
+    - _ulid: 01KJZ1JQJXV39DPB3D8ZHT0479
+      created_at: 2026-03-05T13:04:19.549Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX E2E AC coverage quality gaps in
+        sessions.spec.ts (incorrect sort assertion for ac-1; ac-2 test does not verify stream view
+        and has ineffective detail/events route stubbing)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T12:59:46.170Z
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
   slugs:
     - implement-enhanced-inbox-view
