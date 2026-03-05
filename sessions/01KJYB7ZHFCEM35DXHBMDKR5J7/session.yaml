@@ -1,0 +1,7 @@
+id: 01KJYB7ZHFCEM35DXHBMDKR5J7
+task_id: "@implement-ui-design-system"
+agent_type: claude-agent-acp
+agent_id: ui-worker
+trigger: task.needs_work
+status: active
+started_at: 2026-03-05T06:33:58.580Z
