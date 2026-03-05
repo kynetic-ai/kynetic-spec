@@ -84,16 +84,7 @@ agents:
       - vitest
     conventions: []
     adapter: codex-acp
-    dispatch:
-      - on: task.in_progress
-        filter:
-          automation: eligible
-      - on: task.ready
-        filter:
-          automation: eligible
-      - on: task.needs_work
-        filter:
-          automation: eligible
+    dispatch: []
     skills:
       - task-work
     concurrency:
@@ -112,8 +103,7 @@ agents:
       - gh
     conventions: []
     adapter: codex-acp
-    dispatch:
-      - on: task.pending_review
+    dispatch: []
     skills:
       - pr-review
     concurrency:
@@ -151,6 +141,53 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
+    prompt_template: >
+      Work on task {{task_ref}} — "{{task_title}}"
+
+
+      LOCAL WORKFLOW (no GitHub PRs):
+
+      - You are working in an isolated clone on the feat/ui-revamp branch.
+
+      - Before starting work, create a sub-branch: git checkout -b feat/ui-revamp/{{task_ref}}
+      feat/ui-revamp
+
+      - Make all commits on the sub-branch with conventional commit format + Task: {{task_ref}}
+      trailer.
+
+      - When work is complete, do NOT create a GitHub PR. Instead:
+        1. Ensure all tests pass (npm test in project root, and npm run test in packages/web-ui if UI tests exist)
+        2. Run kspec task submit {{task_ref}} (transitions to pending_review)
+        3. Stop responding — the ux-reviewer agent will handle review.
+      - After review approval, the reviewer will merge locally into feat/ui-revamp.
+
+
+      UI-SPECIFIC REQUIREMENTS:
+
+      - Use Svelte 5 runes ($state, $derived, $effect) exclusively. Never use Svelte 4 stores or $:
+      reactive declarations.
+
+      - Reference the imgen design system at ../imgen/packages/design-system/src/ for token values
+      and patterns.
+
+      - Use oklch() color space for all color tokens. Map tokens as Tailwind theme extensions.
+
+      - All animations MUST be gated behind @media (prefers-reduced-motion: reduce).
+
+      - Status colors: pending=amber, in_progress=orange, pending_review=blue, needs_work=yellow,
+        completed=emerald, blocked=red, cancelled=gray. Every status must be visually distinct and
+        not rely on color alone (include text labels).
+      - Use bits-ui primitives for dialog/sheet/accordion — do NOT recreate these.
+
+      - Every view must have empty state, loading skeleton, and error boundary.
+
+      - Follow component structure: lib/ds/ for design system CSS/tokens, lib/components/<feature>/
+      for feature components.
+
+      - Read .kspec/artifacts/ui-revamp-plan.md for full architectural context and wireframes.
+
+      - Reference ../kynetic-internal/packages/hub-ui/ for patterns: ActiveFleetRow, MiniTerminal,
+        ChatPanel, ToolCallView, ThinkingBlock, StreamingMarkdown.
   - _ulid: 01KJY2FP38QGAGFE27XKDBG7XN
     id: ux-reviewer
     name: UX Reviewer Agent
@@ -170,6 +207,58 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
+    prompt_template: >
+      Review task {{task_ref}} — "{{task_title}}"
+
+
+      LOCAL REVIEW WORKFLOW (no GitHub PRs):
+
+      - You are reviewing work in an isolated clone. The worker committed to a sub-branch
+        (feat/ui-revamp/{{task_ref}} or similar) off feat/ui-revamp.
+      - Find the sub-branch: git branch --list 'feat/ui-revamp/*' | grep -i "$(echo {{task_ref}} |
+      sed 's/@//')"
+
+      - Review the diff against feat/ui-revamp: git diff feat/ui-revamp...HEAD
+
+      - Run all tests: npm test && cd packages/web-ui && npm test 2>/dev/null; cd ../..
+
+      - If issues found:
+        1. Add a task note with specific findings: kspec task note {{task_ref}} "Review findings: ..."
+        2. Transition: kspec task needs-work {{task_ref}} --reason "Review issues: ..."
+        3. Stop responding — the worker will fix.
+      - If review passes:
+        1. Merge into feat/ui-revamp: git checkout feat/ui-revamp && git merge --no-ff feat/ui-revamp/{{task_ref}} -m "feat(web-ui): merge {{task_ref}}"
+        2. Delete the sub-branch: git branch -d feat/ui-revamp/{{task_ref}}
+        3. Complete the task: kspec task complete {{task_ref}} --reason "Review passed. Merged to feat/ui-revamp."
+        4. Stop responding.
+
+      UX REVIEW CHECKLIST:
+
+      - Spec AC coverage: every AC in the spec has a test with // AC: @spec-ref ac-N annotation.
+
+      - Trait AC coverage: check inherited trait ACs via kspec item get @spec-ref.
+
+      - Run kspec validate — any warnings for this spec are MUST-FIX.
+
+      - Design token usage: components use design tokens (bg-design-surface, text-design-accent,
+      etc.),
+        not hardcoded colors or raw Tailwind color classes (bg-gray-500, text-blue-400).
+      - Svelte 5 patterns: $state/$derived/$effect only, no legacy $: or svelte/store imports.
+
+      - Empty states: every list/collection view has an empty state with actionable guidance.
+
+      - Loading states: every async view has skeleton loading (shimmer animation).
+
+      - Error boundaries: views handle API failures gracefully.
+
+      - Accessibility: focus management in modals, aria-live for streaming, color-independent status
+      indicators,
+        prefers-reduced-motion gated animations.
+      - Visual consistency: compare with wireframes in .kspec/artifacts/ui-revamp-plan.md.
+
+      - Information density: cards/views are scannable, not cluttered.
+
+      - Reference ../imgen/packages/design-system/src/token-contract.css for expected token usage.
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
