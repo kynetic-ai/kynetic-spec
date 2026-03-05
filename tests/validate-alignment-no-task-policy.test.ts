@@ -124,4 +124,32 @@ tasks:
     expect(output).toContain("Test Spec");
     expect(output).not.toContain("Orphaned specs");
   });
+
+  // AC: @ui-design-system ac-1
+  it("treats needs_work task as active work (expected spec status in_progress)", async () => {
+    // spec says in_progress, task is needs_work → expected in_progress → aligned
+    await writeProject("in_progress", true, "needs_work");
+    const result = kspecWithStatus("validate --alignment", tmpDir);
+    const output = `${result.stdout}\n${result.stderr}`;
+    expect(output).not.toContain("Status mismatches");
+    expect(output).not.toContain("Test Spec");
+  });
+
+  it("treats pending_review task as active work (expected spec status in_progress)", async () => {
+    // spec says in_progress, task is pending_review → expected in_progress → aligned
+    await writeProject("in_progress", true, "pending_review");
+    const result = kspecWithStatus("validate --alignment", tmpDir);
+    const output = `${result.stdout}\n${result.stderr}`;
+    expect(output).not.toContain("Status mismatches");
+    expect(output).not.toContain("Test Spec");
+  });
+
+  it("emits status_mismatch when spec is not_started but task is needs_work", async () => {
+    // spec says not_started, task is needs_work → expected in_progress → mismatch
+    await writeProject("not_started", true, "needs_work");
+    const result = kspecWithStatus("validate --alignment", tmpDir);
+    const output = `${result.stdout}\n${result.stderr}`;
+    expect(output).toContain("Status mismatches");
+    expect(output).toContain("Test Spec");
+  });
 });
