@@ -75539,6 +75539,20 @@
         pre-existing codex failures unrelated). kspec validate confirms 294/294 aligned (was
         293/294)."
       supersedes: null
+    - _ulid: 01KJY91ZDA7BXHJW35XJN2JCS6
+      created_at: 2026-03-05T05:55:44.682Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Incorrect AC annotation mapping in
+        tests/validate-alignment-no-task-policy.test.ts:128 — '// AC: @ui-design-system ac-1' is
+        attached to alignment status behavior, not UI design token behavior from @ui-design-system
+        ac-1. AC annotations must map to the referenced AC text. 2) Out-of-scope core behavior
+        change in src/parser/alignment.ts:154-167 modifies global expected status rules (treats
+        pending_review/needs_work as active work) and was added on this UI design-system task
+        branch; move to a dedicated alignment/spec task or remove from this task branch. Required
+        test sequence passed: npm test (3706 passed) and packages/web-ui npm test (18 passed). kspec
+        validate run completed; no spec-specific warning shown for @ui-design-system, but global
+        repo validation errors/warnings remain unrelated to this task."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
