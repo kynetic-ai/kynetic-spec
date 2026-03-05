@@ -1339,6 +1339,9 @@ features:
     traits: []
     notes: []
     created: 2026-03-05T01:30:02.811Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KJXSVF6C8W98RNSGH5V0EM4G
     slugs:
       - ui-plans-view
