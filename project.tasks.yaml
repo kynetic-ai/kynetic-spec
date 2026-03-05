@@ -76682,6 +76682,15 @@
 
         - Verification: npm test in root, npm run test in web-ui
       supersedes: null
+    - _ulid: 01KJZG8F00TCWKM7Q1JS3PN75T
+      created_at: 2026-03-05T17:20:51.713Z
+      author: "@claude"
+      content: "Added E2E test coverage: 13 Playwright tests covering AC @ui-plans-view ac-1. Tests verify
+        plan cards (title, status, dates, spec/task counts), progress bars with task completion
+        status, status filtering, summary counts, empty states, loading skeletons, and error
+        handling. Created project.plans.yaml fixture with 3 plans (active/draft/completed) for test
+        data."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
