@@ -66576,6 +66576,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #680. Reduced alignment warnings from 150 to 24 (all orphaned specs, 0
+    mismatches). Fixed alignment.ts suppression logic, corrected 20 spec statuses, added 5
+    behavioral tests with proper AC annotations."
   depends_on: []
   context: []
   priority: 2
@@ -66588,6 +66591,7 @@
   created_at: 2026-02-27T23:59:53.084Z
   started_at: 2026-03-05T00:23:01.668Z
   submitted_at: 2026-03-05T00:23:03.208Z
+  completed_at: 2026-03-05T00:23:04.272Z
   notes:
     - _ulid: 01KJXMCRPM1TNQZAB3BTA1JY3R
       created_at: 2026-03-04T23:54:38.164Z
@@ -66650,10 +66654,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-03-05T00:23:04.272Z
-  closed_reason: "Merged in PR #680. Reduced alignment warnings from 150 to 24 (all orphaned specs, 0
-    mismatches). Fixed alignment.ts suppression logic, corrected 20 spec statuses, added 5
-    behavioral tests with proper AC annotations."
 - _ulid: 01KJGRPX87E756YE1VFKXCWEZ3
   slugs:
     - task-triage-automation-eligible-missing-spec-ref
@@ -75246,3 +75246,23 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: UI/UX revamp - comprehensive web UI redesign
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - ui
+    - web-ui
+    - design
+  depends_on: []
+  _ulid: 01KJXQK4T21FSEY4YV6RD0DT8M
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-05T00:50:32.895Z
+  notes: []
+  todos: []
