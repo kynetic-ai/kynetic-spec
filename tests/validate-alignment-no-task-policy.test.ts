@@ -125,7 +125,7 @@ tasks:
     expect(output).not.toContain("Orphaned specs");
   });
 
-  // AC: @ui-app-shell ac-1
+  // AC: @alignment-warnings ac-2
   it("treats needs_work task as active work (expects in_progress spec)", async () => {
     await writeProject("in_progress", true, "needs_work");
     const result = kspecWithStatus("validate --alignment", tmpDir);
@@ -133,6 +133,7 @@ tasks:
     expect(output).not.toContain("Status mismatches");
   });
 
+  // AC: @alignment-warnings ac-2
   it("treats pending_review task as active work (expects in_progress spec)", async () => {
     await writeProject("in_progress", true, "pending_review");
     const result = kspecWithStatus("validate --alignment", tmpDir);
