@@ -1421,3 +1421,50 @@ features:
     traits: []
     notes: []
     created: 2026-03-05T01:30:02.857Z
+requirements:
+  - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
+    slugs:
+      - e2e-test-daemon-isolation
+    title: E2E Test Daemon Isolation
+    type: requirement
+    tags:
+      - test
+      - daemon
+      - e2e
+      - web-ui
+    description: E2E (Playwright) tests must never interfere with user-invoked or other daemons. Tests
+      must use ephemeral ports, isolated HOME/config, and deterministic cleanup — never killing
+      processes by port number. This extends the vitest isolation patterns from
+      @daemon-sensitive-cli-test-determinism to the Playwright E2E test infrastructure.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-05T17:35:25.175Z
+    acceptance_criteria:
+      - id: ac-1
+        given: E2E tests need a daemon for API/browser testing
+        when: the Playwright test fixture starts a daemon
+        then: the daemon binds to an ephemeral port (OS-assigned, port 0) so it never conflicts with user
+          daemons or parallel test runs
+      - id: ac-2
+        given: a daemon is running on the default port (3456) before tests start
+        when: E2E tests execute
+        then: the user's daemon is never killed, stopped, or interfered with — tests use their own isolated
+          port
+      - id: ac-3
+        given: E2E tests start a daemon in a temp directory
+        when: the test fixture sets up the daemon environment
+        then: HOME and config paths are isolated so daemon PID/port state does not leak to or from the
+          ambient system
+      - id: ac-4
+        given: E2E tests complete (pass or fail)
+        when: the Playwright test fixture tears down
+        then: the test daemon is stopped via scoped kspec serve stop (not process killing) and temp
+          directories are cleaned up
+      - id: ac-5
+        given: the test daemon port is dynamically assigned
+        when: Playwright tests make API calls or navigate browser pages
+        then: the port is propagated to all test fixtures and page URLs via the daemon fixture context
