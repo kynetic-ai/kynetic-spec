@@ -568,6 +568,7 @@ describe('kspec serve commands', () => {
 
   // AC: @cli-serve-commands ac-11
   describe('dispatch agent guard', () => {
+    // AC: @trait-semantic-exit-codes ac-2 — validation error exit code
     it('should refuse serve start when KSPEC_SESSION_ID is set', async () => {
       const result = runKspec(
         `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
@@ -575,7 +576,7 @@ describe('kspec serve commands', () => {
         { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
       );
 
-      expect(result.exitCode).not.toBe(0);
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
       expect(result.stderr).toContain('Cannot start daemon from inside an agent invocation');
       expect(result.stderr).toContain('dispatch engine');
     });
@@ -587,7 +588,7 @@ describe('kspec serve commands', () => {
         { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
       );
 
-      expect(result.exitCode).not.toBe(0);
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
       expect(result.stderr).toContain('Cannot stop daemon from inside an agent invocation');
       expect(result.stderr).toContain('dispatch engine');
     });
@@ -599,7 +600,7 @@ describe('kspec serve commands', () => {
         { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
       );
 
-      expect(result.exitCode).not.toBe(0);
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
       expect(result.stderr).toContain('Cannot restart daemon from inside an agent invocation');
       expect(result.stderr).toContain('dispatch engine');
     });
@@ -612,7 +613,7 @@ describe('kspec serve commands', () => {
         { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
       );
 
-      expect(result.exitCode).not.toBe(0);
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
       const output = JSON.parse(result.stdout);
       expect(output).toHaveProperty('error');
       expect(output.error).toContain('Cannot start daemon');
