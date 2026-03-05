@@ -76794,7 +76794,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76810,6 +76810,8 @@
       content: See plan @plan-ui-ux-revamp for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-03-05T20:44:24.834Z
+  session_id: 01KJZVWC9DKZ2A97887XA3T3JK
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
   slugs:
     - implement-dashboard-overview
@@ -77027,6 +77029,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #683. Added guardAgentContext() to serve start/stop/restart that checks
+    KSPEC_SESSION_ID and refuses with VALIDATION_FAILED. 4 tests, convention rule added. Fix cycle
+    addressed foreground test env sanitization and exact exit code assertions."
   depends_on: []
   context: []
   priority: 2
@@ -77039,6 +77044,7 @@
   created_at: 2026-03-05T19:32:00.739Z
   started_at: 2026-03-05T20:06:38.089Z
   submitted_at: 2026-03-05T20:06:39.755Z
+  completed_at: 2026-03-05T20:39:50.447Z
   notes:
     - _ulid: 01KJZQS871W22QPR27A6TZDXTA
       created_at: 2026-03-05T19:32:21.857Z
@@ -77122,7 +77128,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-05T20:39:50.447Z
-  closed_reason: "Merged in PR #683. Added guardAgentContext() to serve start/stop/restart that checks
-    KSPEC_SESSION_ID and refuses with VALIDATION_FAILED. 4 tests, convention rule added. Fix cycle
-    addressed foreground test env sanitization and exact exit code assertions."
