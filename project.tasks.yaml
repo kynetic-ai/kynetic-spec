@@ -76219,6 +76219,33 @@
         instead of structured API responses, and AC-2/AC-3 tests still rely on test-local logic
         simulations rather than runtime component behavior coverage."
       supersedes: null
+    - _ulid: 01KJYXVWJ8KX3JJ9F0PH17QWE6
+      created_at: 2026-03-05T11:59:25.257Z
+      author: "@claude"
+      content: >-
+        Fix cycle 3: Addressing review feedback.
+
+
+        Changes:
+
+        1. API error handling: Replaced all throw-based errors in session routes
+        (packages/daemon/src/routes/sessions.ts) with structured HTTP responses using
+        errorResponse(status, {...}) pattern matching tasks.ts/items.ts. Ambiguous IDs return 400
+        with 'ambiguous_id' error, missing sessions return 404 with 'not_found' error and
+        suggestion.
+
+
+        2. AC-2/AC-3 test quality: Extracted 6 testable utility functions from Svelte components
+        into session-utils.ts: computeScrollDistance, shouldAutoScroll, AUTO_SCROLL_THRESHOLD,
+        shouldShowJumpButton, accumulateStreamingText, getLastSeq. Updated SessionStream.svelte and
+        +page.svelte to import and use these shared utilities. Rewrote all AC-2/AC-3 tests to
+        exercise the actual exported functions instead of reimplementing logic in test-local
+        functions.
+
+
+        Tests: 92/92 session stream tests passing. Full suite: 3840/3845 (2 pre-existing codex
+        failures, 3 skipped).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
