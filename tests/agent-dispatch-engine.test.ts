@@ -22,10 +22,13 @@ import * as invocationModule from "../src/agent-runtime/invocation.js";
 import {
   createTempDir,
   cleanupTempDir,
+  createIsolatedKspecHome,
   testUlid,
   testUlids,
+  kspec,
   initGitRepo,
 } from "./helpers/cli.js";
+import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
@@ -1835,9 +1838,111 @@ describe("Stale queue entry discard", () => {
 
 // ─── Self-trigger suppression ────────────────────────────────────────────────
 
-// AC: @agent-dispatch-engine ac-18
-// The self-trigger suppression guard lives in postDispatchEvent (src/cli/commands/task.ts).
-// When KSPEC_SESSION_ID is set, CLI task transitions skip posting dispatch events to the daemon.
-// This is verified via E2E/integration tests that run kspec commands with KSPEC_SESSION_ID set.
-// The dispatch engine's file watcher independently detects the state change, so the CLI event
-// is redundant and was causing stale queue entry accumulation.
+describe("Self-trigger suppression", () => {
+  let testDir: string;
+  let server: http.Server;
+  let serverPort: number;
+  let receivedEvents: unknown[];
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-selftrigger-");
+    receivedEvents = [];
+
+    // Start a minimal HTTP server to capture dispatch events
+    server = http.createServer((req, res) => {
+      if (req.url === "/api/agent/events" && req.method === "POST") {
+        let body = "";
+        req.on("data", (chunk: Buffer) => { body += chunk.toString(); });
+        req.on("end", () => {
+          try { receivedEvents.push(JSON.parse(body)); } catch { /* ignore */ }
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ accepted: true }));
+        });
+        return;
+      }
+      res.writeHead(404);
+      res.end();
+    });
+
+    await new Promise<void>((resolve) => {
+      server.listen(0, "127.0.0.1", () => resolve());
+    });
+    serverPort = (server.address() as { port: number }).port;
+  });
+
+  afterEach(async () => {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-18
+  it("should suppress dispatch events when KSPEC_SESSION_ID is set", async () => {
+    // Set up a minimal kspec project with a task
+    initGitRepo(testDir);
+    const taskId = testUlid("TASK");
+    await fs.writeFile(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    await fs.writeFile(
+      path.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({
+        tasks: [{
+          _ulid: taskId,
+          type: "task",
+          title: "Test task",
+          status: "pending",
+          tags: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+        }],
+      }),
+    );
+    // Initial git commit so kspec commands work
+    await fs.writeFile(path.join(testDir, ".gitignore"), "");
+    const { execSync } = await import("node:child_process");
+    execSync("git add -A && git commit -m init", { cwd: testDir, stdio: "pipe" });
+
+    // Create isolated home with fake daemon PID/port pointing at our server
+    const isolated = await createIsolatedKspecHome(testDir);
+    await fs.writeFile(isolated.daemonPidFilePath, String(process.pid));
+    await fs.writeFile(isolated.daemonPortFilePath, String(serverPort));
+
+    const specDirEnv = { KSPEC_SPEC_DIR: testDir };
+
+    // Run task start WITHOUT KSPEC_SESSION_ID — event should be posted
+    kspec(`task start @${taskId}`, testDir, {
+      env: { ...isolated.env, ...specDirEnv },
+    });
+    // Give async fire-and-forget fetch time to complete
+    await new Promise((r) => setTimeout(r, 200));
+    expect(receivedEvents.length).toBe(1);
+
+    // Reset task to pending for the next test
+    receivedEvents = [];
+    await fs.writeFile(
+      path.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({
+        tasks: [{
+          _ulid: taskId,
+          type: "task",
+          title: "Test task",
+          status: "pending",
+          tags: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+        }],
+      }),
+    );
+    execSync("git add -A && git commit -m reset", { cwd: testDir, stdio: "pipe" });
+
+    // Run task start WITH KSPEC_SESSION_ID — event should be suppressed
+    kspec(`task start @${taskId}`, testDir, {
+      env: { ...isolated.env, ...specDirEnv, KSPEC_SESSION_ID: "test-session-id" },
+    });
+    await new Promise((r) => setTimeout(r, 200));
+    expect(receivedEvents.length).toBe(0);
+  });
+});
