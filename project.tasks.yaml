@@ -75967,6 +75967,7 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on:
     - "@implement-app-shell-and-navigation"
   context: []
@@ -75977,6 +75978,7 @@
   created_at: 2026-03-05T01:30:04.544Z
   started_at: 2026-03-05T12:25:44.413Z
   submitted_at: 2026-03-05T12:30:05.372Z
+  completed_at: 2026-03-05T12:35:49.162Z
   notes:
     - _ulid: 01KJXSVGW0MZHVDM69995M87W1
       created_at: 2026-03-05T01:30:04.544Z
@@ -76275,8 +76277,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-05T12:35:49.162Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
   slugs:
     - implement-agent-and-dispatch-view
@@ -76368,6 +76368,29 @@
       content: "[FIX_CYCLE: 1] Review findings: Review issues: missing aria-live handling for streamed
         invocation updates, missing actionable empty state for active-invocation collection, and
         fluff/non-failing error-boundary E2E coverage."
+      supersedes: null
+    - _ulid: 01KJZ0CNBXKXG7QF6XVTD3T8H7
+      created_at: 2026-03-05T12:43:32.094Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 complete. Addressed all 4 review findings:
+
+        - MUST-FIX 1: Added aria-live='polite' on active-invocations-section for DOM changes, plus
+        sr-only assertive aria-live region for WebSocket invocation lifecycle announcements
+        (started/completed/failed)
+
+        - MUST-FIX 2: Added actionable empty state when dispatch is running but no active
+        invocations, with guidance to run 'kspec tasks ready --eligible'
+
+        - MUST-FIX 3: Replaced documentary error-boundary test with real API failure test using
+        page.route() interception returning 500 errors
+
+        - SHOULD-FIX 4: Fixed loading-state test determinism by using page.route() to delay API
+        responses 500ms, ensuring skeleton is reliably visible
+
+        Also fixed API route patterns in E2E tests (definitions endpoint is /api/meta/agents not
+        /api/agent/definitions). All tests pass: root 3748/3750 (2 pre-existing codex failures),
+        web-ui 63/63.
       supersedes: null
   todos: []
   automation: eligible
