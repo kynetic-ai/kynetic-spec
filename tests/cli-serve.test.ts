@@ -161,6 +161,9 @@ describe('kspec serve commands', () => {
     const port = await getAvailablePort();
 
     // Spawn kspec serve in foreground
+    // Strip KSPEC_SESSION_ID to prevent dispatch guard from blocking
+    // when tests run inside an agent dispatch session
+    const { KSPEC_SESSION_ID: _, ...cleanProcessEnv } = process.env;
     const child = spawn('node', [
       join(__dirname, '../dist/cli/index.js'),
       'serve',
@@ -172,7 +175,7 @@ describe('kspec serve commands', () => {
     ], {
       cwd: tempDir,
       stdio: ['pipe', 'pipe', 'pipe'],
-      env: { ...process.env, ...testEnv },
+      env: { ...cleanProcessEnv, ...testEnv },
     });
 
     let output = '';
