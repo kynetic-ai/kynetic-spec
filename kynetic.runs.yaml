@@ -13284,7 +13284,7 @@ runs:
   - _ulid: 01KJXP1ZSSJNDMP3TSZ9M6KK93
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 4
+    current_step: 5
     total_steps: 6
     started_at: 2026-03-05T00:23:42.137Z
     step_results:
@@ -13325,5 +13325,11 @@ runs:
       - step_index: 4
         status: completed
         started_at: 2026-03-05T00:24:43.046Z
-        completed_at: 2026-03-05T00:24:43.046Z
+        completed_at: 2026-03-05T00:31:32.999Z
+        notes: "All three improvements approved and captured: @01KJXP5T (--no-cascade), @01KJXP9C (validate
+          annotations), @01KJXPG8 (item list --json structure)"
+      - step_index: 5
+        status: completed
+        started_at: 2026-03-05T00:31:32.999Z
+        completed_at: 2026-03-05T00:31:32.999Z
     initiated_by: "@claude"
