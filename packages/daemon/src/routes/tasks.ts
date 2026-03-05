@@ -14,6 +14,9 @@
  * - ac-5: GET /api/tasks/:ref resolves via ReferenceIndex
  * - ac-6: POST /api/tasks/:ref/start transitions state
  * - ac-7: POST /api/tasks/:ref/note appends note
+ * - @ui-task-board ac-6: POST /api/tasks/:ref/submit transitions to pending_review
+ * - @ui-task-board ac-6: POST /api/tasks/:ref/complete transitions to completed
+ * - @ui-task-board ac-6: POST /api/tasks/:ref/block transitions to blocked
  */
 
 import { Elysia, t } from 'elysia';
@@ -93,6 +96,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           depends_on: task.depends_on || [],
           notes_count: task.notes?.length || 0,
           todos_count: task.todos?.length || 0,
+          automation: task.automation,
           started_at: task.started_at,
           completed_at: task.completed_at,
           created_at: task.created_at,
@@ -322,6 +326,159 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         body: t.Object({
           content: t.String(),
         }),
+      }
+    )
+
+    // AC: @ui-task-board ac-6 - Submit task for review
+    .post(
+      '/:ref/submit',
+      async ({ params, error: errorResponse, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+
+        const result = index.resolve(params.ref);
+        if (!result.ok) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Task reference "${params.ref}" not found`,
+          });
+        }
+
+        const task = tasks.find((t) => t._ulid === result.ulid);
+        if (!task) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Reference "${params.ref}" is not a task`,
+          });
+        }
+
+        if (task.status !== 'in_progress' && task.status !== 'needs_work') {
+          return errorResponse(409, {
+            error: 'invalid_transition',
+            message: `Cannot submit task with status "${task.status}". Must be in_progress or needs_work.`,
+            current: task.status,
+            valid_transitions: ['pending_review'],
+          });
+        }
+
+        const updatedTask: LoadedTask = { ...task, status: 'pending_review' };
+        await saveTask(ctx, updatedTask);
+        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
+
+        pubsub.broadcast('tasks:updates', 'task_updated', {
+          ref: params.ref,
+          ulid: task._ulid,
+          action: 'submit',
+          status: 'pending_review',
+        }, projectContext.path);
+
+        return updatedTask;
+      },
+      { params: t.Object({ ref: t.String() }) }
+    )
+
+    // AC: @ui-task-board ac-6 - Complete task
+    .post(
+      '/:ref/complete',
+      async ({ params, body, error: errorResponse, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+
+        const result = index.resolve(params.ref);
+        if (!result.ok) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Task reference "${params.ref}" not found`,
+          });
+        }
+
+        const task = tasks.find((t) => t._ulid === result.ulid);
+        if (!task) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Reference "${params.ref}" is not a task`,
+          });
+        }
+
+        const updatedTask: LoadedTask = {
+          ...task,
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          closed_reason: body.reason,
+        };
+        await saveTask(ctx, updatedTask);
+        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
+
+        pubsub.broadcast('tasks:updates', 'task_updated', {
+          ref: params.ref,
+          ulid: task._ulid,
+          action: 'complete',
+          status: 'completed',
+        }, projectContext.path);
+
+        return updatedTask;
+      },
+      {
+        params: t.Object({ ref: t.String() }),
+        body: t.Object({ reason: t.String() }),
+      }
+    )
+
+    // AC: @ui-task-board ac-6 - Block task
+    .post(
+      '/:ref/block',
+      async ({ params, body, error: errorResponse, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+
+        const result = index.resolve(params.ref);
+        if (!result.ok) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Task reference "${params.ref}" not found`,
+          });
+        }
+
+        const task = tasks.find((t) => t._ulid === result.ulid);
+        if (!task) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Reference "${params.ref}" is not a task`,
+          });
+        }
+
+        const author = getAuthor(ctx.config?.identity?.author);
+        const note = createNote(`Blocked: ${body.reason}`, author);
+
+        const updatedTask: LoadedTask = {
+          ...task,
+          status: 'blocked',
+          notes: [...(task.notes || []), note],
+        };
+        await saveTask(ctx, updatedTask);
+        await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
+        await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
+
+        pubsub.broadcast('tasks:updates', 'task_updated', {
+          ref: params.ref,
+          ulid: task._ulid,
+          action: 'block',
+          status: 'blocked',
+        }, projectContext.path);
+
+        return updatedTask;
+      },
+      {
+        params: t.Object({ ref: t.String() }),
+        body: t.Object({ reason: t.String() }),
       }
     );
 }

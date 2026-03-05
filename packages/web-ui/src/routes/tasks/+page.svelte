@@ -17,6 +17,8 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import XIcon from '@lucide/svelte/icons/x';
+	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
+	import ListIcon from '@lucide/svelte/icons/list';
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 
 	let tasks = $state<TaskSummary[]>([]);
@@ -279,13 +281,32 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <div class="flex flex-col gap-6 p-6">
-	<div>
-		<h1 class="text-3xl font-bold mb-2">Tasks</h1>
-		{#if !loading}
-			<p class="text-muted-foreground">
-				Showing {tasks.length} of {total} tasks
-			</p>
-		{/if}
+	<div class="flex items-center justify-between">
+		<div>
+			<h1 class="text-3xl font-bold mb-2">Tasks</h1>
+			{#if !loading}
+				<p class="text-muted-foreground">
+					Showing {tasks.length} of {total} tasks
+				</p>
+			{/if}
+		</div>
+		<!-- View toggle -->
+		<div class="flex items-center gap-1 border rounded-lg p-0.5">
+			<a href="{base}/tasks/board" title="Board view">
+				<Button variant="ghost" size="icon-sm" aria-pressed="false">
+					<LayoutGrid class="size-4" />
+				</Button>
+			</a>
+			<Button
+				variant="ghost"
+				size="icon-sm"
+				class="bg-accent"
+				title="List view"
+				aria-pressed="true"
+			>
+				<ListIcon class="size-4" />
+			</Button>
+		</div>
 	</div>
 
 	<TaskFilters />
