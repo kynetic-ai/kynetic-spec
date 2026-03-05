@@ -77101,5 +77101,24 @@
         (over-broad) and regresses dispatch-run serve foreground path; implement daemon-scoped guard
         signal (KSPEC_DAEMON_PID) and align tests."
       supersedes: null
+    - _ulid: 01KJZSRBRR3Q6GACM7RE7YYWRB
+      created_at: 2026-03-05T20:06:49.881Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1: addressed both reviewer findings.
+
+
+        1. MUST-FIX (foreground env leak): The foreground serve test at line 164 used spawn()
+        directly with process.env, which inherits KSPEC_SESSION_ID when tests run inside a dispatch
+        agent session. Fixed by destructuring to strip KSPEC_SESSION_ID before passing env to
+        spawn(). The runKspec() helper already had this sanitization (cli.ts:112-117).
+
+
+        2. SHOULD-FIX (exact exit codes): Guard tests now assert exitCode === 4 (VALIDATION_FAILED)
+        instead of generic !== 0.
+
+
+        Both commits pushed (c605ae45b, bd73a53a0). All 26 serve tests pass.
+      supersedes: null
   todos: []
   automation: eligible
