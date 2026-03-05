@@ -76863,7 +76863,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76874,7 +76874,7 @@
   session_id: 01KK01K2EKPFP8G59BAZZNY69V
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-05T22:30:14.172Z
-  submitted_at: 2026-03-05T20:52:07.413Z
+  submitted_at: 2026-03-05T22:52:56.111Z
   notes:
     - _ulid: 01KJXSVK0MH0J1XWEDB0HMS4MT
       created_at: 2026-03-05T01:30:06.740Z
