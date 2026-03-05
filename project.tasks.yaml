@@ -75769,6 +75769,7 @@
   session_id: 01KJYK5PHSNB2K4V68FF0XXA0R
   created_at: 2026-03-05T01:30:04.123Z
   started_at: 2026-03-05T08:56:24.350Z
+  submitted_at: 2026-03-05T09:15:08.754Z
   notes:
     - _ulid: 01KJXSVGEVEFWJGDKKH9MRT736
       created_at: 2026-03-05T01:30:04.123Z
@@ -75839,9 +75840,25 @@
         Status colors use design system tokens (oklch). Animations gated behind
         prefers-reduced-motion.
       supersedes: null
+    - _ulid: 01KJYMVBZ7BB6FZC65248KBCVP
+      created_at: 2026-03-05T09:21:51.080Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Missing AC coverage: kspec validate --json reports
+        @ui-task-board missing own AC coverage for ac-5 (real-time websocket updates). No // AC:
+        @ui-task-board ac-5 tests found in packages/web-ui/tests. 2) Spec misalignment for ac-4:
+        Active Fleet card does not render 'last few lines of output'
+        (packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte:27-53). 3) Spec misalignment
+        for ac-3: task detail modal omits required full info fields (description; explicit session
+        link; branch/PR-style VCS links), despite ac-3 requirement
+        (packages/web-ui/src/lib/components/board/TaskDetailModal.svelte:167-258). 4) AC-6 behavior
+        not actually tested: E2E only checks action section visibility, not that
+        Start/Submit/Complete/Block/Add Note execute mutations via API
+        (packages/web-ui/tests/e2e/task-board.spec.ts:109-126). 5) UX checklist token violation: raw
+        Tailwind color class text-white used instead of tokenized foreground
+        (packages/web-ui/src/lib/components/board/TaskCard.svelte:38)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T09:15:08.754Z
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
   slugs:
     - implement-session-stream-view
