@@ -75634,16 +75634,45 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KJYBDG2JYDHNA3VSKNNN6546
   created_at: 2026-03-05T01:30:03.650Z
+  started_at: 2026-03-05T06:39:48.807Z
   notes:
     - _ulid: 01KJXSVG020RA509FAG9DPVHD6
       created_at: 2026-03-05T01:30:03.650Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
+    - _ulid: 01KJYCC7CMD68JFNX2AHW5KJ53
+      created_at: 2026-03-05T06:53:46.260Z
+      author: "@claude"
+      content: >-
+        Implemented app shell with grouped sidebar navigation. Key changes:
+
+        - Restructured Sidebar.svelte with 4 groups: Work (Dashboard, Tasks, Agents, Sessions),
+        Specs (Specs, Plans, Validate), Capture (Inbox, Observations, Triage), Config (Workflows,
+        Settings)
+
+        - Added SidebarMenuBadge counts for inbox items, unresolved observations, and pending_review
+        tasks (fetched via Promise.all with 30s refresh interval)
+
+        - Created /specs route (moved content from /items), /items now redirects to /specs
+        preserving query params with replaceState
+
+        - Fixed Observations nav visibility — now permanently in Capture group (was hidden when
+        count=0)
+
+        - Migrated taskDetailStore from Svelte 4 writable stores to Svelte 5  runes
+
+        - Updated MobileNav with lucide icons and primary route shortcuts
+
+        - Added placeholder route pages for agents, sessions, plans, validate, workflows, settings
+
+        - Updated spec-ref links in TaskDetail and tasks page from /items to /specs
+
+        - 45 new static analysis tests covering all 4 ACs
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T06:39:48.807Z
-  session_id: 01KJYBDG2JYDHNA3VSKNNN6546
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
   slugs:
     - implement-task-board-kanban
