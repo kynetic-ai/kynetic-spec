@@ -752,14 +752,25 @@ export class DispatchEngine {
       const active = this.activeCount.get(agent.id) ?? 0;
       const queue = this.queues.get(agent.id) ?? [];
 
-      // AC: @agent-dispatch-engine ac-17 - Discard stale entries before spawning
+      // AC: @agent-dispatch-engine ac-17 - Discard stale entries before spawning.
+      // Only discard when we have positive evidence the task moved: either the task
+      // exists on disk with a different status, or the task was previously tracked
+      // (in prevTaskStates) but is no longer found (deleted).
       if (currentTaskStates) {
         const before = queue.length;
         for (let i = queue.length - 1; i >= 0; i--) {
           const entry = queue[i];
           const currentStatus = currentTaskStates.get(entry.change.taskId);
           const expectedEvent = STATUS_TO_EVENT[entry.change.toStatus];
-          if (currentStatus !== undefined && expectedEvent) {
+          if (!expectedEvent) continue; // No event mapping — skip check
+          if (currentStatus === undefined) {
+            // Task not on disk — only discard if we previously knew about it
+            // (it was deleted). Tasks from pure handleStateChange events without
+            // on-disk presence should still be processed.
+            if (this.prevTaskStates.has(entry.change.taskId)) {
+              queue.splice(i, 1);
+            }
+          } else {
             const currentEvent = STATUS_TO_EVENT[currentStatus];
             if (currentEvent !== expectedEvent) {
               queue.splice(i, 1);

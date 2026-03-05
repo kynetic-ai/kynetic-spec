@@ -68,6 +68,9 @@ async function postDispatchEvent(opts: {
   // inside a dispatched agent invocation. The file watcher will independently
   // detect the change, so the CLI event would be redundant and causes stale
   // queue entries to accumulate.
+  // NOTE: This relies on the daemon's file watcher being active. If the watcher
+  // is temporarily down, dispatched agents' task mutations won't produce dispatch
+  // events until the watcher recovers and diffs the changed state.
   if (process.env.KSPEC_SESSION_ID) return;
 
   const pidManager = new PidFileManager();

@@ -1768,6 +1768,69 @@ describe("Stale queue entry discard", () => {
 
     await engine.stop();
   });
+
+  // AC: @agent-dispatch-engine ac-17
+  it("should discard queued entries when task has been deleted", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.in_progress" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
+
+    // Block first invocation
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await firstBlock;
+        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+      })
+      .mockResolvedValue({
+        session: {} as any,
+        outcome: "success" as const,
+        durationMs: 1,
+      });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    // Enqueue another event while first is running
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "in_progress",
+      timestamp: Date.now(),
+    });
+
+    expect(engine.getStatus().queuedInvocations).toBe(1);
+
+    // Delete the task (write empty tasks list)
+    await writeTasks(testDir, []);
+
+    // Release first invocation
+    resolveFirst();
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Entry for deleted task should have been discarded
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    await engine.stop();
+  });
 });
 
 // ─── Self-trigger suppression ────────────────────────────────────────────────
