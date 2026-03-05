@@ -2213,7 +2213,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |
           kspec init [options]
 
@@ -2301,7 +2301,7 @@ features:
         created: 2026-01-15T15:34:40.999Z
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         acceptance_criteria:
           - id: detect-existing-repo
             given: Repository has kspec-meta branch but no .kspec worktree
@@ -2405,7 +2405,7 @@ features:
             then: changes are auto-committed to shadow branch
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFADGA7EPEJKTVG91CCVV3YA
         slugs:
           - cmd-clone-for-testing
@@ -2514,7 +2514,7 @@ features:
             then: 'Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch": "main"}'
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KJCT2Z088W7TT4GR6A4HK9Q0
         slugs:
           - bootstrap-script
@@ -2546,7 +2546,7 @@ features:
             then: skips npm link
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands

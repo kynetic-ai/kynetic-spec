@@ -983,7 +983,7 @@ features:
             then: accepted by schema (traits can be implemented by any item type)
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFC1A9NA56A1RFAMZ5S0JPNA
         slugs:
           - traits-field
@@ -1021,7 +1021,7 @@ features:
             then: warning emitted (duplicate)
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFC1B8DT80QA3V46340MT1BJ
         slugs:
           - trait-index
@@ -1052,7 +1052,7 @@ features:
             then: returns all specs that implement that trait
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFC1C406T11X5C4M954R7FP9
         slugs:
           - trait-display
@@ -1091,7 +1091,7 @@ features:
             then: each trait's AC shown in separate labeled section
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFC1D57K060RM5XZNE9SV3QE
         slugs:
           - trait-validation
@@ -1125,7 +1125,7 @@ features:
             then: validation reports broken ref error
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFC1E178WYP06TTVGY12VVE4
         slugs:
           - trait-cli
@@ -1191,7 +1191,7 @@ features:
             then: valid traits are still added; errors reported for unresolved refs; exit code 1
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
       - _ulid: 01KFC1FGKR7S29HE1DYX8KJ8KT
         slugs:
           - trait-edge-cases
@@ -1224,7 +1224,7 @@ features:
             then: shows 'No traits defined' message
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
     status:
       maturity: draft
       implementation: implemented

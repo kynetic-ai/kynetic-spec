@@ -1,0 +1,7 @@
+id: 01KJYCD8JV5J8SFCA268NKR7CH
+task_id: "@implement-app-shell-and-navigation"
+agent_type: claude-agent-acp
+agent_id: ui-worker
+trigger: task.in_progress
+status: active
+started_at: 2026-03-05T07:01:05.625Z

@@ -2259,7 +2259,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |
           Tasks gain meta_ref field parallel to spec_ref:
 
@@ -2283,7 +2283,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |
           kspec task add gains --meta-ref option:
 
@@ -2305,7 +2305,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |
           Query tasks by meta_ref:
 
@@ -2324,7 +2324,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: not_started
         description: |
           meta_ref field validation rules:
 
