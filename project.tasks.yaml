@@ -75449,6 +75449,15 @@
         npm test script) and kspec validate reports spec-specific status mismatch warning for
         @ui-design-system."
       supersedes: null
+    - _ulid: 01KJY5M29CFDPEFB9WQ0P2ZRJM
+      created_at: 2026-03-05T04:55:43.148Z
+      author: "@claude"
+      content: "Fix cycle 1: Addressed both review findings. (1) Added 'test' script to
+        packages/web-ui/package.json that delegates to root vitest for web-ui-design-system.test.ts
+        — 'cd packages/web-ui && npm test' now passes all 18 tests. (2) Fixed spec status mismatch
+        by resetting @ui-design-system implementation to not_started, and restored 19 unrelated
+        specs that were incorrectly cascaded to not_started by the item set command."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
