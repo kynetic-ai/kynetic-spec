@@ -75628,6 +75628,7 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on:
     - "@implement-ui-design-system"
   context: []
@@ -75638,6 +75639,7 @@
   created_at: 2026-03-05T01:30:03.650Z
   started_at: 2026-03-05T07:41:10.250Z
   submitted_at: 2026-03-05T07:41:12.486Z
+  completed_at: 2026-03-05T07:59:18.430Z
   notes:
     - _ulid: 01KJXSVG020RA509FAG9DPVHD6
       created_at: 2026-03-05T01:30:03.650Z
@@ -75749,8 +75751,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-05T07:59:18.430Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
   slugs:
     - implement-task-board-kanban
@@ -75973,3 +75973,30 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix dispatch engine re-triggering workers on completed tasks
+  description: "The dispatch engine repeatedly spawns stale worker invocations for tasks that have
+    already been completed. Root cause: (1) no staleness check at dequeue time - queue entries
+    created from intermediate state transitions are never validated against the task's current state
+    before spawning, (2) CLI postDispatchEvent self-triggers back into the same dispatch engine that
+    spawned the current invocation, creating redundant queue entries for every state transition an
+    agent makes during its work. Over 3 fix cycles this produced 4+ wasteful invocations that each
+    spawn a full agent process only to discover the task is already completed."
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - dispatch
+    - mvp
+  depends_on: []
+  _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-05T08:19:23.588Z
+  notes: []
+  todos: []
