@@ -729,16 +729,49 @@ export class DispatchEngine {
 
   /**
    * Drain queues, spawning invocations up to each agent's max_concurrent limit.
-   * AC: @agent-dispatch-engine ac-3
+   * AC: @agent-dispatch-engine ac-3, ac-17
    */
   private async _drainQueues(agents: LoadedAgent[]): Promise<void> {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
+    // AC: @agent-dispatch-engine ac-17 - Load current task states once for staleness checks
+    let currentTaskStates: Map<string, TaskStatus> | undefined;
+    try {
+      const ctx = await initContext(this.projectDir);
+      const tasks = await loadAllTasks(ctx);
+      currentTaskStates = new Map(
+        tasks.map((t) => [t._ulid, t.status as TaskStatus]),
+      );
+    } catch {
+      // If we can't load tasks, skip staleness checks (best effort)
+    }
+
     for (const agent of agents) {
       const maxConcurrent = agent.concurrency?.max_concurrent ?? 1;
       const active = this.activeCount.get(agent.id) ?? 0;
       const queue = this.queues.get(agent.id) ?? [];
+
+      // AC: @agent-dispatch-engine ac-17 - Discard stale entries before spawning
+      if (currentTaskStates) {
+        const before = queue.length;
+        for (let i = queue.length - 1; i >= 0; i--) {
+          const entry = queue[i];
+          const currentStatus = currentTaskStates.get(entry.change.taskId);
+          const expectedEvent = STATUS_TO_EVENT[entry.change.toStatus];
+          if (currentStatus !== undefined && expectedEvent) {
+            const currentEvent = STATUS_TO_EVENT[currentStatus];
+            if (currentEvent !== expectedEvent) {
+              queue.splice(i, 1);
+            }
+          }
+        }
+        if (before > queue.length) {
+          console.log(
+            `[dispatch] Discarded ${before - queue.length} stale queue entries for agent "${agent.id}"`,
+          );
+        }
+      }
 
       let slots = maxConcurrent - active;
       while (slots > 0 && queue.length > 0) {

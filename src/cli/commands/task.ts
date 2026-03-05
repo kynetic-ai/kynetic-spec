@@ -55,6 +55,7 @@ import { PidFileManager } from "../pid-utils.js";
  * Post a task state change event to the daemon dispatch engine.
  * Fails silently — dispatch requires a running daemon; if absent, this is a no-op.
  * AC: @daemon-agent-dispatch ac-2, ac-7
+ * AC: @agent-dispatch-engine ac-18
  */
 async function postDispatchEvent(opts: {
   taskId: string;
@@ -63,6 +64,12 @@ async function postDispatchEvent(opts: {
   toStatus: string;
   projectPath?: string;
 }): Promise<void> {
+  // AC: @agent-dispatch-engine ac-18 - Suppress self-triggering when running
+  // inside a dispatched agent invocation. The file watcher will independently
+  // detect the change, so the CLI event would be redundant and causes stale
+  // queue entries to accumulate.
+  if (process.env.KSPEC_SESSION_ID) return;
+
   const pidManager = new PidFileManager();
   if (!pidManager.isDaemonRunning()) return;
 

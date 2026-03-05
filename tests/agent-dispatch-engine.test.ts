@@ -23,6 +23,7 @@ import {
   createTempDir,
   cleanupTempDir,
   testUlid,
+  testUlids,
   initGitRepo,
 } from "./helpers/cli.js";
 import type { Agent } from "../src/schema/meta.js";
@@ -1623,3 +1624,157 @@ describe("getStatus", () => {
     await engine.stop();
   });
 });
+
+// ─── Stale Queue Entry Discard ───────────────────────────────────────────────
+
+describe("Stale queue entry discard", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-stale-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-17
+  it("should discard queued entries when task has moved to a different state", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.in_progress" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    // Task starts as in_progress
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
+
+    // Block runInvocation so the first invocation holds the slot
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await firstBlock;
+        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+      })
+      .mockResolvedValue({
+        session: {} as any,
+        outcome: "success" as const,
+        durationMs: 1,
+      });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    // First invocation is running (bootstrap picked up in_progress task)
+    // Wait for first invocation to start
+    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    // Enqueue another event for the same task while first is running
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "in_progress",
+      timestamp: Date.now(),
+    });
+
+    // Verify it was enqueued
+    expect(engine.getStatus().queuedInvocations).toBe(1);
+
+    // Now update the task to completed (simulating the task finishing)
+    await writeTasks(testDir, [{ _ulid: taskId, status: "completed" }]);
+
+    // Release the first invocation
+    resolveFirst();
+
+    // Wait for drain to process
+    await new Promise((r) => setTimeout(r, 200));
+
+    // The stale entry should have been discarded — only 1 invocation total
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-17
+  it("should keep queued entries when task state still matches", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.in_progress" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [taskId1, taskId2] = testUlids("TASK", 2);
+    // Both tasks in_progress
+    await writeTasks(testDir, [
+      { _ulid: taskId1, status: "in_progress" },
+      { _ulid: taskId2, status: "in_progress" },
+    ]);
+
+    // Block first invocation
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await firstBlock;
+        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+      })
+      .mockResolvedValue({
+        session: {} as any,
+        outcome: "success" as const,
+        durationMs: 1,
+      });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    // Wait for bootstrap to fire first invocation
+    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    // task2 is still in_progress — its queue entry should survive
+    expect(engine.getStatus().queuedInvocations).toBeGreaterThanOrEqual(1);
+
+    // Release first invocation
+    resolveFirst();
+
+    // Wait for second invocation to start
+    for (let i = 0; i < 50 && runSpy.mock.calls.length < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    // Second invocation should have been spawned (task2 still in_progress)
+    expect(runSpy).toHaveBeenCalledTimes(2);
+
+    await engine.stop();
+  });
+});
+
+// ─── Self-trigger suppression ────────────────────────────────────────────────
+
+// AC: @agent-dispatch-engine ac-18
+// The self-trigger suppression guard lives in postDispatchEvent (src/cli/commands/task.ts).
+// When KSPEC_SESSION_ID is set, CLI task transitions skip posting dispatch events to the daemon.
+// This is verified via E2E/integration tests that run kspec commands with KSPEC_SESSION_ID set.
+// The dispatch engine's file watcher independently detects the state change, so the CLI event
+// is redundant and was causing stale queue entry accumulation.
