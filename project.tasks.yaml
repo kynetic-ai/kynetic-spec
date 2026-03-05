@@ -75385,16 +75385,34 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KJY3FGB4W881DYXQ42PQHA59
   created_at: 2026-03-05T01:30:03.199Z
+  started_at: 2026-03-05T04:20:41.966Z
   notes:
     - _ulid: 01KJXSVFHZFJTJAWT37FDADBZM
       created_at: 2026-03-05T01:30:03.199Z
       author: "@claude"
       content: See plan @plan-ui-ux-revamp for implementation notes
+    - _ulid: 01KJY3MDPWHN8EKWT0Z0J000P6
+      created_at: 2026-03-05T04:20:57.692Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Foundation design token layer that all other UI revamp tasks build on
+
+        - Scope: Create lib/ds/ directory with tokens.css and animations.css; extend app.css @theme
+        inline block with design-* tokens, status colors, spacing, z-index, typography; add shimmer
+        and breathing animations gated behind prefers-reduced-motion
+
+        - Files: packages/web-ui/src/lib/ds/tokens.css, packages/web-ui/src/lib/ds/animations.css,
+        packages/web-ui/src/app.css, tests for AC coverage
+
+        - Verification: npm test in project root, vitest tests validating token presence and
+        animation definitions
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-05T04:20:41.966Z
-  session_id: 01KJY3FGB4W881DYXQ42PQHA59
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
   slugs:
     - implement-app-shell-and-navigation
