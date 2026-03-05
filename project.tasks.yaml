@@ -75944,6 +75944,18 @@
         detail async view, and non-actionable empty states in board/modal collections per UX
         checklist."
       supersedes: null
+    - _ulid: 01KJYVKCDWX3TJKQQN65ZQTN8Z
+      created_at: 2026-03-05T11:19:49.436Z
+      author: "@claude"
+      content: "Fix cycle 3 — addressed all 2 review findings: 1. Loading state: Task detail modal now
+        uses Skeleton components with ds-shimmer class for loading state instead of plain text
+        'Loading task...'. Skeleton mirrors the modal layout (title, slug, badges, spec ref, tags,
+        separator, notes). 2. Empty states: BoardColumn now renders column-contextual actionable
+        guidance (e.g. backlog → 'Create tasks with kspec task add', ready → 'Mark tasks
+        eligible...', in_progress → 'Start a task...', review → 'Submit work...', done → 'Tasks
+        appear here after completion'). TaskDetailModal notes section renders actionable empty
+        guidance contextual to mode (static: 'Use kspec task note', daemon: 'Add a note above...')."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
