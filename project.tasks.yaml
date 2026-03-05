@@ -76112,6 +76112,20 @@
       content: "[FIX_CYCLE: 2] Review findings: Review issues: markdown AC not met and AC tests remain
         predominantly static-source checks."
       supersedes: null
+    - _ulid: 01KJYS3PQNBXBPF1C7F7A6K3YB
+      created_at: 2026-03-05T10:36:18.549Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Spec alignment gap for @ui-session-stream ac-1 (markdown
+        rendering): MessageBlock outputs raw text () instead of rendered markdown, so markdown
+        formatting is not actually rendered. Evidence:
+        packages/web-ui/src/lib/components/session/MessageBlock.svelte:21-23. MUST-FIX 2) AC test
+        quality remains mostly static-source assertions for stream behavior/context-panel behavior;
+        many checks only assert source contains strings and can pass even if runtime behavior
+        regresses. Evidence: tests/web-ui-session-stream.test.ts:156-364 (AC-2/AC-3/AC-4 sections
+        use readFileSync + toContain patterns). Validation/tests: npm test and packages/web-ui npm
+        test passed; kspec validate still has global unrelated meta/reference errors, with no
+        specific @ui-session-stream warning surfaced."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVH9ZYABZWRX8BC523EFJ
