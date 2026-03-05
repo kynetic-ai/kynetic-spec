@@ -6742,6 +6742,11 @@ features:
         then: The engine re-evaluates all current task states against dispatch rules (identical to bootstrap
           logic), enqueuing any tasks that match an agent's dispatch trigger but have no active or
           queued invocation, ensuring that missed or lost events are recovered automatically
+      - id: ac-20
+        given: The dispatch engine reconciliation interval is configured via DispatchEngineOptions
+        when: The engine is created with a custom reconcileIntervalMs value (or the default of 60000ms)
+        then: The periodic reconciliation scan runs at the configured interval, and setting the interval to
+          0 or null disables periodic reconciliation entirely
     depends_on: []
     implements: []
     relates_to: []
