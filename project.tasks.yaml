@@ -75274,4 +75274,31 @@
         session stream with rich components, 5-phase plan. Plan at
         .kspec/artifacts/ui-revamp-plan.md"
       supersedes: null
+    - _ulid: 01KJXRDYGHGFZZN0ENZ49Z4X6D
+      created_at: 2026-03-05T01:05:11.185Z
+      author: "@claude"
+      content: >-
+        Phase 1 complete: Plan drafted and reviewed. Review found 7 critical issues, all resolved in
+        plan update:
+
+
+        1. CRITICAL: Keep Tailwind (not rip it out). Map imgen tokens as Tailwind theme extensions
+
+        2. Missing Workflows and Settings views - added to navigation
+
+        3. API gaps corrected: dispatch/agent status endpoints already exist, session streaming
+        already broadcasts agent_text_chunk events
+
+        4. bits-ui duplication avoided: DS layer contains CSS + simple components only
+
+        5. Quick wins identified: needs_work status missing, Svelte 4 store, Observations nav hidden
+        at 0
+
+        6. Empty/error/loading states must be Phase 1, not Phase 5
+
+        7. Phase dependencies fixed: added Phase 0 prerequisites, daemon API work scoped per phase
+
+
+        Plan ready for user review at .kspec/artifacts/ui-revamp-plan.md
+      supersedes: null
   todos: []
