@@ -56,15 +56,12 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_WS_URL = 'ws://localhost:3456/ws';
-const DAEMON_HTTP_URL = 'http://localhost:3456';
-
 /**
  * Connect to the daemon WebSocket from the browser context.
  * Stores WebSocket in window.__testWs for subsequent calls.
  */
-async function connectWebSocket(page: import('@playwright/test').Page): Promise<void> {
-  await page.goto(DAEMON_HTTP_URL + '/api/health');
+async function connectWebSocket(page: import('@playwright/test').Page, baseUrl: string, wsUrl: string): Promise<void> {
+  await page.goto(baseUrl + '/api/health');
 
   await page.evaluate((wsUrl: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -100,7 +97,7 @@ async function connectWebSocket(page: import('@playwright/test').Page): Promise<
         }
       };
     });
-  }, DAEMON_WS_URL);
+  }, wsUrl + '/ws');
 }
 
 /**
@@ -324,8 +321,8 @@ test.describe('File Watcher API', () => {
     }
   });
 
-  test.beforeEach(async ({ page }) => {
-    await connectWebSocket(page);
+  test.beforeEach(async ({ page, daemon }) => {
+    await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
   });
 
   // AC: @daemon-server ac-4
@@ -387,7 +384,7 @@ test.describe('File Watcher API', () => {
     await subscribeTopic(page, 'files:updates');
 
     // Get a task from the fixture
-    const tasksResponse = await request.get(`${DAEMON_HTTP_URL}/api/tasks`);
+    const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
     const tasksBody = await tasksResponse.json();
     expect(tasksBody.items.length).toBeGreaterThan(0);
     const taskRef = tasksBody.items[0]._ulid;
@@ -396,7 +393,7 @@ test.describe('File Watcher API', () => {
     const broadcastPromise = waitForBroadcast(page, 'files:updates');
 
     // Add a note via HTTP API — daemon writes to project.tasks.yaml, watcher detects it
-    const noteResponse = await request.post(`${DAEMON_HTTP_URL}/api/tasks/${taskRef}/note`, {
+    const noteResponse = await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
       data: {
         content: 'E2E file watcher detection test note',
         author: '@test',
@@ -532,7 +529,7 @@ test.describe('File Watcher API', () => {
     expect(errorBroadcast.data.error.length).toBeGreaterThan(0);
 
     // AC: @daemon-server ac-6 — daemon did NOT crash, still responds to health check
-    const healthResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+    const healthResponse = await request.get(`${daemon.baseUrl}/api/health`);
     expect(healthResponse.status()).toBe(200);
     const health = await healthResponse.json();
     expect(health.status).toBe('ok');
@@ -576,7 +573,7 @@ test.describe('File Watcher API', () => {
     expect(recoveryBroadcast).toHaveProperty('msg_id');
 
     // Final health check
-    const healthResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+    const healthResponse = await request.get(`${daemon.baseUrl}/api/health`);
     expect(healthResponse.status()).toBe(200);
   });
 });

@@ -55,8 +55,6 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-
 test.describe('Meta API', () => {
   test.describe('GET /api/meta/session', () => {
     // AC: @api-contract ac-15
@@ -64,7 +62,7 @@ test.describe('Meta API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/session`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/session`);
 
       expect(response.status()).toBe(200);
 
@@ -82,7 +80,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-15 - fixture data integrity
     test('returns fixture session context values', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/session`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/session`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -94,7 +92,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-15 - JSON content type
     test('returns JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/session`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/session`);
       const contentType = response.headers()['content-type'] || '';
       expect(contentType).toContain('application/json');
     });
@@ -103,7 +101,7 @@ test.describe('Meta API', () => {
   test.describe('GET /api/meta/agents', () => {
     // AC: @api-contract ac-16
     test('returns paginated response with items and total', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/agents`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/agents`);
 
       expect(response.status()).toBe(200);
 
@@ -117,7 +115,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-16 - fixture data consistency
     test('items count matches total field', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/agents`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/agents`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -131,7 +129,7 @@ test.describe('Meta API', () => {
   test.describe('GET /api/meta/workflows', () => {
     // AC: @api-contract ac-17
     test('returns paginated response with items and total', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/workflows`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/workflows`);
 
       expect(response.status()).toBe(200);
 
@@ -145,7 +143,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-17 - fixture data consistency
     test('items count matches total field', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/workflows`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/workflows`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -159,7 +157,7 @@ test.describe('Meta API', () => {
   test.describe('GET /api/meta/observations', () => {
     // AC: @api-contract ac-18
     test('returns all observations without filter', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/observations`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
 
       expect(response.status()).toBe(200);
 
@@ -175,7 +173,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-18 - each observation has required fields
     test('observations have required fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/observations`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -193,7 +191,7 @@ test.describe('Meta API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/observations`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -210,7 +208,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-18 - filter by resolved=false returns unresolved
     test('filters unresolved observations with ?resolved=false', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/observations?resolved=false`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/observations?resolved=false`);
 
       expect(response.status()).toBe(200);
 
@@ -227,7 +225,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-18 - filter by resolved=true returns no results (fixture has none)
     test('filters resolved observations with ?resolved=true', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/observations?resolved=true`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/observations?resolved=true`);
 
       expect(response.status()).toBe(200);
 
@@ -240,7 +238,7 @@ test.describe('Meta API', () => {
 
     // AC: @api-contract ac-18 - fixture content check
     test('returns fixture observations with correct content', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/meta/observations`);
+      const response = await request.get(`${daemon.baseUrl}/api/meta/observations`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -263,7 +261,7 @@ test.describe('Search API', () => {
   test.describe('GET /api/search', () => {
     // AC: @api-contract ac-19
     test('returns search results with results array and total', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/search?q=test`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
 
       expect(response.status()).toBe(200);
 
@@ -276,7 +274,7 @@ test.describe('Search API', () => {
 
     // AC: @api-contract ac-19 - each result has type, ulid, title, matchedFields
     test('each search result has required fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/search?q=test`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -293,7 +291,7 @@ test.describe('Search API', () => {
     // AC: @api-contract ac-19 - searches across spec items
     test('finds spec items matching query', async ({ request, daemon }) => {
       // Fixture has "Test Feature", "Test Requirement", etc. matching "Core"
-      const response = await request.get(`${DAEMON_URL}/api/search?q=Core+Module`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=Core+Module`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -306,7 +304,7 @@ test.describe('Search API', () => {
     // AC: @api-contract ac-19 - searches across tasks
     test('finds tasks matching query', async ({ request, daemon }) => {
       // Fixture has "Ready task", "In progress task", etc.
-      const response = await request.get(`${DAEMON_URL}/api/search?q=Ready+task`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=Ready+task`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -318,7 +316,7 @@ test.describe('Search API', () => {
     // AC: @api-contract ac-19 - searches inbox items
     test('finds inbox items matching query', async ({ request, daemon }) => {
       // Fixture inbox has "First inbox item for testing"
-      const response = await request.get(`${DAEMON_URL}/api/search?q=First+inbox+item`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=First+inbox+item`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -329,7 +327,7 @@ test.describe('Search API', () => {
     // AC: @api-contract ac-19 - searches meta entities (observations)
     test('finds observations matching query', async ({ request, daemon }) => {
       // Fixture has "Test friction observation"
-      const response = await request.get(`${DAEMON_URL}/api/search?q=friction+observation`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=friction+observation`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -342,7 +340,7 @@ test.describe('Search API', () => {
     // AC: @api-contract ac-19 - returns empty results for no match
     test('returns empty results for non-matching query', async ({ request, daemon }) => {
       const response = await request.get(
-        `${DAEMON_URL}/api/search?q=zzznomatch_unique_xyz_99999`
+        `${daemon.baseUrl}/api/search?q=zzznomatch_unique_xyz_99999`
       );
       expect(response.status()).toBe(200);
 
@@ -353,7 +351,7 @@ test.describe('Search API', () => {
 
     // AC: @api-contract ac-19 - returns empty results for empty query
     test('returns empty results when no query provided', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/search`);
+      const response = await request.get(`${daemon.baseUrl}/api/search`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -363,7 +361,7 @@ test.describe('Search API', () => {
 
     // AC: @api-contract ac-19 - result types are from known set
     test('result types are from known entity types', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/search?q=test`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -376,7 +374,7 @@ test.describe('Search API', () => {
 
     // AC: @api-contract ac-19 - limit parameter restricts results
     test('limits results with ?limit parameter', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/search?q=test&limit=2`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=test&limit=2`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -388,7 +386,7 @@ test.describe('Search API', () => {
 
     // AC: @api-contract ac-19 - showing field
     test('includes showing field in response', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/search?q=test`);
+      const response = await request.get(`${daemon.baseUrl}/api/search?q=test`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -402,7 +400,7 @@ test.describe('Validation API', () => {
   test.describe('GET /api/validate', () => {
     // AC: @api-contract ac-20
     test('returns ValidationResult with required fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/validate`);
+      const response = await request.get(`${daemon.baseUrl}/api/validate`);
 
       expect(response.status()).toBe(200);
 
@@ -422,7 +420,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-20 - fixture data is valid
     test('fixture data passes validation', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/validate`);
+      const response = await request.get(`${daemon.baseUrl}/api/validate`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -433,7 +431,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-20 - includes refWarnings and completenessWarnings
     test('includes refWarnings and completenessWarnings fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/validate`);
+      const response = await request.get(`${daemon.baseUrl}/api/validate`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -446,7 +444,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-20 - includes traitCycles field
     test('includes traitCycles field', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/validate`);
+      const response = await request.get(`${daemon.baseUrl}/api/validate`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -456,7 +454,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-20 - JSON content type
     test('returns JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/validate`);
+      const response = await request.get(`${daemon.baseUrl}/api/validate`);
       const contentType = response.headers()['content-type'] || '';
       expect(contentType).toContain('application/json');
     });
@@ -465,7 +463,7 @@ test.describe('Validation API', () => {
   test.describe('GET /api/alignment', () => {
     // AC: @api-contract ac-21
     test('returns alignment stats and warnings', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/alignment`);
+      const response = await request.get(`${daemon.baseUrl}/api/alignment`);
 
       expect(response.status()).toBe(200);
 
@@ -478,7 +476,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-21 - stats has required fields
     test('stats contains required alignment fields', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/alignment`);
+      const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -497,7 +495,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-21 - stats values are non-negative
     test('alignment stats values are non-negative integers', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/alignment`);
+      const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -511,7 +509,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-21 - fixture has spec items
     test('fixture has spec items reflected in totalSpecs', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/alignment`);
+      const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -521,7 +519,7 @@ test.describe('Validation API', () => {
 
     // AC: @api-contract ac-21 - JSON content type
     test('returns JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/alignment`);
+      const response = await request.get(`${daemon.baseUrl}/api/alignment`);
       const contentType = response.headers()['content-type'] || '';
       expect(contentType).toContain('application/json');
     });

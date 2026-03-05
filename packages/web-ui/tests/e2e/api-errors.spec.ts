@@ -30,8 +30,6 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-
 test.describe('Error Handling API', () => {
   test.describe('404 Not Found Errors', () => {
     // AC: @api-contract ac-22
@@ -39,7 +37,7 @@ test.describe('Error Handling API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@nonexistent-ref-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@nonexistent-ref-xyz`);
 
       expect(response.status()).toBe(404);
 
@@ -60,7 +58,7 @@ test.describe('Error Handling API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/items/@nonexistent-item-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/items/@nonexistent-item-xyz`);
 
       expect(response.status()).toBe(404);
 
@@ -78,7 +76,7 @@ test.describe('Error Handling API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/inbox/@nonexistent-inbox-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/inbox/@nonexistent-inbox-xyz`);
 
       expect(response.status()).toBe(404);
 
@@ -93,7 +91,7 @@ test.describe('Error Handling API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@nonexistent-task-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz`);
 
       expect(response.status()).toBe(404);
 
@@ -110,7 +108,7 @@ test.describe('Error Handling API', () => {
       daemon,
     }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@nonexistent-task-xyz/start`,
+        `${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz/start`,
         { data: {} }
       );
 
@@ -129,7 +127,7 @@ test.describe('Error Handling API', () => {
       daemon,
     }) => {
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@nonexistent-task-xyz/note`,
+        `${daemon.baseUrl}/api/tasks/@nonexistent-task-xyz/note`,
         { data: { content: 'test note' } }
       );
 
@@ -156,7 +154,7 @@ test.describe('Error Handling API', () => {
     }) => {
       // Elysia validates body schema before handler runs — returns 422 for schema violations
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/note`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/note`,
         { data: {} } // missing required 'content' field
       );
 
@@ -171,7 +169,7 @@ test.describe('Error Handling API', () => {
       daemon,
     }) => {
       // Send request without required 'text' field
-      const response = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: {}, // missing required 'text' field
       });
 
@@ -185,7 +183,7 @@ test.describe('Error Handling API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const response = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: '   ' }, // whitespace-only text: passes Elysia schema but fails custom validation
       });
 
@@ -211,13 +209,13 @@ test.describe('Error Handling API', () => {
       daemon,
     }) => {
       // First create an inbox item to triage
-      const inboxResponse = await request.post(`${DAEMON_URL}/api/inbox`, {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Error handling test ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inbox = await inboxResponse.json();
 
-      const response = await request.post(`${DAEMON_URL}/api/triage`, {
+      const response = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inbox.item._ulid}`,
           action: 'invalid-action-xyz',
@@ -249,7 +247,7 @@ test.describe('Error Handling API', () => {
     }) => {
       // test-task-in-progress is already in_progress in the fixture
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/start`,
         { data: {} }
       );
 
@@ -272,7 +270,7 @@ test.describe('Error Handling API', () => {
     }) => {
       // test-task-completed is in completed state — cannot be started
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-completed/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-completed/start`,
         { data: {} }
       );
 
@@ -291,7 +289,7 @@ test.describe('Error Handling API', () => {
     test('409 current field reflects the actual task state', async ({ request, daemon }) => {
       // in_progress task — trying to start it again
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/start`,
         { data: {} }
       );
 
@@ -309,7 +307,7 @@ test.describe('Error Handling API', () => {
     }) => {
       // test-task-in-progress: already in_progress
       const response = await request.post(
-        `${DAEMON_URL}/api/tasks/@test-task-in-progress/start`,
+        `${daemon.baseUrl}/api/tasks/@test-task-in-progress/start`,
         { data: {} }
       );
 
@@ -331,8 +329,8 @@ test.describe('Error Handling API', () => {
       daemon,
     }) => {
       const endpoints = [
-        { method: 'GET', url: `${DAEMON_URL}/api/tasks/@nonexistent-xyz` },
-        { method: 'GET', url: `${DAEMON_URL}/api/items/@nonexistent-xyz` },
+        { method: 'GET', url: `${daemon.baseUrl}/api/tasks/@nonexistent-xyz` },
+        { method: 'GET', url: `${daemon.baseUrl}/api/items/@nonexistent-xyz` },
       ];
 
       for (const endpoint of endpoints) {
@@ -354,7 +352,7 @@ test.describe('Error Handling API', () => {
 
     // AC: @api-contract ac-22 — 404 content type is JSON
     test('404 responses return JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/tasks/@nonexistent-ref-xyz`);
+      const response = await request.get(`${daemon.baseUrl}/api/tasks/@nonexistent-ref-xyz`);
 
       expect(response.status()).toBe(404);
 

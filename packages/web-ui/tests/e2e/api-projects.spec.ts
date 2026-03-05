@@ -26,8 +26,6 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-
 test.describe('Projects API', () => {
   test.describe('GET /api/projects', () => {
     // AC: @multi-directory-daemon ac-28
@@ -35,7 +33,7 @@ test.describe('Projects API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/projects`);
+      const response = await request.get(`${daemon.baseUrl}/api/projects`);
 
       expect(response.status()).toBe(200);
 
@@ -55,7 +53,7 @@ test.describe('Projects API', () => {
       request,
       daemon,
     }) => {
-      const response = await request.get(`${DAEMON_URL}/api/projects`);
+      const response = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -79,7 +77,7 @@ test.describe('Projects API', () => {
 
     // AC: @multi-directory-daemon ac-28
     test('returns JSON content type', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/projects`);
+      const response = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(response.status()).toBe(200);
 
       const contentType = response.headers()['content-type'] || '';
@@ -88,7 +86,7 @@ test.describe('Projects API', () => {
 
     // AC: @multi-directory-daemon ac-28 — default project path is absolute
     test('project paths are absolute filesystem paths', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/projects`);
+      const response = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -103,7 +101,7 @@ test.describe('Projects API', () => {
       // Register a second project
       const secondPath = await daemon.createSecondProject();
 
-      const response = await request.get(`${DAEMON_URL}/api/projects`);
+      const response = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
@@ -132,10 +130,10 @@ test.describe('Projects API', () => {
 
       // Unregister so we can re-register and capture the direct POST response
       const encodedPath = encodeURIComponent(secondPath);
-      await request.delete(`${DAEMON_URL}/api/projects/${encodedPath}`);
+      await request.delete(`${daemon.baseUrl}/api/projects/${encodedPath}`);
 
       // AC: @multi-directory-daemon ac-29 — POST with {path} body, verify response shape
-      const registerResponse = await request.post(`${DAEMON_URL}/api/projects`, {
+      const registerResponse = await request.post(`${daemon.baseUrl}/api/projects`, {
         data: { path: secondPath },
       });
 
@@ -159,7 +157,7 @@ test.describe('Projects API', () => {
     // (Note: ac-6/ac-7/ac-5 are for X-Kspec-Dir header validation; POST /api/projects
     // mirrors those rules for the request body {path} field as part of ac-29 path validation)
     test('returns 400 when path is not absolute', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/projects`, {
+      const response = await request.post(`${daemon.baseUrl}/api/projects`, {
         data: { path: 'relative/path/without/slash' },
       });
 
@@ -172,7 +170,7 @@ test.describe('Projects API', () => {
 
     // AC: @multi-directory-daemon ac-29 — POST /api/projects rejects parent traversal in path
     test('returns 400 when path contains ".." segments', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/projects`, {
+      const response = await request.post(`${daemon.baseUrl}/api/projects`, {
         data: { path: '/tmp/../etc' },
       });
 
@@ -185,7 +183,7 @@ test.describe('Projects API', () => {
 
     // AC: @multi-directory-daemon ac-29 — POST /api/projects rejects paths without .kspec/
     test('returns 400 for path without .kspec/ directory', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/projects`, {
+      const response = await request.post(`${daemon.baseUrl}/api/projects`, {
         data: { path: '/tmp' }, // /tmp exists but has no .kspec/
       });
 
@@ -203,7 +201,7 @@ test.describe('Projects API', () => {
     }) => {
       const secondPath = await daemon.createSecondProject();
 
-      const listResponse = await request.get(`${DAEMON_URL}/api/projects`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       expect(listResponse.status()).toBe(200);
 
       const listBody = await listResponse.json();
@@ -226,7 +224,7 @@ test.describe('Projects API', () => {
 
       // AC: @multi-directory-daemon ac-30 — DELETE to unregister
       const response = await request.delete(
-        `${DAEMON_URL}/api/projects/${encodedPath}`
+        `${daemon.baseUrl}/api/projects/${encodedPath}`
       );
 
       expect(response.status()).toBe(200);
@@ -245,7 +243,7 @@ test.describe('Projects API', () => {
       const secondPath = await daemon.createSecondProject();
 
       // Verify it's registered
-      const beforeResponse = await request.get(`${DAEMON_URL}/api/projects`);
+      const beforeResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       const beforeBody = await beforeResponse.json();
       const foundBefore = beforeBody.projects.find(
         (p: { path: string }) => p.path === secondPath
@@ -255,12 +253,12 @@ test.describe('Projects API', () => {
       // Unregister it
       const encodedPath = encodeURIComponent(secondPath);
       const deleteResponse = await request.delete(
-        `${DAEMON_URL}/api/projects/${encodedPath}`
+        `${daemon.baseUrl}/api/projects/${encodedPath}`
       );
       expect(deleteResponse.status()).toBe(200);
 
       // Verify it's gone from the list
-      const afterResponse = await request.get(`${DAEMON_URL}/api/projects`);
+      const afterResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       const afterBody = await afterResponse.json();
       const foundAfter = afterBody.projects.find(
         (p: { path: string }) => p.path === secondPath
@@ -277,7 +275,7 @@ test.describe('Projects API', () => {
       const encodedPath = encodeURIComponent(fakePath);
 
       const response = await request.delete(
-        `${DAEMON_URL}/api/projects/${encodedPath}`
+        `${daemon.baseUrl}/api/projects/${encodedPath}`
       );
 
       expect(response.status()).toBe(404);
@@ -298,7 +296,7 @@ test.describe('Projects API', () => {
       expect(encodedPath).not.toContain('/');
 
       const response = await request.delete(
-        `${DAEMON_URL}/api/projects/${encodedPath}`
+        `${daemon.baseUrl}/api/projects/${encodedPath}`
       );
 
       // Should successfully decode and delete
@@ -314,10 +312,10 @@ test.describe('Projects API', () => {
       const encodedPath = encodeURIComponent(secondPath);
 
       // Unregister (stops watcher as part of unregister)
-      await request.delete(`${DAEMON_URL}/api/projects/${encodedPath}`);
+      await request.delete(`${daemon.baseUrl}/api/projects/${encodedPath}`);
 
       // Project should not be in list (verifies cleanup happened)
-      const listResponse = await request.get(`${DAEMON_URL}/api/projects`);
+      const listResponse = await request.get(`${daemon.baseUrl}/api/projects`);
       const listBody = await listResponse.json();
       const found = listBody.projects.find(
         (p: { path: string }) => p.path === secondPath

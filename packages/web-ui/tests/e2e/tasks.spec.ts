@@ -415,7 +415,7 @@ test.describe('Tasks View', () => {
       expect(taskRef).toBeTruthy();
 
       // Simulate external update via API (would trigger WebSocket event)
-      const response = await fetch(`http://localhost:3456/api/tasks/${taskRef}/note`, {
+      const response = await fetch(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

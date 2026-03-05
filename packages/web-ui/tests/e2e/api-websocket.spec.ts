@@ -56,9 +56,6 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_WS_URL = 'ws://localhost:3456/ws';
-const DAEMON_HTTP_URL = 'http://localhost:3456';
-
 /**
  * Connect to the daemon WebSocket from the browser context.
  * Returns a promise that resolves with the connected event payload.
@@ -67,10 +64,12 @@ const DAEMON_HTTP_URL = 'http://localhost:3456';
  * which properly handles WebSocket HTTP upgrades (101 Switching Protocols).
  */
 async function connectWebSocket(
-  page: import('@playwright/test').Page
+  page: import('@playwright/test').Page,
+  baseUrl: string,
+  wsUrl: string,
 ): Promise<{ sessionId: string; wsHandle: unknown }> {
   // Navigate to daemon root first so browser is in the right origin
-  await page.goto(DAEMON_HTTP_URL + '/api/health');
+  await page.goto(baseUrl + '/api/health');
 
   // Open WebSocket and wait for the 'connected' event
   const sessionId = await page.evaluate((wsUrl: string) => {
@@ -111,7 +110,7 @@ async function connectWebSocket(
         }
       };
     });
-  }, DAEMON_WS_URL);
+  }, wsUrl + '/ws');
 
   return { sessionId, wsHandle: null };
 }
@@ -221,7 +220,7 @@ test.describe('WebSocket Protocol API', () => {
   test.describe('Connection Lifecycle', () => {
     // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
     test('connects to /ws and receives connected event with session_id', async ({ page, daemon }) => {
-      await page.goto(DAEMON_HTTP_URL + '/api/health');
+      await page.goto(daemon.baseUrl + '/api/health');
 
       const result = await page.evaluate((wsUrl: string) => {
         return new Promise<{ event: string; session_id: string; rawMessage: string }>(
@@ -255,7 +254,7 @@ test.describe('WebSocket Protocol API', () => {
             };
           }
         );
-      }, DAEMON_WS_URL);
+      }, daemon.wsUrl + '/ws');
 
       // AC: @api-contract ac-25
       expect(result.event).toBe('connected');
@@ -267,7 +266,7 @@ test.describe('WebSocket Protocol API', () => {
 
     // AC: @api-contract ac-25, @trait-websocket-protocol ac-1
     test('each connection gets a unique session_id', async ({ page, daemon }) => {
-      await page.goto(DAEMON_HTTP_URL + '/api/health');
+      await page.goto(daemon.baseUrl + '/api/health');
 
       const sessionIds = await page.evaluate((wsUrl: string) => {
         return new Promise<string[]>((resolve, reject) => {
@@ -314,7 +313,7 @@ test.describe('WebSocket Protocol API', () => {
             })
             .catch(reject);
         });
-      }, DAEMON_WS_URL);
+      }, daemon.wsUrl + '/ws');
 
       expect(sessionIds).toHaveLength(2);
       expect(sessionIds[0]).not.toBe(sessionIds[1]);
@@ -326,9 +325,9 @@ test.describe('WebSocket Protocol API', () => {
       daemon,
       request,
     }) => {
-      await page.goto(DAEMON_HTTP_URL + '/api/health');
+      await page.goto(daemon.baseUrl + '/api/health');
 
-      const baselineResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+      const baselineResponse = await request.get(`${daemon.baseUrl}/api/health`);
       expect(baselineResponse.ok()).toBe(true);
       const baseline = await baselineResponse.json();
       const baselineConnections = baseline.connections as number;
@@ -372,9 +371,9 @@ test.describe('WebSocket Protocol API', () => {
             };
           }
         });
-      }, DAEMON_WS_URL);
+      }, daemon.wsUrl + '/ws');
 
-      const afterConnectResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+      const afterConnectResponse = await request.get(`${daemon.baseUrl}/api/health`);
       expect(afterConnectResponse.ok()).toBe(true);
       const afterConnect = await afterConnectResponse.json();
       expect(afterConnect.connections).toBe(baselineConnections + 2);
@@ -399,7 +398,7 @@ test.describe('WebSocket Protocol API', () => {
 
       let finalConnections: number | null = null;
       for (let attempt = 0; attempt < 20; attempt++) {
-        const healthResponse = await request.get(`${DAEMON_HTTP_URL}/api/health`);
+        const healthResponse = await request.get(`${daemon.baseUrl}/api/health`);
         const health = await healthResponse.json();
         finalConnections = health.connections as number;
         if (finalConnections === baselineConnections + 1) {
@@ -422,9 +421,9 @@ test.describe('WebSocket Protocol API', () => {
   });
 
   test.describe('Command Protocol', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, daemon }) => {
       // Establish WebSocket connection before each test
-      await connectWebSocket(page);
+      await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
     });
 
     // AC: @api-contract ac-26, @api-contract ac-27, @trait-websocket-protocol ac-2
@@ -573,8 +572,8 @@ test.describe('WebSocket Protocol API', () => {
   });
 
   test.describe('Broadcast Events', () => {
-    test.beforeEach(async ({ page }) => {
-      await connectWebSocket(page);
+    test.beforeEach(async ({ page, daemon }) => {
+      await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
     });
 
     // AC: @api-contract ac-28, @api-contract ac-29, @trait-websocket-protocol ac-2, ac-3, @daemon-server ac-4
@@ -586,12 +585,12 @@ test.describe('WebSocket Protocol API', () => {
         async () => {
           // Trigger a mutation via HTTP API that causes file change broadcast
           // Add a note to an existing task (fixture tasks exist)
-          const tasksResponse = await request.get(`${DAEMON_HTTP_URL}/api/tasks`);
+          const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
           const tasksBody = await tasksResponse.json();
           expect(tasksBody.items.length).toBeGreaterThan(0);
 
           const taskRef = tasksBody.items[0]._ulid;
-          const noteResponse = await request.post(`${DAEMON_HTTP_URL}/api/tasks/${taskRef}/note`, {
+          const noteResponse = await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
             data: {
               content: 'E2E WebSocket broadcast test note',
               author: '@test',
@@ -627,7 +626,7 @@ test.describe('WebSocket Protocol API', () => {
     // AC: @api-contract ac-29, @trait-websocket-protocol ac-3
     test('sequence numbers increment across broadcasts', async ({ page, daemon, request }) => {
       // Get first task from fixture
-      const tasksResponse = await request.get(`${DAEMON_HTTP_URL}/api/tasks`);
+      const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const tasksBody = await tasksResponse.json();
       const taskRef = tasksBody.items[0]._ulid;
 
@@ -671,14 +670,14 @@ test.describe('WebSocket Protocol API', () => {
 
       // Trigger first broadcast
       const firstBroadcastPromise = waitForNextBroadcast(page);
-      await request.post(`${DAEMON_HTTP_URL}/api/tasks/${taskRef}/note`, {
+      await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
         data: { content: 'Seq test note 1', author: '@test' },
       });
       const first = await firstBroadcastPromise;
 
       // Trigger second broadcast
       const secondBroadcastPromise = waitForNextBroadcast(page);
-      await request.post(`${DAEMON_HTTP_URL}/api/tasks/${taskRef}/note`, {
+      await request.post(`${daemon.baseUrl}/api/tasks/${taskRef}/note`, {
         data: { content: 'Seq test note 2', author: '@test' },
       });
       const second = await secondBroadcastPromise;
@@ -710,7 +709,7 @@ test.describe('WebSocket Protocol API', () => {
       expect(unsubAck.success).toBe(true);
 
       // Get a task to trigger a mutation
-      const tasksResponse = await request.get(`${DAEMON_HTTP_URL}/api/tasks`);
+      const tasksResponse = await request.get(`${daemon.baseUrl}/api/tasks`);
       const tasksBody = await tasksResponse.json();
       const taskRef = tasksBody.items[0]._ulid;
 
@@ -759,7 +758,7 @@ test.describe('WebSocket Protocol API', () => {
             });
           });
         },
-        { taskRefParam: taskRef, daemonUrl: DAEMON_HTTP_URL }
+        { taskRefParam: taskRef, daemonUrl: daemon.baseUrl }
       );
 
       // AC: @api-contract ac-28 — unsubscribed clients don't receive broadcasts
@@ -770,7 +769,7 @@ test.describe('WebSocket Protocol API', () => {
   test.describe('Connection Lifecycle - Clean Close', () => {
     // AC: @api-contract ac-31 — close code 1000 for clean close
     test('clean close uses code 1000', async ({ page, daemon }) => {
-      await page.goto(DAEMON_HTTP_URL + '/api/health');
+      await page.goto(daemon.baseUrl + '/api/health');
 
       const closeCode = await page.evaluate((wsUrl: string) => {
         return new Promise<number>((resolve, reject) => {
@@ -802,7 +801,7 @@ test.describe('WebSocket Protocol API', () => {
             reject(new Error('WebSocket error'));
           };
         });
-      }, DAEMON_WS_URL);
+      }, daemon.wsUrl + '/ws');
 
       // AC: @api-contract ac-31 — clean close uses code 1000
       expect(closeCode).toBe(1000);
@@ -815,7 +814,7 @@ test.describe('WebSocket Protocol API', () => {
     // Note: 30s ping interval and 90s pong timeout cannot be verified within E2E timeout budget.
     // This test verifies the connection remains functional after a brief idle period.
     test('connection remains active and responsive after idle', async ({ page, daemon }) => {
-      await connectWebSocket(page);
+      await connectWebSocket(page, daemon.baseUrl, daemon.wsUrl);
 
       // Wait 2 seconds and verify connection is still active by sending a ping
       await page.waitForTimeout(2000);

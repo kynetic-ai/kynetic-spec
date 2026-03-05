@@ -198,9 +198,9 @@ test.describe('Interactive Triage UI', () => {
   });
 
   // AC: @interactive-triage-ui ac-7
-  test('action filter narrows cards by triage action and resets card index', async ({ page, request }) => {
+  test('action filter narrows cards by triage action and resets card index', async ({ page, request, daemon }) => {
     let targetAction = 'defer';
-    const triageListResponse = await request.get('http://localhost:3456/api/triage?limit=1000');
+    const triageListResponse = await request.get(`${daemon.baseUrl}/api/triage?limit=1000`);
     expect(triageListResponse.ok()).toBe(true);
     const triageListBody = await triageListResponse.json();
     const existingAction = triageListBody.items.find((item: { action?: string | null }) => item.action)?.action;
@@ -208,14 +208,14 @@ test.describe('Interactive Triage UI', () => {
     if (existingAction) {
       targetAction = existingAction;
     } else {
-      const inboxResponse = await request.post('http://localhost:3456/api/inbox', {
+      const inboxResponse = await request.post(`${daemon.baseUrl}/api/inbox`, {
         data: { text: `Action filter test item ${Date.now()}` },
       });
       expect(inboxResponse.status()).toBe(200);
       const inboxBody = await inboxResponse.json();
       const inboxUlid = inboxBody.item._ulid;
 
-      const triageResponse = await request.post('http://localhost:3456/api/triage', {
+      const triageResponse = await request.post(`${daemon.baseUrl}/api/triage`, {
         data: {
           inbox_ref: `@${inboxUlid}`,
           action: targetAction,
@@ -319,7 +319,7 @@ test.describe('Triage real-time updates via WebSocket', () => {
     const initialProgress = await progressEl.textContent();
 
     // Create a fresh inbox item to triage (so we don't conflict with fixture records)
-    const inboxResp = await request.post('http://localhost:3456/api/inbox', {
+    const inboxResp = await request.post(`${daemon.baseUrl}/api/inbox`, {
       data: { text: `Real-time update test item ${Date.now()}` },
     });
     expect(inboxResp.status()).toBe(200);
@@ -329,7 +329,7 @@ test.describe('Triage real-time updates via WebSocket', () => {
     // POST triage decision via API (simulates another client acting on the item).
     // The daemon broadcasts triage:updates after mutation, which the triage page
     // receives and calls loadTriageData() to refresh the displayed count.
-    const triageResp = await request.post('http://localhost:3456/api/triage', {
+    const triageResp = await request.post(`${daemon.baseUrl}/api/triage`, {
       data: {
         inbox_ref: `@${newInboxUlid}`,
         action: 'defer',

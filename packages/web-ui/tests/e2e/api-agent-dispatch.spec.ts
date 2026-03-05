@@ -47,13 +47,11 @@
 
 import { test, expect } from '../fixtures/test-base';
 
-const DAEMON_URL = 'http://localhost:3456';
-
 test.describe('Agent Dispatch API', () => {
   test.describe('GET /api/agent/status', () => {
     // AC: @daemon-agent-dispatch ac-5
     test('returns dispatch_enabled, active_invocations, queue_depth, agent_definitions', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/agent/status`);
+      const response = await request.get(`${daemon.baseUrl}/api/agent/status`);
 
       expect(response.status()).toBe(200);
 
@@ -74,7 +72,7 @@ test.describe('Agent Dispatch API', () => {
 
     // AC: @daemon-agent-dispatch ac-5
     test('returns dispatch_enabled=false when engine not started', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/agent/status`);
+      const response = await request.get(`${daemon.baseUrl}/api/agent/status`);
 
       expect(response.status()).toBe(200);
 
@@ -88,7 +86,7 @@ test.describe('Agent Dispatch API', () => {
   test.describe('POST /api/agent/dispatch', () => {
     // AC: @daemon-agent-dispatch ac-6
     test('starts dispatch engine with action=start', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      const response = await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'start' },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -100,7 +98,7 @@ test.describe('Agent Dispatch API', () => {
       expect(body.dispatch_enabled).toBe(true);
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'stop' },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -109,12 +107,12 @@ test.describe('Agent Dispatch API', () => {
     // AC: @daemon-agent-dispatch ac-6
     test('stops dispatch engine with action=stop', async ({ request, daemon }) => {
       // Start first
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'start' },
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const response = await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      const response = await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'stop' },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -128,19 +126,19 @@ test.describe('Agent Dispatch API', () => {
 
     // AC: @daemon-agent-dispatch ac-6
     test('returns dispatch_enabled=true when GET /api/agent/status is called after start', async ({ request, daemon }) => {
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'start' },
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const statusResponse = await request.get(`${DAEMON_URL}/api/agent/status`);
+      const statusResponse = await request.get(`${daemon.baseUrl}/api/agent/status`);
       expect(statusResponse.status()).toBe(200);
 
       const body = await statusResponse.json();
       expect(body.dispatch_enabled).toBe(true);
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'stop' },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -150,7 +148,7 @@ test.describe('Agent Dispatch API', () => {
   test.describe('POST /api/agent/events', () => {
     // AC: @daemon-agent-dispatch ac-2, ac-7
     test('returns accepted=false when dispatch engine not running', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/agent/events`, {
+      const response = await request.post(`${daemon.baseUrl}/api/agent/events`, {
         data: {
           task_id: '01JXXXXXXXXXXXXXXXXXXXXXXXXX',
           from_status: 'in_progress',
@@ -171,12 +169,12 @@ test.describe('Agent Dispatch API', () => {
     // AC: @daemon-agent-dispatch ac-2
     test('returns accepted=true when dispatch engine is running', async ({ request, daemon }) => {
       // Start the engine first
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'start' },
         headers: { 'Content-Type': 'application/json' },
       });
 
-      const response = await request.post(`${DAEMON_URL}/api/agent/events`, {
+      const response = await request.post(`${daemon.baseUrl}/api/agent/events`, {
         data: {
           task_id: '01JXXXXXXXXXXXXXXXXXXXXXXXXX',
           task_ref: '@test-task',
@@ -193,7 +191,7 @@ test.describe('Agent Dispatch API', () => {
       expect(body.accepted).toBe(true);
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'stop' },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -201,7 +199,7 @@ test.describe('Agent Dispatch API', () => {
 
     // AC: @daemon-agent-dispatch ac-2
     test('POST /api/agent/event (legacy alias) returns accepted=false when engine not running', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/agent/event`, {
+      const response = await request.post(`${daemon.baseUrl}/api/agent/event`, {
         data: {
           task_id: '01JXXXXXXXXXXXXXXXXXXXXXXXXX',
           from_status: 'pending',
@@ -221,7 +219,7 @@ test.describe('Agent Dispatch API', () => {
   test.describe('GET /api/agent/dispatch/status (internal format)', () => {
     // AC: @daemon-agent-dispatch ac-5 (internal route for backwards compat)
     test('returns running=false when engine not started', async ({ request, daemon }) => {
-      const response = await request.get(`${DAEMON_URL}/api/agent/dispatch/status`);
+      const response = await request.get(`${daemon.baseUrl}/api/agent/dispatch/status`);
 
       expect(response.status()).toBe(200);
 
@@ -233,7 +231,7 @@ test.describe('Agent Dispatch API', () => {
 
   test.describe('Legacy dispatch start/stop routes', () => {
     test('POST /api/agent/dispatch/start starts the engine', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/agent/dispatch/start`);
+      const response = await request.post(`${daemon.baseUrl}/api/agent/dispatch/start`);
 
       expect(response.status()).toBe(200);
 
@@ -241,19 +239,19 @@ test.describe('Agent Dispatch API', () => {
       expect(body.started).toBe(true);
 
       // Verify engine is running
-      const statusResponse = await request.get(`${DAEMON_URL}/api/agent/dispatch/status`);
+      const statusResponse = await request.get(`${daemon.baseUrl}/api/agent/dispatch/status`);
       const status = await statusResponse.json();
       expect(status.running).toBe(true);
 
       // Clean up
-      await request.post(`${DAEMON_URL}/api/agent/dispatch/stop`);
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch/stop`);
     });
 
     test('POST /api/agent/dispatch/stop stops the engine', async ({ request, daemon }) => {
       // Start first
-      await request.post(`${DAEMON_URL}/api/agent/dispatch/start`);
+      await request.post(`${daemon.baseUrl}/api/agent/dispatch/start`);
 
-      const response = await request.post(`${DAEMON_URL}/api/agent/dispatch/stop`);
+      const response = await request.post(`${daemon.baseUrl}/api/agent/dispatch/stop`);
 
       expect(response.status()).toBe(200);
 
@@ -261,7 +259,7 @@ test.describe('Agent Dispatch API', () => {
       expect(body.stopped).toBe(true);
 
       // Verify engine is stopped
-      const statusResponse = await request.get(`${DAEMON_URL}/api/agent/dispatch/status`);
+      const statusResponse = await request.get(`${daemon.baseUrl}/api/agent/dispatch/status`);
       const status = await statusResponse.json();
       expect(status.running).toBe(false);
     });
@@ -270,13 +268,13 @@ test.describe('Agent Dispatch API', () => {
   test.describe('Trait: @trait-api-endpoint', () => {
     // AC: @trait-api-endpoint ac-1 — valid requests return 2xx
     test('all dispatch endpoints return 2xx for valid requests', async ({ request, daemon }) => {
-      const statusResp = await request.get(`${DAEMON_URL}/api/agent/status`);
+      const statusResp = await request.get(`${daemon.baseUrl}/api/agent/status`);
       expect(statusResp.status()).toBe(200);
 
-      const dispatchStatusResp = await request.get(`${DAEMON_URL}/api/agent/dispatch/status`);
+      const dispatchStatusResp = await request.get(`${daemon.baseUrl}/api/agent/dispatch/status`);
       expect(dispatchStatusResp.status()).toBe(200);
 
-      const eventResp = await request.post(`${DAEMON_URL}/api/agent/events`, {
+      const eventResp = await request.post(`${daemon.baseUrl}/api/agent/events`, {
         data: { task_id: '01JXXXXXXXXXXXXXXXXXXXXXXXXX', from_status: 'pending', to_status: 'in_progress' },
         headers: { 'Content-Type': 'application/json' },
       });
@@ -285,7 +283,7 @@ test.describe('Agent Dispatch API', () => {
 
     // AC: @trait-api-endpoint ac-3 — invalid body returns 400
     test('POST /api/agent/dispatch with invalid action returns 400', async ({ request, daemon }) => {
-      const response = await request.post(`${DAEMON_URL}/api/agent/dispatch`, {
+      const response = await request.post(`${daemon.baseUrl}/api/agent/dispatch`, {
         data: { action: 'restart' }, // invalid action
         headers: { 'Content-Type': 'application/json' },
       });
