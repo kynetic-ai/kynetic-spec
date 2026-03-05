@@ -212,10 +212,12 @@ export class AlignmentIndex {
       // Orphaned spec (no tasks)
       // AC: @trait-retrospective ac-1
       // Skip retrospective specs from orphaned warnings
+      // Policy: warn for not_started and in_progress (suspicious), but trust
+      // implemented/verified as baseline history predating the task system.
       const isRetrospective = spec.traits?.includes("@trait-retrospective");
       if (
         taskUlids.length === 0 &&
-        currentStatus === "not_started" &&
+        (currentStatus === "not_started" || currentStatus === "in_progress") &&
         !isRetrospective
       ) {
         warnings.push({
@@ -226,7 +228,8 @@ export class AlignmentIndex {
         });
       }
 
-      // Status mismatch (only when tasks exist — no-task specs emit orphaned_spec instead)
+      // Status mismatch (only when tasks exist — no-task specs are handled above
+      // for not_started/in_progress; implemented/verified are trusted as baseline)
       if (taskUlids.length > 0 && currentStatus !== expectedStatus) {
         warnings.push({
           type: "status_mismatch",
