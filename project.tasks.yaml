@@ -76307,6 +76307,31 @@
         - Verification: E2E tests covering ac-1 (agent definitions), ac-2 (dispatch running), ac-3
         (dispatch stopped)
       supersedes: null
+    - _ulid: 01KJYZ1SMMTAJK3MTFC37F7T2Y
+      created_at: 2026-03-05T12:20:07.444Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created:
+
+        - API client: fetchAgentStatus(), fetchAgentDefinitions(), controlDispatch() in lib/api.ts
+
+        - AgentCard component: shows name, id, triggers as badges, active/completed counts (ac-1)
+
+        - DispatchStatus component: running/stopped indicator, start/stop button, static mode
+        tooltip (ac-2, ac-3)  
+
+        - ActiveInvocationRow: task ref, elapsed time, session stream link with ds-breathe animation
+        (ac-2)
+
+        - /agents page: loads agent defs + dispatch status in parallel, WebSocket subscription for
+        live updates
+
+        - E2E tests: 13 tests covering all 3 ACs with fixture agents (task-worker, pr-reviewer)
+
+        - All animations gated with motion-reduce:animate-none
+
+        - Build passes, 3748/3753 tests pass (2 pre-existing codex failures, 3 skips)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
