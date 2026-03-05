@@ -151,14 +151,19 @@ export class AlignmentIndex {
     }
 
     // Check task statuses
-    const hasInProgress = tasks.some((t) => t.status === "in_progress");
+    const hasActiveWork = tasks.some(
+      (t) =>
+        t.status === "in_progress" ||
+        t.status === "pending_review" ||
+        t.status === "needs_work",
+    );
     const allCompleted = tasks.every((t) => t.status === "completed");
     const someCompleted = tasks.some((t) => t.status === "completed");
 
     if (allCompleted) {
       return "implemented";
     }
-    if (hasInProgress || someCompleted) {
+    if (hasActiveWork || someCompleted) {
       return "in_progress";
     }
     return "not_started";
