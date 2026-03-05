@@ -13,6 +13,7 @@
 		ready: number;
 		in_progress: number;
 		pending_review: number;
+		needs_work: number;
 		blocked: number;
 		completed: number;
 	}
@@ -21,6 +22,7 @@
 		ready: 0,
 		in_progress: 0,
 		pending_review: 0,
+		needs_work: 0,
 		blocked: 0,
 		completed: 0
 	});
@@ -51,6 +53,7 @@
 				ready: 0,
 				in_progress: 0,
 				pending_review: 0,
+				needs_work: 0,
 				blocked: 0,
 				completed: 0
 			};
@@ -69,6 +72,8 @@
 					newCounts.in_progress++;
 				} else if (task.status === 'pending_review') {
 					newCounts.pending_review++;
+				} else if (task.status === 'needs_work') {
+					newCounts.needs_work++;
 				} else if (task.status === 'blocked') {
 					newCounts.blocked++;
 				} else if (task.status === 'pending') {
@@ -102,16 +107,17 @@
 
 	// Status display config
 	const statusConfig = [
-		{ key: 'ready', label: 'Ready', color: 'bg-green-500', filterStatus: 'pending' },
-		{ key: 'in_progress', label: 'In Progress', color: 'bg-blue-500', filterStatus: 'in_progress' },
+		{ key: 'ready', label: 'Ready', color: 'bg-emerald-500', filterStatus: 'pending' },
+		{ key: 'in_progress', label: 'In Progress', color: 'bg-orange-500', filterStatus: 'in_progress' },
 		{
 			key: 'pending_review',
 			label: 'Pending Review',
-			color: 'bg-yellow-500',
+			color: 'bg-blue-500',
 			filterStatus: 'pending_review'
 		},
+		{ key: 'needs_work', label: 'Needs Work', color: 'bg-yellow-500', filterStatus: 'needs_work' },
 		{ key: 'blocked', label: 'Blocked', color: 'bg-red-500', filterStatus: 'blocked' },
-		{ key: 'completed', label: 'Completed', color: 'bg-gray-500', filterStatus: 'completed' }
+		{ key: 'completed', label: 'Completed', color: 'bg-emerald-500', filterStatus: 'completed' }
 	] as const;
 </script>
 
@@ -119,7 +125,7 @@
 	<h1 class="text-3xl font-bold">Dashboard</h1>
 
 	<!-- AC: @web-dashboard ac-1 - Task counts by status -->
-	<div class="grid gap-4 md:grid-cols-3 lg:grid-cols-5" data-testid="dashboard-counts">
+	<div class="grid gap-4 md:grid-cols-3 lg:grid-cols-6" data-testid="dashboard-counts">
 		{#each statusConfig as status}
 			<button
 				class="text-left"

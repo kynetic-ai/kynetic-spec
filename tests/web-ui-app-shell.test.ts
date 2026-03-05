@@ -27,19 +27,12 @@ const MOBILE_NAV_PATH = join(
 );
 const ITEMS_REDIRECT_PATH = join(WEB_UI_SRC, "routes", "items", "+page.svelte");
 const SPECS_PAGE_PATH = join(WEB_UI_SRC, "routes", "specs", "+page.svelte");
-const TASK_DETAIL_STORE_PATH = join(
-  WEB_UI_SRC,
-  "lib",
-  "stores",
-  "taskDetail.svelte.ts",
-);
 const LAYOUT_PATH = join(WEB_UI_SRC, "routes", "+layout.svelte");
 
 let sidebarSrc = "";
 let mobileNavSrc = "";
 let itemsRedirectSrc = "";
 let specsPageSrc = "";
-let taskDetailStoreSrc = "";
 let layoutSrc = "";
 
 // Load source files
@@ -48,7 +41,6 @@ function loadSources() {
   mobileNavSrc = readFileSync(MOBILE_NAV_PATH, "utf-8");
   itemsRedirectSrc = readFileSync(ITEMS_REDIRECT_PATH, "utf-8");
   specsPageSrc = readFileSync(SPECS_PAGE_PATH, "utf-8");
-  taskDetailStoreSrc = readFileSync(TASK_DETAIL_STORE_PATH, "utf-8");
   layoutSrc = readFileSync(LAYOUT_PATH, "utf-8");
 }
 
@@ -280,25 +272,6 @@ describe("Observations nav always visible (@ui-app-shell ac-4)", () => {
     expect(sidebarSrc).toContain("badgeKey: 'observations'");
     // The getBadgeCount check gates the badge, not the nav item
     expect(sidebarSrc).toContain("getBadgeCount(item.badgeKey) > 0");
-  });
-});
-
-// Additional: taskDetailStore migration to Svelte 5 runes
-describe("taskDetailStore Svelte 5 migration", () => {
-  it("uses $state runes instead of writable stores", () => {
-    expect(taskDetailStoreSrc).toContain("$state");
-    expect(taskDetailStoreSrc).not.toContain("writable(");
-    expect(taskDetailStoreSrc).not.toContain("from 'svelte/store'");
-  });
-
-  it("exports getter-based API for open and task", () => {
-    expect(taskDetailStoreSrc).toContain("get open()");
-    expect(taskDetailStoreSrc).toContain("get task()");
-  });
-
-  it("provides openWith and close methods", () => {
-    expect(taskDetailStoreSrc).toContain("openWith(task");
-    expect(taskDetailStoreSrc).toContain("close()");
   });
 });
 

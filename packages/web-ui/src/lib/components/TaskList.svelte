@@ -33,11 +33,12 @@
 
 	function getStatusColor(status: string): string {
 		const colors: Record<string, string> = {
-			pending: 'bg-gray-500',
-			in_progress: 'bg-blue-500',
-			pending_review: 'bg-yellow-500',
+			pending: 'bg-amber-500',
+			in_progress: 'bg-orange-500',
+			pending_review: 'bg-blue-500',
+			needs_work: 'bg-yellow-500',
 			blocked: 'bg-red-500',
-			completed: 'bg-green-500',
+			completed: 'bg-emerald-500',
 			cancelled: 'bg-gray-400'
 		};
 		return colors[status] || 'bg-gray-500';
@@ -48,6 +49,7 @@
 			pending: 'Pending',
 			in_progress: 'In Progress',
 			pending_review: 'Pending Review',
+			needs_work: 'Needs Work',
 			blocked: 'Blocked',
 			completed: 'Completed',
 			cancelled: 'Cancelled'
