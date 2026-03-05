@@ -2405,7 +2405,7 @@ features:
             then: changes are auto-committed to shadow branch
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
       - _ulid: 01KFADGA7EPEJKTVG91CCVV3YA
         slugs:
           - cmd-clone-for-testing
