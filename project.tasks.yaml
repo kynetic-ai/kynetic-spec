@@ -76436,6 +76436,29 @@
 
         - Verification: npm test (root), npm run test (web-ui)
       supersedes: null
+    - _ulid: 01KJZ1A773MZCT8A1QDB1QN3NV
+      created_at: 2026-03-05T12:59:40.643Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+        - Added task_id to SessionLogSummary (store.ts) and SessionSummary (api.ts) so session list
+        includes task reference
+
+        - Updated /sessions page to display all AC-1 fields: ID (short ULID), agent type, task ref
+        (@-prefixed), status badge, duration, age
+
+        - Added data-testid attributes for E2E testing
+
+        - Added status colors for abandoned (needs-work) and timed_out (pending) states
+
+        - Added unit tests for task_id presence/absence in summaries
+
+        - Created E2E test suite (sessions.spec.ts) with route interception covering AC-1 metadata
+        fields, AC-2 navigation, empty/loading/error states
+
+        - All existing tests pass (2 pre-existing failures unrelated to changes)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
