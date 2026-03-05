@@ -75956,6 +75956,20 @@
         appear here after completion'). TaskDetailModal notes section renders actionable empty
         guidance contextual to mode (static: 'Use kspec task note', daemon: 'Add a note above...')."
       supersedes: null
+    - _ulid: 01KJZFAXETBA83YN62VPQQA8TK
+      created_at: 2026-03-05T17:04:43.482Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) AC-3/spec alignment bug: task detail API omits task type, so
+        modal cannot reliably show the required type field; GET /api/tasks/:ref response in
+        packages/daemon/src/routes/tasks.ts (around return fields at lines 159-183) does not include
+        type, and TaskDetailModal checks task.type at
+        packages/web-ui/src/lib/components/board/TaskDetailModal.svelte:213, producing
+        incorrect/blank type rendering. 2) AC-3 coverage gap: tests annotated for AC-3 do not
+        validate the full required modal info set (type, dependencies, blocked-by, todos,
+        automation, VCS links, plan ref, session link); current AC-3 E2E assertions in
+        packages/web-ui/tests/e2e/task-board.spec.ts:82-107 only check description/notes/status, so
+        AC text is only partially enforced."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
@@ -76635,6 +76649,7 @@
   session_id: 01KJZE5WPH5XAAT9F96WNF0MF0
   created_at: 2026-03-05T01:30:06.311Z
   started_at: 2026-03-05T16:47:32.319Z
+  submitted_at: 2026-03-05T16:57:24.447Z
   notes:
     - _ulid: 01KJXSVJK7RK2HWN05Q26NYP6M
       created_at: 2026-03-05T01:30:06.311Z
@@ -76662,7 +76677,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T16:57:24.447Z
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
   slugs:
     - implement-validation-and-alignment-view
