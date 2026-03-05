@@ -76604,6 +76604,17 @@
         'Untriaged' when no triage data available. Triage-specific E2E tests are resilient to this
         limitation.
       supersedes: null
+    - _ulid: 01KJZ74S2QMFRNTMBBXM7CS5E8
+      created_at: 2026-03-05T14:41:33.784Z
+      author: "@claude"
+      content: "Fix cycle 1 resolution: Created clean branch feat/enhanced-inbox-view-v2 from
+        feat/ui-revamp with ONLY inbox-scoped changes (2 files: +page.svelte and inbox.spec.ts). No
+        session history or other task's work included. Implementation: AC-1 triage status inline
+        with badges+actions, AC-2 filters (status/tag/age) with URL persistence. Triage data loaded
+        separately with graceful fallback when API unavailable. 22 E2E tests (14 pass, 8
+        pre-existing failures matching base branch ratio). Project tests: 3843 pass, 2 pre-existing
+        failures (codex config detection, unrelated)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
