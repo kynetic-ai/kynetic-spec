@@ -2514,7 +2514,7 @@ features:
             then: 'Outputs JSON with path to cloned repo: {"path": "/tmp/kspec-test-xxx", "branch": "main"}'
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
       - _ulid: 01KJCT2Z088W7TT4GR6A4HK9Q0
         slugs:
           - bootstrap-script
