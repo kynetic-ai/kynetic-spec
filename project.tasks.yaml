@@ -76621,7 +76621,7 @@
   type: task
   spec_ref: "@ui-inbox-enhanced"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76737,6 +76737,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-05T21:28:35.135Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVJK7DS2RV2SNMYH5G39W
   slugs:
     - implement-plans-view
@@ -76890,6 +76892,7 @@
   session_id: 01KJZWBQJWYWMNSH7X620F3FKT
   created_at: 2026-03-05T01:30:07.172Z
   started_at: 2026-03-05T21:02:14.985Z
+  submitted_at: 2026-03-05T21:21:52.231Z
   notes:
     - _ulid: 01KJXSVKE4KK0MKFP61JZBR1DD
       created_at: 2026-03-05T01:30:07.172Z
@@ -76946,7 +76949,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-05T21:21:52.231Z
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
   slugs: []
   title: UI Revamp Prerequisites (Quick Wins)
