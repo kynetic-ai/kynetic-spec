@@ -6583,6 +6583,11 @@ features:
         when: the invocation is running in autonomous dispatch mode
         then: the ACP client request handler auto-approves the request by sending the appropriate response,
           so tool calls (Edit, Write, Bash) are never blocked waiting for human confirmation
+      - id: ac-12
+        given: an agent invocation is being spawned via the dispatch engine or one-shot CLI
+        when: the environment is prepared for the agent process
+        then: KSPEC_DAEMON_PID is set to the daemon's process ID so that kspec serve commands can detect and
+          refuse to kill the host daemon
     depends_on: []
     implements: []
     relates_to: []
