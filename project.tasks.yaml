@@ -76839,7 +76839,7 @@
   spec_ref: "@e2e-test-daemon-isolation"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -76881,3 +76881,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-05T17:46:25.390Z
