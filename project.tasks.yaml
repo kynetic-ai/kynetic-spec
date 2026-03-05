@@ -76403,7 +76403,7 @@
   type: task
   spec_ref: "@ui-session-history"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-stream-view"
@@ -76461,6 +76461,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-05T12:59:46.170Z
 - _ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
   slugs:
     - implement-enhanced-inbox-view
