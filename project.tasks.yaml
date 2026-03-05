@@ -75432,6 +75432,16 @@
         - Build succeeds, all 18 new tests pass, full suite passes (2 pre-existing codex failures
         unrelated)
       supersedes: null
+    - _ulid: 01KJY4S8CYKK8ZX28BEN5WNHPX
+      created_at: 2026-03-05T04:41:04.671Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Required test command fails in web-ui package: 'cd
+        packages/web-ui && npm test' exits 1 because package script 'test' is missing
+        (packages/web-ui/package.json). 2) kspec validate reports a warning for this spec that is a
+        blocker per checklist: UI Design System status mismatch (spec implementation='in_progress'
+        but validator expects 'not_started' based on task progress). AC annotation coverage exists
+        for ac-1..ac-4 in tests/web-ui-design-system.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
