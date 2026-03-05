@@ -75512,6 +75512,16 @@
         mismatch warning for @ui-design-system. All 18 design system tests pass. 4 pre-existing
         failures unrelated (codex platform detection + session-start timeout)."
       supersedes: null
+    - _ulid: 01KJY7RAPFWXV8J9CB2W9H8ZCW
+      created_at: 2026-03-05T05:32:59.987Z
+      author: Jacob Chapel
+      content: 'Review findings: MUST-FIX — kspec validate reports a warning for this spec: UI Design
+        System status mismatch (implementation="in_progress" but expected "not_started" based on
+        task progress). Review checks: diff against feat/ui-revamp reviewed; AC annotations present
+        for @ui-design-system ac-1..ac-4 in tests/web-ui-design-system.test.ts; no inherited trait
+        ACs shown by kspec item get @ui-design-system; required test commands pass (npm test and cd
+        packages/web-ui && npm test).'
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVG0226PJPNCGMG4N1383
