@@ -74129,8 +74129,13 @@
       author: Jacob Chapel
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KJY3CA43SD5GN072MFFKYYY6
+      created_at: 2026-03-05T04:16:31.875Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Paused during UI revamp focus"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJVCWC68CMQZXE387YNF8EYZ
   slugs: []
   title: Fix agent dispatch watch WebSocket subscribe decoding for Node clients
@@ -74649,9 +74654,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-03-04T13:55:57.570Z
-  notes: []
+  notes:
+    - _ulid: 01KJY3CBAN33QFSN8FRWN0MV6H
+      created_at: 2026-03-05T04:16:33.109Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Paused during UI revamp focus"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJWK8821AN0M759BMX4FK3NX
   slugs: []
   title: "Fill spec gap: task add command options and acceptance criteria"
@@ -74759,9 +74769,14 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-04T14:15:28.030Z
-  notes: []
+  notes:
+    - _ulid: 01KJY3CCG5D5EM7QVQ7NDTK86X
+      created_at: 2026-03-05T04:16:34.310Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Paused during UI revamp focus"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJWK89YMH01SAC8ECSHRJ5BC
   slugs: []
   title: "Fill spec gap: derive command options and fix spec/code mismatches"
@@ -74990,9 +75005,14 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-04T14:15:30.920Z
-  notes: []
+  notes:
+    - _ulid: 01KJY3CDN6CXSYEVVP2CXNNN28
+      created_at: 2026-03-05T04:16:35.494Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Paused during UI revamp focus"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJWQM3XZ6P3TYHBCFRCBJ9DZ
   slugs: []
   title: Fix batch write buffer bypass — loadSpecFile and other read paths skip buffer
@@ -75256,8 +75276,13 @@
       content: "Automation: eligible. Bug fix with clear root cause — tests must clear
         CLAUDE_CODE_ENTRYPOINT/CLAUDE_PROJECT_DIR/CLAUDE_CODE env vars."
       supersedes: null
+    - _ulid: 01KJY3CETMN0AFWDE8T1TH8545
+      created_at: 2026-03-05T04:16:36.693Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Paused during UI revamp focus"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KJXQK4T21FSEY4YV6RD0DT8M
   slugs: []
   title: UI/UX revamp - comprehensive web UI redesign
