@@ -75377,7 +75377,7 @@
   type: task
   spec_ref: "@ui-design-system"
   plan_ref: "@plan-ui-ux-revamp"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@01KJXSWR"
@@ -75388,7 +75388,7 @@
   session_id: 01KJY693X421JZV0X9CSB9Q0BQ
   created_at: 2026-03-05T01:30:03.199Z
   started_at: 2026-03-05T05:13:57.869Z
-  submitted_at: 2026-03-05T05:07:05.169Z
+  submitted_at: 2026-03-05T05:23:01.305Z
   notes:
     - _ulid: 01KJXSVFHZFJTJAWT37FDADBZM
       created_at: 2026-03-05T01:30:03.199Z
