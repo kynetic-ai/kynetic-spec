@@ -193,6 +193,93 @@ export async function addTaskNote(ref: string, content: string): Promise<void> {
 }
 
 /**
+ * Submit a task for review (transition to pending_review)
+ * AC: @ui-task-board ac-6
+ */
+export async function submitTask(ref: string): Promise<void> {
+	assertWritable('submit task');
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/submit`, {
+		method: 'POST',
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+}
+
+/**
+ * Complete a task
+ * AC: @ui-task-board ac-6
+ */
+export async function completeTask(ref: string, reason: string): Promise<void> {
+	assertWritable('complete task');
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/complete`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ reason })
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+}
+
+/**
+ * Block a task
+ * AC: @ui-task-board ac-6
+ */
+export async function blockTask(ref: string, reason: string): Promise<void> {
+	assertWritable('block task');
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/block`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ reason })
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+}
+
+/**
+ * Fetch agent/dispatch status
+ * AC: @ui-task-board ac-4
+ */
+export interface AgentStatus {
+	dispatch_enabled: boolean;
+	active_invocations: Array<{
+		session_id: string;
+		agent_id: string;
+		task_ref: string | null;
+		elapsed_ms: number;
+	}>;
+	queue_depth: number;
+	agent_definitions: Array<{ id: string; name: string; adapter: string }>;
+}
+
+export async function fetchAgentStatus(): Promise<AgentStatus> {
+	if (isStaticMode()) {
+		return { dispatch_enabled: false, active_invocations: [], queue_depth: 0, agent_definitions: [] };
+	}
+
+	const response = await fetch(`${API_BASE}/api/agent/status`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
  * Fetch spec items with optional filters
  * AC: @web-dashboard ac-11
  * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
