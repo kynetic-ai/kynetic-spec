@@ -1402,7 +1402,7 @@ features:
     created: 2026-03-05T01:30:02.842Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KJXSVF7944GT0W021545WRPK
     slugs:
       - ui-dashboard-overview
