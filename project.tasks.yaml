@@ -77201,7 +77201,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -77209,7 +77209,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK202C5S26WMF3E13SDBQT0M
+  session_id: null
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-06T16:55:48.695Z
   submitted_at: 2026-03-06T16:56:06.364Z
@@ -77452,6 +77452,12 @@
         - npm test: 3847 passed, 2 failed (pre-existing Codex-related failures, unrelated)
 
         - packages/web-ui npm test: 156 passed
+      supersedes: null
+    - _ulid: 01KK23Q61K116FK6MEJBWDJHPQ
+      created_at: 2026-03-06T17:39:25.875Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Review findings: Review issues: merge conflict against feat/ui-revamp in
+        packages/web-ui/src/lib/api.ts; rebase/resolve required before merge."
       supersedes: null
   todos: []
   automation: eligible
