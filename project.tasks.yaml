@@ -76960,6 +76960,18 @@
         ?plan=..., but /specs and /tasks ignore that parameter, so View Specs / View Tasks do not
         show the selected plan's linked records."
       supersedes: null
+    - _ulid: 01KK0VGBS9WHFBEQPCEDXZ4ERA
+      created_at: 2026-03-06T05:56:39.337Z
+      author: "@claude"
+      content: "Fix cycle 2 addressed: (1) Added plan query param filter to daemon GET /api/tasks and GET
+        /api/items routes — loads plans, matches by ULID or slug, filters to
+        derived_specs/derived_tasks. (2) Added plan param to API client fetchTasks/fetchItems. (3)
+        /specs page now reads ?plan= param, passes to fetchItems, shows filter banner. (4) /tasks
+        page reads ?plan= via filterParams, passes to fetchTasks, shows filter banner. (5) Updated
+        E2E tests to verify hrefs contain plan slug and navigation shows filter banner. Pre-existing
+        E2E CORS issue (hardcoded port 3456 vs ephemeral port) blocks all UI E2E tests including
+        plans — this is not specific to this task. Unit tests all pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
