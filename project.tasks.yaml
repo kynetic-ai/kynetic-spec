@@ -77234,6 +77234,19 @@
         - board/ components don't exist on this branch (task-board is on separate branch), so active
         fleet is inlined
       supersedes: null
+    - _ulid: 01KK0X5Y22W04KP3VHV0VPXHJK
+      created_at: 2026-03-06T06:25:54.755Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) AC validation gap in dashboard E2E tests.
+        packages/web-ui/tests/e2e/dashboard.spec.ts:14-17 explicitly notes browser fetch failures,
+        and current tests only check structure/navigation/API contracts, not that UI renders
+        aggregated counts for active work/status summary/needs-attention from fixture data. This
+        does not adequately validate @ui-dashboard-overview ac-1 behavior. MUST-FIX 2)
+        Count-to-filter mismatch for blocked cards. packages/web-ui/src/routes/+page.svelte:234-242
+        increments blocked count for pending tasks with unmet deps, but blocked card links/filter
+        use status=blocked at lines 104-107 and 154. Users can see blocked count that does not match
+        tasks shown after click."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
