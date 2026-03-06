@@ -905,25 +905,104 @@ export async function fetchSessionEvents(
 }
 
 // ============================================================
-// Validation API Functions
-// AC: @ui-dashboard-overview ac-1
+// Validation & Alignment API Functions
+// AC: @ui-validation-view ac-1
 // ============================================================
 
-export interface ValidationResult {
+export interface SchemaValidationError {
+	file: string;
+	path?: string;
+	message: string;
+	details?: unknown;
+}
+
+export interface RefValidationError {
+	ref: string;
+	sourceFile?: string;
+	sourceUlid?: string;
+	field: string;
+	error: 'not_found' | 'ambiguous' | 'duplicate_slug';
+	message: string;
+}
+
+export interface RefValidationWarning {
+	ref: string;
+	sourceFile?: string;
+	sourceUlid?: string;
+	field: string;
+	warning: 'deprecated_target';
+	message: string;
+}
+
+export interface OrphanItem {
+	ulid: string;
+	title: string;
+	type: string;
+	file?: string;
+}
+
+export type CompletenessWarningType =
+	| 'missing_acceptance_criteria'
+	| 'missing_description'
+	| 'status_inconsistency'
+	| 'missing_test_coverage'
+	| 'automation_eligible_no_spec'
+	| 'ac_schema_field_mismatch';
+
+export interface CompletenessWarning {
+	type: CompletenessWarningType;
+	subtype?: 'own_ac' | 'trait_ac';
+	itemRef: string;
+	itemTitle: string;
+	message: string;
+	details?: string;
+}
+
+export interface TraitCycleError {
+	traitRef: string;
+	traitTitle: string;
+	cycle: string[];
+	message: string;
+}
+
+export interface ValidationResponse {
 	valid: boolean;
-	schemaErrors: Array<{ path: string; message: string }>;
-	refErrors: Array<{ source: string; ref: string; message: string }>;
-	refWarnings: Array<{ source: string; ref: string; message: string }>;
-	orphans: Array<{ type: string; ulid: string; title: string }>;
-	completenessWarnings: Array<{ item: string; message: string }>;
-	traitCycles: Array<{ cycle: string[] }>;
+	schemaErrors: SchemaValidationError[];
+	refErrors: RefValidationError[];
+	refWarnings: RefValidationWarning[];
+	orphans: OrphanItem[];
+	completenessWarnings: CompletenessWarning[];
+	traitCycles: TraitCycleError[];
+}
+
+/** Alias for backward compatibility with dashboard overview */
+export type ValidationResult = ValidationResponse;
+
+export interface AlignmentWarning {
+	type: 'orphaned_spec' | 'status_mismatch' | 'stale_implementation';
+	specUlid?: string;
+	specTitle?: string;
+	taskUlid?: string;
+	message: string;
+}
+
+export interface AlignmentStats {
+	totalSpecs: number;
+	specsWithTasks: number;
+	alignedSpecs: number;
+	orphanedSpecs: number;
+}
+
+export interface AlignmentResponse {
+	stats: AlignmentStats;
+	warnings: AlignmentWarning[];
 }
 
 /**
  * Fetch validation results
- * AC: @ui-dashboard-overview ac-1
+ * AC: @ui-validation-view ac-1
  */
-export async function fetchValidation(): Promise<ValidationResult> {
+export async function fetchValidation(): Promise<ValidationResponse> {
 	if (isStaticMode()) {
 		return {
 			valid: true,
@@ -937,6 +1016,28 @@ export async function fetchValidation(): Promise<ValidationResult> {
 	}
 
 	const response = await fetch(`${API_BASE}/api/validate`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch alignment stats and warnings
+ * AC: @ui-validation-view ac-1
+ */
+export async function fetchAlignment(): Promise<AlignmentResponse> {
+	if (isStaticMode()) {
+		return {
+			stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+			warnings: []
+		};
+	}
+
+	const response = await fetch(`${API_BASE}/api/alignment`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
