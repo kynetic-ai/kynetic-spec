@@ -4249,7 +4249,7 @@ features:
         created: 2026-02-27T18:10:39.831Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KJGBWMZCGSE6D13A74NH8NZ5
         slugs:
           - session-stale-cleanup
