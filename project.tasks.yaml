@@ -77038,7 +77038,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -77046,7 +77046,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK0VHFZJ3BSK8ST6AK2YQBTH
+  session_id: null
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-06T06:09:05.663Z
   submitted_at: 2026-03-06T06:18:20.022Z
@@ -77210,6 +77210,13 @@
         Alignment View status is in_progress but should be not_started' (kspec validate output lines
         52-53). Per review checklist, warnings for this spec are blocker-level and must be resolved
         before merge."
+      supersedes: null
+    - _ulid: 01KK1VVBJZJ241THKDT6Y2Y309
+      created_at: 2026-03-06T15:21:54.015Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: Review issues: AC coverage % currently ignores uncovered
+        trait AC warnings in /validate view; kspec validate still reports a spec-specific warning
+        for @ui-validation-view (status mismatch)."
       supersedes: null
   todos: []
   automation: eligible
