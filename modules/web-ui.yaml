@@ -1374,7 +1374,7 @@ features:
     created: 2026-03-05T01:30:02.828Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KJXSVF6TWXS4Z07QE6R2JEG8
     slugs:
       - ui-validation-view
