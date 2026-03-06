@@ -1432,7 +1432,7 @@ features:
     created: 2026-03-05T01:30:02.857Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
