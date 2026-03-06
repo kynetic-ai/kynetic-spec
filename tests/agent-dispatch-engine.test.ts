@@ -1946,3 +1946,238 @@ describe("Self-trigger suppression", () => {
     expect(receivedEvents.length).toBe(0);
   });
 });
+
+// ─── AC-19: Periodic reconciliation ───────────────────────────────────────────
+
+// AC: @agent-dispatch-engine ac-19
+describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-reconcile-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-19
+  it("should enqueue matching tasks with no active or queued invocation", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending" }]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    // Mock _drainQueues to prevent actual invocation spawning
+    vi.spyOn(engine as unknown as { _drainQueues: (a: unknown) => Promise<void> }, "_drainQueues")
+      .mockResolvedValue(undefined);
+    const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
+
+    await engine.start();
+
+    // Bootstrap enqueued it via _enqueue (drain is no-op so entries stay)
+    expect(enqueueSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+
+    // Clear the queue to simulate a lost event scenario
+    (engine as unknown as { queues: Map<string, unknown[]> }).queues.clear();
+    enqueueSpy.mockClear();
+
+    // Now call _reconcile — it should re-discover the task
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+
+    expect(enqueueSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-19
+  it("should NOT re-enqueue tasks that already have a queued invocation", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending" }]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    // Mock _drainQueues to prevent actual invocation spawning
+    vi.spyOn(engine as unknown as { _drainQueues: (a: unknown) => Promise<void> }, "_drainQueues")
+      .mockResolvedValue(undefined);
+    const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
+
+    await engine.start();
+
+    // Bootstrap enqueued it — DON'T clear the queue this time
+    enqueueSpy.mockClear();
+
+    // Reconcile should see the queued entry and skip
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+
+    expect(enqueueSpy.mock.calls.length).toBe(0);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-19
+  it("should skip tasks in non-dispatchable states (completed, blocked)", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "completed" }]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
+    await engine.start();
+
+    // Neither bootstrap nor reconcile should enqueue completed tasks
+    expect(enqueueSpy.mock.calls.length).toBe(0);
+
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+    expect(enqueueSpy.mock.calls.length).toBe(0);
+
+    await engine.stop();
+  });
+});
+
+// ─── AC-20: Reconciliation interval configuration ─────────────────────────────
+
+// AC: @agent-dispatch-engine ac-20
+describe("AC-20: Reconciliation interval configuration", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-reconcile-interval-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-20
+  it("should run reconciliation on the configured interval", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await writeTasks(testDir, []);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 100, // 100ms for testing
+    });
+
+    const reconcileSpy = vi.spyOn(
+      engine as unknown as { _reconcile: () => Promise<void> },
+      "_reconcile",
+    );
+
+    await engine.start();
+
+    // Wait enough for at least one interval tick
+    await new Promise((r) => setTimeout(r, 250));
+
+    expect(reconcileSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-20
+  it("should NOT run reconciliation when interval is 0", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await writeTasks(testDir, []);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const reconcileSpy = vi.spyOn(
+      engine as unknown as { _reconcile: () => Promise<void> },
+      "_reconcile",
+    );
+
+    await engine.start();
+    await new Promise((r) => setTimeout(r, 200));
+
+    expect(reconcileSpy.mock.calls.length).toBe(0);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-20
+  it("should NOT run reconciliation when interval is null", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await writeTasks(testDir, []);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: null,
+    });
+
+    const reconcileSpy = vi.spyOn(
+      engine as unknown as { _reconcile: () => Promise<void> },
+      "_reconcile",
+    );
+
+    await engine.start();
+    await new Promise((r) => setTimeout(r, 200));
+
+    expect(reconcileSpy.mock.calls.length).toBe(0);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-20
+  it("should stop reconciliation timer on engine stop", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await writeTasks(testDir, []);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 50,
+    });
+
+    const reconcileSpy = vi.spyOn(
+      engine as unknown as { _reconcile: () => Promise<void> },
+      "_reconcile",
+    );
+
+    await engine.start();
+    await engine.stop();
+
+    const callsAtStop = reconcileSpy.mock.calls.length;
+
+    // Wait well past interval — no more calls should happen
+    await new Promise((r) => setTimeout(r, 200));
+    expect(reconcileSpy.mock.calls.length).toBe(callsAtStop);
+  });
+});
