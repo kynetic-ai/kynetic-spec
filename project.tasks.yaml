@@ -77553,7 +77553,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -77598,6 +77598,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-06T04:32:02.297Z
+  closed_reason: "Merged in PR #685. Implemented periodic reconciliation loop (AC-19, AC-20) with
+    shared _evaluateAllTasks helper, .unref() on timer, and 8 new tests."
 - _ulid: 01KK0JFDE8E2Y7C7JJK651EA74
   slugs: []
   title: Fix max_tasks misuse as retry limit in dispatch/invocation code
