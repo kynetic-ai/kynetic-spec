@@ -40,14 +40,16 @@
 		window.history.pushState({}, '', url);
 	}
 
-	function handleDetailClose() {
-		detailOpen = false;
 
-		// Clear URL param
-		const url = new URL(window.location.href);
-		url.searchParams.delete('ref');
-		window.history.pushState({}, '', url);
-	}
+	// Clear URL param when detail panel closes via bind:open
+	$effect(() => {
+		if (!detailOpen && selectedRef) {
+			selectedRef = null;
+			const url = new URL(window.location.href);
+			url.searchParams.delete('ref');
+			window.history.pushState({}, '', url);
+		}
+	});
 
 	// React to URL ref param changes (handles both initial load and navigation)
 	$effect(() => {
@@ -98,4 +100,4 @@
 	{/if}
 </div>
 
-<ItemDetail ref={selectedRef} bind:open={detailOpen} on:close={handleDetailClose} />
+<ItemDetail ref={selectedRef} bind:open={detailOpen} />

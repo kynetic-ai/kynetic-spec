@@ -19,6 +19,7 @@
 		pending: 'Pending',
 		in_progress: 'In Progress',
 		pending_review: 'Pending Review',
+		needs_work: 'Needs Work',
 		blocked: 'Blocked',
 		completed: 'Completed',
 		cancelled: 'Cancelled'
@@ -99,6 +100,7 @@
 				<SelectItem value="pending">Pending</SelectItem>
 				<SelectItem value="in_progress">In Progress</SelectItem>
 				<SelectItem value="pending_review">Pending Review</SelectItem>
+				<SelectItem value="needs_work">Needs Work</SelectItem>
 				<SelectItem value="blocked">Blocked</SelectItem>
 				<SelectItem value="completed">Completed</SelectItem>
 				<SelectItem value="cancelled">Cancelled</SelectItem>
