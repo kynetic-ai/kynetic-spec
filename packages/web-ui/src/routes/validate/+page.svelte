@@ -235,13 +235,16 @@
 		return labels[type] ?? type;
 	}
 
-	/** Count total uncovered ACs from completeness warnings details field ("Uncovered: ac-1, ac-2") */
+	/** Count total uncovered ACs from completeness warnings details field.
+	 * Own AC format: "Uncovered: ac-1, ac-2"
+	 * Trait AC format: "Uncovered trait ACs: @trait-slug ac-1, @trait-slug ac-2"
+	 */
 	function countUncoveredACs(warnings: CompletenessWarning[]): number {
 		let count = 0;
 		for (const w of warnings) {
 			if (w.type === 'missing_test_coverage' && w.details) {
-				// Parse "Uncovered: ac-1, ac-2" → count comma-separated entries
-				const match = w.details.match(/^Uncovered:\s*(.+)$/);
+				// Match both "Uncovered: ..." and "Uncovered trait ACs: ..."
+				const match = w.details.match(/^Uncovered(?:\s+trait\s+ACs)?:\s*(.+)$/);
 				if (match) {
 					count += match[1].split(',').length;
 				}

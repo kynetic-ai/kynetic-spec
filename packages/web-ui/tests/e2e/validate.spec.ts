@@ -63,6 +63,14 @@ function mockValidationWithIssues() {
 				itemTitle: 'Test Feature',
 				message: 'Item @test-feature has 1 AC(s) without test coverage',
 				details: 'Uncovered: ac-2'
+			},
+			{
+				type: 'missing_test_coverage',
+				subtype: 'trait_ac',
+				itemRef: '@batch-exec',
+				itemTitle: 'Batch Command Execution',
+				message: 'Item @batch-exec has 2 inherited trait AC(s) without test coverage',
+				details: 'Uncovered trait ACs: @trait-priority-parameter ac-1, @trait-priority-parameter ac-2'
 			}
 		],
 		traitCycles: []
@@ -244,8 +252,8 @@ test.describe('Validation and Alignment View', () => {
 			// Warning count card
 			const warningCard = page.getByTestId('warning-count-card');
 			await expect(warningCard).toBeVisible();
-			// 1 refWarning + 2 completenessWarnings + 1 orphan = 4 warnings
-			await expect(warningCard).toContainText('4');
+			// 1 refWarning + 3 completenessWarnings + 1 orphan = 5 warnings
+			await expect(warningCard).toContainText('5');
 			await expect(warningCard).toContainText('Warnings');
 
 			// Valid items card
@@ -302,10 +310,39 @@ test.describe('Validation and Alignment View', () => {
 			const acCoverage = page.getByTestId('ac-coverage');
 			await expect(acCoverage).toBeVisible();
 			await expect(acCoverage).toContainText('AC Coverage');
-			// 20 total ACs (from acceptance_criteria_count), 1 uncovered (from "Uncovered: ac-2")
-			// Coverage = (20 - 1) / 20 = 95%
-			await expect(acCoverage).toContainText('95%');
-			await expect(acCoverage).toContainText('19/20 ACs with tests');
+			// 20 total ACs (from acceptance_criteria_count)
+			// 1 uncovered own AC (from "Uncovered: ac-2") + 2 uncovered trait ACs
+			// (from "Uncovered trait ACs: @trait-priority-parameter ac-1, @trait-priority-parameter ac-2")
+			// Coverage = (20 - 3) / 20 = 85%
+			await expect(acCoverage).toContainText('85%');
+			await expect(acCoverage).toContainText('17/20 ACs with tests');
+		});
+
+		// AC: @ui-validation-view ac-1
+		test('AC coverage includes uncovered trait ACs', async ({ page, daemon }) => {
+			// Build validation with ONLY trait AC warnings (no own AC warnings)
+			const traitOnlyValidation = {
+				...mockValidationClean(),
+				completenessWarnings: [
+					{
+						type: 'missing_test_coverage',
+						subtype: 'trait_ac',
+						itemRef: '@batch-exec',
+						itemTitle: 'Batch Command Execution',
+						message: 'Item @batch-exec has 3 inherited trait AC(s) without test coverage',
+						details:
+							'Uncovered trait ACs: @trait-priority-parameter ac-1, @trait-priority-parameter ac-2, @trait-priority-parameter ac-3'
+					}
+				]
+			};
+			await setupValidateRoutes(page, { validation: traitOnlyValidation });
+			await page.goto('/validate');
+
+			const acCoverage = page.getByTestId('ac-coverage');
+			await expect(acCoverage).toBeVisible();
+			// 20 total ACs, 3 uncovered trait ACs → (20 - 3) / 20 = 85%
+			await expect(acCoverage).toContainText('85%');
+			await expect(acCoverage).toContainText('17/20 ACs with tests');
 		});
 
 		// AC: @ui-validation-view ac-1
@@ -350,8 +387,8 @@ test.describe('Validation and Alignment View', () => {
 			// Warning issues group
 			const warningGroup = page.getByTestId('warning-issues');
 			await expect(warningGroup).toBeVisible();
-			// 1 refWarning + 2 completenessWarnings + 1 status_mismatch alignment = 4 warnings
-			await expect(warningGroup).toContainText('Warnings (4)');
+			// 1 refWarning + 3 completenessWarnings + 1 status_mismatch alignment = 5 warnings
+			await expect(warningGroup).toContainText('Warnings (5)');
 
 			// Info issues group
 			const infoGroup = page.getByTestId('info-issues');
