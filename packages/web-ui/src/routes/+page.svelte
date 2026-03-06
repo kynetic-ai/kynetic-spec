@@ -107,17 +107,17 @@
 
 	// Status display config
 	const statusConfig = [
-		{ key: 'ready', label: 'Ready', color: 'bg-emerald-500', filterStatus: 'pending' },
-		{ key: 'in_progress', label: 'In Progress', color: 'bg-orange-500', filterStatus: 'in_progress' },
+		{ key: 'ready', label: 'Ready', color: 'bg-status-completed', filterStatus: 'pending' },
+		{ key: 'in_progress', label: 'In Progress', color: 'bg-status-in-progress', filterStatus: 'in_progress' },
 		{
 			key: 'pending_review',
 			label: 'Pending Review',
-			color: 'bg-blue-500',
+			color: 'bg-status-pending-review',
 			filterStatus: 'pending_review'
 		},
-		{ key: 'needs_work', label: 'Needs Work', color: 'bg-yellow-500', filterStatus: 'needs_work' },
-		{ key: 'blocked', label: 'Blocked', color: 'bg-red-500', filterStatus: 'blocked' },
-		{ key: 'completed', label: 'Completed', color: 'bg-emerald-500', filterStatus: 'completed' }
+		{ key: 'needs_work', label: 'Needs Work', color: 'bg-status-needs-work', filterStatus: 'needs_work' },
+		{ key: 'blocked', label: 'Blocked', color: 'bg-status-blocked', filterStatus: 'blocked' },
+		{ key: 'completed', label: 'Completed', color: 'bg-status-completed', filterStatus: 'completed' }
 	] as const;
 </script>
 

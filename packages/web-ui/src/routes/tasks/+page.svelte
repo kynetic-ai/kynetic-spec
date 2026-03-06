@@ -208,15 +208,15 @@
 
 	function getStatusColor(status: string): string {
 		const colors: Record<string, string> = {
-			pending: 'bg-amber-500',
-			in_progress: 'bg-orange-500',
-			pending_review: 'bg-blue-500',
-			needs_work: 'bg-yellow-500',
-			blocked: 'bg-red-500',
-			completed: 'bg-emerald-500',
-			cancelled: 'bg-gray-400'
+			pending: 'bg-status-pending text-status-pending-fg',
+			in_progress: 'bg-status-in-progress text-status-in-progress-fg',
+			pending_review: 'bg-status-pending-review text-status-pending-review-fg',
+			needs_work: 'bg-status-needs-work text-status-needs-work-fg',
+			blocked: 'bg-status-blocked text-status-blocked-fg',
+			completed: 'bg-status-completed text-status-completed-fg',
+			cancelled: 'bg-status-cancelled text-status-cancelled-fg'
 		};
-		return colors[status] || 'bg-gray-500';
+		return colors[status] || 'bg-status-cancelled text-status-cancelled-fg';
 	}
 
 	function formatStatus(status: string): string {
