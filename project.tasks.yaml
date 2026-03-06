@@ -77378,6 +77378,37 @@
         @ui-validation-view (status mismatch: in_progress vs should be not_started). Checklist
         treats any warning for this spec as MUST-FIX blocker."
       supersedes: null
+    - _ulid: 01KK217NS9QPTXBKQV3XNPXGWP
+      created_at: 2026-03-06T16:56:00.554Z
+      author: "@claude"
+      content: >-
+        Fix cycle 4: Root cause identified and resolved.
+
+
+        The spec status mismatch warning ('in_progress but should be not_started') was caused by the
+        globally installed kspec v0.10.0 binary, which did not include the alignment fix from commit
+        ca43d7362 (src/parser/alignment.ts:154-158). The installed v0.10.0 only checked for t.status
+        === 'in_progress' in calculateExpectedStatus(), missing 'needs_work' and 'pending_review'
+        states. This caused needs_work tasks to fall through to 'not_started' expected status.
+
+
+        Fix: Ran 'npm link' to point the global kspec binary to the local dist/ (which includes the
+        fix). Verified: kspec validate --alignment no longer reports the @ui-validation-view status
+        mismatch.
+
+
+        The source code alignment fix was already present since fix cycle 2 (commit ca43d7362 on
+        this branch). No code changes needed — only the runtime environment needed updating.
+
+
+        Verification:
+
+        - kspec validate --alignment: no warning for 'Validation and Alignment View'
+
+        - npm test: 3847 passed, 2 failed (pre-existing Codex-related failures, unrelated)
+
+        - packages/web-ui npm test: 156 passed
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
