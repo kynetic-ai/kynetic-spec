@@ -77098,6 +77098,15 @@
       content: "[FIX_CYCLE: 4] Review findings: Review issues: MUST-FIX — kspec validate warns for
         @ui-plans-view (status mismatch in_progress vs expected not_started)."
       supersedes: null
+    - _ulid: 01KK1YW5BQYNYMPRMYX4XXJN90
+      created_at: 2026-03-06T16:14:46.135Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) \\ reports an alignment warning for this spec: Plans View
+        status mismatch (implementation \\ vs expected \\). Per review checklist, any warnings for
+        this spec are blocking. Other review gates checked clean on this branch: AC coverage present
+        for @ui-plans-view ac-1, no inherited traits, required test sequence passed (root +
+        web-ui)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
