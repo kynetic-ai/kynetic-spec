@@ -77186,6 +77186,29 @@
         violations, legacy Svelte reactivity in touched code, and failing npm test
         (tests/cli-serve.test.ts:222)."
       supersedes: null
+    - _ulid: 01KK09XA5QHQCNAA0DFX605P8H
+      created_at: 2026-03-06T00:49:09.303Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed:
+
+        1. Removed unrelated /plans feature commits via git rebase --onto (out of task scope)
+
+        2. Replaced raw Tailwind status colors with design tokens (bg-status-* / text-status-*-fg)
+        in TaskList, ItemDetail, dashboard, and tasks page
+
+        3. Converted ItemDetail.svelte to Svelte 5 runes: export let → $props/$bindable, $: →
+        $effect, plain vars → $state
+
+        4. Updated specs page for Svelte 5 ItemDetail compatibility (removed on:close, added $effect
+        for URL cleanup)
+
+        5. cli-serve.test.ts:222 passes locally — was pre-existing flaky test, not caused by this
+        task
+
+        6. All tests pass: 176 suites / 3844 tests (2 pre-existing codex platform detection failures
+        unchanged)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
