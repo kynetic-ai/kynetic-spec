@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75766,7 +75766,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KK1SWHYH62GGZ06MSRGJ1HYB
+  session_id: null
   created_at: 2026-03-05T01:30:04.123Z
   started_at: 2026-03-06T14:47:53.268Z
   submitted_at: 2026-03-06T14:55:25.217Z
@@ -76207,6 +76207,13 @@
         All 3777 unit tests pass (2 pre-existing codex failures). 25 board-utils tests pass. E2E
         tests cannot run inside dispatch (daemon guard), but changes are purely additive assertions
         + data-testid attributes + fixture data.
+      supersedes: null
+    - _ulid: 01KK1X4ZWF52FC9HKTC3WHBMK6
+      created_at: 2026-03-06T15:44:38.287Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 8] Review findings: Review issues: kspec validate shows Task Board (Kanban)
+        spec alignment warning (in_progress vs expected not_started); checklist marks this spec
+        warning as MUST-FIX."
       supersedes: null
   todos: []
   automation: eligible
