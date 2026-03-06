@@ -4160,7 +4160,7 @@ features:
         created: 2026-02-06T23:37:16.756Z
         status:
           maturity: draft
-          implementation: not_started
+          implementation: implemented
       - _ulid: 01KJG4QB2QSQZ11J5D1GNFED86
         slugs:
           - session-compact
