@@ -77043,6 +77043,26 @@
 
         Additional: Added /validate plus other missing routes to daemon SPA fallback routes.
       supersedes: null
+    - _ulid: 01KK0AAGNBZ9Z746GRS3V82CN6
+      created_at: 2026-03-06T00:56:21.931Z
+      author: Jacob Chapel
+      content: 'Review findings: MUST-FIX 1) packages/web-ui/src/routes/validate/+page.svelte:57-71
+        computes "Valid Items" by subtracting unique schemaErrors.file, refErrors.ref, and
+        traitCycles.traitRef values from totalItemCount. Those identifiers are not equivalent to
+        invalid items, so the summary can miscount valid items;
+        packages/web-ui/tests/e2e/validate.spec.ts:214-245 locks in the same incorrect math by
+        asserting "2 errors => 8 valid items." 2)
+        packages/web-ui/src/routes/validate/+page.svelte:82-96 computes "AC Coverage %" as (total
+        items - itemsWithMissingCoverage) / total items and explicitly says it uses totalItems "for
+        simplicity." That is not acceptance-criteria coverage; it is item-level approximation.
+        packages/web-ui/tests/e2e/validate.spec.ts:283-292 bakes in the same wrong behavior by
+        expecting 90% from 10 total items and 1 uncovered item. 3)
+        packages/web-ui/src/routes/validate/+page.svelte:283-305 uses raw animate-pulse placeholders
+        instead of the design-system shimmer utility in
+        packages/web-ui/src/lib/ds/animations.css:1-65, so the async loading state misses the
+        required shimmer pattern and reduced-motion gating from the review checklist. Regression
+        check passed: npm test exited 0 at repo root, and packages/web-ui npm test exited 0.'
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
