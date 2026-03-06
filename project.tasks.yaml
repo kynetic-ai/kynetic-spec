@@ -76115,6 +76115,30 @@
         src/schema/task.ts:40-46). Required test suites passed: npm test and packages/web-ui npm
         test."
       supersedes: null
+    - _ulid: 01KK0A4KK9F55C7XY37PFVBBSD
+      created_at: 2026-03-06T00:53:08.330Z
+      author: "@claude"
+      content: >-
+        Fix cycle 6 — addressed all 3 review findings:
+
+        1. AC-4 agent name: Active Fleet now resolves agent name from agent_definitions map instead
+        of rendering raw agent_id. Falls back to agent_id when definition is missing. Added
+        data-testid='fleet-agent-name' for test targeting.
+
+        2. AC-4 coverage: Added E2E tests for pulse indicator visibility, output empty state
+        ('Awaiting output...'), and new test for WebSocket output area (aria-live='polite'). Total
+        AC-4 tests: hidden state + running state (agent name, title, elapsed, pulse, output) +
+        output area.
+
+        3. Shared API types: Updated Todo interface to match TodoSchema (text/done instead of
+        content/status). Added notes_count/todos_count to TaskDetail. Rebuilt shared dist. Fixed all
+        consuming components (TaskDetail.svelte, TaskDetailPanel.svelte, tasks/+page.svelte) to use
+        todo.done/todo.text.
+
+
+        All 25 board unit tests pass. 16 task board E2E tests pass when run in isolation (dispatch
+        engine branch switching causes non-deterministic failures in concurrent runs).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
