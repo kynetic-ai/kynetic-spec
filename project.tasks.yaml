@@ -77029,6 +77029,33 @@
         (`tests/cli-serve.test.ts:222`) and `kspec validate` warning for @ui-plans-view status
         mismatch."
       supersedes: null
+    - _ulid: 01KK1WK3BETJGQMSEM5RDSNXV8
+      created_at: 2026-03-06T15:34:52.014Z
+      author: "@claude"
+      content: >-
+        Fix cycle 3 investigation:
+
+
+        1. cli-serve.test.ts:222 regression: Test passes consistently on rerun (ran 3x). Branch made
+        zero changes to tests/cli-serve.test.ts or the code path it exercises (foreground SIGINT
+        handling). The only daemon change is adding plans routes (additive, non-breaking). Failure
+        is a pre-existing flaky test — same result on base branch feat/validation-view.
+
+
+        2. kspec validate status mismatch: Global kspec (v0.10.0) reports Plans View
+        expected=not_started, but local code (v0.9.1 with needs_work alignment fix at
+        src/parser/alignment.ts:158) correctly reports expected=in_progress, isAligned=true. Running
+        'npm run dev -- validate --alignment' shows 2 mismatches (not 6), and Plans View is NOT
+        among them. The discrepancy is a version skew between global install and local code.
+
+
+        Pre-existing test failures (also present on base branch): tests/core-skill-install.test.ts
+        and tests/enhanced-setup.test.ts — both related to Codex config rendering, unrelated to
+        web-ui.
+
+
+        All tests pass: npm test (3847 passed, 2 pre-existing failures), web-ui (156 passed).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
