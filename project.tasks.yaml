@@ -76792,7 +76792,7 @@
   type: task
   spec_ref: "@ui-plans-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76800,7 +76800,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK00VAC6BD7V82C4HREF0V5K
+  session_id: null
   created_at: 2026-03-05T01:30:06.311Z
   started_at: 2026-03-05T22:23:22.270Z
   submitted_at: 2026-03-05T22:23:23.955Z
@@ -76882,6 +76882,30 @@
         tasks:updates — plan progress is derived from task statuses, so task changes now trigger
         plan view refresh. (3) Added View Specs / View Tasks navigation buttons to plan cards per
         wireframe. (4) Added E2E tests for accessible label and navigation actions."
+      supersedes: null
+    - _ulid: 01KK08MR69SX9ZAS8MD6A1756S
+      created_at: 2026-03-06T00:27:00.170Z
+      author: Jacob Chapel
+      content: 'Review findings: MUST-FIX 1) packages/web-ui/src/routes/plans/+page.svelte:285 and :297
+        add plan-scoped "View Specs" / "View Tasks" links, but the destination pages ignore the plan
+        query. /items only redirects to /specs preserving query
+        (packages/web-ui/src/routes/items/+page.svelte:8-10), /specs only reads ref
+        (packages/web-ui/src/routes/specs/+page.svelte:53-58), and /tasks only supports
+        status/type/tag/assignee/automation filters
+        (packages/web-ui/src/routes/tasks/+page.svelte:39-46;
+        packages/web-ui/src/lib/api.ts:95-103). Clicking the new actions therefore lands on
+        unfiltered lists, so the wireframe navigation action is still not implemented. SHOULD-FIX 2)
+        packages/web-ui/tests/e2e/plans.spec.ts:185-202 only asserts that the buttons are visible;
+        it never verifies the href or filtered navigation behavior, which let this regression
+        through. Tests passed (npm test; cd packages/web-ui && npm test), and kspec validate showed
+        no warnings for @ui-plans-view.'
+      supersedes: null
+    - _ulid: 01KK08MSY320F4ZXM4T2FT0DRA
+      created_at: 2026-03-06T00:27:01.957Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: Review issues: plan action links on /plans navigate with
+        ?plan=..., but /specs and /tasks ignore that parameter, so View Specs / View Tasks do not
+        show the selected plan's linked records."
       supersedes: null
   todos: []
   automation: eligible
