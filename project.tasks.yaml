@@ -77608,7 +77608,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -77621,7 +77621,7 @@
   session_id: null
   created_at: 2026-03-06T03:18:51.078Z
   started_at: 2026-03-06T04:56:11.149Z
-  submitted_at: 2026-03-06T04:41:27.007Z
+  submitted_at: 2026-03-06T04:56:12.907Z
   notes:
     - _ulid: 01KK0Q5Z1MGKRWJHV9KAN8KA8M
       created_at: 2026-03-06T04:41:04.308Z
