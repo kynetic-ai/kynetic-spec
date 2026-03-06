@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75766,7 +75766,7 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: 01KK1XGJRK80WC7E02Z8HPC286
+  session_id: null
   created_at: 2026-03-05T01:30:04.123Z
   started_at: 2026-03-06T16:00:22.979Z
   submitted_at: 2026-03-06T16:05:00.642Z
@@ -76256,6 +76256,13 @@
         feat/ui-revamp...feat/task-board-kanban), so this task branch is not the expected sub-branch
         for no-PR merge flow. Regression command passed: root npm test and packages/web-ui npm test
         both exit 0."
+      supersedes: null
+    - _ulid: 01KK20EASAPYJZS8XES0EDJEPR
+      created_at: 2026-03-06T16:42:10.090Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 9] Review findings: Review issues: Task Board spec-specific validation warning
+        is still present, and branch does not follow required feat/ui-revamp/<task> sub-branch
+        topology for merge."
       supersedes: null
   todos: []
   automation: eligible
