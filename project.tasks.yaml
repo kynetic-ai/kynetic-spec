@@ -76845,7 +76845,7 @@
   type: task
   spec_ref: "@ui-plans-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76853,9 +76853,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KK0TCBJVHG82A8DYKNP33BR4
   created_at: 2026-03-05T01:30:06.311Z
-  started_at: 2026-03-05T22:23:22.270Z
+  started_at: 2026-03-06T05:37:45.707Z
   submitted_at: 2026-03-05T22:23:23.955Z
   notes:
     - _ulid: 01KJXSVJK7RK2HWN05Q26NYP6M
@@ -77610,6 +77610,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #686. Fixed max_tasks misuse as retry limit — added budget.max_retries
+    field, updated dispatch.ts and invocation.ts, added CLI --max-retries option with full test
+    coverage."
   depends_on: []
   context: []
   priority: 3
@@ -77622,6 +77625,7 @@
   created_at: 2026-03-06T03:18:51.078Z
   started_at: 2026-03-06T04:56:11.149Z
   submitted_at: 2026-03-06T04:56:12.907Z
+  completed_at: 2026-03-06T05:04:08.157Z
   notes:
     - _ulid: 01KK0Q5Z1MGKRWJHV9KAN8KA8M
       created_at: 2026-03-06T04:41:04.308Z
@@ -77658,10 +77662,6 @@
         pass."
       supersedes: null
   todos: []
-  completed_at: 2026-03-06T05:04:08.157Z
-  closed_reason: "Merged in PR #686. Fixed max_tasks misuse as retry limit — added budget.max_retries
-    field, updated dispatch.ts and invocation.ts, added CLI --max-retries option with full test
-    coverage."
 - _ulid: 01KK0JFEFJ3EVWHAT0B3SBB1S5
   slugs: []
   title: Replace note-based failure tracking with structured invocation outcome data
