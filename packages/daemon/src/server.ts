@@ -28,6 +28,7 @@ import { createProjectsRoutes } from './routes/projects';
 import { createTriageRoutes } from './routes/triage';
 import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
 import { createSessionRoutes } from './routes/sessions';
+import { createPlansRoutes } from './routes/plans';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -244,6 +245,9 @@ export async function createServer(options: ServerOptions) {
     // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
     .use(createSessionRoutes())
 
+    // AC: @ui-plans-view ac-1 - Plans data endpoints
+    .use(createPlansRoutes())
+
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
@@ -359,7 +363,7 @@ export async function createServer(options: ServerOptions) {
 
     // SPA fallback routes for client-side routing
     // These catch paths like /tasks, /items, /inbox that don't have static files
-    const spaRoutes = ['/tasks', '/tasks/*', '/items', '/items/*', '/inbox', '/observations', '/triage'];
+    const spaRoutes = ['/tasks', '/tasks/*', '/items', '/items/*', '/inbox', '/observations', '/triage', '/plans'];
     for (const route of spaRoutes) {
       app.get(route, () => Bun.file(indexHtmlPath));
     }

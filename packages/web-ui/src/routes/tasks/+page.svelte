@@ -44,6 +44,7 @@
 		tag: $page.url.searchParams.get('tag') || undefined,
 		assignee: $page.url.searchParams.get('assignee') || undefined,
 		automation: $page.url.searchParams.get('automation') || undefined,
+		plan: $page.url.searchParams.get('plan') || undefined,
 		limit: 50,
 		offset: 0
 	});
@@ -53,7 +54,7 @@
 
 	$effect(() => {
 		// Re-fetch when filterParams changes - explicitly access all properties for dependency tracking
-		const { status, type, tag, assignee, automation, limit, offset } = filterParams;
+		const { status, type, tag, assignee, automation, plan, limit, offset } = filterParams;
 		loadTasks();
 	});
 
@@ -312,6 +313,13 @@
 	</div>
 
 	<TaskFilters />
+
+	{#if filterParams.plan}
+		<div class="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-md px-3 py-2" data-testid="plan-filter-banner">
+			Filtered by plan: <code class="bg-muted px-1 py-0.5 rounded text-xs">@{filterParams.plan}</code>
+			<a href="{base}/tasks" class="ml-auto text-primary hover:underline text-xs">Clear filter</a>
+		</div>
+	{/if}
 
 	{#if error}
 		<div class="bg-destructive/10 text-destructive p-4 rounded-lg" data-testid="error-message" role="alert">

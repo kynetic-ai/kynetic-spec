@@ -2,6 +2,7 @@
 	// AC: @web-dashboard ac-11, ac-12, ac-13, ac-14, ac-15
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import type { ItemSummary } from '@kynetic-ai/shared';
 	import { fetchItems } from '$lib/api';
@@ -16,11 +17,14 @@
 	let selectedRef = $state<string | null>(null);
 	let detailOpen = $state(false);
 
+	// Plan filter from URL query param (set by "View Specs" on plans page)
+	let planFilter = $derived($page.url.searchParams.get('plan') ?? undefined);
+
 	async function loadItems() {
 		loading = true;
 		error = null;
 		try {
-			const response = await fetchItems();
+			const response = await fetchItems(planFilter ? { plan: planFilter } : undefined);
 			items = response.items;
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load spec items';
@@ -64,6 +68,12 @@
 		loadItems();
 	});
 
+	// Reload when plan filter changes (e.g. navigating from plans page)
+	$effect(() => {
+		const _plan = planFilter;
+		loadItems();
+	});
+
 	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
 	$effect(() => {
 		const version = getProjectVersion();
@@ -78,6 +88,13 @@
 		<h1 class="text-3xl font-bold">Spec Items</h1>
 		<p class="text-sm text-muted-foreground">{items.length} items total</p>
 	</div>
+
+	{#if planFilter}
+		<div class="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-md px-3 py-2" data-testid="plan-filter-banner">
+			Filtered by plan: <code class="bg-muted px-1 py-0.5 rounded text-xs">@{planFilter}</code>
+			<a href="{base}/specs" class="ml-auto text-primary hover:underline text-xs">Clear filter</a>
+		</div>
+	{/if}
 
 	{#if loading}
 		<div class="space-y-4">

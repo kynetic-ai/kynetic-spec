@@ -417,6 +417,20 @@ export function fetchTriageRecordsStatic(params?: {
 }
 
 // ============================================================
+// Plans Static Functions
+// ============================================================
+
+/**
+ * Fetch plans from static snapshot
+ * Plans are not included in static snapshots, so return empty.
+ */
+export function fetchPlansStatic(_params?: {
+	status?: string;
+}): { items: never[]; total: number } {
+	return { items: [], total: 0 };
+}
+
+// ============================================================
 // Write Operations (throw ReadOnlyModeError)
 // ============================================================
 

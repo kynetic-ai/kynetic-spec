@@ -20,6 +20,7 @@ import type {
 	SessionContext,
 	Observation,
 	PaginatedResponse,
+	PlanSummary,
 	ErrorResponse,
 	SearchResponse
 } from '@kynetic-ai/shared';
@@ -41,7 +42,8 @@ import {
 	fetchSessionContextStatic,
 	fetchObservationsStatic,
 	searchStatic,
-	fetchTriageRecordsStatic
+	fetchTriageRecordsStatic,
+	fetchPlansStatic
 } from './api-static';
 import { DAEMON_API_BASE } from './constants';
 
@@ -96,6 +98,7 @@ export async function fetchTasks(params?: {
 	tag?: string;
 	assignee?: string;
 	automation?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<TaskSummary>> {
@@ -262,6 +265,7 @@ export async function blockTask(ref: string, reason: string): Promise<void> {
 export async function fetchItems(params?: {
 	type?: string | string[];
 	tag?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<ItemSummary>> {
@@ -724,6 +728,42 @@ export async function actOnTriageRecord(
 
 	const response = await fetch(`${API_BASE}/api/triage/${ref}/act`, {
 		method: 'POST',
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Plans API Functions
+// AC: @ui-plans-view ac-1
+// ============================================================
+
+/**
+ * Fetch plans with optional status filter
+ * AC: @ui-plans-view ac-1
+ */
+export async function fetchPlans(params?: {
+	status?: string;
+}): Promise<{ items: PlanSummary[]; total: number }> {
+	if (isStaticMode()) {
+		return fetchPlansStatic(params);
+	}
+
+	const url = new URL(`${API_BASE}/api/plans`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				url.searchParams.set(key, String(value));
+			}
+		});
+	}
+
+	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
