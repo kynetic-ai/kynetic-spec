@@ -77198,6 +77198,19 @@
         - packages/web-ui/tests/e2e/validate.spec.ts — Updated mock items with
         acceptance_criteria_count, adjusted AC coverage assertion from 90% to 95%
       supersedes: null
+    - _ulid: 01KK1VV62AD9JK48BEZQEYS8KD
+      created_at: 2026-03-06T15:21:48.362Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) AC Coverage is undercounting uncovered trait ACs. In
+        packages/web-ui/src/routes/validate/+page.svelte:239-247, countUncoveredACs() only parses
+        details matching '^Uncovered: ...', but trait coverage warnings are emitted as 'Uncovered
+        trait ACs: ...' (src/parser/validate.ts:1050). This inflates displayed AC coverage whenever
+        trait AC gaps exist. Add parsing for trait warning format and add an E2E assertion covering
+        trait_ac warnings. 2) kspec validate still reports a warning for this spec: 'Validation and
+        Alignment View status is in_progress but should be not_started' (kspec validate output lines
+        52-53). Per review checklist, warnings for this spec are blocker-level and must be resolved
+        before merge."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
