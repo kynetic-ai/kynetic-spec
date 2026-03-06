@@ -77128,6 +77128,36 @@
         and AC-coverage metrics, and its loading state does not use the required
         shimmer/reduced-motion pattern."
       supersedes: null
+    - _ulid: 01KK0WQWWF5BV0ENPQ5C6NJ1GB
+      created_at: 2026-03-06T06:18:14.800Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2: Addressed all three MUST-FIX items from review.
+
+
+        1. Valid Items count: Changed from using refErrors.ref (the broken target reference) to
+        sourceUlid/sourceFile (the item containing the broken reference). This correctly identifies
+        which items have validation errors instead of counting nonexistent targets.
+
+
+        2. AC Coverage %: Replaced item-level approximation with actual AC-level computation. Now
+        sums acceptance_criteria_count from the items API (total ACs = 20 in test data) and parses
+        uncovered ACs from completeness warning details field. Coverage = (totalACs - uncoveredACs)
+        / totalACs. Display also shows 'N/M ACs with tests' for transparency.
+
+
+        3. Loading skeleton: Replaced all animate-pulse classes with ds-shimmer utility from
+        lib/ds/animations.css, which provides proper shimmer animation with @media
+        (prefers-reduced-motion: reduce) gating.
+
+
+        Files changed:
+
+        - packages/web-ui/src/routes/validate/+page.svelte — All three metric/skeleton fixes
+
+        - packages/web-ui/tests/e2e/validate.spec.ts — Updated mock items with
+        acceptance_criteria_count, adjusted AC coverage assertion from 90% to 95%
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
