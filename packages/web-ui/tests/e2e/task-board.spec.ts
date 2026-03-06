@@ -446,14 +446,60 @@ test.describe('Task Board (Kanban)', () => {
 			});
 		});
 
+		// Track WebSocket instances before page navigation
+		await page.addInitScript(() => {
+			const instances: WebSocket[] = [];
+			const OriginalWebSocket = window.WebSocket;
+			(window as any).__test_ws_instances = instances;
+			window.WebSocket = new Proxy(OriginalWebSocket, {
+				construct(target, args) {
+					const ws = new target(...(args as [string, ...any[]]));
+					instances.push(ws);
+					return ws;
+				}
+			});
+		});
+
 		await page.goto('/tasks/board');
 		await expect(page.getByTestId('board-columns')).toBeVisible();
 		await expect(page.getByTestId('active-fleet-row')).toBeVisible();
 
-		// Verify the output area exists with aria-live for accessibility
-		const fleetCard = page.getByTestId('fleet-card');
-		const outputArea = fleetCard.locator('[aria-live="polite"]');
-		await expect(outputArea).toBeVisible();
+		// Initially output should show empty placeholder
+		await expect(page.getByTestId('fleet-output-empty')).toBeVisible();
+		await expect(page.getByTestId('fleet-output-empty')).toHaveText(/Awaiting output/);
+
+		// Inject a synthetic agent_text_chunk WebSocket message through the live connection
+		const injected = await page.evaluate((sessionId) => {
+			const instances = (window as any).__test_ws_instances as WebSocket[];
+			const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+			if (!ws) return false;
+
+			const msg = JSON.stringify({
+				msg_id: 'test-output-001',
+				seq: 9999,
+				timestamp: new Date().toISOString(),
+				topic: 'agents',
+				event: 'agent_text_chunk',
+				data: {
+					session_id: sessionId,
+					text: 'Running tests...\nAll 25 tests passed\nBuild complete'
+				}
+			});
+			ws.dispatchEvent(new MessageEvent('message', { data: msg }));
+			return true;
+		}, 'test-session-002');
+
+		expect(injected).toBe(true);
+
+		// Verify the output lines rendered in the fleet card
+		const outputEl = page.getByTestId('fleet-output');
+		await expect(outputEl).toBeVisible({ timeout: 5000 });
+		await expect(outputEl).toContainText('Running tests...');
+		await expect(outputEl).toContainText('All 25 tests passed');
+		await expect(outputEl).toContainText('Build complete');
+
+		// Verify aria-live attribute for accessibility
+		await expect(outputEl).toHaveAttribute('aria-live', 'polite');
 	});
 
 	// View toggle navigation
