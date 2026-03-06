@@ -77167,7 +77167,7 @@
   type: task
   spec_ref: "@ui-dashboard-overview"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-task-board-kanban"
@@ -77176,7 +77176,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KJZWBQJWYWMNSH7X620F3FKT
+  session_id: null
   created_at: 2026-03-05T01:30:07.172Z
   started_at: 2026-03-05T21:02:14.985Z
   submitted_at: 2026-03-05T21:21:52.231Z
@@ -77246,6 +77246,12 @@
         increments blocked count for pending tasks with unmet deps, but blocked card links/filter
         use status=blocked at lines 104-107 and 154. Users can see blocked count that does not match
         tasks shown after click."
+      supersedes: null
+    - _ulid: 01KK0X634Q05B39PPVYS23QZD9
+      created_at: 2026-03-06T06:25:59.959Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: AC coverage does not validate dashboard UI
+        aggregation path, and blocked count card semantics do not match filtered results."
       supersedes: null
   todos: []
   automation: eligible
