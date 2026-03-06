@@ -75758,7 +75758,7 @@
   type: task
   spec_ref: "@ui-task-board"
   plan_ref: "@plan-ui-ux-revamp"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -75766,9 +75766,9 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KK1SWHYH62GGZ06MSRGJ1HYB
   created_at: 2026-03-05T01:30:04.123Z
-  started_at: 2026-03-06T00:53:24.671Z
+  started_at: 2026-03-06T14:47:53.268Z
   submitted_at: 2026-03-06T00:53:28.296Z
   notes:
     - _ulid: 01KJXSVGEVEFWJGDKKH9MRT736
@@ -77264,6 +77264,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on: []
   context: []
   priority: 1
@@ -77275,6 +77276,7 @@
   created_at: 2026-03-05T01:30:45.138Z
   started_at: 2026-03-06T00:49:21.100Z
   submitted_at: 2026-03-06T00:49:22.769Z
+  completed_at: 2026-03-06T06:32:34.743Z
   notes:
     - _ulid: 01KJXSX0DNC87CF9RR1ZCMMR5A
       created_at: 2026-03-05T01:30:53.238Z
@@ -77369,8 +77371,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-06T06:32:34.743Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
   slugs: []
   title: Fix dispatch engine re-triggering workers on completed tasks
