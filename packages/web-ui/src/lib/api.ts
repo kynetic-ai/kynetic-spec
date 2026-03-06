@@ -802,3 +802,45 @@ export async function fetchSessionEvents(
 
 	return response.json();
 }
+
+// ============================================================
+// Validation API Functions
+// AC: @ui-dashboard-overview ac-1
+// ============================================================
+
+export interface ValidationResult {
+	valid: boolean;
+	schemaErrors: Array<{ path: string; message: string }>;
+	refErrors: Array<{ source: string; ref: string; message: string }>;
+	refWarnings: Array<{ source: string; ref: string; message: string }>;
+	orphans: Array<{ type: string; ulid: string; title: string }>;
+	completenessWarnings: Array<{ item: string; message: string }>;
+	traitCycles: Array<{ cycle: string[] }>;
+}
+
+/**
+ * Fetch validation results
+ * AC: @ui-dashboard-overview ac-1
+ */
+export async function fetchValidation(): Promise<ValidationResult> {
+	if (isStaticMode()) {
+		return {
+			valid: true,
+			schemaErrors: [],
+			refErrors: [],
+			refWarnings: [],
+			orphans: [],
+			completenessWarnings: [],
+			traitCycles: []
+		};
+	}
+
+	const response = await fetch(`${API_BASE}/api/validate`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
