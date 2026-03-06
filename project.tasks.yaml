@@ -76175,6 +76175,16 @@
         text (missing tag/spec-ref assertions on card and missing tags/blocked-by assertions in
         modal full-info test)."
       supersedes: null
+    - _ulid: 01KK0W5GNGQ5QRAZ26QD8RQ5CV
+      created_at: 2026-03-06T06:08:12.464Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) AC-2 coverage mismatch: test annotated // AC: @ui-task-board
+        ac-2 only asserts priority/title/slug/metadata and does not validate required tag chips or
+        spec ref link from AC text (packages/web-ui/tests/e2e/task-board.spec.ts:46-57). 2) AC-3
+        coverage mismatch: test annotated as full-modal AC-3 coverage omits required tags and
+        blocked-by assertions from AC text, so regressions in those fields would pass
+        (packages/web-ui/tests/e2e/task-board.spec.ts:81-139)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
