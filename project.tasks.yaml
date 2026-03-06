@@ -77262,7 +77262,7 @@
   spec_ref: "@ui-app-shell"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -77369,6 +77369,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-06T06:32:34.743Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJYH90A5BC3Q2MKWBKAFT6GZ
   slugs: []
   title: Fix dispatch engine re-triggering workers on completed tasks
