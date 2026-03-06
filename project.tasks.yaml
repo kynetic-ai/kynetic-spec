@@ -77176,6 +77176,16 @@
         cascaded to not_started. All tests pass: root (3847 passed, 2 pre-existing failures), web-ui
         (156 passed)."
       supersedes: null
+    - _ulid: 01KK22YG0AXPZF2F323TM7FS40
+      created_at: 2026-03-06T17:25:56.874Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) kspec validate reports an alignment warning for this spec:
+        Plans View status mismatch (implementation not_started vs expected in_progress). Per review
+        checklist, warnings on this spec are blocking. Other gates checked clean: diff reviewed
+        against feat/ui-revamp, AC coverage present for @ui-plans-view ac-1 in
+        packages/web-ui/tests/e2e/plans.spec.ts, no inherited trait ACs, and required test sequence
+        passed (npm test; cd packages/web-ui && npm test)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
