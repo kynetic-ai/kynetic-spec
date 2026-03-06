@@ -77418,7 +77418,7 @@
   type: task
   spec_ref: "@ui-dashboard-overview"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-task-board-kanban"
@@ -77548,6 +77548,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-06T17:04:32.920Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
   slugs: []
   title: UI Revamp Prerequisites (Quick Wins)
