@@ -1335,6 +1335,7 @@ Examples:
       "Auto-approve tasks without human confirmation (for agents)",
     )
     .option("--max-tasks <n>", "Maximum tasks budget (for agents)")
+    .option("--max-retries <n>", "Maximum retry attempts on failure (for agents, default 3)")
     .option("--timeout-minutes <n>", "Timeout in minutes budget (for agents)")
     .option(
       "--max-concurrent <n>",
@@ -1388,6 +1389,9 @@ Examples:
           const maxTasks = options.maxTasks
             ? parseInt(options.maxTasks, 10)
             : undefined;
+          const maxRetries = options.maxRetries
+            ? parseInt(options.maxRetries, 10)
+            : undefined;
           const timeoutMinutes = options.timeoutMinutes
             ? parseInt(options.timeoutMinutes, 10)
             : undefined;
@@ -1416,10 +1420,11 @@ Examples:
             // AC: @agent-definition-schema ac-12
             dispatch: dispatchRules,
             skills: options.skill || [],
-            ...(maxTasks !== undefined || timeoutMinutes !== undefined
+            ...(maxTasks !== undefined || maxRetries !== undefined || timeoutMinutes !== undefined
               ? {
                   budget: {
                     ...(maxTasks !== undefined && { max_tasks: maxTasks }),
+                    ...(maxRetries !== undefined && { max_retries: maxRetries }),
                     ...(timeoutMinutes !== undefined && {
                       timeout_minutes: timeoutMinutes,
                     }),
@@ -1565,6 +1570,7 @@ Examples:
     .option("--auto-approve", "Enable auto-approve (for agents)")
     .option("--no-auto-approve", "Disable auto-approve (for agents)")
     .option("--max-tasks <n>", "Set max tasks budget (for agents)")
+    .option("--max-retries <n>", "Set maximum retry attempts on failure (for agents)")
     .option("--timeout-minutes <n>", "Set timeout minutes budget (for agents)")
     .option("--max-concurrent <n>", "Set max concurrent tasks (for agents)")
     .option("--add-rule <rule>", "Add rule (for conventions)")
@@ -1648,11 +1654,14 @@ Examples:
           if (options.autoApprove === false) item.auto_approve = false;
           if (
             options.maxTasks !== undefined ||
+            options.maxRetries !== undefined ||
             options.timeoutMinutes !== undefined
           ) {
             if (!item.budget) item.budget = {};
             if (options.maxTasks !== undefined)
               item.budget.max_tasks = parseInt(options.maxTasks, 10);
+            if (options.maxRetries !== undefined)
+              item.budget.max_retries = parseInt(options.maxRetries, 10);
             if (options.timeoutMinutes !== undefined)
               item.budget.timeout_minutes = parseInt(
                 options.timeoutMinutes,
