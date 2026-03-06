@@ -76885,7 +76885,7 @@
   type: task
   spec_ref: "@ui-plans-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76893,7 +76893,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK0TCBJVHG82A8DYKNP33BR4
+  session_id: null
   created_at: 2026-03-05T01:30:06.311Z
   started_at: 2026-03-06T05:37:45.707Z
   submitted_at: 2026-03-06T05:56:44.682Z
@@ -77011,6 +77011,23 @@
         E2E tests to verify hrefs contain plan slug and navigation shows filter banner. Pre-existing
         E2E CORS issue (hardcoded port 3456 vs ephemeral port) blocks all UI E2E tests including
         plans — this is not specific to this task. Unit tests all pass."
+      supersedes: null
+    - _ulid: 01KK1TRK8PH33Q3JDP9P4ZT3K2
+      created_at: 2026-03-06T15:02:54.998Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Regression gate failed: `npm test` exits 1 on this branch.
+        Failing test: `tests/cli-serve.test.ts:222` (`expected null to be +0`) in `kspec serve
+        commands > should start in foreground mode with Ctrl+C support`. MUST-FIX 2) `kspec validate
+        --alignment --warnings-ok` reports a warning for this spec: `Plans View` status mismatch
+        (`in_progress` vs expected `not_started`). Per review checklist, warnings on this spec are
+        blocking. Web UI suite passed (`cd packages/web-ui && npm test` -> 156 passed)."
+      supersedes: null
+    - _ulid: 01KK1TRN8P84PSS95YGHPR764K
+      created_at: 2026-03-06T15:02:57.046Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: Review issues: root regression test failure
+        (`tests/cli-serve.test.ts:222`) and `kspec validate` warning for @ui-plans-view status
+        mismatch."
       supersedes: null
   todos: []
   automation: eligible
