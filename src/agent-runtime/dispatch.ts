@@ -1038,7 +1038,7 @@ export class DispatchEngine {
             timestamp: Date.now(),
           });
         } catch (err) {
-          const retryLimit = agent.budget?.max_tasks ?? 3;
+          const retryLimit = agent.budget?.max_retries ?? 3;
           if (entry.retryCount < retryLimit) {
             entry.retryCount++;
             const backoffMs = Math.min(

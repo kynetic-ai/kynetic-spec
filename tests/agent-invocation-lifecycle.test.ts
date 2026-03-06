@@ -1056,7 +1056,7 @@ describe("Consecutive failure threshold and task blocking", () => {
 
   it("should block the task with a failure note when consecutive failures reach retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — consecutive failures → task blocked with note
-    // The agent's retry limit is derived from agent.budget.max_tasks (default 3).
+    // The agent's retry limit is derived from agent.budget.max_retries (default 3).
     // We pre-populate the capture file to simulate prior failure notes already recorded
     // by previous invocations, then trigger the threshold-crossing invocation.
     const captureFile = path.join(testDir, "kspec-calls.json");
@@ -1099,7 +1099,7 @@ process.exit(0);
     try {
       const agent = makeTestAgent({
         adapter: "always-fail-acp",
-        budget: { max_tasks: 3, timeout_minutes: 30 },
+        budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
 
       await runInvocation({
@@ -1161,7 +1161,7 @@ process.exit(0);
     try {
       const agent = makeTestAgent({
         adapter: "always-fail-acp",
-        budget: { max_tasks: 3, timeout_minutes: 30 },
+        budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
 
       await runInvocation({
@@ -1233,7 +1233,7 @@ process.exit(0);
     try {
       const agent = makeTestAgent({
         adapter: "always-fail-acp",
-        budget: { max_tasks: 3, timeout_minutes: 30 },
+        budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
 
       await runInvocation({
