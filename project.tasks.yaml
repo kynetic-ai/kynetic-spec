@@ -77216,7 +77216,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -77224,7 +77224,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK243N4SB4CGBR8YNHPYGEKF
+  session_id: null
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-06T17:54:31.365Z
   submitted_at: 2026-03-06T18:01:07.729Z
@@ -77514,6 +77514,13 @@
         feat/ui-revamp. Quality gates passed (AC coverage, no spec-specific validate warning for
         @ui-validation-view, and required test sequence: root npm test + packages/web-ui npm test
         both pass), but branch must be rebased or conflict-resolved before merge."
+      supersedes: null
+    - _ulid: 01KK25TQ3H0SDTRY1X1SWKGHW5
+      created_at: 2026-03-06T18:16:18.801Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Review findings: Review issues: merge conflict in
+        packages/daemon/src/server.ts while merging feat/validation-view into feat/ui-revamp;
+        rebase/conflict resolution required before landing."
       supersedes: null
   todos: []
   automation: eligible
