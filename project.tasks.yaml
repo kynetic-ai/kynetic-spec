@@ -76139,6 +76139,35 @@
         All 25 board unit tests pass. 16 task board E2E tests pass when run in isolation (dispatch
         engine branch switching causes non-deterministic failures in concurrent runs).
       supersedes: null
+    - _ulid: 01KK0CHT35MFKGX6F4X6NJBRHX
+      created_at: 2026-03-06T01:35:18.117Z
+      author: "@claude"
+      content: >-
+        Fix cycle 7 — addressed all 3 review findings from fix cycle 6:
+
+
+        Root cause discovery: daemon dist (dist/daemon/) and web-ui build (packages/web-ui/build/)
+        were stale. The daemon dist was the old version without type, blocked_by, vcs_refs,
+        plan_ref, session_ref fields that were added to packages/daemon/src/ in fix cycle 4. The
+        web-ui build was missing the /tasks/board route. E2E tests run against the dist daemon, so
+        they were testing old code.
+
+
+        Fixes applied:
+
+        1. Rebuilt daemon dist via npm run build:daemon (copies packages/daemon/src/ to
+        dist/daemon/)
+
+        2. Rebuilt web-ui build for E2E daemon serving
+
+        3. AC-4 output coverage: Enhanced 'last few lines of output from WebSocket' E2E test to
+        inject synthetic agent_text_chunk messages via addInitScript WebSocket proxy and verify 3
+        output lines render correctly with aria-live accessibility
+
+
+        Verification: All 16 task board E2E tests pass. Full E2E suite (290 tests) passes. 3777 unit
+        tests pass (2 pre-existing codex failures). 25 board-utils unit tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
