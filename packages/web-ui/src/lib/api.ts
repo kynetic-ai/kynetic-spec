@@ -98,6 +98,7 @@ export async function fetchTasks(params?: {
 	tag?: string;
 	assignee?: string;
 	automation?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<TaskSummary>> {
@@ -203,6 +204,7 @@ export async function addTaskNote(ref: string, content: string): Promise<void> {
 export async function fetchItems(params?: {
 	type?: string | string[];
 	tag?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<ItemSummary>> {

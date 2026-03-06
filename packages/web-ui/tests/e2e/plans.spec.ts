@@ -182,7 +182,7 @@ test.describe('Plans View', () => {
 	// ── Navigation actions ──
 
 	// AC: @ui-plans-view ac-1
-	test('shows View Specs and View Tasks navigation links on plan cards', async ({ page }) => {
+	test('shows View Specs and View Tasks links with plan filter hrefs', async ({ page }) => {
 		const plansList = page.getByTestId('plans-list');
 		await expect(plansList).toBeVisible({ timeout: 10000 });
 
@@ -193,13 +193,49 @@ test.describe('Plans View', () => {
 		const actions = activePlan.getByTestId('plan-actions');
 		await expect(actions).toBeVisible();
 
+		// View Specs link should include plan query param
 		const viewSpecs = activePlan.getByTestId('plan-view-specs');
 		await expect(viewSpecs).toBeVisible();
 		await expect(viewSpecs).toContainText('View Specs');
+		const specsHref = await viewSpecs.getAttribute('href');
+		expect(specsHref).toContain('plan=test-plan-active');
 
+		// View Tasks link should include plan query param
 		const viewTasks = activePlan.getByTestId('plan-view-tasks');
 		await expect(viewTasks).toBeVisible();
 		await expect(viewTasks).toContainText('View Tasks');
+		const tasksHref = await viewTasks.getAttribute('href');
+		expect(tasksHref).toContain('plan=test-plan-active');
+	});
+
+	// AC: @ui-plans-view ac-1
+	test('View Tasks link navigates to tasks page filtered by plan', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const viewTasks = activePlan.getByTestId('plan-view-tasks');
+		await viewTasks.click();
+
+		// Should navigate to /tasks with plan filter
+		await expect(page).toHaveURL(/\/tasks\?plan=test-plan-active/);
+		await expect(page.getByTestId('plan-filter-banner')).toBeVisible();
+		await expect(page.getByTestId('plan-filter-banner')).toContainText('@test-plan-active');
+	});
+
+	// AC: @ui-plans-view ac-1
+	test('View Specs link navigates to specs page filtered by plan', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const viewSpecs = activePlan.getByTestId('plan-view-specs');
+		await viewSpecs.click();
+
+		// Should navigate to /specs (via /items redirect) with plan filter
+		await expect(page).toHaveURL(/\/specs\?plan=test-plan-active/);
+		await expect(page.getByTestId('plan-filter-banner')).toBeVisible();
+		await expect(page.getByTestId('plan-filter-banner')).toContainText('@test-plan-active');
 	});
 
 	// ── UI states ──

@@ -21,6 +21,7 @@ import {
   initContext,
   loadAllTasks,
   loadAllItems,
+  loadPlans,
   ReferenceIndex,
   createNote,
   saveTask,
@@ -72,6 +73,26 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           );
         }
 
+        // Plan filter — show only tasks derived from a given plan
+        if (query.plan) {
+          const plans = await loadPlans(ctx);
+          const plan = plans.find(
+            (p) => p._ulid === query.plan || p.slugs.includes(query.plan!)
+          );
+          if (plan) {
+            const derivedRefs = new Set(
+              plan.derived_tasks.map((r) => (r.startsWith('@') ? r.slice(1) : r))
+            );
+            filtered = filtered.filter(
+              (task) =>
+                derivedRefs.has(task._ulid) ||
+                task.slugs.some((s) => derivedRefs.has(s))
+            );
+          } else {
+            filtered = [];
+          }
+        }
+
         // AC: @api-contract ac-4 - Pagination
         const total = filtered.length;
         const offset = Number(query.offset) || 0;
@@ -113,6 +134,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),
         }),
