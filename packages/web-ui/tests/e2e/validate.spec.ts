@@ -109,13 +109,25 @@ function mockAlignment() {
 	};
 }
 
-/** Mock items response (for total count). */
+/** Mock items response (with acceptance_criteria_count for AC coverage calculation). */
 function mockItems() {
+	// Total ACs: 3+2+1+2+3+1+2+1+3+2 = 20 ACs across 10 items
 	return {
-		items: [{ _ulid: '01KTEST000000000000ITEM001', title: 'Item 1' }],
+		items: [
+			{ _ulid: '01KTEST000000000000ITEM001', title: 'Item 1', acceptance_criteria_count: 3 },
+			{ _ulid: '01KTEST000000000000ITEM002', title: 'Item 2', acceptance_criteria_count: 2 },
+			{ _ulid: '01KTEST000000000000ITEM003', title: 'Item 3', acceptance_criteria_count: 1 },
+			{ _ulid: '01KTEST000000000000ITEM004', title: 'Item 4', acceptance_criteria_count: 2 },
+			{ _ulid: '01KTEST000000000000ITEM005', title: 'Item 5', acceptance_criteria_count: 3 },
+			{ _ulid: '01KTEST000000000000ITEM006', title: 'Item 6', acceptance_criteria_count: 1 },
+			{ _ulid: '01KTEST000000000000ITEM007', title: 'Item 7', acceptance_criteria_count: 2 },
+			{ _ulid: '01KTEST000000000000ITEM008', title: 'Item 8', acceptance_criteria_count: 1 },
+			{ _ulid: '01KTEST000000000000ITEM009', title: 'Item 9', acceptance_criteria_count: 3 },
+			{ _ulid: '01KTEST000000000000ITEM010', title: 'Item 10', acceptance_criteria_count: 2 }
+		],
 		total: 10,
 		offset: 0,
-		limit: 1
+		limit: 999
 	};
 }
 
@@ -240,7 +252,9 @@ test.describe('Validation and Alignment View', () => {
 			const validCard = page.getByTestId('valid-count-card');
 			await expect(validCard).toBeVisible();
 			await expect(validCard).toContainText('Valid Items');
-			// Valid items shown as count (total 10 items - 2 with errors = 8)
+			// 10 items total, 2 source items with errors:
+			// schemaError from 'modules/broken.yaml', refError from sourceFile 'modules/core.yaml'
+			// → 10 - 2 = 8 valid items
 			const validCount = page.getByTestId('valid-item-count');
 			await expect(validCount).toContainText('8');
 		});
@@ -288,8 +302,10 @@ test.describe('Validation and Alignment View', () => {
 			const acCoverage = page.getByTestId('ac-coverage');
 			await expect(acCoverage).toBeVisible();
 			await expect(acCoverage).toContainText('AC Coverage');
-			// 10 total items, 1 with missing_test_coverage = 90%
-			await expect(acCoverage).toContainText('90%');
+			// 20 total ACs (from acceptance_criteria_count), 1 uncovered (from "Uncovered: ac-2")
+			// Coverage = (20 - 1) / 20 = 95%
+			await expect(acCoverage).toContainText('95%');
+			await expect(acCoverage).toContainText('19/20 ACs with tests');
 		});
 
 		// AC: @ui-validation-view ac-1

@@ -7,7 +7,8 @@
 		fetchItems,
 		fetchTasks,
 		type ValidationResponse,
-		type AlignmentResponse
+		type AlignmentResponse,
+		type CompletenessWarning
 	} from '$lib/api';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -29,6 +30,7 @@
 	let validation = $state<ValidationResponse | null>(null);
 	let alignment = $state<AlignmentResponse | null>(null);
 	let totalItemCount = $state(0);
+	let totalAcCount = $state(0);
 	let orphanedTaskCount = $state(0);
 	let loading = $state(true);
 	let error = $state('');
@@ -55,17 +57,22 @@
 	});
 
 	// AC: @ui-validation-view ac-1 — valid item count
-	// Count unique items that have errors, subtract from total
+	// Count unique items that have errors (using the source item, not the broken target)
 	let validItemCount = $derived.by(() => {
 		if (!validation) return 0;
 		const itemsWithErrors = new Set<string>();
 		for (const e of validation.schemaErrors) {
+			// schemaErrors.file = the YAML file containing the invalid item
 			if (e.file) itemsWithErrors.add(e.file);
 		}
 		for (const e of validation.refErrors) {
-			if (e.ref) itemsWithErrors.add(e.ref);
+			// sourceUlid/sourceFile = the item containing the broken reference
+			// (NOT e.ref, which is the target that doesn't exist)
+			const source = e.sourceUlid ?? e.sourceFile;
+			if (source) itemsWithErrors.add(source);
 		}
 		for (const e of validation.traitCycles) {
+			// traitRef = the trait involved in the cycle
 			if (e.traitRef) itemsWithErrors.add(e.traitRef);
 		}
 		return Math.max(0, totalItemCount - itemsWithErrors.size);
@@ -80,20 +87,16 @@
 	});
 
 	// AC: @ui-validation-view ac-1 — AC coverage %
-	// Computed from completeness warnings: items with missing_test_coverage
+	// Computed from total AC count (from items API) minus uncovered ACs (from completeness warnings)
+	let uncoveredAcCount = $derived.by(() => {
+		if (!validation) return 0;
+		return countUncoveredACs(validation.completenessWarnings);
+	});
+
 	let acCoverage = $derived.by(() => {
-		if (!validation || totalItemCount === 0) return 0;
-		const itemsWithMissingCoverage = new Set<string>();
-		for (const w of validation.completenessWarnings) {
-			if (w.type === 'missing_test_coverage') {
-				itemsWithMissingCoverage.add(w.itemRef);
-			}
-		}
-		// Items with ACs that are fully covered = total items - items with missing coverage
-		// AC coverage % = covered items / total items that have ACs
-		// Since not all items have ACs, use totalItems as denominator for simplicity
-		const coveredItems = totalItemCount - itemsWithMissingCoverage.size;
-		return Math.round((coveredItems / totalItemCount) * 100);
+		if (totalAcCount === 0) return 100;
+		const covered = totalAcCount - uncoveredAcCount;
+		return Math.round((covered / totalAcCount) * 100);
 	});
 
 	// --- Group issues by severity ---
@@ -198,12 +201,17 @@
 			const [v, a, itemsRes, tasksRes] = await Promise.all([
 				fetchValidation(),
 				fetchAlignment(),
-				fetchItems({ limit: 1 }),
+				fetchItems({ limit: 999 }),
 				fetchTasks({ limit: 999 })
 			]);
 			validation = v;
 			alignment = a;
 			totalItemCount = itemsRes.total;
+			// Sum acceptance_criteria_count from all items (field returned by daemon but not in ItemSummary type)
+			totalAcCount = itemsRes.items.reduce(
+				(sum, item) => sum + ((item as any).acceptance_criteria_count ?? 0),
+				0
+			);
 			// Orphaned tasks = tasks without a spec_ref
 			orphanedTaskCount = tasksRes.items.filter((t) => !t.spec_ref).length;
 		} catch (err) {
@@ -225,6 +233,21 @@
 			ac_schema_field_mismatch: 'AC Schema Mismatch'
 		};
 		return labels[type] ?? type;
+	}
+
+	/** Count total uncovered ACs from completeness warnings details field ("Uncovered: ac-1, ac-2") */
+	function countUncoveredACs(warnings: CompletenessWarning[]): number {
+		let count = 0;
+		for (const w of warnings) {
+			if (w.type === 'missing_test_coverage' && w.details) {
+				// Parse "Uncovered: ac-1, ac-2" → count comma-separated entries
+				const match = w.details.match(/^Uncovered:\s*(.+)$/);
+				if (match) {
+					count += match[1].split(',').length;
+				}
+			}
+		}
+		return count;
 	}
 
 	function alignmentLabel(type: string): string {
@@ -287,21 +310,21 @@
 				{#each Array(3) as _}
 					<Card>
 						<CardHeader class="pb-2">
-							<div class="h-4 w-24 animate-pulse rounded bg-muted"></div>
+							<div class="h-4 w-24 rounded bg-muted ds-shimmer"></div>
 						</CardHeader>
 						<CardContent>
-							<div class="h-8 w-16 animate-pulse rounded bg-muted"></div>
+							<div class="h-8 w-16 rounded bg-muted ds-shimmer"></div>
 						</CardContent>
 					</Card>
 				{/each}
 			</div>
 			<Card>
 				<CardHeader class="pb-2">
-					<div class="h-4 w-32 animate-pulse rounded bg-muted"></div>
+					<div class="h-4 w-32 rounded bg-muted ds-shimmer"></div>
 				</CardHeader>
 				<CardContent class="space-y-3">
 					{#each Array(3) as _}
-						<div class="h-4 w-full animate-pulse rounded bg-muted"></div>
+						<div class="h-4 w-full rounded bg-muted ds-shimmer"></div>
 					{/each}
 				</CardContent>
 			</Card>
@@ -399,7 +422,7 @@
 							<div class="flex items-baseline gap-2">
 								<span class="text-2xl font-bold">{acCoverage}%</span>
 								<span class="text-xs text-muted-foreground">
-									items with test coverage
+									{totalAcCount - uncoveredAcCount}/{totalAcCount} ACs with tests
 								</span>
 							</div>
 							<div class="h-2 w-full rounded-full bg-muted overflow-hidden">
