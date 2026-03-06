@@ -77125,7 +77125,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -77133,7 +77133,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK1WM6K5FCF4613KRPTSQSAS
+  session_id: null
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-06T15:45:20.005Z
   submitted_at: 2026-03-06T15:50:25.701Z
@@ -77338,6 +77338,13 @@
         should be not_started based on task progress' (kspec validate output lines 52-53 on
         2026-03-06). Per review checklist, any warning for this spec is blocker-level. Regression
         checks passed: root npm test exit 0; packages/web-ui npm test exit 0."
+      supersedes: null
+    - _ulid: 01KK1ZMC9QR1WA7HZ772RSC5Z3
+      created_at: 2026-03-06T16:27:59.671Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: Review issues: kspec validate still shows spec warning for
+        @ui-validation-view (status mismatch: in_progress vs should be not_started). Checklist
+        treats any warning for this spec as MUST-FIX blocker."
       supersedes: null
   todos: []
   automation: eligible
