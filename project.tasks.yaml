@@ -77218,6 +77218,7 @@
   plan_ref: "@plan-ui-ux-revamp"
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on:
     - "@implement-app-shell-and-navigation"
   context: []
@@ -77228,6 +77229,7 @@
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-06T18:17:13.645Z
   submitted_at: 2026-03-06T18:20:54.999Z
+  completed_at: 2026-03-06T18:26:13.605Z
   notes:
     - _ulid: 01KJXSVK0MH0J1XWEDB0HMS4MT
       created_at: 2026-03-05T01:30:06.740Z
@@ -77550,8 +77552,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-06T18:26:13.605Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
   slugs:
     - implement-dashboard-overview
@@ -78195,5 +78195,30 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-06T03:18:52.146Z
+  notes: []
+  todos: []
+- title: "Fix validate page runtime error: Cannot read properties of undefined (reading 'length')"
+  description: "The /validate page throws a runtime TypeError: Cannot read properties of undefined
+    (reading 'length'). This is a client-side error visible in the browser error overlay. Stack
+    trace points to minified code in the SvelteKit build. Likely cause: accessing .length on an
+    undefined array in the validation/alignment data processing logic (e.g., schemaErrors,
+    refErrors, warnings, or alignment stats may be undefined when the API response shape doesn't
+    match expectations)."
+  type: task
+  spec_ref: "@ui-validation-view"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - bug
+    - web-ui
+  depends_on: []
+  _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-06T22:41:31.264Z
   notes: []
   todos: []
