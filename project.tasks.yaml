@@ -77330,6 +77330,15 @@
         - packages/web-ui/tests/e2e/validate.spec.ts — trait_ac mock data + new test + updated
         assertions
       supersedes: null
+    - _ulid: 01KK1ZM6PFPEBJ3HVEVPDFJPHK
+      created_at: 2026-03-06T16:27:53.935Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) kspec validate still reports a spec-specific alignment
+        warning for this task’s spec: 'Validation and Alignment View status is in_progress but
+        should be not_started based on task progress' (kspec validate output lines 52-53 on
+        2026-03-06). Per review checklist, any warning for this spec is blocker-level. Regression
+        checks passed: root npm test exit 0; packages/web-ui npm test exit 0."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
