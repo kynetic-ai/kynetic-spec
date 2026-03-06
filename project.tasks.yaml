@@ -76940,7 +76940,7 @@
   type: task
   spec_ref: "@ui-validation-view"
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-app-shell-and-navigation"
@@ -76948,7 +76948,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KK01K2EKPFP8G59BAZZNY69V
+  session_id: null
   created_at: 2026-03-05T01:30:06.740Z
   started_at: 2026-03-05T22:30:14.172Z
   submitted_at: 2026-03-05T22:52:56.111Z
@@ -77062,6 +77062,13 @@
         packages/web-ui/src/lib/ds/animations.css:1-65, so the async loading state misses the
         required shimmer pattern and reduced-motion gating from the review checklist. Regression
         check passed: npm test exited 0 at repo root, and packages/web-ui npm test exited 0.'
+      supersedes: null
+    - _ulid: 01KK0AAJ0M8P6SA4EAHFKX9CFT
+      created_at: 2026-03-06T00:56:23.316Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: Review issues: validation view shows incorrect valid-item
+        and AC-coverage metrics, and its loading state does not use the required
+        shimmer/reduced-motion pattern."
       supersedes: null
   todos: []
   automation: eligible
