@@ -138,6 +138,8 @@ agents:
           automation: eligible
     skills:
       - task-work
+    budget:
+      timeout_minutes: 120
     concurrency:
       max_concurrent: 1
     auto_approve: true
@@ -259,6 +261,8 @@ agents:
       - Information density: cards/views are scannable, not cluttered.
 
       - Reference ../imgen/packages/design-system/src/token-contract.css for expected token usage.
+    budget:
+      timeout_minutes: 60
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
