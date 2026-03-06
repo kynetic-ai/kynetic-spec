@@ -77401,6 +77401,14 @@
         succeeds. E2E tests cannot run from agent invocation but are syntactically valid and
         structurally correct.
       supersedes: null
+    - _ulid: 01KK1Y0J9Q9BEB05VRCXB6ECKS
+      created_at: 2026-03-06T15:59:41.879Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX merge conflict while merging feat/dashboard-overview into
+        feat/ui-revamp. Conflict file: packages/web-ui/src/routes/+page.svelte. Rebase or merge
+        feat/ui-revamp into feat/dashboard-overview, resolve conflicts, rerun required tests, and
+        resubmit for review."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSWRGKJ17GV80FM9Z15M74
