@@ -76244,6 +76244,19 @@
         No code changes needed. All tests pass: 3777 root tests, 63 web-ui tests. 2 pre-existing
         codex setup test failures (unchanged).
       supersedes: null
+    - _ulid: 01KK20E8HSTYPS7CVVKKM1BQKQ
+      created_at: 2026-03-06T16:42:07.801Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) Validation gate failure for this spec: 'kspec validate
+        --alignment' reports Task Board (Kanban) status mismatch — spec is 'in_progress' but
+        expected 'not_started' based on task progress. Per checklist, any warning for this spec is
+        blocking. 2) Required local review branch topology is not satisfied: no branch matches
+        'feat/ui-revamp/*01KJXSVGEVRV1SQF02SRPJ9JEQ'; implementation is on 'feat/task-board-kanban',
+        which is 21 commits ahead / 17 behind feat/ui-revamp (git rev-list --left-right --count
+        feat/ui-revamp...feat/task-board-kanban), so this task branch is not the expected sub-branch
+        for no-PR merge flow. Regression command passed: root npm test and packages/web-ui npm test
+        both exit 0."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVGW0KG615NZ4M98CSAG6
