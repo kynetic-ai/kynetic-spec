@@ -78197,28 +78197,161 @@
   created_at: 2026-03-06T03:18:52.146Z
   notes: []
   todos: []
-- title: "Fix validate page runtime error: Cannot read properties of undefined (reading 'length')"
+- _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
+  slugs: []
+  title: "Fix validate page runtime error: Cannot read properties of undefined (reading 'length')"
+  type: task
   description: "The /validate page throws a runtime TypeError: Cannot read properties of undefined
     (reading 'length'). This is a client-side error visible in the browser error overlay. Stack
     trace points to minified code in the SvelteKit build. Likely cause: accessing .length on an
     undefined array in the validation/alignment data processing logic (e.g., schemaErrors,
     refErrors, warnings, or alignment stats may be undefined when the API response shape doesn't
     match expectations)."
-  type: task
   spec_ref: "@ui-validation-view"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - bug
     - web-ui
+  vcs_refs: []
+  created_at: 2026-03-06T22:41:31.264Z
+  notes: []
+  todos: []
+- _ulid: 01KK2NNKV88XS2NCPKRHP3MH5E
+  slugs: []
+  title: Fix session stream not rendering agent messages, tool calls, or thinking blocks
+  type: task
+  description: "The session stream view only shows SystemBlock events (Agent dispatched, Agent
+    started, Agent completed). Agent messages, tool calls, and thinking blocks are missing. Root
+    cause: parseEventsToBlocks() in session-utils.ts line ~142 reads data.update but the event
+    structure stores the SessionUpdate directly as data (no .update nesting). Additionally, ACP
+    event type names have changed — the parser checks for old names (assistant_text, assistant,
+    thinking, assistant_thinking) instead of current ACP types (agent_message_chunk,
+    agent_thought_chunk, tool_call_update). Fix: correct the data path and add handlers for current
+    ACP SessionUpdate types."
+  spec_ref: "@ui-session-stream"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
   depends_on: []
-  _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
+  context: []
+  priority: 1
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-06T22:53:08.839Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KK2NNMYXCBD0MMWKJS4MCGRQ
+  slugs: []
+  title: Improve session timeline timestamp granularity
+  type: task
+  description: "SessionContextPanel Timeline section shows Started/Ended as coarse relative times like
+    4h when the session was 4h 12m ago. The formatAge() function drops the minutes component when
+    showing hours. Fix: show both hours and minutes (e.g. 4h 12m ago) or show absolute timestamps
+    (e.g. 10:16:37 AM) for the timeline section, since precise times matter more here than in list
+    views."
+  spec_ref: "@ui-session-stream"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-06T22:53:09.981Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KK2NNP0QP0V0AAW9MK7HGG5A
+  slugs: []
+  title: Fix double @@ on task ref and make it a clickable link in session context panel
+  type: task
+  description: "SessionContextPanel line ~113 renders task_id as @{session.task_id.slice(0,8)} but
+    task_id may already contain an @ prefix from session metadata, producing @@01KJXSV. Also the
+    task ref is plain text, not a clickable link. Fix: (1) strip leading @ before display with
+    task_id.replace(/^@/, ), (2) wrap in an <a> tag linking to /tasks?ref={taskId} or the task board
+    detail view. Should also resolve the task title when available and display it instead of just
+    the ULID prefix."
+  spec_ref: "@ui-session-stream"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-06T22:53:11.063Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KK2NNQ0MJY54DX9PYHP4N1EA
+  slugs: []
+  title: Normalize reference displays across web UI — show titles and consistent linking
+  type: task
+  description: "References to tasks, specs, plans, and sessions are displayed inconsistently across
+    the web UI. Some views show raw ULID prefixes, some show slugs, some show titles. Create a
+    shared ReferenceLink component that: (1) accepts a ref type (task/spec/plan/session) and ID, (2)
+    resolves and displays the title when available with the slug/ULID as secondary, (3) links to the
+    appropriate detail view, (4) handles @ prefix normalization. Use this component in
+    SessionContextPanel task_ref, session history task_ref, task card spec_ref, dashboard active
+    work, and any other cross-reference display."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - feature
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-06T22:53:12.084Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: "Distinguish session types: dispatched agent vs manual CLI run"
+  description: "Session context panel shows Type: Invocation for all new-runtime sessions. The trigger
+    field already distinguishes manual from auto-dispatched (manual, task.ready, task.in_progress,
+    task.needs_work, task.pending_review), but this is not surfaced clearly in the UI. Fix: (1) show
+    trigger value as a human-readable label instead of or alongside session_type (e.g. Dispatched:
+    Task Ready, Manual Run, Fix Cycle, PR Review), (2) in session history list, add a visual
+    indicator distinguishing dispatched vs manual sessions (e.g. icon or badge), (3) consider adding
+    a filter for trigger type in the session history list."
+  type: task
+  spec_ref: "@ui-session-history"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - feature
+    - web-ui
+  depends_on: []
+  automation: eligible
+  _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-06T22:41:31.264Z
+  created_at: 2026-03-06T22:53:13.113Z
   notes: []
   todos: []
