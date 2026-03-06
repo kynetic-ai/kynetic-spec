@@ -287,6 +287,13 @@ export interface DispatchEngineOptions {
   cwd?: string;
   /** Deduplication window in milliseconds (default 2000) */
   dedupWindowMs?: number;
+  /**
+   * Periodic reconciliation interval in milliseconds (default 60000).
+   * Re-evaluates all task states against dispatch rules, enqueuing any that
+   * match but have no active or queued invocation. Set to 0 or null to disable.
+   * AC: @agent-dispatch-engine ac-20
+   */
+  reconcileIntervalMs?: number | null;
   /** Path to kspec CLI binary (for task notes) */
   kspecCliPath?: string;
   /**
@@ -320,6 +327,7 @@ export class DispatchEngine {
   private specDir: string;
   private cwd: string;
   private dedupWindowMs: number;
+  private reconcileIntervalMs: number;
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
@@ -344,12 +352,17 @@ export class DispatchEngine {
   private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
   /** Monotonic enqueue sequence for deterministic queue ordering */
   private nextQueueSequence = 0;
+  /** Timer handle for periodic reconciliation. AC: @agent-dispatch-engine ac-20 */
+  private reconcileTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
     this.specDir = options.specDir ?? path.join(options.projectDir, ".kspec");
     this.cwd = options.cwd ?? options.projectDir;
     this.dedupWindowMs = options.dedupWindowMs ?? 2000;
+    this.reconcileIntervalMs = (options.reconcileIntervalMs === null || options.reconcileIntervalMs === 0)
+      ? 0
+      : (options.reconcileIntervalMs ?? 60_000);
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onTextChunk = options.onTextChunk;
@@ -368,6 +381,18 @@ export class DispatchEngine {
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
     await this._bootstrap();
+
+    // AC: @agent-dispatch-engine ac-19, ac-20 - Start periodic reconciliation
+    if (this.reconcileIntervalMs > 0) {
+      this.reconcileTimer = setInterval(() => {
+        if (this.running) {
+          this._reconcile().catch((err) => {
+            console.error("[dispatch] Reconciliation error:", err);
+          });
+        }
+      }, this.reconcileIntervalMs);
+      this.reconcileTimer.unref();
+    }
   }
 
   /**
@@ -473,6 +498,12 @@ export class DispatchEngine {
   async stop(): Promise<void> {
     this.running = false;
 
+    // AC: @agent-dispatch-engine ac-20 - Stop periodic reconciliation
+    if (this.reconcileTimer !== null) {
+      clearInterval(this.reconcileTimer);
+      this.reconcileTimer = null;
+    }
+
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
     for (const controller of this.invocationAbortControllers) {
       controller.abort();
@@ -553,46 +584,95 @@ export class DispatchEngine {
    */
   private async _bootstrap(): Promise<void> {
     try {
-      const ctx = await initContext(this.projectDir);
-      const tasks = await loadAllTasks(ctx);
-      const agents = await this._loadAgents();
-      const now = Date.now();
-
-      // Seed prevTaskStates so subsequent file watcher diffs work correctly
-      for (const task of tasks) {
-        this.prevTaskStates.set(task._ulid, task.status as TaskStatus);
+      const enqueued = await this._evaluateAllTasks({ skipIfActive: false });
+      if (enqueued > 0) {
+        const agents = await this._loadAgents();
+        await this._drainQueues(agents);
       }
-
-      // Evaluate each task against each agent's dispatch rules
-      for (const task of tasks) {
-        const currentStatus = task.status as TaskStatus;
-        const eventType = STATUS_TO_EVENT[currentStatus];
-        if (!eventType) continue;
-
-        for (const agent of agents) {
-          for (const rule of (agent.dispatch ?? [])) {
-            if (rule.on !== eventType) continue;
-
-            const change: TaskStateChange = {
-              taskId: task._ulid,
-              taskRef: `@${task._ulid}`,
-              fromStatus: currentStatus, // bootstrap: treated as "just entered"
-              toStatus: currentStatus,
-              timestamp: now,
-              task,
-            };
-
-            if (!this._matchesFilter(change, rule, task)) continue;
-
-            this._enqueue(agent, change);
-          }
-        }
-      }
-
-      await this._drainQueues(agents);
     } catch (err) {
       console.error("[dispatch] Bootstrap error:", err);
     }
+  }
+
+  /**
+   * Periodic reconciliation: re-evaluate all task states against dispatch rules.
+   * Enqueues tasks that match but have no active or queued invocation.
+   * AC: @agent-dispatch-engine ac-19
+   */
+  private async _reconcile(): Promise<void> {
+    const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
+    if (enqueued > 0) {
+      console.log(`[dispatch] Reconciliation enqueued ${enqueued} task(s)`);
+      const agents = await this._loadAgents();
+      await this._drainQueues(agents);
+    }
+  }
+
+  /**
+   * Shared logic for bootstrap and reconciliation: load all tasks, seed
+   * prevTaskStates, and enqueue tasks matching agent dispatch rules.
+   *
+   * When skipIfActive is true (reconciliation), tasks with an existing
+   * active or queued invocation are skipped.
+   *
+   * AC: @agent-dispatch-engine ac-8, ac-19
+   */
+  private async _evaluateAllTasks(opts: { skipIfActive: boolean }): Promise<number> {
+    const ctx = await initContext(this.projectDir);
+    const tasks = await loadAllTasks(ctx);
+    const agents = await this._loadAgents();
+    const now = Date.now();
+    let enqueued = 0;
+
+    // Seed/update prevTaskStates so file watcher diffs work correctly
+    for (const task of tasks) {
+      this.prevTaskStates.set(task._ulid, task.status as TaskStatus);
+    }
+
+    for (const task of tasks) {
+      const currentStatus = task.status as TaskStatus;
+      const eventType = STATUS_TO_EVENT[currentStatus];
+      if (!eventType) continue;
+
+      for (const agent of agents) {
+        for (const rule of (agent.dispatch ?? [])) {
+          if (rule.on !== eventType) continue;
+
+          const change: TaskStateChange = {
+            taskId: task._ulid,
+            taskRef: `@${task._ulid}`,
+            fromStatus: currentStatus,
+            toStatus: currentStatus,
+            timestamp: now,
+            task,
+          };
+
+          if (!this._matchesFilter(change, rule, task)) continue;
+          if (opts.skipIfActive && this._hasActiveOrQueuedInvocation(agent.id, task._ulid)) continue;
+
+          this._enqueue(agent, change);
+          enqueued++;
+        }
+      }
+    }
+
+    return enqueued;
+  }
+
+  /**
+   * Check if an agent already has an active or queued invocation for a task.
+   * AC: @agent-dispatch-engine ac-19
+   */
+  private _hasActiveOrQueuedInvocation(agentId: string, taskId: string): boolean {
+    // Check active invocations
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.agentId === agentId && record.taskRef === `@${taskId}`) {
+        return true;
+      }
+    }
+    // Check queued entries
+    const queue = this.queues.get(agentId) ?? [];
+    return queue.some((entry) => entry.change.taskId === taskId);
   }
 
   /**
