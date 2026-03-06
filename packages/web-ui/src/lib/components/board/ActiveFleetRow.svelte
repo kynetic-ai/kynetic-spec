@@ -4,7 +4,7 @@
   and last few lines of output.
 -->
 <script lang="ts">
-	import type { AgentStatus } from '$lib/api';
+	import type { AgentDispatchStatus } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatElapsed } from './board-utils';
 	import Bot from '@lucide/svelte/icons/bot';
@@ -16,7 +16,7 @@
 		outputLines = {},
 		taskTitles = {}
 	}: {
-		status: AgentStatus | null;
+		status: AgentDispatchStatus | null;
 		outputLines?: Record<string, string[]>;
 		taskTitles?: Record<string, string>;
 	} = $props();

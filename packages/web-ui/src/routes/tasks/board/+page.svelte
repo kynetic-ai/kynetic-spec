@@ -10,7 +10,7 @@
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
 	import type { TaskSummary, BroadcastEvent } from '@kynetic-ai/shared';
-	import { fetchTasks, fetchAgentStatus, type AgentStatus } from '$lib/api';
+	import { fetchTasks, fetchAgentStatus, type AgentDispatchStatus } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 	import { distributeToColumns, type BoardColumn } from '$lib/components/board/board-utils';
@@ -27,7 +27,7 @@
 	let columns = $state<BoardColumn[]>([]);
 	let loading = $state(true);
 	let error = $state('');
-	let agentStatus = $state<AgentStatus | null>(null);
+	let agentStatus = $state<AgentDispatchStatus | null>(null);
 
 	// AC: @ui-task-board ac-4 — Accumulated output lines per agent session
 	const MAX_OUTPUT_LINES = 3;

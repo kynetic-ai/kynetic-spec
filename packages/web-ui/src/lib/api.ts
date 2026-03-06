@@ -252,32 +252,6 @@ export async function blockTask(ref: string, reason: string): Promise<void> {
  * Fetch agent/dispatch status
  * AC: @ui-task-board ac-4
  */
-export interface AgentStatus {
-	dispatch_enabled: boolean;
-	active_invocations: Array<{
-		session_id: string;
-		agent_id: string;
-		task_ref: string | null;
-		elapsed_ms: number;
-	}>;
-	queue_depth: number;
-	agent_definitions: Array<{ id: string; name: string; adapter: string }>;
-}
-
-export async function fetchAgentStatus(): Promise<AgentStatus> {
-	if (isStaticMode()) {
-		return { dispatch_enabled: false, active_invocations: [], queue_depth: 0, agent_definitions: [] };
-	}
-
-	const response = await fetch(`${API_BASE}/api/agent/status`, {
-		headers: getProjectHeaders()
-	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
-
-	return response.json();
-}
 
 /**
  * Fetch spec items with optional filters
