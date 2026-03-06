@@ -77555,6 +77555,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #685. Implemented periodic reconciliation loop (AC-19, AC-20) with
+    shared _evaluateAllTasks helper, .unref() on timer, and 8 new tests."
   depends_on: []
   context: []
   priority: 2
@@ -77566,6 +77568,7 @@
   created_at: 2026-03-05T23:55:44.429Z
   started_at: 2026-03-06T03:54:52.439Z
   submitted_at: 2026-03-06T03:54:54.162Z
+  completed_at: 2026-03-06T04:32:02.297Z
   notes:
     - _ulid: 01KK06VST1ZEKAPWQQT8BEGQ6J
       created_at: 2026-03-05T23:55:54.049Z
@@ -77598,9 +77601,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-06T04:32:02.297Z
-  closed_reason: "Merged in PR #685. Implemented periodic reconciliation loop (AC-19, AC-20) with
-    shared _evaluateAllTasks helper, .unref() on timer, and 8 new tests."
 - _ulid: 01KK0JFDE8E2Y7C7JJK651EA74
   slugs: []
   title: Fix max_tasks misuse as retry limit in dispatch/invocation code
@@ -77608,7 +77608,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -77621,6 +77621,7 @@
   created_at: 2026-03-06T03:18:51.078Z
   notes: []
   todos: []
+  started_at: 2026-03-06T04:37:51.599Z
 - _ulid: 01KK0JFEFJ3EVWHAT0B3SBB1S5
   slugs: []
   title: Replace note-based failure tracking with structured invocation outcome data
