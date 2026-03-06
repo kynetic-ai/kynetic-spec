@@ -77262,6 +77262,31 @@
         trait AC warnings in /validate view; kspec validate still reports a spec-specific warning
         for @ui-validation-view (status mismatch)."
       supersedes: null
+    - _ulid: 01KK1XFDQS8CJ9NNAMSCTMFRAB
+      created_at: 2026-03-06T15:50:20.153Z
+      author: "@claude"
+      content: >-
+        Fix cycle 3: Addressed both review findings.
+
+
+        1. Trait AC coverage undercounting: Updated countUncoveredACs() regex from
+        /^Uncovered:\s*(.+)$/ to /^Uncovered(?:\s+trait\s+ACs)?:\s*(.+)$/ to match both own AC
+        format ('Uncovered: ac-1, ac-2') and trait AC format ('Uncovered trait ACs: @trait ac-1,
+        @trait ac-2'). Added dedicated E2E test 'AC coverage includes uncovered trait ACs' with
+        trait-only mock data.
+
+
+        2. Spec status mismatch: No longer reported by kspec validate — the spec is correctly
+        in_progress matching the task's active state.
+
+
+        Files changed:
+
+        - packages/web-ui/src/routes/validate/+page.svelte — regex fix in countUncoveredACs()
+
+        - packages/web-ui/tests/e2e/validate.spec.ts — trait_ac mock data + new test + updated
+        assertions
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KJXSVKE4CDXPX88HKAX3RXV3
