@@ -23,6 +23,13 @@
 
 	let activeInvocations = $derived(status?.active_invocations ?? []);
 	let isVisible = $derived(status?.dispatch_enabled && activeInvocations.length > 0);
+
+	// AC: @ui-task-board ac-4 — Resolve agent name from agent_definitions
+	let agentNameMap = $derived(
+		Object.fromEntries(
+			(status?.agent_definitions ?? []).map((a) => [a.id, a.name])
+		)
+	);
 </script>
 
 {#if isVisible}
@@ -36,13 +43,14 @@
 			{#each activeInvocations as invocation (invocation.session_id)}
 				{@const lines = outputLines[invocation.session_id] ?? []}
 				{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
+				{@const agentName = agentNameMap[invocation.agent_id] ?? invocation.agent_id}
 				<div
 					class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
 					data-testid="fleet-card"
 				>
 					<div class="flex items-center gap-2 mb-1.5">
 						<Bot class="size-4 text-muted-foreground" />
-						<span class="text-xs font-medium truncate">{invocation.agent_id}</span>
+						<span class="text-xs font-medium truncate" data-testid="fleet-agent-name">{agentName}</span>
 					</div>
 
 					{#if invocation.task_ref}
@@ -76,7 +84,7 @@
 						<div
 							class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-14"
 							aria-live="polite"
-							aria-label="Agent output for {title ?? invocation.agent_id}"
+							aria-label="Agent output for {title ?? agentName}"
 							data-testid="fleet-output"
 						>
 							{#each lines as line}
@@ -87,7 +95,7 @@
 						<div
 							class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
 							aria-live="polite"
-							aria-label="Agent output for {title ?? invocation.agent_id}"
+							aria-label="Agent output for {title ?? agentName}"
 							data-testid="fleet-output-empty"
 						>
 							<Terminal class="size-3" />

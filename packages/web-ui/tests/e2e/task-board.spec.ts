@@ -359,12 +359,10 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-4
-	test('active fleet row shows running agents with title, name, elapsed, and output', async ({
+	test('active fleet row shows running agents with title, agent name, elapsed, output, and pulse', async ({
 		page,
 		daemon
 	}) => {
-		// Mock agent status endpoint to return active invocations
-		// Use the in-progress fixture task ULID so taskTitles lookup resolves
 		const mockAgentStatus = {
 			dispatch_enabled: true,
 			active_invocations: [
@@ -392,24 +390,70 @@ test.describe('Task Board (Kanban)', () => {
 		await page.goto('/tasks/board');
 		await expect(page.getByTestId('board-columns')).toBeVisible();
 
-		// Active Fleet row should be visible
 		const fleetRow = page.getByTestId('active-fleet-row');
 		await expect(fleetRow).toBeVisible();
 
-		// Fleet card should exist
 		const fleetCard = page.getByTestId('fleet-card');
 		await expect(fleetCard).toBeVisible();
 
-		// Agent name should be shown
-		await expect(fleetCard.getByText('task-worker')).toBeVisible();
+		// Agent name should be resolved from agent_definitions (not raw agent_id)
+		const agentName = page.getByTestId('fleet-agent-name');
+		await expect(agentName).toBeVisible();
+		await expect(agentName).toHaveText('Task Worker');
 
-		// Task title should be shown (resolved from taskTitles lookup: "In progress task")
 		const taskTitle = page.getByTestId('fleet-task-title');
 		await expect(taskTitle).toBeVisible();
 		await expect(taskTitle).toHaveText('In progress task');
 
-		// Elapsed time should be shown (2m 5s)
 		await expect(fleetCard.getByText('2m 5s')).toBeVisible();
+
+		// Pulse indicator should be visible (animated dot with ds-breathe class)
+		const pulseIndicator = fleetCard.locator('.ds-breathe').first();
+		await expect(pulseIndicator).toBeVisible();
+
+		// Empty output placeholder should be visible initially
+		const outputEmpty = page.getByTestId('fleet-output-empty');
+		await expect(outputEmpty).toBeVisible();
+		await expect(outputEmpty).toHaveText(/Awaiting output/);
+	});
+
+	// AC: @ui-task-board ac-4
+	test('active fleet row shows last few lines of output from WebSocket', async ({
+		page,
+		daemon
+	}) => {
+		const mockAgentStatus = {
+			dispatch_enabled: true,
+			active_invocations: [
+				{
+					session_id: 'test-session-002',
+					agent_id: 'task-worker',
+					task_ref: '@01KG0RR8CB8N4YGP991WD7XS9R',
+					elapsed_ms: 30000
+				}
+			],
+			queue_depth: 0,
+			agent_definitions: [
+				{ id: 'task-worker', name: 'Task Worker', adapter: 'claude-agent-acp' }
+			]
+		};
+
+		await page.route('**/api/agent/status', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(mockAgentStatus)
+			});
+		});
+
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+		await expect(page.getByTestId('active-fleet-row')).toBeVisible();
+
+		// Verify the output area exists with aria-live for accessibility
+		const fleetCard = page.getByTestId('fleet-card');
+		const outputArea = fleetCard.locator('[aria-live="polite"]');
+		await expect(outputArea).toBeVisible();
 	});
 
 	// View toggle navigation

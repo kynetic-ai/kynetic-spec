@@ -473,16 +473,14 @@
 							{#each panel.task.todos as todo}
 								<li class="flex items-start gap-2 text-sm">
 									<span class="mt-0.5">
-										{#if todo.status === 'completed'}
+										{#if todo.done}
 											✅
-										{:else if todo.status === 'in_progress'}
-											⏳
 										{:else}
 											⏸️
 										{/if}
 									</span>
-									<span class:line-through={todo.status === 'completed'}>
-										{todo.content}
+									<span class:line-through={todo.done}>
+										{todo.text}
 									</span>
 								</li>
 							{/each}

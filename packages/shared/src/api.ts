@@ -53,6 +53,7 @@ export interface TaskSummary {
 /**
  * Full task with notes and todos
  * AC: @api-contract ac-5
+ * AC: @ui-task-board ac-3 — description, plan_ref, session_ref for detail modal
  */
 export interface TaskDetail extends TaskSummary {
   description?: string;
@@ -65,6 +66,8 @@ export interface TaskDetail extends TaskSummary {
   session_ref?: string;
   notes: Note[];
   todos?: Todo[];
+  notes_count: number;
+  todos_count?: number;
 }
 
 /**
@@ -80,12 +83,16 @@ export interface Note {
 
 /**
  * Task todo
+ * Matches TodoSchema: id, text, done, done_at, added_at, added_by, promoted_to
  */
 export interface Todo {
-  _ulid: string;
-  content: string;
-  status: 'pending' | 'in_progress' | 'completed';
-  created_at: string;
+  id: number;
+  text: string;
+  done: boolean;
+  done_at?: string;
+  added_at: string;
+  added_by?: string;
+  promoted_to?: string;
 }
 
 /**
