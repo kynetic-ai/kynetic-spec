@@ -238,7 +238,9 @@
 							return !completedRefs.has(ref);
 						});
 						if (hasUnmetDeps) {
-							newCounts.blocked++;
+							// Pending tasks with unmet deps are not ready, but don't
+							// count as "blocked" (which is status=blocked only). They
+							// resolve naturally when predecessor tasks complete.
 						} else {
 							newCounts.ready++;
 						}
@@ -249,6 +251,9 @@
 
 			counts = newCounts;
 			taskTitles = titles;
+			// Needs-attention blocked count only includes status=blocked tasks.
+			// Pending tasks with unmet deps are excluded — they resolve naturally
+			// when predecessor tasks complete, and don't require user intervention.
 			blockedTasks = newCounts.blocked;
 
 			// Inbox count
