@@ -233,7 +233,7 @@
 
 				<!-- Tags -->
 				{#if task.tags?.length > 0}
-					<div>
+					<div data-testid="modal-tags">
 						<p class="text-xs font-medium text-muted-foreground mb-1">Tags</p>
 						<div class="flex flex-wrap gap-1">
 							{#each task.tags as tag}

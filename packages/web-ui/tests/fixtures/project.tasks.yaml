@@ -43,7 +43,8 @@ tasks:
     spec_ref: "@test-feature"
     depends_on:
       - "@test-task-ready"
-    blocked_by: []
+    blocked_by:
+      - "@test-task-blocked"
     vcs_refs:
       - ref: "feat/test-task-in-progress"
         type: branch

@@ -43,17 +43,38 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-2
-	test('task card shows priority badge, title, slug, and metadata', async ({ page, daemon }) => {
+	test('task card shows priority badge, tag chips, title, slug, spec ref link, and metadata', async ({
+		page,
+		daemon
+	}) => {
 		await page.goto('/tasks/board');
 
-		// Find first task card
-		const card = page.getByTestId('task-card').first();
+		// Use 'Ready task' which has tags: [test] and spec_ref: @test-feature
+		// It lands in backlog (no automation field = not eligible)
+		const backlogColumn = page.locator('[data-column-id="backlog"]');
+		await expect(backlogColumn).toBeVisible();
+		// Target the specific card by data-task-id for the ready task fixture
+		const card = backlogColumn.locator('[data-task-id="01KG0RR6CA45ZT43W2T6HJMVA1"]');
 		await expect(card).toBeVisible();
 
-		// Verify card contents
+		// Priority badge
 		await expect(card.getByTestId('priority-badge')).toBeVisible();
+
+		// Title
 		await expect(card.getByTestId('task-title')).toBeVisible();
+
+		// Slug (mono)
 		await expect(card.getByTestId('task-slug')).toBeVisible();
+
+		// Tag chips (fixture has tags: ['test'])
+		await expect(card.getByTestId('task-tags')).toBeVisible();
+		await expect(card.getByTestId('task-tags')).toContainText('test');
+
+		// Spec ref link (fixture has spec_ref: '@test-feature')
+		await expect(card.getByTestId('spec-ref-link')).toBeVisible();
+		await expect(card.getByTestId('spec-ref-link')).toContainText('@test-feature');
+
+		// Metadata footer (notes count, dependency count, age)
 		await expect(card.getByTestId('task-metadata')).toBeVisible();
 	});
 
@@ -114,12 +135,20 @@ test.describe('Task Board (Kanban)', () => {
 		// Spec ref
 		await expect(page.getByTestId('modal-spec-ref')).toBeVisible();
 
+		// Tags (fixture has tags: ['test'])
+		await expect(page.getByTestId('modal-tags')).toBeVisible();
+		await expect(page.getByTestId('modal-tags')).toContainText('test');
+
 		// Automation status
 		await expect(page.getByTestId('modal-automation')).toBeVisible();
 		await expect(page.getByTestId('modal-automation')).toHaveText('eligible');
 
 		// Dependencies (fixture has depends_on: @test-task-ready)
 		await expect(page.getByTestId('modal-dependencies')).toBeVisible();
+
+		// Blocked-by (fixture has blocked_by: ['@test-task-blocked'])
+		await expect(page.getByTestId('modal-blocked-by')).toBeVisible();
+		await expect(page.getByTestId('modal-blocked-by')).toContainText('@test-task-blocked');
 
 		// VCS info (fixture has branch + PR refs)
 		await expect(page.getByTestId('modal-vcs')).toBeVisible();
@@ -132,7 +161,6 @@ test.describe('Task Board (Kanban)', () => {
 		// Verify session link targets /sessions route (not /session)
 		const sessionLink = page.getByTestId('modal-session-link').locator('a');
 		await expect(sessionLink).toHaveAttribute('href', /\/sessions\?ref=/);
-
 
 		// Todos (fixture has 2 todos)
 		await expect(page.getByTestId('modal-todos')).toBeVisible();

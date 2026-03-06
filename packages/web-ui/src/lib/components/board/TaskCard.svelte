@@ -80,7 +80,7 @@
 
 	<!-- Tag chips -->
 	{#if task.tags?.length > 0}
-		<div class="flex flex-wrap gap-1 mb-2">
+		<div class="flex flex-wrap gap-1 mb-2" data-testid="task-tags">
 			{#each task.tags.slice(0, 3) as tag}
 				<Badge variant="secondary" class="text-[10px] px-1.5 py-0">{tag}</Badge>
 			{/each}
