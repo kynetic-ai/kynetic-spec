@@ -79624,6 +79624,24 @@
         in current daemon WS contract; dashboard Active Fleet missing aria-live for streaming
         updates."
       supersedes: null
+    - _ulid: 01KK3QVYPE4WVK6T6Q2FNW16QR
+      created_at: 2026-03-07T08:50:48.142Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed both MUST-FIX items:
+
+        1) Removed unreachable agent_tool_call/agent_tool_result event handlers and tool-call
+        indicator UI from board page, dashboard page, and ActiveFleetRow component. Daemon WS
+        contract only publishes agent_invocation and agent_text_chunk — tool-call code was dead.
+        Removed processToolCallStart/processToolCallEnd/ToolCallIndicator from fleet-buffer.ts.
+        Updated tests accordingly (removed 8 tool-call tests).
+
+        2) Added aria-live="polite" and aria-label attributes to dashboard Active Fleet streaming
+        output blocks (fleet-output and fleet-output-empty). Board page ActiveFleetRow already had
+        aria-live from prior implementation.
+
+        Net change: -244 lines, +14 lines across 5 files. All tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK3A73PP2K0DDDHR6KQ9H2K1
