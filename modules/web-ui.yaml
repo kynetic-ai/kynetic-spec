@@ -1504,7 +1504,7 @@ features:
           connection info (port, uptime, version), and shadow branch status. Read-only for v1.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KK2TDYAA0T8H327EKEKH308R
     slugs:
       - ui-reference-display
