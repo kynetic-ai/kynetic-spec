@@ -166,7 +166,7 @@
 							{#if s.task_id}
 								<span class="text-xs text-muted-foreground">&middot;</span>
 								<span data-testid="session-task-ref">
-									<ReferenceLink ref={s.task_id} type="task" class="text-xs" />
+									<ReferenceLink ref={s.task_id} type="task" linked={false} class="text-xs" />
 								</span>
 							{/if}
 						</div>

@@ -93,7 +93,7 @@
 	<!-- Spec ref link -->
 	{#if task.spec_ref}
 		<div class="mb-2" data-testid="spec-ref-link">
-			<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-[11px]" />
+			<ReferenceLink ref={task.spec_ref} type="spec" linked={false} class="text-[11px]" />
 		</div>
 	{/if}
 
