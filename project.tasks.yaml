@@ -79561,6 +79561,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on: []
   context: []
   priority: 2
@@ -79572,6 +79573,7 @@
   created_at: 2026-03-07T04:48:14.326Z
   started_at: 2026-03-07T08:44:25.995Z
   submitted_at: 2026-03-07T08:50:54.610Z
+  completed_at: 2026-03-07T09:08:09.392Z
   notes:
     - _ulid: 01KK3A1JFSXCHP8DCM1JSHBPXT
       created_at: 2026-03-07T04:49:12.186Z
@@ -79644,8 +79646,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T09:08:09.392Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KK3A73PP2K0DDDHR6KQ9H2K1
   slugs: []
   title: Fix kanban board and task views loading tasks from wrong project on initial page load
@@ -79700,6 +79700,15 @@
         feat/ui-revamp failed with a content conflict in
         packages/web-ui/src/routes/plans/+page.svelte. Branch must be rebased or conflict-resolved
         before landing."
+      supersedes: null
+    - _ulid: 01KK3S5ARXFGRRV30N9P3TTXHD
+      created_at: 2026-03-07T09:13:23.997Z
+      author: "@claude"
+      content: "Fix cycle 1: Rebased fix/kanban-wrong-project-load onto current feat/ui-revamp. Resolved
+        merge conflict in plans/+page.svelte — the conflict was between the isProjectInitialized
+        import (this fix) and the renderMarkdown import + plan content expansion features (merged to
+        feat/ui-revamp since original PR). Resolution: kept both imports. All tests pass (2
+        pre-existing failures in codex skill tests unrelated to this change)."
       supersedes: null
   todos: []
   automation: eligible
