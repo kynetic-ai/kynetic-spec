@@ -8,13 +8,26 @@
 	import type { SessionSummary } from '$lib/api';
 	import { fetchSessions } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
-	import { formatElapsed, formatAge } from '$lib/components/session/session-utils';
+	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
 	import { Badge } from '$lib/components/ui/badge';
 	import Activity from '@lucide/svelte/icons/activity';
+	import Zap from '@lucide/svelte/icons/zap';
+	import Terminal from '@lucide/svelte/icons/terminal';
 
 	let sessions = $state<SessionSummary[]>([]);
 	let loading = $state(true);
 	let error = $state('');
+
+	type TriggerFilter = 'all' | 'manual' | 'dispatched';
+	let triggerFilter = $state<TriggerFilter>('all');
+
+	let filteredSessions = $derived(
+		triggerFilter === 'all'
+			? sessions
+			: triggerFilter === 'manual'
+				? sessions.filter(s => !isDispatchedSession(s.trigger))
+				: sessions.filter(s => isDispatchedSession(s.trigger))
+	);
 
 	async function loadSessions() {
 		loading = true;
@@ -58,10 +71,37 @@
 </script>
 
 <div class="flex flex-col gap-4 p-6">
-	<div>
-		<h1 class="text-2xl font-bold">Sessions</h1>
+	<div class="flex items-end justify-between gap-4">
+		<div>
+			<h1 class="text-2xl font-bold">Sessions</h1>
+			{#if !loading && sessions.length > 0}
+				<p class="text-sm text-muted-foreground">{filteredSessions.length} of {sessions.length} session{sessions.length === 1 ? '' : 's'}</p>
+			{/if}
+		</div>
+
 		{#if !loading && sessions.length > 0}
-			<p class="text-sm text-muted-foreground">{sessions.length} session{sessions.length === 1 ? '' : 's'}</p>
+			<div class="flex gap-1" data-testid="trigger-filter">
+				<button
+					class="px-2.5 py-1 text-xs rounded-md transition-colors {triggerFilter === 'all' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}"
+					onclick={() => triggerFilter = 'all'}
+				>
+					All
+				</button>
+				<button
+					class="px-2.5 py-1 text-xs rounded-md transition-colors inline-flex items-center gap-1 {triggerFilter === 'manual' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}"
+					onclick={() => triggerFilter = 'manual'}
+				>
+					<Terminal class="size-3" />
+					Manual
+				</button>
+				<button
+					class="px-2.5 py-1 text-xs rounded-md transition-colors inline-flex items-center gap-1 {triggerFilter === 'dispatched' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}"
+					onclick={() => triggerFilter = 'dispatched'}
+				>
+					<Zap class="size-3" />
+					Dispatched
+				</button>
+			</div>
 		{/if}
 	</div>
 
@@ -89,10 +129,18 @@
 				{/if}
 			</p>
 		</div>
+	{:else if filteredSessions.length === 0}
+		<div class="flex flex-col items-center justify-center py-16" data-testid="sessions-filter-empty">
+			<Activity class="size-12 text-muted-foreground/30 mb-4" />
+			<h2 class="text-lg font-medium text-muted-foreground mb-1">No matching sessions</h2>
+			<p class="text-sm text-muted-foreground">
+				No sessions match the "{triggerFilter}" filter.
+			</p>
+		</div>
 	{:else}
 		<!-- AC: @ui-session-history ac-1 — List showing ID, agent type, task ref, status, duration, age -->
 		<div class="space-y-2" data-testid="sessions-list">
-			{#each sessions as s (s.id)}
+			{#each filteredSessions as s (s.id)}
 				<!-- AC: @ui-session-history ac-2 — Click navigates to /sessions/:id -->
 				<a
 					href="{base}/sessions/{s.id}"
@@ -102,17 +150,31 @@
 				>
 					<Badge class={statusColor(s.status)}>{s.status}</Badge>
 
+					<!-- Session origin indicator -->
+					<span
+						class="flex-shrink-0"
+						title={getTriggerLabel(s.trigger)}
+						data-testid="session-trigger-icon"
+					>
+						{#if isDispatchedSession(s.trigger)}
+							<Zap class="size-3.5 text-status-in-progress" />
+						{:else}
+							<Terminal class="size-3.5 text-muted-foreground" />
+						{/if}
+					</span>
+
 					<div class="flex-1 min-w-0">
 						<div class="flex items-center gap-2">
 							<span class="text-sm font-medium">{s.agent_type}</span>
 							<span class="text-xs text-muted-foreground font-mono" data-testid="session-id">{s.id.slice(0, 8)}</span>
 							{#if s.task_id}
-								<span class="text-xs text-muted-foreground">·</span>
+								<span class="text-xs text-muted-foreground">&middot;</span>
 								<span class="text-xs font-mono text-primary/70" data-testid="session-task-ref" title={s.task_id}>@{shortTaskRef(s.task_id)}</span>
 							{/if}
 						</div>
 						<div class="text-xs text-muted-foreground">
-							{s.event_count} events
+							<span data-testid="session-trigger-label">{getTriggerLabel(s.trigger)}</span>
+							&middot; {s.event_count} events
 							{#if s.iteration_count > 0}
 								&middot; {s.iteration_count} iterations
 							{/if}

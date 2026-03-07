@@ -20,6 +20,7 @@ function mockSessions() {
 				status: 'completed',
 				agent_type: 'task-worker',
 				session_type: 'invocation',
+				trigger: 'task.ready',
 				task_id: '01JTASK0000000000000000001',
 				started_at: '2026-03-04T10:00:00.000Z',
 				ended_at: '2026-03-04T11:30:00.000Z',
@@ -33,6 +34,7 @@ function mockSessions() {
 				status: 'active',
 				agent_type: 'pr-reviewer',
 				session_type: 'invocation',
+				trigger: 'task.pending_review',
 				task_id: '01JTASK0000000000000000002',
 				started_at: '2026-03-05T08:00:00.000Z',
 				duration_ms: 60000,
@@ -45,6 +47,7 @@ function mockSessions() {
 				status: 'failed',
 				agent_type: 'task-worker',
 				session_type: 'loop',
+				trigger: 'manual',
 				started_at: '2026-03-03T14:00:00.000Z',
 				ended_at: '2026-03-03T14:05:00.000Z',
 				duration_ms: 300000,
@@ -346,6 +349,105 @@ test.describe('Session History View', () => {
 
 			const errorMessage = page.getByTestId('sessions-error');
 			await expect(errorMessage).toBeVisible();
+		});
+	});
+
+	test.describe('Session Type Indicators', () => {
+		// AC: @ui-session-history ac-1 — Trigger labels distinguish dispatched vs manual
+		test('shows trigger label for each session', async ({ page, daemon }) => {
+			await page.route('**/api/sessions', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(mockSessions()),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			const labels = page.getByTestId('session-trigger-label');
+			await expect(labels).toHaveCount(3);
+			await expect(labels.nth(0)).toContainText('Dispatched: Task Ready');
+			await expect(labels.nth(1)).toContainText('Dispatched: PR Review');
+			await expect(labels.nth(2)).toContainText('Manual Run');
+		});
+
+		test('shows trigger icon for each session', async ({ page, daemon }) => {
+			await page.route('**/api/sessions', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(mockSessions()),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			const icons = page.getByTestId('session-trigger-icon');
+			await expect(icons).toHaveCount(3);
+		});
+	});
+
+	test.describe('Trigger Filter', () => {
+		test('filter buttons are visible when sessions exist', async ({ page, daemon }) => {
+			await page.route('**/api/sessions', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(mockSessions()),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			const filter = page.getByTestId('trigger-filter');
+			await expect(filter).toBeVisible();
+			await expect(filter.getByText('All')).toBeVisible();
+			await expect(filter.getByText('Manual')).toBeVisible();
+			await expect(filter.getByText('Dispatched')).toBeVisible();
+		});
+
+		test('dispatched filter shows only dispatched sessions', async ({ page, daemon }) => {
+			await page.route('**/api/sessions', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(mockSessions()),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			await page.getByTestId('trigger-filter').getByText('Dispatched').click();
+
+			const rows = page.getByTestId('session-row');
+			await expect(rows).toHaveCount(2);
+			// Only dispatched sessions remain (task.ready and task.pending_review)
+			await expect(rows.nth(0)).toHaveAttribute('data-session-id', '01JTEST0000000000000000001');
+			await expect(rows.nth(1)).toHaveAttribute('data-session-id', '01JTEST0000000000000000002');
+		});
+
+		test('manual filter shows only manual sessions', async ({ page, daemon }) => {
+			await page.route('**/api/sessions', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(mockSessions()),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			await page.getByTestId('trigger-filter').getByText('Manual').click();
+
+			const rows = page.getByTestId('session-row');
+			await expect(rows).toHaveCount(1);
+			await expect(rows.nth(0)).toHaveAttribute('data-session-id', '01JTEST0000000000000000003');
 		});
 	});
 
