@@ -786,6 +786,8 @@ export interface SessionSummary {
 	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
 	agent_type: string;
 	session_type: 'loop' | 'invocation';
+	/** Dispatch trigger for distinguishing dispatched agent vs manual CLI run. */
+	trigger?: string;
 	/** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
 	task_id?: string;
 	started_at: string;

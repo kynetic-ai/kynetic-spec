@@ -497,6 +497,29 @@ export function getLastSeq(events: Array<{ seq: number }>): number {
 	return events[events.length - 1].seq;
 }
 
+/**
+ * Map a raw trigger value to a human-readable label.
+ * Used by both the session list and session context panel.
+ */
+export function getTriggerLabel(trigger: string | undefined): string {
+	switch (trigger) {
+		case 'manual': return 'Manual Run';
+		case 'task.ready': return 'Dispatched: Task Ready';
+		case 'task.in_progress': return 'Dispatched: In Progress';
+		case 'task.needs_work': return 'Dispatched: Fix Cycle';
+		case 'task.pending_review': return 'Dispatched: PR Review';
+		case 'legacy': return 'Legacy';
+		default: return trigger ? `Dispatched: ${trigger}` : 'Legacy';
+	}
+}
+
+/**
+ * Determine whether a session trigger represents a dispatched (automated) session.
+ */
+export function isDispatchedSession(trigger: string | undefined): boolean {
+	return !!trigger && trigger !== 'manual' && trigger !== 'legacy';
+}
+
 const WRITE_TOOLS = new Set(['Write', 'Edit', 'NotebookEdit']);
 
 export function extractFilesChanged(blocks: DisplayBlock[]): string[] {

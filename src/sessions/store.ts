@@ -1621,6 +1621,8 @@ export interface SessionLogSummary {
    * AC: @session-model-evolution ac-6
    */
   session_type: "loop" | "invocation";
+  /** Dispatch trigger (manual, task.ready, etc.) for distinguishing session origin. */
+  trigger?: string;
   /** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
   task_id?: string;
   /** When session started (ISO 8601) */
@@ -1755,6 +1757,7 @@ export async function getSessionLogSummary(
     status: metadata.status,
     agent_type: metadata.agent_type,
     session_type: resolveSessionType(metadata),
+    trigger: metadata.trigger,
     task_id: metadata.task_id,
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,

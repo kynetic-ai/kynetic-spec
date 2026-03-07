@@ -6,7 +6,7 @@
 	import type { SessionDetail } from '$lib/api';
 	import { fetchTask } from '$lib/api';
 	import type { DisplayBlock } from './session-utils';
-	import { extractFilesChanged, formatElapsed, formatTimeline } from './session-utils';
+	import { extractFilesChanged, formatElapsed, formatTimeline, getTriggerLabel, isDispatchedSession } from './session-utils';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import { base } from '$app/paths';
@@ -17,6 +17,8 @@
 	import CheckCircle from '@lucide/svelte/icons/check-circle';
 	import Wallet from '@lucide/svelte/icons/wallet';
 	import FolderOpen from '@lucide/svelte/icons/folder-open';
+	import Zap from '@lucide/svelte/icons/zap';
+	import Terminal from '@lucide/svelte/icons/terminal';
 
 	let {
 		session,
@@ -75,19 +77,7 @@
 							: session.status
 	);
 
-	let triggerLabel = $derived(
-		session.trigger === 'manual'
-			? 'Manual'
-			: session.trigger === 'task.ready'
-				? 'Task Ready'
-				: session.trigger === 'task.in_progress'
-					? 'Task In Progress'
-					: session.trigger === 'task.needs_work'
-						? 'Needs Work'
-						: session.trigger === 'task.pending_review'
-							? 'Pending Review'
-							: session.trigger ?? 'Legacy'
-	);
+	let triggerLabel = $derived(getTriggerLabel(session.trigger));
 
 	// AC: @ui-session-stream ac-4 — Files changed during session
 	let filesChanged = $derived(extractFilesChanged(blocks));
@@ -130,8 +120,12 @@
 				</div>
 
 				<div class="flex items-center gap-2 text-xs text-muted-foreground">
-					<Activity class="size-3.5" />
-					<span>Trigger: {triggerLabel}</span>
+					{#if isDispatchedSession(session.trigger)}
+						<Zap class="size-3.5 text-status-in-progress" />
+					{:else}
+						<Terminal class="size-3.5" />
+					{/if}
+					<span>{triggerLabel}</span>
 				</div>
 
 				{#if session.task_id}
@@ -207,8 +201,8 @@
 					<p class="text-sm font-medium">{session.tasks_completed}</p>
 				</div>
 				<div class="bg-secondary/50 rounded-md px-2.5 py-1.5">
-					<p class="text-[10px] text-muted-foreground">Type</p>
-					<p class="text-sm font-medium capitalize">{session.session_type}</p>
+					<p class="text-[10px] text-muted-foreground">Origin</p>
+					<p class="text-sm font-medium">{isDispatchedSession(session.trigger) ? 'Dispatched' : 'Manual'}</p>
 				</div>
 			</div>
 		</div>

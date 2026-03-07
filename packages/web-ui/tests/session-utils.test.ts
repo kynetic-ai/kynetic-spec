@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { formatTimeline, formatAge } from '../src/lib/components/session/session-utils';
+import { formatTimeline, formatAge, getTriggerLabel, isDispatchedSession } from '../src/lib/components/session/session-utils';
 
 describe('formatTimeline', () => {
 	afterEach(() => {
@@ -67,5 +67,42 @@ describe('formatAge', () => {
 		vi.setSystemTime(new Date('2026-03-06T18:30:00.000Z'));
 		// 4h 12m ago — formatAge only shows "4h" (coarse, used in list views)
 		expect(formatAge('2026-03-06T14:18:00.000Z')).toBe('4h');
+	});
+});
+
+describe('getTriggerLabel', () => {
+	it('returns Manual Run for manual trigger', () => {
+		expect(getTriggerLabel('manual')).toBe('Manual Run');
+	});
+
+	it('returns dispatched labels for task triggers', () => {
+		expect(getTriggerLabel('task.ready')).toBe('Dispatched: Task Ready');
+		expect(getTriggerLabel('task.in_progress')).toBe('Dispatched: In Progress');
+		expect(getTriggerLabel('task.needs_work')).toBe('Dispatched: Fix Cycle');
+		expect(getTriggerLabel('task.pending_review')).toBe('Dispatched: PR Review');
+	});
+
+	it('returns Legacy for legacy or undefined trigger', () => {
+		expect(getTriggerLabel('legacy')).toBe('Legacy');
+		expect(getTriggerLabel(undefined)).toBe('Legacy');
+	});
+
+	it('returns generic dispatched label for unknown triggers', () => {
+		expect(getTriggerLabel('task.unknown')).toBe('Dispatched: task.unknown');
+	});
+});
+
+describe('isDispatchedSession', () => {
+	it('returns true for dispatched triggers', () => {
+		expect(isDispatchedSession('task.ready')).toBe(true);
+		expect(isDispatchedSession('task.in_progress')).toBe(true);
+		expect(isDispatchedSession('task.needs_work')).toBe(true);
+		expect(isDispatchedSession('task.pending_review')).toBe(true);
+	});
+
+	it('returns false for manual and legacy triggers', () => {
+		expect(isDispatchedSession('manual')).toBe(false);
+		expect(isDispatchedSession('legacy')).toBe(false);
+		expect(isDispatchedSession(undefined)).toBe(false);
 	});
 });
