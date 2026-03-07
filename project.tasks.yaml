@@ -79971,6 +79971,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp. Type filter removed from task list, spec
+    ac-9 updated, TaskDetailContent extracted as shared component, E2E tests updated. All quality
+    gates green.
   depends_on: []
   context: []
   priority: 3
@@ -79982,6 +79985,7 @@
   created_at: 2026-03-07T15:35:01.162Z
   started_at: 2026-03-07T17:00:29.089Z
   submitted_at: 2026-03-07T17:00:30.755Z
+  completed_at: 2026-03-07T21:25:19.372Z
   notes:
     - _ulid: 01KK4GZ2725F2E5QTW3SPMDEG9
       created_at: 2026-03-07T16:09:24.450Z
@@ -80072,10 +80076,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T21:25:19.372Z
-  closed_reason: Review passed. Merged to feat/ui-revamp. Type filter removed from task list, spec
-    ac-9 updated, TaskDetailContent extracted as shared component, E2E tests updated. All quality
-    gates green.
 - _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
   slugs: []
   title: Unify task detail display across kanban and task list
@@ -80169,6 +80169,37 @@
 
         All 4030 tests pass (2 pre-existing codex config failures). Build succeeds. kspec validate
         --completeness no longer reports @web-dashboard warnings.
+      supersedes: null
+    - _ulid: 01KK53CVQF5N7DJ4CAB9P3YFBH
+      created_at: 2026-03-07T21:31:30.927Z
+      author: "@claude"
+      content: >-
+        Review findings (fix cycle 1 re-review):
+
+        - SHOULD-FIX: Incorrect AC annotation at TaskDetailModal.svelte:528. The comment '// AC:
+        @gh-pages-export ac-17 — Note form disabled in static mode' references ac-17, which is about
+        the inbox Add button being disabled/hidden in SPA mode (not the task note form). The real
+        ac-17 is already correctly annotated in inbox/+page.svelte:7 and api.ts:397. This annotation
+        should either reference @gh-pages-export ac-18 (general write action no-op) or be removed
+        entirely — it misleads coverage tracking.
+
+        - SUGGESTION: The readOnly tooltip pattern is repeated 5 times with near-identical code (~75
+        lines of boilerplate). Consider extracting a DisabledTooltipButton snippet or component.
+
+        - PASS: Static mode fix correctly addresses @gh-pages-export ac-16 (disabled buttons with
+        tooltips).
+
+        - PASS: @web-dashboard completeness warnings resolved — ac-1, ac-2, ac-3, ac-11, ac-12,
+        ac-13, ac-14 annotations added.
+
+        - PASS: All tests pass (4029/4032, 3 pre-existing failures in codex config and session-start
+        timeout).
+
+        - PASS: No hardcoded Tailwind colors — uses design tokens correctly.
+
+        - PASS: Svelte 5 patterns only ($state/$derived/$effect).
+
+        - PASS: kspec validate shows no new warnings for this task's specs.
       supersedes: null
   todos: []
   automation: eligible

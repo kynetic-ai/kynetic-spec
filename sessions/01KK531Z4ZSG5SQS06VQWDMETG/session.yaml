@@ -1,0 +1,7 @@
+id: 01KK531Z4ZSG5SQS06VQWDMETG
+task_id: "@01KK4F049FHJ9AS8DPSMVXD74Y"
+agent_type: claude-agent-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-07T21:25:34.330Z
