@@ -18,6 +18,11 @@
 	import ActiveFleetRow from '$lib/components/board/ActiveFleetRow.svelte';
 	import TaskDetailModal from '$lib/components/board/TaskDetailModal.svelte';
 	import BoardSkeleton from '$lib/components/board/BoardSkeleton.svelte';
+	import {
+		createSessionState,
+		processTextChunk,
+		type FleetSessionState,
+	} from '$lib/components/board/fleet-buffer';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import List from '@lucide/svelte/icons/list';
 	import { Button } from '$lib/components/ui/button';
@@ -29,9 +34,15 @@
 	let error = $state('');
 	let agentStatus = $state<AgentDispatchStatus | null>(null);
 
-	// AC: @ui-task-board ac-4 — Accumulated output lines per agent session
-	const MAX_OUTPUT_LINES = 3;
-	let agentOutputLines = $state<Record<string, string[]>>({});
+	// AC: @ui-task-board ac-4 — Buffered output state per agent session
+	let sessionStates = $state<Record<string, FleetSessionState>>({});
+
+	// Derived: output lines per session (for ActiveFleetRow)
+	let agentOutputLines = $derived<Record<string, string[]>>(
+		Object.fromEntries(
+			Object.entries(sessionStates).map(([id, s]) => [id, s.lines])
+		)
+	);
 
 	// AC: @ui-task-board ac-4 — Lookup map: task_ref (@ULID or @slug) → title
 	let taskTitles = $derived(
@@ -111,29 +122,26 @@
 
 	// AC: @ui-task-board ac-4 — Refresh agent status on agent events
 	function handleAgentUpdate(event: BroadcastEvent) {
-		// AC: @ui-task-board ac-4 — Accumulate text chunks for last few lines of output
+		// AC: @ui-task-board ac-4 — Buffer text chunks into complete lines
 		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
 			const sessionId = event.data.session_id as string;
 			const text = event.data.text as string;
-			const newLines = text.split('\n').filter((l: string) => l.trim().length > 0);
-			if (newLines.length > 0) {
-				const existing = agentOutputLines[sessionId] ?? [];
-				agentOutputLines[sessionId] = [...existing, ...newLines].slice(-MAX_OUTPUT_LINES);
-			}
+			const current = sessionStates[sessionId] ?? createSessionState();
+			sessionStates[sessionId] = processTextChunk(current, text);
 			return;
 		}
 
-		// Invocation lifecycle events — refresh status and clean up stale output
+		// Invocation lifecycle events — refresh status and clean up stale state
 		fetchAgentStatus()
 			.then((status) => {
 				agentStatus = status;
-				// Clean up output lines for sessions no longer active
+				// Clean up session states for sessions no longer active
 				const activeSessions = new Set(
 					status.active_invocations.map((inv) => inv.session_id)
 				);
-				for (const sessionId of Object.keys(agentOutputLines)) {
+				for (const sessionId of Object.keys(sessionStates)) {
 					if (!activeSessions.has(sessionId)) {
-						delete agentOutputLines[sessionId];
+						delete sessionStates[sessionId];
 					}
 				}
 			})

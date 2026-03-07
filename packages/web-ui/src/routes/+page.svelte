@@ -6,6 +6,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import {
 		fetchTasks,
 		fetchInbox,
@@ -15,6 +16,11 @@
 		type AgentDispatchStatus,
 		type ActiveInvocation
 	} from '$lib/api';
+	import {
+		createSessionState,
+		processTextChunk,
+		type FleetSessionState,
+	} from '$lib/components/board/fleet-buffer';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -30,6 +36,7 @@
 	import Activity from '@lucide/svelte/icons/activity';
 	import Bot from '@lucide/svelte/icons/bot';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import TerminalIcon from '@lucide/svelte/icons/terminal';
 
 	// --- State ---
 	let loading = $state(true);
@@ -59,6 +66,9 @@
 	// Active work
 	let agentStatus = $state<AgentDispatchStatus | null>(null);
 	let taskTitles = $state<Record<string, string>>({});
+
+	// Buffered output state per agent session (same pattern as board)
+	let sessionStates = $state<Record<string, FleetSessionState>>({});
 
 	let hasActiveWork = $derived(
 		agentStatus?.dispatch_enabled && (agentStatus?.active_invocations?.length ?? 0) > 0
@@ -293,10 +303,28 @@
 		loadDashboard();
 	}
 
-	function handleAgentEvent() {
+	function handleAgentEvent(event: BroadcastEvent) {
+		// Buffer text chunks into complete lines
+		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
+			const sessionId = event.data.session_id as string;
+			const text = event.data.text as string;
+			const current = sessionStates[sessionId] ?? createSessionState();
+			sessionStates[sessionId] = processTextChunk(current, text);
+			return;
+		}
+
+		// Invocation lifecycle events — refresh status and clean up stale state
 		fetchAgentStatus()
 			.then((s) => {
 				agentStatus = s;
+				const activeSessions = new Set(
+					s.active_invocations.map((inv) => inv.session_id)
+				);
+				for (const sessionId of Object.keys(sessionStates)) {
+					if (!activeSessions.has(sessionId)) {
+						delete sessionStates[sessionId];
+					}
+				}
 			})
 			.catch(() => {});
 	}
@@ -399,6 +427,8 @@
 					<div class="flex gap-3 overflow-x-auto pb-2" data-testid="active-fleet-row">
 						{#each agentStatus?.active_invocations ?? [] as invocation (invocation.session_id)}
 							{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
+							{@const sessionState = sessionStates[invocation.session_id]}
+							{@const lines = sessionState?.lines ?? []}
 							<div
 								class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
 								data-testid="fleet-card"
@@ -436,6 +466,30 @@
 										<ExternalLink class="size-3" />
 									</a>
 								</div>
+
+								<!-- Buffered output -->
+								{#if lines.length > 0}
+									<div
+										class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-10"
+										aria-live="polite"
+										aria-label="Agent output for {title ?? invocation.agent_id}"
+										data-testid="fleet-output"
+									>
+										{#each lines.slice(-2) as line}
+											<div class="truncate">{line}</div>
+										{/each}
+									</div>
+								{:else}
+									<div
+										class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
+										aria-live="polite"
+										aria-label="Agent output for {title ?? invocation.agent_id}"
+										data-testid="fleet-output-empty"
+									>
+										<TerminalIcon class="size-3" />
+										<span>Awaiting output...</span>
+									</div>
+								{/if}
 							</div>
 						{/each}
 					</div>

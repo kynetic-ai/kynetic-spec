@@ -1,7 +1,7 @@
 <!--
   AC: @ui-task-board ac-4 — Active Fleet row showing running agent work.
   Shows task title, agent name, elapsed time with pulse indicator,
-  and last few lines of output.
+  and last few lines of buffered output.
 -->
 <script lang="ts">
 	import type { AgentDispatchStatus } from '$lib/api';
@@ -71,7 +71,7 @@
 						<span>{formatElapsed(invocation.elapsed_ms)}</span>
 					</div>
 
-					<!-- AC: @ui-task-board ac-4 — Last few lines of output -->
+					<!-- AC: @ui-task-board ac-4 — Last few lines of buffered output -->
 					{#if lines.length > 0}
 						<div
 							class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-14"
