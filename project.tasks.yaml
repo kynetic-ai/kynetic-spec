@@ -79109,7 +79109,7 @@
   spec_ref: "@ui-settings-view"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -79122,6 +79122,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T05:50:13.994Z
+  session_id: 01KK3D4ZWR5MN60VF5CSQ8GSQG
 - _ulid: 01KK2T53XATPSTVMRNGCHCX23W
   slugs: []
   title: Fix triage page dropdown selectors not functioning
