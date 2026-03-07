@@ -79638,7 +79638,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -79651,6 +79651,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T08:23:41.436Z
+  session_id: 01KK3NNSZTWX079RHX85PJ9R7W
 - _ulid: 01KK3ARVJQPW5J3AJN7EJ7B657
   slugs: []
   title: Fix tool call rows in session stream — enforce single-line layout with truncation
