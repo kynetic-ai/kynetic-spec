@@ -182,8 +182,9 @@
 	<div class="flex items-center justify-between p-6 pb-0">
 		<div>
 			<h1 class="text-2xl font-bold">Task Board</h1>
-			{#if !loading && tasks.length > 0}
-				<p class="text-sm text-muted-foreground">{tasks.length} tasks</p>
+			{#if !loading && columns.length > 0}
+				{@const visibleCount = columns.reduce((sum, col) => sum + col.tasks.length, 0)}
+				<p class="text-sm text-muted-foreground">{visibleCount} tasks</p>
 			{/if}
 		</div>
 
