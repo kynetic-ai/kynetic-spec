@@ -80026,12 +80026,28 @@
     - enhancement
     - web-ui
   vcs_refs: []
+  session_id: 01KK4GZHZBMP3N4DYBK246AJJ3
   created_at: 2026-03-07T15:35:02.191Z
-  notes: []
+  started_at: 2026-03-07T16:14:53.223Z
+  notes:
+    - _ulid: 01KK4H9H82J780G5T3RYXQEC8Q
+      created_at: 2026-03-07T16:15:07.523Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Kanban board has a TaskDetailModal component; task list page uses a different
+        detail view. Need to unify so both use the same component.
+
+        - Scope: Extract/refactor the task detail display into a shared component, use it from both
+        kanban and task list views.
+
+        - Branch: feat/unify-task-detail (off feat/ui-revamp)
+
+        - Verification: npm test in root, npm run test in packages/web-ui
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T16:14:53.223Z
-  session_id: 01KK4GZHZBMP3N4DYBK246AJJ3
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
   slugs: []
   title: Fix kanban and task list responsive layout (no horizontal scrolling)
