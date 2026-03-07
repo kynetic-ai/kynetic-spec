@@ -218,7 +218,7 @@ export function createValidationRoutes(options: ValidationRouteOptions = {}) {
         refWarnings: result.refWarnings,
         orphans: result.orphans,
         completenessWarnings: result.completenessWarnings,
-        traitCycles: result.traitCycles,
+        traitCycles: result.traitCycleErrors,
       };
     })
 
