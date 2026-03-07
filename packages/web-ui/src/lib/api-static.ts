@@ -17,6 +17,7 @@ import type {
 	InboxItem,
 	SessionContext,
 	Observation,
+	Workflow,
 	PaginatedResponse,
 	SearchResponse,
 	SearchResult
@@ -414,6 +415,26 @@ export function fetchTriageRecordsStatic(params?: {
 	offset?: number;
 }): PaginatedResponse<never> {
 	return { items: [], total: 0, offset: params?.offset ?? 0, limit: params?.limit ?? 50 };
+}
+
+// ============================================================
+// Workflows Static Functions
+// ============================================================
+
+/**
+ * Fetch workflows from static snapshot
+ * AC: @ui-workflows-view ac-1
+ */
+export function fetchWorkflowsStatic(): { items: Workflow[]; total: number } {
+	const snapshot = getSnapshot();
+	if (!snapshot) {
+		return { items: [], total: 0 };
+	}
+
+	return {
+		items: snapshot.workflows ?? [],
+		total: (snapshot.workflows ?? []).length
+	};
 }
 
 // ============================================================

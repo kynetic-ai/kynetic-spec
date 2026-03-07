@@ -176,18 +176,24 @@ export interface Agent {
  */
 export interface Workflow {
   _ulid: string;
-  slugs: string[];
-  name: string;
+  id: string;
+  trigger: string;
+  description?: string;
   steps: WorkflowStep[];
+  enforcement?: 'advisory' | 'strict';
+  mode?: 'interactive' | 'loop';
+  based_on?: string;
+  tags?: string[];
 }
 
 /**
  * Workflow step
  */
 export interface WorkflowStep {
-  _ulid: string;
   type: 'action' | 'check' | 'decision';
   content: string;
+  on_fail?: string;
+  options?: string[];
 }
 
 /**

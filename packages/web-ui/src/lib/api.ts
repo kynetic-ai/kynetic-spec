@@ -19,6 +19,7 @@ import type {
 	InboxItem,
 	SessionContext,
 	Observation,
+	Workflow,
 	PaginatedResponse,
 	PlanSummary,
 	ErrorResponse,
@@ -45,7 +46,8 @@ import {
 	fetchObservationsStatic,
 	searchStatic,
 	fetchTriageRecordsStatic,
-	fetchPlansStatic
+	fetchPlansStatic,
+	fetchWorkflowsStatic
 } from './api-static';
 import { DAEMON_API_BASE } from './constants';
 
@@ -768,6 +770,30 @@ export async function fetchPlans(params?: {
 	}
 
 	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Workflows API Functions
+// AC: @ui-workflows-view ac-1
+// ============================================================
+
+/**
+ * Fetch workflow definitions
+ * AC: @ui-workflows-view ac-1
+ */
+export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: number }> {
+	if (isStaticMode()) {
+		return fetchWorkflowsStatic();
+	}
+
+	const response = await fetch(`${API_BASE}/api/meta/workflows`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
