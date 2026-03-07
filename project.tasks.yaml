@@ -79969,7 +79969,7 @@
   spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -79978,7 +79978,7 @@
     - bug
     - web-ui
   vcs_refs: []
-  session_id: 01KK4G5TK8KZB33XYBBEHZS3KV
+  session_id: null
   created_at: 2026-03-07T15:35:01.162Z
   started_at: 2026-03-07T16:01:38.943Z
   submitted_at: 2026-03-07T16:09:28.339Z
@@ -80017,6 +80017,12 @@
         AC-9 first or restore type filtering behavior/tests. MUST-FIX 2) Regression gate not green:
         root npm test fails at tests/cli-serve.test.ts:225 ("kspec serve commands > should start in
         foreground mode with Ctrl+C support": expected null to be 0).'
+      supersedes: null
+    - _ulid: 01KK4JFNY261GHJP20RQXTAKMS
+      created_at: 2026-03-07T16:35:57.506Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: @web-dashboard ac-9 mismatch (type filter
+        removed without spec update) and root npm test failure at tests/cli-serve.test.ts:225."
       supersedes: null
   todos: []
   automation: eligible
