@@ -78786,7 +78786,7 @@
   spec_ref: "@ui-agent-dispatch"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -78800,6 +78800,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T04:09:46.259Z
+  session_id: 01KK37D3NJEEQK7GTA5FHT9F0D
 - _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
   slugs: []
   title: Add compact kanban board to dashboard with active fleet row and needs attention
