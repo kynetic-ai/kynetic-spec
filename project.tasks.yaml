@@ -80005,6 +80005,19 @@
         Backend type query param left intact for API compatibility. All tests pass (2 pre-existing
         failures in codex platform detection unrelated to this change).
       supersedes: null
+    - _ulid: 01KK4JFCHEZ9F3P51BB8DJYGJH
+      created_at: 2026-03-07T16:35:47.886Z
+      author: Jacob Chapel
+      content: 'Review findings: MUST-FIX 1) Spec misalignment with @web-dashboard ac-9. Spec AC
+        explicitly requires task list filters by status, type, tag, assignee, and automation, but
+        this branch removes the type filter UI/API wiring and removes the type-filter E2E coverage
+        (packages/web-ui/src/lib/components/TaskFilters.svelte,
+        packages/web-ui/src/routes/tasks/+page.svelte, packages/web-ui/src/lib/api.ts,
+        packages/web-ui/src/lib/api-static.ts, packages/web-ui/tests/e2e/tasks.spec.ts). Update spec
+        AC-9 first or restore type filtering behavior/tests. MUST-FIX 2) Regression gate not green:
+        root npm test fails at tests/cli-serve.test.ts:225 ("kspec serve commands > should start in
+        foreground mode with Ctrl+C support": expected null to be 0).'
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
