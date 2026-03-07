@@ -79801,7 +79801,7 @@
   spec_ref: "@ui-session-stream"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -79814,3 +79814,5 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T09:20:35.740Z
+  session_id: 01KK3S62X4G13VMS87YN8F6B80
