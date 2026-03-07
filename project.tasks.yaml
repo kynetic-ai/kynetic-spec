@@ -78421,12 +78421,30 @@
     - feature
     - web-ui
   vcs_refs: []
+  session_id: 01KK2ZTEV87FMZ8GA2DD95A9S3
   created_at: 2026-03-06T22:53:12.084Z
-  notes: []
+  started_at: 2026-03-07T01:57:13.092Z
+  notes:
+    - _ulid: 01KK30BAHBFC3KY2GHBRPPRN2M
+      created_at: 2026-03-07T01:59:45.964Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: References displayed inconsistently - some raw ULIDs, some slugs, some with @@
+        prefix. Need shared ReferenceLink component.
+
+        - Scope: Create ReferenceLink component in lib/components/, utility for ref normalization,
+        replace 13+ reference displays across web UI
+
+        - Files to change: SessionContextPanel, TaskCard, TaskDetailModal, TaskList, ActiveFleetRow,
+        ActiveInvocationRow, sessions/+page, dashboard +page
+
+        - Verification: npm test in root, visual check that all reference displays show title+slug
+        and link to detail views
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T01:57:13.092Z
-  session_id: 01KK2ZTEV87FMZ8GA2DD95A9S3
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
   slugs: []
   title: "Distinguish session types: dispatched agent vs manual CLI run"
