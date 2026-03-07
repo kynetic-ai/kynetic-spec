@@ -63,7 +63,7 @@
 		<!-- AC: @gh-pages-export ac-15 - Show read-only banner in static mode -->
 		<ReadOnlyBanner />
 
-		<main class="flex-1 overflow-auto p-4 pb-20 md:pb-4">
+		<main class="flex-1 overflow-auto p-4 pb-20 md:pb-4 min-w-0">
 			{#if ready}
 				{@render children()}
 			{:else}

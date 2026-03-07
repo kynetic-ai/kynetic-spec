@@ -177,7 +177,7 @@
 	});
 </script>
 
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-full min-w-0">
 	<!-- Header -->
 	<div class="flex items-center justify-between p-6 pb-0">
 		<div>
@@ -232,7 +232,7 @@
 		</div>
 
 		<!-- AC: @ui-task-board ac-1 — Kanban Columns -->
-		<div class="flex gap-4 overflow-x-auto p-6 pt-2 flex-1 min-h-0" data-testid="board-columns">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 p-6 pt-2 flex-1 min-h-0" data-testid="board-columns">
 			{#each columns as column (column.id)}
 				<BoardColumnComponent {column} onCardClick={handleCardClick} />
 			{/each}

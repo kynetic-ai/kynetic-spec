@@ -65,16 +65,16 @@
 	}
 </script>
 
-<div class="rounded-md border" data-testid="task-list">
-	<Table>
+<div class="rounded-md border overflow-hidden" data-testid="task-list">
+	<Table class="table-fixed">
 		<TableHeader>
 			<TableRow>
-				<TableHead>Title</TableHead>
-				<TableHead>Status</TableHead>
-				<TableHead>Priority</TableHead>
-				<TableHead>Spec</TableHead>
-				<TableHead>Notes</TableHead>
-				<TableHead>Tags</TableHead>
+				<TableHead class="w-[40%]">Title</TableHead>
+				<TableHead class="w-[12%]">Status</TableHead>
+				<TableHead class="w-[8%]">Priority</TableHead>
+				<TableHead class="w-[15%]">Spec</TableHead>
+				<TableHead class="w-[7%]">Notes</TableHead>
+				<TableHead class="w-[18%]">Tags</TableHead>
 			</TableRow>
 		</TableHeader>
 		<TableBody>
@@ -98,10 +98,10 @@
 						tabindex="0"
 						onkeydown={(e) => e.key === 'Enter' && selectTask(task)}
 					>
-						<TableCell class="font-medium">
-							<span data-testid="task-title">{task.title}</span>
+						<TableCell class="font-medium truncate">
+							<span data-testid="task-title" class="truncate">{task.title}</span>
 							{#if task.type !== 'task'}
-								<Badge variant="outline" class="ml-2">{task.type}</Badge>
+								<Badge variant="outline" class="ml-2 shrink-0">{task.type}</Badge>
 							{/if}
 						</TableCell>
 						<TableCell>
@@ -110,9 +110,9 @@
 						<TableCell class={getPriorityColor(task.priority)}>
 							<span data-testid="task-priority">P{task.priority}</span>
 						</TableCell>
-						<TableCell data-testid="task-spec-ref">
+						<TableCell data-testid="task-spec-ref" class="truncate">
 							{#if task.spec_ref}
-								<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-sm" />
+								<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-sm truncate" />
 							{:else}
 								<span class="text-muted-foreground text-sm">—</span>
 							{/if}

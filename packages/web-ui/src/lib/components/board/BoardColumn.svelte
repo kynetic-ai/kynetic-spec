@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="flex flex-col min-w-[260px] max-w-[320px] flex-1"
+	class="flex flex-col min-w-0"
 	data-testid="board-column"
 	data-column-id={column.id}
 >
