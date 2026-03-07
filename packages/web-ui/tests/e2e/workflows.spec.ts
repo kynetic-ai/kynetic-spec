@@ -85,17 +85,41 @@ test.describe('Workflows View', () => {
       await expect(startButtons).toHaveCount(2);
       await expect(startButtons.first()).toContainText('Start');
     });
+
+    // AC: @ui-workflows-view ac-1 — Start button copies command to clipboard
+    test('Start button copies workflow start command to clipboard', async ({ page, daemon, context }) => {
+      // Grant clipboard permissions
+      await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+      await page.goto('/workflows');
+      await expect(page.getByTestId('workflows-loading')).toHaveCount(0);
+
+      const startBtn = page.getByTestId('workflow-start-btn').first();
+      await expect(startBtn).toContainText('Start');
+
+      // Click the Start button
+      await startBtn.click();
+
+      // Button text should change to "Copied!" feedback
+      await expect(startBtn).toContainText('Copied!');
+
+      // Verify clipboard contains the correct kspec command
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toBe('kspec workflow start @spec-first');
+    });
   });
 
   test.describe('Loading and Empty States', () => {
-    test('shows loading skeleton initially', async ({ page, daemon }) => {
-      // Navigate but don't wait for network idle
-      const response = page.goto('/workflows', { waitUntil: 'commit' });
+    test('shows loading skeleton that transitions to content', async ({ page, daemon }) => {
+      // Navigate and verify the page transitions from loading to loaded content
+      await page.goto('/workflows');
 
-      // Check loading skeleton appears
-      const loading = page.getByTestId('workflows-loading');
-      // Loading may resolve quickly; just verify page navigated
-      await response;
+      // After loading completes, skeleton should be gone and content visible
+      await expect(page.getByTestId('workflows-loading')).toHaveCount(0);
+      // Verify content actually rendered (list or empty state)
+      const hasList = await page.getByTestId('workflows-list').isVisible().catch(() => false);
+      const hasEmpty = await page.getByTestId('workflows-empty').isVisible().catch(() => false);
+      expect(hasList || hasEmpty).toBe(true);
     });
 
     test('shows summary count after loading', async ({ page, daemon }) => {

@@ -28,11 +28,11 @@
 	let error = $state('');
 	let copiedId = $state<string | null>(null);
 
-	// ── Step type classes ──
+	// ── Step type classes (using design-system severity tokens) ──
 	const STEP_TYPE_CLASS: Record<string, string> = {
-		action: 'text-emerald-500',
-		check: 'text-blue-500',
-		decision: 'text-amber-500'
+		action: 'text-severity-success',
+		check: 'text-severity-info',
+		decision: 'text-severity-warning'
 	};
 
 	// ── Lifecycle ──
