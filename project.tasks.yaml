@@ -78630,6 +78630,16 @@
         TaskCard spec_ref, TaskList spec_ref, and sessions history task_ref were switched to
         non-link rendering (linked={false}) and no longer navigate to detail views."
       supersedes: null
+    - _ulid: 01KK39CGDYYA8PAV1PCS9F5H51
+      created_at: 2026-03-07T04:37:41.950Z
+      author: "@claude"
+      content: "Fix cycle 5: Root cause was that linked={false} made references non-navigable, violating
+        ac-1. Added inline prop to ReferenceLink that renders as <span role=link> with goto()
+        navigation instead of <a>. This avoids invalid nested interactive HTML while keeping
+        references clickable. Sessions page and TaskCard use inline mode (nested inside <a> and
+        <button>). TaskList uses regular <a> with stopPropagation (valid inside <tr>). All 3922+161
+        tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
