@@ -78424,6 +78424,7 @@
   session_id: 01KK2ZTEV87FMZ8GA2DD95A9S3
   created_at: 2026-03-06T22:53:12.084Z
   started_at: 2026-03-07T01:57:13.092Z
+  submitted_at: 2026-03-07T02:10:54.147Z
   notes:
     - _ulid: 01KK30BAHBFC3KY2GHBRPPRN2M
       created_at: 2026-03-07T01:59:45.964Z
@@ -78476,9 +78477,21 @@
 
         All tests pass (3911 + 14 new). 2 pre-existing failures in codex tests unrelated.
       supersedes: null
+    - _ulid: 01KK319KVSZ558XCEG2FZDPD4N
+      created_at: 2026-03-07T02:16:18.553Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) packages/web-ui/src/lib/components/ReferenceLink.svelte
+        renders @{short} when title is unavailable (lines 57 and 69), which truncates refs to 8
+        chars; spec @ui-reference-display ac-1 requires fallback to raw ref display when
+        resolution/title is unavailable. This also causes slug refs to lose identifying text
+        (shortRef() in packages/web-ui/src/lib/utils/reference.ts always slices to 8). MUST-FIX 2)
+        Regression gate failed: npm test exits 1 with failing tests: tests/cli-serve.test.ts
+        (foreground Ctrl+C support expects exitCode 0 but got null) and
+        tests/cli/session-start-format.test.ts (primer timeline test timeout at 30s).
+        packages/web-ui npm test passes."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-07T02:10:54.147Z
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
   slugs: []
   title: "Distinguish session types: dispatched agent vs manual CLI run"
