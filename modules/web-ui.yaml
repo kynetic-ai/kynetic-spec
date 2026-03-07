@@ -1319,7 +1319,7 @@ features:
     created: 2026-03-05T01:30:02.796Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KJXSVF5VWDHKVSJ51JSZDSPN
     slugs:
       - ui-inbox-enhanced
