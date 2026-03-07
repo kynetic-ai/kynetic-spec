@@ -79724,12 +79724,33 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK3QWJ8TGKSQVQC0WQP47ZK5
   created_at: 2026-03-07T05:01:55.159Z
-  notes: []
+  started_at: 2026-03-07T08:57:09.576Z
+  notes:
+    - _ulid: 01KK3RGMDK99G29CHYCV7DQRJT
+      created_at: 2026-03-07T09:02:05.747Z
+      author: "@claude"
+      content: >-
+        Fixed collapsed tool call header to enforce single-line layout:
+
+        - Added overflow-hidden to the button container to prevent content overflow
+
+        - Added flex-shrink-0 + whitespace-nowrap to chevron, timestamp, tool name badge, and status
+        icons — these never shrink
+
+        - Changed preview span from flex-1 to min-w-0 for proper truncation in flex context
+        (truncate class already present)
+
+        - Duration badge already had flex-shrink-0 and ml-auto — preserved as-is
+
+        - Added AC annotation comment referencing @ui-session-stream ac-5
+
+        - No E2E test needed — this is a CSS-only fix; ac-5 acceptance criteria is validated by
+        visual inspection of the layout behavior
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T08:57:09.576Z
-  session_id: 01KK3QWJ8TGKSQVQC0WQP47ZK5
 - _ulid: 01KK3BSWT9NQHKEZ19P97VT3SV
   slugs: []
   title: Tool calls in live session stream should render collapsed by default, not expanded
