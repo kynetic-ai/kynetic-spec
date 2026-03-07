@@ -78662,6 +78662,7 @@
   session_id: 01KK34EZYQHCP7VEBNHWMYGCYH
   created_at: 2026-03-07T00:01:03.380Z
   started_at: 2026-03-07T03:18:02.122Z
+  submitted_at: 2026-03-07T03:26:03.094Z
   notes:
     - _ulid: 01KK3595ZTBM1KFVHMNEMSDK76
       created_at: 2026-03-07T03:25:58.651Z
@@ -78689,9 +78690,18 @@
         All 3907+ tests pass. Pre-existing failures in core-skill-install and enhanced-setup tests
         are unrelated.
       supersedes: null
+    - _ulid: 01KK35K7JE7EESGE9ZKPG8FZXT
+      created_at: 2026-03-07T03:31:27.950Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX — Spec AC coverage gate failed for @ui-agent-dispatch. kspec
+        validate --json reports missing own AC coverage on this spec (Uncovered: ac-4). There are no
+        // AC: @ui-agent-dispatch ac-4 annotations in tests (checked
+        packages/web-ui/tests/e2e/agents.spec.ts and tests/). The implementation change for
+        completed count looks correct, but review cannot pass until ac-4 has explicit test coverage
+        annotation and validation warning is cleared for this spec."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-07T03:26:03.094Z
 - _ulid: 01KK2SHZXHD706QWBM4P2TTGB1
   slugs: []
   title: Add agent definition editing UI with inline edit form
