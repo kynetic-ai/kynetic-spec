@@ -78412,7 +78412,7 @@
   spec_ref: "@ui-reference-display"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -78478,6 +78478,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T02:10:54.147Z
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
   slugs: []
   title: "Distinguish session types: dispatched agent vs manual CLI run"
