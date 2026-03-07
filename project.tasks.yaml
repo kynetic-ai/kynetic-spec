@@ -78237,7 +78237,7 @@
   spec_ref: "@ui-session-stream"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -78250,6 +78250,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T01:14:29.949Z
+  session_id: 01KK2XQT6V7431BNAGH4NJHD5Z
 - _ulid: 01KK2NNMYXCBD0MMWKJS4MCGRQ
   slugs: []
   title: Improve session timeline timestamp granularity
@@ -78587,6 +78589,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Already implemented in PR #685 (feat/dispatch: implement periodic reconciliation
+    loop). Branch feat/ui-revamp just needs to merge main to pick it up."
   depends_on: []
   context: []
   priority: 2
@@ -78595,6 +78599,8 @@
     - daemon
   vcs_refs: []
   created_at: 2026-03-07T01:08:28.540Z
+  started_at: 2026-03-07T01:12:15.646Z
+  completed_at: 2026-03-07T01:12:15.646Z
   notes:
     - _ulid: 01KK2XMBJQ93XC2AAQXFWYYSBY
       created_at: 2026-03-07T01:12:16.216Z
@@ -78605,7 +78611,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T01:12:15.646Z
-  closed_reason: "Already implemented in PR #685 (feat/dispatch: implement periodic reconciliation
-    loop). Branch feat/ui-revamp just needs to merge main to pick it up."
-  started_at: 2026-03-07T01:12:15.646Z
