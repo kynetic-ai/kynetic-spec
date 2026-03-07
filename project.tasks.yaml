@@ -80230,7 +80230,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -80259,6 +80259,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T17:32:29.674Z
 - _ulid: 01KK4F07BB4W0T37GF2SH50WPB
   slugs: []
   title: Fix task IDs showing instead of task names in sessions and dispatch views
