@@ -79890,3 +79890,168 @@
       supersedes: null
   todos: []
   automation: eligible
+- _ulid: 01KK4F027ZMTQBCW246BY56Y37
+  slugs: []
+  title: Fix task list automation filter showing wrong subset
+  type: task
+  description: "The automation filter dropdown on the task list page shows All/Eligible/Blocked
+    options but the filter does not work correctly — selecting 'Eligible' shows all pending tasks
+    instead of only automation-eligible ones. The dropdown options should be: All, Eligible, Needs
+    Review, Manual Only (not 'Blocked' which is a task status, not an automation status)."
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:00.095Z
+  notes: []
+  todos: []
+- _ulid: 01KK4F039AVGTDAQ5PD54S1VEF
+  slugs: []
+  title: Remove useless type filter from task list
+  type: task
+  description: The type filter dropdown on the task list shows Task/Subtask options but there are no
+    subtasks in the system. This filter is useless and should be removed to reduce UI clutter.
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:01.162Z
+  notes: []
+  todos: []
+- _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
+  slugs: []
+  title: Unify task detail display across kanban and task list
+  type: task
+  description: The kanban board's TaskDetailModal is superior to whatever detail view the task list
+    page uses. Unify the task display so the task list page uses the same modal/detail component as
+    the kanban board for consistency.
+  spec_ref: "@web-dashboard"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - enhancement
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:02.191Z
+  notes: []
+  todos: []
+- _ulid: 01KK4F059GEKBV8HAMM38FJPMT
+  slugs: []
+  title: Fix kanban and task list responsive layout (no horizontal scrolling)
+  type: task
+  description: Both the kanban board and task list are too wide and do not honor the browser's
+    viewport width, requiring horizontal scrolling. Need to make both views responsive with proper
+    width constraints, overflow handling, and mobile-friendly layout.
+  spec_ref: "@ui-task-board"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:03.216Z
+  notes: []
+  todos: []
+- _ulid: 01KK4F06AW44EZDXEPSPHPATD4
+  slugs: []
+  title: Fix kanban board showing wrong tasks in columns
+  type: task
+  description: "The kanban board is still showing the wrong tasks despite a previous fix attempt.
+    Board shows '500 tasks' header but only 2 cards in Backlog and nothing in other columns. The
+    distributeToColumns logic in board-utils.ts looks correct, so the issue is likely in data
+    fetching — loadBoard() calls fetchTasks({limit: 500}) without any status filter, which may be
+    returning the wrong data set or the API is not returning all tasks."
+  spec_ref: "@ui-task-board"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:04.284Z
+  notes: []
+  todos: []
+- _ulid: 01KK4F07BB4W0T37GF2SH50WPB
+  slugs: []
+  title: Fix task IDs showing instead of task names in sessions and dispatch views
+  type: task
+  description: "Task references in sessions list, session detail panel, and active invocation rows
+    show raw task IDs (@01KK3BSWT9NQHKEZ19P97VT3SV) instead of resolved task names. The
+    ReferenceLink component shows the ID when no title prop is passed. The fix existed briefly but
+    was lost (likely overwritten). Sessions list (sessions/+page.svelte line 174),
+    SessionContextPanel, and ActiveInvocationRow all pass task_id/task_ref to ReferenceLink without
+    resolving the title first. Need to either: (a) resolve task titles at the page level and pass
+    them down, or (b) make ReferenceLink self-resolving by fetching task data."
+  spec_ref: "@ui-session-history"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - bug
+    - web-ui
+    - regression
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:05.323Z
+  notes: []
+  todos: []
+- title: Fix settings page showing shadow branch as unhealthy when it is healthy
+  description: "The settings page shows shadow branch status as 'Unhealthy' (yellow indicator) even
+    when kspec shadow status reports it as healthy. The daemon endpoint GET /api/meta/shadow calls
+    getShadowStatus() which checks branchExists, worktreeExists, and worktreeLinked. The UI shows
+    unhealthy when enabled=true but healthy=false. Possible causes: (1) the daemon's initContext
+    resolves a different project root than the CLI, (2) the project header is missing/wrong so the
+    daemon checks the wrong directory, or (3) the getShadowStatus check fails for worktreeLinked in
+    the daemon context."
+  type: task
+  spec_ref: "@ui-settings-view"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - bug
+    - web-ui
+  depends_on: []
+  _ulid: 01KK4F08D3J3EQMKJ8YQN9T7NB
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-07T15:35:06.403Z
+  notes: []
+  todos: []
