@@ -80329,6 +80329,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp. Fixed header showing total fetched count
+    instead of visible column count, and added missing automation field to static mode
+    toTaskSummary(). All tests pass, AC coverage verified.
   depends_on: []
   context: []
   priority: 1
@@ -80340,6 +80343,7 @@
   created_at: 2026-03-07T15:35:04.284Z
   started_at: 2026-03-07T17:22:34.987Z
   submitted_at: 2026-03-07T17:32:29.674Z
+  completed_at: 2026-03-07T21:49:29.794Z
   notes:
     - _ulid: 01KK4NAR2YN7TZBRGQ3N91XPBR
       created_at: 2026-03-07T17:25:41.599Z
@@ -80357,10 +80361,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T21:49:29.794Z
-  closed_reason: Review passed. Merged to feat/ui-revamp. Fixed header showing total fetched count
-    instead of visible column count, and added missing automation field to static mode
-    toTaskSummary(). All tests pass, AC coverage verified.
 - _ulid: 01KK4F07BB4W0T37GF2SH50WPB
   slugs: []
   title: Fix task IDs showing instead of task names in sessions and dispatch views
@@ -80375,7 +80375,7 @@
   spec_ref: "@ui-session-history"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -80412,6 +80412,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-07T21:54:47.316Z
+  closed_reason: Review passed. Merged to feat/ui-revamp. Fix resolves task names in sessions list,
+    session detail panel, and active invocation rows using the same fetchTasks + title lookup
+    pattern as the dashboard. Clean code, correct Svelte 5 patterns, all tests pass.
 - _ulid: 01KK4F08D3J3EQMKJ8YQN9T7NB
   slugs: []
   title: Fix settings page showing shadow branch as unhealthy when it is healthy
