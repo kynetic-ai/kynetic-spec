@@ -1451,6 +1451,52 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KK2TDXAKM3A0HBWJ71APCM9Q
+    slugs:
+      - ui-workflows-view
+    title: Workflows View
+    type: feature
+    tags: []
+    description: Web UI page for browsing and managing kspec workflows. Shows workflow definitions with
+      steps, triggers, loop variants, and provides workflow start action.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-07T00:16:19.283Z
+  - _ulid: 01KK2TDXT5T18EXQSYC8M8X35K
+    slugs:
+      - ui-settings-view
+    title: Settings View
+    type: feature
+    tags: []
+    description: Web UI page for viewing project configuration, conventions, daemon connection info, and
+      shadow branch status.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-07T00:16:19.781Z
+  - _ulid: 01KK2TDYAA0T8H327EKEKH308R
+    slugs:
+      - ui-reference-display
+    title: Consistent Reference Display
+    type: feature
+    tags: []
+    description: Shared ReferenceLink component for consistent display of cross-references (task, spec,
+      plan, session) across all web UI views. Normalizes @ prefix, resolves titles, and links to
+      detail views.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-07T00:16:20.298Z
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
