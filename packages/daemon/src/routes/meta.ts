@@ -230,7 +230,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
 
       const status = await getShadowStatus(ctx.rootDir, {
         branchName: ctx.shadow.branchName,
-        directory: ctx.shadow.worktreeDir,
+        directory: ctx.config.shadow.directory,
       });
       const hasRemote = await hasRemoteTracking(ctx.shadow.worktreeDir, {
         branchName: ctx.shadow.branchName,
