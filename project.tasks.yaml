@@ -79377,7 +79377,7 @@
   spec_ref: "@ui-plans-view"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -79386,7 +79386,7 @@
     - bug
     - web-ui
   vcs_refs: []
-  session_id: 01KK3HT0SDF501MBHC8TYJDK09
+  session_id: null
   created_at: 2026-03-07T00:12:45.811Z
   started_at: 2026-03-07T07:16:05.125Z
   submitted_at: 2026-03-07T07:26:23.726Z
@@ -79429,6 +79429,12 @@
         packages/daemon/src/routes/plans.ts), but no tests are annotated with // AC: @ui-plans-view
         ac-2 in packages/web-ui/tests/e2e/plans.spec.ts or other test files. Add AC-linked tests
         that verify expand toggle, lazy load, markdown render, and error/empty states."
+      supersedes: null
+    - _ulid: 01KK3M2N72SP7V9GW7772F8F9G
+      created_at: 2026-03-07T07:44:33.506Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX missing AC coverage for
+        @ui-plans-view ac-2 (expand/lazy-loaded content + /api/plans/:ref behavior untested)."
       supersedes: null
   todos: []
   automation: eligible
