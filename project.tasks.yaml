@@ -79096,6 +79096,24 @@
       content: "[FIX_CYCLE: 1] Review findings: Review issues: design-token violations in workflows page
         and incomplete/fluff start-action/loading E2E coverage (see latest review note)."
       supersedes: null
+    - _ulid: 01KK3EV63CJ6HE40104RWTS6X4
+      created_at: 2026-03-07T06:13:05.772Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed all 3 MUST-FIX items:
+
+        1. Replaced raw Tailwind colors (text-emerald-500, text-blue-500, text-amber-500) with
+        design-system severity tokens (text-severity-success, text-severity-info,
+        text-severity-warning)
+
+        2. Added behavioral E2E test for Start button: verifies clipboard copy of 'kspec workflow
+        start @spec-first' command and 'Copied!' feedback
+
+        3. Fixed fluff loading test: now asserts loading transitions to content (workflows-list or
+        workflows-empty visible)
+
+        All 27 static analysis tests pass, web-ui build succeeds.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2T4MT9XR3QJ8R0TJFM7M1B
