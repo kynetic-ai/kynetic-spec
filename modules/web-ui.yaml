@@ -1371,6 +1371,11 @@ features:
         then: |
           Each plan shows title, status, creation date, linked spec/task counts,
           and progress based on task completion status
+      - id: ac-2
+        given: A plan card on the /plans page
+        when: The user expands or clicks into the plan
+        then: The full plan content renders as formatted markdown, loaded on demand if not already in the
+          list payload
     depends_on: []
     implements: []
     relates_to: []
