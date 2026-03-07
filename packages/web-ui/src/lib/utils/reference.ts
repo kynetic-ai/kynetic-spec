@@ -19,11 +19,23 @@ export function normalizeRef(ref: string): string {
 	return ref.startsWith('@') ? ref.slice(1) : ref;
 }
 
+/** ULID pattern: 26 Crockford base32 characters (digits 0-9 + A-Z excluding I, L, O, U). */
+const ULID_RE = /^[0-9A-HJKMNP-TV-Z]{26}$/i;
+
 /**
- * Get a short display version of a reference (first 8 chars of the normalized ref).
+ * Check whether a normalized ref looks like a ULID.
+ */
+export function isUlid(ref: string): boolean {
+	return ULID_RE.test(normalizeRef(ref));
+}
+
+/**
+ * Get a short display version of a reference.
+ * ULIDs are truncated to 8 chars; slugs are returned in full.
  */
 export function shortRef(ref: string): string {
-	return normalizeRef(ref).slice(0, 8);
+	const norm = normalizeRef(ref);
+	return isUlid(norm) ? norm.slice(0, 8) : norm;
 }
 
 /**

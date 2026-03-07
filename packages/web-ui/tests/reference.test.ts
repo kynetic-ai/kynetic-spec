@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { normalizeRef, shortRef, refHref } from '../src/lib/utils/reference';
+import { normalizeRef, shortRef, isUlid, refHref } from '../src/lib/utils/reference';
 
 describe('normalizeRef', () => {
 	// AC: @ui-reference-display ac-1 — normalizes @ prefix (no double @@)
@@ -31,18 +31,40 @@ describe('normalizeRef', () => {
 	});
 });
 
+describe('isUlid', () => {
+	it('recognizes a valid ULID', () => {
+		expect(isUlid('01KK2NNQ0MJY54DX9PYHP4N1EA')).toBe(true);
+	});
+
+	it('recognizes a ULID with @ prefix', () => {
+		expect(isUlid('@01KK2NNQ0MJY54DX9PYHP4N1EA')).toBe(true);
+	});
+
+	it('rejects slugs', () => {
+		expect(isUlid('task-slug-long-name')).toBe(false);
+	});
+
+	it('rejects short strings', () => {
+		expect(isUlid('short')).toBe(false);
+	});
+});
+
 describe('shortRef', () => {
 	// AC: @ui-reference-display ac-1 — shows slug or short ULID as secondary text
-	it('returns first 8 chars of normalized ref', () => {
+	it('truncates ULIDs to 8 chars', () => {
 		expect(shortRef('@01KK2NNQ0MJY54DX9PYHP4N1EA')).toBe('01KK2NNQ');
 	});
 
-	it('returns full ref if shorter than 8 chars', () => {
+	it('returns full slug without truncation', () => {
+		expect(shortRef('@task-slug-long-name')).toBe('task-slug-long-name');
+	});
+
+	it('returns short slug in full', () => {
 		expect(shortRef('@short')).toBe('short');
 	});
 
-	it('normalizes before shortening', () => {
-		expect(shortRef('@task-slug-long-name')).toBe('task-slu');
+	it('normalizes @ prefix before processing', () => {
+		expect(shortRef('@my-feature')).toBe('my-feature');
 	});
 });
 
