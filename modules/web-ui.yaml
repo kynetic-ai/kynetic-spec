@@ -1480,7 +1480,7 @@ features:
           loop variant indicator. A Start button initiates the workflow via daemon API.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KK2TDXT5T18EXQSYC8M8X35K
     slugs:
       - ui-settings-view
