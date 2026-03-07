@@ -78909,6 +78909,43 @@
         All 3926 root vitest tests pass (2 pre-existing failures). All 161 web-ui tests pass. No new
         svelte-check errors.
       supersedes: null
+    - _ulid: 01KK3BAR61QHKNGNC9XB2ZRF0J
+      created_at: 2026-03-07T05:11:41.506Z
+      author: Jacob Chapel
+      content: >-
+        Review findings:
+
+
+        MUST-FIX 1 (task/spec alignment): The explicit task requirement says "Agent schema fields
+        from src/schema/meta.ts AgentSchema should drive the form structure." Current implementation
+        still hardcodes form structure and duplicates schema values rather than deriving from
+        AgentSchema.
+
+        - packages/web-ui/src/lib/components/agents/AgentEditForm.svelte:32-45 hardcoded per-field
+        local state and shape.
+
+        - packages/web-ui/src/lib/components/agents/AgentEditForm.svelte:164-453 hardcoded field
+        rendering and payload mapping.
+
+        - packages/shared/src/schemas.ts:70-88 introduces AGENT_DISPATCH_EVENTS that "mirrors"
+        AgentDispatchEventSchema (duplicate source of truth, not schema-derived).
+
+        - packages/daemon/src/routes/meta.ts:89-124 separately duplicates the update-body shape
+        instead of reusing schema-derived contract.
+
+
+        Gate results (for context):
+
+        - git diff reviewed against feat/ui-revamp
+
+        - kspec item get @ui-agent-dispatch: AC set reviewed (no inherited trait ACs shown)
+
+        - kspec validate: no warnings/errors surfaced for @ui-agent-dispatch specifically (global
+        repo issues remain pre-existing)
+
+        - Required tests: npm test passed (181 files, 3928 passed, 3 skipped); packages/web-ui npm
+        test passed (3 files, 161 passed)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
@@ -79201,7 +79238,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix tool call rows in session stream — enforce single-line layout with truncation
+- _ulid: 01KK3ARVJQPW5J3AJN7EJ7B657
+  slugs: []
+  title: Fix tool call rows in session stream — enforce single-line layout with truncation
+  type: task
   description: "Collapsed tool call rows in the session stream break to multiple lines when the tool
     name or parameters are long, causing the expand chevron, timing badge, and status indicators to
     shrink or become hidden. Fix: (1) enforce single-line display on collapsed tool call rows with
@@ -79209,22 +79249,19 @@
     timing/status indicators must always be visible at fixed sizes — never shrink, (3) only the tool
     name and parameter summary should truncate, (4) use flex-shrink-0 on control elements (chevron,
     timestamp, status icons) and min-w-0 + truncate on the content area."
-  type: task
   spec_ref: "@ui-session-stream"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - bug
     - web-ui
-  depends_on: []
-  automation: eligible
-  _ulid: 01KK3ARVJQPW5J3AJN7EJ7B657
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-07T05:01:55.159Z
   notes: []
   todos: []
+  automation: eligible
