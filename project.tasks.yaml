@@ -80088,7 +80088,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -80101,6 +80101,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T16:36:56.709Z
+  session_id: 01KK4J4TXGAR9BRYXB8SJ1YN3F
 - _ulid: 01KK4F06AW44EZDXEPSPHPATD4
   slugs: []
   title: Fix kanban board showing wrong tasks in columns
