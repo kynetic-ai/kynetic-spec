@@ -78521,14 +78521,40 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix inbox page filter dropdowns not functioning
+- _ulid: 01KK2T5ZKN5M7ZVF5TK7HHAYCG
+  slugs: []
+  title: Fix inbox page filter dropdowns not functioning
+  type: task
   description: "The filter dropdown selectors (status, tags, age) on the /inbox page are
     non-functional — selecting a value has no effect on the displayed items. Likely same root cause
     as the triage dropdown bug: Svelte 5 event binding issue or reactive state not updating on
     select change. Investigate routes/inbox/+page.svelte filter controls and how filterStatus,
     filterTag, filterAge state variables are bound to the select elements."
-  type: task
   spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T00:11:59.476Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Show plan content in plans view — expand card or detail view
+  description: "The /plans page shows plan metadata (title, status, progress, spec/task counts) but
+    not the actual plan content text. Plans have a content field with the full markdown plan
+    document. Add: (1) an expandable section on each plan card, or a click-to-open detail view, that
+    renders the plan content as formatted markdown, (2) ensure the daemon GET /api/plans endpoint
+    returns the content field (check if it's currently omitted for payload size), (3) if content is
+    large, consider lazy-loading it on expand rather than including in the list response."
+  type: task
+  spec_ref: "@ui-plans-view"
   meta_ref: null
   plan_ref: null
   priority: 2
@@ -78538,11 +78564,11 @@
     - web-ui
   depends_on: []
   automation: eligible
-  _ulid: 01KK2T5ZKN5M7ZVF5TK7HHAYCG
+  _ulid: 01KK2T7CVKTKWAG10MJFZHQXYK
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-07T00:11:59.476Z
+  created_at: 2026-03-07T00:12:45.811Z
   notes: []
   todos: []
