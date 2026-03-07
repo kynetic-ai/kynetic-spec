@@ -78312,7 +78312,7 @@
     appropriate detail view, (4) handles @ prefix normalization. Use this component in
     SessionContextPanel task_ref, session history task_ref, task card spec_ref, dashboard active
     work, and any other cross-reference display."
-  spec_ref: null
+  spec_ref: "@ui-reference-display"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -78453,7 +78453,7 @@
     variant indicator, (3) Add a Start button per workflow that calls the daemon to initiate a
     workflow run (or shows the kspec workflow start command if no daemon endpoint exists yet), (4)
     Show workflow status if tracking exists. Check daemon routes for existing workflow endpoints."
-  spec_ref: null
+  spec_ref: "@ui-workflows-view"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -78479,7 +78479,7 @@
     uptime, version from /api/health), (4) Shadow branch status (from kspec shadow status), (5)
     Consider a section for managing skills list. Read-only sections are fine for v1 — editing can be
     a follow-up."
-  spec_ref: null
+  spec_ref: "@ui-settings-view"
   meta_ref: null
   plan_ref: null
   status: pending

@@ -1466,6 +1466,12 @@ features:
     traits: []
     notes: []
     created: 2026-03-07T00:16:19.283Z
+    acceptance_criteria:
+      - id: ac-1
+        given: Workflow definitions exist in meta
+        when: The user navigates to /workflows
+        then: Each workflow shows id, description, ordered steps with names, trigger type if configured, and
+          loop variant indicator. A Start button initiates the workflow via daemon API.
   - _ulid: 01KK2TDXT5T18EXQSYC8M8X35K
     slugs:
       - ui-settings-view
@@ -1481,6 +1487,12 @@ features:
     traits: []
     notes: []
     created: 2026-03-07T00:16:19.781Z
+    acceptance_criteria:
+      - id: ac-1
+        given: The user navigates to /settings
+        when: The page renders
+        then: Displays project config (name, version, remote tracking), conventions list from meta, daemon
+          connection info (port, uptime, version), and shadow branch status. Read-only for v1.
   - _ulid: 01KK2TDYAA0T8H327EKEKH308R
     slugs:
       - ui-reference-display
@@ -1497,6 +1509,13 @@ features:
     traits: []
     notes: []
     created: 2026-03-07T00:16:20.298Z
+    acceptance_criteria:
+      - id: ac-1
+        given: A reference to a task, spec, plan, or session appears in any view
+        when: The reference renders
+        then: A shared ReferenceLink component displays the resolved title (when available) with slug or
+          short ULID as secondary text, links to the appropriate detail view, and normalizes @
+          prefix (no double @@). Falls back to raw ref display if resolution fails.
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
