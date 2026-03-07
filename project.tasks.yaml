@@ -79384,12 +79384,41 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK3HT0SDF501MBHC8TYJDK09
   created_at: 2026-03-07T00:12:45.811Z
-  notes: []
+  started_at: 2026-03-07T07:16:05.125Z
+  notes:
+    - _ulid: 01KK3K12G6W3H7WC4Z2NFSMTBQ
+      created_at: 2026-03-07T07:26:12.998Z
+      author: "@claude"
+      content: >-
+        Implemented plan content expansion for AC-2. Approach:
+
+        - Added PlanDetail type extending PlanSummary with content field
+
+        - Added GET /api/plans/:ref daemon endpoint using existing findPlanByRef parser function
+
+        - Refactored plans route to extract shared helpers (buildTaskStatusMap, computeTaskProgress,
+        toPlanSummary)
+
+        - Added fetchPlanContent() API client in web-ui
+
+        - Plans page now shows a 'Show Content' toggle button on each card (hidden in static mode
+        since content requires daemon)
+
+        - On first expand, content is lazy-loaded from /api/plans/:ref, then cached for subsequent
+        toggles
+
+        - Content renders as formatted markdown via existing renderMarkdown utility (marked +
+        DOMPurify)
+
+        - Includes loading skeleton, error state, and empty content state
+
+        - All existing tests pass (181/183 test files, 2 pre-existing failures in codex integration
+        unrelated to changes)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T07:16:05.125Z
-  session_id: 01KK3HT0SDF501MBHC8TYJDK09
 - _ulid: 01KK2XDD7XYFMA07EJ3Y86QTWC
   slugs: []
   title: Dispatch engine should poll for eligible pending tasks on start and periodically
