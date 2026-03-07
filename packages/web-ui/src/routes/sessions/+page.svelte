@@ -47,9 +47,9 @@
 		}
 	}
 
-	/** Format task_id to a short ref display (first 8 chars). */
+	/** Format task_id to a short ref display (first 8 chars), stripping leading @. */
 	function shortTaskRef(taskId: string): string {
-		return taskId.slice(0, 8);
+		return taskId.replace(/^@/, '').slice(0, 8);
 	}
 
 	onMount(() => {
