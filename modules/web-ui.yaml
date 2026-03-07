@@ -1270,6 +1270,12 @@ features:
           The agents page renders
         then: |
           Dispatch status shows as stopped with no active invocations
+      - id: ac-4
+        given: An agent definition card on the /agents page
+        when: The user clicks the edit icon on the card
+        then: An inline form or modal opens allowing editing of all agent fields (name, description,
+          adapter, dispatch triggers, capabilities, tools, skills, budget, concurrency,
+          auto_approve, prompt_template). Saving persists changes via API and updates the card.
     depends_on: []
     implements: []
     relates_to: []
@@ -1423,6 +1429,13 @@ features:
           status summary shows clickable count cards per status,
           needs-attention section aggregates untriaged inbox, unresolved observations,
           validation warnings, and blocked tasks
+      - id: ac-2
+        given: The user navigates to /
+        when: Tasks exist in various states
+        then: A compact kanban board shows columns for Ready, In Progress, Needs Work, Review, Blocked, and
+          Completed (no Cancelled). Each column has a header with count, and contains compact task
+          cards. The board has constrained height with per-column scroll. Active Fleet row appears
+          above the board when agents are running.
     depends_on: []
     implements: []
     relates_to: []
