@@ -79556,7 +79556,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -79565,7 +79565,7 @@
     - bug
     - web-ui
   vcs_refs: []
-  session_id: 01KK3KR1GG337ZNJHHM8CHP69G
+  session_id: null
   created_at: 2026-03-07T04:48:14.326Z
   started_at: 2026-03-07T07:44:59.623Z
   submitted_at: 2026-03-07T07:55:41.343Z
@@ -79613,6 +79613,13 @@
         checklist requirement for live-stream updates. Validation/tests run: kspec validate has
         existing global repo issues but no @ui-task-board-specific warnings; npm test passed on
         rerun (184 files, 4034 passed), packages/web-ui npm test passed."
+      supersedes: null
+    - _ulid: 01KK3P9NT3JX5A5Z61HXCDC8F5
+      created_at: 2026-03-07T08:23:20.643Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: tool-call event integration is unreachable
+        in current daemon WS contract; dashboard Active Fleet missing aria-live for streaming
+        updates."
       supersedes: null
   todos: []
   automation: eligible
