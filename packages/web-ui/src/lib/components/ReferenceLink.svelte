@@ -57,7 +57,7 @@
 			<span class="text-sm">{title}</span>
 			<span class="text-[10px] font-mono text-muted-foreground">@{short}</span>
 		{:else}
-			<span class="text-sm font-mono">@{short}</span>
+			<span class="text-sm font-mono">@{normalized}</span>
 		{/if}
 	</a>
 {:else}
@@ -71,7 +71,7 @@
 			<span class="text-sm">{title}</span>
 			<span class="text-[10px] font-mono text-muted-foreground">@{short}</span>
 		{:else}
-			<span class="text-sm font-mono text-muted-foreground">@{short}</span>
+			<span class="text-sm font-mono text-muted-foreground">@{normalized}</span>
 		{/if}
 	</span>
 {/if}
