@@ -163,6 +163,48 @@ test.describe('Tasks API', () => {
       }
     });
 
+    // AC: @web-dashboard ac-9 - automation filter
+    test('filters tasks by automation=eligible', async ({ request, daemon }) => {
+      const response = await request.get(`${daemon.baseUrl}/api/tasks?automation=eligible`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(Array.isArray(body.items)).toBe(true);
+      expect(body.items.length).toBeGreaterThan(0);
+
+      for (const task of body.items) {
+        expect(task.automation).toBe('eligible');
+      }
+    });
+
+    // AC: @web-dashboard ac-9 - automation filter needs_review
+    test('filters tasks by automation=needs_review', async ({ request, daemon }) => {
+      const response = await request.get(`${daemon.baseUrl}/api/tasks?automation=needs_review`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(Array.isArray(body.items)).toBe(true);
+      expect(body.items.length).toBeGreaterThan(0);
+
+      for (const task of body.items) {
+        expect(task.automation).toBe('needs_review');
+      }
+    });
+
+    // AC: @web-dashboard ac-9 - automation filter manual_only
+    test('filters tasks by automation=manual_only', async ({ request, daemon }) => {
+      const response = await request.get(`${daemon.baseUrl}/api/tasks?automation=manual_only`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(Array.isArray(body.items)).toBe(true);
+      expect(body.items.length).toBeGreaterThan(0);
+
+      for (const task of body.items) {
+        expect(task.automation).toBe('manual_only');
+      }
+    });
+
     // AC: @api-contract ac-4 - total count is consistent
     test('total count is consistent across paginated requests', async ({ request, daemon }) => {
       const response1 = await request.get(`${daemon.baseUrl}/api/tasks?offset=0&limit=2`);

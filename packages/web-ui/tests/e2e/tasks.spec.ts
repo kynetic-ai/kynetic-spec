@@ -152,9 +152,32 @@ test.describe('Tasks View', () => {
       await filterAutomation.click();
       await page.getByRole('option', { name: 'Eligible' }).click();
 
-      // Verify filtered results show eligible tasks
+      // Wait for URL to update with automation=eligible
+      await page.waitForURL(/\/tasks\?.*automation=eligible/);
+
+      // Verify filtered results show only eligible tasks
       const taskItems = page.getByTestId('task-list-item');
       await expect(taskItems.first()).toBeVisible();
+
+      // Only the task with automation=eligible should appear (1 task in fixture)
+      await expect(taskItems).toHaveCount(1);
+    });
+
+    // AC: @web-dashboard ac-9 - automation filter dropdown has correct options
+    test('automation filter has correct dropdown options', async ({ page, daemon }) => {
+      await page.goto('/tasks');
+
+      const filterAutomation = page.getByTestId('filter-automation');
+      await filterAutomation.click();
+
+      // Should show correct automation statuses matching AutomationStatusSchema
+      await expect(page.getByRole('option', { name: 'All' })).toBeVisible();
+      await expect(page.getByRole('option', { name: 'Eligible' })).toBeVisible();
+      await expect(page.getByRole('option', { name: 'Needs Review' })).toBeVisible();
+      await expect(page.getByRole('option', { name: 'Manual Only' })).toBeVisible();
+
+      // "Blocked" should NOT be an option (it's a task status, not an automation status)
+      await expect(page.getByRole('option', { name: 'Blocked' })).not.toBeVisible();
     });
 
     // AC: @web-dashboard ac-10
