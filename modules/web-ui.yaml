@@ -1228,6 +1228,12 @@ features:
         then: |
           It displays session metadata, spec context with AC checklist,
           files changed during session, and budget info
+      - id: ac-5
+        given: A collapsed tool call row in the session stream
+        when: The tool call name or parameters are long, or the viewport is narrow
+        then: "The row stays a single line height: the expand chevron, timestamp, tool icon, tool name,
+          parameter summary, and timing/status indicators are always visible. Content is truncated
+          with ellipsis rather than wrapping to multiple lines."
     depends_on: []
     implements: []
     relates_to: []
