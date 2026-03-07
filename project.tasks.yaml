@@ -79976,12 +79976,34 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK4G5TK8KZB33XYBBEHZS3KV
   created_at: 2026-03-07T15:35:01.162Z
-  notes: []
+  started_at: 2026-03-07T16:01:38.943Z
+  notes:
+    - _ulid: 01KK4GZ2725F2E5QTW3SPMDEG9
+      created_at: 2026-03-07T16:09:24.450Z
+      author: "@claude"
+      content: >-
+        Removed type filter (Task/Subtask dropdown) from task list UI. Changes across 6 files:
+
+        - TaskFilters.svelte: Removed typeLabels, type derived state, typeDisplay, and the Type
+        dropdown
+
+        - tasks/+page.svelte: Removed type from filterParams and detail panel type badge
+
+        - api.ts: Removed type from fetchTasks params signature
+
+        - api-static.ts: Removed type from filterTasks and fetchTasksStatic signatures
+
+        - TaskList.svelte: Removed type badge display from task rows
+
+        - tasks.spec.ts: Removed E2E test for type filter
+
+        Backend type query param left intact for API compatibility. All tests pass (2 pre-existing
+        failures in codex platform detection unrelated to this change).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T16:01:38.943Z
-  session_id: 01KK4G5TK8KZB33XYBBEHZS3KV
 - _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
   slugs: []
   title: Unify task detail display across kanban and task list
