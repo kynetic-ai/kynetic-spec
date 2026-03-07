@@ -78953,6 +78953,30 @@
         AgentEditForm and dispatch event contract remain hardcoded/duplicated instead of being
         driven from src/schema/meta.ts AgentSchema."
       supersedes: null
+    - _ulid: 01KK3D3W05K9HMTGKJRF5QG0TW
+      created_at: 2026-03-07T05:42:53.189Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 addressed. Schema-driven architecture:
+
+        1. AgentDefinition, AgentUpdatePayload, AgentDispatchRule, AgentBudget, AgentConcurrency,
+        AgentDispatchFilter types now live in @kynetic-ai/shared (packages/shared/src/schemas.ts),
+        mirroring AgentSchema from src/schema/meta.ts
+
+        2. web-ui api.ts: removed local AgentDefinition/AgentUpdatePayload definitions, re-exports
+        from @kynetic-ai/shared
+
+        3. AgentEditForm.svelte: imports all agent types (AgentDefinition, AgentUpdatePayload,
+        AgentDispatchEvent, AgentDispatchRule) from @kynetic-ai/shared; dispatch trigger state typed
+        as AgentDispatchRule[]
+
+        4. Daemon meta.ts: imports AgentDispatchEventSchema from root schema, uses it to derive
+        Elysia enum for dispatch event validation (t.Union(AgentDispatchEventSchema.options.map(v =>
+        t.Literal(v)))). Response typed as Agent from schema.
+
+        5. No new svelte-check errors. Root tests: 3926 passed (2 pre-existing failures). Web-ui
+        tests: 161 passed.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
@@ -79012,6 +79036,7 @@
   session_id: 01KK3AEEEQVK5DNFM2JQ2RB007
   created_at: 2026-03-07T00:11:14.567Z
   started_at: 2026-03-07T05:12:19.848Z
+  submitted_at: 2026-03-07T05:30:53.121Z
   notes:
     - _ulid: 01KK3C4WV817MRD3P9G5WCWXPD
       created_at: 2026-03-07T05:25:58.248Z
@@ -79038,7 +79063,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-07T05:30:53.121Z
 - _ulid: 01KK2T4MT9XR3QJ8R0TJFM7M1B
   slugs: []
   title: Implement settings page — project config, conventions, and daemon settings
