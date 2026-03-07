@@ -79541,7 +79541,9 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK3KR1GG337ZNJHHM8CHP69G
   created_at: 2026-03-07T04:48:14.326Z
+  started_at: 2026-03-07T07:44:59.623Z
   notes:
     - _ulid: 01KK3A1JFSXCHP8DCM1JSHBPXT
       created_at: 2026-03-07T04:49:12.186Z
@@ -79552,10 +79554,28 @@
         and show something like '🔧 Edit src/lib/api.ts' or '🔧 Bash running...' instead of raw text
         output during tool execution."
       supersedes: null
+    - _ulid: 01KK3M7MCEEZQSV8AR1F0K0H5R
+      created_at: 2026-03-07T07:47:16.494Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Active Fleet cards show raw token chunks from agent_text_chunk WS events. Text
+        arrives as incomplete fragments that look like garbled output. Need sentence/line-level
+        buffering plus tool call indicators.
+
+        - Scope: (1) Create fleet-buffer.ts utility for line buffering + tool call state, (2) Update
+        board page to use buffer, (3) Update ActiveFleetRow to show tool call indicators, (4) Apply
+        same fix to dashboard Active Fleet cards.
+
+        - Files: packages/web-ui/src/lib/components/board/fleet-buffer.ts (new),
+        board/ActiveFleetRow.svelte, routes/tasks/board/+page.svelte, routes/+page.svelte
+
+        - Verification: Unit tests for fleet-buffer.ts, npm test passes in both root and
+        packages/web-ui
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T07:44:59.623Z
-  session_id: 01KK3KR1GG337ZNJHHM8CHP69G
 - _ulid: 01KK3A73PP2K0DDDHR6KQ9H2K1
   slugs: []
   title: Fix kanban board and task views loading tasks from wrong project on initial page load
