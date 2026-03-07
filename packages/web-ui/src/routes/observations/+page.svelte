@@ -1,6 +1,5 @@
 <script lang="ts">
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
-	import { onMount } from 'svelte';
 	import type { Observation } from '@kynetic-ai/shared';
 	import { fetchObservations } from '$lib/api';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
@@ -11,7 +10,7 @@
 		AlertTriangle,
 		HelpCircle
 	} from 'lucide-svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 
 	// AC: @web-dashboard ac-22
 	let observations = $state<Observation[]>([]);
@@ -40,17 +39,14 @@
 		idea: 'Idea'
 	};
 
-	onMount(async () => {
-		await loadObservations();
-	});
-
+	// Load observations when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			// Only reload if version has been incremented (not on initial load)
-			loadObservations();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadObservations();
 	});
 
 	async function loadObservations() {

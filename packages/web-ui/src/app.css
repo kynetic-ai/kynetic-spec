@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @import "tw-animate-css";
+@import "./lib/ds/tokens.css";
+@import "./lib/ds/animations.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -74,10 +76,13 @@
 }
 
 @theme inline {
+  /* ── Existing shadcn/ui radius tokens ── */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* ── Existing shadcn/ui color tokens ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -109,6 +114,92 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Design System: 16 color tokens ── */
+  --color-design-bg: var(--design-bg);
+  --color-design-fg: var(--design-fg);
+  --color-design-card: var(--design-card);
+  --color-design-card-fg: var(--design-card-fg);
+  --color-design-primary: var(--design-primary);
+  --color-design-primary-fg: var(--design-primary-fg);
+  --color-design-secondary: var(--design-secondary);
+  --color-design-secondary-fg: var(--design-secondary-fg);
+  --color-design-muted: var(--design-muted);
+  --color-design-muted-fg: var(--design-muted-fg);
+  --color-design-accent: var(--design-accent);
+  --color-design-accent-fg: var(--design-accent-fg);
+  --color-design-destructive: var(--design-destructive);
+  --color-design-border: var(--design-border);
+  --color-design-input: var(--design-input);
+  --color-design-ring: var(--design-ring);
+
+  /* ── Design System: 4 radius tokens ── */
+  --radius-design-sm: var(--design-radius-sm);
+  --radius-design-md: var(--design-radius-md);
+  --radius-design-lg: var(--design-radius-lg);
+  --radius-design-xl: var(--design-radius-xl);
+
+  /* ── Design System: 7 spacing tokens ── */
+  --spacing-design-xs: var(--design-spacing-xs);
+  --spacing-design-sm: var(--design-spacing-sm);
+  --spacing-design-md: var(--design-spacing-md);
+  --spacing-design-lg: var(--design-spacing-lg);
+  --spacing-design-xl: var(--design-spacing-xl);
+  --spacing-design-2xl: var(--design-spacing-2xl);
+  --spacing-design-3xl: var(--design-spacing-3xl);
+
+  /* ── Design System: 7 z-index layers ── */
+  --z-design-base: var(--design-z-base);
+  --z-design-dropdown: var(--design-z-dropdown);
+  --z-design-sticky: var(--design-z-sticky);
+  --z-design-overlay: var(--design-z-overlay);
+  --z-design-modal: var(--design-z-modal);
+  --z-design-popover: var(--design-z-popover);
+  --z-design-toast: var(--design-z-toast);
+
+  /* ── Design System: 3 font families ── */
+  --font-design-sans: var(--font-design-primary);
+  --font-design-heading: var(--font-design-secondary);
+  --font-mono: var(--font-design-mono);
+
+  /* ── Design System: 4 severity colors ── */
+  --color-severity-error: var(--design-severity-error);
+  --color-severity-error-fg: var(--design-severity-error-fg);
+  --color-severity-error-muted: var(--design-severity-error-muted);
+  --color-severity-error-muted-fg: var(--design-severity-error-muted-fg);
+  --color-severity-error-border: var(--design-severity-error-border);
+  --color-severity-warning: var(--design-severity-warning);
+  --color-severity-warning-fg: var(--design-severity-warning-fg);
+  --color-severity-warning-muted: var(--design-severity-warning-muted);
+  --color-severity-warning-muted-fg: var(--design-severity-warning-muted-fg);
+  --color-severity-warning-border: var(--design-severity-warning-border);
+  --color-severity-info: var(--design-severity-info);
+  --color-severity-info-fg: var(--design-severity-info-fg);
+  --color-severity-info-muted: var(--design-severity-info-muted);
+  --color-severity-info-muted-fg: var(--design-severity-info-muted-fg);
+  --color-severity-info-border: var(--design-severity-info-border);
+  --color-severity-success: var(--design-severity-success);
+  --color-severity-success-fg: var(--design-severity-success-fg);
+  --color-severity-success-muted: var(--design-severity-success-muted);
+  --color-severity-success-muted-fg: var(--design-severity-success-muted-fg);
+  --color-severity-success-border: var(--design-severity-success-border);
+
+  /* ── Design System: 7 status colors ── */
+  --color-status-pending: var(--design-status-pending);
+  --color-status-pending-fg: var(--design-status-pending-fg);
+  --color-status-in-progress: var(--design-status-in-progress);
+  --color-status-in-progress-fg: var(--design-status-in-progress-fg);
+  --color-status-pending-review: var(--design-status-pending-review);
+  --color-status-pending-review-fg: var(--design-status-pending-review-fg);
+  --color-status-needs-work: var(--design-status-needs-work);
+  --color-status-needs-work-fg: var(--design-status-needs-work-fg);
+  --color-status-completed: var(--design-status-completed);
+  --color-status-completed-fg: var(--design-status-completed-fg);
+  --color-status-blocked: var(--design-status-blocked);
+  --color-status-blocked-fg: var(--design-status-blocked-fg);
+  --color-status-cancelled: var(--design-status-cancelled);
+  --color-status-cancelled-fg: var(--design-status-cancelled-fg);
+
 }
 
 @layer base {

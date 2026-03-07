@@ -228,13 +228,13 @@ describe('API Response Types', () => {
 
   it('Workflow should have correct structure', () => {
     expectTypeOf<Workflow>().toHaveProperty('_ulid');
-    expectTypeOf<Workflow>().toHaveProperty('slugs');
-    expectTypeOf<Workflow>().toHaveProperty('name');
+    expectTypeOf<Workflow>().toHaveProperty('id');
+    expectTypeOf<Workflow>().toHaveProperty('trigger');
     expectTypeOf<Workflow>().toHaveProperty('steps');
 
     expectTypeOf<Workflow['_ulid']>().toEqualTypeOf<string>();
-    expectTypeOf<Workflow['slugs']>().toEqualTypeOf<string[]>();
-    expectTypeOf<Workflow['name']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['id']>().toEqualTypeOf<string>();
+    expectTypeOf<Workflow['trigger']>().toEqualTypeOf<string>();
   });
 
   it('Observation should have correct structure', () => {

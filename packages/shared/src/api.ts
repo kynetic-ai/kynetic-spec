@@ -43,6 +43,7 @@ export interface TaskSummary {
   spec_ref?: string;
   tags: string[];
   depends_on: string[];
+  automation?: string;
   created_at: string;
   started_at?: string;
   notes_count: number;
@@ -52,15 +53,21 @@ export interface TaskSummary {
 /**
  * Full task with notes and todos
  * AC: @api-contract ac-5
+ * AC: @ui-task-board ac-3 — description, plan_ref, session_ref for detail modal
  */
 export interface TaskDetail extends TaskSummary {
+  description?: string;
   derivation?: string;
   blocked_by: string[];
   depends_on: string[];
   context: string[];
   vcs_refs: string[];
+  plan_ref?: string;
+  session_ref?: string;
   notes: Note[];
   todos?: Todo[];
+  notes_count: number;
+  todos_count?: number;
 }
 
 /**
@@ -76,12 +83,16 @@ export interface Note {
 
 /**
  * Task todo
+ * Matches TodoSchema: id, text, done, done_at, added_at, added_by, promoted_to
  */
 export interface Todo {
-  _ulid: string;
-  content: string;
-  status: 'pending' | 'in_progress' | 'completed';
-  created_at: string;
+  id: number;
+  text: string;
+  done: boolean;
+  done_at?: string;
+  added_at: string;
+  added_by?: string;
+  promoted_to?: string;
 }
 
 /**
@@ -165,18 +176,24 @@ export interface Agent {
  */
 export interface Workflow {
   _ulid: string;
-  slugs: string[];
-  name: string;
+  id: string;
+  trigger: string;
+  description?: string;
   steps: WorkflowStep[];
+  enforcement?: 'advisory' | 'strict';
+  mode?: 'interactive' | 'loop';
+  based_on?: string;
+  tags?: string[];
 }
 
 /**
  * Workflow step
  */
 export interface WorkflowStep {
-  _ulid: string;
   type: 'action' | 'check' | 'decision';
   content: string;
+  on_fail?: string;
+  options?: string[];
 }
 
 /**
@@ -191,6 +208,39 @@ export interface Observation {
   created_at: string;
   resolved?: boolean;
   resolution?: string;
+}
+
+/**
+ * Plan summary for list endpoints
+ * AC: @ui-plans-view ac-1
+ */
+export interface PlanSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  created_at: string;
+  approved_at?: string;
+  completed_at?: string;
+  derived_specs: string[];
+  derived_tasks: string[];
+  spec_count: number;
+  task_count: number;
+  task_progress: {
+    total: number;
+    completed: number;
+    in_progress: number;
+    pending: number;
+    blocked: number;
+  };
+}
+
+/**
+ * Plan detail with content for expand/detail views
+ * AC: @ui-plans-view ac-2
+ */
+export interface PlanDetail extends PlanSummary {
+  content: string;
 }
 
 /**

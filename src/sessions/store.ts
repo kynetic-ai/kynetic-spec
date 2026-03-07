@@ -248,6 +248,36 @@ export async function listSessions(specDir: string): Promise<string[]> {
 }
 
 /**
+ * Count completed sessions grouped by agent_id.
+ *
+ * Reads only session metadata (not events.jsonl) for performance.
+ * A session counts as "completed" if its status is "completed".
+ *
+ * @param specDir - The .kspec directory path
+ * @returns Map of agent_id to completed session count
+ */
+export async function getCompletedSessionCountsByAgent(
+  specDir: string,
+): Promise<Record<string, number>> {
+  const sessionIds = await listSessions(specDir);
+  const counts: Record<string, number> = {};
+
+  // Read metadata in parallel for performance
+  const metadataResults = await Promise.all(
+    sessionIds.map((id) => getSession(specDir, id)),
+  );
+
+  for (const metadata of metadataResults) {
+    if (!metadata) continue;
+    if (metadata.status !== "completed") continue;
+    const agentId = metadata.agent_id ?? metadata.agent_type;
+    counts[agentId] = (counts[agentId] || 0) + 1;
+  }
+
+  return counts;
+}
+
+/**
  * Check if a session exists.
  */
 export async function sessionExists(
@@ -1621,6 +1651,10 @@ export interface SessionLogSummary {
    * AC: @session-model-evolution ac-6
    */
   session_type: "loop" | "invocation";
+  /** Dispatch trigger (manual, task.ready, etc.) for distinguishing session origin. */
+  trigger?: string;
+  /** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
+  task_id?: string;
   /** When session started (ISO 8601) */
   started_at: string;
   /** When session ended (ISO 8601), if completed */
@@ -1753,6 +1787,8 @@ export async function getSessionLogSummary(
     status: metadata.status,
     agent_type: metadata.agent_type,
     session_type: resolveSessionType(metadata),
+    trigger: metadata.trigger,
+    task_id: metadata.task_id,
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,
     duration_ms: durationMs,

@@ -17,6 +17,7 @@ import type {
 	InboxItem,
 	SessionContext,
 	Observation,
+	Workflow,
 	PaginatedResponse,
 	SearchResponse,
 	SearchResult
@@ -40,6 +41,7 @@ function toTaskSummary(task: ExportedTask): TaskSummary {
 		depends_on: task.depends_on,
 		created_at: task.created_at,
 		started_at: task.started_at ?? undefined,
+		automation: task.automation,
 		notes_count: task.notes?.length ?? 0,
 		todos_count: task.todos?.length ?? 0
 	};
@@ -67,7 +69,6 @@ function filterTasks(
 	tasks: ExportedTask[],
 	params?: {
 		status?: string;
-		type?: string;
 		tag?: string;
 		assignee?: string;
 		automation?: string;
@@ -77,9 +78,6 @@ function filterTasks(
 
 	if (params?.status) {
 		result = result.filter((t) => t.status === params.status);
-	}
-	if (params?.type) {
-		result = result.filter((t) => t.type === params.type);
 	}
 	if (params?.tag) {
 		result = result.filter((t) => t.tags.includes(params.tag!));
@@ -182,7 +180,6 @@ function findItemByRef(items: ExportedItem[], ref: string): ExportedItem | null 
  */
 export function fetchTasksStatic(params?: {
 	status?: string;
-	type?: string;
 	tag?: string;
 	assignee?: string;
 	automation?: string;
@@ -414,6 +411,40 @@ export function fetchTriageRecordsStatic(params?: {
 	offset?: number;
 }): PaginatedResponse<never> {
 	return { items: [], total: 0, offset: params?.offset ?? 0, limit: params?.limit ?? 50 };
+}
+
+// ============================================================
+// Workflows Static Functions
+// ============================================================
+
+/**
+ * Fetch workflows from static snapshot
+ * AC: @ui-workflows-view ac-1
+ */
+export function fetchWorkflowsStatic(): { items: Workflow[]; total: number } {
+	const snapshot = getSnapshot();
+	if (!snapshot) {
+		return { items: [], total: 0 };
+	}
+
+	return {
+		items: snapshot.workflows ?? [],
+		total: (snapshot.workflows ?? []).length
+	};
+}
+
+// ============================================================
+// Plans Static Functions
+// ============================================================
+
+/**
+ * Fetch plans from static snapshot
+ * Plans are not included in static snapshots, so return empty.
+ */
+export function fetchPlansStatic(_params?: {
+	status?: string;
+}): { items: never[]; total: number } {
+	return { items: [], total: 0 };
 }
 
 // ============================================================

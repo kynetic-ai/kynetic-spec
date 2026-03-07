@@ -16,7 +16,7 @@
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -62,40 +62,22 @@
 	const TRIAGE_STATUS_VALUES: readonly TriageFilterStatus[] = ['all', 'untriaged', 'triaged', 'acted_on'];
 	const TRIAGE_ACTION_VALUES = Object.keys(ACTION_LABELS) as TriageAction[];
 
-	// Filter state
+	// Filter state — derived from URL params (single source of truth)
 	// AC: @interactive-triage-ui ac-7
-	let filterTag = $state<string | ''>('');
-	let filterStatus = $state<TriageFilterStatus>('all');
-	let filterAction = $state<TriageAction | ''>('');
-
-	function parseFilterStatus(rawStatus: string | null): TriageFilterStatus {
-		if (rawStatus && TRIAGE_STATUS_VALUES.includes(rawStatus as TriageFilterStatus)) {
-			return rawStatus as TriageFilterStatus;
+	let filterTag = $derived($page.url.searchParams.get('tag') || '');
+	let filterStatus = $derived.by((): TriageFilterStatus => {
+		const raw = $page.url.searchParams.get('status');
+		if (raw && TRIAGE_STATUS_VALUES.includes(raw as TriageFilterStatus)) {
+			return raw as TriageFilterStatus;
 		}
 		return 'all';
-	}
-
-	function parseFilterAction(rawAction: string | null): TriageAction | '' {
-		if (rawAction && TRIAGE_ACTION_VALUES.includes(rawAction as TriageAction)) {
-			return rawAction as TriageAction;
+	});
+	let filterAction = $derived.by((): TriageAction | '' => {
+		const raw = $page.url.searchParams.get('action');
+		if (raw && TRIAGE_ACTION_VALUES.includes(raw as TriageAction)) {
+			return raw as TriageAction;
 		}
 		return '';
-	}
-
-	$effect(() => {
-		const nextTag = $page.url.searchParams.get('tag') || '';
-		const nextStatus = parseFilterStatus($page.url.searchParams.get('status'));
-		const nextAction = parseFilterAction($page.url.searchParams.get('action'));
-
-		if (filterTag !== nextTag) {
-			filterTag = nextTag;
-		}
-		if (filterStatus !== nextStatus) {
-			filterStatus = nextStatus;
-		}
-		if (filterAction !== nextAction) {
-			filterAction = nextAction;
-		}
 	});
 
 	// Merged view: inbox items with their triage records
@@ -151,9 +133,7 @@
 		return Array.from(tagSet).sort();
 	});
 
-	onMount(async () => {
-		await loadData();
-
+	onMount(() => {
 		// AC: @interactive-triage-ui ac-6 - Subscribe to triage:updates
 		// AC: @trait-websocket-protocol ac-2 - Subscribe to topic
 		if (!isStaticMode()) {
@@ -169,12 +149,14 @@
 		}
 	});
 
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadData();
 	});
 
 	// AC: @interactive-triage-ui ac-6 - Real-time update handler
@@ -381,7 +363,7 @@
 		<!-- AC: @interactive-triage-ui ac-7 - Filters -->
 		<div class="flex gap-2 items-center" data-testid="triage-filters">
 			<select
-				bind:value={filterStatus}
+				value={filterStatus}
 				onchange={(event) => updateFilterParam('status', (event.currentTarget as HTMLSelectElement).value)}
 				class="rounded-md border bg-background px-3 py-1.5 text-sm"
 				data-testid="triage-status-filter"
@@ -392,7 +374,7 @@
 				<option value="acted_on">Acted On</option>
 			</select>
 			<select
-				bind:value={filterAction}
+				value={filterAction}
 				onchange={(event) => updateFilterParam('action', (event.currentTarget as HTMLSelectElement).value)}
 				class="rounded-md border bg-background px-3 py-1.5 text-sm"
 				data-testid="triage-action-filter"
@@ -404,7 +386,7 @@
 			</select>
 			{#if allTags.length > 0}
 				<select
-					bind:value={filterTag}
+					value={filterTag}
 					onchange={(event) => updateFilterParam('tag', (event.currentTarget as HTMLSelectElement).value)}
 					class="rounded-md border bg-background px-3 py-1.5 text-sm"
 					data-testid="triage-tag-filter"

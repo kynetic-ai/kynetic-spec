@@ -19,9 +19,15 @@ import type {
 	InboxItem,
 	SessionContext,
 	Observation,
+	Workflow,
+	Convention,
 	PaginatedResponse,
+	PlanSummary,
+	PlanDetail,
 	ErrorResponse,
-	SearchResponse
+	SearchResponse,
+	AgentDefinition,
+	AgentUpdatePayload
 } from '@kynetic-ai/shared';
 import type { TriageRecord } from './types/triage';
 import {
@@ -41,7 +47,9 @@ import {
 	fetchSessionContextStatic,
 	fetchObservationsStatic,
 	searchStatic,
-	fetchTriageRecordsStatic
+	fetchTriageRecordsStatic,
+	fetchPlansStatic,
+	fetchWorkflowsStatic
 } from './api-static';
 import { DAEMON_API_BASE } from './constants';
 
@@ -92,10 +100,10 @@ export async function fetchProjects(): Promise<{ projects: Project[] }> {
  */
 export async function fetchTasks(params?: {
 	status?: string;
-	type?: string;
 	tag?: string;
 	assignee?: string;
 	automation?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<TaskSummary>> {
@@ -193,6 +201,67 @@ export async function addTaskNote(ref: string, content: string): Promise<void> {
 }
 
 /**
+ * Submit a task for review (transition to pending_review)
+ * AC: @ui-task-board ac-6
+ */
+export async function submitTask(ref: string): Promise<void> {
+	assertWritable('submit task');
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/submit`, {
+		method: 'POST',
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+}
+
+/**
+ * Complete a task
+ * AC: @ui-task-board ac-6
+ */
+export async function completeTask(ref: string, reason: string): Promise<void> {
+	assertWritable('complete task');
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/complete`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ reason })
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+}
+
+/**
+ * Block a task
+ * AC: @ui-task-board ac-6
+ */
+export async function blockTask(ref: string, reason: string): Promise<void> {
+	assertWritable('block task');
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/block`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ reason })
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+}
+
+/**
+ * Fetch agent/dispatch status
+ * AC: @ui-task-board ac-4
+ */
+
+/**
  * Fetch spec items with optional filters
  * AC: @web-dashboard ac-11
  * AC: @multi-directory-daemon ac-26 - Includes X-Kspec-Dir header
@@ -201,6 +270,7 @@ export async function addTaskNote(ref: string, content: string): Promise<void> {
 export async function fetchItems(params?: {
 	type?: string | string[];
 	tag?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): Promise<PaginatedResponse<ItemSummary>> {
@@ -544,6 +614,116 @@ export async function overrideTriageRecord(
 	return response.json();
 }
 
+// ============================================================
+// Agent & Dispatch API Functions
+// AC: @ui-agent-dispatch ac-1, ac-2, ac-3
+// ============================================================
+
+// AgentDefinition and AgentUpdatePayload are imported from @kynetic-ai/shared
+// (schema-driven types mirroring AgentSchema from src/schema/meta.ts)
+// Re-exported so existing imports from '$lib/api' continue to work.
+// AC: @ui-agent-dispatch ac-4
+export type { AgentDefinition, AgentUpdatePayload };
+
+/**
+ * Active invocation from GET /api/agent/status
+ */
+export interface ActiveInvocation {
+	session_id: string;
+	agent_id: string;
+	task_ref: string | null;
+	elapsed_ms: number;
+}
+
+/**
+ * Agent dispatch status from GET /api/agent/status
+ */
+export interface AgentDispatchStatus {
+	dispatch_enabled: boolean;
+	active_invocations: ActiveInvocation[];
+	queue_depth: number;
+	agent_definitions: Array<{
+		id: string;
+		name: string;
+		adapter: string;
+		completed_sessions?: number;
+	}>;
+}
+
+/**
+ * Fetch agent dispatch status (dispatch state + active invocations)
+ * AC: @ui-agent-dispatch ac-1, ac-2, ac-3
+ */
+export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
+	const response = await fetch(`${API_BASE}/api/agent/status`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch full agent definitions from meta
+ * AC: @ui-agent-dispatch ac-1
+ */
+export async function fetchAgentDefinitions(): Promise<{ items: AgentDefinition[]; total: number }> {
+	const response = await fetch(`${API_BASE}/api/meta/agents`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Start or stop the dispatch engine
+ * AC: @ui-agent-dispatch ac-2
+ */
+export async function controlDispatch(action: 'start' | 'stop'): Promise<{ dispatch_enabled: boolean }> {
+	assertWritable('control dispatch');
+
+	const response = await fetch(`${API_BASE}/api/agent/dispatch`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ action })
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Update an agent definition via PATCH
+ * AC: @ui-agent-dispatch ac-4
+ */
+export async function updateAgentDefinition(
+	agentId: string,
+	payload: AgentUpdatePayload
+): Promise<AgentDefinition> {
+	assertWritable('update agent definition');
+
+	const response = await fetch(`${API_BASE}/api/meta/agents/${agentId}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify(payload)
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
 /**
  * Execute a triage action
  * AC: @interactive-triage-ui ac-3
@@ -561,5 +741,464 @@ export async function actOnTriageRecord(
 		await handleResponseError(response);
 	}
 
+	return response.json();
+}
+
+// ============================================================
+// Plans API Functions
+// AC: @ui-plans-view ac-1
+// ============================================================
+
+/**
+ * Fetch plans with optional status filter
+ * AC: @ui-plans-view ac-1
+ */
+export async function fetchPlans(params?: {
+	status?: string;
+}): Promise<{ items: PlanSummary[]; total: number }> {
+	if (isStaticMode()) {
+		return fetchPlansStatic(params);
+	}
+
+	const url = new URL(`${API_BASE}/api/plans`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				url.searchParams.set(key, String(value));
+			}
+		});
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch a single plan's detail including content (lazy-loaded on expand)
+ * AC: @ui-plans-view ac-2
+ */
+export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
+	if (isStaticMode()) {
+		throw new Error('Plan content not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Workflows API Functions
+// AC: @ui-workflows-view ac-1
+// ============================================================
+
+/**
+ * Fetch workflow definitions
+ * AC: @ui-workflows-view ac-1
+ */
+export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: number }> {
+	if (isStaticMode()) {
+		return fetchWorkflowsStatic();
+	}
+
+	const response = await fetch(`${API_BASE}/api/meta/workflows`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Session API Functions
+// AC: @ui-session-stream ac-1, ac-2, ac-4
+// ============================================================
+
+/**
+ * Session summary from the daemon API.
+ */
+export interface SessionSummary {
+	id: string;
+	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
+	agent_type: string;
+	session_type: 'loop' | 'invocation';
+	/** Dispatch trigger for distinguishing dispatched agent vs manual CLI run. */
+	trigger?: string;
+	/** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
+	task_id?: string;
+	started_at: string;
+	ended_at?: string;
+	duration_ms: number;
+	event_count: number;
+	iteration_count: number;
+	tasks_completed: number;
+}
+
+/**
+ * Spec context with acceptance criteria checklist.
+ * AC: @ui-session-stream ac-4
+ */
+export interface SessionSpecContext {
+	spec_ref: string;
+	title: string;
+	acceptance_criteria: Array<{ id: string; description: string }>;
+}
+
+/**
+ * Session budget info.
+ * AC: @ui-session-stream ac-4
+ */
+export interface SessionBudget {
+	max_per_cycle: number;
+	started_this_cycle: number;
+}
+
+/**
+ * Session detail with additional metadata.
+ * AC: @ui-session-stream ac-4
+ */
+export interface SessionDetail extends SessionSummary {
+	task_id?: string;
+	agent_id?: string;
+	trigger?: string;
+	spec_context?: SessionSpecContext | null;
+	budget?: SessionBudget | null;
+}
+
+/**
+ * A single event from events.jsonl.
+ */
+export interface SessionEvent {
+	ts: number;
+	seq: number;
+	type: string;
+	session_id: string;
+	trace_id?: string;
+	data: unknown;
+}
+
+/**
+ * Fetch all sessions with summaries.
+ * AC: @ui-session-stream ac-1
+ */
+export async function fetchSessions(): Promise<{ items: SessionSummary[]; total: number }> {
+	if (isStaticMode()) {
+		return { items: [], total: 0 };
+	}
+
+	const response = await fetch(`${API_BASE}/api/sessions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch a single session by ID.
+ * AC: @ui-session-stream ac-4
+ */
+export async function fetchSession(id: string): Promise<SessionDetail> {
+	if (isStaticMode()) {
+		throw new Error('Session data not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/sessions/${id}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch session events (optionally incremental via since_seq).
+ * AC: @ui-session-stream ac-1, ac-2
+ */
+export async function fetchSessionEvents(
+	id: string,
+	sinceSeq?: number
+): Promise<{ events: SessionEvent[]; total: number }> {
+	if (isStaticMode()) {
+		return { events: [], total: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/sessions/${id}/events`);
+	if (sinceSeq !== undefined) {
+		url.searchParams.set('since_seq', String(sinceSeq));
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Validation & Alignment API Functions
+// AC: @ui-validation-view ac-1
+// ============================================================
+
+export interface SchemaValidationError {
+	file: string;
+	path?: string;
+	message: string;
+	details?: unknown;
+}
+
+export interface RefValidationError {
+	ref: string;
+	sourceFile?: string;
+	sourceUlid?: string;
+	field: string;
+	error: 'not_found' | 'ambiguous' | 'duplicate_slug';
+	message: string;
+}
+
+export interface RefValidationWarning {
+	ref: string;
+	sourceFile?: string;
+	sourceUlid?: string;
+	field: string;
+	warning: 'deprecated_target';
+	message: string;
+}
+
+export interface OrphanItem {
+	ulid: string;
+	title: string;
+	type: string;
+	file?: string;
+}
+
+export type CompletenessWarningType =
+	| 'missing_acceptance_criteria'
+	| 'missing_description'
+	| 'status_inconsistency'
+	| 'missing_test_coverage'
+	| 'automation_eligible_no_spec'
+	| 'ac_schema_field_mismatch';
+
+export interface CompletenessWarning {
+	type: CompletenessWarningType;
+	subtype?: 'own_ac' | 'trait_ac';
+	itemRef: string;
+	itemTitle: string;
+	message: string;
+	details?: string;
+}
+
+export interface TraitCycleError {
+	traitRef: string;
+	traitTitle: string;
+	cycle: string[];
+	message: string;
+}
+
+export interface ValidationResponse {
+	valid: boolean;
+	schemaErrors: SchemaValidationError[];
+	refErrors: RefValidationError[];
+	refWarnings: RefValidationWarning[];
+	orphans: OrphanItem[];
+	completenessWarnings: CompletenessWarning[];
+	traitCycles: TraitCycleError[];
+}
+
+/** Alias for backward compatibility with dashboard overview */
+export type ValidationResult = ValidationResponse;
+
+export interface AlignmentWarning {
+	type: 'orphaned_spec' | 'status_mismatch' | 'stale_implementation';
+	specUlid?: string;
+	specTitle?: string;
+	taskUlid?: string;
+	message: string;
+}
+
+export interface AlignmentStats {
+	totalSpecs: number;
+	specsWithTasks: number;
+	alignedSpecs: number;
+	orphanedSpecs: number;
+}
+
+export interface AlignmentResponse {
+	stats: AlignmentStats;
+	warnings: AlignmentWarning[];
+}
+
+/**
+ * Fetch validation results
+ * AC: @ui-validation-view ac-1
+ */
+export async function fetchValidation(): Promise<ValidationResponse> {
+	if (isStaticMode()) {
+		return {
+			valid: true,
+			schemaErrors: [],
+			refErrors: [],
+			refWarnings: [],
+			orphans: [],
+			completenessWarnings: [],
+			traitCycles: []
+		};
+	}
+
+	const response = await fetch(`${API_BASE}/api/validate`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	const data = await response.json();
+	// Normalize: ensure all array fields exist even if the API omits them
+	return {
+		valid: data.valid ?? true,
+		schemaErrors: data.schemaErrors ?? [],
+		refErrors: data.refErrors ?? [],
+		refWarnings: data.refWarnings ?? [],
+		orphans: data.orphans ?? [],
+		completenessWarnings: data.completenessWarnings ?? [],
+		traitCycles: data.traitCycles ?? []
+	};
+}
+
+/**
+ * Fetch alignment stats and warnings
+ * AC: @ui-validation-view ac-1
+ */
+export async function fetchAlignment(): Promise<AlignmentResponse> {
+	if (isStaticMode()) {
+		return {
+			stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+			warnings: []
+		};
+	}
+
+	const response = await fetch(`${API_BASE}/api/alignment`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Settings API Functions
+// AC: @ui-settings-view ac-1
+// ============================================================
+
+/**
+ * Daemon health check response
+ * AC: @ui-settings-view ac-1 — daemon connection info (port, uptime, version)
+ */
+export interface HealthResponse {
+	status: string;
+	uptime: number;
+	connections: number;
+	version: string;
+}
+
+/**
+ * Project config from manifest + kspec.config.yaml
+ * AC: @ui-settings-view ac-1 — project config (name, version, remote tracking)
+ */
+export interface ProjectConfig {
+	project: { name: string; version: string; status: string } | null;
+	spec_version: string | null;
+	root_dir: string;
+	remote_tracking: { value: string; type: string } | null;
+	daemon: { port: number; host: string; auto_start: boolean };
+}
+
+/**
+ * Shadow branch status
+ * AC: @ui-settings-view ac-1 — shadow branch status
+ */
+export interface ShadowStatusResponse {
+	enabled: boolean;
+	branch_name: string | null;
+	worktree_dir: string | null;
+	healthy: boolean;
+	remote_tracking: boolean;
+}
+
+/**
+ * Fetch daemon health
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchHealth(): Promise<HealthResponse> {
+	const response = await fetch(`${API_BASE}/api/health`);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch project config (manifest + kspec.config.yaml)
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchProjectConfig(): Promise<ProjectConfig> {
+	const response = await fetch(`${API_BASE}/api/meta/config`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch shadow branch status
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
+	const response = await fetch(`${API_BASE}/api/meta/shadow`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch convention definitions
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchConventions(): Promise<{ items: Convention[]; total: number }> {
+	const response = await fetch(`${API_BASE}/api/meta/conventions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
 	return response.json();
 }

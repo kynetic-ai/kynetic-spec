@@ -24,6 +24,7 @@ import { DispatchEngine } from '../../agent-runtime/dispatch.js';
 import type { TaskStateChange, TaskStatus, InvocationEvent } from '../../agent-runtime/dispatch.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext } from '../../parser/index.js';
+import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
 import type { PubSubManager } from '../websocket/pubsub.js';
 
 const VALID_TASK_STATUSES = new Set<string>([
@@ -218,14 +219,20 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       const projectDir = projectContext.path;
       const engineStatus = engines.get(projectDir)?.getStatus();
 
-      let agentDefinitions: Array<{ id: string; name: string; adapter: string }> = [];
+      let agentDefinitions: Array<{ id: string; name: string; adapter: string; completed_sessions: number }> = [];
+      let completedCounts: Record<string, number> = {};
       try {
         const ctx = await initContext(projectDir);
-        const meta = await loadMetaContext(ctx);
+        const [meta, counts] = await Promise.all([
+          loadMetaContext(ctx),
+          getCompletedSessionCountsByAgent(ctx.specDir),
+        ]);
+        completedCounts = counts;
         agentDefinitions = meta.agents.map((a) => ({
           id: a.id,
           name: a.name,
           adapter: a.adapter ?? 'claude-agent-acp',
+          completed_sessions: completedCounts[a.id] ?? 0,
         }));
       } catch {
         // Agent definitions unavailable — return empty array

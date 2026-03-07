@@ -1549,6 +1549,33 @@ describe('Shadow Branch', () => {
         expect(status.healthy).toBe(true);
         expect(status.branchExists).toBe(true);
       });
+
+      it('getShadowStatus reports healthy with directory name, not full path', async () => {
+        // Regression: daemon was passing the full worktreeDir path (e.g. /tmp/x/.kspec)
+        // as the directory option instead of the directory name (e.g. .kspec).
+        // getShadowStatus joins projectRoot + directory, so a full path produced an
+        // invalid path like /tmp/x//tmp/x/.kspec, causing a false unhealthy report.
+        execSync('git init', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        await initializeShadow(testDir);
+
+        // Directory name (correct) — should be healthy
+        const statusWithName = await getShadowStatus(testDir, {
+          directory: SHADOW_WORKTREE_DIR,
+        });
+        expect(statusWithName.healthy).toBe(true);
+
+        // Full path (bug) — should NOT be healthy because path.join produces garbage
+        const fullPath = path.join(testDir, SHADOW_WORKTREE_DIR);
+        const statusWithFullPath = await getShadowStatus(testDir, {
+          directory: fullPath,
+        });
+        expect(statusWithFullPath.healthy).toBe(false);
+      });
     });
 
     // AC: @config-shadow ac-1 — custom branch name

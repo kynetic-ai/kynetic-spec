@@ -35,6 +35,7 @@ import {
   saveSessionContext,
   readSessionContext,
   getSessionContextPath,
+  getCompletedSessionCountsByAgent,
 } from '../src/sessions/store.js';
 
 // ─── Schema Tests ────────────────────────────────────────────────────────────
@@ -921,6 +922,96 @@ describe('Event storage', () => {
 
       expect(contextPath).toContain(sessionId);
       expect(contextPath).toContain('context-iter-3.json');
+    });
+  });
+});
+
+// ─── Completed Session Counts ─────────────────────────────────────────────────
+
+// AC: @ui-agent-dispatch ac-1
+describe('getCompletedSessionCountsByAgent', () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-completed-count-'));
+  });
+
+  afterEach(async () => {
+    await fs.rm(testDir, { recursive: true });
+  });
+
+  it('should return empty object when no sessions exist', async () => {
+    const counts = await getCompletedSessionCountsByAgent(testDir);
+    expect(counts).toEqual({});
+  });
+
+  it('should count completed sessions per agent_id', async () => {
+    // Create sessions with different agents and statuses
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM01',
+      agent_type: 'claude-code',
+      agent_id: 'task-worker',
+    });
+    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM01', 'completed');
+
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM02',
+      agent_type: 'claude-code',
+      agent_id: 'task-worker',
+    });
+    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM02', 'completed');
+
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM03',
+      agent_type: 'claude-code',
+      agent_id: 'pr-reviewer',
+    });
+    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM03', 'completed');
+
+    // Active session should not be counted
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM04',
+      agent_type: 'claude-code',
+      agent_id: 'task-worker',
+    });
+
+    const counts = await getCompletedSessionCountsByAgent(testDir);
+    expect(counts).toEqual({
+      'task-worker': 2,
+      'pr-reviewer': 1,
+    });
+  });
+
+  it('should not count abandoned or failed sessions', async () => {
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM05',
+      agent_type: 'claude-code',
+      agent_id: 'task-worker',
+    });
+    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM05', 'abandoned');
+
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM06',
+      agent_type: 'claude-code',
+      agent_id: 'task-worker',
+    });
+    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM06', 'failed');
+
+    const counts = await getCompletedSessionCountsByAgent(testDir);
+    expect(counts).toEqual({});
+  });
+
+  it('should fall back to agent_type when agent_id is not set', async () => {
+    await createSession(testDir, {
+      id: '01KF123456789ABCDEFGHJKM07',
+      agent_type: 'claude-code',
+    });
+    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM07', 'completed');
+
+    const counts = await getCompletedSessionCountsByAgent(testDir);
+    // getSession() materializes agent_id from agent_type for legacy sessions
+    expect(counts).toEqual({
+      'claude-code': 1,
     });
   });
 });

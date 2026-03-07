@@ -92,6 +92,34 @@ describe('getSessionLogSummary', () => {
     expect(summary!.tasks_completed).toBe(0);
   });
 
+  // AC: @ui-session-history ac-1 — task_id included in summary
+  it('should include task_id in summary when session has a task', async () => {
+    const sessionId = testUlid('SESS', 5);
+    const taskId = testUlid('TASK');
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'claude-agent-acp',
+      task_id: taskId,
+    });
+
+    const summary = await getSessionLogSummary(testDir, sessionId);
+    expect(summary).not.toBeNull();
+    expect(summary!.task_id).toBe(taskId);
+  });
+
+  // AC: @ui-session-history ac-1 — task_id undefined when session has no task
+  it('should have undefined task_id when session has no task', async () => {
+    const sessionId = testUlid('SESS', 6);
+    await createSession(testDir, {
+      id: sessionId,
+      agent_type: 'test-agent',
+    });
+
+    const summary = await getSessionLogSummary(testDir, sessionId);
+    expect(summary).not.toBeNull();
+    expect(summary!.task_id).toBeUndefined();
+  });
+
   it('should compute duration from now for active sessions', async () => {
     const sessionId = testUlid('SESS', 1);
     await createSession(testDir, {

@@ -1,8 +1,8 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-33
 	import type { TaskSummary } from '@kynetic-ai/shared';
-	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import {
 		Table,
 		TableBody,
@@ -33,14 +33,15 @@
 
 	function getStatusColor(status: string): string {
 		const colors: Record<string, string> = {
-			pending: 'bg-gray-500',
-			in_progress: 'bg-blue-500',
-			pending_review: 'bg-yellow-500',
-			blocked: 'bg-red-500',
-			completed: 'bg-green-500',
-			cancelled: 'bg-gray-400'
+			pending: 'bg-status-pending text-status-pending-fg',
+			in_progress: 'bg-status-in-progress text-status-in-progress-fg',
+			pending_review: 'bg-status-pending-review text-status-pending-review-fg',
+			needs_work: 'bg-status-needs-work text-status-needs-work-fg',
+			blocked: 'bg-status-blocked text-status-blocked-fg',
+			completed: 'bg-status-completed text-status-completed-fg',
+			cancelled: 'bg-status-cancelled text-status-cancelled-fg'
 		};
-		return colors[status] || 'bg-gray-500';
+		return colors[status] || 'bg-status-cancelled text-status-cancelled-fg';
 	}
 
 	function formatStatus(status: string): string {
@@ -48,6 +49,7 @@
 			pending: 'Pending',
 			in_progress: 'In Progress',
 			pending_review: 'Pending Review',
+			needs_work: 'Needs Work',
 			blocked: 'Blocked',
 			completed: 'Completed',
 			cancelled: 'Cancelled'
@@ -63,16 +65,16 @@
 	}
 </script>
 
-<div class="rounded-md border" data-testid="task-list">
-	<Table>
+<div class="rounded-md border overflow-hidden" data-testid="task-list">
+	<Table class="table-fixed">
 		<TableHeader>
 			<TableRow>
-				<TableHead>Title</TableHead>
-				<TableHead>Status</TableHead>
-				<TableHead>Priority</TableHead>
-				<TableHead>Spec</TableHead>
-				<TableHead>Notes</TableHead>
-				<TableHead>Tags</TableHead>
+				<TableHead class="w-[40%]">Title</TableHead>
+				<TableHead class="w-[12%]">Status</TableHead>
+				<TableHead class="w-[8%]">Priority</TableHead>
+				<TableHead class="w-[15%]">Spec</TableHead>
+				<TableHead class="w-[7%]">Notes</TableHead>
+				<TableHead class="w-[18%]">Tags</TableHead>
 			</TableRow>
 		</TableHeader>
 		<TableBody>
@@ -96,11 +98,8 @@
 						tabindex="0"
 						onkeydown={(e) => e.key === 'Enter' && selectTask(task)}
 					>
-						<TableCell class="font-medium">
-							<span data-testid="task-title">{task.title}</span>
-							{#if task.type !== 'task'}
-								<Badge variant="outline" class="ml-2">{task.type}</Badge>
-							{/if}
+						<TableCell class="font-medium truncate">
+							<span data-testid="task-title" class="truncate">{task.title}</span>
 						</TableCell>
 						<TableCell>
 							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{formatStatus(task.status)}</Badge>
@@ -108,15 +107,9 @@
 						<TableCell class={getPriorityColor(task.priority)}>
 							<span data-testid="task-priority">P{task.priority}</span>
 						</TableCell>
-						<TableCell data-testid="task-spec-ref">
+						<TableCell data-testid="task-spec-ref" class="truncate">
 							{#if task.spec_ref}
-								<a
-									href="{base}/items?ref={encodeURIComponent(task.spec_ref)}"
-									class="text-primary hover:underline text-sm"
-									onclick={(e) => e.stopPropagation()}
-								>
-									{task.spec_ref}
-								</a>
+								<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-sm truncate" />
 							{:else}
 								<span class="text-muted-foreground text-sm">—</span>
 							{/if}

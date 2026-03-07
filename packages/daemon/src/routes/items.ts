@@ -18,6 +18,7 @@ import {
   initContext,
   loadAllItems,
   loadAllTasks,
+  loadPlans,
   ReferenceIndex,
   AlignmentIndex,
   getCachedTestCoverage,
@@ -144,6 +145,26 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           );
         }
 
+        // Plan filter — show only specs derived from a given plan
+        if (query.plan) {
+          const plans = await loadPlans(ctx);
+          const plan = plans.find(
+            (p) => p._ulid === query.plan || p.slugs.includes(query.plan!)
+          );
+          if (plan) {
+            const derivedRefs = new Set(
+              plan.derived_specs.map((r) => (r.startsWith('@') ? r.slice(1) : r))
+            );
+            filtered = filtered.filter(
+              (item) =>
+                derivedRefs.has(item._ulid) ||
+                item.slugs.some((s) => derivedRefs.has(s))
+            );
+          } else {
+            filtered = [];
+          }
+        }
+
         // Pagination
         const total = filtered.length;
         const offset = Number(query.offset) || 0;
@@ -178,6 +199,7 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           maturity: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           implementation: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),
         }),

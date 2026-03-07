@@ -3,7 +3,6 @@
 	import type { ItemDetail, TaskSummary } from '@kynetic-ai/shared';
 	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
 	import {
 		Sheet,
 		SheetContent,
@@ -18,17 +17,21 @@
 		AccordionTrigger
 	} from '$lib/components/ui/accordion';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { fetchItem, fetchItemTasks } from '$lib/api';
-	import { goto } from '$app/navigation';
 	import { CheckCircle, XCircle, HelpCircle } from 'lucide-svelte';
 
-	export let ref: string | null = null;
-	export let open = false;
+	interface Props {
+		ref: string | null;
+		open: boolean;
+	}
 
-	let item: ItemDetail | null = null;
-	let linkedTasks: TaskSummary[] = [];
-	let loading = false;
-	let error: string | null = null;
+	let { ref, open = $bindable(false) }: Props = $props();
+
+	let item = $state<ItemDetail | null>(null);
+	let linkedTasks = $state<TaskSummary[]>([]);
+	let loading = $state(false);
+	let error = $state<string | null>(null);
 
 	async function loadItem(itemRef: string) {
 		loading = true;
@@ -50,20 +53,23 @@
 		}
 	}
 
-	$: if (ref && open) {
-		loadItem(ref);
-	}
+	$effect(() => {
+		if (ref && open) {
+			loadItem(ref);
+		}
+	});
 
 	function getStatusColor(status: string): string {
 		const colors: Record<string, string> = {
-			pending: 'bg-gray-500',
-			in_progress: 'bg-blue-500',
-			pending_review: 'bg-yellow-500',
-			blocked: 'bg-red-500',
-			completed: 'bg-green-500',
-			cancelled: 'bg-gray-400'
+			pending: 'bg-status-pending text-status-pending-fg',
+			in_progress: 'bg-status-in-progress text-status-in-progress-fg',
+			pending_review: 'bg-status-pending-review text-status-pending-review-fg',
+			needs_work: 'bg-status-needs-work text-status-needs-work-fg',
+			blocked: 'bg-status-blocked text-status-blocked-fg',
+			completed: 'bg-status-completed text-status-completed-fg',
+			cancelled: 'bg-status-cancelled text-status-cancelled-fg'
 		};
-		return colors[status] || 'bg-gray-500';
+		return colors[status] || 'bg-status-cancelled text-status-cancelled-fg';
 	}
 
 	function formatStatus(status: string): string {
@@ -71,6 +77,7 @@
 			pending: 'Pending',
 			in_progress: 'In Progress',
 			pending_review: 'Pending Review',
+			needs_work: 'Needs Work',
 			blocked: 'Blocked',
 			completed: 'Completed',
 			cancelled: 'Cancelled'
@@ -178,19 +185,10 @@
 						<h3 class="text-sm font-semibold mb-2">Traits</h3>
 						<div class="flex flex-wrap gap-2">
 							{#each item.traits as trait}
-								<Button
-									variant="outline"
-									size="sm"
-									data-testid="trait-chip"
-									onclick={() => {
-										// AC: @web-dashboard ac-14 - Navigate to trait detail
-										// Traits are items (type: trait), so we navigate to items view with the ref
-										const traitRef = trait.startsWith('@') ? trait.slice(1) : trait;
-										goto(`${base}/items?ref=${encodeURIComponent(traitRef)}`);
-									}}
-								>
-									<span data-testid="trait-title">{trait}</span>
-								</Button>
+								<span data-testid="trait-chip">
+									<!-- AC: @web-dashboard ac-14 - Navigate to trait detail -->
+									<ReferenceLink ref={trait} type="spec" class="text-sm" />
+								</span>
 							{/each}
 						</div>
 					</div>
