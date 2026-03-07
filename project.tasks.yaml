@@ -78210,7 +78210,7 @@
   spec_ref: "@ui-validation-view"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -78240,6 +78240,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T15:46:30.468Z
 - _ulid: 01KK2NNKV88XS2NCPKRHP3MH5E
   slugs: []
   title: Fix session stream not rendering agent messages, tool calls, or thinking blocks
