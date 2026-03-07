@@ -78422,7 +78422,7 @@
   spec_ref: "@ui-reference-display"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -78431,7 +78431,7 @@
     - feature
     - web-ui
   vcs_refs: []
-  session_id: 01KK36QTVP20EPJE7X54B5HB0F
+  session_id: null
   created_at: 2026-03-06T22:53:12.084Z
   started_at: 2026-03-07T03:57:17.497Z
   submitted_at: 2026-03-07T04:02:55.579Z
@@ -78622,6 +78622,13 @@
         packages/web-ui/src/lib/components/TaskList.svelte:115 (spec_ref),
         packages/web-ui/src/routes/sessions/+page.svelte:169 (session history task_ref). AC requires
         links to appropriate detail views for these references."
+      supersedes: null
+    - _ulid: 01KK37RMMM63TBBAF1YYJ7YRGH
+      created_at: 2026-03-07T04:09:22.325Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Review findings: Review issues: @ui-reference-display ac-1 violated;
+        TaskCard spec_ref, TaskList spec_ref, and sessions history task_ref were switched to
+        non-link rendering (linked={false}) and no longer navigate to detail views."
       supersedes: null
   todos: []
   automation: eligible
