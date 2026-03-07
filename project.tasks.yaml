@@ -78346,12 +78346,40 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK2Z0SFPVBC0R1NMMRWFVWZA
   created_at: 2026-03-06T22:53:11.063Z
-  notes: []
+  started_at: 2026-03-07T01:42:20.287Z
+  notes:
+    - _ulid: 01KK2ZSVSCKM3EA1TDRT26A62V
+      created_at: 2026-03-07T01:50:13.804Z
+      author: "@claude"
+      content: >-
+        Fixed double @@ bug and made task ref a clickable link in SessionContextPanel:
+
+
+        1. Added normalizeTaskId() to strip leading @ from task_id before display, preventing
+        @@prefix
+
+        2. Replaced plain text <span> with <a> tag linking to /tasks?ref={taskId} with
+        data-testid='session-task-link'
+
+        3. Added  to resolve task title via fetchTask — displays title when available, falls back to
+        @ULID prefix
+
+        4. Also fixed the same double @@ issue in the sessions list page (shortTaskRef function)
+
+
+        Files changed:
+
+        - packages/web-ui/src/lib/components/session/SessionContextPanel.svelte
+
+        - packages/web-ui/src/routes/sessions/+page.svelte
+
+
+        All 161 web-ui tests pass. Pre-existing failures in codex-related tests are unrelated.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T01:42:20.287Z
-  session_id: 01KK2Z0SFPVBC0R1NMMRWFVWZA
 - _ulid: 01KK2NNQ0MJY54DX9PYHP4N1EA
   slugs: []
   title: Normalize reference displays across web UI — show titles and consistent linking
