@@ -1,0 +1,7 @@
+id: 01KK3CEH6SDM34HTM59ATD586V
+task_id: "@01KK2T4KR8EMDXEKRRMTFWDM50"
+agent_type: codex-acp
+agent_id: ux-reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-07T05:43:29.452Z
