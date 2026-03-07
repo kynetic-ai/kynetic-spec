@@ -1,24 +1,28 @@
 <!--
   AC: @ui-task-board ac-4 — Active Fleet row showing running agent work.
   Shows task title, agent name, elapsed time with pulse indicator,
-  and last few lines of output.
+  and last few lines of output. Includes tool call indicators.
 -->
 <script lang="ts">
 	import type { AgentDispatchStatus } from '$lib/api';
+	import type { ToolCallIndicator } from './fleet-buffer';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { formatElapsed } from './board-utils';
 	import Bot from '@lucide/svelte/icons/bot';
 	import Activity from '@lucide/svelte/icons/activity';
 	import Terminal from '@lucide/svelte/icons/terminal';
+	import Wrench from '@lucide/svelte/icons/wrench';
 
 	let {
 		status,
 		outputLines = {},
+		toolCalls = {},
 		taskTitles = {}
 	}: {
 		status: AgentDispatchStatus | null;
 		outputLines?: Record<string, string[]>;
+		toolCalls?: Record<string, ToolCallIndicator | null>;
 		taskTitles?: Record<string, string>;
 	} = $props();
 
@@ -43,6 +47,7 @@
 		<div class="flex gap-3 overflow-x-auto pb-2">
 			{#each activeInvocations as invocation (invocation.session_id)}
 				{@const lines = outputLines[invocation.session_id] ?? []}
+				{@const activeTool = toolCalls[invocation.session_id] ?? null}
 				{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
 				{@const agentName = agentNameMap[invocation.agent_id] ?? invocation.agent_id}
 				<div
@@ -71,8 +76,21 @@
 						<span>{formatElapsed(invocation.elapsed_ms)}</span>
 					</div>
 
-					<!-- AC: @ui-task-board ac-4 — Last few lines of output -->
-					{#if lines.length > 0}
+					<!-- AC: @ui-task-board ac-4 — Tool call indicator or last few lines of output -->
+					{#if activeTool}
+						<div
+							class="mt-1.5 flex items-center gap-1.5 rounded bg-muted/50 p-1.5 text-[10px] text-muted-foreground"
+							aria-live="polite"
+							aria-label="Tool call for {title ?? agentName}"
+							data-testid="fleet-tool-call"
+						>
+							<Wrench class="size-3 shrink-0 text-status-in-progress" />
+							<span class="font-medium shrink-0">{activeTool.toolName}</span>
+							{#if activeTool.preview}
+								<span class="truncate font-mono opacity-70">{activeTool.preview}</span>
+							{/if}
+						</div>
+					{:else if lines.length > 0}
 						<div
 							class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-14"
 							aria-live="polite"
