@@ -1075,7 +1075,17 @@ export async function fetchValidation(): Promise<ValidationResponse> {
 		await handleResponseError(response);
 	}
 
-	return response.json();
+	const data = await response.json();
+	// Normalize: ensure all array fields exist even if the API omits them
+	return {
+		valid: data.valid ?? true,
+		schemaErrors: data.schemaErrors ?? [],
+		refErrors: data.refErrors ?? [],
+		refWarnings: data.refWarnings ?? [],
+		orphans: data.orphans ?? [],
+		completenessWarnings: data.completenessWarnings ?? [],
+		traitCycles: data.traitCycles ?? []
+	};
 }
 
 /**
