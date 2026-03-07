@@ -80086,7 +80086,7 @@
   spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -80265,6 +80265,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-07T22:07:54.003Z
+  closed_reason: Review passed (FC2). Merged to feat/ui-revamp. Static mode regression fixed — all
+    action buttons now show disabled with tooltips in read-only mode per @gh-pages-export ac-16. AC
+    annotations corrected (ac-18 for note form, not ac-17). @web-dashboard completeness warnings
+    resolved (ac-1, ac-3, ac-11-14 annotated). All 4030 tests pass.
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
   slugs: []
   title: Fix kanban and task list responsive layout (no horizontal scrolling)
@@ -80432,6 +80437,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Review passed. Merged to feat/ui-revamp. One-line fix in daemon shadow endpoint:
+    changed ctx.shadow.worktreeDir (full path) to ctx.config.shadow.directory (directory name) so
+    getShadowStatus constructs the correct path. Regression test verifies both correct and buggy
+    behavior. No regressions, all quality gates green."
   depends_on: []
   context: []
   priority: 2
@@ -80443,6 +80452,7 @@
   created_at: 2026-03-07T15:35:06.403Z
   started_at: 2026-03-07T17:42:57.039Z
   submitted_at: 2026-03-07T17:51:02.745Z
+  completed_at: 2026-03-07T22:01:44.309Z
   notes:
     - _ulid: 01KK4PS08HYQTFM55R2EDNRK62
       created_at: 2026-03-07T17:50:57.297Z
@@ -80458,8 +80468,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T22:01:44.309Z
-  closed_reason: "Review passed. Merged to feat/ui-revamp. One-line fix in daemon shadow endpoint:
-    changed ctx.shadow.worktreeDir (full path) to ctx.config.shadow.directory (directory name) so
-    getShadowStatus constructs the correct path. Regression test verifies both correct and buggy
-    behavior. No regressions, all quality gates green."
