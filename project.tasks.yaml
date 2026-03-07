@@ -78586,6 +78586,16 @@
         SessionContextPanel auto-merged cleanly. All 3922 tests pass (19 reference tests, 161 web-ui
         tests). 2 pre-existing codex failures unrelated."
       supersedes: null
+    - _ulid: 01KK36ASVAQRYM3X8TD00CGJB1
+      created_at: 2026-03-07T03:44:20.330Z
+      author: Jacob Chapel
+      content: 'Review findings: MUST-FIX 1) Invalid nested anchors in session list row.
+        packages/web-ui/src/routes/sessions/+page.svelte wraps each row in <a href="/sessions/{id}">
+        (line 153), and now renders <ReferenceLink> for task_ref inside that row (line 169), which
+        itself renders an <a>. Nested <a> is invalid HTML and causes conflicting/fragile click
+        behavior and accessibility issues. Fix by rendering task_ref as non-link text in this
+        context (linked={false}) or refactoring row container to avoid anchor nesting.'
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
@@ -78766,6 +78776,8 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Existing kanban board at /tasks/board already covers this need. Dashboard layout is
+    fine as status summary cards + needs attention.
   depends_on: []
   context: []
   priority: 2
@@ -78777,8 +78789,6 @@
   notes: []
   todos: []
   automation: eligible
-  closed_reason: Existing kanban board at /tasks/board already covers this need. Dashboard layout is
-    fine as status summary cards + needs attention.
 - _ulid: 01KK2T4KR8EMDXEKRRMTFWDM50
   slugs: []
   title: Implement workflows page — list workflows with steps, triggers, and start action
