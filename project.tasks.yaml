@@ -79876,5 +79876,14 @@
       content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX missing AC coverage for
         @ui-session-stream ac-5 (validate completeness warning: Uncovered ac-5)."
       supersedes: null
+    - _ulid: 01KK3VRPMMXMNJ3WNB7T144QN0
+      created_at: 2026-03-07T09:58:55.892Z
+      author: "@claude"
+      content: "Fix cycle 1: Applied collapsed-by-default fix ((false) instead of (block.status ===
+        'running')) which was on the unmerged fix/tool-call-default-collapsed branch but never
+        merged to feat/ui-revamp. Added test verifying expanded state initializes to false. AC-5
+        test annotations (CSS layout checks) were already present from a different task's merge
+        (c767d1b6a). All 168 web-ui tests pass."
+      supersedes: null
   todos: []
   automation: eligible
