@@ -1677,6 +1677,14 @@ describe("collapsed tool call row layout (@ui-session-stream ac-5)", () => {
   });
 
   // AC: @ui-session-stream ac-5
+  it("expanded state initializes to false (collapsed by default)", () => {
+    // Tool calls must start collapsed regardless of status so the single-line
+    // layout is the default view. $state(false) not $state(block.status === 'running').
+    expect(toolCallSrc).toMatch(/let expanded = \$state\(false\)/);
+    expect(toolCallSrc).not.toMatch(/let expanded = \$state\(block\.status/);
+  });
+
+  // AC: @ui-session-stream ac-5
   it("header button uses overflow-hidden to enforce single-line", () => {
     // The collapsed row button must clip overflow to prevent multi-line wrapping
     expect(toolCallSrc).toMatch(/class="[^"]*overflow-hidden[^"]*"/);
