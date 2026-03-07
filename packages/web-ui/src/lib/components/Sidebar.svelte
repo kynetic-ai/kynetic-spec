@@ -23,7 +23,11 @@
 	import type { SessionContext } from '@kynetic-ai/shared';
 	import ConnectionStatus from '$lib/components/ConnectionStatus.svelte';
 	import ProjectSelector from '$lib/components/ProjectSelector.svelte';
-	import { hasMultipleProjects, getProjectVersion } from '$lib/stores/project.svelte';
+	import {
+		hasMultipleProjects,
+		getProjectVersion,
+		isInitialized as isProjectInitialized
+	} from '$lib/stores/project.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import {
 		LayoutDashboard,
@@ -128,16 +132,29 @@
 		}
 	}
 
+	// Polling interval handle — set up once project store is ready
+	let countsInterval: ReturnType<typeof setInterval> | undefined;
+
 	onMount(() => {
-		loadCounts();
-		const interval = setInterval(loadCounts, 30000);
-		return () => clearInterval(interval);
+		return () => {
+			if (countsInterval) clearInterval(countsInterval);
+		};
 	});
 
+	// Load counts when project store is initialized and on every project change.
+	// This replaces the old onMount loadCounts() call which could fire before
+	// loadProjects() completed, causing stale/wrong-project badge counts.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadCounts();
+		const ready = isProjectInitialized();
+		if (!ready) return;
+
+		// Initial load (version === 0) and subsequent project switches (version > 0)
+		loadCounts();
+
+		// Set up polling interval on first ready signal
+		if (!countsInterval) {
+			countsInterval = setInterval(loadCounts, 30000);
 		}
 	});
 
