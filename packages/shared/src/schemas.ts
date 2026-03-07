@@ -65,3 +65,24 @@ export type ObservationType =
   | 'success'
   | 'question'
   | 'idea';
+
+/**
+ * Agent dispatch event values — mirrors AgentDispatchEventSchema enum from src/schema/meta.ts
+ * AC: @ui-agent-dispatch ac-4 — shared type for schema-driven edit form
+ */
+export type AgentDispatchEvent =
+  | 'task.in_progress'
+  | 'task.ready'
+  | 'task.needs_work'
+  | 'task.pending_review';
+
+/**
+ * All valid dispatch events as a const array — for form dropdowns and validation
+ * AC: @ui-agent-dispatch ac-4
+ */
+export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
+  'task.in_progress',
+  'task.ready',
+  'task.needs_work',
+  'task.pending_review',
+] as const;

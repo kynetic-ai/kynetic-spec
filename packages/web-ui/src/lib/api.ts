@@ -636,13 +636,36 @@ export interface AgentDefinition {
 	skills: string[];
 	budget?: {
 		max_tasks?: number;
+		max_retries?: number;
 		timeout_minutes?: number;
 	};
 	concurrency: {
 		max_concurrent: number;
 	};
 	auto_approve: boolean;
+	prompt_template?: string;
 }
+
+/**
+ * Payload for PATCH /api/meta/agents/:id — partial agent update
+ * AC: @ui-agent-dispatch ac-4
+ */
+export type AgentUpdatePayload = Partial<
+	Pick<
+		AgentDefinition,
+		| 'name'
+		| 'description'
+		| 'adapter'
+		| 'dispatch'
+		| 'capabilities'
+		| 'tools'
+		| 'skills'
+		| 'budget'
+		| 'concurrency'
+		| 'auto_approve'
+		| 'prompt_template'
+	>
+>;
 
 /**
  * Active invocation from GET /api/agent/status
@@ -715,6 +738,31 @@ export async function controlDispatch(action: 'start' | 'stop'): Promise<{ dispa
 	if (!response.ok) {
 		await handleResponseError(response);
 	}
+	return response.json();
+}
+
+/**
+ * Update an agent definition via PATCH
+ * AC: @ui-agent-dispatch ac-4
+ */
+export async function updateAgentDefinition(
+	agentId: string,
+	payload: AgentUpdatePayload
+): Promise<AgentDefinition> {
+	assertWritable('update agent definition');
+
+	const response = await fetch(`${API_BASE}/api/meta/agents/${agentId}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify(payload)
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
 	return response.json();
 }
 

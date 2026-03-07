@@ -8,12 +8,10 @@
  * - @ui-agent-dispatch ac-1: Agent definitions show name, triggers, active/completed counts
  * - @ui-agent-dispatch ac-2: Dispatch running with stop button and active invocations
  * - @ui-agent-dispatch ac-3: Dispatch stopped with no active invocations
- * - @ui-agent-dispatch ac-4: Agent editing (N/A — separate task @01KK2SHZ)
+ * - @ui-agent-dispatch ac-4: Agent editing with inline edit form
  */
 
 import { test, expect } from '../fixtures/test-base';
-
-// AC: @ui-agent-dispatch ac-4 — N/A: agent editing UI not yet implemented; covered by task @01KK2SHZ
 
 const DAEMON_URL = 'http://localhost:3456';
 
@@ -329,6 +327,162 @@ test.describe('Agent and Dispatch View', () => {
 
       await agentsLink.click();
       await expect(page).toHaveURL(/\/agents/);
+    });
+  });
+
+  test.describe('Agent Editing (AC-4)', () => {
+    // AC: @ui-agent-dispatch ac-4
+    test('edit button opens dialog with agent fields pre-populated', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      // Click edit on task-worker agent
+      const editButton = page.getByTestId('agent-edit-button-task-worker');
+      await expect(editButton).toBeVisible();
+      await editButton.click();
+
+      // Dialog should open
+      const dialog = page.getByTestId('agent-edit-dialog');
+      await expect(dialog).toBeVisible();
+
+      // Title should show the agent id
+      const title = page.getByTestId('agent-edit-title');
+      await expect(title).toContainText('task-worker');
+
+      // Name field should be pre-populated
+      const nameInput = page.getByTestId('agent-edit-name');
+      await expect(nameInput).toHaveValue('Task Worker');
+    });
+
+    // AC: @ui-agent-dispatch ac-4
+    test('edit dialog shows dispatch triggers with add/remove', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      // Should show existing triggers
+      const triggers = page.getByTestId('agent-edit-triggers');
+      await expect(triggers).toBeVisible();
+
+      // task-worker has 3 triggers: ready, in_progress, needs_work
+      // So pending_review should be available to add
+      const addPendingReview = page.getByTestId('add-trigger-task.pending_review');
+      await expect(addPendingReview).toBeVisible();
+    });
+
+    // AC: @ui-agent-dispatch ac-4
+    test('edit dialog shows prompt template textarea', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      const promptTemplate = page.getByTestId('agent-edit-prompt-template');
+      await expect(promptTemplate).toBeVisible();
+    });
+
+    // AC: @ui-agent-dispatch ac-4
+    test('cancel discards changes and closes dialog', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      // Modify name
+      const nameInput = page.getByTestId('agent-edit-name');
+      await nameInput.fill('Modified Name');
+
+      // Cancel
+      await page.getByTestId('agent-edit-cancel').click();
+
+      // Dialog should close
+      await expect(page.getByTestId('agent-edit-dialog')).toHaveCount(0);
+
+      // Card name should still be original
+      const card = page.getByTestId('agent-card-task-worker');
+      await expect(card.getByTestId('agent-name')).toContainText('Task Worker');
+    });
+
+    // AC: @ui-agent-dispatch ac-4
+    test('save persists changes via PATCH API and updates card', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      // Modify description
+      const descInput = page.getByTestId('agent-edit-description');
+      await descInput.fill('Updated description via E2E test');
+
+      // Save
+      await page.getByTestId('agent-edit-save').click();
+
+      // Dialog should close
+      await expect(page.getByTestId('agent-edit-dialog')).toHaveCount(0);
+
+      // Verify the update persisted by reloading
+      await page.reload();
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      const card = page.getByTestId('agent-card-task-worker');
+      await expect(card).toContainText('Updated description via E2E test');
+    });
+
+    // AC: @ui-agent-dispatch ac-4
+    test('edit form shows error on save failure', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      // Intercept PATCH to simulate failure
+      await page.route('**/api/meta/agents/task-worker', (route) => {
+        if (route.request().method() === 'PATCH') {
+          route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ error: 'internal_error', message: 'Save failed' }),
+          });
+        } else {
+          route.continue();
+        }
+      });
+
+      // Save
+      await page.getByTestId('agent-edit-save').click();
+
+      // Error should be displayed
+      const errorMsg = page.getByTestId('agent-edit-error');
+      await expect(errorMsg).toBeVisible();
+      await expect(errorMsg).toContainText('Save failed');
+    });
+
+    // AC: @ui-agent-dispatch ac-4
+    test('trigger management: add and remove triggers', async ({ page, daemon }) => {
+      await page.goto('/agents');
+      await expect(page.getByTestId('agents-loading')).toHaveCount(0);
+
+      await page.getByTestId('agent-edit-button-task-worker').click();
+      await expect(page.getByTestId('agent-edit-dialog')).toBeVisible();
+
+      // Remove a trigger (needs_work)
+      const removeButton = page.getByTestId('remove-trigger-task.needs_work');
+      await expect(removeButton).toBeVisible();
+      await removeButton.click();
+
+      // Add pending_review trigger
+      const addButton = page.getByTestId('add-trigger-task.pending_review');
+      await expect(addButton).toBeVisible();
+      await addButton.click();
+
+      // needs_work should now be available to add
+      await expect(page.getByTestId('add-trigger-task.needs_work')).toBeVisible();
     });
   });
 });

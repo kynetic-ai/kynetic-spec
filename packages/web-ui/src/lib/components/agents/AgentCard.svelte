@@ -1,18 +1,23 @@
 <script lang="ts">
 	// AC: @ui-agent-dispatch ac-1 — Agent card showing name, triggers, active/completed counts
+	// AC: @ui-agent-dispatch ac-4 — Edit button opens inline edit form
 	import type { AgentDefinition } from '$lib/api';
+	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
 	import Bot from '@lucide/svelte/icons/bot';
 	import Zap from '@lucide/svelte/icons/zap';
+	import Pencil from '@lucide/svelte/icons/pencil';
 
 	interface Props {
 		agent: AgentDefinition;
 		activeCount: number;
 		completedCount: number;
+		onEdit?: () => void;
 	}
 
-	let { agent, activeCount, completedCount }: Props = $props();
+	let { agent, activeCount, completedCount, onEdit }: Props = $props();
 </script>
 
 <!-- AC: @ui-agent-dispatch ac-1 -->
@@ -28,11 +33,26 @@
 				<p class="text-xs text-muted-foreground font-mono" data-testid="agent-id">{agent.id}</p>
 			</div>
 		</div>
-		{#if activeCount > 0}
-			<span class="ds-breathe inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-status-in-progress text-status-in-progress-fg" data-testid="agent-active-badge">
-				{activeCount} active
-			</span>
-		{/if}
+		<div class="flex items-center gap-1.5 shrink-0">
+			{#if activeCount > 0}
+				<span class="ds-breathe inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-status-in-progress text-status-in-progress-fg" data-testid="agent-active-badge">
+					{activeCount} active
+				</span>
+			{/if}
+			{#if !isStaticMode() && onEdit}
+				<!-- AC: @ui-agent-dispatch ac-4 — Edit button -->
+				<Button
+					size="sm"
+					variant="ghost"
+					class="h-7 w-7 p-0"
+					onclick={onEdit}
+					aria-label="Edit agent {agent.name}"
+					data-testid="agent-edit-button-{agent.id}"
+				>
+					<Pencil class="h-4 w-4" />
+				</Button>
+			{/if}
+		</div>
 	</div>
 
 	{#if agent.description}

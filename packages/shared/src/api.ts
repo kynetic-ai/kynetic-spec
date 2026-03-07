@@ -48,7 +48,6 @@ export interface TaskSummary {
   started_at?: string;
   notes_count: number;
   todos_count?: number;
-  automation?: string;
 }
 
 /**

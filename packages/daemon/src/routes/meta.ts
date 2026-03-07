@@ -4,6 +4,7 @@
  * REST endpoints for meta operations:
  * - GET /api/meta/session - get session context
  * - GET /api/meta/agents - list agents
+ * - PATCH /api/meta/agents/:id - update agent definition
  * - GET /api/meta/workflows - list workflows
  * - GET /api/meta/observations - list observations with filter
  *
@@ -12,6 +13,7 @@
  * - ac-16: GET /api/meta/agents returns all agents
  * - ac-17: GET /api/meta/workflows returns all workflows
  * - ac-18: GET /api/meta/observations with filter
+ * - @ui-agent-dispatch ac-4: PATCH /api/meta/agents/:id updates agent definition
  */
 
 import { Elysia, t } from 'elysia';
@@ -19,7 +21,9 @@ import {
   initContext,
   loadMetaContext,
   loadSessionContext,
+  saveMetaItem,
 } from '../../parser/index.js';
+import { commitIfShadow } from '../../parser/shadow.js';
 
 interface MetaRouteOptions {}
 
@@ -56,6 +60,70 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
         total: agents.length,
       };
     })
+
+    // AC: @ui-agent-dispatch ac-4 - Update agent definition
+    .patch(
+      '/agents/:id',
+      async ({ params, body, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const meta = await loadMetaContext(ctx);
+
+        // Find the agent by id
+        const agent = meta.agents.find((a) => a.id === params.id);
+        if (!agent) {
+          throw new Error(`Agent not found: ${params.id}`);
+        }
+
+        // Apply partial updates from body
+        const updated = { ...agent, ...body };
+
+        await saveMetaItem(ctx, updated, 'agent');
+        await commitIfShadow(ctx.shadow, `meta: update agent ${params.id}`);
+
+        return updated;
+      },
+      {
+        params: t.Object({
+          id: t.String(),
+        }),
+        body: t.Object({
+          name: t.Optional(t.String()),
+          description: t.Optional(t.String()),
+          adapter: t.Optional(t.String()),
+          dispatch: t.Optional(
+            t.Array(
+              t.Object({
+                on: t.String(),
+                filter: t.Optional(
+                  t.Object({
+                    automation: t.Optional(t.String()),
+                    tags: t.Optional(t.Array(t.String())),
+                    priority: t.Optional(t.Number()),
+                  })
+                ),
+              })
+            )
+          ),
+          capabilities: t.Optional(t.Array(t.String())),
+          tools: t.Optional(t.Array(t.String())),
+          skills: t.Optional(t.Array(t.String())),
+          budget: t.Optional(
+            t.Object({
+              max_tasks: t.Optional(t.Number()),
+              max_retries: t.Optional(t.Number()),
+              timeout_minutes: t.Optional(t.Number()),
+            })
+          ),
+          concurrency: t.Optional(
+            t.Object({
+              max_concurrent: t.Optional(t.Number()),
+            })
+          ),
+          auto_approve: t.Optional(t.Boolean()),
+          prompt_template: t.Optional(t.String()),
+        }),
+      }
+    )
 
     // AC: @api-contract ac-17 - List workflows
     .get('/workflows', async ({ projectContext }) => {
