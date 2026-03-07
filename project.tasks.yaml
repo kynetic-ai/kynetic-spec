@@ -80076,6 +80076,25 @@
         IDs. All 182 test files pass (4030 tests). The 2 pre-existing failures in codex config tests
         are unrelated.
       supersedes: null
+    - _ulid: 01KK4KDKETZHRYB7CHV8PHMGFB
+      created_at: 2026-03-07T16:52:18.011Z
+      author: Jacob Chapel
+      content: >-
+        Review findings:
+
+        - MUST-FIX: Static mode regression in shared detail content. In TaskDetailContent, all
+        actions are hidden behind `{#if !isStaticMode()}`
+        (packages/web-ui/src/lib/components/board/TaskDetailContent.svelte:289 and :415). This
+        removes the Start Task button entirely in read-only SPA mode, which conflicts with
+        @gh-pages-export ac-16 (button should be disabled with explanatory tooltip).
+
+        - MUST-FIX: `kspec validate --completeness -v --warnings-ok` reports warnings for
+        @web-dashboard: uncovered ACs ac-1, ac-2, ac-3, ac-11, ac-12, ac-13, ac-14 (see
+        /tmp/kspec-completeness.txt lines 363-364). Per review checklist, warnings for this spec are
+        blocking.
+
+        - Regression check: `npm test` (root) and `packages/web-ui npm test` both passed.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
@@ -80100,6 +80119,7 @@
   session_id: 01KK4J4TXGAR9BRYXB8SJ1YN3F
   created_at: 2026-03-07T15:35:03.216Z
   started_at: 2026-03-07T16:36:56.709Z
+  submitted_at: 2026-03-07T16:46:22.245Z
   notes:
     - _ulid: 01KK4K2J55XYXVGREGPPCD9BAH
       created_at: 2026-03-07T16:46:16.229Z
@@ -80125,7 +80145,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-07T16:46:22.245Z
 - _ulid: 01KK4F06AW44EZDXEPSPHPATD4
   slugs: []
   title: Fix kanban board showing wrong tasks in columns
