@@ -11,7 +11,7 @@
 
 	let { block }: { block: ToolCallBlock } = $props();
 
-	let expanded = $state(block.status === 'running');
+	let expanded = $state(false);
 
 	let borderColor = $derived(
 		block.status === 'completed'
