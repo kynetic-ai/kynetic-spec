@@ -80327,7 +80327,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -80357,6 +80357,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-07T21:49:29.794Z
+  closed_reason: Review passed. Merged to feat/ui-revamp. Fixed header showing total fetched count
+    instead of visible column count, and added missing automation field to static mode
+    toTaskSummary(). All tests pass, AC coverage verified.
 - _ulid: 01KK4F07BB4W0T37GF2SH50WPB
   slugs: []
   title: Fix task IDs showing instead of task names in sessions and dispatch views
