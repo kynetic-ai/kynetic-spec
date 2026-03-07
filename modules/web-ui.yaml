@@ -1478,6 +1478,9 @@ features:
         when: The user navigates to /workflows
         then: Each workflow shows id, description, ordered steps with names, trigger type if configured, and
           loop variant indicator. A Start button initiates the workflow via daemon API.
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KK2TDXT5T18EXQSYC8M8X35K
     slugs:
       - ui-settings-view
