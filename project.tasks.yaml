@@ -80220,6 +80220,28 @@
         TaskDetailModal.svelte. The AC annotation additions to dashboard.spec.ts and items.spec.ts
         are valid and already merged via dda66873e."
       supersedes: null
+    - _ulid: 01KK53G6VPB9QXQQAWC13KYZ81
+      created_at: 2026-03-07T21:33:20.630Z
+      author: "@claude"
+      content: >-
+        Clarification for fix cycle 2: The fix branch (fix/unify-task-detail-display) is stale — its
+        single commit modified the old monolithic TaskDetailModal.svelte, but feat/ui-revamp already
+        has the extracted TaskDetailContent.svelte. The worker needs to:
+
+        1. Apply the @gh-pages-export ac-16 fix (disabled buttons with tooltips in static mode) to
+        TaskDetailContent.svelte:289, replacing the {#if !isStaticMode()} guard that hides actions
+        entirely
+
+        2. Apply the same pattern to the note form at TaskDetailContent.svelte:415
+
+        3. Add @web-dashboard AC annotations to dashboard.spec.ts (ac-1, ac-2, ac-3) and
+        items.spec.ts (ac-11, ac-12, ac-13, ac-14) — these were in the fix branch but never merged
+
+        4. Do NOT annotate the note form with @gh-pages-export ac-17 (that AC is about the inbox Add
+        button, already covered elsewhere)
+
+        5. The fix branch can be deleted — its changes target the wrong file
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
