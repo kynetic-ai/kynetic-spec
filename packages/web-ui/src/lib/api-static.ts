@@ -41,6 +41,7 @@ function toTaskSummary(task: ExportedTask): TaskSummary {
 		depends_on: task.depends_on,
 		created_at: task.created_at,
 		started_at: task.started_at ?? undefined,
+		automation: task.automation,
 		notes_count: task.notes?.length ?? 0,
 		todos_count: task.todos?.length ?? 0
 	};

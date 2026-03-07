@@ -84,6 +84,30 @@ describe('distributeToColumns', () => {
 	});
 
 	// AC: @ui-task-board ac-1
+	it('visible task count is less than total when many completed tasks exist', () => {
+		// Regression: header showed total fetched tasks (e.g. 500) instead of
+		// sum of visible column tasks. With 490 completed tasks capped at 20,
+		// visible count should be much less than total.
+		const active = [
+			makeTask({ status: 'pending', automation: undefined }),
+			makeTask({ status: 'pending', automation: 'eligible' }),
+			makeTask({ status: 'in_progress' })
+		];
+		const completed = Array.from({ length: 100 }, (_, i) =>
+			makeTask({
+				status: 'completed',
+				created_at: new Date(Date.now() - i * 86400000).toISOString()
+			})
+		);
+		const allTasks = [...active, ...completed];
+		const columns = distributeToColumns(allTasks);
+		const visibleCount = columns.reduce((sum, col) => sum + col.tasks.length, 0);
+		// 1 backlog + 1 ready + 1 in_progress + 0 review + 20 done = 23
+		expect(visibleCount).toBe(23);
+		expect(visibleCount).toBeLessThan(allTasks.length);
+	});
+
+	// AC: @ui-task-board ac-1
 	it('places blocked tasks in In Progress column', () => {
 		const tasks = [makeTask({ status: 'blocked' })];
 		const columns = distributeToColumns(tasks);
