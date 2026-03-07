@@ -37,7 +37,6 @@
 	// Reactive: re-fetch when URL params change
 	let filterParams = $derived({
 		status: $page.url.searchParams.get('status') || undefined,
-		type: $page.url.searchParams.get('type') || undefined,
 		tag: $page.url.searchParams.get('tag') || undefined,
 		assignee: $page.url.searchParams.get('assignee') || undefined,
 		automation: $page.url.searchParams.get('automation') || undefined,
@@ -54,7 +53,7 @@
 	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
 	$effect(() => {
 		// Explicitly access all filter properties for dependency tracking
-		const { status, type, tag, assignee, automation, plan, limit, offset } = filterParams;
+		const { status, tag, assignee, automation, plan, limit, offset } = filterParams;
 		const version = getProjectVersion();
 		const ready = isProjectInitialized();
 		if (!ready) return;

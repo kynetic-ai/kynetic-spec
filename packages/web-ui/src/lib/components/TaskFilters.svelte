@@ -25,14 +25,6 @@
 		cancelled: 'Cancelled'
 	};
 
-	// Display labels for type values
-	const typeLabels: Record<string, string> = {
-		'': 'All Types',
-		all: 'All Types',
-		task: 'Task',
-		subtask: 'Subtask'
-	};
-
 	// Display labels for automation values
 	// Values match AutomationStatusSchema: eligible, needs_review, manual_only
 	const automationLabels: Record<string, string> = {
@@ -45,12 +37,11 @@
 
 	// Derive filter values from URL - use $derived with $page store
 	let status = $derived($page.url.searchParams.get('status') || '');
-	let type = $derived($page.url.searchParams.get('type') || '');
 	let tag = $derived($page.url.searchParams.get('tag') || '');
 	let assignee = $derived($page.url.searchParams.get('assignee') || '');
 	let automation = $derived($page.url.searchParams.get('automation') || '');
 
-	let hasFilters = $derived(status || type || tag || assignee || automation);
+	let hasFilters = $derived(status || tag || assignee || automation);
 
 	function updateFilter(key: string, value: string | string[] | undefined) {
 		// Handle the case where value might be an array (bits-ui Svelte 5 quirk)
@@ -83,7 +74,6 @@
 
 	// Compute the display value for Select triggers
 	let statusDisplay = $derived(status || 'all');
-	let typeDisplay = $derived(type || 'all');
 	let automationDisplay = $derived(automation || 'all');
 </script>
 
@@ -106,23 +96,6 @@
 				<SelectItem value="blocked">Blocked</SelectItem>
 				<SelectItem value="completed">Completed</SelectItem>
 				<SelectItem value="cancelled">Cancelled</SelectItem>
-			</SelectContent>
-		</Select>
-	</div>
-
-	<div class="flex-1 min-w-[200px]">
-		<label for="type-filter" class="text-sm font-medium mb-2 block">Type</label>
-		<Select
-			value={typeDisplay}
-			onValueChange={(v) => updateFilter('type', v)}
-		>
-			<SelectTrigger id="type-filter" data-testid="filter-type">
-				{typeLabels[typeDisplay] || 'All Types'}
-			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="all">All Types</SelectItem>
-				<SelectItem value="task">Task</SelectItem>
-				<SelectItem value="subtask">Subtask</SelectItem>
 			</SelectContent>
 		</Select>
 	</div>

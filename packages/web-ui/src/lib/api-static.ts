@@ -68,7 +68,6 @@ function filterTasks(
 	tasks: ExportedTask[],
 	params?: {
 		status?: string;
-		type?: string;
 		tag?: string;
 		assignee?: string;
 		automation?: string;
@@ -78,9 +77,6 @@ function filterTasks(
 
 	if (params?.status) {
 		result = result.filter((t) => t.status === params.status);
-	}
-	if (params?.type) {
-		result = result.filter((t) => t.type === params.type);
 	}
 	if (params?.tag) {
 		result = result.filter((t) => t.tags.includes(params.tag!));
@@ -183,7 +179,6 @@ function findItemByRef(items: ExportedItem[], ref: string): ExportedItem | null 
  */
 export function fetchTasksStatic(params?: {
 	status?: string;
-	type?: string;
 	tag?: string;
 	assignee?: string;
 	automation?: string;

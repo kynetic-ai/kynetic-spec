@@ -76,25 +76,6 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test('filters tasks by type', async ({ page, daemon }) => {
-      await page.goto('/tasks');
-
-      const filterType = page.getByTestId('filter-type');
-      await expect(filterType).toBeVisible();
-
-      // Select "task" type (use exact match to avoid matching "Subtask")
-      await filterType.click();
-      await page.getByRole('option', { name: 'Task', exact: true }).click();
-
-      // Wait for URL to update with filter
-      await page.waitForURL(/type=task/, { timeout: 5000 });
-
-      // Verify tasks displayed match selected type
-      const taskItems = page.getByTestId('task-list-item');
-      await expect(taskItems.first()).toBeVisible({ timeout: 5000 });
-    });
-
-    // AC: @web-dashboard ac-9
     test('filters tasks by tag', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
