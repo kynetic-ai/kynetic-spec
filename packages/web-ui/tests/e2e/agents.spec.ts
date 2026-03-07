@@ -8,9 +8,12 @@
  * - @ui-agent-dispatch ac-1: Agent definitions show name, triggers, active/completed counts
  * - @ui-agent-dispatch ac-2: Dispatch running with stop button and active invocations
  * - @ui-agent-dispatch ac-3: Dispatch stopped with no active invocations
+ * - @ui-agent-dispatch ac-4: Agent editing (N/A — separate task @01KK2SHZ)
  */
 
 import { test, expect } from '../fixtures/test-base';
+
+// AC: @ui-agent-dispatch ac-4 — N/A: agent editing UI not yet implemented; covered by task @01KK2SHZ
 
 const DAEMON_URL = 'http://localhost:3456';
 
