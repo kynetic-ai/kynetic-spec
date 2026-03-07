@@ -80274,7 +80274,7 @@
   spec_ref: "@ui-session-history"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -80310,6 +80310,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T17:42:13.891Z
 - _ulid: 01KK4F08D3J3EQMKJ8YQN9T7NB
   slugs: []
   title: Fix settings page showing shadow branch as unhealthy when it is healthy
