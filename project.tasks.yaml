@@ -78495,13 +78495,38 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix triage page dropdown selectors not functioning
+- _ulid: 01KK2T53XATPSTVMRNGCHCX23W
+  slugs: []
+  title: Fix triage page dropdown selectors not functioning
+  type: task
   description: "The filter dropdown selectors on the /triage page are non-functional — selecting a
     value has no effect. Likely causes: (1) Svelte 5 event binding issue (onchange vs on:change),
     (2) reactive state not updating when select value changes, (3) select elements may be missing
     bind:value or change handlers. Investigate the triage page route (routes/triage/+page.svelte),
     check how filter state is managed and whether dropdown change events properly update the
     reactive filter state and re-filter the displayed items."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T00:11:31.113Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Fix inbox page filter dropdowns not functioning
+  description: "The filter dropdown selectors (status, tags, age) on the /inbox page are
+    non-functional — selecting a value has no effect on the displayed items. Likely same root cause
+    as the triage dropdown bug: Svelte 5 event binding issue or reactive state not updating on
+    select change. Investigate routes/inbox/+page.svelte filter controls and how filterStatus,
+    filterTag, filterAge state variables are bound to the select elements."
   type: task
   spec_ref: null
   meta_ref: null
@@ -78513,11 +78538,11 @@
     - web-ui
   depends_on: []
   automation: eligible
-  _ulid: 01KK2T53XATPSTVMRNGCHCX23W
+  _ulid: 01KK2T5ZKN5M7ZVF5TK7HHAYCG
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-07T00:11:31.113Z
+  created_at: 2026-03-07T00:11:59.476Z
   notes: []
   todos: []
