@@ -9,7 +9,7 @@
 	import { fetchWorkflows } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -36,9 +36,7 @@
 	};
 
 	// ── Lifecycle ──
-	onMount(async () => {
-		await loadData();
-
+	onMount(() => {
 		if (!isStaticMode()) {
 			subscribe(['files:updates']);
 			on('files:updates', handleUpdate);
@@ -52,12 +50,13 @@
 		}
 	});
 
-	// Reload on project change
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadData();
 	});
 
 	// ── Data loading ──

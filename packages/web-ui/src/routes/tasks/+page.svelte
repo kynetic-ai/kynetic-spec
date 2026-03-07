@@ -19,7 +19,7 @@
 	import XIcon from '@lucide/svelte/icons/x';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import ListIcon from '@lucide/svelte/icons/list';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 
 	let tasks = $state<TaskSummary[]>([]);
 	let total = $state(0);
@@ -52,19 +52,16 @@
 	// Track the last processed ref to avoid infinite loops
 	let lastProcessedRef = $state('');
 
-	$effect(() => {
-		// Re-fetch when filterParams changes - explicitly access all properties for dependency tracking
-		const { status, type, tag, assignee, automation, plan, limit, offset } = filterParams;
-		loadTasks();
-	});
-
+	// Re-fetch when filterParams change or project changes.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
 	$effect(() => {
+		// Explicitly access all filter properties for dependency tracking
+		const { status, type, tag, assignee, automation, plan, limit, offset } = filterParams;
 		const version = getProjectVersion();
-		if (version > 0) {
-			// Only reload if version has been incremented (not on initial load)
-			loadTasks();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadTasks();
 	});
 
 	// AC: Open task detail when URL has ref param
@@ -267,8 +264,6 @@
 	}
 
 	onMount(() => {
-		loadTasks();
-
 		// AC: @web-dashboard ac-32, ac-33 - Subscribe to task updates
 		subscribe(['tasks']);
 		on('tasks', handleTaskUpdate);

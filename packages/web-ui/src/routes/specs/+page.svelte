@@ -1,7 +1,6 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-11, ac-12, ac-13, ac-14, ac-15
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
-	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import type { ItemSummary } from '@kynetic-ai/shared';
@@ -9,7 +8,7 @@
 	import ItemTree from '$lib/components/ItemTree.svelte';
 	import ItemDetail from '$lib/components/ItemDetail.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 
 	let items = $state<ItemSummary[]>([]);
 	let loading = $state(true);
@@ -64,22 +63,15 @@
 		}
 	});
 
-	onMount(() => {
-		loadItems();
-	});
-
-	// Reload when plan filter changes (e.g. navigating from plans page)
-	$effect(() => {
-		const _plan = planFilter;
-		loadItems();
-	});
-
+	// Load items when project is ready, on project change, and on plan filter change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
 	$effect(() => {
+		const _plan = planFilter;
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadItems();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadItems();
 	});
 </script>
 

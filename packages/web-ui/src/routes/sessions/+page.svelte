@@ -3,11 +3,11 @@
   AC: @ui-session-history ac-2 — Click navigates to /sessions/:id.
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import type { SessionSummary } from '$lib/api';
 	import { fetchSessions } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
@@ -61,7 +61,12 @@
 		}
 	}
 
-	onMount(() => {
+	// Load sessions when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
+	$effect(() => {
+		const version = getProjectVersion();
+		const ready = isProjectInitialized();
+		if (!ready) return;
 		loadSessions();
 	});
 </script>

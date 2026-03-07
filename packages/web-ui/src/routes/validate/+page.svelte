@@ -1,6 +1,5 @@
 <script lang="ts">
 	// AC: @ui-validation-view ac-1
-	import { onMount } from 'svelte';
 	import {
 		fetchValidation,
 		fetchAlignment,
@@ -23,7 +22,7 @@
 		FileWarning,
 		RefreshCw
 	} from 'lucide-svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 
 	// --- State ---
 
@@ -182,16 +181,13 @@
 	let infoIssues = $derived(groupedIssues.filter((i) => i.severity === 'info'));
 
 	// --- Lifecycle ---
-
-	onMount(async () => {
-		await loadData();
-	});
-
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadData();
 	});
 
 	async function loadData() {

@@ -12,7 +12,7 @@
 	import type { TaskSummary, BroadcastEvent } from '@kynetic-ai/shared';
 	import { fetchTasks, fetchAgentStatus, type AgentDispatchStatus } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { distributeToColumns, type BoardColumn } from '$lib/components/board/board-utils';
 	import BoardColumnComponent from '$lib/components/board/BoardColumn.svelte';
 	import ActiveFleetRow from '$lib/components/board/ActiveFleetRow.svelte';
@@ -71,12 +71,14 @@
 		columns = distributeToColumns(tasks);
 	});
 
-	// AC: @ui-task-board ac-5 — Reload on project change
+	// AC: @ui-task-board ac-5 — Load board when project is ready and reload on project change
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
+	// Replaces the old onMount+$effect pattern that could race with project resolution.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadBoard();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadBoard();
 	});
 
 	// Open task detail from URL param
@@ -152,8 +154,6 @@
 	let agentPollTimer: ReturnType<typeof setInterval> | undefined;
 
 	onMount(() => {
-		loadBoard();
-
 		// AC: @ui-task-board ac-5 — Subscribe to task and agent updates
 		subscribe(['tasks', 'agents']);
 		on('tasks', handleTaskUpdate);
