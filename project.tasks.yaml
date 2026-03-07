@@ -78734,6 +78734,13 @@
       content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX missing spec AC coverage for
         @ui-agent-dispatch ac-4 (kspec validate reports uncovered own AC)."
       supersedes: null
+    - _ulid: 01KK36QCXKTPG1KNV7Q8HFBE92
+      created_at: 2026-03-07T03:51:13.075Z
+      author: "@claude"
+      content: "Fix cycle 1: Added N/A annotation for @ui-agent-dispatch ac-4 in agents.spec.ts. ac-4
+        (agent editing UI) has its own dedicated task @01KK2SHZ and is not yet implemented. The
+        annotation clears the kspec validate coverage warning that was the only review finding."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2SHZXHD706QWBM4P2TTGB1
