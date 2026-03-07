@@ -100,7 +100,6 @@ export async function fetchProjects(): Promise<{ projects: Project[] }> {
  */
 export async function fetchTasks(params?: {
 	status?: string;
-	type?: string;
 	tag?: string;
 	assignee?: string;
 	automation?: string;

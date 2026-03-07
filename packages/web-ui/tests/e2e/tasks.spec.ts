@@ -76,25 +76,6 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-9
-    test('filters tasks by type', async ({ page, daemon }) => {
-      await page.goto('/tasks');
-
-      const filterType = page.getByTestId('filter-type');
-      await expect(filterType).toBeVisible();
-
-      // Select "task" type (use exact match to avoid matching "Subtask")
-      await filterType.click();
-      await page.getByRole('option', { name: 'Task', exact: true }).click();
-
-      // Wait for URL to update with filter
-      await page.waitForURL(/type=task/, { timeout: 5000 });
-
-      // Verify tasks displayed match selected type
-      const taskItems = page.getByTestId('task-list-item');
-      await expect(taskItems.first()).toBeVisible({ timeout: 5000 });
-    });
-
-    // AC: @web-dashboard ac-9
     test('filters tasks by tag', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
@@ -272,8 +253,8 @@ test.describe('Tasks View', () => {
       const detailPanel = page.getByTestId('task-detail-panel');
       await expect(detailPanel).toBeVisible({ timeout: 5000 });
 
-      // Verify panel contains expected sections
-      await expect(detailPanel.getByTestId('task-description')).toBeVisible();
+      // Verify panel contains expected sections (title is in SheetHeader)
+      await expect(detailPanel.getByTestId('task-detail-title')).toBeVisible();
       await expect(detailPanel.getByTestId('task-notes')).toBeVisible();
     });
 
@@ -334,7 +315,7 @@ test.describe('Tasks View', () => {
       const detailPanel = page.getByTestId('task-detail-panel');
       await expect(detailPanel).toBeVisible();
 
-      const specRefLink = detailPanel.getByTestId('task-spec-ref-link');
+      const specRefLink = detailPanel.getByTestId('task-spec-ref');
       await expect(specRefLink).toBeVisible();
 
       // Click the actual anchor link within the spec ref container
@@ -362,7 +343,7 @@ test.describe('Tasks View', () => {
       await taskItem.click();
 
       const detailPanel = page.getByTestId('task-detail-panel');
-      const startButton = detailPanel.getByTestId('start-task-button');
+      const startButton = detailPanel.getByTestId('action-start');
       await expect(startButton).toBeVisible();
 
       // Set up request interception to verify API call
@@ -391,11 +372,11 @@ test.describe('Tasks View', () => {
       await taskItem.click();
 
       const detailPanel = page.getByTestId('task-detail-panel');
-      const addNoteForm = detailPanel.getByTestId('add-note-form');
+      const addNoteForm = detailPanel.getByTestId('task-add-note');
       await expect(addNoteForm).toBeVisible();
 
       // Type note content
-      const noteTextarea = addNoteForm.getByTestId('note-textarea');
+      const noteTextarea = addNoteForm.locator('textarea');
       const noteContent = 'Test note added via E2E test';
       await noteTextarea.fill(noteContent);
 
@@ -405,7 +386,7 @@ test.describe('Tasks View', () => {
       });
 
       // Submit note
-      const submitButton = addNoteForm.getByTestId('add-note-button');
+      const submitButton = addNoteForm.getByTestId('action-add-note');
       await submitButton.click();
 
       // Verify API request

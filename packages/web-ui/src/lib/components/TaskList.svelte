@@ -100,9 +100,6 @@
 					>
 						<TableCell class="font-medium truncate">
 							<span data-testid="task-title" class="truncate">{task.title}</span>
-							{#if task.type !== 'task'}
-								<Badge variant="outline" class="ml-2 shrink-0">{task.type}</Badge>
-							{/if}
 						</TableCell>
 						<TableCell>
 							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{formatStatus(task.status)}</Badge>
