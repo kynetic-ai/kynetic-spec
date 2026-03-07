@@ -32,12 +32,16 @@
 	}
 
 	let taskTitle = $state<string | null>(null);
+	let lastFetchedTaskId: string | null = null;
 
-	// Resolve task title when task_id is available
+	// Resolve task title when task_id is available — guard to avoid
+	// repeated fetches on every session metadata refresh (every 3s for live sessions).
 	$effect(() => {
-		if (session.task_id) {
+		const taskId = session.task_id;
+		if (taskId && taskId !== lastFetchedTaskId) {
+			lastFetchedTaskId = taskId;
 			taskTitle = null;
-			fetchTask(session.task_id)
+			fetchTask(taskId)
 				.then((task) => {
 					taskTitle = task.title;
 				})
