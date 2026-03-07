@@ -519,7 +519,7 @@ features:
       - id: ac-9
         given: user is viewing task list
         when: filter controls are visible
-        then: can filter by status, type, tag, assignee, automation status
+        then: can filter by status, tag, assignee, automation status
       - id: ac-10
         given: user applies filter
         when: filter selection changes
