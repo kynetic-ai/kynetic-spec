@@ -1,0 +1,7 @@
+id: 01KK39D2R7TVFTGJV9V982H6GT
+task_id: "@01KK2SHZXHD706QWBM4P2TTGB1"
+agent_type: claude-agent-acp
+agent_id: ui-worker
+trigger: task.needs_work
+status: active
+started_at: 2026-03-07T04:44:03.449Z
