@@ -79715,7 +79715,7 @@
   spec_ref: "@ui-session-stream"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -79728,6 +79728,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T08:57:09.576Z
+  session_id: 01KK3QWJ8TGKSQVQC0WQP47ZK5
 - _ulid: 01KK3BSWT9NQHKEZ19P97VT3SV
   slugs: []
   title: Tool calls in live session stream should render collapsed by default, not expanded
