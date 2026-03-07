@@ -78212,6 +78212,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on: []
   context: []
   priority: 1
@@ -78223,6 +78224,7 @@
   created_at: 2026-03-06T22:41:31.264Z
   started_at: 2026-03-07T15:40:17.604Z
   submitted_at: 2026-03-07T15:46:30.468Z
+  completed_at: 2026-03-07T16:01:14.156Z
   notes:
     - _ulid: 01KK4FMZ9SREXC67CCEB0HQ7HN
       created_at: 2026-03-07T15:46:25.209Z
@@ -78241,8 +78243,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T16:01:14.156Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KK2NNKV88XS2NCPKRHP3MH5E
   slugs: []
   title: Fix session stream not rendering agent messages, tool calls, or thinking blocks
@@ -79967,7 +79967,7 @@
   spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -79980,6 +79980,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-07T16:01:38.943Z
+  session_id: 01KK4G5TK8KZB33XYBBEHZS3KV
 - _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
   slugs: []
   title: Unify task detail display across kanban and task list
