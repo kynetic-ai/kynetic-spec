@@ -78880,6 +78880,35 @@
         required, POST implemented) and edit form not schema-driven from AgentSchema as required by
         task."
       supersedes: null
+    - _ulid: 01KK3ADR65660QK9CAX6MBZD3C
+      created_at: 2026-03-07T04:55:51.237Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed. Changes:
+
+        1. PATCH /api/meta/agents/:id endpoint (was POST) — daemon route uses Elysia .patch() with
+        typed body schema
+
+        2. Schema-driven edit form — dispatch events from AGENT_DISPATCH_EVENTS (shared const
+        mirroring AgentDispatchEventSchema), AgentUpdatePayload derived from AgentDefinition type
+
+        3. AgentEditForm.svelte dialog with all fields: name, description, adapter, dispatch
+        triggers (add/remove from schema-defined events), capabilities, tools, skills, budget
+        (max_tasks, max_retries, timeout_minutes), concurrency, auto_approve toggle, prompt_template
+        textarea
+
+        4. Edit button on AgentCard (ghost icon, hidden in static mode)
+
+        5. updateAgentDefinition API client function using PATCH method
+
+        6. E2E tests: dialog open, field pre-population, save persistence, cancel discard, error
+        display, trigger management
+
+        7. Fixed pre-existing duplicate automation field in shared TaskSummary
+
+        All 3926 root vitest tests pass (2 pre-existing failures). All 161 web-ui tests pass. No new
+        svelte-check errors.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
@@ -79144,7 +79173,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix kanban board and task views loading tasks from wrong project on initial page load
+- _ulid: 01KK3A73PP2K0DDDHR6KQ9H2K1
+  slugs: []
+  title: Fix kanban board and task views loading tasks from wrong project on initial page load
+  type: task
   description: "The kanban board shows only 2 tasks in Backlog and 0 in Ready/In Progress, while the
     task list shows 27 pending and 1 in progress. The board is loading tasks from the wrong project
     context on initial page load — same root cause as the sidebar badge count bug (@01KK39QY). The
@@ -79153,22 +79185,19 @@
     active project to be resolved before calling fetchTasks(). This likely affects ALL data-loading
     pages, not just the board — consider fixing the project context initialization centrally in the
     layout or API layer."
-  type: task
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - bug
     - web-ui
-  depends_on: []
-  automation: eligible
-  _ulid: 01KK3A73PP2K0DDDHR6KQ9H2K1
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-07T04:52:13.653Z
   notes: []
   todos: []
+  automation: eligible
