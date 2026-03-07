@@ -23,6 +23,7 @@ import type {
 	Convention,
 	PaginatedResponse,
 	PlanSummary,
+	PlanDetail,
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
@@ -771,6 +772,25 @@ export async function fetchPlans(params?: {
 	}
 
 	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch a single plan's detail including content (lazy-loaded on expand)
+ * AC: @ui-plans-view ac-2
+ */
+export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
+	if (isStaticMode()) {
+		throw new Error('Plan content not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {

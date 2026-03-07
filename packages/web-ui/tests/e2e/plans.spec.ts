@@ -238,6 +238,205 @@ test.describe('Plans View', () => {
 		await expect(page.getByTestId('plan-filter-banner')).toContainText('@test-plan-active');
 	});
 
+	// ── AC: @ui-plans-view ac-2 — Expandable plan content rendered as formatted markdown, loaded on demand ──
+
+	// AC: @ui-plans-view ac-2
+	test('shows expand toggle button on each plan card', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const cards = page.getByTestId('plan-card');
+		const count = await cards.count();
+		expect(count).toBeGreaterThan(0);
+
+		// Each card should have a "Show Content" expand toggle
+		for (let i = 0; i < count; i++) {
+			const card = cards.nth(i);
+			const toggle = card.getByTestId('plan-expand-toggle');
+			await expect(toggle).toBeVisible();
+			await expect(toggle).toContainText('Show Content');
+		}
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('clicking expand toggle loads and renders plan content as markdown', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		await expect(activePlan).toBeVisible();
+
+		// Click expand toggle
+		const toggle = activePlan.getByTestId('plan-expand-toggle');
+		await toggle.click();
+
+		// Content section should appear with rendered markdown
+		const contentSection = activePlan.getByTestId('plan-content-section');
+		await expect(contentSection).toBeVisible({ timeout: 10000 });
+
+		const rendered = activePlan.getByTestId('plan-content-rendered');
+		await expect(rendered).toBeVisible();
+
+		// Fixture content is "# Active Plan\nThis plan is actively being implemented."
+		// Rendered as markdown, should have an h1 and paragraph text
+		await expect(rendered.locator('h1')).toContainText('Active Plan');
+		await expect(rendered).toContainText('actively being implemented');
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('toggle button text changes to Hide Content when expanded', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const toggle = activePlan.getByTestId('plan-expand-toggle');
+
+		await expect(toggle).toContainText('Show Content');
+		await toggle.click();
+
+		// Wait for content to load
+		await expect(activePlan.getByTestId('plan-content-rendered')).toBeVisible({ timeout: 10000 });
+
+		// Button should now say "Hide Content"
+		await expect(toggle).toContainText('Hide Content');
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('clicking Hide Content collapses the content section', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const toggle = activePlan.getByTestId('plan-expand-toggle');
+
+		// Expand
+		await toggle.click();
+		await expect(activePlan.getByTestId('plan-content-section')).toBeVisible({ timeout: 10000 });
+
+		// Collapse
+		await toggle.click();
+		await expect(activePlan.getByTestId('plan-content-section')).not.toBeVisible();
+
+		// Button should revert to "Show Content"
+		await expect(toggle).toContainText('Show Content');
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('expand toggle has correct aria attributes', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const toggle = activePlan.getByTestId('plan-expand-toggle');
+
+		// Initially not expanded
+		await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+		// Click to expand
+		await toggle.click();
+		await expect(activePlan.getByTestId('plan-content-section')).toBeVisible({ timeout: 10000 });
+		await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('content is cached after first load — re-expand does not show loading state', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const toggle = activePlan.getByTestId('plan-expand-toggle');
+
+		// First expand — content loads
+		await toggle.click();
+		await expect(activePlan.getByTestId('plan-content-rendered')).toBeVisible({ timeout: 10000 });
+
+		// Collapse
+		await toggle.click();
+		await expect(activePlan.getByTestId('plan-content-section')).not.toBeVisible();
+
+		// Re-expand — should show content immediately without loading skeleton
+		await toggle.click();
+		await expect(activePlan.getByTestId('plan-content-rendered')).toBeVisible();
+		// Loading skeleton should not appear for cached content
+		await expect(activePlan.getByTestId('plan-content-loading')).not.toBeVisible();
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('shows error state when plan content API fails', async ({ page }) => {
+		const plansList = page.getByTestId('plans-list');
+		await expect(plansList).toBeVisible({ timeout: 10000 });
+
+		// Intercept the detail endpoint to return an error
+		await page.route('**/api/plans/test-plan-active', (route) =>
+			route.fulfill({
+				status: 500,
+				contentType: 'application/json',
+				body: JSON.stringify({ error: 'internal_error', message: 'Failed to load plan' })
+			})
+		);
+
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		const toggle = activePlan.getByTestId('plan-expand-toggle');
+		await toggle.click();
+
+		// Should show error state
+		const errorEl = activePlan.getByTestId('plan-content-error');
+		await expect(errorEl).toBeVisible({ timeout: 10000 });
+	});
+
+	// ── AC: @ui-plans-view ac-2 — API endpoint tests ──
+
+	// AC: @ui-plans-view ac-2
+	test('GET /api/plans/:ref returns plan detail with content', async ({ request, daemon }) => {
+		const response = await request.get(`${daemon.baseUrl}/api/plans/test-plan-active`, {
+			headers: { 'X-Kspec-Dir': daemon.tempDir }
+		});
+
+		expect(response.status()).toBe(200);
+
+		const body = await response.json();
+
+		// Should have all PlanSummary fields
+		expect(body).toHaveProperty('_ulid', '01KG0RRPCA45ZT43W2T6HJMVP1');
+		expect(body).toHaveProperty('title', 'Active Implementation Plan');
+		expect(body).toHaveProperty('status', 'active');
+		expect(body).toHaveProperty('slugs');
+		expect(body.slugs).toContain('test-plan-active');
+		expect(body).toHaveProperty('task_progress');
+		expect(body).toHaveProperty('spec_count');
+		expect(body).toHaveProperty('task_count');
+
+		// Should include content field (the key AC-2 requirement)
+		expect(body).toHaveProperty('content');
+		expect(body.content).toContain('Active Plan');
+		expect(body.content).toContain('actively being implemented');
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('GET /api/plans/:ref returns 404 for non-existent plan', async ({ request, daemon }) => {
+		const response = await request.get(`${daemon.baseUrl}/api/plans/non-existent-plan`, {
+			headers: { 'X-Kspec-Dir': daemon.tempDir }
+		});
+
+		expect(response.status()).toBe(404);
+
+		const body = await response.json();
+		expect(body).toHaveProperty('error', 'not_found');
+	});
+
+	// AC: @ui-plans-view ac-2
+	test('GET /api/plans/:ref works with ULID reference', async ({ request, daemon }) => {
+		const response = await request.get(`${daemon.baseUrl}/api/plans/01KG0RRPCA45ZT43W2T6HJMVP1`, {
+			headers: { 'X-Kspec-Dir': daemon.tempDir }
+		});
+
+		expect(response.status()).toBe(200);
+
+		const body = await response.json();
+		expect(body).toHaveProperty('title', 'Active Implementation Plan');
+		expect(body).toHaveProperty('content');
+	});
+
 	// ── UI states ──
 
 	test('shows loading skeletons while fetching data', async ({ page }) => {
