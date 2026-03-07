@@ -16,7 +16,7 @@
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -133,9 +133,7 @@
 		return Array.from(tagSet).sort();
 	});
 
-	onMount(async () => {
-		await loadData();
-
+	onMount(() => {
 		// AC: @interactive-triage-ui ac-6 - Subscribe to triage:updates
 		// AC: @trait-websocket-protocol ac-2 - Subscribe to topic
 		if (!isStaticMode()) {
@@ -151,12 +149,14 @@
 		}
 	});
 
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadData();
 	});
 
 	// AC: @interactive-triage-ui ac-6 - Real-time update handler

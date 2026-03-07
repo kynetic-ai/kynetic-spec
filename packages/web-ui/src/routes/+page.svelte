@@ -25,7 +25,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import AlertTriangle from '@lucide/svelte/icons/triangle-alert';
@@ -331,8 +331,6 @@
 
 	// --- Lifecycle ---
 	onMount(() => {
-		loadDashboard();
-
 		if (!isStaticMode()) {
 			subscribe(['tasks', 'agents']);
 			on('tasks', handleTaskUpdate);
@@ -348,12 +346,13 @@
 		}
 	});
 
-	// Reload on project change
+	// Load dashboard when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadDashboard();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadDashboard();
 	});
 </script>
 

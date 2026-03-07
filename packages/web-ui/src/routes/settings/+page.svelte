@@ -17,7 +17,7 @@
 	} from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import SettingsIcon from '@lucide/svelte/icons/settings';
@@ -48,9 +48,7 @@
 	let expandedDomains = $state<Set<string>>(new Set());
 
 	// ── Lifecycle ──
-	onMount(async () => {
-		await loadAllData();
-
+	onMount(() => {
 		if (!isStaticMode()) {
 			subscribe(['files:updates']);
 			on('files:updates', handleUpdate);
@@ -64,12 +62,13 @@
 		}
 	});
 
-	// Reload on project change
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadAllData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadAllData();
 	});
 
 	// ── Data loading ──

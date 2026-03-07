@@ -9,7 +9,7 @@
 	import { fetchPlans, fetchPlanContent } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -70,9 +70,7 @@
 	});
 
 	// ── Lifecycle ──
-	onMount(async () => {
-		await loadData();
-
+	onMount(() => {
 		if (!isStaticMode()) {
 			// Plan progress is derived from task statuses, so subscribe to tasks:updates
 			// to refresh when task status changes (e.g., task completed → plan progress updates)
@@ -88,12 +86,13 @@
 		}
 	});
 
-	// Reload on project change
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadData();
 	});
 
 	// ── Data loading ──

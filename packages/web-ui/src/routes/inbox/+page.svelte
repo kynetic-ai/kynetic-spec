@@ -31,7 +31,7 @@
 		DialogHeader,
 		DialogTitle
 	} from '$lib/components/ui/dialog';
-	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import Inbox from '@lucide/svelte/icons/inbox';
 
 	// ── Data state ──
@@ -146,9 +146,7 @@
 	let actedCount = $derived(allItems.filter((i) => i.triageStatus === 'acted_on').length);
 
 	// ── Lifecycle ──
-	onMount(async () => {
-		await loadData();
-
+	onMount(() => {
 		// Subscribe to real-time updates
 		if (!isStaticMode()) {
 			subscribe(['inbox:updates', 'triage:updates']);
@@ -165,12 +163,14 @@
 		}
 	});
 
+	// Load data when project is ready and reload on project change.
+	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
 	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
 	$effect(() => {
 		const version = getProjectVersion();
-		if (version > 0) {
-			loadData();
-		}
+		const ready = isProjectInitialized();
+		if (!ready) return;
+		loadData();
 	});
 
 	// ── Data loading ──
