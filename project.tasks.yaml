@@ -78659,12 +78659,38 @@
     - web-ui
     - daemon
   vcs_refs: []
+  session_id: 01KK34EZYQHCP7VEBNHWMYGCYH
   created_at: 2026-03-07T00:01:03.380Z
-  notes: []
+  started_at: 2026-03-07T03:18:02.122Z
+  notes:
+    - _ulid: 01KK3595ZTBM1KFVHMNEMSDK76
+      created_at: 2026-03-07T03:25:58.651Z
+      author: "@claude"
+      content: >-
+        Fix: agent completed count was always 0 because it was only tracked in ephemeral page state
+        via WebSocket events.
+
+
+        Changes:
+
+        1. Added getCompletedSessionCountsByAgent() to src/sessions/store.ts — reads session
+        metadata (not events.jsonl) to count completed sessions per agent_id
+
+        2. Updated daemon GET /api/agent/status to include completed_sessions in agent_definitions
+        array
+
+        3. Updated web-ui agents page to pre-populate completedCounts from API response on load;
+        WebSocket events still increment for real-time updates
+
+        4. Added 4 unit tests for the new function (empty, per-agent counts, non-completed excluded,
+        agent_type fallback)
+
+
+        All 3907+ tests pass. Pre-existing failures in core-skill-install and enhanced-setup tests
+        are unrelated.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T03:18:02.122Z
-  session_id: 01KK34EZYQHCP7VEBNHWMYGCYH
 - _ulid: 01KK2SHZXHD706QWBM4P2TTGB1
   slugs: []
   title: Add agent definition editing UI with inline edit form
