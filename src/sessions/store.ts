@@ -248,6 +248,36 @@ export async function listSessions(specDir: string): Promise<string[]> {
 }
 
 /**
+ * Count completed sessions grouped by agent_id.
+ *
+ * Reads only session metadata (not events.jsonl) for performance.
+ * A session counts as "completed" if its status is "completed".
+ *
+ * @param specDir - The .kspec directory path
+ * @returns Map of agent_id to completed session count
+ */
+export async function getCompletedSessionCountsByAgent(
+  specDir: string,
+): Promise<Record<string, number>> {
+  const sessionIds = await listSessions(specDir);
+  const counts: Record<string, number> = {};
+
+  // Read metadata in parallel for performance
+  const metadataResults = await Promise.all(
+    sessionIds.map((id) => getSession(specDir, id)),
+  );
+
+  for (const metadata of metadataResults) {
+    if (!metadata) continue;
+    if (metadata.status !== "completed") continue;
+    const agentId = metadata.agent_id ?? metadata.agent_type;
+    counts[agentId] = (counts[agentId] || 0) + 1;
+  }
+
+  return counts;
+}
+
+/**
  * Check if a session exists.
  */
 export async function sessionExists(

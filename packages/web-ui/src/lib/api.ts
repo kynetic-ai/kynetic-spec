@@ -665,6 +665,7 @@ export interface AgentDispatchStatus {
 		id: string;
 		name: string;
 		adapter: string;
+		completed_sessions?: number;
 	}>;
 }
 

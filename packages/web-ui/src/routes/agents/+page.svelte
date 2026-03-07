@@ -64,6 +64,15 @@
 			]);
 			dispatchStatus = statusResult;
 			agentDefinitions = defsResult.items;
+
+			// Pre-populate completed counts from API (server-side aggregation from session history)
+			const initial: Record<string, number> = {};
+			for (const def of statusResult.agent_definitions) {
+				if (def.completed_sessions != null && def.completed_sessions > 0) {
+					initial[def.id] = def.completed_sessions;
+				}
+			}
+			completedCounts = initial;
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load agent data';
 			console.error('Error loading agent data:', err);
