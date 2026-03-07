@@ -76,6 +76,11 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           );
         }
 
+        // Automation filter — filter by automation eligibility status
+        if (query.automation) {
+          filtered = filtered.filter((task) => task.automation === query.automation);
+        }
+
         // Plan filter — show only tasks derived from a given plan
         if (query.plan) {
           const plans = await loadPlans(ctx);
@@ -119,7 +124,6 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           automation: task.automation,
           notes_count: task.notes?.length || 0,
           todos_count: task.todos?.length || 0,
-          automation: task.automation,
           started_at: task.started_at,
           completed_at: task.completed_at,
           created_at: task.created_at,
@@ -138,6 +142,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          automation: t.Optional(t.String()),
           plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),

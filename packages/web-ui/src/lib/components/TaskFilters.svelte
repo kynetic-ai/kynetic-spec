@@ -34,11 +34,13 @@
 	};
 
 	// Display labels for automation values
+	// Values match AutomationStatusSchema: eligible, needs_review, manual_only
 	const automationLabels: Record<string, string> = {
 		'': 'All',
 		all: 'All',
 		eligible: 'Eligible',
-		blocked: 'Blocked'
+		needs_review: 'Needs Review',
+		manual_only: 'Manual Only'
 	};
 
 	// Derive filter values from URL - use $derived with $page store
@@ -137,7 +139,8 @@
 			<SelectContent>
 				<SelectItem value="all">All</SelectItem>
 				<SelectItem value="eligible">Eligible</SelectItem>
-				<SelectItem value="blocked">Blocked</SelectItem>
+				<SelectItem value="needs_review">Needs Review</SelectItem>
+				<SelectItem value="manual_only">Manual Only</SelectItem>
 			</SelectContent>
 		</Select>
 	</div>
