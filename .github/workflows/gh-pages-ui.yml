@@ -54,6 +54,9 @@ jobs:
             echo "No existing snapshot found - will deploy without it"
           fi
 
+      - name: Build shared package
+        run: npm run build -w packages/shared
+
       # AC: @gh-pages-export ac-9, ac-19 - Build and copy SPA assets
       - name: Build web UI
         run: npm run build -w packages/web-ui
