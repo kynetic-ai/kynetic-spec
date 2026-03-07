@@ -78796,12 +78796,34 @@
     - web-ui
     - daemon
   vcs_refs: []
+  session_id: 01KK37D3NJEEQK7GTA5FHT9F0D
   created_at: 2026-03-07T00:01:04.433Z
-  notes: []
+  started_at: 2026-03-07T04:09:46.259Z
+  notes:
+    - _ulid: 01KK38P478VK09PY1BQ96ZYNBX
+      created_at: 2026-03-07T04:25:28.552Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Added:
+
+        1. POST /api/meta/agents/:id daemon endpoint using saveMetaItem + commitIfShadow
+
+        2. AgentEditForm.svelte dialog with all agent fields (name, description, adapter, dispatch
+        triggers with add/remove, capabilities, tools, skills, budget [max_tasks, max_retries,
+        timeout_minutes], concurrency, auto_approve toggle, prompt_template textarea)
+
+        3. Edit button on AgentCard (ghost icon, hidden in static mode)
+
+        4. updateAgentDefinition API client function + AgentUpdatePayload type
+
+        5. E2E Playwright tests: dialog open, field pre-population, save persistence to API, cancel
+        discard, error display, trigger management, prompt template editing
+
+        All 161 web-ui vitest tests pass. 3907/3912 root vitest tests pass (2 pre-existing failures
+        unrelated to this change).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T04:09:46.259Z
-  session_id: 01KK37D3NJEEQK7GTA5FHT9F0D
 - _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
   slugs: []
   title: Add compact kanban board to dashboard with active fleet row and needs attention
