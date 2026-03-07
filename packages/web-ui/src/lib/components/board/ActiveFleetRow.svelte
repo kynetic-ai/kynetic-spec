@@ -6,6 +6,7 @@
 <script lang="ts">
 	import type { AgentDispatchStatus } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { formatElapsed } from './board-utils';
 	import Bot from '@lucide/svelte/icons/bot';
 	import Activity from '@lucide/svelte/icons/activity';
@@ -54,18 +55,9 @@
 					</div>
 
 					{#if invocation.task_ref}
-						{#if title}
-							<p class="text-xs text-foreground truncate mb-0.5" data-testid="fleet-task-title">
-								{title}
-							</p>
-							<p class="text-[10px] text-muted-foreground font-mono truncate mb-1">
-								{invocation.task_ref}
-							</p>
-						{:else}
-							<p class="text-xs text-muted-foreground font-mono truncate mb-1">
-								{invocation.task_ref}
-							</p>
-						{/if}
+						<div class="truncate mb-1" data-testid="fleet-task-title">
+							<ReferenceLink ref={invocation.task_ref} type="task" title={title} class="text-xs" />
+						</div>
 					{/if}
 
 					<div class="flex items-center gap-1.5 text-[10px] text-muted-foreground mb-1.5">

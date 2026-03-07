@@ -3,7 +3,6 @@
 	import type { ItemDetail, TaskSummary } from '@kynetic-ai/shared';
 	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
 	import {
 		Sheet,
 		SheetContent,
@@ -18,8 +17,8 @@
 		AccordionTrigger
 	} from '$lib/components/ui/accordion';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { fetchItem, fetchItemTasks } from '$lib/api';
-	import { goto } from '$app/navigation';
 	import { CheckCircle, XCircle, HelpCircle } from 'lucide-svelte';
 
 	interface Props {
@@ -186,19 +185,10 @@
 						<h3 class="text-sm font-semibold mb-2">Traits</h3>
 						<div class="flex flex-wrap gap-2">
 							{#each item.traits as trait}
-								<Button
-									variant="outline"
-									size="sm"
-									data-testid="trait-chip"
-									onclick={() => {
-										// AC: @web-dashboard ac-14 - Navigate to trait detail
-										// Traits are items (type: trait), so we navigate to items view with the ref
-										const traitRef = trait.startsWith('@') ? trait.slice(1) : trait;
-										goto(`${base}/items?ref=${encodeURIComponent(traitRef)}`);
-									}}
-								>
-									<span data-testid="trait-title">{trait}</span>
-								</Button>
+								<span data-testid="trait-chip">
+									<!-- AC: @web-dashboard ac-14 - Navigate to trait detail -->
+									<ReferenceLink ref={trait} type="spec" class="text-sm" />
+								</span>
 							{/each}
 						</div>
 					</div>

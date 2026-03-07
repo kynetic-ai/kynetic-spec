@@ -3,6 +3,7 @@
 	import { base } from '$app/paths';
 	import type { ActiveInvocation } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Clock from '@lucide/svelte/icons/clock';
 
@@ -37,8 +38,8 @@
 		</Badge>
 
 		{#if invocation.task_ref}
-			<span class="text-sm font-mono truncate" data-testid="invocation-task-ref">
-				{invocation.task_ref}
+			<span data-testid="invocation-task-ref">
+				<ReferenceLink ref={invocation.task_ref} type="task" class="text-sm" />
 			</span>
 		{:else}
 			<span class="text-sm text-muted-foreground italic">No task</span>

@@ -1,8 +1,8 @@
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-33
 	import type { TaskSummary } from '@kynetic-ai/shared';
-	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import {
 		Table,
 		TableBody,
@@ -112,13 +112,7 @@
 						</TableCell>
 						<TableCell data-testid="task-spec-ref">
 							{#if task.spec_ref}
-								<a
-									href="{base}/items?ref={encodeURIComponent(task.spec_ref)}"
-									class="text-primary hover:underline text-sm"
-									onclick={(e) => e.stopPropagation()}
-								>
-									{task.spec_ref}
-								</a>
+								<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-sm" />
 							{:else}
 								<span class="text-muted-foreground text-sm">—</span>
 							{/if}

@@ -18,6 +18,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -408,12 +409,9 @@
 								</div>
 
 								{#if invocation.task_ref}
-									{#if title}
-										<p class="text-xs text-foreground truncate mb-0.5">{title}</p>
-									{/if}
-									<p class="text-[10px] text-muted-foreground font-mono truncate mb-1">
-										{invocation.task_ref}
-									</p>
+									<div class="truncate mb-1">
+										<ReferenceLink ref={invocation.task_ref} type="task" title={title} class="text-xs" />
+									</div>
 								{/if}
 
 								<div class="flex items-center justify-between text-[10px] text-muted-foreground">

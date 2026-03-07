@@ -4,8 +4,8 @@
 -->
 <script lang="ts">
 	import type { TaskSummary } from '@kynetic-ai/shared';
-	import { base } from '$app/paths';
 	import { Badge } from '$lib/components/ui/badge';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { getStatusClasses, formatAge } from './board-utils';
 	import MessageSquare from '@lucide/svelte/icons/message-square';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
@@ -92,15 +92,8 @@
 
 	<!-- Spec ref link -->
 	{#if task.spec_ref}
-		<div class="mb-2">
-			<a
-				href="{base}/specs?ref={encodeURIComponent(task.spec_ref)}"
-				class="text-[11px] text-primary hover:underline font-mono"
-				onclick={(e) => e.stopPropagation()}
-				data-testid="spec-ref-link"
-			>
-				{task.spec_ref}
-			</a>
+		<div class="mb-2" data-testid="spec-ref-link">
+			<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-[11px]" />
 		</div>
 	{/if}
 

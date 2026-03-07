@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
 	import type { TaskDetail } from '@kynetic-ai/shared';
-	import { base } from '$app/paths';
 	import {
 		fetchTask,
 		startTask,
@@ -21,6 +20,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { getStatusClasses, formatAge, formatVcsRef } from './board-utils';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
@@ -222,12 +222,7 @@
 				{#if task.spec_ref}
 					<div data-testid="modal-spec-ref">
 						<p class="text-xs font-medium text-muted-foreground mb-0.5">Spec</p>
-						<a
-							href="{base}/specs?ref={encodeURIComponent(task.spec_ref)}"
-							class="text-sm text-primary hover:underline font-mono"
-						>
-							{task.spec_ref}
-						</a>
+						<ReferenceLink ref={task.spec_ref} type="spec" />
 					</div>
 				{/if}
 
@@ -250,12 +245,7 @@
 						<ul class="text-sm space-y-0.5">
 							{#each task.depends_on as dep}
 								<li>
-									<a
-										href="{base}/tasks/board?ref={encodeURIComponent(dep)}"
-										class="text-primary hover:underline font-mono text-xs"
-									>
-										{dep}
-									</a>
+									<ReferenceLink ref={dep} type="task" class="text-xs" />
 								</li>
 							{/each}
 						</ul>
@@ -268,7 +258,9 @@
 						<p class="text-xs font-medium text-destructive mb-1">Blocked By</p>
 						<ul class="text-sm space-y-0.5">
 							{#each task.blocked_by as blocker}
-								<li class="text-muted-foreground font-mono text-xs">{blocker}</li>
+								<li>
+									<ReferenceLink ref={blocker} type="task" class="text-xs" />
+								</li>
 							{/each}
 						</ul>
 					</div>
@@ -306,7 +298,7 @@
 				{#if task.plan_ref}
 					<div data-testid="modal-plan-ref">
 						<p class="text-xs font-medium text-muted-foreground mb-0.5">Plan</p>
-						<span class="text-sm text-primary font-mono">{task.plan_ref}</span>
+						<ReferenceLink ref={task.plan_ref} type="plan" />
 					</div>
 				{:else if task.derivation}
 					<div data-testid="modal-plan-ref">
@@ -319,12 +311,7 @@
 				{#if task.session_ref}
 					<div data-testid="modal-session-link">
 						<p class="text-xs font-medium text-muted-foreground mb-0.5">Session</p>
-						<a
-							href="{base}/sessions?ref={encodeURIComponent(task.session_ref)}"
-							class="text-sm text-primary hover:underline font-mono"
-						>
-							{task.session_ref}
-						</a>
+						<ReferenceLink ref={task.session_ref} type="session" />
 					</div>
 				{/if}
 
