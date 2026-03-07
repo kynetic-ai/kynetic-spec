@@ -67,9 +67,9 @@
 
 		<span class="text-xs text-muted-foreground font-mono flex-shrink-0 whitespace-nowrap">{formatTime(block.startedAt)}</span>
 
-		<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono bg-secondary flex-shrink-0 whitespace-nowrap">
-			<span>{icon}</span>
-			{block.toolName}
+		<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono bg-secondary min-w-0 max-w-[40%]">
+			<span class="flex-shrink-0">{icon}</span>
+			<span class="truncate">{block.toolName}</span>
 		</span>
 
 		{#if block.status === 'running'}
