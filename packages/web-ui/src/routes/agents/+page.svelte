@@ -7,6 +7,7 @@
 		fetchAgentStatus,
 		fetchAgentDefinitions,
 		controlDispatch,
+		fetchTasks,
 		type AgentDefinition,
 		type AgentDispatchStatus,
 		type ActiveInvocation
@@ -25,6 +26,7 @@
 
 	let agentDefinitions = $state<AgentDefinition[]>([]);
 	let dispatchStatus = $state<AgentDispatchStatus | null>(null);
+	let taskTitles = $state<Record<string, string>>({});
 	let loading = $state(true);
 	let error = $state('');
 	let isToggling = $state(false);
@@ -64,12 +66,25 @@
 		error = '';
 
 		try {
-			const [statusResult, defsResult] = await Promise.all([
+			const [statusResult, defsResult, tasksResult] = await Promise.all([
 				fetchAgentStatus(),
-				fetchAgentDefinitions()
+				fetchAgentDefinitions(),
+				fetchTasks({ limit: 1000 })
 			]);
 			dispatchStatus = statusResult;
 			agentDefinitions = defsResult.items;
+
+			// Build task title lookup for ActiveInvocationRow display
+			const titles: Record<string, string> = {};
+			for (const task of tasksResult.items) {
+				if (task.slugs?.length) {
+					for (const slug of task.slugs) {
+						titles[`@${slug}`] = task.title;
+					}
+				}
+				titles[`@${task._ulid}`] = task.title;
+			}
+			taskTitles = titles;
 
 			// Pre-populate completed counts from API (server-side aggregation from session history)
 			const initial: Record<string, number> = {};
@@ -230,7 +245,7 @@
 				{#if dispatchStatus.active_invocations.length > 0}
 					<div class="flex flex-col gap-2">
 						{#each dispatchStatus.active_invocations as invocation (invocation.session_id)}
-							<ActiveInvocationRow {invocation} />
+							<ActiveInvocationRow {invocation} taskTitle={invocation.task_ref ? taskTitles[invocation.task_ref] : null} />
 						{/each}
 					</div>
 				{:else}
