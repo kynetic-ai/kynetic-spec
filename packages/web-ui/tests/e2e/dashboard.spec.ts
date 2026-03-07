@@ -282,6 +282,7 @@ test.describe('Dashboard Overview', () => {
 		});
 
 		// AC: @ui-dashboard-overview ac-1 — Validates UI renders correct aggregated counts
+		// AC: @web-dashboard ac-1
 		// Fixture: 2 pending (1 ready, 1 dep-blocked), 1 in_progress, 1 pending_review, 1 completed
 		// Expected: ready=1, in_progress=1, pending_review=1, blocked=0, completed=1
 		test('renders correct aggregated counts from task data', async ({ page }) => {
@@ -300,6 +301,7 @@ test.describe('Dashboard Overview', () => {
 			await expect(page.getByTestId('task-count-cancelled')).toContainText('0');
 		});
 
+		// AC: @web-dashboard ac-3
 		test('clicking ready count navigates to pending tasks', async ({ page }) => {
 			await interceptDashboardAPIs(page);
 			await page.goto('/');

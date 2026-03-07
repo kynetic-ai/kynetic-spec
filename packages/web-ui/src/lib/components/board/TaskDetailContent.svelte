@@ -3,6 +3,7 @@
   AC: @web-dashboard ac-6 — Spec reference is clickable link to spec item detail.
   AC: @web-dashboard ac-7 — Start Task action button.
   AC: @web-dashboard ac-8 — Add Note textarea and submit.
+  AC: @gh-pages-export ac-16 — Buttons disabled with tooltip in static mode.
 
   Shared task detail content used by both TaskDetailModal (kanban board)
   and the task list Sheet panel. Handles all task display, actions, and notes.
@@ -24,6 +25,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getStatusClasses, formatVcsRef } from './board-utils';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
@@ -131,6 +133,7 @@
 
 	let statusInfo = $derived(task ? getStatusClasses(task.status) : null);
 	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
+	let readOnly = $derived(isStaticMode());
 </script>
 
 {#if loading}
@@ -286,9 +289,21 @@
 
 		<!-- Actions -->
 		<!-- AC: @web-dashboard ac-7 -->
-		{#if !isStaticMode()}
-			<div class="flex flex-wrap gap-2" data-testid="task-actions">
-				{#if task.status === 'pending'}
+		<!-- AC: @gh-pages-export ac-16 — Buttons disabled with tooltip in static mode -->
+		<div class="flex flex-wrap gap-2" data-testid="task-actions">
+			{#if task.status === 'pending'}
+				{#if readOnly}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{#snippet child({ props })}
+								<Button {...props} size="sm" disabled={true} data-testid="action-start">
+									Start
+								</Button>
+							{/snippet}
+						</Tooltip.Trigger>
+						<Tooltip.Content><p>Read-only mode — use CLI to start task</p></Tooltip.Content>
+					</Tooltip.Root>
+				{:else}
 					<Button
 						size="sm"
 						onclick={handleStart}
@@ -298,8 +313,21 @@
 						{isSubmitting ? 'Starting...' : 'Start'}
 					</Button>
 				{/if}
+			{/if}
 
-				{#if task.status === 'in_progress' || task.status === 'needs_work'}
+			{#if task.status === 'in_progress' || task.status === 'needs_work'}
+				{#if readOnly}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{#snippet child({ props })}
+								<Button {...props} size="sm" disabled={true} data-testid="action-submit">
+									Submit for Review
+								</Button>
+							{/snippet}
+						</Tooltip.Trigger>
+						<Tooltip.Content><p>Read-only mode — use CLI to submit task</p></Tooltip.Content>
+					</Tooltip.Root>
+				{:else}
 					<Button
 						size="sm"
 						onclick={handleSubmit}
@@ -309,8 +337,21 @@
 						{isSubmitting ? 'Submitting...' : 'Submit for Review'}
 					</Button>
 				{/if}
+			{/if}
 
-				{#if task.status === 'in_progress' || task.status === 'pending_review'}
+			{#if task.status === 'in_progress' || task.status === 'pending_review'}
+				{#if readOnly}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{#snippet child({ props })}
+								<Button {...props} size="sm" variant="outline" disabled={true} data-testid="action-complete-toggle">
+									Complete
+								</Button>
+							{/snippet}
+						</Tooltip.Trigger>
+						<Tooltip.Content><p>Read-only mode — use CLI to complete task</p></Tooltip.Content>
+					</Tooltip.Root>
+				{:else}
 					<Button
 						size="sm"
 						variant="outline"
@@ -324,8 +365,21 @@
 						Complete
 					</Button>
 				{/if}
+			{/if}
 
-				{#if task.status !== 'blocked' && task.status !== 'completed' && task.status !== 'cancelled'}
+			{#if task.status !== 'blocked' && task.status !== 'completed' && task.status !== 'cancelled'}
+				{#if readOnly}
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{#snippet child({ props })}
+								<Button {...props} size="sm" variant="destructive" disabled={true} data-testid="action-block-toggle">
+									Block
+								</Button>
+							{/snippet}
+						</Tooltip.Trigger>
+						<Tooltip.Content><p>Read-only mode — use CLI to block task</p></Tooltip.Content>
+					</Tooltip.Root>
+				{:else}
 					<Button
 						size="sm"
 						variant="destructive"
@@ -339,35 +393,35 @@
 						Block
 					</Button>
 				{/if}
-			</div>
-
-			<!-- Reason input for block/complete -->
-			{#if showReasonFor}
-				<div class="flex gap-2" data-testid="reason-input">
-					<Input
-						bind:value={reasonInput}
-						placeholder="{showReasonFor === 'block' ? 'Block' : 'Completion'} reason..."
-						class="flex-1"
-					/>
-					<Button
-						size="sm"
-						onclick={showReasonFor === 'block' ? handleBlock : handleComplete}
-						disabled={isSubmitting || !reasonInput.trim()}
-					>
-						Confirm
-					</Button>
-					<Button
-						size="sm"
-						variant="ghost"
-						onclick={() => {
-							showReasonFor = null;
-							reasonInput = '';
-						}}
-					>
-						Cancel
-					</Button>
-				</div>
 			{/if}
+		</div>
+
+		<!-- Reason input for block/complete (only in daemon mode) -->
+		{#if !readOnly && showReasonFor}
+			<div class="flex gap-2" data-testid="reason-input">
+				<Input
+					bind:value={reasonInput}
+					placeholder="{showReasonFor === 'block' ? 'Block' : 'Completion'} reason..."
+					class="flex-1"
+				/>
+				<Button
+					size="sm"
+					onclick={showReasonFor === 'block' ? handleBlock : handleComplete}
+					disabled={isSubmitting || !reasonInput.trim()}
+				>
+					Confirm
+				</Button>
+				<Button
+					size="sm"
+					variant="ghost"
+					onclick={() => {
+						showReasonFor = null;
+						reasonInput = '';
+					}}
+				>
+					Cancel
+				</Button>
+			</div>
 		{/if}
 
 		{#if actionError}
@@ -412,7 +466,26 @@
 			</p>
 
 			<!-- Add Note form -->
-			{#if !isStaticMode()}
+			<!-- AC: @gh-pages-export ac-18 — Note form disabled in static mode -->
+			{#if readOnly}
+				<div class="mb-3 space-y-2" data-testid="task-add-note">
+					<Textarea
+						placeholder="Add a note..."
+						disabled={true}
+						rows={2}
+					/>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{#snippet child({ props })}
+								<Button {...props} size="sm" disabled={true} data-testid="action-add-note">
+									Add Note
+								</Button>
+							{/snippet}
+						</Tooltip.Trigger>
+						<Tooltip.Content><p>Read-only mode — use CLI to add notes</p></Tooltip.Content>
+					</Tooltip.Root>
+				</div>
+			{:else}
 				<div class="mb-3 space-y-2" data-testid="task-add-note">
 					<Textarea
 						placeholder="Add a note..."
@@ -435,7 +508,7 @@
 			<div class="space-y-3">
 				{#if (task.notes ?? []).length === 0}
 					<div class="text-center py-4 text-muted-foreground text-xs" data-testid="notes-empty">
-						{#if isStaticMode()}
+						{#if readOnly}
 							No notes recorded. Use <code class="bg-muted px-1 rounded">kspec task note</code> to add context.
 						{:else}
 							Add a note above to document decisions, progress, or findings.

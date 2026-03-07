@@ -16,6 +16,7 @@ import { test, expect } from '../fixtures/test-base';
 
 test.describe('Items View', () => {
   test.describe('Spec Tree (AC-11)', () => {
+    // AC: @web-dashboard ac-11
     test('displays hierarchical spec tree with modules', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -121,6 +122,7 @@ test.describe('Items View', () => {
   });
 
   test.describe('Item Detail (AC-12)', () => {
+    // AC: @web-dashboard ac-12
     test('displays item title and description with actual content', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -190,6 +192,7 @@ test.describe('Items View', () => {
   });
 
   test.describe('Linked Tasks (AC-13)', () => {
+    // AC: @web-dashboard ac-13
     test('shows implementation section with linked task', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -264,6 +267,7 @@ test.describe('Items View', () => {
   });
 
   test.describe('Traits (AC-14)', () => {
+    // AC: @web-dashboard ac-14
     test('displays traits section with trait chips', async ({ page, daemon }) => {
       await page.goto('/items');
 
