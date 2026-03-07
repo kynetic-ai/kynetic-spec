@@ -78296,7 +78296,7 @@
   spec_ref: "@ui-session-stream"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -78321,6 +78321,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T01:36:17.032Z
 - _ulid: 01KK2NNP0QP0V0AAW9MK7HGG5A
   slugs: []
   title: Fix double @@ on task ref and make it a clickable link in session context panel
