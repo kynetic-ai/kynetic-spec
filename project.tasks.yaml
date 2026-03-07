@@ -79532,7 +79532,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -79554,6 +79554,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-07T07:44:59.623Z
+  session_id: 01KK3KR1GG337ZNJHHM8CHP69G
 - _ulid: 01KK3A73PP2K0DDDHR6KQ9H2K1
   slugs: []
   title: Fix kanban board and task views loading tasks from wrong project on initial page load
