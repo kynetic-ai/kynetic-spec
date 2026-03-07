@@ -55,37 +55,37 @@
 	data-testid="tool-call-block"
 	data-tool-call-id={block.toolCallId}
 >
-	<!-- Header (always visible) -->
+	<!-- AC: @ui-session-stream ac-5 — Header enforces single-line layout with truncation -->
 	<button
-		class="flex items-center gap-2 w-full px-3 py-2 text-left text-sm hover:bg-accent/30 transition-colors"
+		class="flex items-center gap-2 w-full px-3 py-2 text-left text-sm hover:bg-accent/30 transition-colors overflow-hidden"
 		onclick={() => (expanded = !expanded)}
 		aria-expanded={expanded}
 	>
 		<ChevronRight
-			class="size-3.5 text-muted-foreground transition-transform {expanded ? 'rotate-90' : ''}"
+			class="size-3.5 flex-shrink-0 text-muted-foreground transition-transform {expanded ? 'rotate-90' : ''}"
 		/>
 
-		<span class="text-xs text-muted-foreground font-mono">{formatTime(block.startedAt)}</span>
+		<span class="text-xs text-muted-foreground font-mono flex-shrink-0 whitespace-nowrap">{formatTime(block.startedAt)}</span>
 
-		<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono bg-secondary">
-			<span>{icon}</span>
-			{block.toolName}
+		<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono bg-secondary min-w-0 max-w-[40%]">
+			<span class="flex-shrink-0">{icon}</span>
+			<span class="truncate">{block.toolName}</span>
 		</span>
 
 		{#if block.status === 'running'}
-			<Loader class="size-3.5 text-status-pending-review ds-tool-spin" />
+			<Loader class="size-3.5 flex-shrink-0 text-status-pending-review ds-tool-spin" />
 		{:else if block.status === 'completed'}
-			<Check class="size-3.5 text-status-completed" />
+			<Check class="size-3.5 flex-shrink-0 text-status-completed" />
 		{:else if block.status === 'failed'}
-			<X class="size-3.5 text-status-blocked" />
+			<X class="size-3.5 flex-shrink-0 text-status-blocked" />
 		{/if}
 
 		{#if !expanded && preview}
-			<span class="text-xs text-muted-foreground truncate flex-1">{preview}</span>
+			<span class="text-xs text-muted-foreground truncate min-w-0">{preview}</span>
 		{/if}
 
 		{#if block.durationMs !== undefined}
-			<span class="text-[10px] text-muted-foreground font-mono ml-auto flex-shrink-0">
+			<span class="text-[10px] text-muted-foreground font-mono ml-auto flex-shrink-0 whitespace-nowrap">
 				{formatDuration(block.durationMs)}
 			</span>
 		{/if}

@@ -1662,6 +1662,70 @@ describe("session context panel (@ui-session-stream ac-4)", () => {
   });
 });
 
+// ─── AC-5: Collapsed tool call row single-line layout ────────────────────────
+
+// AC: @ui-session-stream ac-5
+describe("collapsed tool call row layout (@ui-session-stream ac-5)", () => {
+  let toolCallSrc: string;
+
+  beforeAll(() => {
+    const { readFileSync } = require("node:fs");
+    toolCallSrc = readFileSync(
+      join(SESSION_COMPONENTS, "ToolCallView.svelte"),
+      "utf-8",
+    );
+  });
+
+  // AC: @ui-session-stream ac-5
+  it("header button uses overflow-hidden to enforce single-line", () => {
+    // The collapsed row button must clip overflow to prevent multi-line wrapping
+    expect(toolCallSrc).toMatch(/class="[^"]*overflow-hidden[^"]*"/);
+  });
+
+  // AC: @ui-session-stream ac-5
+  it("chevron, timestamp, and duration are flex-shrink-0 (never hidden)", () => {
+    // ChevronRight component has flex-shrink-0
+    expect(toolCallSrc).toMatch(/ChevronRight[\s\S]*?flex-shrink-0/);
+    // Timestamp span has flex-shrink-0
+    expect(toolCallSrc).toMatch(/formatTime[\s\S]*?flex-shrink-0/);
+    // Duration span has flex-shrink-0
+    expect(toolCallSrc).toMatch(/formatDuration[\s\S]*?flex-shrink-0/);
+  });
+
+  // AC: @ui-session-stream ac-5
+  it("status icons are flex-shrink-0 (never hidden)", () => {
+    // Each status icon (Loader, Check, X) must have flex-shrink-0
+    expect(toolCallSrc).toMatch(/Loader[\s\S]*?flex-shrink-0/);
+    expect(toolCallSrc).toMatch(/Check[\s\S]*?flex-shrink-0/);
+    expect(toolCallSrc).toMatch(/<X[\s\S]*?flex-shrink-0/);
+  });
+
+  // AC: @ui-session-stream ac-5
+  it("tool name badge allows truncation (not flex-shrink-0)", () => {
+    // The tool name badge must use min-w-0 to allow flex shrinking
+    // and must NOT be flex-shrink-0 (which would prevent truncation)
+    const badgeMatch = toolCallSrc.match(
+      /class="[^"]*font-mono bg-secondary[^"]*"/,
+    );
+    expect(badgeMatch).not.toBeNull();
+    const badgeClasses = badgeMatch![0];
+    expect(badgeClasses).toContain("min-w-0");
+    expect(badgeClasses).not.toContain("flex-shrink-0");
+  });
+
+  // AC: @ui-session-stream ac-5
+  it("tool name text inside badge uses truncate class", () => {
+    // The inner span containing block.toolName must have truncate for ellipsis
+    expect(toolCallSrc).toMatch(/class="truncate">\{block\.toolName\}/);
+  });
+
+  // AC: @ui-session-stream ac-5
+  it("preview span uses truncate with min-w-0", () => {
+    // Parameter preview should truncate, not wrap
+    expect(toolCallSrc).toMatch(/class="[^"]*truncate[^"]*min-w-0[^"]*"/);
+  });
+});
+
 // ─── View states ─────────────────────────────────────────────────────────────
 
 describe("view states", () => {
