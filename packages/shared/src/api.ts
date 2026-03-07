@@ -236,6 +236,14 @@ export interface PlanSummary {
 }
 
 /**
+ * Plan detail with content for expand/detail views
+ * AC: @ui-plans-view ac-2
+ */
+export interface PlanDetail extends PlanSummary {
+  content: string;
+}
+
+/**
  * Search result
  * AC: @api-contract ac-19
  * AC: @web-dashboard ac-24

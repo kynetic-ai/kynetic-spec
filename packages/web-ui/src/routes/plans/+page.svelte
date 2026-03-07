@@ -1,20 +1,24 @@
 <!--
   AC: @ui-plans-view ac-1 — Each plan shows title, status, creation date, linked spec/task counts, and progress.
+  AC: @ui-plans-view ac-2 — Expandable plan content rendered as formatted markdown, loaded on demand.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { base } from '$app/paths';
 	import type { PlanSummary } from '@kynetic-ai/shared';
-	import { fetchPlans } from '$lib/api';
+	import { fetchPlans, fetchPlanContent } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion } from '$lib/stores/project.svelte';
+	import { renderMarkdown } from '$lib/utils/markdown';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import MapIcon from '@lucide/svelte/icons/map';
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import ListTodoIcon from '@lucide/svelte/icons/list-todo';
+	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 
 	// ── Data state ──
 	let plans = $state<PlanSummary[]>([]);
@@ -24,6 +28,13 @@
 	// ── Filter state ──
 	type PlanStatusFilter = 'all' | 'draft' | 'approved' | 'active' | 'completed' | 'rejected';
 	let filterStatus = $state<PlanStatusFilter>('all');
+
+	// ── Plan content expansion state ──
+	// AC: @ui-plans-view ac-2 — Track expanded plans and their lazy-loaded content
+	let expandedPlanId = $state<string | null>(null);
+	let contentCache = $state<Record<string, string>>({});
+	let contentLoading = $state<Record<string, boolean>>({});
+	let contentError = $state<Record<string, string>>({});
 
 	// ── Plan status labels and colors ──
 	// AC: @ui-plans-view ac-1 — visually distinct statuses with text labels
@@ -102,6 +113,39 @@
 	// ── WebSocket handler ──
 	function handleUpdate() {
 		loadData();
+	}
+
+	// AC: @ui-plans-view ac-2 — Toggle plan content expansion, lazy-load content on first expand
+	async function togglePlanContent(plan: PlanSummary) {
+		const planRef = plan.slugs[0] ?? plan._ulid;
+
+		if (expandedPlanId === plan._ulid) {
+			expandedPlanId = null;
+			return;
+		}
+
+		expandedPlanId = plan._ulid;
+
+		// Skip loading if already cached
+		if (contentCache[plan._ulid] !== undefined) return;
+
+		// Don't re-fetch if already loading
+		if (contentLoading[plan._ulid]) return;
+
+		contentLoading = { ...contentLoading, [plan._ulid]: true };
+		contentError = { ...contentError, [plan._ulid]: '' };
+
+		try {
+			const detail = await fetchPlanContent(planRef);
+			contentCache = { ...contentCache, [plan._ulid]: detail.content };
+		} catch (err) {
+			contentError = {
+				...contentError,
+				[plan._ulid]: err instanceof Error ? err.message : 'Failed to load plan content'
+			};
+		} finally {
+			contentLoading = { ...contentLoading, [plan._ulid]: false };
+		}
 	}
 
 	// ── Formatting ──
@@ -276,7 +320,7 @@
 							</div>
 						</div>
 
-						<!-- Navigation actions -->
+						<!-- Navigation actions and expand toggle -->
 						<div class="flex items-center gap-2 pt-1" data-testid="plan-actions">
 							{#if plan.spec_count > 0}
 								<Button
@@ -302,7 +346,64 @@
 									View Tasks
 								</Button>
 							{/if}
+							<!-- AC: @ui-plans-view ac-2 — Expand/collapse button for plan content -->
+							{#if !isStaticMode()}
+								<Button
+									variant="ghost"
+									size="sm"
+									class="h-7 gap-1.5 text-xs ml-auto"
+									onclick={() => togglePlanContent(plan)}
+									aria-expanded={expandedPlanId === plan._ulid}
+									aria-controls="plan-content-{plan._ulid}"
+									data-testid="plan-expand-toggle"
+								>
+									{expandedPlanId === plan._ulid ? 'Hide Content' : 'Show Content'}
+									<ChevronDownIcon
+										class="size-3.5 transition-transform duration-200 {expandedPlanId === plan._ulid ? 'rotate-180' : ''}"
+									/>
+								</Button>
+							{/if}
 						</div>
+
+						<!-- AC: @ui-plans-view ac-2 — Expandable plan content section -->
+						{#if expandedPlanId === plan._ulid}
+							<div
+								id="plan-content-{plan._ulid}"
+								class="mt-3 border-t pt-3"
+								data-testid="plan-content-section"
+							>
+								{#if contentLoading[plan._ulid]}
+									<div class="space-y-2" data-testid="plan-content-loading">
+										<Skeleton class="h-4 w-full" />
+										<Skeleton class="h-4 w-5/6" />
+										<Skeleton class="h-4 w-4/6" />
+										<Skeleton class="h-4 w-full" />
+										<Skeleton class="h-4 w-3/6" />
+									</div>
+								{:else if contentError[plan._ulid]}
+									<div
+										class="text-sm text-destructive bg-destructive/10 p-3 rounded"
+										role="alert"
+										data-testid="plan-content-error"
+									>
+										{contentError[plan._ulid]}
+									</div>
+								{:else if contentCache[plan._ulid] !== undefined}
+									{#if contentCache[plan._ulid]}
+										<div
+											class="prose prose-sm dark:prose-invert max-w-none"
+											data-testid="plan-content-rendered"
+										>
+											{@html renderMarkdown(contentCache[plan._ulid])}
+										</div>
+									{:else}
+										<p class="text-sm text-muted-foreground italic" data-testid="plan-content-empty">
+											No content available for this plan.
+										</p>
+									{/if}
+								{/if}
+							</div>
+						{/if}
 					</CardContent>
 				</Card>
 			{/each}
