@@ -78469,29 +78469,55 @@
   notes: []
   todos: []
   automation: eligible
-- title: Implement settings page — project config, conventions, and daemon settings
+- _ulid: 01KK2T4MT9XR3QJ8R0TJFM7M1B
+  slugs: []
+  title: Implement settings page — project config, conventions, and daemon settings
+  type: task
   description: "The /settings page currently shows placeholder content. Implement: (1) Display current
     project config from kynetic.yaml (project name, version, remote tracking), (2) Show and edit
     conventions (commits, naming, testing, etc.) from meta, (3) Show daemon connection info (port,
     uptime, version from /api/health), (4) Shadow branch status (from kspec shadow status), (5)
     Consider a section for managing skills list. Read-only sections are fine for v1 — editing can be
     a follow-up."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - feature
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-07T00:11:15.657Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Fix triage page dropdown selectors not functioning
+  description: "The filter dropdown selectors on the /triage page are non-functional — selecting a
+    value has no effect. Likely causes: (1) Svelte 5 event binding issue (onchange vs on:change),
+    (2) reactive state not updating when select value changes, (3) select elements may be missing
+    bind:value or change handlers. Investigate the triage page route (routes/triage/+page.svelte),
+    check how filter state is managed and whether dropdown change events properly update the
+    reactive filter state and re-filter the displayed items."
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 3
+  priority: 2
   slugs: []
   tags:
-    - feature
+    - bug
     - web-ui
   depends_on: []
   automation: eligible
-  _ulid: 01KK2T4MT9XR3QJ8R0TJFM7M1B
+  _ulid: 01KK2T53XATPSTVMRNGCHCX23W
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-07T00:11:15.657Z
+  created_at: 2026-03-07T00:11:31.113Z
   notes: []
   todos: []
