@@ -6,9 +6,9 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 </script>
 
-<div class="flex gap-4 overflow-x-auto p-6" data-testid="board-skeleton">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 p-6" data-testid="board-skeleton">
 	{#each Array(5) as _, colIdx}
-		<div class="flex flex-col min-w-[260px] max-w-[320px] flex-1">
+		<div class="flex flex-col min-w-0">
 			<!-- Column header skeleton -->
 			<div class="flex items-center gap-2 mb-3 px-1">
 				<Skeleton class="h-4 w-20 ds-shimmer" />

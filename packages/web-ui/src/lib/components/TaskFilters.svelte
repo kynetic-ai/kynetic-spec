@@ -88,7 +88,7 @@
 </script>
 
 <div class="flex flex-wrap gap-4 p-4 bg-muted/50 rounded-lg" data-testid="filter-controls">
-	<div class="flex-1 min-w-[200px]">
+	<div class="flex-1 min-w-[140px]">
 		<label for="status-filter" class="text-sm font-medium mb-2 block">Status</label>
 		<Select
 			value={statusDisplay}
@@ -110,7 +110,7 @@
 		</Select>
 	</div>
 
-	<div class="flex-1 min-w-[200px]">
+	<div class="flex-1 min-w-[140px]">
 		<label for="type-filter" class="text-sm font-medium mb-2 block">Type</label>
 		<Select
 			value={typeDisplay}
@@ -127,7 +127,7 @@
 		</Select>
 	</div>
 
-	<div class="flex-1 min-w-[200px]">
+	<div class="flex-1 min-w-[140px]">
 		<label for="automation-filter" class="text-sm font-medium mb-2 block">Automation</label>
 		<Select
 			value={automationDisplay}
@@ -145,7 +145,7 @@
 		</Select>
 	</div>
 
-	<div class="flex-1 min-w-[200px]">
+	<div class="flex-1 min-w-[140px]">
 		<label for="tag-filter" class="text-sm font-medium mb-2 block">Tag</label>
 		<Input
 			id="tag-filter"
@@ -157,7 +157,7 @@
 		/>
 	</div>
 
-	<div class="flex-1 min-w-[200px]">
+	<div class="flex-1 min-w-[140px]">
 		<label for="assignee-filter" class="text-sm font-medium mb-2 block">Assignee</label>
 		<Input
 			id="assignee-filter"
