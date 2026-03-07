@@ -78328,7 +78328,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: "Distinguish session types: dispatched agent vs manual CLI run"
+- _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
+  slugs: []
+  title: "Distinguish session types: dispatched agent vs manual CLI run"
+  type: task
   description: "Session context panel shows Type: Invocation for all new-runtime sessions. The trigger
     field already distinguishes manual from auto-dispatched (manual, task.ready, task.in_progress,
     task.needs_work, task.pending_review), but this is not surfaced clearly in the UI. Fix: (1) show
@@ -78336,22 +78339,107 @@
     Task Ready, Manual Run, Fix Cycle, PR Review), (2) in session history list, add a visual
     indicator distinguishing dispatched vs manual sessions (e.g. icon or badge), (3) consider adding
     a filter for trigger type in the session history list."
-  type: task
   spec_ref: "@ui-session-history"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
+  tags:
+    - feature
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-06T22:53:13.113Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KK2SHYWMQAPBM0W7T7S3A9FY
+  slugs: []
+  title: Fix agent completed count always showing 0 — aggregate from session history
+  type: task
+  description: "Agent cards show Active: 0, Completed: 0 because the completed count is only tracked
+    in ephemeral page state via WebSocket events — it resets on page reload and the API never
+    provides initial counts. Fix: (1) In daemon GET /api/agent/status endpoint (agent-dispatch.ts),
+    query session store to aggregate completed session counts by agent_id, (2) return per-agent
+    counts in agent_definitions array (e.g. completed_sessions: number), (3) in agents page,
+    pre-populate completedCounts from API response on load instead of starting from {}. The active
+    count works because it derives from active_invocations — completed needs the same server-side
+    source of truth."
+  spec_ref: "@ui-agent-dispatch"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-07T00:01:03.380Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KK2SHZXHD706QWBM4P2TTGB1
+  slugs: []
+  title: Add agent definition editing UI with inline edit form
+  type: task
+  description: "Currently agent definitions can only be edited via CLI (kspec meta set agent). Add:
+    (1) Daemon PATCH /api/meta/agents/:id endpoint that updates agent fields in kynetic.meta.yaml
+    via the existing meta set infrastructure, (2) An edit icon/button on each AgentCard that opens
+    an inline form or modal, (3) Edit form fields: name, description, adapter, dispatch triggers
+    (add/remove), capabilities, tools, skills, budget (max_tasks, timeout_minutes), concurrency
+    (max_concurrent), auto_approve toggle, prompt_template textarea, (4) Save calls the PATCH
+    endpoint, (5) Cancel discards changes. Agent schema fields from src/schema/meta.ts AgentSchema
+    should drive the form structure."
+  spec_ref: "@ui-agent-dispatch"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - feature
+    - web-ui
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-07T00:01:04.433Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Add compact kanban board to dashboard with active fleet row and needs attention
+  description: "Redesign the dashboard layout to show a compact kanban-style task overview instead of
+    just status count cards. New layout top-to-bottom: (1) Active Fleet row at top showing
+    in-progress agent work (existing component, keep as horizontal row), (2) Needs Attention section
+    (existing, keep as-is), (3) Compact kanban board with columns: Ready, In Progress, Needs Work,
+    Review, Blocked, Completed. No Cancelled column. Each column shows task cards (compact — title,
+    priority badge, slug, spec ref). Columns should not be full-page height — use a constrained
+    max-height with scroll within each column. Reuse existing TaskCard component in a compact
+    variant or create a MiniTaskCard. The status summary count cards can be replaced by the kanban
+    column headers showing counts. Keep existing click-to-navigate behavior — clicking a card should
+    still open the task detail or navigate to the task board."
+  type: task
+  spec_ref: "@ui-dashboard-overview"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
   slugs: []
   tags:
     - feature
     - web-ui
   depends_on: []
   automation: eligible
-  _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
+  _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-06T22:53:13.113Z
+  created_at: 2026-03-07T00:01:05.393Z
   notes: []
   todos: []
