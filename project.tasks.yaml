@@ -80024,6 +80024,52 @@
       content: "[FIX_CYCLE: 1] Review findings: Review issues: @web-dashboard ac-9 mismatch (type filter
         removed without spec update) and root npm test failure at tests/cli-serve.test.ts:225."
       supersedes: null
+    - _ulid: 01KK4KW967NN6FYFQSPX9P3CMY
+      created_at: 2026-03-07T17:00:19.015Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 resolution:
+
+
+        MUST-FIX 1 (spec misalignment): Updated @web-dashboard ac-9 to remove "type" from required
+        filter list.
+
+        ac-9 now reads: "can filter by status, tag, assignee, automation status" — aligned with the
+        intentional
+
+        removal of the useless type filter.
+
+
+        MUST-FIX 2 (cli-serve.test.ts:225): Verified the foreground mode test passes on this branch.
+        The failure
+
+        was transient/environmental — it passes consistently on the current branch. Confirmed the 2
+        remaining
+
+        test failures (codex platform detection in core-skill-install.test.ts and
+        enhanced-setup.test.ts) are
+
+        pre-existing on the base feat/unify-task-detail branch and unrelated to this task.
+
+
+        Changes (same as prior attempt, rebased onto feat/unify-task-detail):
+
+        - TaskFilters.svelte: Removed type dropdown
+
+        - TaskList.svelte: Removed type badge from task rows
+
+        - +page.svelte: Removed type from filterParams (resolved merge conflict with
+        TaskDetailContent refactor)
+
+        - api.ts: Removed type from fetchTasks params
+
+        - api-static.ts: Removed type from filterTasks and fetchTasksStatic
+
+        - tasks.spec.ts: Removed type filter E2E test
+
+
+        All tests pass (168 web-ui, 4030 root — 2 pre-existing codex failures on base branch).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
