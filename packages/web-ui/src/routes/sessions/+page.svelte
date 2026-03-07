@@ -10,6 +10,7 @@
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
 	import { Badge } from '$lib/components/ui/badge';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import Activity from '@lucide/svelte/icons/activity';
 	import Zap from '@lucide/svelte/icons/zap';
 	import Terminal from '@lucide/svelte/icons/terminal';
@@ -58,11 +59,6 @@
 			default:
 				return 'bg-status-cancelled text-status-cancelled-fg';
 		}
-	}
-
-	/** Format task_id to a short ref display (first 8 chars), stripping leading @. */
-	function shortTaskRef(taskId: string): string {
-		return taskId.replace(/^@/, '').slice(0, 8);
 	}
 
 	onMount(() => {
@@ -169,7 +165,9 @@
 							<span class="text-xs text-muted-foreground font-mono" data-testid="session-id">{s.id.slice(0, 8)}</span>
 							{#if s.task_id}
 								<span class="text-xs text-muted-foreground">&middot;</span>
-								<span class="text-xs font-mono text-primary/70" data-testid="session-task-ref" title={s.task_id}>@{shortTaskRef(s.task_id)}</span>
+								<span data-testid="session-task-ref">
+									<ReferenceLink ref={s.task_id} type="task" inline class="text-xs" />
+								</span>
 							{/if}
 						</div>
 						<div class="text-xs text-muted-foreground">
