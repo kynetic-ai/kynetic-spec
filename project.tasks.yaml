@@ -78649,7 +78649,7 @@
   spec_ref: "@ui-agent-dispatch"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -78691,6 +78691,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T03:26:03.094Z
 - _ulid: 01KK2SHZXHD706QWBM4P2TTGB1
   slugs: []
   title: Add agent definition editing UI with inline edit form
