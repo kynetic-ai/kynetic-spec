@@ -78337,7 +78337,7 @@
   spec_ref: "@ui-session-stream"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -78380,6 +78380,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T01:50:19.144Z
 - _ulid: 01KK2NNQ0MJY54DX9PYHP4N1EA
   slugs: []
   title: Normalize reference displays across web UI — show titles and consistent linking
