@@ -51,5 +51,34 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: false
-workflows: []
+workflows:
+  - _ulid: 01KF0WF001CA45ZT43W2T6HJMV
+    id: spec-first
+    trigger: behavior-change
+    description: |
+      Check spec coverage before implementing changes.
+      Core principle: If changing behavior and spec doesn't cover it,
+      update the spec first.
+    steps:
+      - type: check
+        content: Does the spec cover this change?
+        on_fail: Update or create spec before proceeding
+      - type: decision
+        content: What is the spec status?
+        options:
+          - Spec exists and matches -> Derive task, proceed
+          - Spec exists but outdated -> Update spec first
+          - No spec exists -> Create spec first (behavior) or task directly (infra)
+      - type: action
+        content: Update or create spec item if needed
+  - _ulid: 01KF0WF002CC9N4YGP991WD7XS
+    id: session-start
+    trigger: session-start
+    description: Get context at the beginning of a work session.
+    steps:
+      - type: action
+        content: Run kspec session start to get context
+      - type: check
+        content: Are there active (in_progress) tasks?
+        on_fail: Pick from ready tasks or triage inbox
 conventions: []
