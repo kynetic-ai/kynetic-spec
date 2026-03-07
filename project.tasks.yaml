@@ -78424,6 +78424,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed. Merged to feat/ui-revamp.
   depends_on: []
   context: []
   priority: 3
@@ -78435,6 +78436,7 @@
   created_at: 2026-03-06T22:53:12.084Z
   started_at: 2026-03-07T04:32:26.123Z
   submitted_at: 2026-03-07T04:37:47.343Z
+  completed_at: 2026-03-07T04:43:49.945Z
   notes:
     - _ulid: 01KK30BAHBFC3KY2GHBRPPRN2M
       created_at: 2026-03-07T01:59:45.964Z
@@ -78642,8 +78644,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T04:43:49.945Z
-  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
   slugs: []
   title: "Distinguish session types: dispatched agent vs manual CLI run"
@@ -79080,3 +79080,31 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix sidebar badge counts showing stale data from wrong project on initial load
+  description: "When switching projects or first loading the UI for a project, the sidebar badge
+    counts (inbox, observations, pending review tasks) show numbers from the previous/default
+    project rather than the active one. They eventually correct after the 30-second refresh
+    interval. Root cause: Sidebar.svelte loads badge counts on mount but may fire before the project
+    context is fully resolved, or the initial API calls don't include the correct X-Kspec-Dir header
+    for the active project. Fix: (1) ensure loadCounts() waits for the active project to be resolved
+    before fetching, (2) reload counts immediately on project change (not just on version change),
+    (3) consider debouncing the project switch to avoid a flash of stale counts."
+  type: task
+  spec_ref: "@ui-app-shell"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - bug
+    - web-ui
+  depends_on: []
+  automation: eligible
+  _ulid: 01KK39QYZC4J6PQ4WXHX2VHHN3
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-07T04:43:57.291Z
+  notes: []
+  todos: []
