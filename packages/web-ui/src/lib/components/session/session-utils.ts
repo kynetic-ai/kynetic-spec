@@ -411,6 +411,27 @@ export function formatAge(dateStr: string): string {
 }
 
 /**
+ * Format a timestamp for timeline display showing absolute time.
+ * Shows "HH:MM:SS" for today, "MMM D, HH:MM:SS" for other days.
+ */
+export function formatTimeline(dateStr: string): string {
+	const d = new Date(dateStr);
+	const now = new Date();
+	const time = d.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' });
+
+	const isToday =
+		d.getFullYear() === now.getFullYear() &&
+		d.getMonth() === now.getMonth() &&
+		d.getDate() === now.getDate();
+
+	if (isToday) return time;
+
+	const month = d.toLocaleString('en-US', { month: 'short' });
+	const day = d.getDate();
+	return `${month} ${day}, ${time}`;
+}
+
+/**
  * Extract unique file paths that were changed during a session.
  * Looks at Write, Edit, and NotebookEdit tool calls.
  *

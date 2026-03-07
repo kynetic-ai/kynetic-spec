@@ -5,7 +5,7 @@
 <script lang="ts">
 	import type { SessionDetail } from '$lib/api';
 	import type { DisplayBlock } from './session-utils';
-	import { extractFilesChanged, formatElapsed, formatAge } from './session-utils';
+	import { extractFilesChanged, formatElapsed, formatTimeline } from './session-utils';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import Clock from '@lucide/svelte/icons/clock';
@@ -232,12 +232,12 @@
 			<div class="space-y-1 text-xs text-muted-foreground">
 				<div class="flex justify-between">
 					<span>Started</span>
-					<span class="font-mono">{formatAge(session.started_at)}</span>
+					<span class="font-mono" title={session.started_at}>{formatTimeline(session.started_at)}</span>
 				</div>
 				{#if session.ended_at}
 					<div class="flex justify-between">
 						<span>Ended</span>
-						<span class="font-mono">{formatAge(session.ended_at)}</span>
+						<span class="font-mono" title={session.ended_at}>{formatTimeline(session.ended_at)}</span>
 					</div>
 				{/if}
 				<div class="flex justify-between">
