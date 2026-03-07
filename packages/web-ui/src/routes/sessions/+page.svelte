@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import type { SessionSummary } from '$lib/api';
-	import { fetchSessions } from '$lib/api';
+	import { fetchSessions, fetchTasks } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
@@ -16,6 +16,7 @@
 	import Terminal from '@lucide/svelte/icons/terminal';
 
 	let sessions = $state<SessionSummary[]>([]);
+	let taskTitles = $state<Record<string, string>>({});
 	let loading = $state(true);
 	let error = $state('');
 
@@ -34,9 +35,24 @@
 		loading = true;
 		error = '';
 		try {
-			const data = await fetchSessions();
+			const [data, tasksData] = await Promise.all([
+				fetchSessions(),
+				fetchTasks({ limit: 1000 })
+			]);
 			// AC: @ui-session-history ac-1 — sorted by most recent first (daemon returns pre-sorted)
 			sessions = data.items;
+
+			// Build task title lookup for ReferenceLink display
+			const titles: Record<string, string> = {};
+			for (const task of tasksData.items) {
+				if (task.slugs?.length) {
+					for (const slug of task.slugs) {
+						titles[`@${slug}`] = task.title;
+					}
+				}
+				titles[`@${task._ulid}`] = task.title;
+			}
+			taskTitles = titles;
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load sessions';
 		} finally {
@@ -171,7 +187,7 @@
 							{#if s.task_id}
 								<span class="text-xs text-muted-foreground">&middot;</span>
 								<span data-testid="session-task-ref">
-									<ReferenceLink ref={s.task_id} type="task" inline class="text-xs" />
+									<ReferenceLink ref={s.task_id} type="task" title={taskTitles[s.task_id] || taskTitles[`@${s.task_id}`]} inline class="text-xs" />
 								</span>
 							{/if}
 						</div>

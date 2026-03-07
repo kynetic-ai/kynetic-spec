@@ -8,7 +8,7 @@
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
 	import type { SessionDetail, SessionEvent as SessionEventType } from '$lib/api';
-	import { fetchSession, fetchSessionEvents } from '$lib/api';
+	import { fetchSession, fetchSessionEvents, fetchTasks } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import { parseEventsToBlocks, accumulateStreamingText, getLastSeq, type DisplayBlock } from '$lib/components/session/session-utils';
@@ -21,6 +21,7 @@
 	let sessionId = $derived($page.params.id);
 
 	let session = $state<SessionDetail | null>(null);
+	let taskTitle = $state<string | null>(null);
 	let events = $state<SessionEventType[]>([]);
 	let blocks = $state<DisplayBlock[]>([]);
 	let loading = $state(true);
@@ -44,10 +45,36 @@
 			events = eventsData.events;
 			blocks = parseEventsToBlocks(events);
 			lastSeq = getLastSeq(events);
+
+			// Resolve task title if the session has a task_id
+			if (sessionData.task_id) {
+				resolveTaskTitle(sessionData.task_id);
+			}
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load session';
 		} finally {
 			loading = false;
+		}
+	}
+
+	async function resolveTaskTitle(taskId: string) {
+		try {
+			const tasksData = await fetchTasks({ limit: 1000 });
+			const ref = taskId.startsWith('@') ? taskId : `@${taskId}`;
+			for (const task of tasksData.items) {
+				if (`@${task._ulid}` === ref) {
+					taskTitle = task.title;
+					return;
+				}
+				for (const slug of task.slugs || []) {
+					if (`@${slug}` === ref) {
+						taskTitle = task.title;
+						return;
+					}
+				}
+			}
+		} catch {
+			// Non-critical — ReferenceLink falls back to raw ID display
 		}
 	}
 
@@ -151,7 +178,7 @@
 		<!-- Main content: context panel + stream -->
 		<div class="flex flex-1 min-h-0">
 			<!-- AC: @ui-session-stream ac-4 — Context panel with spec context, files, budget -->
-			<SessionContextPanel {session} {blocks} />
+			<SessionContextPanel {session} {blocks} {taskTitle} />
 
 			<!-- AC: @ui-session-stream ac-1, ac-2, ac-3 — Event stream -->
 			<SessionStream {blocks} {isLive} {streamingText} />

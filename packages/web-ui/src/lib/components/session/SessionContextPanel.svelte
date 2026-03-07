@@ -22,9 +22,11 @@
 	let {
 		session,
 		blocks = [],
+		taskTitle = null,
 	}: {
 		session: SessionDetail;
 		blocks?: DisplayBlock[];
+		taskTitle?: string | null;
 	} = $props();
 
 	let statusColor = $derived(
@@ -105,7 +107,7 @@
 				{#if session.task_id}
 					<div class="flex items-center gap-2 text-xs">
 						<FileText class="size-3.5 text-muted-foreground" />
-						<ReferenceLink ref={session.task_id} type="task" class="text-xs" />
+						<ReferenceLink ref={session.task_id} type="task" title={taskTitle} class="text-xs" />
 					</div>
 				{/if}
 			</div>

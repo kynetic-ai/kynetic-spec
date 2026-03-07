@@ -9,9 +9,10 @@
 
 	interface Props {
 		invocation: ActiveInvocation;
+		taskTitle?: string | null;
 	}
 
-	let { invocation }: Props = $props();
+	let { invocation, taskTitle = null }: Props = $props();
 
 	let elapsedFormatted = $derived(formatElapsed(invocation.elapsed_ms));
 
@@ -39,7 +40,7 @@
 
 		{#if invocation.task_ref}
 			<span data-testid="invocation-task-ref">
-				<ReferenceLink ref={invocation.task_ref} type="task" class="text-sm" />
+				<ReferenceLink ref={invocation.task_ref} type="task" title={taskTitle} class="text-sm" />
 			</span>
 		{:else}
 			<span class="text-sm text-muted-foreground italic">No task</span>
