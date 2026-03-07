@@ -78799,6 +78799,7 @@
   session_id: 01KK37D3NJEEQK7GTA5FHT9F0D
   created_at: 2026-03-07T00:01:04.433Z
   started_at: 2026-03-07T04:09:46.259Z
+  submitted_at: 2026-03-07T04:25:34.811Z
   notes:
     - _ulid: 01KK38P478VK09PY1BQ96ZYNBX
       created_at: 2026-03-07T04:25:28.552Z
@@ -78822,9 +78823,46 @@
         All 161 web-ui vitest tests pass. 3907/3912 root vitest tests pass (2 pre-existing failures
         unrelated to this change).
       supersedes: null
+    - _ulid: 01KK390FE458CTEF8PYG60V88F
+      created_at: 2026-03-07T04:31:07.716Z
+      author: Jacob Chapel
+      content: >-
+        Review findings:
+
+
+        MUST-FIX 1 (spec/task alignment): Task description explicitly requires PATCH
+        /api/meta/agents/:id, but implementation ships POST.
+
+        - packages/daemon/src/routes/meta.ts:124 defines `.post('/agents/:id', ...)`
+
+        - packages/web-ui/src/lib/api.ts:719 sends `method: 'POST'`
+
+
+        MUST-FIX 2 (task requirement not met): Task description says Agent schema fields from
+        src/schema/meta.ts AgentSchema should drive form structure. Current edit form is hardcoded
+        and does not reference AgentSchema.
+
+        - packages/web-ui/src/lib/components/agents/AgentEditForm.svelte:15 hardcodes dispatch
+        events
+
+        - packages/web-ui/src/lib/components/agents/AgentEditForm.svelte:31-137 hardcodes per-field
+        form state and serialization
+
+        - No AgentSchema import/usage found in changed UI/daemon files.
+
+
+        Validation/Test context:
+
+        - `npm test` passed (root): 180 files, 3909 tests passed, 3 skipped
+
+        - `cd packages/web-ui && npm test` passed: 3 files, 161 tests passed
+
+        - `kspec validate` currently fails globally due unrelated pre-existing repo
+        meta/schema/reference issues; no new warning surfaced specifically for @ui-agent-dispatch in
+        this branch diff.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-07T04:25:34.811Z
 - _ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
   slugs: []
   title: Add compact kanban board to dashboard with active fleet row and needs attention
