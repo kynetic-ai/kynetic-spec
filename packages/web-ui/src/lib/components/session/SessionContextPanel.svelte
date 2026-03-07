@@ -4,10 +4,12 @@
 -->
 <script lang="ts">
 	import type { SessionDetail } from '$lib/api';
+	import { fetchTask } from '$lib/api';
 	import type { DisplayBlock } from './session-utils';
 	import { extractFilesChanged, formatElapsed, formatTimeline } from './session-utils';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
+	import { base } from '$app/paths';
 	import Clock from '@lucide/svelte/icons/clock';
 	import Bot from '@lucide/svelte/icons/bot';
 	import FileText from '@lucide/svelte/icons/file-text';
@@ -23,6 +25,31 @@
 		session: SessionDetail;
 		blocks?: DisplayBlock[];
 	} = $props();
+
+	/** Strip leading @ from task_id to avoid double @@ in display. */
+	function normalizeTaskId(taskId: string): string {
+		return taskId.replace(/^@/, '');
+	}
+
+	let taskTitle = $state<string | null>(null);
+	let lastFetchedTaskId: string | null = null;
+
+	// Resolve task title when task_id is available — guard to avoid
+	// repeated fetches on every session metadata refresh (every 3s for live sessions).
+	$effect(() => {
+		const taskId = session.task_id;
+		if (taskId && taskId !== lastFetchedTaskId) {
+			lastFetchedTaskId = taskId;
+			taskTitle = null;
+			fetchTask(taskId)
+				.then((task) => {
+					taskTitle = task.title;
+				})
+				.catch(() => {
+					// Silently ignore — fall back to ULID display
+				});
+		}
+	});
 
 	let statusColor = $derived(
 		session.status === 'active'
@@ -108,9 +135,21 @@
 				</div>
 
 				{#if session.task_id}
+					{@const rawId = normalizeTaskId(session.task_id)}
 					<div class="flex items-center gap-2 text-xs">
 						<FileText class="size-3.5 text-muted-foreground" />
-						<span class="font-mono text-primary">@{session.task_id.slice(0, 8)}</span>
+						<a
+							href="{base}/tasks?ref={encodeURIComponent(session.task_id)}"
+							class="font-mono text-primary hover:underline"
+							data-testid="session-task-link"
+							title={taskTitle ?? session.task_id}
+						>
+							{#if taskTitle}
+								{taskTitle}
+							{:else}
+								@{rawId.slice(0, 8)}
+							{/if}
+						</a>
 					</div>
 				{/if}
 			</div>
