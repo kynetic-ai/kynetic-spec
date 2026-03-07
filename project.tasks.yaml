@@ -80148,6 +80148,24 @@
         @gh-pages-export ac-16, plus blocking @web-dashboard completeness warnings from kspec
         validate."
       supersedes: null
+    - _ulid: 01KK4N0DQ9YQEM0PXBJZB9TZT2
+      created_at: 2026-03-07T17:20:03.305Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 - addressed review feedback:
+
+        1. Static mode regression: Replaced {#if !isStaticMode()} guard that hid all action buttons
+        with disabled buttons + tooltips. Now Start, Submit, Complete, Block, and Add Note buttons
+        are always visible but disabled with 'Read-only mode' tooltip in static mode, matching
+        @gh-pages-export ac-16.
+
+        2. @web-dashboard completeness warnings: Added missing // AC: @web-dashboard annotations to
+        dashboard.spec.ts (ac-1, ac-2, ac-3) and items.spec.ts (ac-11, ac-12, ac-13, ac-14). Tests
+        already existed but lacked the standard annotation format that kspec validate scans for.
+
+        All 4030 tests pass (2 pre-existing codex config failures). Build succeeds. kspec validate
+        --completeness no longer reports @web-dashboard warnings.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
