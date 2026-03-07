@@ -79913,6 +79913,7 @@
   created_at: 2026-03-07T15:35:00.095Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK4F039AVGTDAQ5PD54S1VEF
   slugs: []
   title: Remove useless type filter from task list
@@ -79934,6 +79935,7 @@
   created_at: 2026-03-07T15:35:01.162Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
   slugs: []
   title: Unify task detail display across kanban and task list
@@ -79956,6 +79958,7 @@
   created_at: 2026-03-07T15:35:02.191Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
   slugs: []
   title: Fix kanban and task list responsive layout (no horizontal scrolling)
@@ -79978,6 +79981,7 @@
   created_at: 2026-03-07T15:35:03.216Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK4F06AW44EZDXEPSPHPATD4
   slugs: []
   title: Fix kanban board showing wrong tasks in columns
@@ -80002,6 +80006,7 @@
   created_at: 2026-03-07T15:35:04.284Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK4F07BB4W0T37GF2SH50WPB
   slugs: []
   title: Fix task IDs showing instead of task names in sessions and dispatch views
@@ -80029,7 +80034,11 @@
   created_at: 2026-03-07T15:35:05.323Z
   notes: []
   todos: []
-- title: Fix settings page showing shadow branch as unhealthy when it is healthy
+  automation: eligible
+- _ulid: 01KK4F08D3J3EQMKJ8YQN9T7NB
+  slugs: []
+  title: Fix settings page showing shadow branch as unhealthy when it is healthy
+  type: task
   description: "The settings page shows shadow branch status as 'Unhealthy' (yellow indicator) even
     when kspec shadow status reports it as healthy. The daemon endpoint GET /api/meta/shadow calls
     getShadowStatus() which checks branchExists, worktreeExists, and worktreeLinked. The UI shows
@@ -80037,21 +80046,19 @@
     resolves a different project root than the CLI, (2) the project header is missing/wrong so the
     daemon checks the wrong directory, or (3) the getShadowStatus check fails for worktreeLinked in
     the daemon context."
-  type: task
   spec_ref: "@ui-settings-view"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - bug
     - web-ui
-  depends_on: []
-  _ulid: 01KK4F08D3J3EQMKJ8YQN9T7NB
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-07T15:35:06.403Z
   notes: []
   todos: []
+  automation: eligible
