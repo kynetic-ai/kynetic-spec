@@ -79474,7 +79474,7 @@
   spec_ref: "@ui-app-shell"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -79501,6 +79501,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-07T07:38:32.592Z
 - _ulid: 01KK39ZSZPMTJ9404EQTGHXGBW
   slugs: []
   title: Buffer agent output in Active Fleet cards to show sentence-level text instead of raw token chunks
