@@ -78649,7 +78649,7 @@
   spec_ref: "@ui-agent-dispatch"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -78659,7 +78659,7 @@
     - web-ui
     - daemon
   vcs_refs: []
-  session_id: 01KK34EZYQHCP7VEBNHWMYGCYH
+  session_id: null
   created_at: 2026-03-07T00:01:03.380Z
   started_at: 2026-03-07T03:18:02.122Z
   submitted_at: 2026-03-07T03:26:03.094Z
@@ -78699,6 +78699,12 @@
         packages/web-ui/tests/e2e/agents.spec.ts and tests/). The implementation change for
         completed count looks correct, but review cannot pass until ac-4 has explicit test coverage
         annotation and validation warning is cleared for this spec."
+      supersedes: null
+    - _ulid: 01KK35K9RN8Y7R2ERSVA39E13M
+      created_at: 2026-03-07T03:31:30.198Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX missing spec AC coverage for
+        @ui-agent-dispatch ac-4 (kspec validate reports uncovered own AC)."
       supersedes: null
   todos: []
   automation: eligible
