@@ -78519,6 +78519,18 @@
         sessions/+page.svelte. All 3911+14 tests pass; 2 pre-existing codex platform detection
         failures unrelated."
       supersedes: null
+    - _ulid: 01KK32TD00PA9R0BMMKVSKQYQK
+      created_at: 2026-03-07T02:42:57.152Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1) @ui-reference-display ac-1 requires secondary text to be slug
+        OR short ULID. Current implementation truncates all refs to 8 chars via shortRef()
+        (packages/web-ui/src/lib/utils/reference.ts:25-27), and ReferenceLink always renders that
+        truncated value when title is present
+        (packages/web-ui/src/lib/components/ReferenceLink.svelte:58,72). This causes slug refs to
+        display as shortened fragments (e.g., task-slu) instead of full slug. Tests currently encode
+        this incorrect behavior (packages/web-ui/tests/reference.test.ts:35-46). Required fix: only
+        shorten ULIDs; keep full slug in secondary text."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
