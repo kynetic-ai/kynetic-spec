@@ -80208,6 +80208,18 @@
         TaskDetailModal.svelte:528 — ac-17 is about inbox Add button, not task note form. Remove or
         change to @gh-pages-export ac-18."
       supersedes: null
+    - _ulid: 01KK53F2C1SQ3MRWF74B7RG18C
+      created_at: 2026-03-07T21:32:43.265Z
+      author: "@claude"
+      content: "Re-review update: The fix/unify-task-detail-display branch is STALE. The fix cycle 1
+        commit (c89a604e4) modified TaskDetailModal.svelte, but the original refactoring (51e193de8,
+        merged as dda66873e) extracted all action/note logic into TaskDetailContent.svelte. The
+        current feat/ui-revamp still has the static mode regression in TaskDetailContent.svelte:289
+        ({#if !isStaticMode()} hides actions entirely instead of showing disabled buttons with
+        tooltips). The fix needs to be applied to TaskDetailContent.svelte, not the old monolithic
+        TaskDetailModal.svelte. The AC annotation additions to dashboard.spec.ts and items.spec.ts
+        are valid and already merged via dda66873e."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
