@@ -1516,6 +1516,9 @@ features:
         then: A shared ReferenceLink component displays the resolved title (when available) with slug or
           short ULID as secondary text, links to the appropriate detail view, and normalizes @
           prefix (no double @@). Falls back to raw ref display if resolution fails.
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
