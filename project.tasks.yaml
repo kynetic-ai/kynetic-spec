@@ -79786,6 +79786,21 @@
         single-line truncation contract (controls can be clipped), and @ui-session-stream ac-5 test
         coverage annotation is missing."
       supersedes: null
+    - _ulid: 01KK3TMWTGPF8P0CVQKHNWJ09F
+      created_at: 2026-03-07T09:39:22.577Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed both MUST-FIX items:
+
+        1) Tool name badge changed from flex-shrink-0+whitespace-nowrap to min-w-0+max-w-[40%] with
+        inner truncate span. Icon inside badge keeps flex-shrink-0. This ensures long tool names
+        truncate with ellipsis while right-side controls (status icon, duration) remain visible.
+
+        2) Added 6 tests annotated with // AC: @ui-session-stream ac-5 in
+        web-ui-session-stream.test.ts — verifies overflow-hidden on button, flex-shrink-0 on
+        chevron/timestamp/duration/status-icons, min-w-0+truncate on tool name badge (and NOT
+        flex-shrink-0), and truncate on preview span.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK3BSWT9NQHKEZ19P97VT3SV
