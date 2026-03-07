@@ -79761,6 +79761,22 @@
         - No E2E test needed — this is a CSS-only fix; ac-5 acceptance criteria is validated by
         visual inspection of the layout behavior
       supersedes: null
+    - _ulid: 01KK3SH2SATAPQFGSCXKTNH29Z
+      created_at: 2026-03-07T09:19:49.034Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX 1)
+        packages/web-ui/src/lib/components/session/ToolCallView.svelte:70 makes the tool-name badge
+        flex-shrink-0 + whitespace-nowrap without truncation. With long tool names this can force
+        overflow clipping and hide right-side timing/status controls due button-level
+        overflow-hidden, violating task requirement that controls stay visible and only tool
+        name/parameter summary truncate. MUST-FIX 2) Missing test AC coverage for @ui-session-stream
+        ac-5. No // AC: @ui-session-stream ac-5 exists in test files (tests/ or
+        packages/web-ui/tests/); only a source comment was added in ToolCallView.svelte. Add a test
+        that validates collapsed-row single-line + truncation behavior and annotate it with ac-5.
+        Regression suite status: npm test PASS, cd packages/web-ui && npm test PASS. kspec validate
+        reports repo-level existing issues; no spec-specific warning for @ui-session-stream was
+        surfaced in this change."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK3BSWT9NQHKEZ19P97VT3SV
