@@ -68,27 +68,15 @@
 	type TriageFilterStatus = 'all' | 'untriaged' | 'triaged' | 'acted_on';
 	const TRIAGE_STATUS_VALUES: readonly TriageFilterStatus[] = ['all', 'untriaged', 'triaged', 'acted_on'];
 
-	let filterStatus = $state<TriageFilterStatus>('all');
-	let filterTag = $state<string>('');
-	let filterAge = $state<string>('');
-
-	function parseFilterStatus(raw: string | null): TriageFilterStatus {
+	let filterStatus = $derived.by((): TriageFilterStatus => {
+		const raw = $page.url.searchParams.get('status');
 		if (raw && TRIAGE_STATUS_VALUES.includes(raw as TriageFilterStatus)) {
 			return raw as TriageFilterStatus;
 		}
 		return 'all';
-	}
-
-	// Sync filter state from URL params
-	$effect(() => {
-		const nextStatus = parseFilterStatus($page.url.searchParams.get('status'));
-		const nextTag = $page.url.searchParams.get('tag') || '';
-		const nextAge = $page.url.searchParams.get('age') || '';
-
-		if (filterStatus !== nextStatus) filterStatus = nextStatus;
-		if (filterTag !== nextTag) filterTag = nextTag;
-		if (filterAge !== nextAge) filterAge = nextAge;
 	});
+	let filterTag = $derived($page.url.searchParams.get('tag') || '');
+	let filterAge = $derived($page.url.searchParams.get('age') || '');
 
 	// ── Merged inbox + triage view ──
 	interface InboxCardItem {
@@ -363,7 +351,7 @@
 	<!-- AC: @ui-inbox-enhanced ac-2 — Filter controls -->
 	<div class="flex flex-wrap gap-2 items-center" data-testid="inbox-filters">
 		<select
-			bind:value={filterStatus}
+			value={filterStatus}
 			onchange={(event) => updateFilterParam('status', (event.currentTarget as HTMLSelectElement).value)}
 			class="rounded-md border bg-background px-3 py-1.5 text-sm"
 			data-testid="inbox-status-filter"
@@ -376,7 +364,7 @@
 
 		{#if allTags.length > 0}
 			<select
-				bind:value={filterTag}
+				value={filterTag}
 				onchange={(event) => updateFilterParam('tag', (event.currentTarget as HTMLSelectElement).value)}
 				class="rounded-md border bg-background px-3 py-1.5 text-sm"
 				data-testid="inbox-tag-filter"
@@ -389,7 +377,7 @@
 		{/if}
 
 		<select
-			bind:value={filterAge}
+			value={filterAge}
 			onchange={(event) => updateFilterParam('age', (event.currentTarget as HTMLSelectElement).value)}
 			class="rounded-md border bg-background px-3 py-1.5 text-sm"
 			data-testid="inbox-age-filter"
