@@ -80334,9 +80334,21 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK4P9K8991NMACZHCTPNTH1S
   created_at: 2026-03-07T15:35:06.403Z
-  notes: []
+  started_at: 2026-03-07T17:42:57.039Z
+  notes:
+    - _ulid: 01KK4PS08HYQTFM55R2EDNRK62
+      created_at: 2026-03-07T17:50:57.297Z
+      author: "@claude"
+      content: "Fixed shadow branch health status bug. Root cause: the daemon's /api/meta/shadow endpoint
+        was passing ctx.shadow.worktreeDir (full absolute path like /home/user/project/.kspec) as
+        the 'directory' option to getShadowStatus(), which expects just a directory name (like
+        '.kspec'). getShadowStatus joins projectRoot + directory, so the full path produced an
+        invalid path like /home/user/project//home/user/project/.kspec, causing all three health
+        checks (branchExists, worktreeExists, worktreeLinked) to fail. Fix: use
+        ctx.config.shadow.directory (the directory name from project config) instead. Added
+        regression test verifying that passing a full path as directory produces unhealthy status."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T17:42:57.039Z
-  session_id: 01KK4P9K8991NMACZHCTPNTH1S
