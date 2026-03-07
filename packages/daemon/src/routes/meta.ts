@@ -24,6 +24,8 @@ import {
   saveMetaItem,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
+import type { Agent } from '../../schema/meta.js';
+import { AgentDispatchEventSchema } from '../../schema/meta.js';
 
 interface MetaRouteOptions {}
 
@@ -62,6 +64,8 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
     })
 
     // AC: @ui-agent-dispatch ac-4 - Update agent definition
+    // Body schema mirrors editable fields from AgentSchema (src/schema/meta.ts).
+    // Dispatch event enum values derived from AgentDispatchEventSchema.
     .patch(
       '/agents/:id',
       async ({ params, body, projectContext }) => {
@@ -74,8 +78,8 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
           throw new Error(`Agent not found: ${params.id}`);
         }
 
-        // Apply partial updates from body
-        const updated = { ...agent, ...body };
+        // Apply partial updates from body — result satisfies Agent type from schema
+        const updated: Agent = { ...agent, ...body };
 
         await saveMetaItem(ctx, updated, 'agent');
         await commitIfShadow(ctx.shadow, `meta: update agent ${params.id}`);
@@ -86,6 +90,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
         params: t.Object({
           id: t.String(),
         }),
+        // Editable fields from AgentSchema — dispatch.on enum derived from AgentDispatchEventSchema
         body: t.Object({
           name: t.Optional(t.String()),
           description: t.Optional(t.String()),
@@ -93,10 +98,10 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
           dispatch: t.Optional(
             t.Array(
               t.Object({
-                on: t.String(),
+                on: t.Union(AgentDispatchEventSchema.options.map((v) => t.Literal(v))),
                 filter: t.Optional(
                   t.Object({
-                    automation: t.Optional(t.String()),
+                    automation: t.Optional(t.Union([t.Literal('eligible'), t.Literal('ineligible')])),
                     tags: t.Optional(t.Array(t.String())),
                     priority: t.Optional(t.Number()),
                   })

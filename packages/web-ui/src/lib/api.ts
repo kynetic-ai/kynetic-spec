@@ -22,7 +22,9 @@ import type {
 	PaginatedResponse,
 	PlanSummary,
 	ErrorResponse,
-	SearchResponse
+	SearchResponse,
+	AgentDefinition,
+	AgentUpdatePayload
 } from '@kynetic-ai/shared';
 import type { TriageRecord } from './types/triage';
 import {
@@ -614,58 +616,11 @@ export async function overrideTriageRecord(
 // AC: @ui-agent-dispatch ac-1, ac-2, ac-3
 // ============================================================
 
-/**
- * Agent definition from GET /api/meta/agents
- */
-export interface AgentDefinition {
-	_ulid: string;
-	id: string;
-	name: string;
-	description?: string;
-	adapter?: string;
-	dispatch: Array<{
-		on: string;
-		filter?: {
-			automation?: string;
-			tags?: string[];
-			priority?: number;
-		};
-	}>;
-	capabilities: string[];
-	tools: string[];
-	skills: string[];
-	budget?: {
-		max_tasks?: number;
-		max_retries?: number;
-		timeout_minutes?: number;
-	};
-	concurrency: {
-		max_concurrent: number;
-	};
-	auto_approve: boolean;
-	prompt_template?: string;
-}
-
-/**
- * Payload for PATCH /api/meta/agents/:id — partial agent update
- * AC: @ui-agent-dispatch ac-4
- */
-export type AgentUpdatePayload = Partial<
-	Pick<
-		AgentDefinition,
-		| 'name'
-		| 'description'
-		| 'adapter'
-		| 'dispatch'
-		| 'capabilities'
-		| 'tools'
-		| 'skills'
-		| 'budget'
-		| 'concurrency'
-		| 'auto_approve'
-		| 'prompt_template'
-	>
->;
+// AgentDefinition and AgentUpdatePayload are imported from @kynetic-ai/shared
+// (schema-driven types mirroring AgentSchema from src/schema/meta.ts)
+// Re-exported so existing imports from '$lib/api' continue to work.
+// AC: @ui-agent-dispatch ac-4
+export type { AgentDefinition, AgentUpdatePayload };
 
 /**
  * Active invocation from GET /api/agent/status

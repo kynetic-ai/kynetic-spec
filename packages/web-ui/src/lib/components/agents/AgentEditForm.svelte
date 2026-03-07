@@ -1,14 +1,18 @@
 <!--
   AC: @ui-agent-dispatch ac-4 — Inline edit form for agent definitions.
-  Schema-driven: dispatch events from AGENT_DISPATCH_EVENTS, field structure from AgentDefinition type.
+  Schema-driven: types (AgentDefinition, AgentUpdatePayload, AgentDispatchRule) and
+  dispatch event values (AGENT_DISPATCH_EVENTS) from @kynetic-ai/shared, which mirrors
+  AgentSchema / AgentDispatchEventSchema from src/schema/meta.ts.
 -->
 <script lang="ts">
+	import { updateAgentDefinition } from '$lib/api';
 	import {
-		updateAgentDefinition,
+		AGENT_DISPATCH_EVENTS,
 		type AgentDefinition,
-		type AgentUpdatePayload
-	} from '$lib/api';
-	import { AGENT_DISPATCH_EVENTS } from '@kynetic-ai/shared';
+		type AgentUpdatePayload,
+		type AgentDispatchEvent,
+		type AgentDispatchRule
+	} from '@kynetic-ai/shared';
 	import { ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
@@ -30,10 +34,11 @@
 	} = $props();
 
 	// Form state derived from agent prop — reset when dialog opens
+	// Field structure mirrors AgentDefinition from @kynetic-ai/shared (schema-driven)
 	let name = $state('');
 	let description = $state('');
 	let adapter = $state('');
-	let dispatchTriggers = $state<Array<{ on: string; filter?: { automation?: string; tags?: string[]; priority?: number } }>>([]);
+	let dispatchTriggers = $state<AgentDispatchRule[]>([]);
 	let capabilities = $state<string[]>([]);
 	let tools = $state<string[]>([]);
 	let skills = $state<string[]>([]);
@@ -81,7 +86,7 @@
 		AGENT_DISPATCH_EVENTS.filter((e) => !dispatchTriggers.some((t) => t.on === e))
 	);
 
-	function addTrigger(event: string) {
+	function addTrigger(event: AgentDispatchEvent) {
 		dispatchTriggers = [...dispatchTriggers, { on: event }];
 	}
 
