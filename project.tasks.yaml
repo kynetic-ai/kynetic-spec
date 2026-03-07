@@ -78508,6 +78508,17 @@
         when unresolved/title-missing), and required regression command npm test failed (2 failing
         tests)."
       supersedes: null
+    - _ulid: 01KK32EJQ8Y4VD50MZ09HWSF52
+      created_at: 2026-03-07T02:36:29.801Z
+      author: "@claude"
+      content: "Fix cycle 1: Changed ReferenceLink.svelte fallback (no-title case) from @{short} (8-char
+        truncated via shortRef()) to @{normalized} (full ref via normalizeRef()). This matches ac-1
+        requirement for raw ref fallback when title is unavailable. shortRef() still correctly used
+        as secondary text when title IS present. Cherry-picked original implementation onto
+        fix/ref-display-fallback branch, resolved merge conflicts in SessionContextPanel.svelte and
+        sessions/+page.svelte. All 3911+14 tests pass; 2 pre-existing codex platform detection
+        failures unrelated."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
