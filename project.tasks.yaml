@@ -78764,7 +78764,7 @@
   spec_ref: "@ui-dashboard-overview"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -78777,6 +78777,8 @@
   notes: []
   todos: []
   automation: eligible
+  closed_reason: Existing kanban board at /tasks/board already covers this need. Dashboard layout is
+    fine as status summary cards + needs attention.
 - _ulid: 01KK2T4KR8EMDXEKRRMTFWDM50
   slugs: []
   title: Implement workflows page — list workflows with steps, triggers, and start action
