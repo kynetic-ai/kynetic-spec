@@ -92,11 +92,11 @@ test.describe('Task Board (Kanban)', () => {
 		await expect(modal).toBeVisible();
 
 		// Modal should show task title
-		await expect(page.getByTestId('modal-task-title')).toBeVisible();
+		await expect(page.getByTestId('task-detail-title')).toBeVisible();
 		// Modal should show status badge
-		await expect(page.getByTestId('modal-status-badge')).toBeVisible();
+		await expect(page.getByTestId('task-status-badge')).toBeVisible();
 		// Modal should show priority
-		await expect(page.getByTestId('modal-priority')).toBeVisible();
+		await expect(page.getByTestId('task-priority')).toBeVisible();
 	});
 
 	// AC: @ui-task-board ac-3
@@ -117,56 +117,56 @@ test.describe('Task Board (Kanban)', () => {
 		await expect(modal).toBeVisible();
 
 		// Title
-		await expect(page.getByTestId('modal-task-title')).toHaveText('In progress task');
+		await expect(page.getByTestId('task-detail-title')).toHaveText('In progress task');
 
 		// Description
-		await expect(page.getByTestId('modal-description')).toBeVisible();
+		await expect(page.getByTestId('task-description')).toBeVisible();
 
 		// Status badge
-		await expect(page.getByTestId('modal-status-badge')).toHaveText('In Progress');
+		await expect(page.getByTestId('task-status-badge')).toHaveText('In Progress');
 
 		// Priority
-		await expect(page.getByTestId('modal-priority')).toContainText('Priority');
+		await expect(page.getByTestId('task-priority')).toContainText('Priority');
 
 		// Type (AC-3 requires type to be shown)
-		await expect(page.getByTestId('modal-type')).toBeVisible();
-		await expect(page.getByTestId('modal-type')).toHaveText('task');
+		await expect(page.getByTestId('task-type')).toBeVisible();
+		await expect(page.getByTestId('task-type')).toHaveText('task');
 
 		// Spec ref
-		await expect(page.getByTestId('modal-spec-ref')).toBeVisible();
+		await expect(page.getByTestId('task-spec-ref')).toBeVisible();
 
 		// Tags (fixture has tags: ['test'])
-		await expect(page.getByTestId('modal-tags')).toBeVisible();
-		await expect(page.getByTestId('modal-tags')).toContainText('test');
+		await expect(page.getByTestId('task-tags')).toBeVisible();
+		await expect(page.getByTestId('task-tags')).toContainText('test');
 
 		// Automation status
-		await expect(page.getByTestId('modal-automation')).toBeVisible();
-		await expect(page.getByTestId('modal-automation')).toHaveText('eligible');
+		await expect(page.getByTestId('task-automation')).toBeVisible();
+		await expect(page.getByTestId('task-automation')).toHaveText('eligible');
 
 		// Dependencies (fixture has depends_on: @test-task-ready)
-		await expect(page.getByTestId('modal-dependencies')).toBeVisible();
+		await expect(page.getByTestId('task-dependencies')).toBeVisible();
 
 		// Blocked-by (fixture has blocked_by: ['@test-task-blocked'])
-		await expect(page.getByTestId('modal-blocked-by')).toBeVisible();
-		await expect(page.getByTestId('modal-blocked-by')).toContainText('@test-task-blocked');
+		await expect(page.getByTestId('task-blocked-by')).toBeVisible();
+		await expect(page.getByTestId('task-blocked-by')).toContainText('@test-task-blocked');
 
 		// VCS info (fixture has branch + PR refs)
-		await expect(page.getByTestId('modal-vcs')).toBeVisible();
+		await expect(page.getByTestId('task-vcs')).toBeVisible();
 
 		// Plan ref (fixture has plan_ref: @test-plan)
-		await expect(page.getByTestId('modal-plan-ref')).toBeVisible();
+		await expect(page.getByTestId('task-plan-ref')).toBeVisible();
 
 		// Session link (fixture has session_id: session-abc123)
-		await expect(page.getByTestId('modal-session-link')).toBeVisible();
+		await expect(page.getByTestId('task-session-ref')).toBeVisible();
 		// Verify session link targets /sessions route (not /session)
-		const sessionLink = page.getByTestId('modal-session-link').locator('a');
+		const sessionLink = page.getByTestId('task-session-ref').locator('a');
 		await expect(sessionLink).toHaveAttribute('href', /\/sessions\?ref=/);
 
 		// Todos (fixture has 2 todos)
-		await expect(page.getByTestId('modal-todos')).toBeVisible();
+		await expect(page.getByTestId('task-todos')).toBeVisible();
 
 		// Notes section
-		await expect(page.getByTestId('modal-notes')).toBeVisible();
+		await expect(page.getByTestId('task-notes')).toBeVisible();
 	});
 
 	// AC: @ui-task-board ac-1
@@ -236,7 +236,7 @@ test.describe('Task Board (Kanban)', () => {
 		await startBtn.click();
 
 		// Status badge should update to In Progress
-		await expect(page.getByTestId('modal-status-badge')).toHaveText('In Progress', {
+		await expect(page.getByTestId('task-status-badge')).toHaveText('In Progress', {
 			timeout: 5000
 		});
 	});
@@ -267,7 +267,7 @@ test.describe('Task Board (Kanban)', () => {
 		await submitBtn.click();
 
 		// Status badge should update to Review
-		await expect(page.getByTestId('modal-status-badge')).toHaveText('Review', { timeout: 5000 });
+		await expect(page.getByTestId('task-status-badge')).toHaveText('Review', { timeout: 5000 });
 	});
 
 	// AC: @ui-task-board ac-6
@@ -284,7 +284,7 @@ test.describe('Task Board (Kanban)', () => {
 		await expect(modal).toBeVisible();
 
 		// Find the add note form
-		const noteForm = page.getByTestId('modal-add-note');
+		const noteForm = page.getByTestId('task-add-note');
 		await expect(noteForm).toBeVisible();
 
 		// Type a note
@@ -332,7 +332,7 @@ test.describe('Task Board (Kanban)', () => {
 		await reasonInput.getByRole('button', { name: 'Confirm' }).click();
 
 		// Status badge should update to Completed
-		await expect(page.getByTestId('modal-status-badge')).toHaveText('Completed', {
+		await expect(page.getByTestId('task-status-badge')).toHaveText('Completed', {
 			timeout: 5000
 		});
 	});
@@ -368,7 +368,7 @@ test.describe('Task Board (Kanban)', () => {
 		await reasonInput.getByRole('button', { name: 'Confirm' }).click();
 
 		// Status badge should update to Blocked
-		await expect(page.getByTestId('modal-status-badge')).toHaveText('Blocked', {
+		await expect(page.getByTestId('task-status-badge')).toHaveText('Blocked', {
 			timeout: 5000
 		});
 	});

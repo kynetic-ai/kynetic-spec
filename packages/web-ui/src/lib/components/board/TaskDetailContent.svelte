@@ -1,0 +1,458 @@
+<!--
+  AC: @web-dashboard ac-5 — Task detail content showing description, notes, todos, dependencies.
+  AC: @web-dashboard ac-6 — Spec reference is clickable link to spec item detail.
+  AC: @web-dashboard ac-7 — Start Task action button.
+  AC: @web-dashboard ac-8 — Add Note textarea and submit.
+
+  Shared task detail content used by both TaskDetailModal (kanban board)
+  and the task list Sheet panel. Handles all task display, actions, and notes.
+-->
+<script lang="ts">
+	import type { TaskDetail } from '@kynetic-ai/shared';
+	import {
+		startTask,
+		submitTask,
+		completeTask,
+		blockTask,
+		addTaskNote
+	} from '$lib/api';
+	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import { Input } from '$lib/components/ui/input';
+	import { Separator } from '$lib/components/ui/separator';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import { getStatusClasses, formatVcsRef } from './board-utils';
+	import GitBranch from '@lucide/svelte/icons/git-branch';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
+
+	interface Props {
+		/** The task detail to display, or null if not yet loaded. */
+		task: TaskDetail | null;
+		/** Whether the task is currently loading. */
+		loading: boolean;
+		/** Error message to display, if any. */
+		error: string;
+		/** Called after a task action succeeds (start, submit, complete, block, add note). */
+		onTaskUpdated?: (task: TaskDetail) => void;
+	}
+
+	let { task, loading, error, onTaskUpdated }: Props = $props();
+
+	let actionError = $state('');
+	let isSubmitting = $state(false);
+
+	// Note form
+	let noteContent = $state('');
+
+	// Block/Complete reason form
+	let reasonInput = $state('');
+	let showReasonFor = $state<'block' | 'complete' | null>(null);
+
+	// Reset local state when task changes
+	$effect(() => {
+		if (task) {
+			// Task changed, reset action-specific state
+			actionError = '';
+			noteContent = '';
+			reasonInput = '';
+			showReasonFor = null;
+		}
+	});
+
+	async function handleAction(action: () => Promise<void>) {
+		if (!task) return;
+		isSubmitting = true;
+		actionError = '';
+		try {
+			await action();
+			// Re-fetch is handled by the parent via onTaskUpdated
+			onTaskUpdated?.(task);
+		} catch (err) {
+			if (err instanceof ReadOnlyModeError) {
+				actionError = err.message;
+			} else {
+				actionError = err instanceof Error ? err.message : 'Action failed';
+			}
+		} finally {
+			isSubmitting = false;
+		}
+	}
+
+	function handleStart() {
+		if (!task) return;
+		handleAction(() => startTask(task!._ulid));
+	}
+
+	function handleSubmit() {
+		if (!task) return;
+		handleAction(() => submitTask(task!._ulid));
+	}
+
+	function handleComplete() {
+		if (!task || !reasonInput.trim()) return;
+		const reason = reasonInput.trim();
+		handleAction(async () => {
+			await completeTask(task!._ulid, reason);
+			reasonInput = '';
+			showReasonFor = null;
+		});
+	}
+
+	function handleBlock() {
+		if (!task || !reasonInput.trim()) return;
+		const reason = reasonInput.trim();
+		handleAction(async () => {
+			await blockTask(task!._ulid, reason);
+			reasonInput = '';
+			showReasonFor = null;
+		});
+	}
+
+	function handleAddNote() {
+		if (!task || !noteContent.trim()) return;
+		const content = noteContent.trim();
+		handleAction(async () => {
+			await addTaskNote(task!._ulid, content);
+			noteContent = '';
+		});
+	}
+
+	function formatDate(dateStr: string): string {
+		return new Intl.DateTimeFormat('en-US', {
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		}).format(new Date(dateStr));
+	}
+
+	let statusInfo = $derived(task ? getStatusClasses(task.status) : null);
+	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
+</script>
+
+{#if loading}
+	<div class="flex flex-col gap-4 py-4" data-testid="task-detail-skeleton">
+		<Skeleton class="h-6 w-3/4 ds-shimmer" />
+		<Skeleton class="h-3 w-24 ds-shimmer" />
+		<div class="flex gap-2">
+			<Skeleton class="h-5 w-20 rounded-full ds-shimmer" />
+			<Skeleton class="h-5 w-24 rounded-full ds-shimmer" />
+		</div>
+		<div>
+			<Skeleton class="h-3 w-10 mb-1 ds-shimmer" />
+			<Skeleton class="h-4 w-32 ds-shimmer" />
+		</div>
+		<div class="flex gap-1">
+			<Skeleton class="h-5 w-12 rounded-full ds-shimmer" />
+			<Skeleton class="h-5 w-16 rounded-full ds-shimmer" />
+		</div>
+		<Skeleton class="h-px w-full ds-shimmer" />
+		<div>
+			<Skeleton class="h-3 w-16 mb-2 ds-shimmer" />
+			<Skeleton class="h-16 w-full rounded-md ds-shimmer" />
+		</div>
+	</div>
+{:else if error}
+	<div class="bg-destructive/10 text-destructive p-4 rounded-lg" role="alert">
+		{error}
+	</div>
+{:else if task && statusInfo}
+	<div class="flex flex-col gap-4">
+		<!-- Description -->
+		{#if task.description}
+			<p class="text-sm text-muted-foreground" data-testid="task-description">
+				{task.description}
+			</p>
+		{/if}
+
+		<!-- Status, priority, type -->
+		<div class="flex flex-wrap gap-2 items-center">
+			<Badge class="{statusInfo.bg} {statusInfo.fg}" data-testid="task-status-badge">
+				{statusInfo.label}
+			</Badge>
+			<Badge variant="outline" data-testid="task-priority">Priority {task.priority}</Badge>
+			<Badge variant="outline" data-testid="task-type">{task.type}</Badge>
+			{#if task.automation}
+				<Badge variant="secondary" data-testid="task-automation">
+					{task.automation}
+				</Badge>
+			{/if}
+		</div>
+
+		<!-- Spec ref -->
+		<!-- AC: @web-dashboard ac-6 -->
+		{#if task.spec_ref}
+			<div data-testid="task-spec-ref">
+				<p class="text-xs font-medium text-muted-foreground mb-0.5">Spec</p>
+				<ReferenceLink ref={task.spec_ref} type="spec" />
+			</div>
+		{/if}
+
+		<!-- Tags -->
+		{#if task.tags?.length > 0}
+			<div data-testid="task-tags">
+				<p class="text-xs font-medium text-muted-foreground mb-1">Tags</p>
+				<div class="flex flex-wrap gap-1">
+					{#each task.tags as tag}
+						<Badge variant="secondary">{tag}</Badge>
+					{/each}
+				</div>
+			</div>
+		{/if}
+
+		<!-- Dependencies -->
+		<div data-testid="task-dependencies">
+			{#if task.depends_on?.length > 0}
+				<p class="text-xs font-medium text-muted-foreground mb-1">Dependencies</p>
+				<ul class="text-sm space-y-0.5">
+					{#each task.depends_on as dep}
+						<li>
+							<ReferenceLink ref={dep} type="task" class="text-xs" />
+						</li>
+					{/each}
+				</ul>
+			{:else}
+				<p class="text-sm text-muted-foreground">No dependencies</p>
+			{/if}
+		</div>
+
+		<!-- Blocked by -->
+		{#if task.blocked_by?.length > 0}
+			<div data-testid="task-blocked-by">
+				<p class="text-xs font-medium text-destructive mb-1">Blocked By</p>
+				<ul class="text-sm space-y-0.5">
+					{#each task.blocked_by as blocker}
+						<li>
+							<ReferenceLink ref={blocker} type="task" class="text-xs" />
+						</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+
+		<!-- VCS info (branch, PR link) -->
+		{#if task.vcs_refs?.length > 0}
+			<div data-testid="task-vcs">
+				<p class="text-xs font-medium text-muted-foreground mb-1">VCS</p>
+				<ul class="text-sm space-y-1">
+					{#each task.vcs_refs as ref}
+						{@const vcsInfo = formatVcsRef(ref)}
+						<li class="flex items-center gap-1.5">
+							<GitBranch class="size-3 text-muted-foreground flex-shrink-0" />
+							{#if vcsInfo.url}
+								<a
+									href={vcsInfo.url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="text-xs text-primary hover:underline font-mono inline-flex items-center gap-1"
+								>
+									{vcsInfo.label}
+									<ExternalLink class="size-3" />
+								</a>
+							{:else}
+								<span class="text-muted-foreground font-mono text-xs">{vcsInfo.label}</span>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+
+		<!-- Plan ref -->
+		{#if task.plan_ref}
+			<div data-testid="task-plan-ref">
+				<p class="text-xs font-medium text-muted-foreground mb-0.5">Plan</p>
+				<ReferenceLink ref={task.plan_ref} type="plan" />
+			</div>
+		{:else if task.derivation}
+			<div data-testid="task-derivation">
+				<p class="text-xs font-medium text-muted-foreground mb-0.5">Derivation</p>
+				<p class="text-sm text-muted-foreground">{task.derivation}</p>
+			</div>
+		{/if}
+
+		<!-- Session link -->
+		{#if task.session_ref}
+			<div data-testid="task-session-ref">
+				<p class="text-xs font-medium text-muted-foreground mb-0.5">Session</p>
+				<ReferenceLink ref={task.session_ref} type="session" />
+			</div>
+		{/if}
+
+		<Separator />
+
+		<!-- Actions -->
+		<!-- AC: @web-dashboard ac-7 -->
+		{#if !isStaticMode()}
+			<div class="flex flex-wrap gap-2" data-testid="task-actions">
+				{#if task.status === 'pending'}
+					<Button
+						size="sm"
+						onclick={handleStart}
+						disabled={isSubmitting}
+						data-testid="action-start"
+					>
+						{isSubmitting ? 'Starting...' : 'Start'}
+					</Button>
+				{/if}
+
+				{#if task.status === 'in_progress' || task.status === 'needs_work'}
+					<Button
+						size="sm"
+						onclick={handleSubmit}
+						disabled={isSubmitting}
+						data-testid="action-submit"
+					>
+						{isSubmitting ? 'Submitting...' : 'Submit for Review'}
+					</Button>
+				{/if}
+
+				{#if task.status === 'in_progress' || task.status === 'pending_review'}
+					<Button
+						size="sm"
+						variant="outline"
+						onclick={() => {
+							showReasonFor = 'complete';
+							reasonInput = '';
+						}}
+						disabled={isSubmitting}
+						data-testid="action-complete-toggle"
+					>
+						Complete
+					</Button>
+				{/if}
+
+				{#if task.status !== 'blocked' && task.status !== 'completed' && task.status !== 'cancelled'}
+					<Button
+						size="sm"
+						variant="destructive"
+						onclick={() => {
+							showReasonFor = 'block';
+							reasonInput = '';
+						}}
+						disabled={isSubmitting}
+						data-testid="action-block-toggle"
+					>
+						Block
+					</Button>
+				{/if}
+			</div>
+
+			<!-- Reason input for block/complete -->
+			{#if showReasonFor}
+				<div class="flex gap-2" data-testid="reason-input">
+					<Input
+						bind:value={reasonInput}
+						placeholder="{showReasonFor === 'block' ? 'Block' : 'Completion'} reason..."
+						class="flex-1"
+					/>
+					<Button
+						size="sm"
+						onclick={showReasonFor === 'block' ? handleBlock : handleComplete}
+						disabled={isSubmitting || !reasonInput.trim()}
+					>
+						Confirm
+					</Button>
+					<Button
+						size="sm"
+						variant="ghost"
+						onclick={() => {
+							showReasonFor = null;
+							reasonInput = '';
+						}}
+					>
+						Cancel
+					</Button>
+				</div>
+			{/if}
+		{/if}
+
+		{#if actionError}
+			<p class="text-sm text-destructive" data-testid="action-error">{actionError}</p>
+		{/if}
+
+		<Separator />
+
+		<!-- Todos -->
+		<div data-testid="task-todos">
+			{#if task.todos && task.todos.length > 0}
+				<p class="text-xs font-medium text-muted-foreground mb-1">
+					Todos ({task.todos.length})
+				</p>
+				<ul class="space-y-1">
+					{#each task.todos as todo}
+						<li class="flex items-start gap-2 text-sm">
+							<span class="mt-0.5 text-xs">
+								{#if todo.done}
+									&#x2705;
+								{:else}
+									&#x23F8;&#xFE0F;
+								{/if}
+							</span>
+							<span class:line-through={todo.done}>
+								{todo.text}
+							</span>
+						</li>
+					{/each}
+				</ul>
+			{:else}
+				<p class="text-sm text-muted-foreground">No todos</p>
+			{/if}
+		</div>
+		<Separator />
+
+		<!-- Notes -->
+		<!-- AC: @web-dashboard ac-8 -->
+		<div data-testid="task-notes">
+			<p class="text-xs font-medium text-muted-foreground mb-2">
+				Notes ({task.notes?.length ?? 0})
+			</p>
+
+			<!-- Add Note form -->
+			{#if !isStaticMode()}
+				<div class="mb-3 space-y-2" data-testid="task-add-note">
+					<Textarea
+						placeholder="Add a note..."
+						bind:value={noteContent}
+						disabled={isSubmitting}
+						rows={2}
+					/>
+					<Button
+						size="sm"
+						onclick={handleAddNote}
+						disabled={isSubmitting || !noteContent.trim()}
+						data-testid="action-add-note"
+					>
+						{isSubmitting ? 'Adding...' : 'Add Note'}
+					</Button>
+				</div>
+			{/if}
+
+			<!-- Notes list -->
+			<div class="space-y-3">
+				{#if (task.notes ?? []).length === 0}
+					<div class="text-center py-4 text-muted-foreground text-xs" data-testid="notes-empty">
+						{#if isStaticMode()}
+							No notes recorded. Use <code class="bg-muted px-1 rounded">kspec task note</code> to add context.
+						{:else}
+							Add a note above to document decisions, progress, or findings.
+						{/if}
+					</div>
+				{:else}
+					{#each task.notes ?? [] as note}
+						<div class="border rounded-md p-2.5" data-testid="note-item">
+							<div class="flex justify-between items-start mb-1">
+								<span class="text-[10px] text-muted-foreground">{note.author}</span>
+								<span class="text-[10px] text-muted-foreground" data-testid="note-timestamp">{formatDate(note.created_at)}</span>
+							</div>
+							<p class="text-sm whitespace-pre-wrap">{note.content}</p>
+						</div>
+					{/each}
+				{/if}
+			</div>
+		</div>
+	</div>
+{/if}
