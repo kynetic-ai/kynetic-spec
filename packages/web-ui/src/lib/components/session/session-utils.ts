@@ -102,7 +102,31 @@ function truncate(str: string, max: number): string {
 }
 
 /**
+ * Extract text content from an ACP SessionUpdate.
+ *
+ * ACP ContentChunk format: { content: { type: 'text', text: '...' } }
+ * Legacy format: { text: '...' } or { content: '...' }
+ */
+function extractTextContent(update: Record<string, unknown>): string {
+	// ACP ContentChunk: content is an object with type + text
+	const content = update.content;
+	if (content && typeof content === 'object') {
+		const block = content as Record<string, unknown>;
+		if (block.type === 'text' && typeof block.text === 'string') {
+			return block.text;
+		}
+	}
+	// Legacy: flat text or string content field
+	if (typeof update.text === 'string') return update.text;
+	if (typeof content === 'string') return content;
+	return '';
+}
+
+/**
  * Parse raw session events into structured display blocks.
+ *
+ * Supports both ACP format (data IS the SessionUpdate directly) and
+ * legacy format (data wraps the update at data.update).
  *
  * AC: @ui-session-stream ac-1
  */
@@ -139,13 +163,23 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 			}
 
 			case 'session.update': {
-				const update = data.update as Record<string, unknown> | undefined;
+				// ACP format: data IS the SessionUpdate (data.sessionUpdate exists)
+				// Legacy format: data wraps the update (data.update.sessionUpdate)
+				const update = (
+					data.sessionUpdate
+						? data
+						: (data.update as Record<string, unknown> | undefined)
+				) as Record<string, unknown> | undefined;
 				if (!update) break;
 
 				const sessionUpdate = update.sessionUpdate as string | undefined;
 
-				if (sessionUpdate === 'assistant_text' || sessionUpdate === 'assistant') {
-					const content = (update.text ?? update.content ?? '') as string;
+				if (
+					sessionUpdate === 'agent_message_chunk' ||
+					sessionUpdate === 'assistant_text' ||
+					sessionUpdate === 'assistant'
+				) {
+					const content = extractTextContent(update);
 					if (content) {
 						// Merge consecutive message blocks
 						const lastBlock = blocks[blocks.length - 1];
@@ -160,8 +194,12 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 							});
 						}
 					}
-				} else if (sessionUpdate === 'thinking' || sessionUpdate === 'assistant_thinking') {
-					const content = (update.text ?? update.content ?? '') as string;
+				} else if (
+					sessionUpdate === 'agent_thought_chunk' ||
+					sessionUpdate === 'thinking' ||
+					sessionUpdate === 'assistant_thinking'
+				) {
+					const content = extractTextContent(update);
 					if (content) {
 						const lastBlock = blocks[blocks.length - 1];
 						if (lastBlock?.type === 'thinking') {
@@ -177,7 +215,7 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 					}
 				} else if (sessionUpdate === 'tool_call') {
 					const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
-					const toolName = (update.tool ?? update.toolName ?? update.name ?? 'unknown') as string;
+					const toolName = (update.title ?? update.tool ?? update.toolName ?? update.name ?? 'unknown') as string;
 					const rawInput = update.rawInput ?? update.input;
 
 					const block: ToolCallBlock = {
@@ -192,15 +230,34 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 
 					toolCalls.set(toolCallId, block);
 					blocks.push(block);
-				} else if (sessionUpdate === 'tool_result') {
+				} else if (sessionUpdate === 'tool_call_update' || sessionUpdate === 'tool_result') {
 					const toolCallId = (update.toolCallId ?? update.tool_call_id ?? update.id ?? '') as string;
 					const existing = toolCalls.get(toolCallId);
 
 					if (existing) {
-						existing.output = update.output ?? update.rawOutput ?? update.content;
-						existing.status = (update.error || update.isError) ? 'failed' : 'completed';
-						existing.completedAt = event.ts;
-						existing.durationMs = event.ts - existing.startedAt;
+						// ACP tool_call_update uses status + rawOutput; legacy uses output/error flags
+						const acpStatus = update.status as string | undefined;
+						const output = update.rawOutput ?? update.output ?? update.content;
+						if (output !== undefined) {
+							existing.output = output;
+						}
+						if (acpStatus === 'completed' || acpStatus === 'failed') {
+							existing.status = acpStatus;
+							existing.completedAt = event.ts;
+							existing.durationMs = event.ts - existing.startedAt;
+						} else if (update.error || update.isError) {
+							existing.status = 'failed';
+							existing.completedAt = event.ts;
+							existing.durationMs = event.ts - existing.startedAt;
+						} else if (sessionUpdate === 'tool_result') {
+							existing.status = 'completed';
+							existing.completedAt = event.ts;
+							existing.durationMs = event.ts - existing.startedAt;
+						}
+						// Update rawInput if provided (ACP phased tool calls)
+						if (update.rawInput !== undefined) {
+							existing.input = update.rawInput;
+						}
 					}
 				}
 				break;

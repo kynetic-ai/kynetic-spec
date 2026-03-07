@@ -278,6 +278,60 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const blocks = parseEventsToBlocks(events);
       expect(blocks).toHaveLength(0);
     });
+
+    // AC: @ui-session-stream ac-1
+    it("parses ACP agent_message_chunk (direct data format) as message block", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_message_chunk",
+            content: { type: "text", text: "Hello from ACP" },
+          },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]).toMatchObject({
+        type: "message",
+        content: "Hello from ACP",
+        timestamp: 1000,
+      });
+    });
+
+    // AC: @ui-session-stream ac-1
+    it("merges consecutive ACP agent_message_chunk blocks", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_message_chunk",
+            content: { type: "text", text: "Part 1 " },
+          },
+        },
+        {
+          ts: 1001,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_message_chunk",
+            content: { type: "text", text: "Part 2" },
+          },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks).toHaveLength(1);
+      if (blocks[0].type === "message") {
+        expect(blocks[0].content).toBe("Part 1 Part 2");
+      }
+    });
   });
 
   describe("parseEventsToBlocks — tool call blocks", () => {
@@ -435,6 +489,107 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     });
 
     // AC: @ui-session-stream ac-1
+    it("handles ACP tool_call_update with status field", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call",
+            toolCallId: "tc-acp",
+            title: "Read",
+            rawInput: { file_path: "/src/main.ts" },
+          },
+        },
+        {
+          ts: 2000,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call_update",
+            toolCallId: "tc-acp",
+            status: "completed",
+            rawOutput: "file contents here",
+          },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]).toMatchObject({
+        type: "tool_call",
+        toolName: "Read",
+        toolCallId: "tc-acp",
+        input: { file_path: "/src/main.ts" },
+        output: "file contents here",
+        status: "completed",
+        durationMs: 1000,
+      });
+    });
+
+    // AC: @ui-session-stream ac-1
+    it("handles ACP tool_call_update with failed status", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call",
+            toolCallId: "tc-fail",
+            title: "Bash",
+            rawInput: { command: "exit 1" },
+          },
+        },
+        {
+          ts: 1500,
+          seq: 1,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call_update",
+            toolCallId: "tc-fail",
+            status: "failed",
+            rawOutput: "exit code 1",
+          },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks[0]).toMatchObject({
+        type: "tool_call",
+        status: "failed",
+        durationMs: 500,
+      });
+    });
+
+    // AC: @ui-session-stream ac-1
+    it("handles ACP tool_call with title field as tool name", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "tool_call",
+            toolCallId: "tc-title",
+            title: "Edit",
+            rawInput: { file_path: "/src/app.ts" },
+          },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks[0]).toMatchObject({
+        type: "tool_call",
+        toolName: "Edit",
+        status: "running",
+      });
+    });
+
+    // AC: @ui-session-stream ac-1
     it("leaves tool call as running if no result arrives", () => {
       const events = [
         {
@@ -534,6 +689,29 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       if (blocks[0].type === "thinking") {
         expect(blocks[0].content).toBe("Part 1 Part 2");
       }
+    });
+
+    // AC: @ui-session-stream ac-1
+    it("parses ACP agent_thought_chunk (direct data format) as thinking block", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: {
+            sessionUpdate: "agent_thought_chunk",
+            content: { type: "text", text: "ACP thinking..." },
+          },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]).toMatchObject({
+        type: "thinking",
+        content: "ACP thinking...",
+        timestamp: 1000,
+      });
     });
   });
 
@@ -637,6 +815,21 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const blocks = parseEventsToBlocks(events);
       expect(blocks).toHaveLength(0);
     });
+
+    // AC: @ui-session-stream ac-1
+    it("skips session.update with no sessionUpdate field and no update wrapper", () => {
+      const events = [
+        {
+          ts: 1000,
+          seq: 0,
+          type: "session.update",
+          session_id: "s1",
+          data: { someOtherField: "value" },
+        },
+      ];
+      const blocks = parseEventsToBlocks(events);
+      expect(blocks).toHaveLength(0);
+    });
   });
 
   describe("parseEventsToBlocks — complex multi-event sequences", () => {
@@ -666,6 +859,64 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
         "tool_call",
         "system",
       ]);
+
+      // Verify tool calls resolved correctly
+      const toolCalls = blocks.filter((b) => b.type === "tool_call");
+      expect(toolCalls[0]).toMatchObject({
+        type: "tool_call",
+        toolName: "Read",
+        status: "completed",
+        durationMs: 500,
+      });
+      expect(toolCalls[1]).toMatchObject({
+        type: "tool_call",
+        toolName: "Edit",
+        status: "completed",
+        durationMs: 500,
+      });
+    });
+  });
+
+  describe("parseEventsToBlocks — ACP format multi-event sequence", () => {
+    // AC: @ui-session-stream ac-1
+    it("produces correct block sequence for an ACP-format agent session", () => {
+      const events = [
+        { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: { agent_type: "worker" } },
+        { ts: 1100, seq: 1, type: "session.update", session_id: "s1", data: { sessionUpdate: "agent_thought_chunk", content: { type: "text", text: "Planning..." } } },
+        { ts: 1200, seq: 2, type: "session.update", session_id: "s1", data: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: "I'll read the file." } } },
+        { ts: 1300, seq: 3, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call", toolCallId: "r1", title: "Read", rawInput: { file_path: "/src/main.ts" } } },
+        { ts: 1800, seq: 4, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call_update", toolCallId: "r1", status: "completed", rawOutput: "export function main() {}" } },
+        { ts: 1900, seq: 5, type: "session.update", session_id: "s1", data: { sessionUpdate: "agent_message_chunk", content: { type: "text", text: "Now editing." } } },
+        { ts: 2000, seq: 6, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call", toolCallId: "e1", title: "Edit", rawInput: { file_path: "/src/main.ts", old_string: "main", new_string: "start" } } },
+        { ts: 2500, seq: 7, type: "session.update", session_id: "s1", data: { sessionUpdate: "tool_call_update", toolCallId: "e1", status: "completed", rawOutput: "OK" } },
+        { ts: 3000, seq: 8, type: "session.end", session_id: "s1", data: { reason: "completed" } },
+      ];
+
+      const blocks = parseEventsToBlocks(events);
+
+      // Expected sequence: system, thinking, message, tool_call(Read), message, tool_call(Edit), system
+      expect(blocks.map((b) => b.type)).toEqual([
+        "system",
+        "thinking",
+        "message",
+        "tool_call",
+        "message",
+        "tool_call",
+        "system",
+      ]);
+
+      // Verify thinking block
+      if (blocks[1].type === "thinking") {
+        expect(blocks[1].content).toBe("Planning...");
+      }
+
+      // Verify message blocks
+      if (blocks[2].type === "message") {
+        expect(blocks[2].content).toBe("I'll read the file.");
+      }
+      if (blocks[4].type === "message") {
+        expect(blocks[4].content).toBe("Now editing.");
+      }
 
       // Verify tool calls resolved correctly
       const toolCalls = blocks.filter((b) => b.type === "tool_call");
