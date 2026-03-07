@@ -8,7 +8,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import type { InboxItem, BroadcastEvent } from '@kynetic-ai/shared';
 	import type { TriageRecord } from '$lib/types/triage';
 	import {
@@ -69,14 +69,14 @@
 	const TRIAGE_STATUS_VALUES: readonly TriageFilterStatus[] = ['all', 'untriaged', 'triaged', 'acted_on'];
 
 	let filterStatus = $derived.by((): TriageFilterStatus => {
-		const raw = $page.url.searchParams.get('status');
+		const raw = page.url.searchParams.get('status');
 		if (raw && TRIAGE_STATUS_VALUES.includes(raw as TriageFilterStatus)) {
 			return raw as TriageFilterStatus;
 		}
 		return 'all';
 	});
-	let filterTag = $derived($page.url.searchParams.get('tag') || '');
-	let filterAge = $derived($page.url.searchParams.get('age') || '');
+	let filterTag = $derived(page.url.searchParams.get('tag') || '');
+	let filterAge = $derived(page.url.searchParams.get('age') || '');
 
 	// ── Merged inbox + triage view ──
 	interface InboxCardItem {
@@ -215,7 +215,7 @@
 
 	// ── Filter URL management ──
 	function updateFilterParam(key: 'status' | 'tag' | 'age', value: string) {
-		const params = new URLSearchParams($page.url.searchParams);
+		const params = new URLSearchParams(page.url.searchParams);
 
 		if (!value || value === 'all') {
 			params.delete(key);
