@@ -20,6 +20,7 @@ import type {
 	SessionContext,
 	Observation,
 	Workflow,
+	Convention,
 	PaginatedResponse,
 	PlanSummary,
 	ErrorResponse,
@@ -1076,5 +1077,99 @@ export async function fetchAlignment(): Promise<AlignmentResponse> {
 		await handleResponseError(response);
 	}
 
+	return response.json();
+}
+
+// ============================================================
+// Settings API Functions
+// AC: @ui-settings-view ac-1
+// ============================================================
+
+/**
+ * Daemon health check response
+ * AC: @ui-settings-view ac-1 — daemon connection info (port, uptime, version)
+ */
+export interface HealthResponse {
+	status: string;
+	uptime: number;
+	connections: number;
+	version: string;
+}
+
+/**
+ * Project config from manifest + kspec.config.yaml
+ * AC: @ui-settings-view ac-1 — project config (name, version, remote tracking)
+ */
+export interface ProjectConfig {
+	project: { name: string; version: string; status: string } | null;
+	spec_version: string | null;
+	root_dir: string;
+	remote_tracking: { value: string; type: string } | null;
+	daemon: { port: number; host: string; auto_start: boolean };
+}
+
+/**
+ * Shadow branch status
+ * AC: @ui-settings-view ac-1 — shadow branch status
+ */
+export interface ShadowStatusResponse {
+	enabled: boolean;
+	branch_name: string | null;
+	worktree_dir: string | null;
+	healthy: boolean;
+	remote_tracking: boolean;
+}
+
+/**
+ * Fetch daemon health
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchHealth(): Promise<HealthResponse> {
+	const response = await fetch(`${API_BASE}/api/health`);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch project config (manifest + kspec.config.yaml)
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchProjectConfig(): Promise<ProjectConfig> {
+	const response = await fetch(`${API_BASE}/api/meta/config`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch shadow branch status
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
+	const response = await fetch(`${API_BASE}/api/meta/shadow`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch convention definitions
+ * AC: @ui-settings-view ac-1
+ */
+export async function fetchConventions(): Promise<{ items: Convention[]; total: number }> {
+	const response = await fetch(`${API_BASE}/api/meta/conventions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
 	return response.json();
 }

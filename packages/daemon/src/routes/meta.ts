@@ -7,6 +7,9 @@
  * - PATCH /api/meta/agents/:id - update agent definition
  * - GET /api/meta/workflows - list workflows
  * - GET /api/meta/observations - list observations with filter
+ * - GET /api/meta/config - project config from manifest + kspec.config.yaml
+ * - GET /api/meta/shadow - shadow branch status
+ * - GET /api/meta/conventions - convention definitions
  *
  * AC Coverage:
  * - ac-15: GET /api/meta/session returns session context
@@ -14,6 +17,7 @@
  * - ac-17: GET /api/meta/workflows returns all workflows
  * - ac-18: GET /api/meta/observations with filter
  * - @ui-agent-dispatch ac-4: PATCH /api/meta/agents/:id updates agent definition
+ * - @ui-settings-view ac-1: GET /api/meta/config, /shadow, /conventions
  */
 
 import { Elysia, t } from 'elysia';
@@ -23,7 +27,7 @@ import {
   loadSessionContext,
   saveMetaItem,
 } from '../../parser/index.js';
-import { commitIfShadow } from '../../parser/shadow.js';
+import { commitIfShadow, getShadowStatus, hasRemoteTracking } from '../../parser/shadow.js';
 import type { Agent } from '../../schema/meta.js';
 import { AgentDispatchEventSchema } from '../../schema/meta.js';
 
@@ -187,5 +191,68 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
           type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
         }),
       }
-    );
+    )
+
+    // AC: @ui-settings-view ac-1 - Project config from manifest
+    .get('/config', async ({ projectContext }) => {
+      const ctx = await initContext(projectContext.path);
+      const manifest = ctx.manifest;
+      const config = ctx.config;
+
+      return {
+        project: manifest?.project ?? null,
+        spec_version: manifest?.kynetic ?? null,
+        root_dir: ctx.rootDir,
+        remote_tracking: config.shadow.remote
+          ? { value: config.shadow.remote.value, type: config.shadow.remote.type }
+          : null,
+        daemon: {
+          port: config.daemon.port,
+          host: config.daemon.host,
+          auto_start: config.daemon.auto_start,
+        },
+      };
+    })
+
+    // AC: @ui-settings-view ac-1 - Shadow branch status
+    .get('/shadow', async ({ projectContext }) => {
+      const ctx = await initContext(projectContext.path);
+
+      if (!ctx.shadow) {
+        return {
+          enabled: false,
+          branch_name: null,
+          worktree_dir: null,
+          healthy: false,
+          remote_tracking: false,
+        };
+      }
+
+      const status = await getShadowStatus(ctx.rootDir, {
+        branchName: ctx.shadow.branchName,
+        directory: ctx.shadow.worktreeDir,
+      });
+      const hasRemote = await hasRemoteTracking(ctx.shadow.worktreeDir, {
+        branchName: ctx.shadow.branchName,
+      });
+
+      return {
+        enabled: ctx.shadow.enabled,
+        branch_name: ctx.shadow.branchName,
+        worktree_dir: ctx.shadow.worktreeDir,
+        healthy: status.healthy,
+        remote_tracking: hasRemote,
+      };
+    })
+
+    // AC: @ui-settings-view ac-1 - Convention definitions
+    .get('/conventions', async ({ projectContext }) => {
+      const ctx = await initContext(projectContext.path);
+      const meta = await loadMetaContext(ctx);
+
+      return {
+        items: meta.conventions,
+        total: meta.conventions.length,
+      };
+    });
 }
