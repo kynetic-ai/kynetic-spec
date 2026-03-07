@@ -78443,6 +78443,39 @@
         - Verification: npm test in root, visual check that all reference displays show title+slug
         and link to detail views
       supersedes: null
+    - _ulid: 01KK30ZHRYC8JSWFEFG7HTR23B
+      created_at: 2026-03-07T02:10:48.734Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created:
+
+        - lib/utils/reference.ts: normalizeRef(), shortRef(), refHref() utilities
+
+        - lib/components/ReferenceLink.svelte: shared component with title/short-ULID display,
+        linking, @ normalization
+
+        - tests/reference.test.ts: 14 unit tests covering normalization, shortening, and URL
+        generation
+
+
+        Replaced reference displays in 9 files (12 files total changed):
+
+        - SessionContextPanel: task_id and spec_context.spec_ref now use ReferenceLink (spec_ref now
+        clickable)
+
+        - TaskCard, TaskDetailModal, TaskList: spec_ref uses ReferenceLink
+
+        - TaskDetailModal: depends_on, blocked_by (now clickable), plan_ref (now clickable),
+        session_ref all use ReferenceLink
+
+        - ActiveFleetRow, ActiveInvocationRow: task_ref now uses ReferenceLink (invocation row now
+        clickable)
+
+        - sessions/+page, dashboard: task_ref displays use ReferenceLink
+
+
+        All tests pass (3911 + 14 new). 2 pre-existing failures in codex tests unrelated.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
