@@ -78677,7 +78677,7 @@
   spec_ref: "@ui-agent-dispatch"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -78743,6 +78743,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-07T03:56:33.789Z
+  closed_reason: Review passed. Merged to feat/ui-revamp.
 - _ulid: 01KK2SHZXHD706QWBM4P2TTGB1
   slugs: []
   title: Add agent definition editing UI with inline edit form
