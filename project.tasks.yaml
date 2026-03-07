@@ -79181,6 +79181,46 @@
 
         - All pre-existing tests continue to pass (161 web-ui tests, 3953 total tests)
       supersedes: null
+    - _ulid: 01KK3F4D5N4WFNSGNMNSCV8W3C
+      created_at: 2026-03-07T06:18:07.925Z
+      author: Jacob Chapel
+      content: >-
+        Review findings (MUST-FIX):
+
+
+        1) Regression gate failed:
+
+        - `npm test` fails at `tests/lint/no-static-analysis.test.ts` because
+        `tests/web-ui-settings.test.ts` reads implementation source files directly (includes
+        `packages/daemon/src/routes/meta.ts`).
+
+        - This blocks review immediately.
+
+
+        2) Spec/AC mismatch for `@ui-settings-view ac-1`:
+
+        - AC requires project config with remote tracking and daemon info including port, uptime,
+        version.
+
+        - Current settings UI/API does not surface remote tracking or daemon port
+        (`packages/web-ui/src/routes/settings/+page.svelte`, `packages/daemon/src/routes/meta.ts`,
+        `packages/web-ui/src/lib/api.ts`).
+
+
+        3) Design token violations:
+
+        - Raw Tailwind color classes are used instead of design tokens (e.g. `text-emerald-500`,
+        `text-emerald-600`, `bg-emerald-500/10`, `text-blue-500`, `text-amber-500`) in
+        `packages/web-ui/src/routes/settings/+page.svelte` and
+        `packages/web-ui/src/routes/workflows/+page.svelte`.
+
+
+        4) Branch scope conflation:
+
+        - Diff against `feat/ui-revamp` includes unrelated workflows implementation
+        (`packages/web-ui/src/routes/workflows/+page.svelte`, workflows tests/fixture changes) while
+        reviewing settings task `@01KK2T4MT9XR3QJ8R0TJFM7M1B`.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2T53XATPSTVMRNGCHCX23W
