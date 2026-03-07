@@ -15,6 +15,7 @@
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { getProjectVersion } from '$lib/stores/project.svelte';
 	import AgentCard from '$lib/components/agents/AgentCard.svelte';
+	import AgentEditForm from '$lib/components/agents/AgentEditForm.svelte';
 	import DispatchStatusComponent from '$lib/components/agents/DispatchStatus.svelte';
 	import ActiveInvocationRow from '$lib/components/agents/ActiveInvocationRow.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -27,6 +28,10 @@
 	let loading = $state(true);
 	let error = $state('');
 	let isToggling = $state(false);
+
+	// AC: @ui-agent-dispatch ac-4 — Edit form state
+	let editDialogOpen = $state(false);
+	let editingAgent = $state<AgentDefinition | null>(null);
 
 	// Screen reader announcement for live invocation updates
 	let invocationAnnouncement = $state('');
@@ -146,6 +151,19 @@
 				})
 				.catch((err) => console.error('Error refreshing agent status:', err));
 		}
+	}
+
+	// AC: @ui-agent-dispatch ac-4 — Open edit dialog for an agent
+	function handleEditAgent(agent: AgentDefinition) {
+		editingAgent = agent;
+		editDialogOpen = true;
+	}
+
+	function handleAgentSaved(updated: AgentDefinition) {
+		// Update the agent in the local list
+		agentDefinitions = agentDefinitions.map((a) =>
+			a.id === updated.id ? updated : a
+		);
 	}
 
 	onMount(() => {
@@ -270,10 +288,20 @@
 							{agent}
 							activeCount={activeCounts[agent.id] || 0}
 							completedCount={completedCounts[agent.id] || 0}
+							onEdit={() => handleEditAgent(agent)}
 						/>
 					{/each}
 				</div>
 			{/if}
 		</section>
+	{/if}
+
+	<!-- AC: @ui-agent-dispatch ac-4 — Agent edit dialog -->
+	{#if editingAgent}
+		<AgentEditForm
+			bind:open={editDialogOpen}
+			agent={editingAgent}
+			onSaved={handleAgentSaved}
+		/>
 	{/if}
 </div>

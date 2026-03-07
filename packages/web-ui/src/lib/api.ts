@@ -22,7 +22,9 @@ import type {
 	PaginatedResponse,
 	PlanSummary,
 	ErrorResponse,
-	SearchResponse
+	SearchResponse,
+	AgentDefinition,
+	AgentUpdatePayload
 } from '@kynetic-ai/shared';
 import type { TriageRecord } from './types/triage';
 import {
@@ -614,35 +616,11 @@ export async function overrideTriageRecord(
 // AC: @ui-agent-dispatch ac-1, ac-2, ac-3
 // ============================================================
 
-/**
- * Agent definition from GET /api/meta/agents
- */
-export interface AgentDefinition {
-	_ulid: string;
-	id: string;
-	name: string;
-	description?: string;
-	adapter?: string;
-	dispatch: Array<{
-		on: string;
-		filter?: {
-			automation?: string;
-			tags?: string[];
-			priority?: number;
-		};
-	}>;
-	capabilities: string[];
-	tools: string[];
-	skills: string[];
-	budget?: {
-		max_tasks?: number;
-		timeout_minutes?: number;
-	};
-	concurrency: {
-		max_concurrent: number;
-	};
-	auto_approve: boolean;
-}
+// AgentDefinition and AgentUpdatePayload are imported from @kynetic-ai/shared
+// (schema-driven types mirroring AgentSchema from src/schema/meta.ts)
+// Re-exported so existing imports from '$lib/api' continue to work.
+// AC: @ui-agent-dispatch ac-4
+export type { AgentDefinition, AgentUpdatePayload };
 
 /**
  * Active invocation from GET /api/agent/status
@@ -715,6 +693,31 @@ export async function controlDispatch(action: 'start' | 'stop'): Promise<{ dispa
 	if (!response.ok) {
 		await handleResponseError(response);
 	}
+	return response.json();
+}
+
+/**
+ * Update an agent definition via PATCH
+ * AC: @ui-agent-dispatch ac-4
+ */
+export async function updateAgentDefinition(
+	agentId: string,
+	payload: AgentUpdatePayload
+): Promise<AgentDefinition> {
+	assertWritable('update agent definition');
+
+	const response = await fetch(`${API_BASE}/api/meta/agents/${agentId}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify(payload)
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
 	return response.json();
 }
 
