@@ -52,6 +52,7 @@ export const AgentDispatchRuleSchema = z.object({
  */
 export const AgentBudgetSchema = z.object({
   max_tasks: z.number().positive().optional(),
+  max_retries: z.number().int().nonnegative().optional(),
   timeout_minutes: z.number().positive().optional(),
 });
 

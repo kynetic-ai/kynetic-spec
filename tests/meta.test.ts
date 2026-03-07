@@ -2948,6 +2948,47 @@ describe('Integration: agent definition schema', () => {
     expect(agent?.auto_approve).toBe(false);
   });
 
+  // AC: @agent-definition-schema ac-4 - meta add agent with max_retries budget
+  it('should create agent with max_retries budget via meta add', () => {
+    const result = kspecRun(
+      'meta add agent --id retry-agent --name "Retry Agent" --max-retries 5 --timeout-minutes 60',
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; budget?: { max_retries?: number; timeout_minutes?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'retry-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.budget?.max_retries).toBe(5);
+    expect(agent?.budget?.timeout_minutes).toBe(60);
+  });
+
+  // AC: @agent-definition-schema ac-10 - meta set agent updates max_retries
+  it('should update agent max_retries via meta set', () => {
+    kspecRun('meta add agent --id retries-set-agent --name "Retries Set Agent"', tempDir);
+
+    const result = kspecRun('meta set retries-set-agent --max-retries 2', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; budget?: { max_retries?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'retries-set-agent');
+    expect(agent?.budget?.max_retries).toBe(2);
+  });
+
+  // AC: @agent-definition-schema ac-4 - max_retries accepts zero (disables retries)
+  it('should accept max_retries of 0 via meta add', () => {
+    const result = kspecRun(
+      'meta add agent --id no-retry-agent --name "No Retry Agent" --max-retries 0',
+      tempDir,
+    );
+    expect(result.exitCode).toBe(0);
+
+    const agents = kspecJson<Array<{ id: string; budget?: { max_retries?: number } }>>('meta agents', tempDir);
+    const agent = agents.find(a => a.id === 'no-retry-agent');
+    expect(agent).toBeDefined();
+    expect(agent?.budget?.max_retries).toBe(0);
+  });
+
   // AC: @agent-definition-schema ac-9 - meta add agent with auto_approve
   it('should create agent with auto_approve enabled', () => {
     const result = kspecRun(

@@ -161,6 +161,9 @@ describe('kspec serve commands', () => {
     const port = await getAvailablePort();
 
     // Spawn kspec serve in foreground
+    // Strip KSPEC_SESSION_ID to prevent dispatch guard from blocking
+    // when tests run inside an agent dispatch session
+    const { KSPEC_SESSION_ID: _, ...cleanProcessEnv } = process.env;
     const child = spawn('node', [
       join(__dirname, '../dist/cli/index.js'),
       'serve',
@@ -172,7 +175,7 @@ describe('kspec serve commands', () => {
     ], {
       cwd: tempDir,
       stdio: ['pipe', 'pipe', 'pipe'],
-      env: { ...process.env, ...testEnv },
+      env: { ...cleanProcessEnv, ...testEnv },
     });
 
     let output = '';
@@ -564,6 +567,62 @@ describe('kspec serve commands', () => {
     // Error and hint should be in stderr
     expect(result.stderr).toContain('Invalid port number');
     expect(result.stderr).toContain('Try: kspec serve --port');
+  });
+
+  // AC: @cli-serve-commands ac-11
+  describe('dispatch agent guard', () => {
+    // AC: @trait-semantic-exit-codes ac-2 — validation error exit code
+    it('should refuse serve start when KSPEC_SESSION_ID is set', async () => {
+      const result = runKspec(
+        `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+      expect(result.stderr).toContain('Cannot start daemon from inside an agent invocation');
+      expect(result.stderr).toContain('dispatch engine');
+    });
+
+    it('should refuse serve stop when KSPEC_SESSION_ID is set', async () => {
+      const result = runKspec(
+        `serve stop --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+      expect(result.stderr).toContain('Cannot stop daemon from inside an agent invocation');
+      expect(result.stderr).toContain('dispatch engine');
+    });
+
+    it('should refuse serve restart when KSPEC_SESSION_ID is set', async () => {
+      const result = runKspec(
+        `serve restart --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+      expect(result.stderr).toContain('Cannot restart daemon from inside an agent invocation');
+      expect(result.stderr).toContain('dispatch engine');
+    });
+
+    // AC: @trait-json-output ac-3 — JSON error output for dispatch guard
+    it('should output JSON error when guard triggers with --json', async () => {
+      const result = runKspec(
+        `serve start --json --kspec-dir ${join(tempDir, '.kspec')}`,
+        tempDir,
+        { expectFail: true, env: { KSPEC_SESSION_ID: 'test-session-id' } }
+      );
+
+      expect(result.exitCode).toBe(4); // VALIDATION_FAILED
+      const output = JSON.parse(result.stdout);
+      expect(output).toHaveProperty('error');
+      expect(output.error).toContain('Cannot start daemon');
+      expect(output).toHaveProperty('reason');
+      expect(output).toHaveProperty('suggestion');
+    });
   });
 
   // Trait tests: @trait-json-output

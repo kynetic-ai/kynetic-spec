@@ -532,7 +532,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
       // ─── Check retry threshold ────────────────────────────────────────────
       // AC: @agent-invocation-lifecycle ac-9
-      const retryLimit = agent.budget?.max_tasks ?? 3;
+      const retryLimit = agent.budget?.max_retries ?? 3;
       const consecutiveFailures = getConsecutiveFailureCount(taskRef, cwd, kspecCliPath);
 
       if (consecutiveFailures >= retryLimit) {

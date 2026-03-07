@@ -95,6 +95,28 @@ function parseUptimeSeconds(raw: unknown): number | null {
 
 
 /**
+ * AC: @cli-serve-commands ac-11
+ * Refuse to modify daemon lifecycle when running inside an agent invocation.
+ * Agents inherit KSPEC_SESSION_ID — stopping the daemon would kill the dispatch engine.
+ */
+function guardAgentContext(action: string): void {
+  if (process.env.KSPEC_SESSION_ID) {
+    if (isJsonMode()) {
+      output({
+        error: `Cannot ${action} daemon from inside an agent invocation.`,
+        reason: 'Stopping or restarting the daemon would kill the dispatch engine hosting this agent.',
+        suggestion: 'The daemon is managed externally. Do not run kspec serve commands from agent code.',
+      });
+    } else {
+      error(`Cannot ${action} daemon from inside an agent invocation.`);
+      error('Stopping or restarting the daemon would kill the dispatch engine hosting this agent.');
+      error('The daemon is managed externally. Do not run kspec serve commands from agent code.');
+    }
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+}
+
+/**
  * Register serve commands
  */
 export function registerServeCommands(program: Command): void {
@@ -192,6 +214,8 @@ async function startServer(opts: {
   port?: string;
   kspecDir: string;
 }): Promise<void> {
+  // AC: @cli-serve-commands ac-11
+  guardAgentContext('start');
   const jsonMode = isJsonMode();
 
   // AC: @config-daemon ac-1, ac-2 — load config for default port, CLI flag overrides
@@ -352,8 +376,8 @@ async function startServer(opts: {
  * AC: @cli-serve-commands ac-4 (stop), ac-5 (idempotent)
  */
 async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
-  if (isJsonMode()) {
-  }
+  // AC: @cli-serve-commands ac-11
+  guardAgentContext('stop');
 
   const pidManager = new PidFileManager();
 
@@ -531,6 +555,8 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
  * AC: @cli-serve-commands ac-7
  */
 async function restartServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+  // AC: @cli-serve-commands ac-11
+  guardAgentContext('restart');
   const pidManager = new PidFileManager();
 
   // AC: @cli-serve-commands ac-7 - preserve port across restarts
