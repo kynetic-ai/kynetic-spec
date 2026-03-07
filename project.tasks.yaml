@@ -78563,6 +78563,13 @@
         and tests), but task cannot be landed until branch is rebased/resolved against current
         feat/ui-revamp and resubmitted for review.
       supersedes: null
+    - _ulid: 01KK34SAX8AHGR7J6MKKZB1C21
+      created_at: 2026-03-07T03:17:19.400Z
+      author: Jacob Chapel
+      content: "Review findings: MUST-FIX merge conflict while landing to feat/ui-revamp. Conflict file:
+        packages/web-ui/src/routes/sessions/+page.svelte. Branch must be rebased or merged with
+        latest feat/ui-revamp and conflict resolved before this task can be merged."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2NNR0SRZEYEVW223TQD7WP
