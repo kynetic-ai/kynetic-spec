@@ -19,10 +19,7 @@
 	import {
 		createSessionState,
 		processTextChunk,
-		processToolCallStart,
-		processToolCallEnd,
 		type FleetSessionState,
-		type ToolCallIndicator,
 	} from '$lib/components/board/fleet-buffer';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -39,7 +36,6 @@
 	import Activity from '@lucide/svelte/icons/activity';
 	import Bot from '@lucide/svelte/icons/bot';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import Wrench from '@lucide/svelte/icons/wrench';
 	import TerminalIcon from '@lucide/svelte/icons/terminal';
 
 	// --- State ---
@@ -317,26 +313,6 @@
 			return;
 		}
 
-		// Track tool call start for tool indicator
-		if (event.event === 'agent_tool_call' && event.data?.session_id) {
-			const sessionId = event.data.session_id as string;
-			const toolName = (event.data.tool ?? event.data.name ?? 'unknown') as string;
-			const input = event.data.input ?? event.data.rawInput;
-			const current = sessionStates[sessionId] ?? createSessionState();
-			sessionStates[sessionId] = processToolCallStart(current, toolName, input);
-			return;
-		}
-
-		// Clear tool indicator on tool completion
-		if (event.event === 'agent_tool_result' && event.data?.session_id) {
-			const sessionId = event.data.session_id as string;
-			const current = sessionStates[sessionId];
-			if (current) {
-				sessionStates[sessionId] = processToolCallEnd(current);
-			}
-			return;
-		}
-
 		// Invocation lifecycle events — refresh status and clean up stale state
 		fetchAgentStatus()
 			.then((s) => {
@@ -452,7 +428,6 @@
 						{#each agentStatus?.active_invocations ?? [] as invocation (invocation.session_id)}
 							{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
 							{@const sessionState = sessionStates[invocation.session_id]}
-							{@const activeTool = sessionState?.activeTool ?? null}
 							{@const lines = sessionState?.lines ?? []}
 							<div
 								class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"
@@ -492,21 +467,12 @@
 									</a>
 								</div>
 
-								<!-- Buffered output / tool indicator -->
-								{#if activeTool}
-									<div
-										class="mt-1.5 flex items-center gap-1.5 rounded bg-muted/50 p-1.5 text-[10px] text-muted-foreground"
-										data-testid="fleet-tool-call"
-									>
-										<Wrench class="size-3 shrink-0 text-status-in-progress" />
-										<span class="font-medium shrink-0">{activeTool.toolName}</span>
-										{#if activeTool.preview}
-											<span class="truncate font-mono opacity-70">{activeTool.preview}</span>
-										{/if}
-									</div>
-								{:else if lines.length > 0}
+								<!-- Buffered output -->
+								{#if lines.length > 0}
 									<div
 										class="mt-1.5 rounded bg-muted/50 p-1.5 font-mono text-[10px] leading-tight text-muted-foreground overflow-hidden max-h-10"
+										aria-live="polite"
+										aria-label="Agent output for {title ?? invocation.agent_id}"
 										data-testid="fleet-output"
 									>
 										{#each lines.slice(-2) as line}
@@ -516,6 +482,8 @@
 								{:else}
 									<div
 										class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground/50"
+										aria-live="polite"
+										aria-label="Agent output for {title ?? invocation.agent_id}"
 										data-testid="fleet-output-empty"
 									>
 										<TerminalIcon class="size-3" />

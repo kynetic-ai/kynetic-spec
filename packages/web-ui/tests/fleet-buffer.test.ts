@@ -1,17 +1,14 @@
 /**
  * Unit tests for Active Fleet output buffering.
  *
- * AC: @ui-task-board ac-4 — Active Fleet row shows buffered output and tool indicators
+ * AC: @ui-task-board ac-4 — Active Fleet row shows buffered output
  */
 
 import { describe, it, expect } from 'vitest';
 import {
 	createSessionState,
 	processTextChunk,
-	processToolCallStart,
-	processToolCallEnd,
 	getDisplayState,
-	type FleetSessionState,
 } from '../src/lib/components/board/fleet-buffer';
 
 describe('createSessionState', () => {
@@ -20,7 +17,6 @@ describe('createSessionState', () => {
 		const state = createSessionState();
 		expect(state.buffer).toBe('');
 		expect(state.lines).toEqual([]);
-		expect(state.activeTool).toBeNull();
 	});
 });
 
@@ -118,101 +114,15 @@ describe('processTextChunk', () => {
 		expect(state.lines).toEqual(['driven', 'form']);
 		expect(state.buffer).toBe('.');
 	});
-
-	// AC: @ui-task-board ac-4
-	it('preserves activeTool across text chunk processing', () => {
-		let state = createSessionState();
-		state = processToolCallStart(state, 'Read', { file_path: 'test.ts' });
-		state = processTextChunk(state, 'some output\n');
-		expect(state.activeTool).not.toBeNull();
-		expect(state.activeTool?.toolName).toBe('Read');
-	});
-});
-
-describe('processToolCallStart', () => {
-	// AC: @ui-task-board ac-4
-	it('sets active tool indicator', () => {
-		const state = createSessionState();
-		const result = processToolCallStart(state, 'Edit', { file_path: 'src/lib/api.ts' });
-		expect(result.activeTool).toEqual({
-			toolName: 'Edit',
-			icon: '\u{270F}\u{FE0F}',
-			preview: 'src/lib/api.ts',
-		});
-	});
-
-	// AC: @ui-task-board ac-4
-	it('extracts command preview for Bash tool', () => {
-		const state = createSessionState();
-		const result = processToolCallStart(state, 'Bash', { command: 'npm test' });
-		expect(result.activeTool?.toolName).toBe('Bash');
-		expect(result.activeTool?.preview).toBe('npm test');
-	});
-
-	// AC: @ui-task-board ac-4
-	it('extracts pattern preview for Grep tool', () => {
-		const state = createSessionState();
-		const result = processToolCallStart(state, 'Grep', { pattern: 'handleClick' });
-		expect(result.activeTool?.toolName).toBe('Grep');
-		expect(result.activeTool?.preview).toContain('handleClick');
-	});
-
-	// AC: @ui-task-board ac-4
-	it('handles unknown tools with wrench icon', () => {
-		const state = createSessionState();
-		const result = processToolCallStart(state, 'CustomTool', {});
-		expect(result.activeTool?.toolName).toBe('CustomTool');
-		expect(result.activeTool?.icon).toBe('\u{1F527}');
-	});
-
-	// AC: @ui-task-board ac-4
-	it('preserves existing lines', () => {
-		let state = createSessionState();
-		state = processTextChunk(state, 'existing output\n');
-		state = processToolCallStart(state, 'Read', { file_path: 'test.ts' });
-		expect(state.lines).toEqual(['existing output']);
-		expect(state.activeTool?.toolName).toBe('Read');
-	});
-});
-
-describe('processToolCallEnd', () => {
-	// AC: @ui-task-board ac-4
-	it('clears active tool indicator', () => {
-		let state = createSessionState();
-		state = processToolCallStart(state, 'Read', { file_path: 'test.ts' });
-		expect(state.activeTool).not.toBeNull();
-
-		state = processToolCallEnd(state);
-		expect(state.activeTool).toBeNull();
-	});
-
-	// AC: @ui-task-board ac-4
-	it('preserves existing lines when clearing tool', () => {
-		let state = createSessionState();
-		state = processTextChunk(state, 'line 1\nline 2\n');
-		state = processToolCallStart(state, 'Bash', { command: 'npm test' });
-		state = processToolCallEnd(state);
-		expect(state.lines).toEqual(['line 1', 'line 2']);
-		expect(state.activeTool).toBeNull();
-	});
 });
 
 describe('getDisplayState', () => {
 	// AC: @ui-task-board ac-4
-	it('returns lines and tool state for display', () => {
+	it('returns lines for display', () => {
 		let state = createSessionState();
 		state = processTextChunk(state, 'hello\nworld\n');
 		const display = getDisplayState(state);
 		expect(display.lines).toEqual(['hello', 'world']);
-		expect(display.activeTool).toBeNull();
-	});
-
-	// AC: @ui-task-board ac-4
-	it('returns active tool when set', () => {
-		let state = createSessionState();
-		state = processToolCallStart(state, 'Edit', { file_path: 'foo.ts' });
-		const display = getDisplayState(state);
-		expect(display.activeTool?.toolName).toBe('Edit');
 	});
 });
 
@@ -228,15 +138,6 @@ describe('full lifecycle simulation', () => {
 		state = processTextChunk(state, 'spec file.\n');
 		expect(state.lines).toEqual(["I'll start by reading the spec file."]);
 
-		// Agent makes a tool call
-		state = processToolCallStart(state, 'Read', { file_path: 'src/auth/login.ts' });
-		expect(state.activeTool?.toolName).toBe('Read');
-		expect(state.activeTool?.preview).toBe('src/auth/login.ts');
-
-		// Tool completes
-		state = processToolCallEnd(state);
-		expect(state.activeTool).toBeNull();
-
 		// More text output
 		state = processTextChunk(state, 'Now implementing the fix.\n');
 		expect(state.lines).toEqual([
@@ -244,13 +145,8 @@ describe('full lifecycle simulation', () => {
 			'Now implementing the fix.',
 		]);
 
-		// Another tool call
-		state = processToolCallStart(state, 'Edit', { file_path: 'src/auth/login.ts' });
-		expect(state.activeTool?.toolName).toBe('Edit');
-
-		// Text arrives during tool call (preserved correctly)
+		// Text arrives during continued work
 		state = processTextChunk(state, 'Updated the login handler.\n');
 		expect(state.lines).toHaveLength(3);
-		expect(state.activeTool?.toolName).toBe('Edit');
 	});
 });

@@ -21,10 +21,7 @@
 	import {
 		createSessionState,
 		processTextChunk,
-		processToolCallStart,
-		processToolCallEnd,
 		type FleetSessionState,
-		type ToolCallIndicator,
 	} from '$lib/components/board/fleet-buffer';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import List from '@lucide/svelte/icons/list';
@@ -44,13 +41,6 @@
 	let agentOutputLines = $derived<Record<string, string[]>>(
 		Object.fromEntries(
 			Object.entries(sessionStates).map(([id, s]) => [id, s.lines])
-		)
-	);
-
-	// Derived: active tool calls per session (for ActiveFleetRow)
-	let agentToolCalls = $derived<Record<string, ToolCallIndicator | null>>(
-		Object.fromEntries(
-			Object.entries(sessionStates).map(([id, s]) => [id, s.activeTool])
 		)
 	);
 
@@ -138,26 +128,6 @@
 			const text = event.data.text as string;
 			const current = sessionStates[sessionId] ?? createSessionState();
 			sessionStates[sessionId] = processTextChunk(current, text);
-			return;
-		}
-
-		// AC: @ui-task-board ac-4 — Track tool call start for tool indicator
-		if (event.event === 'agent_tool_call' && event.data?.session_id) {
-			const sessionId = event.data.session_id as string;
-			const toolName = (event.data.tool ?? event.data.name ?? 'unknown') as string;
-			const input = event.data.input ?? event.data.rawInput;
-			const current = sessionStates[sessionId] ?? createSessionState();
-			sessionStates[sessionId] = processToolCallStart(current, toolName, input);
-			return;
-		}
-
-		// AC: @ui-task-board ac-4 — Clear tool indicator on tool completion
-		if (event.event === 'agent_tool_result' && event.data?.session_id) {
-			const sessionId = event.data.session_id as string;
-			const current = sessionStates[sessionId];
-			if (current) {
-				sessionStates[sessionId] = processToolCallEnd(current);
-			}
 			return;
 		}
 
@@ -258,7 +228,7 @@
 	{:else}
 		<!-- AC: @ui-task-board ac-4 — Active Fleet Row -->
 		<div class="px-6 pt-4">
-			<ActiveFleetRow status={agentStatus} outputLines={agentOutputLines} toolCalls={agentToolCalls} {taskTitles} />
+			<ActiveFleetRow status={agentStatus} outputLines={agentOutputLines} {taskTitles} />
 		</div>
 
 		<!-- AC: @ui-task-board ac-1 — Kanban Columns -->

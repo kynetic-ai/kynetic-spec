@@ -5,26 +5,15 @@
  * 1. Accumulates incoming text into a buffer per session
  * 2. Only emits complete lines (split on newline)
  * 3. Keeps the last N complete lines for display
- * 4. Tracks active tool calls to show tool indicators
  *
  * AC: @ui-task-board ac-4
  */
-
-import { getToolIcon, getToolInputPreview } from '../session/session-utils';
-
-export interface ToolCallIndicator {
-	toolName: string;
-	icon: string;
-	preview: string;
-}
 
 export interface FleetSessionState {
 	/** Raw text buffer — holds partial line content until a newline arrives */
 	buffer: string;
 	/** Complete lines ready for display (last N) */
 	lines: string[];
-	/** Currently active tool call (if any) */
-	activeTool: ToolCallIndicator | null;
 }
 
 const MAX_DISPLAY_LINES = 3;
@@ -36,7 +25,6 @@ export function createSessionState(): FleetSessionState {
 	return {
 		buffer: '',
 		lines: [],
-		activeTool: null,
 	};
 }
 
@@ -69,51 +57,17 @@ export function processTextChunk(
 	return {
 		buffer: partial,
 		lines: allLines,
-		activeTool: state.activeTool,
-	};
-}
-
-/**
- * Process a tool call start event.
- * Sets the active tool indicator.
- */
-export function processToolCallStart(
-	state: FleetSessionState,
-	toolName: string,
-	input: unknown,
-): FleetSessionState {
-	const icon = getToolIcon(toolName);
-	const preview = getToolInputPreview(toolName, input);
-
-	return {
-		...state,
-		activeTool: { toolName, icon, preview },
-	};
-}
-
-/**
- * Process a tool call completion event.
- * Clears the active tool indicator.
- */
-export function processToolCallEnd(
-	state: FleetSessionState,
-): FleetSessionState {
-	return {
-		...state,
-		activeTool: null,
 	};
 }
 
 /**
  * Get display-ready output for a fleet card.
- * Returns lines to show and optional tool indicator.
+ * Returns the buffered lines.
  */
 export function getDisplayState(state: FleetSessionState): {
 	lines: string[];
-	activeTool: ToolCallIndicator | null;
 } {
 	return {
 		lines: state.lines,
-		activeTool: state.activeTool,
 	};
 }
