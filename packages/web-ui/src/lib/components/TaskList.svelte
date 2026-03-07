@@ -112,7 +112,7 @@
 						</TableCell>
 						<TableCell data-testid="task-spec-ref">
 							{#if task.spec_ref}
-								<ReferenceLink ref={task.spec_ref} type="spec" linked={false} class="text-sm" />
+								<ReferenceLink ref={task.spec_ref} type="spec" stopPropagation class="text-sm" />
 							{:else}
 								<span class="text-muted-foreground text-sm">—</span>
 							{/if}

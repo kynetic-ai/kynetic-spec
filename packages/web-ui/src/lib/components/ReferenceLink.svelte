@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { goto } from '$app/navigation';
 	import type { RefType } from '$lib/utils/reference';
 	import { normalizeRef, shortRef, refHref } from '$lib/utils/reference';
 
@@ -18,6 +19,13 @@
 		title?: string | null;
 		/** Whether to render as a clickable link (default: true). */
 		linked?: boolean;
+		/**
+		 * Use an interactive <span> instead of <a> for the link.
+		 * Navigates via goto() on click. Use when nested inside <a> or <button>
+		 * to avoid invalid HTML (nested interactive elements).
+		 * Implies stopPropagation and preventDefault.
+		 */
+		inline?: boolean;
 		/** Stop click propagation (useful when nested inside clickable containers). */
 		stopPropagation?: boolean;
 		/** Additional CSS classes. */
@@ -29,6 +37,7 @@
 		type,
 		title = null,
 		linked = true,
+		inline = false,
 		stopPropagation = false,
 		class: className = ''
 	}: Props = $props();
@@ -42,9 +51,39 @@
 			e.stopPropagation();
 		}
 	}
+
+	function handleInlineClick(e: Event) {
+		e.stopPropagation();
+		e.preventDefault();
+		goto(href);
+	}
 </script>
 
-{#if linked}
+{#snippet refContent()}
+	{#if title}
+		<span class="text-sm">{title}</span>
+		<span class="text-[10px] font-mono text-muted-foreground">@{short}</span>
+	{:else}
+		<span class="text-sm font-mono">@{normalized}</span>
+	{/if}
+{/snippet}
+
+{#if linked && inline}
+	<!-- Interactive span: navigates via goto(), safe inside <a>/<button> -->
+	<span
+		class="inline-flex items-baseline gap-1 text-primary hover:underline cursor-pointer {className}"
+		onclick={handleInlineClick}
+		onkeydown={(e) => e.key === 'Enter' && handleInlineClick(e)}
+		title={rawRef}
+		role="link"
+		tabindex="0"
+		data-testid="reference-link"
+		data-ref-type={type}
+		data-href={href}
+	>
+		{@render refContent()}
+	</span>
+{:else if linked}
 	<a
 		{href}
 		class="inline-flex items-baseline gap-1 text-primary hover:underline {className}"
@@ -53,12 +92,7 @@
 		data-testid="reference-link"
 		data-ref-type={type}
 	>
-		{#if title}
-			<span class="text-sm">{title}</span>
-			<span class="text-[10px] font-mono text-muted-foreground">@{short}</span>
-		{:else}
-			<span class="text-sm font-mono">@{normalized}</span>
-		{/if}
+		{@render refContent()}
 	</a>
 {:else}
 	<span
