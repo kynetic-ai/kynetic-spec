@@ -79647,12 +79647,24 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK3NNSZTWX079RHX85PJ9R7W
   created_at: 2026-03-07T04:52:13.653Z
-  notes: []
+  started_at: 2026-03-07T08:23:41.436Z
+  notes:
+    - _ulid: 01KK3Q1ETM9AG90MV4YDC5B3Q1
+      created_at: 2026-03-07T08:36:19.924Z
+      author: "@claude"
+      content: "Fix applied: replaced onMount+$effect(version>0) data loading pattern across all 13 route
+        pages with a single $effect gated on isProjectInitialized(). This is the same pattern used
+        in the Sidebar fix (bf6611352). Pages fixed: dashboard, tasks list, task board, specs,
+        inbox, observations, agents, sessions, workflows, plans, settings, validate, triage. The
+        root cause: onMount() data loads could fire before the project store resolved the active
+        project, causing API calls with wrong/missing X-Kspec-Dir header. The fix gates all initial
+        data loads on isProjectInitialized(), ensuring the project context is established before any
+        API calls."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-07T08:23:41.436Z
-  session_id: 01KK3NNSZTWX079RHX85PJ9R7W
 - _ulid: 01KK3ARVJQPW5J3AJN7EJ7B657
   slugs: []
   title: Fix tool call rows in session stream — enforce single-line layout with truncation
