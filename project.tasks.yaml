@@ -82432,7 +82432,7 @@
   spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -82445,3 +82445,5 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-08T21:35:59.674Z
+  session_id: 01KK7P0B338YTMAYZ552M4R5H3
