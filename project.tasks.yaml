@@ -51894,6 +51894,20 @@
         - Verification: markdown review plus targeted repo checks for command accuracy and link
         validity.
       supersedes: null
+    - _ulid: 01KK5G28TFMFW933RNE6VA5A3J
+      created_at: 2026-03-08T01:12:55.375Z
+      author: Jacob Chapel
+      content: >-
+        Rewrote the top-level README for external adopters and added docs/getting-started.md with an
+        end-to-end spec-first tutorial. Also added an INSTALL.md handoff to the tutorial.
+
+
+        Verification: checked markdown link targets and ran git diff --check.
+
+        Validation: kspec validate currently fails because of pre-existing meta/spec issues
+        unrelated to this docs task (missing .kspec/skills/observations/SKILL.md, duplicate
+        @observations slug, and existing alignment/completeness warnings).
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
