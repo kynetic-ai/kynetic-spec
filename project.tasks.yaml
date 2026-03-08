@@ -67162,6 +67162,28 @@
 
         - Verification: re-run kspec tasks assess automation and kspec validate after updates.
       supersedes: null
+    - _ulid: 01KK5QWDCE5XT1J7EJ526TDYVY
+      created_at: 2026-03-08T03:29:32.046Z
+      author: Jacob Chapel
+      content: >-
+        Classified the current live warning set and applied the first correction batch.
+
+
+        - Reclassified @01KJXQK4 (UI/UX revamp umbrella task) from unassessed to manual_only because
+        it coordinates plan/design work and derived spec-backed implementation tasks rather than
+        implementing one spec directly.
+
+        - Added plan_ref @plan-ui-ux-revamp to that umbrella task so its planning context is
+        explicit without fabricating a spec_ref.
+
+        - Updated automation triage guidance to document the rule: do not invent spec_ref for
+        umbrella planning/design tasks; keep them manual_only and execute the derived spec-linked
+        tasks instead.
+
+        - Verification: kspec tasks assess automation now shows 0 needs_review items in the active
+        queue; kspec validate still has unrelated pre-existing schema/reference/completeness noise
+        and a larger historical automation-without-spec backlog outside this first-batch scope.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJGRQ1BBMQ4VHWB8SSKG16RA
