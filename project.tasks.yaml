@@ -81996,6 +81996,17 @@
         (including readiness timeouts, leaked unmatched output under --agent filtering, and
         --retries 0 not exiting with code 3)."
       supersedes: null
+    - _ulid: 01KK6N258W8GHGDKHVGN7A9BCE
+      created_at: 2026-03-08T11:59:29.053Z
+      author: "@claude"
+      content: "Fix cycle 2: Root cause was two issues: (1) vi.stubGlobal(\"WebSocket\", FakeWs) is
+        unreliable across module boundaries in vitest 4.0's vm-based module resolution, and (2)
+        initContext() takes >500ms in environments without .kspec/ (clean clones, CI), exceeding the
+        500ms waitFor timeout. Fix: replaced separate websocket.ts with injectable
+        _setWebSocketCtor() in agent.ts, always use ws package instead of native WebSocket, and mock
+        initContext() in dispatch watch tests. Verified all 50 agent tests pass in both working copy
+        and isolated clean checkout with npm ci."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK6201CTYB6AXEPY2MBSY2B0
