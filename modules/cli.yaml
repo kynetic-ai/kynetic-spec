@@ -591,6 +591,13 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: User needs to create a project-level trait item in kynetic.yaml
+            when: user runs 'kspec item add --root --type trait --title "Root Trait" --slug root-trait' without
+              --under
+            then: the command creates the trait in the root traits array of kynetic.yaml and returns the created
+              trait ref
       - _ulid: 01KEZCJPHXKYVVP0YWF261A8N3
         slugs:
           - item-get
