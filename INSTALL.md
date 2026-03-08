@@ -97,7 +97,7 @@ kspec setup --dry-run    # Preview what would be configured
 kspec setup --no-hooks   # Skip hook installation
 ```
 
-For manual configuration or supported agent list, see [README.md Agent Integration](README.md#agent-integration).
+For broader setup context and the spec-first workflow after install, see [README.md](README.md#how-it-works) and [docs/getting-started.md](docs/getting-started.md).
 
 ## Verification
 
@@ -135,7 +135,7 @@ kspec task note @task-slug "..." # Document what you're doing
 kspec inbox add "..."            # Capture ideas for later
 ```
 
-See [README.md](README.md#task-management) for full command reference.
+See [docs/getting-started.md](docs/getting-started.md) for the full first-task walkthrough.
 
 ## Troubleshooting
 
