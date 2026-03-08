@@ -82149,6 +82149,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #712 (fd0550ca5cf9a9d9c066a2c46c35cac1dcf6294d). Implemented
+    bidirectional shadow branch sync: pull-rebase before shadow push, daemon background shadow pull
+    with configurable shadow.sync_interval (default 60s), and CLI pre-read shadow pull via
+    initContext with configured shadow remote/branch support. AC coverage verified for
+    @config-shadow ac-11 and ac-12 with targeted shadow tests; required CI checks passed on the
+    merged head."
   depends_on: []
   context: []
   priority: 1
@@ -82162,6 +82168,7 @@
   created_at: 2026-03-08T09:11:24.022Z
   started_at: 2026-03-08T15:06:35.344Z
   submitted_at: 2026-03-08T15:14:11.995Z
+  completed_at: 2026-03-08T15:23:51.500Z
   notes:
     - _ulid: 01KK6GYDSDZJ9Z0PZE6VTD695V
       created_at: 2026-03-08T10:47:32.398Z
@@ -82286,10 +82293,22 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-08T15:23:51.500Z
-  closed_reason: "Merged in PR #712 (fd0550ca5cf9a9d9c066a2c46c35cac1dcf6294d). Implemented
-    bidirectional shadow branch sync: pull-rebase before shadow push, daemon background shadow pull
-    with configurable shadow.sync_interval (default 60s), and CLI pre-read shadow pull via
-    initContext with configured shadow remote/branch support. AC coverage verified for
-    @config-shadow ac-11 and ac-12 with targeted shadow tests; required CI checks passed on the
-    merged head."
+- title: Update web UI favicon with new Kynetic logo
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - design
+    - web-ui
+  depends_on: []
+  _ulid: 01KK767ZJ9Y6BXEJ6MV192T37V
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T16:59:45.609Z
+  notes: []
+  todos: []
