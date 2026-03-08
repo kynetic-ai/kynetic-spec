@@ -3,6 +3,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { execSync, spawnSync } from 'node:child_process';
 import { SHADOW_BRANCH_NAME, SHADOW_WORKTREE_DIR } from '../src/parser/shadow.js';
+import { kspec, createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli.js';
 
 describe('kspec setup', () => {
   const testDir = path.join('/tmp', `kspec-setup-test-${Date.now()}`);
@@ -136,5 +137,90 @@ describe('kspec setup', () => {
     // Should prompt with the expected message
     expect(result.stdout).toContain(`${SHADOW_BRANCH_NAME} branch exists but .kspec worktree is missing. Create it?`);
     expect(result.status).toBe(1); // Exit with error since user declined
+  });
+});
+
+describe('kspec setup without agent environment', () => {
+  let tempDir: string;
+  const kspecBinPath = path.join(process.cwd(), 'dist', 'cli', 'index.js');
+
+  // Build a minimal env that has NO agent detection vars at all.
+  // This prevents false detection (e.g. AIDER_DARK_MODE !== undefined).
+  function cleanEnv(): Record<string, string> {
+    return {
+      PATH: process.env.PATH || '',
+      HOME: '/tmp/fake-home-no-claude', // Prevent ~/.claude fallback
+      NODE_PATH: process.env.NODE_PATH || '',
+      KSPEC_AUTHOR: '', // Explicitly unset so Configure author step runs
+    };
+  }
+
+  function runSetup(args: string): { exitCode: number; stdout: string; stderr: string } {
+    const result = spawnSync('node', [kspecBinPath, 'setup', ...args.split(' ').filter(Boolean)], {
+      cwd: tempDir,
+      encoding: 'utf-8',
+      timeout: 30_000,
+      env: cleanEnv(),
+    });
+    return {
+      exitCode: result.status ?? 1,
+      stdout: (result.stdout || '').trim(),
+      stderr: (result.stderr || '').trim(),
+    };
+  }
+
+  beforeEach(async () => {
+    tempDir = await createTempDir('kspec-setup-no-agent-');
+    initGitRepo(tempDir);
+
+    // Create initial commit
+    await fs.writeFile(path.join(tempDir, 'README.md'), '# Test', 'utf-8');
+    execSync('git add README.md && git commit -m "Initial"', {
+      cwd: tempDir,
+      stdio: 'pipe',
+    });
+
+    // Initialize kspec project so setup pipeline has something to work with
+    kspec('init --name test-project --no-prompt', tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @cmd-setup ac-1
+  it('should proceed with core setup steps when no agent environment is detected', () => {
+    const result = runSetup('--dry-run');
+
+    // Should NOT exit with error
+    expect(result.exitCode).toBe(0);
+    // Should warn about missing agent but proceed
+    expect(result.stderr).toContain('Could not auto-detect agent environment');
+    // Should still run the pipeline and show setup summary steps
+    expect(result.stdout).toContain('Agent detection');
+    expect(result.stdout).toContain('unknown');
+    expect(result.stdout).toContain('Install core skills');
+    expect(result.stdout).toContain('Render skills');
+    expect(result.stdout).toContain('Generate kspec-agents.md');
+  });
+
+  // AC: @cmd-setup ac-1
+  it('should print manual KSPEC_AUTHOR instructions for unknown agents', () => {
+    const result = runSetup('--dry-run');
+
+    expect(result.exitCode).toBe(0);
+    // Should show manual instructions for setting KSPEC_AUTHOR
+    expect(result.stdout).toContain('KSPEC_AUTHOR');
+    expect(result.stdout).toContain('export KSPEC_AUTHOR');
+  });
+
+  // AC: @cmd-setup ac-1
+  it('should show skipped Configure author step for unknown agents', () => {
+    const result = runSetup('--dry-run');
+
+    expect(result.exitCode).toBe(0);
+    // Should show Configure author as skipped with manual instructions message
+    expect(result.stdout).toContain('Configure author');
+    expect(result.stdout).toContain('no auto-config for unknown agent');
   });
 });
