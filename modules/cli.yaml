@@ -1967,7 +1967,8 @@ features:
                 then: the first command exits with warning code 6 while the strict run upgrades the warnings to
                   validation failure exit code 4
             status:
-              implementation: implemented
+              maturity: draft
+              implementation: in_progress
       - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
         slugs:
           - cmd-lint
