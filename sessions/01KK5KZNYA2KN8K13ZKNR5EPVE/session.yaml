@@ -3,5 +3,7 @@ task_id: "@01KJ4SM7SSXD7S0ZN6VDXTDD85"
 agent_type: codex-acp
 agent_id: reviewer
 trigger: task.pending_review
-status: active
+status: failed
 started_at: 2026-03-08T02:24:01.192Z
+ended_at: 2026-03-08T02:30:14.223Z
+close_reason: "Invocation failed: JsonRpcFraming closed"
