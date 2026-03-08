@@ -80088,6 +80088,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: Review passed (FC2). Merged to feat/ui-revamp. Static mode regression fixed — all
+    action buttons now show disabled with tooltips in read-only mode per @gh-pages-export ac-16. AC
+    annotations corrected (ac-18 for note form, not ac-17). @web-dashboard completeness warnings
+    resolved (ac-1, ac-3, ac-11-14 annotated). All 4030 tests pass.
   depends_on: []
   context: []
   priority: 2
@@ -80099,6 +80103,7 @@
   created_at: 2026-03-07T15:35:02.191Z
   started_at: 2026-03-07T21:32:25.117Z
   submitted_at: 2026-03-07T21:43:13.397Z
+  completed_at: 2026-03-07T22:07:54.003Z
   notes:
     - _ulid: 01KK4H9H82J780G5T3RYXQEC8Q
       created_at: 2026-03-07T16:15:07.523Z
@@ -80265,11 +80270,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-07T22:07:54.003Z
-  closed_reason: Review passed (FC2). Merged to feat/ui-revamp. Static mode regression fixed — all
-    action buttons now show disabled with tooltips in read-only mode per @gh-pages-export ac-16. AC
-    annotations corrected (ac-18 for note form, not ac-17). @web-dashboard completeness warnings
-    resolved (ac-1, ac-3, ac-11-14 annotated). All 4030 tests pass.
 - _ulid: 01KK4F059GEKBV8HAMM38FJPMT
   slugs: []
   title: Fix kanban and task list responsive layout (no horizontal scrolling)
@@ -80468,3 +80468,28 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Make new UI views work in GitHub Pages static mode
+  description: "The UI revamp added 7 new views but the kspec-snapshot.json export and static API
+    layer were not updated to support them. Snapshot gaps: plans not exported, triage not exported,
+    alignment data missing, task automation/spec_ref fields missing. Static API gaps: plans/triage
+    return empty, settings skips all sections, sessions needs messaging. Payload is 4.5MB - consider
+    pruning. Spec @gh-pages-export needs new ACs."
+  type: task
+  spec_ref: "@gh-pages-export"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - web-ui
+    - static
+    - gh-pages
+  depends_on: []
+  _ulid: 01KK5CNFSJZWJGWHZ1VYPYT5F4
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T00:13:30.801Z
+  notes: []
+  todos: []
