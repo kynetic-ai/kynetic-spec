@@ -1034,6 +1034,127 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
   });
 });
 
+// ─── Active fleet cleanup ordering ──────────────────────────────────────────
+
+describe("Active fleet cleanup on invocation completion", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-fleet-cleanup-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should remove completed invocation from getStatus before draining next invocation", async () => {
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Track getStatus snapshots taken during drain (inside runExclusive of the NEXT invocation)
+    const statusDuringSecondInvocation: Array<ReturnType<DispatchEngine["getStatus"]>> = [];
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+      invocationCount++;
+      if (invocationCount === 2) {
+        // During the second invocation (spawned by drain), check if the first
+        // invocation has been cleaned up from status. If the bug is present,
+        // the first invocation would still appear in getStatus().invocations.
+        statusDuringSecondInvocation.push(engine.getStatus());
+      }
+      return { session: {} as any, outcome: "success", durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+
+    // Enqueue two tasks so the drain after the first completion triggers the second
+    const [taskId1, taskId2] = testUlids("TASK", 2);
+    await engine.handleStateChange({
+      taskId: taskId1,
+      taskRef: `@${taskId1}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+    await engine.handleStateChange({
+      taskId: taskId2,
+      taskRef: `@${taskId2}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now() + 1,
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Wait for both invocations to complete
+    for (let i = 0; i < 50 && invocationCount < 2; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    expect(invocationCount).toBe(2);
+    expect(statusDuringSecondInvocation).toHaveLength(1);
+
+    // During the second invocation, getStatus should show exactly 1 active invocation
+    // (the second one), NOT 2 (which would include the stale first invocation)
+    const statusSnapshot = statusDuringSecondInvocation[0];
+    expect(statusSnapshot.invocations).toHaveLength(1);
+    expect(statusSnapshot.activeInvocations).toBe(1);
+
+    await engine.stop();
+  });
+
+  it("should clean up activeInvocationDetails on failed invocation (retry exhausted)", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+      budget: { max_retries: 0 } as any,
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    vi.spyOn(invocationModule, "runInvocation").mockRejectedValue(new Error("test failure"));
+
+    const events: Array<{ type: string }> = [];
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      onInvocationEvent: (e) => events.push(e),
+    });
+
+    await engine.start();
+
+    const taskId = testUlid("TASK", 50);
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Wait for the invocation to fail
+    for (let i = 0; i < 50 && events.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    // After failure, getStatus should show no active invocations
+    const status = engine.getStatus();
+    expect(status.invocations).toHaveLength(0);
+    expect(status.activeInvocations).toBe(0);
+
+    await engine.stop();
+  });
+});
+
 // ─── AC-4: CLI API event processing ─────────────────────────────────────────
 
 // AC: @agent-dispatch-engine ac-4

@@ -1092,12 +1092,16 @@ export class DispatchEngine {
             });
           }
         }
-      })
-      .then(async () => {
-        // Decrement active count and drain again
+
+        // Clean up active tracking immediately while still holding the mutex,
+        // BEFORE _drainQueues can spawn the next invocation. This prevents
+        // completed invocations from appearing active in the fleet status
+        // while the next invocation runs.
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-
+        this.activeInvocationDetails.delete(invocationId);
+      })
+      .then(async () => {
         if (!this.running) return;
 
         // Try to drain more items
@@ -1111,7 +1115,6 @@ export class DispatchEngine {
       .finally(() => {
         this.runningInvocations.delete(invocationPromise);
         this.invocationAbortControllers.delete(abortController);
-        this.activeInvocationDetails.delete(invocationId);
       });
 
     this.runningInvocations.add(invocationPromise);
