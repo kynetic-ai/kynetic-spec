@@ -81819,7 +81819,7 @@
   spec_ref: "@agent-invocation-lifecycle"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -81833,6 +81833,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-08T09:08:04.779Z
+  session_id: 01KK6AZJYC91HM66HXFNPGRRJH
 - _ulid: 01KK615M5YTKM989ZT8X2GEVXR
   slugs: []
   title: Document agent system configuration and setup
