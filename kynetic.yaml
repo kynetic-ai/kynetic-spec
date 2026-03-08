@@ -523,6 +523,48 @@ traits:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KK7WM78BVYN7W8W9CJ37CV6H
+    slugs:
+      - trait-task-readiness
+    title: Task Readiness Contract
+    type: trait
+    tags:
+      - tasks
+      - dispatch
+      - trait
+    description: "Cross-cutting contract for determining whether a task is ready to be picked up. Any
+      system that selects tasks for work must apply this base readiness check before
+      consumer-specific filters (automation, tags, priority). Canonical definition: ready = (pending
+      OR needs_work) + all depends_on completed + not blocked."
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-08T23:30:55.371Z
+    acceptance_criteria:
+      - id: ac-status
+        given: A system evaluates whether a task can be picked up for work
+        when: It checks the task status
+        then: Only tasks with status pending or needs_work are considered ready. All other statuses
+          (in_progress, pending_review, completed, blocked, cancelled) are excluded.
+      - id: ac-deps
+        given: A task has depends_on references to other tasks
+        when: Readiness is evaluated
+        then: All depends_on tasks must have status completed. If any dependency has a non-completed status
+          (pending, in_progress, needs_work, pending_review, blocked, cancelled), the task is not
+          ready.
+      - id: ac-not-blocked
+        given: A task has a blocked_by array
+        when: Readiness is evaluated
+        then: The blocked_by array must be empty. Any entry in blocked_by prevents readiness regardless of
+          other conditions.
+      - id: ac-composable
+        given: A consumer applies additional filters (automation status, tags, priority thresholds)
+        when: It selects tasks for work
+        then: Consumer-specific filters are applied on top of base readiness, never instead of it. A task
+          must pass base readiness before any consumer filter is evaluated.
 includes:
   - modules/core.yaml
   - modules/schema.yaml
