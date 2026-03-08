@@ -501,4 +501,136 @@ describe('Path Validation Middleware', () => {
       expect((state.projectContext as ProjectContext).path).toBe(projectA);
     });
   });
+
+  describe('Non-API route bypass (static files, SPA, health)', () => {
+    /**
+     * Recreates the derive middleware's URL-based routing logic from
+     * packages/daemon/src/middleware/project-context.ts (lines 51-58).
+     *
+     * Non-API routes and /api/health skip project context resolution entirely,
+     * returning projectContext: undefined instead of triggering a 400 error
+     * when no project is configured.
+     */
+    function createDeriveMiddleware(manager: ProjectContextManager) {
+      return async (
+        requestUrl: string,
+        headers: Record<string, string> = {},
+      ): Promise<{
+        projectContext: ProjectContext | undefined;
+        error?: string;
+        status?: number;
+      }> => {
+        const url = new URL(requestUrl, 'http://localhost:3456');
+        const needsProject =
+          url.pathname.startsWith('/api/') && url.pathname !== '/api/health';
+
+        if (!needsProject) {
+          return { projectContext: undefined };
+        }
+
+        try {
+          const projectPath = headers['X-Kspec-Dir'];
+          let projectContext: ProjectContext;
+
+          if (projectPath) {
+            try {
+              projectContext = manager.getProject(projectPath);
+            } catch {
+              projectContext = manager.registerProject(projectPath);
+            }
+          } else {
+            projectContext = manager.getProject();
+          }
+          return { projectContext };
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+
+          if (
+            message.includes('No default project configured') ||
+            message.includes('Default project no longer valid')
+          ) {
+            return { error: message, status: 400, projectContext: undefined };
+          }
+          return {
+            error: 'Internal server error',
+            status: 500,
+            projectContext: undefined,
+          };
+        }
+      };
+    }
+
+    it('should skip project context for static file paths (no 400)', async () => {
+      // No default project configured — would 400 for API routes
+      const manager = new ProjectContextManager();
+      const derive = createDeriveMiddleware(manager);
+
+      const staticPaths = [
+        'http://localhost:3456/_app/immutable/entry/start.abc123.js',
+        'http://localhost:3456/_app/immutable/chunks/index.def456.js',
+        'http://localhost:3456/favicon.ico',
+        'http://localhost:3456/styles.css',
+      ];
+
+      for (const url of staticPaths) {
+        const result = await derive(url);
+        expect(result.status).toBeUndefined();
+        expect(result.error).toBeUndefined();
+        expect(result.projectContext).toBeUndefined();
+      }
+    });
+
+    it('should skip project context for /api/health (no 400)', async () => {
+      // No default project configured — would 400 for other API routes
+      const manager = new ProjectContextManager();
+      const derive = createDeriveMiddleware(manager);
+
+      const result = await derive('http://localhost:3456/api/health');
+      expect(result.status).toBeUndefined();
+      expect(result.error).toBeUndefined();
+      expect(result.projectContext).toBeUndefined();
+    });
+
+    it('should skip project context for SPA fallback routes (no 400)', async () => {
+      const manager = new ProjectContextManager();
+      const derive = createDeriveMiddleware(manager);
+
+      const spaRoutes = [
+        'http://localhost:3456/',
+        'http://localhost:3456/tasks',
+        'http://localhost:3456/items',
+        'http://localhost:3456/inbox',
+        'http://localhost:3456/settings',
+      ];
+
+      for (const url of spaRoutes) {
+        const result = await derive(url);
+        expect(result.status).toBeUndefined();
+        expect(result.error).toBeUndefined();
+        expect(result.projectContext).toBeUndefined();
+      }
+    });
+
+    it('should still require project context for API routes', async () => {
+      // No default project configured — API routes should 400
+      const manager = new ProjectContextManager();
+      const derive = createDeriveMiddleware(manager);
+
+      const result = await derive('http://localhost:3456/api/tasks');
+      expect(result.status).toBe(400);
+      expect(result.error).toContain('No default project configured');
+    });
+
+    it('should resolve project context for API routes when project is available', async () => {
+      const manager = new ProjectContextManager(projectA);
+      manager.registerProject(projectA, true);
+      const derive = createDeriveMiddleware(manager);
+
+      const result = await derive('http://localhost:3456/api/tasks');
+      expect(result.projectContext).toBeDefined();
+      expect(result.projectContext!.path).toBe(projectA);
+      expect(result.status).toBeUndefined();
+    });
+  });
+
 });

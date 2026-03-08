@@ -234,4 +234,37 @@ test.describe('Server Core API', () => {
 
     // AC: @trait-localhost-security ac-3 — N/A: daemon does not support external binding configuration
   });
+
+  test.describe('Non-API route bypass (regression: derive middleware 400)', () => {
+    // Regression tests for the bug where the derive middleware in
+    // project-context.ts set status 400 on ALL requests (including static
+    // files and SPA routes) when no project was configured, breaking
+    // dynamic ES module imports in the web UI.
+
+    test('GET / serves HTML via SPA fallback, not 400', async ({ request, daemon }) => {
+      const response = await request.get(`${daemon.baseUrl}/`);
+
+      // Root path should serve index.html (SPA fallback), not error
+      expect(response.status()).toBe(200);
+      const contentType = response.headers()['content-type'] || '';
+      expect(contentType).toContain('text/html');
+    });
+
+    test('GET /api/health succeeds without project context', async ({ request, daemon }) => {
+      // /api/health must work even when derive middleware runs, because
+      // it's explicitly excluded from project context resolution.
+      const response = await request.get(`${daemon.baseUrl}/api/health`);
+      expect(response.status()).toBe(200);
+      const body = await response.json();
+      expect(body.status).toBe('ok');
+    });
+
+    test('API routes still require project context', async ({ request, daemon }) => {
+      // API routes (other than /api/health) should still use project context.
+      // With a valid project configured (daemon fixture has one), this should succeed.
+      const response = await request.get(`${daemon.baseUrl}/api/tasks`);
+      // Should succeed because daemon fixture provides a startup project
+      expect(response.status()).toBe(200);
+    });
+  });
 });
