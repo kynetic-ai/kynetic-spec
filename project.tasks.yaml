@@ -81476,6 +81476,15 @@
         tests/cli-serve.test.ts only inspects package.json instead of exercising npm-installed
         'kspec serve start' behavior, so packaging/runtime regressions could slip through."
       supersedes: null
+    - _ulid: 01KK65NF9FMR4PMT242WGHRQ5F
+      created_at: 2026-03-08T07:30:24.688Z
+      author: "@claude"
+      content: "Fix cycle 1: Replaced static package.json inspection test with behavioral test. New test
+        npm-packs the project, installs the tarball in an isolated temp dir, then verifies: (1)
+        dist/daemon/index.ts exists in installed package, (2) elysia, @elysiajs/cors,
+        @elysiajs/static all resolve via require.resolve from the installed package location. This
+        catches packaging regressions the static check missed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5E7YSKTWV0KBKFERG5GV8E
