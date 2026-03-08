@@ -570,14 +570,44 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @web-ui ac-1
-  it('should bundle daemon runtime dependencies in the npm package', () => {
-    // Verify elysia and its companion packages are in the package.json dependencies
-    // so they are available after `npm install -g @kynetic-ai/spec`
-    const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
-    expect(pkg.dependencies).toHaveProperty('elysia');
-    expect(pkg.dependencies).toHaveProperty('@elysiajs/cors');
-    expect(pkg.dependencies).toHaveProperty('@elysiajs/static');
-  });
+  it('should bundle daemon runtime dependencies in the npm package', async () => {
+    // Pack the project, install the tarball into an isolated directory,
+    // and verify that the daemon binary and its runtime imports resolve.
+    const projectRoot = join(__dirname, '..');
+    const installDir = await createTempDir();
+
+    try {
+      // Fresh pack so we test the current build output
+      const packOutput = execSync('npm pack --pack-destination ' + installDir, {
+        cwd: projectRoot,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim();
+      const tarball = join(installDir, packOutput.split('\n').pop()!.trim());
+
+      // Install the tarball into the temp dir (brings transitive deps)
+      execSync(`npm init -y && npm install --no-save "${tarball}"`, {
+        cwd: installDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+        timeout: 60_000,
+      });
+
+      // Resolve the installed package's dist/daemon/index.ts
+      const installedPkgDir = join(installDir, 'node_modules', '@kynetic-ai', 'spec');
+      const daemonEntry = join(installedPkgDir, 'dist', 'daemon', 'index.ts');
+      expect(existsSync(daemonEntry), `daemon entry not found at ${daemonEntry}`).toBe(true);
+
+      // Verify runtime dependencies resolve from the installed location
+      const depsToCheck = ['elysia', '@elysiajs/cors', '@elysiajs/static'];
+      for (const dep of depsToCheck) {
+        const resolved = require.resolve(dep, { paths: [installedPkgDir] });
+        expect(resolved, `${dep} should resolve from installed package`).toBeTruthy();
+      }
+    } finally {
+      await cleanupTempDir(installDir);
+    }
+  }, 90_000);
 
   // AC: @web-ui ac-2
   it('should show clear error with Bun install URL when Bun is not available', () => {
