@@ -630,7 +630,9 @@ describe('Trait CLI - item add --trait', () => {
     expect(manifest).toContain('      - root-trait');
   });
 
-  it('should reject --root for non-trait item types', () => {
+  // AC: @trait-error-guidance ac-2
+  // AC: @trait-error-guidance ac-5
+  it('should reject --root for non-trait item types with recovery guidance', () => {
     const result = kspecRun(
       'item add --root --type feature --title "Invalid Root Feature"',
       tempDir,
@@ -639,9 +641,13 @@ describe('Trait CLI - item add --trait', () => {
 
     expect(result.exitCode).toBe(2);
     expect(result.stderr).toContain('--root is only supported for --type trait');
+    expect(result.stderr).toContain('received: feature');
+    expect(result.stderr).toContain('Change --type to trait');
   });
 
-  it('should reject combining --root with --under', () => {
+  // AC: @trait-error-guidance ac-2
+  // AC: @trait-error-guidance ac-5
+  it('should reject combining --root with --under with recovery guidance', () => {
     const result = kspecRun(
       'item add --root --under @test-core --type trait --title "Conflicting Root Trait"',
       tempDir,
@@ -649,6 +655,38 @@ describe('Trait CLI - item add --trait', () => {
     );
 
     expect(result.exitCode).toBe(2);
-    expect(result.stderr).toContain('Cannot use --under and --root together');
+    expect(result.stderr).toContain('Cannot use --under (@test-core) and --root together');
+    expect(result.stderr).toContain('Use --root only for project-level traits');
+  });
+
+  // AC: @trait-error-guidance ac-6
+  it('should include structured guidance for --root type validation in JSON mode', () => {
+    const result = kspecRun(
+      'item add --root --type feature --title "Invalid Root Feature" --json',
+      tempDir,
+      { expectFail: true }
+    );
+
+    const parsed = JSON.parse(result.stderr);
+    expect(parsed.error).toContain('--root is only supported for --type trait');
+    expect(parsed.details.field).toBe('type');
+    expect(parsed.details.value).toBe('feature');
+    expect(parsed.details.suggestion).toContain('Change --type to trait');
+  });
+
+  // AC: @trait-error-guidance ac-6
+  it('should include structured guidance for conflicting --root and --under in JSON mode', () => {
+    const result = kspecRun(
+      'item add --root --under @test-core --type trait --title "Conflicting Root Trait" --json',
+      tempDir,
+      { expectFail: true }
+    );
+
+    const parsed = JSON.parse(result.stderr);
+    expect(parsed.error).toContain('Cannot use --under (@test-core) and --root together');
+    expect(parsed.details.field).toBe('under');
+    expect(parsed.details.value).toBe('@test-core');
+    expect(parsed.details.conflicting_field).toBe('root');
+    expect(parsed.details.suggestion).toContain('project-level traits in kynetic.yaml');
   });
 });

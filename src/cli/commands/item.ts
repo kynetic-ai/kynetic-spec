@@ -695,19 +695,43 @@ Examples:
         const isRootAdd = Boolean(options.root);
         const itemType = options.type as ItemType;
 
-        if (options.under && isRootAdd) {
-          error("Cannot use --under and --root together");
+        const exitWithUsageGuidance = (
+          message: string,
+          suggestion: string,
+          details?: Record<string, unknown>,
+        ): never => {
+          error(message, { suggestion, ...details });
           process.exit(EXIT_CODES.USAGE_ERROR);
+        };
+
+        if (options.under && isRootAdd) {
+          exitWithUsageGuidance(
+            `Cannot use --under (${options.under}) and --root together`,
+            "Use --root only for project-level traits in kynetic.yaml, or remove --root and keep --under for nested items.",
+            {
+              field: "under",
+              value: options.under,
+              conflicting_field: "root",
+            },
+          );
         }
 
         if (!options.under && !isRootAdd) {
-          error("item add requires either --under <ref> or --root");
-          process.exit(EXIT_CODES.USAGE_ERROR);
+          exitWithUsageGuidance(
+            "item add requires either --under <ref> or --root",
+            "Use --under @parent to create a nested item, or use --root --type trait to create a project-level trait in kynetic.yaml.",
+          );
         }
 
         if (isRootAdd && itemType !== "trait") {
-          error("--root is only supported for --type trait");
-          process.exit(EXIT_CODES.USAGE_ERROR);
+          exitWithUsageGuidance(
+            `--root is only supported for --type trait (received: ${itemType || "undefined"})`,
+            "Change --type to trait for project-level creation, or remove --root and create the item under a parent with --under.",
+            {
+              field: "type",
+              value: itemType || null,
+            },
+          );
         }
 
         let parent: LoadedSpecItem | null = null;
