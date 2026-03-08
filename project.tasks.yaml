@@ -62024,6 +62024,7 @@
   session_id: 01KK5HGQSHCNF1Y2FJHDG5ZWHY
   created_at: 2026-02-26T13:07:52.613Z
   started_at: 2026-03-08T01:46:05.443Z
+  submitted_at: 2026-03-08T01:49:11.504Z
   notes:
     - _ulid: 01KJDFWAA0883CNHNQ37PYMGNF
       created_at: 2026-02-26T17:27:53.920Z
@@ -62058,9 +62059,16 @@
         workflow YAML with node+yaml and ran 'npm run test:e2e -- --list' successfully through
         shared build, web-ui build, and Playwright test discovery (506 tests listed)."
       supersedes: null
+    - _ulid: 01KK5J5EZ1E9BDEW5ZH8M13VW0
+      created_at: 2026-03-08T01:49:37.121Z
+      author: Jacob Chapel
+      content: "Opened PR #694 on branch fix/ci-e2e-tests. Summary: separate Playwright Chromium CI job
+        added, browser cache restored via actions/cache on ~/.cache/ms-playwright, Chromium
+        installed with --with-deps, and root npm run test:e2e added to build shared before running
+        the web-ui Playwright suite."
+      supersedes: null
   todos: []
   automation: manual_only
-  submitted_at: 2026-03-08T01:49:11.504Z
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
   slugs:
     - implement-per-role-adapter-selection-for-ralph-loo
