@@ -29,6 +29,7 @@ import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invo
 import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import * as spawnerModule from "../src/agents/spawner.js";
+import { SANITIZED_ENV_VARS } from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 import {
@@ -1333,6 +1334,103 @@ describe("ACP permission request handling", () => {
 
     // Invocation should complete (not hang) — mock proceeds after receiving any response
     expect(result.outcome).toBe("success");
+  });
+});
+
+// ─── AC-12: Sanitize inherited env vars in agent spawner ──────────────────────
+
+// AC: @agent-invocation-lifecycle ac-12
+describe("Host environment variable sanitization", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac12-");
+  });
+
+  afterEach(async () => {
+    for (const key of SANITIZED_ENV_VARS) {
+      delete process.env[key];
+    }
+    await cleanupTempDir(testDir);
+  });
+
+  it("should strip CLAUDECODE and CLAUDE_CODE_SESSION from spawned agent environment", async () => {
+    // Simulate running inside a Claude Code environment
+    process.env.CLAUDECODE = "1";
+    process.env.CLAUDE_CODE_SESSION = "parent-session-id";
+
+    // Use the mock ACP's VERIFY_ENV feature to check what the child process sees
+    const envVerifyFile = path.join(testDir, "env-verify.json");
+    registerAdapter("env-verify-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: envVerifyFile,
+        MOCK_ACP_VERIFY_ENV_VARS: "CLAUDECODE,CLAUDE_CODE_SESSION,PATH",
+      },
+      description: "Mock ACP that reports its env vars for sanitization tests",
+    });
+
+    const agent = makeTestAgent({ adapter: "env-verify-acp" });
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test env sanitization",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+
+    // Read the env vars reported by the child process
+    const reportedEnv = JSON.parse(await fs.readFile(envVerifyFile, "utf-8"));
+
+    // CLAUDECODE and CLAUDE_CODE_SESSION must be null (not present in child env)
+    expect(reportedEnv.CLAUDECODE).toBeNull();
+    expect(reportedEnv.CLAUDE_CODE_SESSION).toBeNull();
+
+    // PATH should still be present (not sanitized)
+    expect(reportedEnv.PATH).not.toBeNull();
+  });
+
+  it("should not affect process.env of the parent process", async () => {
+    // Set sanitized vars
+    process.env.CLAUDECODE = "1";
+    process.env.CLAUDE_CODE_SESSION = "parent-session-id";
+
+    const envVerifyFile = path.join(testDir, "env-verify-parent.json");
+    registerAdapter("env-verify-parent-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: envVerifyFile,
+        MOCK_ACP_VERIFY_ENV_VARS: "CLAUDECODE",
+      },
+      description: "Mock ACP for parent env preservation test",
+    });
+
+    const agent = makeTestAgent({ adapter: "env-verify-parent-acp" });
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test parent env preservation",
+      trigger: "task.ready",
+    });
+
+    // Parent process should still have CLAUDECODE — sanitization is per-spawn only
+    expect(process.env.CLAUDECODE).toBe("1");
+    expect(process.env.CLAUDE_CODE_SESSION).toBe("parent-session-id");
+  });
+
+  it("SANITIZED_ENV_VARS should contain the expected variables", () => {
+    // Guard against accidental removal of vars from the sanitization list
+    expect(SANITIZED_ENV_VARS).toContain("CLAUDECODE");
+    expect(SANITIZED_ENV_VARS).toContain("CLAUDE_CODE_SESSION");
   });
 });
 

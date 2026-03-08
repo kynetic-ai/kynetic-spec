@@ -35,6 +35,13 @@ export interface SpawnedAgent {
   kill: (signal?: NodeJS.Signals) => void;
 }
 
+/**
+ * Environment variables to strip from the parent process before spawning agents.
+ * These vars cause agent runtimes to detect a "nested session" and refuse to start
+ * when the daemon itself was launched from within such an environment.
+ */
+export const SANITIZED_ENV_VARS = ["CLAUDECODE", "CLAUDE_CODE_SESSION"] as const;
+
 const UNEXPECTED_CASE_PREFIX = "Unexpected case:";
 const RATE_LIMIT_EVENT_TYPE = "rate_limit_event";
 
@@ -100,9 +107,16 @@ export function spawnAgent(
 ): SpawnedAgent {
   const { cwd, env = {}, extraArgs, clientOptions = {} } = options;
 
+  // Strip host-environment variables that interfere with agent startup
+  // (e.g. CLAUDECODE=1 causes nested-session detection in Claude Code)
+  const cleanProcessEnv = { ...process.env };
+  for (const key of SANITIZED_ENV_VARS) {
+    delete cleanProcessEnv[key];
+  }
+
   // Merge environment variables
   const processEnv = {
-    ...process.env,
+    ...cleanProcessEnv,
     ...adapter.env,
     ...env,
   };
