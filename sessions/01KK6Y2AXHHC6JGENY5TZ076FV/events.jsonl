@@ -697,3 +697,363 @@
 {"ts":1772981077585,"seq":696,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" revision"}}}
 {"ts":1772981077586,"seq":697,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
 {"ts":1772981078234,"seq":698,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"usage_update","used":82111,"size":258400}}
+{"ts":1772981082569,"seq":699,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"tool_call_update","toolCallId":"call_4DU2lqWmL847zY7MyCJdZSrJ","content":[{"type":"content","content":{"type":"text","text":"```sh\nOK Kicked back task: 01KK6BEC (fix cycle 3)\n```\n"}}]}}
+{"ts":1772981083225,"seq":700,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"tool_call_update","toolCallId":"call_4DU2lqWmL847zY7MyCJdZSrJ","content":[{"type":"content","content":{"type":"text","text":"```sh\nOK Kicked back task: 01KK6BEC (fix cycle 3)\n```\n"}}]}}
+{"ts":1772981084747,"seq":701,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"tool_call_update","toolCallId":"call_4DU2lqWmL847zY7MyCJdZSrJ","status":"completed","rawOutput":{"call_id":"call_4DU2lqWmL847zY7MyCJdZSrJ","process_id":"13356","turn_id":"019ccde1-763e-77a3-93b2-3ef635f5e2d4","command":["/usr/bin/bash","-lc","kspec task needs-work @01KK6BECKPA5MHQAZJ2KNPEMP1 --reason \"MUST-FIX review on PR #712: scheduler tests copy the implementation instead of covering shipped daemon code, and the new sync paths still drop configured shadow branch/remote handling in CLI pre-read and pull-rebase logic.\""],"cwd":"/home/chapel/Projects/kynetic-spec","parsed_cmd":[{"type":"unknown","cmd":"kspec task needs-work @01KK6BECKPA5MHQAZJ2KNPEMP1 --reason 'MUST-FIX review on PR #712: scheduler tests copy the implementation instead of covering shipped daemon code, and the new sync paths still drop configured shadow branch/remote handling in CLI pre-read and pull-rebase logic.'"}],"source":"unified_exec_startup","stdout":"OK Kicked back task: 01KK6BEC (fix cycle 3)\n","stderr":"","aggregated_output":"OK Kicked back task: 01KK6BEC (fix cycle 3)\n","exit_code":0,"duration":{"secs":10,"nanos":289221815},"formatted_output":"OK Kicked back task: 01KK6BEC (fix cycle 3)\n","status":"completed"}}}
+{"ts":1772981089213,"seq":702,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"usage_update","used":82227,"size":258400}}
+{"ts":1772981093626,"seq":703,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Find"}}}
+{"ts":1772981093699,"seq":704,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"ings"}}}
+{"ts":1772981093706,"seq":705,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":":\n"}}}
+{"ts":1772981093709,"seq":706,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"1"}}}
+{"ts":1772981093710,"seq":707,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
+{"ts":1772981093781,"seq":708,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" MUST"}}}
+{"ts":1772981093783,"seq":709,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-F"}}}
+{"ts":1772981093784,"seq":710,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"IX"}}}
+{"ts":1772981093865,"seq":711,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" at"}}}
+{"ts":1772981093867,"seq":712,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" ["}}}
+{"ts":1772981093869,"seq":713,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"tests"}}}
+{"ts":1772981093871,"seq":714,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/sh"}}}
+{"ts":1772981093873,"seq":715,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"adow"}}}
+{"ts":1772981093946,"seq":716,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-sync"}}}
+{"ts":1772981093948,"seq":717,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-s"}}}
+{"ts":1772981093950,"seq":718,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"cheduler"}}}
+{"ts":1772981093951,"seq":719,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".test"}}}
+{"ts":1772981093953,"seq":720,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981094030,"seq":721,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"]"}}}
+{"ts":1772981094032,"seq":722,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"(/"}}}
+{"ts":1772981094034,"seq":723,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"home"}}}
+{"ts":1772981094035,"seq":724,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981094036,"seq":725,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"chap"}}}
+{"ts":1772981094119,"seq":726,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"el"}}}
+{"ts":1772981094119,"seq":727,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981094119,"seq":728,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Projects"}}}
+{"ts":1772981094120,"seq":729,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/k"}}}
+{"ts":1772981094122,"seq":730,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"yn"}}}
+{"ts":1772981094196,"seq":731,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"etic"}}}
+{"ts":1772981094197,"seq":732,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-spec"}}}
+{"ts":1772981094200,"seq":733,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/tests"}}}
+{"ts":1772981094202,"seq":734,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/sh"}}}
+{"ts":1772981094204,"seq":735,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"adow"}}}
+{"ts":1772981094285,"seq":736,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-sync"}}}
+{"ts":1772981094285,"seq":737,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-s"}}}
+{"ts":1772981094287,"seq":738,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"cheduler"}}}
+{"ts":1772981094287,"seq":739,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".test"}}}
+{"ts":1772981094290,"seq":740,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981094368,"seq":741,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"#"}}}
+{"ts":1772981094368,"seq":742,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"L"}}}
+{"ts":1772981094465,"seq":743,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"15"}}}
+{"ts":1772981094465,"seq":744,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"):"}}}
+{"ts":1772981094542,"seq":745,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" AC"}}}
+{"ts":1772981094557,"seq":746,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-"}}}
+{"ts":1772981094557,"seq":747,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"12"}}}
+{"ts":1772981094557,"seq":748,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" coverage"}}}
+{"ts":1772981094557,"seq":749,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" is"}}}
+{"ts":1772981094627,"seq":750,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" not"}}}
+{"ts":1772981094629,"seq":751,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" on"}}}
+{"ts":1772981094722,"seq":752,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" shipped"}}}
+{"ts":1772981094723,"seq":753,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" code"}}}
+{"ts":1772981094723,"seq":754,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
+{"ts":1772981094723,"seq":755,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" The"}}}
+{"ts":1772981094796,"seq":756,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" test"}}}
+{"ts":1772981094899,"seq":757,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" file"}}}
+{"ts":1772981094900,"seq":758,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" copies"}}}
+{"ts":1772981094901,"seq":759,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981094901,"seq":760,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Shadow"}}}
+{"ts":1772981094901,"seq":761,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Sync"}}}
+{"ts":1772981094983,"seq":762,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Scheduler"}}}
+{"ts":1772981094987,"seq":763,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981094987,"seq":764,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" instead"}}}
+{"ts":1772981094991,"seq":765,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" of"}}}
+{"ts":1772981094991,"seq":766,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" importing"}}}
+{"ts":1772981095047,"seq":767,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981095048,"seq":768,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" production"}}}
+{"ts":1772981095101,"seq":769,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" class"}}}
+{"ts":1772981095101,"seq":770,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":","}}}
+{"ts":1772981095103,"seq":771,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" so"}}}
+{"ts":1772981095104,"seq":772,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981095106,"seq":773,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" daemon"}}}
+{"ts":1772981095163,"seq":774,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" scheduler"}}}
+{"ts":1772981095164,"seq":775,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" can"}}}
+{"ts":1772981095166,"seq":776,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" regress"}}}
+{"ts":1772981095224,"seq":777,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" while"}}}
+{"ts":1772981095227,"seq":778,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" this"}}}
+{"ts":1772981095229,"seq":779,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" suite"}}}
+{"ts":1772981095230,"seq":780,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" still"}}}
+{"ts":1772981095231,"seq":781,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" passes"}}}
+{"ts":1772981095270,"seq":782,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".\n"}}}
+{"ts":1772981095272,"seq":783,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"2"}}}
+{"ts":1772981095274,"seq":784,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
+{"ts":1772981095275,"seq":785,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" MUST"}}}
+{"ts":1772981095276,"seq":786,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-F"}}}
+{"ts":1772981095324,"seq":787,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"IX"}}}
+{"ts":1772981095326,"seq":788,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" at"}}}
+{"ts":1772981095331,"seq":789,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" ["}}}
+{"ts":1772981095331,"seq":790,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"src"}}}
+{"ts":1772981095331,"seq":791,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/parser"}}}
+{"ts":1772981095377,"seq":792,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/y"}}}
+{"ts":1772981095379,"seq":793,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"aml"}}}
+{"ts":1772981095381,"seq":794,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981095382,"seq":795,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"]"}}}
+{"ts":1772981095383,"seq":796,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"(/"}}}
+{"ts":1772981095434,"seq":797,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"home"}}}
+{"ts":1772981095437,"seq":798,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981095439,"seq":799,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"chap"}}}
+{"ts":1772981095446,"seq":800,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"el"}}}
+{"ts":1772981095446,"seq":801,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981095487,"seq":802,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Projects"}}}
+{"ts":1772981095489,"seq":803,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/k"}}}
+{"ts":1772981095489,"seq":804,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"yn"}}}
+{"ts":1772981095495,"seq":805,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"etic"}}}
+{"ts":1772981095495,"seq":806,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-spec"}}}
+{"ts":1772981095581,"seq":807,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/src"}}}
+{"ts":1772981095584,"seq":808,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/parser"}}}
+{"ts":1772981095597,"seq":809,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/y"}}}
+{"ts":1772981095597,"seq":810,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"aml"}}}
+{"ts":1772981095597,"seq":811,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981095655,"seq":812,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"#"}}}
+{"ts":1772981095655,"seq":813,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"L"}}}
+{"ts":1772981095655,"seq":814,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"393"}}}
+{"ts":1772981095655,"seq":815,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"):"}}}
+{"ts":1772981095655,"seq":816,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981095721,"seq":817,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" new"}}}
+{"ts":1772981095723,"seq":818,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" CLI"}}}
+{"ts":1772981095725,"seq":819,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" pre"}}}
+{"ts":1772981095727,"seq":820,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-read"}}}
+{"ts":1772981095728,"seq":821,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" sync"}}}
+{"ts":1772981095800,"seq":822,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" path"}}}
+{"ts":1772981095801,"seq":823,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" drops"}}}
+{"ts":1772981095877,"seq":824,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" resolved"}}}
+{"ts":1772981095878,"seq":825,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" shadow"}}}
+{"ts":1772981095960,"seq":826,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" options"}}}
+{"ts":1772981095962,"seq":827,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
+{"ts":1772981095965,"seq":828,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981095966,"seq":829,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"has"}}}
+{"ts":1772981095968,"seq":830,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Remote"}}}
+{"ts":1772981096038,"seq":831,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Tracking"}}}
+{"ts":1772981096039,"seq":832,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"(spec"}}}
+{"ts":1772981096041,"seq":833,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Dir"}}}
+{"ts":1772981096042,"seq":834,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":")`"}}}
+{"ts":1772981096117,"seq":835,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" and"}}}
+{"ts":1772981096118,"seq":836,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981096120,"seq":837,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"shadow"}}}
+{"ts":1772981096122,"seq":838,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Pull"}}}
+{"ts":1772981096127,"seq":839,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"(spec"}}}
+{"ts":1772981096197,"seq":840,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Dir"}}}
+{"ts":1772981096199,"seq":841,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":")`"}}}
+{"ts":1772981096201,"seq":842,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" fall"}}}
+{"ts":1772981096203,"seq":843,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" back"}}}
+{"ts":1772981096204,"seq":844,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" to"}}}
+{"ts":1772981096278,"seq":845,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" default"}}}
+{"ts":1772981096280,"seq":846,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" branch"}}}
+{"ts":1772981096281,"seq":847,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981096283,"seq":848,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"remote"}}}
+{"ts":1772981096359,"seq":849,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" behavior"}}}
+{"ts":1772981096360,"seq":850,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":","}}}
+{"ts":1772981096363,"seq":851,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" so"}}}
+{"ts":1772981096364,"seq":852,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" custom"}}}
+{"ts":1772981096365,"seq":853,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981096448,"seq":854,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"shadow"}}}
+{"ts":1772981096450,"seq":855,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".branch"}}}
+{"ts":1772981096450,"seq":856,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981096451,"seq":857,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" and"}}}
+{"ts":1772981096451,"seq":858,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981096522,"seq":859,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"shadow"}}}
+{"ts":1772981096523,"seq":860,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".remote"}}}
+{"ts":1772981096527,"seq":861,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981096527,"seq":862,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" setups"}}}
+{"ts":1772981096529,"seq":863,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" can"}}}
+{"ts":1772981096604,"seq":864,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" silently"}}}
+{"ts":1772981096605,"seq":865,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" skip"}}}
+{"ts":1772981096606,"seq":866,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" sync"}}}
+{"ts":1772981096608,"seq":867,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" or"}}}
+{"ts":1772981096690,"seq":868,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" use"}}}
+{"ts":1772981096699,"seq":869,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981096699,"seq":870,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" wrong"}}}
+{"ts":1772981096700,"seq":871,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" upstream"}}}
+{"ts":1772981096700,"seq":872,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".\n"}}}
+{"ts":1772981096770,"seq":873,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"3"}}}
+{"ts":1772981096772,"seq":874,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
+{"ts":1772981096773,"seq":875,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" MUST"}}}
+{"ts":1772981096775,"seq":876,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-F"}}}
+{"ts":1772981096776,"seq":877,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"IX"}}}
+{"ts":1772981096854,"seq":878,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" at"}}}
+{"ts":1772981096856,"seq":879,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" ["}}}
+{"ts":1772981096857,"seq":880,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"src"}}}
+{"ts":1772981096866,"seq":881,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/parser"}}}
+{"ts":1772981096866,"seq":882,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/sh"}}}
+{"ts":1772981096938,"seq":883,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"adow"}}}
+{"ts":1772981096939,"seq":884,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981096940,"seq":885,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"]"}}}
+{"ts":1772981096942,"seq":886,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"(/"}}}
+{"ts":1772981096948,"seq":887,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"home"}}}
+{"ts":1772981097022,"seq":888,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981097024,"seq":889,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"chap"}}}
+{"ts":1772981097026,"seq":890,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"el"}}}
+{"ts":1772981097027,"seq":891,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981097028,"seq":892,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Projects"}}}
+{"ts":1772981097105,"seq":893,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/k"}}}
+{"ts":1772981097107,"seq":894,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"yn"}}}
+{"ts":1772981097109,"seq":895,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"etic"}}}
+{"ts":1772981097110,"seq":896,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-spec"}}}
+{"ts":1772981097111,"seq":897,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/src"}}}
+{"ts":1772981097191,"seq":898,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/parser"}}}
+{"ts":1772981097193,"seq":899,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/sh"}}}
+{"ts":1772981097195,"seq":900,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"adow"}}}
+{"ts":1772981097199,"seq":901,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981097200,"seq":902,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"#"}}}
+{"ts":1772981097276,"seq":903,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"L"}}}
+{"ts":1772981097276,"seq":904,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"133"}}}
+{"ts":1772981097277,"seq":905,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"0"}}}
+{"ts":1772981097279,"seq":906,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"):"}}}
+{"ts":1772981097280,"seq":907,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981097359,"seq":908,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" new"}}}
+{"ts":1772981097361,"seq":909,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" pull"}}}
+{"ts":1772981097448,"seq":910,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-before"}}}
+{"ts":1772981097452,"seq":911,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-p"}}}
+{"ts":1772981097455,"seq":912,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"ush"}}}
+{"ts":1772981097456,"seq":913,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" path"}}}
+{"ts":1772981097457,"seq":914,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" still"}}}
+{"ts":1772981097530,"seq":915,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" checks"}}}
+{"ts":1772981097532,"seq":916,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" remote"}}}
+{"ts":1772981097533,"seq":917,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" branch"}}}
+{"ts":1772981097534,"seq":918,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" existence"}}}
+{"ts":1772981099687,"seq":919,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" via"}}}
+{"ts":1772981099694,"seq":920,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981099710,"seq":921,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" default"}}}
+{"ts":1772981099748,"seq":922,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981099753,"seq":923,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"origin"}}}
+{"ts":1772981099797,"seq":924,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981099798,"seq":925,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" path"}}}
+{"ts":1772981099804,"seq":926,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" instead"}}}
+{"ts":1772981099807,"seq":927,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" of"}}}
+{"ts":1772981099828,"seq":928,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" following"}}}
+{"ts":1772981099837,"seq":929,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" configured"}}}
+{"ts":1772981099909,"seq":930,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" shadow"}}}
+{"ts":1772981099918,"seq":931,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" remote"}}}
+{"ts":1772981099932,"seq":932,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" tracking"}}}
+{"ts":1772981099970,"seq":933,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":","}}}
+{"ts":1772981099994,"seq":934,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" which"}}}
+{"ts":1772981100013,"seq":935,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" breaks"}}}
+{"ts":1772981100034,"seq":936,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981100039,"seq":937,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"@"}}}
+{"ts":1772981100044,"seq":938,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"config"}}}
+{"ts":1772981100073,"seq":939,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-shadow"}}}
+{"ts":1772981100073,"seq":940,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981100073,"seq":941,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" behavior"}}}
+{"ts":1772981100073,"seq":942,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" for"}}}
+{"ts":1772981100078,"seq":943,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" non"}}}
+{"ts":1772981100080,"seq":944,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-"}}}
+{"ts":1772981100083,"seq":945,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981100083,"seq":946,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"origin"}}}
+{"ts":1772981100086,"seq":947,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981100090,"seq":948,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" rem"}}}
+{"ts":1772981100092,"seq":949,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"otes"}}}
+{"ts":1772981100095,"seq":950,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".\n\n"}}}
+{"ts":1772981100101,"seq":951,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"I"}}}
+{"ts":1772981100101,"seq":952,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" posted"}}}
+{"ts":1772981100110,"seq":953,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" inline"}}}
+{"ts":1772981100110,"seq":954,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" Git"}}}
+{"ts":1772981100111,"seq":955,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Hub"}}}
+{"ts":1772981100114,"seq":956,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" comments"}}}
+{"ts":1772981100124,"seq":957,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" on"}}}
+{"ts":1772981100124,"seq":958,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" PR"}}}
+{"ts":1772981100124,"seq":959,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981100131,"seq":960,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"#"}}}
+{"ts":1772981100131,"seq":961,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"712"}}}
+{"ts":1772981100134,"seq":962,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`,"}}}
+{"ts":1772981100134,"seq":963,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" posted"}}}
+{"ts":1772981100150,"seq":964,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" a"}}}
+{"ts":1772981100150,"seq":965,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" summary"}}}
+{"ts":1772981100150,"seq":966,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" review"}}}
+{"ts":1772981100155,"seq":967,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":","}}}
+{"ts":1772981100155,"seq":968,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" and"}}}
+{"ts":1772981100155,"seq":969,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" transitioned"}}}
+{"ts":1772981100155,"seq":970,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" task"}}}
+{"ts":1772981100155,"seq":971,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981100162,"seq":972,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"@"}}}
+{"ts":1772981100162,"seq":973,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"01"}}}
+{"ts":1772981100165,"seq":974,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"KK"}}}
+{"ts":1772981100190,"seq":975,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"6"}}}
+{"ts":1772981100190,"seq":976,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"BE"}}}
+{"ts":1772981100190,"seq":977,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"CK"}}}
+{"ts":1772981100193,"seq":978,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"PA"}}}
+{"ts":1772981100193,"seq":979,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"5"}}}
+{"ts":1772981100195,"seq":980,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"MH"}}}
+{"ts":1772981100196,"seq":981,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Q"}}}
+{"ts":1772981100199,"seq":982,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"AZ"}}}
+{"ts":1772981100209,"seq":983,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"J"}}}
+{"ts":1772981100209,"seq":984,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"2"}}}
+{"ts":1772981100209,"seq":985,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"KN"}}}
+{"ts":1772981100209,"seq":986,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"PE"}}}
+{"ts":1772981100210,"seq":987,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"MP"}}}
+{"ts":1772981100210,"seq":988,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"1"}}}
+{"ts":1772981100210,"seq":989,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981100211,"seq":990,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" to"}}}
+{"ts":1772981100212,"seq":991,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981100214,"seq":992,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"needs"}}}
+{"ts":1772981100216,"seq":993,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"_work"}}}
+{"ts":1772981100218,"seq":994,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981100219,"seq":995,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" (`"}}}
+{"ts":1772981100220,"seq":996,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"fix"}}}
+{"ts":1772981100223,"seq":997,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" cycle"}}}
+{"ts":1772981100233,"seq":998,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" "}}}
+{"ts":1772981100233,"seq":999,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"3"}}}
+{"ts":1772981100239,"seq":1000,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`)."}}}
+{"ts":1772981100239,"seq":1001,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" I"}}}
+{"ts":1772981100239,"seq":1002,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" did"}}}
+{"ts":1772981100239,"seq":1003,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" not"}}}
+{"ts":1772981100240,"seq":1004,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" merge"}}}
+{"ts":1772981100240,"seq":1005,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".\n\n"}}}
+{"ts":1772981100247,"seq":1006,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Regression"}}}
+{"ts":1772981100248,"seq":1007,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" gate"}}}
+{"ts":1772981100248,"seq":1008,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" is"}}}
+{"ts":1772981100248,"seq":1009,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" also"}}}
+{"ts":1772981100248,"seq":1010,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" not"}}}
+{"ts":1772981100254,"seq":1011,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" clean"}}}
+{"ts":1772981100254,"seq":1012,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":":"}}}
+{"ts":1772981100254,"seq":1013,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981100254,"seq":1014,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"npm"}}}
+{"ts":1772981100269,"seq":1015,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" test"}}}
+{"ts":1772981100270,"seq":1016,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1772981100270,"seq":1017,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" failed"}}}
+{"ts":1772981100270,"seq":1018,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" on"}}}
+{"ts":1772981100273,"seq":1019,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981100273,"seq":1020,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" current"}}}
+{"ts":1772981100274,"seq":1021,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" PR"}}}
+{"ts":1772981100274,"seq":1022,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" head"}}}
+{"ts":1772981100274,"seq":1023,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" with"}}}
+{"ts":1772981100274,"seq":1024,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" "}}}
+{"ts":1772981100274,"seq":1025,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"11"}}}
+{"ts":1772981100282,"seq":1026,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" failures"}}}
+{"ts":1772981100282,"seq":1027,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" in"}}}
+{"ts":1772981100282,"seq":1028,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1772981100282,"seq":1029,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"tests"}}}
+{"ts":1772981100282,"seq":1030,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/"}}}
+{"ts":1772981100282,"seq":1031,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"cli"}}}
+{"ts":1772981100284,"seq":1032,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-agent"}}}
+{"ts":1772981100285,"seq":1033,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-"}}}
+{"ts":1772981100287,"seq":1034,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"commands"}}}
+{"ts":1772981100288,"seq":1035,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".test"}}}
+{"ts":1772981100290,"seq":1036,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":".ts"}}}
+{"ts":1772981100292,"seq":1037,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`."}}}
+{"ts":1772981100294,"seq":1038,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" Those"}}}
+{"ts":1772981100295,"seq":1039,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" failures"}}}
+{"ts":1772981100297,"seq":1040,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" look"}}}
+{"ts":1772981100298,"seq":1041,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" outside"}}}
+{"ts":1772981100300,"seq":1042,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" this"}}}
+{"ts":1772981100305,"seq":1043,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" diff"}}}
+{"ts":1772981100305,"seq":1044,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":","}}}
+{"ts":1772981100305,"seq":1045,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" but"}}}
+{"ts":1772981100308,"seq":1046,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" the"}}}
+{"ts":1772981100309,"seq":1047,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" full"}}}
+{"ts":1772981100311,"seq":1048,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" required"}}}
+{"ts":1772981100313,"seq":1049,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" test"}}}
+{"ts":1772981100314,"seq":1050,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" gate"}}}
+{"ts":1772981100329,"seq":1051,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" is"}}}
+{"ts":1772981100336,"seq":1052,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" red"}}}
+{"ts":1772981100336,"seq":1053,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" on"}}}
+{"ts":1772981100342,"seq":1054,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" current"}}}
+{"ts":1772981100342,"seq":1055,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" head"}}}
+{"ts":1772981100342,"seq":1056,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"."}}}
+{"ts":1772981100431,"seq":1057,"type":"session.update","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"sessionUpdate":"usage_update","used":83041,"size":258400}}
+{"ts":1772981100432,"seq":1058,"type":"agent.completed","session_id":"01KK6Y2AXHHC6JGENY5TZ076FV","data":{"task_id":"@01KK6BECKPA5MHQAZJ2KNPEMP1","outcome":"success","stop_reason":"end_turn","duration_ms":470478}}
