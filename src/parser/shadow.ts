@@ -320,6 +320,18 @@ function getDirectoryName(options?: ShadowOptions): string {
 }
 
 /**
+ * Get effective remote name from options or default.
+ * AC: @config-shadow ac-3 ac-7 — resolves configured remote for fetch/push/pull.
+ * Named remotes use the name directly; path/URL remotes use the auto-created "kspec-specs".
+ */
+function getRemoteName(options?: ShadowOptions): string {
+  if (!options?.remote) return "origin";
+  const remoteType = options.remoteType ?? "named";
+  if (remoteType === "path" || remoteType === "url") return "kspec-specs";
+  return options.remote;
+}
+
+/**
  * Check if debug mode is enabled.
  * Debug mode can be enabled via:
  * - KSPEC_DEBUG=1 environment variable
@@ -1583,9 +1595,11 @@ export async function shadowPull(
   }
 
   // Check if remote branch exists before attempting pull
+  // AC: @config-shadow ac-3 — use configured remote instead of hardcoded origin
+  const remoteName = getRemoteName(options);
   // Fetch first to ensure refs are up to date
-  await fetchRemote(projectRoot);
-  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName);
+  await fetchRemote(projectRoot, remoteName);
+  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName, remoteName);
   if (!remoteHasBranch) {
     // Remote branch doesn't exist yet - nothing to pull, but success
     result.success = true;

@@ -1302,6 +1302,155 @@ describe('Shadow Branch', () => {
         await fs.rm(cloneDir, { recursive: true, force: true });
       }
     });
+
+    // AC: @config-shadow ac-3 ac-11
+    it('shadowPull uses configured named remote instead of origin', async () => {
+      // Set up a bare remote with a non-default name
+      const specsRemoteDir = path.join('/tmp', `kspec-specs-remote-${Date.now()}`);
+      try {
+        await fs.mkdir(specsRemoteDir, { recursive: true });
+        execSync('git init --bare', { cwd: specsRemoteDir, stdio: 'pipe' });
+
+        // Create local repo with the non-default remote name
+        execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Add remote as "specs-origin" (NOT "origin")
+        execSync(`git remote add specs-origin ${specsRemoteDir}`, { cwd: testDir, stdio: 'pipe' });
+        execSync('git push -u specs-origin main', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize shadow and configure tracking against specs-origin
+        await initializeShadow(testDir);
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+        execSync(`git push specs-origin ${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.remote specs-origin`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.merge refs/heads/${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+
+        // Clone from specs-origin, push a change to shadow branch
+        const cloneDir = path.join('/tmp', `kspec-specs-clone-${Date.now()}`);
+        try {
+          execSync(`git clone ${specsRemoteDir} ${cloneDir}`, { stdio: 'pipe' });
+          execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+          await fs.writeFile(
+            path.join(cloneDir, '.kspec', 'specs-remote-marker.yaml'),
+            'marker: from-specs-origin\n'
+          );
+          execSync('git add -A && git commit -m "Clone adds marker via specs-origin"', {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+          execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+
+          // Verify marker does not exist locally yet
+          const markerPath = path.join(worktreeDir, 'specs-remote-marker.yaml');
+          expect(existsSync(markerPath)).toBe(false);
+
+          // Pull with configured remote options — should use specs-origin, not origin
+          const result = await shadowPull(worktreeDir, {
+            remote: 'specs-origin',
+            remoteType: 'named',
+          });
+
+          expect(result.success).toBe(true);
+          expect(result.pulled).toBe(true);
+
+          // Verify the marker was pulled from specs-origin
+          expect(existsSync(markerPath)).toBe(true);
+          const content = await fs.readFile(markerPath, 'utf-8');
+          expect(content).toContain('marker: from-specs-origin');
+        } finally {
+          await fs.rm(cloneDir, { recursive: true, force: true });
+        }
+      } finally {
+        await fs.rm(specsRemoteDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-3 ac-11
+    it('shadowPushAsync pull-rebase uses configured remote for integration', async () => {
+      // Set up a bare remote with a non-default name
+      const specsRemoteDir = path.join('/tmp', `kspec-push-specs-remote-${Date.now()}`);
+      try {
+        await fs.mkdir(specsRemoteDir, { recursive: true });
+        execSync('git init --bare', { cwd: specsRemoteDir, stdio: 'pipe' });
+
+        // Create local repo with the non-default remote name
+        execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Add remote as "specs-origin" (NOT "origin")
+        execSync(`git remote add specs-origin ${specsRemoteDir}`, { cwd: testDir, stdio: 'pipe' });
+        execSync('git push -u specs-origin main', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize shadow and configure tracking against specs-origin
+        await initializeShadow(testDir);
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+        execSync(`git push specs-origin ${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.remote specs-origin`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.merge refs/heads/${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+
+        // Clone from specs-origin, push a new file to shadow branch
+        const cloneDir = path.join('/tmp', `kspec-push-specs-clone-${Date.now()}`);
+        try {
+          execSync(`git clone ${specsRemoteDir} ${cloneDir}`, { stdio: 'pipe' });
+          execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+          await fs.writeFile(
+            path.join(cloneDir, '.kspec', 'push-specs-marker.yaml'),
+            'marker: from-clone-via-specs\n'
+          );
+          execSync('git add -A && git commit -m "Clone adds push marker via specs-origin"', {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+          execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+
+          // Local adds a different file
+          await fs.writeFile(
+            path.join(worktreeDir, 'local-push-marker.yaml'),
+            'marker: from-local-push\n'
+          );
+          await shadowAutoCommit(worktreeDir, 'Local adds push marker file');
+
+          // Push — should pull-rebase from specs-origin, integrate clone's file, then push
+          await shadowPushAsync(worktreeDir, undefined, {
+            remote: 'specs-origin',
+            remoteType: 'named',
+          });
+
+          // Verify clone's file was pulled into local worktree
+          const remoteMarkerPath = path.join(worktreeDir, 'push-specs-marker.yaml');
+          expect(existsSync(remoteMarkerPath)).toBe(true);
+          const remoteContent = await fs.readFile(remoteMarkerPath, 'utf-8');
+          expect(remoteContent).toContain('marker: from-clone-via-specs');
+
+          // Verify local file still exists
+          const localMarkerPath = path.join(worktreeDir, 'local-push-marker.yaml');
+          expect(existsSync(localMarkerPath)).toBe(true);
+        } finally {
+          await fs.rm(cloneDir, { recursive: true, force: true });
+        }
+      } finally {
+        await fs.rm(specsRemoteDir, { recursive: true, force: true });
+      }
+    });
   });
 
   // AC: @shadow-debug-mode
