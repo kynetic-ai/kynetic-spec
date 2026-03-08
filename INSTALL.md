@@ -70,7 +70,7 @@ This creates:
     main.yaml               # Spec items
 ```
 
-The shadow branch (`kspec-meta`) keeps spec/task files separate from your main branch history. If you're not using git or prefer simpler setup, use `kspec init --no-shadow` to create files in `spec/` instead. See [AGENTS.md](AGENTS.md#shadow-branch-worktree-architecture) for architecture details.
+The shadow branch (`kspec-meta`) keeps spec/task files separate from your main branch history. If you're not using git or prefer simpler setup, use `kspec init --no-shadow` to create files in `spec/` instead. See [kspec-agents.md](kspec-agents.md#shadow-branch-architecture) for architecture details.
 
 ### Existing kspec Project (Cloning a Repo)
 
@@ -97,7 +97,7 @@ kspec setup --dry-run    # Preview what would be configured
 kspec setup --no-hooks   # Skip hook installation
 ```
 
-For manual configuration or supported agent list, see [README.md Agent Integration](README.md#agent-integration).
+For broader setup context and the spec-first workflow after install, see [README.md](README.md#how-it-works) and [docs/getting-started.md](docs/getting-started.md).
 
 ## Verification
 
@@ -135,7 +135,7 @@ kspec task note @task-slug "..." # Document what you're doing
 kspec inbox add "..."            # Capture ideas for later
 ```
 
-See [README.md](README.md#task-management) for full command reference.
+See [docs/getting-started.md](docs/getting-started.md) for the full first-task walkthrough.
 
 ## Troubleshooting
 
@@ -159,5 +159,6 @@ kspec init --force     # Reinitialize completely (use as last resort)
 
 ## Next Steps
 
+- [docs/getting-started.md](docs/getting-started.md) - End-to-end tutorial from install to first completed task
 - [AGENTS.md](AGENTS.md) - Detailed workflows for AI agents
-- [README.md](README.md#task-management) - Full CLI reference
+- [README.md](README.md) - Package overview and workflow summary
