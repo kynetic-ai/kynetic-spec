@@ -51865,14 +51865,14 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KK5JNRDWQVHTSQTD4ZTACRG7
+  session_id: null
   created_at: 2026-02-19T19:09:09.058Z
   started_at: 2026-03-08T02:22:01.484Z
   submitted_at: 2026-03-08T02:23:37.465Z
@@ -51952,6 +51952,13 @@
         first-task walkthrough. Verification: rg confirmed no remaining README.md#agent-integration
         or README.md#task-management links; git diff --check passed; origin/main..HEAD file scope
         remains README.md, INSTALL.md, docs/getting-started.md."
+      supersedes: null
+    - _ulid: 01KK5MTVYDXDX561H2WWYSZY2T
+      created_at: 2026-03-08T02:36:15.693Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Review findings: MUST-FIX: INSTALL.md still links to
+        AGENTS.md#shadow-branch-worktree-architecture, but the generated heading is 'Shadow Branch
+        Architecture', so the install guide still contains a broken handoff."
       supersedes: null
   todos: []
   automation: manual_only
