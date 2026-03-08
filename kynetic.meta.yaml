@@ -7749,6 +7749,33 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KK7CMS1J9SR33R5VNPKGY2TX
+    type: friction
+    content: Debugging daemon issues is slow because the daemon runs Bun (not Node) on a separate
+      TypeScript entry point (dist/daemon/index.ts). Changes to src/parser/ need a full rebuild AND
+      daemon restart. No hot-reload path exists.
+    created_at: 2026-03-08T18:51:36.371Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KK7CMVKEGK45YN1YWTG17W6D
+    type: friction
+    content: initContext() is called on every daemon API route. Any work it does (like shadowPull) gets
+      multiplied by concurrent requests. Consider caching the context or moving sync to a dedicated
+      interval instead of per-request.
+    created_at: 2026-03-08T18:51:38.990Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KK7CMYPDTSFV50YA1H3RPQVA
+    type: success
+    content: In-flight promise dedup pattern in shadowPull works well for shared async functions that
+      get called concurrently. Avoids time-based caching that breaks tests while still preventing
+      duplicate work.
+    created_at: 2026-03-08T18:51:42.157Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
