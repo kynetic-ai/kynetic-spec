@@ -46778,6 +46778,10 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #690. Added derive-time mapping from spec depends_on to task
+    depends_on, including same-run ordering so derive --all links dependency tasks before consumers
+    and warning-only behavior when a depended-on spec has no active task. AC coverage verified for
+    @cmd-derive ac-16 and ac-17; full npm test and PR CI passed on current HEAD."
   depends_on: []
   context: []
   priority: 3
@@ -46790,6 +46794,7 @@
   created_at: 2026-02-07T07:41:49.575Z
   started_at: 2026-03-08T00:48:18.771Z
   submitted_at: 2026-03-08T00:55:15.207Z
+  completed_at: 2026-03-08T01:03:55.548Z
   notes:
     - _ulid: 01KGVGSH49350X0MVF442ZVV10
       created_at: 2026-02-07T07:41:49.577Z
@@ -46877,11 +46882,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-03-08T01:03:55.548Z
-  closed_reason: "Merged in PR #690. Added derive-time mapping from spec depends_on to task
-    depends_on, including same-run ordering so derive --all links dependency tasks before consumers
-    and warning-only behavior when a depended-on spec has no active task. AC coverage verified for
-    @cmd-derive ac-16 and ac-17; full npm test and PR CI passed on current HEAD."
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
   slugs: []
   title: Filter superseded notes from default task display
@@ -48559,6 +48559,14 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #691 is conflated with unrelated derive and
         smoke-test changes; rebase onto a dedicated branch with only @validate-drift work before
         review."
+      supersedes: null
+    - _ulid: 01KK5FTK60C8AXYH2C7MHS3JQF
+      created_at: 2026-03-08T01:08:43.841Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Rebuilt the PR branch from main with only the task-linked commit for
+        @validate-drift (tests/ac-schema-drift.test.ts). Re-ran npm test -- --run
+        tests/ac-schema-drift.test.ts and the full npm test suite; both passed. Repo-wide kspec
+        validate still reports pre-existing meta/reference issues unrelated to this task."
       supersedes: null
   todos: []
   automation: needs_review
