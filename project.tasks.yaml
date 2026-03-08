@@ -82331,7 +82331,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -82342,6 +82342,7 @@
   vcs_refs: []
   created_at: 2026-03-08T17:21:07.790Z
   started_at: 2026-03-08T17:21:23.729Z
+  submitted_at: 2026-03-08T17:25:07.561Z
   notes:
     - _ulid: 01KK77NA606AMT2BPS1C6Y5D3J
       created_at: 2026-03-08T17:24:31.040Z
@@ -82352,5 +82353,11 @@
         so dirty worktrees don't trigger false conflict warnings in the sync scheduler. Spec
         coverage: @session-events ac-7 already requires this. No spec gap for the primary fix."
       supersedes: null
+    - _ulid: 01KK787PD01JNQRRXJBEWM6A2J
+      created_at: 2026-03-08T17:34:33.377Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #714 adds no regression tests for the new
+        session-end shadow commit path or the dirty-worktree shadowPull stash/pop path."
+      supersedes: null
   todos: []
-  submitted_at: 2026-03-08T17:25:07.561Z
+  session_id: null
