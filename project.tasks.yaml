@@ -46829,6 +46829,15 @@
         - Verification: targeted vitest for derive/integration coverage, then full validation and
         relevant test suite.
       supersedes: null
+    - _ulid: 01KK5DGQSGDMX2ZJGQ18CW4YNG
+      created_at: 2026-03-08T00:28:23.729Z
+      author: Jacob Chapel
+      content: Implemented direct spec dependency mapping in derive. Derived tasks now merge
+        hierarchy-based depends_on with task refs resolved from spec depends_on, and emit a
+        non-fatal warning when a depended-on spec has no active derived task. Added integration
+        coverage for both the linked-task and warning paths; existing derive and item-set
+        relationship suites still pass.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
