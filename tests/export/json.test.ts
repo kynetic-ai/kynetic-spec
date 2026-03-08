@@ -18,10 +18,25 @@ import { setupTempFixtures, cleanupTempDir } from "../helpers/cli.js";
 describe("JSON Export", () => {
   let tempDir: string;
   let originalCwd: string;
+  const webUiFixtureDir = path.resolve(
+    process.cwd(),
+    "packages",
+    "web-ui",
+    "tests",
+    "fixtures"
+  );
 
   beforeAll(async () => {
     originalCwd = process.cwd();
     tempDir = await setupTempFixtures();
+    await fs.copyFile(
+      path.join(webUiFixtureDir, "project.plans.yaml"),
+      path.join(tempDir, "project.plans.yaml")
+    );
+    await fs.copyFile(
+      path.join(webUiFixtureDir, "project.triage.yaml"),
+      path.join(tempDir, "project.triage.yaml")
+    );
     process.chdir(tempDir);
   });
 
@@ -42,6 +57,9 @@ describe("JSON Export", () => {
       expect(snapshot).toHaveProperty("tasks");
       expect(snapshot).toHaveProperty("items");
       expect(snapshot).toHaveProperty("inbox");
+      expect(snapshot).toHaveProperty("plans");
+      expect(snapshot).toHaveProperty("triage");
+      expect(snapshot).toHaveProperty("alignment");
       expect(snapshot).toHaveProperty("observations");
       expect(snapshot).toHaveProperty("agents");
       expect(snapshot).toHaveProperty("workflows");
@@ -51,6 +69,8 @@ describe("JSON Export", () => {
       expect(Array.isArray(snapshot.tasks)).toBe(true);
       expect(Array.isArray(snapshot.items)).toBe(true);
       expect(Array.isArray(snapshot.inbox)).toBe(true);
+      expect(Array.isArray(snapshot.plans)).toBe(true);
+      expect(Array.isArray(snapshot.triage)).toBe(true);
     });
 
     // AC: @gh-pages-export ac-2
@@ -117,10 +137,42 @@ describe("JSON Export", () => {
       expect(snapshot.validation).toHaveProperty("valid");
       expect(snapshot.validation).toHaveProperty("errorCount");
       expect(snapshot.validation).toHaveProperty("warningCount");
+      expect(snapshot.validation).toHaveProperty("schemaErrors");
+      expect(snapshot.validation).toHaveProperty("refErrors");
+      expect(snapshot.validation).toHaveProperty("refWarnings");
+      expect(snapshot.validation).toHaveProperty("orphans");
+      expect(snapshot.validation).toHaveProperty("completenessWarnings");
+      expect(snapshot.validation).toHaveProperty("traitCycles");
       expect(snapshot.validation).toHaveProperty("errors");
       expect(snapshot.validation).toHaveProperty("warnings");
       expect(Array.isArray(snapshot.validation!.errors)).toBe(true);
       expect(Array.isArray(snapshot.validation!.warnings)).toBe(true);
+    });
+
+    // AC: @gh-pages-export ac-21
+    it("includes detailed alignment data for the validate view", async () => {
+      const snapshot = await generateJsonSnapshot(true);
+
+      expect(snapshot.alignment).toBeDefined();
+      expect(snapshot.alignment).toHaveProperty("stats");
+      expect(snapshot.alignment).toHaveProperty("warnings");
+      expect(snapshot.alignment?.stats).toHaveProperty("totalSpecs");
+      expect(snapshot.alignment?.stats).toHaveProperty("specsWithTasks");
+      expect(snapshot.alignment?.stats).toHaveProperty("alignedSpecs");
+      expect(snapshot.alignment?.stats).toHaveProperty("orphanedSpecs");
+      expect(Array.isArray(snapshot.alignment?.warnings)).toBe(true);
+    });
+
+    // AC: @gh-pages-export ac-23
+    it("includes plans and triage data needed by static plans and triage views", async () => {
+      const snapshot = await generateJsonSnapshot();
+
+      expect(snapshot.plans?.length).toBeGreaterThan(0);
+      expect(Array.isArray(snapshot.triage)).toBe(true);
+      expect(snapshot.plans?.[0]).toHaveProperty("content");
+      expect(snapshot.plans?.[0]).toHaveProperty("task_progress");
+      expect(snapshot.plans?.[0]).toHaveProperty("spec_count");
+      expect(snapshot.plans?.[0]).toHaveProperty("task_count");
     });
 
     it("excludes validation by default", async () => {
@@ -138,6 +190,8 @@ describe("JSON Export", () => {
       expect(stats.taskCount).toBe(snapshot.tasks.length);
       expect(stats.itemCount).toBe(snapshot.items.length);
       expect(stats.inboxCount).toBe(snapshot.inbox.length);
+      expect(stats.planCount).toBe(snapshot.plans?.length ?? 0);
+      expect(stats.triageCount).toBe(snapshot.triage?.length ?? 0);
       expect(stats.observationCount).toBe(snapshot.observations.length);
       expect(stats.agentCount).toBe(snapshot.agents.length);
       expect(stats.workflowCount).toBe(snapshot.workflows.length);

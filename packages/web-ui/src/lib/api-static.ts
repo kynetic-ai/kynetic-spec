@@ -15,8 +15,13 @@ import type {
 	ItemSummary,
 	ItemDetail,
 	InboxItem,
+	PlanDetail,
+	PlanSummary,
 	SessionContext,
 	Observation,
+	TriageRecord,
+	ValidationResponse,
+	AlignmentResponse,
 	Workflow,
 	PaginatedResponse,
 	SearchResponse,
@@ -58,8 +63,38 @@ function toItemSummary(item: ExportedItem): ItemSummary {
 		type: item.type,
 		status: item.status,
 		tags: item.tags,
-		created_at: item.created_at ?? new Date().toISOString()
+		created_at: item.created_at ?? new Date().toISOString(),
+		acceptance_criteria_count: item.acceptance_criteria?.length ?? 0
 	};
+}
+
+function normalizeRef(ref: string | null | undefined): string | null {
+	if (!ref) return null;
+	return ref.startsWith('@') ? ref.slice(1) : ref;
+}
+
+function findPlanByRef(snapshot: KspecSnapshot, ref: string): PlanDetail | null {
+	const normalizedRef = normalizeRef(ref);
+	if (!normalizedRef) return null;
+
+	return (
+		snapshot.plans?.find(
+			(plan) =>
+				plan.slugs.includes(normalizedRef) ||
+				plan._ulid.toUpperCase().startsWith(normalizedRef.toUpperCase())
+		) ?? null
+	);
+}
+
+function matchesPlanRef(planRef: string | undefined, ref: string): boolean {
+	const normalizedPlanRef = normalizeRef(planRef);
+	const normalizedRef = normalizeRef(ref);
+
+	if (!normalizedPlanRef || !normalizedRef) return false;
+	return (
+		normalizedPlanRef === normalizedRef ||
+		normalizedPlanRef.toUpperCase().startsWith(normalizedRef.toUpperCase())
+	);
 }
 
 /**
@@ -72,6 +107,7 @@ function filterTasks(
 		tag?: string;
 		assignee?: string;
 		automation?: string;
+		plan?: string;
 	}
 ): ExportedTask[] {
 	let result = tasks;
@@ -88,6 +124,9 @@ function filterTasks(
 	if (params?.automation) {
 		result = result.filter((t) => t.automation === params.automation);
 	}
+	if (params?.plan) {
+		result = result.filter((t) => matchesPlanRef(t.plan_ref, params.plan!));
+	}
 
 	return result;
 }
@@ -100,6 +139,7 @@ function filterItems(
 	params?: {
 		type?: string | string[];
 		tag?: string;
+		plan?: string;
 	}
 ): ExportedItem[] {
 	let result = items;
@@ -110,6 +150,20 @@ function filterItems(
 	}
 	if (params?.tag) {
 		result = result.filter((i) => i.tags.includes(params.tag!));
+	}
+	if (params?.plan) {
+		const snapshot = getSnapshot();
+		const plan = snapshot ? findPlanByRef(snapshot, params.plan) : null;
+		if (plan) {
+			const planSpecRefs = new Set(plan.derived_specs.map((ref) => normalizeRef(ref)));
+			result = result.filter(
+				(i) =>
+					planSpecRefs.has(i._ulid) ||
+					i.slugs.some((slug) => planSpecRefs.has(slug))
+			);
+		} else {
+			result = [];
+		}
 	}
 
 	return result;
@@ -183,6 +237,7 @@ export function fetchTasksStatic(params?: {
 	tag?: string;
 	assignee?: string;
 	automation?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): PaginatedResponse<TaskSummary> {
@@ -222,6 +277,7 @@ export function fetchTaskStatic(ref: string): TaskDetail | null {
 export function fetchItemsStatic(params?: {
 	type?: string | string[];
 	tag?: string;
+	plan?: string;
 	limit?: number;
 	offset?: number;
 }): PaginatedResponse<ItemSummary> {
@@ -400,17 +456,28 @@ export function searchStatic(query: string): SearchResponse {
 /**
  * Fetch triage records from static snapshot
  * AC: @interactive-triage-ui ac-8
- *
- * Triage records are not included in static snapshots, so this always
- * returns an empty list. Params are accepted for API compatibility.
  */
 export function fetchTriageRecordsStatic(params?: {
 	status?: string;
 	action?: string;
 	limit?: number;
 	offset?: number;
-}): PaginatedResponse<never> {
-	return { items: [], total: 0, offset: params?.offset ?? 0, limit: params?.limit ?? 50 };
+}): PaginatedResponse<TriageRecord> {
+	const snapshot = getSnapshot();
+	if (!snapshot) {
+		return { items: [], total: 0, offset: params?.offset ?? 0, limit: params?.limit ?? 50 };
+	}
+
+	let items = snapshot.triage ?? [];
+
+	if (params?.status) {
+		items = items.filter((item) => item.status === params.status);
+	}
+	if (params?.action) {
+		items = items.filter((item) => item.action === params.action);
+	}
+
+	return paginate(items, params);
 }
 
 // ============================================================
@@ -443,8 +510,69 @@ export function fetchWorkflowsStatic(): { items: Workflow[]; total: number } {
  */
 export function fetchPlansStatic(_params?: {
 	status?: string;
-}): { items: never[]; total: number } {
-	return { items: [], total: 0 };
+}): { items: PlanSummary[]; total: number } {
+	const snapshot = getSnapshot();
+	if (!snapshot) {
+		return { items: [], total: 0 };
+	}
+
+	let items = snapshot.plans ?? [];
+	if (_params?.status) {
+		items = items.filter((plan) => plan.status === _params.status);
+	}
+
+	return {
+		items: items.map(({ content: _content, ...plan }) => plan),
+		total: items.length
+	};
+}
+
+export function fetchPlanContentStatic(ref: string): PlanDetail {
+	const snapshot = getSnapshot();
+	if (!snapshot) {
+		throw new Error('Plan content not available in static mode');
+	}
+
+	const plan = findPlanByRef(snapshot, ref);
+	if (!plan) {
+		throw new Error(`Plan not found: ${ref}`);
+	}
+
+	return plan;
+}
+
+export function fetchValidationStatic(): ValidationResponse {
+	const snapshot = getSnapshot();
+	if (!snapshot?.validation) {
+		return {
+			valid: true,
+			schemaErrors: [],
+			refErrors: [],
+			refWarnings: [],
+			orphans: [],
+			completenessWarnings: [],
+			traitCycles: []
+		};
+	}
+
+	return {
+		valid: snapshot.validation.valid,
+		schemaErrors: snapshot.validation.schemaErrors ?? [],
+		refErrors: snapshot.validation.refErrors ?? [],
+		refWarnings: snapshot.validation.refWarnings ?? [],
+		orphans: snapshot.validation.orphans ?? [],
+		completenessWarnings: snapshot.validation.completenessWarnings ?? [],
+		traitCycles: snapshot.validation.traitCycles ?? []
+	};
+}
+
+export function fetchAlignmentStatic(): AlignmentResponse {
+	return (
+		getSnapshot()?.alignment ?? {
+			stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
+			warnings: []
+		}
+	);
 }
 
 // ============================================================
