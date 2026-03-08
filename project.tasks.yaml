@@ -48519,7 +48519,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/691
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
   slugs: []
   title: Fix trivial AC-6 test in multi-value status filter
@@ -80591,6 +80590,7 @@
   created_at: 2026-03-08T00:41:01.312Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK5E7WQ76A3HJAD8BCF6PF3A
   slugs: []
   title: Support git < 2.42 in kspec init (--orphan worktree fallback)
@@ -80615,6 +80615,7 @@
   created_at: 2026-03-08T00:41:02.439Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
   slugs: []
   title: Document Bun requirement for daemon or provide Node.js fallback
@@ -80639,6 +80640,7 @@
   created_at: 2026-03-08T00:41:03.501Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK5E7YSKTWV0KBKFERG5GV8E
   slugs: []
   title: Allow adding root-level spec items without --under flag
@@ -80662,6 +80664,7 @@
   created_at: 2026-03-08T00:41:04.563Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK5E7ZTASR8W3AX2WBHFMGV2
   slugs: []
   title: kspec setup should work without agent environment detected
@@ -80686,3 +80689,4 @@
   created_at: 2026-03-08T00:41:05.609Z
   notes: []
   todos: []
+  automation: eligible
