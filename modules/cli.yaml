@@ -1967,7 +1967,7 @@ features:
                   validation failure exit code 4
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
       - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
         slugs:
           - cmd-lint
