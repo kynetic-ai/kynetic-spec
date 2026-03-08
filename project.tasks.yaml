@@ -81232,6 +81232,29 @@
         Playwright CI/package changes, and AC-22 coverage relies on source-scanning tests instead of
         behavior-level regression coverage."
       supersedes: null
+    - _ulid: 01KK64GN76KTTZ4WC8R92CRF5K
+      created_at: 2026-03-08T07:10:18.343Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 3] Addressed both MUST-FIX items from review:
+
+        1. Removed unrelated commits: Rebased branch onto updated main (which now has the UI revamp
+        merged) and cherry-picked only the 2 task-specific commits, dropping the unrelated
+        docs/skill/CI/package changes. PR diff now contains only 10 files, all directly related to
+        this task.
+
+        2. Replaced source-scanning AC-22 tests with behavioral tests: The old tests used
+        readFileSync to scan Svelte/TS source strings. New tests mock SvelteKit transitive deps
+        ($app/environment, $lib/stores/project.svelte, $lib/constants) and import
+        fetchSessions/fetchSession from api.ts directly, exercising the actual static-mode code
+        paths.
+
+
+        Full test suite: 182 passed, 3 pre-existing failures (codex render path, enhanced setup
+        codex, session-start-format timeout).
+
+        Task-specific tests: 73/73 passed. tsc clean.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5E7VM0ZQ7SXE5547293KH6
@@ -81324,6 +81347,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #703. Added git < 2.42 orphan-worktree fallback in shadow
+    initialization using a temp-repo flow that never touches the project working tree, with AC
+    coverage for @config-shadow ac-10 in tests/shadow.test.ts and CI green on the merged head."
   depends_on: []
   context: []
   priority: 2
@@ -81336,6 +81362,7 @@
   created_at: 2026-03-08T00:41:02.439Z
   started_at: 2026-03-08T05:54:38.645Z
   submitted_at: 2026-03-08T06:05:46.431Z
+  completed_at: 2026-03-08T06:47:15.338Z
   notes:
     - _ulid: 01KK5EPGT095GPRFVJYDVTGB3C
       created_at: 2026-03-08T00:49:01.760Z
@@ -81392,10 +81419,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-08T06:47:15.338Z
-  closed_reason: "Merged in PR #703. Added git < 2.42 orphan-worktree fallback in shadow
-    initialization using a temp-repo flow that never touches the project working tree, with AC
-    coverage for @config-shadow ac-10 in tests/shadow.test.ts and CI green on the merged head."
 - _ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
   slugs: []
   title: Document Bun requirement for daemon or provide Node.js fallback
