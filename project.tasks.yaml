@@ -46776,7 +46776,7 @@
     spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates
     task-A depending on task-B. Removes need to manually set task dependencies after derive."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -46840,6 +46840,7 @@
       supersedes: null
   todos: []
   automation: manual_only
+  submitted_at: 2026-03-08T00:28:46.858Z
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
   slugs: []
   title: Filter superseded notes from default task display
