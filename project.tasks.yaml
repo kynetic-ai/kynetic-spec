@@ -81497,25 +81497,49 @@
   notes: []
   todos: []
   automation: eligible
-- title: "kspec agent run produces no visible output: (1) runInvocation is called without onUpdate, so
+- _ulid: 01KK5XAGV3YDF7X8N1JXBFKW2C
+  slugs: []
+  title: "kspec agent run produces no visible output: (1) runInvocation is called without onUpdate, so
     no stre"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "kspec agent run produces no visible output: (1) runInvocation is called without
     onUpdate, so no streaming to stdout during execution. (2) kspec session log show does not
     display session.update text content after the fact. Fix: add --stream flag to agent run (or
     stream by default for interactive use), print text blocks as they arrive. Also: session log show
     should support a --output or --text mode that replays the assistant text from session.update
     events. Workaround: jq/python one-liner on events.jsonl."
-  _ulid: 01KK5XAGV3YDF7X8N1JXBFKW2C
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-08T05:04:37.219Z
+  notes: []
+  todos: []
+- title: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe for
+    concurrent mu"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe for
+    concurrent multi-project agent dispatch. invocation.ts saves/restores KSPEC_SESSION_ID in
+    finally, and the per-engine mutex serializes within a project — but two projects running agents
+    concurrently both mutate the same process-level env var. The injectEnvForAdapter() path (writing
+    to .claude/settings.local.json etc.) largely mitigates this in practice, but the process.env
+    mutation remains as a race vector. Fix: either remove the process.env mutation entirely (rely
+    solely on adapter config injection + spawn env), or add a process-level lock around the env
+    mutation window."
+  _ulid: 01KK5XAJVEJZNYR7GRDPEFP2M0
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-08T05:04:37.219Z
+  created_at: 2026-03-08T05:04:39.277Z
   notes: []
   todos: []
