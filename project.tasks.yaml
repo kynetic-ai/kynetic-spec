@@ -81463,6 +81463,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #704. Documented Bun as the daemon/web UI prerequisite, improved
+    missing-Bun guidance in serve start with install commands and URL, added the missing ulidx
+    runtime dependency, and verified @web-ui ac-1/ac-2 coverage including an npm-pack/install/start
+    end-to-end test."
   depends_on: []
   context: []
   priority: 2
@@ -81475,6 +81479,7 @@
   created_at: 2026-03-08T00:41:03.501Z
   started_at: 2026-03-08T07:57:10.905Z
   submitted_at: 2026-03-08T07:57:13.242Z
+  completed_at: 2026-03-08T08:20:56.372Z
   notes:
     - _ulid: 01KK61QW0QC8G03QY6DCJM3NQX
       created_at: 2026-03-08T06:21:48.951Z
@@ -81530,11 +81535,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-08T08:20:56.372Z
-  closed_reason: "Merged in PR #704. Documented Bun as the daemon/web UI prerequisite, improved
-    missing-Bun guidance in serve start with install commands and URL, added the missing ulidx
-    runtime dependency, and verified @web-ui ac-1/ac-2 coverage including an npm-pack/install/start
-    end-to-end test."
 - _ulid: 01KK5E7YSKTWV0KBKFERG5GV8E
   slugs: []
   title: Allow adding root-level spec items without --under flag
@@ -81647,7 +81647,7 @@
   spec_ref: "@ui-agent-dispatch"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -81661,6 +81661,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-08T08:21:40.631Z
+  session_id: 01KK688QHWVMHJ72MD9GCJTR24
 - _ulid: 01KK5WX0TMYDP3NV9VFEE9HHDT
   slugs: []
   title: Fix derive middleware setting 400 on static file responses
