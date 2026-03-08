@@ -46851,6 +46851,13 @@
         single derive run; derive --all can create the consumer before the dependency task and leave
         depends_on empty."
       supersedes: null
+    - _ulid: 01KK5ESZ5K5T7Z9BATTK5151FX
+      created_at: 2026-03-08T00:50:54.772Z
+      author: Jacob Chapel
+      content: Applied a dependency-aware ordering pass in derive so same-run spec depends_on links
+        resolve before consumer task creation. Added a derive --all regression test for
+        consumer-before-base ordering.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
