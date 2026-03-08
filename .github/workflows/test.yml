@@ -64,12 +64,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3]
-
-    name: e2e (playwright chromium ${{ matrix.shard }}/3)
+    name: e2e (playwright smoke)
 
     env:
       PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
@@ -101,5 +96,5 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run E2E tests
-        run: npm run test:e2e -- --shard=${{ matrix.shard }}/3
+      - name: Run E2E smoke tests
+        run: npm run test:e2e
