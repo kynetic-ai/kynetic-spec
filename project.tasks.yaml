@@ -46776,7 +46776,7 @@
     spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates
     task-A depending on task-B. Removes need to manually set task dependencies after derive."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -46789,7 +46789,7 @@
   session_id: 01KK5EA92PSQT2W5P74VXWFJ40
   created_at: 2026-02-07T07:41:49.575Z
   started_at: 2026-03-08T00:48:18.771Z
-  submitted_at: 2026-03-08T00:28:46.858Z
+  submitted_at: 2026-03-08T00:55:15.207Z
   notes:
     - _ulid: 01KGVGSH49350X0MVF442ZVV10
       created_at: 2026-02-07T07:41:49.577Z
