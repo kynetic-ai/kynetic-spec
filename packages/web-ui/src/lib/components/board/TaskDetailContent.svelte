@@ -6,7 +6,7 @@
   AC: @gh-pages-export ac-16 — Buttons disabled with tooltip in static mode.
 
   Shared task detail content used by both TaskDetailModal (kanban board)
-  and the task list Sheet panel. Handles all task display, actions, and notes.
+  and the task list Dialog modal. Handles all task display, actions, and notes.
 -->
 <script lang="ts">
 	import type { TaskDetail } from '@kynetic-ai/shared';

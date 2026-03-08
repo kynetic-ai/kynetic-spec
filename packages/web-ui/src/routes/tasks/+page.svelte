@@ -12,13 +12,7 @@
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import {
-		Sheet,
-		SheetContent,
-		SheetHeader,
-		SheetTitle,
-		SheetDescription
-	} from '$lib/components/ui/sheet';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import ListIcon from '@lucide/svelte/icons/list';
 
@@ -28,8 +22,8 @@
 	let error = $state('');
 	let updatedTaskIds = $state<Set<string>>(new Set());
 
-	// Sheet panel state
-	let sheetOpen = $state(false);
+	// Dialog panel state
+	let dialogOpen = $state(false);
 	let panelTask = $state<TaskDetail | null>(null);
 	let panelLoading = $state(false);
 	let panelError = $state('');
@@ -88,7 +82,7 @@
 	async function handleSelectTask(taskId: string) {
 		panelLoading = true;
 		panelError = '';
-		sheetOpen = true;
+		dialogOpen = true;
 		try {
 			panelTask = await fetchTask(taskId);
 		} catch (err) {
@@ -117,9 +111,9 @@
 		loadTasks();
 	}
 
-	// Reset panel state when sheet closes
+	// Reset panel state when dialog closes
 	$effect(() => {
-		if (!sheetOpen) {
+		if (!dialogOpen) {
 			panelTask = null;
 			panelError = '';
 			lastProcessedRef = '';
@@ -224,16 +218,16 @@
 	{/if}
 </div>
 
-<!-- Task Detail Sheet Panel - AC: @web-dashboard ac-5, ac-6, ac-7, ac-8 -->
-<Sheet bind:open={sheetOpen}>
-	<SheetContent class="sm:max-w-2xl overflow-y-auto" data-testid="task-detail-panel">
+<!-- Task Detail Dialog Modal - AC: @web-dashboard ac-5, ac-6, ac-7, ac-8 -->
+<Dialog.Root bind:open={dialogOpen}>
+	<Dialog.Content class="max-w-2xl max-h-[85vh] overflow-y-auto" data-testid="task-detail-panel">
 		{#if panelTask && !panelLoading && !panelError}
-			<SheetHeader>
-				<SheetTitle data-testid="task-detail-title">{panelTask.title}</SheetTitle>
-				<SheetDescription>
+			<Dialog.Header>
+				<Dialog.Title data-testid="task-detail-title">{panelTask.title}</Dialog.Title>
+				<Dialog.Description>
 					<span class="font-mono text-xs">@{slug}</span>
-				</SheetDescription>
-			</SheetHeader>
+				</Dialog.Description>
+			</Dialog.Header>
 		{/if}
 
 		<TaskDetailContent
@@ -242,5 +236,5 @@
 			error={panelError}
 			onTaskUpdated={handleTaskUpdated}
 		/>
-	</SheetContent>
-</Sheet>
+	</Dialog.Content>
+</Dialog.Root>
