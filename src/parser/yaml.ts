@@ -50,24 +50,6 @@ import {
 import { TraitIndex } from "./traits.js";
 
 /**
- * Throttle pre-read shadow pulls so the daemon doesn't pull on every API request.
- * Returns true if a pull already happened within the throttle window.
- */
-const PRE_READ_PULL_THROTTLE_MS = 5_000;
-const lastPullAt = new Map<string, number>();
-
-function preReadPullThrottled(specDir: string): boolean {
-  const key = path.resolve(specDir);
-  const last = lastPullAt.get(key);
-  const now = Date.now();
-  if (last && now - last < PRE_READ_PULL_THROTTLE_MS) {
-    return true;
-  }
-  lastPullAt.set(key, now);
-  return false;
-}
-
-/**
  * Log a debug message (only when KSPEC_DEBUG=1)
  */
 function debugLog(prefix: string, message: string): void {
@@ -407,9 +389,8 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     // AC: @config-shadow ac-11 — pre-read shadow pull to pick up remote changes
     // before CLI read operations (task list, session start, etc.)
     // Skip when KSPEC_NO_SYNC is set (tests, offline) or KSPEC_SPEC_DIR is overridden
-    // Debounced: in daemon mode, many API routes call initContext() concurrently.
-    // Only pull if enough time has elapsed since the last pull for this worktree.
-    if (!process.env.KSPEC_NO_SYNC && !preReadPullThrottled(specDir)) {
+    // Note: shadowPull() has in-flight dedup so concurrent daemon calls don't collide
+    if (!process.env.KSPEC_NO_SYNC) {
       // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
       // uses the right branch name and remote instead of hardcoded defaults
       const shadowOpts: ShadowOptions = {

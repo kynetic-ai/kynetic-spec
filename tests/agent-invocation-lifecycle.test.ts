@@ -1526,6 +1526,38 @@ describe("Shadow commit on terminal invocation events", () => {
       expect.stringContaining("failed"),
     );
   });
+
+  it("should call shadowAutoCommit after aborted invocation", async () => {
+    registerAdapter("slow-mock-acp-abort", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_DELAY_MS: "5000",
+      },
+      description: "Slow mock for abort test",
+    });
+    const agent = makeTestAgent({ adapter: "slow-mock-acp-abort" });
+    const controller = new AbortController();
+
+    // Abort shortly after starting
+    setTimeout(() => controller.abort(), 100);
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Shadow commit on abort",
+      trigger: "task.ready",
+      abortSignal: controller.signal,
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(commitSpy).toHaveBeenCalledWith(
+      testDir,
+      expect.stringContaining("aborted"),
+    );
+  });
 });
 
 // ─── Trait: error-guidance ────────────────────────────────────────────────────
