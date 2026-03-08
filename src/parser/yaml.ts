@@ -40,6 +40,7 @@ import {
   hasRemoteTracking,
   shadowPull,
   type ShadowConfig,
+  type ShadowOptions,
   ShadowError,
 } from "./shadow.js";
 import {
@@ -389,10 +390,18 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     // before CLI read operations (task list, session start, etc.)
     // Skip when KSPEC_NO_SYNC is set (tests, offline) or KSPEC_SPEC_DIR is overridden
     if (!process.env.KSPEC_NO_SYNC) {
+      // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
+      // uses the right branch name and remote instead of hardcoded defaults
+      const shadowOpts: ShadowOptions = {
+        branchName: config.shadow.branch,
+        directory: config.shadow.directory,
+        remote: config.shadow.remote?.value,
+        remoteType: config.shadow.remote?.type,
+      };
       try {
-        const tracked = await hasRemoteTracking(specDir);
+        const tracked = await hasRemoteTracking(specDir, shadowOpts);
         if (tracked) {
-          const syncResult = await shadowPull(specDir);
+          const syncResult = await shadowPull(specDir, shadowOpts);
           if (syncResult.hadConflict) {
             console.error(
               "Warning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",

@@ -1311,6 +1311,7 @@ async function pullRebaseBeforePush(
   worktreeDir: string,
   branchName: string,
   debug: boolean,
+  options?: ShadowOptions,
 ): Promise<boolean> {
   try {
     // Fetch latest remote state for the shadow branch specifically.
@@ -1325,9 +1326,24 @@ async function pullRebaseBeforePush(
       return true;
     }
 
-    // Check if remote branch exists
+    // AC: @config-shadow ac-3 — resolve the configured remote name from git config
+    // instead of hardcoding "origin", so custom shadow.remote setups work correctly
     const projectRoot = path.dirname(worktreeDir);
-    const remoteHasBranch = await remoteBranchExists(projectRoot, branchName);
+    let remoteName = "origin";
+    try {
+      const { stdout } = await runGitAsync(worktreeDir, [
+        "config",
+        `branch.${branchName}.remote`,
+      ]);
+      const configured = stdout.trim();
+      if (configured) {
+        remoteName = configured;
+      }
+    } catch {
+      // Fall back to origin if config lookup fails
+    }
+
+    const remoteHasBranch = await remoteBranchExists(projectRoot, branchName, remoteName);
     if (!remoteHasBranch) {
       if (debug) {
         console.error("[DEBUG] Shadow pull-rebase: no remote branch yet, skipping pull");
@@ -1440,7 +1456,7 @@ export async function shadowPushAsync(
 
   // AC: @config-shadow ac-11 — pull-rebase before pushing to integrate remote changes
   const branchName = getBranchName(options);
-  const pullOk = await pullRebaseBeforePush(worktreeDir, branchName, debug);
+  const pullOk = await pullRebaseBeforePush(worktreeDir, branchName, debug, options);
   if (!pullOk) {
     noteShadowPushFailure(
       worktreeDir,

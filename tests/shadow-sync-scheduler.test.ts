@@ -7,69 +7,10 @@ import {
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   hasRemoteTracking,
-  shadowPull,
 } from '../src/parser/shadow.js';
-import type { ShadowOptions } from '../src/parser/shadow.js';
+import { ShadowSyncScheduler } from '../src/parser/shadow-sync-scheduler.js';
 
-/**
- * Minimal test-only scheduler that mirrors the daemon's ShadowSyncScheduler
- * but imports from the test-accessible path. This avoids the daemon's relative
- * import path (`../../parser/shadow.js`) which vitest cannot resolve.
- *
- * AC: @config-shadow ac-12
- */
-class TestShadowSyncScheduler {
-  private timer: ReturnType<typeof setInterval> | null = null;
-  private running = false;
-  private readonly worktreeDir: string;
-  private readonly intervalMs: number;
-  private readonly shadowOptions?: ShadowOptions;
-
-  constructor(options: { worktreeDir: string; intervalSeconds: number; shadowOptions?: ShadowOptions }) {
-    this.worktreeDir = options.worktreeDir;
-    this.intervalMs = options.intervalSeconds * 1000;
-    this.shadowOptions = options.shadowOptions;
-  }
-
-  start(): void {
-    if (this.intervalMs <= 0 || this.timer !== null) return;
-    console.log(`[daemon] Shadow sync scheduler started (interval: ${this.intervalMs / 1000}s)`);
-    this.timer = setInterval(() => {
-      this.syncOnce().catch((err) => console.error('[daemon] Shadow sync error:', err));
-    }, this.intervalMs);
-    if (this.timer && typeof this.timer === 'object' && 'unref' in this.timer) {
-      this.timer.unref();
-    }
-  }
-
-  stop(): void {
-    if (this.timer !== null) {
-      clearInterval(this.timer);
-      this.timer = null;
-      console.log('[daemon] Shadow sync scheduler stopped');
-    }
-  }
-
-  async syncOnce(): Promise<void> {
-    if (this.running) return;
-    const hasTracking = await hasRemoteTracking(this.worktreeDir, this.shadowOptions);
-    if (!hasTracking) return;
-    this.running = true;
-    try {
-      const result = await shadowPull(this.worktreeDir, this.shadowOptions);
-      if (result.pulled) {
-        console.log('[daemon] Shadow sync: pulled remote changes');
-      }
-      if (result.hadConflict) {
-        console.warn('[daemon] Shadow sync: conflict detected. Run `kspec shadow resolve` to fix.');
-      }
-    } finally {
-      this.running = false;
-    }
-  }
-}
-
-describe('TestShadowSyncScheduler', () => {
+describe('ShadowSyncScheduler', () => {
   const testDir = path.join('/tmp', `kspec-sync-sched-${Date.now()}`);
   const remoteDir = path.join('/tmp', `kspec-sync-sched-remote-${Date.now()}`);
 
@@ -107,7 +48,7 @@ describe('TestShadowSyncScheduler', () => {
 
   // AC: @config-shadow ac-12
   it('does not start when interval is 0', () => {
-    const scheduler = new TestShadowSyncScheduler({
+    const scheduler = new ShadowSyncScheduler({
       worktreeDir: '/fake/path',
       intervalSeconds: 0,
     });
@@ -121,7 +62,7 @@ describe('TestShadowSyncScheduler', () => {
   it('starts and stops the periodic timer', async () => {
     const worktreeDir = await setupSyncTest();
 
-    const scheduler = new TestShadowSyncScheduler({
+    const scheduler = new ShadowSyncScheduler({
       worktreeDir,
       intervalSeconds: 60,
     });
@@ -174,7 +115,7 @@ describe('TestShadowSyncScheduler', () => {
       // Run syncOnce
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       try {
-        const scheduler = new TestShadowSyncScheduler({
+        const scheduler = new ShadowSyncScheduler({
           worktreeDir,
           intervalSeconds: 60,
         });
@@ -212,7 +153,7 @@ describe('TestShadowSyncScheduler', () => {
 
     expect(await hasRemoteTracking(worktreeDir)).toBe(false);
 
-    const scheduler = new TestShadowSyncScheduler({
+    const scheduler = new ShadowSyncScheduler({
       worktreeDir,
       intervalSeconds: 60,
     });
@@ -225,7 +166,7 @@ describe('TestShadowSyncScheduler', () => {
   it('syncOnce skips when already running', async () => {
     const worktreeDir = await setupSyncTest();
 
-    const scheduler = new TestShadowSyncScheduler({
+    const scheduler = new ShadowSyncScheduler({
       worktreeDir,
       intervalSeconds: 60,
     });
