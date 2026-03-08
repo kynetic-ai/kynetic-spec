@@ -81732,12 +81732,28 @@
     - daemon
     - web-ui
   vcs_refs: []
+  session_id: 01KK6AD7RSBBRGPQAH777ZPHT0
   created_at: 2026-03-08T04:57:14.835Z
-  notes: []
+  started_at: 2026-03-08T09:01:21.344Z
+  notes:
+    - _ulid: 01KK6AYG80SG9Q4MT0TSCC71FN
+      created_at: 2026-03-08T09:02:43.456Z
+      author: "@claude"
+      content: >-
+        Fix applied in two files:
+
+        1. packages/daemon/src/middleware/project-context.ts — Added early return in derive
+        middleware to skip project context resolution for non-API routes and /api/health. Non-API
+        routes (static files, SPA pages) get projectContext: undefined instead of triggering a 400
+        when no project is configured.
+
+        2. packages/daemon/src/server.ts — Added '/' to spaRoutes array so the root path correctly
+        serves index.html via SPA fallback.
+
+        All daemon unit tests pass (53 tests). TypeScript compiles clean.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T09:01:21.344Z
-  session_id: 01KK6AD7RSBBRGPQAH777ZPHT0
 - _ulid: 01KK5XAGV3YDF7X8N1JXBFKW2C
   slugs: []
   title: Add streaming output to kspec agent run
