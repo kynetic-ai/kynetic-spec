@@ -29,6 +29,7 @@ describe("AC Schema Drift detection", () => {
     }
   });
 
+  // AC: @validate-drift ac-1
   it("should warn when AC references non-existent field like item.children", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -69,6 +70,7 @@ includes:
     expect(result).toContain("parse-time/conceptual field");
   });
 
+  // AC: @validate-drift ac-2
   it("should warn when AC references spec_ref.field (spec_ref is a string, not object)", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -109,6 +111,7 @@ includes:
     expect(result).toContain("reference string, not an object");
   });
 
+  // AC: @validate-drift ac-3
   it("should NOT warn when AC references valid schema fields", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -148,6 +151,7 @@ includes:
     expect(result).not.toContain("AC Schema Drift warnings");
   });
 
+  // AC: @validate-drift ac-1
   it("should warn when AC references task fields that don't exist", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -188,6 +192,7 @@ includes:
     expect(result).toContain("not a known schema field");
   });
 
+  // AC: @validate-drift ac-3
   it("should accept valid status.maturity and status.implementation references", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -226,6 +231,46 @@ includes:
     expect(result).toContain("AC Schema Drift: OK");
   });
 
+  // AC: @validate-drift ac-4
+  it("should ignore file extensions when scanning for schema field references", async () => {
+    const specDir = path.join(tmpDir, "spec");
+    await fs.mkdir(specDir);
+
+    await fs.writeFile(
+      path.join(tmpDir, "kynetic.yaml"),
+      `kynetic: "1.0"
+project:
+  name: test-project
+  version: 0.1.0
+includes:
+  - "spec/module.yaml"
+`,
+    );
+
+    await fs.writeFile(
+      path.join(specDir, "module.yaml"),
+      `- _ulid: 01JHNKAB01SPEC0000000000A1
+  slugs:
+    - test-spec
+  title: Test Spec with filenames
+  type: feature
+  acceptance_criteria:
+    - id: ac-1
+      given: the user compares spec.yaml against task.json and writes notes.md
+      when: item.status is updated after reading spec.yaml
+      then: the item.tags should reflect the comparison without treating task.json or notes.md as schema fields
+`,
+    );
+
+    const result = kspec("validate --drift", tmpDir);
+
+    expect(result).toContain("AC Schema Drift: OK");
+    expect(result).not.toContain("spec.yaml");
+    expect(result).not.toContain("task.json");
+    expect(result).not.toContain("notes.md");
+  });
+
+  // AC: @validate-drift ac-5
   it("should only run drift checks when --drift flag is provided", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
@@ -275,6 +320,7 @@ includes:
     expect(resultWithFlag).not.toContain("Staleness warnings");
   });
 
+  // AC: @validate-drift ac-6
   it("should exit with code 6 for warnings, code 4 with --strict", async () => {
     const specDir = path.join(tmpDir, "spec");
     await fs.mkdir(specDir);
