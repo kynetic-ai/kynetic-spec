@@ -82361,3 +82361,22 @@
         session-end shadow commit path or the dirty-worktree shadowPull stash/pop path."
       supersedes: null
   todos: []
+- title: "Investigate: global kspec install overrides local linked version"
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - infra
+  depends_on: []
+  _ulid: 01KK79354YDDPP9H4DH0TH1628
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T17:49:33.214Z
+  notes: []
+  todos: []
