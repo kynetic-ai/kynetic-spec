@@ -82324,22 +82324,23 @@
         use static assets with base path support for GitHub Pages.
       supersedes: null
   todos: []
-- title: "Fix: commit session files to shadow branch on terminal events"
+- _ulid: 01KK77F3PEZH292XN0MAPQAH66
+  slugs: []
+  title: "Fix: commit session files to shadow branch on terminal events"
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - agent-runtime
-  depends_on: []
-  _ulid: 01KK77F3PEZH292XN0MAPQAH66
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T17:21:07.790Z
   notes: []
   todos: []
+  started_at: 2026-03-08T17:21:23.729Z
