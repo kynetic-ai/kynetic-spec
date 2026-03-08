@@ -56444,7 +56444,7 @@
     without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
     never-edit-manually rule.
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -56454,7 +56454,7 @@
   session_id: 01KK5J5S5065MK8W0XJPGB6GPV
   created_at: 2026-02-23T08:25:05.081Z
   started_at: 2026-03-08T01:57:52.813Z
-  submitted_at: 2026-03-08T01:35:26.216Z
+  submitted_at: 2026-03-08T01:58:04.495Z
   notes:
     - _ulid: 01KJ4V7KPFGSXBBGSXS5KP4VCC
       created_at: 2026-02-23T08:53:08.431Z
