@@ -225,6 +225,8 @@ interface DeriveResult {
   reason?: string;
   /** Task ref that was used for depends_on (if any) */
   dependsOn?: string[];
+  /** Non-fatal warnings discovered while deriving this task */
+  warnings?: string[];
   /** Number of acceptance criteria on the spec item */
   acCount: number;
 }
@@ -408,6 +410,56 @@ function getParentTaskRef(
   return undefined;
 }
 
+function dedupeRefs(refs: string[] | undefined): string[] | undefined {
+  if (!refs || refs.length === 0) return undefined;
+  return Array.from(new Set(refs.map(normalizeRefInput)));
+}
+
+/**
+ * Resolve spec-level depends_on references to active task refs.
+ * Uses tasks created in the current derive session first, then falls back to
+ * existing non-cancelled tasks linked to the depended-on spec.
+ */
+function resolveSpecDependencyTaskRefs(
+  specItem: LoadedSpecItem,
+  specToTaskMap: Map<string, LoadedTask>,
+  alignmentIndex: AlignmentIndex,
+  index: ReferenceIndex,
+): { taskRefs: string[]; warnings: string[] } {
+  const taskRefs: string[] = [];
+  const warnings: string[] = [];
+
+  for (const depRef of specItem.depends_on || []) {
+    const resolved = index.resolve(depRef);
+    if (!resolved.ok) {
+      warnings.push(
+        `Spec dependency ${depRef} for @${specItem.slugs[0] || specItem._ulid} could not be resolved; skipping task dependency link.`,
+      );
+      continue;
+    }
+
+    const dependencyTask =
+      specToTaskMap.get(resolved.ulid) ||
+      alignmentIndex
+        .getTasksForSpec(resolved.ulid)
+        .find((task) => task.status !== "cancelled");
+
+    if (dependencyTask) {
+      taskRefs.push(getTaskRef(dependencyTask, index));
+      continue;
+    }
+
+    warnings.push(
+      `Spec dependency ${depRef} for @${specItem.slugs[0] || specItem._ulid} has no active derived task; created task without linking it.`,
+    );
+  }
+
+  return {
+    taskRefs: Array.from(new Set(taskRefs)),
+    warnings,
+  };
+}
+
 /**
  * Register the 'derive' command
  */
@@ -502,7 +554,8 @@ export function registerDeriveCommand(program: Command): void {
 
         for (const specItem of specsToDerive) {
           // Determine depends_on based on parent spec's task
-          let dependsOn: string[] | undefined;
+          const dependsOn: string[] = [];
+          const warnings: string[] = [];
 
           if (!options.flat && !options.all) {
             // Find the parent spec item
@@ -516,10 +569,19 @@ export function registerDeriveCommand(program: Command): void {
                 index,
               );
               if (parentTaskRef) {
-                dependsOn = [parentTaskRef];
+                dependsOn.push(parentTaskRef);
               }
             }
           }
+
+          const specDependencyResolution = resolveSpecDependencyTaskRefs(
+            specItem,
+            specToTaskMap,
+            alignmentIndex,
+            index,
+          );
+          dependsOn.push(...specDependencyResolution.taskRefs);
+          warnings.push(...specDependencyResolution.warnings);
 
           const result = await deriveTaskFromSpec(
             ctx,
@@ -531,11 +593,12 @@ export function registerDeriveCommand(program: Command): void {
             {
               force: options.force || false,
               dryRun: options.dryRun || false,
-              dependsOn,
+              dependsOn: dedupeRefs(dependsOn),
               priority: options.priority,
               title: options.title,
             },
           );
+          result.warnings = warnings;
 
           // Track created/would_create tasks for dependency resolution
           if (
@@ -590,6 +653,9 @@ export function registerDeriveCommand(program: Command): void {
                     `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
                   );
                 }
+                for (const warningMessage of r.warnings || []) {
+                  warn(warningMessage);
+                }
               }
               if (skipped.length > 0) {
                 console.log("\nSkipped:");
@@ -620,6 +686,9 @@ export function registerDeriveCommand(program: Command): void {
                   warn(
                     `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
                   );
+                }
+                for (const warningMessage of r.warnings || []) {
+                  warn(warningMessage);
                 }
               }
             }
