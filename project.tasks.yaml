@@ -81657,12 +81657,31 @@
     - dispatch
     - bug
   vcs_refs: []
+  session_id: 01KK688QHWVMHJ72MD9GCJTR24
   created_at: 2026-03-08T02:58:42.044Z
-  notes: []
+  started_at: 2026-03-08T08:21:40.631Z
+  notes:
+    - _ulid: 01KK68QNT4ZZEA57DADQ179N08
+      created_at: 2026-03-08T08:24:02.628Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Part C (setup defaults) already has filter: { automation: 'eligible' } on task-worker
+        dispatch rules — no changes needed
+
+        - Part B (engine default) needs _matchesFilter to default to automation:eligible for
+        task.ready/task.needs_work when no filter specified
+
+        - Part A (UI) needs filter editing per trigger row: automation dropdown, tag chips, priority
+        threshold
+
+        - Files to change: dispatch.ts, AgentEditForm.svelte, AgentCard.svelte (show filter badges)
+
+        - Tests: dispatch engine test, vitest component tests or E2E for UI
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T08:21:40.631Z
-  session_id: 01KK688QHWVMHJ72MD9GCJTR24
 - _ulid: 01KK5WX0TMYDP3NV9VFEE9HHDT
   slugs: []
   title: Fix derive middleware setting 400 on static file responses
