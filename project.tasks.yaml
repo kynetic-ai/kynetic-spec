@@ -48519,6 +48519,7 @@
       supersedes: null
   todos: []
   automation: needs_review
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/691
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
   slugs: []
   title: Fix trivial AC-6 test in multi-value status filter
@@ -80661,26 +80662,26 @@
   created_at: 2026-03-08T00:41:04.563Z
   notes: []
   todos: []
-- title: kspec setup should work without agent environment detected
+- _ulid: 01KK5E7ZTASR8W3AX2WBHFMGV2
+  slugs: []
+  title: kspec setup should work without agent environment detected
+  type: task
   description: kspec setup exits with error 'Could not auto-detect agent environment' and does
     nothing. It should still install core skills, generate kspec-agents.md, and perform other setup
     steps even without detecting a specific agent platform. The agent env detection should be
     optional/informational.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - cli
     - dx
-  depends_on: []
-  _ulid: 01KK5E7ZTASR8W3AX2WBHFMGV2
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T00:41:05.609Z
   notes: []
