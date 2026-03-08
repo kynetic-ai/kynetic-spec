@@ -51867,6 +51867,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #692 (bc65035). Rewrote the public README for external adopters, added
+    docs/getting-started.md with an end-to-end spec-first tutorial, and updated INSTALL.md handoffs
+    to the current docs flow. Review verified isolated scope, link integrity, and current CLI
+    command accuracy; AC coverage not applicable because this task has no spec_ref."
   depends_on: []
   context: []
   priority: 2
@@ -51876,6 +51880,7 @@
   created_at: 2026-02-19T19:09:09.058Z
   started_at: 2026-03-08T03:05:58.081Z
   submitted_at: 2026-03-08T03:06:05.268Z
+  completed_at: 2026-03-08T03:25:34.672Z
   notes:
     - _ulid: 01KHW19B512JKJ09DNKPQMXEC9
       created_at: 2026-02-19T22:45:46.785Z
@@ -51979,11 +51984,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-03-08T03:25:34.672Z
-  closed_reason: "Merged in PR #692 (bc65035). Rewrote the public README for external adopters, added
-    docs/getting-started.md with an end-to-end spec-first tutorial, and updated INSTALL.md handoffs
-    to the current docs flow. Review verified isolated scope, link integrity, and current CLI
-    command accuracy; AC coverage not applicable because this task has no spec_ref."
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
   slugs: []
   title: Clean up setup.ts tech debt — dedup, legacy render, error handling
@@ -67131,7 +67131,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -67145,6 +67145,8 @@
   notes: []
   todos: []
   automation: manual_only
+  started_at: 2026-03-08T03:27:07.019Z
+  session_id: 01KK5Q6WNH1TJWBR8BKDQ4P5G0
 - _ulid: 01KJGRQ1BBMQ4VHWB8SSKG16RA
   slugs:
     - task-plan-completeness-warning-debt-reduction
