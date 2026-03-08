@@ -462,4 +462,96 @@ test.describe('Session History View', () => {
 			await expect(page).toHaveURL(/\/sessions/);
 		});
 	});
+
+	// AC: @gh-pages-export ac-22
+	test.describe('Static Mode (@gh-pages-export ac-22)', () => {
+		test('session detail shows read-only message in static mode', async ({ page, daemon }) => {
+			// Force static mode: intercept health check to fail, serve a snapshot instead
+			await page.route('**/health', (route) => {
+				route.fulfill({ status: 503, body: 'Service Unavailable' });
+			});
+
+			const snapshot = {
+				version: '0.1.0',
+				exported_at: '2026-03-08T00:00:00.000Z',
+				project: { name: 'Test' },
+				tasks: [],
+				items: [],
+				inbox: [],
+				session: null,
+				observations: [],
+				agents: [],
+				workflows: [],
+				conventions: [],
+			};
+
+			await page.route('**/kspec-snapshot.json', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(snapshot),
+				});
+			});
+
+			// Navigate to a session detail page — the route exists but session data
+			// is not included in the static export
+			await page.goto('/sessions/01JTEST0000000000000000001');
+
+			// Verify the static-mode read-only message renders
+			const staticMessage = page.getByTestId('session-static-message');
+			await expect(staticMessage).toBeVisible({ timeout: 10000 });
+			await expect(staticMessage).toContainText(
+				'Session history is not included in the static export'
+			);
+		});
+
+		test('session detail does not attempt API calls in static mode', async ({ page, daemon }) => {
+			// Force static mode: intercept health check to fail, serve a snapshot instead
+			let sessionApiFetched = false;
+
+			await page.route('**/health', (route) => {
+				route.fulfill({ status: 503, body: 'Service Unavailable' });
+			});
+
+			const snapshot = {
+				version: '0.1.0',
+				exported_at: '2026-03-08T00:00:00.000Z',
+				project: { name: 'Test' },
+				tasks: [],
+				items: [],
+				inbox: [],
+				session: null,
+				observations: [],
+				agents: [],
+				workflows: [],
+				conventions: [],
+			};
+
+			await page.route('**/kspec-snapshot.json', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify(snapshot),
+				});
+			});
+
+			// Track whether the session API endpoint is ever called
+			await page.route('**/api/sessions/**', (route) => {
+				sessionApiFetched = true;
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({ id: 'test', status: 'completed', agent_type: 'worker', events: [], total: 0 }),
+				});
+			});
+
+			await page.goto('/sessions/01JTEST0000000000000000001');
+
+			// Wait for the static message to appear (proves the route rendered)
+			await expect(page.getByTestId('session-static-message')).toBeVisible({ timeout: 10000 });
+
+			// The session API should NOT have been called in static mode
+			expect(sessionApiFetched).toBe(false);
+		});
+	});
 });

@@ -222,9 +222,11 @@ describe("loading, empty, and error states (@ui-settings-view ac-1)", () => {
     expect(pageSrc).toContain("No conventions defined");
   });
 
+  // AC: @gh-pages-export ac-24
   it("has static mode fallback", () => {
     expect(pageSrc).toContain("isStaticMode()");
-    expect(pageSrc).toContain('data-testid="settings-static"');
+    expect(pageSrc).toContain('data-testid="settings-daemon-static"');
+    expect(pageSrc).toContain('data-testid="settings-shadow-static"');
   });
 });
 

@@ -49,6 +49,9 @@ import {
 	searchStatic,
 	fetchTriageRecordsStatic,
 	fetchPlansStatic,
+	fetchPlanContentStatic,
+	fetchValidationStatic,
+	fetchAlignmentStatic,
 	fetchWorkflowsStatic
 } from './api-static';
 import { DAEMON_API_BASE } from './constants';
@@ -786,7 +789,7 @@ export async function fetchPlans(params?: {
  */
 export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
 	if (isStaticMode()) {
-		throw new Error('Plan content not available in static mode');
+		return fetchPlanContentStatic(ref);
 	}
 
 	const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
@@ -1056,15 +1059,7 @@ export interface AlignmentResponse {
  */
 export async function fetchValidation(): Promise<ValidationResponse> {
 	if (isStaticMode()) {
-		return {
-			valid: true,
-			schemaErrors: [],
-			refErrors: [],
-			refWarnings: [],
-			orphans: [],
-			completenessWarnings: [],
-			traitCycles: []
-		};
+		return fetchValidationStatic();
 	}
 
 	const response = await fetch(`${API_BASE}/api/validate`, {
@@ -1093,10 +1088,7 @@ export async function fetchValidation(): Promise<ValidationResponse> {
  */
 export async function fetchAlignment(): Promise<AlignmentResponse> {
 	if (isStaticMode()) {
-		return {
-			stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
-			warnings: []
-		};
+		return fetchAlignmentStatic();
 	}
 
 	const response = await fetch(`${API_BASE}/api/alignment`, {

@@ -15,12 +15,11 @@
 		type ProjectConfig,
 		type ShadowStatusResponse
 	} from '$lib/api';
-	import { isStaticMode } from '$lib/stores/mode.svelte';
+	import { getSnapshot, isStaticMode } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
-	import SettingsIcon from '@lucide/svelte/icons/settings';
 	import ServerIcon from '@lucide/svelte/icons/server';
 	import GitBranchIcon from '@lucide/svelte/icons/git-branch';
 	import BookOpenIcon from '@lucide/svelte/icons/book-open';
@@ -78,6 +77,18 @@
 
 	async function loadConfig() {
 		if (isStaticMode()) {
+			const snapshot = getSnapshot();
+			projectConfig = {
+				project: {
+					name: snapshot?.project.name ?? 'Static Export',
+					version: snapshot?.project.version ?? '—',
+					status: 'static'
+				},
+				spec_version: null,
+				root_dir: 'GitHub Pages export',
+				remote_tracking: null,
+				daemon: { port: 0, host: 'n/a', auto_start: false }
+			};
 			loadingConfig = false;
 			return;
 		}
@@ -126,6 +137,7 @@
 
 	async function loadConventions() {
 		if (isStaticMode()) {
+			conventions = getSnapshot()?.conventions ?? [];
 			loadingConventions = false;
 			return;
 		}
@@ -181,17 +193,7 @@
 		</div>
 	</div>
 
-	{#if isStaticMode()}
-		<!-- AC: @ui-settings-view ac-1 — Static mode graceful degradation -->
-		<div class="flex flex-col items-center justify-center py-16" data-testid="settings-static">
-			<SettingsIcon class="size-12 text-muted-foreground/30 mb-4" />
-			<h2 class="text-lg font-medium text-muted-foreground mb-1">Settings unavailable</h2>
-			<p class="text-sm text-muted-foreground">
-				Settings data is not available in static mode. Connect to a running daemon to view project configuration.
-			</p>
-		</div>
-	{:else}
-		<div class="grid gap-4 md:grid-cols-2">
+	<div class="grid gap-4 md:grid-cols-2">
 			<!-- ═══ Section 1: Project Configuration ═══ -->
 			<Card data-testid="settings-project-config">
 				<CardHeader class="pb-3">
@@ -320,6 +322,10 @@
 								</div>
 							{/if}
 						</dl>
+					{:else if isStaticMode()}
+						<div class="text-sm text-muted-foreground" data-testid="settings-daemon-static">
+							Daemon connection details are unavailable in static mode.
+						</div>
 					{/if}
 				</CardContent>
 			</Card>
@@ -382,6 +388,10 @@
 								</dd>
 							</div>
 						</dl>
+					{:else if isStaticMode()}
+						<div class="text-sm text-muted-foreground" data-testid="settings-shadow-static">
+							Shadow branch status is unavailable in static mode.
+						</div>
 					{:else}
 						<div class="text-sm text-muted-foreground" data-testid="settings-shadow-empty">
 							Shadow branch not detected.
@@ -478,6 +488,5 @@
 					{/if}
 				</CardContent>
 			</Card>
-		</div>
-	{/if}
+	</div>
 </div>
