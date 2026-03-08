@@ -82300,7 +82300,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -82311,6 +82311,7 @@
   vcs_refs: []
   created_at: 2026-03-08T16:59:45.609Z
   started_at: 2026-03-08T17:00:23.876Z
+  submitted_at: 2026-03-08T17:03:10.137Z
   notes:
     - _ulid: 01KK76D774K7Y7MFXVMQKP6BYF
       created_at: 2026-03-08T17:02:37.284Z
@@ -82320,4 +82321,6 @@
         use static assets with base path support for GitHub Pages.
       supersedes: null
   todos: []
-  submitted_at: 2026-03-08T17:03:10.137Z
+  completed_at: 2026-03-08T17:12:41.450Z
+  closed_reason: "Merged in PR #713. Replaced default Svelte favicon with Kynetic logo in ico, 32px,
+    and 192px formats."
