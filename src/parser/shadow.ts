@@ -320,6 +320,18 @@ function getDirectoryName(options?: ShadowOptions): string {
 }
 
 /**
+ * Get effective remote name from options or default.
+ * AC: @config-shadow ac-3 ac-7 — resolves configured remote for fetch/push/pull.
+ * Named remotes use the name directly; path/URL remotes use the auto-created "kspec-specs".
+ */
+function getRemoteName(options?: ShadowOptions): string {
+  if (!options?.remote) return "origin";
+  const remoteType = options.remoteType ?? "named";
+  if (remoteType === "path" || remoteType === "url") return "kspec-specs";
+  return options.remote;
+}
+
+/**
  * Check if debug mode is enabled.
  * Debug mode can be enabled via:
  * - KSPEC_DEBUG=1 environment variable
@@ -1300,9 +1312,123 @@ function noteShadowPushSuccess(worktreeDir: string): void {
 }
 
 /**
- * Fire-and-forget push to remote.
+ * Pull-rebase from remote before pushing, using the kspec merge driver for
+ * YAML conflict resolution.
+ *
+ * AC: @config-shadow ac-11 — pull-rebase before push prevents divergence
+ *
+ * @returns true if pull succeeded (or was unnecessary), false on conflict
+ */
+async function pullRebaseBeforePush(
+  worktreeDir: string,
+  branchName: string,
+  debug: boolean,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  try {
+    // Fetch latest remote state for the shadow branch specifically.
+    // Using the worktree dir for fetch ensures we use the branch's tracking config.
+    try {
+      await runGitAsync(worktreeDir, ["fetch"]);
+    } catch {
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: fetch failed, skipping pull");
+      }
+      // Fetch failure is non-fatal — push may still succeed if already up to date
+      return true;
+    }
+
+    // AC: @config-shadow ac-3 — resolve the configured remote name from git config
+    // instead of hardcoding "origin", so custom shadow.remote setups work correctly
+    const projectRoot = path.dirname(worktreeDir);
+    let remoteName = "origin";
+    try {
+      const { stdout } = await runGitAsync(worktreeDir, [
+        "config",
+        `branch.${branchName}.remote`,
+      ]);
+      const configured = stdout.trim();
+      if (configured) {
+        remoteName = configured;
+      }
+    } catch {
+      // Fall back to origin if config lookup fails
+    }
+
+    const remoteHasBranch = await remoteBranchExists(projectRoot, branchName, remoteName);
+    if (!remoteHasBranch) {
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: no remote branch yet, skipping pull");
+      }
+      return true;
+    }
+
+    // Check if there are any upstream changes to integrate.
+    // If local is already at or ahead of remote, skip the pull.
+    try {
+      const { stdout } = await runGitAsync(worktreeDir, [
+        "rev-list",
+        "--count",
+        `${branchName}..@{upstream}`,
+      ]);
+      const behindCount = parseInt(stdout.trim(), 10);
+      if (behindCount === 0) {
+        if (debug) {
+          console.error("[DEBUG] Shadow pull-rebase: already up to date with remote");
+        }
+        return true;
+      }
+    } catch {
+      // rev-list may fail if upstream isn't set — proceed with pull attempt
+    }
+
+    // Try fast-forward first (cleanest, no rebase needed)
+    try {
+      await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: fast-forward succeeded");
+      }
+      return true;
+    } catch {
+      // FF failed, need rebase
+    }
+
+    // Fall back to rebase — the kspec merge driver handles YAML conflicts
+    try {
+      await runGitAsync(worktreeDir, ["pull", "--rebase"]);
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: rebase succeeded");
+      }
+      return true;
+    } catch {
+      // Rebase failed — abort and report
+    }
+
+    // Abort the failed rebase so local state is clean
+    try {
+      await runGitAsync(worktreeDir, ["rebase", "--abort"]);
+    } catch {
+      // May not be in rebase state
+    }
+
+    if (debug) {
+      console.error("[DEBUG] Shadow pull-rebase: conflict detected, push skipped");
+    }
+    return false;
+  } catch (err) {
+    if (debug) {
+      console.error("[DEBUG] Shadow pull-rebase error:", err);
+    }
+    // Pull failure is non-fatal — still attempt push
+    return true;
+  }
+}
+
+/**
+ * Fire-and-forget push to remote with pull-rebase-before-push.
  * AC-1: Called after each auto-commit when tracking is configured.
  * AC-8: Automatically sets up tracking if main branch has remote.
+ * AC: @config-shadow ac-11 — pull-rebase before push for bidirectional sync.
  * Push failures are surfaced as warnings, but local commits still succeed.
  *
  * AC: @config-shadow ac-7 — backward compat when called without config
@@ -1338,6 +1464,17 @@ export async function shadowPushAsync(
       );
     }
     return; // AC: @shadow-sync ac-4 - silently skip if no tracking
+  }
+
+  // AC: @config-shadow ac-11 — pull-rebase before pushing to integrate remote changes
+  const branchName = getBranchName(options);
+  const pullOk = await pullRebaseBeforePush(worktreeDir, branchName, debug, options);
+  if (!pullOk) {
+    noteShadowPushFailure(
+      worktreeDir,
+      "Pull-rebase failed due to conflicts. Run `kspec shadow resolve` to fix.",
+    );
+    return;
   }
 
   try {
@@ -1458,9 +1595,11 @@ export async function shadowPull(
   }
 
   // Check if remote branch exists before attempting pull
+  // AC: @config-shadow ac-3 — use configured remote instead of hardcoded origin
+  const remoteName = getRemoteName(options);
   // Fetch first to ensure refs are up to date
-  await fetchRemote(projectRoot);
-  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName);
+  await fetchRemote(projectRoot, remoteName);
+  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName, remoteName);
   if (!remoteHasBranch) {
     // Remote branch doesn't exist yet - nothing to pull, but success
     result.success = true;

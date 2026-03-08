@@ -12,8 +12,6 @@ import {
 } from "../../../parser/index.js";
 import {
   ShadowError,
-  type ShadowSyncResult,
-  shadowPull,
 } from "../../../parser/shadow.js";
 import { isObject } from "../../../acp/types.js";
 import {
@@ -22,7 +20,7 @@ import {
 } from "../../../strings/index.js";
 import { markMutating } from "../../command-annotations.js";
 import { EXIT_CODES } from "../../exit-codes.js";
-import { error, info, isJsonMode, output, warn } from "../../output.js";
+import { error, isJsonMode, output } from "../../output.js";
 import { performCheckpoint } from "./checkpoint.js";
 import { sessionCompactAction } from "./compact.js";
 import { gatherSessionContext } from "./context.js";
@@ -53,20 +51,8 @@ function debugLog(message: string, detail?: unknown): void {
 
 async function sessionStartAction(options: SessionOptions): Promise<void> {
   try {
+    // AC: @shadow-sync ac-2 — initContext() performs pre-read shadow pull automatically
     const ctx = await initContext();
-
-    // AC: @shadow-sync ac-2 - Pull remote changes before showing session context
-    let syncResult: ShadowSyncResult | null = null;
-    if (ctx.shadow?.enabled) {
-      syncResult = await shadowPull(ctx.shadow.worktreeDir);
-      // AC: @shadow-sync ac-3 - Warn about conflicts but continue with local state
-      if (syncResult.hadConflict) {
-        warn("Shadow sync conflict detected. Run `kspec shadow resolve` to fix.");
-        info("Continuing with local state...");
-      } else if (syncResult.pulled) {
-        info("Synced shadow branch from remote");
-      }
-    }
 
     const sessionCtx = await gatherSessionContext(ctx, options);
 

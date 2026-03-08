@@ -29,6 +29,7 @@ import { createTriageRoutes } from './routes/triage';
 import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
 import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
+import { ShadowSyncScheduler } from './shadow-sync';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -91,6 +92,7 @@ let pubsubManager: PubSubManager;
 let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let projectManager: import('./project-context').ProjectContextManager | undefined;
+let shadowSyncScheduler: ShadowSyncScheduler | undefined;
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -417,6 +419,33 @@ export async function createServer(options: ServerOptions) {
     }
   }
 
+  // AC: @config-shadow ac-12 - Start periodic shadow sync if remote tracking configured
+  if (startupProjectPath) {
+    try {
+      const { loadProjectConfig } = await import('../parser/config.js');
+      const { config } = await loadProjectConfig(startupProjectPath);
+      const syncInterval = config.shadow.sync_interval;
+      const worktreeDir = join(startupProjectPath, config.shadow.directory);
+
+      if (syncInterval > 0) {
+        shadowSyncScheduler = new ShadowSyncScheduler({
+          worktreeDir,
+          intervalSeconds: syncInterval,
+          shadowOptions: {
+            branchName: config.shadow.branch,
+            directory: config.shadow.directory,
+            remote: config.shadow.remote?.value,
+            remoteType: config.shadow.remote?.type,
+          },
+          pubsub: pubsubManager,
+        });
+        shadowSyncScheduler.start();
+      }
+    } catch (error) {
+      console.error('[daemon] Failed to initialize shadow sync scheduler:', error);
+    }
+  }
+
   // AC: @daemon-server ac-13, ac-14 - Start heartbeat monitoring
   heartbeatManager.start(pubsubManager.getAllConnections());
 
@@ -427,6 +456,9 @@ export async function createServer(options: ServerOptions) {
     try {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
+
+      // AC: @config-shadow ac-12 - Stop shadow sync scheduler
+      shadowSyncScheduler?.stop();
 
       // AC: @agent-dispatch-engine ac-11 - Stop all dispatch engines before shutting down
       await stopAllEngines();
