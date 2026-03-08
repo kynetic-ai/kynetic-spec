@@ -48502,16 +48502,16 @@
   spec_ref: "@validate-drift"
   meta_ref: null
   plan_ref: null
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KK5F2SGRYK9G8ZGQBZ5XMMV6
   created_at: 2026-02-14T21:54:24.255Z
-  started_at: 2026-03-08T00:35:46.594Z
+  started_at: 2026-03-08T01:09:21.966Z
   submitted_at: 2026-03-08T00:40:51.757Z
   notes:
     - _ulid: 01KHFCPHTHP924E82BBE9HDH25
