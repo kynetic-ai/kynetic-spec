@@ -48470,7 +48470,7 @@
     validation. This was shipped without a spec item or formal ACs, violating the spec-before-code
     rule. Create a spec item with acceptance criteria covering: field detection from prose,
     conceptual vs schema fields, strict mode, exit codes, and false positive handling."
-  spec_ref: null
+  spec_ref: "@validate-drift"
   meta_ref: null
   plan_ref: null
   status: in_progress

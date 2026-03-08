@@ -1914,6 +1914,60 @@ features:
         implements:
           - "@validate-commands"
           - "@validation-modes"
+        requirements:
+          - _ulid: 01KK5E29MS9P5XJ86XG7EFXV4J
+            slugs:
+              - validate-drift
+            title: Validate AC Schema Drift
+            type: requirement
+            tags: []
+            description: Optional validate mode that scans acceptance criterion prose for schema-style field
+              references and warns when the prose refers to fields or object shapes that do not
+              exist in the stored schema.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-08T00:37:59.065Z
+            acceptance_criteria:
+              - id: ac-1
+                given: a spec acceptance criterion references conceptual or unknown fields such as item.children,
+                  the children, or task.foobar
+                when: the user runs kspec validate --drift
+                then: validation reports each offending reference as an AC schema drift warning for the owning spec
+                  item, using conceptual-field guidance for parse-time fields and unknown-field
+                  guidance for names that are not in the schema
+              - id: ac-2
+                given: an acceptance criterion references spec_ref.status, task_ref.notes, meta_ref.slug, or
+                  plan_ref.title
+                when: the user runs kspec validate --drift
+                then: validation warns that the reference drifts because the ref value is a reference string, not an
+                  object with fields
+              - id: ac-3
+                given: an acceptance criterion references valid stored fields such as item.status, item.tags, or
+                  status.implementation
+                when: the user runs kspec validate --drift
+                then: "the drift check accepts those references without emitting warnings for them and reports AC
+                  Schema Drift: OK when no invalid references are found"
+              - id: ac-4
+                given: acceptance criterion prose includes filenames or extensions such as spec.yaml, task.json, or
+                  notes.md alongside schema-like prose
+                when: the user runs kspec validate --drift
+                then: the drift check ignores filename extensions and only evaluates supported field-reference
+                  patterns so those filenames do not create false positives
+              - id: ac-5
+                given: a project contains drift issues that would otherwise be reported by the drift checker
+                when: the user runs kspec validate without the --drift flag
+                then: drift checking is skipped and no AC schema drift warnings are emitted
+              - id: ac-6
+                given: drift warnings are present for one or more acceptance criteria
+                when: the user runs kspec validate --drift and then reruns it with --strict
+                then: the first command exits with warning code 6 while the strict run upgrades the warnings to
+                  validation failure exit code 4
+            status:
+              implementation: implemented
       - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
         slugs:
           - cmd-lint
