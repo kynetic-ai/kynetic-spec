@@ -1282,6 +1282,30 @@ features:
         then: An inline form or modal opens allowing editing of all agent fields (name, description,
           adapter, dispatch triggers, capabilities, tools, skills, budget, concurrency,
           auto_approve, prompt_template). Saving persists changes via API and updates the card.
+      - id: ac-5
+        given: the user is editing an agent's dispatch triggers in the edit form
+        when: a dispatch rule is shown
+        then: each trigger row displays its filter criteria (automation status, tags, priority) with inline
+          editing controls — automation defaults to 'eligible' for new triggers
+      - id: ac-6
+        given: the user adds a new dispatch trigger via the edit form
+        when: the trigger is for task.ready or task.needs_work
+        then: "the filter automatically includes automation: eligible as the default, shown as a pre-filled
+          badge the user can modify or remove"
+      - id: ac-7
+        given: the user is editing a dispatch trigger's filter
+        when: they add tag filter criteria
+        then: the agent only receives tasks matching ALL specified tags — tags are shown as removable chips
+          with an add input
+      - id: ac-8
+        given: the user is editing a dispatch trigger's filter
+        when: they set a priority filter
+        then: the agent only receives tasks with priority at or above (numerically <=) the specified
+          threshold
+      - id: ac-9
+        given: the user saves an agent with dispatch filters configured
+        when: the save request is sent to the API
+        then: the full dispatch rule including filter object is persisted — filters are not silently dropped
     depends_on: []
     implements: []
     relates_to: []

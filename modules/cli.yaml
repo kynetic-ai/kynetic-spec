@@ -6823,6 +6823,17 @@ features:
         when: The engine is created with a custom reconcileIntervalMs value (or the default of 60000ms)
         then: The periodic reconciliation scan runs at the configured interval, and setting the interval to
           0 or null disables periodic reconciliation entirely
+      - id: ac-21
+        given: a dispatch rule has no filter configured (filter is undefined or empty)
+        when: a task state change matches the rule's event type
+        then: "the engine defaults to requiring automation: eligible for task.ready and task.needs_work
+          events — only automation-eligible tasks are dispatched unless the rule explicitly
+          specifies a different automation filter value"
+      - id: ac-22
+        given: kspec setup creates default agent definitions (task-worker, pr-reviewer)
+        when: the default dispatch rules are generated
+        then: "task-worker's task.ready and task.needs_work rules include filter: { automation: eligible }
+          by default"
     depends_on: []
     implements: []
     relates_to: []
