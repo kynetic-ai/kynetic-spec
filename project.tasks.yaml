@@ -51968,6 +51968,15 @@
         where the generated heading actually exists on this docs branch. Verification will re-check
         anchors, diff scope, and push an isolated docs-only fix to PR #692."
       supersedes: null
+    - _ulid: 01KK5PGYSN6Y4AEA641XQWR135
+      created_at: 2026-03-08T03:05:48.085Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Updated INSTALL.md to replace the broken AGENTS.md shadow-branch anchor
+        with kspec-agents.md#shadow-branch-architecture, which matches the generated heading on this
+        branch. Verification: rg confirmed the new link target and no remaining stale README/AGENTS
+        anchors in INSTALL.md; git diff --check passed; git diff --name-only origin/main..HEAD
+        remains README.md, INSTALL.md, docs/getting-started.md; pushed commit 243c7041f to PR #692."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
