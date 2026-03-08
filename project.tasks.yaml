@@ -82061,6 +82061,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #711. Fixed static-mode page data loading by initializing the shared
+    project store before page-level gates run, and added E2E regression coverage for snapshot-backed
+    dashboard/tasks/specs/inbox rendering plus the data freshness indicator. Reviewed diff was
+    aligned to @gh-pages-export ac-25 with no blocking findings; required GitHub CI checks passed on
+    the merged head."
   depends_on: []
   context: []
   priority: 1
@@ -82074,6 +82079,7 @@
   created_at: 2026-03-08T08:18:39.184Z
   started_at: 2026-03-08T10:21:25.447Z
   submitted_at: 2026-03-08T10:29:20.911Z
+  completed_at: 2026-03-08T10:46:36.806Z
   notes:
     - _ulid: 01KK6FWZ01C7Z7XQ1QYX8KGGJS
       created_at: 2026-03-08T10:29:15.905Z
@@ -82098,12 +82104,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-08T10:46:36.806Z
-  closed_reason: "Merged in PR #711. Fixed static-mode page data loading by initializing the shared
-    project store before page-level gates run, and added E2E regression coverage for snapshot-backed
-    dashboard/tasks/specs/inbox rendering plus the data freshness indicator. Reviewed diff was
-    aligned to @gh-pages-export ac-25 with no blocking findings; required GitHub CI checks passed on
-    the merged head."
 - _ulid: 01KK6BECKPA5MHQAZJ2KNPEMP1
   slugs: []
   title: Implement bidirectional shadow branch sync
@@ -82120,7 +82120,7 @@
   spec_ref: "@config-shadow"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -82135,3 +82135,5 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-08T10:47:16.569Z
+  session_id: 01KK6GG55Q0GJSR9MBEP0NX4BX
