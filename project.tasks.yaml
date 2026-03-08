@@ -56476,6 +56476,12 @@
         feat/task-redesign-web-ui instead of main, which would have conflated this PR with unrelated
         docs work. Rebased the task branch setup onto main before commit."
       supersedes: null
+    - _ulid: 01KK5H8WYPSGRPF7YP2HB40W97
+      created_at: 2026-03-08T01:34:01.174Z
+      author: Jacob Chapel
+      content: Re-anchored the task branch from stale local main to origin/main so the eventual PR diff
+        stays scoped to this task only.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
