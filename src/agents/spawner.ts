@@ -100,9 +100,11 @@ export function spawnAgent(
 ): SpawnedAgent {
   const { cwd, env = {}, extraArgs, clientOptions = {} } = options;
 
-  // Merge environment variables
+  // Merge environment variables, removing CLAUDECODE to prevent nested session
+  // detection when the daemon was started from within a Claude Code environment.
+  const { CLAUDECODE: _, ...cleanProcessEnv } = process.env;
   const processEnv = {
-    ...process.env,
+    ...cleanProcessEnv,
     ...adapter.env,
     ...env,
   };
