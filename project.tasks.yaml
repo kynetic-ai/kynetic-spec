@@ -80581,7 +80581,7 @@
     not listed in package.json dependencies. Clean npm installs cannot start the daemon — fails with
     'Cannot find module @elysiajs/static'. Only @elysiajs/cors is declared. Works locally because
     Bun resolves it from the workspace, but breaks on global installs.
-  spec_ref: null
+  spec_ref: "@web-ui"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -80606,7 +80606,7 @@
     git 2.42. Debian 12 (bookworm) ships git 2.39, Ubuntu 22.04 ships 2.34. Need a fallback that
     creates the orphan branch and worktree using older git commands (create orphan branch manually,
     then add worktree).
-  spec_ref: null
+  spec_ref: "@config-shadow"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -80631,7 +80631,7 @@
     the install guide or README. Users discover it only when trying to start the daemon. Either: (a)
     document the Bun requirement clearly in install/setup, (b) auto-install Bun during kspec setup,
     or (c) provide a Node.js-compatible daemon fallback."
-  spec_ref: null
+  spec_ref: "@web-ui"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -80655,7 +80655,7 @@
   description: kspec item add requires --under <ref> but in a fresh project there are no items to
     reference as a parent. Need to allow adding root-level items (features/requirements) without
     specifying a parent, or auto-create a module when --module is specified.
-  spec_ref: null
+  spec_ref: "@item-add"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -80680,7 +80680,7 @@
     nothing. It should still install core skills, generate kspec-agents.md, and perform other setup
     steps even without detecting a specific agent platform. The agent env detection should be
     optional/informational.
-  spec_ref: null
+  spec_ref: "@cmd-setup"
   meta_ref: null
   plan_ref: null
   status: pending

@@ -621,6 +621,11 @@ features:
               a shadow branch already exists with default settings (kspec-meta, .kspec)
             when: config is changed to different shadow.branch or shadow.directory
             then: kspec reports the mismatch and guides the user to migrate or repair
+          - id: ac-10
+            given: git version is below 2.42 (does not support --orphan worktree flag)
+            when: kspec init creates the shadow branch
+            then: falls back to manual orphan branch creation (git checkout --orphan + git worktree add) instead
+              of failing
         depends_on: []
         implements: []
         relates_to: []

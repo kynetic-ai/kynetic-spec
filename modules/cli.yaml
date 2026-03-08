@@ -2378,6 +2378,11 @@ features:
             given: .kspec worktree already exists and is valid
             when: User runs kspec setup
             then: Skips worktree creation, proceeds with other setup steps
+          - id: ac-1
+            given: no agent environment is detected (no Claude Code, Aider, Codex, etc.)
+            when: kspec setup is run
+            then: still installs core skills, renders skills, generates kspec-agents.md, and prints manual
+              KSPEC_AUTHOR instructions — does not exit with error
         notes:
           - _ulid: 01KFADB7BNJMB4YSV75Z79SS7G
             created_at: 2026-01-19T05:58:47.925Z

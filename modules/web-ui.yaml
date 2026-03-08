@@ -1581,3 +1581,14 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+acceptance_criteria:
+  - id: ac-1
+    given: kspec is installed globally via npm
+    when: kspec serve start is run
+    then: all daemon runtime dependencies (elysia, @elysiajs/cors, @elysiajs/static) are available
+      without additional install steps
+  - id: ac-2
+    given: Bun runtime is not installed
+    when: kspec serve start is run
+    then: shows a clear error message with Bun install URL and optionally offers to install via the
+      official install script
