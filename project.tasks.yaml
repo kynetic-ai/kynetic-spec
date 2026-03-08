@@ -62012,7 +62012,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -62031,6 +62031,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-03-08T01:46:05.443Z
+  session_id: 01KK5HGQSHCNF1Y2FJHDG5ZWHY
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
   slugs:
     - implement-per-role-adapter-selection-for-ralph-loo
