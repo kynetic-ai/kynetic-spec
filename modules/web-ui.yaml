@@ -737,6 +737,11 @@ features:
         when: the user navigates to a sessions route
         then: the UI shows an informative read-only message instead of failing or implying live session
           streaming is available
+      - id: ac-23
+        given: export runs after the web UI adds plans and triage views
+        when: JSON output is generated
+        then: snapshot includes read-only plans data (including content and progress fields) and triage
+          records so /plans and /triage can render from static data
     status:
       maturity: draft
       implementation: in_progress
