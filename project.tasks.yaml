@@ -46776,7 +46776,7 @@
     spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates
     task-A depending on task-B. Removes need to manually set task dependencies after derive."
   spec_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -46786,7 +46786,7 @@
     - derive
     - dx
   vcs_refs: []
-  session_id: 01KK5D7J8PRFF49G48S1NN27E7
+  session_id: null
   created_at: 2026-02-07T07:41:49.575Z
   started_at: 2026-03-08T00:24:22.324Z
   submitted_at: 2026-03-08T00:28:46.858Z
@@ -46843,6 +46843,13 @@
       created_at: 2026-03-08T00:29:20.261Z
       author: Jacob Chapel
       content: "Submitted for review in PR #690: https://github.com/kynetic-ai/kynetic-spec/pull/690"
+      supersedes: null
+    - _ulid: 01KK5DWVTRZB6C24M2S0Z169SC
+      created_at: 2026-03-08T00:35:01.081Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: spec dependency linking is order-dependent in a
+        single derive run; derive --all can create the consumer before the dependency task and leave
+        depends_on empty."
       supersedes: null
   todos: []
   automation: manual_only
