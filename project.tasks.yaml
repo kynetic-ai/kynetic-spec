@@ -62119,7 +62119,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -62268,6 +62268,12 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-03-08T04:39:18.275Z
+  closed_reason: "Merged in PR #694. Added a dedicated GitHub Actions Playwright smoke E2E job with
+    Playwright browser cache restore, Bun setup, Chromium install, and a repo-level smoke command
+    path separated from the vitest shards; preserved the full suite as npm run test:e2e:full.
+    Verification: fresh PR-head CI passed on 7591bedf including e2e (playwright smoke), and env -u
+    KSPEC_SESSION_ID npm run test:e2e passed locally in isolated review worktree."
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
   slugs:
     - implement-per-role-adapter-selection-for-ralph-loo
