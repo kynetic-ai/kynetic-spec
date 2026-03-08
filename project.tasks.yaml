@@ -82333,6 +82333,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #714. Added session-end shadow commits for
+    completed/timed_out/aborted/failed invocation paths, added dirty-worktree shadowPull
+    stash/restore coverage, and confirmed @session-events ac-7 regression coverage plus green branch
+    CI on merge commit ac7d5a396d2d6311619f39daa1ab7da4413aed3d."
   depends_on: []
   context: []
   priority: 3
@@ -82344,6 +82348,7 @@
   created_at: 2026-03-08T17:21:07.790Z
   started_at: 2026-03-08T18:07:21.989Z
   submitted_at: 2026-03-08T18:07:28.822Z
+  completed_at: 2026-03-08T18:17:52.118Z
   notes:
     - _ulid: 01KK77NA606AMT2BPS1C6Y5D3J
       created_at: 2026-03-08T17:24:31.040Z
@@ -82368,11 +82373,6 @@
         shadow commit logic."
       supersedes: null
   todos: []
-  completed_at: 2026-03-08T18:17:52.118Z
-  closed_reason: "Merged in PR #714. Added session-end shadow commits for
-    completed/timed_out/aborted/failed invocation paths, added dirty-worktree shadowPull
-    stash/restore coverage, and confirmed @session-events ac-7 regression coverage plus green branch
-    CI on merge commit ac7d5a396d2d6311619f39daa1ab7da4413aed3d."
 - _ulid: 01KK79354YDDPP9H4DH0TH1628
   slugs: []
   title: "Investigate: global kspec install overrides local linked version"
@@ -82390,5 +82390,24 @@
     - infra
   vcs_refs: []
   created_at: 2026-03-08T17:49:33.214Z
+  notes: []
+  todos: []
+- title: Reconcile agent memory entries into project documentation
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - docs
+    - infra
+  depends_on: []
+  _ulid: 01KK7F3RMGQCWA3R0ST0TQ3H6Z
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T19:34:44.624Z
   notes: []
   todos: []
