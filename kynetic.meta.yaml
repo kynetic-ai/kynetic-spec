@@ -112,11 +112,11 @@ agents:
       - on: task.pending_review
     skills:
       - pr-review
+    budget:
+      timeout_minutes: 120
     concurrency:
       max_concurrent: 1
     auto_approve: true
-    budget:
-      timeout_minutes: 120
   - _ulid: 01KJY2FNZ6DG45GGS7D4V2ZADF
     id: ui-worker
     name: UI Worker Agent
@@ -7713,6 +7713,15 @@ observations:
       logic before merge. Running both in parallel added no wall-clock time."
     created_at: 2026-03-05T00:31:37.570Z
     author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KK5EA0FV1F2Z7VHKGAG8JYTE
+    type: friction
+    content: Alignment validation expects a linked spec to remain in_progress while its task is
+      pending_review, which is unintuitive for spec-repair tasks on already-implemented behavior and
+      forced a status flip during submission.
+    created_at: 2026-03-08T00:42:11.835Z
+    author: Jacob Chapel
     resolved: false
     resolution: null
 skills:
