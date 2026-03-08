@@ -82293,22 +82293,23 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Update web UI favicon with new Kynetic logo
+- _ulid: 01KK767ZJ9Y6BXEJ6MV192T37V
+  slugs: []
+  title: Update web UI favicon with new Kynetic logo
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - design
     - web-ui
-  depends_on: []
-  _ulid: 01KK767ZJ9Y6BXEJ6MV192T37V
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T16:59:45.609Z
   notes: []
   todos: []
+  started_at: 2026-03-08T17:00:23.876Z
