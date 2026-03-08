@@ -82441,9 +82441,19 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KK7P0B338YTMAYZ552M4R5H3
   created_at: 2026-03-08T19:56:47.115Z
-  notes: []
+  started_at: 2026-03-08T21:35:59.674Z
+  notes:
+    - _ulid: 01KK7PEM88J9K6BNF94E6ME8JG
+      created_at: 2026-03-08T21:43:00.616Z
+      author: "@claude"
+      content: "Switched task list detail panel from Sheet (side slide-in) to Dialog (centered modal) to
+        match kanban board. Changes: replaced
+        Sheet/SheetContent/SheetHeader/SheetTitle/SheetDescription imports with
+        Dialog.Root/Dialog.Content/Dialog.Header/Dialog.Title/Dialog.Description in +page.svelte.
+        Kept same data-testid='task-detail-panel' so E2E tests continue working. Also updated
+        comment in TaskDetailContent.svelte and test comments in tasks.spec.ts."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T21:35:59.674Z
-  session_id: 01KK7P0B338YTMAYZ552M4R5H3
