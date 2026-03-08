@@ -189,12 +189,17 @@ describe("Dispatch in-progress priority", () => {
     // Hold dispatching so we can inspect queue ordering.
     internal.activeCount.set(agent.id, 1);
 
+    // Provide inline task data with automation: eligible so task.ready/task.needs_work
+    // default filter passes (AC-21). Tasks are not on disk to avoid staleness discard.
+    const makeEligibleTask = (id: string) => ({ automation: "eligible", tags: [] }) as any;
+
     await engine.handleStateChange(
       makeStateChange({
         taskId: testUlid("TASK", 10),
         taskRef: `@${testUlid("TASK", 10)}`,
         fromStatus: "in_progress",
         toStatus: "pending",
+        task: makeEligibleTask(testUlid("TASK", 10)),
       }),
     );
     await engine.handleStateChange(
@@ -203,6 +208,7 @@ describe("Dispatch in-progress priority", () => {
         taskRef: `@${testUlid("TASK", 11)}`,
         fromStatus: "pending_review",
         toStatus: "needs_work",
+        task: makeEligibleTask(testUlid("TASK", 11)),
       }),
     );
     await engine.handleStateChange(
@@ -333,6 +339,10 @@ describe("AC-1: Task state change queues matching agents", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
+    // Write task with automation: eligible so default filter passes (AC-21)
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -348,7 +358,6 @@ describe("AC-1: Task state change queues matching agents", () => {
     await engine.start();
 
     // Trigger state change: task transitions to pending (task.ready)
-    const taskId = testUlid("TASK");
     const change: TaskStateChange = {
       taskId,
       taskRef: `@${taskId}`,
@@ -388,6 +397,10 @@ describe("AC-2: Multiple matching agents queued independently", () => {
     });
     await setupProjectWithAgents(testDir, [agent1, agent2]);
 
+    // Write task with automation: eligible so default filter passes (AC-21)
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
 
     // Track enqueue calls per agent
@@ -400,7 +413,7 @@ describe("AC-2: Multiple matching agents queued independently", () => {
     // Reset after bootstrap
     enqueuedAgentIds.length = 0;
 
-    const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress" });
+    const change = makeStateChange({ taskId, taskRef: `@${taskId}`, toStatus: "pending", fromStatus: "in_progress" });
     await engine.handleStateChange(change);
 
     // Both agents should be enqueued independently
@@ -611,6 +624,10 @@ describe("AC-7: Event deduplication within time window", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
+    // Write task with automation: eligible so default filter passes (AC-21)
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -629,7 +646,6 @@ describe("AC-7: Event deduplication within time window", () => {
     enqueueCount = 0;
 
     const now = Date.now();
-    const taskId = testUlid("TASK");
     const change: TaskStateChange = {
       taskId,
       taskRef: `@${taskId}`,
@@ -653,6 +669,10 @@ describe("AC-7: Event deduplication within time window", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
+    // Write task with automation: eligible so default filter passes (AC-21)
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
@@ -670,7 +690,6 @@ describe("AC-7: Event deduplication within time window", () => {
     // Reset after bootstrap
     enqueueCount = 0;
 
-    const taskId = testUlid("TASK");
     const now = Date.now();
     const change: TaskStateChange = {
       taskId,
@@ -712,7 +731,7 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending" }]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
 
@@ -1033,6 +1052,10 @@ describe("AC-4: CLI posts state change event via handleStateChange", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.needs_work" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
+    // Write task with automation: eligible so default filter passes (AC-21)
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
 
     let enqueueCount = 0;
@@ -1044,7 +1067,6 @@ describe("AC-4: CLI posts state change event via handleStateChange", () => {
     enqueueCount = 0; // reset after bootstrap
 
     // Simulate CLI posting a state change event
-    const taskId = testUlid("TASK");
     const change: TaskStateChange = {
       taskId,
       taskRef: `@${taskId}`,
@@ -1080,6 +1102,7 @@ describe("Text chunk boundary signaling", () => {
     const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
+    const taskId = testUlid("TASK");
     const seenChunks: string[] = [];
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
       opts.onUpdate?.({
@@ -1113,13 +1136,13 @@ describe("Text chunk boundary signaling", () => {
     });
 
     await engine.start();
-    const taskId = testUlid("TASK");
     await engine.handleStateChange({
       taskId,
       taskRef: `@${taskId}`,
       fromStatus: "in_progress",
       toStatus: "pending",
       timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
     });
 
     expect(seenChunks).toEqual(["before tool", "", "after tool"]);
@@ -1143,6 +1166,8 @@ describe("Autonomous dispatch prompt guardrails", () => {
     const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
+    const taskId = testUlid("TASK");
+
     const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
       session: {} as any,
       outcome: "success",
@@ -1156,13 +1181,13 @@ describe("Autonomous dispatch prompt guardrails", () => {
     });
 
     await engine.start();
-    const taskId = testUlid("TASK");
     await engine.handleStateChange({
       taskId,
       taskRef: `@${taskId}`,
       fromStatus: "in_progress",
       toStatus: "pending",
       timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
     });
 
     for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
@@ -1397,7 +1422,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         fromStatus: "in_progress",
         toStatus: "pending",
         timestamp: Date.now(),
-        task: { _ulid: taskId, title: "Test task title", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString() } as any,
+        task: { _ulid: taskId, title: "Test task title", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
       for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
@@ -1442,7 +1467,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         fromStatus: "in_progress",
         toStatus: "pending",
         timestamp: Date.now(),
-        task: { _ulid: taskId, title: "My task", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString() } as any,
+        task: { _ulid: taskId, title: "My task", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
       for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
@@ -1967,7 +1992,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending" }]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -2004,7 +2029,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    await writeTasks(testDir, [{ _ulid: taskId, status: "pending" }]);
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -2179,5 +2204,200 @@ describe("AC-20: Reconciliation interval configuration", () => {
     // Wait well past interval — no more calls should happen
     await new Promise((r) => setTimeout(r, 200));
     expect(reconcileSpy.mock.calls.length).toBe(callsAtStop);
+  });
+});
+
+// ─── AC-21: Default automation filter for task.ready/task.needs_work ────────
+
+// AC: @agent-dispatch-engine ac-21
+describe("AC-21: Default automation:eligible for task.ready/task.needs_work without filter", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-ac21-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should reject ineligible tasks on task.ready rules with no filter", async () => {
+    // Agent with NO filter on task.ready — should still default to automation:eligible
+    const agent = makeTestAgent({
+      id: "no-filter-worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0; // reset after bootstrap
+
+    // Transition to pending (task.ready) — should NOT be queued because task is ineligible
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "ineligible" },
+    ]);
+
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(0);
+
+    await engine.stop();
+  });
+
+  it("should accept eligible tasks on task.ready rules with no filter", async () => {
+    const agent = makeTestAgent({
+      id: "no-filter-worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(1);
+
+    await engine.stop();
+  });
+
+  it("should reject ineligible tasks on task.needs_work rules with no filter", async () => {
+    const agent = makeTestAgent({
+      id: "needs-work-worker",
+      dispatch: [{ on: "task.needs_work" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "ineligible" },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "needs_work", automation: "ineligible" },
+    ]);
+
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(0);
+
+    await engine.stop();
+  });
+
+  it("should NOT default automation filter for task.pending_review rules", async () => {
+    // task.pending_review should NOT default to automation:eligible
+    // Use same pattern as AC-6 positive test: spy handleStateChange to verify event detection
+    const agent = makeTestAgent({
+      id: "reviewer-no-filter",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    await engine.start();
+
+    // Transition to pending_review — should be queued even though task is ineligible
+    // because task.pending_review does NOT default to automation:eligible
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "ineligible" },
+    ]);
+
+    // Use handleStateChange directly to test filter behavior independently of file diffing
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending_review",
+      timestamp: Date.now(),
+    };
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.handleStateChange(change);
+
+    expect(enqueueCount).toBe(1);
+
+    await engine.stop();
+  });
+
+  it("should allow explicit filter override on task.ready rules", async () => {
+    // Rule explicitly says automation: undefined (via empty filter) — default still applies
+    const agentWithExplicitAny = makeTestAgent({
+      id: "explicit-any-worker",
+      dispatch: [{ on: "task.ready", filter: { tags: ["mvp"] } }],
+    });
+    await setupProjectWithAgents(testDir, [agentWithExplicitAny]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "ineligible", tags: ["mvp"] },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "ineligible", tags: ["mvp"] },
+    ]);
+
+    await engine.handleFileChange(testDir);
+
+    // Still rejected — default automation:eligible applies when filter doesn't specify automation
+    expect(enqueueCount).toBe(0);
+
+    await engine.stop();
   });
 });

@@ -65,6 +65,9 @@
 				<Badge variant="secondary" class="text-xs gap-1" data-testid="agent-trigger">
 					<Zap class="h-3 w-3" />
 					{trigger.on.replace('task.', '')}
+					{#if trigger.filter?.automation}
+						<span class="opacity-60">({trigger.filter.automation})</span>
+					{/if}
 				</Badge>
 			{/each}
 		{:else}
