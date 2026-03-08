@@ -1664,6 +1664,13 @@ export async function runSetupPipeline(
             status: "done",
             message: `KSPEC_AUTHOR="${author}"`,
           });
+        } else if (detected.type === "unknown") {
+          // AC: @cmd-setup ac-1 - show manual instructions for unknown agents
+          steps.push({
+            name: "Configure author",
+            status: "skipped",
+            message: `no auto-config for unknown agent — set KSPEC_AUTHOR manually`,
+          });
         }
       }
     }
@@ -1867,10 +1874,9 @@ export function registerSetupCommand(program: Command): void {
           : detectAgent();
         const dryRun = options.dryRun || false;
 
+        // AC: @cmd-setup ac-1 - proceed with setup even when no agent is detected
         if (detected.type === "unknown") {
-          warn("Could not auto-detect agent environment");
-          printManualInstructions("unknown");
-          return;
+          warn("Could not auto-detect agent environment — proceeding with core setup steps");
         }
 
         // AC: @setup-pipeline-unification ac-3 - delegate to runSetupPipeline()
@@ -1941,6 +1947,11 @@ export function registerSetupCommand(program: Command): void {
               console.log(
                 chalk.gray("Restart your agent session for changes to take effect."),
               );
+            }
+
+            // AC: @cmd-setup ac-1 - print manual KSPEC_AUTHOR instructions for unknown agents
+            if (detected.type === "unknown") {
+              printManualInstructions("unknown");
             }
           },
         );
