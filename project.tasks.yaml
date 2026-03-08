@@ -51865,16 +51865,16 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KK5JNRDWQVHTSQTD4ZTACRG7
   created_at: 2026-02-19T19:09:09.058Z
-  started_at: 2026-03-08T01:37:07.196Z
+  started_at: 2026-03-08T02:22:01.484Z
   submitted_at: 2026-03-08T01:37:37.724Z
   notes:
     - _ulid: 01KHW19B512JKJ09DNKPQMXEC9
