@@ -46776,7 +46776,7 @@
     spec dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates
     task-A depending on task-B. Removes need to manually set task dependencies after derive."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -46877,6 +46877,11 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-03-08T01:03:55.548Z
+  closed_reason: "Merged in PR #690. Added derive-time mapping from spec depends_on to task
+    depends_on, including same-run ordering so derive --all links dependency tasks before consumers
+    and warning-only behavior when a depended-on spec has no active task. AC coverage verified for
+    @cmd-derive ac-16 and ac-17; full npm test and PR CI passed on current HEAD."
 - _ulid: 01KGVGVJCXRNGY20G88G0HJDVD
   slugs: []
   title: Filter superseded notes from default task display
