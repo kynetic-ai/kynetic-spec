@@ -80627,7 +80627,16 @@
     - compatibility
   vcs_refs: []
   created_at: 2026-03-08T00:41:02.439Z
-  notes: []
+  notes:
+    - _ulid: 01KK5EPGT095GPRFVJYDVTGB3C
+      created_at: 2026-03-08T00:49:01.760Z
+      author: "@claude"
+      content: "IMPORTANT: The fallback must NEVER modify the project working tree. The approach is: (1)
+        create a temp dir in /tmp, (2) init a bare/empty repo there to create the orphan branch, (3)
+        push that branch back to the project repo, (4) use standard 'git worktree add' (no --orphan)
+        to attach. Do NOT use 'git checkout --orphan' in the project dir — that would blow away the
+        user's working tree."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
