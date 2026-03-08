@@ -62021,7 +62021,9 @@
     - ci
     - infra
   vcs_refs: []
+  session_id: 01KK5HGQSHCNF1Y2FJHDG5ZWHY
   created_at: 2026-02-26T13:07:52.613Z
+  started_at: 2026-03-08T01:46:05.443Z
   notes:
     - _ulid: 01KJDFWAA0883CNHNQ37PYMGNF
       created_at: 2026-02-26T17:27:53.920Z
@@ -62029,10 +62031,24 @@
       content: "Automation status set to manual_only: CI configuration requires human judgment on runner
         resources, caching strategy, and secrets"
       supersedes: null
+    - _ulid: 01KK5HZ1A3KH0B721YYC4S5FH8
+      created_at: 2026-03-08T01:46:06.531Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: CI currently runs typecheck/build/vitest shards but not Playwright E2E.
+
+        - Scope: add a separate GitHub Actions E2E job with Playwright browser install/caching and
+        keep it isolated from unit shards.
+
+        - Files: .github/workflows/test.yml and any minimal script/workflow support files required.
+
+        - Verification: validate workflow YAML, run targeted checks for CI config, and exercise the
+        E2E command path locally if feasible.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-03-08T01:46:05.443Z
-  session_id: 01KK5HGQSHCNF1Y2FJHDG5ZWHY
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
   slugs:
     - implement-per-role-adapter-selection-for-ralph-loo
