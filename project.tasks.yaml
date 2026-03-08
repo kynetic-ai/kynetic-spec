@@ -82274,5 +82274,15 @@
         background sync still miss configured shadow remotes because shadowPull() checks remote
         branch existence against origin; add coverage for non-origin shadow.remote cases."
       supersedes: null
+    - _ulid: 01KK7065ZKD98RS02WWWCCBNWV
+      created_at: 2026-03-08T15:13:55.188Z
+      author: "@claude"
+      content: "Fix cycle 4: shadowPull() was calling fetchRemote() and remoteBranchExists() with default
+        'origin' instead of the configured remote from ShadowOptions. Added getRemoteName() helper
+        (following getBranchName/getDirectoryName pattern) that resolves the effective remote name
+        from options. Two new behavioral tests prove shadowPull and shadowPushAsync work correctly
+        with a non-origin configured remote (specs-origin). All 100 shadow tests + 5 scheduler tests
+        + 1315 shard1 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
