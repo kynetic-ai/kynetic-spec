@@ -56484,7 +56484,7 @@
     without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
     never-edit-manually rule.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -56610,6 +56610,13 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-03-08T03:12:22.915Z
+  closed_reason: "Merged in PR #693 (merge commit b1389f2da3173770e86f8c2f06f6034aca31df61). Added
+    --root support to kspec item add for project-level trait creation in kynetic.yaml without
+    --under, reused a shared project-level trait write helper across item add / trait add / plan
+    import, and added CLI coverage for root-path success plus recovery-guided misuse cases in text
+    and JSON modes. AC coverage verified for @item-add ac-1 and the changed inherited trait
+    behavior; npx vitest run tests/trait-cli.test.ts and npm test both passed on the merged head."
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
   slugs: []
   title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
