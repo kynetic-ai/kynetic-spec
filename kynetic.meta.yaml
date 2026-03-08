@@ -84,12 +84,17 @@ agents:
       - vitest
     conventions: []
     adapter: codex-acp
-    dispatch: []
+    dispatch:
+      - on: task.in_progress
+      - on: task.ready
+      - on: task.needs_work
     skills:
       - task-work
     concurrency:
       max_concurrent: 1
     auto_approve: true
+    budget:
+      timeout_minutes: 120
   - _ulid: 01KJS8JC35KPCJP6A4C1VJAWF9
     id: reviewer
     name: Reviewer Agent
