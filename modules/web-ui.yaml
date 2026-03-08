@@ -754,7 +754,7 @@ features:
           (isProjectInitialized) pass and static API functions can serve snapshot data to all views
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
   - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
     slugs:
       - cli-serve-commands
