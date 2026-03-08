@@ -82223,5 +82223,16 @@
         sync for CLI read paths such as task list; PR #712 only covers write-side pull-rebase and
         daemon background pull."
       supersedes: null
+    - _ulid: 01KK6Y21WB0PEZ28YA9GKG7TC6
+      created_at: 2026-03-08T14:36:42.763Z
+      author: "@claude"
+      content: "Fix cycle 2: Added pre-read shadow pull in initContext() so all CLI read operations (task
+        list, task get, search, session start, etc.) automatically pull remote changes before
+        loading data. The pull is best-effort: conflicts warn but don't fail the command. Controlled
+        by KSPEC_NO_SYNC=1 for offline/test scenarios. Moved session start's explicit shadowPull
+        into initContext to eliminate duplication. Two new behavioral tests verify pre-read sync
+        works and respects KSPEC_NO_SYNC. All 98 shadow tests pass. Shard failures are pre-existing
+        codex-related issues."
+      supersedes: null
   todos: []
   automation: eligible
