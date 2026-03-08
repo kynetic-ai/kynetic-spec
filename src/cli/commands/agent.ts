@@ -29,6 +29,7 @@ import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
+import { getWebSocketCtor } from "../websocket.js";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -842,8 +843,8 @@ export function registerAgentCommands(program: Command): void {
           wsUrl.searchParams.set("project", projectDir);
         }
 
-        // AC: @cli-agent-commands ac-15 — Node 22+ has global WebSocket
-        const ws = new WebSocket(wsUrl.toString());
+        const WS = getWebSocketCtor();
+        const ws = new WS(wsUrl.toString());
 
         ws.onopen = () => {
           retryCount = 0;
