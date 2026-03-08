@@ -48473,7 +48473,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -48489,6 +48489,8 @@
       supersedes: null
   todos: []
   automation: needs_review
+  started_at: 2026-03-08T00:35:46.594Z
+  session_id: 01KK5DJRP5BFF69MMEG7S3PAC9
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
   slugs: []
   title: Fix trivial AC-6 test in multi-value status filter
