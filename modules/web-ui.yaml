@@ -320,6 +320,7 @@ features:
       - "@trait-error-guidance"
       - "@trait-api-endpoint"
       - "@trait-websocket-protocol"
+      - "@trait-task-readiness"
     notes: []
     created: 2026-01-22T07:00:00.000Z
     acceptance_criteria:
@@ -1203,7 +1204,8 @@ features:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-task-readiness"
     notes: []
     created: 2026-03-05T01:30:02.752Z
     status:

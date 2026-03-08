@@ -6897,17 +6897,13 @@ features:
         when: the default dispatch rules are generated
         then: "task-worker's task.ready and task.needs_work rules include filter: { automation: eligible }
           by default"
-      - id: ac-23
-        given: A task matches an agent dispatch rule and the task has depends_on references
-        when: The dispatch engine evaluates the task for dispatch
-        then: The engine checks that all depends_on tasks have status completed before queuing. Tasks with
-          unmet dependencies (any depends_on task not completed) are skipped.
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits:
       - "@trait-error-guidance"
+      - "@trait-task-readiness"
     notes: []
     created: 2026-03-02T01:22:19.943Z
     status:

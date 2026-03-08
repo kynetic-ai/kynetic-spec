@@ -785,6 +785,8 @@ features:
           This is THE command for "what can I work on next?"
         implements:
           - "@task-queries"
+        traits:
+          - "@trait-task-readiness"
       - _ulid: 01JHNKA7W2TQRY200000000000
         slugs:
           - query-next
@@ -802,6 +804,8 @@ features:
           Useful for agents: "give me one thing to do"
         implements:
           - "@task-queries"
+        traits:
+          - "@trait-task-readiness"
       - _ulid: 01JHNKA7W3TQRY300000000000
         slugs:
           - query-filters
@@ -1143,6 +1147,8 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+    traits:
+      - "@trait-task-readiness"
   - _ulid: 01KFFFZTA9V1WPHADEDRYJ78XM
     slugs:
       - spec-task-reset
