@@ -81715,6 +81715,27 @@
         coverage for @ui-agent-dispatch ac-5..ac-9, priority filter semantics still use exact match
         instead of threshold, and filter badges are only partially surfaced."
       supersedes: null
+    - _ulid: 01KK6CFN4SGS2ESR5FN5BHBKG8
+      created_at: 2026-03-08T09:29:34.105Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed:
+
+        - MUST-FIX: Priority filter changed from exact match to threshold semantics (task.priority
+        <= filter.priority). 4 new dispatch engine tests covering equal, higher, lower priority, and
+        default priority.
+
+        - MUST-FIX: Added 15 E2E tests for @ui-agent-dispatch ac-5..ac-9 covering filter display,
+        automation defaults, tag chips, priority editing, and save persistence.
+
+        - SHOULD-FIX: AgentCard now shows full filter badges — automation, tags (as individual
+        badges), and priority (as p≤N) — not just automation.
+
+        - Updated fixture to include tags and priority on task-worker dispatch rule for E2E testing.
+
+        - All 64 dispatch engine tests pass. Full suite 4053+ pass (3 pre-existing failures in
+        unrelated test files).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5WX0TMYDP3NV9VFEE9HHDT
