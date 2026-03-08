@@ -1,18 +1,43 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { KspecSnapshot } from '../../shared/src/api';
 
 const modeState = vi.hoisted(() => ({
-	snapshot: null as KspecSnapshot | null
+	snapshot: null as KspecSnapshot | null,
+	staticMode: false
 }));
 
-vi.mock('$lib/stores/mode.svelte', () => ({
+const modeMock = vi.hoisted(() => () => ({
 	getSnapshot: () => modeState.snapshot,
+	isStaticMode: () => modeState.staticMode,
+	assertWritable: (op: string) => {
+		if (modeState.staticMode) {
+			throw new Error(`Cannot ${op} in read-only mode.`);
+		}
+	},
 	ReadOnlyModeError: class ReadOnlyModeError extends Error {
 		constructor(operation: string) {
 			super(`Cannot ${operation} in read-only mode.`);
 		}
 	}
 }));
+
+const projectMock = vi.hoisted(() => () => ({
+	getSelectedProjectPath: () => null,
+	clearInvalidSelection: () => {},
+	isInvalidProjectError: () => false
+}));
+
+const constantsMock = vi.hoisted(() => () => ({
+	DAEMON_API_BASE: 'http://localhost:3456'
+}));
+
+// Mock both $lib/ alias (used by api-static.ts) and relative path (resolved by api.ts)
+vi.mock('$lib/stores/mode.svelte', modeMock);
+vi.mock('../src/lib/stores/mode.svelte', modeMock);
+vi.mock('$lib/stores/project.svelte', projectMock);
+vi.mock('../src/lib/stores/project.svelte', projectMock);
+vi.mock('$lib/constants', constantsMock);
+vi.mock('../src/lib/constants', constantsMock);
 
 import {
 	fetchAlignmentStatic,
@@ -23,8 +48,7 @@ import {
 	fetchTriageRecordsStatic,
 	fetchValidationStatic
 } from '../src/lib/api-static';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { fetchSessions, fetchSession } from '../src/lib/api';
 
 function createSnapshot(): KspecSnapshot {
 	return {
@@ -222,36 +246,23 @@ describe('static API snapshot adapters', () => {
 });
 
 // AC: @gh-pages-export ac-22
-describe('static sessions route behavior (@gh-pages-export ac-22)', () => {
-	const WEB_UI_SRC = join(process.cwd(), 'packages', 'web-ui', 'src');
-
-	it('session detail page guards static mode and shows read-only message', () => {
-		const detailSrc = readFileSync(
-			join(WEB_UI_SRC, 'routes', 'sessions', '[id]', '+page.svelte'),
-			'utf-8'
-		);
-		// Component checks isStaticMode() and short-circuits loadSession
-		expect(detailSrc).toContain('isStaticMode()');
-		// Shows an informative read-only message with a testid
-		expect(detailSrc).toContain('data-testid="session-static-message"');
-		expect(detailSrc).toContain('not included in the static export');
+describe('static sessions behavior (@gh-pages-export ac-22)', () => {
+	beforeEach(() => {
+		modeState.staticMode = true;
 	});
 
-	it('session list page returns empty in static mode via fetchSessions', () => {
-		const apiSrc = readFileSync(
-			join(WEB_UI_SRC, 'lib', 'api.ts'),
-			'utf-8'
-		);
-		// fetchSessions returns empty items in static mode
-		expect(apiSrc).toMatch(/fetchSessions[\s\S]*?isStaticMode\(\)[\s\S]*?items:\s*\[\]/);
+	afterEach(() => {
+		modeState.staticMode = false;
 	});
 
-	it('fetchSession throws in static mode to prevent live data fetching', () => {
-		const apiSrc = readFileSync(
-			join(WEB_UI_SRC, 'lib', 'api.ts'),
-			'utf-8'
+	it('fetchSessions returns empty list in static mode', async () => {
+		const result = await fetchSessions();
+		expect(result).toEqual({ items: [], total: 0 });
+	});
+
+	it('fetchSession throws in static mode', async () => {
+		await expect(fetchSession('test-session-id')).rejects.toThrow(
+			'Session data not available in static mode'
 		);
-		// fetchSession throws when called in static mode
-		expect(apiSrc).toMatch(/fetchSession\(id[\s\S]*?isStaticMode\(\)[\s\S]*?throw new Error/);
 	});
 });
