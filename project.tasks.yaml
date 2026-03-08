@@ -81787,6 +81787,15 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: add regression coverage for non-API/static
         requests, /api/health, and root SPA fallback before merge (see PR #707 review)."
       supersedes: null
+    - _ulid: 01KK6D1XZCF034RKT44WRZ1NPT
+      created_at: 2026-03-08T09:39:32.973Z
+      author: "@claude"
+      content: "Fix cycle 1: Added regression tests per review feedback. 5 new vitest unit tests in
+        daemon-path-validation-middleware.test.ts verify the derive middleware URL-based routing
+        logic (static files, /api/health, SPA routes skip project context; API routes still require
+        it). 3 new E2E tests in api-server.spec.ts verify GET / serves HTML, /api/health works, and
+        API routes succeed with a configured project. All 153 daemon tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5XAGV3YDF7X8N1JXBFKW2C
