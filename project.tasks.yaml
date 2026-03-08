@@ -51859,7 +51859,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -51876,6 +51876,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-03-08T01:10:29.121Z
+  session_id: 01KK5FWS0V32ZNSXA6JMSZWK1W
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
   slugs: []
   title: Clean up setup.ts tech debt — dedup, legacy render, error handling
