@@ -82341,6 +82341,15 @@
     - agent-runtime
   vcs_refs: []
   created_at: 2026-03-08T17:21:07.790Z
-  notes: []
-  todos: []
   started_at: 2026-03-08T17:21:23.729Z
+  notes:
+    - _ulid: 01KK77NA606AMT2BPS1C6Y5D3J
+      created_at: 2026-03-08T17:24:31.040Z
+      author: "@claude"
+      content: "Root cause: closeSession() in invocation.ts writes session files to disk but never calls
+        shadowAutoCommit(). Added shadow commit after all 4 terminal event paths (completed,
+        timed_out, aborted, failed). Also fixed shadowPull to stash/unstash around pull operations
+        so dirty worktrees don't trigger false conflict warnings in the sync scheduler. Spec
+        coverage: @session-events ac-7 already requires this. No spec gap for the primary fix."
+      supersedes: null
+  todos: []
