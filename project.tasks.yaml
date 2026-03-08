@@ -67184,6 +67184,28 @@
         queue; kspec validate still has unrelated pre-existing schema/reference/completeness noise
         and a larger historical automation-without-spec backlog outside this first-batch scope.
       supersedes: null
+    - _ulid: 01KK5QXXAJTMQC1Q3CZ1VG37CQ
+      created_at: 2026-03-08T03:30:21.139Z
+      author: Jacob Chapel
+      content: >-
+        Submitted for review in PR #695.
+
+
+        Artifacts:
+
+        - Main branch docs commit: d2ade61ae
+
+        - PR: https://github.com/kynetic-ai/kynetic-spec/pull/695
+
+
+        Verification:
+
+        - kspec tasks assess automation now shows only one review_for_eligible task and no
+        missing-spec needs_review items in the active queue.
+
+        - kspec validate still reports unrelated pre-existing schema/reference/completeness issues
+        plus historical automation-without-spec warnings outside this first-batch scope.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJGRQ1BBMQ4VHWB8SSKG16RA
