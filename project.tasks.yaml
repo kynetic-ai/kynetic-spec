@@ -51865,14 +51865,14 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KK5FWS0V32ZNSXA6JMSZWK1W
+  session_id: null
   created_at: 2026-02-19T19:09:09.058Z
   started_at: 2026-03-08T01:10:29.121Z
   submitted_at: 2026-03-08T01:13:16.604Z
@@ -51914,6 +51914,13 @@
         Validation: kspec validate currently fails because of pre-existing meta/spec issues
         unrelated to this docs task (missing .kspec/skills/observations/SKILL.md, duplicate
         @observations slug, and existing alignment/completeness warnings).
+      supersedes: null
+    - _ulid: 01KK5GRE5QQYH2510KCXXSHAPV
+      created_at: 2026-03-08T01:25:01.751Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #692 includes unrelated validate-drift test
+        changes from task @01KHF2BNVZSQV12C2DRK57C5P2. Split the docs work into a dedicated
+        PR/branch before review can pass."
       supersedes: null
   todos: []
   automation: manual_only
@@ -56092,6 +56099,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Verified on March 8, 2026 that the redesign spike outcomes were already produced by
+    the existing UI revamp planning work: active plan @plan-ui-ux-revamp, imported redesign specs,
+    and derived implementation tasks. Closed as already completed by prior planning/import work
+    rather than duplicating the session."
   depends_on: []
   context: []
   priority: 2
@@ -56104,6 +56115,7 @@
   created_at: 2026-02-23T05:33:38.629Z
   started_at: 2026-03-08T01:18:05.641Z
   submitted_at: 2026-03-08T01:19:41.592Z
+  completed_at: 2026-03-08T01:19:51.778Z
   notes:
     - _ulid: 01KJ4V7SENBYDYV28R1CT2910G
       created_at: 2026-02-23T08:53:14.325Z
@@ -56128,11 +56140,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-03-08T01:19:51.778Z
-  closed_reason: "Verified on March 8, 2026 that the redesign spike outcomes were already produced by
-    the existing UI revamp planning work: active plan @plan-ui-ux-revamp, imported redesign specs,
-    and derived implementation tasks. Closed as already completed by prior planning/import work
-    rather than duplicating the session."
 - _ulid: 01KJ4HJB047Y2M2NJ54YJBJCJJ
   slugs:
     - task-update-triage-skill
