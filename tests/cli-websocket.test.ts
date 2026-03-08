@@ -30,8 +30,20 @@ describe("cli/websocket polyfill", () => {
     expect(WS).toBe(FakeWS);
   });
 
-  it("can establish a real WebSocket connection via the fallback", async () => {
-    // Use the ws Server to verify the exported constructor can connect
+  it("falls back to ws package when globalThis.WebSocket is undefined", () => {
+    // Simulate Node < 22 where globalThis.WebSocket does not exist
+    vi.stubGlobal("WebSocket", undefined);
+
+    const WS = getWebSocketCtor();
+    expect(typeof WS).toBe("function");
+    // The fallback should NOT be the (now-undefined) global
+    expect(WS).not.toBe(undefined);
+  });
+
+  it("can establish a real WebSocket connection via the ws fallback", async () => {
+    // Force the fallback path to simulate Node < 22
+    vi.stubGlobal("WebSocket", undefined);
+
     const { WebSocketServer } = await import("ws");
     const { createServer } = await import("node:http");
 
