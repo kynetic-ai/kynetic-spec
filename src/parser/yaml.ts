@@ -1645,6 +1645,43 @@ export async function addChildItem(
 }
 
 /**
+ * Add a trait item to the project-level traits array in kynetic.yaml.
+ */
+export async function addProjectLevelTraitItem(
+  ctx: KspecContext,
+  item: SpecItem,
+): Promise<{ item: SpecItem; path: string }> {
+  if (!ctx.manifestPath) {
+    throw new Error("Could not find kynetic.yaml");
+  }
+
+  return withFileLock(ctx.manifestPath, async () => {
+    const manifest = await readYamlFile<Record<string, unknown>>(
+      ctx.manifestPath!,
+    );
+
+    if (!manifest) {
+      throw new Error("Could not load kynetic.yaml");
+    }
+
+    if (!Array.isArray(manifest.traits)) {
+      manifest.traits = [];
+    }
+
+    const cleanItem = stripSpecItemMetadata(item as LoadedSpecItem);
+    (manifest.traits as unknown[]).push(cleanItem);
+
+    await writeYamlFilePreserveFormat(ctx.manifestPath!, manifest);
+
+    const traitIndex = (manifest.traits as unknown[]).length - 1;
+    return {
+      item: cleanItem,
+      path: `traits[${traitIndex}]`,
+    };
+  });
+}
+
+/**
  * Update a spec item in place within its source file.
  * Works with nested structures using the _path field.
  */

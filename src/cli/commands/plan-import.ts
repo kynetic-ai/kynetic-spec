@@ -8,6 +8,7 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
+  addProjectLevelTraitItem,
   addChildItem,
   buildIndexes,
   createPlan,
@@ -411,36 +412,11 @@ async function importPlan(
         if (isRootTrait) {
           // Traits without a parent go to kynetic.yaml project-level traits array,
           // not the module-level traits array (same logic as `kspec trait add`)
-          if (!ctx.manifestPath) {
-            throw new Error("Could not find kynetic.yaml");
-          }
-
-          const { readYamlFile, writeYamlFilePreserveFormat } = await import(
-            "../../parser/yaml.js"
-          );
-          const manifest = await readYamlFile<Record<string, unknown>>(
-            ctx.manifestPath,
-          );
-
-          if (!manifest) {
-            throw new Error("Could not load kynetic.yaml");
-          }
-
-          // Ensure traits array exists at root
-          if (!Array.isArray(manifest.traits)) {
-            manifest.traits = [];
-          }
-
-          // Strip metadata from newSpec (_sourceFile, _path)
-          const { _sourceFile, _path, ...cleanItem } = newSpec as LoadedSpecItem;
-          (manifest.traits as unknown[]).push(cleanItem);
-          await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
-
-          const traitIndex = (manifest.traits as unknown[]).length - 1;
+          const addResult = await addProjectLevelTraitItem(ctx, newSpec);
           const createdSpec: LoadedSpecItem = {
-            ...newSpec,
-            _sourceFile: ctx.manifestPath,
-            _path: `traits[${traitIndex}]`,
+            ...(addResult.item as LoadedSpecItem),
+            _sourceFile: ctx.manifestPath!,
+            _path: addResult.path,
           } as LoadedSpecItem;
           createdSpecsMap.set(specSlug, createdSpec);
         } else {

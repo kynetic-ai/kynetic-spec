@@ -2,6 +2,7 @@ import chalk from "chalk";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
+  addProjectLevelTraitItem,
   buildIndexes,
   checkSlugUniqueness,
   createSpecItem,
@@ -64,48 +65,14 @@ export function registerTraitCommands(program: Command): void {
 
         const newItem = createSpecItem(input);
 
-        // Traits should be added to kynetic.yaml as root-level traits array
-        // This requires manually manipulating the manifest file since it's not loaded as an item
-
-        if (!ctx.manifestPath) {
-          error("Could not find kynetic.yaml");
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        const { readYamlFile, writeYamlFilePreserveFormat } = await import(
-          "../../parser/yaml.js"
-        );
-        const manifest = await readYamlFile<Record<string, unknown>>(
-          ctx.manifestPath,
-        );
-
-        if (!manifest) {
-          error("Could not load kynetic.yaml");
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        // Ensure traits array exists at root
-        if (!Array.isArray(manifest.traits)) {
-          manifest.traits = [];
-        }
-
-        // Strip metadata from newItem (_sourceFile, _path)
-        const { _sourceFile, _path, ...cleanItem } = newItem as LoadedSpecItem;
-
-        // Add trait to manifest
-        (manifest.traits as unknown[]).push(cleanItem);
-
-        await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
-
-        // For calculating path and ref
-        const traitIndex = (manifest.traits as unknown[]).length - 1;
+        const addResult = await addProjectLevelTraitItem(ctx, newItem);
         const result = {
           item: {
-            ...newItem,
-            _sourceFile: ctx.manifestPath,
-            _path: `traits[${traitIndex}]`,
+            ...(addResult.item as LoadedSpecItem),
+            _sourceFile: ctx.manifestPath!,
+            _path: addResult.path,
           } as LoadedSpecItem,
-          path: `traits[${traitIndex}]`,
+          path: addResult.path,
         };
 
         // Build index with new item for short ULID

@@ -3,6 +3,7 @@ import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
   AlignmentIndex,
+  addProjectLevelTraitItem,
   addChildItem,
   type BulkPatchResult,
   buildIndexes,
@@ -660,11 +661,9 @@ export function registerItemCommands(program: Command): void {
 
   // kspec item add - create a new spec item under a parent
   markMutating(item.command("add"))
-    .description("Create a new spec item under a parent")
-    .requiredOption(
-      "--under <ref>",
-      "Parent item reference (e.g., @core-primitives)",
-    )
+    .description("Create a new spec item under a parent or in project root")
+    .option("--under <ref>", "Parent item reference (e.g., @core-primitives)")
+    .option("--root", "Create at project root (trait items only)")
     .requiredOption("--title <title>", "Item title")
     .option(
       "--type <type>",
@@ -686,26 +685,70 @@ export function registerItemCommands(program: Command): void {
 Examples:
   $ kspec item add --under @parent --title "Feature name" --type feature
   $ kspec item add --under @parent --title "Multi-tag" --tag api public
-  $ kspec item add --under @parent --title "API endpoint" --trait @trait-api-endpoint`,
+  $ kspec item add --under @parent --title "API endpoint" --trait @trait-api-endpoint
+  $ kspec item add --root --type trait --title "JSON Output" --slug trait-json-output`,
     )
     .action(async (options) => {
       try {
         const ctx = await initContext();
         const { refIndex, items } = await buildIndexes(ctx);
+        const isRootAdd = Boolean(options.root);
+        const itemType = options.type as ItemType;
 
-        // Find the parent item
-        const parentResult = refIndex.resolve(options.under);
-        if (!parentResult.ok) {
-          error(errors.reference.itemNotFound(options.under));
-          process.exit(EXIT_CODES.ERROR);
+        const exitWithUsageGuidance = (
+          message: string,
+          suggestion: string,
+          details?: Record<string, unknown>,
+        ): never => {
+          error(message, { suggestion, ...details });
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        };
+
+        if (options.under && isRootAdd) {
+          exitWithUsageGuidance(
+            `Cannot use --under (${options.under}) and --root together`,
+            "Use --root only for project-level traits in kynetic.yaml, or remove --root and keep --under for nested items.",
+            {
+              field: "under",
+              value: options.under,
+              conflicting_field: "root",
+            },
+          );
         }
 
-        const parent = parentResult.item as LoadedSpecItem;
+        if (!options.under && !isRootAdd) {
+          exitWithUsageGuidance(
+            "item add requires either --under <ref> or --root",
+            "Use --under @parent to create a nested item, or use --root --type trait to create a project-level trait in kynetic.yaml.",
+          );
+        }
 
-        // Check it's not a task
-        if ("status" in parent && typeof parent.status === "string") {
-          error(errors.reference.parentIsTask(options.under));
-          process.exit(EXIT_CODES.ERROR);
+        if (isRootAdd && itemType !== "trait") {
+          exitWithUsageGuidance(
+            `--root is only supported for --type trait (received: ${itemType || "undefined"})`,
+            "Change --type to trait for project-level creation, or remove --root and create the item under a parent with --under.",
+            {
+              field: "type",
+              value: itemType || null,
+            },
+          );
+        }
+
+        let parent: LoadedSpecItem | null = null;
+        if (options.under) {
+          const parentResult = refIndex.resolve(options.under);
+          if (!parentResult.ok) {
+            error(errors.reference.itemNotFound(options.under));
+            process.exit(EXIT_CODES.ERROR);
+          }
+
+          parent = parentResult.item as LoadedSpecItem;
+
+          // Check it's not a task
+          if ("status" in parent && typeof parent.status === "string") {
+            error(errors.reference.parentIsTask(options.under));
+            process.exit(EXIT_CODES.ERROR);
+          }
         }
 
         // Check slug uniqueness if provided
@@ -758,7 +801,7 @@ Examples:
 
         const input: SpecItemInput = {
           title: options.title,
-          type: options.type as ItemType,
+          type: itemType,
           slugs: options.slug ? [options.slug] : [],
           priority: options.priority,
           tags: parseTagsArray(options.tag),
@@ -772,30 +815,41 @@ Examples:
         };
 
         const newItem = createSpecItem(input);
-        const result = await addChildItem(ctx, parent, newItem, options.as);
+        const addResult = isRootAdd
+          ? await addProjectLevelTraitItem(ctx, newItem)
+          : await addChildItem(ctx, parent!, newItem, options.as);
+        const resultItem = {
+          ...(addResult.item as LoadedSpecItem),
+          ...(isRootAdd
+            ? {
+                _sourceFile: ctx.manifestPath!,
+                _path: addResult.path,
+              }
+            : {}),
+        } as LoadedSpecItem;
 
         // Build index including the new item for accurate short ULID
         const index = new ReferenceIndex(
           [],
-          [...items, result.item as LoadedSpecItem],
+          [...items, resultItem],
         );
-        const itemSlug =
-          (result.item as LoadedSpecItem).slugs?.[0] ||
-          index.shortUlid(result.item._ulid);
+        const itemSlug = resultItem.slugs?.[0] || index.shortUlid(resultItem._ulid);
+        const itemRef = `@${itemSlug}`;
         await commitIfShadow(ctx.shadow, "item-add", itemSlug);
         success(
-          `Created item: ${index.shortUlid(result.item._ulid)} under @${parent.slugs[0] || index.shortUlid(parent._ulid)}`,
+          isRootAdd
+            ? `Created item: ${itemRef} in project root traits`
+            : `Created item: ${index.shortUlid(resultItem._ulid)} under @${parent!.slugs[0] || index.shortUlid(parent!._ulid)}`,
           {
-            item: result.item,
-            path: result.path,
+            item: resultItem,
+            path: addResult.path,
           },
         );
 
         // Derive hint
         if (!isJsonMode()) {
           const refSlug =
-            (result.item as LoadedSpecItem).slugs?.[0] ||
-            index.shortUlid(result.item._ulid);
+            resultItem.slugs?.[0] || index.shortUlid(resultItem._ulid);
           console.log(
             chalk.gray(
               `\nDerive implementation task? kspec derive @${refSlug}`,
