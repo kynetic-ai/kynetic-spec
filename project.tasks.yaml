@@ -67226,7 +67226,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -67240,6 +67240,8 @@
   notes: []
   todos: []
   automation: manual_only
+  started_at: 2026-03-08T03:36:08.610Z
+  session_id: 01KK5QYJX5BD8WMZV15N9WWXS8
 - _ulid: 01KJGV65DSZBK2ZB27K8FQFXY9
   slugs: []
   title: Add integration test for config-aware init output messaging
