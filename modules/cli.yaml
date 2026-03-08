@@ -1940,8 +1940,7 @@ features:
                   item, using conceptual-field guidance for parse-time fields and unknown-field
                   guidance for names that are not in the schema
               - id: ac-2
-                given: an acceptance criterion references spec_ref.status, task_ref.notes, meta_ref.slug, or
-                  plan_ref.title
+                given: an acceptance criterion references spec_ref.status or another ref value with dot-access prose
                 when: the user runs kspec validate --drift
                 then: validation warns that the reference drifts because the ref value is a reference string, not an
                   object with fields
