@@ -1666,3 +1666,9 @@ inbox:
       - design
       - feature
     added_by: "@claude"
+  - _ulid: 01KK69QAQYJX1QKV706RTCFNNZ
+    text: test sync - delete me
+    created_at: 2026-03-08T08:41:19.871Z
+    tags:
+      - test
+    added_by: "@claude"
