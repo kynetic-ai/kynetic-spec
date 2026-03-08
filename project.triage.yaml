@@ -2256,7 +2256,41 @@ triage:
       branch-friction observations and PR #664 branch-isolation guidance."
     decided_by: Jacob Chapel
     evidence_refs: []
-    created_at: 2026-03-04T18:54:15.770Z
-    updated_at: 2026-03-04T18:54:21.487Z
     acted_at: 2026-03-04T18:54:21.472Z
     result_ref: "@01KJX36X"
+    created_at: 2026-03-04T18:54:15.770Z
+    updated_at: 2026-03-04T18:54:21.487Z
+  - _ulid: 01KK5X9SS2DV0TMFVJFHK0CMN5
+    inbox_ref: 01KJS7BGC9GX1E66JYK3QDH8R3
+    item_snapshot: "kspec agent run produces no visible output: (1) runInvocation is called without
+      onUpdate, so no streaming to stdout during execution. (2) kspec session log show does not
+      display session.update text content after the fact. Fix: add --stream flag to agent run (or
+      stream by default for interactive use), print text blocks as they arrive. Also: session log
+      show should support a --output or --text mode that replays the assistant text from
+      session.update events. Workaround: jq/python one-liner on events.jsonl."
+    status: triaged
+    action: promote
+    reasoning: Spec coverage exists at @cli-agent-commands ac-12 (streaming output) and ac-11 (--json
+      suppression). Promote to task for implementation.
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-08T05:04:13.602Z
+    updated_at: 2026-03-08T05:04:13.638Z
+  - _ulid: 01KK5X9SWBGW00F2RBSDTNH9VP
+    inbox_ref: 01KJTBNHYM8CTAG9Q9SWY87W2M
+    item_snapshot: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe
+      for concurrent multi-project agent dispatch. invocation.ts saves/restores KSPEC_SESSION_ID in
+      finally, and the per-engine mutex serializes within a project — but two projects running
+      agents concurrently both mutate the same process-level env var. The injectEnvForAdapter() path
+      (writing to .claude/settings.local.json etc.) largely mitigates this in practice, but the
+      process.env mutation remains as a race vector. Fix: either remove the process.env mutation
+      entirely (rely solely on adapter config injection + spawn env), or add a process-level lock
+      around the env mutation window."
+    status: triaged
+    action: promote
+    reasoning: Bug in invocation.ts — process.env mutation race condition for concurrent multi-project
+      dispatch. No spec gap, runtime bug to fix.
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-08T05:04:13.707Z
+    updated_at: 2026-03-08T05:04:13.739Z
