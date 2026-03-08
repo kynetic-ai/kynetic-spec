@@ -1566,7 +1566,27 @@ export async function shadowPushAsync(
  * @param worktreeDir Path to shadow worktree
  * @param options Optional shadow configuration
  */
-export async function shadowPull(
+// In-flight dedup: if a pull is already running for this worktree, piggyback
+// on its result instead of starting a concurrent stash/pull/pop sequence.
+const pullInflight = new Map<string, Promise<ShadowSyncResult>>();
+
+export function shadowPull(
+  worktreeDir: string,
+  options?: ShadowOptions,
+): Promise<ShadowSyncResult> {
+  const key = path.resolve(worktreeDir);
+  const existing = pullInflight.get(key);
+  if (existing) {
+    return existing;
+  }
+  const promise = shadowPullImpl(worktreeDir, options).finally(() => {
+    pullInflight.delete(key);
+  });
+  pullInflight.set(key, promise);
+  return promise;
+}
+
+async function shadowPullImpl(
   worktreeDir: string,
   options?: ShadowOptions,
 ): Promise<ShadowSyncResult> {
@@ -1606,9 +1626,31 @@ export async function shadowPull(
     return result;
   }
 
+  // Stash uncommitted changes before pulling to avoid false conflict reports
+  let stashed = false;
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, ["stash", "push", "-m", "shadow-sync-auto"]);
+    stashed = !stdout.includes("No local changes");
+  } catch {
+    // If stash fails, skip the pull entirely — don't risk reporting a false conflict
+    result.success = true;
+    return result;
+  }
+
+  const unstash = async () => {
+    if (stashed) {
+      try {
+        await runGitAsync(worktreeDir, ["stash", "pop"]);
+      } catch {
+        // Stash pop conflict is unlikely but leave stash intact if it happens
+      }
+    }
+  };
+
   try {
     // Try fast-forward only first (cleanest)
     await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
+    await unstash();
     result.success = true;
     result.pulled = true;
     return result;
@@ -1619,6 +1661,7 @@ export async function shadowPull(
   try {
     // AC: @shadow-sync ac-6 - Fall back to rebase
     await runGitAsync(worktreeDir, ["pull", "--rebase"]);
+    await unstash();
     result.success = true;
     result.pulled = true;
     return result;
@@ -1633,6 +1676,7 @@ export async function shadowPull(
     // May not be in rebase state, ignore
   }
 
+  await unstash();
   result.hadConflict = true;
   result.error = "Sync conflict detected. Run `kspec shadow resolve` to fix.";
   return result;

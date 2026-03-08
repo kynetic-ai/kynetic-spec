@@ -969,6 +969,61 @@ describe('Shadow Branch', () => {
       }
     });
 
+    it('shadowPull succeeds with dirty worktree by stashing and restoring local changes', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Push a remote change via clone
+      const cloneDir = path.join('/tmp', `kspec-sync-dirty-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-file.yaml'),
+          'remote: true\n'
+        );
+        execSync('git add -A && git commit -m "Remote adds file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Create uncommitted local changes (dirty worktree)
+        await fs.writeFile(
+          path.join(worktreeDir, 'dirty-local.yaml'),
+          'dirty: true\n'
+        );
+
+        // Pull should succeed despite dirty worktree
+        const result = await shadowPull(worktreeDir);
+        expect(result.success).toBe(true);
+        expect(result.pulled).toBe(true);
+        expect(result.hadConflict).toBe(false);
+
+        // Remote file should be present
+        const remoteContent = await fs.readFile(
+          path.join(worktreeDir, 'remote-file.yaml'),
+          'utf-8',
+        );
+        expect(remoteContent).toContain('remote: true');
+
+        // Local dirty file should still be present (restored from stash)
+        const localContent = await fs.readFile(
+          path.join(worktreeDir, 'dirty-local.yaml'),
+          'utf-8',
+        );
+        expect(localContent).toContain('dirty: true');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
     // shadowSync does pull then push
     it('shadowSync pulls and pushes', async () => {
       await setupSyncTest();

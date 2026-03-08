@@ -32,6 +32,7 @@ import * as spawnerModule from "../src/agents/spawner.js";
 import { SANITIZED_ENV_VARS } from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
+import * as shadowModule from "../src/parser/shadow.js";
 import {
   testUlid,
   createTempDir,
@@ -1431,6 +1432,131 @@ describe("Host environment variable sanitization", () => {
     // Guard against accidental removal of vars from the sanitization list
     expect(SANITIZED_ENV_VARS).toContain("CLAUDECODE");
     expect(SANITIZED_ENV_VARS).toContain("CLAUDE_CODE_SESSION");
+  });
+});
+
+// ─── AC-7: Shadow commit on session end ──────────────────────────────────────
+
+// AC: @session-events ac-7
+describe("Shadow commit on terminal invocation events", () => {
+  let testDir: string;
+  let commitSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-shadow-");
+    commitSpy = vi.spyOn(shadowModule, "shadowAutoCommit").mockResolvedValue(true);
+  });
+
+  afterEach(async () => {
+    commitSpy.mockRestore();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should call shadowAutoCommit after successful invocation", async () => {
+    registerMockAdapter();
+    const agent = makeTestAgent();
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Shadow commit on success",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(commitSpy).toHaveBeenCalledWith(
+      testDir,
+      expect.stringContaining("completed"),
+    );
+  });
+
+  it("should call shadowAutoCommit after timed-out invocation", async () => {
+    registerAdapter("slow-mock-acp-shadow", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_DELAY_MS: "5000",
+      },
+      description: "Slow mock for shadow commit timeout test",
+    });
+    const agent = makeTestAgent({ adapter: "slow-mock-acp-shadow" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Shadow commit on timeout",
+      trigger: "task.ready",
+      timeoutMinutes: 0.001,
+    });
+
+    expect(result.outcome).toBe("timed_out");
+    expect(commitSpy).toHaveBeenCalledWith(
+      testDir,
+      expect.stringContaining("timed_out"),
+    );
+  });
+
+  it("should call shadowAutoCommit after failed invocation", async () => {
+    registerAdapter("failing-mock-acp-shadow", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_EXIT_CODE: "1",
+      },
+      description: "Failing mock for shadow commit test",
+    });
+    const agent = makeTestAgent({ adapter: "failing-mock-acp-shadow" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Shadow commit on failure",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(commitSpy).toHaveBeenCalledWith(
+      testDir,
+      expect.stringContaining("failed"),
+    );
+  });
+
+  it("should call shadowAutoCommit after aborted invocation", async () => {
+    registerAdapter("slow-mock-acp-abort", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_DELAY_MS: "5000",
+      },
+      description: "Slow mock for abort test",
+    });
+    const agent = makeTestAgent({ adapter: "slow-mock-acp-abort" });
+    const controller = new AbortController();
+
+    // Abort shortly after starting
+    setTimeout(() => controller.abort(), 100);
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Shadow commit on abort",
+      trigger: "task.ready",
+      abortSignal: controller.signal,
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(commitSpy).toHaveBeenCalledWith(
+      testDir,
+      expect.stringContaining("aborted"),
+    );
   });
 });
 

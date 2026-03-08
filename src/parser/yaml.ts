@@ -389,6 +389,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     // AC: @config-shadow ac-11 — pre-read shadow pull to pick up remote changes
     // before CLI read operations (task list, session start, etc.)
     // Skip when KSPEC_NO_SYNC is set (tests, offline) or KSPEC_SPEC_DIR is overridden
+    // Note: shadowPull() has in-flight dedup so concurrent daemon calls don't collide
     if (!process.env.KSPEC_NO_SYNC) {
       // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
       // uses the right branch name and remote instead of hardcoded defaults
