@@ -81403,7 +81403,7 @@
   spec_ref: "@web-ui"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -81436,6 +81436,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-08T06:33:43.556Z
 - _ulid: 01KK5E7YSKTWV0KBKFERG5GV8E
   slugs: []
   title: Allow adding root-level spec items without --under flag
