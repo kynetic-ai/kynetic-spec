@@ -81360,6 +81360,28 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KK60T9F0VZKZZE26CZZAYW0Y
+      created_at: 2026-03-08T06:05:39.680Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. Added getGitVersion() and gitSupportsOrphanWorktree() to shadow.ts for version detection
+
+        2. Added createOrphanBranchFallback() that creates orphan branches without --orphan flag by:
+           - Creating a temp bare repo in OS temp dir
+           - Cloning it, creating orphan branch with checkout --orphan (works on all git versions)
+           - Pushing back to temp bare, then to project repo via file:// protocol
+           - Attaching with standard git worktree add (no --orphan)
+           - Cleaning up all temp dirs
+        3. Modified initializeShadow() to detect git version and use fallback when < 2.42
+
+        4. Added 7 new tests: version detection (2), fallback correctness (3), working tree safety
+        (1), cleanup (1)
+
+        5. All 94 shadow tests pass. Full test suite (3 shards) passes with no new failures.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
