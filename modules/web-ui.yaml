@@ -727,6 +727,16 @@ features:
         given: app is in static mode
         when: fetching kspec-snapshot.json
         then: URL is prefixed with SvelteKit configured base path from $app/paths
+      - id: ac-21
+        given: export runs with validation data available
+        when: JSON output is generated for GitHub Pages
+        then: snapshot includes alignment statistics/warnings and detailed validation fields required by the
+          /validate view instead of forcing empty placeholders
+      - id: ac-22
+        given: the app is in static mode
+        when: the user navigates to a sessions route
+        then: the UI shows an informative read-only message instead of failing or implying live session
+          streaming is available
     status:
       maturity: draft
       implementation: in_progress
