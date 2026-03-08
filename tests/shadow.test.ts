@@ -1214,6 +1214,94 @@ describe('Shadow Branch', () => {
         await fs.rm(cloneDir, { recursive: true, force: true });
       }
     });
+
+    // AC: @config-shadow ac-11
+    it('initContext pulls remote shadow changes before returning (pre-read sync)', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Push a new file from a clone so the remote is ahead
+      const cloneDir = path.join('/tmp', `kspec-preread-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone adds a new file and pushes
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'preread-marker.yaml'),
+          'marker: from-remote\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds preread marker"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Verify the file does NOT exist locally before initContext
+        const markerPath = path.join(worktreeDir, 'preread-marker.yaml');
+        expect(existsSync(markerPath)).toBe(false);
+
+        // Call initContext — should trigger pre-read pull
+        const ctx = await initContext(testDir);
+
+        // Verify shadow is enabled
+        expect(ctx.shadow?.enabled).toBe(true);
+
+        // Verify the remote file was pulled down
+        expect(existsSync(markerPath)).toBe(true);
+        const content = await fs.readFile(markerPath, 'utf-8');
+        expect(content).toContain('marker: from-remote');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-11
+    it('initContext skips pre-read pull when KSPEC_NO_SYNC is set', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Push a new file from a clone
+      const cloneDir = path.join('/tmp', `kspec-nosync-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'nosync-marker.yaml'),
+          'marker: should-not-pull\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds nosync marker"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Set KSPEC_NO_SYNC to disable pre-read pull
+        process.env.KSPEC_NO_SYNC = '1';
+        try {
+          await initContext(testDir);
+
+          // File should NOT have been pulled
+          const markerPath = path.join(worktreeDir, 'nosync-marker.yaml');
+          expect(existsSync(markerPath)).toBe(false);
+        } finally {
+          delete process.env.KSPEC_NO_SYNC;
+        }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
   });
 
   // AC: @shadow-debug-mode

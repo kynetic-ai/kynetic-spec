@@ -37,6 +37,8 @@ import { ReferenceIndex } from "./refs.js";
 import {
   detectRunningFromShadowWorktree,
   detectShadow,
+  hasRemoteTracking,
+  shadowPull,
   type ShadowConfig,
   ShadowError,
 } from "./shadow.js";
@@ -382,6 +384,27 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   if (shadow?.enabled) {
     // Shadow mode: use .kspec/ for everything
     const specDir = shadow.worktreeDir;
+
+    // AC: @config-shadow ac-11 — pre-read shadow pull to pick up remote changes
+    // before CLI read operations (task list, session start, etc.)
+    // Skip when KSPEC_NO_SYNC is set (tests, offline) or KSPEC_SPEC_DIR is overridden
+    if (!process.env.KSPEC_NO_SYNC) {
+      try {
+        const tracked = await hasRemoteTracking(specDir);
+        if (tracked) {
+          const syncResult = await shadowPull(specDir);
+          if (syncResult.hadConflict) {
+            console.error(
+              "Warning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",
+            );
+            console.error("Continuing with local state...");
+          }
+        }
+      } catch {
+        // Pre-read pull is best-effort — don't fail the command
+      }
+    }
+
     const manifestPath = await findManifestInDir(specDir);
 
     let manifest: Manifest | null = null;
