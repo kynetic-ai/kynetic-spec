@@ -81033,7 +81033,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Add dispatch filter UI and default automation eligibility
+- _ulid: 01KK5P3YQXNQR1MHAHSKA68HE5
+  slugs: []
+  title: Add dispatch filter UI and default automation eligibility
+  type: task
   description: >-
     The dispatch engine feeds non-eligible tasks (manual_only, needs_review) to agents because:
 
@@ -81068,22 +81071,20 @@
 
 
     See new ACs on @ui-agent-dispatch (ac-5 through ac-9) and @agent-dispatch-engine (ac-21, ac-22).
-  type: task
   spec_ref: "@ui-agent-dispatch"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - web-ui
     - dispatch
     - bug
-  depends_on: []
-  _ulid: 01KK5P3YQXNQR1MHAHSKA68HE5
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T02:58:42.044Z
   notes: []
   todos: []
+  automation: eligible
