@@ -82567,6 +82567,15 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KK7W5GN5Q83SEQKDDVBW9VAG
+      created_at: 2026-03-08T23:22:53.477Z
+      author: "@claude"
+      content: "Reset to pending. Dispatch engine started this task prematurely — dependency
+        @add-sessions-storage-config-to-manifest-schema is in needs_work status (not completed).
+        This is a dispatch engine bug: _matchesFilter() in dispatch.ts does not check depends_on
+        relationships. WIP changes committed on branch feat/extract-session-path-resolution for
+        potential reuse once dependency is completed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
