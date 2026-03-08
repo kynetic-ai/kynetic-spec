@@ -570,9 +570,15 @@ describe('kspec serve commands', () => {
   });
 
   // AC: @web-ui ac-1
-  it('should bundle daemon runtime dependencies in the npm package', async () => {
-    // Pack the project, install the tarball into an isolated directory,
-    // and verify that the daemon binary and its runtime imports resolve.
+  it('should start daemon from npm-installed package with all deps available', async () => {
+    if (!bunAvailable) {
+      console.log('  ⊘ Skipping test - Bun runtime required');
+      return;
+    }
+
+    // Pack the project, install the tarball, then run the installed CLI's
+    // `kspec serve start --daemon` to verify all runtime dependencies
+    // (elysia, @elysiajs/cors, @elysiajs/static) resolve at execution time.
     const projectRoot = join(__dirname, '..');
     const installDir = await createTempDir();
 
@@ -593,21 +599,68 @@ describe('kspec serve commands', () => {
         timeout: 60_000,
       });
 
-      // Resolve the installed package's dist/daemon/index.ts
-      const installedPkgDir = join(installDir, 'node_modules', '@kynetic-ai', 'spec');
-      const daemonEntry = join(installedPkgDir, 'dist', 'daemon', 'index.ts');
-      expect(existsSync(daemonEntry), `daemon entry not found at ${daemonEntry}`).toBe(true);
+      // The installed CLI binary
+      const installedCli = join(installDir, 'node_modules', '.bin', 'kspec');
+      expect(existsSync(installedCli), `installed CLI not found at ${installedCli}`).toBe(true);
 
-      // Verify runtime dependencies resolve from the installed location
-      const depsToCheck = ['elysia', '@elysiajs/cors', '@elysiajs/static'];
-      for (const dep of depsToCheck) {
-        const resolved = require.resolve(dep, { paths: [installedPkgDir] });
-        expect(resolved, `${dep} should resolve from installed package`).toBeTruthy();
+      // Create a minimal .kspec/ directory so serve has something to point at
+      const kspecDir = join(installDir, '.kspec');
+      mkdirSync(kspecDir, { recursive: true });
+
+      // Isolated HOME so PID/port files don't collide with real daemon
+      const isolated = await createIsolatedKspecHome(installDir);
+      const port = await getAvailablePort();
+
+      // Strip KSPEC_SESSION_ID to prevent dispatch guard from blocking
+      const { KSPEC_SESSION_ID: _, ...cleanProcessEnv } = process.env;
+
+      // Run the installed CLI's serve start in daemon mode
+      const result = execSync(
+        `"${installedCli}" serve start --daemon --port ${port} --kspec-dir "${kspecDir}"`,
+        {
+          cwd: installDir,
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+          timeout: 30_000,
+          env: { ...cleanProcessEnv, ...isolated.env },
+        }
+      );
+
+      // Daemon should have started — output contains PID and port
+      expect(result).toContain(`port ${port}`);
+
+      // Verify health endpoint responds (daemon is actually running with Elysia)
+      const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+      expect(healthResponse.ok, 'daemon health endpoint should respond').toBe(true);
+      const healthBody = await healthResponse.json();
+      expect(healthBody).toHaveProperty('status', 'ok');
+
+      // Cleanup: stop the daemon
+      try {
+        execSync(
+          `"${installedCli}" serve stop --kspec-dir "${kspecDir}"`,
+          {
+            cwd: installDir,
+            encoding: 'utf-8',
+            stdio: ['pipe', 'pipe', 'pipe'],
+            timeout: 10_000,
+            env: { ...cleanProcessEnv, ...isolated.env },
+          }
+        );
+      } catch {
+        // Best-effort cleanup; PID file has the PID if we need to kill manually
+        const pidFile = isolated.daemonPidFilePath;
+        if (existsSync(pidFile)) {
+          try {
+            const pid = parseInt(readFileSync(pidFile, 'utf-8').trim(), 10);
+            process.kill(pid, 'SIGTERM');
+          } catch { /* ignore */ }
+        }
       }
     } finally {
       await cleanupTempDir(installDir);
     }
-  }, 90_000);
+  }, 120_000);
 
   // AC: @web-ui ac-2
   it('should show clear error with Bun install URL when Bun is not available', () => {
