@@ -51865,14 +51865,14 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KK5HCQGQGJRCY469TGHYM9TZ
+  session_id: null
   created_at: 2026-02-19T19:09:09.058Z
   started_at: 2026-03-08T01:37:07.196Z
   submitted_at: 2026-03-08T01:37:37.724Z
@@ -51929,6 +51929,13 @@
         #692 so it now contains only the docs task changes (README.md, INSTALL.md,
         docs/getting-started.md). Verification: git diff --name-only origin/main..HEAD, git diff
         --check origin/main..HEAD, and PR file list via gh pr view 692."
+      supersedes: null
+    - _ulid: 01KK5JCRXZ78F5S5FKKS2ZCTYD
+      created_at: 2026-03-08T01:53:36.703Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: INSTALL.md still has stale README anchors
+        (README.md#agent-integration and README.md#task-management) after the README rewrite, so the
+        external-user docs path contains broken links."
       supersedes: null
   todos: []
   automation: manual_only
