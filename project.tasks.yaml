@@ -48517,6 +48517,13 @@
         tests/ac-schema-drift.test.ts, and rechecked targeted completeness/alignment validation for
         @validate-drift.
       supersedes: null
+    - _ulid: 01KK5E8X1315DN1SEA6KTED4AN
+      created_at: 2026-03-08T00:41:35.523Z
+      author: Jacob Chapel
+      content: Adjusted @validate-drift implementation status back to in_progress after submission because
+        the current alignment checker expects linked specs to remain in_progress until the task is
+        completed, even for already-shipped behavior.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
