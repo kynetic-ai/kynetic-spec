@@ -1606,9 +1606,31 @@ export async function shadowPull(
     return result;
   }
 
+  // Stash uncommitted changes before pulling to avoid false conflict reports
+  let stashed = false;
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, ["stash", "push", "-m", "shadow-sync-auto"]);
+    stashed = !stdout.includes("No local changes");
+  } catch {
+    // If stash fails, skip the pull entirely — don't risk reporting a false conflict
+    result.success = true;
+    return result;
+  }
+
+  const unstash = async () => {
+    if (stashed) {
+      try {
+        await runGitAsync(worktreeDir, ["stash", "pop"]);
+      } catch {
+        // Stash pop conflict is unlikely but leave stash intact if it happens
+      }
+    }
+  };
+
   try {
     // Try fast-forward only first (cleanest)
     await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
+    await unstash();
     result.success = true;
     result.pulled = true;
     return result;
@@ -1619,6 +1641,7 @@ export async function shadowPull(
   try {
     // AC: @shadow-sync ac-6 - Fall back to rebase
     await runGitAsync(worktreeDir, ["pull", "--rebase"]);
+    await unstash();
     result.success = true;
     result.pulled = true;
     return result;
@@ -1633,6 +1656,7 @@ export async function shadowPull(
     // May not be in rebase state, ignore
   }
 
+  await unstash();
   result.hadConflict = true;
   result.error = "Sync conflict detected. Run `kspec shadow resolve` to fix.";
   return result;
