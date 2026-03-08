@@ -82142,5 +82142,33 @@
         focuses on spec ACs 11 and 12: pull-rebase before push, and periodic daemon background
         pull."
       supersedes: null
+    - _ulid: 01KK6J4ET2PNNECA3E0EN2KV70
+      created_at: 2026-03-08T11:08:18.627Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. AC-11 (pull-rebase before push): Added pullRebaseBeforePush() in shadow.ts, called by
+        shadowPushAsync before the git push spawn. Uses fetch → rev-list check → ff-only → rebase
+        fallback → abort on conflict. Conflicts trigger push failure warning with guidance to run
+        kspec shadow resolve.
+
+
+        2. AC-12 (periodic daemon pull): Created ShadowSyncScheduler in
+        packages/daemon/src/shadow-sync.ts. Integrated into daemon server.ts — loads sync_interval
+        from project config (default 60s, 0 disables). Uses setInterval with unref(). Stops on
+        daemon shutdown. Added sync_interval to shadow config schema in config.ts
+        (KspecConfigSchema, ResolvedKspecConfig, DEFAULT_CONFIG, resolveConfig, getDefaultConfig).
+
+
+        3. Tests: 2 new behavioral tests for AC-11 in shadow.test.ts (integration + conflict). 5 new
+        tests for AC-12 in shadow-sync-scheduler.test.ts (interval=0, start/stop, syncOnce pulls,
+        no-tracking skip, concurrent guard).
+
+
+        All 101 shadow tests pass. All 3 config test files pass. Full shard runs show only
+        pre-existing codex-related failures.
+      supersedes: null
   todos: []
   automation: eligible
