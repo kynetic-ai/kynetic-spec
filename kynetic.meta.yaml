@@ -7724,6 +7724,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KK5HGE6555831F36A32JY83E
+    type: friction
+    content: "Fix-cycle branch isolation is easy to miss: a docs PR inherited an unrelated task commit
+      because the work branch was created from another task branch instead of origin/main. Review
+      had to bounce the task just to split the PR."
+    created_at: 2026-03-08T01:38:08.197Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
