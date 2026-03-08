@@ -56538,6 +56538,17 @@
         unrelated to this task, including duplicate @observations refs and missing
         .kspec/skills/observations/SKILL.md."
       supersedes: null
+    - _ulid: 01KK5JK6VBTKX50YEQ8YC7DVYX
+      created_at: 2026-03-08T01:57:07.564Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Updated item add --root to print the created trait ref in human-readable
+        success output (@root-trait) instead of a shortened ULID, matching @item-add ac-1.
+        Strengthened tests/trait-cli.test.ts to assert the stdout ref contract and verify the
+        created trait remains project-level in kynetic.yaml. Verification: npx vitest run
+        tests/trait-cli.test.ts passed (32/32); npm run build passed; kspec validate still fails on
+        pre-existing repo issues unrelated to this task, including duplicate @observations refs and
+        missing .kspec/skills/observations/SKILL.md."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
