@@ -1090,6 +1090,130 @@ describe('Shadow Branch', () => {
       // Tracking should now be configured
       expect(await hasRemoteTracking(worktreeDir)).toBe(true);
     });
+
+    // AC: @config-shadow ac-11
+    it('shadowPushAsync integrates remote changes via pull-rebase before pushing', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Make a remote change via a clone — add a NEW file to avoid merge conflicts
+      const cloneDir = path.join('/tmp', `kspec-bidir-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone adds a new file (no conflict with local changes)
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-marker.yaml'),
+          'marker: from-clone\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds marker file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Local adds a DIFFERENT new file (no conflict)
+        await fs.writeFile(
+          path.join(worktreeDir, 'local-marker.yaml'),
+          'marker: from-local\n'
+        );
+        await shadowAutoCommit(worktreeDir, 'Local adds marker file');
+
+        // Push — should pull-rebase (integrating clone's file), then push
+        await shadowPushAsync(worktreeDir);
+
+        // Verify clone's file was pulled into local worktree
+        const remoteMarkerContent = await fs.readFile(
+          path.join(worktreeDir, 'remote-marker.yaml'),
+          'utf-8',
+        );
+        expect(remoteMarkerContent).toContain('marker: from-clone');
+
+        // Verify local file still exists
+        const localMarkerContent = await fs.readFile(
+          path.join(worktreeDir, 'local-marker.yaml'),
+          'utf-8',
+        );
+        expect(localMarkerContent).toContain('marker: from-local');
+
+        // Verify remote has both files after push
+        const verifyDir = path.join('/tmp', `kspec-bidir-verify-${Date.now()}`);
+        try {
+          execSync(`git clone ${remoteDir} ${verifyDir}`, { stdio: 'pipe' });
+          execSync(`git -C ${verifyDir} checkout ${SHADOW_BRANCH_NAME}`, { stdio: 'pipe' });
+          const verifyRemote = await fs.readFile(
+            path.join(verifyDir, 'remote-marker.yaml'),
+            'utf-8',
+          );
+          const verifyLocal = await fs.readFile(
+            path.join(verifyDir, 'local-marker.yaml'),
+            'utf-8',
+          );
+          expect(verifyRemote).toContain('marker: from-clone');
+          expect(verifyLocal).toContain('marker: from-local');
+        } finally {
+          await fs.rm(verifyDir, { recursive: true, force: true });
+        }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-11
+    it('shadowPushAsync reports failure when pull-rebase has unresolvable conflicts', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      const cloneDir = path.join('/tmp', `kspec-bidir-conflict-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Both sides create a file with the SAME name but different content (binary-like conflict)
+        // Use a non-YAML file (.txt) so the kspec merge driver doesn't apply
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'conflict-file.txt'),
+          'REMOTE CONTENT LINE 1\nREMOTE CONTENT LINE 2\n'
+        );
+        execSync('git add -A && git commit -m "Remote adds conflict file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Local creates the SAME file with different content
+        await fs.writeFile(
+          path.join(worktreeDir, 'conflict-file.txt'),
+          'LOCAL CONTENT LINE 1\nLOCAL CONTENT LINE 2\n'
+        );
+        await shadowAutoCommit(worktreeDir, 'Local adds conflict file');
+
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+          await shadowPushAsync(worktreeDir);
+
+          // Should see a push failure warning about conflicts
+          expect(consoleErrorSpy).toHaveBeenCalledWith(
+            expect.stringContaining('[WARN] Shadow auto-push failed')
+          );
+        } finally {
+          consoleErrorSpy.mockRestore();
+        }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
   });
 
   // AC: @shadow-debug-mode

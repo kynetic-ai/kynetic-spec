@@ -1300,9 +1300,107 @@ function noteShadowPushSuccess(worktreeDir: string): void {
 }
 
 /**
- * Fire-and-forget push to remote.
+ * Pull-rebase from remote before pushing, using the kspec merge driver for
+ * YAML conflict resolution.
+ *
+ * AC: @config-shadow ac-11 — pull-rebase before push prevents divergence
+ *
+ * @returns true if pull succeeded (or was unnecessary), false on conflict
+ */
+async function pullRebaseBeforePush(
+  worktreeDir: string,
+  branchName: string,
+  debug: boolean,
+): Promise<boolean> {
+  try {
+    // Fetch latest remote state for the shadow branch specifically.
+    // Using the worktree dir for fetch ensures we use the branch's tracking config.
+    try {
+      await runGitAsync(worktreeDir, ["fetch"]);
+    } catch {
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: fetch failed, skipping pull");
+      }
+      // Fetch failure is non-fatal — push may still succeed if already up to date
+      return true;
+    }
+
+    // Check if remote branch exists
+    const projectRoot = path.dirname(worktreeDir);
+    const remoteHasBranch = await remoteBranchExists(projectRoot, branchName);
+    if (!remoteHasBranch) {
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: no remote branch yet, skipping pull");
+      }
+      return true;
+    }
+
+    // Check if there are any upstream changes to integrate.
+    // If local is already at or ahead of remote, skip the pull.
+    try {
+      const { stdout } = await runGitAsync(worktreeDir, [
+        "rev-list",
+        "--count",
+        `${branchName}..@{upstream}`,
+      ]);
+      const behindCount = parseInt(stdout.trim(), 10);
+      if (behindCount === 0) {
+        if (debug) {
+          console.error("[DEBUG] Shadow pull-rebase: already up to date with remote");
+        }
+        return true;
+      }
+    } catch {
+      // rev-list may fail if upstream isn't set — proceed with pull attempt
+    }
+
+    // Try fast-forward first (cleanest, no rebase needed)
+    try {
+      await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: fast-forward succeeded");
+      }
+      return true;
+    } catch {
+      // FF failed, need rebase
+    }
+
+    // Fall back to rebase — the kspec merge driver handles YAML conflicts
+    try {
+      await runGitAsync(worktreeDir, ["pull", "--rebase"]);
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: rebase succeeded");
+      }
+      return true;
+    } catch {
+      // Rebase failed — abort and report
+    }
+
+    // Abort the failed rebase so local state is clean
+    try {
+      await runGitAsync(worktreeDir, ["rebase", "--abort"]);
+    } catch {
+      // May not be in rebase state
+    }
+
+    if (debug) {
+      console.error("[DEBUG] Shadow pull-rebase: conflict detected, push skipped");
+    }
+    return false;
+  } catch (err) {
+    if (debug) {
+      console.error("[DEBUG] Shadow pull-rebase error:", err);
+    }
+    // Pull failure is non-fatal — still attempt push
+    return true;
+  }
+}
+
+/**
+ * Fire-and-forget push to remote with pull-rebase-before-push.
  * AC-1: Called after each auto-commit when tracking is configured.
  * AC-8: Automatically sets up tracking if main branch has remote.
+ * AC: @config-shadow ac-11 — pull-rebase before push for bidirectional sync.
  * Push failures are surfaced as warnings, but local commits still succeed.
  *
  * AC: @config-shadow ac-7 — backward compat when called without config
@@ -1338,6 +1436,17 @@ export async function shadowPushAsync(
       );
     }
     return; // AC: @shadow-sync ac-4 - silently skip if no tracking
+  }
+
+  // AC: @config-shadow ac-11 — pull-rebase before pushing to integrate remote changes
+  const branchName = getBranchName(options);
+  const pullOk = await pullRebaseBeforePush(worktreeDir, branchName, debug);
+  if (!pullOk) {
+    noteShadowPushFailure(
+      worktreeDir,
+      "Pull-rebase failed due to conflicts. Run `kspec shadow resolve` to fix.",
+    );
+    return;
   }
 
   try {

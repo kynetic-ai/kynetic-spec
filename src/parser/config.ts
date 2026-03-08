@@ -35,6 +35,13 @@ const ShadowConfigSchema = z
      * - Git URL (contains :// or starts with git@)
      */
     remote: z.string().optional(),
+    /**
+     * Interval in seconds for periodic background shadow pull in daemon mode.
+     * Set to 0 to disable periodic sync. Default: 60.
+     *
+     * AC: @config-shadow ac-12 — configurable sync interval for daemon background pull
+     */
+    sync_interval: z.number().int().min(0).optional(),
   })
   .strict()
   .optional();
@@ -201,6 +208,12 @@ export interface ResolvedKspecConfig {
     directory: string;
     /** Remote configuration, null if not specified */
     remote: ResolvedShadowRemote | null;
+    /**
+     * Interval in seconds for periodic background shadow pull in daemon mode.
+     * 0 disables periodic sync. Default: 60.
+     * AC: @config-shadow ac-12
+     */
+    sync_interval: number;
   };
   identity: {
     author: string | null;
@@ -250,6 +263,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     branch: "kspec-meta",
     directory: ".kspec",
     remote: null,
+    sync_interval: 60, // AC: @config-shadow ac-12 — default 60s
   },
   identity: {
     author: null,
@@ -428,6 +442,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       branch: file.shadow?.branch ?? DEFAULT_CONFIG.shadow.branch,
       directory: file.shadow?.directory ?? DEFAULT_CONFIG.shadow.directory,
       remote: resolvedRemote,
+      sync_interval: file.shadow?.sync_interval ?? DEFAULT_CONFIG.shadow.sync_interval,
     },
     identity: {
       // AC: ac-5 — env var takes precedence
@@ -473,6 +488,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       branch: DEFAULT_CONFIG.shadow.branch,
       directory: DEFAULT_CONFIG.shadow.directory,
       remote: DEFAULT_CONFIG.shadow.remote,
+      sync_interval: DEFAULT_CONFIG.shadow.sync_interval,
     },
     identity: { ...DEFAULT_CONFIG.identity },
     validation: {
