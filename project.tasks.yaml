@@ -82147,7 +82147,7 @@
   spec_ref: "@config-shadow"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -82158,7 +82158,7 @@
     - sync
     - multi-clone
   vcs_refs: []
-  session_id: 01KK6X8PHG00NG49EYGFXFVK9T
+  session_id: null
   created_at: 2026-03-08T09:11:24.022Z
   started_at: 2026-03-08T14:23:45.923Z
   submitted_at: 2026-03-08T14:36:50.348Z
@@ -82233,6 +82233,13 @@
         into initContext to eliminate duplication. Two new behavioral tests verify pre-read sync
         works and respects KSPEC_NO_SYNC. All 98 shadow tests pass. Shard failures are pre-existing
         codex-related issues."
+      supersedes: null
+    - _ulid: 01KK6YGP26XWYKE3QB3VZ8XT3T
+      created_at: 2026-03-08T14:44:42.182Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX review on PR #712: scheduler tests copy the
+        implementation instead of covering shipped daemon code, and the new sync paths still drop
+        configured shadow branch/remote handling in CLI pre-read and pull-rebase logic."
       supersedes: null
   todos: []
   automation: eligible
