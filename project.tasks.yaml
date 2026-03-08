@@ -81660,6 +81660,7 @@
   session_id: 01KK688QHWVMHJ72MD9GCJTR24
   created_at: 2026-03-08T02:58:42.044Z
   started_at: 2026-03-08T08:21:40.631Z
+  submitted_at: 2026-03-08T08:52:19.124Z
   notes:
     - _ulid: 01KK68QNT4ZZEA57DADQ179N08
       created_at: 2026-03-08T08:24:02.628Z
@@ -81680,9 +81681,29 @@
 
         - Tests: dispatch engine test, vitest component tests or E2E for UI
       supersedes: null
+    - _ulid: 01KK6ACQDD8M4Z0PK4X41KPVMR
+      created_at: 2026-03-08T08:53:00.973Z
+      author: "@claude"
+      content: >-
+        PR #706 created: https://github.com/kynetic-ai/kynetic-spec/pull/706
+
+
+        Changes:
+
+        - AgentEditForm: each trigger row now shows automation dropdown, tag chips, priority
+        threshold (ac-5 through ac-9)
+
+        - dispatch.ts: _matchesFilter defaults to automation:eligible for task.ready/task.needs_work
+        (ac-21)
+
+        - setup.ts: already had filter defaults, added ac-22 annotation to existing test
+
+        - 5 new AC-21 tests + 12 existing tests updated for new default behavior
+
+        - All 60 dispatch engine tests pass, full suite 4051 pass
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-08T08:52:19.124Z
 - _ulid: 01KK5WX0TMYDP3NV9VFEE9HHDT
   slugs: []
   title: Fix derive middleware setting 400 on static file responses
