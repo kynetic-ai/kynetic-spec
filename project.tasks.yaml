@@ -82791,3 +82791,29 @@
         Independent sync from kspec-meta.
   todos: []
   automation: eligible
+- title: Fix dispatch engine to check depends_on before dispatching
+  description: "The dispatch engine _matchesFilter() in dispatch.ts only checks automation status,
+    tags, and priority — it does not call areDependenciesMet() from yaml.ts. This causes tasks with
+    unmet depends_on relationships to be dispatched. Fix: add dependency checking to
+    _matchesFilter() or the dispatch evaluation path, reusing the existing areDependenciesMet()
+    logic. Also applies to _evaluateAllTasks() (bootstrap/reconciliation) and _drainQueues()."
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - bug
+    - dispatch
+    - agent
+  depends_on: []
+  automation: eligible
+  _ulid: 01KK7W7S520G8ACKWTCYNW9Y4F
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T23:24:07.713Z
+  notes: []
+  todos: []
