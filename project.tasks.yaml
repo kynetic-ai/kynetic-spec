@@ -62253,6 +62253,19 @@
         slice that stays green and under budget while preserving a full-suite script for
         manual/nightly use."
       supersedes: null
+    - _ulid: 01KK5SBCQ2Q52G80P8BEE6FTQH
+      created_at: 2026-03-08T03:55:11.459Z
+      author: Jacob Chapel
+      content: "Fixed FIX_CYCLE 3 by converting the required PR E2E gate from the full sharded Playwright
+        suite to a stable smoke lane. Changes: '.github/workflows/test.yml' now runs a single 'e2e
+        (playwright smoke)' job with browser cache + Bun + Chromium install; root 'npm run test:e2e'
+        now delegates to a web-ui smoke subset; root 'npm run test:e2e:full' preserves the full
+        suite for manual/nightly use; 'packages/web-ui/tests/e2e/smoke.spec.ts' was updated to
+        assert the current sidebar nav test id. Verification: workflow YAML parses; 'env -u
+        KSPEC_SESSION_ID npm run test:e2e -- --list' lists 13 tests across smoke.spec.ts and
+        api-server.spec.ts; 'env -u KSPEC_SESSION_ID npm run test:e2e' passes with 13/13 passing in
+        ~20s."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
