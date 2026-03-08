@@ -82241,5 +82241,31 @@
         implementation instead of covering shipped daemon code, and the new sync paths still drop
         configured shadow branch/remote handling in CLI pre-read and pull-rebase logic."
       supersedes: null
+    - _ulid: 01KK6ZA8DAVZY9E2QNB761DADY
+      created_at: 2026-03-08T14:58:40.170Z
+      author: "@claude"
+      content: >-
+        Fix cycle 3: Addressed all three MUST-FIX review findings:
+
+
+        1. Scheduler tests now import production ShadowSyncScheduler: Moved class from
+        packages/daemon/src/shadow-sync.ts to src/parser/shadow-sync-scheduler.ts (canonical
+        location with correct ./shadow.js import). Daemon re-exports from there. Tests import the
+        real production class, not a copy.
+
+
+        2. Pre-read sync uses configured shadow options: initContext() now builds ShadowOptions from
+        config (branch, directory, remote, remoteType) and passes to hasRemoteTracking() and
+        shadowPull(), so custom shadow.remote setups work correctly.
+
+
+        3. pullRebaseBeforePush reads configured remote from git config: Instead of hardcoding
+        'origin', reads branch.<name>.remote from git config and passes it to remoteBranchExists().
+        Falls back to 'origin' if config lookup fails.
+
+
+        All 143 shadow-related tests pass (98 shadow + 5 scheduler + 40 config). Full suite: 12
+        pre-existing codex-related failures, 0 new failures.
+      supersedes: null
   todos: []
   automation: eligible
