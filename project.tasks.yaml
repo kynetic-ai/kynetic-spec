@@ -56482,6 +56482,16 @@
       content: Re-anchored the task branch from stale local main to origin/main so the eventual PR diff
         stays scoped to this task only.
       supersedes: null
+    - _ulid: 01KK5HAW96FRY02DT1F091SYRH
+      created_at: 2026-03-08T01:35:06.022Z
+      author: Jacob Chapel
+      content: "Implemented --root support for item add when creating trait items, reusing a shared
+        project-level trait write helper across item add / trait add / plan import. Verification:
+        npm run build passed on the origin/main-based task branch; npx vitest run
+        tests/trait-cli.test.ts passed (32/32). kspec validate remains red due to pre-existing repo
+        issues unrelated to this task, including duplicate @observations refs and missing
+        .kspec/skills/observations/SKILL.md."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
