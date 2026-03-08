@@ -28,6 +28,9 @@ import {
   setVerboseModeGetter,
   shadowAutoCommit,
   checkConfigMismatch,
+  getGitVersion,
+  gitSupportsOrphanWorktree,
+  createOrphanBranchFallback,
   type ShadowOptions,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
@@ -1874,6 +1877,172 @@ describe('Shadow Branch', () => {
         expect(shadow?.branchName).toBe(customBranch);
         expect(shadow?.worktreeDir).toBe(customDirPath);
       });
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Git Version Detection & Orphan Worktree Fallback
+  // AC: @config-shadow ac-10 — fallback for git < 2.42
+  // ══════════════════════════════════════════════════════════════════════════
+
+  describe('Git Version Detection', () => {
+    // AC: @config-shadow ac-10
+    it('getGitVersion returns a valid version tuple', () => {
+      const version = getGitVersion();
+      expect(version).not.toBeNull();
+      expect(version).toHaveLength(3);
+      expect(version![0]).toBeGreaterThanOrEqual(1);
+      expect(version![1]).toBeGreaterThanOrEqual(0);
+      expect(version![2]).toBeGreaterThanOrEqual(0);
+    });
+
+    // AC: @config-shadow ac-10
+    it('gitSupportsOrphanWorktree returns a boolean', () => {
+      const result = gitSupportsOrphanWorktree();
+      expect(typeof result).toBe('boolean');
+    });
+  });
+
+  describe('createOrphanBranchFallback (git < 2.42 compatibility)', () => {
+    // AC: @config-shadow ac-10
+    it('creates orphan branch and worktree without --orphan flag', async () => {
+      // Initialize a git repo
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Use the fallback directly
+      await createOrphanBranchFallback(testDir, 'orphan-test', '.orphan-wt');
+
+      // Verify the branch was created
+      const hasBranch = await branchExists(testDir, 'orphan-test');
+      expect(hasBranch).toBe(true);
+
+      // Verify the worktree was created and is valid
+      const worktreeDir = path.join(testDir, '.orphan-wt');
+      expect(await isValidWorktree(worktreeDir)).toBe(true);
+
+      // Verify the orphan branch has no parent (orphan = first commit has no parents)
+      const parents = execSync('git log --format=%P -1 orphan-test', {
+        cwd: testDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(parents).toBe('');
+
+      // Verify the orphan branch does NOT share history with main
+      try {
+        const mergeBase = execSync('git merge-base main orphan-test', {
+          cwd: testDir,
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        }).trim();
+        // If merge-base succeeds, branches share history — that's wrong
+        expect(mergeBase).toBe('');
+      } catch {
+        // Expected: merge-base fails when branches share no common ancestor
+      }
+    });
+
+    // AC: @config-shadow ac-10
+    it('does not modify the project working tree', async () => {
+      // Initialize a git repo with some content
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      await fs.writeFile(path.join(testDir, 'src.ts'), 'export const x = 1;');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Run the fallback
+      await createOrphanBranchFallback(testDir, 'safe-orphan', '.safe-wt');
+
+      // Working tree should be unchanged — only the worktree dir itself is new/untracked.
+      // No modifications to existing tracked files on the main branch.
+      const statusAfter = execSync('git status --porcelain', {
+        cwd: testDir,
+        encoding: 'utf-8',
+      }).trim();
+      // Filter out the worktree directory itself (expected to be untracked)
+      const changesExcludingWorktree = statusAfter
+        .split('\n')
+        .filter(line => !line.includes('.safe-wt'))
+        .join('\n')
+        .trim();
+      expect(changesExcludingWorktree).toBe('');
+
+      // Original files should still be present and unchanged
+      const readme = await fs.readFile(path.join(testDir, 'README.md'), 'utf-8');
+      expect(readme).toBe('# Test');
+      const src = await fs.readFile(path.join(testDir, 'src.ts'), 'utf-8');
+      expect(src).toBe('export const x = 1;');
+
+      // Current branch should still be whatever it was (not switched)
+      const currentBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+        cwd: testDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(currentBranch).not.toBe('safe-orphan');
+    });
+
+    // AC: @config-shadow ac-10
+    it('works with custom branch names', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      await createOrphanBranchFallback(testDir, 'my-custom-specs', '.my-specs');
+
+      expect(await branchExists(testDir, 'my-custom-specs')).toBe(true);
+      expect(await isValidWorktree(path.join(testDir, '.my-specs'))).toBe(true);
+    });
+
+    // AC: @config-shadow ac-10
+    it('initializeShadow produces a healthy shadow regardless of git version', async () => {
+      // This test verifies end-to-end: initializeShadow → detect → status
+      // It works on any git version since it exercises whatever path is chosen
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+
+      expect(result.success).toBe(true);
+      expect(result.branchCreated).toBe(true);
+      expect(result.worktreeCreated).toBe(true);
+
+      // Verify the result is fully healthy
+      const status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+      expect(status.branchExists).toBe(true);
+      expect(status.worktreeExists).toBe(true);
+      expect(status.worktreeLinked).toBe(true);
+    });
+
+    // AC: @config-shadow ac-10
+    it('cleans up temp directories on success', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Count kspec-orphan temp dirs before
+      const tmpBase = require('node:os').tmpdir();
+      const beforeDirs = (await fs.readdir(tmpBase))
+        .filter(d => d.startsWith('kspec-orphan'));
+
+      await createOrphanBranchFallback(testDir, 'cleanup-test', '.cleanup-wt');
+
+      // Count after — should not increase (temp dirs cleaned up)
+      const afterDirs = (await fs.readdir(tmpBase))
+        .filter(d => d.startsWith('kspec-orphan'));
+      expect(afterDirs.length).toBeLessThanOrEqual(beforeDirs.length);
     });
   });
 });

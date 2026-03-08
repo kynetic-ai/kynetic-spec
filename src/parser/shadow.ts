@@ -11,6 +11,7 @@
 
 import { execFile, spawn, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
+import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
@@ -72,6 +73,147 @@ function runGitSync(
     ok: !result.error && result.status === 0,
     stdout: (result.stdout || "").toString(),
   };
+}
+
+/**
+ * Parse git version from `git --version` output.
+ * Returns [major, minor, patch] or null if unparseable.
+ */
+export function getGitVersion(
+  cwd?: string,
+): [number, number, number] | null {
+  const result = spawnSync("git", ["--version"], {
+    cwd,
+    stdio: ["ignore", "pipe", "pipe"],
+    encoding: "utf-8",
+  });
+  if (result.error || result.status !== 0) return null;
+  const match = (result.stdout || "").match(/(\d+)\.(\d+)\.(\d+)/);
+  if (!match) return null;
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
+}
+
+/**
+ * Check if the installed git supports `git worktree add --orphan` (requires >= 2.42.0).
+ */
+export function gitSupportsOrphanWorktree(cwd?: string): boolean {
+  const version = getGitVersion(cwd);
+  if (!version) return false;
+  const [major, minor] = version;
+  return major > 2 || (major === 2 && minor >= 42);
+}
+
+/**
+ * Fallback for creating an orphan branch when git < 2.42.
+ *
+ * Strategy:
+ * 1. Create a temp bare repo in the OS temp directory
+ * 2. Create an orphan branch with an empty commit there
+ * 3. Push that branch to the project repo (via file:// protocol)
+ * 4. Clean up the temp repo
+ * 5. Attach using standard `git worktree add <dir> <branch>`
+ *
+ * This approach NEVER modifies the project's working tree.
+ *
+ * AC: @config-shadow ac-10
+ */
+export async function createOrphanBranchFallback(
+  projectRoot: string,
+  branchName: string,
+  directoryName: string,
+): Promise<void> {
+  const tmpDir = await fs.mkdtemp(path.join(tmpdir(), "kspec-orphan-"));
+
+  try {
+    // 1. Init a bare repo in the temp dir
+    await runGitAsync(tmpDir, ["init", "--bare"]);
+
+    // 2. Create the orphan branch using a temporary non-bare clone.
+    //    We need a working tree to make a commit, so clone the bare repo.
+    const workDir = await fs.mkdtemp(path.join(tmpdir(), "kspec-orphan-work-"));
+
+    try {
+      await runGitAsync(workDir, ["clone", tmpDir, "."]);
+      await runGitAsync(workDir, [
+        "config",
+        "user.email",
+        "kspec@localhost",
+      ]);
+      await runGitAsync(workDir, [
+        "config",
+        "user.name",
+        "kspec",
+      ]);
+
+      // Create an orphan branch (checkout --orphan works on all git versions)
+      await runGitAsync(workDir, [
+        "checkout",
+        "--orphan",
+        branchName,
+      ]);
+
+      // Remove any files that might have been staged
+      try {
+        await runGitAsync(workDir, ["rm", "-rf", "."]);
+      } catch {
+        // May fail if nothing to remove (empty repo) - that's fine
+      }
+
+      // Create an empty initial commit
+      await runGitAsync(workDir, [
+        "commit",
+        "--allow-empty",
+        "-m",
+        `Initialize ${branchName}`,
+      ]);
+
+      // Push the orphan branch back to the bare repo
+      await runGitAsync(workDir, [
+        "push",
+        "origin",
+        branchName,
+      ]);
+    } finally {
+      await fs.rm(workDir, { recursive: true, force: true });
+    }
+
+    // 3. Push from the temp bare repo to the project repo
+    //    Use file:// protocol to ensure git treats it as a proper remote
+    await runGitAsync(tmpDir, [
+      "push",
+      `file://${path.resolve(projectRoot)}`,
+      branchName,
+    ]);
+  } finally {
+    // 4. Clean up the temp bare repo
+    await fs.rm(tmpDir, { recursive: true, force: true });
+  }
+
+  // 5. Attach worktree using standard git worktree add (no --orphan flag)
+  await runGitAsync(projectRoot, [
+    "worktree",
+    "add",
+    directoryName,
+    branchName,
+  ]);
+
+  // 6. Remove all tracked files from the worktree since the fallback
+  //    created an empty commit but `git worktree add` may still populate
+  //    the index from the branch. Clear anything that appeared.
+  try {
+    const { stdout } = await runGitAsync(
+      path.join(projectRoot, directoryName),
+      ["ls-files"],
+    );
+    if (stdout.trim()) {
+      await runGitAsync(
+        path.join(projectRoot, directoryName),
+        ["rm", "-rf", "."],
+      );
+    }
+  } catch {
+    // Nothing to remove — expected for an empty commit
+  }
 }
 
 // Import getVerboseMode for checking CLI --debug-shadow flag
@@ -1868,14 +2010,23 @@ export async function initializeShadow(
       } else if (!status.branchExists) {
         // AC: @shadow-init-remote ac-2 ac-3 - No remote branch or no remote - create orphan branch
         // AC: @config-shadow ac-1 — use configured branch name
-        await runGitAsync(projectRoot, [
-          "worktree",
-          "add",
-          "--orphan",
-          "-b",
-          branchName,
-          directoryName,
-        ]);
+        // AC: @config-shadow ac-10 — fallback for git < 2.42
+        if (gitSupportsOrphanWorktree(projectRoot)) {
+          await runGitAsync(projectRoot, [
+            "worktree",
+            "add",
+            "--orphan",
+            "-b",
+            branchName,
+            directoryName,
+          ]);
+        } else {
+          await createOrphanBranchFallback(
+            projectRoot,
+            branchName,
+            directoryName,
+          );
+        }
         result.branchCreated = true;
       } else {
         // Attach to existing local branch
