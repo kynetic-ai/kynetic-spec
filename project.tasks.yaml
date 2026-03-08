@@ -82791,29 +82791,39 @@
         Independent sync from kspec-meta.
   todos: []
   automation: eligible
-- title: Fix dispatch engine to check depends_on before dispatching
+- _ulid: 01KK7W7S520G8ACKWTCYNW9Y4F
+  slugs: []
+  title: Fix dispatch engine to check depends_on before dispatching
+  type: task
   description: "The dispatch engine _matchesFilter() in dispatch.ts only checks automation status,
     tags, and priority — it does not call areDependenciesMet() from yaml.ts. This causes tasks with
     unmet depends_on relationships to be dispatched. Fix: add dependency checking to
     _matchesFilter() or the dispatch evaluation path, reusing the existing areDependenciesMet()
     logic. Also applies to _evaluateAllTasks() (bootstrap/reconciliation) and _drainQueues()."
-  type: task
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - bug
     - dispatch
     - agent
-  depends_on: []
-  automation: eligible
-  _ulid: 01KK7W7S520G8ACKWTCYNW9Y4F
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T23:24:07.713Z
-  notes: []
+  notes:
+    - _ulid: 01KK7WTGCN4STSF0Z7VC8M9P07
+      created_at: 2026-03-08T23:34:21.334Z
+      author: "@claude"
+      content: "Spec approach changed: instead of a standalone AC on @agent-dispatch-engine, created
+        @trait-task-readiness (4 ACs: ac-status, ac-deps, ac-not-blocked, ac-composable). Trait
+        bound to 6 specs: @agent-dispatch-engine, @query-ready, @query-next,
+        @task-automation-eligibility, @ui-task-board, @api-contract. The dispatch fix should
+        implement ac-deps and ac-composable — add areDependenciesMet() call to _matchesFilter() and
+        verify it runs before consumer-specific filters."
+      supersedes: null
   todos: []
+  automation: eligible
