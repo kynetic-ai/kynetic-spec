@@ -60317,6 +60317,7 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #698. Added @elysiajs/static to the published root package dependencies, synced the lockfile, and added a package distribution regression test covering daemon runtime deps for global installs. Reviewed against @web-ui ac-1 with no trait ACs on the spec, and current-head CI passed."
   depends_on: []
   context: []
   priority: 1
@@ -60329,6 +60330,7 @@
   created_at: 2026-03-08T00:41:01.312Z
   started_at: 2026-03-08T04:40:03.842Z
   submitted_at: 2026-03-08T04:46:48.929Z
+  completed_at: 2026-03-08T05:53:40.376Z
   notes:
     - _ulid: 01KK5VXV696HRTR8EV804ZAZP4
       created_at: 2026-03-08T04:40:13.258Z
@@ -60361,8 +60363,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  closed_reason: "Merged in PR #698. Added @elysiajs/static to the published root package dependencies, synced the lockfile, and added a package distribution regression test covering daemon runtime deps for global installs. Reviewed against @web-ui ac-1 with no trait ACs on the spec, and current-head CI passed."
-  completed_at: 2026-03-08T05:53:40.376Z
 - _ulid: 01KK5E7WQ76A3HJAD8BCF6PF3A
   slugs: []
   title: Support git < 2.42 in kspec init (--orphan worktree fallback)
@@ -60384,6 +60384,7 @@
   session_id: 01KK5ZRK5PH8V9E62T05WHRC75
   created_at: 2026-03-08T00:41:02.439Z
   started_at: 2026-03-08T05:54:38.645Z
+  submitted_at: 2026-03-08T06:05:46.431Z
   notes:
     - _ulid: 01KK5EPGT095GPRFVJYDVTGB3C
       created_at: 2026-03-08T00:49:01.760Z
@@ -60424,7 +60425,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-08T06:05:46.431Z
   closed_reason: "Merged in PR #703. Added git < 2.42 orphan-worktree fallback in shadow initialization using a temp-repo flow that never touches the project working tree, with AC coverage for @config-shadow ac-10 in tests/shadow.test.ts and CI green on the merged head."
   completed_at: 2026-03-08T06:47:15.338Z
 - _ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
@@ -60445,7 +60445,9 @@
     - daemon
     - dx
   vcs_refs: []
+  session_id: 01KK66F8NGFR856T4WTHCAGNFG
   created_at: 2026-03-08T00:41:03.501Z
+  started_at: 2026-03-08T07:57:10.905Z
   notes:
     - _ulid: 01KK61QW0QC8G03QY6DCJM3NQX
       created_at: 2026-03-08T06:21:48.951Z
@@ -60479,8 +60481,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T07:57:10.905Z
-  session_id: 01KK66F8NGFR856T4WTHCAGNFG
   closed_reason: "Merged in PR #704. Documented Bun as the daemon/web UI prerequisite, improved missing-Bun guidance in serve start with install commands and URL, added the missing ulidx runtime dependency, and verified @web-ui ac-1/ac-2 coverage including an npm-pack/install/start end-to-end test."
   submitted_at: 2026-03-08T07:57:13.242Z
   completed_at: 2026-03-08T08:20:56.372Z
@@ -60690,23 +60690,23 @@
   created_at: 2026-03-08T06:11:51.101Z
   notes: []
   todos: []
-- title: Fix dispatch watch WebSocket crash on Node 20
-  description: "kspec agent dispatch watch crashes on Node 20 with 'WebSocket is not defined'. The command uses the global WebSocket constructor which is only available in Node 22+, but package.json engines field says >=18.0.0. Fix: add ws package as a polyfill/fallback for Node < 22, or use a conditional import. The WebSocket usage is in src/cli/commands/agent.ts line 846. See GitHub issue #701."
+- _ulid: 01KK617H896Z5RHSCVA51G9QFQ
+  slugs: []
+  title: Fix dispatch watch WebSocket crash on Node 20
   type: task
+  description: "kspec agent dispatch watch crashes on Node 20 with 'WebSocket is not defined'. The command uses the global WebSocket constructor which is only available in Node 22+, but package.json engines field says >=18.0.0. Fix: add ws package as a polyfill/fallback for Node < 22, or use a conditional import. The WebSocket usage is in src/cli/commands/agent.ts line 846. See GitHub issue #701."
   spec_ref: "@cli-agent-commands"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - bug
     - cli
     - agent
-  depends_on: []
-  _ulid: 01KK617H896Z5RHSCVA51G9QFQ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T06:12:53.641Z
   notes: []
@@ -60734,3 +60734,4 @@
   created_at: 2026-03-08T06:26:16.602Z
   notes: []
   todos: []
+  automation: eligible
