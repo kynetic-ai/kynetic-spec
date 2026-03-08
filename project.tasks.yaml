@@ -48506,6 +48506,16 @@
         - Verification: inspect existing validate implementation/tests, run kspec item get on new
         spec, then run kspec validate --warnings-ok.
       supersedes: null
+    - _ulid: 01KK5E6ZEK13BFGPNGQAQR1MW1
+      created_at: 2026-03-08T00:40:32.468Z
+      author: Jacob Chapel
+      content: Created @validate-drift under @cmd-validate with six ACs covering prose field detection,
+        reference-string handling, valid schema fields, filename false-positive filtering, flag
+        gating, and strict exit-code behavior. Added AC annotations plus a dedicated filename
+        false-positive test in tests/ac-schema-drift.test.ts, ran npm test -- --run
+        tests/ac-schema-drift.test.ts, and rechecked targeted completeness/alignment validation for
+        @validate-drift.
+      supersedes: null
   todos: []
   automation: needs_review
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
