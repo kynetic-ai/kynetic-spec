@@ -249,9 +249,14 @@ test.describe('Tasks View', () => {
       console.log('=== API calls ===');
       apiCalls.forEach(call => console.log(call));
 
-      // Detail panel should open
+      // Detail panel should open as a Dialog modal (not a Sheet side-panel)
       const detailPanel = page.getByTestId('task-detail-panel');
       await expect(detailPanel).toBeVisible({ timeout: 5000 });
+
+      // AC-5 requires the same floating Dialog modal as the kanban board.
+      // Dialog.Content renders data-slot="dialog-content"; the old Sheet
+      // rendered data-slot="sheet-content". This assertion distinguishes them.
+      await expect(detailPanel).toHaveAttribute('data-slot', 'dialog-content');
 
       // Verify panel contains expected sections (title is in Dialog.Header)
       await expect(detailPanel.getByTestId('task-detail-title')).toBeVisible();
