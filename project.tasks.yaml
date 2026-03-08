@@ -81136,7 +81136,7 @@
   spec_ref: "@gh-pages-export"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -81150,6 +81150,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-08T04:09:16.845Z
+  session_id: 01KK5T4DH9SAZK1WETCP6R6QX1
 - _ulid: 01KK5E7VM0ZQ7SXE5547293KH6
   slugs: []
   title: Add @elysiajs/static to package.json dependencies
