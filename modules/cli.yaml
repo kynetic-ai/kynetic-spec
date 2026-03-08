@@ -2167,6 +2167,10 @@ features:
             given: derive creates a task
             when: --title 'Custom Title' is provided
             then: "created task uses the custom title instead of default 'Implement: {spec title}' pattern"
+          - id: ac-16
+            given: spec item depends_on references another spec with an existing active task
+            when: kspec derive @item runs
+            then: created task depends_on includes the existing task linked to the depended-on spec
       - _ulid: 01KG97RZRPWSSF09C2J394RJK2
         slugs:
           - derive-title-override
