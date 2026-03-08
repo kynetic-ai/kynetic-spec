@@ -81579,7 +81579,7 @@
   spec_ref: "@cmd-setup"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -81606,6 +81606,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-08T09:00:49.545Z
+  closed_reason: "Merged in PR #705 (merge commit 94cc90c4245bfcebd04dcc6554190795fc293ff2). Updated
+    kspec setup so unknown agent detection warns but still runs the full setup pipeline, adds a
+    skipped Configure author summary step for unknown agents, and prints manual KSPEC_AUTHOR
+    instructions after setup. AC coverage confirmed for @cmd-setup ac-1 in tests/setup.test.ts;
+    targeted setup suites passed after fresh build and full npm test passed on PR head."
 - _ulid: 01KK5P3YQXNQR1MHAHSKA68HE5
   slugs: []
   title: Add dispatch filter UI and default automation eligibility
