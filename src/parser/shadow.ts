@@ -1566,24 +1566,23 @@ export async function shadowPushAsync(
  * @param worktreeDir Path to shadow worktree
  * @param options Optional shadow configuration
  */
-// Per-worktree lock to prevent concurrent pulls from colliding
-// (daemon routes call initContext → shadowPull concurrently)
-const pullLocks = new Map<string, Promise<ShadowSyncResult>>();
+// In-flight dedup: if a pull is already running for this worktree, piggyback
+// on its result instead of starting a concurrent stash/pull/pop sequence.
+const pullInflight = new Map<string, Promise<ShadowSyncResult>>();
 
 export function shadowPull(
   worktreeDir: string,
   options?: ShadowOptions,
 ): Promise<ShadowSyncResult> {
   const key = path.resolve(worktreeDir);
-  const existing = pullLocks.get(key);
+  const existing = pullInflight.get(key);
   if (existing) {
-    // Another pull is in progress — piggyback on its result
     return existing;
   }
   const promise = shadowPullImpl(worktreeDir, options).finally(() => {
-    pullLocks.delete(key);
+    pullInflight.delete(key);
   });
-  pullLocks.set(key, promise);
+  pullInflight.set(key, promise);
   return promise;
 }
 
