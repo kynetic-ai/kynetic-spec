@@ -62177,6 +62177,12 @@
         content file, and existing completeness/alignment debt). No new validation failures were
         introduced by the CI workflow change."
       supersedes: null
+    - _ulid: 01KK5P4N50H0MVF0QX8NKV38BB
+      created_at: 2026-03-08T02:59:04.992Z
+      author: Jacob Chapel
+      content: This can't be completed until the CI job is split up so the total time is less than 10
+        minutes.
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
