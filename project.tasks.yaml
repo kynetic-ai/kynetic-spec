@@ -56436,7 +56436,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KK5GFMB04R6DFR7RFW043D0S
   created_at: 2026-02-23T08:25:05.081Z
+  started_at: 2026-03-08T01:25:39.521Z
   notes:
     - _ulid: 01KJ4V7KPFGSXBBGSXS5KP4VCC
       created_at: 2026-02-23T08:53:08.431Z
@@ -56450,10 +56452,25 @@
       content: "NEEDS_REVIEW: @item-add spec documents --parent and --type but has no --root flag for
         placing traits in kynetic.yaml. Add AC to @item-add before implementing."
       supersedes: null
+    - _ulid: 01KK5GT243NVYS1X763HVC86EV
+      created_at: 2026-03-08T01:25:54.947Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: item add cannot currently create project-level trait items in kynetic.yaml
+        without manual edits.
+
+        - Scope: update @item-add spec coverage for a root-level trait path, implement --root for
+        item add, and add tests proving project-level trait placement.
+
+        - Files: src/cli/commands/item.ts, command schemas/tests, and related task/spec metadata via
+        kspec CLI.
+
+        - Verification: targeted vitest coverage for item add plus kspec validate.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-03-08T01:25:39.521Z
-  session_id: 01KK5GFMB04R6DFR7RFW043D0S
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
   slugs: []
   title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —
