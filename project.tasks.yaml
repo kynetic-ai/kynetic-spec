@@ -81146,12 +81146,30 @@
     - static
     - gh-pages
   vcs_refs: []
+  session_id: 01KK5T4DH9SAZK1WETCP6R6QX1
   created_at: 2026-03-08T00:13:30.801Z
-  notes: []
+  started_at: 2026-03-08T04:09:16.845Z
+  notes:
+    - _ulid: 01KK5TDYYBRPRM8JXCA8Z18DCZ
+      created_at: 2026-03-08T04:14:04.236Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: UI revamp added plans, triage, validation/alignment, settings, and sessions
+        views, but GitHub Pages static mode still exports only the older snapshot shape.
+
+        - Scope: update spec coverage where missing, extend snapshot/static API for the new
+        read-only views, and add regression tests for static mode behavior.
+
+        - Files: src/export/*, packages/shared/src/api.ts, packages/web-ui/src/lib/api*.ts, relevant
+        route components/tests.
+
+        - Verification: targeted vitest for export/static API and web-ui route behavior, then kspec
+        validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T04:09:16.845Z
-  session_id: 01KK5T4DH9SAZK1WETCP6R6QX1
 - _ulid: 01KK5E7VM0ZQ7SXE5547293KH6
   slugs: []
   title: Add @elysiajs/static to package.json dependencies
