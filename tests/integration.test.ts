@@ -982,6 +982,27 @@ describe('Integration: derive', () => {
     expect(task.depends_on).toContain('@task-dependency-base');
   });
 
+  // AC: @cmd-derive ac-17
+  it('should map spec depends_on when both tasks are created in the same derive --all run', () => {
+    kspec(
+      'item add --under @test-core --title "Same Run Consumer" --slug same-run-consumer --type feature',
+      tempDir
+    );
+    kspec(
+      'item add --under @test-core --title "Same Run Base" --slug same-run-base --type feature',
+      tempDir
+    );
+    kspec('item set @same-run-consumer --depends-on @same-run-base', tempDir);
+
+    kspec('derive --all', tempDir);
+
+    const task = kspecJson<{ depends_on: string[] }>(
+      'task get @task-same-run-consumer',
+      tempDir
+    );
+    expect(task.depends_on).toContain('@task-same-run-base');
+  });
+
   // AC: @cmd-derive ac-16
   it('should warn and still create the task when spec dependency has no task', () => {
     kspec(

@@ -416,6 +416,91 @@ function dedupeRefs(refs: string[] | undefined): string[] | undefined {
 }
 
 /**
+ * Sort specs so same-run task dependency resolution is stable.
+ * Orders specs by:
+ * 1. Parent-before-child when both are being derived
+ * 2. depended-on spec before consumer when both are being derived
+ *
+ * Falls back to original order for any cyclic/unresolvable subset.
+ */
+function sortSpecsForDerive(
+  specs: LoadedSpecItem[],
+  allItems: LoadedSpecItem[],
+  index: ReferenceIndex,
+): LoadedSpecItem[] {
+  if (specs.length <= 1) return specs;
+
+  const specMap = new Map(specs.map((spec) => [spec._ulid, spec]));
+  const originalOrder = new Map(specs.map((spec, idx) => [spec._ulid, idx]));
+  const outgoing = new Map<string, Set<string>>();
+  const indegree = new Map<string, number>();
+
+  for (const spec of specs) {
+    outgoing.set(spec._ulid, new Set());
+    indegree.set(spec._ulid, 0);
+  }
+
+  const addEdge = (from: string, to: string): void => {
+    if (from === to || !specMap.has(from) || !specMap.has(to)) return;
+    const fromEdges = outgoing.get(from);
+    if (!fromEdges || fromEdges.has(to)) return;
+    fromEdges.add(to);
+    indegree.set(to, (indegree.get(to) || 0) + 1);
+  };
+
+  for (const spec of specs) {
+    const parentSpec = findParentItem(spec, allItems);
+    if (parentSpec && specMap.has(parentSpec._ulid)) {
+      addEdge(parentSpec._ulid, spec._ulid);
+    }
+
+    for (const depRef of spec.depends_on || []) {
+      const resolved = index.resolve(depRef);
+      if (resolved.ok && specMap.has(resolved.ulid)) {
+        addEdge(resolved.ulid, spec._ulid);
+      }
+    }
+  }
+
+  const ready = specs
+    .filter((spec) => indegree.get(spec._ulid) === 0)
+    .sort(
+      (a, b) =>
+        (originalOrder.get(a._ulid) || 0) - (originalOrder.get(b._ulid) || 0),
+    );
+  const sorted: LoadedSpecItem[] = [];
+
+  while (ready.length > 0) {
+    const current = ready.shift();
+    if (!current) break;
+    sorted.push(current);
+
+    for (const target of outgoing.get(current._ulid) || []) {
+      const nextIndegree = (indegree.get(target) || 0) - 1;
+      indegree.set(target, nextIndegree);
+      if (nextIndegree === 0) {
+        const nextSpec = specMap.get(target);
+        if (!nextSpec) continue;
+        ready.push(nextSpec);
+        ready.sort(
+          (a, b) =>
+            (originalOrder.get(a._ulid) || 0) -
+            (originalOrder.get(b._ulid) || 0),
+        );
+      }
+    }
+  }
+
+  if (sorted.length === specs.length) {
+    return sorted;
+  }
+
+  const sortedIds = new Set(sorted.map((spec) => spec._ulid));
+  const remaining = specs.filter((spec) => !sortedIds.has(spec._ulid));
+  return [...sorted, ...remaining];
+}
+
+/**
  * Resolve spec-level depends_on references to active task refs.
  * Uses tasks created in the current derive session first, then falls back to
  * existing non-cancelled tasks linked to the depended-on spec.
@@ -545,6 +630,8 @@ export function registerDeriveCommand(program: Command): void {
             specsToDerive = collectItemsRecursively(specItem, items);
           }
         }
+
+        specsToDerive = sortSpecsForDerive(specsToDerive, items, index);
 
         // Track spec ULID -> created task for dependency resolution
         const specToTaskMap = new Map<string, LoadedTask>();
