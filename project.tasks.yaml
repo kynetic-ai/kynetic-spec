@@ -48483,6 +48483,7 @@
   session_id: 01KK5DJRP5BFF69MMEG7S3PAC9
   created_at: 2026-02-14T21:54:24.255Z
   started_at: 2026-03-08T00:35:46.594Z
+  submitted_at: 2026-03-08T00:40:51.757Z
   notes:
     - _ulid: 01KHFCPHTHP924E82BBE9HDH25
       created_at: 2026-02-15T00:55:06.321Z
@@ -48518,7 +48519,6 @@
       supersedes: null
   todos: []
   automation: needs_review
-  submitted_at: 2026-03-08T00:40:51.757Z
 - _ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
   slugs: []
   title: Fix trivial AC-6 test in multi-value status filter
@@ -80566,3 +80566,122 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KK5E7VM0ZQ7SXE5547293KH6
+  slugs: []
+  title: Add @elysiajs/static to package.json dependencies
+  type: task
+  description: The daemon server imports @elysiajs/static (packages/daemon/src/server.ts:10) but it is
+    not listed in package.json dependencies. Clean npm installs cannot start the daemon — fails with
+    'Cannot find module @elysiajs/static'. Only @elysiajs/cors is declared. Works locally because
+    Bun resolves it from the workspace, but breaks on global installs.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - bug
+    - daemon
+    - P1
+  vcs_refs: []
+  created_at: 2026-03-08T00:41:01.312Z
+  notes: []
+  todos: []
+- _ulid: 01KK5E7WQ76A3HJAD8BCF6PF3A
+  slugs: []
+  title: Support git < 2.42 in kspec init (--orphan worktree fallback)
+  type: task
+  description: kspec init fails on git < 2.42 because 'git worktree add --orphan' was introduced in
+    git 2.42. Debian 12 (bookworm) ships git 2.39, Ubuntu 22.04 ships 2.34. Need a fallback that
+    creates the orphan branch and worktree using older git commands (create orphan branch manually,
+    then add worktree).
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - cli
+    - compatibility
+  vcs_refs: []
+  created_at: 2026-03-08T00:41:02.439Z
+  notes: []
+  todos: []
+- _ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
+  slugs: []
+  title: Document Bun requirement for daemon or provide Node.js fallback
+  type: task
+  description: "kspec serve start fails with 'Bun runtime is required' but this is not documented in
+    the install guide or README. Users discover it only when trying to start the daemon. Either: (a)
+    document the Bun requirement clearly in install/setup, (b) auto-install Bun during kspec setup,
+    or (c) provide a Node.js-compatible daemon fallback."
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - docs
+    - daemon
+    - dx
+  vcs_refs: []
+  created_at: 2026-03-08T00:41:03.501Z
+  notes: []
+  todos: []
+- _ulid: 01KK5E7YSKTWV0KBKFERG5GV8E
+  slugs: []
+  title: Allow adding root-level spec items without --under flag
+  type: task
+  description: kspec item add requires --under <ref> but in a fresh project there are no items to
+    reference as a parent. Need to allow adding root-level items (features/requirements) without
+    specifying a parent, or auto-create a module when --module is specified.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - bug
+    - cli
+    - dx
+  vcs_refs: []
+  created_at: 2026-03-08T00:41:04.563Z
+  notes: []
+  todos: []
+- title: kspec setup should work without agent environment detected
+  description: kspec setup exits with error 'Could not auto-detect agent environment' and does
+    nothing. It should still install core skills, generate kspec-agents.md, and perform other setup
+    steps even without detecting a specific agent platform. The agent env detection should be
+    optional/informational.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - cli
+    - dx
+  depends_on: []
+  _ulid: 01KK5E7ZTASR8W3AX2WBHFMGV2
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T00:41:05.609Z
+  notes: []
+  todos: []
