@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import {
+  kspec as kspecRun,
   kspecOutput as kspec,
   kspecJson,
   setupTempFixtures,
@@ -601,5 +602,47 @@ describe('Trait CLI - item add --trait', () => {
     // Should be stored as @json-output (slug), not @ULID
     expect(result.item.traits).toContain('@json-output');
     expect(result.item.traits).not.toContain(`@${traitResult._ulid}`);
+  });
+
+  // AC: @item-add ac-1
+  it('should create project-level trait items with --root', async () => {
+    const result = kspecJson<{ item: { type: string; slugs: string[]; _sourceFile: string } }>(
+      'item add --root --type trait --title "Root Trait" --slug root-trait',
+      tempDir
+    );
+
+    expect(result.item.type).toBe('trait');
+    expect(result.item.slugs).toContain('root-trait');
+    expect(result.item._sourceFile).toContain('kynetic.yaml');
+
+    const manifest = await fs.readFile(
+      path.join(tempDir, 'kynetic.yaml'),
+      'utf-8'
+    );
+    expect(manifest).toContain('traits:');
+    expect(manifest).toContain('title: Root Trait');
+    expect(manifest).toContain('      - root-trait');
+  });
+
+  it('should reject --root for non-trait item types', () => {
+    const result = kspecRun(
+      'item add --root --type feature --title "Invalid Root Feature"',
+      tempDir,
+      { expectFail: true }
+    );
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain('--root is only supported for --type trait');
+  });
+
+  it('should reject combining --root with --under', () => {
+    const result = kspecRun(
+      'item add --root --under @test-core --type trait --title "Conflicting Root Trait"',
+      tempDir,
+      { expectFail: true }
+    );
+
+    expect(result.exitCode).toBe(2);
+    expect(result.stderr).toContain('Cannot use --under and --root together');
   });
 });
