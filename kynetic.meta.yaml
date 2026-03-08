@@ -90,11 +90,11 @@ agents:
       - on: task.needs_work
     skills:
       - task-work
+    budget:
+      timeout_minutes: 120
     concurrency:
       max_concurrent: 1
     auto_approve: true
-    budget:
-      timeout_minutes: 120
   - _ulid: 01KJS8JC35KPCJP6A4C1VJAWF9
     id: reviewer
     name: Reviewer Agent
@@ -108,12 +108,15 @@ agents:
       - gh
     conventions: []
     adapter: codex-acp
-    dispatch: []
+    dispatch:
+      - on: task.pending_review
     skills:
       - pr-review
     concurrency:
       max_concurrent: 1
     auto_approve: true
+    budget:
+      timeout_minutes: 120
   - _ulid: 01KJY2FNZ6DG45GGS7D4V2ZADF
     id: ui-worker
     name: UI Worker Agent
