@@ -51937,6 +51937,13 @@
         (README.md#agent-integration and README.md#task-management) after the README rewrite, so the
         external-user docs path contains broken links."
       supersedes: null
+    - _ulid: 01KK5M0S812B25S753NY6TM080
+      created_at: 2026-03-08T02:22:00.961Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Addressing stale INSTALL.md README links by repointing them to the
+        rewritten README sections on the dedicated docs/getting-started-readme branch. Verification
+        will re-check anchors and diff scope before re-submitting."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
