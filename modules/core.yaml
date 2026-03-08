@@ -624,8 +624,9 @@ features:
           - id: ac-10
             given: git version is below 2.42 (does not support --orphan worktree flag)
             when: kspec init creates the shadow branch
-            then: falls back to manual orphan branch creation (git checkout --orphan + git worktree add) instead
-              of failing
+            then: falls back to creating the orphan branch in a temporary directory (never modifies the project
+              working tree), pushes the branch to the local repo, then uses standard git worktree
+              add to attach it
         depends_on: []
         implements: []
         relates_to: []
