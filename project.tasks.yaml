@@ -81466,3 +81466,28 @@
   notes: []
   todos: []
   automation: eligible
+- title: Fix derive middleware setting 400 on static file responses
+  description: "The derive middleware in packages/daemon/src/middleware/project-context.ts runs on
+    every request including static files. When no .kspec/ project is registered, it sets status 400
+    on all responses, breaking dynamic ES module imports in the web UI. Fix: skip project context
+    resolution for non-API routes and /api/health. Also add / to SPA fallback routes. See GitHub
+    issue #689."
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - bug
+    - daemon
+    - web-ui
+  depends_on: []
+  _ulid: 01KK5WX0TMYDP3NV9VFEE9HHDT
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-08T04:57:14.835Z
+  notes: []
+  todos: []
