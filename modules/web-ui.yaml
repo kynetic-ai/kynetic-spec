@@ -749,7 +749,7 @@ features:
           clearly labels live-only daemon/shadow details as unavailable
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
     slugs:
       - cli-serve-commands
