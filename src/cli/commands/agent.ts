@@ -29,7 +29,17 @@ import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
-import { getWebSocketCtor } from "../websocket.js";
+import WsDefault from "ws";
+
+// WebSocket constructor that works on Node 18+.
+// Uses the ws package by default. Tests override via _setWebSocketCtor.
+const WsFallback = WsDefault as unknown as typeof WebSocket;
+let _wsCtor: typeof WebSocket = WsFallback;
+
+/** @internal Test-only: override the WebSocket constructor used by dispatch watch. */
+export function _setWebSocketCtor(ctor: typeof WebSocket | null): void {
+  _wsCtor = ctor ?? WsFallback;
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -843,8 +853,9 @@ export function registerAgentCommands(program: Command): void {
           wsUrl.searchParams.set("project", projectDir);
         }
 
-        const WS = getWebSocketCtor();
-        const ws = new WS(wsUrl.toString());
+        // Use _wsCtor (ws package by default; tests override via _setWebSocketCtor).
+        // Always uses ws instead of native globalThis.WebSocket for Node < 22 compat.
+        const ws = new _wsCtor(wsUrl.toString());
 
         ws.onopen = () => {
           retryCount = 0;
