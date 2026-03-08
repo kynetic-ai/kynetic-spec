@@ -81210,6 +81210,21 @@
         src/export/types.ts import), lacks AC-22 regression coverage for static sessions, and
         includes unrelated docs/skill changes from other tasks."
       supersedes: null
+    - _ulid: 01KK5ZQZFDV497R8GWAZFKHTJ7
+      created_at: 2026-03-08T05:46:55.341Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1] Addressed all three MUST-FIX items:
+
+        1. Fixed CI build failure: replaced @kynetic-ai/shared import in src/export/types.ts with
+        local types (TriageRecord from schema, new ExportedPlan interface) — tsc now compiles clean.
+
+        2. Removed unrelated commits: reverted docs/plans/completeness-warning-debt-reduction.md and
+        skill template changes from other tasks.
+
+        3. Added AC-22 regression tests: session detail page static message guard, fetchSessions
+        empty return in static mode, fetchSession throw in static mode.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5E7VM0ZQ7SXE5547293KH6
