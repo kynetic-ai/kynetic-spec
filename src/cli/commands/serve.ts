@@ -269,13 +269,22 @@ async function startServer(opts: {
     process.exit(EXIT_CODES.ERROR);
   }
 
-  // Daemon requires Bun to run TypeScript directly
+  // AC: @web-ui ac-2 — clear error with install URL when Bun is missing
   if (!isBunAvailable()) {
+    const installHint = process.platform === 'win32'
+      ? 'Install Bun: powershell -c "irm bun.sh/install.ps1 | iex"'
+      : 'Install Bun: curl -fsSL https://bun.sh/install | bash';
     if (isJsonMode()) {
-      output({ error: 'Bun runtime not found', hint: 'Install Bun: https://bun.sh/docs/installation' });
+      output({
+        error: 'Bun runtime is required for the kspec daemon',
+        hint: installHint,
+        url: 'https://bun.sh/docs/installation',
+      });
     } else {
-      error('Bun runtime is required for the daemon server');
-      error('Install Bun: https://bun.sh/docs/installation');
+      error('Bun runtime is required for the kspec daemon');
+      error('The daemon uses Elysia (a Bun-native framework) and cannot run on Node.js alone.');
+      info(installHint);
+      info('For more options: https://bun.sh/docs/installation');
     }
     process.exit(EXIT_CODES.ERROR);
   }

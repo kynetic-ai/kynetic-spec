@@ -7,6 +7,7 @@ This guide covers installing and setting up kspec in your own projects. For deve
 - **Node.js** v18 or later
 - **npm** (or pnpm/yarn)
 - **Git** - Your project must be a git repository for shadow branch mode (the default)
+- **Bun** (optional) - Required only for the daemon/web UI (`kspec serve`). Not needed for CLI-only usage. Install from [bun.sh](https://bun.sh/docs/installation)
 
 ## Installation
 
@@ -141,6 +142,7 @@ See [docs/getting-started.md](docs/getting-started.md) for the full first-task w
 
 | Issue | Solution |
 |-------|----------|
+| "Bun runtime is required" | Install Bun: `curl -fsSL https://bun.sh/install \| bash` (only needed for `kspec serve`) |
 | "kspec: command not found" | Run `npm install -g @kynetic-ai/spec`, or if using source: `npm link` |
 | "Not a git repository" | Run `git init` first, or use `kspec init --no-shadow` |
 | "Cannot find .kspec" | Run `kspec init` (fresh project) or `kspec setup --auto-worktree` (cloned repo) |

@@ -17,6 +17,7 @@ The example uses a documentation deliverable so you can try the whole flow in al
 - Node.js 18+
 - Git repository initialized locally
 - `gh` installed if you want to open a pull request from the command line
+- [Bun](https://bun.sh) installed if you plan to use the web dashboard (`kspec serve`)
 
 If you need install variants, cloned-project setup, or troubleshooting, read [INSTALL.md](../INSTALL.md) first.
 

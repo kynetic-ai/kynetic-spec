@@ -14,7 +14,7 @@ import {
   type KspecOptions,
 } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { readFileSync, existsSync, mkdirSync } from 'fs';
 import { createServer } from 'net';
 
@@ -567,6 +567,69 @@ describe('kspec serve commands', () => {
     // Error and hint should be in stderr
     expect(result.stderr).toContain('Invalid port number');
     expect(result.stderr).toContain('Try: kspec serve --port');
+  });
+
+  // AC: @web-ui ac-1
+  it('should bundle daemon runtime dependencies in the npm package', () => {
+    // Verify elysia and its companion packages are in the package.json dependencies
+    // so they are available after `npm install -g @kynetic-ai/spec`
+    const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
+    expect(pkg.dependencies).toHaveProperty('elysia');
+    expect(pkg.dependencies).toHaveProperty('@elysiajs/cors');
+    expect(pkg.dependencies).toHaveProperty('@elysiajs/static');
+  });
+
+  // AC: @web-ui ac-2
+  it('should show clear error with Bun install URL when Bun is not available', () => {
+    // Build PATH that includes node but excludes bun
+    const nodeDir = dirname(execSync('which node', { encoding: 'utf-8' }).trim());
+    const noBunPath = (process.env.PATH || '')
+      .split(':')
+      .filter(p => {
+        try { return !existsSync(join(p, 'bun')); } catch { return true; }
+      })
+      .join(':');
+    // Ensure node's directory is always present
+    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+
+    const result = runKspec(
+      `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir,
+      { expectFail: true, env: { PATH: pathWithNode } }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Bun runtime is required');
+    // Install instructions go to stdout via info()
+    expect(result.stdout).toContain('bun.sh');
+  });
+
+  // AC: @web-ui ac-2
+  it('should show Bun install URL in JSON mode when Bun is not available', () => {
+    // Build PATH that includes node but excludes bun
+    const nodeDir = dirname(execSync('which node', { encoding: 'utf-8' }).trim());
+    const noBunPath = (process.env.PATH || '')
+      .split(':')
+      .filter(p => {
+        try { return !existsSync(join(p, 'bun')); } catch { return true; }
+      })
+      .join(':');
+    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+
+    const result = runKspec(
+      `serve start --json --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir,
+      { expectFail: true, env: { PATH: pathWithNode } }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed).toHaveProperty('error');
+    expect(parsed.error).toContain('Bun runtime is required');
+    expect(parsed).toHaveProperty('hint');
+    expect(parsed.hint).toContain('bun.sh');
+    expect(parsed).toHaveProperty('url');
+    expect(parsed.url).toBe('https://bun.sh/docs/installation');
   });
 
   // AC: @cli-serve-commands ac-11
