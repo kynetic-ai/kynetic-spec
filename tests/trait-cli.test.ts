@@ -606,14 +606,20 @@ describe('Trait CLI - item add --trait', () => {
 
   // AC: @item-add ac-1
   it('should create project-level trait items with --root', async () => {
-    const result = kspecJson<{ item: { type: string; slugs: string[]; _sourceFile: string } }>(
+    const humanResult = kspecRun(
       'item add --root --type trait --title "Root Trait" --slug root-trait',
       tempDir
     );
+    expect(humanResult.stdout).toContain('Created item: @root-trait in project root traits');
 
-    expect(result.item.type).toBe('trait');
-    expect(result.item.slugs).toContain('root-trait');
-    expect(result.item._sourceFile).toContain('kynetic.yaml');
+    const result = kspecJson<{ type: string; slugs: string[]; _sourceFile: string }>(
+      'item get @root-trait',
+      tempDir
+    );
+
+    expect(result.type).toBe('trait');
+    expect(result.slugs).toContain('root-trait');
+    expect(result._sourceFile).toContain('kynetic.yaml');
 
     const manifest = await fs.readFile(
       path.join(tempDir, 'kynetic.yaml'),

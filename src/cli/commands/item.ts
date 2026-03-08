@@ -810,10 +810,11 @@ Examples:
           [...items, resultItem],
         );
         const itemSlug = resultItem.slugs?.[0] || index.shortUlid(resultItem._ulid);
+        const itemRef = `@${itemSlug}`;
         await commitIfShadow(ctx.shadow, "item-add", itemSlug);
         success(
           isRootAdd
-            ? `Created item: ${index.shortUlid(resultItem._ulid)} in project root traits`
+            ? `Created item: ${itemRef} in project root traits`
             : `Created item: ${index.shortUlid(resultItem._ulid)} under @${parent!.slugs[0] || index.shortUlid(parent!._ulid)}`,
           {
             item: resultItem,
