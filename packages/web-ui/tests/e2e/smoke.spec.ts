@@ -4,8 +4,8 @@ test.describe('Smoke Tests', () => {
   test('page loads and shows sidebar', async ({ page, daemon }) => {
     await page.goto('/');
 
-    // Sidebar navigation is visible
-    await expect(page.getByTestId('sidebar-nav')).toBeVisible();
+    // Sidebar navigation renders the dashboard entry in the desktop shell
+    await expect(page.getByTestId('nav-link-dashboard')).toBeVisible();
 
     // Connection status shows connected
     const connectionStatus = page.getByTestId('connection-status');
