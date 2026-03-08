@@ -62221,6 +62221,17 @@
         splitting the GitHub Actions Playwright job into shards so each CI slice stays under the
         requested 10-minute wall-clock target.
       supersedes: null
+    - _ulid: 01KK5Q53JBX9WPA7EYRJX73J5P
+      created_at: 2026-03-08T03:16:48.332Z
+      author: Jacob Chapel
+      content: "Verification after FIX_CYCLE 2 changes: '.github/workflows/test.yml' parses cleanly; 'npm
+        run test:e2e -- --list' now runs the new build:e2e + npm link path and lists 506 Playwright
+        tests; 'npm run test:e2e -- --shard=2/3 --list' lists 164 tests in 9 files, confirming shard
+        forwarding. Full local smoke execution is still blocked inside dispatch because the E2E
+        fixture intentionally refuses 'kspec serve start' when KSPEC_SESSION_ID is set, so
+        fresh-head GitHub Actions remains the valid end-to-end environment for actual daemon-backed
+        execution."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
