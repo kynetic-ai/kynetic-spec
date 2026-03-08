@@ -81755,7 +81755,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -81803,6 +81803,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-08T10:10:02.281Z
+  closed_reason: "Merged in PR #707. Fixed daemon project-context derive middleware so non-API routes
+    and /api/health bypass project lookup, and added '/' to SPA fallback routes. Regression coverage
+    verified with daemon unit tests and Playwright smoke coverage; fresh local npm test passed on
+    the merged HEAD."
 - _ulid: 01KK5XAGV3YDF7X8N1JXBFKW2C
   slugs: []
   title: Add streaming output to kspec agent run
@@ -81955,6 +81960,7 @@
   session_id: 01KK6D2E67MCZRDPPJGFRSPNKR
   created_at: 2026-03-08T06:12:53.641Z
   started_at: 2026-03-08T09:45:16.846Z
+  submitted_at: 2026-03-08T10:03:11.526Z
   notes:
     - _ulid: 01KK6ECKGS2WV90H3265MSSKQ3
       created_at: 2026-03-08T10:02:51.289Z
@@ -81967,7 +81973,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-08T10:03:11.526Z
 - _ulid: 01KK6201CTYB6AXEPY2MBSY2B0
   slugs: []
   title: Fix active fleet showing completed agents as still active
