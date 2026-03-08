@@ -62151,6 +62151,14 @@
         and web-ui builds. Local verification still emits an unrelated Svelte deprecation warning
         from packages/web-ui/src/routes/observations/+page.svelte during build."
       supersedes: null
+    - _ulid: 01KK5MKG92A2NA0MPRBK0JD25N
+      created_at: 2026-03-08T02:32:14.371Z
+      author: Jacob Chapel
+      content: "Additional verification: 'kspec validate' still fails, but only on pre-existing unrelated
+        kspec metadata/alignment issues (duplicate @observations refs, missing skills.observations
+        content file, and existing completeness/alignment debt). No new validation failures were
+        introduced by the CI workflow change."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
