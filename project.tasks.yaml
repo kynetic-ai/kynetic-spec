@@ -48473,14 +48473,14 @@
   spec_ref: "@validate-drift"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
-  session_id: 01KK5DJRP5BFF69MMEG7S3PAC9
+  session_id: null
   created_at: 2026-02-14T21:54:24.255Z
   started_at: 2026-03-08T00:35:46.594Z
   submitted_at: 2026-03-08T00:40:51.757Z
@@ -48523,6 +48523,13 @@
       content: Adjusted @validate-drift implementation status back to in_progress after submission because
         the current alignment checker expects linked specs to remain in_progress until the task is
         completed, even for already-shipped behavior.
+      supersedes: null
+    - _ulid: 01KK5EKW13SJRVBFRW6STZWHZF
+      created_at: 2026-03-08T00:47:34.947Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #691 is conflated with unrelated derive and
+        smoke-test changes; rebase onto a dedicated branch with only @validate-drift work before
+        review."
       supersedes: null
   todos: []
   automation: needs_review
