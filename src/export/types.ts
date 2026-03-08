@@ -13,13 +13,10 @@ import type {
   InboxItem,
   Observation,
   SessionContext,
+  TriageRecord,
   Workflow,
 } from "../schema/index.js";
 import type { LoadedSpecItem, LoadedTask } from "../parser/yaml.js";
-import type {
-  PlanDetail,
-  TriageRecord,
-} from "@kynetic-ai/shared";
 import type { AlignmentWarning } from "../parser/alignment.js";
 import type {
   CompletenessWarning,
@@ -81,6 +78,32 @@ export interface ExportedProject {
 }
 
 /**
+ * Exported plan with computed progress for static display.
+ * AC: @gh-pages-export ac-23
+ */
+export interface ExportedPlan {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  created_at: string;
+  approved_at?: string;
+  completed_at?: string;
+  derived_specs: string[];
+  derived_tasks: string[];
+  spec_count: number;
+  task_count: number;
+  task_progress: {
+    total: number;
+    completed: number;
+    in_progress: number;
+    pending: number;
+    blocked: number;
+  };
+  content: string;
+}
+
+/**
  * Validation result included in the snapshot.
  * AC: @gh-pages-export ac-5
  */
@@ -123,7 +146,7 @@ export interface KspecSnapshot {
   /** Inbox items */
   inbox: InboxItem[];
   /** Plans for static plans/specs/tasks filtering */
-  plans?: PlanDetail[];
+  plans?: ExportedPlan[];
   /** Triage records for static triage browsing */
   triage?: TriageRecord[];
   /** Session context */

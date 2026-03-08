@@ -23,6 +23,8 @@ import {
 	fetchTriageRecordsStatic,
 	fetchValidationStatic
 } from '../src/lib/api-static';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 function createSnapshot(): KspecSnapshot {
 	return {
@@ -216,5 +218,40 @@ describe('static API snapshot adapters', () => {
 		expect(items.total).toBe(1);
 		expect(items.items[0].title).toBe('Spec One');
 		expect(items.items[0].acceptance_criteria_count).toBe(1);
+	});
+});
+
+// AC: @gh-pages-export ac-22
+describe('static sessions route behavior (@gh-pages-export ac-22)', () => {
+	const WEB_UI_SRC = join(process.cwd(), 'packages', 'web-ui', 'src');
+
+	it('session detail page guards static mode and shows read-only message', () => {
+		const detailSrc = readFileSync(
+			join(WEB_UI_SRC, 'routes', 'sessions', '[id]', '+page.svelte'),
+			'utf-8'
+		);
+		// Component checks isStaticMode() and short-circuits loadSession
+		expect(detailSrc).toContain('isStaticMode()');
+		// Shows an informative read-only message with a testid
+		expect(detailSrc).toContain('data-testid="session-static-message"');
+		expect(detailSrc).toContain('not included in the static export');
+	});
+
+	it('session list page returns empty in static mode via fetchSessions', () => {
+		const apiSrc = readFileSync(
+			join(WEB_UI_SRC, 'lib', 'api.ts'),
+			'utf-8'
+		);
+		// fetchSessions returns empty items in static mode
+		expect(apiSrc).toMatch(/fetchSessions[\s\S]*?isStaticMode\(\)[\s\S]*?items:\s*\[\]/);
+	});
+
+	it('fetchSession throws in static mode to prevent live data fetching', () => {
+		const apiSrc = readFileSync(
+			join(WEB_UI_SRC, 'lib', 'api.ts'),
+			'utf-8'
+		);
+		// fetchSession throws when called in static mode
+		expect(apiSrc).toMatch(/fetchSession\(id[\s\S]*?isStaticMode\(\)[\s\S]*?throw new Error/);
 	});
 });
