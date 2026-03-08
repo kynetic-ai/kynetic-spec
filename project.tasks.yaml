@@ -81238,7 +81238,7 @@
   spec_ref: "@web-ui"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -81299,6 +81299,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-08T05:53:40.376Z
+  closed_reason: "Merged in PR #698. Added @elysiajs/static to the published root package
+    dependencies, synced the lockfile, and added a package distribution regression test covering
+    daemon runtime deps for global installs. Reviewed against @web-ui ac-1 with no trait ACs on the
+    spec, and current-head CI passed."
 - _ulid: 01KK5E7WQ76A3HJAD8BCF6PF3A
   slugs: []
   title: Support git < 2.42 in kspec init (--orphan worktree fallback)
