@@ -56429,7 +56429,7 @@
     without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
     never-edit-manually rule.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -56452,6 +56452,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  started_at: 2026-03-08T01:25:39.521Z
+  session_id: 01KK5GFMB04R6DFR7RFW043D0S
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
   slugs: []
   title: kspec-agents.md Finding Information table shows skill IDs as /help instead of /kspec:help —

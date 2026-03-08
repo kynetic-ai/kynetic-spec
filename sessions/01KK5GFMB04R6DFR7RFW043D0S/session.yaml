@@ -1,0 +1,7 @@
+id: 01KK5GFMB04R6DFR7RFW043D0S
+task_id: "@01KJ4SM7SSXD7S0ZN6VDXTDD85"
+agent_type: codex-acp
+agent_id: worker
+trigger: task.ready
+status: active
+started_at: 2026-03-08T01:25:09.435Z
