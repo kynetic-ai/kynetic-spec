@@ -67141,12 +67141,29 @@
     - automation
     - tasks
   vcs_refs: []
+  session_id: 01KK5Q6WNH1TJWBR8BKDQ4P5G0
   created_at: 2026-02-27T23:59:57.190Z
-  notes: []
+  started_at: 2026-03-08T03:27:07.019Z
+  notes:
+    - _ulid: 01KK5QRE80MKAQFHQCHYVX7P7S
+      created_at: 2026-03-08T03:27:21.856Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: validate/automation surfaced a small remaining set of tasks that are eligible
+        or unassessed without a linked spec.
+
+        - Scope: classify the current warning set, apply the first metadata correction batch, and
+        document when a task without spec_ref must be manual_only versus when it should gain a spec.
+
+        - Files: task metadata via kspec CLI; automation guidance under templates/skills if policy
+        text needs to change.
+
+        - Verification: re-run kspec tasks assess automation and kspec validate after updates.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-03-08T03:27:07.019Z
-  session_id: 01KK5Q6WNH1TJWBR8BKDQ4P5G0
 - _ulid: 01KJGRQ1BBMQ4VHWB8SSKG16RA
   slugs:
     - task-plan-completeness-warning-debt-reduction
