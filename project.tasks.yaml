@@ -67259,6 +67259,39 @@
         - Verification: re-run kspec validate --completeness, inspect current warning hotspots,
         create a durable plan record, and capture the resulting plan ref + branch/PR in task notes.
       supersedes: null
+    - _ulid: 01KK5RE0EV281QT462CH4YKSBB
+      created_at: 2026-03-08T03:39:08.635Z
+      author: Jacob Chapel
+      content: >-
+        Created durable plan @plan-completeness-warning-debt-reduction (01KK5RDB) and committed the
+        reviewable source document at docs/plans/completeness-warning-debt-reduction.md.
+
+
+        Current baseline captured on 2026-03-07:
+
+        - missing_acceptance_criteria: 149
+
+        - missing_description: 7
+
+        - missing_test_coverage (own_ac): 106
+
+        - missing_test_coverage (trait_ac): 6
+
+        - automation_eligible_no_spec: 144
+
+
+        Wave summary:
+
+        - Wave 0: classify warning families and decide module/state-taxonomy policy
+
+        - Wave 1: clear low-churn hygiene debt (descriptions + placeholder test trait)
+
+        - Wave 2: close @trait-priority-parameter coverage across six command families
+
+        - Wave 3: reduce review-critical own AC coverage debt
+
+        - Wave 4: split structural-vs-behavioral missing AC debt before bulk backfill
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJGV65DSZBK2ZB27K8FQFXY9
