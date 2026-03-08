@@ -51865,7 +51865,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -51979,6 +51979,11 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-03-08T03:25:34.672Z
+  closed_reason: "Merged in PR #692 (bc65035). Rewrote the public README for external adopters, added
+    docs/getting-started.md with an end-to-end spec-first tutorial, and updated INSTALL.md handoffs
+    to the current docs flow. Review verified isolated scope, link integrity, and current CLI
+    command accuracy; AC coverage not applicable because this task has no spec_ref."
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
   slugs: []
   title: Clean up setup.ts tech debt — dedup, legacy render, error handling
