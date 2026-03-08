@@ -81978,6 +81978,15 @@
         WebSocket fallback path, so the Node 20 crash fix can regress undetected on the repo's Node
         22 CI."
       supersedes: null
+    - _ulid: 01KK6GFJZQGSGRAGEC3EK73GQJ
+      created_at: 2026-03-08T10:39:26.199Z
+      author: "@claude"
+      content: "Fix cycle 1: Added explicit fallback-path tests. Tests now stub globalThis.WebSocket to
+        undefined before calling getWebSocketCtor(), forcing the ws-package fallback path. Two new
+        test cases: (1) verifies fallback returns a function when global is absent, (2) verifies
+        fallback can establish a real WebSocket connection via ws. This ensures the Node 20 fix
+        cannot regress on Node 22 CI."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK6201CTYB6AXEPY2MBSY2B0
