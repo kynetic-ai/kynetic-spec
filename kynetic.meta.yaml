@@ -83,7 +83,7 @@ agents:
       - npm
       - vitest
     conventions: []
-    adapter: codex-acp
+    adapter: claude-agent-acp
     dispatch:
       - on: task.in_progress
         filter:
@@ -7736,6 +7736,16 @@ observations:
       because the work branch was created from another task branch instead of origin/main. Review
       had to bounce the task just to split the PR."
     created_at: 2026-03-08T01:38:08.197Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KK5WHSWEKPGJE7QV14GKPFHR
+    type: friction
+    content: Direct 'kspec agent run --task' bypassed agent prompt_template and framed review
+      invocations as implementation work, while explicit codex-acp prompt runs could fail with RPC
+      parse errors. This makes local readonly review automation hard to trust and pushes users off
+      the intended agent workflow.
+    created_at: 2026-03-08T04:51:07.278Z
     author: Jacob Chapel
     resolved: false
     resolution: null
