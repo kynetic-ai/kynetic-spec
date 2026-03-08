@@ -422,7 +422,7 @@ export async function createServer(options: ServerOptions) {
   // AC: @config-shadow ac-12 - Start periodic shadow sync if remote tracking configured
   if (startupProjectPath) {
     try {
-      const { loadProjectConfig } = await import('../../parser/config.js');
+      const { loadProjectConfig } = await import('../parser/config.js');
       const { config } = await loadProjectConfig(startupProjectPath);
       const syncInterval = config.shadow.sync_interval;
       const worktreeDir = join(startupProjectPath, config.shadow.directory);

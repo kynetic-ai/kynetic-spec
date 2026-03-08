@@ -7,7 +7,7 @@
  * requiring a manual `kspec shadow sync`.
  */
 
-import { shadowPull, hasRemoteTracking, type ShadowOptions } from '../../parser/shadow.js';
+import { shadowPull, hasRemoteTracking, type ShadowOptions } from '../parser/shadow.js';
 import type { PubSubManager } from './websocket/pubsub';
 
 export interface ShadowSyncSchedulerOptions {
