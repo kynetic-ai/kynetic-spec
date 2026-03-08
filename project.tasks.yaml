@@ -62142,6 +62142,15 @@
         install Bun in the e2e job before browser install/test execution, then re-running targeted
         verification."
       supersedes: null
+    - _ulid: 01KK5MJTKPH1S16QZV4MZVB8A9
+      created_at: 2026-03-08T02:31:52.183Z
+      author: Jacob Chapel
+      content: "Fixed FIX_CYCLE 1 by adding an explicit Bun setup step to the GitHub Actions e2e job
+        before Playwright/browser execution. Verification: workflow YAML parses cleanly and 'npm run
+        test:e2e -- --list' completed successfully, listing 506 Playwright tests after the shared
+        and web-ui builds. Local verification still emits an unrelated Svelte deprecation warning
+        from packages/web-ui/src/routes/observations/+page.svelte during build."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
