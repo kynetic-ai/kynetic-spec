@@ -81952,12 +81952,21 @@
     - cli
     - agent
   vcs_refs: []
+  session_id: 01KK6D2E67MCZRDPPJGFRSPNKR
   created_at: 2026-03-08T06:12:53.641Z
-  notes: []
+  started_at: 2026-03-08T09:45:16.846Z
+  notes:
+    - _ulid: 01KK6ECKGS2WV90H3265MSSKQ3
+      created_at: 2026-03-08T10:02:51.289Z
+      author: "@claude"
+      content: "Fix: Added ws package as dependency and created src/cli/websocket.ts utility that checks
+        globalThis.WebSocket at call time (Node 22+) with ws fallback (Node 18-21). The
+        getWebSocketCtor() function returns the appropriate constructor, preserving vi.stubGlobal
+        compatibility for tests. Updated agent.ts dispatch watch to use the utility. All 53 agent
+        command tests pass including all 18 dispatch watch tests."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T09:45:16.846Z
-  session_id: 01KK6D2E67MCZRDPPJGFRSPNKR
 - _ulid: 01KK6201CTYB6AXEPY2MBSY2B0
   slugs: []
   title: Fix active fleet showing completed agents as still active
