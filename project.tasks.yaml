@@ -82206,5 +82206,15 @@
         packages/daemon/src/server.ts resolve to nonexistent parser paths in the built dist layout,
         and the e2e smoke job is failing with 'Daemon failed to start within 5 seconds'."
       supersedes: null
+    - _ulid: 01KK6P2ESNXBD6Z3AX0BYVEZJM
+      created_at: 2026-03-08T12:17:07.382Z
+      author: "@claude"
+      content: "Fix cycle 1: Corrected relative import paths in shadow-sync.ts and server.ts. Both files
+        used ../../parser/ which only works from the routes/ subdirectory (3 levels deep in
+        dist/daemon/routes/). From dist/daemon/ root (2 levels deep), ../../parser/ overshoots past
+        dist/ to the project root. Changed to ../parser/ which correctly resolves to dist/parser/ at
+        runtime. Verified with bun import smoke test and all 101 shadow tests + 61 config tests
+        pass."
+      supersedes: null
   todos: []
   automation: eligible
