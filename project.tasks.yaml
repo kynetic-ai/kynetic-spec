@@ -60712,24 +60712,24 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix active fleet showing completed agents as still active
-  description: "The dispatch engine emits the completed/failed WebSocket event (onInvocationEvent) BEFORE removing the invocation from activeInvocationDetails and decrementing activeCount. The event fires inside .runExclusive() (dispatch.ts ~line 1032), but activeInvocationDetails.delete() happens in .finally() (~line 1100) and activeCount decrement in .then() (~line 1085). When the UI receives the completed event and immediately fetches /api/agent/status, the invocation is still in the active list, causing stale 'active' entries on the agents page and dashboard/kanban active fleet. Fix: move activeInvocationDetails.delete() and activeCount decrement BEFORE emitting the completed/failed event, or emit the event in .finally() after cleanup. Affects both the agents page (AgentCard activeCount) and dashboard/kanban (ActiveFleetRow)."
+- _ulid: 01KK6201CTYB6AXEPY2MBSY2B0
+  slugs: []
+  title: Fix active fleet showing completed agents as still active
   type: task
+  description: "The agents screen and dashboard/kanban active fleet show more agents as active than are actually running. The issue persists across page refreshes, indicating this is a server-side data issue in the dispatch engine's getStatus() — not a UI rendering or WebSocket race. Possible causes: (1) activeInvocationDetails entries not being cleaned up when invocations complete/fail (e.g. if runInvocation hangs or the .finally() cleanup never fires), (2) activeCount diverging from actual running invocations, (3) CLAUDECODE nested-session failures (issue #700) causing spawned agents to crash in a way that the promise never resolves, leaving stale tracking records. Investigation needed: check dispatch.ts _spawnInvocation cleanup paths — .then() decrements activeCount, .finally() deletes from activeInvocationDetails and runningInvocations. If the promise hangs (never resolves/rejects), all cleanup is skipped. Also check the shadowMutex.runExclusive wrapper — if it deadlocks, same result."
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - bug
     - web-ui
     - daemon
     - dispatch
-  depends_on: []
-  _ulid: 01KK6201CTYB6AXEPY2MBSY2B0
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T06:26:16.602Z
   notes: []
