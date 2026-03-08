@@ -51866,7 +51866,9 @@
   priority: 2
   tags: []
   vcs_refs: []
+  session_id: 01KK5FWS0V32ZNSXA6JMSZWK1W
   created_at: 2026-02-19T19:09:09.058Z
+  started_at: 2026-03-08T01:10:29.121Z
   notes:
     - _ulid: 01KHW19B512JKJ09DNKPQMXEC9
       created_at: 2026-02-19T22:45:46.785Z
@@ -51874,10 +51876,26 @@
       content: "Automation status set to manual_only: Editorial content — voice, positioning, emphasis
         need human direction"
       supersedes: null
+    - _ulid: 01KK5FY9MYNGB1ZDRV50WXCDBV
+      created_at: 2026-03-08T01:10:45.150Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: public-facing docs for external users adopting kspec as a tool, not
+        contributors hacking on kspec itself.
+
+        - Scope: rewrite top-level README and add an end-to-end getting-started tutorial that links
+        to existing install and skill docs instead of duplicating them.
+
+        - Files: README.md, docs/getting-started.md, and any small cross-links needed from existing
+        docs.
+
+        - Verification: markdown review plus targeted repo checks for command accuracy and link
+        validity.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-03-08T01:10:29.121Z
-  session_id: 01KK5FWS0V32ZNSXA6JMSZWK1W
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
   slugs: []
   title: Clean up setup.ts tech debt — dedup, legacy render, error handling
