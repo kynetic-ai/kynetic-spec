@@ -159,5 +159,6 @@ kspec init --force     # Reinitialize completely (use as last resort)
 
 ## Next Steps
 
+- [docs/getting-started.md](docs/getting-started.md) - End-to-end tutorial from install to first completed task
 - [AGENTS.md](AGENTS.md) - Detailed workflows for AI agents
-- [README.md](README.md#task-management) - Full CLI reference
+- [README.md](README.md) - Package overview and workflow summary
