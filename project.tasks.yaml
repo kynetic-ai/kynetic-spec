@@ -82540,7 +82540,7 @@
   type: task
   spec_ref: "@session-storage-path-resolution"
   plan_ref: "@plan-session-storage-separation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82562,6 +82562,8 @@
         Thread through store.ts, CLI commands, daemon routes.
   todos: []
   automation: eligible
+  started_at: 2026-03-08T23:08:45.279Z
+  session_id: 01KK7TS04QHPBX3312K8ZMTJ87
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
   slugs:
     - remove-shadowautocommit-from-session-operations
