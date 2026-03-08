@@ -627,6 +627,18 @@ features:
             then: falls back to creating the orphan branch in a temporary directory (never modifies the project
               working tree), pushes the branch to the local repo, then uses standard git worktree
               add to attach it
+          - id: ac-11
+            given: Shadow branch has remote tracking configured and multiple clones or worktrees share the same
+              remote shadow branch
+            when: A kspec write command commits to the local shadow branch
+            then: The shadow sync performs a pull-rebase before pushing, using the configured merge driver for
+              conflict resolution, so that changes from other clones are integrated before pushing
+              new commits — preventing divergence and reducing merge conflicts
+          - id: ac-12
+            given: The daemon is running with shadow remote tracking configured
+            when: A configurable sync interval elapses (default 60s)
+            then: The daemon performs a background shadow pull to pick up changes pushed by other clones, making
+              remote shadow state available locally without requiring a manual kspec shadow sync
         depends_on: []
         implements: []
         relates_to: []
