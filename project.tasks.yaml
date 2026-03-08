@@ -56469,6 +56469,13 @@
 
         - Verification: targeted vitest coverage for item add plus kspec validate.
       supersedes: null
+    - _ulid: 01KK5H84A12VC9013J3M8054V9
+      created_at: 2026-03-08T01:33:35.937Z
+      author: Jacob Chapel
+      content: "Found branch ancestry issue: the dedicated task branch had been created from
+        feat/task-redesign-web-ui instead of main, which would have conflated this PR with unrelated
+        docs work. Rebased the task branch setup onto main before commit."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJ4SM8TEBGJ7WXRTTVQKTY3S
