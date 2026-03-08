@@ -2401,3 +2401,144 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     await engine.stop();
   });
 });
+
+// ─── Priority filter threshold semantics ──────────────────────────────────────
+
+// AC: @ui-agent-dispatch ac-8
+describe("Priority filter uses threshold semantics (<=)", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-priority-threshold-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should match tasks with priority equal to filter threshold", async () => {
+    const agent = makeTestAgent({
+      id: "priority-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible", priority: 3 } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 3 },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible", priority: 3 },
+    ]);
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(1);
+    await engine.stop();
+  });
+
+  it("should match tasks with higher priority (lower number) than threshold", async () => {
+    const agent = makeTestAgent({
+      id: "priority-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible", priority: 3 } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 1 },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible", priority: 1 },
+    ]);
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(1);
+    await engine.stop();
+  });
+
+  it("should reject tasks with lower priority (higher number) than threshold", async () => {
+    const agent = makeTestAgent({
+      id: "priority-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible", priority: 2 } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 5 },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible", priority: 5 },
+    ]);
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+
+  it("should reject tasks with default priority (3) when filter requires higher (1)", async () => {
+    // Schema defaults task priority to 3 when not specified.
+    // Filter priority: 1 means only tasks with priority <= 1 match.
+    const agent = makeTestAgent({
+      id: "priority-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible", priority: 1 } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "in_progress", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+    await engine.handleFileChange(testDir);
+
+    expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+});

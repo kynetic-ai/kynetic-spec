@@ -732,9 +732,11 @@ export class DispatchEngine {
       }
     }
 
-    // Priority filter
+    // Priority filter — threshold semantics: task priority at or above (numerically <=)
+    // AC: @ui-agent-dispatch ac-8
     if (filter.priority !== undefined) {
-      if ((task as LoadedTask & { priority?: number }).priority !== filter.priority) {
+      const taskPriority = (task as LoadedTask & { priority?: number }).priority;
+      if (taskPriority === undefined || taskPriority > filter.priority) {
         return false;
       }
     }

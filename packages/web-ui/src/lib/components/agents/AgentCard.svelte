@@ -65,10 +65,20 @@
 				<Badge variant="secondary" class="text-xs gap-1" data-testid="agent-trigger">
 					<Zap class="h-3 w-3" />
 					{trigger.on.replace('task.', '')}
-					{#if trigger.filter?.automation}
-						<span class="opacity-60">({trigger.filter.automation})</span>
-					{/if}
 				</Badge>
+				{#if trigger.filter}
+					{#if trigger.filter.automation}
+						<Badge variant="outline" class="text-xs" data-testid="filter-badge-automation">{trigger.filter.automation}</Badge>
+					{/if}
+					{#if trigger.filter.tags?.length}
+						{#each trigger.filter.tags as tag}
+							<Badge variant="outline" class="text-xs" data-testid="filter-badge-tag">{tag}</Badge>
+						{/each}
+					{/if}
+					{#if trigger.filter.priority !== undefined}
+						<Badge variant="outline" class="text-xs" data-testid="filter-badge-priority">p≤{trigger.filter.priority}</Badge>
+					{/if}
+				{/if}
 			{/each}
 		{:else}
 			<span class="text-xs text-muted-foreground">No triggers configured</span>
