@@ -82392,22 +82392,32 @@
   created_at: 2026-03-08T17:49:33.214Z
   notes: []
   todos: []
-- title: Reconcile agent memory entries into project documentation
+- _ulid: 01KK7F3RMGQCWA3R0ST0TQ3H6Z
+  slugs: []
+  title: Reconcile agent memory entries into project documentation
   type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - docs
     - infra
-  depends_on: []
-  _ulid: 01KK7F3RMGQCWA3R0ST0TQ3H6Z
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-08T19:34:44.624Z
-  notes: []
+  notes:
+    - _ulid: 01KK7F4B549P524V314TEY6AQ4
+      created_at: 2026-03-08T19:35:03.588Z
+      author: "@claude"
+      content: "Memory files at ~/.claude/projects/*/memory/MEMORY.md contain ~120 lines of accumulated
+        knowledge: daemon architecture, testing patterns, vitest gotchas, shadow branch operations,
+        container setup, etc. Much of this is durable project knowledge that belongs in AGENTS.md,
+        templates/agents-sections/, or conventions — not ephemeral per-agent memory. Audit each
+        entry: move stable patterns to project docs, remove anything already covered, keep only
+        truly agent-specific preferences in memory."
+      supersedes: null
   todos: []
