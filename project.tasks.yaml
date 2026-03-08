@@ -81584,12 +81584,22 @@
     - cli
     - dx
   vcs_refs: []
+  session_id: 01KK677D6HQAEGY2AQWHNDQPK5
   created_at: 2026-03-08T00:41:05.609Z
-  notes: []
+  started_at: 2026-03-08T08:06:44.518Z
+  notes:
+    - _ulid: 01KK6873KWVHV7PRAZJZ3C71VP
+      created_at: 2026-03-08T08:14:59.708Z
+      author: "@claude"
+      content: "Fix: When detected.type === 'unknown', setup no longer returns early. Instead it warns and
+        proceeds to runSetupPipeline(). The pipeline already handles unknown agents gracefully
+        (hooks skipped, permissions skipped, etc.). Added 'Configure author' skipped step for
+        unknown agents with manual instructions message. After pipeline completes,
+        printManualInstructions() is called to show KSPEC_AUTHOR export instructions. Three tests
+        added covering AC ac-1."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T08:06:44.518Z
-  session_id: 01KK677D6HQAEGY2AQWHNDQPK5
 - _ulid: 01KK5P3YQXNQR1MHAHSKA68HE5
   slugs: []
   title: Add dispatch filter UI and default automation eligibility
