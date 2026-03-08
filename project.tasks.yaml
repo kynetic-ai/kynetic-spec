@@ -51944,6 +51944,15 @@
         rewritten README sections on the dedicated docs/getting-started-readme branch. Verification
         will re-check anchors and diff scope before re-submitting."
       supersedes: null
+    - _ulid: 01KK5M3DH2RW4Z48TDG62795EE
+      created_at: 2026-03-08T02:23:27.266Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Updated INSTALL.md to replace stale README anchor links with current docs
+        targets: README.md#how-it-works for setup context and docs/getting-started.md for the
+        first-task walkthrough. Verification: rg confirmed no remaining README.md#agent-integration
+        or README.md#task-management links; git diff --check passed; origin/main..HEAD file scope
+        remains README.md, INSTALL.md, docs/getting-started.md."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
