@@ -240,7 +240,7 @@ test.describe('Tasks View', () => {
       // Click the first task
       await taskItem.click();
 
-      // Wait briefly for API call and sheet animation
+      // Wait briefly for API call and dialog animation
       await page.waitForTimeout(2000);
 
       // Debug output
@@ -253,7 +253,7 @@ test.describe('Tasks View', () => {
       const detailPanel = page.getByTestId('task-detail-panel');
       await expect(detailPanel).toBeVisible({ timeout: 5000 });
 
-      // Verify panel contains expected sections (title is in SheetHeader)
+      // Verify panel contains expected sections (title is in Dialog.Header)
       await expect(detailPanel.getByTestId('task-detail-title')).toBeVisible();
       await expect(detailPanel.getByTestId('task-notes')).toBeVisible();
     });
