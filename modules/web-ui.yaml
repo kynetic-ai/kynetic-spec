@@ -742,6 +742,11 @@ features:
         when: JSON output is generated
         then: snapshot includes read-only plans data (including content and progress fields) and triage
           records so /plans and /triage can render from static data
+      - id: ac-24
+        given: the app is in static mode
+        when: the user navigates to /settings
+        then: the page renders snapshot-backed sections such as project metadata and conventions, and
+          clearly labels live-only daemon/shadow details as unavailable
     status:
       maturity: draft
       implementation: in_progress
