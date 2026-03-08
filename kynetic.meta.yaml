@@ -7776,6 +7776,35 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KK7XJZ94NG5GSKNTJS7PCDPA
+    type: friction
+    content: "Dispatch engine running during interactive sessions causes confusion: checkpoint hooks
+      report dispatch agent changes as uncommitted work, dispatch agent leaves files on wrong
+      branches, no way to pause dispatch for specific tasks without stopping the whole engine.
+      Consider: per-task dispatch hold, or checkpoint hook filtering by session_id."
+    created_at: 2026-03-08T23:47:43.012Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KK7XK21TEDE2HP8WVK8RQN9V
+    type: friction
+    content: Session checkpoint stop hook cannot distinguish between changes made by the current
+      interactive session vs changes made by dispatch agents on other branches. Results in repeated
+      false-positive warnings that the user must manually dismiss.
+    created_at: 2026-03-08T23:47:45.850Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KK7XK4SPQS1BNXSF2QM2K7M0
+    type: success
+    content: Dual review pattern (internal agent + codex in parallel) is highly effective for plan
+      review. They catch complementary issues — codex found slug prefix mismatch and spec conflicts,
+      internal agent found trait binding conflicts and missing spec updates. 4-pass review (2 rounds
+      x 2 reviewers) produced a clean import with zero issues.
+    created_at: 2026-03-08T23:47:48.662Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
