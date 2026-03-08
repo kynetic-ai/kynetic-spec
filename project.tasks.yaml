@@ -82043,7 +82043,7 @@
   spec_ref: "@gh-pages-export"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -82058,6 +82058,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-08T10:21:25.447Z
+  session_id: 01KK6F7YD8RMCG69SJ69JQNQ6J
 - _ulid: 01KK6BECKPA5MHQAZJ2KNPEMP1
   slugs: []
   title: Implement bidirectional shadow branch sync
