@@ -23,7 +23,10 @@ import {
 import { runInvocation } from "./invocation.js";
 import type { InvocationOptions } from "./invocation.js";
 import { getAdapter } from "../agents/adapters.js";
-import type { AgentDispatchRule } from "../schema/meta.js";
+import type {
+  AgentDispatchRule,
+  AgentDispatchFilter,
+} from "../schema/meta.js";
 import type { SessionTrigger } from "../sessions/types.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
@@ -691,23 +694,32 @@ export class DispatchEngine {
   /**
    * Check if a state change matches a dispatch rule's filters.
    * AC: @agent-dispatch-engine ac-6
+   * AC: @agent-dispatch-engine ac-21
    */
   private _matchesFilter(
     change: TaskStateChange,
     rule: AgentDispatchRule,
     task?: LoadedTask,
   ): boolean {
-    if (!rule.filter) return true;
+    // AC: @agent-dispatch-engine ac-21 — default to automation: eligible for
+    // task.ready and task.needs_work when no filter is specified
+    const defaultsToEligible =
+      rule.on === "task.ready" || rule.on === "task.needs_work";
+    if (!rule.filter && !defaultsToEligible) return true;
 
     // We need the task to evaluate filters — if not provided, reject to avoid
     // enqueuing non-matching tasks (AC-6: all filters must match)
     if (!task) return false;
 
-    const { filter } = rule;
+    const filter: AgentDispatchFilter = rule.filter ?? {};
+
+    // Apply default automation filter for task.ready/task.needs_work
+    const effectiveAutomation =
+      filter.automation ?? (defaultsToEligible ? "eligible" : undefined);
 
     // Automation filter
-    if (filter.automation !== undefined) {
-      if ((task as LoadedTask & { automation?: string }).automation !== filter.automation) {
+    if (effectiveAutomation !== undefined) {
+      if ((task as LoadedTask & { automation?: string }).automation !== effectiveAutomation) {
         return false;
       }
     }
@@ -720,9 +732,11 @@ export class DispatchEngine {
       }
     }
 
-    // Priority filter
+    // Priority filter — threshold semantics: task priority at or above (numerically <=)
+    // AC: @ui-agent-dispatch ac-8
     if (filter.priority !== undefined) {
-      if ((task as LoadedTask & { priority?: number }).priority !== filter.priority) {
+      const taskPriority = (task as LoadedTask & { priority?: number }).priority;
+      if (taskPriority === undefined || taskPriority > filter.priority) {
         return false;
       }
     }

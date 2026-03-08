@@ -30,6 +30,9 @@ agents:
       - on: task.ready
         filter:
           automation: eligible
+          tags:
+            - mvp
+          priority: 3
       - on: task.in_progress
       - on: task.needs_work
     capabilities: []

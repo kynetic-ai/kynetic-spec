@@ -66,6 +66,19 @@
 					<Zap class="h-3 w-3" />
 					{trigger.on.replace('task.', '')}
 				</Badge>
+				{#if trigger.filter}
+					{#if trigger.filter.automation}
+						<Badge variant="outline" class="text-xs" data-testid="filter-badge-automation">{trigger.filter.automation}</Badge>
+					{/if}
+					{#if trigger.filter.tags?.length}
+						{#each trigger.filter.tags as tag}
+							<Badge variant="outline" class="text-xs" data-testid="filter-badge-tag">{tag}</Badge>
+						{/each}
+					{/if}
+					{#if trigger.filter.priority !== undefined}
+						<Badge variant="outline" class="text-xs" data-testid="filter-badge-priority">p≤{trigger.filter.priority}</Badge>
+					{/if}
+				{/if}
 			{/each}
 		{:else}
 			<span class="text-xs text-muted-foreground">No triggers configured</span>
