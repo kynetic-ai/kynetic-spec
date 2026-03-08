@@ -82540,7 +82540,7 @@
   type: task
   spec_ref: "@session-storage-path-resolution"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82551,7 +82551,9 @@
     - storage
     - refactor
   vcs_refs: []
+  session_id: null
   created_at: 2026-03-08T22:46:13.935Z
+  started_at: null
   notes:
     - _ulid: 01KK7T2CNFQ60ZDV8928Z5A5JZ
       created_at: 2026-03-08T22:46:13.935Z
@@ -82560,10 +82562,13 @@
         Replace all getSessionsDir(specDir) calls to resolve from project root
         .kspec-sessions/ instead of specDir/sessions. Add sessionsDir to context.
         Thread through store.ts, CLI commands, daemon routes.
+    - _ulid: 01KK7W4ZT159P8MG2CH4NY9CZE
+      created_at: 2026-03-08T23:22:36.225Z
+      author: "@claude"
+      content: Reset from in_progress to pending
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-08T23:08:45.279Z
-  session_id: 01KK7TS04QHPBX3312K8ZMTJ87
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
   slugs:
     - remove-shadowautocommit-from-session-operations
