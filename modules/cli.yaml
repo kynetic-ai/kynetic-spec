@@ -4520,6 +4520,62 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    requirements:
+      - _ulid: 01KK7T2BNES331GX2S6G2HRGDH
+        slugs:
+          - session-storage-path-resolution
+        title: Session Storage Path Resolution
+        type: requirement
+        tags: []
+        description: |
+          Centralized path resolution for session storage that all session
+          operations use. Replaces hardcoded specDir/sessions paths with
+          a resolver that accounts for storage mode configuration.
+        acceptance_criteria:
+          - id: ac-resolver
+            given: |
+              Any session operation needs a file path
+            when: |
+              It calls the session path resolver
+            then: |
+              Returns paths rooted at .kspec-sessions/ (project root),
+              not .kspec/sessions/.
+          - id: ac-path-helpers
+            given: |
+              Existing path helpers (getSessionDir, getSessionEventsPath, etc.)
+            when: |
+              They resolve session paths
+            then: |
+              All use the new sessions root from the resolver.
+          - id: ac-context
+            given: |
+              initContext() is called
+            when: |
+              Context is resolved
+            then: |
+              Context includes sessionsDir alongside specDir.
+              sessionsDir points to .kspec-sessions/ at project root.
+          - id: ac-cli-commands
+            given: |
+              A CLI session command accesses session data
+            when: |
+              It resolves session paths
+            then: |
+              Uses ctx.sessionsDir (not ctx.specDir) for all session file operations.
+          - id: ac-daemon-routes
+            given: |
+              A daemon API route serves session data (/api/sessions/*)
+            when: |
+              It resolves session paths
+            then: |
+              Uses sessionsDir from project context for all session file operations.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-08T22:46:12.910Z
   - _ulid: 01KF68JFQF2N4VAKDWNE9P9Z70
     slugs:
       - acp-handlers

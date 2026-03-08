@@ -896,6 +896,355 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    requirements:
+      - _ulid: 01KK7T2BMFFBH7PPST20MPC2TY
+        slugs:
+          - session-storage-modes
+        title: Session Storage Modes
+        type: requirement
+        tags: []
+        description: |
+          Configurable session storage with two modes: local (default) and branch.
+          Local mode writes to .kspec-sessions/ with no git tracking. Branch mode
+          writes to .kspec-sessions/ backed by a named orphan branch for persistence.
+          Shadow mode (sessions on kspec-meta) is legacy read-only — never written to.
+        acceptance_criteria:
+          - id: ac-config
+            given: |
+              A kspec project with kynetic.yaml
+            when: |
+              sessions.storage is set to "local" or "branch"
+            then: |
+              Session operations use the configured storage mode.
+          - id: ac-config-default
+            given: |
+              A kspec project with no sessions.storage in kynetic.yaml
+            when: |
+              A session operation runs
+            then: |
+              Defaults to "local" mode.
+          - id: ac-config-invalid
+            given: |
+              sessions.storage is set to an unsupported value
+            when: |
+              kspec validates the manifest
+            then: |
+              Zod validation error with message indicating valid values (local, branch).
+          - id: ac-local-mode
+            given: |
+              sessions.storage is "local" (or unconfigured)
+            when: |
+              A session is created, events appended, or session closed
+            then: |
+              Files are written to .kspec-sessions/{id}/ with no git operations.
+          - id: ac-branch-mode
+            given: |
+              sessions.storage is "branch" with a branch name configured
+            when: |
+              A session is created or closed
+            then: |
+              Files are written to .kspec-sessions/ which is a git worktree
+              on the configured orphan branch. Auto-commits on session lifecycle
+              boundaries (create, close, stale cleanup, compact) but NOT on every event append.
+          - id: ac-branch-name
+            given: |
+              sessions.storage is "branch"
+            when: |
+              sessions.branch is set (e.g., "kspec-sessions")
+            then: |
+              The orphan branch uses the configured name.
+          - id: ac-branch-name-default
+            given: |
+              sessions.storage is "branch" with no sessions.branch set
+            when: |
+              Session branch is initialized
+            then: |
+              Default branch name is "kspec-sessions".
+          - id: ac-no-event-commits
+            given: |
+              sessions.storage is "branch"
+            when: |
+              An event is appended to events.jsonl during active session
+            then: |
+              No git commit occurs. Events are committed in bulk at session close.
+          - id: ac-sessions-dir
+            given: |
+              Any storage mode
+            when: |
+              Session operations resolve file paths
+            then: |
+              Sessions directory is .kspec-sessions/ at project root,
+              separate from .kspec/ (which remains spec/task only).
+          - id: ac-sessions-dir-autocreate
+            given: |
+              .kspec-sessions/ directory does not exist
+            when: |
+              A session create operation runs
+            then: |
+              The directory is created automatically (mkdir -p equivalent).
+          - id: ac-gitignore
+            given: |
+              A kspec project
+            when: |
+              kspec init or kspec setup runs
+            then: |
+              .kspec-sessions/ is added to the project root .gitignore
+              (not tracked on main branch regardless of storage mode).
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-08T22:46:12.879Z
+        requirements:
+          - _ulid: 01KK7T2BR295DN37ZY4VE896F8
+            slugs:
+              - session-branch-worktree
+            title: Session Branch Worktree Management
+            type: requirement
+            tags: []
+            description: |
+              Git worktree management for the session branch mode. Creates and
+              maintains an orphan branch with its own worktree at .kspec-sessions/.
+            acceptance_criteria:
+              - id: ac-init
+                given: |
+                  sessions.storage is "branch" and no session worktree exists
+                when: |
+                  kspec init or kspec setup runs
+                then: |
+                  Creates orphan branch with configured name (default "kspec-sessions"),
+                  adds worktree at .kspec-sessions/.
+              - id: ac-commit-boundaries
+                given: |
+                  sessions.storage is "branch"
+                when: |
+                  Session lifecycle events occur (create, close, stale cleanup, compact)
+                then: |
+                  Auto-commits to session branch at lifecycle boundaries only.
+                  Event appends during active sessions are NOT committed individually.
+              - id: ac-sync
+                given: |
+                  sessions.storage is "branch" and remote tracking is configured
+                when: |
+                  Daemon shadow sync runs
+                then: |
+                  Session branch syncs independently from kspec-meta.
+                  Sync failures on one branch do not affect the other.
+              - id: ac-status
+                given: |
+                  sessions.storage is "branch"
+                when: |
+                  kspec shadow status runs
+                then: |
+                  Reports health of both kspec-meta and session branch worktrees.
+              - id: ac-repair
+                given: |
+                  Session worktree is broken or disconnected
+                when: |
+                  kspec shadow repair runs
+                then: |
+                  Repairs session worktree independently from kspec-meta worktree.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-08T22:46:12.994Z
+          - _ulid: 01KK7T2BRDRG8YMYXMB412EEQY
+            slugs:
+              - session-remove-shadow-commits
+            title: Remove Shadow Commits for Sessions
+            type: requirement
+            tags: []
+            description: |
+              Remove all shadowAutoCommit calls related to session operations.
+              Sessions no longer dirty the kspec-meta worktree.
+            acceptance_criteria:
+              - id: ac-invocation-end
+                given: |
+                  An agent invocation ends (completed, timed_out, failed, aborted)
+                when: |
+                  closeSession() is called in invocation.ts
+                then: |
+                  No shadowAutoCommit is called for the session.
+                  Task state changes (if any) still commit to kspec-meta normally.
+              - id: ac-stale-cleanup
+                given: |
+                  Stale session auto-abandon runs
+                when: |
+                  Session metadata is updated to abandoned
+                then: |
+                  Commit goes to session branch (if branch mode) or nowhere (if local).
+                  No commit to kspec-meta.
+              - id: ac-no-sync-conflict
+                given: |
+                  Dispatch engine creates sessions while daemon syncs shadow branch
+                when: |
+                  Periodic shadow sync runs shadowPull on kspec-meta
+                then: |
+                  No conflict occurs because session files are not in the kspec-meta worktree.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-08T22:46:13.005Z
+      - _ulid: 01KK7T2BN1AGYHZHDPY3HD28H6
+        slugs:
+          - session-legacy-migration
+        title: Legacy Session Migration
+        type: requirement
+        tags: []
+        description: |
+          Read-only fallback for sessions stored on the kspec-meta shadow branch
+          (.kspec/sessions/) from before the storage separation. Provides migration
+          path with deprecation timeline.
+        acceptance_criteria:
+          - id: ac-read-fallback
+            given: |
+              A session ID is requested that does not exist in .kspec-sessions/
+            when: |
+              Any session read operation executes (get, list, log show, log search)
+            then: |
+              Falls back to reading from .kspec/sessions/ on kspec-meta.
+              Result is returned normally — caller does not need to know the source.
+          - id: ac-no-write
+            given: |
+              Legacy sessions exist in .kspec/sessions/ on kspec-meta
+            when: |
+              Any session write operation occurs (create, append, close, compact)
+            then: |
+              Writes always go to .kspec-sessions/, never to .kspec/sessions/.
+          - id: ac-list-merge
+            given: |
+              Sessions exist in both .kspec-sessions/ and .kspec/sessions/
+            when: |
+              kspec session log list runs
+            then: |
+              Results include sessions from both locations, deduplicated by ID,
+              with .kspec-sessions/ taking precedence for duplicates.
+          - id: ac-deprecation-warning
+            given: |
+              A session is read from the legacy .kspec/sessions/ location
+            when: |
+              The read completes
+            then: |
+              A deprecation warning is emitted (stderr, not stdout) noting
+              the legacy location. Warning includes guidance to run kspec session migrate.
+          - id: ac-shadow-gitignore
+            given: |
+              kspec setup or kspec init runs
+            when: |
+              .kspec/sessions/ exists on kspec-meta
+            then: |
+              sessions/ is added to .kspec/.gitignore so no new session files
+              are tracked on kspec-meta. Existing history is preserved in git.
+          - id: ac-migration-copy
+            given: |
+              Legacy sessions exist in .kspec/sessions/
+            when: |
+              kspec session migrate runs
+            then: |
+              Copies session directories from .kspec/sessions/ to .kspec-sessions/.
+              Does not delete originals.
+          - id: ac-migration-idempotent
+            given: |
+              Some sessions already exist in .kspec-sessions/
+            when: |
+              kspec session migrate runs
+            then: |
+              Skips sessions that already exist in target.
+              Reports count of migrated and skipped sessions.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-08T22:46:12.897Z
+      - _ulid: 01KK7T2BRVFT4E3NK8N44J9P98
+        slugs:
+          - session-spec-path-updates
+        title: Update Existing Session Specs for Storage Separation
+        type: requirement
+        tags: []
+        description: |
+          Update existing session-related specs that hardcode .kspec/sessions/ paths
+          or inherit @trait-shadow-commit, to reflect the new .kspec-sessions/ storage
+          location and the removal of shadow branch commits for sessions.
+        acceptance_criteria:
+          - id: ac-session-events-paths
+            given: |
+              @session-events ac-1 and ac-8 reference .kspec/sessions/{id}/
+            when: |
+              This plan is implemented
+            then: |
+              ACs are updated to reference .kspec-sessions/{id}/ instead.
+          - id: ac-session-events-commits
+            given: |
+              @session-events ac-7 says "events are included in next kspec commit"
+            when: |
+              This plan is implemented
+            then: |
+              AC is updated to reflect storage-mode-dependent behavior:
+              local mode has no commits, branch mode commits at lifecycle boundaries.
+          - id: ac-session-creation-paths
+            given: |
+              @session-creation-and-env-injection ac-create references .kspec/sessions/{id}/
+              and ac-budget-local references .kspec/sessions/{id}/budget.json
+            when: |
+              This plan is implemented
+            then: |
+              ACs are updated to reference .kspec-sessions/{id}/ instead.
+          - id: ac-compact-trait
+            given: |
+              @session-compact inherits @trait-shadow-commit
+            when: |
+              This plan is implemented
+            then: |
+              @trait-shadow-commit is removed from @session-compact since compact
+              now operates on .kspec-sessions/ which is not the shadow worktree.
+          - id: ac-stale-cleanup-trait
+            given: |
+              @session-stale-cleanup inherits @trait-shadow-commit
+            when: |
+              This plan is implemented
+            then: |
+              @trait-shadow-commit is removed from @session-stale-cleanup since
+              stale cleanup no longer commits to kspec-meta.
+          - id: ac-session-log-list-path
+            given: |
+              @session-log-list ac-1 references .kspec/sessions/ in its given clause
+            when: |
+              This plan is implemented
+            then: |
+              AC is updated to reference .kspec-sessions/ instead.
+          - id: ac-session-creation-description
+            given: |
+              @session-creation-and-env-injection description references
+              .kspec/sessions/{id}/budget.json
+            when: |
+              This plan is implemented
+            then: |
+              Description is updated to reference .kspec-sessions/ paths.
+          - id: ac-cli-ralph-path
+            given: |
+              @cli-ralph ac-22 references .kspec/sessions/{session}/tool-output/
+            when: |
+              This plan is implemented
+            then: |
+              AC is updated to reference .kspec-sessions/ paths instead.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-08T22:46:13.019Z
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z
