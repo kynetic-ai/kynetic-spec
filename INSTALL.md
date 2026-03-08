@@ -70,7 +70,7 @@ This creates:
     main.yaml               # Spec items
 ```
 
-The shadow branch (`kspec-meta`) keeps spec/task files separate from your main branch history. If you're not using git or prefer simpler setup, use `kspec init --no-shadow` to create files in `spec/` instead. See [AGENTS.md](AGENTS.md#shadow-branch-worktree-architecture) for architecture details.
+The shadow branch (`kspec-meta`) keeps spec/task files separate from your main branch history. If you're not using git or prefer simpler setup, use `kspec init --no-shadow` to create files in `spec/` instead. See [kspec-agents.md](kspec-agents.md#shadow-branch-architecture) for architecture details.
 
 ### Existing kspec Project (Cloning a Repo)
 
