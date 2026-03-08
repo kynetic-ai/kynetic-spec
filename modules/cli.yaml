@@ -6238,6 +6238,10 @@ features:
         given: the ACP agent sends a request_permission or other JSON-RPC request during a tool call
         when: the invocation is running in autonomous dispatch mode
         then: the ACP client request handler auto-approves the request by sending the appropriate response, so tool calls (Edit, Write, Bash) are never blocked waiting for human confirmation
+      - id: ac-12
+        given: An agent subprocess is spawned by the dispatch engine or one-shot kspec agent run
+        when: The parent process environment contains variables that would interfere with agent startup (e.g. CLAUDECODE=1 causing nested-session detection)
+        then: The spawner strips known host-environment variables (CLAUDECODE, CLAUDE_CODE_SESSION) from the inherited process.env before merging adapter.env and invocation env overrides, so the agent starts cleanly without inheriting the parent's session context
     depends_on: []
     implements: []
     relates_to: []
