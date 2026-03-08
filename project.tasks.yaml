@@ -81437,7 +81437,7 @@
   spec_ref: "@web-ui"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -81447,7 +81447,7 @@
     - daemon
     - dx
   vcs_refs: []
-  session_id: 01KK6519FS3VAM1Z4TCQXNFTW9
+  session_id: null
   created_at: 2026-03-08T00:41:03.501Z
   started_at: 2026-03-08T07:30:35.460Z
   submitted_at: 2026-03-08T07:30:37.649Z
@@ -81484,6 +81484,13 @@
         dist/daemon/index.ts exists in installed package, (2) elysia, @elysiajs/cors,
         @elysiajs/static all resolve via require.resolve from the installed package location. This
         catches packaging regressions the static check missed."
+      supersedes: null
+    - _ulid: 01KK6609RJXWSVY5Y7FKCY0MPZ
+      created_at: 2026-03-08T07:36:19.474Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: @web-ui ac-1 coverage still does not execute the
+        npm-installed 'kspec serve start' path; current test only checks packaged files and
+        dependency resolution."
       supersedes: null
   todos: []
   automation: eligible
