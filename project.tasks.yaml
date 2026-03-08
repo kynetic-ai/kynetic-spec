@@ -51960,6 +51960,14 @@
         AGENTS.md#shadow-branch-worktree-architecture, but the generated heading is 'Shadow Branch
         Architecture', so the install guide still contains a broken handoff."
       supersedes: null
+    - _ulid: 01KK5PFDDWRZZSZS790KAXQTMQ
+      created_at: 2026-03-08T03:04:57.532Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Correcting the remaining broken install-guide handoff by pointing the
+        shadow-branch architecture link at kspec-agents.md#shadow-branch-architecture, which is
+        where the generated heading actually exists on this docs branch. Verification will re-check
+        anchors, diff scope, and push an isolated docs-only fix to PR #692."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KHVNNW69XCEGTTNRBE3CKCDQ
