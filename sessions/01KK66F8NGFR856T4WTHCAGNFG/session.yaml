@@ -1,0 +1,7 @@
+id: 01KK66F8NGFR856T4WTHCAGNFG
+task_id: "@01KK5E7XRDS4X8TNCB27E7G5SJ"
+agent_type: claude-agent-acp
+agent_id: worker
+trigger: task.needs_work
+status: active
+started_at: 2026-03-08T07:44:29.902Z

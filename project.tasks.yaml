@@ -81511,6 +81511,18 @@
         npm-installed 'kspec serve start' path; current test only checks packaged files and
         dependency resolution."
       supersedes: null
+    - _ulid: 01KK676428HDQB7MG4QA363QCK
+      created_at: 2026-03-08T07:56:58.824Z
+      author: "@claude"
+      content: "Fix cycle 2: Replaced static file-existence/require.resolve test with true behavioral
+        test. The ac-1 test now: (1) npm packs the project, (2) installs the tarball in an isolated
+        temp dir, (3) runs the installed CLI's 'kspec serve start --daemon', (4) verifies the daemon
+        health endpoint responds with {status: ok}. This actually exercises the npm-installed serve
+        start path end-to-end. Also discovered and fixed a missing ulidx dependency in root
+        package.json — the daemon imports from ulidx but only ulid was declared, causing the daemon
+        to fail when installed from npm (exactly the kind of packaging regression the behavioral
+        test catches)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK5E7YSKTWV0KBKFERG5GV8E
