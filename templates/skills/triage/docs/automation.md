@@ -39,6 +39,11 @@ For each task shown:
 - Mark `manual_only` - spikes are inherently human work
 - `kspec task set @ref --automation manual_only --reason "Spike - output is knowledge"`
 
+**If it is a plan/design umbrella task with derived child work:**
+- Keep it `manual_only` instead of attaching a synthetic `spec_ref`
+- Prefer linking the umbrella task with `plan_ref` and executing the derived spec-backed tasks separately
+- `kspec task set @ref --automation manual_only --reason "Umbrella planning task; implementation belongs to derived spec-backed tasks"`
+
 **If missing spec_ref or no ACs:**
 - Ask: "Fix now or mark for later?"
 - **Fix now:**
@@ -73,6 +78,7 @@ Auto mode is conservative:
 - Spikes → `manual_only`
 - Missing spec/ACs → `needs_review`
 - Has spec + ACs → **NOT auto-marked** (requires review)
+- Plan/design umbrella tasks without a real implementation spec → review manually, usually `manual_only`
 
 ## Quick Commands
 
@@ -110,7 +116,7 @@ kspec tasks ready --needs-review           # Tasks needing human triage
 |----------------|---------|------------------|
 | `review_for_eligible` | Passes criteria, needs review | No change (manual review) |
 | `needs_review` | Missing spec or ACs | Sets `needs_review` with reason |
-| `manual_only` | Spike task | Sets `manual_only` |
+| `manual_only` | Spike task or umbrella planning task | Sets `manual_only` |
 
 ## Key Principles
 
@@ -118,3 +124,4 @@ kspec tasks ready --needs-review           # Tasks needing human triage
 - **Agents CAN mark eligible** - When reviewing based on user instruction
 - **Add notes when setting status** - Document the "why"
 - **Re-assess after fixes** - After adding spec/ACs, check again
+- **Don't invent spec links** - If the task coordinates plan/design work and real implementation lives in derived tasks, keep `spec_ref` empty and use `manual_only`
