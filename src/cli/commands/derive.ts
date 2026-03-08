@@ -225,6 +225,8 @@ interface DeriveResult {
   reason?: string;
   /** Task ref that was used for depends_on (if any) */
   dependsOn?: string[];
+  /** Non-fatal warnings discovered while deriving this task */
+  warnings?: string[];
   /** Number of acceptance criteria on the spec item */
   acCount: number;
 }
@@ -408,6 +410,141 @@ function getParentTaskRef(
   return undefined;
 }
 
+function dedupeRefs(refs: string[] | undefined): string[] | undefined {
+  if (!refs || refs.length === 0) return undefined;
+  return Array.from(new Set(refs.map(normalizeRefInput)));
+}
+
+/**
+ * Sort specs so same-run task dependency resolution is stable.
+ * Orders specs by:
+ * 1. Parent-before-child when both are being derived
+ * 2. depended-on spec before consumer when both are being derived
+ *
+ * Falls back to original order for any cyclic/unresolvable subset.
+ */
+function sortSpecsForDerive(
+  specs: LoadedSpecItem[],
+  allItems: LoadedSpecItem[],
+  index: ReferenceIndex,
+): LoadedSpecItem[] {
+  if (specs.length <= 1) return specs;
+
+  const specMap = new Map(specs.map((spec) => [spec._ulid, spec]));
+  const originalOrder = new Map(specs.map((spec, idx) => [spec._ulid, idx]));
+  const outgoing = new Map<string, Set<string>>();
+  const indegree = new Map<string, number>();
+
+  for (const spec of specs) {
+    outgoing.set(spec._ulid, new Set());
+    indegree.set(spec._ulid, 0);
+  }
+
+  const addEdge = (from: string, to: string): void => {
+    if (from === to || !specMap.has(from) || !specMap.has(to)) return;
+    const fromEdges = outgoing.get(from);
+    if (!fromEdges || fromEdges.has(to)) return;
+    fromEdges.add(to);
+    indegree.set(to, (indegree.get(to) || 0) + 1);
+  };
+
+  for (const spec of specs) {
+    const parentSpec = findParentItem(spec, allItems);
+    if (parentSpec && specMap.has(parentSpec._ulid)) {
+      addEdge(parentSpec._ulid, spec._ulid);
+    }
+
+    for (const depRef of spec.depends_on || []) {
+      const resolved = index.resolve(depRef);
+      if (resolved.ok && specMap.has(resolved.ulid)) {
+        addEdge(resolved.ulid, spec._ulid);
+      }
+    }
+  }
+
+  const ready = specs
+    .filter((spec) => indegree.get(spec._ulid) === 0)
+    .sort(
+      (a, b) =>
+        (originalOrder.get(a._ulid) || 0) - (originalOrder.get(b._ulid) || 0),
+    );
+  const sorted: LoadedSpecItem[] = [];
+
+  while (ready.length > 0) {
+    const current = ready.shift();
+    if (!current) break;
+    sorted.push(current);
+
+    for (const target of outgoing.get(current._ulid) || []) {
+      const nextIndegree = (indegree.get(target) || 0) - 1;
+      indegree.set(target, nextIndegree);
+      if (nextIndegree === 0) {
+        const nextSpec = specMap.get(target);
+        if (!nextSpec) continue;
+        ready.push(nextSpec);
+        ready.sort(
+          (a, b) =>
+            (originalOrder.get(a._ulid) || 0) -
+            (originalOrder.get(b._ulid) || 0),
+        );
+      }
+    }
+  }
+
+  if (sorted.length === specs.length) {
+    return sorted;
+  }
+
+  const sortedIds = new Set(sorted.map((spec) => spec._ulid));
+  const remaining = specs.filter((spec) => !sortedIds.has(spec._ulid));
+  return [...sorted, ...remaining];
+}
+
+/**
+ * Resolve spec-level depends_on references to active task refs.
+ * Uses tasks created in the current derive session first, then falls back to
+ * existing non-cancelled tasks linked to the depended-on spec.
+ */
+function resolveSpecDependencyTaskRefs(
+  specItem: LoadedSpecItem,
+  specToTaskMap: Map<string, LoadedTask>,
+  alignmentIndex: AlignmentIndex,
+  index: ReferenceIndex,
+): { taskRefs: string[]; warnings: string[] } {
+  const taskRefs: string[] = [];
+  const warnings: string[] = [];
+
+  for (const depRef of specItem.depends_on || []) {
+    const resolved = index.resolve(depRef);
+    if (!resolved.ok) {
+      warnings.push(
+        `Spec dependency ${depRef} for @${specItem.slugs[0] || specItem._ulid} could not be resolved; skipping task dependency link.`,
+      );
+      continue;
+    }
+
+    const dependencyTask =
+      specToTaskMap.get(resolved.ulid) ||
+      alignmentIndex
+        .getTasksForSpec(resolved.ulid)
+        .find((task) => task.status !== "cancelled");
+
+    if (dependencyTask) {
+      taskRefs.push(getTaskRef(dependencyTask, index));
+      continue;
+    }
+
+    warnings.push(
+      `Spec dependency ${depRef} for @${specItem.slugs[0] || specItem._ulid} has no active derived task; created task without linking it.`,
+    );
+  }
+
+  return {
+    taskRefs: Array.from(new Set(taskRefs)),
+    warnings,
+  };
+}
+
 /**
  * Register the 'derive' command
  */
@@ -494,6 +631,8 @@ export function registerDeriveCommand(program: Command): void {
           }
         }
 
+        specsToDerive = sortSpecsForDerive(specsToDerive, items, index);
+
         // Track spec ULID -> created task for dependency resolution
         const specToTaskMap = new Map<string, LoadedTask>();
 
@@ -502,7 +641,8 @@ export function registerDeriveCommand(program: Command): void {
 
         for (const specItem of specsToDerive) {
           // Determine depends_on based on parent spec's task
-          let dependsOn: string[] | undefined;
+          const dependsOn: string[] = [];
+          const warnings: string[] = [];
 
           if (!options.flat && !options.all) {
             // Find the parent spec item
@@ -516,10 +656,19 @@ export function registerDeriveCommand(program: Command): void {
                 index,
               );
               if (parentTaskRef) {
-                dependsOn = [parentTaskRef];
+                dependsOn.push(parentTaskRef);
               }
             }
           }
+
+          const specDependencyResolution = resolveSpecDependencyTaskRefs(
+            specItem,
+            specToTaskMap,
+            alignmentIndex,
+            index,
+          );
+          dependsOn.push(...specDependencyResolution.taskRefs);
+          warnings.push(...specDependencyResolution.warnings);
 
           const result = await deriveTaskFromSpec(
             ctx,
@@ -531,11 +680,12 @@ export function registerDeriveCommand(program: Command): void {
             {
               force: options.force || false,
               dryRun: options.dryRun || false,
-              dependsOn,
+              dependsOn: dedupeRefs(dependsOn),
               priority: options.priority,
               title: options.title,
             },
           );
+          result.warnings = warnings;
 
           // Track created/would_create tasks for dependency resolution
           if (
@@ -590,6 +740,9 @@ export function registerDeriveCommand(program: Command): void {
                     `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
                   );
                 }
+                for (const warningMessage of r.warnings || []) {
+                  warn(warningMessage);
+                }
               }
               if (skipped.length > 0) {
                 console.log("\nSkipped:");
@@ -620,6 +773,9 @@ export function registerDeriveCommand(program: Command): void {
                   warn(
                     `This spec has ${r.acCount} ACs — consider splitting before implementing.`,
                   );
+                }
+                for (const warningMessage of r.warnings || []) {
+                  warn(warningMessage);
                 }
               }
             }

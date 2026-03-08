@@ -960,6 +960,72 @@ describe('Integration: derive', () => {
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @cmd-derive ac-17
+  it('should map spec depends_on to an existing active task dependency', () => {
+    kspec(
+      'item add --under @test-core --title "Dependency Base" --slug dependency-base --type feature',
+      tempDir
+    );
+    kspec(
+      'item add --under @test-core --title "Dependency Consumer" --slug dependency-consumer --type feature',
+      tempDir
+    );
+    kspec('item set @dependency-consumer --depends-on @dependency-base', tempDir);
+
+    kspec('derive @dependency-base --flat', tempDir);
+    kspec('derive @dependency-consumer --flat', tempDir);
+
+    const task = kspecJson<{ depends_on: string[] }>(
+      'task get @task-dependency-consumer',
+      tempDir
+    );
+    expect(task.depends_on).toContain('@task-dependency-base');
+  });
+
+  // AC: @cmd-derive ac-17
+  it('should map spec depends_on when both tasks are created in the same derive --all run', () => {
+    kspec(
+      'item add --under @test-core --title "Same Run Consumer" --slug same-run-consumer --type feature',
+      tempDir
+    );
+    kspec(
+      'item add --under @test-core --title "Same Run Base" --slug same-run-base --type feature',
+      tempDir
+    );
+    kspec('item set @same-run-consumer --depends-on @same-run-base', tempDir);
+
+    kspec('derive --all', tempDir);
+
+    const task = kspecJson<{ depends_on: string[] }>(
+      'task get @task-same-run-consumer',
+      tempDir
+    );
+    expect(task.depends_on).toContain('@task-same-run-base');
+  });
+
+  // AC: @cmd-derive ac-16
+  it('should warn and still create the task when spec dependency has no task', () => {
+    kspec(
+      'item add --under @test-core --title "Unlinked Base" --slug unlinked-base --type feature',
+      tempDir
+    );
+    kspec(
+      'item add --under @test-core --title "Warn Consumer" --slug warn-consumer --type feature',
+      tempDir
+    );
+    kspec('item set @warn-consumer --depends-on @unlinked-base', tempDir);
+
+    const result = kspecRun('derive @warn-consumer --flat', tempDir);
+    expect(result.stdout).toContain('Created 1 task(s)');
+    expect(result.stderr).toContain('has no active derived task');
+
+    const task = kspecJson<{ depends_on: string[] }>(
+      'task get @task-warn-consumer',
+      tempDir
+    );
+    expect(task.depends_on).toEqual([]);
+  });
+
   it('should add implementation notes from spec description', () => {
     // test-feature has a description in fixtures
     kspec('derive @test-feature --flat', tempDir);
