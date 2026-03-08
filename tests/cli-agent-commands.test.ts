@@ -43,7 +43,7 @@ function registerMockAdapter(): void {
 // ─── Mock daemon helpers for ac-4/5/6 ────────────────────────────────────────
 // Note: we import and test command handlers directly to avoid spawnSync event-loop issues
 
-import { registerAgentCommands } from "../src/cli/commands/agent.js";
+import { registerAgentCommands, _setWebSocketCtor } from "../src/cli/commands/agent.js";
 import { Command } from "commander";
 
 /**
@@ -1413,6 +1413,16 @@ async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void>
   );
 }
 
+/**
+ * Mock initContext to throw immediately. Dispatch watch catches this (non-fatal)
+ * so the only effect is removing the slow filesystem search that otherwise
+ * causes waitFor timeouts in environments without .kspec/ (clean clones, CI).
+ */
+async function mockInitContextFast(): Promise<void> {
+  const parser = await import("../src/parser/index.js");
+  vi.spyOn(parser, "initContext").mockRejectedValue(new Error("mocked"));
+}
+
 // AC: @cli-agent-commands ac-15
 describe("AC-15: dispatch watch — daemon not running", () => {
   afterEach(() => {
@@ -1454,6 +1464,7 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 // AC: @cli-agent-commands ac-18
 describe("AC-18: dispatch watch — subscribe handshake failure", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -1462,9 +1473,10 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const errors: string[] = [];
     const infos: string[] = [];
@@ -1522,6 +1534,7 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — streams section-marked output", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -1530,9 +1543,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1581,9 +1595,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1626,9 +1641,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1668,9 +1684,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1718,9 +1735,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1773,9 +1791,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1823,9 +1842,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1880,9 +1900,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1920,9 +1941,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1965,6 +1987,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — transcript fixture regressions", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -1979,9 +2002,10 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -2027,6 +2051,7 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -2035,9 +2060,10 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -2086,9 +2112,10 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -2132,6 +2159,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
 // AC: @cli-agent-commands ac-14
 describe("AC-14: dispatch watch — reconnect on disconnect", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -2141,6 +2169,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class TrackingFakeWs implements FakeWsInstance {
@@ -2151,7 +2180,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", TrackingFakeWs);
+    _setWebSocketCtor(TrackingFakeWs as unknown as typeof WebSocket);
     vi.useFakeTimers({ shouldAdvanceTime: true });
 
     const stderrLines: string[] = [];
@@ -2191,6 +2220,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class CaptureWs implements FakeWsInstance {
@@ -2201,7 +2231,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", CaptureWs);
+    _setWebSocketCtor(CaptureWs as unknown as typeof WebSocket);
 
     const stdoutWrites: string[] = [];
     const stderrWrites: string[] = [];
@@ -2259,6 +2289,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class CaptureWs implements FakeWsInstance {
@@ -2269,7 +2300,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", CaptureWs);
+    _setWebSocketCtor(CaptureWs as unknown as typeof WebSocket);
     vi.useFakeTimers({ shouldAdvanceTime: true });
 
     const stdoutWrites: string[] = [];
@@ -2311,6 +2342,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class CaptureFakeWs implements FakeWsInstance {
@@ -2321,7 +2353,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", CaptureFakeWs);
+    _setWebSocketCtor(CaptureFakeWs as unknown as typeof WebSocket);
 
     let exitCode: number | undefined;
     vi.spyOn(process, "exit").mockImplementation((code?: number) => {
@@ -2358,6 +2390,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const wsCtor = vi.fn();
     class GuardWs implements FakeWsInstance {
@@ -2368,7 +2401,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { wsCtor(); }
     }
-    vi.stubGlobal("WebSocket", GuardWs);
+    _setWebSocketCtor(GuardWs as unknown as typeof WebSocket);
 
     const consoleErrors: string[] = [];
     const origError = console.error;
