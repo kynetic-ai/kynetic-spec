@@ -75774,7 +75774,7 @@
   type: task
   spec_ref: null
   meta_ref: null
-  plan_ref: null
+  plan_ref: "@plan-ui-ux-revamp"
   status: pending
   blocked_by: []
   depends_on: []
@@ -75854,7 +75854,14 @@
 
         Ready for work to begin.
       supersedes: null
+    - _ulid: 01KK5QS6HP3PEMTF18JCCZARSQ
+      created_at: 2026-03-08T03:27:46.742Z
+      author: Jacob Chapel
+      content: "Automation status set to manual_only: Plan/design umbrella task with derived spec-backed
+        implementation tasks; keep manual_only instead of attaching a synthetic spec_ref"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KJXSVFHZ2FHQND06AEGFC3FF
   slugs:
     - implement-ui-design-system
