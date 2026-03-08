@@ -62047,6 +62047,17 @@
         - Verification: validate workflow YAML, run targeted checks for CI config, and exercise the
         E2E command path locally if feasible.
       supersedes: null
+    - _ulid: 01KK5J3RAW5P5TK8GJWHQTSB7C
+      created_at: 2026-03-08T01:48:41.180Z
+      author: Jacob Chapel
+      content: "Implemented CI E2E coverage by adding a dedicated Playwright Chromium job in
+        .github/workflows/test.yml with npm dependency caching plus ~/.cache/ms-playwright browser
+        cache restore and explicit 'npx playwright install --with-deps chromium'. Added a root npm
+        test:e2e script that builds @kynetic-ai/shared first, then delegates to the web-ui
+        Playwright suite so CI can run the command exactly as specified. Verification: parsed
+        workflow YAML with node+yaml and ran 'npm run test:e2e -- --list' successfully through
+        shared build, web-ui build, and Playwright test discovery (506 tests listed)."
+      supersedes: null
   todos: []
   automation: manual_only
 - _ulid: 01KJDCYRZD15F9VGD8N11TR5H0
