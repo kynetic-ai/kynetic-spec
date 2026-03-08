@@ -48,6 +48,15 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
       // Store manager in app state for WebSocket access
       .state('projectManager', manager)
       .derive(async ({ request, set }) => {
+        // Skip project context resolution for non-API routes (static files, SPA pages)
+        // and /api/health which should work without a project configured
+        const url = new URL(request.url, `http://${request.headers.get('host')}`);
+        const needsProject = url.pathname.startsWith('/api/')
+          && url.pathname !== '/api/health';
+        if (!needsProject) {
+          return { projectContext: undefined as unknown as ProjectContext };
+        }
+
         try {
           // AC: @multi-directory-daemon ac-1 - Extract X-Kspec-Dir header
           const projectPath = request.headers.get('X-Kspec-Dir') || undefined;
