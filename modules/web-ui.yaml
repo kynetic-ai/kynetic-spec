@@ -503,7 +503,8 @@ features:
       - id: ac-5
         given: user is viewing task list
         when: clicking a task row
-        then: task detail panel opens showing description, notes (chronological), todos, dependencies
+        then: task detail modal opens showing description, notes (chronological), todos, dependencies —
+          using the same floating Dialog modal as the kanban board
       - id: ac-6
         given: user is viewing task detail
         when: task has spec_ref
