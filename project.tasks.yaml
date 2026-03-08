@@ -82486,7 +82486,7 @@
   type: task
   spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -82496,7 +82496,7 @@
     - storage
     - schema
   vcs_refs: []
-  session_id: 01KK7TFJBN4S6RHP8Z7NRH86K5
+  session_id: null
   created_at: 2026-03-08T22:46:13.408Z
   started_at: 2026-03-08T22:54:28.605Z
   submitted_at: 2026-03-08T22:57:27.585Z
@@ -82523,6 +82523,13 @@
         - AC ac-branch-name: accepts string branch name
         - AC ac-branch-name-default: branch is optional
         - Integration test with other manifest fields
+      supersedes: null
+    - _ulid: 01KK7V3FD2B0YKBJAGTXRGREAM
+      created_at: 2026-03-08T23:04:18.082Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: schema does not default omitted sessions config
+        to local, and ac-config-invalid test does not verify the error message lists valid values
+        (local, branch)."
       supersedes: null
   todos: []
   automation: eligible
