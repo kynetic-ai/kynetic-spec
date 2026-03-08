@@ -8,7 +8,7 @@
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
 	import ReadOnlyBanner from '$lib/components/ReadOnlyBanner.svelte';
 	import { initConnection } from '$lib/stores/connection.svelte';
-	import { loadProjects, getSelectedProjectPath, isInitialized } from '$lib/stores/project.svelte';
+	import { loadProjects, getSelectedProjectPath, isInitialized, initializeForStaticMode } from '$lib/stores/project.svelte';
 	import { initMode, isStaticMode, isLoading as isModeLoading } from '$lib/stores/mode.svelte';
 	import { browser } from '$app/environment';
 
@@ -26,7 +26,9 @@
 
 		// In static mode, skip project loading and WebSocket
 		// AC: @gh-pages-export ac-11 - Static mode uses embedded JSON
+		// AC: @gh-pages-export ac-25 - Initialize project store so page gates pass
 		if (isStaticMode()) {
+			initializeForStaticMode();
 			appReady = true;
 			return;
 		}
