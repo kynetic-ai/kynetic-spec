@@ -1727,6 +1727,150 @@ export async function shadowSync(
   return pullResult;
 }
 
+// ─── Lazy Drift Check ────────────────────────────────────────────────────────
+
+const FETCH_TIMEOUT_MS = 5000;
+
+/**
+ * Spawn a git command with a hard timeout. Returns stdout/stderr on success,
+ * throws on non-zero exit or timeout. On timeout, sends SIGTERM then SIGKILL.
+ *
+ * Used for drift check fetch only — other git ops continue using runGitAsync.
+ *
+ * AC: @shadow-lazy-read-sync ac-fetch-timeout
+ */
+export function spawnGitWithTimeout(
+  cwd: string,
+  args: string[],
+  timeoutMs: number,
+): Promise<{ stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn("git", args, {
+      cwd,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (d: Buffer) => {
+      stdout += d;
+    });
+    child.stderr.on("data", (d: Buffer) => {
+      stderr += d;
+    });
+
+    let promiseSettled = false;
+    let processExited = false;
+    const timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      setTimeout(() => {
+        if (!processExited) child.kill("SIGKILL");
+      }, 1000);
+      promiseSettled = true;
+      reject(new Error(`git ${args[0]} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    child.on("close", (code) => {
+      processExited = true;
+      clearTimeout(timer);
+      if (promiseSettled) return;
+      promiseSettled = true;
+      if (code === 0) resolve({ stdout, stderr });
+      else reject(new Error(`git ${args[0]} exited ${code}: ${stderr}`));
+    });
+  });
+}
+
+/**
+ * Lightweight drift check: determine whether local shadow branch needs
+ * to pull from remote. Uses FETCH_HEAD mtime to avoid redundant fetches,
+ * and ahead/behind counts to decide if a pull is needed.
+ *
+ * AC: @shadow-lazy-read-sync ac-drift-check
+ * AC: @shadow-lazy-read-sync ac-fetch-head-location
+ * AC: @shadow-lazy-read-sync ac-fetch-head-freshness
+ * AC: @shadow-lazy-read-sync ac-fetch-when-stale
+ * AC: @shadow-lazy-read-sync ac-fetch-timeout-no-error
+ * AC: @shadow-lazy-read-sync ac-fetch-timeout-debug-log
+ * AC: @shadow-lazy-read-sync ac-pull-when-behind
+ * AC: @shadow-lazy-read-sync ac-no-pull-when-ahead
+ * AC: @shadow-lazy-read-sync ac-pull-when-diverged
+ * AC: @shadow-lazy-read-sync ac-upstream-ref-missing
+ * AC: @shadow-lazy-read-sync ac-no-drift-fast-path
+ * AC: @shadow-lazy-read-sync ac-threshold-from-config
+ *
+ * @returns true if shadowPull() should be called, false if local state is current
+ */
+export async function shadowNeedsSync(
+  worktreeDir: string,
+  remoteName: string,
+  thresholdMs: number,
+): Promise<boolean> {
+  // 1. Resolve FETCH_HEAD path for this worktree
+  // AC: ac-fetch-head-location — use rev-parse --git-path from worktree dir
+  const { stdout: fetchHeadRaw } = await runGitAsync(worktreeDir, [
+    "rev-parse",
+    "--git-path",
+    "FETCH_HEAD",
+  ]);
+  const fetchHeadPath = path.resolve(worktreeDir, fetchHeadRaw.trim());
+
+  // 2. Check freshness — if stale or missing, fetch with timeout
+  // AC: ac-fetch-head-freshness, ac-fetch-when-stale
+  let fetchNeeded = true;
+  try {
+    const stat = await fs.stat(fetchHeadPath);
+    fetchNeeded = Date.now() - stat.mtimeMs > thresholdMs;
+  } catch {
+    // No FETCH_HEAD — need to fetch
+  }
+
+  if (fetchNeeded) {
+    try {
+      // AC: ac-fetch-timeout — kill if exceeds FETCH_TIMEOUT_MS
+      await spawnGitWithTimeout(
+        worktreeDir,
+        ["fetch", remoteName],
+        FETCH_TIMEOUT_MS,
+      );
+    } catch (err) {
+      // AC: ac-fetch-timeout-no-error — no error surfaced to user
+      // AC: ac-fetch-timeout-debug-log — debug log if enabled
+      if (isDebugEnabled()) {
+        console.error(
+          `[DEBUG] shadow drift-check: fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+      return false;
+    }
+  }
+
+  // 3. Check ahead/behind — only sync when behind or diverged
+  // AC: ac-pull-when-behind, ac-no-pull-when-ahead, ac-pull-when-diverged
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, [
+      "rev-list",
+      "--left-right",
+      "--count",
+      "HEAD...@{u}",
+    ]);
+    const [, behind] = stdout.trim().split("\t").map(Number);
+    // AC: ac-no-drift-fast-path — behind === 0 means no pull needed
+    return behind > 0;
+  } catch {
+    // AC: ac-upstream-ref-missing — force sync as safer default
+    return true;
+  }
+}
+
+/**
+ * Check if debug logging is enabled (KSPEC_DEBUG=1 or --debug-shadow).
+ */
+function isDebugEnabled(): boolean {
+  if (process.env.KSPEC_DEBUG === "1") return true;
+  if (getVerboseModeFunc?.()) return true;
+  return false;
+}
+
 /**
  * Check if .gitignore has uncommitted changes
  */

@@ -62,6 +62,8 @@ import {
   getAllCommands,
 } from "./suggest.js";
 import { PidFileManager } from "./pid-utils.js";
+import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
+import { setSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
@@ -196,6 +198,19 @@ program
 
     if (opts.debugShadow) {
       setVerboseMode(true);
+    }
+
+    // AC: @shadow-lazy-read-sync ac-syncmode-propagation
+    // Determine sync mode centrally based on command annotations
+    const isAlwaysSync = getAlwaysSyncAnnotation(actionCommand);
+    const isMutating = getMutatingAnnotation(actionCommand);
+
+    if (isAlwaysSync) {
+      setSyncMode("always");
+    } else if (isMutating) {
+      setSyncMode("skip");
+    } else {
+      setSyncMode("drift-check");
     }
 
     // Auto-start daemon if configured and not running
