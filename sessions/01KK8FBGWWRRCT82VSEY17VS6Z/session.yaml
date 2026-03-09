@@ -1,0 +1,7 @@
+id: 01KK8FBGWWRRCT82VSEY17VS6Z
+task_id: "@01KK7T2D69GB50YVSFKVTTHWC6"
+agent_type: codex-acp
+agent_id: reviewer
+trigger: task.pending_review
+status: active
+started_at: 2026-03-09T05:07:55.850Z
