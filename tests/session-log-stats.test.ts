@@ -434,7 +434,7 @@ describe('kspec session log stats (CLI)', () => {
     tempDir = await setupTempFixtures();
 
     // Create sessions directory
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: completed, 2026-01-15

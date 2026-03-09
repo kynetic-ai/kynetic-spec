@@ -26,7 +26,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
-    sessionsDir = path.join(tempDir, 'sessions');
+    sessionsDir = path.join(tempDir, '.kspec-sessions');
     initGitRepo(tempDir);
     // Commit fixture files so working tree is clean (no uncommitted-changes noise)
     git('add -A', tempDir);
@@ -175,7 +175,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
     it('should include task when owning session has corrupt metadata', async () => {
       const corruptSession = sessionIds[0];
       // Create session dir with invalid YAML
-      const sessDir = path.join(tempDir, 'sessions', corruptSession);
+      const sessDir = path.join(sessionsDir, corruptSession);
       fs.mkdirSync(sessDir, { recursive: true });
       fs.writeFileSync(path.join(sessDir, 'session.yaml'), '{{invalid yaml:::');
       startTaskWithSession('@test-task-pending', corruptSession);

@@ -338,7 +338,7 @@ describe('kspec session log search (CLI)', () => {
     tempDir = await setupTempFixtures();
 
     // Create sessions directory for test data
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: with tool calls containing searchable content

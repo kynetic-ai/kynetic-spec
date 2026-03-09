@@ -1268,7 +1268,7 @@ Examples:
         // would prevent completing already-assigned work.
         if (foundTask.status !== "needs_work") {
           const budgetCheck = await checkBudget(
-            ctx.specDir,
+            ctx.sessionsDir,
             sessionId || undefined,
           );
           if (!budgetCheck.allowed) {

@@ -63,7 +63,7 @@ describe("session stale close", () => {
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
-    sessionsDir = path.join(tempDir, "sessions");
+    sessionsDir = path.join(tempDir, ".kspec-sessions");
   });
 
   afterEach(async () => {

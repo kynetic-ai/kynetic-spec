@@ -160,7 +160,7 @@ describe("ac-env-inject: KSPEC_SESSION_ID budget enforcement via task start", ()
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
-    sessionsDir = path.join(tempDir, "sessions");
+    sessionsDir = path.join(tempDir, ".kspec-sessions");
   });
 
   afterEach(async () => {

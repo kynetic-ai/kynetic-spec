@@ -311,7 +311,7 @@ describe("kspec session log list session type display (CLI)", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
 
-    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionsDir = path.join(tempDir, ".kspec-sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Legacy session (no trigger = loop type)
@@ -381,7 +381,7 @@ describe("kspec session log show agent.* event rendering (CLI)", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
 
-    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionsDir = path.join(tempDir, ".kspec-sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
 
     const sDir = path.join(sessionsDir, sessionId);

@@ -267,9 +267,8 @@ describe('kspec session log list (CLI)', () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
 
-    // In traditional mode (no shadow branch), specDir = tempDir
-    // Sessions go in tempDir/sessions/
-    const sessionsDir = path.join(tempDir, 'sessions');
+    // Sessions live at projectRoot/.kspec-sessions/ (outside shadow branch)
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: completed, old
@@ -448,7 +447,7 @@ describe('kspec session log list (CLI)', () => {
   // AC: @session-log-list ac-6
   it('should show "No sessions found" when no sessions exist', async () => {
     // Remove all sessions
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.rm(sessionsDir, { recursive: true });
     await fs.mkdir(sessionsDir);
 
@@ -459,7 +458,7 @@ describe('kspec session log list (CLI)', () => {
 
   // AC: @session-log-list ac-6 (JSON variant)
   it('should return empty array in JSON mode when no sessions exist', async () => {
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.rm(sessionsDir, { recursive: true });
     await fs.mkdir(sessionsDir);
 

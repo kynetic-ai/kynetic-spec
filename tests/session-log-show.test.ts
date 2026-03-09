@@ -414,7 +414,7 @@ describe('kspec session log show (CLI)', () => {
     tempDir = await setupTempFixtures();
 
     // In traditional mode (no shadow branch), specDir = tempDir
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: completed with events and context
@@ -624,7 +624,7 @@ describe('kspec session log show (CLI)', () => {
     // Create two more sessions with same prefix
     const ambig1 = '01AMBG00000000000000000001';
     const ambig2 = '01AMBG00000000000000000002';
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
 
     const a1Dir = path.join(sessionsDir, ambig1);
     await fs.mkdir(a1Dir);
@@ -661,7 +661,7 @@ describe('kspec session log show (CLI)', () => {
 
   // AC: @session-log-show ac-11
   it('should replay assistant text from session.update events with --text', async () => {
-    const s1Dir = path.join(tempDir, 'sessions', sessionId1);
+    const s1Dir = path.join(tempDir, '.kspec-sessions', sessionId1);
     const textBlobRelPath = 'blobs/session-show-text.blob';
     await fs.writeFile(path.join(s1Dir, textBlobRelPath), 'world', 'utf-8');
 
@@ -718,7 +718,7 @@ describe('kspec session log show (CLI)', () => {
   // AC: @session-log-show ac-11
   // AC: @trait-json-output ac-6
   it('should support --text and --events together in JSON output', async () => {
-    const s1Dir = path.join(tempDir, 'sessions', sessionId1);
+    const s1Dir = path.join(tempDir, '.kspec-sessions', sessionId1);
     await fs.writeFile(path.join(s1Dir, 'events.jsonl'), [
       JSON.stringify({
         ts: 1000,
@@ -917,7 +917,7 @@ describe('kspec session log show (CLI)', () => {
   it('should exit with VALIDATION_FAILED (4) for ambiguous prefix', async () => {
     const ambig1 = '01XTEST0000000000000000001';
     const ambig2 = '01XTEST0000000000000000002';
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
 
     const a1Dir = path.join(sessionsDir, ambig1);
     await fs.mkdir(a1Dir);
