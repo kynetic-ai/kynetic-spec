@@ -83043,7 +83043,7 @@
   type: task
   spec_ref: "@session-storage-path-resolution"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -83056,9 +83056,10 @@
     - storage
     - testing
   vcs_refs: []
-  session_id: 01KK8MQ9B5ZR6N2DQZ2AEHR63Z
+  session_id: null
   created_at: 2026-03-08T22:46:16.973Z
   started_at: 2026-03-09T06:39:07.135Z
+  submitted_at: 2026-03-09T06:47:42.411Z
   notes:
     - _ulid: 01KK7T2FMDCJ6BM346ZM5HB2RE
       created_at: 2026-03-08T22:46:16.973Z
@@ -83100,9 +83101,15 @@
 
         All 4233 tests pass. 2 pre-existing failures on main (codex skill tests) unrelated.
       supersedes: null
+    - _ulid: 01KK8NY5SGKR1G8NMVJF3V4SCK
+      created_at: 2026-03-09T06:53:15.953Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #724 includes unmerged
+        @implement-session-branch-worktree changes from PR #723, so the task cannot be reviewed or
+        merged independently."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T06:47:42.411Z
 - _ulid: 01KK7T2G3B8KMYSF48VJA1HAPA
   slugs:
     - implement-session-branch-worktree-mode
