@@ -888,7 +888,7 @@ features:
         created: 2026-03-09T21:25:11.346Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKA7TQ1Y7T5F46Y8MKW3QNE3
         slugs:
           - shadow-daemon-push-sync
