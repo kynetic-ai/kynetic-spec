@@ -83606,6 +83606,24 @@
         from a hard-coded main branch assumption, and ac-session-start-always-pulls plus
         ac-no-sync-env still lack behavioral coverage against the real initContext/command path."
       supersedes: null
+    - _ulid: 01KKACP9FMTFPTKXJTMHP74498
+      created_at: 2026-03-09T22:50:09.268Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 addressed. Changes:
+
+        1. Fixed CI failure: all git init calls now use -b main (initBareRepo, initRepo,
+        spawnGitWithTimeout setup, fetch failure setup) to avoid master/main mismatch on GitHub
+        Actions.
+
+        2. Replaced all non-behavioral plumbing tests with real initContext() behavioral tests:
+           - ac-session-start-always-pulls: sets up real shadow worktree with remote tracking, sets setSyncMode('always'), calls initContext(), verifies shadowPull called and shadowNeedsSync NOT called.
+           - ac-no-sync-env: same setup, sets KSPEC_NO_SYNC=1 with syncMode='always', calls initContext(), verifies neither shadowPull nor shadowNeedsSync called.
+           - Negative case: verifies sync runs when KSPEC_NO_SYNC is unset.
+           - Drift-check comparison: verifies initContext uses shadowNeedsSync (not direct pull) for drift-check mode.
+        All 22 tests in shadow-drift-check.test.ts pass. Full suite: 4259 passed, 2 pre-existing
+        codex-related failures.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
@@ -83640,6 +83658,11 @@
   plan_ref: "@plan-lazy-shadow-sync"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #731. Implemented daemon periodic shadow sync push behavior by fetching
+    from the worktree git dir to freshen FETCH_HEAD, pulling remote changes, and pushing local
+    commits when ahead using configured shadow remotes. Push failures remain non-fatal, custom
+    remote behavior is covered by tests, and AC coverage for @shadow-daemon-push-sync was verified
+    in tests/shadow-sync-scheduler.test.ts with local full suite passing (4232 passed, 3 skipped)."
   depends_on: []
   context: []
   priority: 3
@@ -83649,6 +83672,7 @@
   created_at: 2026-03-09T21:25:12.899Z
   started_at: 2026-03-09T22:26:18.581Z
   submitted_at: 2026-03-09T22:26:26.419Z
+  completed_at: 2026-03-09T22:37:57.745Z
   notes:
     - _ulid: 01KKA7TRJ3A5VFCWFFEG5WZX7E
       created_at: 2026-03-09T21:25:12.899Z
@@ -83691,9 +83715,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-09T22:37:57.745Z
-  closed_reason: "Merged in PR #731. Implemented daemon periodic shadow sync push behavior by fetching
-    from the worktree git dir to freshen FETCH_HEAD, pulling remote changes, and pushing local
-    commits when ahead using configured shadow remotes. Push failures remain non-fatal, custom
-    remote behavior is covered by tests, and AC coverage for @shadow-daemon-push-sync was verified
-    in tests/shadow-sync-scheduler.test.ts with local full suite passing (4232 passed, 3 skipped)."
