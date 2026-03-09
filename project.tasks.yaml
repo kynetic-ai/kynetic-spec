@@ -82553,6 +82553,24 @@
         (tests/cli/session-start-format.test.ts timed out). SHOULD-FIX: PR also includes unrelated
         plans/session-storage-separation.md outside the schema-only task scope."
       supersedes: null
+    - _ulid: 01KK81622YSS6PXBQGP8H5982J
+      created_at: 2026-03-09T00:50:34.206Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2: Addressed both review findings:
+
+        1. MUST-FIX (session-start-format timeout): Confirmed this is a pre-existing CI flake — test
+        passes locally (43/43, 49.6s) and same test passes on main. Not caused by this PR's schema
+        changes.
+
+        2. SHOULD-FIX (plans/session-storage-separation.md): Removed the plan doc and unrelated
+        dispatch changes by rebasing on current main and dropping the docs commit. PR now contains
+        only 2 commits touching src/schema/spec.ts and tests/schema/session-storage-config.test.ts.
+
+
+        Full test suite: 4116 passed, 3 skipped, 2 failed (both pre-existing on main:
+        core-skill-install and enhanced-setup codex platform detection).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7T2CNFQVZ8EM809ZSRC1PV
@@ -82827,6 +82845,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #718. Added dispatch readiness checks so task.ready and task.needs_work
+    require empty blocked_by and completed depends_on entries before enqueue/spawn, including
+    bootstrap/reconciliation and drainQueues revalidation. AC coverage verified for
+    @trait-task-readiness ac-deps/ac-not-blocked/ac-composable and related @agent-dispatch-engine
+    paths; npm test passed on the PR head."
   depends_on: []
   context: []
   priority: 1
@@ -82839,6 +82862,7 @@
   created_at: 2026-03-08T23:24:07.713Z
   started_at: 2026-03-09T00:32:41.397Z
   submitted_at: 2026-03-09T00:32:50.935Z
+  completed_at: 2026-03-09T00:40:05.840Z
   notes:
     - _ulid: 01KK7WTGCN4STSF0Z7VC8M9P07
       created_at: 2026-03-08T23:34:21.334Z
@@ -82883,9 +82907,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-09T00:40:05.840Z
-  closed_reason: "Merged in PR #718. Added dispatch readiness checks so task.ready and task.needs_work
-    require empty blocked_by and completed depends_on entries before enqueue/spawn, including
-    bootstrap/reconciliation and drainQueues revalidation. AC coverage verified for
-    @trait-task-readiness ac-deps/ac-not-blocked/ac-composable and related @agent-dispatch-engine
-    paths; npm test passed on the PR head."
