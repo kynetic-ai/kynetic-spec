@@ -181,4 +181,193 @@ describe('ShadowSyncScheduler', () => {
     expect(result1).toBeUndefined();
     expect(result2).toBeUndefined();
   });
+
+  // AC: @shadow-daemon-push-sync ac-periodic-push
+  it('syncOnce pushes local commits when ahead of upstream', async () => {
+    const worktreeDir = await setupSyncTest();
+
+    // Push shadow branch to remote so tracking is fully set up
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    // Make a local commit in the shadow worktree (ahead of remote)
+    const tasksFile = (await fs.readdir(worktreeDir))
+      .find(f => f.endsWith('.tasks.yaml'));
+    expect(tasksFile).toBeDefined();
+
+    await fs.appendFile(
+      path.join(worktreeDir, tasksFile!),
+      '\n# Local change to push\n'
+    );
+    execSync('git add -A && git commit -m "Local change for push test"', {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: '1' },
+    });
+
+    // Verify local is ahead
+    const revListOut = execSync(
+      'git rev-list --left-right --count HEAD...@{u}',
+      { cwd: worktreeDir, encoding: 'utf-8' }
+    ).trim();
+    const [ahead] = revListOut.split('\t').map(Number);
+    expect(ahead).toBeGreaterThan(0);
+
+    // Run syncOnce
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      const scheduler = new ShadowSyncScheduler({
+        worktreeDir,
+        intervalSeconds: 60,
+      });
+
+      await scheduler.syncOnce();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Shadow sync: pushed local changes')
+      );
+
+      // Verify local is no longer ahead after push
+      const afterRevList = execSync(
+        'git rev-list --left-right --count HEAD...@{u}',
+        { cwd: worktreeDir, encoding: 'utf-8' }
+      ).trim();
+      const [afterAhead] = afterRevList.split('\t').map(Number);
+      expect(afterAhead).toBe(0);
+    } finally {
+      consoleSpy.mockRestore();
+    }
+  });
+
+  // AC: @shadow-daemon-push-sync ac-periodic-push
+  it('syncOnce does not push when not ahead of upstream', async () => {
+    const worktreeDir = await setupSyncTest();
+
+    // Push shadow branch so tracking is configured and we're up to date
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      const scheduler = new ShadowSyncScheduler({
+        worktreeDir,
+        intervalSeconds: 60,
+      });
+
+      await scheduler.syncOnce();
+
+      // Should not log any push message
+      const pushCalls = consoleSpy.mock.calls.filter(
+        args => typeof args[0] === 'string' && args[0].includes('pushed')
+      );
+      expect(pushCalls).toHaveLength(0);
+    } finally {
+      consoleSpy.mockRestore();
+    }
+  });
+
+  // AC: @shadow-daemon-push-sync ac-periodic-push
+  it('syncOnce push failure is non-fatal', async () => {
+    const worktreeDir = await setupSyncTest();
+
+    // Push shadow branch so tracking is configured
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    // Make a local commit so we're ahead
+    const tasksFile = (await fs.readdir(worktreeDir))
+      .find(f => f.endsWith('.tasks.yaml'));
+    expect(tasksFile).toBeDefined();
+    await fs.appendFile(
+      path.join(worktreeDir, tasksFile!),
+      '\n# Local change for push failure test\n'
+    );
+    execSync('git add -A && git commit -m "Local change for push failure test"', {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: '1' },
+    });
+
+    // Make the remote unreachable by pointing to a non-existent path
+    execSync('git remote set-url origin /nonexistent/path', {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      const scheduler = new ShadowSyncScheduler({
+        worktreeDir,
+        intervalSeconds: 60,
+      });
+
+      // Should NOT throw — push failure is non-fatal
+      await scheduler.syncOnce();
+
+      // Should log the warning about push failure
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('push failed (non-fatal)')
+      );
+    } finally {
+      consoleSpy.mockRestore();
+      warnSpy.mockRestore();
+    }
+  });
+
+  // AC: @shadow-daemon-push-sync ac-daemon-freshens-fetch-head
+  it('syncOnce freshens FETCH_HEAD in the worktree git dir', async () => {
+    const worktreeDir = await setupSyncTest();
+
+    // Push shadow branch so tracking is configured
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    // Resolve the worktree FETCH_HEAD path
+    const fetchHeadRelative = execSync(
+      'git rev-parse --git-path FETCH_HEAD',
+      { cwd: worktreeDir, encoding: 'utf-8' }
+    ).trim();
+    const fetchHeadPath = path.resolve(worktreeDir, fetchHeadRelative);
+
+    // Delete FETCH_HEAD if it exists to start clean
+    try { await fs.unlink(fetchHeadPath); } catch { /* may not exist */ }
+
+    // Verify it doesn't exist
+    let exists = true;
+    try {
+      await fs.stat(fetchHeadPath);
+    } catch {
+      exists = false;
+    }
+    expect(exists).toBe(false);
+
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      const scheduler = new ShadowSyncScheduler({
+        worktreeDir,
+        intervalSeconds: 60,
+      });
+
+      await scheduler.syncOnce();
+
+      // FETCH_HEAD should now exist in the worktree git dir
+      const stat = await fs.stat(fetchHeadPath);
+      expect(stat.isFile()).toBe(true);
+
+      // Verify it's fresh (created within last few seconds)
+      const ageMs = Date.now() - stat.mtimeMs;
+      expect(ageMs).toBeLessThan(10000); // Less than 10 seconds old
+    } finally {
+      consoleSpy.mockRestore();
+    }
+  });
 });

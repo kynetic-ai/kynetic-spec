@@ -1099,6 +1099,30 @@ export async function fetchRemote(
 }
 
 /**
+ * Check if the local shadow branch has unpushed commits ahead of upstream.
+ * Returns true if local is ahead, false otherwise (including when upstream
+ * ref doesn't exist or an error occurs).
+ *
+ * @param worktreeDir Path to shadow worktree
+ */
+export async function isAheadOfUpstream(worktreeDir: string): Promise<boolean> {
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, [
+      "rev-list",
+      "--left-right",
+      "--count",
+      "HEAD...@{u}",
+    ]);
+    const [aheadStr] = stdout.trim().split("\t");
+    const ahead = parseInt(aheadStr, 10);
+    return ahead > 0;
+  } catch {
+    // No upstream ref or other error — not ahead
+    return false;
+  }
+}
+
+/**
  * Push shadow branch to remote with tracking.
  * Returns true if push succeeded, false otherwise.
  *
