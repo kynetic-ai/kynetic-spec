@@ -1095,7 +1095,7 @@ features:
             created: 2026-03-08T22:46:13.005Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KK7T2BN1AGYHZHDPY3HD28H6
         slugs:
           - session-legacy-migration
