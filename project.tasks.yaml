@@ -82738,7 +82738,7 @@
   type: task
   spec_ref: "@session-spec-path-updates"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -82752,6 +82752,7 @@
   session_id: 01KK8BZFWX77P91QZD0WDN87HA
   created_at: 2026-03-08T22:46:14.966Z
   started_at: 2026-03-09T04:01:17.972Z
+  submitted_at: 2026-03-09T04:07:04.856Z
   notes:
     - _ulid: 01KK7T2DNPXZ0806X5SJ2484KR
       created_at: 2026-03-08T22:46:14.966Z
@@ -82799,7 +82800,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T04:07:04.856Z
+  completed_at: 2026-03-09T04:07:19.580Z
+  closed_reason: All 8 ACs completed. Updated path references in @session-events (ac-1, ac-7, ac-8),
+    @session-creation-and-env-injection (description, ac-create, ac-budget-local), @session-log-list
+    (ac-1), @cli-ralph (ac-22) from .kspec/sessions/ to .kspec-sessions/. Removed
+    @trait-shadow-commit from @session-compact and @session-stale-cleanup. Spec-only task — no code
+    changes or PR needed.
 - _ulid: 01KK7T2E55NJF36KH0YPFZBN3X
   slugs:
     - update-kspec-init-setup-for-session-directory
