@@ -83374,7 +83374,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Replace legacy session fallback reads with detect-and-warn
+- _ulid: 01KK9YDHFM4FKET3Z53ZC0Y277
+  slugs: []
+  title: Replace legacy session fallback reads with detect-and-warn
+  type: task
   description: |-
     Remove transparent fallback reads from legacy .kspec/sessions/ and replace with a
     detect-and-warn pattern. Currently legacy.ts has *WithFallback and *Merged wrappers
@@ -83412,21 +83415,19 @@
     - store.ts:237 trigger ?? "legacy" — session trigger type, not storage
     - daemon agent-dispatch.ts legacy route aliases — unrelated
     - parser/skill-render.ts legacy hash — unrelated
-  type: task
   spec_ref: "@session-legacy-migration"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cleanup
     - sessions
-  depends_on: []
-  _ulid: 01KK9YDHFM4FKET3Z53ZC0Y277
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-09T18:40:42.484Z
   notes: []
   todos: []
+  automation: eligible
