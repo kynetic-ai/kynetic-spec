@@ -30,6 +30,7 @@ import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './
 import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { ShadowSyncScheduler } from './shadow-sync';
+import { SessionSyncScheduler } from './session-sync';
 import { join } from 'path';
 
 export interface ServerOptions {
@@ -93,6 +94,7 @@ let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let projectManager: import('./project-context').ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
+let sessionSyncScheduler: SessionSyncScheduler | undefined;
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -446,6 +448,40 @@ export async function createServer(options: ServerOptions) {
     }
   }
 
+  // AC: @session-branch-worktree ac-sync - Start periodic session branch sync if configured
+  // Session sync runs independently from kspec-meta sync — failures in one do not affect the other
+  if (startupProjectPath) {
+    try {
+      const { readFileSync } = await import('fs');
+      const { parse: parseYaml } = await import('yaml');
+      const manifestPath = join(startupProjectPath, '.kspec', 'kynetic.yaml');
+      const manifestRaw = readFileSync(manifestPath, 'utf-8');
+      const manifest = parseYaml(manifestRaw) as { sessions?: { storage?: string; branch?: string } } | null;
+
+      if (manifest?.sessions?.storage === 'branch') {
+        const { loadProjectConfig } = await import('../parser/config.js');
+        const { config } = await loadProjectConfig(startupProjectPath);
+        const syncInterval = config.shadow.sync_interval;
+
+        if (syncInterval > 0) {
+          const sessionBranchName = manifest.sessions.branch || 'kspec-sessions';
+          const sessionWorktreeDir = join(startupProjectPath, '.kspec-sessions');
+
+          sessionSyncScheduler = new SessionSyncScheduler({
+            worktreeDir: sessionWorktreeDir,
+            intervalSeconds: syncInterval,
+            branchName: sessionBranchName,
+            pubsub: pubsubManager,
+          });
+          sessionSyncScheduler.start();
+        }
+      }
+    } catch (error) {
+      // Session sync init failure does not block daemon startup
+      console.error('[daemon] Failed to initialize session sync scheduler:', error);
+    }
+  }
+
   // AC: @daemon-server ac-13, ac-14 - Start heartbeat monitoring
   heartbeatManager.start(pubsubManager.getAllConnections());
 
@@ -459,6 +495,9 @@ export async function createServer(options: ServerOptions) {
 
       // AC: @config-shadow ac-12 - Stop shadow sync scheduler
       shadowSyncScheduler?.stop();
+
+      // AC: @session-branch-worktree ac-sync - Stop session sync scheduler
+      sessionSyncScheduler?.stop();
 
       // AC: @agent-dispatch-engine ac-11 - Stop all dispatch engines before shutting down
       await stopAllEngines();

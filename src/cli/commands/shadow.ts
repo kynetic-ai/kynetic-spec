@@ -212,39 +212,38 @@ export function registerShadowCommands(program: Command): void {
         }
 
         const status = await getShadowStatus(gitRoot);
+        let hadError = false;
 
         if (status.healthy) {
           info(shadowCommands.repair.alreadyHealthy);
-          return;
-        }
-
-        if (!status.branchExists) {
+        } else if (!status.branchExists) {
           error(shadowCommands.repair.branchNotExist);
           console.log(shadowCommands.repair.initHint);
-          process.exit(EXIT_CODES.ERROR);
-        }
-
-        info(shadowCommands.repair.repairing);
-
-        const result = await repairShadow(gitRoot);
-
-        if (result.success) {
-          if (result.alreadyExists) {
-            info(shadowCommands.repair.stillHealthy);
-          } else {
-            success(shadowCommands.repair.repaired, {
-              worktreeCreated: result.worktreeCreated,
-            });
-            console.log(
-              shadowCommands.repair.worktreeCreated(SHADOW_WORKTREE_DIR),
-            );
-          }
+          hadError = true;
         } else {
-          error(shadowCommands.repair.failed(result.error || "Unknown error"));
-          process.exit(EXIT_CODES.ERROR);
+          info(shadowCommands.repair.repairing);
+
+          const result = await repairShadow(gitRoot);
+
+          if (result.success) {
+            if (result.alreadyExists) {
+              info(shadowCommands.repair.stillHealthy);
+            } else {
+              success(shadowCommands.repair.repaired, {
+                worktreeCreated: result.worktreeCreated,
+              });
+              console.log(
+                shadowCommands.repair.worktreeCreated(SHADOW_WORKTREE_DIR),
+              );
+            }
+          } else {
+            error(shadowCommands.repair.failed(result.error || "Unknown error"));
+            hadError = true;
+          }
         }
 
         // AC: @session-branch-worktree ac-repair — repair session branch independently
+        // Runs regardless of kspec-meta health — session branch is independent
         try {
           const { initContext } = await import("../../parser/index.js");
           const ctx = await initContext();
@@ -278,6 +277,10 @@ export function registerShadowCommands(program: Command): void {
           }
         } catch {
           // Session branch repair is optional
+        }
+
+        if (hadError) {
+          process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
         error(shadowCommands.repair.commandFailed, err);
