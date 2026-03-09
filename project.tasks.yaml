@@ -82704,6 +82704,7 @@
   session_id: 01KK8ANN8KBGAHSPZQBEMNCXBP
   created_at: 2026-03-08T22:46:14.473Z
   started_at: 2026-03-09T03:46:28.391Z
+  submitted_at: 2026-03-09T03:58:21.850Z
   notes:
     - _ulid: 01KK7T2D68HEXA0P31V1EW1F9V
       created_at: 2026-03-08T22:46:14.473Z
@@ -82730,7 +82731,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T03:58:21.850Z
 - _ulid: 01KK7T2DNPNANBZ25VM0MQBFRN
   slugs:
     - update-existing-session-specs-for-new-storage-path
@@ -82738,7 +82738,7 @@
   type: task
   spec_ref: "@session-spec-path-updates"
   plan_ref: "@plan-session-storage-separation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -82765,6 +82765,8 @@
         in-progress implementation uses the new path resolver.
   todos: []
   automation: eligible
+  started_at: 2026-03-09T04:01:17.972Z
+  session_id: 01KK8BZFWX77P91QZD0WDN87HA
 - _ulid: 01KK7T2E55NJF36KH0YPFZBN3X
   slugs:
     - update-kspec-init-setup-for-session-directory
