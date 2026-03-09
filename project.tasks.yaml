@@ -82722,7 +82722,7 @@
   type: task
   spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82743,6 +82743,8 @@
         .kspec-sessions/ to root .gitignore and sessions/ to .kspec/.gitignore.
   todos: []
   automation: eligible
+  started_at: 2026-03-09T01:54:39.667Z
+  session_id: 01KK84FJMTSMTDZQBPZZTTQYTJ
 - _ulid: 01KK7T2EMAEM95B7M04Z2SMRNA
   slugs:
     - add-legacy-session-read-fallback
