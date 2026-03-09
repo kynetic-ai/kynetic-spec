@@ -1071,6 +1071,7 @@ export class DispatchEngine {
     const options: InvocationOptions = {
       agent,
       specDir: this.specDir,
+      sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
       cwd: this.cwd,
       taskRef: entry.change.taskRef,
       prompt: this._buildDispatchPrompt(agent, entry.change),

@@ -25,12 +25,13 @@ import {
 
 describe('searchSessionEvents', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-search-'));
 
     // Create sessions directory
-    const sessionsDir = path.join(testDir, 'sessions');
+    sessionsDir = path.join(testDir, 'sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: with tool calls
@@ -181,7 +182,7 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-1
   it('should search event data for case-insensitive substring match', async () => {
-    const results = await searchSessionEvents(testDir, 'error');
+    const results = await searchSessionEvents(sessionsDir, 'error');
     expect(results.length).toBeGreaterThan(0);
 
     // Should find matches in both sessions that have "error" (case-insensitive)
@@ -194,7 +195,7 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-1
   it('should return results grouped by session', async () => {
-    const results = await searchSessionEvents(testDir, 'session');
+    const results = await searchSessionEvents(sessionsDir, 'session');
     expect(results.length).toBeGreaterThan(0);
 
     for (const result of results) {
@@ -208,7 +209,7 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-2
   it('should filter by event type when --type is provided', async () => {
-    const results = await searchSessionEvents(testDir, 'session', {
+    const results = await searchSessionEvents(sessionsDir, 'session', {
       eventType: 'session.start',
     });
 
@@ -223,7 +224,7 @@ describe('searchSessionEvents', () => {
   // AC: @session-log-search ac-3
   it('should filter by since date', async () => {
     const sinceDate = new Date('2026-02-01');
-    const results = await searchSessionEvents(testDir, 'session', {
+    const results = await searchSessionEvents(sessionsDir, 'session', {
       sinceDate,
     });
 
@@ -235,7 +236,7 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-4
   it('should return matches with session ID, timestamp, type, and excerpt', async () => {
-    const results = await searchSessionEvents(testDir, 'build');
+    const results = await searchSessionEvents(sessionsDir, 'build');
     expect(results.length).toBeGreaterThan(0);
 
     const match = results[0].matches[0];
@@ -249,7 +250,7 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-4
   it('should limit content excerpt to 200 characters', async () => {
-    const results = await searchSessionEvents(testDir, 'build');
+    const results = await searchSessionEvents(sessionsDir, 'build');
     for (const result of results) {
       for (const match of result.matches) {
         expect(match.content_excerpt.length).toBeLessThanOrEqual(200);
@@ -259,7 +260,7 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-5
   it('should respect limit option', async () => {
-    const results = await searchSessionEvents(testDir, 'session', { limit: 2 });
+    const results = await searchSessionEvents(sessionsDir, 'session', { limit: 2 });
 
     let totalMatches = 0;
     for (const r of results) {
@@ -270,13 +271,13 @@ describe('searchSessionEvents', () => {
 
   // AC: @session-log-search ac-6
   it('should return empty array when no matches found', async () => {
-    const results = await searchSessionEvents(testDir, 'xyznonexistent');
+    const results = await searchSessionEvents(sessionsDir, 'xyznonexistent');
     expect(results).toEqual([]);
   });
 
   // AC: @session-log-search ac-7
   it('should filter by agent type', async () => {
-    const results = await searchSessionEvents(testDir, 'session', {
+    const results = await searchSessionEvents(sessionsDir, 'session', {
       agentType: 'custom-agent',
     });
 
@@ -288,20 +289,20 @@ describe('searchSessionEvents', () => {
   // Defense-in-depth: store normalizes invalid limits
   it('should fallback to default limit when given invalid limit', async () => {
     // NaN should be normalized to 50
-    const results1 = await searchSessionEvents(testDir, 'session', { limit: NaN });
+    const results1 = await searchSessionEvents(sessionsDir, 'session', { limit: NaN });
     expect(results1.length).toBeGreaterThan(0);
 
     // 0 should be normalized to 50
-    const results2 = await searchSessionEvents(testDir, 'session', { limit: 0 });
+    const results2 = await searchSessionEvents(sessionsDir, 'session', { limit: 0 });
     expect(results2.length).toBeGreaterThan(0);
 
     // Negative should be normalized to 50
-    const results3 = await searchSessionEvents(testDir, 'session', { limit: -5 });
+    const results3 = await searchSessionEvents(sessionsDir, 'session', { limit: -5 });
     expect(results3.length).toBeGreaterThan(0);
   });
 
   it('should combine multiple filters', async () => {
-    const results = await searchSessionEvents(testDir, 'error', {
+    const results = await searchSessionEvents(sessionsDir, 'error', {
       agentType: 'custom-agent',
       sinceDate: new Date('2026-01-01'),
     });
@@ -311,16 +312,16 @@ describe('searchSessionEvents', () => {
   });
 
   it('should search pointer previews by default', async () => {
-    const results = await searchSessionEvents(testDir, 'preview_only_blob_token');
+    const results = await searchSessionEvents(sessionsDir, 'preview_only_blob_token');
     expect(results.length).toBe(1);
     expect(results[0].matches[0].content_excerpt).toContain('PREVIEW_ONLY_BLOB_TOKEN');
   });
 
   it('should resolve blob content when resolveBlobs is enabled', async () => {
-    const noResolve = await searchSessionEvents(testDir, 'resolved_only_blob_token');
+    const noResolve = await searchSessionEvents(sessionsDir, 'resolved_only_blob_token');
     expect(noResolve).toEqual([]);
 
-    const resolved = await searchSessionEvents(testDir, 'resolved_only_blob_token', {
+    const resolved = await searchSessionEvents(sessionsDir, 'resolved_only_blob_token', {
       resolveBlobs: true,
     });
     expect(resolved.length).toBe(1);
@@ -337,7 +338,7 @@ describe('kspec session log search (CLI)', () => {
     tempDir = await setupTempFixtures();
 
     // Create sessions directory for test data
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: with tool calls containing searchable content

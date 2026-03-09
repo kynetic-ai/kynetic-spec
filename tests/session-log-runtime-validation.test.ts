@@ -28,7 +28,7 @@ describe('session log list --status validation', () => {
     tempDir = await setupTempFixtures();
 
     // Create a single session so we can verify valid statuses work
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     const s1 = testUlid('SESS');
@@ -95,7 +95,7 @@ describe('session log show --events with malformed event data', () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
 
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     sessionId = testUlid('SESS');
@@ -115,7 +115,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle null event data without crashing', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
       JSON.stringify({ ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: null }),
@@ -129,7 +129,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle string event data (not an object) without crashing', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: "just a string" }),
       JSON.stringify({ ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: "unexpected" }),
@@ -142,7 +142,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle array event data without crashing', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: [1, 2, 3] }),
       JSON.stringify({ ts: 2000, seq: 1, type: 'session.end', session_id: sessionId, data: { reason: 123 } }),
@@ -154,7 +154,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle session.update with non-object update field', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
       JSON.stringify({
@@ -177,7 +177,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle session.update with tool_call but missing nested fields', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
       // tool_call but _meta is a string, not an object
@@ -219,7 +219,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle prompt.sent with non-string prompt field', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
       JSON.stringify({ ts: 2000, seq: 1, type: 'prompt.sent', session_id: sessionId, data: { prompt: 42 } }),
@@ -233,7 +233,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should handle session.end with non-string reason field', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
       JSON.stringify({ ts: 2000, seq: 1, type: 'session.end', session_id: sessionId, data: { reason: 123 } }),
@@ -247,7 +247,7 @@ describe('session log show --events with malformed event data', () => {
   });
 
   it('should correctly summarize well-formed tool_call events', async () => {
-    const eventsPath = path.join(tempDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(tempDir, '.kspec-sessions', sessionId, 'events.jsonl');
     const events = [
       JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
       JSON.stringify({

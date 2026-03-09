@@ -102,6 +102,7 @@ describe("Session creation on invocation start", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Test session creation",
@@ -122,6 +123,7 @@ describe("Session creation on invocation start", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Check session file creation",
@@ -173,6 +175,7 @@ describe("KSPEC_SESSION_ID injection", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check env injection",
@@ -195,6 +198,7 @@ describe("KSPEC_SESSION_ID injection", () => {
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check env cleanup",
@@ -240,6 +244,7 @@ describe("Timeout handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test timeout",
@@ -257,6 +262,7 @@ describe("Timeout handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test timeout event logging",
@@ -287,6 +293,7 @@ describe("Timeout handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test timeout note",
@@ -322,6 +329,7 @@ describe("Timeout handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test cancel dispatch",
@@ -368,6 +376,7 @@ describe("Timeout handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test ACP prompt timeout alignment",
@@ -408,6 +417,7 @@ describe("Successful invocation completion", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Successful completion test",
@@ -434,6 +444,7 @@ describe("Successful invocation completion", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check session completion status",
@@ -450,6 +461,7 @@ describe("Successful invocation completion", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check stop reason",
@@ -492,6 +504,7 @@ describe("Failure handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Test failure handling",
@@ -517,6 +530,7 @@ describe("Failure handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check failed session status",
@@ -538,6 +552,7 @@ describe("Failure handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test failure note",
@@ -583,6 +598,7 @@ describe("Streaming event logging", () => {
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test streaming updates",
@@ -602,6 +618,7 @@ describe("Streaming event logging", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test event logging",
@@ -687,6 +704,7 @@ describe("Streaming event logging", () => {
       const result = await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Concurrent update burst ordering",
@@ -734,6 +752,7 @@ describe("Streaming event logging", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test blob externalization",
@@ -929,6 +948,7 @@ describe("Cleanup on completion or failure", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test cleanup on success",
@@ -946,6 +966,7 @@ describe("Cleanup on completion or failure", () => {
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test env restoration",
@@ -971,6 +992,7 @@ describe("Cleanup on completion or failure", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test cleanup on failure",
@@ -991,6 +1013,7 @@ describe("Cleanup on completion or failure", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test adapter env restoration",
@@ -1021,6 +1044,7 @@ describe("Cleanup on completion or failure", () => {
       const result = await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test env restoration on failure",
@@ -1107,6 +1131,7 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test consecutive failure blocking",
@@ -1169,6 +1194,7 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test below threshold",
@@ -1241,6 +1267,7 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test streak reset after success",
@@ -1298,6 +1325,7 @@ describe("ACP permission request handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test permission auto-approval",
@@ -1326,6 +1354,7 @@ describe("ACP permission request handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test permission denial",
@@ -1377,6 +1406,7 @@ describe("Host environment variable sanitization", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test env sanitization",
@@ -1417,6 +1447,7 @@ describe("Host environment variable sanitization", () => {
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test parent env preservation",
@@ -1459,6 +1490,7 @@ describe("Shadow commit on terminal invocation events", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Shadow commit on success",
@@ -1486,6 +1518,7 @@ describe("Shadow commit on terminal invocation events", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Shadow commit on timeout",
@@ -1514,6 +1547,7 @@ describe("Shadow commit on terminal invocation events", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Shadow commit on failure",
@@ -1545,6 +1579,7 @@ describe("Shadow commit on terminal invocation events", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Shadow commit on abort",

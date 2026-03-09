@@ -89,7 +89,7 @@ export async function sessionCreateAction(options: {
     // Validate existing KSPEC_SESSION_ID if set — warn user if it's stale/corrupt
     const existingSessionId = process.env.KSPEC_SESSION_ID;
     if (existingSessionId) {
-      const validation = await validateSessionId(ctx.specDir, existingSessionId);
+      const validation = await validateSessionId(ctx.sessionsDir, existingSessionId);
       if (!validation.valid) {
         warn(
           `Current KSPEC_SESSION_ID (${existingSessionId}) is invalid: ${validation.error}`,
@@ -119,7 +119,7 @@ export async function sessionCreateAction(options: {
     const sessionId = ulid();
 
     // AC: @session-creation-and-env-injection ac-create, ac-budget, ac-budget-local
-    const result = await createSessionWithBudget(ctx.specDir, {
+    const result = await createSessionWithBudget(ctx.sessionsDir, {
       id: sessionId,
       agent_type: options.agentType,
       task_id: options.taskId,

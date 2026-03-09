@@ -29,9 +29,11 @@ import {
 
 describe('resolveSessionId', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-show-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -40,7 +42,7 @@ describe('resolveSessionId', () => {
 
   // AC: @session-log-show ac-9
   it('should return not_found for nonexistent session', async () => {
-    const result = await resolveSessionId(testDir, 'nonexistent');
+    const result = await resolveSessionId(sessionsDir, 'nonexistent');
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error).toBe('not_found');
@@ -50,9 +52,9 @@ describe('resolveSessionId', () => {
   // AC: @session-log-show ac-7
   it('should resolve exact session ID', async () => {
     const sessionId = testUlid('SESS');
-    await createSession(testDir, { id: sessionId, agent_type: 'test-agent' });
+    await createSession(sessionsDir, { id: sessionId, agent_type: 'test-agent' });
 
-    const result = await resolveSessionId(testDir, sessionId);
+    const result = await resolveSessionId(sessionsDir, sessionId);
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.id).toBe(sessionId);
@@ -62,11 +64,11 @@ describe('resolveSessionId', () => {
   // AC: @session-log-show ac-7
   it('should resolve unique prefix to full session ID', async () => {
     const sessionId = testUlid('SESS');
-    await createSession(testDir, { id: sessionId, agent_type: 'test-agent' });
+    await createSession(sessionsDir, { id: sessionId, agent_type: 'test-agent' });
 
     // Use first 8 chars as prefix
     const prefix = sessionId.slice(0, 8);
-    const result = await resolveSessionId(testDir, prefix);
+    const result = await resolveSessionId(sessionsDir, prefix);
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.id).toBe(sessionId);
@@ -78,10 +80,10 @@ describe('resolveSessionId', () => {
     // Create two sessions with similar prefixes
     const id1 = '01SESS00000000000000000001';
     const id2 = '01SESS00000000000000000002';
-    await createSession(testDir, { id: id1, agent_type: 'test-agent' });
-    await createSession(testDir, { id: id2, agent_type: 'test-agent' });
+    await createSession(sessionsDir, { id: id1, agent_type: 'test-agent' });
+    await createSession(sessionsDir, { id: id2, agent_type: 'test-agent' });
 
-    const result = await resolveSessionId(testDir, '01SESS');
+    const result = await resolveSessionId(sessionsDir, '01SESS');
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error).toBe('ambiguous');
@@ -93,9 +95,11 @@ describe('resolveSessionId', () => {
 
 describe('getSessionLogDetail', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-detail-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -103,7 +107,7 @@ describe('getSessionLogDetail', () => {
   });
 
   it('should return null for nonexistent session', async () => {
-    const detail = await getSessionLogDetail(testDir, 'nonexistent');
+    const detail = await getSessionLogDetail(sessionsDir, 'nonexistent');
     expect(detail).toBeNull();
   });
 
@@ -113,7 +117,7 @@ describe('getSessionLogDetail', () => {
     const startedAt = '2026-01-20T10:00:00.000Z';
     const endedAt = '2026-01-20T11:30:00.000Z';
 
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'claude-agent-acp',
       task_id: '@my-task',
@@ -121,7 +125,7 @@ describe('getSessionLogDetail', () => {
     });
 
     // Simulate completion by writing metadata directly
-    const metaPath = path.join(testDir, 'sessions', sessionId, 'session.yaml');
+    const metaPath = path.join(sessionsDir, sessionId, 'session.yaml');
     await fs.writeFile(metaPath, YAML.stringify({
       id: sessionId,
       agent_type: 'claude-agent-acp',
@@ -131,7 +135,7 @@ describe('getSessionLogDetail', () => {
       ended_at: endedAt,
     }));
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.id).toBe(sessionId);
     expect(detail!.status).toBe('completed');
@@ -145,17 +149,17 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-2
   it('should compute per-iteration summaries with boundaries', async () => {
     const sessionId = testUlid('SESS', 1);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
     // Add context snapshots
-    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
-    await saveSessionContext(testDir, sessionId, 2, { iteration: 2 });
+    await saveSessionContext(sessionsDir, sessionId, 1, { iteration: 1 });
+    await saveSessionContext(sessionsDir, sessionId, 2, { iteration: 2 });
 
     // Add events with prompt.sent boundaries (phase: task-work)
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
       {
@@ -182,7 +186,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.iteration_count).toBe(2);
     expect(detail!.iterations).toHaveLength(2);
@@ -198,12 +202,12 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — wrong data.iteration on streaming events, still grouped correctly
   it('should group by boundary position even when data.iteration is wrong', async () => {
     const sessionId = testUlid('SESS', 2);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       // Iteration 1 boundary
       { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
@@ -217,7 +221,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.iterations).toHaveLength(2);
 
@@ -232,15 +236,15 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — legacy fallback when no prompt.sent boundaries exist
   it('should fall back to legacy data.iteration grouping without boundaries', async () => {
     const sessionId = testUlid('SESS', 3);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
+    await saveSessionContext(sessionsDir, sessionId, 1, { iteration: 1 });
 
     // Events with data.iteration but NO prompt.sent with phase: task-work
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: { iteration: 1 } },
       { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
@@ -249,7 +253,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.iterations).toHaveLength(2);
 
@@ -262,12 +266,12 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — pre-boundary events merge into first iteration
   it('should merge pre-boundary events into first iteration', async () => {
     const sessionId = testUlid('SESS', 4);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       // Pre-boundary events (session.start before any prompt.sent)
       { ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null },
@@ -278,7 +282,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.iterations).toHaveLength(1);
     // All 4 events in iteration 1 (2 pre-boundary + 2 from boundary range)
@@ -290,12 +294,12 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — single iteration captures all events
   it('should handle single iteration with one boundary', async () => {
     const sessionId = testUlid('SESS', 5);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
       { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1, update: { sessionUpdate: 'tool_call', rawInput: { command: 'ls' } } } },
@@ -303,7 +307,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.iterations).toHaveLength(1);
     expect(detail!.iterations[0].event_count).toBe(3);
@@ -313,12 +317,12 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — mixed phase prompt.sent (only task-work used as boundaries)
   it('should only use task-work phase prompt.sent as boundaries', async () => {
     const sessionId = testUlid('SESS', 6);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
       { ts: 2000, seq: 1, type: 'session.update', session_id: sessionId, data: { iteration: 1 } },
@@ -329,7 +333,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     // Only 2 iterations (task-work boundaries), not 3
     expect(detail!.iterations).toHaveLength(2);
@@ -345,14 +349,14 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — malformed boundaries gracefully fall back
   it('should fall back to legacy when prompt.sent has missing phase/iteration', async () => {
     const sessionId = testUlid('SESS', 7);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
+    await saveSessionContext(sessionsDir, sessionId, 1, { iteration: 1 });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const events = [
       // prompt.sent without phase field — not a valid boundary
       { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { iteration: 1 } },
@@ -362,7 +366,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     // Falls back to legacy: iteration 1 from data.iteration
     expect(detail!.iterations.length).toBeGreaterThan(0);
@@ -372,12 +376,12 @@ describe('getSessionLogDetail', () => {
   // AC: @session-log-show ac-10 — duplicate seq values don't affect boundary math
   it('should handle duplicate seq values with correct boundary grouping', async () => {
     const sessionId = testUlid('SESS', 8);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     // Simulate concurrent appends producing duplicate seq numbers
     const events = [
       { ts: 1000, seq: 0, type: 'prompt.sent', session_id: sessionId, data: { phase: 'task-work', iteration: 1 } },
@@ -388,7 +392,7 @@ describe('getSessionLogDetail', () => {
     ];
     await fs.writeFile(eventsPath, events.map(e => JSON.stringify(e)).join('\n') + '\n');
 
-    const detail = await getSessionLogDetail(testDir, sessionId);
+    const detail = await getSessionLogDetail(sessionsDir, sessionId);
     expect(detail).not.toBeNull();
     expect(detail!.iterations).toHaveLength(2);
     // readEvents sorts by seq, so duplicate seq events are adjacent.
@@ -410,7 +414,7 @@ describe('kspec session log show (CLI)', () => {
     tempDir = await setupTempFixtures();
 
     // In traditional mode (no shadow branch), specDir = tempDir
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: completed with events and context
@@ -620,7 +624,7 @@ describe('kspec session log show (CLI)', () => {
     // Create two more sessions with same prefix
     const ambig1 = '01AMBG00000000000000000001';
     const ambig2 = '01AMBG00000000000000000002';
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
 
     const a1Dir = path.join(sessionsDir, ambig1);
     await fs.mkdir(a1Dir);
@@ -657,7 +661,7 @@ describe('kspec session log show (CLI)', () => {
 
   // AC: @session-log-show ac-11
   it('should replay assistant text from session.update events with --text', async () => {
-    const s1Dir = path.join(tempDir, 'sessions', sessionId1);
+    const s1Dir = path.join(tempDir, '.kspec-sessions', sessionId1);
     const textBlobRelPath = 'blobs/session-show-text.blob';
     await fs.writeFile(path.join(s1Dir, textBlobRelPath), 'world', 'utf-8');
 
@@ -714,7 +718,7 @@ describe('kspec session log show (CLI)', () => {
   // AC: @session-log-show ac-11
   // AC: @trait-json-output ac-6
   it('should support --text and --events together in JSON output', async () => {
-    const s1Dir = path.join(tempDir, 'sessions', sessionId1);
+    const s1Dir = path.join(tempDir, '.kspec-sessions', sessionId1);
     await fs.writeFile(path.join(s1Dir, 'events.jsonl'), [
       JSON.stringify({
         ts: 1000,
@@ -913,7 +917,7 @@ describe('kspec session log show (CLI)', () => {
   it('should exit with VALIDATION_FAILED (4) for ambiguous prefix', async () => {
     const ambig1 = '01XTEST0000000000000000001';
     const ambig2 = '01XTEST0000000000000000002';
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
 
     const a1Dir = path.join(sessionsDir, ambig1);
     await fs.mkdir(a1Dir);

@@ -294,6 +294,13 @@ export interface KspecContext {
   rootDir: string;
   /** Spec files directory (.kspec/ when shadow enabled, otherwise spec/) */
   specDir: string;
+  /**
+   * Sessions storage directory (.kspec-sessions/ at project root).
+   * Separate from specDir — session data lives outside the shadow branch.
+   *
+   * AC: @session-storage-path-resolution ac-context
+   */
+  sessionsDir: string;
   /** Path to manifest file */
   manifestPath: string | null;
   /** Parsed manifest */
@@ -351,9 +358,11 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
       }
     }
 
+    const rootDir = path.dirname(specDir);
     return {
-      rootDir: path.dirname(specDir),
+      rootDir,
       specDir,
+      sessionsDir: path.join(rootDir, ".kspec-sessions"),
       manifestPath,
       manifest,
       shadow: null, // No shadow in overridden context
@@ -430,6 +439,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     return {
       rootDir: shadow.projectRoot,
       specDir,
+      sessionsDir: path.join(shadow.projectRoot, ".kspec-sessions"),
       manifestPath,
       manifest,
       shadow,
@@ -463,7 +473,15 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     }
   }
 
-  return { rootDir, specDir, manifestPath, manifest, shadow: null, config };
+  return {
+    rootDir,
+    specDir,
+    sessionsDir: path.join(rootDir, ".kspec-sessions"),
+    manifestPath,
+    manifest,
+    shadow: null,
+    config,
+  };
 }
 
 /**

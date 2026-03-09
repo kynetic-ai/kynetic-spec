@@ -47,6 +47,8 @@ export interface InvocationOptions {
   agent: Agent;
   /** The spec directory (.kspec/) */
   specDir: string;
+  /** The sessions directory (.kspec-sessions/). Derived from specDir if not set. */
+  sessionsDir?: string;
   /** Working directory for spawned agent */
   cwd: string;
   /** Task reference being worked on (e.g., "@01KJP277A"). Optional — omit for unbound invocations. */
@@ -197,6 +199,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     abortSignal,
   } = options;
 
+  // AC: @session-storage-path-resolution ac-resolver
+  // Sessions live in .kspec-sessions/ at project root, not inside .kspec/
+  const sessionsDir = options.sessionsDir ?? path.join(path.dirname(specDir), ".kspec-sessions");
+
   const startTime = Date.now();
   const sessionId = options.sessionId ?? ulid();
 
@@ -258,7 +264,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     input: Omit<SessionEventInput, "session_id" | "seq">,
   ): Promise<void> => {
     const event = await queueEventWrite(() =>
-      appendEvent(specDir, {
+      appendEvent(sessionsDir, {
         ...input,
         session_id: sessionId,
         seq: nextEventSeq,
@@ -269,7 +275,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
-  const session = await createSession(specDir, {
+  const session = await createSession(sessionsDir, {
     id: sessionId,
     agent_type: adapterId,
     agent_id: agent.id,
@@ -424,7 +430,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     // ─── Close session as completed ───────────────────────────────────────
-    const finalSession = await closeSession(specDir, sessionId, "completed", "Invocation completed normally");
+    const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
     await shadowAutoCommit(specDir, `session end: ${sessionId} — completed`);
 
     // Add success note to reset consecutive failure streak (only when a task is bound)
@@ -467,7 +473,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         },
       });
 
-      const finalSession = await closeSession(specDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
+      const finalSession = await closeSession(sessionsDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
       await shadowAutoCommit(specDir, `session end: ${sessionId} — timed_out`);
 
       // Add timeout note to task (only when a task is bound)
@@ -499,7 +505,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         // Best-effort cancel
       }
 
-      const finalSession = await closeSession(specDir, sessionId, "failed", "Invocation aborted by shutdown");
+      const finalSession = await closeSession(sessionsDir, sessionId, "failed", "Invocation aborted by shutdown");
       await shadowAutoCommit(specDir, `session end: ${sessionId} — aborted`);
 
       return {
@@ -523,7 +529,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       },
     });
 
-    const finalSession = await closeSession(specDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
+    const finalSession = await closeSession(sessionsDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
     await shadowAutoCommit(specDir, `session end: ${sessionId} — failed`);
 
     // Add failure note to task and check retry threshold (only when a task is bound)

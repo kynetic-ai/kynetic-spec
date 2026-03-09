@@ -99,10 +99,10 @@ export async function sessionCompactAction(
 
     const targetSessionIds: string[] = [];
     if (options.all) {
-      const summaries = await getAllSessionLogSummaries(ctx.specDir);
+      const summaries = await getAllSessionLogSummaries(ctx.sessionsDir);
       targetSessionIds.push(...summaries.map((s) => s.id));
     } else {
-      const resolution = await resolveSessionId(ctx.specDir, sessionIdOrPrefix!);
+      const resolution = await resolveSessionId(ctx.sessionsDir, sessionIdOrPrefix!);
       if (!resolution.ok) {
         if (resolution.error === "not_found") {
           error(`Session not found: ${sessionIdOrPrefix}`);
@@ -120,7 +120,7 @@ export async function sessionCompactAction(
     let failures = 0;
     for (let idx = 0; idx < targetSessionIds.length; idx += 1) {
       const sessionId = targetSessionIds[idx];
-      const metadata = await getSession(ctx.specDir, sessionId);
+      const metadata = await getSession(ctx.sessionsDir, sessionId);
       if (!metadata) {
         if (!options.all) {
           error(`Session not found: ${sessionId}`);
@@ -168,7 +168,7 @@ export async function sessionCompactAction(
       }
 
       try {
-        const result = await compactSessionEvents(ctx.specDir, sessionId, {
+        const result = await compactSessionEvents(ctx.sessionsDir, sessionId, {
           dryRun,
         });
         entries.push(toEntry(sessionId, result));

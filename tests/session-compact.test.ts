@@ -56,9 +56,11 @@ interface SessionCompactJson {
 
 describe("session compact", () => {
   let tempDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
+    sessionsDir = path.join(tempDir, ".kspec-sessions");
   });
 
   afterEach(async () => {
@@ -69,12 +71,12 @@ describe("session compact", () => {
     sessionId: string,
     status: "active" | "completed" | "abandoned",
   ): Promise<void> {
-    await createSession(tempDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "test-agent",
     });
     if (status !== "active") {
-      await updateSessionStatus(tempDir, sessionId, status);
+      await updateSessionStatus(sessionsDir, sessionId, status);
     }
   }
 
@@ -82,7 +84,7 @@ describe("session compact", () => {
     sessionId: string,
     payload: string,
   ): Promise<void> {
-    const eventsPath = getSessionEventsPath(tempDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     const event = {
       ts: 1000,
       seq: 0,
@@ -121,14 +123,14 @@ describe("session compact", () => {
     expect(result.session?.blobs_created).toBeGreaterThanOrEqual(1);
     expect(result.session?.bytes_reclaimed).toBeGreaterThan(0);
 
-    const eventsPath = getSessionEventsPath(tempDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     const stored = JSON.parse((await fs.readFile(eventsPath, "utf-8")).trim());
     const pointer = stored.data.update.rawOutput as {
       path: string;
     };
     expect(pointer.path).toMatch(/^blobs\//);
 
-    const blobPath = path.join(getSessionDir(tempDir, sessionId), pointer.path);
+    const blobPath = path.join(getSessionDir(sessionsDir, sessionId), pointer.path);
     const blobContent = await fs.readFile(blobPath, "utf-8");
     expect(blobContent).toBe(rawOutput);
   });
@@ -140,11 +142,11 @@ describe("session compact", () => {
     await createSessionWithStatus(sessionId, "completed");
     await writeRawEventWithOversizedPayload(sessionId, "Y".repeat(22_000));
 
-    const eventsPath = getSessionEventsPath(tempDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     const before = await fs.readFile(eventsPath, "utf-8");
 
     await expect(
-      compactSessionEvents(tempDir, sessionId, {
+      compactSessionEvents(sessionsDir, sessionId, {
         renameFn: async () => {
           throw new Error("rename failed");
         },
@@ -163,9 +165,9 @@ describe("session compact", () => {
     await writeRawEventWithOversizedPayload(sessionId, "Z".repeat(22_000));
 
     kspec(`session compact ${sessionId}`, tempDir);
-    const eventsPath = getSessionEventsPath(tempDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     const firstContent = await fs.readFile(eventsPath, "utf-8");
-    const blobsDir = path.join(getSessionDir(tempDir, sessionId), "blobs");
+    const blobsDir = path.join(getSessionDir(sessionsDir, sessionId), "blobs");
     const firstBlobCount = (await fs.readdir(blobsDir)).length;
 
     const second = kspecJson<SessionCompactJson>(
@@ -206,7 +208,7 @@ describe("session compact", () => {
     await createSessionWithStatus(activeId, "active");
 
     await writeRawEventWithOversizedPayload(completedId, "B".repeat(22_000));
-    await fs.writeFile(getSessionEventsPath(tempDir, abandonedId), "", "utf-8");
+    await fs.writeFile(getSessionEventsPath(sessionsDir, abandonedId), "", "utf-8");
     await writeRawEventWithOversizedPayload(activeId, "C".repeat(22_000));
 
     const output = kspec("session compact --all", tempDir);
@@ -242,7 +244,7 @@ describe("session compact", () => {
     await createSessionWithStatus(sessionId, "completed");
     await writeRawEventWithOversizedPayload(sessionId, "D".repeat(22_000));
 
-    const eventsPath = getSessionEventsPath(tempDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     const before = await fs.readFile(eventsPath, "utf-8");
 
     const jsonResult = kspecJson<SessionCompactJson>(
@@ -260,7 +262,7 @@ describe("session compact", () => {
     expect(humanResult.stdout).toContain("Dry run preview");
     expect(after).toBe(before);
 
-    const blobsDir = path.join(getSessionDir(tempDir, sessionId), "blobs");
+    const blobsDir = path.join(getSessionDir(sessionsDir, sessionId), "blobs");
     await expect(fs.access(blobsDir)).rejects.toThrow();
   });
 
@@ -270,7 +272,7 @@ describe("session compact", () => {
   it("returns errors in --json mode and preserves state in dry-run failures", async () => {
     const sessionId = testUlid("SESS", 10);
     await createSessionWithStatus(sessionId, "completed");
-    const eventsPath = getSessionEventsPath(tempDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     await fs.writeFile(eventsPath, "{not-json}\n", "utf-8");
     const before = await fs.readFile(eventsPath, "utf-8");
 

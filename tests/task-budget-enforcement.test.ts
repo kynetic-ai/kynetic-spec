@@ -21,22 +21,22 @@ import {
 
 /**
  * Helper to create a budget file for a session in the test fixture directory.
- * Budget lives at {specDir}/sessions/{sessionId}/budget.json
+ * Budget lives at {projectRoot}/.kspec-sessions/{sessionId}/budget.json
  */
 async function createTestBudget(
-  specDir: string,
+  projectRoot: string,
   sessionId: string,
   maxPerCycle: number,
   startedThisCycle: number = 0,
 ): Promise<void> {
-  const sessionsDir = path.join(specDir, "sessions", sessionId);
-  await fs.mkdir(sessionsDir, { recursive: true });
+  const sessionDir = path.join(projectRoot, ".kspec-sessions", sessionId);
+  await fs.mkdir(sessionDir, { recursive: true });
   const budget = {
     max_per_cycle: maxPerCycle,
     started_this_cycle: startedThisCycle,
   };
   await fs.writeFile(
-    path.join(sessionsDir, "budget.json"),
+    path.join(sessionDir, "budget.json"),
     JSON.stringify(budget, null, 2) + "\n",
   );
 }
@@ -45,12 +45,12 @@ async function createTestBudget(
  * Helper to read the budget file and return parsed contents.
  */
 async function readTestBudget(
-  specDir: string,
+  projectRoot: string,
   sessionId: string,
 ): Promise<{ max_per_cycle: number; started_this_cycle: number } | null> {
   const budgetPath = path.join(
-    specDir,
-    "sessions",
+    projectRoot,
+    ".kspec-sessions",
     sessionId,
     "budget.json",
   );
@@ -264,7 +264,7 @@ describe("Integration: task budget enforcement", () => {
         env: { KSPEC_SESSION_ID: SESSION_ID },
       });
 
-      const sessionDir = path.join(tempDir, "sessions", SESSION_ID);
+      const sessionDir = path.join(tempDir, ".kspec-sessions", SESSION_ID);
       const files = await fs.readdir(sessionDir);
       const tmpFiles = files.filter((f) => f.endsWith(".tmp"));
       expect(tmpFiles).toHaveLength(0);
@@ -279,7 +279,7 @@ describe("Integration: task budget enforcement", () => {
 
       const budgetPath = path.join(
         tempDir,
-        "sessions",
+        ".kspec-sessions",
         SESSION_ID,
         "budget.json",
       );
