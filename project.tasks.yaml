@@ -83709,6 +83709,14 @@
         in tests/cli/session-start-format.test.ts (primer and full activity timeline cases). AC
         coverage for @shadow-write-sync is now complete, but regression gate is still failing."
       supersedes: null
+    - _ulid: 01KKAFYKX0V8P7HAFFFXX670NW
+      created_at: 2026-03-09T23:47:07.808Z
+      author: "@claude"
+      content: "Fix cycle 2: Investigated session-start-format.test.ts timeout — it was transient. All 3
+        CI test shards pass on current PR HEAD. Tests pass locally (43/43 in 64s). The 2 unrelated
+        test failures (core-skill-install.test.ts, enhanced-setup.test.ts codex detection) are
+        pre-existing on main. Replied to both review threads with findings and resolved them."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
