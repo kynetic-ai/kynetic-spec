@@ -82753,7 +82753,7 @@
   type: task
   spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82813,6 +82813,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-09T03:45:21.004Z
+  closed_reason: "Merged in PR #720 (merge commit 1b0c9e36dc21). Updated kspec init/setup to create
+    .kspec-sessions/, ensure root and shadow gitignore entries, and preserve dry-run preview of
+    those planned actions. Reviewed against @session-storage-modes with AC coverage confirmed for
+    config, branch naming, sessions directory creation/separation, and gitignore behavior; fresh CI
+    passed on the merged head."
 - _ulid: 01KK7T2EMAEM95B7M04Z2SMRNA
   slugs:
     - add-legacy-session-read-fallback
