@@ -83362,7 +83362,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -83386,6 +83386,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T18:46:34.411Z
 - _ulid: 01KK9YDHFM4FKET3Z53ZC0Y277
   slugs: []
   title: Replace legacy session fallback reads with detect-and-warn
