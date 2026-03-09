@@ -82905,7 +82905,9 @@
     - storage
     - migration
   vcs_refs: []
+  session_id: 01KK8CFA3ESPE6DWCZKBSJBZF6
   created_at: 2026-03-08T22:46:15.946Z
+  started_at: 2026-03-09T04:14:15.367Z
   notes:
     - _ulid: 01KK7T2EMA7ZPTE0JWCKA2ZRJ4
       created_at: 2026-03-08T22:46:15.946Z
@@ -82914,10 +82916,37 @@
         When a session ID is not found in .kspec-sessions/, fall back to reading
         from .kspec/sessions/. Emit deprecation warning. Merge results in list
         operations with dedup.
+    - _ulid: 01KK8D3KRCRXNH6S2MEW2WS8R4
+      created_at: 2026-03-09T04:18:56.908Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: When sessions don't exist in .kspec-sessions/, fall back to .kspec/sessions/
+        (shadow branch legacy location)
+
+        - Architecture: Create src/sessions/legacy.ts with fallback-aware wrappers around store.ts
+        read functions. Store functions stay pure — they read from wherever pointed. Legacy module
+        adds try-primary-then-fallback logic.
+
+        - Legacy path: path.join(specDir, 'sessions') since specDir points to .kspec/ worktree
+
+        - Key decision: CLI commands will pass both sessionsDir and specDir; legacy module derives
+        fallback path
+
+        - Scope: Read fallback (getSession, readEvents, listSessions, resolveSessionId,
+        getAllSessionLogSummaries, searchSessionEvents), list merge with dedup, deprecation warning,
+        shadow gitignore, session migrate command
+
+        - Files to create: src/sessions/legacy.ts
+
+        - Files to modify: src/cli/commands/session/log.ts (use legacy wrappers),
+        src/cli/commands/session/commands.ts, src/parser/shadow.ts (gitignore), init.ts, setup.ts
+
+        - Verification: new tests + full test suite
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T04:14:15.367Z
-  session_id: 01KK8CFA3ESPE6DWCZKBSJBZF6
 - _ulid: 01KK7T2F51QR38YMPS1FX6HKXS
   slugs:
     - add-kspec-session-migrate-command
