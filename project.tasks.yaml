@@ -82867,5 +82867,12 @@
         commit/file; rebase or recreate the branch so the PR contains only the dispatch-engine
         depends_on/blocked_by fix."
       supersedes: null
+    - _ulid: 01KK7ZJPD2ASHPYNM2DA824HTK
+      created_at: 2026-03-09T00:22:31.074Z
+      author: "@claude"
+      content: "Fix cycle: rebased branch onto origin/main to exclude unrelated
+        session-storage-separation.md commit that was on local main but not yet on remote. PR #718
+        now contains only dispatch changes."
+      supersedes: null
   todos: []
   automation: eligible
