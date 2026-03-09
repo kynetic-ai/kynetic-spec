@@ -82586,7 +82586,7 @@
   type: task
   spec_ref: "@session-storage-path-resolution"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82676,6 +82676,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-09T03:25:23.484Z
+  closed_reason: "Merged in PR #719 (commit e05e155be84dffb822523639cd219dcc0f37002d). Extracted
+    session path resolution from specDir by adding ctx.sessionsDir, routing session
+    store/helpers/CLI/daemon/invocation through .kspec-sessions at project root, and fixing
+    follow-up regressions in checkpoint scoping, task budget enforcement, and session log listing.
+    AC coverage verified for ac-resolver, ac-path-helpers, ac-context, ac-cli-commands, and
+    ac-daemon-routes; npm test passed on the merged head."
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
   slugs:
     - remove-shadowautocommit-from-session-operations
