@@ -83436,7 +83436,7 @@
   spec_ref: "@session-legacy-migration"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -83507,3 +83507,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-09T20:01:10.123Z
+  closed_reason: "Merged in PR #728 (merge commit f5762baf17a080b613f8fba0f034454ba387451c). Replaced
+    legacy session fallback reads with detect-and-warn across CLI and daemon session read endpoints,
+    removed legacy *WithFallback/*Merged helpers, and added daemon/API coverage for the warning
+    contract. AC coverage verified for @session-legacy-migration own criteria; full local regression
+    suite passed (npm test: 4227 tests) and GitHub test shards/e2e smoke passed on the merged head."
