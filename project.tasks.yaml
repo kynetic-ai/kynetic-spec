@@ -82586,7 +82586,7 @@
   type: task
   spec_ref: "@session-storage-path-resolution"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82597,9 +82597,10 @@
     - storage
     - refactor
   vcs_refs: []
-  session_id: 01KK81QGK5MS9DM2DEMHCJRKVX
+  session_id: null
   created_at: 2026-03-08T22:46:13.935Z
   started_at: 2026-03-09T01:01:10.523Z
+  submitted_at: 2026-03-09T01:46:31.163Z
   notes:
     - _ulid: 01KK7T2CNFQ60ZDV8928Z5A5JZ
       created_at: 2026-03-08T22:46:13.935Z
@@ -82642,9 +82643,15 @@
         - Verification: npx tsc --noEmit clean, 4116/4118 tests pass (2 pre-existing failures on
         main)
       supersedes: null
+    - _ulid: 01KK84SANGBQ4FV8VCWRYS0B25
+      created_at: 2026-03-09T01:53:31.313Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: session-storage-path-resolution review found
+        incomplete AC coverage (ac-context/ac-cli-commands/ac-daemon-routes) and local regressions
+        in session checkpoint scoping, task budget enforcement, and session log list."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T01:46:31.163Z
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
   slugs:
     - remove-shadowautocommit-from-session-operations
