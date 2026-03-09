@@ -82803,7 +82803,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -82846,3 +82846,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T00:09:06.564Z
