@@ -83520,7 +83520,7 @@
   type: task
   spec_ref: "@shadow-lazy-read-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -83530,7 +83530,7 @@
   session_id: 01KKABRSNWJSXQZSH1AXS7C0B0
   created_at: 2026-03-09T21:25:11.791Z
   started_at: 2026-03-09T22:50:21.026Z
-  submitted_at: 2026-03-09T22:19:59.464Z
+  submitted_at: 2026-03-09T22:50:24.881Z
   notes:
     - _ulid: 01KKA7TQFGB4T5SWQ26CBGXV68
       created_at: 2026-03-09T21:25:11.792Z
