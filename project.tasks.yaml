@@ -83647,16 +83647,46 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKADDWHP48TJXSW6MRWZG67C
   created_at: 2026-03-09T21:25:12.363Z
+  started_at: 2026-03-09T23:03:42.822Z
   notes:
     - _ulid: 01KKA7TR1B9T1JRBW6455W337P
       created_at: 2026-03-09T21:25:12.363Z
       author: "@claude"
       content: See plan @plan-lazy-shadow-sync for implementation notes
+    - _ulid: 01KKAE124PQER1J1ZYTPBWW9R8
+      created_at: 2026-03-09T23:13:30.774Z
+      author: "@claude"
+      content: >-
+        Implementation complete. This task's ACs (ac-write-always-syncs, ac-write-skips-read-check)
+        were already implemented by the syncMode mechanism from task 1
+        (@implement-lazy-shadow-sync-on-reads). The work here was adding AC annotations to code and
+        tests, plus 3 new behavioral tests:
+
+        1. initContext skips all sync when syncMode is 'skip' (write commands)
+
+        2. initContext skips sync on both calls within a mutating command lifecycle (consume-once)
+
+        3. Mutating task command (task add) is annotated as mutating (triggers skip syncMode)
+
+
+        Files changed:
+
+        - src/cli/index.ts: AC annotation on preAction skip logic
+
+        - src/parser/yaml.ts: AC annotation on initContext skip check
+
+        - src/parser/shadow.ts: AC annotations on commitIfShadow and pullRebaseBeforePush
+
+        - tests/shadow-drift-check.test.ts: 3 new tests for ac-write-skips-read-check
+
+        - tests/shadow.test.ts: AC annotation on existing pull-rebase test
+
+        - tests/sync-mode.test.ts: AC annotation on existing skip mode test
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T23:03:42.822Z
-  session_id: 01KKADDWHP48TJXSW6MRWZG67C
 - _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
   slugs:
     - implement-daemon-background-sync-pushes
