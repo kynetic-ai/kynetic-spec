@@ -83497,5 +83497,13 @@
         /api/sessions and lacks daemon/API coverage; @session-legacy-migration ac-read-fallback
         requires daemon reads to warn too."
       supersedes: null
+    - _ulid: 01KKA1ZFQKFS727EK6E8MMSPCW
+      created_at: 2026-03-09T19:42:56.243Z
+      author: "@claude"
+      content: "Fix cycle 1: Extended daemon detect-and-warn to all session read endpoints (GET /:id and
+        /:id/events) — previously only GET / had it. Added E2E test file api-sessions-legacy.spec.ts
+        with 8 tests covering the warning contract across all 3 daemon session endpoints. All 4225
+        vitest tests pass (2 pre-existing codex-related failures unrelated)."
+      supersedes: null
   todos: []
   automation: eligible
