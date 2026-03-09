@@ -15,18 +15,21 @@ import {
   type ToolUsageStats,
   type TimePeriodStats,
   type SessionSearchResult,
-  getAllSessionLogSummaries,
   getSessionLogDetail,
-  resolveSessionId,
   readEvents,
   readSessionContext,
   computeSessionLogStats,
-  computeToolUsageStats,
   computeTimePeriodStats,
-  searchSessionEvents,
   deduplicatePhasedToolCalls,
   resolveSessionBlobPointers,
 } from "../../../sessions/store.js";
+import {
+  getAllSessionLogSummariesMerged,
+  resolveSessionIdWithFallback,
+  searchSessionEventsWithFallback,
+  computeToolUsageStatsWithFallback,
+  getLegacySessionsDir,
+} from "../../../sessions/legacy.js";
 import type { SessionEvent } from "../../../sessions/types.js";
 import { SessionStatusSchema } from "../../../sessions/types.js";
 import {
@@ -208,7 +211,8 @@ export async function sessionLogListAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    let sessions = await getAllSessionLogSummaries(ctx.sessionsDir);
+    // AC: @session-legacy-migration ac-list-merge — merge primary + legacy sessions
+    let sessions = await getAllSessionLogSummariesMerged(ctx.sessionsDir, ctx.specDir);
 
     // AC: @session-log-list ac-2 - Filter by status
     if (options.status) {
@@ -525,7 +529,8 @@ export async function sessionLogShowAction(
     const ctx = await initContext();
 
     // AC: @session-log-show ac-7, ac-8, ac-9 - Resolve session ID
-    const resolution = await resolveSessionId(ctx.sessionsDir, sessionRef);
+    // AC: @session-legacy-migration ac-read-fallback — try primary, then legacy
+    const resolution = await resolveSessionIdWithFallback(ctx.sessionsDir, sessionRef, ctx.specDir);
 
     if (!resolution.ok) {
       if (resolution.error === "not_found") {
@@ -542,9 +547,13 @@ export async function sessionLogShowAction(
     }
 
     const sessionId = resolution.id;
+    // Use legacy dir for all reads if session was found there
+    const effectiveDir = resolution.legacy
+      ? getLegacySessionsDir(ctx.specDir)!
+      : ctx.sessionsDir;
 
     // Get session detail
-    const detail = await getSessionLogDetail(ctx.sessionsDir, sessionId);
+    const detail = await getSessionLogDetail(effectiveDir, sessionId);
     if (!detail) {
       error(`Session not found: ${sessionId}`);
       process.exit(EXIT_CODES.NOT_FOUND);
@@ -558,7 +567,7 @@ export async function sessionLogShowAction(
     let events: SessionEvent[] | null = null;
     if (options.events) {
       let allEvents = deduplicatePhasedToolCalls(
-        await readEvents(ctx.sessionsDir, sessionId),
+        await readEvents(effectiveDir, sessionId),
       );
 
       // AC: @session-log-show ac-4 - Filter by type
@@ -580,7 +589,7 @@ export async function sessionLogShowAction(
           allEvents.map(async (event) => ({
             ...event,
             data: await resolveSessionBlobPointers(
-              ctx.sessionsDir,
+              effectiveDir,
               sessionId,
               event.data,
             ),
@@ -594,14 +603,14 @@ export async function sessionLogShowAction(
     // AC: @session-log-show ac-11 - Replay assistant text from session.update content blocks
     let replayText: string | null = null;
     if (options.text) {
-      const allEvents = await readEvents(ctx.sessionsDir, sessionId);
+      const allEvents = await readEvents(effectiveDir, sessionId);
       const chunks: string[] = [];
       for (const event of allEvents) {
         if (event.type !== "session.update") {
           continue;
         }
         const resolvedData = await resolveSessionBlobPointers(
-          ctx.sessionsDir,
+          effectiveDir,
           sessionId,
           event.data,
         );
@@ -619,7 +628,7 @@ export async function sessionLogShowAction(
       const iterNum = parseInt(options.context, 10);
       if (!Number.isNaN(iterNum) && iterNum > 0) {
         contextSnapshot = await readSessionContext(
-          ctx.sessionsDir,
+          effectiveDir,
           sessionId,
           iterNum,
         );
@@ -762,7 +771,8 @@ export async function sessionLogStatsAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    let sessions = await getAllSessionLogSummaries(ctx.sessionsDir);
+    // AC: @session-legacy-migration ac-list-merge — merge primary + legacy sessions
+    let sessions = await getAllSessionLogSummariesMerged(ctx.sessionsDir, ctx.specDir);
 
     // AC: @session-log-stats ac-4 - Filter by since
     if (options.since) {
@@ -795,7 +805,7 @@ export async function sessionLogStatsAction(
     let toolUsage: ToolUsageStats[] | null = null;
     if (options.toolUsage) {
       const sessionIds = sessions.map((s) => s.id);
-      toolUsage = await computeToolUsageStats(ctx.sessionsDir, sessionIds);
+      toolUsage = await computeToolUsageStatsWithFallback(ctx.sessionsDir, sessionIds, ctx.specDir);
     }
 
     // AC: @session-log-stats ac-7 - Time periods (optional)
@@ -907,13 +917,19 @@ export async function sessionLogSearchAction(
     const sinceDate = options.since ? parseTimeSpec(options.since) : undefined;
 
     // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
-    const results = await searchSessionEvents(ctx.sessionsDir, pattern, {
-      eventType: options.type,
-      sinceDate: sinceDate || undefined,
-      agentType: options.agent,
-      limit,
-      resolveBlobs: options.resolveBlobs,
-    });
+    // AC: @session-legacy-migration ac-read-fallback — search across primary + legacy
+    const results = await searchSessionEventsWithFallback(
+      ctx.sessionsDir,
+      pattern,
+      {
+        eventType: options.type,
+        sinceDate: sinceDate || undefined,
+        agentType: options.agent,
+        limit,
+        resolveBlobs: options.resolveBlobs,
+      },
+      ctx.specDir,
+    );
 
     // AC: @session-log-search ac-6 - No matches found message
     // exit code 0 regardless (per @trait-semantic-exit-codes ac-5)
