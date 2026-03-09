@@ -33,6 +33,8 @@ import {
   SESSIONS_WORKTREE_DIR,
   ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
+  needsSessionsGitignore,
+  needsShadowSessionsGitignore,
 } from "../../parser/shadow.js";
 import {
   detectAgentFromEnv,
@@ -1536,11 +1538,16 @@ export async function runSetupPipeline(
         sessionsCreated = true;
       }
       if (sessionsCreated) {
-        actions.push(`created ${SESSIONS_WORKTREE_DIR}/`);
+        actions.push(`${dryRun ? "create" : "created"} ${SESSIONS_WORKTREE_DIR}/`);
       }
 
       // Add .kspec-sessions/ to root .gitignore
-      if (!dryRun) {
+      if (dryRun) {
+        const rootNeeded = await needsSessionsGitignore(projectDir);
+        if (rootNeeded) {
+          actions.push(`add ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      } else {
         const rootAdded = await ensureSessionsGitignore(projectDir);
         if (rootAdded) {
           actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
@@ -1548,7 +1555,12 @@ export async function runSetupPipeline(
       }
 
       // Add sessions/ to .kspec/.gitignore
-      if (!dryRun) {
+      if (dryRun) {
+        const shadowNeeded = await needsShadowSessionsGitignore(projectDir);
+        if (shadowNeeded) {
+          actions.push("add sessions/ to .kspec/.gitignore");
+        }
+      } else {
         const shadowAdded = await ensureShadowSessionsGitignore(projectDir);
         if (shadowAdded) {
           actions.push("added sessions/ to .kspec/.gitignore");

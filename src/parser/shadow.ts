@@ -1843,6 +1843,37 @@ async function ensureGitignore(
  * @param projectRoot Git repository root
  * @returns true if entry was added, false if already present
  */
+export async function needsSessionsGitignore(
+  projectRoot: string,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+
+  let content = "";
+  try {
+    content = await fs.readFile(gitignorePath, "utf-8");
+  } catch {
+    // File doesn't exist — entry is needed
+    return true;
+  }
+
+  const lines = content.split("\n");
+  const patterns = [
+    SESSIONS_WORKTREE_DIR,
+    `${SESSIONS_WORKTREE_DIR}/`,
+    `/${SESSIONS_WORKTREE_DIR}`,
+    `/${SESSIONS_WORKTREE_DIR}/`,
+  ];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (patterns.includes(trimmed)) {
+      return false; // Already present
+    }
+  }
+
+  return true;
+}
+
 export async function ensureSessionsGitignore(
   projectRoot: string,
 ): Promise<boolean> {
@@ -1850,27 +1881,16 @@ export async function ensureSessionsGitignore(
   const entry = `${SESSIONS_WORKTREE_DIR}/`;
 
   try {
+    const needed = await needsSessionsGitignore(projectRoot);
+    if (!needed) {
+      return false;
+    }
+
     let content = "";
     try {
       content = await fs.readFile(gitignorePath, "utf-8");
     } catch {
       // File doesn't exist, will create
-    }
-
-    // Check if already present
-    const lines = content.split("\n");
-    const patterns = [
-      SESSIONS_WORKTREE_DIR,
-      `${SESSIONS_WORKTREE_DIR}/`,
-      `/${SESSIONS_WORKTREE_DIR}`,
-      `/${SESSIONS_WORKTREE_DIR}/`,
-    ];
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (patterns.includes(trimmed)) {
-        return false; // Already present
-      }
     }
 
     // Add to gitignore
@@ -1900,6 +1920,27 @@ export async function ensureSessionsGitignore(
  * @param options Optional shadow configuration for directory name
  * @returns true if entry was added, false if already present
  */
+export async function needsShadowSessionsGitignore(
+  projectRoot: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const directoryName = getDirectoryName(options);
+  const shadowGitignorePath = path.join(projectRoot, directoryName, ".gitignore");
+  const entry = "sessions/";
+
+  try {
+    const content = await fs.readFile(shadowGitignorePath, "utf-8");
+    const lines = content.split("\n");
+    if (lines.some((line) => line.trim() === entry || line.trim() === "sessions")) {
+      return false; // Already present
+    }
+    return true;
+  } catch {
+    // File doesn't exist — can't add to non-existent file
+    return false;
+  }
+}
+
 export async function ensureShadowSessionsGitignore(
   projectRoot: string,
   options?: ShadowOptions,
@@ -1909,6 +1950,11 @@ export async function ensureShadowSessionsGitignore(
   const entry = "sessions/";
 
   try {
+    const needed = await needsShadowSessionsGitignore(projectRoot, options);
+    if (!needed) {
+      return false;
+    }
+
     let content = "";
     try {
       content = await fs.readFile(shadowGitignorePath, "utf-8");
@@ -1916,12 +1962,6 @@ export async function ensureShadowSessionsGitignore(
       // File doesn't exist — this shouldn't happen since init creates it,
       // but handle gracefully
       return false;
-    }
-
-    // Check if already present
-    const lines = content.split("\n");
-    if (lines.some((line) => line.trim() === entry || line.trim() === "sessions")) {
-      return false; // Already present
     }
 
     // Add to gitignore

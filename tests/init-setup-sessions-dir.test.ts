@@ -8,6 +8,8 @@ import {
   SESSIONS_WORKTREE_DIR,
   ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
+  needsSessionsGitignore,
+  needsShadowSessionsGitignore,
 } from '../src/parser/shadow.js';
 
 // Check if git supports --orphan worktree (requires >= 2.42)
@@ -118,6 +120,25 @@ describe('Init/Setup Sessions Directory', () => {
     });
   });
 
+  describe('needsSessionsGitignore', () => {
+    it('returns true when .gitignore does not exist', async () => {
+      const result = await needsSessionsGitignore(testDir);
+      expect(result).toBe(true);
+    });
+
+    it('returns true when entry is not present', async () => {
+      await fs.writeFile(path.join(testDir, '.gitignore'), 'node_modules/\n', 'utf-8');
+      const result = await needsSessionsGitignore(testDir);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when entry already present', async () => {
+      await fs.writeFile(path.join(testDir, '.gitignore'), '.kspec-sessions/\n', 'utf-8');
+      const result = await needsSessionsGitignore(testDir);
+      expect(result).toBe(false);
+    });
+  });
+
   describe('ensureShadowSessionsGitignore', () => {
     // AC: @session-legacy-migration ac-shadow-gitignore
     it('adds sessions/ to .kspec/.gitignore', async () => {
@@ -151,6 +172,31 @@ describe('Init/Setup Sessions Directory', () => {
 
     it('returns false when .kspec/.gitignore does not exist', async () => {
       const result = await ensureShadowSessionsGitignore(testDir);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('needsShadowSessionsGitignore', () => {
+    it('returns true when sessions/ not in .kspec/.gitignore', async () => {
+      const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await fs.mkdir(kspecDir, { recursive: true });
+      await fs.writeFile(path.join(kspecDir, '.gitignore'), 'artifacts/\n', 'utf-8');
+
+      const result = await needsShadowSessionsGitignore(testDir);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when sessions/ already present', async () => {
+      const kspecDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      await fs.mkdir(kspecDir, { recursive: true });
+      await fs.writeFile(path.join(kspecDir, '.gitignore'), 'artifacts/\nsessions/\n', 'utf-8');
+
+      const result = await needsShadowSessionsGitignore(testDir);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when .kspec/.gitignore does not exist', async () => {
+      const result = await needsShadowSessionsGitignore(testDir);
       expect(result).toBe(false);
     });
   });
