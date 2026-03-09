@@ -423,11 +423,6 @@ export async function sessionStaleCloseAction(
       },
       {
         dryRun,
-        specDir: ctx.specDir,
-        shadowCommitMessage:
-          !dryRun && targetCandidates.length > 0
-            ? `session stale close: ${mode} (${targetCandidates.length} candidate${targetCandidates.length === 1 ? "" : "s"})`
-            : undefined,
       },
     );
 

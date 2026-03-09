@@ -1466,10 +1466,10 @@ describe("Host environment variable sanitization", () => {
   });
 });
 
-// ─── AC-7: Shadow commit on session end ──────────────────────────────────────
+// ─── No shadow commit on session end ──────────────────────────────────────────
 
-// AC: @session-events ac-7
-describe("Shadow commit on terminal invocation events", () => {
+// AC: @session-remove-shadow-commits ac-invocation-end
+describe("No shadow commit on session close (session storage separation)", () => {
   let testDir: string;
   let commitSpy: ReturnType<typeof vi.spyOn>;
 
@@ -1483,7 +1483,7 @@ describe("Shadow commit on terminal invocation events", () => {
     await cleanupTempDir(testDir);
   });
 
-  it("should call shadowAutoCommit after successful invocation", async () => {
+  it("should NOT call shadowAutoCommit after successful invocation", async () => {
     registerMockAdapter();
     const agent = makeTestAgent();
 
@@ -1493,18 +1493,15 @@ describe("Shadow commit on terminal invocation events", () => {
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
-      prompt: "Shadow commit on success",
+      prompt: "No shadow commit on success",
       trigger: "task.ready",
     });
 
     expect(result.outcome).toBe("success");
-    expect(commitSpy).toHaveBeenCalledWith(
-      testDir,
-      expect.stringContaining("completed"),
-    );
+    expect(commitSpy).not.toHaveBeenCalled();
   });
 
-  it("should call shadowAutoCommit after timed-out invocation", async () => {
+  it("should NOT call shadowAutoCommit after timed-out invocation", async () => {
     registerAdapter("slow-mock-acp-shadow", {
       command: "node",
       args: [MOCK_ACP],
@@ -1521,19 +1518,16 @@ describe("Shadow commit on terminal invocation events", () => {
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
-      prompt: "Shadow commit on timeout",
+      prompt: "No shadow commit on timeout",
       trigger: "task.ready",
       timeoutMinutes: 0.001,
     });
 
     expect(result.outcome).toBe("timed_out");
-    expect(commitSpy).toHaveBeenCalledWith(
-      testDir,
-      expect.stringContaining("timed_out"),
-    );
+    expect(commitSpy).not.toHaveBeenCalled();
   });
 
-  it("should call shadowAutoCommit after failed invocation", async () => {
+  it("should NOT call shadowAutoCommit after failed invocation", async () => {
     registerAdapter("failing-mock-acp-shadow", {
       command: "node",
       args: [MOCK_ACP],
@@ -1550,18 +1544,15 @@ describe("Shadow commit on terminal invocation events", () => {
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
-      prompt: "Shadow commit on failure",
+      prompt: "No shadow commit on failure",
       trigger: "task.ready",
     });
 
     expect(result.outcome).toBe("failed");
-    expect(commitSpy).toHaveBeenCalledWith(
-      testDir,
-      expect.stringContaining("failed"),
-    );
+    expect(commitSpy).not.toHaveBeenCalled();
   });
 
-  it("should call shadowAutoCommit after aborted invocation", async () => {
+  it("should NOT call shadowAutoCommit after aborted invocation", async () => {
     registerAdapter("slow-mock-acp-abort", {
       command: "node",
       args: [MOCK_ACP],
@@ -1582,16 +1573,13 @@ describe("Shadow commit on terminal invocation events", () => {
       sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
-      prompt: "Shadow commit on abort",
+      prompt: "No shadow commit on abort",
       trigger: "task.ready",
       abortSignal: controller.signal,
     });
 
     expect(result.outcome).toBe("failed");
-    expect(commitSpy).toHaveBeenCalledWith(
-      testDir,
-      expect.stringContaining("aborted"),
-    );
+    expect(commitSpy).not.toHaveBeenCalled();
   });
 });
 

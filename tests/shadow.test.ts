@@ -31,12 +31,14 @@ import {
   getGitVersion,
   gitSupportsOrphanWorktree,
   createOrphanBranchFallback,
+  SESSIONS_WORKTREE_DIR,
   type ShadowOptions,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 import { existsSync } from 'node:fs';
 import { kspec as kspecRun } from './helpers/cli.js';
 import { detectRemoteType } from '../src/parser/config.js';
+import { createSession, appendEvent, getSession } from '../src/sessions/store.js';
 
 // Check if git supports --orphan worktree (requires >= 2.42) and built CLI exists.
 // initializeShadow needs both to work.
@@ -1504,6 +1506,83 @@ describe('Shadow Branch', () => {
         }
       } finally {
         await fs.rm(specsRemoteDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @session-remove-shadow-commits ac-no-sync-conflict
+    it('session writes to .kspec-sessions/ do not conflict with shadowPull on .kspec/', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const sessionsDir = path.join(testDir, SESSIONS_WORKTREE_DIR);
+
+      // Push a remote change to the shadow branch via a clone
+      const cloneDir = path.join('/tmp', `kspec-sync-session-conflict-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-task-update.yaml'),
+          'task_status: updated_remotely\n'
+        );
+        execSync('git add -A && git commit -m "Remote task update during session"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Create sessions directory (simulates what kspec init/setup does)
+        await fs.mkdir(path.join(sessionsDir, 'sessions'), { recursive: true });
+
+        // Run shadowPull AND session write concurrently — this is the exact
+        // scenario where conflicts would occur if sessions were on kspec-meta
+        const sessionId = '01KJHSYNC0NFLT0000000001';
+        const [pullResult] = await Promise.all([
+          shadowPull(worktreeDir),
+          createSession(sessionsDir, {
+            id: sessionId,
+            agent_type: 'ralph',
+            agent_id: 'task-worker',
+            trigger: 'task.ready',
+            status: 'active',
+            started_at: new Date().toISOString(),
+          }),
+          appendEvent(sessionsDir, {
+            session_id: sessionId,
+            type: 'session.start',
+            data: { task_id: '@test-task' },
+          }),
+        ]);
+
+        // shadowPull should succeed with no conflict
+        expect(pullResult.success).toBe(true);
+        expect(pullResult.pulled).toBe(true);
+        expect(pullResult.hadConflict).toBe(false);
+
+        // Remote change should be present in shadow worktree
+        const remoteContent = await fs.readFile(
+          path.join(worktreeDir, 'remote-task-update.yaml'),
+          'utf-8',
+        );
+        expect(remoteContent).toContain('task_status: updated_remotely');
+
+        // Session should be readable from .kspec-sessions/ (completely separate path)
+        const session = await getSession(sessionsDir, sessionId);
+        expect(session).toBeDefined();
+        expect(session!.id).toBe(sessionId);
+        expect(session!.status).toBe('active');
+        expect(session!.agent_id).toBe('task-worker');
+
+        // Verify session files are NOT in the shadow worktree
+        const shadowSessionsPath = path.join(worktreeDir, 'sessions', sessionId);
+        await expect(fs.access(shadowSessionsPath)).rejects.toThrow();
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
       }
     });
   });

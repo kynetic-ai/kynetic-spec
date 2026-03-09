@@ -28,7 +28,6 @@ import {
   removeEnvForAdapter,
 } from "../sessions/store.js";
 import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
-import { shadowAutoCommit } from "../parser/shadow.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -431,7 +430,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // ─── Close session as completed ───────────────────────────────────────
     const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
-    await shadowAutoCommit(specDir, `session end: ${sessionId} — completed`);
 
     // Add success note to reset consecutive failure streak (only when a task is bound)
     // AC: @agent-invocation-lifecycle ac-9
@@ -474,7 +472,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       });
 
       const finalSession = await closeSession(sessionsDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
-      await shadowAutoCommit(specDir, `session end: ${sessionId} — timed_out`);
 
       // Add timeout note to task (only when a task is bound)
       if (taskRef) {
@@ -506,7 +503,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }
 
       const finalSession = await closeSession(sessionsDir, sessionId, "failed", "Invocation aborted by shutdown");
-      await shadowAutoCommit(specDir, `session end: ${sessionId} — aborted`);
 
       return {
         session: finalSession ?? session,
@@ -530,7 +526,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     const finalSession = await closeSession(sessionsDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
-    await shadowAutoCommit(specDir, `session end: ${sessionId} — failed`);
 
     // Add failure note to task and check retry threshold (only when a task is bound)
     if (taskRef) {
