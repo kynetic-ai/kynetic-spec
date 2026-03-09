@@ -83374,3 +83374,59 @@
   notes: []
   todos: []
   automation: eligible
+- title: Replace legacy session fallback reads with detect-and-warn
+  description: |-
+    Remove transparent fallback reads from legacy .kspec/sessions/ and replace with a
+    detect-and-warn pattern. Currently legacy.ts has *WithFallback and *Merged wrappers
+    that silently read from the old location, but only session/log.ts uses them — daemon
+    routes, stale-close, compact, and checkpoint already read only from .kspec-sessions/.
+
+    ## Intent
+
+    One consumer (dispatch engine) — transparent fallback adds complexity for marginal
+    benefit. Better to warn everywhere and let the user run `kspec session migrate`.
+
+    ## Scope
+
+    ### Remove fallback read functions from legacy.ts
+    - Delete: getSessionWithFallback, readEventsWithFallback, listSessionsMerged,
+      getAllSessionLogSummariesMerged, resolveSessionIdWithFallback,
+      searchSessionEventsWithFallback, computeToolUsageStatsWithFallback
+    - Keep: hasLegacySessions, getLegacySessionsDir, migrateLegacySessions,
+      emitLegacyDeprecationWarning (repurpose for detect-and-warn)
+
+    ### Update session/log.ts
+    - Replace imports from legacy.ts with direct store.ts calls
+    - Add legacy detection warning when hasLegacySessions() is true
+    - Lines: 27-32 (imports), 215, 533, 551, 775, 808, 921 (call sites)
+
+    ### Add detect-and-warn to daemon session routes
+    - packages/daemon/src/routes/sessions.ts — check hasLegacySessions on list endpoint,
+      include warning in response (e.g. meta field or header)
+
+    ### Update tests
+    - tests/session-legacy-fallback.test.ts — remove or rewrite for detect-and-warn
+    - tests/session-legacy-cli.test.ts — update for new behavior
+
+    ### Not in scope (unrelated "legacy" references)
+    - store.ts:237 trigger ?? "legacy" — session trigger type, not storage
+    - daemon agent-dispatch.ts legacy route aliases — unrelated
+    - parser/skill-render.ts legacy hash — unrelated
+  type: task
+  spec_ref: "@session-legacy-migration"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cleanup
+    - sessions
+  depends_on: []
+  _ulid: 01KK9YDHFM4FKET3Z53ZC0Y277
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-09T18:40:42.484Z
+  notes: []
+  todos: []
