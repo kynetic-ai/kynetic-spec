@@ -1114,13 +1114,11 @@ features:
           path with deprecation timeline.
         acceptance_criteria:
           - id: ac-read-fallback
-            given: |
-              A session ID is requested that does not exist in .kspec-sessions/
-            when: |
-              Any session read operation executes (get, list, log show, log search)
-            then: |
-              Falls back to reading from .kspec/sessions/ on kspec-meta.
-              Result is returned normally — caller does not need to know the source.
+            given: Legacy sessions exist in .kspec/sessions/ but not in .kspec-sessions/
+            when: Any session read operation executes (CLI or daemon)
+            then: Returns results only from .kspec-sessions/. Does not transparently read from .kspec/sessions/.
+              If hasLegacySessions() is true, emits a warning advising the user to run kspec session
+              migrate.
           - id: ac-no-write
             given: |
               Legacy sessions exist in .kspec/sessions/ on kspec-meta
@@ -1129,13 +1127,10 @@ features:
             then: |
               Writes always go to .kspec-sessions/, never to .kspec/sessions/.
           - id: ac-list-merge
-            given: |
-              Sessions exist in both .kspec-sessions/ and .kspec/sessions/
-            when: |
-              kspec session log list runs
-            then: |
-              Results include sessions from both locations, deduplicated by ID,
-              with .kspec-sessions/ taking precedence for duplicates.
+            given: Legacy sessions exist in .kspec/sessions/ but have not been migrated
+            when: kspec session log list runs
+            then: Returns only sessions from .kspec-sessions/. A warning is shown indicating N legacy sessions
+              exist and advising to run kspec session migrate.
           - id: ac-deprecation-warning
             given: |
               A session is read from the legacy .kspec/sessions/ location
