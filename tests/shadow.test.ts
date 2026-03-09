@@ -1149,6 +1149,7 @@ describe('Shadow Branch', () => {
     });
 
     // AC: @config-shadow ac-11
+    // AC: @shadow-write-sync ac-write-always-syncs
     it('shadowPushAsync integrates remote changes via pull-rebase before pushing', async () => {
       await setupSyncTest();
       const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);

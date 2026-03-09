@@ -22,6 +22,7 @@ describe("ShadowSyncMode", () => {
       expect(consumeSyncMode()).toBe("always");
     });
 
+    // AC: @shadow-write-sync ac-write-skips-read-check
     it("returns skip when set to skip", () => {
       setSyncMode("skip");
       expect(consumeSyncMode()).toBe("skip");

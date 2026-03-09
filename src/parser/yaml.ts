@@ -412,6 +412,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
         remoteType: config.shadow.remote?.type,
       };
 
+      // AC: @shadow-write-sync ac-write-skips-read-check — skip pre-read sync for mutating commands
       if (syncMode !== "skip") {
         try {
           const tracked = await hasRemoteTracking(specDir, shadowOpts);

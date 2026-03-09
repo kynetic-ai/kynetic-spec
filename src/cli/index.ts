@@ -201,6 +201,7 @@ program
     }
 
     // AC: @shadow-lazy-read-sync ac-syncmode-propagation
+    // AC: @shadow-write-sync ac-write-skips-read-check — mutating commands skip pre-read sync
     // Determine sync mode centrally based on command annotations
     const isAlwaysSync = getAlwaysSyncAnnotation(actionCommand);
     const isMutating = getMutatingAnnotation(actionCommand);
