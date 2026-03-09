@@ -1017,6 +1017,8 @@ export interface ShadowInitResult {
   pushedToRemote: boolean;
   /** Whether .kspec-sessions/ directory was created */
   sessionsDirectoryCreated?: boolean;
+  /** Whether session branch worktree was created (sessions.storage=branch) */
+  sessionBranchCreated?: boolean;
   error?: string;
 }
 
@@ -1032,6 +1034,8 @@ export interface ShadowInitOptions {
   force?: boolean;
   /** Shadow branch/directory/remote configuration */
   shadow?: ShadowOptions;
+  /** Session storage configuration from manifest */
+  sessions?: { storage?: string; branch?: string };
 }
 
 /**
@@ -2465,6 +2469,21 @@ export async function initializeShadow(
     // Step 7: Configure merge driver for semantic YAML merging
     // AC: @yaml-merge-driver ac-12
     await configureMergeDriver(projectRoot, worktreeDir);
+
+    // Step 8: Initialize session branch worktree if sessions.storage is "branch"
+    // AC: @session-branch-worktree ac-init
+    if (options.sessions?.storage === "branch") {
+      const { initializeSessionBranch } = await import("./session-branch.js");
+      const sessionBranchName = options.sessions.branch || "kspec-sessions";
+      const sessionResult = await initializeSessionBranch(
+        projectRoot,
+        sessionBranchName,
+      );
+      if (sessionResult.success) {
+        result.sessionBranchCreated = true;
+      }
+      // Non-fatal: session branch failure doesn't block shadow init
+    }
 
     result.success = true;
     return result;
