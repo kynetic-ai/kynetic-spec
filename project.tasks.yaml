@@ -83614,16 +83614,17 @@
   type: task
   spec_ref: "@shadow-daemon-push-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKA8YXD3QGSPZ8MTBWYX2YES
+  session_id: null
   created_at: 2026-03-09T21:25:12.899Z
   started_at: 2026-03-09T21:48:54.543Z
+  submitted_at: 2026-03-09T21:58:11.827Z
   notes:
     - _ulid: 01KKA7TRJ3A5VFCWFFEG5WZX7E
       created_at: 2026-03-09T21:25:12.899Z
@@ -83650,6 +83651,11 @@
           - Push failure is non-fatal
           - FETCH_HEAD freshened in worktree git dir
       supersedes: null
+    - _ulid: 01KKAA3MXY1FX9P9PD7V7PA6AJ
+      created_at: 2026-03-09T22:05:01.247Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #731 daemon scheduler fetch/push ignores
+        configured shadow remote/branch and falls back to origin/defaults."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T21:58:11.827Z
