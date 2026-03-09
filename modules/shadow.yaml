@@ -843,7 +843,7 @@ features:
         created: 2026-03-09T21:25:11.327Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKA7TQ1JJE7W2DHCNF4G0EQ7
         slugs:
           - shadow-write-sync
