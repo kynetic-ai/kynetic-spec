@@ -113,10 +113,10 @@ describe("TaskBudgetSchema", () => {
 describe("getSessionBudgetPath", () => {
   // AC: @session-creation-and-env-injection ac-budget-local
   it("should return path inside session directory", () => {
-    const sessionsDir = "/test/.kspec/sessions";
+    const sessionsDir = "/test/.kspec-sessions";
     const sessionId = "01KF123456789ABCDEFGHJKMNP";
     expect(getSessionBudgetPath(sessionsDir, sessionId)).toBe(
-      `/test/.kspec/sessions/${sessionId}/budget.json`,
+      `/test/.kspec-sessions/${sessionId}/budget.json`,
     );
   });
 });
