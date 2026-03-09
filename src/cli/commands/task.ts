@@ -1250,7 +1250,7 @@ Examples:
 
         // AC: @session-end-loop-signal ac-block-task - Block if end-loop requested
         if (sessionId) {
-          const endLoopState = await isEndLoopRequested(ctx.specDir, sessionId);
+          const endLoopState = await isEndLoopRequested(ctx.sessionsDir, sessionId);
           if (endLoopState?.requested) {
             error(
               `Cannot start task: loop is ending for session ${sessionId.slice(0, 8)}...` +
@@ -1302,7 +1302,7 @@ Examples:
         // above. needs_work→in_progress is a fix cycle (task already consumed
         // a budget slot when originally started) — don't double-count it.
         if (sessionId && transitionFromStatus === "pending") {
-          await incrementBudget(ctx.specDir, sessionId);
+          await incrementBudget(ctx.sessionsDir, sessionId);
         }
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)

@@ -35,7 +35,7 @@ export function createSessionRoutes() {
     // List all sessions with summaries
     .get('/', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
-      const summaries = await getAllSessionLogSummaries(ctx.specDir);
+      const summaries = await getAllSessionLogSummaries(ctx.sessionsDir);
 
       // Sort by started_at descending (most recent first)
       summaries.sort((a, b) =>
@@ -54,7 +54,7 @@ export function createSessionRoutes() {
       const ctx = await initContext(projectContext.path);
 
       // Resolve session ID (supports prefix matching)
-      const resolution = await resolveSessionId(ctx.specDir, params.id);
+      const resolution = await resolveSessionId(ctx.sessionsDir, params.id);
       if (!resolution.ok) {
         if (resolution.error === 'ambiguous') {
           return errorResponse(400, {
@@ -70,7 +70,7 @@ export function createSessionRoutes() {
         });
       }
 
-      const detail = await getSessionLogSummary(ctx.specDir, resolution.id);
+      const detail = await getSessionLogSummary(ctx.sessionsDir, resolution.id);
       if (!detail) {
         return errorResponse(404, {
           error: 'not_found',
@@ -79,7 +79,7 @@ export function createSessionRoutes() {
         });
       }
 
-      const metadata = await getSession(ctx.specDir, resolution.id);
+      const metadata = await getSession(ctx.sessionsDir, resolution.id);
 
       // AC: @ui-session-stream ac-4 — Resolve spec context from task's spec_ref
       let spec_context: {
@@ -122,7 +122,7 @@ export function createSessionRoutes() {
       // AC: @ui-session-stream ac-4 — Include budget info
       let budget: { max_per_cycle: number; started_this_cycle: number } | null = null;
       try {
-        budget = await getBudget(ctx.specDir, resolution.id);
+        budget = await getBudget(ctx.sessionsDir, resolution.id);
       } catch {
         // No budget configured — that's fine
       }
@@ -141,7 +141,7 @@ export function createSessionRoutes() {
     .get('/:id/events', async ({ params, query, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
 
-      const resolution = await resolveSessionId(ctx.specDir, params.id);
+      const resolution = await resolveSessionId(ctx.sessionsDir, params.id);
       if (!resolution.ok) {
         if (resolution.error === 'ambiguous') {
           return errorResponse(400, {
@@ -157,7 +157,7 @@ export function createSessionRoutes() {
         });
       }
 
-      let events = await readEvents(ctx.specDir, resolution.id);
+      let events = await readEvents(ctx.sessionsDir, resolution.id);
 
       // Deduplicate phased tool calls
       events = deduplicatePhasedToolCalls(events);

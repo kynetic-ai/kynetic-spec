@@ -208,7 +208,7 @@ export async function sessionLogListAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    let sessions = await getAllSessionLogSummaries(ctx.specDir);
+    let sessions = await getAllSessionLogSummaries(ctx.sessionsDir);
 
     // AC: @session-log-list ac-2 - Filter by status
     if (options.status) {
@@ -525,7 +525,7 @@ export async function sessionLogShowAction(
     const ctx = await initContext();
 
     // AC: @session-log-show ac-7, ac-8, ac-9 - Resolve session ID
-    const resolution = await resolveSessionId(ctx.specDir, sessionRef);
+    const resolution = await resolveSessionId(ctx.sessionsDir, sessionRef);
 
     if (!resolution.ok) {
       if (resolution.error === "not_found") {
@@ -544,7 +544,7 @@ export async function sessionLogShowAction(
     const sessionId = resolution.id;
 
     // Get session detail
-    const detail = await getSessionLogDetail(ctx.specDir, sessionId);
+    const detail = await getSessionLogDetail(ctx.sessionsDir, sessionId);
     if (!detail) {
       error(`Session not found: ${sessionId}`);
       process.exit(EXIT_CODES.NOT_FOUND);
@@ -558,7 +558,7 @@ export async function sessionLogShowAction(
     let events: SessionEvent[] | null = null;
     if (options.events) {
       let allEvents = deduplicatePhasedToolCalls(
-        await readEvents(ctx.specDir, sessionId),
+        await readEvents(ctx.sessionsDir, sessionId),
       );
 
       // AC: @session-log-show ac-4 - Filter by type
@@ -580,7 +580,7 @@ export async function sessionLogShowAction(
           allEvents.map(async (event) => ({
             ...event,
             data: await resolveSessionBlobPointers(
-              ctx.specDir,
+              ctx.sessionsDir,
               sessionId,
               event.data,
             ),
@@ -594,14 +594,14 @@ export async function sessionLogShowAction(
     // AC: @session-log-show ac-11 - Replay assistant text from session.update content blocks
     let replayText: string | null = null;
     if (options.text) {
-      const allEvents = await readEvents(ctx.specDir, sessionId);
+      const allEvents = await readEvents(ctx.sessionsDir, sessionId);
       const chunks: string[] = [];
       for (const event of allEvents) {
         if (event.type !== "session.update") {
           continue;
         }
         const resolvedData = await resolveSessionBlobPointers(
-          ctx.specDir,
+          ctx.sessionsDir,
           sessionId,
           event.data,
         );
@@ -619,7 +619,7 @@ export async function sessionLogShowAction(
       const iterNum = parseInt(options.context, 10);
       if (!Number.isNaN(iterNum) && iterNum > 0) {
         contextSnapshot = await readSessionContext(
-          ctx.specDir,
+          ctx.sessionsDir,
           sessionId,
           iterNum,
         );
@@ -762,7 +762,7 @@ export async function sessionLogStatsAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    let sessions = await getAllSessionLogSummaries(ctx.specDir);
+    let sessions = await getAllSessionLogSummaries(ctx.sessionsDir);
 
     // AC: @session-log-stats ac-4 - Filter by since
     if (options.since) {
@@ -795,7 +795,7 @@ export async function sessionLogStatsAction(
     let toolUsage: ToolUsageStats[] | null = null;
     if (options.toolUsage) {
       const sessionIds = sessions.map((s) => s.id);
-      toolUsage = await computeToolUsageStats(ctx.specDir, sessionIds);
+      toolUsage = await computeToolUsageStats(ctx.sessionsDir, sessionIds);
     }
 
     // AC: @session-log-stats ac-7 - Time periods (optional)
@@ -907,7 +907,7 @@ export async function sessionLogSearchAction(
     const sinceDate = options.since ? parseTimeSpec(options.since) : undefined;
 
     // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
-    const results = await searchSessionEvents(ctx.specDir, pattern, {
+    const results = await searchSessionEvents(ctx.sessionsDir, pattern, {
       eventType: options.type,
       sinceDate: sinceDate || undefined,
       agentType: options.agent,

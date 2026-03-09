@@ -30,9 +30,11 @@ import {
 
 describe('getSessionLogSummary', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-log-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -40,7 +42,7 @@ describe('getSessionLogSummary', () => {
   });
 
   it('should return null for nonexistent session', async () => {
-    const summary = await getSessionLogSummary(testDir, 'nonexistent');
+    const summary = await getSessionLogSummary(sessionsDir, 'nonexistent');
     expect(summary).toBeNull();
   });
 
@@ -50,14 +52,14 @@ describe('getSessionLogSummary', () => {
     const startedAt = '2026-01-20T10:00:00.000Z';
     const endedAt = '2026-01-20T11:30:00.000Z';
 
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'claude-agent-acp',
       started_at: startedAt,
     });
 
     // Simulate completion by writing metadata directly
-    const metaPath = path.join(testDir, 'sessions', sessionId, 'session.yaml');
+    const metaPath = path.join(sessionsDir, sessionId, 'session.yaml');
     await fs.writeFile(metaPath, YAML.stringify({
       id: sessionId,
       agent_type: 'claude-agent-acp',
@@ -68,7 +70,7 @@ describe('getSessionLogSummary', () => {
 
     // Add some events
     for (let i = 0; i < 5; i++) {
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: i === 0 ? 'session.start' : 'prompt.sent',
         session_id: sessionId,
         data: null,
@@ -76,10 +78,10 @@ describe('getSessionLogSummary', () => {
     }
 
     // Add context snapshots
-    await saveSessionContext(testDir, sessionId, 1, { iteration: 1 });
-    await saveSessionContext(testDir, sessionId, 2, { iteration: 2 });
+    await saveSessionContext(sessionsDir, sessionId, 1, { iteration: 1 });
+    await saveSessionContext(sessionsDir, sessionId, 2, { iteration: 2 });
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary).not.toBeNull();
     expect(summary!.id).toBe(sessionId);
     expect(summary!.status).toBe('completed');
@@ -96,13 +98,13 @@ describe('getSessionLogSummary', () => {
   it('should include task_id in summary when session has a task', async () => {
     const sessionId = testUlid('SESS', 5);
     const taskId = testUlid('TASK');
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'claude-agent-acp',
       task_id: taskId,
     });
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary).not.toBeNull();
     expect(summary!.task_id).toBe(taskId);
   });
@@ -110,24 +112,24 @@ describe('getSessionLogSummary', () => {
   // AC: @ui-session-history ac-1 — task_id undefined when session has no task
   it('should have undefined task_id when session has no task', async () => {
     const sessionId = testUlid('SESS', 6);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary).not.toBeNull();
     expect(summary!.task_id).toBeUndefined();
   });
 
   it('should compute duration from now for active sessions', async () => {
     const sessionId = testUlid('SESS', 1);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary).not.toBeNull();
     expect(summary!.status).toBe('active');
     expect(summary!.duration_ms).toBeGreaterThan(0);
@@ -136,19 +138,19 @@ describe('getSessionLogSummary', () => {
 
   it('should count task completions from realistic tool_call events', async () => {
     const sessionId = testUlid('SESS', 2);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'claude-agent-acp',
     });
 
     // Append events including realistic task complete tool calls
-    await appendEvent(testDir, {
+    await appendEvent(sessionsDir, {
       type: 'session.start',
       session_id: sessionId,
       data: null,
     });
     // Write realistic session.update events with tool_call shape
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     const toolCallEvent1 = JSON.stringify({
       ts: Date.now(),
       seq: 1,
@@ -180,7 +182,7 @@ describe('getSessionLogSummary', () => {
     });
     await fs.appendFile(eventsPath, toolCallEvent2 + '\n');
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary!.tasks_completed).toBe(2);
     expect(summary!.event_count).toBe(3); // session.start + 2 tool_call updates
   });
@@ -188,9 +190,9 @@ describe('getSessionLogSummary', () => {
   // AC: @session-log-list ac-1 (claude-agent-acp: commands in tool_call_update events)
   it('should count task completions from tool_call_update events (claude-agent-acp format)', async () => {
     const sessionId = testUlid('SESS', 3);
-    await createSession(testDir, { id: sessionId, agent_type: 'claude-agent-acp' });
+    await createSession(sessionsDir, { id: sessionId, agent_type: 'claude-agent-acp' });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     // claude-agent-acp: initial tool_call has empty rawInput, command arrives in tool_call_update
     const emptyToolCall = JSON.stringify({
       ts: Date.now(), seq: 1, type: 'session.update', session_id: sessionId,
@@ -203,16 +205,16 @@ describe('getSessionLogSummary', () => {
     });
     await fs.appendFile(eventsPath, populatedUpdate + '\n');
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary!.tasks_completed).toBe(1);
   });
 
   // AC: @session-log-list ac-1 (codex-acp: command is array in tool_call events)
   it('should count task completions from array commands (codex-acp format)', async () => {
     const sessionId = testUlid('SESS', 4);
-    await createSession(testDir, { id: sessionId, agent_type: 'codex-acp' });
+    await createSession(sessionsDir, { id: sessionId, agent_type: 'codex-acp' });
 
-    const eventsPath = path.join(testDir, 'sessions', sessionId, 'events.jsonl');
+    const eventsPath = path.join(sessionsDir, sessionId, 'events.jsonl');
     // codex-acp: command is ['/usr/bin/bash', '-lc', 'kspec task complete @ref']
     const arrayCommandEvent = JSON.stringify({
       ts: Date.now(), seq: 1, type: 'session.update', session_id: sessionId,
@@ -220,16 +222,18 @@ describe('getSessionLogSummary', () => {
     });
     await fs.appendFile(eventsPath, arrayCommandEvent + '\n');
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary!.tasks_completed).toBe(1);
   });
 });
 
 describe('getAllSessionLogSummaries', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-log-all-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -238,7 +242,7 @@ describe('getAllSessionLogSummaries', () => {
 
   // AC: @session-log-list ac-6
   it('should return empty array when no sessions exist', async () => {
-    const summaries = await getAllSessionLogSummaries(testDir);
+    const summaries = await getAllSessionLogSummaries(sessionsDir);
     expect(summaries).toEqual([]);
   });
 
@@ -246,10 +250,10 @@ describe('getAllSessionLogSummaries', () => {
     const id1 = testUlid('SESS', 1);
     const id2 = testUlid('SESS', 2);
 
-    await createSession(testDir, { id: id1, agent_type: 'agent-a' });
-    await createSession(testDir, { id: id2, agent_type: 'agent-b' });
+    await createSession(sessionsDir, { id: id1, agent_type: 'agent-a' });
+    await createSession(sessionsDir, { id: id2, agent_type: 'agent-b' });
 
-    const summaries = await getAllSessionLogSummaries(testDir);
+    const summaries = await getAllSessionLogSummaries(sessionsDir);
     expect(summaries).toHaveLength(2);
     expect(summaries.map(s => s.id).sort()).toEqual([id1, id2].sort());
   });

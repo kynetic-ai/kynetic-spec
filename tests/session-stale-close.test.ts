@@ -7,6 +7,7 @@
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import {
   appendEvent,
   createSession,
@@ -58,9 +59,11 @@ interface JsonErrorPayload {
 
 describe("session stale close", () => {
   let tempDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
+    sessionsDir = path.join(tempDir, "sessions");
   });
 
   afterEach(async () => {
@@ -72,7 +75,7 @@ describe("session stale close", () => {
     startedAt: string,
     lastActivityAt?: string,
   ): Promise<void> {
-    await createSession(tempDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "test-agent",
       status: "active",
@@ -80,7 +83,7 @@ describe("session stale close", () => {
     });
 
     if (lastActivityAt) {
-      await appendEvent(tempDir, {
+      await appendEvent(sessionsDir, {
         session_id: sessionId,
         type: "session.update",
         ts: new Date(lastActivityAt).getTime(),
@@ -119,7 +122,7 @@ describe("session stale close", () => {
       true,
     );
 
-    const unchanged = await getSession(tempDir, staleId);
+    const unchanged = await getSession(sessionsDir, staleId);
     expect(unchanged?.status).toBe("active");
     expect(unchanged?.ended_at).toBeUndefined();
   });
@@ -148,8 +151,8 @@ describe("session stale close", () => {
     expect(output.mode).toBe("single");
     expect(output.totals.changed_sessions).toBe(1);
 
-    const target = await getSession(tempDir, targetId);
-    const other = await getSession(tempDir, otherId);
+    const target = await getSession(sessionsDir, targetId);
+    const other = await getSession(sessionsDir, otherId);
     expect(target?.status).toBe("abandoned");
     expect(target?.close_reason?.startsWith("auto-abandoned:")).toBe(true);
     expect(other?.status).toBe("active");
@@ -171,7 +174,7 @@ describe("session stale close", () => {
     expect(output.totals.changed_sessions).toBe(0);
     expect(output.sessions[0].status).toBe("not_candidate");
 
-    const session = await getSession(tempDir, recentId);
+    const session = await getSession(sessionsDir, recentId);
     expect(session?.status).toBe("active");
   });
 
@@ -193,7 +196,7 @@ describe("session stale close", () => {
       "2024-01-01T00:00:00.000Z",
       undefined,
     );
-    await fs.mkdir(getSessionEventsPath(tempDir, brokenId), { recursive: true });
+    await fs.mkdir(getSessionEventsPath(sessionsDir, brokenId), { recursive: true });
 
     const dryRun = kspecJson<SessionStaleCloseJson>(
       "session stale close --all --dry-run --older-than 24h --inactive-for 6h",
@@ -210,9 +213,9 @@ describe("session stale close", () => {
     expect(apply.totals.changed_sessions).toBe(1);
     expect(apply.totals.candidates).toBe(1);
 
-    const stale = await getSession(tempDir, staleId);
-    const fresh = await getSession(tempDir, freshId);
-    const broken = await getSession(tempDir, brokenId);
+    const stale = await getSession(sessionsDir, staleId);
+    const fresh = await getSession(sessionsDir, freshId);
+    const broken = await getSession(sessionsDir, brokenId);
     expect(stale?.status).toBe("abandoned");
     expect(fresh?.status).toBe("active");
     expect(broken?.status).toBe("active");
@@ -325,7 +328,7 @@ describe("session stale close", () => {
     expect(resolutionError?.reason).toContain("Session not found");
     expect(resolutionError?.reason).toContain("kspec session list --status active");
 
-    const unchanged = await getSession(tempDir, staleId);
+    const unchanged = await getSession(sessionsDir, staleId);
     expect(unchanged?.status).toBe("active");
   });
 
@@ -422,7 +425,7 @@ describe("session stale close", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("Auto-abandon this stale session? [y/N]");
 
-    const session = await getSession(tempDir, staleId);
+    const session = await getSession(sessionsDir, staleId);
     expect(session?.status).toBe("abandoned");
     expect(session?.close_reason?.startsWith("auto-abandoned:")).toBe(true);
   });
@@ -457,8 +460,8 @@ describe("session stale close", () => {
     const promptCount = result.stdout.match(/from --refs\? \[y\/N\]/g)?.length ?? 0;
     expect(promptCount).toBe(1);
 
-    const first = await getSession(tempDir, staleA);
-    const second = await getSession(tempDir, staleB);
+    const first = await getSession(sessionsDir, staleA);
+    const second = await getSession(sessionsDir, staleB);
     expect(first?.status).toBe("abandoned");
     expect(second?.status).toBe("abandoned");
   });

@@ -988,7 +988,7 @@ export function registerAgentCommands(program: Command): void {
 
         // Write end-loop state to session
         const updated = await requestEndLoop(
-          ctx.specDir,
+          ctx.sessionsDir,
           sessionId,
           options.reason,
         );
