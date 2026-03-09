@@ -2,15 +2,16 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
+import * as shadowModule from "../src/parser/shadow.js";
 import {
   shadowNeedsSync,
   spawnGitWithTimeout,
 } from "../src/parser/shadow.js";
 import {
   setSyncMode,
-  consumeSyncMode,
   _resetSyncModeForTesting,
 } from "../src/cli/sync-mode.js";
+import { initContext } from "../src/parser/yaml.js";
 
 // ─── Test Setup ──────────────────────────────────────────────────────────────
 
@@ -19,11 +20,11 @@ function git(cwd: string, cmd: string): string {
 }
 
 function initBareRepo(dir: string): void {
-  execSync("git init --bare", { cwd: dir, stdio: "pipe" });
+  execSync("git init --bare -b main", { cwd: dir, stdio: "pipe" });
 }
 
 function initRepo(dir: string): void {
-  execSync("git init", { cwd: dir, stdio: "pipe" });
+  execSync("git init -b main", { cwd: dir, stdio: "pipe" });
   git(dir, 'config user.email "test@test.com"');
   git(dir, 'config user.name "Test"');
 }
@@ -194,7 +195,7 @@ describe("spawnGitWithTimeout", () => {
   beforeEach(async () => {
     await fs.rm(testDir, { recursive: true }).catch(() => {});
     await fs.mkdir(testDir, { recursive: true });
-    execSync("git init", { cwd: testDir, stdio: "pipe" });
+    execSync("git init -b main", { cwd: testDir, stdio: "pipe" });
   });
 
   afterEach(async () => {
@@ -234,7 +235,7 @@ describe("shadowNeedsSync fetch failure handling", () => {
     // Create a repo with a remote that points to a non-existent location
     repoDir = path.join(baseDir, "repo");
     await fs.mkdir(repoDir);
-    execSync("git init", { cwd: repoDir, stdio: "pipe" });
+    execSync("git init -b main", { cwd: repoDir, stdio: "pipe" });
     execSync('git config user.email "test@test.com"', { cwd: repoDir, stdio: "pipe" });
     execSync('git config user.name "Test"', { cwd: repoDir, stdio: "pipe" });
     execSync('echo "init" > init.txt && git add init.txt && git commit -m "init"', {
@@ -351,91 +352,136 @@ describe("Command Annotations", () => {
     expect(getAlwaysSyncAnnotation(startCmd!)).toBe(true);
   });
 
-  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
-  it("always syncMode bypasses drift check and sets shouldPull=true", () => {
-    // When syncMode is 'always', initContext sets shouldPull = true
-    // without calling shadowNeedsSync. Verify the sync-mode chain:
-    _resetSyncModeForTesting();
-    setSyncMode("always");
-    const mode = consumeSyncMode();
-    expect(mode).toBe("always");
-    // In initContext: if (syncMode === "always") { shouldPull = true }
-    // This is a direct assertion that the sync-mode plumbing delivers "always"
-    // which causes the unconditional pull path (bypassing drift check).
-    _resetSyncModeForTesting();
-  });
 });
 
-describe("KSPEC_NO_SYNC env var", () => {
-  beforeEach(() => {
-    _resetSyncModeForTesting();
+// ─── Behavioral tests against real initContext() ──────────────────────────────
+// These tests call the real initContext() with a working shadow branch setup
+// and verify that the sync behavior matches the spec ACs. shadowPull and
+// shadowNeedsSync are mocked to track whether initContext routes to them.
+
+describe("initContext sync behavior", () => {
+  const baseDir = path.join("/tmp", `kspec-initctx-sync-${Date.now()}`);
+  let testDir: string;
+  let remoteDir: string;
+  let pullCalled: boolean;
+  let needsSyncCalled: boolean;
+  let pullSpy: ReturnType<typeof vi.spyOn>;
+  let needsSyncSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    pullCalled = false;
+    needsSyncCalled = false;
+    await fs.rm(baseDir, { recursive: true }).catch(() => {});
+    await fs.mkdir(baseDir, { recursive: true });
+
+    testDir = path.join(baseDir, "project");
+    remoteDir = path.join(baseDir, "remote.git");
+
+    // Create bare remote
+    await fs.mkdir(remoteDir);
+    execSync(`git init --bare -b main`, { cwd: remoteDir, stdio: "pipe" });
+
+    // Create project repo with remote
+    await fs.mkdir(testDir);
+    execSync("git init -b main", { cwd: testDir, stdio: "pipe" });
+    git(testDir, 'config user.email "test@test.com"');
+    git(testDir, 'config user.name "Test"');
+    await fs.writeFile(path.join(testDir, "README.md"), "# Test");
+    execSync("git add . && git commit -m 'initial'", { cwd: testDir, stdio: "pipe" });
+    execSync(`git remote add origin "${remoteDir}"`, { cwd: testDir, stdio: "pipe" });
+    git(testDir, "push -u origin main");
+
+    // Set up shadow branch as a git worktree with remote tracking
+    const kspecDir = path.join(testDir, ".kspec");
+
+    // Create orphan branch kspec-meta with a manifest
+    git(testDir, "checkout --orphan kspec-meta");
+    execSync("git rm -rf .", { cwd: testDir, stdio: "pipe" }).toString();
+    await fs.writeFile(
+      path.join(testDir, "kynetic.yaml"),
+      "project:\n  name: Test\nmodules: []\n",
+    );
+    execSync("git add kynetic.yaml && git commit -m 'init shadow'", {
+      cwd: testDir,
+      stdio: "pipe",
+    });
+    git(testDir, "push -u origin kspec-meta");
+    git(testDir, "checkout main");
+
+    // Create worktree at .kspec/
+    git(testDir, `worktree add "${kspecDir}" kspec-meta`);
+
+    // Spy on shadow module functions using closure variables for reliability
+    pullSpy = vi.spyOn(shadowModule, "shadowPull").mockImplementation(async () => {
+      pullCalled = true;
+      return { hadConflict: false };
+    });
+    needsSyncSpy = vi.spyOn(shadowModule, "shadowNeedsSync").mockImplementation(async () => {
+      needsSyncCalled = true;
+      return false;
+    });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    pullSpy.mockRestore();
+    needsSyncSpy.mockRestore();
+    _resetSyncModeForTesting();
     delete process.env.KSPEC_NO_SYNC;
-    _resetSyncModeForTesting();
+    // Remove worktree before removing directory
+    try {
+      git(testDir, 'worktree remove .kspec --force');
+    } catch {
+      // Best effort
+    }
+    await fs.rm(baseDir, { recursive: true }).catch(() => {});
   });
 
-  // AC: @shadow-lazy-read-sync ac-no-sync-env
-  it("KSPEC_NO_SYNC=1 disables sync in initContext (env guard prevents consumeSyncMode call)", async () => {
-    // Set up: syncMode is "always" (as session start would set it)
+  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+  it("initContext calls shadowPull and skips shadowNeedsSync when syncMode is 'always'", async () => {
+    // Simulate what the preAction hook does for session start
     setSyncMode("always");
 
-    // Simulate the initContext guard: when KSPEC_NO_SYNC is set, the entire
-    // sync block is skipped — consumeSyncMode() is never called.
-    process.env.KSPEC_NO_SYNC = "1";
+    await initContext(testDir);
 
-    // Replicate the initContext sync guard logic:
-    let syncExecuted = false;
-    if (!process.env.KSPEC_NO_SYNC) {
-      // This block is what initContext runs — it should be skipped
-      consumeSyncMode();
-      syncExecuted = true;
-    }
-
-    // Verify: sync block was NOT executed
-    expect(syncExecuted).toBe(false);
-
-    // Verify: consumeSyncMode was never consumed, so it still returns "always"
-    // (proving KSPEC_NO_SYNC prevented the sync block from running)
-    expect(consumeSyncMode()).toBe("always");
+    // "always" mode should call shadowPull directly, bypassing drift check
+    expect(pullCalled).toBe(true);
+    expect(needsSyncCalled).toBe(false);
   });
 
   // AC: @shadow-lazy-read-sync ac-no-sync-env
-  it("without KSPEC_NO_SYNC, sync block executes normally", () => {
+  it("initContext skips all sync when KSPEC_NO_SYNC=1 is set", async () => {
+    // Set up: syncMode "always" (strongest sync), but KSPEC_NO_SYNC overrides
+    setSyncMode("always");
+    process.env.KSPEC_NO_SYNC = "1";
+
+    await initContext(testDir);
+
+    // KSPEC_NO_SYNC should prevent both shadowPull and shadowNeedsSync
+    expect(pullCalled).toBe(false);
+    expect(needsSyncCalled).toBe(false);
+  });
+
+  // AC: @shadow-lazy-read-sync ac-no-sync-env (negative: without env var, sync runs)
+  it("initContext performs sync when KSPEC_NO_SYNC is not set", async () => {
+    delete process.env.KSPEC_NO_SYNC;
     setSyncMode("always");
 
-    delete process.env.KSPEC_NO_SYNC;
+    await initContext(testDir);
 
-    // Without the env var, the sync guard allows execution
-    let syncExecuted = false;
-    if (!process.env.KSPEC_NO_SYNC) {
-      const mode = consumeSyncMode();
-      syncExecuted = true;
-      expect(mode).toBe("always");
-    }
-
-    expect(syncExecuted).toBe(true);
-
-    // consumeSyncMode was consumed, so second call returns "skip"
-    expect(consumeSyncMode()).toBe("skip");
+    // Without KSPEC_NO_SYNC, "always" mode should call shadowPull
+    expect(pullCalled).toBe(true);
   });
 
-  // AC: @shadow-lazy-read-sync ac-no-sync-env
-  it("KSPEC_NO_SYNC overrides all syncMode values including always and drift-check", () => {
-    process.env.KSPEC_NO_SYNC = "1";
+  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls (drift-check comparison)
+  it("initContext calls shadowNeedsSync (not direct pull) when syncMode is 'drift-check'", async () => {
+    // "drift-check" is the default for read commands
+    setSyncMode("drift-check");
 
-    // Even with "always" sync mode (session start), env var blocks all sync
-    for (const mode of ["always", "drift-check", "skip"] as const) {
-      _resetSyncModeForTesting();
-      setSyncMode(mode);
+    await initContext(testDir);
 
-      let syncRan = false;
-      if (!process.env.KSPEC_NO_SYNC) {
-        consumeSyncMode();
-        syncRan = true;
-      }
-      expect(syncRan).toBe(false);
-    }
+    // drift-check mode should call shadowNeedsSync, not directly pull
+    expect(needsSyncCalled).toBe(true);
+    // Pull was not called because our mock returns false (no sync needed)
+    expect(pullCalled).toBe(false);
   });
 });
