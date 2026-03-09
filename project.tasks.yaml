@@ -83520,16 +83520,17 @@
   type: task
   spec_ref: "@shadow-lazy-read-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKA81PPBJRM10HA7ZB842KFS
+  session_id: null
   created_at: 2026-03-09T21:25:11.791Z
   started_at: 2026-03-09T21:30:15.028Z
+  submitted_at: 2026-03-09T21:43:33.364Z
   notes:
     - _ulid: 01KKA7TQFGB4T5SWQ26CBGXV68
       created_at: 2026-03-09T21:25:11.792Z
@@ -83574,9 +83575,15 @@
         Tests: 24 new tests (9 sync-mode + 15 drift-check) covering all 17 ACs. Full suite passes (2
         pre-existing failures in codex-related tests unrelated to this change).
       supersedes: null
+    - _ulid: 01KKA94VF7K8H2S8FY53PGV8AQ
+      created_at: 2026-03-09T21:48:12.135Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: sync-mode leaks stale command state to later
+        non-Commander initContext callers, and multiple spec ACs lack direct behavioral test
+        coverage."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T21:43:33.364Z
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
   slugs:
     - implement-always-sync-on-shadow-writes
