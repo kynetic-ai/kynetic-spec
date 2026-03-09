@@ -475,12 +475,12 @@ describe("session stale close", () => {
   // AC: @trait-semantic-exit-codes ac-7 -- covered by refs partial-failure test above.
   // AC: @trait-semantic-exit-codes ac-8 -- N/A: exit code constants documented centrally.
   // AC: @trait-error-guidance ac-4 -- N/A: command has no state machine transitions; only validation/lookup errors.
-  // AC: @trait-shadow-commit ac-1 -- covered via non-dry-run stale close mutation path.
-  // AC: @trait-shadow-commit ac-2 -- covered by command-specific shadowCommitMessage.
-  // AC: @trait-shadow-commit ac-3 -- N/A: no task/spec ULID ref in commit message contract for session IDs.
-  // AC: @trait-shadow-commit ac-4 -- covered by fixture mode with no shadow worktree.
-  // AC: @trait-shadow-commit ac-5 -- covered by applyAutoAbandonMetadata test suite.
-  // AC: @trait-shadow-commit ac-6 -- N/A in fixture mode without shadow remote.
-  // AC: @trait-shadow-commit ac-7 -- N/A in fixture mode without shadow remote.
-  // AC: @trait-shadow-commit ac-8 -- covered via single apply call/commit path for multi-session close.
+  // AC: @trait-shadow-commit ac-1 -- N/A: session operations no longer commit to kspec-meta (session storage separation).
+  // AC: @trait-shadow-commit ac-2 -- N/A: session operations no longer commit to kspec-meta.
+  // AC: @trait-shadow-commit ac-3 -- N/A: session operations no longer commit to kspec-meta.
+  // AC: @trait-shadow-commit ac-4 -- N/A: session operations no longer commit to kspec-meta.
+  // AC: @trait-shadow-commit ac-5 -- N/A: session operations no longer commit to kspec-meta.
+  // AC: @trait-shadow-commit ac-6 -- N/A: session operations no longer commit to kspec-meta.
+  // AC: @trait-shadow-commit ac-7 -- N/A: session operations no longer commit to kspec-meta.
+  // AC: @trait-shadow-commit ac-8 -- N/A: session operations no longer commit to kspec-meta.
 });

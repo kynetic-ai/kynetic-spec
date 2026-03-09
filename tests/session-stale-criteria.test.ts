@@ -1,7 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { execSync } from "node:child_process";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   applyAutoAbandonMetadata,
@@ -293,15 +292,8 @@ describe("stale session criteria", () => {
     expect(updatedB?.ended_at).toBe(nowIso);
   });
 
-  // AC: @session-stale-close-metadata ac-3
-  it("records one shadow commit with command-specific message for multi-session close", async () => {
-    execSync("git init", { cwd: specDir, stdio: "pipe" });
-    execSync('git config user.name "Test User"', { cwd: specDir, stdio: "pipe" });
-    execSync('git config user.email "test@example.com"', {
-      cwd: specDir,
-      stdio: "pipe",
-    });
-
+  // AC: @session-remove-shadow-commits ac-stale-cleanup
+  it("does not commit to kspec-meta when abandoning stale sessions", async () => {
     const sessionA = "01KJHSTAL3CR1T3R1A000000B";
     const sessionB = "01KJHSTAL3CR1T3R1A000000C";
     await createSession(sessionsDir, {
@@ -317,47 +309,18 @@ describe("stale session criteria", () => {
       started_at: "2026-02-19T00:00:00.000Z",
     });
 
-    execSync("git add -A", { cwd: specDir, stdio: "pipe" });
-    execSync('git commit -m "test: seed sessions"', {
-      cwd: specDir,
-      stdio: "pipe",
-      env: { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
-    });
-    const beforeCount = Number.parseInt(
-      execSync("git rev-list --count HEAD", {
-        cwd: specDir,
-        encoding: "utf-8",
-      }).trim(),
-      10,
-    );
-
     const selection = await selectStaleActiveSessions(
       sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
-    const commitMessage = "session stale close auto-abandoned metadata";
     const applied = await applyAutoAbandonMetadata(sessionsDir, selection, {
       nowMs,
-      shadowCommitMessage: commitMessage,
     });
 
-    const afterCount = Number.parseInt(
-      execSync("git rev-list --count HEAD", {
-        cwd: specDir,
-        encoding: "utf-8",
-      }).trim(),
-      10,
-    );
-    const lastMessage = execSync("git log -1 --pretty=%s", {
-      cwd: specDir,
-      encoding: "utf-8",
-    }).trim();
-
     expect(applied.updatedCount).toBe(2);
-    expect(applied.shadowCommitted).toBe(true);
-    expect(afterCount - beforeCount).toBe(1);
-    expect(lastMessage).toBe(commitMessage);
+    // No shadowCommitted field — sessions no longer commit to kspec-meta
+    expect("shadowCommitted" in applied).toBe(false);
   });
 
   // AC: @session-stale-close-metadata ac-4
