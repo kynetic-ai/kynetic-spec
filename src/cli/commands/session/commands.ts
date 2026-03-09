@@ -32,6 +32,7 @@ import {
   sessionLogShowAction,
   sessionLogStatsAction,
 } from "./log.js";
+import { sessionMigrateAction } from "./migrate.js";
 import { sessionStaleCloseAction } from "./stale-close.js";
 import type { CheckpointOptions, SessionOptions, StopHookInput } from "./types.js";
 
@@ -296,6 +297,13 @@ export function registerSessionCommands(program: Command): void {
     .option("-n, --limit <n>", "Maximum matches to return (default: 50)")
     .option("--resolve-blobs", "Resolve externalized payload blobs for full-content search")
     .action(sessionLogSearchAction);
+
+  // AC: @session-legacy-migration ac-migration-copy ac-migration-idempotent
+  markMutating(session.command("migrate"))
+    .description(
+      "Copy sessions from legacy .kspec/sessions/ to .kspec-sessions/",
+    )
+    .action(sessionMigrateAction);
 
   markMutating(session.command("compact [session-id]"))
     .description(
