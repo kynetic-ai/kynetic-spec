@@ -82749,7 +82749,9 @@
     - storage
     - spec
   vcs_refs: []
+  session_id: 01KK8BZFWX77P91QZD0WDN87HA
   created_at: 2026-03-08T22:46:14.966Z
+  started_at: 2026-03-09T04:01:17.972Z
   notes:
     - _ulid: 01KK7T2DNPXZ0806X5SJ2484KR
       created_at: 2026-03-08T22:46:14.966Z
@@ -82763,10 +82765,40 @@
         Review @session-end-loop-signal and @agent-invocation-lifecycle — confirm
         no AC text changes needed (they don't hardcode paths), but ensure any
         in-progress implementation uses the new path resolver.
+    - _ulid: 01KK8CD00NV7VAT701X6MT2MXP
+      created_at: 2026-03-09T04:06:35.797Z
+      author: "@claude"
+      content: >-
+        All 8 ACs completed via atomic kspec batch (10 operations):
+
+
+        1. ac-session-events-paths: Updated @session-events ac-1 and ac-8 to reference
+        .kspec-sessions/{id}/ instead of .kspec/sessions/{id}/
+
+        2. ac-session-events-commits: Updated @session-events ac-7 to reflect storage-mode-dependent
+        behavior (local=no commits, branch=lifecycle boundaries)
+
+        3. ac-session-creation-paths: Updated @session-creation-and-env-injection ac-create and
+        ac-budget-local to reference .kspec-sessions/{id}/
+
+        4. ac-session-creation-description: Updated description to reference
+        .kspec-sessions/{id}/budget.json
+
+        5. ac-compact-trait: Removed @trait-shadow-commit from @session-compact
+
+        6. ac-stale-cleanup-trait: Removed @trait-shadow-commit from @session-stale-cleanup
+
+        7. ac-session-log-list-path: Updated @session-log-list ac-1 to reference .kspec-sessions/
+
+        8. ac-cli-ralph-path: Updated @cli-ralph ac-22 to reference
+        .kspec-sessions/{session}/tool-output/
+
+
+        All changes verified via kspec item get. Validation passes. No code changes needed —
+        spec-only task.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T04:01:17.972Z
-  session_id: 01KK8BZFWX77P91QZD0WDN87HA
 - _ulid: 01KK7T2E55NJF36KH0YPFZBN3X
   slugs:
     - update-kspec-init-setup-for-session-directory
