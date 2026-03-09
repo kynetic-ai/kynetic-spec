@@ -1172,7 +1172,7 @@ features:
         created: 2026-03-08T22:46:12.897Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KK7T2BRVFT4E3NK8N44J9P98
         slugs:
           - session-spec-path-updates
