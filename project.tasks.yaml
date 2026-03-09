@@ -82622,6 +82622,26 @@
         relationships. WIP changes committed on branch feat/extract-session-path-resolution for
         potential reuse once dependency is completed."
       supersedes: null
+    - _ulid: 01KK84BYHJ2QJ9D5A86CP4HPY1
+      created_at: 2026-03-09T01:46:12.914Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Decouples session storage from shadow branch by extracting path resolution
+
+        - Scope: Add sessionsDir to KspecContext, update store.ts path helpers, thread through CLI
+        commands, daemon routes, invocation.ts, dispatch.ts
+
+        - Key decision: applyAutoAbandonMetadata needs specDir option for shadow commit (temp, until
+        next task removes shadow commits)
+
+        - Files changed: yaml.ts (context type + initContext), store.ts (path helpers), 5 CLI
+        command files, daemon sessions route, invocation.ts, dispatch.ts, 12 test files
+
+        - Verification: npx tsc --noEmit clean, 4116/4118 tests pass (2 pre-existing failures on
+        main)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
