@@ -83534,6 +83534,7 @@
       author: "@claude"
       content: See plan @plan-lazy-shadow-sync for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
   slugs:
     - implement-always-sync-on-shadow-writes
@@ -83556,24 +83557,26 @@
       author: "@claude"
       content: See plan @plan-lazy-shadow-sync for implementation notes
   todos: []
-- title: Implement Daemon Background Sync Pushes
+  automation: eligible
+- _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
+  slugs:
+    - implement-daemon-background-sync-pushes
+  title: Implement Daemon Background Sync Pushes
   type: task
   spec_ref: "@shadow-daemon-push-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  priority: 3
-  slugs:
-    - implement-daemon-background-sync-pushes
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-09T21:25:12.899Z
   notes:
     - _ulid: 01KKA7TRJ3A5VFCWFFEG5WZX7E
       created_at: 2026-03-09T21:25:12.899Z
       author: "@claude"
       content: See plan @plan-lazy-shadow-sync for implementation notes
-  _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-03-09T21:25:12.899Z
   todos: []
+  automation: eligible
