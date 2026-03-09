@@ -83631,16 +83631,16 @@
   type: task
   spec_ref: "@shadow-daemon-push-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKAAZXVDB0K9TJ9ZZHA7X3C5
   created_at: 2026-03-09T21:25:12.899Z
-  started_at: 2026-03-09T21:48:54.543Z
+  started_at: 2026-03-09T22:26:18.581Z
   submitted_at: 2026-03-09T21:58:11.827Z
   notes:
     - _ulid: 01KKA7TRJ3A5VFCWFFEG5WZX7E
