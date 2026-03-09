@@ -225,8 +225,37 @@
 {"ts":1773015585945,"seq":596,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"usage_update","used":82562,"size":258400}}
 {"ts":1773015589352,"seq":597,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"tool_call_update","toolCallId":"call_xJryxANufwpUEzae977qD68J","content":[{"type":"content","content":{"type":"text","text":"```sh\nWarning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.\nContinuing with local state...\n```\n"}}]}}
 {"ts":1773015590880,"seq":598,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"tool_call_update","toolCallId":"call_xJryxANufwpUEzae977qD68J","content":[{"type":"content","content":{"type":"text","text":"```sh\nWarning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.\nContinuing with local state...\n```\n"}}]}}
+<<<<<<< Updated upstream
 {"ts":1773015601199,"seq":846,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" fully"}}}
 {"ts":1773015601218,"seq":847,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" clear"}}}
 {"ts":1773015601236,"seq":848,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" anyway"}}}
 {"ts":1773015601359,"seq":849,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"usage_update","used":83156,"size":258400}}
 {"ts":1773015601362,"seq":850,"type":"agent.completed","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"task_id":"@01KK7W7S520G8ACKWTCYNW9Y4F","outcome":"success","stop_reason":"end_turn","duration_ms":299860}}
+=======
+{"ts":1773015600611,"seq":813,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-task"}}}
+{"ts":1773015600632,"seq":814,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-read"}}}
+{"ts":1773015600654,"seq":815,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"iness"}}}
+{"ts":1773015600655,"seq":816,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`\n"}}}
+{"ts":1773015600679,"seq":817,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"-"}}}
+{"ts":1773015600694,"seq":818,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" Full"}}}
+{"ts":1773015600716,"seq":819,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" `"}}}
+{"ts":1773015600735,"seq":820,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"npm"}}}
+{"ts":1773015600760,"seq":821,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" test"}}}
+{"ts":1773015600781,"seq":822,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"`"}}}
+{"ts":1773015600796,"seq":823,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" was"}}}
+{"ts":1773015600798,"seq":824,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" not"}}}
+{"ts":1773015600816,"seq":825,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" clean"}}}
+{"ts":1773015600838,"seq":826,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" locally"}}}
+{"ts":1773015600862,"seq":827,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" because"}}}
+{"ts":1773015600878,"seq":828,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" of"}}}
+{"ts":1773015600899,"seq":829,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" an"}}}
+{"ts":1773015600918,"seq":830,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" unrelated"}}}
+{"ts":1773015600941,"seq":831,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" web"}}}
+{"ts":1773015600958,"seq":832,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" UI"}}}
+{"ts":1773015600959,"seq":833,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" build"}}}
+{"ts":1773015600982,"seq":834,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"/import"}}}
+{"ts":1773015601010,"seq":835,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" failure"}}}
+{"ts":1773015601019,"seq":836,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" outside"}}}
+{"ts":1773015601039,"seq":837,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" this"}}}
+{"ts":1773015601060,"seq":838,"type":"session.update","session_id":"01KK7Z4ZBW6FXVAQK2Y1V2V6B7","data":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":" diff"}}}
+>>>>>>> Stashed changes

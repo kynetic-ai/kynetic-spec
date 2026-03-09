@@ -82531,6 +82531,21 @@
         to local, and ac-config-invalid test does not verify the error message lists valid values
         (local, branch)."
       supersedes: null
+    - _ulid: 01KK7ZF21HJ2GS3R2CCF0TAA5M
+      created_at: 2026-03-09T00:20:31.922Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed all 3 MUST-FIX findings:
+
+        1. Schema: .optional() → .default({}) so omitting sessions block yields {storage: 'local'}
+
+        2. Test ac-config-default: asserts sessions defaults to {storage: 'local'} (was wrongly
+        asserting undefined)
+
+        3. Test ac-config-invalid: added assertions that error message contains 'local' and 'branch'
+
+        All 9 tests pass. Shard 1 (63 files, 1328 tests) passed with no regressions.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7T2CNFQVZ8EM809ZSRC1PV
