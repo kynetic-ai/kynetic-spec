@@ -32,6 +32,7 @@ import {
   gitSupportsOrphanWorktree,
   createOrphanBranchFallback,
   SESSIONS_WORKTREE_DIR,
+  type ShadowConfig,
   type ShadowOptions,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
@@ -1218,6 +1219,77 @@ describe('Shadow Branch', () => {
         } finally {
           await fs.rm(verifyDir, { recursive: true, force: true });
         }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @shadow-write-sync ac-write-always-syncs
+    it('commitIfShadow triggers full pull-rebase-before-push sync on mutating write', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Make a remote change via a clone — add a NEW file to avoid merge conflicts
+      const cloneDir = path.join('/tmp', `kspec-commitif-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone adds a new file (no conflict with local changes)
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-commitif-marker.yaml'),
+          'marker: from-clone-commitif\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds commitif marker file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Add a local file that commitIfShadow will auto-commit
+        await fs.writeFile(
+          path.join(worktreeDir, 'local-commitif-marker.yaml'),
+          'marker: from-local-commitif\n'
+        );
+
+        // Call commitIfShadow — the actual write entrypoint
+        const shadowConfig: ShadowConfig = {
+          enabled: true,
+          worktreeDir,
+          branchName: SHADOW_BRANCH_NAME,
+          projectRoot: testDir,
+        };
+        const committed = await commitIfShadow(shadowConfig, 'test-write', undefined, 'commitIfShadow sync test');
+        expect(committed).toBe(true);
+
+        // Wait for the fire-and-forget push to complete (pull-rebase runs inside shadowPushAsync)
+        const maxWait = 10_000;
+        const start = Date.now();
+        const remoteMarkerPath = path.join(worktreeDir, 'remote-commitif-marker.yaml');
+        while (Date.now() - start < maxWait) {
+          try {
+            await fs.access(remoteMarkerPath);
+            break; // File exists — pull-rebase integrated the remote change
+          } catch {
+            await new Promise(r => setTimeout(r, 200));
+          }
+        }
+
+        // Verify clone's file was pulled into local worktree (proves pull-rebase ran)
+        const remoteMarkerContent = await fs.readFile(remoteMarkerPath, 'utf-8');
+        expect(remoteMarkerContent).toContain('marker: from-clone-commitif');
+
+        // Verify local file still exists
+        const localMarkerContent = await fs.readFile(
+          path.join(worktreeDir, 'local-commitif-marker.yaml'),
+          'utf-8',
+        );
+        expect(localMarkerContent).toContain('marker: from-local-commitif');
       } finally {
         await fs.rm(cloneDir, { recursive: true, force: true });
       }
