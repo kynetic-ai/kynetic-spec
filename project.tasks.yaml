@@ -83436,7 +83436,7 @@
   spec_ref: "@session-legacy-migration"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -83445,9 +83445,10 @@
     - cleanup
     - sessions
   vcs_refs: []
-  session_id: 01KK9YT7H6M9DD9S0C5NK18605
+  session_id: null
   created_at: 2026-03-09T18:40:42.484Z
   started_at: 2026-03-09T18:59:35.207Z
+  submitted_at: 2026-03-09T19:24:04.123Z
   notes:
     - _ulid: 01KK9ZH8V0F28QDCC269AM6XKD
       created_at: 2026-03-09T19:00:13.281Z
@@ -83489,6 +83490,12 @@
         (18 tests) to verify detect-and-warn behavior. All 47 tests pass. Full suite: 4225 passed, 2
         pre-existing failures unrelated to this change.
       supersedes: null
+    - _ulid: 01KKA187A2CZR947E535PZ6XVM
+      created_at: 2026-03-09T19:30:13.954Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: daemon detect-and-warn only covers GET
+        /api/sessions and lacks daemon/API coverage; @session-legacy-migration ac-read-fallback
+        requires daemon reads to warn too."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T19:24:04.123Z
