@@ -3246,7 +3246,7 @@ features:
         given: A terminal/run tool request produces large stdout or stderr output
         when: Ralph handles the terminal/run request
         then: Ralph streams stdout and stderr to per-session artifact files under
-          .kspec/sessions/{session}/tool-output/ instead of accumulating unbounded output in memory
+          .kspec-sessions/{session}/tool-output/ instead of accumulating unbounded output in memory
       - id: ac-23
         given: A terminal/run command completes after producing output
         when: Ralph sends the tool response and renders tool output
@@ -3958,7 +3958,7 @@ features:
       - id: ac-1
         given: a new session is started
         when: createSession(id, metadata) is called
-        then: creates .kspec/sessions/{id}/ directory with session.yaml metadata file
+        then: creates .kspec-sessions/{id}/ directory with session.yaml metadata file
       - id: ac-2
         given: an active session
         when: appendEvent(id, event) is called
@@ -3982,13 +3982,14 @@ features:
       - id: ac-7
         given: events are accumulated
         when: a commit boundary is reached (task complete, session end)
-        then: events are included in next kspec commit
+        then: in local storage mode, no git commit occurs. In branch storage mode, events are included in
+          the session branch commit at lifecycle boundaries (create, close, stale cleanup, compact).
       - id: ac-8
         given: A session event contains oversized payload fields (for example large tool outputs or chunk
           text)
         when: The event is prepared for persistence
         then: Oversized field content is externalized to session blob files under
-          .kspec/sessions/{id}/blobs/ and the JSONL event stores a pointer object instead of the
+          .kspec-sessions/{id}/blobs/ and the JSONL event stores a pointer object instead of the
           full payload
       - id: ac-9
         given: Event payload content is externalized
@@ -4011,7 +4012,7 @@ features:
           task completions. Supports filtering by status, agent type, and date range.
         acceptance_criteria:
           - id: ac-1
-            given: sessions exist in .kspec/sessions/
+            given: sessions exist in .kspec-sessions/
             when: kspec session log list is run
             then: displays table with columns for session ID, status, agent type, started, duration, events,
               iterations, and tasks completed
@@ -4317,7 +4318,6 @@ features:
         traits:
           - "@trait-semantic-exit-codes"
           - "@trait-dry-run"
-          - "@trait-shadow-commit"
           - "@trait-json-output"
         notes: []
         created: 2026-02-27T18:10:39.831Z
@@ -4393,7 +4393,6 @@ features:
           - "@trait-json-output"
           - "@trait-dry-run"
           - "@trait-semantic-exit-codes"
-          - "@trait-shadow-commit"
           - "@trait-error-guidance"
           - "@trait-confirmation-prompt"
           - "@trait-multi-ref-batch"
@@ -6181,22 +6180,20 @@ features:
     title: Session creation and env injection
     type: feature
     tags: []
-    description: |
-      CLI command and library function to create a kspec session with an optional
-      task budget and inject the session ID into the agent's environment via
-      KSPEC_SESSION_ID. Harness-specific injection for Claude Code, Codex, OpenCode,
-      and Gemini CLI. Fallback to export instructions for unknown harnesses.
-      Budget state stored in local filesystem (.kspec/sessions/{id}/budget.json),
-      not on shadow branch, to avoid contention between ralph and spawned agents.
+    description: CLI command and library function to create a kspec session with an optional task budget
+      and inject the session ID into the agent's environment via KSPEC_SESSION_ID. Harness-specific
+      injection for Claude Code, Codex, OpenCode, and Gemini CLI. Fallback to export instructions
+      for unknown harnesses. Budget state stored in local filesystem
+      (.kspec-sessions/{id}/budget.json), not on shadow branch, to avoid contention between ralph
+      and spawned agents.
     acceptance_criteria:
       - id: ac-create
         given: |
           kspec session create --agent-type <type> is run
         when: |
           the command executes
-        then: |
-          a session is created in .kspec/sessions/{id}/ with status active and the
-          session ID is printed to stdout
+        then: a session is created in .kspec-sessions/{id}/ with status active and the session ID is printed
+          to stdout
       - id: ac-budget
         given: |
           --budget N flag is provided
@@ -6205,13 +6202,11 @@ features:
         then: |
           budget.json is written with max_per_cycle=N, started_this_cycle=0
       - id: ac-budget-local
-        given: |
-          budget state is written
+        given: budget state is written
         when: |
           budget.json is created or updated
-        then: |
-          it lives in .kspec/sessions/{id}/budget.json on local filesystem and is
-          NOT committed to the shadow branch
+        then: it lives in .kspec-sessions/{id}/budget.json on local filesystem and is NOT committed to the
+          shadow branch
       - id: ac-inject-claude
         given: |
           --inject flag with Claude Code detected (CLAUDECODE=1)
