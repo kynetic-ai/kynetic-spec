@@ -1679,3 +1679,9 @@ inbox:
       - shadow
       - dx
     added_by: "@claude"
+  - _ulid: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
+    text: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
+      additional registered projects get periodic session pulls too."
+    created_at: 2026-03-09T07:16:32.329Z
+    tags: []
+    added_by: Jacob Chapel
