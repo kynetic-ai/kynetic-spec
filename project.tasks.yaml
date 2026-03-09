@@ -83467,5 +83467,27 @@
 
         - Verification: npm test passes, spec ACs covered
       supersedes: null
+    - _ulid: 01KKA0WE0B8ZN998ZAG1ARSA35
+      created_at: 2026-03-09T19:23:47.595Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+        1. legacy.ts: Removed all *WithFallback/*Merged functions (getSessionWithFallback,
+        readEventsWithFallback, listSessionsMerged, getAllSessionLogSummariesMerged,
+        resolveSessionIdWithFallback, searchSessionEventsWithFallback,
+        computeToolUsageStatsWithFallback). Added countLegacySessions() and warnIfLegacySessions()
+        convenience function.
+
+        2. session/log.ts: Replaced all legacy imports with direct store.ts calls. Added
+        warnIfLegacySessions() at start of list/show/stats/search actions.
+
+        3. daemon sessions.ts: Added countLegacySessions import and warning field in list endpoint
+        response meta.
+
+        4. Tests: Rewrote session-legacy-fallback.test.ts (29 tests) and session-legacy-cli.test.ts
+        (18 tests) to verify detect-and-warn behavior. All 47 tests pass. Full suite: 4225 passed, 2
+        pre-existing failures unrelated to this change.
+      supersedes: null
   todos: []
   automation: eligible
