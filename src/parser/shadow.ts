@@ -281,6 +281,12 @@ export const SHADOW_BRANCH_NAME = "kspec-meta";
 export const SHADOW_WORKTREE_DIR = ".kspec";
 
 /**
+ * Sessions storage directory name (at project root, separate from shadow worktree).
+ * AC: @session-storage-modes ac-sessions-dir
+ */
+export const SESSIONS_WORKTREE_DIR = ".kspec-sessions";
+
+/**
  * Options for shadow branch operations.
  *
  * AC: @config-shadow ac-7 — all fields optional for backward compatibility
@@ -1009,6 +1015,8 @@ export interface ShadowInitResult {
   createdFromRemote: boolean;
   /** Whether new branch was pushed to remote to establish tracking */
   pushedToRemote: boolean;
+  /** Whether .kspec-sessions/ directory was created */
+  sessionsDirectoryCreated?: boolean;
   error?: string;
 }
 
@@ -1827,6 +1835,110 @@ async function ensureGitignore(
 }
 
 /**
+ * Add .kspec-sessions/ to root .gitignore if not already present.
+ * Does NOT commit — caller is responsible for committing if needed.
+ *
+ * AC: @session-storage-modes ac-gitignore
+ *
+ * @param projectRoot Git repository root
+ * @returns true if entry was added, false if already present
+ */
+export async function ensureSessionsGitignore(
+  projectRoot: string,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+  const entry = `${SESSIONS_WORKTREE_DIR}/`;
+
+  try {
+    let content = "";
+    try {
+      content = await fs.readFile(gitignorePath, "utf-8");
+    } catch {
+      // File doesn't exist, will create
+    }
+
+    // Check if already present
+    const lines = content.split("\n");
+    const patterns = [
+      SESSIONS_WORKTREE_DIR,
+      `${SESSIONS_WORKTREE_DIR}/`,
+      `/${SESSIONS_WORKTREE_DIR}`,
+      `/${SESSIONS_WORKTREE_DIR}/`,
+    ];
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (patterns.includes(trimmed)) {
+        return false; // Already present
+      }
+    }
+
+    // Add to gitignore
+    const newContent =
+      content.endsWith("\n") || content === ""
+        ? `${content}${entry}\n`
+        : `${content}\n${entry}\n`;
+
+    await fs.writeFile(gitignorePath, newContent, "utf-8");
+    return true;
+  } catch (error) {
+    throw new ShadowError(
+      `Failed to update .gitignore with sessions directory: ${error}`,
+      "GIT_ERROR",
+      "Check file permissions for .gitignore",
+    );
+  }
+}
+
+/**
+ * Add sessions/ to .kspec/.gitignore to prevent legacy session data
+ * from being tracked on kspec-meta shadow branch.
+ *
+ * AC: @session-legacy-migration ac-shadow-gitignore
+ *
+ * @param projectRoot Git repository root
+ * @param options Optional shadow configuration for directory name
+ * @returns true if entry was added, false if already present
+ */
+export async function ensureShadowSessionsGitignore(
+  projectRoot: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const directoryName = getDirectoryName(options);
+  const shadowGitignorePath = path.join(projectRoot, directoryName, ".gitignore");
+  const entry = "sessions/";
+
+  try {
+    let content = "";
+    try {
+      content = await fs.readFile(shadowGitignorePath, "utf-8");
+    } catch {
+      // File doesn't exist — this shouldn't happen since init creates it,
+      // but handle gracefully
+      return false;
+    }
+
+    // Check if already present
+    const lines = content.split("\n");
+    if (lines.some((line) => line.trim() === entry || line.trim() === "sessions")) {
+      return false; // Already present
+    }
+
+    // Add to gitignore
+    const newContent =
+      content.endsWith("\n") || content === ""
+        ? `${content}${entry}\n`
+        : `${content}\n${entry}\n`;
+
+    await fs.writeFile(shadowGitignorePath, newContent, "utf-8");
+    return true;
+  } catch (error) {
+    // Non-fatal — shadow gitignore update is best-effort
+    return false;
+  }
+}
+
+/**
  * Generate initial manifest content for shadow branch
  */
 function generateShadowManifest(projectName: string): string {
@@ -2141,6 +2253,25 @@ export async function initializeShadow(
     // Step 1: Update .gitignore first (before creating worktree)
     result.gitignoreUpdated = await ensureGitignore(projectRoot, options.shadow);
 
+    // Step 1b: Also add .kspec-sessions/ to .gitignore
+    // AC: @session-storage-modes ac-gitignore
+    const sessionsAdded = await ensureSessionsGitignore(projectRoot);
+    if (sessionsAdded) {
+      // Commit .kspec-sessions/ gitignore entry (may be separate commit if .kspec/ was already present)
+      await runGitAsync(projectRoot, ["add", ".gitignore"]);
+      await runGitAsync(projectRoot, [
+        "commit",
+        "-m",
+        `chore: add ${SESSIONS_WORKTREE_DIR}/ to .gitignore for session storage`,
+      ]);
+    }
+
+    // Step 1c: Create .kspec-sessions/ directory
+    // AC: @session-storage-modes ac-sessions-dir-autocreate
+    const sessionsDir = path.join(projectRoot, SESSIONS_WORKTREE_DIR);
+    await fs.mkdir(sessionsDir, { recursive: true });
+    result.sessionsDirectoryCreated = true;
+
     // Step 2: Create worktree with orphan branch (or attach to existing branch)
     if (!status.worktreeExists || !status.worktreeLinked) {
       // Remove existing directory if present but not linked
@@ -2265,9 +2396,10 @@ export async function initializeShadow(
       // AC: @artifacts-directory ac-init-creates, ac-gitignore-entry
       const artifactsDir = path.join(worktreeDir, "artifacts");
       await fs.mkdir(artifactsDir, { recursive: true });
+      // AC: @session-legacy-migration ac-shadow-gitignore — sessions/ not tracked on kspec-meta
       await fs.writeFile(
         path.join(worktreeDir, ".gitignore"),
-        "# Ephemeral artifacts - reports, exports, generated files\n# Not tracked in shadow branch\nartifacts/\n",
+        "# Ephemeral artifacts - reports, exports, generated files\n# Not tracked in shadow branch\nartifacts/\n\n# Sessions stored in .kspec-sessions/ at project root, not on shadow branch\nsessions/\n",
         "utf-8",
       );
 
