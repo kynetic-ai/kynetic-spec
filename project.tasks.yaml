@@ -83527,16 +83527,55 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKA81PPBJRM10HA7ZB842KFS
   created_at: 2026-03-09T21:25:11.791Z
+  started_at: 2026-03-09T21:30:15.028Z
   notes:
     - _ulid: 01KKA7TQFGB4T5SWQ26CBGXV68
       created_at: 2026-03-09T21:25:11.792Z
       author: "@claude"
       content: See plan @plan-lazy-shadow-sync for implementation notes
+    - _ulid: 01KKA8VT1C5YEH9VNSYB0BJP8J
+      created_at: 2026-03-09T21:43:15.756Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. **src/cli/sync-mode.ts** (new) — Module-level state for syncMode with consume-once
+        pattern. setSyncMode() called in preAction, consumeSyncMode() called in initContext().
+        Non-Commander callers get drift-check default.
+
+
+        2. **src/cli/command-annotations.ts** — Added
+        markAlwaysSync/getAlwaysSyncAnnotation/getMutatingAnnotation (parallel to existing
+        markMutating pattern).
+
+
+        3. **src/parser/shadow.ts** — Added shadowNeedsSync() drift check function (~60 lines) and
+        spawnGitWithTimeout() helper. FETCH_HEAD resolved via git rev-parse --git-path from worktree
+        dir. Fetch with 5s timeout + SIGTERM/SIGKILL. Ahead/behind via git rev-list --left-right
+        --count.
+
+
+        4. **src/cli/index.ts** — preAction hook now determines syncMode from command annotations
+        before calling maybeAutoStartDaemon.
+
+
+        5. **src/parser/yaml.ts** — initContext() sync block now uses consumeSyncMode() to determine
+        behavior: drift-check (default reads), always (session start), or skip (mutating commands).
+        KSPEC_NO_SYNC still overrides everything.
+
+
+        6. **src/cli/commands/session/commands.ts** — session start and kspec context annotated with
+        markAlwaysSync.
+
+
+        Tests: 24 new tests (9 sync-mode + 15 drift-check) covering all 17 ACs. Full suite passes (2
+        pre-existing failures in codex-related tests unrelated to this change).
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T21:30:15.028Z
-  session_id: 01KKA81PPBJRM10HA7ZB842KFS
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
   slugs:
     - implement-always-sync-on-shadow-writes
