@@ -83520,7 +83520,7 @@
   type: task
   spec_ref: "@shadow-lazy-read-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -83535,6 +83535,8 @@
       content: See plan @plan-lazy-shadow-sync for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-03-09T21:30:15.028Z
+  session_id: 01KKA81PPBJRM10HA7ZB842KFS
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
   slugs:
     - implement-always-sync-on-shadow-writes
