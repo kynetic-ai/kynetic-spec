@@ -82690,7 +82690,7 @@
   type: task
   spec_ref: "@session-remove-shadow-commits"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -82704,7 +82704,7 @@
   session_id: 01KK8E2GTFNVVZJ06AC65K7TC2
   created_at: 2026-03-08T22:46:14.473Z
   started_at: 2026-03-09T04:41:58.090Z
-  submitted_at: 2026-03-09T03:58:21.850Z
+  submitted_at: 2026-03-09T04:57:45.269Z
   notes:
     - _ulid: 01KK7T2D68HEXA0P31V1EW1F9V
       created_at: 2026-03-08T22:46:14.473Z
