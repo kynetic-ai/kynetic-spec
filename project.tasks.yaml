@@ -83353,23 +83353,24 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Update stale session path references in code comments
+- _ulid: 01KK9XWGQ6BDADJQ1WVS56H80X
+  slugs: []
+  title: Update stale session path references in code comments
+  type: task
   description: Three comments in store.ts and types.ts still reference .kspec/sessions/ instead of
     .kspec-sessions/ after the session storage separation work.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  priority: 5
-  slugs: []
-  tags:
-    - cleanup
-  depends_on: []
-  _ulid: 01KK9XWGQ6BDADJQ1WVS56H80X
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 5
+  tags:
+    - cleanup
   vcs_refs: []
   created_at: 2026-03-09T18:31:24.643Z
   notes: []
   todos: []
+  automation: eligible
