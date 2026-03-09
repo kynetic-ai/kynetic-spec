@@ -82586,7 +82586,7 @@
   type: task
   spec_ref: "@session-storage-path-resolution"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82644,6 +82644,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T01:46:31.163Z
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
   slugs:
     - remove-shadowautocommit-from-session-operations
