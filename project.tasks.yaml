@@ -83639,7 +83639,7 @@
   type: task
   spec_ref: "@shadow-write-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-lazy-shadow-sync-on-reads"
@@ -83647,7 +83647,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKAED24TR4ZP3X5GS9AKNVY8
+  session_id: null
   created_at: 2026-03-09T21:25:12.363Z
   started_at: 2026-03-09T23:20:44.564Z
   submitted_at: 2026-03-09T23:26:39.606Z
@@ -83701,6 +83701,13 @@
         commitIfShadow with ShadowConfig, then verifies remote changes were pulled into local
         worktree — proving the sync path executed. This addresses the review finding that the prior
         test only exercised shadowPushAsync() directly."
+      supersedes: null
+    - _ulid: 01KKAFGAS4AB85H07Y0P891523
+      created_at: 2026-03-09T23:39:19.716Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: current PR head fails npm test due to timeouts
+        in tests/cli/session-start-format.test.ts (primer and full activity timeline cases). AC
+        coverage for @shadow-write-sync is now complete, but regression gate is still failing."
       supersedes: null
   todos: []
   automation: eligible
