@@ -166,7 +166,7 @@ export function getSessionBlobDir(sessionsDir: string, sessionId: string): strin
 /**
  * Create a new session with metadata.
  *
- * AC-1: Creates .kspec/sessions/{id}/ directory with session.yaml metadata file.
+ * AC-1: Creates .kspec-sessions/{id}/ directory with session.yaml metadata file.
  * AC-5: Metadata includes task_id (optional), agent_type, status, started_at, ended_at.
  *
  * @param sessionsDir - The .kspec directory path
@@ -3423,7 +3423,7 @@ async function writeBudgetAtomic(
 /**
  * Create a budget for a session.
  *
- * Writes budget.json to .kspec/sessions/{id}/ on the local filesystem
+ * Writes budget.json to .kspec-sessions/{id}/ on the local filesystem
  * (NOT committed to shadow branch).
  *
  * AC: @session-creation-and-env-injection ac-budget

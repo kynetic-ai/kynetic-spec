@@ -188,7 +188,7 @@ export type SessionEventInput = z.infer<typeof SessionEventInputSchema>;
 // ─── Task Budget ────────────────────────────────────────────────────────────
 
 /**
- * Task budget state stored in .kspec/sessions/{id}/budget.json.
+ * Task budget state stored in .kspec-sessions/{id}/budget.json.
  *
  * Budget lives on LOCAL filesystem (not shadow branch) to avoid contention
  * between ralph and spawned agents. Single-writer guarantee: ralph resets
