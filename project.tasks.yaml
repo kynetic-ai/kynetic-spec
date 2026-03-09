@@ -82894,7 +82894,7 @@
   type: task
   spec_ref: "@session-legacy-migration"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -82947,6 +82947,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T04:34:30.577Z
 - _ulid: 01KK7T2F51QR38YMPS1FX6HKXS
   slugs:
     - add-kspec-session-migrate-command
