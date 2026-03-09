@@ -83582,6 +83582,23 @@
         non-Commander initContext callers, and multiple spec ACs lack direct behavioral test
         coverage."
       supersedes: null
+    - _ulid: 01KKAAYD8DE0YVW6DQ9DRTGRTZ
+      created_at: 2026-03-09T22:19:38.125Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed. Changes:
+
+        1. Added clearSyncMode() + postAction hook to prevent stale state leak to non-Commander
+        callers.
+
+        2. Replaced 4 comment-only AC stubs with behavioral tests:
+           - ac-fetch-timeout-no-error: tests shadowNeedsSync with a broken remote (returns false, no throw)
+           - ac-fetch-timeout-debug-log: tests debug log emission with KSPEC_DEBUG=1 and suppression without
+           - ac-session-start-always-pulls: verifies session start command annotation + sync-mode chain
+           - ac-no-sync-env: tests KSPEC_NO_SYNC=1 env guard skips sync block entirely
+        All 34 tests pass (12 sync-mode + 22 drift-check). 2 pre-existing codex test failures
+        unrelated.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
