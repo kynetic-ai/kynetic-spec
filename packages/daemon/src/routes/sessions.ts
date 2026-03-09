@@ -9,6 +9,7 @@
  * AC Coverage:
  * - @ui-session-stream ac-1: Session events as structured blocks
  * - @ui-session-stream ac-4: Session metadata, spec context, budget for context panel
+ * - @session-legacy-migration ac-read-fallback: Detect-and-warn on all session read endpoints
  */
 
 import { Elysia, t } from 'elysia';
@@ -61,6 +62,7 @@ export function createSessionRoutes() {
 
     // Get single session metadata
     // AC: @ui-session-stream ac-4 — Includes spec context, budget, and task info
+    // AC: @session-legacy-migration ac-read-fallback — detect-and-warn for legacy sessions
     .get('/:id', async ({ params, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
 
@@ -138,6 +140,9 @@ export function createSessionRoutes() {
         // No budget configured — that's fine
       }
 
+      // Detect legacy sessions and include warning in response
+      const legacyCount = await countLegacySessions(ctx.specDir);
+
       return {
         ...detail,
         task_id: metadata?.task_id,
@@ -145,10 +150,14 @@ export function createSessionRoutes() {
         trigger: metadata?.trigger ?? 'legacy',
         spec_context,
         budget,
+        ...(legacyCount > 0 ? {
+          warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
+        } : {}),
       };
     })
 
     // Get session events
+    // AC: @session-legacy-migration ac-read-fallback — detect-and-warn for legacy sessions
     .get('/:id/events', async ({ params, query, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
 
@@ -179,9 +188,15 @@ export function createSessionRoutes() {
         events = events.filter(e => e.seq > sinceSeq);
       }
 
+      // Detect legacy sessions and include warning in response
+      const legacyCount = await countLegacySessions(ctx.specDir);
+
       return {
         events,
         total: events.length,
+        ...(legacyCount > 0 ? {
+          warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
+        } : {}),
       };
     }, {
       query: t.Object({
