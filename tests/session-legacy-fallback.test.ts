@@ -1,12 +1,11 @@
 /**
- * Tests for legacy session read fallback.
+ * Tests for legacy session detection and warning.
  *
  * AC coverage:
- * - @session-legacy-migration ac-read-fallback: Falls back to .kspec/sessions/ when not found in .kspec-sessions/
+ * - @session-legacy-migration ac-read-fallback: No transparent fallback — reads only from .kspec-sessions/
  * - @session-legacy-migration ac-no-write: Writes always go to .kspec-sessions/, never .kspec/sessions/
- * - @session-legacy-migration ac-list-merge: List results from both locations, deduplicated by ID
- * - @session-legacy-migration ac-deprecation-warning: Deprecation warning emitted on legacy reads
- * - @session-legacy-migration ac-shadow-gitignore: sessions/ added to .kspec/.gitignore
+ * - @session-legacy-migration ac-list-merge: List returns only .kspec-sessions/ sessions; warns about legacy
+ * - @session-legacy-migration ac-deprecation-warning: Deprecation warning emitted when legacy sessions detected
  * - @session-legacy-migration ac-migration-copy: Copies session dirs from .kspec/sessions/ to .kspec-sessions/
  * - @session-legacy-migration ac-migration-idempotent: Skips sessions that already exist in target
  */
@@ -19,12 +18,8 @@ import * as YAML from "yaml";
 import {
   getLegacySessionsDir,
   hasLegacySessions,
-  getSessionWithFallback,
-  readEventsWithFallback,
-  listSessionsMerged,
-  getAllSessionLogSummariesMerged,
-  resolveSessionIdWithFallback,
-  searchSessionEventsWithFallback,
+  countLegacySessions,
+  warnIfLegacySessions,
   migrateLegacySessions,
   emitLegacyDeprecationWarning,
   resetDeprecationWarning,
@@ -32,6 +27,7 @@ import {
 import {
   createSession,
   appendEvent,
+  getSession,
   listSessions,
 } from "../src/sessions/store.js";
 
@@ -105,7 +101,7 @@ async function createTestSessionWithEvents(
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-describe("Legacy Session Fallback", () => {
+describe("Legacy Session Detection and Warning", () => {
   beforeEach(async () => {
     await createTempDirs();
     resetDeprecationWarning();
@@ -150,160 +146,51 @@ describe("Legacy Session Fallback", () => {
     });
   });
 
+  describe("countLegacySessions", () => {
+    it("returns count of session directories in legacy dir", async () => {
+      await createTestSession(legacyDir, "01LEGACY01");
+      await createTestSession(legacyDir, "01LEGACY02");
+      await createTestSession(legacyDir, "01LEGACY03");
+      expect(await countLegacySessions(specDir)).toBe(3);
+    });
+
+    it("returns 0 when legacy dir is empty", async () => {
+      expect(await countLegacySessions(specDir)).toBe(0);
+    });
+
+    it("returns 0 when legacy dir does not exist", async () => {
+      await fs.rm(legacyDir, { recursive: true, force: true });
+      expect(await countLegacySessions(specDir)).toBe(0);
+    });
+
+    it("returns 0 when specDir is undefined", async () => {
+      expect(await countLegacySessions(undefined)).toBe(0);
+    });
+  });
+
   // ─── ac-read-fallback ──────────────────────────────────────────────────────
 
   // AC: @session-legacy-migration ac-read-fallback
-  describe("ac-read-fallback: getSessionWithFallback", () => {
-    it("returns session from primary when it exists there", async () => {
+  describe("ac-read-fallback: no transparent fallback reads", () => {
+    it("getSession returns null for session only in legacy location", async () => {
+      await createTestSession(legacyDir, "01LEGACY01");
+      const session = await getSession(primaryDir, "01LEGACY01");
+      expect(session).toBeNull();
+    });
+
+    it("getSession returns session from primary location", async () => {
       await createTestSession(primaryDir, "01PRIMARY01");
-      const { session, legacy } = await getSessionWithFallback(
-        primaryDir,
-        "01PRIMARY01",
-        specDir,
-      );
+      const session = await getSession(primaryDir, "01PRIMARY01");
       expect(session).not.toBeNull();
       expect(session!.id).toBe("01PRIMARY01");
-      expect(legacy).toBe(false);
     });
 
-    it("falls back to legacy when session not in primary", async () => {
-      await createTestSession(legacyDir, "01LEGACY01");
-      const { session, legacy } = await getSessionWithFallback(
-        primaryDir,
-        "01LEGACY01",
-        specDir,
-      );
-      expect(session).not.toBeNull();
-      expect(session!.id).toBe("01LEGACY01");
-      expect(legacy).toBe(true);
-    });
-
-    it("returns null when session not in either location", async () => {
-      const { session, legacy } = await getSessionWithFallback(
-        primaryDir,
-        "01NONEXIST",
-        specDir,
-      );
-      expect(session).toBeNull();
-      expect(legacy).toBe(false);
-    });
-
-    it("prefers primary over legacy for same session ID", async () => {
-      await createTestSession(primaryDir, "01BOTH0001", "primary-agent");
-      await createTestSession(legacyDir, "01BOTH0001", "legacy-agent");
-      const { session, legacy } = await getSessionWithFallback(
-        primaryDir,
-        "01BOTH0001",
-        specDir,
-      );
-      expect(session!.agent_type).toBe("primary-agent");
-      expect(legacy).toBe(false);
-    });
-
-    it("works without specDir (no fallback)", async () => {
-      const { session, legacy } = await getSessionWithFallback(
-        primaryDir,
-        "01NONEXIST",
-      );
-      expect(session).toBeNull();
-      expect(legacy).toBe(false);
-    });
-  });
-
-  // AC: @session-legacy-migration ac-read-fallback
-  describe("ac-read-fallback: readEventsWithFallback", () => {
-    it("reads events from primary when session exists there", async () => {
-      await createTestSessionWithEvents(primaryDir, "01PRIMARY01", [
-        { type: "session.start" },
-        { type: "session.end" },
-      ]);
-      const { events, legacy } = await readEventsWithFallback(
-        primaryDir,
-        "01PRIMARY01",
-        specDir,
-      );
-      expect(events).toHaveLength(2);
-      expect(legacy).toBe(false);
-    });
-
-    it("falls back to legacy events when session not in primary", async () => {
-      await createTestSessionWithEvents(legacyDir, "01LEGACY01", [
-        { type: "session.start" },
-      ]);
-      const { events, legacy } = await readEventsWithFallback(
-        primaryDir,
-        "01LEGACY01",
-        specDir,
-      );
-      expect(events).toHaveLength(1);
-      expect(legacy).toBe(true);
-    });
-
-    it("returns empty events when session not in either location", async () => {
-      const { events, legacy } = await readEventsWithFallback(
-        primaryDir,
-        "01NONEXIST",
-        specDir,
-      );
-      expect(events).toHaveLength(0);
-      expect(legacy).toBe(false);
-    });
-  });
-
-  // AC: @session-legacy-migration ac-read-fallback
-  describe("ac-read-fallback: resolveSessionIdWithFallback", () => {
-    it("resolves from primary first", async () => {
+    it("listSessions does not include legacy-only sessions", async () => {
       await createTestSession(primaryDir, "01PRIMARY01");
-      const result = await resolveSessionIdWithFallback(
-        primaryDir,
-        "01PRIMARY01",
-        specDir,
-      );
-      expect(result.ok).toBe(true);
-      if (result.ok) {
-        expect(result.id).toBe("01PRIMARY01");
-      }
-      expect(result.legacy).toBe(false);
-    });
-
-    it("resolves from legacy when not found in primary", async () => {
       await createTestSession(legacyDir, "01LEGACY01");
-      const result = await resolveSessionIdWithFallback(
-        primaryDir,
-        "01LEGACY01",
-        specDir,
-      );
-      expect(result.ok).toBe(true);
-      if (result.ok) {
-        expect(result.id).toBe("01LEGACY01");
-      }
-      expect(result.legacy).toBe(true);
-    });
-
-    it("resolves prefix from legacy when not in primary", async () => {
-      await createTestSession(legacyDir, "01LEGACY01");
-      const result = await resolveSessionIdWithFallback(
-        primaryDir,
-        "01LEGACY",
-        specDir,
-      );
-      expect(result.ok).toBe(true);
-      if (result.ok) {
-        expect(result.id).toBe("01LEGACY01");
-      }
-      expect(result.legacy).toBe(true);
-    });
-
-    it("returns not_found when not in either location", async () => {
-      const result = await resolveSessionIdWithFallback(
-        primaryDir,
-        "01NONEXIST",
-        specDir,
-      );
-      expect(result.ok).toBe(false);
-      if (!result.ok) {
-        expect(result.error).toBe("not_found");
-      }
+      const ids = await listSessions(primaryDir);
+      expect(ids).toContain("01PRIMARY01");
+      expect(ids).not.toContain("01LEGACY01");
     });
   });
 
@@ -371,94 +258,17 @@ describe("Legacy Session Fallback", () => {
     });
   });
 
-  // ─── ac-list-merge ─────────────────────────────────────────────────────────
-
-  // AC: @session-legacy-migration ac-list-merge
-  describe("ac-list-merge: merged session listing with dedup", () => {
-    it("lists sessions from both locations", async () => {
-      await createTestSession(primaryDir, "01PRIMARY01");
-      await createTestSession(legacyDir, "01LEGACY01");
-      const { ids, hasLegacy } = await listSessionsMerged(
-        primaryDir,
-        specDir,
-      );
-      expect(ids).toContain("01PRIMARY01");
-      expect(ids).toContain("01LEGACY01");
-      expect(hasLegacy).toBe(true);
-    });
-
-    it("deduplicates by ID, primary takes precedence", async () => {
-      await createTestSession(primaryDir, "01BOTH0001");
-      await createTestSession(legacyDir, "01BOTH0001");
-      await createTestSession(legacyDir, "01LEGACY01");
-      const { ids, hasLegacy } = await listSessionsMerged(
-        primaryDir,
-        specDir,
-      );
-      // Should have 01BOTH0001 once + 01LEGACY01
-      expect(ids).toHaveLength(2);
-      expect(ids).toContain("01BOTH0001");
-      expect(ids).toContain("01LEGACY01");
-      expect(hasLegacy).toBe(true);
-    });
-
-    it("returns only primary when no legacy exists", async () => {
-      await createTestSession(primaryDir, "01PRIMARY01");
-      await fs.rm(legacyDir, { recursive: true, force: true });
-      const { ids, hasLegacy } = await listSessionsMerged(
-        primaryDir,
-        specDir,
-      );
-      expect(ids).toEqual(["01PRIMARY01"]);
-      expect(hasLegacy).toBe(false);
-    });
-
-    it("works without specDir (no fallback)", async () => {
-      await createTestSession(primaryDir, "01PRIMARY01");
-      const { ids, hasLegacy } = await listSessionsMerged(primaryDir);
-      expect(ids).toEqual(["01PRIMARY01"]);
-      expect(hasLegacy).toBe(false);
-    });
-  });
-
-  // AC: @session-legacy-migration ac-list-merge
-  describe("ac-list-merge: getAllSessionLogSummariesMerged", () => {
-    it("merges summaries from both locations", async () => {
-      await createTestSession(primaryDir, "01PRIMARY01");
-      await createTestSession(legacyDir, "01LEGACY01");
-      const summaries = await getAllSessionLogSummariesMerged(
-        primaryDir,
-        specDir,
-      );
-      const ids = summaries.map((s) => s.id);
-      expect(ids).toContain("01PRIMARY01");
-      expect(ids).toContain("01LEGACY01");
-    });
-
-    it("deduplicates summaries by ID with primary precedence", async () => {
-      await createTestSession(primaryDir, "01BOTH0001", "primary-agent");
-      await createTestSession(legacyDir, "01BOTH0001", "legacy-agent");
-      const summaries = await getAllSessionLogSummariesMerged(
-        primaryDir,
-        specDir,
-      );
-      expect(summaries).toHaveLength(1);
-      expect(summaries[0].agent_type).toBe("primary-agent");
-    });
-  });
-
   // ─── ac-deprecation-warning ────────────────────────────────────────────────
 
   // AC: @session-legacy-migration ac-deprecation-warning
-  describe("ac-deprecation-warning: warning on legacy reads", () => {
-    it("emits deprecation warning to stderr on legacy read", async () => {
+  describe("ac-deprecation-warning: warning when legacy sessions detected", () => {
+    it("emits deprecation warning to stderr with session count", async () => {
       const stderrSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
-      await createTestSession(legacyDir, "01LEGACY01");
-      await getSessionWithFallback(primaryDir, "01LEGACY01", specDir);
+      emitLegacyDeprecationWarning(3);
       expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("legacy location"),
+        expect.stringContaining("3 legacy session(s) found"),
       );
       expect(stderrSpy).toHaveBeenCalledWith(
         expect.stringContaining("kspec session migrate"),
@@ -469,31 +279,68 @@ describe("Legacy Session Fallback", () => {
       const stderrSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
-      await createTestSession(legacyDir, "01LEGACY01");
-      await createTestSession(legacyDir, "01LEGACY02");
-      await getSessionWithFallback(primaryDir, "01LEGACY01", specDir);
-      await getSessionWithFallback(primaryDir, "01LEGACY02", specDir);
+      emitLegacyDeprecationWarning(2);
+      emitLegacyDeprecationWarning(5);
       // Should only have been called once
       expect(stderrSpy).toHaveBeenCalledTimes(1);
     });
 
-    it("does not emit warning for primary reads", async () => {
-      const stderrSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-      await createTestSession(primaryDir, "01PRIMARY01");
-      await getSessionWithFallback(primaryDir, "01PRIMARY01", specDir);
-      expect(stderrSpy).not.toHaveBeenCalled();
-    });
-
-    it("emits warning on merged list with legacy-only sessions", async () => {
+    it("warnIfLegacySessions emits warning when legacy sessions exist", async () => {
       const stderrSpy = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
       await createTestSession(legacyDir, "01LEGACY01");
-      await listSessionsMerged(primaryDir, specDir);
+      await createTestSession(legacyDir, "01LEGACY02");
+      const result = await warnIfLegacySessions(specDir);
+      expect(result).toBe(true);
       expect(stderrSpy).toHaveBeenCalledWith(
-        expect.stringContaining("legacy location"),
+        expect.stringContaining("2 legacy session(s) found"),
+      );
+    });
+
+    it("warnIfLegacySessions returns false when no legacy sessions", async () => {
+      const stderrSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      const result = await warnIfLegacySessions(specDir);
+      expect(result).toBe(false);
+      expect(stderrSpy).not.toHaveBeenCalled();
+    });
+
+    it("warnIfLegacySessions returns false when specDir is undefined", async () => {
+      const stderrSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      const result = await warnIfLegacySessions(undefined);
+      expect(result).toBe(false);
+      expect(stderrSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  // ─── ac-list-merge ─────────────────────────────────────────────────────────
+
+  // AC: @session-legacy-migration ac-list-merge
+  describe("ac-list-merge: list returns only primary sessions with warning", () => {
+    it("listSessions returns only primary sessions, not legacy", async () => {
+      await createTestSession(primaryDir, "01PRIMARY01");
+      await createTestSession(legacyDir, "01LEGACY01");
+      const ids = await listSessions(primaryDir);
+      expect(ids).toContain("01PRIMARY01");
+      expect(ids).not.toContain("01LEGACY01");
+    });
+
+    it("warnIfLegacySessions warns about the count of unmigrated sessions", async () => {
+      const stderrSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      await createTestSession(legacyDir, "01LEGACY01");
+      await createTestSession(legacyDir, "01LEGACY02");
+      await warnIfLegacySessions(specDir);
+      expect(stderrSpy).toHaveBeenCalledWith(
+        expect.stringContaining("2 legacy session(s)"),
+      );
+      expect(stderrSpy).toHaveBeenCalledWith(
+        expect.stringContaining("kspec session migrate"),
       );
     });
   });

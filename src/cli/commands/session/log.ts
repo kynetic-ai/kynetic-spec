@@ -15,6 +15,10 @@ import {
   type ToolUsageStats,
   type TimePeriodStats,
   type SessionSearchResult,
+  getAllSessionLogSummaries,
+  resolveSessionId,
+  searchSessionEvents,
+  computeToolUsageStats,
   getSessionLogDetail,
   readEvents,
   readSessionContext,
@@ -24,11 +28,7 @@ import {
   resolveSessionBlobPointers,
 } from "../../../sessions/store.js";
 import {
-  getAllSessionLogSummariesMerged,
-  resolveSessionIdWithFallback,
-  searchSessionEventsWithFallback,
-  computeToolUsageStatsWithFallback,
-  getLegacySessionsDir,
+  warnIfLegacySessions,
 } from "../../../sessions/legacy.js";
 import type { SessionEvent } from "../../../sessions/types.js";
 import { SessionStatusSchema } from "../../../sessions/types.js";
@@ -211,8 +211,9 @@ export async function sessionLogListAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    // AC: @session-legacy-migration ac-list-merge — merge primary + legacy sessions
-    let sessions = await getAllSessionLogSummariesMerged(ctx.sessionsDir, ctx.specDir);
+    // AC: @session-legacy-migration ac-read-fallback ac-list-merge — read only from primary, warn if legacy exists
+    let sessions = await getAllSessionLogSummaries(ctx.sessionsDir);
+    await warnIfLegacySessions(ctx.specDir);
 
     // AC: @session-log-list ac-2 - Filter by status
     if (options.status) {
@@ -528,9 +529,11 @@ export async function sessionLogShowAction(
   try {
     const ctx = await initContext();
 
+    // AC: @session-legacy-migration ac-read-fallback — read only from primary, warn if legacy exists
+    await warnIfLegacySessions(ctx.specDir);
+
     // AC: @session-log-show ac-7, ac-8, ac-9 - Resolve session ID
-    // AC: @session-legacy-migration ac-read-fallback — try primary, then legacy
-    const resolution = await resolveSessionIdWithFallback(ctx.sessionsDir, sessionRef, ctx.specDir);
+    const resolution = await resolveSessionId(ctx.sessionsDir, sessionRef);
 
     if (!resolution.ok) {
       if (resolution.error === "not_found") {
@@ -547,10 +550,7 @@ export async function sessionLogShowAction(
     }
 
     const sessionId = resolution.id;
-    // Use legacy dir for all reads if session was found there
-    const effectiveDir = resolution.legacy
-      ? getLegacySessionsDir(ctx.specDir)!
-      : ctx.sessionsDir;
+    const effectiveDir = ctx.sessionsDir;
 
     // Get session detail
     const detail = await getSessionLogDetail(effectiveDir, sessionId);
@@ -771,8 +771,9 @@ export async function sessionLogStatsAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    // AC: @session-legacy-migration ac-list-merge — merge primary + legacy sessions
-    let sessions = await getAllSessionLogSummariesMerged(ctx.sessionsDir, ctx.specDir);
+    // AC: @session-legacy-migration ac-read-fallback ac-list-merge — read only from primary, warn if legacy exists
+    let sessions = await getAllSessionLogSummaries(ctx.sessionsDir);
+    await warnIfLegacySessions(ctx.specDir);
 
     // AC: @session-log-stats ac-4 - Filter by since
     if (options.since) {
@@ -805,7 +806,7 @@ export async function sessionLogStatsAction(
     let toolUsage: ToolUsageStats[] | null = null;
     if (options.toolUsage) {
       const sessionIds = sessions.map((s) => s.id);
-      toolUsage = await computeToolUsageStatsWithFallback(ctx.sessionsDir, sessionIds, ctx.specDir);
+      toolUsage = await computeToolUsageStats(ctx.sessionsDir, sessionIds);
     }
 
     // AC: @session-log-stats ac-7 - Time periods (optional)
@@ -904,6 +905,9 @@ export async function sessionLogSearchAction(
   try {
     const ctx = await initContext();
 
+    // AC: @session-legacy-migration ac-read-fallback — read only from primary, warn if legacy exists
+    await warnIfLegacySessions(ctx.specDir);
+
     // Parse options - validate limit as positive integer
     let limit = 50;
     if (options.limit) {
@@ -917,8 +921,7 @@ export async function sessionLogSearchAction(
     const sinceDate = options.since ? parseTimeSpec(options.since) : undefined;
 
     // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
-    // AC: @session-legacy-migration ac-read-fallback — search across primary + legacy
-    const results = await searchSessionEventsWithFallback(
+    const results = await searchSessionEvents(
       ctx.sessionsDir,
       pattern,
       {
@@ -928,7 +931,6 @@ export async function sessionLogSearchAction(
         limit,
         resolveBlobs: options.resolveBlobs,
       },
-      ctx.specDir,
     );
 
     // AC: @session-log-search ac-6 - No matches found message
