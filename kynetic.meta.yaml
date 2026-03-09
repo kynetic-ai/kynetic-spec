@@ -84,16 +84,7 @@ agents:
       - vitest
     conventions: []
     adapter: claude-agent-acp
-    dispatch:
-      - on: task.in_progress
-        filter:
-          automation: eligible
-      - on: task.ready
-        filter:
-          automation: eligible
-      - on: task.needs_work
-        filter:
-          automation: eligible
+    dispatch: []
     skills:
       - task-work
     budget:
