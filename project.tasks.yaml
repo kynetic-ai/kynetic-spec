@@ -83639,7 +83639,7 @@
   type: task
   spec_ref: "@shadow-write-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-lazy-shadow-sync-on-reads"
@@ -83687,6 +83687,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T23:13:52.658Z
 - _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
   slugs:
     - implement-daemon-background-sync-pushes
