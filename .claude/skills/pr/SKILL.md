@@ -42,6 +42,9 @@ git status --porcelain
 
 # Check remote and parse owner/repo
 git remote get-url origin
+
+# Fetch latest remote main for accurate comparison
+git fetch origin main
 ```
 
 ### Step 2: Check Branch Protection (Optional)
@@ -82,7 +85,17 @@ Generate a branch name automatically and proceed without confirmation:
 
 **If already on feature branch:**
 1. Commit any uncommitted changes
-2. Push to origin
+2. **Check for local-only ancestors** — verify the branch doesn't include commits from local `main` that aren't on `origin/main`:
+   ```bash
+   # Find commits between origin/main and the branch that aren't ours
+   git log --oneline origin/main..HEAD
+   ```
+   If this shows commits not authored during the current task (e.g., unpushed commits from local main that were included when branching), rebase to exclude them:
+   ```bash
+   git rebase --onto origin/main <last-foreign-commit> <branch-name>
+   ```
+   This prevents PR diffs from containing unrelated work that happened to be on local main but hasn't been pushed to remote yet.
+3. Push to origin
 
 ### Step 4: Create PR
 
