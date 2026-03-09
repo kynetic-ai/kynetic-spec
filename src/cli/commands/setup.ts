@@ -30,6 +30,11 @@ import {
   getShadowStatus,
   repairShadow,
   SHADOW_BRANCH_NAME,
+  SESSIONS_WORKTREE_DIR,
+  ensureSessionsGitignore,
+  ensureShadowSessionsGitignore,
+  needsSessionsGitignore,
+  needsShadowSessionsGitignore,
 } from "../../parser/shadow.js";
 import {
   detectAgentFromEnv,
@@ -1512,6 +1517,60 @@ export async function runSetupPipeline(
         name: "Ensure artifacts directory",
         status: artifactsCreated ? "done" : "skipped",
         message: artifactsCreated ? "created .kspec/artifacts/" : "already exists",
+      });
+    }
+
+    // Step 3a-ii: Ensure sessions directory and gitignore entries
+    // AC: @session-storage-modes ac-gitignore, ac-sessions-dir-autocreate
+    // AC: @session-legacy-migration ac-shadow-gitignore
+    {
+      const actions: string[] = [];
+
+      // Create .kspec-sessions/ directory
+      const sessionsDirPath = path.join(projectDir, SESSIONS_WORKTREE_DIR);
+      let sessionsCreated = false;
+      try {
+        await fs.access(sessionsDirPath);
+      } catch (_e) {
+        if (!dryRun) {
+          await fs.mkdir(sessionsDirPath, { recursive: true });
+        }
+        sessionsCreated = true;
+      }
+      if (sessionsCreated) {
+        actions.push(`${dryRun ? "create" : "created"} ${SESSIONS_WORKTREE_DIR}/`);
+      }
+
+      // Add .kspec-sessions/ to root .gitignore
+      if (dryRun) {
+        const rootNeeded = await needsSessionsGitignore(projectDir);
+        if (rootNeeded) {
+          actions.push(`add ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      } else {
+        const rootAdded = await ensureSessionsGitignore(projectDir);
+        if (rootAdded) {
+          actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      }
+
+      // Add sessions/ to .kspec/.gitignore
+      if (dryRun) {
+        const shadowNeeded = await needsShadowSessionsGitignore(projectDir);
+        if (shadowNeeded) {
+          actions.push("add sessions/ to .kspec/.gitignore");
+        }
+      } else {
+        const shadowAdded = await ensureShadowSessionsGitignore(projectDir);
+        if (shadowAdded) {
+          actions.push("added sessions/ to .kspec/.gitignore");
+        }
+      }
+
+      steps.push({
+        name: "Ensure sessions directory",
+        status: actions.length > 0 ? "done" : "skipped",
+        message: actions.length > 0 ? actions.join(", ") : "already configured",
       });
     }
 

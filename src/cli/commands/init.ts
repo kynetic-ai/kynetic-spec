@@ -249,6 +249,9 @@ export function registerInitCommand(program: Command): void {
             if (result.initialCommit) {
               console.log("  Created initial spec files");
             }
+            if (result.sessionsDirectoryCreated) {
+              console.log("  Created sessions directory: .kspec-sessions/");
+            }
           }
 
           const slug = toSlug(projectName);
