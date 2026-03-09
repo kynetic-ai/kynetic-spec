@@ -83520,14 +83520,14 @@
   type: task
   spec_ref: "@shadow-lazy-read-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKA9RYD85EEK3RYNM9RYMW10
+  session_id: null
   created_at: 2026-03-09T21:25:11.791Z
   started_at: 2026-03-09T22:19:55.610Z
   submitted_at: 2026-03-09T22:19:59.464Z
@@ -83598,6 +83598,13 @@
            - ac-no-sync-env: tests KSPEC_NO_SYNC=1 env guard skips sync block entirely
         All 34 tests pass (12 sync-mode + 22 drift-check). 2 pre-existing codex test failures
         unrelated.
+      supersedes: null
+    - _ulid: 01KKABPKJSECZ3Q8BKB4TRWSE6
+      created_at: 2026-03-09T22:32:51.034Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: CI fails in tests/shadow-drift-check.test.ts
+        from a hard-coded main branch assumption, and ac-session-start-always-pulls plus
+        ac-no-sync-env still lack behavioral coverage against the real initContext/command path."
       supersedes: null
   todos: []
   automation: eligible
