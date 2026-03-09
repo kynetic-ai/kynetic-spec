@@ -352,6 +352,31 @@ describe("Command Annotations", () => {
     expect(getAlwaysSyncAnnotation(startCmd!)).toBe(true);
   });
 
+  // AC: @shadow-write-sync ac-write-skips-read-check
+  it("mutating task command is annotated as mutating (triggers skip syncMode)", async () => {
+    const { Command } = await import("commander");
+    const { getMutatingAnnotation, getAlwaysSyncAnnotation } = await import(
+      "../src/cli/command-annotations.js"
+    );
+    const { registerTaskCommands } = await import(
+      "../src/cli/commands/task.js"
+    );
+
+    const program = new Command("kspec");
+    registerTaskCommands(program);
+
+    // Find the task add subcommand (representative mutating command)
+    const taskCmd = program.commands.find((c) => c.name() === "task");
+    expect(taskCmd).toBeDefined();
+    const addCmd = taskCmd!.commands.find((c) => c.name() === "add");
+    expect(addCmd).toBeDefined();
+
+    // Verify it's annotated as mutating (will cause preAction to set skip syncMode)
+    expect(getMutatingAnnotation(addCmd!)).toBe(true);
+    // And NOT always-sync (mutating and always-sync are independent)
+    expect(getAlwaysSyncAnnotation(addCmd!)).toBe(false);
+  });
+
 });
 
 // ─── Behavioral tests against real initContext() ──────────────────────────────
@@ -483,5 +508,34 @@ describe("initContext sync behavior", () => {
     expect(needsSyncCalled).toBe(true);
     // Pull was not called because our mock returns false (no sync needed)
     expect(pullCalled).toBe(false);
+  });
+
+  // AC: @shadow-write-sync ac-write-skips-read-check
+  it("initContext skips both shadowPull and shadowNeedsSync when syncMode is 'skip'", async () => {
+    // Simulate what the preAction hook does for mutating (write) commands
+    setSyncMode("skip");
+
+    await initContext(testDir);
+
+    // "skip" mode should bypass all pre-read sync — writes handle their own sync
+    // via commitIfShadow → shadowPushAsync → pullRebaseBeforePush
+    expect(pullCalled).toBe(false);
+    expect(needsSyncCalled).toBe(false);
+  });
+
+  // AC: @shadow-write-sync ac-write-skips-read-check (consume-once: second initContext also skips)
+  it("initContext skips sync on both calls within a mutating command lifecycle", async () => {
+    // Mutating commands call initContext twice: once in preAction (via maybeAutoStartDaemon)
+    // and once in the action handler. Both should skip pre-read sync.
+    setSyncMode("skip");
+
+    await initContext(testDir);
+    expect(pullCalled).toBe(false);
+    expect(needsSyncCalled).toBe(false);
+
+    // Second call (action handler) — consumeSyncMode returns 'skip' (consumed)
+    await initContext(testDir);
+    expect(pullCalled).toBe(false);
+    expect(needsSyncCalled).toBe(false);
   });
 });

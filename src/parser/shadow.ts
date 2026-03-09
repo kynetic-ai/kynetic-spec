@@ -966,6 +966,7 @@ export async function commitIfShadow(
   );
 
   // AC: @shadow-sync ac-1 - Fire-and-forget push after each commit
+  // AC: @shadow-write-sync ac-write-always-syncs — writes always sync via push path
   if (committed) {
     shadowPushAsync(shadowConfig.worktreeDir, verbose);
   }
@@ -1503,6 +1504,7 @@ export async function shadowPushAsync(
   }
 
   // AC: @config-shadow ac-11 — pull-rebase before pushing to integrate remote changes
+  // AC: @shadow-write-sync ac-write-always-syncs — writes always perform full sync
   const branchName = getBranchName(options);
   const pullOk = await pullRebaseBeforePush(worktreeDir, branchName, debug, options);
   if (!pullOk) {
