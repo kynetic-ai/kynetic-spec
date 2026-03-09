@@ -181,26 +181,26 @@ describe('SessionEventSchema', () => {
 // ─── Path Helper Tests ───────────────────────────────────────────────────────
 
 describe('Path helpers', () => {
-  const sessionsDir = '/test/.kspec/sessions';
+  const sessionsDir = '/test/.kspec-sessions';
   const sessionId = '01KF123456789ABCDEFGHJKMNP';
 
   it('should construct sessions directory path', () => {
-    expect(getSessionsDir(sessionsDir)).toBe('/test/.kspec/sessions');
+    expect(getSessionsDir(sessionsDir)).toBe('/test/.kspec-sessions');
   });
 
   it('should construct session directory path', () => {
-    expect(getSessionDir(sessionsDir, sessionId)).toBe(`/test/.kspec/sessions/${sessionId}`);
+    expect(getSessionDir(sessionsDir, sessionId)).toBe(`/test/.kspec-sessions/${sessionId}`);
   });
 
   it('should construct metadata file path', () => {
     expect(getSessionMetadataPath(sessionsDir, sessionId)).toBe(
-      `/test/.kspec/sessions/${sessionId}/session.yaml`
+      `/test/.kspec-sessions/${sessionId}/session.yaml`
     );
   });
 
   it('should construct events file path', () => {
     expect(getSessionEventsPath(sessionsDir, sessionId)).toBe(
-      `/test/.kspec/sessions/${sessionId}/events.jsonl`
+      `/test/.kspec-sessions/${sessionId}/events.jsonl`
     );
   });
 });
