@@ -83004,7 +83004,7 @@
   type: task
   spec_ref: "@session-legacy-migration"
   plan_ref: "@plan-session-storage-separation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@add-legacy-session-read-fallback"
@@ -83026,6 +83026,8 @@
         .kspec-sessions/. Idempotent, reports progress, does not delete originals.
   todos: []
   automation: eligible
+  started_at: 2026-03-09T06:07:26.974Z
+  session_id: 01KK8JV296P5XMTVV766NY4MR4
 - _ulid: 01KK7T2FMD6PPCZN3MZYF3KXXP
   slugs:
     - update-tests-for-session-storage-separation
