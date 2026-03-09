@@ -408,6 +408,74 @@ describe("session branch sync", () => {
     scheduler.stop();
   });
 
+  it("sessionBranchPull resolves configured remote instead of hardcoding origin", async () => {
+    // AC: @session-branch-worktree ac-sync
+    await initializeSessionBranch(tempDir);
+
+    const worktreeDir = path.join(tempDir, SESSIONS_WORKTREE_DIR);
+
+    // Create a bare repo as remote with a non-default name
+    const remoteDir = await createTempDir("session-custom-remote-");
+    execSync("git init --bare", { cwd: remoteDir, stdio: "pipe" });
+
+    // Add remote with custom name (not "origin")
+    execSync(`git remote add upstream ${remoteDir}`, {
+      cwd: worktreeDir,
+      stdio: "pipe",
+    });
+    execSync(`git push upstream ${SESSION_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: "pipe",
+    });
+
+    // Configure tracking to the custom remote
+    execSync(
+      `git config branch.${SESSION_BRANCH_NAME}.remote upstream`,
+      { cwd: worktreeDir, stdio: "pipe" },
+    );
+    execSync(
+      `git config branch.${SESSION_BRANCH_NAME}.merge refs/heads/${SESSION_BRANCH_NAME}`,
+      { cwd: worktreeDir, stdio: "pipe" },
+    );
+
+    // Simulate a remote change by pushing from a clone
+    const cloneDir = await createTempDir("session-custom-clone-");
+    execSync(`git clone ${remoteDir} .`, { cwd: cloneDir, stdio: "pipe" });
+    execSync(`git checkout ${SESSION_BRANCH_NAME}`, {
+      cwd: cloneDir,
+      stdio: "pipe",
+    });
+    await fs.writeFile(
+      path.join(cloneDir, "custom-remote-session.yaml"),
+      "id: custom-remote\n",
+      "utf-8",
+    );
+    execSync("git add -A", { cwd: cloneDir, stdio: "pipe" });
+    execSync(
+      'git -c user.name="Test" -c user.email="test@test.com" commit -m "Custom remote session"',
+      { cwd: cloneDir, stdio: "pipe" },
+    );
+    execSync(`git push origin ${SESSION_BRANCH_NAME}`, {
+      cwd: cloneDir,
+      stdio: "pipe",
+    });
+
+    // Pull should use "upstream" (from git config), not hardcoded "origin"
+    const result = await sessionBranchPull(worktreeDir, SESSION_BRANCH_NAME);
+
+    expect(result.success).toBe(true);
+    expect(result.pulled).toBe(true);
+
+    // Verify the file from the custom remote was pulled
+    const remoteFile = path.join(worktreeDir, "custom-remote-session.yaml");
+    const stat = await fs.stat(remoteFile);
+    expect(stat.isFile()).toBe(true);
+
+    // Clean up
+    await fs.rm(remoteDir, { recursive: true, force: true });
+    await fs.rm(cloneDir, { recursive: true, force: true });
+  });
+
   it("session branch sync is independent from kspec-meta sync", async () => {
     // AC: @session-branch-worktree ac-sync
     // Session sync failure should not affect kspec-meta operations

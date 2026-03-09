@@ -452,28 +452,31 @@ export async function createServer(options: ServerOptions) {
   // Session sync runs independently from kspec-meta sync — failures in one do not affect the other
   if (startupProjectPath) {
     try {
-      const { readFileSync } = await import('fs');
-      const { parse: parseYaml } = await import('yaml');
-      const manifestPath = join(startupProjectPath, '.kspec', 'kynetic.yaml');
-      const manifestRaw = readFileSync(manifestPath, 'utf-8');
-      const manifest = parseYaml(manifestRaw) as { sessions?: { storage?: string; branch?: string } } | null;
+      const { loadProjectConfig } = await import('../parser/config.js');
+      const { config } = await loadProjectConfig(startupProjectPath);
+      const specDir = join(startupProjectPath, config.shadow.directory);
+
+      // Load manifest from config-derived specDir (not hardcoded .kspec/)
+      const { readYamlFile } = await import('../parser/yaml.js');
+      const manifestPath = join(specDir, 'kynetic.yaml');
+      const manifest = await readYamlFile<{ sessions?: { storage?: string; branch?: string } }>(manifestPath);
 
       if (manifest?.sessions?.storage === 'branch') {
-        const { loadProjectConfig } = await import('../parser/config.js');
-        const { config } = await loadProjectConfig(startupProjectPath);
         const syncInterval = config.shadow.sync_interval;
 
         if (syncInterval > 0) {
-          const sessionBranchName = manifest.sessions.branch || 'kspec-sessions';
-          const sessionWorktreeDir = join(startupProjectPath, '.kspec-sessions');
+          const { resolveSessionBranchConfig } = await import('../parser/session-branch.js');
+          const sessionConfig = resolveSessionBranchConfig(startupProjectPath, manifest);
 
-          sessionSyncScheduler = new SessionSyncScheduler({
-            worktreeDir: sessionWorktreeDir,
-            intervalSeconds: syncInterval,
-            branchName: sessionBranchName,
-            pubsub: pubsubManager,
-          });
-          sessionSyncScheduler.start();
+          if (sessionConfig) {
+            sessionSyncScheduler = new SessionSyncScheduler({
+              worktreeDir: sessionConfig.worktreeDir,
+              intervalSeconds: syncInterval,
+              branchName: sessionConfig.branchName,
+              pubsub: pubsubManager,
+            });
+            sessionSyncScheduler.start();
+          }
         }
       }
     } catch (error) {

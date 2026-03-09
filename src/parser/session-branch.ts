@@ -84,6 +84,31 @@ function isDebugMode(): boolean {
   return process.env.KSPEC_DEBUG === "1" || process.env.KSPEC_DEBUG === "true";
 }
 
+/**
+ * Resolve the remote name for a branch from git config.
+ * Falls back to "origin" if no tracking is configured.
+ *
+ * AC: @session-branch-worktree ac-sync — resolve configured remote instead of hardcoding "origin"
+ */
+async function resolveRemoteName(
+  cwd: string,
+  branchName: string,
+): Promise<string> {
+  try {
+    const { stdout } = await runGitAsync(cwd, [
+      "config",
+      `branch.${branchName}.remote`,
+    ]);
+    const configured = stdout.trim();
+    if (configured) {
+      return configured;
+    }
+  } catch {
+    // No tracking configured
+  }
+  return "origin";
+}
+
 // ─── Session Branch Status ──────────────────────────────────────────────────
 
 /**
@@ -181,8 +206,9 @@ export async function initializeSessionBranch(
   }
 
   try {
-    // Check for remote branch
-    let remoteName = "origin";
+    // Resolve remote name from git config instead of hardcoding "origin"
+    // AC: @session-branch-worktree ac-sync
+    const remoteName = await resolveRemoteName(projectRoot, branchName);
     let remoteHasBranch = false;
     try {
       const { stdout } = await runGitAsync(projectRoot, [
@@ -570,10 +596,14 @@ async function sessionBranchPullImpl(
     return result;
   }
 
-  // Fetch
+  // Resolve configured remote instead of hardcoding "origin"
+  // AC: @session-branch-worktree ac-sync
   const projectRoot = path.dirname(worktreeDir);
+  const remoteName = await resolveRemoteName(projectRoot, branchName);
+
+  // Fetch
   try {
-    await runGitAsync(projectRoot, ["fetch", "origin"]);
+    await runGitAsync(projectRoot, ["fetch", remoteName]);
   } catch {
     result.success = true;
     return result;
@@ -584,7 +614,7 @@ async function sessionBranchPullImpl(
     const { stdout } = await runGitAsync(projectRoot, [
       "ls-remote",
       "--heads",
-      "origin",
+      remoteName,
       branchName,
     ]);
     if (stdout.trim().length === 0) {
