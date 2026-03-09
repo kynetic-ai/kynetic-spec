@@ -23,6 +23,10 @@ import {
   getBudget,
 } from '../../sessions/store.js';
 import {
+  hasLegacySessions,
+  countLegacySessions,
+} from '../../sessions/legacy.js';
+import {
   initContext,
   loadAllTasks,
   loadAllItems,
@@ -33,6 +37,7 @@ export function createSessionRoutes() {
   return new Elysia({ prefix: '/api/sessions' })
 
     // List all sessions with summaries
+    // AC: @session-legacy-migration ac-read-fallback ac-list-merge — detect-and-warn for legacy sessions
     .get('/', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
       const summaries = await getAllSessionLogSummaries(ctx.sessionsDir);
@@ -42,9 +47,15 @@ export function createSessionRoutes() {
         new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
       );
 
+      // Detect legacy sessions and include warning in response
+      const legacyCount = await countLegacySessions(ctx.specDir);
+
       return {
         items: summaries,
         total: summaries.length,
+        ...(legacyCount > 0 ? {
+          warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
+        } : {}),
       };
     })
 

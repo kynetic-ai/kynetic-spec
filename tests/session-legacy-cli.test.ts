@@ -1,17 +1,16 @@
 /**
- * CLI-level tests for legacy session read fallback.
+ * CLI-level tests for legacy session detect-and-warn.
  *
  * These tests exercise the actual CLI commands (kspec session log list, show,
- * search, migrate) to verify that the command handlers in
- * src/cli/commands/session/log.ts and migrate.ts route through the fallback
- * layer correctly.
+ * search, migrate) to verify that session reads only come from .kspec-sessions/
+ * and a warning is emitted when legacy sessions exist in .kspec/sessions/.
  *
  * Complements the unit tests in session-legacy-fallback.test.ts which test the
  * legacy.ts helper functions directly.
  *
  * AC coverage (CLI-level):
- * - @session-legacy-migration ac-read-fallback: CLI reads fall back to .kspec/sessions/
- * - @session-legacy-migration ac-list-merge: CLI list merges both locations
+ * - @session-legacy-migration ac-read-fallback: CLI reads only from .kspec-sessions/, warns about legacy
+ * - @session-legacy-migration ac-list-merge: CLI list shows only primary sessions, warns about legacy count
  * - @session-legacy-migration ac-deprecation-warning: CLI emits warning on stderr
  * - @session-legacy-migration ac-migration-copy: CLI migrate copies sessions
  * - @session-legacy-migration ac-migration-idempotent: CLI migrate skips existing
@@ -84,7 +83,7 @@ async function writeSession(
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-describe("Legacy session fallback (CLI)", () => {
+describe("Legacy session detect-and-warn (CLI)", () => {
   let tempDir: string;
   let sessionsDir: string; // .kspec-sessions/ (primary)
   let legacyDir: string; // <specDir>/sessions/ (legacy location)
@@ -108,8 +107,8 @@ describe("Legacy session fallback (CLI)", () => {
 
   // AC: @session-legacy-migration ac-read-fallback
   // AC: @session-legacy-migration ac-list-merge
-  describe("session log list with legacy fallback", () => {
-    it("includes legacy-only sessions in list output", async () => {
+  describe("session log list without fallback reads", () => {
+    it("does not include legacy-only sessions in list output", async () => {
       await writeSession(sessionsDir, PRIMARY_SESSION_ID);
       await writeSession(legacyDir, LEGACY_SESSION_ID, {
         agentType: "legacy-agent",
@@ -119,14 +118,11 @@ describe("Legacy session fallback (CLI)", () => {
         "session log list",
         tempDir,
       );
-      expect(sessions).toHaveLength(2);
-      const ids = sessions.map((s) => s.id);
-      expect(ids).toContain(PRIMARY_SESSION_ID);
-      expect(ids).toContain(LEGACY_SESSION_ID);
+      expect(sessions).toHaveLength(1);
+      expect(sessions[0].id).toBe(PRIMARY_SESSION_ID);
     });
 
-    it("deduplicates when session exists in both locations", async () => {
-      // Same ID in both — primary should win
+    it("shows only primary sessions even when both locations have sessions", async () => {
       await writeSession(sessionsDir, BOTH_SESSION_ID, {
         agentType: "primary-agent",
       });
@@ -139,28 +135,21 @@ describe("Legacy session fallback (CLI)", () => {
         "session log list",
         tempDir,
       );
-      expect(sessions).toHaveLength(2);
-      const both = sessions.find((s) => s.id === BOTH_SESSION_ID);
-      expect(both).toBeDefined();
-      expect(both!.agent_type).toBe("primary-agent");
+      expect(sessions).toHaveLength(1);
+      expect(sessions[0].id).toBe(BOTH_SESSION_ID);
+      expect(sessions[0].agent_type).toBe("primary-agent");
     });
 
-    it("filters by --status still work with merged results", async () => {
+    it("filters by --status work with primary-only results", async () => {
       await writeSession(sessionsDir, PRIMARY_SESSION_ID, {
         status: "completed",
-      });
-      await writeSession(legacyDir, LEGACY_SESSION_ID, {
-        status: "active",
-        agentType: "legacy-agent",
-        endedAt: undefined,
       });
 
       const activeSessions = kspecJson<SessionLogSummary[]>(
         "session log list --status active",
         tempDir,
       );
-      expect(activeSessions).toHaveLength(1);
-      expect(activeSessions[0].id).toBe(LEGACY_SESSION_ID);
+      expect(activeSessions).toHaveLength(0);
     });
   });
 
@@ -168,15 +157,15 @@ describe("Legacy session fallback (CLI)", () => {
 
   // AC: @session-legacy-migration ac-deprecation-warning
   describe("deprecation warning on stderr", () => {
-    it("emits deprecation warning to stderr when listing legacy sessions", async () => {
+    it("emits deprecation warning to stderr when legacy sessions exist", async () => {
       await writeSession(legacyDir, LEGACY_SESSION_ID);
 
       const result = kspec("session log list", tempDir);
       expect(result.exitCode).toBe(0);
-      expect(result.stderr).toContain("legacy location");
+      expect(result.stderr).toContain("legacy session(s) found");
       expect(result.stderr).toContain("kspec session migrate");
       // Warning must NOT appear in stdout (would corrupt structured output)
-      expect(result.stdout).not.toContain("legacy location");
+      expect(result.stdout).not.toContain("legacy session(s) found");
     });
 
     it("does not emit deprecation warning when only primary sessions exist", async () => {
@@ -184,78 +173,57 @@ describe("Legacy session fallback (CLI)", () => {
 
       const result = kspec("session log list", tempDir);
       expect(result.exitCode).toBe(0);
-      expect(result.stderr).not.toContain("legacy location");
+      expect(result.stderr).not.toContain("legacy session(s) found");
+    });
+
+    it("includes legacy session count in warning", async () => {
+      await writeSession(legacyDir, LEGACY_SESSION_ID);
+      await writeSession(legacyDir, testUlid("LGCY", 2));
+
+      const result = kspec("session log list", tempDir);
+      expect(result.stderr).toContain("2 legacy session(s) found");
     });
   });
 
   // ─── ac-read-fallback: session log show ─────────────────────────────────
 
   // AC: @session-legacy-migration ac-read-fallback
-  describe("session log show with legacy fallback", () => {
-    it("shows a legacy-only session by full ID", async () => {
+  describe("session log show without fallback reads", () => {
+    it("does not find a legacy-only session", async () => {
       await writeSession(legacyDir, LEGACY_SESSION_ID, {
         events: [{ type: "session.start" }, { type: "session.end" }],
       });
 
-      const result = kspec(`session log show ${LEGACY_SESSION_ID}`, tempDir);
-      expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain(LEGACY_SESSION_ID.slice(0, 8));
+      const result = kspec(`session log show ${LEGACY_SESSION_ID}`, tempDir, { expectFail: true });
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("not found");
     });
 
-    it("shows a legacy-only session in JSON mode with full fields", async () => {
-      await writeSession(legacyDir, LEGACY_SESSION_ID, {
-        agentType: "legacy-agent",
+    it("shows primary session normally", async () => {
+      await writeSession(sessionsDir, PRIMARY_SESSION_ID, {
         events: [{ type: "session.start" }],
       });
 
-      const detail = kspecJson<{ id: string; agent_type: string; status: string }>(
-        `session log show ${LEGACY_SESSION_ID}`,
-        tempDir,
-      );
-      expect(detail.id).toBe(LEGACY_SESSION_ID);
-      expect(detail.agent_type).toBe("legacy-agent");
-      expect(detail.status).toBe("completed");
+      const result = kspec(`session log show ${PRIMARY_SESSION_ID}`, tempDir);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain(PRIMARY_SESSION_ID.slice(0, 8));
     });
 
-    it("shows primary session over legacy when both exist", async () => {
-      await writeSession(sessionsDir, BOTH_SESSION_ID, {
-        agentType: "primary-agent",
-      });
-      await writeSession(legacyDir, BOTH_SESSION_ID, {
-        agentType: "legacy-agent",
-      });
-
-      const detail = kspecJson<{ id: string; agent_type: string }>(
-        `session log show ${BOTH_SESSION_ID}`,
-        tempDir,
-      );
-      expect(detail.agent_type).toBe("primary-agent");
-    });
-
-    it("emits deprecation warning on stderr for legacy session show", async () => {
+    it("emits warning on stderr when legacy sessions exist even for primary show", async () => {
+      await writeSession(sessionsDir, PRIMARY_SESSION_ID);
       await writeSession(legacyDir, LEGACY_SESSION_ID);
 
-      const result = kspec(`session log show ${LEGACY_SESSION_ID}`, tempDir);
+      const result = kspec(`session log show ${PRIMARY_SESSION_ID}`, tempDir);
       expect(result.exitCode).toBe(0);
-      expect(result.stderr).toContain("legacy location");
-    });
-
-    it("resolves legacy session by prefix", async () => {
-      await writeSession(legacyDir, LEGACY_SESSION_ID);
-
-      // Use first 8 chars as prefix
-      const prefix = LEGACY_SESSION_ID.slice(0, 8);
-      const result = kspec(`session log show ${prefix}`, tempDir);
-      expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain(prefix);
+      expect(result.stderr).toContain("legacy session(s) found");
     });
   });
 
   // ─── ac-read-fallback: session log search ───────────────────────────────
 
   // AC: @session-legacy-migration ac-read-fallback
-  describe("session log search with legacy fallback", () => {
-    it("finds events in legacy sessions", async () => {
+  describe("session log search without fallback reads", () => {
+    it("does not find events from legacy-only sessions", async () => {
       await writeSession(legacyDir, LEGACY_SESSION_ID, {
         events: [
           {
@@ -269,16 +237,15 @@ describe("Legacy session fallback (CLI)", () => {
         'session log search "legacy-search-marker"',
         tempDir,
       );
-      expect(results.length).toBeGreaterThan(0);
-      expect(results[0].session_id).toBe(LEGACY_SESSION_ID);
+      expect(results).toHaveLength(0);
     });
 
-    it("searches across both primary and legacy sessions", async () => {
+    it("searches only primary sessions", async () => {
       await writeSession(sessionsDir, PRIMARY_SESSION_ID, {
         events: [
           {
             type: "session.start",
-            data: { message: "cross-location-search" },
+            data: { message: "primary-search-marker" },
           },
         ],
       });
@@ -286,21 +253,20 @@ describe("Legacy session fallback (CLI)", () => {
         events: [
           {
             type: "session.start",
-            data: { message: "cross-location-search" },
+            data: { message: "primary-search-marker" },
           },
         ],
       });
 
       const results = kspecJson<Array<{ session_id: string; matches: unknown[] }>>(
-        'session log search "cross-location-search"',
+        'session log search "primary-search-marker"',
         tempDir,
       );
-      const sessionIds = results.map((r) => r.session_id);
-      expect(sessionIds).toContain(PRIMARY_SESSION_ID);
-      expect(sessionIds).toContain(LEGACY_SESSION_ID);
+      expect(results).toHaveLength(1);
+      expect(results[0].session_id).toBe(PRIMARY_SESSION_ID);
     });
 
-    it("emits deprecation warning on stderr when searching legacy sessions", async () => {
+    it("emits deprecation warning on stderr when legacy sessions exist", async () => {
       await writeSession(legacyDir, LEGACY_SESSION_ID, {
         events: [
           {
@@ -312,7 +278,7 @@ describe("Legacy session fallback (CLI)", () => {
 
       const result = kspec('session log search "warning-check"', tempDir);
       expect(result.exitCode).toBe(0);
-      expect(result.stderr).toContain("legacy location");
+      expect(result.stderr).toContain("legacy session(s) found");
     });
   });
 });
