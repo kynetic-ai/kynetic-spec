@@ -83520,7 +83520,7 @@
   type: task
   spec_ref: "@shadow-lazy-read-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -83626,6 +83626,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-09T23:02:12.864Z
+  closed_reason: "Merged in PR #730. Implemented lazy shadow sync on reads with worktree-aware
+    FETCH_HEAD drift checks, syncMode propagation/consume-once behavior, session-start always-sync
+    routing, and KSPEC_NO_SYNC precedence. AC coverage verified across all 17 spec criteria with
+    targeted drift-check/sync-mode tests; local full suite passed (195/195 files, 4261 tests) and
+    GitHub checks passed on merge commit f6cbc6fe2f952ab8e8687149716da997890cc5b6."
 - _ulid: 01KKA7TR1B2T0VDX934CVAHQMM
   slugs:
     - implement-always-sync-on-shadow-writes
