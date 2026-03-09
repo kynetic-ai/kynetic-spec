@@ -83225,6 +83225,33 @@
         manifest path and origin remote for session sync, so ac-sync is incomplete for non-default
         configurations. Full local regression gate is also not clean (npm test: 3 failing tests)."
       supersedes: null
+    - _ulid: 01KK8PP29YJX12JVTMARHJSSGJ
+      created_at: 2026-03-09T07:06:18.814Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 — addressed both MUST-FIX findings:
+
+
+        1. **Hardcoded manifest path (daemon server.ts)**: Replaced raw readFileSync + hardcoded
+        '.kspec/kynetic.yaml' with loadProjectConfig() to derive specDir from
+        config.shadow.directory. Also replaced inline branch name/worktree path resolution with
+        resolveSessionBranchConfig() for consistency.
+
+
+        2. **Hardcoded 'origin' remote (session-branch.ts)**: Added resolveRemoteName() helper that
+        reads branch.<name>.remote from git config, falling back to 'origin' if unconfigured. Used
+        in both initializeSessionBranch() and sessionBranchPullImpl(). Matches the pattern used by
+        pullRebaseBeforePush() in shadow.ts.
+
+
+        3. **New test**: Added 'sessionBranchPull resolves configured remote instead of hardcoding
+        origin' — sets up a non-default remote ('upstream'), configures tracking, pushes from a
+        clone, then verifies pull uses the configured remote.
+
+
+        Full test suite: 4234 passed (23 session-branch tests), 2 pre-existing failures in codex
+        platform detection (unrelated). 0 regressions.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7W7S520G8ACKWTCYNW9Y4F
