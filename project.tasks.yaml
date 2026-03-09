@@ -83117,7 +83117,7 @@
   type: task
   spec_ref: "@session-branch-worktree"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -83134,7 +83134,7 @@
   session_id: 01KK8NNFSBV28NZBPDBRSREYWB
   created_at: 2026-03-08T22:46:17.451Z
   started_at: 2026-03-09T07:05:55.760Z
-  submitted_at: 2026-03-09T06:31:32.745Z
+  submitted_at: 2026-03-09T07:06:34.113Z
   notes:
     - _ulid: 01KK7T2G3B9C789Z5SSRNSWDQD
       created_at: 2026-03-08T22:46:17.451Z
