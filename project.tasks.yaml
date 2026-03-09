@@ -83639,7 +83639,7 @@
   type: task
   spec_ref: "@shadow-write-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-lazy-shadow-sync-on-reads"
@@ -83719,6 +83719,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-09T23:53:18.619Z
+  closed_reason: "Merged in PR #732. Verified @shadow-write-sync implementation: commitIfShadow()
+    write entrypoint always reaches pull-rebase-before-push sync, and mutating command initContext()
+    calls skip the redundant pre-read drift check. AC coverage confirmed for ac-write-always-syncs
+    and ac-write-skips-read-check; full npm test passed on PR HEAD (4265 passed, 3 skipped)."
 - _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
   slugs:
     - implement-daemon-background-sync-pushes
