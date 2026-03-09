@@ -82722,7 +82722,7 @@
   type: task
   spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82733,9 +82733,10 @@
     - storage
     - cli
   vcs_refs: []
-  session_id: 01KK84FJMTSMTDZQBPZZTTQYTJ
+  session_id: null
   created_at: 2026-03-08T22:46:15.461Z
   started_at: 2026-03-09T01:54:39.667Z
+  submitted_at: 2026-03-09T02:27:35.596Z
   notes:
     - _ulid: 01KK7T2E55HPXSHDYDPGWX2ADY
       created_at: 2026-03-08T22:46:15.461Z
@@ -82763,9 +82764,15 @@
         5. 11 tests covering AC coverage for ac-gitignore, ac-sessions-dir-autocreate,
         ac-shadow-gitignore, ac-sessions-dir
       supersedes: null
+    - _ulid: 01KK874X3EDQ2GYKHW7BJ02BV3
+      created_at: 2026-03-09T02:34:47.791Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: setup --dry-run only previews .kspec-sessions/
+        creation and omits planned .gitignore updates introduced by PR #720, regressing
+        @enhanced-setup ac-6."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T02:27:35.596Z
 - _ulid: 01KK7T2EMAEM95B7M04Z2SMRNA
   slugs:
     - add-legacy-session-read-fallback
