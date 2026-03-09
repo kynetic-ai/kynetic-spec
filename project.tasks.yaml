@@ -82588,6 +82588,12 @@
   plan_ref: "@plan-session-storage-separation"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #719 (commit e05e155be84dffb822523639cd219dcc0f37002d). Extracted
+    session path resolution from specDir by adding ctx.sessionsDir, routing session
+    store/helpers/CLI/daemon/invocation through .kspec-sessions at project root, and fixing
+    follow-up regressions in checkpoint scoping, task budget enforcement, and session log listing.
+    AC coverage verified for ac-resolver, ac-path-helpers, ac-context, ac-cli-commands, and
+    ac-daemon-routes; npm test passed on the merged head."
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
   context: []
@@ -82601,6 +82607,7 @@
   created_at: 2026-03-08T22:46:13.935Z
   started_at: 2026-03-09T03:14:15.387Z
   submitted_at: 2026-03-09T03:14:24.574Z
+  completed_at: 2026-03-09T03:25:23.484Z
   notes:
     - _ulid: 01KK7T2CNFQ60ZDV8928Z5A5JZ
       created_at: 2026-03-08T22:46:13.935Z
@@ -82676,13 +82683,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-09T03:25:23.484Z
-  closed_reason: "Merged in PR #719 (commit e05e155be84dffb822523639cd219dcc0f37002d). Extracted
-    session path resolution from specDir by adding ctx.sessionsDir, routing session
-    store/helpers/CLI/daemon/invocation through .kspec-sessions at project root, and fixing
-    follow-up regressions in checkpoint scoping, task budget enforcement, and session log listing.
-    AC coverage verified for ac-resolver, ac-path-helpers, ac-context, ac-cli-commands, and
-    ac-daemon-routes; npm test passed on the merged head."
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
   slugs:
     - remove-shadowautocommit-from-session-operations
@@ -82753,7 +82753,7 @@
   type: task
   spec_ref: "@session-storage-modes"
   plan_ref: "@plan-session-storage-separation"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@add-sessions-storage-config-to-manifest-schema"
@@ -82764,9 +82764,9 @@
     - storage
     - cli
   vcs_refs: []
-  session_id: null
+  session_id: 01KK89EEBG2XA6TFD63SWC00D3
   created_at: 2026-03-08T22:46:15.461Z
-  started_at: 2026-03-09T01:54:39.667Z
+  started_at: 2026-03-09T03:26:41.185Z
   submitted_at: 2026-03-09T02:27:35.596Z
   notes:
     - _ulid: 01KK7T2E55HPXSHDYDPGWX2ADY
