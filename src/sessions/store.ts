@@ -29,6 +29,9 @@ import {
   type TaskBudget,
   TaskBudgetSchema,
 } from "./types.js";
+import {
+  sessionBranchAutoCommit,
+} from "../parser/session-branch.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -43,6 +46,48 @@ const EVENT_LINE_MAX_BYTES = 256 * 1024;
 const EVENT_FIELD_EXTERNALIZE_BYTES = 16 * 1024;
 const EVENT_PREVIEW_MAX_BYTES = 512;
 const EVENT_SEQ_TAIL_READ_BYTES = EVENT_LINE_MAX_BYTES + 1024;
+
+// ─── Session Branch Auto-Commit ──────────────────────────────────────────────
+// AC: @session-branch-worktree ac-commit-boundaries
+// When sessionsDir is a git worktree (sessions.storage=branch), auto-commit at
+// lifecycle boundaries (create, close, stale cleanup, compact).
+// Event appends are NOT committed individually.
+
+/**
+ * Check if sessionsDir is a git worktree (has a .git file, not directory).
+ * Cached per path to avoid repeated filesystem checks.
+ */
+const worktreeCache = new Map<string, boolean>();
+
+async function isSessionWorktree(sessionsDir: string): Promise<boolean> {
+  const cached = worktreeCache.get(sessionsDir);
+  if (cached !== undefined) return cached;
+
+  try {
+    const gitPath = path.join(sessionsDir, ".git");
+    const stat = await fsPromises.stat(gitPath);
+    // Worktrees have a .git FILE pointing to the main repo
+    const isWorktree = stat.isFile();
+    worktreeCache.set(sessionsDir, isWorktree);
+    return isWorktree;
+  } catch {
+    worktreeCache.set(sessionsDir, false);
+    return false;
+  }
+}
+
+/**
+ * Auto-commit to session branch at lifecycle boundaries.
+ * No-op if sessionsDir is not a git worktree.
+ */
+async function commitAtLifecycleBoundary(
+  sessionsDir: string,
+  message: string,
+): Promise<void> {
+  if (await isSessionWorktree(sessionsDir)) {
+    await sessionBranchAutoCommit(sessionsDir, message);
+  }
+}
 
 // ─── Path Helpers ────────────────────────────────────────────────────────────
 // AC: @session-storage-path-resolution ac-resolver ac-path-helpers
@@ -159,6 +204,12 @@ export async function createSession(
     sortMapEntries: false,
   });
   await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on session create
+  await commitAtLifecycleBoundary(
+    sessionsDir,
+    `session: create (${input.id})`,
+  );
 
   return validated;
 }
@@ -403,6 +454,12 @@ export async function closeSession(
     sortMapEntries: false,
   });
   await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on session close
+  await commitAtLifecycleBoundary(
+    sessionsDir,
+    `session: close ${status} (${sessionId})`,
+  );
 
   return updated;
 }
@@ -1013,6 +1070,14 @@ export async function compactSessionEvents(
     }
   }
 
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on compact
+  if (!dryRun) {
+    await commitAtLifecycleBoundary(
+      sessionsDir,
+      `session: compact (${sessionId})`,
+    );
+  }
+
   return {
     events_processed: sourceLines.length,
     blobs_created: blobContext.createdBlobs ?? 0,
@@ -1604,6 +1669,14 @@ export async function applyAutoAbandonMetadata(
       sortMapEntries: false,
     });
     await fsPromises.writeFile(metadataPath, content, "utf-8");
+  }
+
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on stale cleanup
+  if (!dryRun && updates.length > 0) {
+    await commitAtLifecycleBoundary(
+      sessionsDir,
+      `session: stale cleanup (${updates.length} abandoned)`,
+    );
   }
 
   return {

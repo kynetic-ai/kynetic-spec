@@ -1574,6 +1574,61 @@ export async function runSetupPipeline(
       });
     }
 
+    // Step 3a-iii: Initialize session branch worktree if sessions.storage is "branch"
+    // AC: @session-branch-worktree ac-init
+    {
+      try {
+        const { initContext } = await import("../../parser/index.js");
+        const ctx = await initContext();
+        const sessionStorage = ctx.manifest?.sessions?.storage;
+        if (sessionStorage === "branch") {
+          const { initializeSessionBranch, getSessionBranchStatus } = await import(
+            "../../parser/session-branch.js"
+          );
+          const sessionBranchName = ctx.manifest?.sessions?.branch || "kspec-sessions";
+          const sessionStatus = await getSessionBranchStatus(
+            projectDir,
+            sessionBranchName,
+          );
+          if (sessionStatus.healthy) {
+            steps.push({
+              name: "Session branch worktree",
+              status: "skipped",
+              message: "already initialized",
+            });
+          } else if (dryRun) {
+            steps.push({
+              name: "Session branch worktree",
+              status: "done",
+              message: `create orphan branch "${sessionBranchName}" with worktree at ${SESSIONS_WORKTREE_DIR}/`,
+            });
+          } else {
+            const sessionResult = await initializeSessionBranch(
+              projectDir,
+              sessionBranchName,
+            );
+            if (sessionResult.success) {
+              steps.push({
+                name: "Session branch worktree",
+                status: "done",
+                message: sessionResult.alreadyExists
+                  ? "already initialized"
+                  : `created branch "${sessionBranchName}" with worktree at ${SESSIONS_WORKTREE_DIR}/`,
+              });
+            } else {
+              steps.push({
+                name: "Session branch worktree",
+                status: "failed",
+                message: sessionResult.error || "unknown error",
+              });
+            }
+          }
+        }
+      } catch {
+        // Session branch init is optional — don't block setup
+      }
+    }
+
     // Step 3b: Seed permissions (Claude Code only)
     // AC: @new-project-bootstrapping ac-1
     {
