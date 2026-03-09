@@ -18,7 +18,7 @@ import {
   errors,
   sessionPrompt,
 } from "../../../strings/index.js";
-import { markMutating } from "../../command-annotations.js";
+import { markAlwaysSync, markMutating } from "../../command-annotations.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, isJsonMode, output } from "../../output.js";
 import { performCheckpoint } from "./checkpoint.js";
@@ -218,9 +218,10 @@ export function registerSessionCommands(program: Command): void {
     .option("--task-id <id>", "Optional task ID being worked on")
     .action(sessionCreateAction);
 
-  session
+  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+  markAlwaysSync(session
     .command("start")
-    .alias("resume")
+    .alias("resume"))
     .description("Surface relevant context for starting a new working session")
     .option("--brief", "Compact summary (default)")
     .option("--full", "Comprehensive context dump")
@@ -351,8 +352,9 @@ export function registerSessionCommands(program: Command): void {
     .action(sessionPromptCheckAction);
 
   // Top-level alias: kspec context
-  program
-    .command("context")
+  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+  markAlwaysSync(program
+    .command("context"))
     .description("Alias for session start - surface session context")
     .option("--brief", "Compact summary (default)")
     .option("--full", "Comprehensive context dump")

@@ -38,6 +38,7 @@ import {
   detectRunningFromShadowWorktree,
   detectShadow,
   hasRemoteTracking,
+  shadowNeedsSync,
   shadowPull,
   type ShadowConfig,
   type ShadowOptions,
@@ -47,6 +48,7 @@ import {
   loadProjectConfig,
   type ResolvedKspecConfig,
 } from "./config.js";
+import { consumeSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
 
 /**
@@ -395,11 +397,12 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     // Shadow mode: use .kspec/ for everything
     const specDir = shadow.worktreeDir;
 
-    // AC: @config-shadow ac-11 — pre-read shadow pull to pick up remote changes
-    // before CLI read operations (task list, session start, etc.)
-    // Skip when KSPEC_NO_SYNC is set (tests, offline) or KSPEC_SPEC_DIR is overridden
-    // Note: shadowPull() has in-flight dedup so concurrent daemon calls don't collide
+    // AC: @shadow-lazy-read-sync ac-no-sync-env — KSPEC_NO_SYNC disables all sync
+    // AC: @shadow-lazy-read-sync ac-syncmode-consume-once — consume-once prevents double-pull
+    // AC: @shadow-lazy-read-sync ac-drift-check — drift check replaces unconditional pull
     if (!process.env.KSPEC_NO_SYNC) {
+      const syncMode = consumeSyncMode();
+
       // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
       // uses the right branch name and remote instead of hardcoded defaults
       const shadowOpts: ShadowOptions = {
@@ -408,19 +411,41 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
         remote: config.shadow.remote?.value,
         remoteType: config.shadow.remote?.type,
       };
-      try {
-        const tracked = await hasRemoteTracking(specDir, shadowOpts);
-        if (tracked) {
-          const syncResult = await shadowPull(specDir, shadowOpts);
-          if (syncResult.hadConflict) {
-            console.error(
-              "Warning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",
-            );
-            console.error("Continuing with local state...");
+
+      if (syncMode !== "skip") {
+        try {
+          const tracked = await hasRemoteTracking(specDir, shadowOpts);
+          if (tracked) {
+            let shouldPull = false;
+
+            if (syncMode === "always") {
+              // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+              shouldPull = true;
+            } else {
+              // AC: @shadow-lazy-read-sync ac-drift-check — lightweight drift check
+              // AC: @shadow-lazy-read-sync ac-threshold-from-config
+              const remoteName = config.shadow.remote?.value ?? "origin";
+              const thresholdMs = config.shadow.sync_interval * 1000;
+              shouldPull = await shadowNeedsSync(
+                specDir,
+                remoteName,
+                thresholdMs,
+              );
+            }
+
+            if (shouldPull) {
+              const syncResult = await shadowPull(specDir, shadowOpts);
+              if (syncResult.hadConflict) {
+                console.error(
+                  "Warning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",
+                );
+                console.error("Continuing with local state...");
+              }
+            }
           }
+        } catch {
+          // Pre-read sync is best-effort — don't fail the command
         }
-      } catch {
-        // Pre-read pull is best-effort — don't fail the command
       }
     }
 
