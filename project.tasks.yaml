@@ -82733,7 +82733,9 @@
     - storage
     - cli
   vcs_refs: []
+  session_id: 01KK84FJMTSMTDZQBPZZTTQYTJ
   created_at: 2026-03-08T22:46:15.461Z
+  started_at: 2026-03-09T01:54:39.667Z
   notes:
     - _ulid: 01KK7T2E55HPXSHDYDPGWX2ADY
       created_at: 2026-03-08T22:46:15.461Z
@@ -82741,10 +82743,28 @@
       content: |
         kspec init creates .kspec-sessions/ directory. kspec setup adds
         .kspec-sessions/ to root .gitignore and sessions/ to .kspec/.gitignore.
+    - _ulid: 01KK86PW9AD8VQGQGQRED41FDK
+      created_at: 2026-03-09T02:27:08.203Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+        1. shadow.ts: Added SESSIONS_WORKTREE_DIR constant, ensureSessionsGitignore(),
+        ensureShadowSessionsGitignore(), sessionsDirectoryCreated field on ShadowInitResult
+
+        2. initializeShadow: Creates .kspec-sessions/ dir, adds to root .gitignore, includes
+        sessions/ in .kspec/.gitignore template
+
+        3. runSetupPipeline: New step 3a-ii ensures sessions dir exists, root .gitignore has
+        .kspec-sessions/, shadow .gitignore has sessions/
+
+        4. init.ts: Reports sessionsDirectoryCreated in output
+
+        5. 11 tests covering AC coverage for ac-gitignore, ac-sessions-dir-autocreate,
+        ac-shadow-gitignore, ac-sessions-dir
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T01:54:39.667Z
-  session_id: 01KK84FJMTSMTDZQBPZZTTQYTJ
 - _ulid: 01KK7T2EMAEM95B7M04Z2SMRNA
   slugs:
     - add-legacy-session-read-fallback
