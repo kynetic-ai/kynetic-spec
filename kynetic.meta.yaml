@@ -7805,6 +7805,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KK9RBGVRQPBGYG7VHTZ8RCED
+    type: success
+    content: "PR skill updated to detect local main drift. After a fix cycle on PR #718 where an
+      unpushed commit on local main leaked into the PR diff, added a rebase-onto-origin/main check
+      in the feature branch path. Prevents unrelated work from polluting PRs."
+    created_at: 2026-03-09T16:54:44.856Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
