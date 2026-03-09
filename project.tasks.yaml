@@ -83621,13 +83621,34 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKA8YXD3QGSPZ8MTBWYX2YES
   created_at: 2026-03-09T21:25:12.899Z
+  started_at: 2026-03-09T21:48:54.543Z
   notes:
     - _ulid: 01KKA7TRJ3A5VFCWFFEG5WZX7E
       created_at: 2026-03-09T21:25:12.899Z
       author: "@claude"
       content: See plan @plan-lazy-shadow-sync for implementation notes
+    - _ulid: 01KKA9P29M3MD35JYWFKCYTCYB
+      created_at: 2026-03-09T21:57:36.180Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        - Added isAheadOfUpstream() exported utility to shadow.ts — uses git rev-list --left-right
+        --count HEAD...@{u}
+
+        - Updated ShadowSyncScheduler.syncOnce() in shadow-sync-scheduler.ts:
+          1. Calls fetchRemote(worktreeDir) before shadowPull() to freshen FETCH_HEAD in the worktree git dir (ac-daemon-freshens-fetch-head)
+          2. After pull, checks isAheadOfUpstream() and pushes via pushShadowBranch() if ahead (ac-periodic-push)
+          3. Push failure is non-fatal — logged as warning, does not throw
+          4. Push is skipped if pull had a conflict
+        - Added 4 new tests covering both ACs:
+          - Push when ahead of upstream
+          - No push when not ahead
+          - Push failure is non-fatal
+          - FETCH_HEAD freshened in worktree git dir
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T21:48:54.543Z
-  session_id: 01KKA8YXD3QGSPZ8MTBWYX2YES
