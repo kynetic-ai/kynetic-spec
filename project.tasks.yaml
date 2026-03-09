@@ -83445,9 +83445,27 @@
     - cleanup
     - sessions
   vcs_refs: []
+  session_id: 01KK9YT7H6M9DD9S0C5NK18605
   created_at: 2026-03-09T18:40:42.484Z
-  notes: []
+  started_at: 2026-03-09T18:59:35.207Z
+  notes:
+    - _ulid: 01KK9ZH8V0F28QDCC269AM6XKD
+      created_at: 2026-03-09T19:00:13.281Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Legacy fallback reads from .kspec/sessions/ add complexity for marginal
+        benefit. Only session/log.ts uses them. Replace with detect-and-warn pattern.
+
+        - Scope: Remove *WithFallback/*Merged functions from legacy.ts, update log.ts to use
+        store.ts directly + hasLegacySessions warning, add warning to daemon routes, rewrite tests.
+
+        - Files: src/sessions/legacy.ts, src/cli/commands/session/log.ts,
+        packages/daemon/src/routes/sessions.ts, tests/session-legacy-fallback.test.ts,
+        tests/session-legacy-cli.test.ts
+
+        - Verification: npm test passes, spec ACs covered
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T18:59:35.207Z
-  session_id: 01KK9YT7H6M9DD9S0C5NK18605
