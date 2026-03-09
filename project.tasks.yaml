@@ -82650,6 +82650,30 @@
         incomplete AC coverage (ac-context/ac-cli-commands/ac-daemon-routes) and local regressions
         in session checkpoint scoping, task budget enforcement, and session log list."
       supersedes: null
+    - _ulid: 01KK89BCG5W4VMJX7TCKBASKAF
+      created_at: 2026-03-09T03:13:17.317Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1: addressed all review findings.
+
+
+        1. Fixed checkBudget(ctx.specDir, ...) → checkBudget(ctx.sessionsDir, ...) in task.ts — root
+        cause of budget enforcement regression
+
+        2. Updated 13 test files to use .kspec-sessions/ instead of sessions/ for CLI integration
+        tests
+
+        3. Added runtime ac-context test (initContext + sessionsDir verification)
+
+        4. Added ac-cli-commands tests (session create path, session log list, checkpoint)
+
+        5. Added ac-daemon-routes tests (initContext provides sessionsDir, store round-trip)
+
+        6. Replaced source-reading daemon routes test with behavioral test (avoids static analysis
+        lint)
+
+        7. Full test suite: 4132 passing, only 2 pre-existing failures (codex skill tests on main)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7T2D69GB50YVSFKVTTHWC6
