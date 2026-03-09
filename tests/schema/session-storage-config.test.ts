@@ -62,12 +62,12 @@ describe("Session Storage Config in ManifestSchema", () => {
   });
 
   // AC: @session-storage-modes ac-config-default
-  it("omits sessions entirely when not specified in manifest", () => {
+  it("defaults sessions.storage to 'local' when sessions block is omitted", () => {
     const result = ManifestSchema.safeParse(baseManifest);
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.sessions).toBeUndefined();
+      expect(result.data.sessions).toEqual({ storage: "local" });
     }
   });
 
@@ -85,6 +85,8 @@ describe("Session Storage Config in ManifestSchema", () => {
       );
       expect(storageError).toBeDefined();
       expect(storageError!.message).toContain("Invalid enum value");
+      expect(storageError!.message).toContain("local");
+      expect(storageError!.message).toContain("branch");
     }
   });
 

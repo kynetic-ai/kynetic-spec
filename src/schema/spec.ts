@@ -133,7 +133,7 @@ export const ManifestSchema = z.object({
   sessions: z.object({
     storage: z.enum(["local", "branch"]).default("local"),
     branch: z.string().optional(),
-  }).optional(),
+  }).default({}),
 
   // Hooks configuration
   hooks: z.record(z.string()).optional(),
