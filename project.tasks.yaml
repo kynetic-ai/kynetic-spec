@@ -83075,7 +83075,7 @@
   type: task
   spec_ref: "@session-branch-worktree"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -83092,7 +83092,7 @@
   session_id: 01KK8KFEAQZGFBP1VSJ1X0AS5F
   created_at: 2026-03-08T22:46:17.451Z
   started_at: 2026-03-09T06:11:32.865Z
-  submitted_at: 2026-03-09T05:58:02.288Z
+  submitted_at: 2026-03-09T06:31:32.745Z
   notes:
     - _ulid: 01KK7T2G3B9C789Z5SSRNSWDQD
       created_at: 2026-03-08T22:46:17.451Z
@@ -83163,6 +83163,18 @@
       author: Jacob Chapel
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: session branch repair is not independent when
         kspec-meta is healthy, and ac-sync is missing daemon wiring/test coverage in PR #723."
+      supersedes: null
+    - _ulid: 01KK8MP874SDWDE4B0X2HQZCQZ
+      created_at: 2026-03-09T06:31:27.716Z
+      author: "@claude"
+      content: "Fix cycle 1 — addressed all 3 MUST-FIX review findings: (1) Shadow repair early return:
+        restructured to use if/else instead of early return so session branch repair runs regardless
+        of kspec-meta health. (2) Daemon wiring: added SessionSyncScheduler import/init/stop in
+        packages/daemon/src/server.ts, reads manifest YAML directly for session config, created
+        session-sync.ts re-export. Independent error handling. (3) ac-sync test coverage: 5 new
+        tests covering sessionBranchPull (no remote, with remote), SessionSyncScheduler lifecycle,
+        disabled interval, and in-flight dedup independence. Full suite: 4233 passed, 0
+        regressions."
       supersedes: null
   todos: []
   automation: eligible
