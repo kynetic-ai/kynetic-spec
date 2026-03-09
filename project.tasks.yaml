@@ -82737,6 +82737,15 @@
         but no test demonstrates session writes can run alongside daemon shadowPull without a
         kspec-meta conflict."
       supersedes: null
+    - _ulid: 01KK8FA4F0QWZECHCCKN7RYJ1G
+      created_at: 2026-03-09T04:57:27.776Z
+      author: "@claude"
+      content: "Fix cycle 1: Added ac-no-sync-conflict test coverage in tests/shadow.test.ts. Test runs
+        shadowPull on .kspec/ concurrently with createSession + appendEvent on .kspec-sessions/,
+        verifies no git conflict, both operations succeed, session data readable from separate dir,
+        and session files absent from shadow worktree. Also rebased onto main to incorporate session
+        path resolution changes from PR #719."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK7T2DNPNANBZ25VM0MQBFRN
