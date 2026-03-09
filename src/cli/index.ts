@@ -63,7 +63,7 @@ import {
 } from "./suggest.js";
 import { PidFileManager } from "./pid-utils.js";
 import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
-import { setSyncMode } from "./sync-mode.js";
+import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
@@ -220,6 +220,12 @@ program
     if (!skipCommands.includes(executingCommandName)) {
       await maybeAutoStartDaemon();
     }
+  })
+  .hook("postAction", () => {
+    // Clear sync mode after command completes so non-Commander callers
+    // (daemon, dispatch engine) that call initContext() later in the
+    // same process get 'drift-check' default, not stale command state.
+    clearSyncMode();
   });
 
 // Register command groups

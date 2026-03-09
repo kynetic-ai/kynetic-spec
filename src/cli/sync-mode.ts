@@ -54,6 +54,17 @@ export function consumeSyncMode(): ShadowSyncMode {
 }
 
 /**
+ * Clear sync mode after a CLI command lifecycle completes (postAction hook).
+ * This prevents stale state from leaking to non-Commander callers
+ * (daemon, dispatch engine) that run initContext() later in the same process.
+ *
+ * AC: @shadow-lazy-read-sync ac-syncmode-propagation
+ */
+export function clearSyncMode(): void {
+  commandSyncMode = null;
+}
+
+/**
  * Reset module state — for testing only.
  */
 export function _resetSyncModeForTesting(): void {
