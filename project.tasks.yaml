@@ -82738,7 +82738,7 @@
   type: task
   spec_ref: "@session-spec-path-updates"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -82799,6 +82799,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T04:07:04.856Z
 - _ulid: 01KK7T2E55NJF36KH0YPFZBN3X
   slugs:
     - update-kspec-init-setup-for-session-directory
