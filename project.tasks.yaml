@@ -83065,7 +83065,7 @@
   type: task
   spec_ref: "@session-branch-worktree"
   plan_ref: "@plan-session-storage-separation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@extract-session-path-resolution-from-specdir"
@@ -83149,6 +83149,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T05:58:02.288Z
 - _ulid: 01KK7W7S520G8ACKWTCYNW9Y4F
   slugs: []
   title: Fix dispatch engine to check depends_on before dispatching
