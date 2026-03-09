@@ -83614,7 +83614,7 @@
   type: task
   spec_ref: "@shadow-daemon-push-sync"
   plan_ref: "@plan-lazy-shadow-sync"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -83652,3 +83652,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-09T21:58:11.827Z
