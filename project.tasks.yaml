@@ -83079,7 +83079,9 @@
     - git
     - post-mvp
   vcs_refs: []
+  session_id: 01KK8GG2TA8D6R97ECP5M80K8K
   created_at: 2026-03-08T22:46:17.451Z
+  started_at: 2026-03-09T05:25:25.865Z
   notes:
     - _ulid: 01KK7T2G3B9C789Z5SSRNSWDQD
       created_at: 2026-03-08T22:46:17.451Z
@@ -83088,10 +83090,65 @@
         When sessions.storage is "branch", create orphan branch and worktree
         at .kspec-sessions/. Auto-commit at lifecycle boundaries (create, close).
         Independent sync from kspec-meta.
+    - _ulid: 01KK8JMR8F2F1NTVZDF2BSBG2X
+      created_at: 2026-03-09T05:55:41.455Z
+      author: "@claude"
+      content: >-
+        Implemented session branch worktree mode:
+
+
+        ## Files created:
+
+        - src/parser/session-branch.ts — Core module: init, status, repair, auto-commit, sync,
+        config resolution
+
+        - src/parser/session-sync-scheduler.ts — Periodic session branch sync for daemon
+
+        - tests/session-branch-worktree.test.ts — 17 tests covering init, status, repair,
+        auto-commit, config
+
+        - tests/session-branch-lifecycle.test.ts — 4 tests for lifecycle boundary auto-commits
+
+
+        ## Files modified:
+
+        - src/parser/shadow.ts — Added sessionBranchCreated to ShadowInitResult, sessions config to
+        ShadowInitOptions, session branch init step in initializeShadow
+
+        - src/sessions/store.ts — Import sessionBranchAutoCommit, add worktree detection cache, add
+        commitAtLifecycleBoundary calls at create/close/compact/stale-cleanup
+
+        - src/cli/commands/shadow.ts — Import session branch functions, extend formatShadowStatus
+        for session branch, add session status to 'shadow status', add session repair to 'shadow
+        repair'
+
+        - src/cli/commands/init.ts — Pass session config to initializeShadow, report
+        sessionBranchCreated
+
+        - src/cli/commands/setup.ts — Add session branch worktree initialization step in setup
+        pipeline
+
+        - dist/daemon/server.ts — Import and initialize SessionSyncScheduler, stop on shutdown
+
+
+        ## AC Coverage:
+
+        - ac-init: initializeSessionBranch creates orphan branch + worktree, called from init/setup
+
+        - ac-commit-boundaries: commitAtLifecycleBoundary in store.ts at
+        create/close/compact/stale-cleanup (NOT on event append)
+
+        - ac-sync: SessionSyncScheduler + sessionBranchPull with in-flight dedup
+
+        - ac-status: shadow status reports both kspec-meta and session branch health
+
+        - ac-repair: shadow repair also repairs session branch independently
+
+
+        All 21 new tests pass. Full suite (189 files, 4145 tests) passes with 0 regressions.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T05:25:25.865Z
-  session_id: 01KK8GG2TA8D6R97ECP5M80K8K
 - _ulid: 01KK7W7S520G8ACKWTCYNW9Y4F
   slugs: []
   title: Fix dispatch engine to check depends_on before dispatching
