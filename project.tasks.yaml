@@ -82908,6 +82908,7 @@
   session_id: 01KK8CFA3ESPE6DWCZKBSJBZF6
   created_at: 2026-03-08T22:46:15.946Z
   started_at: 2026-03-09T04:14:15.367Z
+  submitted_at: 2026-03-09T04:34:30.577Z
   notes:
     - _ulid: 01KK7T2EMA7ZPTE0JWCKA2ZRJ4
       created_at: 2026-03-08T22:46:15.946Z
@@ -82945,9 +82946,22 @@
 
         - Verification: new tests + full test suite
       supersedes: null
+    - _ulid: 01KK8E1G9C7X0GNG4HSC1G68T8
+      created_at: 2026-03-09T04:35:16.396Z
+      author: "@claude"
+      content: |-
+        PR #722 created: https://github.com/kynetic-ai/kynetic-spec/pull/722
+
+        Implementation summary:
+        - Created src/sessions/legacy.ts with fallback-aware wrappers for all read operations
+        - Created src/cli/commands/session/migrate.ts for the migrate command
+        - Updated log.ts to use legacy-aware wrappers (list, show, stats, search)
+        - 37 tests covering all 7 ACs pass
+        - TypeScript compiles clean
+        - No new test regressions (pre-existing failures on main unchanged)
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-09T04:34:30.577Z
 - _ulid: 01KK7T2F51QR38YMPS1FX6HKXS
   slugs:
     - add-kspec-session-migrate-command
