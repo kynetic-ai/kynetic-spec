@@ -17,6 +17,7 @@ import {
   initContext,
   loadAllTasks,
   loadMetaContext,
+  areDependenciesMet,
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
@@ -417,15 +418,25 @@ export class DispatchEngine {
     const eventType = STATUS_TO_EVENT[change.toStatus];
     if (!eventType) return;
 
-    // Load task data for filter evaluation if not provided
+    // Load all tasks for filter evaluation (needed for dependency checks)
+    let allTasks: LoadedTask[] | undefined;
     let taskData = change.task;
     if (!taskData && change.taskId) {
       try {
         const ctx = await initContext(this.projectDir);
-        const tasks = await loadAllTasks(ctx);
-        taskData = tasks.find((t) => t._ulid === change.taskId);
+        allTasks = await loadAllTasks(ctx);
+        taskData = allTasks.find((t) => t._ulid === change.taskId);
       } catch {
-        // Can't load task, filter evaluation will be lenient
+        // Can't load tasks, filter evaluation will be lenient
+      }
+    }
+    // Load allTasks for dependency checking even when task data was provided
+    if (!allTasks && taskData) {
+      try {
+        const ctx = await initContext(this.projectDir);
+        allTasks = await loadAllTasks(ctx);
+      } catch {
+        // Can't load tasks, dependency check will be skipped
       }
     }
     // Make loaded task available for prompt building (AC: @agent-dispatch-engine ac-13)
@@ -438,7 +449,7 @@ export class DispatchEngine {
         if (rule.on !== eventType) continue;
 
         // AC: @agent-dispatch-engine ac-6 - Apply filters
-        if (!this._matchesFilter(change, rule, taskData)) continue;
+        if (!this._matchesFilter(change, rule, taskData, allTasks)) continue;
 
         // AC: @agent-dispatch-engine ac-2 - Each matching agent queued independently
         this._enqueue(agent, change);
@@ -650,7 +661,7 @@ export class DispatchEngine {
             task,
           };
 
-          if (!this._matchesFilter(change, rule, task)) continue;
+          if (!this._matchesFilter(change, rule, task, tasks)) continue;
           if (opts.skipIfActive && this._hasActiveOrQueuedInvocation(agent.id, task._ulid)) continue;
 
           this._enqueue(agent, change);
@@ -693,13 +704,20 @@ export class DispatchEngine {
 
   /**
    * Check if a state change matches a dispatch rule's filters.
+   * Base readiness (deps, blocked_by) is checked before consumer filters
+   * per @trait-task-readiness ac-composable.
+   *
    * AC: @agent-dispatch-engine ac-6
    * AC: @agent-dispatch-engine ac-21
+   * AC: @trait-task-readiness ac-deps
+   * AC: @trait-task-readiness ac-not-blocked
+   * AC: @trait-task-readiness ac-composable
    */
   private _matchesFilter(
     change: TaskStateChange,
     rule: AgentDispatchRule,
     task?: LoadedTask,
+    allTasks?: LoadedTask[],
   ): boolean {
     // AC: @agent-dispatch-engine ac-21 — default to automation: eligible for
     // task.ready and task.needs_work when no filter is specified
@@ -711,6 +729,19 @@ export class DispatchEngine {
     // enqueuing non-matching tasks (AC-6: all filters must match)
     if (!task) return false;
 
+    // AC: @trait-task-readiness ac-not-blocked — blocked_by must be empty
+    if (defaultsToEligible && (task.blocked_by ?? []).length > 0) {
+      return false;
+    }
+
+    // AC: @trait-task-readiness ac-deps — all depends_on must be completed
+    if (defaultsToEligible && allTasks && (task.depends_on ?? []).length > 0) {
+      if (!areDependenciesMet(task, allTasks)) {
+        return false;
+      }
+    }
+
+    // AC: @trait-task-readiness ac-composable — consumer filters applied after base readiness
     const filter: AgentDispatchFilter = rule.filter ?? {};
 
     // Apply default automation filter for task.ready/task.needs_work
@@ -829,13 +860,14 @@ export class DispatchEngine {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
-    // AC: @agent-dispatch-engine ac-17 - Load current task states once for staleness checks
+    // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
+    let currentTasks: LoadedTask[] | undefined;
     let currentTaskStates: Map<string, TaskStatus> | undefined;
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await loadAllTasks(ctx);
+      currentTasks = await loadAllTasks(ctx);
       currentTaskStates = new Map(
-        tasks.map((t) => [t._ulid, t.status as TaskStatus]),
+        currentTasks.map((t) => [t._ulid, t.status as TaskStatus]),
       );
     } catch {
       // If we can't load tasks, skip staleness checks (best effort)
@@ -875,6 +907,21 @@ export class DispatchEngine {
           console.log(
             `[dispatch] Discarded ${before - queue.length} stale queue entries for agent "${agent.id}"`,
           );
+        }
+      }
+
+      // AC: @trait-task-readiness ac-deps, ac-not-blocked — discard entries
+      // where deps are no longer met or task became blocked since enqueue
+      if (currentTasks) {
+        for (let i = queue.length - 1; i >= 0; i--) {
+          const entry = queue[i];
+          const eventType = STATUS_TO_EVENT[entry.change.toStatus];
+          if (eventType !== "task.ready" && eventType !== "task.needs_work") continue;
+          const task = currentTasks.find((t) => t._ulid === entry.change.taskId);
+          if (!task) continue; // already handled by staleness check above
+          if (task.blocked_by.length > 0 || !areDependenciesMet(task, currentTasks)) {
+            queue.splice(i, 1);
+          }
         }
       }
 

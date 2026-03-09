@@ -112,6 +112,8 @@ async function writeTasks(dir: string, tasks: Array<{
   automation?: string;
   tags?: string[];
   priority?: number;
+  depends_on?: string[];
+  blocked_by?: string[];
 }>): Promise<void> {
   await fs.writeFile(
     path.join(dir, "project.tasks.yaml"),
@@ -124,6 +126,8 @@ async function writeTasks(dir: string, tasks: Array<{
         automation: t.automation,
         tags: t.tags ?? [],
         priority: t.priority,
+        depends_on: t.depends_on ?? [],
+        blocked_by: t.blocked_by ?? [],
         created_at: new Date().toISOString(),
         notes: [],
         todos: [],
@@ -2660,6 +2664,369 @@ describe("Priority filter uses threshold semantics (<=)", () => {
     await engine.handleFileChange(testDir);
 
     expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+});
+
+// ─── Trait: Task Readiness ────────────────────────────────────────────────────
+
+describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-readiness-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @trait-task-readiness ac-deps
+  it("should not dispatch task.ready when depends_on tasks are not completed", async () => {
+    const [depId, taskId] = testUlids("RDEP", 2);
+    const agent = makeTestAgent({
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Write dep task as in_progress (not completed) and the dependent task as pending
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "in_progress", automation: "eligible" },
+      { _ulid: taskId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0; // Reset after bootstrap
+
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change);
+
+    // The dependent task should NOT be enqueued
+    expect(enqueueCount).toBe(0);
+
+    await engine.stop();
+  });
+
+  // AC: @trait-task-readiness ac-deps
+  it("should dispatch task.ready when all depends_on tasks are completed", async () => {
+    const [depId, taskId] = testUlids("RDEP", 2);
+    const agent = makeTestAgent({
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Dep is completed, dependent task is pending — should be dispatched
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "completed", automation: "eligible" },
+      { _ulid: taskId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0; // Reset after bootstrap
+
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change);
+
+    expect(enqueueCount).toBe(1);
+
+    await engine.stop();
+  });
+
+  // AC: @trait-task-readiness ac-not-blocked
+  it("should not dispatch task.ready when task has blocked_by entries", async () => {
+    const taskId = testUlid("RBLK");
+    const agent = makeTestAgent({
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible", blocked_by: ["Waiting for API key"] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change);
+
+    expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+
+  // AC: @trait-task-readiness ac-not-blocked
+  it("should not dispatch task.needs_work when task has blocked_by entries", async () => {
+    const taskId = testUlid("RNWB");
+    const agent = makeTestAgent({
+      dispatch: [{ on: "task.needs_work", filter: { automation: "eligible" } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "needs_work", automation: "eligible", blocked_by: ["Needs clarification"] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending_review",
+      toStatus: "needs_work",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change);
+
+    expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+
+  // AC: @trait-task-readiness ac-composable
+  it("should check base readiness before consumer filters", async () => {
+    const [depId, taskId] = testUlids("RCMP", 2);
+    const agent = makeTestAgent({
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible", tags: ["cli"] } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Task matches all consumer filters but has unmet dep — should NOT dispatch
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "pending", automation: "eligible" },
+      { _ulid: taskId, status: "pending", automation: "eligible", tags: ["cli"], depends_on: [`@${depId}`] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change);
+
+    expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+
+  // AC: @trait-task-readiness ac-deps — bootstrap/reconciliation path
+  it("should not enqueue tasks with unmet deps during bootstrap evaluation", async () => {
+    const [depId, taskId] = testUlids("RBOT", 2);
+    const agent = makeTestAgent({
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Dep is in_progress (not completed), task is pending with depends_on
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "in_progress", automation: "eligible" },
+      { _ulid: taskId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+
+    // Bootstrap should not have enqueued the dependent task
+    expect(enqueueCount).toBe(0);
+    await engine.stop();
+  });
+
+  // AC: @trait-task-readiness ac-deps, ac-not-blocked — drainQueues path
+  it("should discard queued entries in drainQueues when deps become unmet", async () => {
+    const [depId, taskId] = testUlids("RDRN", 2);
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Initially dep is completed — task is dispatchable
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "completed", automation: "eligible" },
+      { _ulid: taskId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    // Block draining entirely during enqueue so entries stay in queue
+    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (...args: unknown[]) => Promise<void> }, "_drainQueues").mockResolvedValue(undefined);
+    vi.spyOn(invocationModule, "runInvocation").mockResolvedValue(undefined as never);
+
+    await engine.start();
+
+    // Enqueue the task via handleStateChange (drain is blocked)
+    const change: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change);
+
+    // Verify it got queued
+    let status = engine.getStatus();
+    expect(status.queued.length).toBeGreaterThanOrEqual(1);
+
+    // Now change dep to not-completed (simulating dep regression)
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "in_progress", automation: "eligible" },
+      { _ulid: taskId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
+    ]);
+
+    // Restore drain so readiness check runs, trigger via file change
+    drainSpy.mockRestore();
+    await engine.handleFileChange(testDir);
+
+    // The queued entry should have been discarded due to unmet deps
+    status = engine.getStatus();
+    expect(status.queued).toHaveLength(0);
+
+    await engine.stop();
+  });
+
+  // Verify task.in_progress and task.pending_review are NOT affected by dep checks
+  it("should not apply dep/blocked checks to task.in_progress or task.pending_review events", async () => {
+    const [depId, taskId] = testUlids("RNRR", 2);
+    const agent = makeTestAgent({
+      dispatch: [
+        { on: "task.in_progress" },
+        { on: "task.pending_review" },
+      ],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    // Task has unmet dep and blocked_by, but events are in_progress/pending_review
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "pending", automation: "eligible" },
+      { _ulid: taskId, status: "in_progress", automation: "eligible", depends_on: [`@${depId}`], blocked_by: ["something"] },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    let enqueueCount = 0;
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
+      enqueueCount++;
+    });
+
+    await engine.start();
+    enqueueCount = 0;
+
+    // task.in_progress should dispatch even with unmet deps and blocked_by
+    const change1: TaskStateChange = {
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "in_progress",
+      timestamp: Date.now(),
+    };
+    await engine.handleStateChange(change1);
+
+    expect(enqueueCount).toBeGreaterThanOrEqual(1);
+
     await engine.stop();
   });
 });
