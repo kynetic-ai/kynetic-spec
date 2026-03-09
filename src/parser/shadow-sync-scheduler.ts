@@ -19,6 +19,7 @@ import {
   fetchRemote,
   isAheadOfUpstream,
   pushShadowBranch,
+  getRemoteName,
   type ShadowOptions,
 } from './shadow.js';
 
@@ -128,7 +129,7 @@ export class ShadowSyncScheduler {
       // Fetch from worktreeDir to freshen FETCH_HEAD in the worktree git dir.
       // CLI drift checks resolve FETCH_HEAD from the same worktree dir, so
       // the daemon's fetch keeps it fresh and CLI skips redundant fetches.
-      await fetchRemote(this.worktreeDir);
+      await fetchRemote(this.worktreeDir, getRemoteName(this.shadowOptions));
 
       const result = await shadowPull(this.worktreeDir, this.shadowOptions);
 
@@ -163,7 +164,7 @@ export class ShadowSyncScheduler {
       if (!result.hadConflict) {
         const ahead = await isAheadOfUpstream(this.worktreeDir);
         if (ahead) {
-          const pushed = await pushShadowBranch(this.worktreeDir);
+          const pushed = await pushShadowBranch(this.worktreeDir, getRemoteName(this.shadowOptions), this.shadowOptions);
           if (pushed) {
             console.log('[daemon] Shadow sync: pushed local changes');
             if (this.pubsub) {

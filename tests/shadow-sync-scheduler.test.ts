@@ -321,6 +321,64 @@ describe('ShadowSyncScheduler', () => {
     }
   });
 
+  // AC: @shadow-daemon-push-sync ac-periodic-push
+  // AC: @shadow-daemon-push-sync ac-daemon-freshens-fetch-head
+  it('syncOnce uses configured shadow remote instead of defaulting to origin', async () => {
+    const worktreeDir = await setupSyncTest();
+
+    // Push shadow branch so tracking is configured
+    execSync(`git push -u origin ${SHADOW_BRANCH_NAME}`, {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    // Rename "origin" to a custom remote name to verify the scheduler uses config
+    execSync('git remote rename origin specs-remote', {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+    });
+
+    // Make a local commit so we're ahead
+    const tasksFile = (await fs.readdir(worktreeDir))
+      .find(f => f.endsWith('.tasks.yaml'));
+    expect(tasksFile).toBeDefined();
+    await fs.appendFile(
+      path.join(worktreeDir, tasksFile!),
+      '\n# Custom remote push test\n'
+    );
+    execSync('git add -A && git commit -m "Custom remote push test"', {
+      cwd: worktreeDir,
+      stdio: 'pipe',
+      env: { ...process.env, KSPEC_SHADOW_COMMIT: '1' },
+    });
+
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      const scheduler = new ShadowSyncScheduler({
+        worktreeDir,
+        intervalSeconds: 60,
+        shadowOptions: { remote: 'specs-remote' },
+      });
+
+      await scheduler.syncOnce();
+
+      // Should successfully push via the configured remote
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Shadow sync: pushed local changes')
+      );
+
+      // Verify local is no longer ahead
+      const revListOut = execSync(
+        'git rev-list --left-right --count HEAD...@{u}',
+        { cwd: worktreeDir, encoding: 'utf-8' }
+      ).trim();
+      const [ahead] = revListOut.split('\t').map(Number);
+      expect(ahead).toBe(0);
+    } finally {
+      consoleSpy.mockRestore();
+    }
+  });
+
   // AC: @shadow-daemon-push-sync ac-daemon-freshens-fetch-head
   it('syncOnce freshens FETCH_HEAD in the worktree git dir', async () => {
     const worktreeDir = await setupSyncTest();

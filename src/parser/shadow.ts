@@ -330,7 +330,7 @@ function getDirectoryName(options?: ShadowOptions): string {
  * AC: @config-shadow ac-3 ac-7 — resolves configured remote for fetch/push/pull.
  * Named remotes use the name directly; path/URL remotes use the auto-created "kspec-specs".
  */
-function getRemoteName(options?: ShadowOptions): string {
+export function getRemoteName(options?: ShadowOptions): string {
   if (!options?.remote) return "origin";
   const remoteType = options.remoteType ?? "named";
   if (remoteType === "path" || remoteType === "url") return "kspec-specs";
