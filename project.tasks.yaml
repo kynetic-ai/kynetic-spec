@@ -82701,7 +82701,9 @@
     - storage
     - refactor
   vcs_refs: []
+  session_id: 01KK8ANN8KBGAHSPZQBEMNCXBP
   created_at: 2026-03-08T22:46:14.473Z
+  started_at: 2026-03-09T03:46:28.391Z
   notes:
     - _ulid: 01KK7T2D68HEXA0P31V1EW1F9V
       created_at: 2026-03-08T22:46:14.473Z
@@ -82710,10 +82712,24 @@
         Remove all shadowAutoCommit calls for session lifecycle events in
         invocation.ts and store.ts. Session writes go to .kspec-sessions/
         with no git operations in local mode.
+    - _ulid: 01KK8BWGJW30F890MGFQTHPV07
+      created_at: 2026-03-09T03:57:35.708Z
+      author: "@claude"
+      content: >-
+        Removed all shadowAutoCommit calls for session lifecycle events:
+
+        - invocation.ts: Removed 4 calls (completed, timed_out, aborted, failed outcomes)
+
+        - store.ts: Removed shadowAutoCommit from applyAutoAbandonMetadata, removed
+        shadowCommitMessage option and shadowCommitted result field
+
+        - stale-close.ts: Removed shadowCommitMessage pass-through to applyAutoAbandonMetadata
+
+        - Updated tests: Flipped 4 invocation tests from 'should call' to 'should NOT call', updated
+        stale criteria test to verify no shadow commit, updated stale-close trait annotations to N/A
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-09T03:46:28.391Z
-  session_id: 01KK8ANN8KBGAHSPZQBEMNCXBP
 - _ulid: 01KK7T2DNPNANBZ25VM0MQBFRN
   slugs:
     - update-existing-session-specs-for-new-storage-path
