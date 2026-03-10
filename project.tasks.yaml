@@ -83933,6 +83933,7 @@
   session_id: 01KKAHFC1XZS5RYGXWTAGEA1JQ
   created_at: 2026-03-10T00:07:55.716Z
   started_at: 2026-03-10T00:23:40.129Z
+  submitted_at: 2026-03-10T00:32:05.478Z
   notes:
     - _ulid: 01KKAH5PXMC2WQ9ASX5NV7AVBH
       created_at: 2026-03-10T00:08:28.852Z
@@ -83966,9 +83967,13 @@
         5. Verified: 5 consecutive runs pass, concurrent load test passes (115 tests), shard1 passes
         (1335 tests)
       supersedes: null
+    - _ulid: 01KKAJHGJCXC63ZKHHX6ZV66N5
+      created_at: 2026-03-10T00:32:24.140Z
+      author: "@claude"
+      content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/734"
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T00:32:05.478Z
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
   slugs:
     - task-verify-cli-serve-foreground-stable
