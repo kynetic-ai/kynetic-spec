@@ -86798,6 +86798,11 @@
   spec_ref: "@trait-task-readiness"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #757. Updated direct 'kspec agent run --task <ref>' to respect agent
+    prompt_template with interpolation, kept explicit prompt precedence and fallback behavior, and
+    preserved backward-compatible interpolateTemplate exports. Review verified task intent, posted
+    GitHub review record, and confirmed regression coverage with local npm test (4348 passed, 3
+    skipped) plus passing CI on commit d219645ec252c69e99ea40ce3ead17013bf5bb76."
   depends_on: []
   context: []
   priority: 3
@@ -86807,6 +86812,7 @@
   created_at: 2026-03-10T08:18:08.350Z
   started_at: 2026-03-10T17:05:09.234Z
   submitted_at: 2026-03-10T17:16:10.999Z
+  completed_at: 2026-03-10T17:47:32.912Z
   notes:
     - _ulid: 01KKCBYYG2AYE507EP3K3Q827E
       created_at: 2026-03-10T17:15:53.219Z
@@ -86831,12 +86837,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T17:47:32.912Z
-  closed_reason: "Merged in PR #757. Updated direct 'kspec agent run --task <ref>' to respect agent
-    prompt_template with interpolation, kept explicit prompt precedence and fallback behavior, and
-    preserved backward-compatible interpolateTemplate exports. Review verified task intent, posted
-    GitHub review record, and confirmed regression coverage with local npm test (4348 passed, 3
-    skipped) plus passing CI on commit d219645ec252c69e99ea40ce3ead17013bf5bb76."
 - _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
   title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
@@ -86967,7 +86967,7 @@
     Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
     in src/cli/commands/item.ts. Consider backward compatibility.
   spec_ref: "@trait-confirmation-prompt"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86978,6 +86978,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T17:48:05.377Z
+  session_id: 01KKCCZH9Y0XGPEM50KSTYC8SP
 - _ulid: 01KKCA4D3NW1MPW6SW5N3T7SN6
   slugs:
     - task-ansi-terminal-output-rendering
