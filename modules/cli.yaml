@@ -7838,7 +7838,7 @@ requirements:
         then: HOME/config is isolated so ambient daemon PID/port files do not affect outcomes
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KKAH0ZJ3QVPT8650HVEG5JDH
     slugs:
       - test-suite-perf-reliability
