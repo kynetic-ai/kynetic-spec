@@ -87262,6 +87262,15 @@
         head (9 failing tests across integration.test.ts and trait-retrospective.test.ts). Review
         posted on PR #760."
       supersedes: null
+    - _ulid: 01KKCPJPE35JF6VVFFTWDRWQ7S
+      created_at: 2026-03-10T20:21:26.083Z
+      author: "@claude"
+      content: "Fix cycle 2: Expanded ANSI_RE and ORPHANED_CSI_RE to match private-mode CSI prefix '?'
+        (e.g. \\x1b[?25l, [?25l). Also added orphaned CSI stripping in the main processing loop's
+        text chunks (not just fast path), so mixed real+orphaned sequences are fully cleaned. Added
+        5 new tests. All 57 ANSI tests pass, no regressions in full suite (9 pre-existing failures
+        on main unrelated to this PR)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEDW31WB42ZX52NJA51B4V
