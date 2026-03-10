@@ -84413,7 +84413,7 @@
   spec_ref: "@ui-url-panel-state"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -84500,6 +84500,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-10T08:33:07.080Z
+  session_id: 01KKBE178788KNTDG8FGREN2YB
 - _ulid: 01KKB3PGRCT3XKTY3MVBVKTM87
   slugs:
     - implement-session-list-pagination-api
