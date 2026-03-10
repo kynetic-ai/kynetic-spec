@@ -86305,7 +86305,7 @@
     src/cli/commands/validate.ts for any console.log calls that bypass the JSON output mode. Add a
     test that pipes validate --json output through JSON.parse to catch regressions.
   spec_ref: "@trait-json-output"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86362,6 +86362,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T15:20:46.263Z
+  closed_reason: "Merged in PR #750. Hardened validate/lint --json to emit strict single-object JSON
+    by restructuring both commands to collect all validation data before output. Fixed
+    console.log(initHint) leak in JSON mode. Added 5 tests covering ANSI-free output, data
+    completeness (alignment, skills), and lint --json parseability. All trait AC coverage verified
+    (ac-1, ac-2)."
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
   slugs: []
   title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
