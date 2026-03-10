@@ -1,9 +1,0 @@
-id: 01KJYMFM2PZF0XYJYWZQJG6PJ7
-task_id: "@01KJXSVGW0KG615NZ4M98CSAG6"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.ready
-status: completed
-started_at: 2026-03-05T09:21:59.720Z
-ended_at: 2026-03-05T09:45:40.163Z
-close_reason: Invocation completed normally

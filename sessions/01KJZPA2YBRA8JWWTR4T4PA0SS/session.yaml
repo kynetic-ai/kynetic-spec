@@ -1,9 +1,0 @@
-id: 01KJZPA2YBRA8JWWTR4T4PA0SS
-task_id: "@01KJXSVJ4AFN1YG4GMNEZK9B66"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: failed
-started_at: 2026-03-05T19:22:07.691Z
-ended_at: 2026-03-05T19:22:09.157Z
-close_reason: Invocation aborted by shutdown

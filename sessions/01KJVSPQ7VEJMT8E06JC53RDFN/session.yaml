@@ -1,9 +1,0 @@
-id: 01KJVSPQ7VEJMT8E06JC53RDFN
-task_id: "@01KJS6ZTEGGSXT60KYK4YDRANY"
-agent_type: codex-acp
-agent_id: reviewer
-trigger: task.pending_review
-status: completed
-started_at: 2026-03-04T06:56:48.727Z
-ended_at: 2026-03-04T07:05:23.231Z
-close_reason: Invocation completed normally

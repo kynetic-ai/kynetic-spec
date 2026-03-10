@@ -1,9 +1,0 @@
-id: 01KJV9EWCRPJE592SAM4142EGV
-task_id: "@01KJS6ZPKDDGDB5YP1K0180RZZ"
-agent_type: codex-acp
-agent_id: worker
-trigger: task.ready
-status: failed
-started_at: 2026-03-04T02:05:04.284Z
-ended_at: 2026-03-04T02:05:22.728Z
-close_reason: Invocation aborted by shutdown

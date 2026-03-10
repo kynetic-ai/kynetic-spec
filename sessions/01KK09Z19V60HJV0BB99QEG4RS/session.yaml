@@ -1,9 +1,0 @@
-id: 01KK09Z19V60HJV0BB99QEG4RS
-task_id: "@01KJXSVGEVRV1SQF02SRPJ9JEQ"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.needs_work
-status: timed_out
-started_at: 2026-03-06T00:56:32.636Z
-ended_at: 2026-03-06T01:26:35.318Z
-close_reason: Timeout after 30 minutes

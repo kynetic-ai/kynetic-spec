@@ -1,9 +1,0 @@
-id: 01KJVYB5RD7VPGQV6MJ24A25FD
-task_id: "@01KJS6ZXW9ADK2PQPQXEX43MF4"
-agent_type: codex-acp
-agent_id: reviewer
-trigger: task.pending_review
-status: failed
-started_at: 2026-03-04T08:10:23.202Z
-ended_at: 2026-03-04T08:10:24.081Z
-close_reason: Invocation aborted by shutdown

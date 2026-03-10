@@ -1,9 +1,0 @@
-id: 01KJW1MX94ABZV9CKP81A63CB6
-task_id: "@01KJS702WDPKNN01FQ3CEYB822"
-agent_type: codex-acp
-agent_id: reviewer
-trigger: task.pending_review
-status: timed_out
-started_at: 2026-03-04T09:08:32.120Z
-ended_at: 2026-03-04T09:38:32.908Z
-close_reason: Timeout after 30 minutes

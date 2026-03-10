@@ -1,9 +1,0 @@
-id: 01KJZEY9AXBAJ22Q63BVQ5KZ0V
-task_id: "@implement-plans-view"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.in_progress
-status: failed
-started_at: 2026-03-05T17:04:52.650Z
-ended_at: 2026-03-05T17:12:43.292Z
-close_reason: Invocation aborted by shutdown

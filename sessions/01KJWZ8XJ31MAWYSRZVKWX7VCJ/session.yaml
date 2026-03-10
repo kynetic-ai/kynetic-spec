@@ -1,7 +1,0 @@
-id: 01KJWZ8XJ31MAWYSRZVKWX7VCJ
-task_id: "@01KJWQM3"
-agent_type: codex-acp
-agent_id: reviewer
-trigger: manual
-status: active
-started_at: 2026-03-04T17:45:31.971Z

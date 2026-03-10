@@ -1,9 +1,0 @@
-id: 01KJYMF5YTJ8NN101BTV1AXST8
-task_id: "@implement-task-board-kanban"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: completed
-started_at: 2026-03-05T09:15:25.451Z
-ended_at: 2026-03-05T09:21:59.688Z
-close_reason: Invocation completed normally

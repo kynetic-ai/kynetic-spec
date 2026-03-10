@@ -1,9 +1,0 @@
-id: 01KJYSNR404R2EDJ54V1KBA9CR
-task_id: "@implement-session-stream-view"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.needs_work
-status: completed
-started_at: 2026-03-05T10:52:34.768Z
-ended_at: 2026-03-05T11:07:58.899Z
-close_reason: Invocation completed normally

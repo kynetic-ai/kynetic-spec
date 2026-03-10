@@ -1,2 +1,0 @@
-{"ts":1772181280762,"seq":0,"type":"session.start","session_id":"01KJF3RNZPBZWR8RRWTVWQJFXX","data":{"adapter":"custom","workerAdapter":"custom","reviewerAdapter":"custom","maxLoops":1,"maxRetries":3,"maxFailures":3,"maxTasks":1,"yolo":true}}
-{"ts":1772181281384,"seq":1,"type":"session.end","session_id":"01KJF3RNZPBZWR8RRWTVWQJFXX","data":{"status":"completed","consecutiveFailures":0,"exitReason":"max_iterations","closeReason":"Completed all 1 iterations"}}

@@ -1,9 +1,0 @@
-id: 01KK1YWYS5EQNREJZJXTCXRCJ7
-task_id: "@01KJXSVK0M6DHDVPA9J4G9XD1G"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: completed
-started_at: 2026-03-06T16:22:08.875Z
-ended_at: 2026-03-06T16:28:10.325Z
-close_reason: Invocation completed normally

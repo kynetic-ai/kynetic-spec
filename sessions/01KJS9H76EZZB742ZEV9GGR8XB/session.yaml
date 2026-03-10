@@ -1,9 +1,0 @@
-id: 01KJS9H76EZZB742ZEV9GGR8XB
-task_id: "@01KJS6ZMZH9X9V5C15QHRT9HAT"
-agent_type: claude-agent-acp
-agent_id: worker
-trigger: task.ready
-status: failed
-started_at: 2026-03-03T07:27:52.016Z
-ended_at: 2026-03-03T07:28:31.850Z
-close_reason: Invocation aborted by shutdown

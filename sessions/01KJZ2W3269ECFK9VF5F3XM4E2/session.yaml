@@ -1,9 +1,0 @@
-id: 01KJZ2W3269ECFK9VF5F3XM4E2
-task_id: "@implement-enhanced-inbox-view"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.needs_work
-status: failed
-started_at: 2026-03-05T13:32:03.993Z
-ended_at: 2026-03-05T13:41:32.379Z
-close_reason: Invocation aborted by shutdown

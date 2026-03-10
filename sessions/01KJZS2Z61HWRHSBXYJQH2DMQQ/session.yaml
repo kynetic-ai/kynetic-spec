@@ -1,9 +1,0 @@
-id: 01KJZS2Z61HWRHSBXYJQH2DMQQ
-task_id: "@task-dispatch-daemon-guard"
-agent_type: codex-acp
-agent_id: reviewer
-trigger: manual
-status: completed
-started_at: 2026-03-05T19:55:08.866Z
-ended_at: 2026-03-05T20:03:27.975Z
-close_reason: Invocation completed normally

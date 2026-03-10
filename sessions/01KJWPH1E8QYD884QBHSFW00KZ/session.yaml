@@ -1,9 +1,0 @@
-id: 01KJWPH1E8QYD884QBHSFW00KZ
-task_id: "@01KJWK8821AN0M759BMX4FK3NX"
-agent_type: codex-acp
-agent_id: worker
-trigger: task.in_progress
-status: failed
-started_at: 2026-03-04T15:12:40.908Z
-ended_at: 2026-03-04T15:13:14.971Z
-close_reason: Invocation aborted by shutdown

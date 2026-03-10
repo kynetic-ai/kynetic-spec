@@ -1,9 +1,0 @@
-id: 01KK4PV2RXTQBZRDFDW1719AZ4
-task_id: "@01KK4F049FHJ9AS8DPSMVXD74Y"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: failed
-started_at: 2026-03-07T17:52:05.408Z
-ended_at: 2026-03-07T17:52:06.372Z
-close_reason: "Invocation failed: Internal error"

@@ -1,8 +1,0 @@
-id: 01KJTPTPK6WHYGJS50NV6MJDEE
-agent_type: claude-agent-acp
-agent_id: claude
-trigger: manual
-status: completed
-started_at: 2026-03-03T20:39:28.615Z
-ended_at: 2026-03-03T20:39:33.035Z
-close_reason: Invocation completed normally

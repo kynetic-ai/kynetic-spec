@@ -1,8 +1,0 @@
-id: 01KJR7HZFCF2KGWTQFPJFX7SXT
-agent_type: codex-acp
-status: abandoned
-started_at: 2026-03-02T21:34:05.293Z
-trigger: legacy
-agent_id: codex-acp
-ended_at: 2026-03-02T21:34:09.458Z
-close_reason: Received SIGINT

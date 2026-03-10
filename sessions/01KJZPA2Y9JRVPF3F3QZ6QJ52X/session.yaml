@@ -1,9 +1,0 @@
-id: 01KJZPA2Y9JRVPF3F3QZ6QJ52X
-task_id: "@01KJXSVGEVRV1SQF02SRPJ9JEQ"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.needs_work
-status: failed
-started_at: 2026-03-05T19:06:36.375Z
-ended_at: 2026-03-05T19:22:07.687Z
-close_reason: Invocation aborted by shutdown

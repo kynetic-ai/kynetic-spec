@@ -1,3 +1,0 @@
-{"ts":1772913488473,"seq":0,"type":"agent.dispatched","session_id":"01KK4Y1WJQKR7C1G2K1SYD1Y0E","data":{"task_id":"@01KK4F07BB4W0T37GF2SH50WPB","agent_id":"ux-reviewer","adapter":"codex-acp","trigger":"task.pending_review"}}
-{"ts":1772913489172,"seq":1,"type":"agent.started","session_id":"01KK4Y1WJQKR7C1G2K1SYD1Y0E","data":{"task_id":"@01KK4F07BB4W0T37GF2SH50WPB","agent_id":"ux-reviewer","acp_session_id":"019cc9e0-f50d-7c42-ba54-9d337c0b78bf"}}
-{"ts":1772913489437,"seq":2,"type":"agent.failed","session_id":"01KK4Y1WJQKR7C1G2K1SYD1Y0E","data":{"task_id":"@01KK4F07BB4W0T37GF2SH50WPB","error":"Internal error","duration_ms":965}}

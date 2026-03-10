@@ -1,6 +1,0 @@
-id: 01KJD7CSDWPWQPY4Q9BEVMXWHW
-agent_type: custom
-status: abandoned
-started_at: 2026-02-26T14:59:36.509Z
-ended_at: 2026-02-26T14:59:37.185Z
-close_reason: "Max failures reached (1/1): JsonRpcFraming closed"

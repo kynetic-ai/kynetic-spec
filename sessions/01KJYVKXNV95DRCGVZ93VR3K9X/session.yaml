@@ -1,9 +1,0 @@
-id: 01KJYVKXNV95DRCGVZ93VR3K9X
-task_id: "@implement-task-board-kanban"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: timed_out
-started_at: 2026-03-05T11:20:21.164Z
-ended_at: 2026-03-05T11:50:22.467Z
-close_reason: Timeout after 30 minutes

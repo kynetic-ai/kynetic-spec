@@ -1,9 +1,0 @@
-id: 01KK0AAVJFNGA9QNWE2BG8B6N7
-task_id: "@01KJXSVKE7SRQB8R2YCJG0HG7S"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: failed
-started_at: 2026-03-06T01:26:35.342Z
-ended_at: 2026-03-06T01:30:15.784Z
-close_reason: "Invocation failed: JsonRpcFraming closed"

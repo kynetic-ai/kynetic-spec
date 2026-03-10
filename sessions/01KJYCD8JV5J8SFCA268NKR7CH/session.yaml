@@ -1,9 +1,0 @@
-id: 01KJYCD8JV5J8SFCA268NKR7CH
-task_id: "@implement-app-shell-and-navigation"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.in_progress
-status: completed
-started_at: 2026-03-05T07:01:05.625Z
-ended_at: 2026-03-05T07:07:26.345Z
-close_reason: Invocation completed normally

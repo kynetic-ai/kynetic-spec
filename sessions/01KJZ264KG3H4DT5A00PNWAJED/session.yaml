@@ -1,9 +1,0 @@
-id: 01KJZ264KG3H4DT5A00PNWAJED
-task_id: "@implement-session-history"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.needs_work
-status: completed
-started_at: 2026-03-05T13:20:03.343Z
-ended_at: 2026-03-05T13:26:54.287Z
-close_reason: Invocation completed normally

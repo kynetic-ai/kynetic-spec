@@ -1,8 +1,0 @@
-id: 01KJQM0DXCNG01HZGX4QJ2BYBG
-agent_type: claude-agent-acp
-status: abandoned
-started_at: 2026-03-02T15:52:27.309Z
-trigger: legacy
-agent_id: claude-agent-acp
-ended_at: 2026-03-02T17:39:14.280Z
-close_reason: Received SIGINT

@@ -1,9 +1,0 @@
-id: 01KJYTXQ0BKX4PTXJ83VN0RG2R
-task_id: "@implement-task-board-kanban"
-agent_type: claude-agent-acp
-agent_id: ui-worker
-trigger: task.needs_work
-status: completed
-started_at: 2026-03-05T11:14:20.014Z
-ended_at: 2026-03-05T11:20:21.127Z
-close_reason: Invocation completed normally

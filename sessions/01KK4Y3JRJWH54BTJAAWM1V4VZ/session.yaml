@@ -1,9 +1,0 @@
-id: 01KK4Y3JRJWH54BTJAAWM1V4VZ
-task_id: "@01KK4F039AVGTDAQ5PD54S1VEF"
-agent_type: codex-acp
-agent_id: ux-reviewer
-trigger: task.pending_review
-status: timed_out
-started_at: 2026-03-07T19:59:03.955Z
-ended_at: 2026-03-07T20:59:04.678Z
-close_reason: Timeout after 60 minutes

@@ -1,8 +1,0 @@
-id: 01KJR8JA0CQXS951PDBEBRA3CW
-agent_type: claude-agent-acp
-status: completed
-started_at: 2026-03-02T21:51:44.653Z
-trigger: legacy
-agent_id: claude-agent-acp
-ended_at: 2026-03-03T03:00:08.885Z
-close_reason: No eligible tasks remaining

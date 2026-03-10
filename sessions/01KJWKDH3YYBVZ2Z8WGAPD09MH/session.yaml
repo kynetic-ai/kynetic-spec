@@ -1,9 +1,0 @@
-id: 01KJWKDH3YYBVZ2Z8WGAPD09MH
-task_id: "@01KJWK89YMH01SAC8ECSHRJ5BC"
-agent_type: codex-acp
-agent_id: worker
-trigger: task.in_progress
-status: completed
-started_at: 2026-03-04T14:19:32.107Z
-ended_at: 2026-03-04T14:21:00.570Z
-close_reason: Invocation completed normally
