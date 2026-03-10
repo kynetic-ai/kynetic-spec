@@ -1407,3 +1407,20 @@ inbox:
       - cli
       - dx
     added_by: "@claude"
+  - _ulid: 01KKCG5C5R4WHZ5YS0E7E9C1NP
+    text: "kspec batch with task add throws TypeError: Cannot read properties of undefined (reading
+      'replace'). Requires falling back to sequential CLI calls. Known issue documented in MEMORY.md
+      but not tracked as a bug task."
+    created_at: 2026-03-10T18:29:18.137Z
+    tags:
+      - bug
+      - cli
+    added_by: "@claude"
+  - _ulid: 01KKCG5C7VMDNYF288QWKGM92A
+    text: "kspec item add --under @parent does not set the parent relationship on the created item.
+      Workaround: use item set --relates-to after creation. Needs investigation."
+    created_at: 2026-03-10T18:29:18.203Z
+    tags:
+      - bug
+      - cli
+    added_by: "@claude"
