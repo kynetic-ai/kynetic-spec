@@ -84592,7 +84592,7 @@
   type: task
   spec_ref: "@session-summary-cache"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -84678,6 +84678,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T09:59:07.474Z
+  closed_reason: "Merged in PR #739. Implemented an in-memory session summary cache for daemon session
+    listing/detail reads, added incremental invalidation for new/removed sessions plus in-place
+    session.yaml mtime changes, and scoped caches per sessionsDir for multi-project isolation. AC
+    coverage verified for all 5 own ACs in tests/session-summary-cache.test.ts; targeted vitest and
+    full npm test both passed. Repo-wide kspec validate remains red for unrelated pre-existing
+    @observations meta issues."
 - _ulid: 01KKB3PHV6B1KRKKKHPVAZJZTR
   slugs:
     - implement-session-list-infinite-scroll-ui
@@ -85271,6 +85278,7 @@
   session_id: 01KKBHMSGC4GHYX8QBJAR74VYQ
   created_at: 2026-03-10T06:24:31.178Z
   started_at: 2026-03-10T09:43:36.005Z
+  submitted_at: 2026-03-10T09:50:42.080Z
   notes:
     - _ulid: 01KKBJF8QJPFG688SKTFPDGXYB
       created_at: 2026-03-10T09:50:25.010Z
@@ -85283,7 +85291,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T09:50:42.080Z
 - _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
   slugs: []
   title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
