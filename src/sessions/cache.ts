@@ -1,20 +1,25 @@
 /**
  * Session summary cache.
  *
- * In-memory cache for session metadata and summary stats.
- * Avoids reading 700+ session.yaml files and scanning events.jsonl on every list request.
+ * In-memory cache for session metadata. Reads only session.yaml files —
+ * never reads events.jsonl. Summary stats are computed lazily via the
+ * single-session detail endpoint.
  *
  * AC Coverage:
  * - @session-summary-cache ac-cache-build: Build cache on first request
  * - @session-summary-cache ac-cache-invalidate: Detect changes via directory listing diff
  * - @session-summary-cache ac-cache-graceful: Skip corrupt/missing entries with warning
- * - @session-summary-cache ac-summary-stats: Compute and cache summary stats from events.jsonl
- * - @session-summary-cache ac-active-refresh: Recompute stats for active sessions on each request
+ * - @session-list-pagination-api ac-metadata-only: List path reads only session.yaml
+ * - @session-summary-cache ac-active-refresh: Re-read metadata for active sessions on each request
  */
 
 import * as path from "node:path";
 import * as fsPromises from "node:fs/promises";
-import { type SessionLogSummary, getSessionLogSummary } from "./store.js";
+import {
+  type SessionLogSummary,
+  getSessionLogSummary,
+  getSessionMetadataOnly,
+} from "./store.js";
 
 /**
  * Cached entry: session summary plus mtime for change detection.
@@ -63,24 +68,14 @@ export class SessionSummaryCache {
   }
 
   /**
-   * Get a single session summary, using cache when possible.
-   * Falls back to disk read if not cached.
+   * Get a single session's full summary, including stats from events.jsonl.
+   * Always computes fresh stats (not metadata-only) for detail views.
    */
   async get(
     sessionsDir: string,
     sessionId: string,
   ): Promise<SessionLogSummary | null> {
-    const cached = this.entries.get(sessionId);
-    if (cached && cached.summary.status !== "active") {
-      return cached.summary;
-    }
-
-    // Not cached or active — read from disk and update cache
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
-    if (summary) {
-      const mtimeMs = await this.getMetadataMtime(sessionsDir, sessionId);
-      this.entries.set(sessionId, { summary, mtimeMs });
-    }
     return summary;
   }
 
@@ -127,12 +122,12 @@ export class SessionSummaryCache {
     const sessionIds = await this.listSessionDirs(sessionsDir);
     this.knownSessionIds = new Set(sessionIds);
 
-    // Read all sessions in parallel
+    // AC: @session-list-pagination-api ac-metadata-only — Read only session.yaml, not events.jsonl
     const results = await Promise.all(
       sessionIds.map(async (id) => {
         // AC: @session-summary-cache ac-cache-graceful
         try {
-          const summary = await getSessionLogSummary(sessionsDir, id);
+          const summary = await getSessionMetadataOnly(sessionsDir, id);
           const mtimeMs = await this.getMetadataMtime(sessionsDir, id);
           return { id, summary, mtimeMs };
         } catch (err) {
@@ -207,14 +202,14 @@ export class SessionSummaryCache {
       this.entries.delete(id);
     }
 
-    // Fetch new + active + mtime-changed sessions in parallel
+    // AC: @session-list-pagination-api ac-metadata-only — Read only session.yaml, not events.jsonl
     const idsToRefresh = [...new Set([...newIds, ...activeIds, ...mtimeChangedIds])];
     if (idsToRefresh.length > 0) {
       const results = await Promise.all(
         idsToRefresh.map(async (id) => {
           // AC: @session-summary-cache ac-cache-graceful
           try {
-            const summary = await getSessionLogSummary(sessionsDir, id);
+            const summary = await getSessionMetadataOnly(sessionsDir, id);
             const mtimeMs = await this.getMetadataMtime(sessionsDir, id);
             return { id, summary, mtimeMs };
           } catch (err) {

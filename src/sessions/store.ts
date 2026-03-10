@@ -1868,6 +1868,44 @@ export async function getSessionLogSummary(
 }
 
 /**
+ * Get session metadata only — reads session.yaml without touching events.jsonl.
+ *
+ * AC: @session-list-pagination-api ac-metadata-only — List endpoint reads only
+ * session.yaml metadata. Summary stats (event_count, iteration_count,
+ * tasks_completed) are set to 0 and computed lazily when a single session
+ * is requested via the detail endpoint.
+ */
+export async function getSessionMetadataOnly(
+  sessionsDir: string,
+  sessionId: string,
+): Promise<SessionLogSummary | null> {
+  const metadata = await getSession(sessionsDir, sessionId);
+  if (!metadata) return null;
+
+  const startMs = new Date(metadata.started_at).getTime();
+  const endMs = metadata.ended_at
+    ? new Date(metadata.ended_at).getTime()
+    : Date.now();
+  const durationMs = endMs - startMs;
+
+  return {
+    id: metadata.id,
+    status: metadata.status,
+    agent_type: metadata.agent_type,
+    agent_id: metadata.agent_id,
+    session_type: resolveSessionType(metadata),
+    trigger: metadata.trigger,
+    task_id: metadata.task_id,
+    started_at: metadata.started_at,
+    ended_at: metadata.ended_at,
+    duration_ms: durationMs,
+    event_count: 0,
+    iteration_count: 0,
+    tasks_completed: 0,
+  };
+}
+
+/**
  * Get summaries for all sessions.
  *
  * @param sessionsDir - The .kspec directory path
