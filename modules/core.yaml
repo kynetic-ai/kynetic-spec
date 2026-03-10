@@ -1327,3 +1327,38 @@ notes:
     author: "@claude"
     content: Test note for spec item notes feature
     supersedes: null
+requirements:
+  - _ulid: 01KKB8FCEPMCC7J05GV278WKGT
+    slugs:
+      - core-ac-backfill
+    title: Core Primitives AC Backfill
+    type: requirement
+    tags: []
+    description: |
+      Add acceptance criteria to foundational spec items under @core that
+      currently lack them: ULID system, slug system, reference system,
+      item types, relationship types, and status lifecycle. These are the
+      building blocks — their ACs define what correctness means for everything
+      built on top.
+    acceptance_criteria:
+      - id: ac-coverage
+        given: |
+          All feature and requirement items under @core module
+        when: |
+          kspec validate --completeness runs
+        then: |
+          Zero "missing acceptance criteria" warnings for @core descendants
+      - id: ac-testable
+        given: |
+          Each newly added AC
+        when: |
+          It is reviewed
+        then: |
+          It follows given/when/then format and is specific enough to write a test against
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.062Z

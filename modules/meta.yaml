@@ -2499,6 +2499,108 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKB8FCK90N26ZQATXNFPZY84
+    slugs:
+      - meta-shadow-ac-backfill
+    title: Meta and Shadow Branch AC Backfill
+    type: requirement
+    tags: []
+    description: |
+      Add acceptance criteria to spec items under @meta and @shadow-branch
+      that lack them. These modules govern the meta-spec system
+      (conventions, workflows, skills, observations) and shadow branch
+      mechanics.
+    acceptance_criteria:
+      - id: ac-coverage
+        given: |
+          All feature and requirement items under @meta and @shadow-branch modules
+        when: |
+          kspec validate --completeness runs
+        then: |
+          Zero "missing acceptance criteria" warnings for their descendants
+      - id: ac-testable
+        given: |
+          Each newly added AC
+        when: |
+          It is reviewed
+        then: |
+          It follows given/when/then format and is specific enough to write a test against
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.209Z
+  - _ulid: 01KKB8FCMKWPH6DXDZMQ34558C
+    slugs:
+      - test-annotation-sweep
+    title: Test Coverage Annotation Sweep
+    type: requirement
+    tags: []
+    description: |
+      Systematically add AC: @spec-ref ac-N annotations to existing tests
+      that cover spec acceptance criteria but lack the machine-parseable
+      annotation. This closes the gap between implemented behavior and
+      validate's test coverage tracking. Prioritize traits with downstream
+      impact (trait-priority-parameter, trait-markdown-rendering,
+      ui-url-panel-state) then work through own-AC coverage gaps.
+    acceptance_criteria:
+      - id: ac-trait-coverage
+        given: |
+          All specs that inherit traits with acceptance criteria
+        when: |
+          kspec validate --completeness runs
+        then: |
+          Zero "missing trait AC coverage" warnings (currently 13)
+      - id: ac-own-coverage-reduction
+        given: |
+          All specs with own acceptance criteria
+        when: |
+          kspec validate --completeness runs
+        then: |
+          Missing own AC coverage warnings reduced by at least 50% from current 118
+      - id: ac-annotation-format
+        given: |
+          Each added test annotation
+        when: |
+          It is reviewed
+        then: >
+          It uses the format "// AC: @spec-ref ac-N" (or language-appropriate comment prefix) and is
+          machine-parseable
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.251Z
+  - _ulid: 01KKB8FCNZMAS4XRX9HAPJWQ5K
+    slugs:
+      - description-backfill
+    title: Missing Description Backfill
+    type: requirement
+    tags: []
+    description: |
+      Add descriptions to the 7 spec items that currently lack them:
+      Test Trait, Batch Command Execution, Batch Command Schema,
+      Task Add Depends On, Derive Title Override, Ralph End Loop,
+      Workflow Prune.
+    acceptance_criteria:
+      - id: ac-coverage
+        given: |
+          kspec validate --completeness runs
+        when: |
+          Checking for missing descriptions
+        then: |
+          Zero "missing description" warnings
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.295Z
 modules:
   - _ulid: 01KHFBSP8ABF1QSGXRW86P323E
     slugs:
@@ -4112,3 +4214,44 @@ modules:
           maturity: draft
           implementation: implemented
 traits: []
+decisions:
+  - _ulid: 01KKB8FCD3J3FDT051YBMGZADD
+    slugs:
+      - spec-completeness-policy
+    title: Spec Completeness Policy
+    type: decision
+    tags: []
+    description: |
+      Codifies which item types require acceptance criteria and descriptions,
+      reducing false-positive validate warnings. Modules are organizational
+      containers and should not require ACs. Traits, features, requirements,
+      and constraints must have ACs. All non-module items should have descriptions.
+    acceptance_criteria:
+      - id: ac-module-exempt
+        given: |
+          A spec item has type module
+        when: |
+          kspec validate --completeness runs
+        then: |
+          No "missing acceptance criteria" warning is emitted for module items
+      - id: ac-feature-required
+        given: |
+          A spec item has type feature, requirement, constraint, or trait
+        when: |
+          The item has no acceptance_criteria defined
+        then: |
+          A completeness warning is emitted
+      - id: ac-description-required
+        given: |
+          A spec item has any type except module
+        when: |
+          The item has no description field
+        then: |
+          A completeness warning is emitted
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.011Z

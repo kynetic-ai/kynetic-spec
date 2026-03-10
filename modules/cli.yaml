@@ -7887,3 +7887,35 @@ requirements:
     status:
       maturity: draft
       implementation: in_progress
+  - _ulid: 01KKB8FCFSSWT4ASGRYQZQD6NY
+    slugs:
+      - cli-ac-backfill
+    title: CLI AC Backfill
+    type: requirement
+    tags: []
+    description: |
+      Add acceptance criteria to spec items under @cli that lack them:
+      CLI design, query commands, link commands, validate commands,
+      derive commands, init commands, inbox commands, fuzzy matching.
+    acceptance_criteria:
+      - id: ac-coverage
+        given: |
+          All feature and requirement items under @cli module
+        when: |
+          kspec validate --completeness runs
+        then: |
+          Zero "missing acceptance criteria" warnings for @cli descendants
+      - id: ac-testable
+        given: |
+          Each newly added AC
+        when: |
+          It is reviewed
+        then: |
+          It follows given/when/then format and is specific enough to write a test against
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.097Z

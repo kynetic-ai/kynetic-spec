@@ -85219,7 +85219,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Fix 4 spec implementation status mismatches flagged by validate
+- _ulid: 01KKB8A4TTPD484SR73N4DQE0F
+  slugs: []
+  title: Fix 4 spec implementation status mismatches flagged by validate
+  type: task
   description: >-
     kspec validate reports 4 alignment warnings where spec implementation status doesn't match task
     progress:
@@ -85240,22 +85243,187 @@
 
 
     **Done when**: kspec validate reports 0 status mismatch alignment warnings.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - meta
     - chore
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:52:51.418Z
+  notes: []
+  todos: []
   automation: eligible
-  _ulid: 01KKB8A4TTPD484SR73N4DQE0F
+- _ulid: 01KKB8FD2K4BWC0MJ70CASAN3H
+  slugs:
+    - implement-spec-completeness-policy
+  title: Implement Spec Completeness Policy
+  type: task
+  spec_ref: "@spec-completeness-policy"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:43.699Z
+  notes:
+    - _ulid: 01KKB8FD2K1M4EZREF1S3RRM1R
+      created_at: 2026-03-10T06:55:43.700Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
+  slugs:
+    - implement-core-primitives-ac-backfill
+  title: Implement Core Primitives AC Backfill
+  type: task
+  spec_ref: "@core-ac-backfill"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:44.280Z
+  notes:
+    - _ulid: 01KKB8FDMR8G970BYB2NNW4V9R
+      created_at: 2026-03-10T06:55:44.280Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
+  slugs:
+    - implement-schema-and-structure-ac-backfill
+  title: Implement Schema and Structure AC Backfill
+  type: task
+  spec_ref: "@schema-ac-backfill"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:44.873Z
+  notes:
+    - _ulid: 01KKB8FE79QVHMK021RZNJQRQM
+      created_at: 2026-03-10T06:55:44.873Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- _ulid: 01KKB8FERF22X0ADS5T97D1EAB
+  slugs:
+    - implement-cli-ac-backfill
+  title: Implement CLI AC Backfill
+  type: task
+  spec_ref: "@cli-ac-backfill"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:45.423Z
+  notes:
+    - _ulid: 01KKB8FERFE58KMK98C8Q0KJFH
+      created_at: 2026-03-10T06:55:45.423Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
+  slugs:
+    - implement-task-system-ac-backfill
+  title: Implement Task System AC Backfill
+  type: task
+  spec_ref: "@tasks-ac-backfill"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:45.973Z
+  notes:
+    - _ulid: 01KKB8FF9NT30VT4802Y6WWV4M
+      created_at: 2026-03-10T06:55:45.973Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
+  slugs:
+    - implement-meta-and-shadow-branch-ac-backfill
+  title: Implement Meta and Shadow Branch AC Backfill
+  type: task
+  spec_ref: "@meta-shadow-ac-backfill"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:46.541Z
+  notes:
+    - _ulid: 01KKB8FFVDD9HDVDBT9DPHVSKN
+      created_at: 2026-03-10T06:55:46.541Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- _ulid: 01KKB8FGF6K5NP97PEEXRP2PY7
+  slugs:
+    - implement-test-coverage-annotation-sweep
+  title: Implement Test Coverage Annotation Sweep
+  type: task
+  spec_ref: "@test-annotation-sweep"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:47.174Z
+  notes:
+    - _ulid: 01KKB8FGF6N80GSKNB97A7RXS4
+      created_at: 2026-03-10T06:55:47.174Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  todos: []
+- title: Implement Missing Description Backfill
+  type: task
+  spec_ref: "@description-backfill"
+  plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+  priority: 3
+  slugs:
+    - implement-missing-description-backfill
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KKB8FH07B0SP63HBCG2VNRKT
+      created_at: 2026-03-10T06:55:47.719Z
+      author: "@claude"
+      content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+  _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T06:52:51.418Z
-  notes: []
+  created_at: 2026-03-10T06:55:47.719Z
   todos: []

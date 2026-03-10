@@ -1336,4 +1336,36 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKB8FCF84PFF4PECR7B9W0H7
+    slugs:
+      - schema-ac-backfill
+    title: Schema and Structure AC Backfill
+    type: requirement
+    tags: []
+    description: |
+      Add acceptance criteria to spec items under @schema that lack them:
+      file structure, YAML conventions, versioning, format version,
+      spec version, git baselines, Zod schema validation.
+    acceptance_criteria:
+      - id: ac-coverage
+        given: |
+          All feature and requirement items under @schema module
+        when: |
+          kspec validate --completeness runs
+        then: |
+          Zero "missing acceptance criteria" warnings for @schema descendants
+      - id: ac-testable
+        given: |
+          Each newly added AC
+        when: |
+          It is reviewed
+        then: |
+          It follows given/when/then format and is specific enough to write a test against
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:55:43.080Z
 acceptance_criteria: []
