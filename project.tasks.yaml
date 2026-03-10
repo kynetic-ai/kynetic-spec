@@ -84924,6 +84924,29 @@
         match against derived refs, and render embedded components.
         Account for YAML flow scalars (>) vs block scalars (|) in stored
         plan content which may affect heading detection.
+    - _ulid: 01KKB5NHCAKKA1QS0VPV8ZAA8A
+      created_at: 2026-03-10T06:06:38.987Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Plan detail page shows raw YAML for spec/task definitions. Should show rich
+        embedded cards instead.
+
+        - Scope: Parse plan content markdown to detect YAML blocks under ## Specs and ## Tasks
+        headings. Replace with embedded card components using data from batch item fetch API. Falls
+        back to syntax-highlighted code blocks on parse failure.
+
+        - Files: packages/web-ui/src/routes/plans/ (plan detail components), new embedded card
+        components
+
+        - Dependencies: Requires @implement-batch-item-fetch-api (for resolving refs) AND
+        @implement-streaming-markdown-component (for markdown rendering of non-YAML sections)
+
+        - Verification: Plan detail page shows embedded cards for derived specs/tasks. Cards link to
+        item/task detail. Non-YAML markdown renders with prose typography. Fallback works when YAML
+        parsing fails.
+      supersedes: null
   todos: []
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
