@@ -84994,7 +84994,7 @@
   type: task
   spec_ref: "@session-cli-unified-filtering"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -85062,6 +85062,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T23:51:21.692Z
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
   slugs:
     - implement-task-and-spec-session-context
