@@ -667,7 +667,8 @@ features:
               cwd pinning, and worktree-aware shadow/serve commands.
             depends_on: []
             implements: []
-            relates_to: []
+            relates_to:
+              - "@config-shadow"
             tests: []
             traits: []
             notes: []
