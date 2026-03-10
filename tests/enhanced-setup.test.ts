@@ -415,7 +415,7 @@ describe('kspec setup (enhanced)', () => {
     // AC: @new-project-bootstrapping ac-3
     it('should render core skills to codex output when codex is detected', async () => {
       const result = kspec('setup', tempDir, {
-        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', HOME: tempDir },
+        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '', HOME: tempDir },
       });
       expect(result.exitCode).toBe(0);
 
