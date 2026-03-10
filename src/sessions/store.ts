@@ -3505,6 +3505,15 @@ export async function checkBudget(
     return { allowed: true };
   }
 
+  // Skip budget enforcement when session exists but is not active (stale KSPEC_SESSION_ID).
+  // A completed, abandoned, timed_out, or failed session should not block task starts.
+  // If session metadata is missing, proceed with normal budget checks — the budget file
+  // itself is the authority on whether enforcement applies.
+  const session = await getSession(sessionsDir, sessionId);
+  if (session && session.status !== "active") {
+    return { allowed: true };
+  }
+
   const budget = await getBudget(sessionsDir, sessionId);
 
   // AC: @task-budget-enforcement ac-no-budget — no budget means no check
