@@ -110,7 +110,7 @@
 		error = '';
 		try {
 			const [taskResponse, statusResponse] = await Promise.all([
-				fetchTasks({ limit: 500 }),
+				fetchTasks(),
 				fetchAgentStatus().catch(() => null)
 			]);
 			tasks = taskResponse.items;
