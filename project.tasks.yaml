@@ -86958,7 +86958,7 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -87096,6 +87096,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T22:02:08.076Z
+  closed_reason: "Merged in PR #758. Extended daemon session-branch sync lifecycle across all
+    registered project paths, including API, middleware, and WebSocket registration paths, with
+    normalized teardown and direct regression coverage for multi-project/session-sync behavior.
+    Review confirmed no remaining MUST-FIX or SHOULD-FIX findings; targeted daemon regression tests
+    passed locally and GitHub CI was green on the merged head."
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
