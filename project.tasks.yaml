@@ -85840,7 +85840,7 @@
     what the test expects. Fix either the implementation to create the file or update the test to
     match current behavior.
   spec_ref: "@platform-renderer-trait"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85864,6 +85864,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T12:15:11.268Z
+  closed_reason: "Merged in PR #746. Fixed the codex setup detection test by blanking all Claude env
+    markers so CODEX_THREAD_ID reaches the codex render path. Reviewed diff, verified
+    @new-project-bootstrapping ac-3 coverage in tests/enhanced-setup.test.ts, confirmed
+    @platform-renderer-trait coverage remained intact, and validated with targeted vitest plus full
+    npm test on the PR head (4328 passing)."
 - _ulid: 01KKBBS7YHFWP6RT427884JV12
   slugs: []
   title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
@@ -85924,6 +85930,7 @@
   session_id: 01KKBS9HNSXX4DH5HDD0VWJYAN
   created_at: 2026-03-10T07:53:37.938Z
   started_at: 2026-03-10T11:56:22.934Z
+  submitted_at: 2026-03-10T12:02:05.795Z
   notes:
     - _ulid: 01KKBSZZADM5Q8B2XGX3VGDM76
       created_at: 2026-03-10T12:01:52.462Z
@@ -85944,7 +85951,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T12:02:05.795Z
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
