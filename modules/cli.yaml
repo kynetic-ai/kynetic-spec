@@ -7839,3 +7839,42 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKAH0ZJ3QVPT8650HVEG5JDH
+    slugs:
+      - test-suite-perf-reliability
+    title: Test Suite Performance and Reliability
+    type: requirement
+    tags:
+      - testing
+      - infra
+    description: Tests must complete reliably within their timeout budgets under concurrent/CI load.
+      Tests that depend on build artifacts or external state must either verify prerequisites or
+      skip gracefully. Subprocess-heavy test setups must use efficient fixtures instead of
+      sequential CLI invocations.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T00:05:53.859Z
+    acceptance_criteria:
+      - id: ac-1
+        given: a test requires N > 10 sequential CLI subprocess calls for setup
+        when: the test is authored or modified
+        then: setup uses pre-seeded YAML fixture files written directly to the temp dir instead of CLI
+          subprocess loops
+      - id: ac-2
+        given: a test asserts on the existence of build artifacts (e.g. dist/web-ui/)
+        when: the build artifact does not exist at test time
+        then: the test skips gracefully with a diagnostic message rather than failing with an opaque
+          assertion error
+      - id: ac-3
+        given: WebSocket or async event tests use polling/waitFor helpers
+        when: the poll timeout is set
+        then: timeout is at least 2000ms with configurable override, and timeout errors include the last
+          observed state for diagnosis
+      - id: ac-4
+        given: a test uses crypto.randomUUID or similar Web APIs
+        when: the test runs in a Node.js environment without global crypto
+        then: the test provides a polyfill or stub so it does not throw ReferenceError
