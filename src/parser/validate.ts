@@ -72,7 +72,8 @@ export type CompletenessWarningType =
   | "status_inconsistency"
   | "missing_test_coverage"
   | "automation_eligible_no_spec"
-  | "ac_schema_field_mismatch";
+  | "ac_schema_field_mismatch"
+  | "invalid_ac_annotation";
 
 /**
  * Trait cycle error
@@ -836,6 +837,153 @@ export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   );
 
   return coveredACs;
+}
+
+/**
+ * Structured AC annotation found in a test file.
+ */
+export interface ACAnnotation {
+  /** The @slug or @ULID reference */
+  specRef: string;
+  /** Specific AC ids like "ac-1", "ac-2", or empty if just the ref */
+  acIds: string[];
+  /** Source file where annotation was found */
+  file: string;
+  /** Line number in the source file (1-based) */
+  line: number;
+}
+
+/**
+ * Scan a directory for structured AC annotation data.
+ * Unlike scanDirForACAnnotations which only returns a Set<string>,
+ * this returns full annotation details including file and line number.
+ */
+async function scanDirForACAnnotationsStructured(
+  dir: string,
+  annotations: ACAnnotation[],
+): Promise<void> {
+  try {
+    await fs.access(dir);
+  } catch {
+    return;
+  }
+
+  const testFiles = await findTestFilesRecursive(dir);
+
+  for (const filePath of testFiles) {
+    const content = await fs.readFile(filePath, "utf-8");
+    const lines = content.split("\n");
+
+    for (let i = 0; i < lines.length; i++) {
+      const lineText = lines[i];
+      // Match AC annotations: // AC: @spec-ref ac-N
+      // Also handle: // AC: @spec-ref ac-1, ac-2
+      // Also handle N/A annotations: // AC: @spec-ref ac-N — N/A: reason
+      const acPattern =
+        /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
+      let match;
+
+      while ((match = acPattern.exec(lineText)) !== null) {
+        const specRef = match[1];
+        const acList = match[2];
+        const acIds: string[] = [];
+
+        if (acList) {
+          const acs = acList.split(",").map((ac) => ac.trim());
+          acIds.push(...acs);
+        }
+
+        annotations.push({
+          specRef,
+          acIds,
+          file: filePath,
+          line: i + 1,
+        });
+      }
+    }
+  }
+}
+
+/**
+ * Scan all test directories for structured AC annotations.
+ */
+export async function scanACAnnotations(rootDir: string): Promise<ACAnnotation[]> {
+  const annotations: ACAnnotation[] = [];
+
+  await scanDirForACAnnotationsStructured(path.join(rootDir, "tests"), annotations);
+  await scanDirForACAnnotationsStructured(
+    path.join(rootDir, "packages", "web-ui", "tests", "e2e"),
+    annotations,
+  );
+
+  return annotations;
+}
+
+/**
+ * Validate AC annotations in test files.
+ * Checks that:
+ * 1. @slug resolves to a real spec item or trait
+ * 2. ac-N exists on the resolved item's acceptance_criteria
+ *
+ * Returns completeness warnings for invalid annotations.
+ */
+export function validateACAnnotations(
+  annotations: ACAnnotation[],
+  items: LoadedSpecItem[],
+  index: ReferenceIndex,
+): CompletenessWarning[] {
+  const warnings: CompletenessWarning[] = [];
+
+  for (const annotation of annotations) {
+    const { specRef, acIds, file, line } = annotation;
+    const relFile = path.basename(file);
+
+    // Check if the reference resolves
+    const result = index.resolve(specRef);
+    if (!result.ok) {
+      warnings.push({
+        type: "invalid_ac_annotation",
+        itemRef: specRef,
+        itemTitle: `${relFile}:${line}`,
+        message: `AC annotation references '${specRef}' which cannot be resolved`,
+        details: `${file}:${line}`,
+      });
+      continue;
+    }
+
+    // If no specific AC ids, annotation is just a generic spec reference — skip AC existence check
+    if (acIds.length === 0) {
+      continue;
+    }
+
+    // Find the resolved item in our loaded items to check its ACs
+    const item = items.find((i) => i._ulid === result.ulid);
+    if (!item) {
+      // Resolved to a non-spec item (task, meta, plan) — skip AC check
+      continue;
+    }
+
+    const existingACs = new Set(
+      (item.acceptance_criteria || []).map((ac) => ac.id),
+    );
+
+    for (const acId of acIds) {
+      if (!existingACs.has(acId)) {
+        const itemRef = item.slugs?.[0]
+          ? `@${item.slugs[0]}`
+          : `@${index.shortUlid(item._ulid)}`;
+        warnings.push({
+          type: "invalid_ac_annotation",
+          itemRef,
+          itemTitle: `${relFile}:${line}`,
+          message: `AC annotation references '${specRef} ${acId}' but ${itemRef} has no acceptance criterion '${acId}'`,
+          details: `${file}:${line}`,
+        });
+      }
+    }
+  }
+
+  return warnings;
 }
 
 /**
@@ -1647,6 +1795,11 @@ export async function validate(
       // Check automation eligibility warnings for tasks
       const automationWarnings = checkAutomationEligibility(allTasks, index);
       completenessWarnings.push(...automationWarnings);
+
+      // Validate AC annotations in test files
+      const annotations = await scanACAnnotations(ctx.rootDir);
+      const annotationWarnings = validateACAnnotations(annotations, allItems, index);
+      completenessWarnings.push(...annotationWarnings);
 
       // AC: @config-validation ac-1 — require_acceptance promotes missing AC to errors
       if (options.requireAcceptance) {

@@ -544,6 +544,28 @@ function formatCompletenessWarnings(
       );
     }
   }
+
+  // Invalid AC annotations in test files
+  const invalidAnnotations = warnings.filter(
+    (w) => w.type === "invalid_ac_annotation",
+  );
+  if (invalidAnnotations.length > 0) {
+    console.log(
+      chalk.yellow(`  Invalid AC annotations: ${invalidAnnotations.length}`),
+    );
+    const shown = verbose ? invalidAnnotations : invalidAnnotations.slice(0, 5);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+    if (!verbose && invalidAnnotations.length > 5) {
+      console.log(
+        chalk.gray(`    ... and ${invalidAnnotations.length - 5} more`),
+      );
+    }
+  }
 }
 
 /**
