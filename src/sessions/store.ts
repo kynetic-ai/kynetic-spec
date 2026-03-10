@@ -2717,6 +2717,8 @@ export interface SearchOptions {
   sinceDate?: Date;
   /** Only search sessions with this agent type */
   agentType?: string;
+  /** Pre-filtered session IDs to search (bypasses internal metadata filtering) */
+  sessionIds?: string[];
   /** Maximum total matches to return (default: 50) */
   limit?: number;
   /** Resolve blob pointers and search full payload content */
@@ -2788,22 +2790,29 @@ export async function searchSessionEvents(
   const lowerPattern = pattern.toLowerCase();
   const resolveBlobs = options.resolveBlobs ?? false;
 
-  // Get all session summaries for metadata filtering
-  const allSummaries = await getAllSessionLogSummaries(sessionsDir);
+  // Use pre-filtered session IDs if provided, otherwise load and filter
+  let filteredSummaries: SessionLogSummary[];
+  if (options.sessionIds) {
+    const idSet = new Set(options.sessionIds);
+    const allSummaries = await getAllSessionLogSummaries(sessionsDir);
+    filteredSummaries = allSummaries.filter((s) => idSet.has(s.id));
+  } else {
+    const allSummaries = await getAllSessionLogSummaries(sessionsDir);
 
-  // AC: @session-log-search ac-3 - Pre-filter by --since
-  let filteredSummaries = allSummaries;
-  if (options.sinceDate) {
-    filteredSummaries = filteredSummaries.filter(
-      (s) => new Date(s.started_at) >= options.sinceDate!,
-    );
-  }
+    // AC: @session-log-search ac-3 - Pre-filter by --since
+    filteredSummaries = allSummaries;
+    if (options.sinceDate) {
+      filteredSummaries = filteredSummaries.filter(
+        (s) => new Date(s.started_at) >= options.sinceDate!,
+      );
+    }
 
-  // AC: @session-log-search ac-7 - Pre-filter by --agent
-  if (options.agentType) {
-    filteredSummaries = filteredSummaries.filter(
-      (s) => s.agent_type === options.agentType,
-    );
+    // AC: @session-log-search ac-7 - Pre-filter by --agent
+    if (options.agentType) {
+      filteredSummaries = filteredSummaries.filter(
+        (s) => s.agent_type === options.agentType,
+      );
+    }
   }
 
   const results: SessionSearchResult[] = [];

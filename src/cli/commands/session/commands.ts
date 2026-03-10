@@ -243,9 +243,13 @@ export function registerSessionCommands(program: Command): void {
     .description("List session logs with summary statistics")
     .option(
       "-s, --status <status>",
-      "Filter by status (active, completed, abandoned)",
+      "Filter by status (active, completed, abandoned, timed_out, failed)",
     )
-    .option("--agent <type>", "Filter by agent type")
+    .option("--agent <type>", "Filter by agent type (alias for --agent-type)")
+    .option("--agent-type <type>", "Filter by agent type")
+    .option("--agent-id <id>", "Filter by agent definition ID (e.g. worker, pr-reviewer)")
+    .option("--trigger <trigger>", "Filter by trigger (manual, dispatched, task.ready, etc.)")
+    .option("--task <ref>", "Filter by task reference")
     .option(
       "--since <time>",
       "Only show sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
@@ -257,6 +261,7 @@ export function registerSessionCommands(program: Command): void {
     )
     .option("--count", "Show only the count of matching sessions")
     .option("-n, --limit <n>", "Limit number of sessions shown")
+    .option("--offset <n>", "Skip first N sessions")
     .action(sessionLogListAction);
 
   log
@@ -281,6 +286,10 @@ export function registerSessionCommands(program: Command): void {
       "Only include sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
     )
     .option("--agent <type>", "Only include sessions with this agent type")
+    .option("--agent-type <type>", "Only include sessions with this agent type")
+    .option("--agent-id <id>", "Only include sessions with this agent definition ID")
+    .option("--trigger <trigger>", "Only include sessions with this trigger")
+    .option("--task <ref>", "Only include sessions linked to this task")
     .option("--tool-usage", "Display top 10 tool calls by frequency")
     .option("--by-day", "Group stats by day")
     .option("--by-week", "Group stats by week")
@@ -295,6 +304,10 @@ export function registerSessionCommands(program: Command): void {
       "Only search sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
     )
     .option("--agent <type>", "Only search sessions with this agent type")
+    .option("--agent-type <type>", "Only search sessions with this agent type")
+    .option("--agent-id <id>", "Only search sessions with this agent definition ID")
+    .option("--trigger <trigger>", "Only search sessions with this trigger")
+    .option("--task <ref>", "Only search sessions linked to this task")
     .option("-n, --limit <n>", "Maximum matches to return (default: 50)")
     .option("--resolve-blobs", "Resolve externalized payload blobs for full-content search")
     .action(sessionLogSearchAction);
