@@ -86725,7 +86725,7 @@
     AGENTS.md: if task modifies any file in templates/skills/ or .kspec/skills/, run kspec skill
     render and commit the rendered output. Small documentation change.
   spec_ref: "@platform-renderer-trait"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86745,6 +86745,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T16:55:02.244Z
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
