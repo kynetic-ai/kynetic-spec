@@ -85981,12 +85981,31 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKBT1P2G40V1BCTPG7CR70DF
   created_at: 2026-03-10T07:53:41.361Z
-  notes: []
+  started_at: 2026-03-10T12:16:01.201Z
+  notes:
+    - _ulid: 01KKBTX20S1JVHMVTXGAYGMJ4P
+      created_at: 2026-03-10T12:17:45.498Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: checkBudget() was enforcing budget limits without verifying session is active,
+        causing false-positive blocks when a stale KSPEC_SESSION_ID env var was present from a
+        previous completed/abandoned session.
+
+        - Fix: Added getSession() call before budget enforcement. If session is missing or not in
+        'active' status, skip budget check and return allowed.
+
+        - Files changed: src/sessions/store.ts (checkBudget function), tests/session-budget.test.ts
+        (4 new tests)
+
+        - Tests: 4 new unit tests covering: missing session, completed session, abandoned session,
+        active session still blocks. All 485 session tests pass.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T12:16:01.201Z
-  session_id: 01KKBT1P2G40V1BCTPG7CR70DF
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
