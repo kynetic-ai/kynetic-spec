@@ -2127,23 +2127,21 @@ describe('Skill Verify Command', () => {
 
   // AC: @platform-renderer-trait ac-2
   it('should not exit non-zero when only plugin-provided skills are present', async () => {
-    // Add only a core skill
+    // setupTempFixtures() creates no skills, so adding only core skills
+    // ensures the verify command sees exclusively plugin-provided results
     kspecFull(
       'skill add --id core-only --name "Core Only" --description "Only core skill" --origin core --platform claude-code',
-      tempDir
-    );
-
-    // Remove the default test-skill to have only plugin-provided
-    kspecFull('skill remove core-only --force', tempDir, { expectFail: true });
-
-    // Re-add just core skill
-    kspecFull(
-      'skill add --id core-exit --name "Core Exit" --description "Core exit test" --origin core --platform claude-code',
       tempDir
     );
 
     // Verify should succeed (exit 0) — plugin-provided is not a problem
     const result = kspecFull('skill verify --json', tempDir);
     expect(result.exitCode).toBe(0);
+
+    // Confirm all results are plugin-provided (no rendered skills present)
+    const parsed = JSON.parse(result.stdout) as Array<{ id: string; status: string }>;
+    expect(parsed.length).toBeGreaterThan(0);
+    const nonPluginProvided = parsed.filter((r) => r.status !== 'plugin-provided');
+    expect(nonPluginProvided).toEqual([]);
   });
 });
