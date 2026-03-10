@@ -1365,16 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJY9H27H9HRBH303RQJCKH4B
-    text: Alignment status calculation should treat needs_work and pending_review as active work states
-      (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
-      @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
-      task.
-    created_at: 2026-03-05T06:03:59.089Z
-    tags:
-      - validate
-      - alignment
-    added_by: "@claude"
   - _ulid: 01KK5ETB1FQVBVFX99G95C1TZJ
     text: Multi-project agent dashboard — tmux-style live view of all running agent sessions across
       projects. Show terminal-like panes for each active session with real-time output, agent name,

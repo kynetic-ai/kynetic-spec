@@ -85742,23 +85742,43 @@
   created_at: 2026-03-10T08:17:51.248Z
   notes: []
   todos: []
-- title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
+- _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
+  slugs: []
+  title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
     which are"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: 'Fix kspec item list --json output structure: currently returns nested [items, count]
     pairs which are difficult to parse programmatically. Should return flat { "items": [...],
     "total": N } shape consistent with other JSON commands. Check for existing consumers before
     changing.'
-  _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:54.728Z
+  notes: []
+  todos: []
+- title: "Alignment status calculation should treat needs_work and pending_review as active work
+    states (maps "
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Alignment status calculation should treat needs_work and pending_review as active work
+    states (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
+    @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
+    task.
+  _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:54.728Z
+  created_at: 2026-03-10T08:17:58.132Z
   notes: []
   todos: []

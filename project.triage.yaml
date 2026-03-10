@@ -2617,14 +2617,16 @@ triage:
       work states (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
       @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
       task.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Alignment calculation fix — needs_work and pending_review should map to in_progress. Was
       prototyped already
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.428Z
-    updated_at: 2026-03-10T08:17:09.447Z
+    updated_at: 2026-03-10T08:17:59.256Z
+    acted_at: 2026-03-10T08:17:59.235Z
+    result_ref: "@01KKBD5Z"
   - _ulid: 01KKBD4GBQ9PYTEFH346EW03QG
     inbox_ref: 01KJXPG80VDQWGT01KTJ7GGWYW
     item_snapshot: 'Fix kspec item list --json output structure: currently returns nested [items, count]
@@ -2636,10 +2638,10 @@ triage:
     reasoning: item list --json returns nested pairs instead of flat object — breaks programmatic usage
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.495Z
-    updated_at: 2026-03-10T08:17:55.917Z
     acted_at: 2026-03-10T08:17:55.897Z
     result_ref: "@01KKBD5W"
+    created_at: 2026-03-10T08:17:09.495Z
+    updated_at: 2026-03-10T08:17:55.917Z
   - _ulid: 01KKBD4GDTXZ4K7A5S84VG5RCE
     inbox_ref: 01KJXP9CS7E3GJ27DM8970MM46
     item_snapshot: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug
