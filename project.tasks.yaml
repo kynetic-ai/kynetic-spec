@@ -85822,24 +85822,45 @@
   created_at: 2026-03-10T08:18:04.769Z
   notes: []
   todos: []
-- title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
+- _ulid: 01KKBD69TY1M3FMTQ6ZV1FNTBT
+  slugs: []
+  title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
     prompt_te"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores
     agent prompt_template and always injects a hardcoded work prompt, so review agents drift into
     implementation. Prompt-driven codex-acp runs are also brittle and can fail with RPC parse
     errors. Need a reliable readonly review path with prompt_template parity, dry-run parity, and
     adapter-safe prompt handling."
-  _ulid: 01KKBD69TY1M3FMTQ6ZV1FNTBT
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:18:08.350Z
+  notes: []
+  todos: []
+- title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
+    with m
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "kspec setup should update existing agent definitions on version bumps. Currently skips
+    agents with matching IDs, so agents created with older kspec versions miss new fields like
+    auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve set,
+    blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add kspec
+    setup --upgrade flag, (3) warn when agent config is missing expected fields."
+  _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:18:08.350Z
+  created_at: 2026-03-10T08:18:11.677Z
   notes: []
   todos: []

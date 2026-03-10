@@ -1396,18 +1396,6 @@ inbox:
       - multi-project
       - concurrency
     added_by: "@claude"
-  - _ulid: 01KK6168DMHH6H5EM7277P4Y1B
-    text: "kspec setup should update existing agent definitions on version bumps. Currently skips agents
-      with matching IDs, so agents created with older kspec versions miss new fields like
-      auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve set,
-      blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add
-      kspec setup --upgrade flag, (3) warn when agent config is missing expected fields."
-    created_at: 2026-03-08T06:12:11.829Z
-    tags:
-      - agent
-      - setup
-      - dx
-    added_by: "@claude"
   - _ulid: 01KK69HXSET7B215A80ZY1EKJH
     text: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
       triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift check,

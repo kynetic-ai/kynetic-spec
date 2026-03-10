@@ -2561,14 +2561,16 @@ triage:
       like auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve
       set, blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add
       kspec setup --upgrade flag, (3) warn when agent config is missing expected fields."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Clear DX improvement: setup should update agent defs on version bumps instead of
       skipping matching IDs"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.134Z
-    updated_at: 2026-03-10T08:17:09.158Z
+    updated_at: 2026-03-10T08:18:12.849Z
+    acted_at: 2026-03-10T08:18:12.829Z
+    result_ref: "@01KKBD6D"
   - _ulid: 01KKBD4G38VNC1HHRB7T9EE4JC
     inbox_ref: 01KK5WHSWGB2SNA5B1498X0JAQ
     item_snapshot: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores
@@ -2582,10 +2584,10 @@ triage:
       agents drift into implementation"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.224Z
-    updated_at: 2026-03-10T08:18:09.494Z
     acted_at: 2026-03-10T08:18:09.474Z
     result_ref: "@01KKBD69"
+    created_at: 2026-03-10T08:17:09.224Z
+    updated_at: 2026-03-10T08:18:09.494Z
   - _ulid: 01KKBD4G5DAVCGDV23HKVMACDK
     inbox_ref: 01KK5ETB1FQVBVFX99G95C1TZJ
     item_snapshot: Multi-project agent dashboard — tmux-style live view of all running agent sessions
