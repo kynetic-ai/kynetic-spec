@@ -84805,7 +84805,8 @@
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-prose-typography-setup"
   context: []
   priority: 3
   tags: []
