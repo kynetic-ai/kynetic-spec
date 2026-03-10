@@ -1349,15 +1349,6 @@ inbox:
       - dispatch
       - reviewer
     added_by: Jacob Chapel
-  - _ulid: 01KJVP3S8TYHGHFHT4KZ1BQZ9C
-    text: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
-      default to the single active run instead of requiring explicit run-ref."
-    created_at: 2026-03-04T05:46:12.122Z
-    tags:
-      - reflection
-      - workflow
-      - cli-ux
-    added_by: Jacob Chapel
   - _ulid: 01KJVP7VSXE38QW7TNTPSW4CNP
     text: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
       include current step metadata (step_index, step_type, step_content) so users/agents can

@@ -2746,14 +2746,16 @@ triage:
     inbox_ref: 01KJVP3S8TYHGHFHT4KZ1BQZ9C
     item_snapshot: "Workflow UX: allow kspec workflow show (and related workflow run commands where
       safe) to default to the single active run instead of requiring explicit run-ref."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Small UX fix: workflow show should default to single active run instead of requiring
       explicit ref"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:10.159Z
-    updated_at: 2026-03-10T08:17:10.181Z
+    updated_at: 2026-03-10T08:17:29.361Z
+    acted_at: 2026-03-10T08:17:29.342Z
+    result_ref: "@01KKBD52"
   - _ulid: 01KKBD4H2V9S48KWYCBEQ47D7A
     inbox_ref: 01KJVFDRC70KAZ98MJ9ERFY6JJ
     item_snapshot: Clarify @task-work submit timing and pending_review ownership semantics. Current
@@ -2765,7 +2767,7 @@ triage:
     reasoning: "Small doc fix: update plan-review dispatch naming to avoid role overload with pr-reviewer"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:10.235Z
-    updated_at: 2026-03-10T08:17:25.981Z
     acted_at: 2026-03-10T08:17:25.963Z
     result_ref: "@01KKBD4Z"
+    created_at: 2026-03-10T08:17:10.235Z
+    updated_at: 2026-03-10T08:17:25.981Z
