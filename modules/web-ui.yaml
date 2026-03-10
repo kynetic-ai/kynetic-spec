@@ -2482,7 +2482,7 @@ requirements:
         then: goto() is used for URL mutations so $page.url stays in sync with the browser URL bar
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
