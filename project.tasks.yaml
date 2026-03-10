@@ -85635,6 +85635,7 @@
   created_at: 2026-03-10T07:53:41.361Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
@@ -85660,6 +85661,7 @@
   created_at: 2026-03-10T08:17:24.828Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD52ND0SRD9WXYT6ZXZ776
   slugs: []
   title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
@@ -85687,6 +85689,7 @@
   created_at: 2026-03-10T08:17:28.237Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
   slugs: []
   title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
@@ -85714,6 +85717,7 @@
   created_at: 2026-03-10T08:17:31.495Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD5BAX4M5G9C5FH431MSMF
   slugs: []
   title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
@@ -85741,6 +85745,7 @@
   created_at: 2026-03-10T08:17:37.116Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
   slugs: []
   title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
@@ -85769,6 +85774,7 @@
   created_at: 2026-03-10T08:17:42.389Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD5NVA05J5XM039Y5XVNT0
   slugs: []
   title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
@@ -85796,6 +85802,7 @@
   created_at: 2026-03-10T08:17:47.882Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
@@ -85824,6 +85831,7 @@
   created_at: 2026-03-10T08:17:51.248Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
   title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
@@ -85852,6 +85860,7 @@
   created_at: 2026-03-10T08:17:54.728Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
   slugs: []
   title: "Alignment status calculation should treat needs_work and pending_review as active work
@@ -85881,6 +85890,7 @@
   created_at: 2026-03-10T08:17:58.132Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD6389SFFMQH6645YXWCVK
   slugs: []
   title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
@@ -85909,6 +85919,7 @@
   created_at: 2026-03-10T08:18:01.609Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
@@ -85958,6 +85969,7 @@
   created_at: 2026-03-10T08:18:08.350Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
   title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
@@ -85986,6 +85998,7 @@
   created_at: 2026-03-10T08:18:11.677Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD6GBCWTZA2ECFWN62F92F
   slugs: []
   title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
@@ -86035,6 +86048,7 @@
   created_at: 2026-03-10T08:18:18.277Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
@@ -86066,3 +86080,4 @@
   created_at: 2026-03-10T08:18:22.055Z
   notes: []
   todos: []
+  automation: eligible
