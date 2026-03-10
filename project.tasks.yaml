@@ -85477,3 +85477,22 @@
         given/when/then format with concrete, observable outcomes
       supersedes: null
   todos: []
+- title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
+    CODEX_THREAD_"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
+    CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated to
+    daemon isolation."
+  _ulid: 01KKBBS1HGRR363BSDMG07EC19
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T07:53:25.296Z
+  notes: []
+  todos: []

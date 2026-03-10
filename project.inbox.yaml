@@ -1693,16 +1693,6 @@ inbox:
       - bug
       - sessions
     added_by: "@claude"
-  - _ulid: 01KKAK7EYPM7ZSZWBH9ZZQ4JVK
-    text: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
-      CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated to
-      daemon isolation."
-    created_at: 2026-03-10T00:44:23.382Z
-    tags:
-      - bug
-      - testing
-      - cli
-    added_by: "@claude"
   - _ulid: 01KKB0WWM9QRKCVE1CBMKE6ZY4
     text: "CLI mutation commands should show what changed (before → after) in output, especially for
       array fields like --trait that replace rather than append. Two improvements: (1) item set

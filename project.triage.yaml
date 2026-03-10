@@ -2467,11 +2467,13 @@ triage:
     item_snapshot: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform
       when CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated
       to daemon isolation."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Still failing: agent detection checks CLAUDECODE before CODEX_THREAD_ID, env override
       insufficient"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T07:53:09.574Z
-    updated_at: 2026-03-10T07:53:09.593Z
+    updated_at: 2026-03-10T07:53:26.466Z
+    acted_at: 2026-03-10T07:53:26.449Z
+    result_ref: "@01KKBBS1"
