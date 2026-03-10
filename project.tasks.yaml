@@ -87064,6 +87064,26 @@
       content: "[FIX_CYCLE: 4] Review findings: SHOULD-FIX: add direct regression coverage for the
         WebSocket registration path in daemon session-sync lifecycle"
       supersedes: null
+    - _ulid: 01KKCTY824A2TRABHGAC8H0ZTX
+      created_at: 2026-03-10T21:37:38.884Z
+      author: "@claude"
+      content: >-
+        Fix cycle 4 addressed: Added direct regression coverage for WebSocket registration path in
+        session-sync lifecycle. Changes:
+
+        1. Extracted resolveWebSocketProject() from inline server.ts beforeHandle into
+        packages/daemon/src/websocket/project-resolution.ts — isolates the WebSocket project
+        resolution logic for testing without pulling in the full server dependency tree
+
+        2. Server.ts beforeHandle now delegates to the extracted function (no behavior change)
+
+        3. Added 7 new tests covering: header-based registration, query-param registration,
+        already-registered skip, path normalization regression, default project fallback, no-default
+        error, and header-over-query precedence
+
+        All 20 tests in daemon-session-sync-multi-project.test.ts pass. Full suite green except
+        pre-existing failures (trait-retrospective, cli-serve, integration null-clearing).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
