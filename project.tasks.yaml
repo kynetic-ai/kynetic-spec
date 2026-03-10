@@ -84562,7 +84562,7 @@
   type: task
   spec_ref: "@session-list-pagination-api"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-summary-cache"
@@ -84687,6 +84687,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T16:47:24.328Z
+  closed_reason: "Merged in PR #751 (merge commit fd2497a96). Implemented offset/limit pagination and
+    multi-field filtering for GET /api/sessions, including status, agent_type, agent_id, trigger,
+    task_id, spec_ref, and since filters; added 404 handling for unknown task/spec refs; and changed
+    the list path to read only session.yaml metadata while leaving full event-derived stats to
+    session detail reads. AC coverage verified for all own criteria plus @trait-api-endpoint ac-1
+    through ac-4. Review threads resolved, CI green on the merged head, and local npm test completed
+    clean on the PR head."
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
@@ -86900,6 +86908,41 @@
     - task-ansi-terminal-output-rendering
   title: "Implement: ANSI Terminal Output Rendering"
   type: task
+  description: >-
+    Implement ANSI terminal color rendering in the web UI session stream.
+
+
+    Integration point: packages/web-ui/src/lib/components/session/ToolCallView.svelte (line ~112,
+    the <pre> tag rendering outputText).
+
+
+    Approach:
+
+    1. Add ansi-to-html package to packages/web-ui/
+
+    2. Create a shared utility (e.g. lib/utils/ansi.ts) that converts ANSI escape sequences to
+    styled HTML spans
+
+    3. In ToolCallView.svelte, pipe outputText through the ANSI parser before rendering with {@html}
+
+    4. Handle graceful degradation: if ESC chars (0x1B) were stripped, detect orphaned CSI
+    parameters like [32m and strip them for clean plain text
+
+    5. Ensure HTML escaping of non-ANSI content before insertion (XSS safety)
+
+    6. Use CSS custom properties for the color palette so it works with light/dark theme
+
+    7. Consider reuse: other views (session log, agent fleet cards) may also display terminal output
+
+
+    Data flow: events.jsonl → daemon API → session-utils.ts parseEventsToBlocks() →
+    ToolCallView.svelte
+
+    ANSI codes survive JSON serialization as UTF-8 (\x1b → \u001b). The browser ignores the
+    invisible ESC char, leaving bracket params visible as garbled text.
+
+
+    Spec: @ansi-terminal-rendering (7 ACs)
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
   status: pending
@@ -86959,39 +87002,4 @@
         parsing and rendering completes without visible delay
       supersedes: null
   todos: []
-  description: >-
-    Implement ANSI terminal color rendering in the web UI session stream.
-
-
-    Integration point: packages/web-ui/src/lib/components/session/ToolCallView.svelte (line ~112,
-    the <pre> tag rendering outputText).
-
-
-    Approach:
-
-    1. Add ansi-to-html package to packages/web-ui/
-
-    2. Create a shared utility (e.g. lib/utils/ansi.ts) that converts ANSI escape sequences to
-    styled HTML spans
-
-    3. In ToolCallView.svelte, pipe outputText through the ANSI parser before rendering with {@html}
-
-    4. Handle graceful degradation: if ESC chars (0x1B) were stripped, detect orphaned CSI
-    parameters like [32m and strip them for clean plain text
-
-    5. Ensure HTML escaping of non-ANSI content before insertion (XSS safety)
-
-    6. Use CSS custom properties for the color palette so it works with light/dark theme
-
-    7. Consider reuse: other views (session log, agent fleet cards) may also display terminal output
-
-
-    Data flow: events.jsonl → daemon API → session-utils.ts parseEventsToBlocks() →
-    ToolCallView.svelte
-
-    ANSI codes survive JSON serialization as UTF-8 (\x1b → \u001b). The browser ignores the
-    invisible ESC char, leaving bracket params visible as garbled text.
-
-
-    Spec: @ansi-terminal-rendering (7 ACs)
   automation: eligible
