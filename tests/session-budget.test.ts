@@ -269,9 +269,22 @@ describe("Budget CRUD", () => {
       expect(result.reason).toContain("Wrap up");
     });
 
-    it("should allow when session does not exist (stale KSPEC_SESSION_ID)", async () => {
+    it("should allow when session metadata is missing and no budget file exists", async () => {
+      // Session ID set but no metadata or budget file — falls through to no-budget path
       const result = await checkBudget(sessionsDir, "NONEXISTENT_SESSION_ID");
       expect(result.allowed).toBe(true);
+    });
+
+    it("should enforce budget when session metadata is missing but budget file exists", async () => {
+      // Budget file exists without session metadata (e.g. integration test setup).
+      // Budget enforcement should still apply — missing metadata does NOT mean stale.
+      const orphanSessionId = "ORPHAN_SESSION_ID";
+      await createBudget(sessionsDir, orphanSessionId, 1);
+      await incrementBudget(sessionsDir, orphanSessionId);
+
+      const result = await checkBudget(sessionsDir, orphanSessionId);
+      expect(result.allowed).toBe(false);
+      expect(result.reason).toContain("budget exhausted");
     });
 
     it("should allow when session is completed despite exhausted budget", async () => {
