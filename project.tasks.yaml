@@ -85794,19 +85794,20 @@
     empty string), or (b) adjust detection priority so CODEX_THREAD_ID is checked before CLAUDECODE.
     Option (a) is safer. Check tests/helpers/cli.ts for how env vars are merged.
   spec_ref: "@platform-renderer-trait"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKBRJZHN2WN5N85XR3MHSJ4X
   created_at: 2026-03-10T07:53:25.296Z
+  started_at: 2026-03-10T11:42:51.288Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-10T11:42:51.288Z
-  session_id: 01KKBRJZHN2WN5N85XR3MHSJ4X
+  submitted_at: 2026-03-10T11:43:58.435Z
 - _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
   title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
