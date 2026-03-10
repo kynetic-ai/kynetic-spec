@@ -2380,14 +2380,16 @@ triage:
       exhausted ... let iteration end naturally' even when not running ralph and no in-progress
       tasks. Expected: budget guard should apply only during active ralph loop iteration context, or
       stale/non-ralph session IDs should be ignored."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Still valid: checkBudget() does not validate session is active — blocks legitimate work
       with stale KSPEC_SESSION_ID"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T07:53:09.194Z
-    updated_at: 2026-03-10T07:53:09.212Z
+    updated_at: 2026-03-10T07:53:42.516Z
+    acted_at: 2026-03-10T07:53:42.501Z
+    result_ref: "@01KKBBSH"
   - _ulid: 01KKBBRHWKTJMG5YSCKEZH34TY
     inbox_ref: 01KJGA18V9VY86ZFAVJ9CP2PNA
     item_snapshot: >-
@@ -2416,10 +2418,10 @@ triage:
     reasoning: "Still valid: skill verify switch missing plugin-provided case in skill-diff.ts"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T07:53:09.267Z
-    updated_at: 2026-03-10T07:53:39.149Z
     acted_at: 2026-03-10T07:53:39.127Z
     result_ref: "@01KKBBSD"
+    created_at: 2026-03-10T07:53:09.267Z
+    updated_at: 2026-03-10T07:53:39.149Z
   - _ulid: 01KKBBRHYST9FVS44128Y72KE3
     inbox_ref: 01KJS1XVH2AV1JX8X1QT9RMFC3
     item_snapshot: kspec commands should support manifest discovery from nested task worktrees (or

@@ -85538,11 +85538,10 @@
   created_at: 2026-03-10T07:53:31.856Z
   notes: []
   todos: []
-- title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
+- _ulid: 01KKBBSDWJ9VTVY1HTHDYC69KP
+  slugs: []
+  title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: >-
     Diagnose skill verify drift/no-hash for plugin-provided core skills.
 
@@ -85564,13 +85563,36 @@
     - plugin-provided status handling in skill verify/status/diff paths
 
     - whether this is expected behavior or a bug in drift detection
-  _ulid: 01KKBBSDWJ9VTVY1HTHDYC69KP
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T07:53:37.938Z
+  notes: []
+  todos: []
+- title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
+    (observed in co
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
+    (observed in codex session). Repro: with KSPEC_SESSION_ID set to an old session that has
+    budget.json started_this_cycle=max_per_cycle, 'kspec task start @ref' fails with 'Task budget
+    exhausted ... let iteration end naturally' even when not running ralph and no in-progress tasks.
+    Expected: budget guard should apply only during active ralph loop iteration context, or
+    stale/non-ralph session IDs should be ignored."
+  _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T07:53:37.938Z
+  created_at: 2026-03-10T07:53:41.361Z
   notes: []
   todos: []
