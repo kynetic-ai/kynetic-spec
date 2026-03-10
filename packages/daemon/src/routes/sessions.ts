@@ -32,10 +32,7 @@ import {
   loadAllItems,
   ReferenceIndex,
 } from '../../parser/index.js';
-import { SessionSummaryCache } from '../../sessions/cache.js';
-
-// AC: @session-summary-cache ac-cache-build — Module-level cache instance, lives for daemon lifetime
-const sessionCache = new SessionSummaryCache();
+import { getSessionCache } from '../../sessions/cache.js';
 
 export function createSessionRoutes() {
   return new Elysia({ prefix: '/api/sessions' })
@@ -45,6 +42,8 @@ export function createSessionRoutes() {
     // AC: @session-summary-cache ac-cache-build — Uses cached summaries instead of re-reading all files
     .get('/', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
+      // AC: @session-summary-cache ac-cache-build — Per-project cache scoped by sessionsDir
+      const sessionCache = getSessionCache(ctx.sessionsDir);
       const summaries = await sessionCache.getAll(ctx.sessionsDir);
 
       // Sort by started_at descending (most recent first)
@@ -87,6 +86,7 @@ export function createSessionRoutes() {
         });
       }
 
+      const sessionCache = getSessionCache(ctx.sessionsDir);
       const detail = await sessionCache.get(ctx.sessionsDir, resolution.id);
       if (!detail) {
         return errorResponse(404, {

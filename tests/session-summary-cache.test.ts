@@ -9,7 +9,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { stringify as yamlStringify } from "yaml";
-import { SessionSummaryCache } from "../src/sessions/cache.js";
+import { SessionSummaryCache, getSessionCache } from "../src/sessions/cache.js";
 import { createTempDir } from "./helpers/cli.js";
 
 // Helper to create a session directory with metadata
@@ -205,6 +205,35 @@ describe("SessionSummaryCache", () => {
       const s1 = second.find((s) => s.id === "session-001");
       expect(s1).toBeDefined();
       expect(s1!.status).toBe("completed");
+    });
+
+    // AC: @session-summary-cache ac-cache-invalidate
+    it("should detect in-place session.yaml status/metadata changes for existing sessions", async () => {
+      await createTestSession(sessionsDir, "session-001", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+      });
+
+      // Build initial cache
+      const first = await cache.getAll(sessionsDir);
+      expect(first).toHaveLength(1);
+      expect(first[0].status).toBe("completed");
+
+      // Wait briefly to ensure mtime differs (filesystem mtime granularity)
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      // Modify session.yaml in-place (status changes to "failed")
+      await createTestSession(sessionsDir, "session-001", {
+        status: "failed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+      });
+
+      // Cache should detect the mtime change and re-read the updated metadata
+      const second = await cache.getAll(sessionsDir);
+      expect(second).toHaveLength(1);
+      expect(second[0].status).toBe("failed");
     });
   });
 
@@ -525,6 +554,46 @@ describe("SessionSummaryCache", () => {
 
       for (const result of results) {
         expect(result).toHaveLength(2);
+      }
+    });
+  });
+
+  describe("getSessionCache: per-project scoping", () => {
+    it("should return the same cache instance for the same sessionsDir", () => {
+      const cache1 = getSessionCache("/tmp/project-a/.kspec-sessions");
+      const cache2 = getSessionCache("/tmp/project-a/.kspec-sessions");
+      expect(cache1).toBe(cache2);
+    });
+
+    it("should return different cache instances for different sessionsDirs", () => {
+      const cacheA = getSessionCache("/tmp/project-a/.kspec-sessions");
+      const cacheB = getSessionCache("/tmp/project-b/.kspec-sessions");
+      expect(cacheA).not.toBe(cacheB);
+    });
+
+    it("should isolate session data between projects", async () => {
+      const dirA = await createTempDir("kspec-cache-scope-a-");
+      const dirB = await createTempDir("kspec-cache-scope-b-");
+
+      try {
+        // Create sessions in each project
+        await createTestSession(dirA, "session-a", { status: "completed" });
+        await createTestSession(dirB, "session-b", { status: "completed" });
+
+        const cacheA = getSessionCache(dirA);
+        const cacheB = getSessionCache(dirB);
+
+        const summariesA = await cacheA.getAll(dirA);
+        const summariesB = await cacheB.getAll(dirB);
+
+        // Each cache should only see its own project's sessions
+        expect(summariesA).toHaveLength(1);
+        expect(summariesA[0].id).toBe("session-a");
+        expect(summariesB).toHaveLength(1);
+        expect(summariesB[0].id).toBe("session-b");
+      } finally {
+        await fs.rm(dirA, { recursive: true, force: true });
+        await fs.rm(dirB, { recursive: true, force: true });
       }
     });
   });

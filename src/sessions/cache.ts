@@ -12,14 +12,17 @@
  * - @session-summary-cache ac-active-refresh: Recompute stats for active sessions on each request
  */
 
+import * as path from "node:path";
 import * as fsPromises from "node:fs/promises";
 import { type SessionLogSummary, getSessionLogSummary } from "./store.js";
 
 /**
- * Cached entry: session summary plus the session's status for active-refresh logic.
+ * Cached entry: session summary plus mtime for change detection.
  */
 interface CacheEntry {
   summary: SessionLogSummary;
+  /** mtime of session.yaml when this entry was cached, for invalidation */
+  mtimeMs: number;
 }
 
 /**
@@ -75,7 +78,8 @@ export class SessionSummaryCache {
     // Not cached or active — read from disk and update cache
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
     if (summary) {
-      this.entries.set(sessionId, { summary });
+      const mtimeMs = await this.getMetadataMtime(sessionsDir, sessionId);
+      this.entries.set(sessionId, { summary, mtimeMs });
     }
     return summary;
   }
@@ -129,20 +133,21 @@ export class SessionSummaryCache {
         // AC: @session-summary-cache ac-cache-graceful
         try {
           const summary = await getSessionLogSummary(sessionsDir, id);
-          return { id, summary };
+          const mtimeMs = await this.getMetadataMtime(sessionsDir, id);
+          return { id, summary, mtimeMs };
         } catch (err) {
           console.warn(
             `[session-cache] Skipping session ${id}: ${err instanceof Error ? err.message : String(err)}`,
           );
-          return { id, summary: null };
+          return { id, summary: null, mtimeMs: 0 };
         }
       }),
     );
 
     this.entries.clear();
-    for (const { id, summary } of results) {
+    for (const { id, summary, mtimeMs } of results) {
       if (summary) {
-        this.entries.set(id, { summary });
+        this.entries.set(id, { summary, mtimeMs });
       }
     }
 
@@ -174,32 +179,56 @@ export class SessionSummaryCache {
       .filter((entry) => entry.summary.status === "active")
       .map((entry) => entry.summary.id);
 
+    // AC: @session-summary-cache ac-cache-invalidate — Detect in-place session.yaml changes
+    // Check mtime of session.yaml for all existing non-active cached sessions
+    const mtimeChangedIds: string[] = [];
+    const existingNonActiveIds = [...this.entries.entries()]
+      .filter(([, entry]) => entry.summary.status !== "active")
+      .map(([id]) => id)
+      .filter((id) => currentSet.has(id)); // still exists on disk
+
+    if (existingNonActiveIds.length > 0) {
+      const mtimeChecks = await Promise.all(
+        existingNonActiveIds.map(async (id) => {
+          const currentMtime = await this.getMetadataMtime(sessionsDir, id);
+          const cached = this.entries.get(id);
+          return { id, changed: cached != null && currentMtime !== cached.mtimeMs };
+        }),
+      );
+      for (const { id, changed } of mtimeChecks) {
+        if (changed) {
+          mtimeChangedIds.push(id);
+        }
+      }
+    }
+
     // Remove deleted sessions from cache
     for (const id of removedIds) {
       this.entries.delete(id);
     }
 
-    // Fetch new + active sessions in parallel
-    const idsToRefresh = [...new Set([...newIds, ...activeIds])];
+    // Fetch new + active + mtime-changed sessions in parallel
+    const idsToRefresh = [...new Set([...newIds, ...activeIds, ...mtimeChangedIds])];
     if (idsToRefresh.length > 0) {
       const results = await Promise.all(
         idsToRefresh.map(async (id) => {
           // AC: @session-summary-cache ac-cache-graceful
           try {
             const summary = await getSessionLogSummary(sessionsDir, id);
-            return { id, summary };
+            const mtimeMs = await this.getMetadataMtime(sessionsDir, id);
+            return { id, summary, mtimeMs };
           } catch (err) {
             console.warn(
               `[session-cache] Skipping session ${id}: ${err instanceof Error ? err.message : String(err)}`,
             );
-            return { id, summary: null };
+            return { id, summary: null, mtimeMs: 0 };
           }
         }),
       );
 
-      for (const { id, summary } of results) {
+      for (const { id, summary, mtimeMs } of results) {
         if (summary) {
-          this.entries.set(id, { summary });
+          this.entries.set(id, { summary, mtimeMs });
         } else {
           // Remove from cache if it was there (e.g., active session that became unreadable)
           this.entries.delete(id);
@@ -209,6 +238,23 @@ export class SessionSummaryCache {
 
     // Update known session IDs
     this.knownSessionIds = currentSet;
+  }
+
+  /**
+   * Get mtime of session.yaml for change detection.
+   * Returns 0 if the file doesn't exist.
+   */
+  private async getMetadataMtime(
+    sessionsDir: string,
+    sessionId: string,
+  ): Promise<number> {
+    try {
+      const metadataPath = path.join(sessionsDir, sessionId, "session.yaml");
+      const stat = await fsPromises.stat(metadataPath);
+      return stat.mtimeMs;
+    } catch {
+      return 0;
+    }
   }
 
   /**
@@ -231,4 +277,26 @@ export class SessionSummaryCache {
   private summaries(): SessionLogSummary[] {
     return [...this.entries.values()].map((e) => e.summary);
   }
+}
+
+/**
+ * Per-sessionsDir cache registry.
+ *
+ * The daemon is multi-project: each request can target a different project root,
+ * each with its own sessionsDir. This registry ensures cache instances are scoped
+ * per sessionsDir to prevent cross-project session bleed.
+ */
+const cacheRegistry = new Map<string, SessionSummaryCache>();
+
+/**
+ * Get (or create) a SessionSummaryCache scoped to a specific sessionsDir.
+ * Ensures multi-project daemon requests don't share cached session data.
+ */
+export function getSessionCache(sessionsDir: string): SessionSummaryCache {
+  let cache = cacheRegistry.get(sessionsDir);
+  if (!cache) {
+    cache = new SessionSummaryCache();
+    cacheRegistry.set(sessionsDir, cache);
+  }
+  return cache;
 }
