@@ -1055,7 +1055,7 @@ features:
             created: 2026-03-08T22:46:12.994Z
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
           - _ulid: 01KK7T2BRDRG8YMYXMB412EEQY
             slugs:
               - session-remove-shadow-commits
