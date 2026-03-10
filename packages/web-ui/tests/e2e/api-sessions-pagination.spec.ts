@@ -10,12 +10,14 @@
  * - @session-list-pagination-api ac-filter-agent-type: Agent type filter
  * - @session-list-pagination-api ac-filter-agent-id: Agent ID filter
  * - @session-list-pagination-api ac-filter-trigger: Trigger filter with dispatched shorthand
- * - @session-list-pagination-api ac-filter-task: Task ID filter
+ * - @session-list-pagination-api ac-filter-task: Task ID filter with real fixture tasks
+ * - @session-list-pagination-api ac-filter-spec-ref: Spec ref filter resolving through AlignmentIndex
  * - @session-list-pagination-api ac-filter-since: Since date filter
  * - @session-list-pagination-api ac-combined-filters: AND logic for multiple filters
  * - @session-list-pagination-api ac-invalid-filter: 400 on invalid filter values
  * - @session-list-pagination-api ac-metadata-only: Uses cache, reads session.yaml only
  * - @trait-api-endpoint ac-1: Returns 2xx with JSON body
+ * - @trait-api-endpoint ac-2: Returns 404 for unknown task_id/spec_ref refs
  * - @trait-api-endpoint ac-3: Returns 400 with details array on invalid params
  * - @trait-api-endpoint ac-4: Pagination wrapper {items, total, offset, limit}
  */
@@ -82,36 +84,39 @@ function setupTestSessions(sessionsDir: string): void {
   mkdirSync(sessionsDir, { recursive: true });
 
   // Session 1: completed, worker, dispatched task.ready, oldest
+  // Uses @test-task-ready which exists in fixtures (spec_ref: @test-feature)
   writeSession(sessionsDir, '01KTEST0000000000000000001', {
     agentType: 'claude-agent-acp',
     agentId: 'worker',
     status: 'completed',
     trigger: 'task.ready',
-    taskId: '@task-alpha',
+    taskId: '@test-task-ready',
     startedAt: '2026-03-01T10:00:00.000Z',
     endedAt: '2026-03-01T11:00:00.000Z',
     eventCount: 10,
   });
 
   // Session 2: completed, pr-reviewer, dispatched task.pending_review
+  // Uses @test-task-in-progress which exists in fixtures (spec_ref: @test-feature)
   writeSession(sessionsDir, '01KTEST0000000000000000002', {
     agentType: 'claude-agent-acp',
     agentId: 'pr-reviewer',
     status: 'completed',
     trigger: 'task.pending_review',
-    taskId: '@task-beta',
+    taskId: '@test-task-in-progress',
     startedAt: '2026-03-02T10:00:00.000Z',
     endedAt: '2026-03-02T11:00:00.000Z',
     eventCount: 5,
   });
 
   // Session 3: failed, worker, dispatched task.in_progress
+  // Uses @test-task-ready (same as session 1) for multi-session-per-task testing
   writeSession(sessionsDir, '01KTEST0000000000000000003', {
     agentType: 'claude-agent-acp',
     agentId: 'worker',
     status: 'failed',
     trigger: 'task.in_progress',
-    taskId: '@task-alpha',
+    taskId: '@test-task-ready',
     startedAt: '2026-03-03T10:00:00.000Z',
     endedAt: '2026-03-03T10:05:00.000Z',
     eventCount: 3,
@@ -341,19 +346,35 @@ test.describe('Session List Pagination API', () => {
 
   test.describe('Task Filter', () => {
     // AC: @session-list-pagination-api ac-filter-task
-    test('filters by task_id', async ({ request, daemon }) => {
+    test('filters by task_id with real fixture task', async ({ request, daemon }) => {
       const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
       setupTestSessions(sessionsDir);
 
-      // task-alpha is referenced by sessions 1 and 3
-      const response = await request.get(`${daemon.baseUrl}/api/sessions?task_id=@task-alpha`);
+      // @test-task-ready exists in fixtures and is referenced by sessions 1 and 3
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?task_id=@test-task-ready`);
       expect(response.status()).toBe(200);
 
       const body = await response.json();
-      // This may return 0 if the ref doesn't resolve (task doesn't exist in fixtures)
-      // but the endpoint should not error
       expect(Array.isArray(body.items)).toBe(true);
-      expect(body.total).toBe(body.items.length);
+      expect(body.items.length).toBe(2); // Sessions 1 and 3 reference @test-task-ready
+      expect(body.total).toBe(2);
+      const ids = body.items.map((s: { id: string }) => s.id);
+      expect(ids).toContain('01KTEST0000000000000000001');
+      expect(ids).toContain('01KTEST0000000000000000003');
+    });
+
+    // AC: @session-list-pagination-api ac-filter-task
+    test('filters by task_id returns single session for unique task', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      // @test-task-in-progress exists in fixtures and is referenced by session 2 only
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?task_id=@test-task-in-progress`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.items.length).toBe(1);
+      expect(body.items[0].id).toBe('01KTEST0000000000000000002');
     });
   });
 
@@ -385,6 +406,80 @@ test.describe('Session List Pagination API', () => {
       const body = await response.json();
       // Sessions started at or after Mar 4 10:00: sessions 4 and 5
       expect(body.items.length).toBe(2);
+    });
+  });
+
+  test.describe('Spec Ref Filter', () => {
+    // AC: @session-list-pagination-api ac-filter-spec-ref
+    test('filters by spec_ref resolving through AlignmentIndex', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      // @test-feature exists in fixtures. Tasks test-task-ready, test-task-in-progress,
+      // test-task-pending-review, and test-task-completed all have spec_ref: "@test-feature".
+      // Sessions 1, 3 reference @test-task-ready; session 2 references @test-task-in-progress.
+      // Sessions 4, 5, 6 have no task_id or reference tasks without spec_ref.
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?spec_ref=@test-feature`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(Array.isArray(body.items)).toBe(true);
+      // Sessions 1, 2, 3 have task_ids that resolve to tasks linked to @test-feature
+      expect(body.items.length).toBe(3);
+      expect(body.total).toBe(3);
+      const ids = body.items.map((s: { id: string }) => s.id);
+      expect(ids).toContain('01KTEST0000000000000000001');
+      expect(ids).toContain('01KTEST0000000000000000002');
+      expect(ids).toContain('01KTEST0000000000000000003');
+    });
+
+    // AC: @session-list-pagination-api ac-filter-spec-ref
+    test('spec_ref filter combined with status filter', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      // spec_ref=@test-feature gives sessions 1,2,3; status=completed narrows to 1,2
+      const response = await request.get(
+        `${daemon.baseUrl}/api/sessions?spec_ref=@test-feature&status=completed`
+      );
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.items.length).toBe(2);
+      for (const item of body.items) {
+        expect(item.status).toBe('completed');
+      }
+    });
+  });
+
+  test.describe('Unknown Ref Validation', () => {
+    // AC: @trait-api-endpoint ac-2 — 404 for unknown task_id ref
+    test('returns 404 for unknown task_id ref', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?task_id=@nonexistent-task`);
+      expect(response.status()).toBe(404);
+
+      const body = await response.json();
+      expect(body).toHaveProperty('error', 'not_found');
+      expect(body).toHaveProperty('message');
+      expect(body.message).toContain('@nonexistent-task');
+      expect(body).toHaveProperty('suggestion');
+    });
+
+    // AC: @trait-api-endpoint ac-2 — 404 for unknown spec_ref
+    test('returns 404 for unknown spec_ref', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?spec_ref=@nonexistent-spec`);
+      expect(response.status()).toBe(404);
+
+      const body = await response.json();
+      expect(body).toHaveProperty('error', 'not_found');
+      expect(body.message).toContain('@nonexistent-spec');
+      expect(body).toHaveProperty('suggestion');
     });
   });
 

@@ -107,6 +107,7 @@ export function createSessionRoutes() {
       }
 
       // AC: @session-list-pagination-api ac-filter-task
+      // AC: @trait-api-endpoint ac-2 — 404 for unknown task_id ref
       if (query.task_id) {
         const taskRef = query.task_id.startsWith('@') ? query.task_id.slice(1) : query.task_id;
         // Resolve the task ref to find matching sessions
@@ -129,11 +130,16 @@ export function createSessionRoutes() {
             return matchRefs.has(tid) || matchRefs.has(s.task_id);
           });
         } else {
-          filtered = []; // Unknown task ref — no matches
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Task reference "${query.task_id}" not found`,
+            suggestion: 'Use GET /api/tasks or kspec task list to find valid task references',
+          });
         }
       }
 
       // AC: @session-list-pagination-api ac-filter-spec-ref — resolve spec to linked tasks
+      // AC: @trait-api-endpoint ac-2 — 404 for unknown spec_ref
       if (query.spec_ref) {
         const specRef = query.spec_ref.startsWith('@') ? query.spec_ref.slice(1) : query.spec_ref;
         const tasks = await loadAllTasks(ctx);
@@ -158,7 +164,11 @@ export function createSessionRoutes() {
             return taskRefs.has(tid) || taskRefs.has(s.task_id);
           });
         } else {
-          filtered = []; // Unknown spec ref — no matches
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Spec reference "${query.spec_ref}" not found`,
+            suggestion: 'Use GET /api/items or kspec item list to find valid spec references',
+          });
         }
       }
 
