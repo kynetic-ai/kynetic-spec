@@ -86001,16 +86001,16 @@
     allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
     checkBudget() does not block task start.
   spec_ref: "@session-model-evolution"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKBWQS90D1Z7W955T7NJF3P5
   created_at: 2026-03-10T07:53:41.361Z
-  started_at: 2026-03-10T12:16:01.201Z
+  started_at: 2026-03-10T13:05:49.247Z
   submitted_at: 2026-03-10T12:18:06.147Z
   notes:
     - _ulid: 01KKBTX20S1JVHMVTXGAYGMJ4P
