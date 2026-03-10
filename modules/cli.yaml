@@ -7873,6 +7873,12 @@ requirements:
         given: a test uses crypto.randomUUID or similar Web APIs
         when: the test runs in a Node.js environment without global crypto
         then: the test provides a polyfill or stub so it does not throw ReferenceError
+      - id: ac-5
+        given: tests are run by agents or developers
+        when: the test runner script is invoked
+        then: environment prerequisites (build artifacts, dependencies, config) are verified and gaps are
+          fixed automatically before tests execute, similar to how bootstrap.cjs ensures dev
+          environment readiness
     status:
       maturity: draft
       implementation: in_progress
