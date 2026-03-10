@@ -85371,7 +85371,7 @@
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
   slugs:
     - implement-meta-and-shadow-branch-ac-backfill
-  title: Implement Meta and Shadow Branch AC Backfill
+  title: Implement Meta System AC Backfill
   type: task
   spec_ref: "@meta-shadow-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"

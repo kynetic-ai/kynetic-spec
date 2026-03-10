@@ -11802,3 +11802,11 @@ plans:
 
           Priority order for AC backfill: @core (foundational) → @schema → @tasks → @cli →
           @meta/@shadow-branch. Each is scoped to one module so agents can work them independently.
+      - _ulid: 01KKB963S0G5994EMVQ7VWJFK6
+        created_at: 2026-03-10T07:08:07.840Z
+        author: "@claude"
+        content: "Review fixes applied. Out-of-scope items handled by separate tasks:
+          automation-eligible-no-spec warnings (@01KKB8A2), @observations slug ambiguity
+          (@01KKB8BJ), status mismatches (@01KKB8CF). Meta+shadow backfill split into two
+          independent tasks. All backfill tasks depend on @implement-spec-completeness-policy; sweep
+          depends on all backfills."
