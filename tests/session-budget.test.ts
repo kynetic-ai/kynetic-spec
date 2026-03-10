@@ -22,6 +22,7 @@ import {
   resetBudget,
   getSessionBudgetPath,
   createSession,
+  updateSessionStatus,
 } from "../src/sessions/store.js";
 import type { SessionMetadataInput } from "../src/sessions/types.js";
 
@@ -266,6 +267,39 @@ describe("Budget CRUD", () => {
       expect(result.allowed).toBe(false);
       expect(result.reason).toContain("2/2");
       expect(result.reason).toContain("Wrap up");
+    });
+
+    it("should allow when session does not exist (stale KSPEC_SESSION_ID)", async () => {
+      const result = await checkBudget(sessionsDir, "NONEXISTENT_SESSION_ID");
+      expect(result.allowed).toBe(true);
+    });
+
+    it("should allow when session is completed despite exhausted budget", async () => {
+      await createBudget(sessionsDir, sessionId, 1);
+      await incrementBudget(sessionsDir, sessionId);
+      await updateSessionStatus(sessionsDir, sessionId, "completed");
+
+      const result = await checkBudget(sessionsDir, sessionId);
+      expect(result.allowed).toBe(true);
+    });
+
+    it("should allow when session is abandoned despite exhausted budget", async () => {
+      await createBudget(sessionsDir, sessionId, 1);
+      await incrementBudget(sessionsDir, sessionId);
+      await updateSessionStatus(sessionsDir, sessionId, "abandoned");
+
+      const result = await checkBudget(sessionsDir, sessionId);
+      expect(result.allowed).toBe(true);
+    });
+
+    it("should still block when session is active and budget is exhausted", async () => {
+      await createBudget(sessionsDir, sessionId, 1);
+      await incrementBudget(sessionsDir, sessionId);
+      // Session is active by default from createSession
+
+      const result = await checkBudget(sessionsDir, sessionId);
+      expect(result.allowed).toBe(false);
+      expect(result.reason).toContain("budget exhausted");
     });
   });
 
