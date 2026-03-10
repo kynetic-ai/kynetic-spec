@@ -85382,7 +85382,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85395,6 +85395,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T10:15:26.219Z
+  session_id: 01KKBKKMNCA3QF343C0CDDZ00E
 - _ulid: 01KKB8A4TTPD484SR73N4DQE0F
   slugs: []
   title: Fix 4 spec implementation status mismatches flagged by validate
