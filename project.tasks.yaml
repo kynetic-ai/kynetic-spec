@@ -83811,7 +83811,9 @@
     - bug
     - cli
   vcs_refs: []
+  session_id: 01KKAH4ZGNRK7E3GE22EN4Y33Z
   created_at: 2026-03-10T00:07:43.085Z
+  started_at: 2026-03-10T00:08:18.365Z
   notes:
     - _ulid: 01KKAH5B8CJ9176335ST1J1378
       created_at: 2026-03-10T00:08:16.908Z
@@ -83827,8 +83829,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T00:08:18.365Z
-  session_id: 01KKAH4ZGNRK7E3GE22EN4Y33Z
 - _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
   slugs:
     - task-fix-web-ui-bundle-test-skip
@@ -83851,7 +83851,19 @@
     - daemon
   vcs_refs: []
   created_at: 2026-03-10T00:07:51.766Z
-  notes: []
+  notes:
+    - _ulid: 01KKAH5H9MHVK31AA1EG3F6T2M
+      created_at: 2026-03-10T00:08:23.093Z
+      author: "@claude"
+      content: "Affected tests: 'dist/web-ui/ is populated with index.html after build', 'falls back to
+        bundled dist/web-ui/ when no local or env build exists', 'non-existent explicit webUiDir is
+        skipped and falls through to bundled'. These test resolveWebUiPath() fallback logic. The
+        first test checks build output exists — this one should be the gate. Use
+        describe.skipIf(\\!fs.existsSync(bundledPath)) or it.skipIf for the 3 tests that depend on
+        dist/web-ui/. Skip message should say: 'dist/web-ui/ not populated — run npm run build to
+        include bundled web UI tests'. Keep any tests that DON'T depend on build artifacts running
+        normally."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAH4PJ4YBZ0ZXFBEBYZER9E
