@@ -84993,6 +84993,36 @@
         Shared DOMPurify config: Both the static renderMarkdown() utility
         and the StreamingMarkdown component must use the same DOMPurify
         allowlist configuration. Extract to a shared sanitize.ts module.
+    - _ulid: 01KKB5NYPWK47QVNPXN266ZW96
+      created_at: 2026-03-10T06:06:52.636Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Only plan content and agent messages currently render markdown. All
+        user/agent-authored text should render markdown.
+
+        - Scope: Component swap across 7 surfaces. Replace plain text / whitespace-pre-wrap with
+        {@html renderMarkdown(content)} wrapped in prose classes.
+
+        - Priority order: task notes > task descriptions > spec descriptions > observations >
+        workflows > inbox > AC text
+
+        - Files to modify: packages/web-ui/src/lib/components/tasks/TaskDetailContent.svelte,
+        packages/web-ui/src/routes/observations/+page.svelte,
+        packages/web-ui/src/routes/workflows/+page.svelte,
+        packages/web-ui/src/lib/components/items/ItemDetail.svelte,
+        packages/web-ui/src/routes/inbox/+page.svelte,
+        packages/web-ui/src/routes/triage/+page.svelte
+
+        - Excluded: ThinkingBlock, ToolCallView (agent internals, monospace is correct), SystemBlock
+        (structured events, not user markdown)
+
+        - Dependencies: Requires @implement-prose-typography-setup (prose classes must work first)
+
+        - Verification: Each surface renders markdown formatting. Code blocks highlighted. Dark mode
+        works. No XSS via sanitization.
+      supersedes: null
   todos: []
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
   slugs:
