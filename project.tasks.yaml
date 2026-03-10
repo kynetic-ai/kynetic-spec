@@ -84356,5 +84356,17 @@
         component state AND URL param. Tests only checked URL so they passed — need tests that
         verify the modal actually stays closed."
       supersedes: null
+    - _ulid: 01KKAV4WZQY404CWED04HNYX2F
+      created_at: 2026-03-10T03:02:48.056Z
+      author: "@claude"
+      content: "Fix cycle 1: The initial fix only added URL cleanup via $effect but didn't clear the
+        Svelte component state. The close/dismiss flow needs to: (1) Set modalOpen = false / clear
+        selectedTaskRef in the component, (2) THEN clean up the URL param. The order matters — if
+        you only change the URL, the $effect watching the URL won't fire because the component state
+        still holds the ref. Look at how the open effect works: it watches searchParams, sets state,
+        fetches task. The close effect must be the inverse: watch for modalOpen becoming false,
+        clear selectedTaskRef, clear URL. The specs page pattern works there because its state model
+        is simpler (detailOpen + selectedRef). The task views have more state to clear."
+      supersedes: null
   todos: []
   automation: eligible
