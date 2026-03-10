@@ -86735,7 +86735,14 @@
   session_id: 01KKCA2PMHVR86ANRH9F8Y06JZ
   created_at: 2026-03-10T08:18:01.609Z
   started_at: 2026-03-10T16:47:47.960Z
-  notes: []
+  notes:
+    - _ulid: 01KKCAR3P91K7E7QF71SSXMEQJ
+      created_at: 2026-03-10T16:54:40.585Z
+      author: "@claude"
+      content: Added step 5 'Regenerate Derived Files' to task-work skill between Work/Note and Commit
+        steps. Also added development convention for running kspec skill render after modifying
+        skill sources. Regenerated all rendered output (kspec-agents.md, .agents/skills/, plugin/).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
