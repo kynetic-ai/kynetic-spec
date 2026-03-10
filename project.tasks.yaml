@@ -85451,6 +85451,15 @@
         it cannot be merged as-is. Validation and npm test passed; branch needs refresh/rebase and
         regenerated kspec-agents.md on current main before re-review."
       supersedes: null
+    - _ulid: 01KKBPHQF93GBP944T4BHB2TCR
+      created_at: 2026-03-10T11:01:39.946Z
+      author: "@claude"
+      content: "Fix cycle 1: Rebased branch onto current main to resolve merge conflict in
+        kspec-agents.md. kspec validate passes (Schema: OK, References: OK, Skills: OK). 2
+        pre-existing test failures in core-skill-install.test.ts and enhanced-setup.test.ts
+        confirmed present on main as well — not related to this change. Force-pushed rebased
+        branch."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8A4TTPD484SR73N4DQE0F
