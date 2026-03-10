@@ -87070,7 +87070,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -87080,7 +87080,7 @@
     - session
     - dx
   vcs_refs: []
-  session_id: 01KKCEPYP9FPF9344P795HCHA8
+  session_id: null
   created_at: 2026-03-10T16:43:54.869Z
   started_at: 2026-03-10T18:10:33.665Z
   submitted_at: 2026-03-10T18:20:04.059Z
@@ -87146,6 +87146,14 @@
 
         - Full test suite passes (1 pre-existing failure in trait-retrospective.test.ts unrelated to
         changes)
+      supersedes: null
+    - _ulid: 01KKCGWG4PT77PQEREWE0JAKXJ
+      created_at: 2026-03-10T18:41:55.863Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #760 misses @ansi-terminal-rendering ac-5 in
+        ToolCallView. Orphaned CSI fragments like [32mPASS[0m still render as garbled text because
+        ansiToHtml() only runs when a real ESC sequence is present. Review posted with inline
+        comments."
       supersedes: null
   todos: []
   automation: eligible
