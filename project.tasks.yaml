@@ -87909,3 +87909,89 @@
       supersedes: null
   todos: []
   automation: eligible
+- _ulid: 01KKCYMCNZ94ZJKP84XYCCBVNM
+  slugs:
+    - implement-plan-export-command
+  title: Implement Plan Export Command
+  type: task
+  spec_ref: "@plan-export"
+  plan_ref: "@plan-iterative-plan-editing"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T22:42:10.239Z
+  notes:
+    - _ulid: 01KKCYMCNZG4J4JQ1NMNWRH4P1
+      created_at: 2026-03-10T22:42:10.239Z
+      author: "@claude"
+      content: See plan @plan-iterative-plan-editing for implementation notes
+  todos: []
+- _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
+  slugs:
+    - implement-plan-import-into-existing-plan
+  title: Implement Plan Import Into Existing Plan
+  type: task
+  spec_ref: "@plan-import-into"
+  plan_ref: "@plan-iterative-plan-editing"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@plan-import"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T22:42:10.959Z
+  notes:
+    - _ulid: 01KKCYMDCFS1DS81P1VE42PDQZ
+      created_at: 2026-03-10T22:42:10.959Z
+      author: "@claude"
+      content: See plan @plan-iterative-plan-editing for implementation notes
+  todos: []
+- _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
+  slugs:
+    - implement-plan-import-content-only-storage
+  title: Implement Plan Import Content-Only Storage
+  type: task
+  spec_ref: "@plan-import-content-only"
+  plan_ref: "@plan-iterative-plan-editing"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T22:42:11.659Z
+  notes:
+    - _ulid: 01KKCYME2BQ3Q0PW830AKSQMY9
+      created_at: 2026-03-10T22:42:11.659Z
+      author: "@claude"
+      content: See plan @plan-iterative-plan-editing for implementation notes
+  todos: []
+- title: Implement Enhanced Plan Derivation
+  type: task
+  spec_ref: "@plan-derive-enhanced"
+  plan_ref: "@plan-iterative-plan-editing"
+  priority: 3
+  slugs:
+    - implement-enhanced-plan-derivation
+  tags: []
+  depends_on:
+    - "@implement-plan-import-content-only-storage"
+  notes:
+    - _ulid: 01KKCYMET33J4X0Q2MQRCJQQAW
+      created_at: 2026-03-10T22:42:12.419Z
+      author: "@claude"
+      content: See plan @plan-iterative-plan-editing for implementation notes
+  _ulid: 01KKCYMET3QGYY364J00V0AQZJ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T22:42:12.419Z
+  todos: []

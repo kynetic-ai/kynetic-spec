@@ -5481,6 +5481,567 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KKCYMBT3P2CA1NEYAYZX88VV
+        slugs:
+          - plan-export
+        title: Plan Export Command
+        type: requirement
+        tags: []
+        description: |
+          Export a plan's stored content to a file or stdout for editing.
+          Used during the draft→edit→re-import cycle before derivation.
+          Outputs the plan content as-is (the full markdown document
+          stored during import).
+        acceptance_criteria:
+          - id: ac-stdout
+            given: |
+              A plan exists with content
+            when: |
+              kspec plan export @plan-ref is run
+            then: |
+              Plan content is written to stdout in markdown format
+          - id: ac-output-file
+            given: |
+              A plan exists with content
+            when: |
+              kspec plan export @plan-ref --output /tmp/plan.md is run
+            then: |
+              Plan content is written to the specified file path
+          - id: ac-empty
+            given: |
+              A plan has empty content (empty string)
+            when: |
+              kspec plan export @plan-ref is run
+            then: |
+              Exits with error and message "Plan has no content to export"
+          - id: ac-not-found
+            given: |
+              The plan reference does not resolve to any plan
+            when: |
+              kspec plan export @nonexistent is run
+            then: |
+              Command fails with EXIT_CODES.USAGE_ERROR and message
+              indicating the plan was not found
+          - id: ac-json
+            given: |
+              A plan exists
+            when: |
+              kspec plan export @plan-ref --json is run
+            then: |
+              Output is JSON object with keys: title, content, status,
+              derived_specs, derived_tasks
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+        notes: []
+        created: 2026-03-10T22:42:09.347Z
+      - _ulid: 01KKCYMBXMDRXZ023PF6GFR5DE
+        slugs:
+          - plan-import-into
+        title: Plan Import Into Existing Plan
+        type: requirement
+        tags: []
+        description: |
+          Re-import a plan document into an existing plan record, updating
+          the plan content. This closes the round-trip editing loop:
+          export → edit → re-import.
+
+          Only the plan record's content and title are updated. No specs or
+          tasks are created or modified — that happens at derive time.
+
+          Only allowed for draft or approved plans. Active and terminal
+          plans cannot be updated.
+        acceptance_criteria:
+          - id: ac-into-draft
+            given: |
+              A plan exists in draft status and an edited plan document
+              file exists with an H1 title and body content
+            when: |
+              kspec plan import ./edited-plan.md --into @plan-ref is run
+            then: |
+              The existing plan record's title is updated from the H1
+              heading (if present) and content is replaced with the file
+              content. A note is auto-appended: "Content updated from file"
+          - id: ac-into-no-title
+            given: |
+              A plan exists and the edited document has no H1 heading
+            when: |
+              kspec plan import ./edited.md --into @plan-ref is run
+            then: |
+              Plan content is replaced with the file content.
+              Plan title is preserved unchanged (not cleared).
+          - id: ac-into-no-module
+            given: |
+              A plan exists and --into is specified
+            when: |
+              kspec plan import ./edited.md --into @plan-ref is run
+              (no --module flag)
+            then: |
+              Command succeeds. --module is not required for --into since
+              no specs are created during re-import.
+          - id: ac-into-approved
+            given: |
+              A plan exists in approved status and an edited file exists
+            when: |
+              kspec plan import ./edited.md --into @plan-ref is run
+            then: |
+              Plan title and content are updated.
+              Plan status remains approved.
+          - id: ac-into-active
+            given: |
+              A plan is in active status (specs/tasks already derived)
+            when: |
+              kspec plan import ./edited.md --into @plan-ref is run
+            then: |
+              Command fails with EXIT_CODES.CONFLICT and message
+              "Cannot update active plan. Derive is a one-shot operation."
+          - id: ac-into-terminal
+            given: |
+              A plan exists in completed or rejected status
+            when: |
+              kspec plan import ./edited.md --into @plan-ref is run
+            then: |
+              Command fails with EXIT_CODES.CONFLICT and message
+              "Cannot update plan in terminal status"
+          - id: ac-into-content-only
+            given: |
+              An edited plan document has ## Specs and ## Tasks sections
+            when: |
+              kspec plan import ./edited.md --into @plan-ref is run
+            then: |
+              Only the plan record's title and content fields are updated.
+              No specs are created or modified. No tasks are derived.
+              The document is stored as-is for later derivation.
+          - id: ac-into-dry-run
+            given: |
+              A plan exists and an edited file exists
+            when: |
+              kspec plan import ./edited.md --into @plan-ref --dry-run is run
+            then: |
+              Shows what would change (title update, content update)
+              without making changes. Exits with code 0.
+          - id: ac-into-file-not-found
+            given: |
+              The specified file path does not exist
+            when: |
+              kspec plan import ./nonexistent.md --into @plan-ref is run
+            then: |
+              Command fails with EXIT_CODES.USAGE_ERROR and message
+              "Failed to read plan file: ./nonexistent.md"
+          - id: ac-into-commit
+            given: |
+              A plan is successfully updated via --into
+            when: |
+              The update completes
+            then: |
+              Changes are auto-committed to shadow branch with message
+              referencing the plan slug
+          - id: ac-into-reason
+            given: |
+              A plan is being updated via --into
+            when: |
+              kspec plan import ./edited.md --into @plan --reason "Removed
+              --full mode per review feedback" is run
+            then: |
+              The auto-appended note includes the user-supplied reason
+              text instead of the generic "Content updated from file"
+          - id: ac-into-reason-optional
+            given: |
+              A plan is being updated via --into without --reason
+            when: |
+              kspec plan import ./edited.md --into @plan is run
+            then: |
+              The auto-appended note uses the default message
+              "Content updated from file"
+          - id: ac-into-ignores-module
+            given: |
+              --into and --module are both specified
+            when: |
+              kspec plan import ./file.md --into @plan --module @mod is run
+            then: |
+              --module is ignored with a warning. --into only updates
+              plan content, not module assignment.
+          - id: ac-into-ignores-update
+            given: |
+              --into and --update are both specified
+            when: |
+              kspec plan import ./file.md --into @plan --update is run
+            then: |
+              --update is ignored with a warning. --into only updates plan
+              content, not specs.
+          - id: ac-into-ignores-status
+            given: |
+              --into and --status are both specified
+            when: |
+              kspec plan import ./file.md --into @plan --status approved is run
+            then: |
+              --status is ignored with a warning. --into does not change
+              plan status.
+        depends_on:
+          - "@plan-import"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-shadow-commit"
+          - "@trait-error-guidance"
+          - "@trait-dry-run"
+          - "@trait-semantic-exit-codes"
+        notes: []
+        created: 2026-03-10T22:42:09.460Z
+      - _ulid: 01KKCYMC113V10DNPVX7CPJYDP
+        slugs:
+          - plan-import-content-only
+        title: Plan Import Content-Only Storage
+        type: requirement
+        tags: []
+        description: |
+          Change plan import to store content only and default to draft status.
+
+          Import creates the plan record with the full document as content
+          but does NOT create specs or tasks. All materialization (spec
+          creation, task derivation) happens via kspec plan derive.
+
+          This respects the draft→approved→derive lifecycle and prevents
+          import-time churn during iterative plan editing.
+
+          Supersedes most of @plan-import ac-11 through ac-37.
+          See AC Migration tables in Implementation Notes for the
+          precise mapping of each existing AC.
+        acceptance_criteria:
+          - id: ac-draft-default
+            given: |
+              A valid plan document exists
+            when: |
+              kspec plan import ./plan.md is run
+            then: |
+              The created plan has status "draft" (not "active")
+          - id: ac-module-optional
+            given: |
+              A valid plan document exists
+            when: |
+              kspec plan import ./plan.md is run (no --module flag)
+            then: |
+              Command succeeds. --module is no longer required since
+              specs are not created at import time. If --module is
+              provided, it is stored on the plan record for later use
+              by derive.
+          - id: ac-status-override
+            given: |
+              A user wants to import with a specific status
+            when: |
+              kspec plan import ./plan.md --status approved is run
+            then: |
+              Plan is created with the specified status
+          - id: ac-content-only
+            given: |
+              A plan document has ## Specs and ## Tasks sections
+            when: |
+              kspec plan import ./plan.md is run
+            then: |
+              The full document is stored as plan content. No specs are
+              created, no tasks are derived. The ## Specs YAML is
+              preserved in the content for later derivation.
+          - id: ac-update-ignored
+            given: |
+              --update flag is passed to import (without --into)
+            when: |
+              kspec plan import ./plan.md --update is run
+            then: |
+              --update is ignored with a warning since import no longer
+              creates or modifies specs
+          - id: ac-module-stored
+            given: |
+              A valid plan document exists
+            when: |
+              kspec plan import ./plan.md --module @mod is run
+            then: |
+              Plan is created with the module ref stored on the plan
+              record. The stored module is used by kspec plan derive
+              when --module is not explicitly provided.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-shadow-commit"
+          - "@trait-dry-run"
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+        notes: []
+        created: 2026-03-10T22:42:09.570Z
+      - _ulid: 01KKCYMC46TRPDTA3ZP6B01ERT
+        slugs:
+          - plan-derive-enhanced
+        title: Enhanced Plan Derivation
+        type: requirement
+        tags: []
+        description: |
+          Enhanced plan derive command that parses plan content and creates
+          specs and tasks. This is the materialization step — it takes a
+          plan document stored as content and creates the corresponding
+          spec items and (optionally) tasks.
+
+          Absorbs all spec/task creation logic previously in plan import
+          (topological ordering, slug dedup, parent resolution, trait
+          mapping, dependency mapping, implementation notes, etc.).
+
+          Derive is a one-shot operation — once a plan is derived, it
+          transitions to active and its specs/tasks are managed directly.
+
+          Replaces the current simple single-task derive behavior.
+          Supersedes @plan-derive (ac-5, ac-6). Bidirectional link
+          display is preserved via ac-bidirectional-links.
+        acceptance_criteria:
+          - id: ac-parse-content
+            given: |
+              A plan exists in approved status with ## Specs YAML in its
+              content field
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              The plan content is parsed using parsePlanDocument().
+              Specs from the ## Specs YAML block are created as spec items
+              under the specified module.
+          - id: ac-module-required
+            given: |
+              A plan exists in approved status
+            when: |
+              kspec plan derive @plan-ref is run (no --module)
+            then: |
+              If the plan has no stored module ref, command fails with
+              EXIT_CODES.USAGE_ERROR and message requiring --module
+          - id: ac-module-from-import
+            given: |
+              A plan was imported with --module @mod (stored on plan record)
+            when: |
+              kspec plan derive @plan-ref is run (no --module)
+            then: |
+              Uses the module ref stored on the plan record from import
+          - id: ac-module-override
+            given: |
+              A plan was imported with --module @mod-a (stored on plan record)
+            when: |
+              kspec plan derive @plan-ref --module @mod-b is run
+            then: |
+              Specs are created under @mod-b, not @mod-a.
+              The explicit --module flag overrides the stored value.
+          - id: ac-topo-sort
+            given: |
+              Plan specs have parent references to other specs in the
+              same plan
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Specs are created in topological order so parent specs
+              exist before their children
+          - id: ac-circular-dep
+            given: |
+              Plan specs have circular parent references
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Command fails with EXIT_CODES.USAGE_ERROR and message
+              identifying the circular dependency
+          - id: ac-slug-dedup
+            given: |
+              A plan spec has a slug that collides with an existing item
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              A unique slug is generated by appending a numeric suffix
+          - id: ac-traits
+            given: |
+              A plan spec has a traits array
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Trait refs are normalized (@ prefix added if missing)
+              and stored on the created spec
+          - id: ac-depends-on
+            given: |
+              A plan spec has depends_on referencing other specs
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Dependency refs are normalized and stored on created specs.
+              When deriving tasks, spec depends_on maps to task depends_on.
+          - id: ac-tasks-flag
+            given: |
+              A plan has specs in its content
+            when: |
+              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: |
+              After creating specs, a task is derived from each spec
+              with title "Implement <spec title>"
+          - id: ac-task-refs
+            given: |
+              Tasks are derived from plan specs via --tasks
+            when: |
+              Derivation completes
+            then: |
+              Each derived task has spec_ref pointing to the source spec
+              and plan_ref pointing to the plan
+          - id: ac-no-tasks-default
+            given: |
+              A plan has specs in its content
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+              (no --tasks flag)
+            then: |
+              Only specs are created. Tasks are not derived.
+              This is the default behavior.
+          - id: ac-additional-tasks
+            given: |
+              A plan document has additional_tasks in ## Tasks section
+            when: |
+              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: |
+              Additional tasks are created with plan_ref, spec_ref
+              (if specified), and depends_on mappings
+          - id: ac-impl-notes-global
+            given: |
+              A plan document has ## Implementation Notes section
+            when: |
+              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: |
+              Global implementation notes are stored as a note on the
+              plan record
+          - id: ac-impl-notes-per-spec
+            given: |
+              A plan spec has an implementation_notes field
+            when: |
+              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: |
+              Per-spec implementation notes are stored as a note on
+              the derived task for that spec
+          - id: ac-status-transition
+            given: |
+              A plan in approved status is successfully derived
+            when: |
+              Derivation completes
+            then: |
+              Plan status transitions to active. derived_specs and
+              derived_tasks arrays are updated with created refs.
+          - id: ac-status-guard
+            given: |
+              A plan is in draft status
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Command fails with EXIT_CODES.CONFLICT and message
+              "Plan must be in approved status to derive"
+          - id: ac-already-derived
+            given: |
+              A plan is already in active status (previously derived)
+            when: |
+              kspec plan derive @plan-ref is run
+            then: |
+              Command fails with EXIT_CODES.CONFLICT and message
+              "Plan already derived. Manage specs directly via kspec item set."
+          - id: ac-dry-run
+            given: |
+              A plan exists in approved status
+            when: |
+              kspec plan derive @plan-ref --module @mod --dry-run is run
+            then: |
+              Shows what specs and tasks would be created
+              without making changes
+          - id: ac-json-output
+            given: |
+              A plan is derived
+            when: |
+              kspec plan derive @plan-ref --module @mod --json is run
+            then: |
+              Output is JSON object with keys: plan_ref, created_specs,
+              created_tasks, skipped, errors
+          - id: ac-validation-errors
+            given: |
+              A plan spec is missing required fields (e.g., title)
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Invalid specs are skipped with a warning. Valid specs
+              are still created. Summary includes error count.
+          - id: ac-root-trait
+            given: |
+              A plan spec has type "trait" with no parent
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Trait is created as a root-level item (no parent) in the
+              project's spec tree, accessible via @trait-slug references
+          - id: ac-parent-unresolved
+            given: |
+              A plan spec references a parent that does not exist in the
+              plan or in the project
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              The spec with the unresolved parent is skipped with a
+              warning including the missing parent ref and a recovery
+              hint. Other valid specs are still created.
+          - id: ac-depends-on-unresolved
+            given: |
+              A plan spec has depends_on referencing a slug that does not
+              exist in the plan or in the project
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              The spec is created with a warning about the unresolved
+              dependency. The depends_on ref is stored as-is for later
+              resolution.
+          - id: ac-no-specs-content
+            given: |
+              A plan has content but no ## Specs section or no fenced
+              YAML code block in the ## Specs section
+            when: |
+              kspec plan derive @plan-ref --module @mod is run
+            then: |
+              Command fails with EXIT_CODES.USAGE_ERROR and message
+              "No specs found in plan content. Ensure ## Specs section
+              contains a fenced YAML code block."
+          - id: ac-bidirectional-links
+            given: |
+              A plan has been derived with specs and/or tasks
+            when: |
+              kspec task get @derived-task or kspec plan get @plan is run
+            then: |
+              Task displays plan_ref linking to the plan. Plan displays
+              derived_specs and derived_tasks arrays listing created refs.
+          - id: ac-priority-inheritance
+            given: |
+              A plan spec has a priority field (1-5) and --tasks is used
+            when: |
+              kspec plan derive @plan-ref --module @mod --tasks is run
+            then: |
+              Derived tasks inherit priority from their source spec.
+              Specs without a priority field default to priority 3.
+          - id: ac-commit
+            given: |
+              A plan is successfully derived
+            when: |
+              Derivation completes
+            then: |
+              All changes are auto-committed to shadow branch in a
+              single commit
+        depends_on:
+          - "@plan-import-content-only"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-shadow-commit"
+          - "@trait-dry-run"
+          - "@trait-json-output"
+          - "@trait-error-guidance"
+          - "@trait-semantic-exit-codes"
+        notes: []
+        created: 2026-03-10T22:42:09.670Z
     status:
       maturity: draft
       implementation: implemented
