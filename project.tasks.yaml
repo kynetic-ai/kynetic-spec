@@ -84573,6 +84573,7 @@
   session_id: 01KKBY8FAGBA946T24HRBACQJK
   created_at: 2026-03-10T05:32:13.964Z
   started_at: 2026-03-10T13:31:45.180Z
+  submitted_at: 2026-03-10T13:40:20.091Z
   notes:
     - _ulid: 01KKB3PGRCW197BCZK8YS6ZE61
       created_at: 2026-03-10T05:32:13.964Z
@@ -84615,7 +84616,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T13:40:20.091Z
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
@@ -86356,7 +86356,7 @@
     set, skip the cascade confirmation and apply change only to the targeted item. Update batch
     commands list if needed.
   spec_ref: "@trait-confirmation-prompt"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86367,6 +86367,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T13:41:32.638Z
+  session_id: 01KKBYQZ8AZVY8AQN6CRK8106E
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
