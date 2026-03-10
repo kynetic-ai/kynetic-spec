@@ -650,6 +650,74 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        features:
+          - _ulid: 01KKCED6N48VAWE15SBABSC3MB
+            slugs:
+              - worktree-support
+            title: Git Worktree Support
+            type: feature
+            tags:
+              - cli
+              - shadow
+              - infra
+            description: kspec commands auto-resolve to the main repo's .kspec/ when run from a linked git
+              worktree. Uses git rev-parse --git-common-dir to detect worktrees and derive the main
+              working tree root. Adds projectRoot to KspecContext for daemon/dispatch identity while
+              rootDir becomes the code checkout root. Includes submodule-safe detection, dispatch
+              cwd pinning, and worktree-aware shadow/serve commands.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-10T17:58:37.476Z
+            acceptance_criteria:
+              - id: ac-resolve-roots
+                given: kspec is run from a linked git worktree (created via git worktree add)
+                when: initContext() resolves the project roots
+                then: rootDir is the worktree root, projectRoot is the main repo root, specDir points to .kspec/ at
+                  the main repo root, and sessionsDir is at the main repo root
+              - id: ac-no-worktree-unchanged
+                given: kspec is run from the main repo (not a worktree)
+                when: initContext() resolves the project roots
+                then: rootDir equals projectRoot and all behavior is identical to before this change
+              - id: ac-submodule-safe
+                given: kspec is run from inside a git submodule
+                when: resolveProjectRoots() checks git-common-dir
+                then: the submodule is not falsely detected as a worktree (isWorktree is false)
+              - id: ac-daemon-identity
+                given: kspec CLI sends X-Kspec-Dir header to the daemon from a worktree
+                when: any command posts dispatch events or queries daemon status
+                then: X-Kspec-Dir contains projectRoot (main repo root), not rootDir (worktree root)
+              - id: ac-dispatch-cwd
+                given: dispatch start is called from a worktree
+                when: the dispatch engine spawns agent invocations
+                then: the agent's cwd is the worktree root (via X-Kspec-Cwd header) while specDir points to .kspec/
+                  at the main repo
+              - id: ac-dispatch-conflict
+                given: a dispatch engine is already running for a project with cwd set to worktree A
+                when: dispatch start is called from worktree B (different cwd, same project)
+                then: the daemon returns 409 Conflict
+              - id: ac-shadow-commands
+                given: kspec shadow status/repair/log/resolve/sync is run from a linked worktree
+                when: the command resolves the shadow branch location
+                then: it finds .kspec/ at the main repo root, not the worktree root
+              - id: ac-serve-default
+                given: kspec serve start/stop/status/restart is run from a linked worktree without explicit
+                  --kspec-dir
+                when: the command resolves the default --kspec-dir
+                then: it defaults to .kspec/ at the main repo root
+              - id: ac-false-positive-guard
+                given: a code worktree is named with 'kspec' in the path (e.g. kspec-feature)
+                when: detectRunningFromShadowWorktree checks the worktree
+                then: it is NOT falsely detected as the shadow worktree — structural check (manifest+modules) is
+                  required, not just name matching
+              - id: ac-performance
+                given: initContext() is called
+                when: it resolves project roots via git
+                then: it uses a single git rev-parse call (--show-toplevel --git-common-dir) instead of multiple
+                  separate calls
       - _ulid: 01KHVXK25SDYTAEKZN28S2X66K
         slugs:
           - config-author
