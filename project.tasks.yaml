@@ -84616,6 +84616,7 @@
         management notes). Populate filter options dynamically from the
         distinct values in the session data (unique agent types, agent IDs).
   todos: []
+  automation: eligible
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
   slugs:
     - implement-session-cli-unified-filtering
