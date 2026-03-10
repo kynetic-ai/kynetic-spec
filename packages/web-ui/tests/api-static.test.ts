@@ -201,6 +201,73 @@ describe('static API snapshot adapters', () => {
 		modeState.snapshot = createSnapshot();
 	});
 
+	// AC: @web-dashboard ac-default-active-filter
+	it('filters tasks by multiple statuses (array)', () => {
+		// Add completed and cancelled tasks to the snapshot
+		modeState.snapshot!.tasks.push(
+			{
+				_ulid: '01TASK00000000000000000003',
+				slugs: ['task-completed'],
+				title: 'Completed Task',
+				type: 'task',
+				status: 'completed',
+				priority: 1,
+				spec_ref: '@spec-one',
+				tags: [],
+				depends_on: [],
+				blocked_by: [],
+				context: [],
+				vcs_refs: [],
+				plan_ref: '',
+				automation: 'manual_only',
+				notes: [],
+				todos: [],
+				notes_count: 0,
+				todos_count: 0,
+				created_at: '2026-03-03T00:00:00.000Z'
+			} as any,
+			{
+				_ulid: '01TASK00000000000000000004',
+				slugs: ['task-cancelled'],
+				title: 'Cancelled Task',
+				type: 'task',
+				status: 'cancelled',
+				priority: 1,
+				spec_ref: '@spec-two',
+				tags: [],
+				depends_on: [],
+				blocked_by: [],
+				context: [],
+				vcs_refs: [],
+				plan_ref: '',
+				automation: 'manual_only',
+				notes: [],
+				todos: [],
+				notes_count: 0,
+				todos_count: 0,
+				created_at: '2026-03-04T00:00:00.000Z'
+			} as any
+		);
+
+		// Filter by active statuses only (array of statuses)
+		const active = fetchTasksStatic({
+			status: ['pending', 'in_progress', 'pending_review', 'needs_work', 'blocked']
+		});
+		expect(active.total).toBe(2);
+		expect(active.items.map((t) => t.status)).toEqual(
+			expect.arrayContaining(['in_progress', 'pending'])
+		);
+
+		// Filter by single status (string)
+		const pendingOnly = fetchTasksStatic({ status: 'pending' });
+		expect(pendingOnly.total).toBe(1);
+		expect(pendingOnly.items[0].status).toBe('pending');
+
+		// No filter returns all
+		const all = fetchTasksStatic();
+		expect(all.total).toBe(4);
+	});
+
 	// AC: @gh-pages-export ac-23
 	it('returns static plans and resolves plan content by ref', () => {
 		const plans = fetchPlansStatic();

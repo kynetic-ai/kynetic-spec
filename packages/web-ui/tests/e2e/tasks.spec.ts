@@ -20,6 +20,77 @@ import { test, expect } from '../fixtures/test-base';
 
 test.describe('Tasks View', () => {
   test.describe('Task List', () => {
+    // AC: @web-dashboard ac-default-active-filter
+    test('defaults to showing only active statuses', async ({ page, daemon }) => {
+      await page.goto('/tasks');
+
+      // Wait for task list to load
+      const taskList = page.getByTestId('task-list');
+      await expect(taskList).toBeVisible();
+      const taskItems = page.getByTestId('task-list-item');
+      await expect(taskItems.first()).toBeVisible({ timeout: 10000 });
+
+      // Fixture has 7 tasks: 4 pending, 1 in_progress, 1 pending_review, 1 completed
+      // Default "Active" filter should hide the completed task (6 shown)
+      await expect(taskItems).toHaveCount(6);
+
+      // The status filter should display "Active" (not "All Statuses")
+      const filterStatus = page.getByTestId('filter-status');
+      await expect(filterStatus).toContainText('Active');
+
+      // No completed tasks should be visible
+      for (let i = 0; i < await taskItems.count(); i++) {
+        const statusBadge = taskItems.nth(i).getByTestId('task-status-badge');
+        await expect(statusBadge).not.toContainText(/completed/i);
+        await expect(statusBadge).not.toContainText(/cancelled/i);
+      }
+    });
+
+    // AC: @web-dashboard ac-default-active-filter
+    test('shows all tasks when "All Statuses" is selected', async ({ page, daemon }) => {
+      await page.goto('/tasks');
+
+      // Wait for task list to load
+      const taskList = page.getByTestId('task-list');
+      await expect(taskList).toBeVisible();
+      await expect(page.getByTestId('task-list-item').first()).toBeVisible({ timeout: 10000 });
+
+      // Select "All Statuses"
+      const filterStatus = page.getByTestId('filter-status');
+      await filterStatus.click();
+      await page.getByRole('option', { name: 'All Statuses' }).click();
+
+      // URL should have status=all
+      await page.waitForURL(/status=all/, { timeout: 10000 });
+
+      // All 7 tasks should be visible
+      const taskItems = page.getByTestId('task-list-item');
+      await expect(taskItems).toHaveCount(7, { timeout: 10000 });
+    });
+
+    // AC: @web-dashboard ac-default-active-filter
+    test('switching back to Active hides completed tasks and clears URL param', async ({ page, daemon }) => {
+      // Start with "All Statuses" showing all tasks
+      await page.goto('/tasks?status=all');
+
+      const taskList = page.getByTestId('task-list');
+      await expect(taskList).toBeVisible();
+      await expect(page.getByTestId('task-list-item').first()).toBeVisible({ timeout: 10000 });
+      await expect(page.getByTestId('task-list-item')).toHaveCount(7, { timeout: 10000 });
+
+      // Switch to "Active"
+      const filterStatus = page.getByTestId('filter-status');
+      await filterStatus.click();
+      await page.getByRole('option', { name: 'Active', exact: true }).click();
+
+      // URL should NOT have status= param (active is the default)
+      await page.waitForFunction(() => !window.location.search.includes('status='), { timeout: 10000 });
+
+      // Should show 6 active tasks (no completed)
+      const taskItems = page.getByTestId('task-list-item');
+      await expect(taskItems).toHaveCount(6, { timeout: 10000 });
+    });
+
     // AC: @web-dashboard ac-4
     test('displays task with title, status badge, priority, spec_ref, notes count', async ({
       page,

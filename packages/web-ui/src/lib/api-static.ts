@@ -103,7 +103,7 @@ function matchesPlanRef(planRef: string | undefined, ref: string): boolean {
 function filterTasks(
 	tasks: ExportedTask[],
 	params?: {
-		status?: string;
+		status?: string | string[];
 		tag?: string;
 		assignee?: string;
 		automation?: string;
@@ -113,7 +113,8 @@ function filterTasks(
 	let result = tasks;
 
 	if (params?.status) {
-		result = result.filter((t) => t.status === params.status);
+		const statuses = Array.isArray(params.status) ? params.status : [params.status];
+		result = result.filter((t) => statuses.includes(t.status));
 	}
 	if (params?.tag) {
 		result = result.filter((t) => t.tags.includes(params.tag!));
@@ -233,7 +234,7 @@ function findItemByRef(items: ExportedItem[], ref: string): ExportedItem | null 
  * AC: @gh-pages-export ac-11
  */
 export function fetchTasksStatic(params?: {
-	status?: string;
+	status?: string | string[];
 	tag?: string;
 	assignee?: string;
 	automation?: string;
