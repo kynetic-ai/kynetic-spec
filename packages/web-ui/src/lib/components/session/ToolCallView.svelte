@@ -4,7 +4,7 @@
 <script lang="ts">
 	import type { ToolCallBlock } from './session-utils';
 	import { getToolIcon, getToolInputPreview, formatDuration, formatTime } from './session-utils';
-	import { ansiToHtml, containsAnsi } from '$lib/utils/ansi';
+	import { ansiToHtml, containsAnsi, safeTruncateAnsi } from '$lib/utils/ansi';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Check from '@lucide/svelte/icons/check';
 	import X from '@lucide/svelte/icons/x';
@@ -44,9 +44,7 @@
 	}
 
 	let outputText = $derived(block.output ? formatOutput(block.output) : '');
-	let truncatedOutput = $derived(
-		outputText.length > 1000 ? outputText.slice(0, 1000) : outputText
-	);
+	let truncatedOutput = $derived(safeTruncateAnsi(outputText, 1000));
 	let isOutputTruncated = $derived(outputText.length > 1000);
 	let showFullOutput = $state(false);
 	let hasAnsi = $derived(containsAnsi(outputText));

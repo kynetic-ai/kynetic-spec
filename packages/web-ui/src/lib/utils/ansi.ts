@@ -216,6 +216,23 @@ export function stripOrphanedCsi(text: string): string {
 }
 
 /**
+ * Truncate text to maxLen without splitting an ANSI escape sequence.
+ *
+ * If the cutoff lands inside a sequence (e.g. mid-`\x1b[31m`), the trailing
+ * partial sequence is removed so that downstream ANSI parsing never sees a
+ * dangling ESC byte.
+ */
+export function safeTruncateAnsi(text: string, maxLen: number): string {
+	if (text.length <= maxLen) return text;
+	let truncated = text.slice(0, maxLen);
+	// Strip any trailing incomplete ESC sequence: \x1b possibly followed by [ and partial params
+	truncated = truncated.replace(/\x1b(?:\[[\x20-\x3f]*)?$/, '');
+	// Also strip orphaned trailing [ that could be the start of an orphaned CSI
+	truncated = truncated.replace(/\[\??[0-9;]*$/, '');
+	return truncated;
+}
+
+/**
  * Convert ANSI SGR escape sequences in text to HTML with inline styles.
  *
  * - SGR codes (m suffix) are parsed and converted to styled <span> elements

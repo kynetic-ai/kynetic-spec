@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { ansiToHtml, containsAnsi, stripOrphanedCsi } from '../src/lib/utils/ansi';
+import { ansiToHtml, containsAnsi, stripOrphanedCsi, safeTruncateAnsi } from '../src/lib/utils/ansi';
 
 // AC: @ansi-terminal-rendering ac-1
 describe('ac-1: basic SGR rendering', () => {
@@ -456,5 +456,66 @@ describe('edge cases', () => {
 		// Color 255 is lightest grayscale
 		const result255 = ansiToHtml('\x1b[38;5;255mtext\x1b[0m');
 		expect(result255).toContain('color:rgb(238,238,238)');
+	});
+});
+
+// AC: @ansi-terminal-rendering ac-5
+describe('safeTruncateAnsi: truncation boundary safety', () => {
+	it('returns short text unchanged', () => {
+		expect(safeTruncateAnsi('hello', 1000)).toBe('hello');
+	});
+
+	it('truncates plain text at the limit', () => {
+		const text = 'x'.repeat(1500);
+		const result = safeTruncateAnsi(text, 1000);
+		expect(result.length).toBe(1000);
+	});
+
+	it('removes trailing partial ESC sequence when cutoff splits \\x1b[31m', () => {
+		// 998 chars + \x1b[31mABCD\x1b[0m — cutoff at 1000 lands inside \x1b[31m
+		const input = 'x'.repeat(998) + '\x1b[31mABCD\x1b[0m';
+		const result = safeTruncateAnsi(input, 1000);
+		// Should not contain a dangling ESC byte
+		expect(result).not.toContain('\x1b');
+		// The truncated result fed to ansiToHtml should produce clean output
+		const html = ansiToHtml(result);
+		expect(html).not.toContain('\x1b');
+	});
+
+	it('removes trailing lone ESC byte at exact cutoff', () => {
+		const input = 'x'.repeat(999) + '\x1b[32mtext\x1b[0m';
+		const result = safeTruncateAnsi(input, 1000);
+		expect(result).not.toContain('\x1b');
+	});
+
+	it('removes trailing ESC[ without params at cutoff', () => {
+		const input = 'x'.repeat(998) + '\x1b[32mtext';
+		const result = safeTruncateAnsi(input, 1000);
+		expect(result).not.toContain('\x1b');
+	});
+
+	it('preserves complete ANSI sequences before cutoff', () => {
+		const input = '\x1b[31m' + 'x'.repeat(1500) + '\x1b[0m';
+		const result = safeTruncateAnsi(input, 1000);
+		// The \x1b[31m at the start is complete and should be preserved
+		expect(result).toContain('\x1b[31m');
+		const html = ansiToHtml(result);
+		expect(html).toContain('color:var(--ansi-red)');
+	});
+
+	it('handles truncation right after a complete sequence', () => {
+		const seq = '\x1b[32m';
+		const text = seq + 'x'.repeat(2000);
+		const result = safeTruncateAnsi(text, seq.length + 10);
+		expect(result).toBe(seq + 'x'.repeat(10));
+	});
+
+	it('strips trailing orphaned CSI fragment at cutoff boundary', () => {
+		// Orphaned CSI: text ends with [31 (no final letter)
+		const input = 'x'.repeat(997) + '[31m' + 'more';
+		const result = safeTruncateAnsi(input, 1000);
+		// The [31 at the end (without final letter) might be split
+		const html = ansiToHtml(result);
+		expect(html).not.toContain('[31');
 	});
 });
