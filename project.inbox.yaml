@@ -1611,14 +1611,6 @@ inbox:
     created_at: 2026-03-09T07:16:32.329Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KKA99RAZF7NRTY4XF891HXJ3
-    text: Session checkpoint hook fires for tasks owned by other sessions/agents. Should only checkpoint
-      tasks owned by the current session. Possible regression or spec gap.
-    created_at: 2026-03-09T21:50:52.767Z
-    tags:
-      - bug
-      - sessions
-    added_by: "@claude"
   - _ulid: 01KKB0WWM9QRKCVE1CBMKE6ZY4
     text: "CLI mutation commands should show what changed (before → after) in output, especially for
       array fields like --trait that replace rather than append. Two improvements: (1) item set
