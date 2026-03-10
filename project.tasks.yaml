@@ -84562,7 +84562,7 @@
   type: task
   spec_ref: "@session-list-pagination-api"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-session-summary-cache"
@@ -84585,6 +84585,8 @@
         metadata cache that invalidates on directory mtime changes.
   todos: []
   automation: eligible
+  started_at: 2026-03-10T13:31:45.180Z
+  session_id: 01KKBY8FAGBA946T24HRBACQJK
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
@@ -86009,6 +86011,11 @@
   spec_ref: "@session-model-evolution"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #748 (c37259b). checkBudget() now skips task-budget enforcement only
+    for existing non-active sessions, while still enforcing budgets when metadata is missing but a
+    budget file exists. Added stale-session regression coverage for missing metadata, completed
+    session, abandoned session, and active-session enforcement; fresh local npm test and GitHub CI
+    passed, and touched task-budget/session-model behavior remains covered."
   depends_on: []
   context: []
   priority: 3
@@ -86018,6 +86025,7 @@
   created_at: 2026-03-10T07:53:41.361Z
   started_at: 2026-03-10T13:05:49.247Z
   submitted_at: 2026-03-10T13:05:52.827Z
+  completed_at: 2026-03-10T13:31:18.049Z
   notes:
     - _ulid: 01KKBTX20S1JVHMVTXGAYGMJ4P
       created_at: 2026-03-10T12:17:45.498Z
@@ -86077,12 +86085,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T13:31:18.049Z
-  closed_reason: "Merged in PR #748 (c37259b). checkBudget() now skips task-budget enforcement only
-    for existing non-active sessions, while still enforcing budgets when metadata is missing but a
-    budget file exists. Added stale-session regression coverage for missing metadata, completed
-    session, abandoned session, and active-session enforcement; fresh local npm test and GitHub CI
-    passed, and touched task-budget/session-model behavior remains covered."
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
