@@ -84677,6 +84677,7 @@
         endpoints (/tasks/:ref/sessions, /items/:ref/sessions) are simpler
         than overloading the main sessions endpoint with spec resolution logic.
   todos: []
+  automation: eligible
 - _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
   slugs:
     - implement-session-text-search
