@@ -8192,21 +8192,6 @@ skills:
     tags:
       - core
     allowed_tools: []
-  - _ulid: 01KJ51SSZ2NVZGXE32NR5TWPS9
-    _type: skill
-    id: observations
-    name: Observations
-    description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The
-      feedback loop that drives process improvement.
-    origin: core
-    version: 0.8.0
-    platforms:
-      - claude-code
-      - codex
-    depends_on: []
-    tags:
-      - core
-    allowed_tools: []
   - _ulid: 01KJGHJ26TQ80PXZYX3FSMSSAC
     _type: skill
     id: observe
