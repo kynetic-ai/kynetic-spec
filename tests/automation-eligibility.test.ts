@@ -217,6 +217,56 @@ describe('Task Automation Eligibility', () => {
       expect(output).toContain('eligible but has no spec_ref');
     });
 
+    // AC: @task-automation-eligibility ac-21
+    it('should not warn for completed eligible task without spec_ref', async () => {
+      // Create an eligible task, then complete it
+      kspec('task add --title "Completed eligible" --automation eligible', tempDir);
+      const tasks = kspecJson<any[]>('tasks list', tempDir);
+      const task = tasks.find(t => t.title === 'Completed eligible');
+
+      // Manually set status to completed via YAML patch
+      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
+      const content = await fs.readFile(tasksFile, 'utf-8');
+      const updatedContent = content.replace(
+        new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
+        '$1 completed'
+      );
+      await fs.writeFile(tasksFile, updatedContent);
+
+      const output = kspec('validate --completeness', tempDir);
+      expect(output).not.toContain('Completed eligible');
+    });
+
+    // AC: @task-automation-eligibility ac-21
+    it('should not warn for cancelled eligible task without spec_ref', async () => {
+      // Create an eligible task, then cancel it
+      kspec('task add --title "Cancelled eligible" --automation eligible', tempDir);
+      const tasks = kspecJson<any[]>('tasks list', tempDir);
+      const task = tasks.find(t => t.title === 'Cancelled eligible');
+
+      // Manually set status to cancelled via YAML patch
+      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
+      const content = await fs.readFile(tasksFile, 'utf-8');
+      const updatedContent = content.replace(
+        new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
+        '$1 cancelled'
+      );
+      await fs.writeFile(tasksFile, updatedContent);
+
+      const output = kspec('validate --completeness', tempDir);
+      expect(output).not.toContain('Cancelled eligible');
+    });
+
+    // AC: @task-automation-eligibility ac-21
+    it('should still warn for active eligible tasks without spec_ref', () => {
+      // Create eligible tasks with various active statuses - they should still warn
+      kspec('task add --title "Active eligible pending" --automation eligible', tempDir);
+
+      const output = kspec('validate --completeness', tempDir);
+      expect(output).toContain('eligible but has no spec_ref');
+      expect(output).toContain('Active eligible pending');
+    });
+
     it('should not warn when eligible task has spec_ref', () => {
       // Create task with both eligible and spec_ref
       kspec('task add --title "Eligible with spec" --automation eligible --spec-ref @test-feature', tempDir);
@@ -224,6 +274,54 @@ describe('Task Automation Eligibility', () => {
       const output = kspec('validate --completeness', tempDir);
       // Should not contain warning about this specific task
       expect(output).not.toContain('Eligible with spec');
+    });
+
+    // AC: @task-automation-eligibility ac-23
+    it('should not warn for completed eligible task with unresolvable spec_ref', async () => {
+      // Create an eligible task with a valid spec_ref, then break it and complete the task
+      kspec('task add --title "Completed bad ref" --automation eligible --spec-ref @test-feature', tempDir);
+      const tasks = kspecJson<any[]>('tasks list', tempDir);
+      const task = tasks.find(t => t.title === 'Completed bad ref');
+
+      // Manually patch to completed status with unresolvable spec_ref
+      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
+      let content = await fs.readFile(tasksFile, 'utf-8');
+      content = content.replace(
+        new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
+        '$1 completed'
+      );
+      content = content.replace(
+        new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?)spec_ref: "@test-feature"`),
+        '$1spec_ref: "@nonexistent-deleted-spec"'
+      );
+      await fs.writeFile(tasksFile, content);
+
+      const output = kspec('validate --completeness', tempDir);
+      expect(output).not.toContain('Completed bad ref');
+    });
+
+    // AC: @task-automation-eligibility ac-23
+    it('should not warn for cancelled eligible task with unresolvable spec_ref', async () => {
+      // Create an eligible task with a valid spec_ref, then break it and cancel the task
+      kspec('task add --title "Cancelled bad ref" --automation eligible --spec-ref @test-feature', tempDir);
+      const tasks = kspecJson<any[]>('tasks list', tempDir);
+      const task = tasks.find(t => t.title === 'Cancelled bad ref');
+
+      // Manually patch to cancelled status with unresolvable spec_ref
+      const tasksFile = path.join(tempDir, 'project.tasks.yaml');
+      let content = await fs.readFile(tasksFile, 'utf-8');
+      content = content.replace(
+        new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?status:) pending`),
+        '$1 cancelled'
+      );
+      content = content.replace(
+        new RegExp(`(_ulid: ${task._ulid}[\\s\\S]*?)spec_ref: "@test-feature"`),
+        '$1spec_ref: "@nonexistent-deleted-spec"'
+      );
+      await fs.writeFile(tasksFile, content);
+
+      const output = kspec('validate --completeness', tempDir);
+      expect(output).not.toContain('Cancelled bad ref');
     });
 
     // AC: @task-automation-eligibility ac-23
