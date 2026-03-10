@@ -86977,6 +86977,7 @@
   session_id: 01KKCCZH9Y0XGPEM50KSTYC8SP
   created_at: 2026-03-10T08:18:22.055Z
   started_at: 2026-03-10T17:48:05.377Z
+  submitted_at: 2026-03-10T18:02:56.541Z
   notes:
     - _ulid: 01KKCDZA4YHXHYK95XAEZB9AJC
       created_at: 2026-03-10T17:51:02.302Z
@@ -86998,7 +86999,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T18:02:56.541Z
 - _ulid: 01KKCA4D3NW1MPW6SW5N3T7SN6
   slugs:
     - task-ansi-terminal-output-rendering
@@ -87256,6 +87256,13 @@
         in the main repo, then verify initContext from the worktree finds .kspec, returns correct
         rootDir/projectRoot/specDir/sessionsDir.
       supersedes: null
+    - _ulid: 01KKCEQ28R1MVCJA479NE4H5TR
+      created_at: 2026-03-10T18:04:00.664Z
+      author: "@claude"
+      content: "ADDITIONAL TEST: Add bare git repo test case to resolveProjectRoots tests - should return
+        null (same outcome as 'not a git repo' since --show-toplevel fails on bare repos, but
+        distinct setup: git init --bare)."
+      supersedes: null
   todos: []
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
   slugs:
@@ -87385,6 +87392,13 @@
         - Verify 409 Conflict when dispatch start with different cwd than running engine
 
         - Verify agent cwd is the worktree root in spawned invocations
+      supersedes: null
+    - _ulid: 01KKCEQ0YKN9H4HJX9A2P12KKW
+      created_at: 2026-03-10T18:03:59.315Z
+      author: "@claude"
+      content: "ADDITIONAL: Add a comment to getProjectRootFromSpecDir() in src/agent-runtime/prompts.ts
+        (lines 54-56) explaining that main-root resolution is correct for .agents/skills/ since it's
+        git-tracked and present in all worktrees. No code change needed, just documentation."
       supersedes: null
   todos: []
 - _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
@@ -87521,5 +87535,13 @@
         - Code worktree named kspec-feature: NOT detected as shadow worktree
 
         - .kspec/ worktree: still correctly detected as shadow worktree
+      supersedes: null
+    - _ulid: 01KKCEPZJ4SHJ1ACPV6Z6N4FGC
+      created_at: 2026-03-10T18:03:57.892Z
+      author: "@claude"
+      content: "CLARIFICATION: For serve fix, use resolveProjectRoots() directly (not initContext) to
+        avoid full context init overhead. Pattern: const roots = resolveProjectRoots(process.cwd());
+        const kspecDir = roots ? path.join(roots.mainRoot, '.kspec') : path.join(process.cwd(),
+        '.kspec');"
       supersedes: null
   todos: []
