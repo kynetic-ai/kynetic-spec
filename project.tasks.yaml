@@ -83865,28 +83865,52 @@
   notes: []
   todos: []
   automation: eligible
-- title: Verify cli-serve foreground test stability after daemon isolation fixes
+- _ulid: 01KKAH4TA290SW82M66ZWVDF7P
+  slugs:
+    - task-verify-cli-serve-foreground-stable
+  title: Verify cli-serve foreground test stability after daemon isolation fixes
+  type: task
   description: "Foreground mode test was most frequent flaky failure (3+ sessions). PRs #658, #673,
     #674 landed fixes. Verification task: run cli-serve tests 5x in sequence plus shard3 twice. Fix
     remaining race if any failure found."
-  type: task
   spec_ref: "@daemon-sensitive-cli-test-determinism"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-verify-cli-serve-foreground-stable
   tags:
     - testing
     - verification
     - cli
+  vcs_refs: []
+  created_at: 2026-03-10T00:07:59.554Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Verify session-budget-integration crash cleanup test stability
+  description: "Crash cleanup test was flaky across 2 sessions. Fix landed 2026-02-24. Verification
+    task: run test file 5x and once in full suite. Fix remaining timing issue if any failure found."
+  type: task
+  spec_ref: "@test-suite-perf-reliability"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-verify-budget-cleanup-stable
+  tags:
+    - testing
+    - verification
+    - ralph
   depends_on: []
   automation: eligible
-  _ulid: 01KKAH4TA290SW82M66ZWVDF7P
+  _ulid: 01KKAH4Y0MPPD3S2T6593RDTRM
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T00:07:59.554Z
+  created_at: 2026-03-10T00:08:03.348Z
   notes: []
   todos: []
