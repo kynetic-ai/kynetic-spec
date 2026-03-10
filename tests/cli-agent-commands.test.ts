@@ -1399,14 +1399,20 @@ function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): 
  * Poll for a condition to become true, up to maxWaitMs.
  * Used to handle async initContext() completing before WebSocket is created.
  */
-async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void> {
+async function waitFor(
+  condition: () => boolean,
+  maxWaitMs = 2000,
+  description = "dispatch watch test readiness",
+): Promise<void> {
   await waitForStartup(
-    "dispatch watch test readiness",
+    description,
     async () => {
       const ok = condition();
       return {
         ok,
-        details: ok ? "condition met" : "condition still false",
+        details: ok
+          ? "condition met"
+          : `condition not yet met (waited up to ${maxWaitMs}ms)`,
       };
     },
     { timeoutMs: maxWaitMs, intervalMs: 10 },
@@ -2197,7 +2203,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
 
     // Poll for first WebSocket to be created (initContext is async)
     await vi.runAllTimersAsync();
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect test");
 
     instances[0].onopen?.({});
 
@@ -2250,7 +2256,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       { from: "user" },
     );
 
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for output flush test");
     instances[0].onopen?.({});
     instances[0].onmessage?.({
       data: JSON.stringify({
@@ -2268,10 +2274,10 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         const flushed = stdout.includes("[worker sess-abc]\nline without newline\n");
         return {
           ok: reconnectLogged && flushed,
-          details: `stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
+          details: `reconnect_logged=${reconnectLogged} flushed=${flushed} stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
         };
       },
-      { timeoutMs: 1_000, intervalMs: 10 },
+      { timeoutMs: 2_000, intervalMs: 10 },
     );
 
     const stdout = stdoutWrites.join("");
@@ -2320,7 +2326,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       { from: "user" },
     );
 
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect boundary test");
     instances[0].onopen?.({});
     for (const chunk of fixture.chunks_before_close) {
       emitAgentTextChunk(instances[0], chunk);
@@ -2370,7 +2376,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       .catch(() => {/* mocked exit throws */});
 
     // Wait for WebSocket to be created
-    await waitFor(() => instances.length >= 1);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for retries-exhausted test");
 
     // First connection drops — retryCount(0) >= retryLimit(0), so exit immediately
     // process.exit mock throws synchronously, so wrap in try/catch
@@ -2431,5 +2437,128 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(exitCode).toBe(4);
     expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
     expect(wsCtor).not.toHaveBeenCalled();
+  });
+});
+
+// AC: @test-suite-perf-reliability ac-3
+describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("should enforce 2000ms default timeout floor for waitFor wrapper", async () => {
+    // AC-3 requires polling timeout >= 2000ms with configurable override.
+    // Use fake timers so we can verify the timeout duration without real-time waits.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    let probeCount = 0;
+    let rejected = false;
+    let rejectionError: Error | undefined;
+
+    // Start the waitFor — attach a handler immediately to prevent unhandled rejection
+    const waitPromise = waitFor(() => {
+      probeCount++;
+      return false; // never resolves
+    }).catch((e: Error) => {
+      rejected = true;
+      rejectionError = e;
+    });
+
+    // Advance just under 2000ms — should NOT have thrown yet
+    await vi.advanceTimersByTimeAsync(1900);
+    // probeCount > 0 confirms the helper is actually polling
+    expect(probeCount).toBeGreaterThan(0);
+    expect(rejected).toBe(false);
+
+    // Advance past 2000ms — should reject with timeout
+    await vi.advanceTimersByTimeAsync(200);
+    await waitPromise;
+
+    expect(rejected).toBe(true);
+    expect(rejectionError?.message).toMatch(/timed out/i);
+    expect(rejectionError?.message).toContain("2000ms");
+  });
+
+  it("should include last observed state in timeout error message", async () => {
+    // AC-3 requires timeout errors include the last observed state for diagnosis.
+    const err = await waitForStartup(
+      "diagnostic-probe",
+      async () => ({ ok: false, details: "ws_connected=false pending_ack=true" }),
+      { timeoutMs: 50, intervalMs: 10 },
+    ).catch((e: Error) => e);
+
+    expect(err).toBeInstanceOf(Error);
+    // Must include the description
+    expect((err as Error).message).toContain("diagnostic-probe");
+    // Must include the last observed state details
+    expect((err as Error).message).toContain("ws_connected=false pending_ack=true");
+    // Must include "Last observation" label for diagnosis
+    expect((err as Error).message).toContain("Last observation");
+  });
+
+  it("should allow configurable timeout override", async () => {
+    // AC-3: "configurable override" — callers can pass a custom timeout.
+    const start = Date.now();
+    await expect(
+      waitForStartup(
+        "short override test",
+        async () => ({ ok: false, details: "still waiting" }),
+        { timeoutMs: 100, intervalMs: 10 },
+      ),
+    ).rejects.toThrow(/timed out/i);
+    const elapsed = Date.now() - start;
+    // Should respect the override (100ms), not the default
+    expect(elapsed).toBeLessThan(2000);
+    expect(elapsed).toBeGreaterThanOrEqual(100);
+  });
+});
+
+// AC: @test-suite-perf-reliability ac-4
+describe("AC-4: crypto polyfill prevents ReferenceError", () => {
+  it("should restore globalThis.crypto when it is missing", async () => {
+    // Save original and remove globalThis.crypto to simulate Node < 19
+    const originalCrypto = globalThis.crypto;
+    delete (globalThis as Record<string, unknown>).crypto;
+
+    // Verify crypto is actually gone
+    expect(globalThis.crypto).toBeUndefined();
+
+    // Re-run the polyfill logic (same as tests/setup.ts)
+    const nodeCrypto = await import("node:crypto");
+    if (!globalThis.crypto) {
+      (globalThis as Record<string, unknown>).crypto = nodeCrypto.webcrypto;
+    }
+
+    // Verify the polyfill restored crypto and randomUUID works
+    expect(globalThis.crypto).toBeDefined();
+    expect(() => globalThis.crypto.randomUUID()).not.toThrow();
+
+    const uuid = globalThis.crypto.randomUUID();
+    expect(uuid).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+
+    // Restore original to avoid polluting other tests
+    (globalThis as Record<string, unknown>).crypto = originalCrypto;
+  });
+
+  it("should prevent ReferenceError when crypto.randomUUID is called after polyfill", async () => {
+    // Simulate the exact failure mode: code calls crypto.randomUUID()
+    // in an environment where globalThis.crypto was never set.
+    const originalCrypto = globalThis.crypto;
+    delete (globalThis as Record<string, unknown>).crypto;
+
+    // Without polyfill, this would throw ReferenceError
+    expect(() => globalThis.crypto.randomUUID()).toThrow();
+
+    // Apply polyfill
+    const nodeCrypto = await import("node:crypto");
+    (globalThis as Record<string, unknown>).crypto = nodeCrypto.webcrypto;
+
+    // After polyfill, the same call succeeds
+    expect(() => globalThis.crypto.randomUUID()).not.toThrow();
+
+    // Restore
+    (globalThis as Record<string, unknown>).crypto = originalCrypto;
   });
 });
