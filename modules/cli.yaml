@@ -1305,6 +1305,14 @@ features:
             given: a task exists with spec_ref, meta_ref, or plan_ref set
             when: kspec task set @task --spec-ref null (or --meta-ref null, --plan-ref null) runs
             then: "the ref field is cleared to null; outputs confirmation with (field: cleared)"
+          - id: ac-diff-output
+            given: a task exists with priority 2
+            when: kspec task set @task --priority 3 runs
+            then: "output shows before→after diff: priority: 2 → 3"
+          - id: ac-noop-clear
+            given: a task exists with spec_ref already null
+            when: kspec task set @task --spec-ref null runs
+            then: no diff recorded and no shadow commit for spec_ref
         depends_on: []
         implements: []
         relates_to: []
