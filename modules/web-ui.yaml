@@ -1639,6 +1639,25 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKAYQYQJSF13A10F0AG08MBW
+    slugs:
+      - ui-url-panel-state
+    title: URL-Driven Detail Panel State Management
+    type: requirement
+    tags:
+      - web-ui
+      - navigation
+    description: All detail panels/modals that sync state with URL query parameters must use goto() from
+      $app/navigation for URL mutations (not replaceState, pushState, or window.history). This
+      ensures $page.url updates reactively and prevents stale-URL effect loops where panels reopen
+      after dismissal.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T04:05:38.162Z
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
