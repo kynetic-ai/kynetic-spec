@@ -1712,6 +1712,8 @@ export interface SessionLogSummary {
   status: SessionStatus;
   /** Agent type */
   agent_type: string;
+  /** Agent definition ID (e.g. worker, pr-reviewer). AC: @session-list-pagination-api ac-filter-agent-id */
+  agent_id?: string;
   /**
    * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
    * AC: @session-model-evolution ac-6
@@ -1852,6 +1854,7 @@ export async function getSessionLogSummary(
     id: metadata.id,
     status: metadata.status,
     agent_type: metadata.agent_type,
+    agent_id: metadata.agent_id,
     session_type: resolveSessionType(metadata),
     trigger: metadata.trigger,
     task_id: metadata.task_id,

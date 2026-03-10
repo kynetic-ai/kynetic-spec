@@ -31,36 +31,184 @@ import {
   loadAllTasks,
   loadAllItems,
   ReferenceIndex,
+  AlignmentIndex,
 } from '../../parser/index.js';
 import { getSessionCache } from '../../sessions/cache.js';
+import { SessionStatusSchema } from '../../sessions/types.js';
 
 export function createSessionRoutes() {
   return new Elysia({ prefix: '/api/sessions' })
 
-    // List all sessions with summaries
+    // List all sessions with summaries, pagination, and filtering
     // AC: @session-legacy-migration ac-read-fallback ac-list-merge — detect-and-warn for legacy sessions
     // AC: @session-summary-cache ac-cache-build — Uses cached summaries instead of re-reading all files
-    .get('/', async ({ projectContext }) => {
+    // AC: @session-list-pagination-api ac-pagination — offset/limit pagination with total
+    // AC: @session-list-pagination-api ac-metadata-only — Only reads session.yaml, uses cache
+    .get('/', async ({ query, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
+
+      // AC: @session-list-pagination-api ac-invalid-filter — Validate status values
+      const validStatuses = SessionStatusSchema.options;
+      if (query.status) {
+        const statusValues = Array.isArray(query.status) ? query.status : [query.status];
+        const invalid = statusValues.filter(s => !validStatuses.includes(s as typeof validStatuses[number]));
+        if (invalid.length > 0) {
+          return errorResponse(400, {
+            error: 'invalid_filter',
+            details: [{
+              field: 'status',
+              message: `Invalid status value(s): ${invalid.join(', ')}. Valid values: ${validStatuses.join(', ')}`,
+            }],
+          });
+        }
+      }
+
       // AC: @session-summary-cache ac-cache-build — Per-project cache scoped by sessionsDir
       const sessionCache = getSessionCache(ctx.sessionsDir);
       const summaries = await sessionCache.getAll(ctx.sessionsDir);
 
-      // Sort by started_at descending (most recent first)
+      // AC: @session-list-pagination-api ac-pagination — Sort by started_at descending (most recent first)
       summaries.sort((a, b) =>
         new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
       );
+
+      // Apply filters — all are AND'd together
+      // AC: @session-list-pagination-api ac-combined-filters
+      let filtered = summaries;
+
+      // AC: @session-list-pagination-api ac-filter-status — Multi-value OR filter
+      if (query.status) {
+        const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
+        filtered = filtered.filter(s => statusFilters.includes(s.status));
+      }
+
+      // AC: @session-list-pagination-api ac-filter-agent-type
+      if (query.agent_type) {
+        const agentTypeFilters = Array.isArray(query.agent_type) ? query.agent_type : [query.agent_type];
+        filtered = filtered.filter(s => agentTypeFilters.includes(s.agent_type));
+      }
+
+      // AC: @session-list-pagination-api ac-filter-agent-id
+      if (query.agent_id) {
+        const agentIdFilters = Array.isArray(query.agent_id) ? query.agent_id : [query.agent_id];
+        filtered = filtered.filter(s => s.agent_id != null && agentIdFilters.includes(s.agent_id));
+      }
+
+      // AC: @session-list-pagination-api ac-filter-trigger — with "dispatched" shorthand
+      if (query.trigger) {
+        const triggerFilters = Array.isArray(query.trigger) ? query.trigger : [query.trigger];
+        filtered = filtered.filter(s => {
+          if (!s.trigger) return false;
+          return triggerFilters.some(tf => {
+            if (tf === 'dispatched') return s.trigger!.startsWith('task.');
+            return s.trigger === tf;
+          });
+        });
+      }
+
+      // AC: @session-list-pagination-api ac-filter-task
+      if (query.task_id) {
+        const taskRef = query.task_id.startsWith('@') ? query.task_id.slice(1) : query.task_id;
+        // Resolve the task ref to find matching sessions
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const refIndex = new ReferenceIndex(tasks, items);
+        const resolved = refIndex.resolve(taskRef);
+        if (resolved.ok) {
+          // Match by ULID or any slug
+          const matchTask = tasks.find(t => t._ulid === resolved.ulid);
+          const matchRefs = new Set<string>([resolved.ulid]);
+          if (matchTask) {
+            for (const slug of matchTask.slugs) matchRefs.add(slug);
+            matchRefs.add(`@${resolved.ulid}`);
+            for (const slug of matchTask.slugs) matchRefs.add(`@${slug}`);
+          }
+          filtered = filtered.filter(s => {
+            if (!s.task_id) return false;
+            const tid = s.task_id.startsWith('@') ? s.task_id.slice(1) : s.task_id;
+            return matchRefs.has(tid) || matchRefs.has(s.task_id);
+          });
+        } else {
+          filtered = []; // Unknown task ref — no matches
+        }
+      }
+
+      // AC: @session-list-pagination-api ac-filter-spec-ref — resolve spec to linked tasks
+      if (query.spec_ref) {
+        const specRef = query.spec_ref.startsWith('@') ? query.spec_ref.slice(1) : query.spec_ref;
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const refIndex = new ReferenceIndex(tasks, items);
+        const alignIndex = new AlignmentIndex(tasks, items);
+        alignIndex.buildLinks(refIndex);
+
+        const specResult = refIndex.resolve(specRef);
+        if (specResult.ok) {
+          const linkedTasks = alignIndex.getTasksForSpec(specResult.ulid);
+          const taskRefs = new Set<string>();
+          for (const t of linkedTasks) {
+            taskRefs.add(t._ulid);
+            for (const slug of t.slugs) taskRefs.add(slug);
+            taskRefs.add(`@${t._ulid}`);
+            for (const slug of t.slugs) taskRefs.add(`@${slug}`);
+          }
+          filtered = filtered.filter(s => {
+            if (!s.task_id) return false;
+            const tid = s.task_id.startsWith('@') ? s.task_id.slice(1) : s.task_id;
+            return taskRefs.has(tid) || taskRefs.has(s.task_id);
+          });
+        } else {
+          filtered = []; // Unknown spec ref — no matches
+        }
+      }
+
+      // AC: @session-list-pagination-api ac-filter-since
+      if (query.since) {
+        const sinceDate = new Date(query.since);
+        if (isNaN(sinceDate.getTime())) {
+          return errorResponse(400, {
+            error: 'invalid_filter',
+            details: [{
+              field: 'since',
+              message: `Invalid date value: "${query.since}". Use ISO 8601 format (e.g., 2025-03-01 or 2025-03-01T00:00:00Z).`,
+            }],
+          });
+        }
+        const sinceMs = sinceDate.getTime();
+        filtered = filtered.filter(s => new Date(s.started_at).getTime() >= sinceMs);
+      }
+
+      // AC: @session-list-pagination-api ac-pagination — Apply pagination after filtering
+      // AC: @trait-api-endpoint ac-4 — {items, total, offset, limit} wrapper
+      const total = filtered.length;
+      const offset = Number(query.offset) || 0;
+      const limit = Number(query.limit) || total;
+      const paginated = filtered.slice(offset, offset + limit);
 
       // Detect legacy sessions and include warning in response
       const legacyCount = await countLegacySessions(ctx.specDir);
 
       return {
-        items: summaries,
-        total: summaries.length,
+        items: paginated,
+        total,
+        offset,
+        limit,
         ...(legacyCount > 0 ? {
           warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,
         } : {}),
       };
+    }, {
+      query: t.Object({
+        status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        agent_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        agent_id: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        trigger: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        task_id: t.Optional(t.String()),
+        spec_ref: t.Optional(t.String()),
+        since: t.Optional(t.String()),
+        limit: t.Optional(t.String()),
+        offset: t.Optional(t.String()),
+      }),
     })
 
     // Get single session metadata
