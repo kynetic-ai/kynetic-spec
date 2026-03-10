@@ -1637,7 +1637,7 @@ requirements:
     slugs:
       - ui-url-panel-state
     title: URL-Driven Detail Panel State Management
-    type: requirement
+    type: trait
     tags:
       - web-ui
       - navigation
