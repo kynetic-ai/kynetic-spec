@@ -7917,7 +7917,7 @@ skills:
     name: Kspec Help
     description: Get help with kspec commands and workflows
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -7932,7 +7932,7 @@ skills:
     description: Triage inbox items systematically. Records decisions with audit trail, then executes
       actions. Supports inbox, observations, and automation eligibility triage.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -7947,7 +7947,7 @@ skills:
     description: Structured reflection at the end of work sessions. Identifies learnings, friction
       points, and improvements for system evolution.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -7962,7 +7962,7 @@ skills:
     description: Process inbox items using the record-act pattern. Categorize, promote to spec/task,
       merge duplicates, defer, or delete stale items with full audit trail.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -7977,7 +7977,7 @@ skills:
     description: Assess and prepare tasks for automation eligibility. Verify spec coverage, acceptance
       criteria, and task readiness for automated agents.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -7992,7 +7992,7 @@ skills:
     description: Create and maintain specification items — modules, features, requirements, acceptance
       criteria, and traits. The source of truth for what to build.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -8007,7 +8007,7 @@ skills:
     description: Translate approved plans into specs and tasks. Import structured documents or create
       incrementally. Plans persist as durable artifacts with audit trail.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -8022,7 +8022,7 @@ skills:
     description: Structured task lifecycle — start, work, note, submit, complete. Fix cycle handling,
       scope management, loop mode for automation, and quality gates.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -8037,7 +8037,7 @@ skills:
     description: Formalize repeatable patterns into trackable kspec workflows. Design steps, choose
       triggers, create loop variants, and integrate with skills.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -8052,7 +8052,7 @@ skills:
     description: Kspec-specific review gates — spec alignment, own AC coverage, trait AC coverage, and
       validation integration. Building block for project-specific review workflows.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
@@ -8184,7 +8184,7 @@ skills:
     description: Capture and act on systemic patterns — friction, successes, questions, and ideas. The
       feedback loop that drives process improvement.
     origin: core
-    version: 0.9.1
+    version: 0.11.0
     platforms:
       - claude-code
       - codex
