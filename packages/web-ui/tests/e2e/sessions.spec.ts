@@ -23,6 +23,7 @@ import { test, expect } from '../fixtures/test-base';
 function makeSession(index: number, overrides: Partial<{
 	status: string;
 	agent_type: string;
+	agent_id: string;
 	trigger: string;
 	task_id: string;
 	started_at: string;
@@ -37,6 +38,7 @@ function makeSession(index: number, overrides: Partial<{
 		id: `01JTEST00000000000000000${padded}`,
 		status: overrides.status ?? 'completed',
 		agent_type: overrides.agent_type ?? 'task-worker',
+		agent_id: overrides.agent_id ?? 'worker',
 		session_type: 'invocation' as const,
 		trigger: overrides.trigger ?? 'task.ready',
 		task_id: overrides.task_id,
@@ -57,6 +59,7 @@ function mockSessions() {
 				id: '01JTEST0000000000000000001',
 				status: 'completed',
 				agent_type: 'task-worker',
+				agent_id: 'worker',
 				session_type: 'invocation',
 				trigger: 'task.ready',
 				task_id: '01JTASK0000000000000000001',
@@ -71,6 +74,7 @@ function mockSessions() {
 				id: '01JTEST0000000000000000002',
 				status: 'active',
 				agent_type: 'pr-reviewer',
+				agent_id: 'pr-reviewer',
 				session_type: 'invocation',
 				trigger: 'task.pending_review',
 				task_id: '01JTASK0000000000000000002',
@@ -84,6 +88,7 @@ function mockSessions() {
 				id: '01JTEST0000000000000000003',
 				status: 'failed',
 				agent_type: 'task-worker',
+				agent_id: 'worker',
 				session_type: 'loop',
 				trigger: 'manual',
 				started_at: '2026-03-03T14:00:00.000Z',
@@ -100,19 +105,36 @@ function mockSessions() {
 	};
 }
 
-/** Route handler that serves mock sessions with pagination support. */
+/** Route handler that serves mock sessions with pagination and filtering support. */
 function mockSessionsRoute(sessions: ReturnType<typeof mockSessions>) {
 	return (route: any) => {
 		const url = new URL(route.request().url());
 		const offset = Number(url.searchParams.get('offset') ?? '0');
 		const limit = Number(url.searchParams.get('limit') ?? String(sessions.total));
 		const triggerParam = url.searchParams.get('trigger');
+		const statusParam = url.searchParams.getAll('status');
+		const agentTypeParam = url.searchParams.get('agent_type');
+		const agentIdParam = url.searchParams.get('agent_id');
+		const sinceParam = url.searchParams.get('since');
 
 		let filtered = sessions.items;
 		if (triggerParam === 'manual') {
 			filtered = filtered.filter((s: any) => s.trigger === 'manual');
 		} else if (triggerParam === 'dispatched') {
 			filtered = filtered.filter((s: any) => s.trigger?.startsWith('task.'));
+		}
+		if (statusParam.length > 0) {
+			filtered = filtered.filter((s: any) => statusParam.includes(s.status));
+		}
+		if (agentTypeParam) {
+			filtered = filtered.filter((s: any) => s.agent_type === agentTypeParam);
+		}
+		if (agentIdParam) {
+			filtered = filtered.filter((s: any) => s.agent_id === agentIdParam);
+		}
+		if (sinceParam) {
+			const sinceMs = new Date(sinceParam).getTime();
+			filtered = filtered.filter((s: any) => new Date(s.started_at).getTime() >= sinceMs);
 		}
 
 		const total = filtered.length;
@@ -355,19 +377,18 @@ test.describe('Session History View', () => {
 	});
 
 	test.describe('Trigger Filter', () => {
-		test('filter buttons are visible when sessions exist', async ({ page, daemon }) => {
+		// AC: @session-filter-controls ac-trigger-filter
+		test('filter controls are visible when sessions exist', async ({ page, daemon }) => {
 			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			const filter = page.getByTestId('trigger-filter');
-			await expect(filter).toBeVisible();
-			await expect(filter.getByText('All')).toBeVisible();
-			await expect(filter.getByText('Manual')).toBeVisible();
-			await expect(filter.getByText('Dispatched')).toBeVisible();
+			const filterControls = page.getByTestId('session-filter-controls');
+			await expect(filterControls).toBeVisible();
+			await expect(page.getByTestId('session-filter-trigger')).toBeVisible();
 		});
 
-		// AC: @session-list-infinite-scroll ac-filter-reset — Filter change triggers new API call
+		// AC: @session-filter-controls ac-trigger-filter — Filter change triggers new API call
 		test('dispatched filter shows only dispatched sessions', async ({ page, daemon }) => {
 			const apiCalls: string[] = [];
 
@@ -379,27 +400,36 @@ test.describe('Session History View', () => {
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			await page.getByTestId('trigger-filter').getByText('Dispatched').click();
+			// Use the select dropdown to choose "Dispatched"
+			await page.getByTestId('session-filter-trigger').click();
+			await page.getByRole('option', { name: 'Dispatched' }).click();
 
 			// Wait for the filtered result
 			await expect(page.getByTestId('session-row')).toHaveCount(2);
+
+			// Verify URL updated with trigger param
+			await expect(page).toHaveURL(/trigger=dispatched/);
 
 			// Verify a new API request was made with trigger param
 			const dispatchedCalls = apiCalls.filter(url => url.includes('trigger=dispatched'));
 			expect(dispatchedCalls.length).toBeGreaterThan(0);
 		});
 
-		// AC: @session-list-infinite-scroll ac-filter-reset
+		// AC: @session-filter-controls ac-trigger-filter
 		test('manual filter shows only manual sessions', async ({ page, daemon }) => {
 			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			await page.getByTestId('trigger-filter').getByText('Manual').click();
+			await page.getByTestId('session-filter-trigger').click();
+			await page.getByRole('option', { name: 'Manual' }).click();
 
 			const rows = page.getByTestId('session-row');
 			await expect(rows).toHaveCount(1);
 			await expect(rows.nth(0)).toHaveAttribute('data-session-id', '01JTEST0000000000000000003');
+
+			// AC: @ui-url-panel-state ac-4 — URL updated via goto()
+			await expect(page).toHaveURL(/trigger=manual/);
 		});
 	});
 
@@ -743,17 +773,20 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('session-row')).toHaveCount(25);
 			await expect(page.getByTestId('sessions-count')).toContainText('25 of 50 sessions');
 
-			// Switch to manual filter — should reset to page 1 with filtered results
-			await page.getByTestId('trigger-filter').getByText('Manual').click();
+			// Switch to manual filter via select dropdown — should reset to page 1 with filtered results
+			await page.getByTestId('session-filter-trigger').click();
+			await page.getByRole('option', { name: 'Manual' }).click();
 
 			// Manual sessions = 20 (indices 30-49), all fit in one page
 			await expect(page.getByTestId('session-row')).toHaveCount(20, { timeout: 5000 });
-			await expect(page.getByTestId('sessions-count')).toContainText('20 of 20 sessions');
+			// AC: @session-filter-controls ac-filter-counts — Shows filtered vs total in filter controls
+			await expect(page.getByTestId('session-filter-count')).toContainText('20 of 50 sessions');
 
 			// Switch to dispatched — should reset again
-			await page.getByTestId('trigger-filter').getByText('Dispatched').click();
+			await page.getByTestId('session-filter-trigger').click();
+			await page.getByRole('option', { name: 'Dispatched' }).click();
 			await expect(page.getByTestId('session-row')).toHaveCount(25, { timeout: 5000 });
-			await expect(page.getByTestId('sessions-count')).toContainText('25 of 30 sessions');
+			await expect(page.getByTestId('session-filter-count')).toContainText('30 of 50 sessions');
 		});
 
 		// AC: @session-list-infinite-scroll ac-filter-reset — Previously loaded items cleared
@@ -792,8 +825,9 @@ test.describe('Session History View', () => {
 			// Initially shows all 30 sessions
 			await expect(page.getByTestId('session-row')).toHaveCount(25);
 
-			// Switch to manual filter
-			await page.getByTestId('trigger-filter').getByText('Manual').click();
+			// Switch to manual filter via select dropdown
+			await page.getByTestId('session-filter-trigger').click();
+			await page.getByRole('option', { name: 'Manual' }).click();
 			await expect(page.getByTestId('session-row')).toHaveCount(15, { timeout: 5000 });
 
 			// All visible sessions should be manual-worker type
@@ -1149,6 +1183,98 @@ test.describe('Session History View', () => {
 
 			// Indicator should disappear after refresh
 			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
+		});
+	});
+
+	// ─── Session Filter Controls Tests ───
+
+	test.describe('Session Filter Controls', () => {
+		// AC: @session-filter-controls ac-status-filter
+		test('status filter updates URL and filters sessions', async ({ page, daemon }) => {
+			const sessions = mockSessions();
+			await page.route('**/api/sessions*', mockSessionsRoute(sessions));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Select "Completed" status filter
+			await page.getByTestId('session-filter-status').click();
+			await page.getByRole('option', { name: 'Completed' }).click();
+
+			// URL should update with status param
+			await expect(page).toHaveURL(/status=completed/);
+
+			// Only completed sessions shown
+			await expect(page.getByTestId('session-row')).toHaveCount(1);
+		});
+
+		// AC: @session-filter-controls ac-date-filter
+		test('date filter updates URL with date_range param', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Select "Today" date range
+			await page.getByTestId('session-filter-date').click();
+			await page.getByRole('option', { name: 'Today' }).click();
+
+			// URL should update with date_range param
+			await expect(page).toHaveURL(/date_range=today/);
+		});
+
+		// AC: @session-filter-controls ac-clear-filters
+		test('clear filters button removes all filter params from URL', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+
+			// Navigate with filters already in URL
+			await page.goto('/sessions?trigger=manual&status=completed');
+			await expect(page.getByTestId('session-filter-controls')).toBeVisible();
+
+			// Clear filters button should be visible
+			const clearBtn = page.getByTestId('session-clear-filters');
+			await expect(clearBtn).toBeVisible();
+
+			await clearBtn.click();
+
+			// URL should be clean
+			await expect(page).toHaveURL(/\/sessions$/);
+		});
+
+		// AC: @session-filter-controls ac-filter-counts
+		test('shows filtered vs total count when filters active', async ({ page, daemon }) => {
+			const sessions = mockSessions();
+			await page.route('**/api/sessions*', mockSessionsRoute(sessions));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Apply a filter
+			await page.getByTestId('session-filter-trigger').click();
+			await page.getByRole('option', { name: 'Manual' }).click();
+
+			// Should show filtered count
+			await expect(page.getByTestId('session-filter-count')).toBeVisible({ timeout: 5000 });
+			await expect(page.getByTestId('session-filter-count')).toContainText('of');
+		});
+
+		// AC: @session-filter-controls ac-filter-counts — No count when no filters
+		test('does not show filter count when no filters active', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Filter count should NOT be visible without filters
+			await expect(page.getByTestId('session-filter-count')).not.toBeVisible();
+		});
+
+		// AC: @ui-url-panel-state ac-4 — Filters persist in URL on page load
+		test('filters load from URL params on page navigation', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+
+			// Navigate directly with filter params
+			await page.goto('/sessions?trigger=manual');
+			await expect(page.getByTestId('session-filter-controls')).toBeVisible();
+
+			// Only manual session should be shown
+			await expect(page.getByTestId('session-row')).toHaveCount(1);
 		});
 	});
 });
