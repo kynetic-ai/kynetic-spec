@@ -86013,8 +86013,17 @@
   title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
     additional r"
   type: task
-  description: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
-    so additional registered projects get periodic session pulls too."
+  description: >-
+    Extend daemon session-branch sync to cover all registered projects, not just startupProjectPath.
+
+
+    Current behavior: The daemon periodically syncs the session branch but only for the project it
+    started with. Additional projects registered via the API do not get periodic session pulls.
+
+
+    Fix: In the daemon sync loop (src/daemon/), iterate over all registered project paths and sync
+    each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
+    timer for where startupProjectPath is hardcoded.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -86031,11 +86040,21 @@
   title: CLI mutation commands should show what changed (before → after) in output, especially for
     array fiel
   type: task
-  description: "CLI mutation commands should show what changed (before → after) in output, especially
-    for array fields like --trait that replace rather than append. Two improvements: (1) item set
-    --trait should append by default (or have --add-trait / --remove-trait), (2) all mutating
-    commands should display diffs of what they changed so silent data loss is visible. Triggered by
-    --trait silently replacing existing traits array."
+  description: >-
+    Two related CLI mutation UX improvements:
+
+
+    1. item set --trait should append by default (or provide --add-trait / --remove-trait flags).
+    Current behavior silently REPLACES the entire traits array, causing data loss when users expect
+    append semantics.
+
+
+    2. All mutating CLI commands should display a diff of what changed (before/after) so silent
+    overwrites are visible.
+
+
+    Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
+    in src/cli/commands/item.ts. Consider backward compatibility.
   spec_ref: null
   status: pending
   blocked_by: []
