@@ -84810,7 +84810,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKCQPTNE9NJTP8FSAWYB3NZP
   created_at: 2026-03-10T05:32:15.078Z
+  started_at: 2026-03-10T20:47:09.390Z
   notes:
     - _ulid: 01KKB3PHV7HT3R85BJ2WVXWS7G
       created_at: 2026-03-10T05:32:15.079Z
@@ -84823,10 +84825,35 @@
         when any filter changes. Append new pages to existing items array.
         WebSocket updates use the existing global subscription — no new
         connection management needed per-component.
+    - _ulid: 01KKCRQY7TM5NS8SEXS8NRMH8C
+      created_at: 2026-03-10T20:59:15.066Z
+      author: "@claude"
+      content: >-
+        Implemented infinite scroll pagination on /sessions page. Key changes:
+
+        1. Updated fetchSessions() in api.ts to accept offset/limit/trigger params, returning
+        SessionListResponse with pagination fields.
+
+        2. Rewrote sessions +page.svelte with IntersectionObserver on a sentinel element for
+        automatic page loading.
+
+        3. Server-side trigger filtering (delegates to daemon API instead of client-side filtering).
+
+        4. WebSocket subscription on 'agents' topic to detect new sessions (agent_invocation with
+        status=started).
+
+        5. New sessions indicator button with refresh capability.
+
+        6. Loading skeleton on initial load, spinner for subsequent page loads, end-of-list
+        indicator.
+
+        7. Updated E2E tests with pagination-aware mock route handler + new infinite scroll test
+        cases.
+
+        8. Fixed api-static.test.ts to match updated return shape.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T20:47:09.390Z
-  session_id: 01KKCQPTNE9NJTP8FSAWYB3NZP
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
   slugs:
     - implement-session-filter-controls
