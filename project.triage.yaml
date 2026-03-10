@@ -2499,13 +2499,14 @@ triage:
       expected item ac update; task set --depends-on requires array but gives poor error on
       comma-separated string. Evaluate entire CLI surface area for consistency or add aliases based
       on actual/expected usage patterns."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Large scope audit — no single fix, defer until CLI stabilization phase
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:08.799Z
-    updated_at: 2026-03-10T08:17:08.822Z
+    updated_at: 2026-03-10T08:18:25.644Z
+    acted_at: 2026-03-10T08:18:25.613Z
   - _ulid: 01KKBD4FS43KP9AJCY18GND080
     inbox_ref: 01KKB0WWM9QRKCVE1CBMKE6ZY4
     item_snapshot: "CLI mutation commands should show what changed (before → after) in output,
@@ -2519,10 +2520,10 @@ triage:
       documented in MEMORY.md"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:08.900Z
-    updated_at: 2026-03-10T08:18:23.201Z
     acted_at: 2026-03-10T08:18:23.177Z
     result_ref: "@01KKBD6Q"
+    created_at: 2026-03-10T08:17:08.900Z
+    updated_at: 2026-03-10T08:18:23.201Z
   - _ulid: 01KKBD4FVFFQZ0BHFMSRE2PW0V
     inbox_ref: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
     item_snapshot: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
