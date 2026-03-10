@@ -94,12 +94,24 @@ function checkBuild() {
 
 function installDependencies() {
   logSetup('Installing dependencies (npm ci)...');
-  execSync('npm ci', { cwd: projectRoot, stdio: 'inherit' });
+  try {
+    execSync('npm ci', { cwd: projectRoot, stdio: 'pipe' });
+  } catch (err) {
+    logErr('npm ci failed:');
+    if (err.stderr) process.stderr.write(err.stderr);
+    throw err;
+  }
 }
 
 function runBuild() {
   logSetup('Building project (npm run build)...');
-  execSync('npm run build', { cwd: projectRoot, stdio: 'inherit' });
+  try {
+    execSync('npm run build', { cwd: projectRoot, stdio: 'pipe' });
+  } catch (err) {
+    logErr('npm run build failed:');
+    if (err.stderr) process.stderr.write(err.stderr);
+    throw err;
+  }
 }
 
 // ─── Hook points ───────────────────────────────────────────────────
