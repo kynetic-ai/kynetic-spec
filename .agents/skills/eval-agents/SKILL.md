@@ -141,7 +141,7 @@ The full scenario set lives at `docs/agents-eval-scenarios.md`. Each scenario te
 | 2. Shadow Branch Confusion | Architecture, CLI-not-YAML |
 | 3. Inheriting Work | Task priority, state |
 | 4. Task Blocking Decision | Blocking criteria |
-| 5. After Blocking in Loop | Ralph continuation |
+| 5. After Blocking in Loop | Agent dispatch continuation |
 | 6. Adding a New Feature | Spec-first flow |
 | 7. PR Workflow | PR + PR-review pairing |
 | 8. Test Fixture ULID | Silent failure gotcha |

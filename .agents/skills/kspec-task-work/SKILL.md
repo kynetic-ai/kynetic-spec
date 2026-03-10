@@ -152,7 +152,18 @@ kspec task note @ref "Execution context:
 - Verification: tests/commands that prove completion"
 ```
 
-### 5. Commit
+### 5. Regenerate Derived Files
+
+If your task modified any of these source files, regenerate before committing:
+
+| Modified | Regenerate with |
+|----------|----------------|
+| `templates/skills/` or `.kspec/skills/` | `kspec skill render` |
+| `templates/agents-sections/`, conventions, or workflows | `kspec agents generate` |
+
+Commit the regenerated output alongside your source changes — reviewers and other agents consume the rendered files.
+
+### 6. Commit
 
 Include task and spec trailers:
 
@@ -167,7 +178,7 @@ Spec: @auth-feature
 
 Trailers enable `kspec log @ref` to find related commits.
 
-### 6. Local Review
+### 7. Local Review
 
 Run quality checks before submitting. Verify:
 
@@ -181,7 +192,7 @@ Run quality checks before submitting. Verify:
 kspec validate  # Reports uncovered trait ACs as warnings
 ```
 
-### 7. Submit and Create PR
+### 8. Submit and Create PR
 
 Submit transitions the task to `pending_review`, then create the PR. This is the ownership handoff — the **worker** is done, the **reviewer** takes over.
 
@@ -195,7 +206,7 @@ gh pr create --title "feat: ..." --body "..."
 
 The sequence matters: `submit` first, then PR. The `pending_review` state is what triggers the pr-reviewer agent in dispatch mode. The PR is the artifact the reviewer acts on.
 
-### 8. Complete Task
+### 9. Complete Task
 
 After PR is merged:
 
