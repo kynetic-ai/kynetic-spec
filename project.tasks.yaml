@@ -84238,7 +84238,9 @@
     - bug
     - web-ui
   vcs_refs: []
+  session_id: 01KKAP67JHGG955HVD798Z2DE6
   created_at: 2026-03-10T00:27:01.022Z
+  started_at: 2026-03-10T01:40:10.549Z
   notes:
     - _ulid: 01KKAJ81X8MK59XVYTTPKNJDVW
       created_at: 2026-03-10T00:27:14.216Z
@@ -84272,7 +84274,24 @@
         where modalOpen is bound. Verify with E2E or manual test: open modal via URL, close it,
         confirm ?ref= is gone and modal stays closed.
       supersedes: null
+    - _ulid: 01KKAPHFKAQQE9M6PPGBNZHKVY
+      created_at: 2026-03-10T01:42:17.450Z
+      author: "@claude"
+      content: >-
+        Implementation: Applied the same URL cleanup pattern from /specs page to both /tasks and
+        /tasks/board views.
+
+
+        Changes:
+
+        1. packages/web-ui/src/routes/tasks/+page.svelte — Added url.searchParams.delete('ref') +
+        history.pushState to existing dialog-close effect (lines 114-126)
+
+        2. packages/web-ui/src/routes/tasks/board/+page.svelte — Added new $effect that clears
+        lastProcessedRef and removes ?ref= from URL when modalOpen becomes false (lines 94-103)
+
+        3. E2E tests added to both tasks.spec.ts and task-board.spec.ts covering: closing modal via
+        ESC removes param, closing modal opened via URL param removes param and modal stays closed
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T01:40:10.549Z
-  session_id: 01KKAP67JHGG955HVD798Z2DE6
