@@ -83859,6 +83859,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Cancelled: Skipping tests is the wrong approach. Replacing with a test runner script
+    task that ensures environment prerequisites (like build artifacts) are satisfied before running
+    tests."
   depends_on: []
   context: []
   priority: 3
@@ -83868,6 +83871,8 @@
     - daemon
   vcs_refs: []
   created_at: 2026-03-10T00:07:51.766Z
+  started_at: 2026-03-10T00:20:16.666Z
+  completed_at: 2026-03-10T00:20:16.666Z
   notes:
     - _ulid: 01KKAH5H9MHVK31AA1EG3F6T2M
       created_at: 2026-03-10T00:08:23.093Z
@@ -83896,11 +83901,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T00:20:16.666Z
-  closed_reason: "Cancelled: Skipping tests is the wrong approach. Replacing with a test runner script
-    task that ensures environment prerequisites (like build artifacts) are satisfied before running
-    tests."
-  started_at: 2026-03-10T00:20:16.666Z
 - _ulid: 01KKAH4PJ4YBZ0ZXFBEBYZER9E
   slugs:
     - task-fix-dispatch-watch-timing
@@ -84027,3 +84027,29 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Create test runner script that ensures environment readiness before running tests
+  description: Create a test runner script (like bootstrap.cjs for dev setup) that agents and
+    developers use instead of raw npm test. Script verifies environment prerequisites (build
+    artifacts like dist/web-ui/, dependencies, config), fixes gaps automatically, then runs vitest.
+    Provides extensible hook points for pre/post-test actions and cleaner output.
+  type: task
+  spec_ref: "@test-suite-perf-reliability"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-test-runner-script
+  tags:
+    - testing
+    - infra
+    - cli
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKAHWE1ZAPWVTPNZNTW5B8CH
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T00:20:53.439Z
+  notes: []
+  todos: []
