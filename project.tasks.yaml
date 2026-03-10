@@ -84681,7 +84681,9 @@
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-session-cli-unified-filtering"
+    - "@implement-session-filter-controls"
   context: []
   priority: 3
   tags: []
