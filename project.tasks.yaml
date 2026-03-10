@@ -85626,21 +85626,40 @@
   created_at: 2026-03-10T08:17:24.828Z
   notes: []
   todos: []
-- title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
+- _ulid: 01KKBD52ND0SRD9WXYT6ZXZ776
+  slugs: []
+  title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
     default to "
+  type: task
+  description: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe)
+    to default to the single active run instead of requiring explicit run-ref."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:28.237Z
+  notes: []
+  todos: []
+- title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
+    include cu"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe)
-    to default to the single active run instead of requiring explicit run-ref."
-  _ulid: 01KKBD52ND0SRD9WXYT6ZXZ776
+  description: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
+    should include current step metadata (step_index, step_type, step_content) so users/agents can
+    progress workflows without manually opening meta YAML."
+  _ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:28.237Z
+  created_at: 2026-03-10T08:17:31.495Z
   notes: []
   todos: []

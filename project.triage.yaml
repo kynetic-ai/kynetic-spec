@@ -2734,14 +2734,16 @@ triage:
     item_snapshot: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
       should include current step metadata (step_index, step_type, step_content) so users/agents can
       progress workflows without manually opening meta YAML."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Workflow show --json with step metadata — enables workflow automation and agent progress
       tracking
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:10.089Z
-    updated_at: 2026-03-10T08:17:10.108Z
+    updated_at: 2026-03-10T08:17:32.620Z
+    acted_at: 2026-03-10T08:17:32.601Z
+    result_ref: "@01KKBD55"
   - _ulid: 01KKBD4H0FWTTAM74TKAB41SSZ
     inbox_ref: 01KJVP3S8TYHGHFHT4KZ1BQZ9C
     item_snapshot: "Workflow UX: allow kspec workflow show (and related workflow run commands where
@@ -2752,10 +2754,10 @@ triage:
       explicit ref"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:10.159Z
-    updated_at: 2026-03-10T08:17:29.361Z
     acted_at: 2026-03-10T08:17:29.342Z
     result_ref: "@01KKBD52"
+    created_at: 2026-03-10T08:17:10.159Z
+    updated_at: 2026-03-10T08:17:29.361Z
   - _ulid: 01KKBD4H2V9S48KWYCBEQ47D7A
     inbox_ref: 01KJVFDRC70KAZ98MJ9ERFY6JJ
     item_snapshot: Clarify @task-work submit timing and pending_review ownership semantics. Current
