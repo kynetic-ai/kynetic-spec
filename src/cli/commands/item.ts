@@ -48,6 +48,21 @@ import { error, isJsonMode, output, success, warn } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
 
 /**
+ * Serialize a LoadedSpecItem for JSON output.
+ * Strips internal fields (_sourceFile, _path), renames _ulid → ulid,
+ * and adds a ref field with @ prefix for the primary slug.
+ * AC: @trait-json-output ac-4
+ */
+function serializeSpecItemForJson(item: LoadedSpecItem): Record<string, unknown> {
+  const { _sourceFile, _path, _ulid, ...rest } = item;
+  return {
+    ulid: _ulid,
+    ref: item.slugs.length > 0 ? `@${item.slugs[0]}` : `@${_ulid}`,
+    ...rest,
+  };
+}
+
+/**
  * Format a spec item for display
  */
 function formatItem(
@@ -425,12 +440,9 @@ export function registerItemCommands(program: Command): void {
 
         output(
           {
-            items: specItems,
+            items: specItems.map(serializeSpecItemForJson),
             total: effectiveTotal,
             showing: specItems.length,
-            grepPattern: options.grep,
-            tree: options.tree,
-            under: options.under,
           },
           () => {
             if (options.tree) {
@@ -494,7 +506,7 @@ export function registerItemCommands(program: Command): void {
 
         // Build JSON output with inherited traits
         const jsonOutput = {
-          ...item,
+          ...serializeSpecItemForJson(item),
           inherited_traits: Array.from(traitsByTrait.values()).map(
             ({ trait, acs }) => ({
               ref: `@${trait.slug}`,

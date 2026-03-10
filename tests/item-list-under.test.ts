@@ -89,16 +89,21 @@ describe('kspec item list --under', () => {
 
   // AC: @module-scoped-item-listing ac-under-json
   it('should output JSON array with full item data when --json is used', async () => {
-    const result = kspecJson<{ items: { _ulid: string; title: string; type: string }[] }>(
+    const result = kspecJson<{ items: { ulid: string; ref: string; title: string; type: string }[] }>(
       'item list --under @test-feature',
       tempDir
     );
 
-    // Each item should have full data
+    // Each item should have full data with clean field names
     for (const item of result.items) {
-      expect(item).toHaveProperty('_ulid');
+      expect(item).toHaveProperty('ulid');
+      expect(item).toHaveProperty('ref');
       expect(item).toHaveProperty('title');
       expect(item).toHaveProperty('type');
+      // Internal fields should not be present
+      expect(item).not.toHaveProperty('_ulid');
+      expect(item).not.toHaveProperty('_sourceFile');
+      expect(item).not.toHaveProperty('_path');
     }
   });
 

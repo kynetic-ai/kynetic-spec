@@ -633,6 +633,56 @@ describe('Integration: items', () => {
     expect(output).toContain('When: they click logout');
     expect(output).toContain('Then: session is terminated');
   });
+  // AC: @trait-json-output ac-1, ac-2, ac-4
+  it('should return clean JSON for item list with no internal fields', () => {
+    const result = kspecJson<{
+      items: Array<Record<string, unknown>>;
+      total: number;
+      showing: number;
+    }>('item list --limit 2', tempDir);
+
+    expect(result).toHaveProperty('items');
+    expect(result).toHaveProperty('total');
+    expect(result).toHaveProperty('showing');
+    expect(result.items.length).toBeGreaterThan(0);
+
+    for (const item of result.items) {
+      // Clean field names
+      expect(item).toHaveProperty('ulid');
+      expect(item).toHaveProperty('ref');
+      expect(item).toHaveProperty('title');
+      expect(item).toHaveProperty('type');
+
+      // No internal fields
+      expect(item).not.toHaveProperty('_ulid');
+      expect(item).not.toHaveProperty('_sourceFile');
+      expect(item).not.toHaveProperty('_path');
+
+      // AC: @trait-json-output ac-4 — ref has @ prefix
+      expect(item.ref).toMatch(/^@/);
+    }
+  });
+
+  // AC: @trait-json-output ac-1, ac-2, ac-4
+  it('should return clean JSON for item get with no internal fields', () => {
+    const result = kspecJson<Record<string, unknown>>(
+      'item get @test-feature',
+      tempDir
+    );
+
+    // Clean field names
+    expect(result).toHaveProperty('ulid');
+    expect(result).toHaveProperty('ref');
+    expect(result).toHaveProperty('title');
+
+    // No internal fields
+    expect(result).not.toHaveProperty('_ulid');
+    expect(result).not.toHaveProperty('_sourceFile');
+    expect(result).not.toHaveProperty('_path');
+
+    // AC: @trait-json-output ac-4 — ref has @ prefix
+    expect(result.ref).toBe('@test-feature');
+  });
 });
 
 describe('Integration: item set', () => {
