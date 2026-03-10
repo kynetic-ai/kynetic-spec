@@ -87099,7 +87099,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -87109,9 +87109,9 @@
     - session
     - dx
   vcs_refs: []
-  session_id: null
+  session_id: 01KKCJ8XZYEXY33AYK09X4E6N7
   created_at: 2026-03-10T16:43:54.869Z
-  started_at: 2026-03-10T18:10:33.665Z
+  started_at: 2026-03-10T19:13:14.842Z
   submitted_at: 2026-03-10T18:20:04.059Z
   notes:
     - _ulid: 01KKCA4D3MMM0WBJG558VVF8JW
