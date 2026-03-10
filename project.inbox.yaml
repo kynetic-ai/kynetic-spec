@@ -1359,16 +1359,6 @@ inbox:
       - cli
       - notes
     added_by: Jacob Chapel
-  - _ulid: 01KJVP7YTYMMXN9K64WTS1XEP4
-    text: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
-      validate --json') so output is strict JSON with no trailing text, enabling reliable jq-based
-      automation."
-    created_at: 2026-03-04T05:48:28.894Z
-    tags:
-      - reflection
-      - cli
-      - automation
-    added_by: Jacob Chapel
   - _ulid: 01KJVY4MRHGP0V4ZH4QSMP0Q4M
     text: "Dispatch: add refresh command to re-bootstrap engine state without stopping/starting (reload
       agents + re-evaluate in_progress tasks)."

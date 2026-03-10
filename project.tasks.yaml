@@ -85644,22 +85644,41 @@
   created_at: 2026-03-10T08:17:28.237Z
   notes: []
   todos: []
-- title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
+- _ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
+  slugs: []
+  title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
     include cu"
+  type: task
+  description: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
+    should include current step metadata (step_index, step_type, step_content) so users/agents can
+    progress workflows without manually opening meta YAML."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:31.495Z
+  notes: []
+  todos: []
+- title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
+    validate -"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
-    should include current step metadata (step_index, step_type, step_content) so users/agents can
-    progress workflows without manually opening meta YAML."
-  _ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
+  description: "Reflection: Harden machine-readable output contracts for JSON commands (especially
+    'kspec validate --json') so output is strict JSON with no trailing text, enabling reliable
+    jq-based automation."
+  _ulid: 01KKBD5BAX4M5G9C5FH431MSMF
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:31.495Z
+  created_at: 2026-03-10T08:17:37.116Z
   notes: []
   todos: []
