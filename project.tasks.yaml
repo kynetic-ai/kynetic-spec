@@ -84878,6 +84878,28 @@
         @ui-url-panel-state ac-4 lacks tracked coverage/N-A annotation, and fresh npm test fails in
         tests/cli-agent-commands.test.ts prompt_template cases."
       supersedes: null
+    - _ulid: 01KKD16VDRVYSW0GZE4Z4HZ004
+      created_at: 2026-03-10T23:27:12.313Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 addressed. Three issues resolved:
+
+        1. Scroll container fix: The onscroll handler was on the page's root div, but the actual
+        scroll container is the layout's <main class="overflow-auto">. Changed to find <main> via
+        closest('main') at mount time and attach scroll listener via addEventListener. isAtTop now
+        correctly reflects the user's actual scroll position.
+
+        2. @ui-url-panel-state ac-4: Added proper N/A annotation in both the component (AC comment
+        block) and E2E test file. Session filters use local component state (triggerFilter), not URL
+        query parameters — goto() is not needed.
+
+        3. cli-agent-commands.test.ts failures: Not reproducible — all 4 prompt_template tests pass
+        on both main and the PR branch. Likely a stale build or flaky test environment in the
+        reviewer's run.
+
+        E2E test updates: Fixed scroll-down tests to target the correct scroll container
+        (main.overflow-auto instead of parentElement of sessions-list).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
@@ -87324,6 +87346,12 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #760 (merge commit 0e4a16a7b755b31949e09fab8e55efcb1a0ff2cb).
+    Implemented ANSI terminal output rendering in the web UI session stream with SGR parsing,
+    theme-aware ANSI color tokens, orphaned/private-mode CSI stripping, XSS-safe HTML conversion,
+    and preview truncation safety in ToolCallView. Reviewed AC coverage for ac-1 through ac-8 in
+    packages/web-ui/tests/ansi.test.ts with no inherited trait ACs applicable; GitHub test shards
+    and smoke E2E were green on the merged head."
   depends_on: []
   context: []
   priority: 3
@@ -87336,6 +87364,7 @@
   created_at: 2026-03-10T16:43:54.869Z
   started_at: 2026-03-10T22:02:48.296Z
   submitted_at: 2026-03-10T22:10:13.696Z
+  completed_at: 2026-03-10T22:54:43.749Z
   notes:
     - _ulid: 01KKCA4D3MMM0WBJG558VVF8JW
       created_at: 2026-03-10T16:43:54.868Z
@@ -87466,13 +87495,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T22:54:43.749Z
-  closed_reason: "Merged in PR #760 (merge commit 0e4a16a7b755b31949e09fab8e55efcb1a0ff2cb).
-    Implemented ANSI terminal output rendering in the web UI session stream with SGR parsing,
-    theme-aware ANSI color tokens, orphaned/private-mode CSI stripping, XSS-safe HTML conversion,
-    and preview truncation safety in ToolCallView. Reviewed AC coverage for ac-1 through ac-8 in
-    packages/web-ui/tests/ansi.test.ts with no inherited trait ACs applicable; GitHub test shards
-    and smoke E2E were green on the merged head."
 - _ulid: 01KKCEDW31WB42ZX52NJA51B4V
   slugs:
     - task-worktree-core-resolution
