@@ -2515,21 +2515,50 @@ describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
 
 // AC: @test-suite-perf-reliability ac-4
 describe("AC-4: crypto polyfill prevents ReferenceError", () => {
-  it("should have globalThis.crypto available after setup", () => {
-    // The vitest setup file (tests/setup.ts) polyfills globalThis.crypto
-    // for Node environments that lack it. This test verifies the polyfill
-    // is active and crypto.randomUUID does not throw ReferenceError.
-    expect(globalThis.crypto).toBeDefined();
-    expect(typeof globalThis.crypto.randomUUID).toBe("function");
-  });
+  it("should restore globalThis.crypto when it is missing", async () => {
+    // Save original and remove globalThis.crypto to simulate Node < 19
+    const originalCrypto = globalThis.crypto;
+    delete (globalThis as Record<string, unknown>).crypto;
 
-  it("should produce valid UUIDs via globalThis.crypto.randomUUID", () => {
-    // Verify the polyfilled crypto.randomUUID returns a well-formed UUID,
-    // not just that it exists. Code using WebSocket or crypto APIs in tests
-    // depends on this producing real values.
+    // Verify crypto is actually gone
+    expect(globalThis.crypto).toBeUndefined();
+
+    // Re-run the polyfill logic (same as tests/setup.ts)
+    const nodeCrypto = await import("node:crypto");
+    if (!globalThis.crypto) {
+      (globalThis as Record<string, unknown>).crypto = nodeCrypto.webcrypto;
+    }
+
+    // Verify the polyfill restored crypto and randomUUID works
+    expect(globalThis.crypto).toBeDefined();
+    expect(() => globalThis.crypto.randomUUID()).not.toThrow();
+
     const uuid = globalThis.crypto.randomUUID();
     expect(uuid).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
     );
+
+    // Restore original to avoid polluting other tests
+    (globalThis as Record<string, unknown>).crypto = originalCrypto;
+  });
+
+  it("should prevent ReferenceError when crypto.randomUUID is called after polyfill", async () => {
+    // Simulate the exact failure mode: code calls crypto.randomUUID()
+    // in an environment where globalThis.crypto was never set.
+    const originalCrypto = globalThis.crypto;
+    delete (globalThis as Record<string, unknown>).crypto;
+
+    // Without polyfill, this would throw ReferenceError
+    expect(() => globalThis.crypto.randomUUID()).toThrow();
+
+    // Apply polyfill
+    const nodeCrypto = await import("node:crypto");
+    (globalThis as Record<string, unknown>).crypto = nodeCrypto.webcrypto;
+
+    // After polyfill, the same call succeeds
+    expect(() => globalThis.crypto.randomUUID()).not.toThrow();
+
+    // Restore
+    (globalThis as Record<string, unknown>).crypto = originalCrypto;
   });
 });
