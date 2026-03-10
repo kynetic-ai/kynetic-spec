@@ -1664,6 +1664,12 @@ requirements:
         when: the code updates the URL
         then: "goto(url, { replaceState: true, keepFocus: true, noScroll: true }) is used instead of
           replaceState, pushState, or window.history methods, ensuring $page.url updates reactively"
+      - id: ac-2
+        given: a detail panel or modal is dismissed (click outside, ESC, close button)
+        when: the close handler runs
+        then: the URL query parameter is removed via goto() and the reactive effect that watches
+          $page.url.searchParams does not reopen the panel because $page.url reflects the updated
+          URL
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
