@@ -86625,7 +86625,7 @@
     avoid breaking them. This is a breaking change to the JSON output contract — consider if a
     --format flag or version header is needed.
   spec_ref: "@trait-json-output"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86647,6 +86647,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T16:28:40.004Z
+  closed_reason: "Merged in PR #755. Updated item list/get JSON serialization to strip internal loader
+    fields, expose ulid/ref, and keep item list output as a clean structured payload with downstream
+    tests adjusted. AC coverage reviewed for @trait-json-output, targeted tests passed locally, full
+    npm test passed (4344 passed, 3 skipped), and CI was green on merged HEAD."
 - _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
   slugs: []
   title: "Alignment status calculation should treat needs_work and pending_review as active work
