@@ -2098,4 +2098,50 @@ describe('Skill Verify Command', () => {
     const result = kspecFull('skill verify --json', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
+
+  // AC: @platform-renderer-trait ac-2
+  it('should report plugin-provided status for core skills instead of drift/no-hash', async () => {
+    // Add a core skill (origin=core triggers plugin-provided path)
+    kspecFull(
+      'skill add --id core-verify --name "Core Verify" --description "Core skill verify test" --origin core --platform claude-code',
+      tempDir
+    );
+
+    // Run verify — core skills should be reported as plugin-provided, not drifted/no-hash
+    const result = kspecJson<Array<{ id: string; platform: string; status: string; guidance?: string }>>(
+      'skill verify',
+      tempDir
+    );
+
+    const coreResults = result.filter((r) => r.id === 'core-verify');
+    expect(coreResults.length).toBe(1);
+    expect(coreResults[0].status).toBe('plugin-provided');
+    expect(coreResults[0].guidance).toContain('plugin');
+
+    // Verify no drifted/no-hash results for core skills
+    const badStatuses = result.filter(
+      (r) => r.id === 'core-verify' && (r.status === 'drifted' || r.status === 'no-hash')
+    );
+    expect(badStatuses.length).toBe(0);
+  });
+
+  // AC: @platform-renderer-trait ac-2
+  it('should not exit non-zero when only plugin-provided skills are present', async () => {
+    // setupTempFixtures() creates no skills, so adding only core skills
+    // ensures the verify command sees exclusively plugin-provided results
+    kspecFull(
+      'skill add --id core-only --name "Core Only" --description "Only core skill" --origin core --platform claude-code',
+      tempDir
+    );
+
+    // Verify should succeed (exit 0) — plugin-provided is not a problem
+    const result = kspecFull('skill verify --json', tempDir);
+    expect(result.exitCode).toBe(0);
+
+    // Confirm all results are plugin-provided (no rendered skills present)
+    const parsed = JSON.parse(result.stdout) as Array<{ id: string; status: string }>;
+    expect(parsed.length).toBeGreaterThan(0);
+    const nonPluginProvided = parsed.filter((r) => r.status !== 'plugin-provided');
+    expect(nonPluginProvided).toEqual([]);
+  });
 });
