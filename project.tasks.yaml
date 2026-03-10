@@ -85762,23 +85762,43 @@
   created_at: 2026-03-10T08:17:54.728Z
   notes: []
   todos: []
-- title: "Alignment status calculation should treat needs_work and pending_review as active work
+- _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
+  slugs: []
+  title: "Alignment status calculation should treat needs_work and pending_review as active work
     states (maps "
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Alignment status calculation should treat needs_work and pending_review as active work
     states (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
     @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
     task.
-  _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:58.132Z
+  notes: []
+  todos: []
+- title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
+    SKILL.md, the"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
+    SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
+    Currently agents don't know this step exists and users have to remind them. Could be a post-step
+    in task-work or a convention in AGENTS.md."
+  _ulid: 01KKBD6389SFFMQH6645YXWCVK
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:58.132Z
+  created_at: 2026-03-10T08:18:01.609Z
   notes: []
   todos: []

@@ -1407,16 +1407,6 @@ inbox:
       - multi-project
       - concurrency
     added_by: "@claude"
-  - _ulid: 01KK30AYASRF6F546A5W3G14DR
-    text: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
-      SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
-      Currently agents don't know this step exists and users have to remind them. Could be a
-      post-step in task-work or a convention in AGENTS.md."
-    created_at: 2026-03-07T01:59:33.465Z
-    tags:
-      - reflection
-      - skills
-    added_by: "@claude"
   - _ulid: 01KK5WHSWGB2SNA5B1498X0JAQ
     text: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
       prompt_template and always injects a hardcoded work prompt, so review agents drift into

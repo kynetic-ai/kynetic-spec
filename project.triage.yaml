@@ -2603,14 +2603,16 @@ triage:
       a SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
       Currently agents don't know this step exists and users have to remind them. Could be a
       post-step in task-work or a convention in AGENTS.md."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Document skill update workflow — agents dont know to run kspec skill render after
       modifying SKILL.md
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.363Z
-    updated_at: 2026-03-10T08:17:09.379Z
+    updated_at: 2026-03-10T08:18:02.677Z
+    acted_at: 2026-03-10T08:18:02.657Z
+    result_ref: "@01KKBD63"
   - _ulid: 01KKBD4G9ME9DYQ9NRCZPWCNJY
     inbox_ref: 01KJY9H27H9HRBH303RQJCKH4B
     item_snapshot: Alignment status calculation should treat needs_work and pending_review as active
@@ -2623,10 +2625,10 @@ triage:
       prototyped already
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.428Z
-    updated_at: 2026-03-10T08:17:59.256Z
     acted_at: 2026-03-10T08:17:59.235Z
     result_ref: "@01KKBD5Z"
+    created_at: 2026-03-10T08:17:09.428Z
+    updated_at: 2026-03-10T08:17:59.256Z
   - _ulid: 01KKBD4GBQ9PYTEFH346EW03QG
     inbox_ref: 01KJXPG80VDQWGT01KTJ7GGWYW
     item_snapshot: 'Fix kspec item list --json output structure: currently returns nested [items, count]
