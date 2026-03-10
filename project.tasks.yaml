@@ -87054,7 +87054,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -87112,6 +87112,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-10T18:10:33.665Z
+  session_id: 01KKCEPYP9FPF9344P795HCHA8
 - _ulid: 01KKCEDW31WB42ZX52NJA51B4V
   slugs:
     - task-worktree-core-resolution
