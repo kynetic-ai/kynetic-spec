@@ -87222,7 +87222,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -87235,7 +87235,7 @@
   session_id: 01KKCRTAKQX0A4CVNQK9N0V8YS
   created_at: 2026-03-10T16:43:54.869Z
   started_at: 2026-03-10T21:08:04.033Z
-  submitted_at: 2026-03-10T20:21:35.560Z
+  submitted_at: 2026-03-10T21:19:25.040Z
   notes:
     - _ulid: 01KKCA4D3MMM0WBJG558VVF8JW
       created_at: 2026-03-10T16:43:54.868Z
