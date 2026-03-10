@@ -2157,6 +2157,36 @@ describe('Integration: status cascade', () => {
     expect(result.stdout).not.toContain('[y/n]');
     expect(result.stdout).toContain('Updated item');
   });
+
+  // AC: @trait-confirmation-prompt ac-4
+  it('should skip cascade prompt when --no-cascade is provided', () => {
+    // test-feature has a child requirement
+    const result = kspecRun('item set @test-feature --status implemented --no-cascade', tempDir);
+
+    // Should not prompt for cascade
+    expect(result.stdout).not.toContain('child item(s) to');
+    expect(result.stdout).not.toContain('[y/n]');
+    expect(result.stdout).toContain('Updated item');
+  });
+
+  it('should not update children when --no-cascade is provided', () => {
+    // Get initial status of child
+    const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+
+    // Update parent with --no-cascade
+    kspecRun('item set @test-feature --status verified --no-cascade', tempDir);
+
+    // Check child status was NOT updated
+    const afterChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    expect(afterChild.status?.implementation).toBe(beforeImpl);
+  });
 });
 
 describe('Integration: inbox promote', () => {
