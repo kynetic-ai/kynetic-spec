@@ -85536,7 +85536,7 @@
     fs.rm, (2) consider in-place repair (re-link broken worktree without deletion), (3) add a
     backup/restore mechanism, (4) at minimum print recovery instructions if recreation fails. Manual
     task because it touches data safety and needs human review of the repair strategy.
-  spec_ref: null
+  spec_ref: "@session-branch-worktree"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85589,13 +85589,24 @@
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
     (observed in co
   type: task
-  description: "Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
-    (observed in codex session). Repro: with KSPEC_SESSION_ID set to an old session that has
-    budget.json started_this_cycle=max_per_cycle, 'kspec task start @ref' fails with 'Task budget
-    exhausted ... let iteration end naturally' even when not running ralph and no in-progress tasks.
-    Expected: budget guard should apply only during active ralph loop iteration context, or
-    stale/non-ralph session IDs should be ignored."
-  spec_ref: null
+  description: >-
+    Fix task budget false-positive when stale KSPEC_SESSION_ID is set outside a ralph loop.
+
+
+    Location: checkBudget() in src/sessions/store.ts (lines ~3495-3524).
+
+
+    Current behavior: checkBudget() validates (1) sessionId is set, (2) budget file exists, (3)
+    started_this_cycle >= max_per_cycle. It does NOT check whether the session is actually active. A
+    stale KSPEC_SESSION_ID from a completed/abandoned session causes false budget exhaustion errors.
+
+
+    Fix: Add session status validation to checkBudget(). Before enforcing the budget limit, call
+    getSession() or isSessionActive() to verify the session exists and is in active status. If the
+    session is not active (completed, abandoned, or missing), skip budget enforcement and return
+    allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
+    checkBudget() does not block task start.
+  spec_ref: "@session-model-evolution"
   status: pending
   blocked_by: []
   depends_on: []
