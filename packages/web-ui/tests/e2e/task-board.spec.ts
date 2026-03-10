@@ -532,6 +532,8 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-7
+	// AC: @ui-url-panel-state ac-1 — opens modal via click, URL updated with goto()
+	// AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), modal stays closed
 	test('closing detail modal removes ?ref= query param from URL', async ({ page, daemon }) => {
 		await page.goto('/tasks/board');
 		await expect(page.getByTestId('board-columns')).toBeVisible();
@@ -559,6 +561,8 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-7
+	// AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), stays closed
+	// AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
 	test('closing detail modal opened via URL param removes ?ref= and stays closed', async ({ page, daemon }) => {
 		// Navigate directly with ?ref= param to open modal
 		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');
@@ -581,6 +585,7 @@ test.describe('Task Board (Kanban)', () => {
 	});
 
 	// AC: @ui-task-board ac-7
+	// AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works and panel stays closed
 	test('can reopen same task after closing modal opened via URL param', async ({ page, daemon }) => {
 		// Open modal via URL param
 		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');

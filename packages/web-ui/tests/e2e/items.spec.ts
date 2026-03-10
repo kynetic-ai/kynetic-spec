@@ -101,6 +101,7 @@ test.describe('Items View', () => {
       await expect(childContainer).not.toBeVisible();
     });
 
+    // AC: @ui-url-panel-state ac-1 — opens detail panel via click, URL updated with goto()
     test('clicking item title opens detail panel (not expand)', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -296,6 +297,7 @@ test.describe('Items View', () => {
       await expect(traitTitle).toContainText('test-trait');
     });
 
+    // AC: @ui-url-panel-state ac-3 — navigates with ?ref= in URL, detail panel opens correctly
     test('clicking trait chip navigates to trait detail', async ({ page, daemon }) => {
       await page.goto('/items');
 
