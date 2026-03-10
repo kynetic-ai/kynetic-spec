@@ -84477,5 +84477,26 @@
         don't update $page.url, causing stale reactive state) and reference the SvelteKit issue
         #10661."
       supersedes: null
+    - _ulid: 01KKAZ4Y5CN966G2H91DHXRMEH
+      created_at: 2026-03-10T04:12:43.565Z
+      author: "@claude"
+      content: >-
+        Documentation specifics after reviewing current state:
+
+
+        No existing documentation covers URL state management patterns. Two places need updates:
+
+
+        1. svelte-5 skill (source: templates/skills/svelte-5/SKILL.md, rendered:
+        .agents/skills/svelte-5/SKILL.md)
+           - Add a '## URL State Management' section (follows the existing pattern of 'Problem/Symptom/Root Cause/Solution' used throughout the skill)
+           - Cover: replaceState/pushState don't update $page.url (SvelteKit #10661), use goto() with { replaceState: true, keepFocus: true, noScroll: true }, show before/after code examples
+           - After editing the template, run: kspec skill render
+
+        2. development convention (kspec meta)
+           - Add rule: 'In web UI code, use goto() from $app/navigation for all URL query parameter changes. Never use replaceState, pushState, or window.history — they do not update $page.url and break reactive effects.'
+           - Run: kspec meta set development --add-rule '...'
+           - Then: kspec agents generate
+      supersedes: null
   todos: []
   automation: eligible
