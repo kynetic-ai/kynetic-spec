@@ -84576,14 +84576,14 @@
   type: task
   spec_ref: "@session-summary-cache"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKBEFENC21KYK05KCP8E26TD
+  session_id: null
   created_at: 2026-03-10T05:32:14.534Z
   started_at: 2026-03-10T08:40:55.285Z
   submitted_at: 2026-03-10T08:50:20.803Z
@@ -84625,6 +84625,13 @@
         cache.getAll)
 
         - 21 tests covering all 5 ACs pass
+      supersedes: null
+    - _ulid: 01KKBGCM1W2S7QHJP5RK3VCRFW
+      created_at: 2026-03-10T09:14:01.148Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX review on PR #739: cache invalidation misses
+        in-place session.yaml status/metadata changes for non-active sessions, and the module-level
+        SessionSummaryCache leaks across projects in multi-directory daemon mode."
       supersedes: null
   todos: []
   automation: eligible
@@ -85178,6 +85185,7 @@
   session_id: 01KKBF2PDKX0M6G6J911XTPY73
   created_at: 2026-03-10T06:15:57.215Z
   started_at: 2026-03-10T08:58:07.353Z
+  submitted_at: 2026-03-10T09:09:32.095Z
   notes:
     - _ulid: 01KKBG45Q2CS9N1KEYAB1HZX7B
       created_at: 2026-03-10T09:09:24.322Z
@@ -85191,7 +85199,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T09:09:32.095Z
 - _ulid: 01KKB6P8EEJ355H2QWT50V4HGC
   slugs: []
   title: Board view should load all active tasks without arbitrary limit
