@@ -85782,23 +85782,43 @@
   created_at: 2026-03-10T08:17:58.132Z
   notes: []
   todos: []
-- title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
+- _ulid: 01KKBD6389SFFMQH6645YXWCVK
+  slugs: []
+  title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
     SKILL.md, the"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
     SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
     Currently agents don't know this step exists and users have to remind them. Could be a post-step
     in task-work or a convention in AGENTS.md."
-  _ulid: 01KKBD6389SFFMQH6645YXWCVK
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:18:01.609Z
+  notes: []
+  todos: []
+- title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
+    projects. "
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: Multi-project agent dashboard — tmux-style live view of all running agent sessions
+    across projects. Show terminal-like panes for each active session with real-time output, agent
+    name, task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances.
+    Think mission control for agent fleet monitoring without navigating to individual project UIs.
+  _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:18:01.609Z
+  created_at: 2026-03-10T08:18:04.769Z
   notes: []
   todos: []

@@ -2590,13 +2590,15 @@ triage:
       across projects. Show terminal-like panes for each active session with real-time output, agent
       name, task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances.
       Think mission control for agent fleet monitoring without navigating to individual project UIs.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Design/spec task for multi-project agent dashboard. Manual only, needs design phase
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.293Z
-    updated_at: 2026-03-10T08:17:09.313Z
+    updated_at: 2026-03-10T08:18:05.907Z
+    acted_at: 2026-03-10T08:18:05.887Z
+    result_ref: "@01KKBD66"
   - _ulid: 01KKBD4G7K79AXXGJCB219MSAM
     inbox_ref: 01KK30AYASRF6F546A5W3G14DR
     item_snapshot: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies
@@ -2609,10 +2611,10 @@ triage:
       modifying SKILL.md
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.363Z
-    updated_at: 2026-03-10T08:18:02.677Z
     acted_at: 2026-03-10T08:18:02.657Z
     result_ref: "@01KKBD63"
+    created_at: 2026-03-10T08:17:09.363Z
+    updated_at: 2026-03-10T08:18:02.677Z
   - _ulid: 01KKBD4G9ME9DYQ9NRCZPWCNJY
     inbox_ref: 01KJY9H27H9HRBH303RQJCKH4B
     item_snapshot: Alignment status calculation should treat needs_work and pending_review as active

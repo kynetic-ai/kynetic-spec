@@ -1365,17 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KK5ETB1FQVBVFX99G95C1TZJ
-    text: Multi-project agent dashboard — tmux-style live view of all running agent sessions across
-      projects. Show terminal-like panes for each active session with real-time output, agent name,
-      task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances. Think
-      mission control for agent fleet monitoring without navigating to individual project UIs.
-    created_at: 2026-03-08T00:51:06.928Z
-    tags:
-      - web-ui
-      - feature
-      - multi-project
-    added_by: "@claude"
   - _ulid: 01KJS7BGC9GX1E66JYK3QDH8R3
     text: "kspec agent run produces no visible output: (1) runInvocation is called without onUpdate, so
       no streaming to stdout during execution. (2) kspec session log show does not display
