@@ -686,8 +686,13 @@ features:
           - --description <desc>: Set description
           - --status <status>: Set implementation status
           - --maturity <maturity>: Set maturity level
+          - --trait <ref>: Replace all traits with specified ref
+          - --add-trait <ref>: Append a trait (deduplicates by ULID)
+          - --remove-trait <ref>: Remove a trait by ref
+          - --clear-traits: Clear all traits
 
           Updates item in place and auto-commits to shadow branch.
+          Displays before→after diff for each changed field.
         implements:
           - "@item-commands"
         traits:
@@ -711,6 +716,30 @@ features:
             given: item @my-item exists
             when: kspec item set @my-item --status implemented runs
             then: item's implementation status is updated to 'implemented'
+          - id: ac-add-trait
+            given: item @my-item has traits ['@trait-a']
+            when: kspec item set @my-item --add-trait @trait-b runs
+            then: item now has traits ['@trait-a', '@trait-b']; shows traits diff
+          - id: ac-remove-trait
+            given: item @my-item has traits ['@trait-a', '@trait-b']
+            when: kspec item set @my-item --remove-trait @trait-a runs
+            then: item now has traits ['@trait-b']; shows traits diff
+          - id: ac-clear-traits
+            given: item @my-item has traits ['@trait-a', '@trait-b']
+            when: kspec item set @my-item --clear-traits runs
+            then: item now has traits []; shows traits diff
+          - id: ac-trait-mutual-exclusivity
+            given: item @my-item exists
+            when: kspec item set @my-item --add-trait @x --remove-trait @y runs
+            then: "error: trait flags are mutually exclusive; exits code 1"
+          - id: ac-diff-output
+            given: item @my-item exists with title 'Old'
+            when: kspec item set @my-item --title 'New' runs
+            then: "output shows before→after diff: title: Old → New"
+          - id: ac-noop-detection
+            given: item @my-item exists with title 'Same'
+            when: kspec item set @my-item --title 'Same' runs
+            then: "warns 'No changes: values are already set to the specified values'; no shadow commit"
       - _ulid: 01KEZCJPHXH5SAZ7NWESVKWS3Y
         slugs:
           - item-delete
