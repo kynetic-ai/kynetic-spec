@@ -901,6 +901,9 @@ Examples:
       "Set verified_at (defaults to now if --verified-by provided)",
     )
     .option("--trait <trait...>", "Set traits (replaces existing)")
+    .option("--add-trait <trait...>", "Add traits (appends to existing)")
+    .option("--remove-trait <trait...>", "Remove specific traits")
+    .option("--clear-traits", "Clear all traits")
     .option("--relates-to <ref>", "Add a relates_to reference")
     .option("--implements <ref>", "Add an implements reference")
     .option("--depends-on <ref>", "Add a depends_on reference")
@@ -917,7 +920,9 @@ Examples:
 Examples:
   $ kspec item set @item-ref --title "New title"
   $ kspec item set @item-ref --tag api internal security
-  $ kspec item set @item-ref --trait reusable testable
+  $ kspec item set @item-ref --trait @reusable @testable  # replaces all traits
+  $ kspec item set @item-ref --add-trait @json-output     # appends trait
+  $ kspec item set @item-ref --remove-trait @old-trait     # removes trait
   $ kspec item set @item-ref --relates-to @other-item
   $ kspec item set @item-ref --implements @feature-spec
   $ kspec item set @item-ref --depends-on @prereq-spec
@@ -984,6 +989,47 @@ Examples:
           error("Cannot use --depends-on and --clear-depends-on together");
           process.exit(EXIT_CODES.USAGE_ERROR);
         }
+
+        // Mutual exclusivity for trait flags
+        const traitFlagCount = [options.trait, options.addTrait, options.removeTrait, options.clearTraits].filter(Boolean).length;
+        if (traitFlagCount > 1) {
+          error("Cannot combine --trait, --add-trait, --remove-trait, and --clear-traits. Use only one at a time.");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        // Helper to validate and canonicalize a list of trait refs
+        const validateTraitRefs = (traitRefs: string[]): string[] => {
+          const validated: string[] = [];
+          const seenUlids = new Set<string>();
+          let hasErrors = false;
+
+          for (const traitRef of traitRefs) {
+            const traitResult = refIndex.resolve(traitRef);
+            if (!traitResult.ok) {
+              error(`Trait not found: ${traitRef}`);
+              hasErrors = true;
+              continue;
+            }
+
+            const traitItem = traitResult.item as LoadedSpecItem;
+            if (traitItem.type !== "trait") {
+              error(`${traitRef} is not a trait (type: ${traitItem.type})`);
+              hasErrors = true;
+              continue;
+            }
+
+            if (seenUlids.has(traitItem._ulid)) continue;
+            seenUlids.add(traitItem._ulid);
+
+            const canonicalRef = `@${traitItem.slugs[0] || traitItem._ulid}`;
+            validated.push(canonicalRef);
+          }
+
+          if (hasErrors) {
+            process.exit(EXIT_CODES.NOT_FOUND);
+          }
+          return validated;
+        };
 
         // Helper to validate relationship refs (must exist and be a spec item, not a task)
         // Returns { ulid, canonicalRef } for deduplication and user-friendly storage
@@ -1053,7 +1099,43 @@ Examples:
         }
         if (options.priority) updates.priority = options.priority;
         if (options.tag) updates.tags = parseTagsArray(options.tag);
-        if (options.trait) updates.traits = options.trait;
+
+        // Handle trait mutations (--trait replaces, --add-trait appends, --remove-trait removes, --clear-traits clears)
+        if (options.trait) {
+          updates.traits = validateTraitRefs(options.trait);
+        } else if (options.addTrait) {
+          const validated = validateTraitRefs(options.addTrait);
+          const current = foundItem.traits || [];
+          // Resolve existing traits to ULIDs for deduplication
+          const existingUlids = new Set<string>();
+          for (const ref of current) {
+            const result = refIndex.resolve(ref);
+            if (result.ok) existingUlids.add(result.ulid);
+          }
+          const newTraits = validated.filter((ref) => {
+            const result = refIndex.resolve(ref);
+            return result.ok && !existingUlids.has(result.ulid);
+          });
+          if (newTraits.length > 0) {
+            updates.traits = [...current, ...newTraits];
+          }
+        } else if (options.removeTrait) {
+          const validated = validateTraitRefs(options.removeTrait);
+          const current = foundItem.traits || [];
+          // Resolve removal targets to ULIDs
+          const removeUlids = new Set<string>();
+          for (const ref of validated) {
+            const result = refIndex.resolve(ref);
+            if (result.ok) removeUlids.add(result.ulid);
+          }
+          updates.traits = current.filter((ref) => {
+            const result = refIndex.resolve(ref);
+            return !result.ok || !removeUlids.has(result.ulid);
+          });
+        } else if (options.clearTraits) {
+          updates.traits = [];
+        }
+
         if (options.description) updates.description = options.description;
 
         // AC: @implementation-states ac-reject-invalid
@@ -1140,6 +1222,21 @@ Examples:
           return;
         }
 
+        // Build before→after changes for display
+        const changes: Array<{ field: string; before: unknown; after: unknown }> = [];
+        for (const [key, value] of Object.entries(updates)) {
+          const before = (foundItem as unknown as Record<string, unknown>)[key];
+          // Only record if value actually changed
+          if (JSON.stringify(before) !== JSON.stringify(value)) {
+            changes.push({ field: key, before, after: value });
+          }
+        }
+
+        if (changes.length === 0) {
+          warn("No changes: values are already set to the specified values");
+          return;
+        }
+
         const updated = await updateSpecItem(ctx, foundItem, updates);
         const itemSlug =
           foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
@@ -1158,9 +1255,26 @@ Examples:
         }
 
         await commitIfShadow(ctx.shadow, "item-set", itemSlug);
-        success(`Updated item: ${refIndex.shortUlid(updated._ulid)}`, {
+        const changedFields = changes.map((c) => c.field).join(", ");
+        success(`Updated item: ${refIndex.shortUlid(updated._ulid)} (${changedFields})`, {
           item: updated,
+          changes,
         });
+
+        // Show before→after diff in text mode
+        if (!isJsonMode()) {
+          for (const change of changes) {
+            const formatVal = (v: unknown): string => {
+              if (v === undefined || v === null) return chalk.gray("(none)");
+              if (Array.isArray(v)) return v.length === 0 ? chalk.gray("[]") : v.join(", ");
+              if (typeof v === "object") return JSON.stringify(v);
+              return String(v);
+            };
+            console.log(
+              `  ${chalk.gray(change.field + ":")} ${chalk.red(formatVal(change.before))} → ${chalk.green(formatVal(change.after))}`,
+            );
+          }
+        }
 
         // Derive hint
         if (!isJsonMode()) {
