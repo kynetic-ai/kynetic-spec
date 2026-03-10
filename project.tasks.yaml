@@ -86948,7 +86948,7 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86958,7 +86958,7 @@
   session_id: 01KKCSXSF17C73TZWPQ2XJ8AN1
   created_at: 2026-03-10T08:18:18.277Z
   started_at: 2026-03-10T21:26:09.396Z
-  submitted_at: 2026-03-10T20:40:52.524Z
+  submitted_at: 2026-03-10T21:37:47.975Z
   notes:
     - _ulid: 01KKCCRYC9T4N7VMF98HFE4CME
       created_at: 2026-03-10T17:30:05.066Z
