@@ -20,6 +20,11 @@ export interface ProjectContextMiddlewareOptions {
    * PubSubManager for broadcasting file changes
    */
   pubsub?: PubSubManager;
+  /**
+   * Called when a project is auto-registered (e.g., to start session sync).
+   * Errors are caught and logged — they do not block the request.
+   */
+  onProjectRegistered?: (projectPath: string) => Promise<void>;
 }
 
 /**
@@ -75,6 +80,12 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
               void manager.startWatcher(projectPath).catch((watcherError) => {
                 console.error(`[daemon] Failed to start watcher for ${projectPath}:`, watcherError);
               });
+              // Start session sync asynchronously (don't block request)
+              if (options.onProjectRegistered) {
+                void options.onProjectRegistered(projectPath).catch((syncError) => {
+                  console.error(`[daemon] Failed to start session sync for ${projectPath}:`, syncError);
+                });
+              }
             }
           } else {
             // AC: @multi-directory-daemon ac-2, ac-3, ac-20b

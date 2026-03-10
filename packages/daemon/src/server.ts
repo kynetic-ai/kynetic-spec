@@ -94,7 +94,59 @@ let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let projectManager: import('./project-context').ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
-let sessionSyncScheduler: SessionSyncScheduler | undefined;
+const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
+
+/**
+ * Start a session sync scheduler for a project if it has session branch configured.
+ * Safe to call multiple times — skips if scheduler already exists for that project.
+ */
+async function startSessionSyncForProject(
+  projectPath: string,
+  pubsub: PubSubManager,
+): Promise<void> {
+  if (sessionSyncSchedulers.has(projectPath)) {
+    return;
+  }
+
+  const { loadProjectConfig } = await import('../parser/config.js');
+  const { config } = await loadProjectConfig(projectPath);
+  const specDir = join(projectPath, config.shadow.directory);
+
+  const { readYamlFile } = await import('../parser/yaml.js');
+  const manifestPath = join(specDir, 'kynetic.yaml');
+  const manifest = await readYamlFile<{ sessions?: { storage?: string; branch?: string } }>(manifestPath);
+
+  if (manifest?.sessions?.storage === 'branch') {
+    const syncInterval = config.shadow.sync_interval;
+
+    if (syncInterval > 0) {
+      const { resolveSessionBranchConfig } = await import('../parser/session-branch.js');
+      const sessionConfig = resolveSessionBranchConfig(projectPath, manifest);
+
+      if (sessionConfig) {
+        const scheduler = new SessionSyncScheduler({
+          worktreeDir: sessionConfig.worktreeDir,
+          intervalSeconds: syncInterval,
+          branchName: sessionConfig.branchName,
+          pubsub,
+        });
+        scheduler.start();
+        sessionSyncSchedulers.set(projectPath, scheduler);
+      }
+    }
+  }
+}
+
+/**
+ * Stop session sync scheduler for a specific project.
+ */
+function stopSessionSyncForProject(projectPath: string): void {
+  const scheduler = sessionSyncSchedulers.get(projectPath);
+  if (scheduler) {
+    scheduler.stop();
+    sessionSyncSchedulers.delete(projectPath);
+  }
+}
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -208,7 +260,10 @@ export async function createServer(options: ServerOptions) {
   // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
   const { manager: projectContextManager, middleware: projectMiddleware } = projectContextMiddleware({
     startupProject: startupProjectPath,
-    pubsub: pubsubManager
+    pubsub: pubsubManager,
+    onProjectRegistered: async (projectPath) => {
+      await startSessionSyncForProject(projectPath, pubsubManager);
+    },
   });
 
   // Store manager globally for shutdown
@@ -244,7 +299,15 @@ export async function createServer(options: ServerOptions) {
     .use(createValidationRoutes())
 
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
-    .use(createProjectsRoutes({ projectManager: projectContextManager }))
+    .use(createProjectsRoutes({
+      projectManager: projectContextManager,
+      onProjectRegistered: async (projectPath) => {
+        await startSessionSyncForProject(projectPath, pubsubManager);
+      },
+      onProjectUnregistered: (projectPath) => {
+        stopSessionSyncForProject(projectPath);
+      },
+    }))
 
     // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
     .use(createSessionRoutes())
@@ -452,33 +515,7 @@ export async function createServer(options: ServerOptions) {
   // Session sync runs independently from kspec-meta sync — failures in one do not affect the other
   if (startupProjectPath) {
     try {
-      const { loadProjectConfig } = await import('../parser/config.js');
-      const { config } = await loadProjectConfig(startupProjectPath);
-      const specDir = join(startupProjectPath, config.shadow.directory);
-
-      // Load manifest from config-derived specDir (not hardcoded .kspec/)
-      const { readYamlFile } = await import('../parser/yaml.js');
-      const manifestPath = join(specDir, 'kynetic.yaml');
-      const manifest = await readYamlFile<{ sessions?: { storage?: string; branch?: string } }>(manifestPath);
-
-      if (manifest?.sessions?.storage === 'branch') {
-        const syncInterval = config.shadow.sync_interval;
-
-        if (syncInterval > 0) {
-          const { resolveSessionBranchConfig } = await import('../parser/session-branch.js');
-          const sessionConfig = resolveSessionBranchConfig(startupProjectPath, manifest);
-
-          if (sessionConfig) {
-            sessionSyncScheduler = new SessionSyncScheduler({
-              worktreeDir: sessionConfig.worktreeDir,
-              intervalSeconds: syncInterval,
-              branchName: sessionConfig.branchName,
-              pubsub: pubsubManager,
-            });
-            sessionSyncScheduler.start();
-          }
-        }
-      }
+      await startSessionSyncForProject(startupProjectPath, pubsubManager);
     } catch (error) {
       // Session sync init failure does not block daemon startup
       console.error('[daemon] Failed to initialize session sync scheduler:', error);
@@ -499,8 +536,11 @@ export async function createServer(options: ServerOptions) {
       // AC: @config-shadow ac-12 - Stop shadow sync scheduler
       shadowSyncScheduler?.stop();
 
-      // AC: @session-branch-worktree ac-sync - Stop session sync scheduler
-      sessionSyncScheduler?.stop();
+      // AC: @session-branch-worktree ac-sync - Stop all session sync schedulers
+      for (const scheduler of sessionSyncSchedulers.values()) {
+        scheduler.stop();
+      }
+      sessionSyncSchedulers.clear();
 
       // AC: @agent-dispatch-engine ac-11 - Stop all dispatch engines before shutting down
       await stopAllEngines();
