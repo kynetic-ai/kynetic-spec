@@ -2402,10 +2402,24 @@ features:
       - web-ui
       - session
       - dx
-    description: Parse and render ANSI SGR (Select Graphic Rendition) escape sequences in terminal/bash
-      tool output displayed in the session stream. Convert ANSI color codes to styled HTML spans so
-      terminal output appears with the same colors and formatting as a real terminal. Currently
-      ToolCallView.svelte renders output in a plain <pre> tag — ANSI codes show as garbled raw text.
+    description: >-
+      Parse and render ANSI SGR (Select Graphic Rendition) escape sequences in terminal/bash tool
+      output displayed in the session stream. Convert ANSI color codes to styled HTML spans so
+      terminal output appears with the same colors and formatting as a real terminal.
+
+
+      Currently ToolCallView.svelte renders output in a plain <pre> tag — ANSI codes show as garbled
+      raw text.
+
+
+      Scope: SGR codes only (colors, bold, dim, italic, underline, strikethrough, reset). Cursor
+      movement and screen control codes (CUU, CUD, clear, etc.) are outside scope and should be
+      stripped.
+
+
+      Rendering pipeline: Tool/bash output stays in <pre> blocks and is never markdown-parsed. ANSI
+      color rendering applies only inside these <pre> blocks. Agent text messages continue to use
+      the markdown renderer. The two parsers never touch the same content.
     depends_on: []
     implements: []
     relates_to: []
