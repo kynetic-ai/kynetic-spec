@@ -787,6 +787,12 @@ features:
         given: another client modifies task
         when: WebSocket update received
         then: task list/detail updates without refresh, subtle highlight animation on changed item
+      - id: ac-default-active-filter
+        given: User navigates to the task list with no filter query params
+        when: The task list page loads
+        then: Only active statuses are shown by default (pending, in_progress, pending_review, needs_work,
+          blocked). Completed and cancelled tasks are hidden unless the user explicitly selects
+          them.
     status:
       maturity: draft
       implementation: implemented
@@ -1542,6 +1548,12 @@ features:
           The user clicks action buttons (Start, Submit, Complete, Block, Add Note)
         then: |
           The corresponding task transition or mutation is executed via API
+      - id: ac-all-active-tasks
+        given: A project has tasks in active statuses (pending, in_progress, needs_work, pending_review,
+          blocked)
+        when: The task board renders
+        then: All active columns (Backlog, Ready, In Progress, Review) show every matching task with no
+          arbitrary limit. Only the Done column limits to recent tasks.
     depends_on: []
     implements: []
     relates_to: []
