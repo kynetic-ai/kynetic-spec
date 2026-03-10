@@ -993,7 +993,7 @@ export function registerSkillDiffCommands(skill: Command): void {
         interface VerifyResult {
           id: string;
           platform: string;
-          status: "ok" | "drifted" | "not-rendered" | "no-hash";
+          status: "ok" | "drifted" | "not-rendered" | "no-hash" | "plugin-provided";
           guidance?: string;
         }
 
@@ -1047,6 +1047,14 @@ export function registerSkillDiffCommands(skill: Command): void {
                   guidance: `No render hash stored. Run 'kspec skill render ${skill.id}' to render and store hash.`,
                 });
                 break;
+              case "plugin-provided":
+                results.push({
+                  id: skill.id,
+                  platform,
+                  status: "plugin-provided",
+                  guidance: `Managed by plugin — no local render to verify.`,
+                });
+                break;
             }
           }
         }
@@ -1055,12 +1063,16 @@ export function registerSkillDiffCommands(skill: Command): void {
         const okResults = results.filter((r) => r.status === "ok");
         const notRenderedResults = results.filter((r) => r.status === "not-rendered");
         const noHashResults = results.filter((r) => r.status === "no-hash");
+        const pluginProvidedResults = results.filter((r) => r.status === "plugin-provided");
 
         output(
           results,
           () => {
             if (driftedResults.length === 0 && notRenderedResults.length === 0 && noHashResults.length === 0) {
-              console.log(chalk.green(`All ${okResults.length} rendered skill(s) verified — no drift detected.`));
+              const parts: string[] = [];
+              if (okResults.length > 0) parts.push(`${okResults.length} rendered`);
+              if (pluginProvidedResults.length > 0) parts.push(`${pluginProvidedResults.length} plugin-provided`);
+              console.log(chalk.green(`All ${parts.join(", ")} skill(s) verified — no drift detected.`));
               return;
             }
 
@@ -1091,9 +1103,20 @@ export function registerSkillDiffCommands(skill: Command): void {
               }
             }
 
+            // Show plugin-provided
+            if (pluginProvidedResults.length > 0) {
+              console.log(chalk.cyan.bold(`\nPlugin-provided (${pluginProvidedResults.length}):`));
+              for (const r of pluginProvidedResults) {
+                console.log(`  ${chalk.cyan("◆")} ${r.id} [${r.platform}]`);
+              }
+            }
+
             // Summary line
-            if (okResults.length > 0) {
-              console.log(chalk.green(`\n${okResults.length} skill(s) verified OK.`));
+            const summaryParts: string[] = [];
+            if (okResults.length > 0) summaryParts.push(`${okResults.length} OK`);
+            if (pluginProvidedResults.length > 0) summaryParts.push(`${pluginProvidedResults.length} plugin-provided`);
+            if (summaryParts.length > 0) {
+              console.log(chalk.green(`\n${summaryParts.join(", ")} skill(s) verified.`));
             }
 
             // Actionable summary
