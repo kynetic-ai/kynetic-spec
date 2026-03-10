@@ -83920,7 +83920,7 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -83968,6 +83968,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T00:32:05.478Z
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
   slugs:
     - task-verify-cli-serve-foreground-stable
