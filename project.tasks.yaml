@@ -86895,3 +86895,67 @@
   notes: []
   todos: []
   automation: eligible
+- title: "Implement: ANSI Terminal Output Rendering"
+  type: task
+  spec_ref: "@ansi-terminal-rendering"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-ansi-terminal-output-rendering
+  tags:
+    - web-ui
+    - session
+    - dx
+  depends_on: []
+  notes:
+    - _ulid: 01KKCA4D3MMM0WBJG558VVF8JW
+      created_at: 2026-03-10T16:43:54.868Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Parse and render ANSI SGR (Select Graphic Rendition) escape sequences in terminal/bash tool
+        output displayed in the session stream. Convert ANSI color codes to styled HTML spans so
+        terminal output appears with the same colors and formatting as a real terminal. Currently
+        ToolCallView.svelte renders output in a plain <pre> tag — ANSI codes show as garbled raw
+        text.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given tool output contains ANSI SGR escape sequences (e.g. \x1b[32mPASS\x1b[0m),
+        when the output is displayed in ToolCallView, then the text renders with corresponding CSS
+        colors instead of showing raw escape codes
+
+        - ac-2: Given tool output uses standard ANSI colors (30-37 foreground, 40-47 background,
+        90-97 bright, 100-107 bright background), when rendered in the web UI, then colors map to a
+        terminal-like palette that works in both light and dark themes
+
+        - ac-3: Given tool output contains formatting codes (bold=1, dim=2, italic=3, underline=4,
+        strikethrough=9), when rendered in the web UI, then corresponding CSS styles are applied
+        (font-weight, opacity, font-style, text-decoration)
+
+        - ac-4: Given tool output contains reset codes (\x1b[0m for full reset, or specific resets
+        like \x1b[22m), when rendered, then styling resets correctly without leaking to subsequent
+        text
+
+        - ac-5: Given tool output contains ANSI parameter sequences but the ESC character was
+        stripped or lost during storage, when rendered, then the raw bracket sequences are stripped
+        rather than displayed as garbled text — fallback to clean plain text
+
+        - ac-6: Given tool output may contain user-controlled content alongside ANSI codes, when
+        ANSI codes are converted to HTML, then all non-ANSI content is HTML-escaped before insertion
+        to prevent XSS
+
+        - ac-7: Given tool output is 10000+ characters with many ANSI sequences, when rendered, then
+        parsing and rendering completes without visible delay
+      supersedes: null
+  _ulid: 01KKCA4D3NW1MPW6SW5N3T7SN6
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T16:43:54.869Z
+  todos: []
