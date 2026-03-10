@@ -83815,28 +83815,53 @@
   notes: []
   todos: []
   automation: eligible
-- title: Make daemon-web-ui-bundle tests skip gracefully when dist/web-ui/ missing
+- _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
+  slugs:
+    - task-fix-web-ui-bundle-test-skip
+  title: Make daemon-web-ui-bundle tests skip gracefully when dist/web-ui/ missing
+  type: task
   description: 3 tests in tests/daemon-web-ui-bundle.test.ts fail with opaque assertion errors when
     dist/web-ui/index.html missing. Agents retry without rebuilding, wasting cycles. Add
     describe-level skip with diagnostic message when build artifacts absent.
+  spec_ref: "@test-suite-perf-reliability"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - testing
+    - bug
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-10T00:07:51.766Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Stabilize dispatch watch WebSocket mock timing in cli-agent-commands tests
+  description: Dispatch watch tests (AC-13, AC-14, AC-16, AC-18) in tests/cli-agent-commands.test.ts
+    use fake WebSocket mocks with short poll timeouts. Under load, events do not propagate before
+    timeout. Increase timeouts to 2000ms+, add crypto polyfill, ensure diagnostic timeout messages.
   type: task
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
   priority: 3
   slugs:
-    - task-fix-web-ui-bundle-test-skip
+    - task-fix-dispatch-watch-timing
   tags:
     - testing
     - bug
-    - daemon
+    - cli
   depends_on: []
   automation: eligible
-  _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
+  _ulid: 01KKAH4PJ4YBZ0ZXFBEBYZER9E
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T00:07:51.766Z
+  created_at: 2026-03-10T00:07:55.716Z
   notes: []
   todos: []
