@@ -968,35 +968,6 @@ inbox:
       - codex
       - sessions
     added_by: Jacob Chapel
-  - _ulid: 01KJGA18V9VY86ZFAVJ9CP2PNA
-    text: >-
-      Diagnose skill verify drift/no-hash for plugin-provided core skills.
-
-
-      Observed behavior:
-
-      - kspec skill verify reports codex statuses as drifted/no-hash for help, observations, triage,
-      reflect, triage-inbox, writing-specs.
-
-      - kspec skill diff reports plugin-provided (no local render to diff).
-
-      - Rendered skill files exist under .agents/skills.
-
-
-      Investigate:
-
-      - render-hash semantics in .kspec/skills for plugin-provided skills
-
-      - plugin-provided status handling in skill verify/status/diff paths
-
-      - whether this is expected behavior or a bug in drift detection
-    created_at: 2026-02-27T19:43:28.105Z
-    tags:
-      - bug
-      - infra
-      - skills
-      - setup
-    added_by: Jacob Chapel
   - _ulid: 01KJGAE25EBJWC0NAWGN3Z89YE
     text: "derive_from_specs produces sparse tasks: derived tasks get null description, no tags,
       automation unassessed. Agents picking up these tasks lack context to work independently.

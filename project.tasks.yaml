@@ -85516,25 +85516,61 @@
   created_at: 2026-03-10T07:53:28.621Z
   notes: []
   todos: []
-- title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
+- _ulid: 01KKBBS7YHFWP6RT427884JV12
+  slugs: []
+  title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
     is not o
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If
     git is not on PATH (e.g. spawn git ENOENT), repair leaves the project in a worse state than
     before — worktree gone, branch exists but disconnected. Repair should almost never remove the
     worktree; instead it should try to re-link or fix in place. If removal is truly necessary,
     verify git is available before removing. Observed in kynetic-spec-ui when repair failed with
     'spawn git ENOENT' and left .kspec missing entirely.
-  _ulid: 01KKBBS7YHFWP6RT427884JV12
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T07:53:31.856Z
+  notes: []
+  todos: []
+- title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: >-
+    Diagnose skill verify drift/no-hash for plugin-provided core skills.
+
+
+    Observed behavior:
+
+    - kspec skill verify reports codex statuses as drifted/no-hash for help, observations, triage,
+    reflect, triage-inbox, writing-specs.
+
+    - kspec skill diff reports plugin-provided (no local render to diff).
+
+    - Rendered skill files exist under .agents/skills.
+
+
+    Investigate:
+
+    - render-hash semantics in .kspec/skills for plugin-provided skills
+
+    - plugin-provided status handling in skill verify/status/diff paths
+
+    - whether this is expected behavior or a bug in drift detection
+  _ulid: 01KKBBSDWJ9VTVY1HTHDYC69KP
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T07:53:31.856Z
+  created_at: 2026-03-10T07:53:37.938Z
   notes: []
   todos: []
