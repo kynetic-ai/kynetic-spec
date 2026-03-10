@@ -1365,14 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJXP5TGJ6CCC2D45C4RS9B4X
-    text: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
-      to targeted item. Needed when bulk-updating many specs in scripts — currently requires yes |
-      workaround which breaks kspec batch."
-    created_at: 2026-03-05T00:25:47.794Z
-    tags:
-      - cli
-    added_by: "@claude"
   - _ulid: 01KJXP9CS7E3GJ27DM8970MM46
     text: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
       comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec.

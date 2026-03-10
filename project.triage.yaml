@@ -2657,14 +2657,16 @@ triage:
     item_snapshot: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
       change only to targeted item. Needed when bulk-updating many specs in scripts — currently
       requires yes | workaround which breaks kspec batch."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: --no-cascade flag for item set — needed for bulk scripting, currently requires yes pipe
       workaround
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.632Z
-    updated_at: 2026-03-10T08:17:09.650Z
+    updated_at: 2026-03-10T08:17:49.001Z
+    acted_at: 2026-03-10T08:17:48.982Z
+    result_ref: "@01KKBD5N"
   - _ulid: 01KKBD4GJ477Y6HZ22BR49RD7W
     inbox_ref: 01KJXFS1A8QE3YPJ0J0HDY4SVJ
     item_snapshot: "`kspec setup` renders codex skills to `.agents/skills/` but does not store render
@@ -2677,9 +2679,9 @@ triage:
     reasoning: "Duplicate of promoted task @01KKBBSD — same issue: codex skill render hashes not stored"
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-03-10T08:17:45.720Z
     created_at: 2026-03-10T08:17:09.700Z
     updated_at: 2026-03-10T08:17:45.746Z
-    acted_at: 2026-03-10T08:17:45.720Z
   - _ulid: 01KKBD4GM79AAZZFVMDX00VMAF
     inbox_ref: 01KJXFRHPQ44N29GATSVJZAZTN
     item_snapshot: When running `kspec setup` or `kspec init --setup`, automatically install default
