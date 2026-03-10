@@ -85266,7 +85266,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -85275,7 +85275,7 @@
     - web-ui
     - feature
   vcs_refs: []
-  session_id: 01KKBHMSGC4GHYX8QBJAR74VYQ
+  session_id: null
   created_at: 2026-03-10T06:24:31.178Z
   started_at: 2026-03-10T09:43:36.005Z
   submitted_at: 2026-03-10T09:50:42.080Z
@@ -85288,6 +85288,13 @@
         behavior (default to items.length instead of 50). Done column remains capped at 20 most
         recent via client-side board-utils. Added unit test for ac-all-active-tasks covering all
         active columns with large counts.
+      supersedes: null
+    - _ulid: 01KKBKW1MPQ2ZQ999FV25CY72G
+      created_at: 2026-03-10T10:14:52.310Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @ui-task-board ac-all-active-tasks lacks
+        coverage for the board fetch/static pagination path; current test only covers post-fetch
+        column distribution."
       supersedes: null
   todos: []
   automation: eligible
@@ -85332,6 +85339,7 @@
   session_id: 01KKBJGPPT48VH4QN8RXAVSZ2Z
   created_at: 2026-03-10T06:52:48.964Z
   started_at: 2026-03-10T09:59:33.863Z
+  submitted_at: 2026-03-10T10:09:37.779Z
   notes:
     - _ulid: 01KKBKJ6RGEBKP16P76HB0YXES
       created_at: 2026-03-10T10:09:29.872Z
@@ -85344,7 +85352,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T10:09:37.779Z
 - _ulid: 01KKB8A3MS1V2CHTC1CEYCS96M
   slugs: []
   title: Remove stale observations skill entry and directory from shadow branch
