@@ -85268,6 +85268,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #744. Removed the arbitrary board fetch limit so active columns load
+    all matching tasks, kept the Done column capped to recent items, and aligned static-mode
+    pagination with daemon behavior. AC coverage confirmed for @ui-task-board ac-all-active-tasks
+    via packages/web-ui/tests/api-static.test.ts and packages/web-ui/tests/board-utils.test.ts; full
+    npm test passed and PR CI was green on head a5d14be29."
   depends_on: []
   context: []
   priority: 3
@@ -85279,6 +85284,7 @@
   created_at: 2026-03-10T06:24:31.178Z
   started_at: 2026-03-10T11:23:33.887Z
   submitted_at: 2026-03-10T11:23:37.550Z
+  completed_at: 2026-03-10T11:42:28.488Z
   notes:
     - _ulid: 01KKBJF8QJPFG688SKTFPDGXYB
       created_at: 2026-03-10T09:50:25.010Z
@@ -85320,12 +85326,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T11:42:28.488Z
-  closed_reason: "Merged in PR #744. Removed the arbitrary board fetch limit so active columns load
-    all matching tasks, kept the Done column capped to recent items, and aligned static-mode
-    pagination with daemon behavior. AC coverage confirmed for @ui-task-board ac-all-active-tasks
-    via packages/web-ui/tests/api-static.test.ts and packages/web-ui/tests/board-utils.test.ts; full
-    npm test passed and PR CI was green on head a5d14be29."
 - _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
   slugs: []
   title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
@@ -85794,7 +85794,7 @@
     empty string), or (b) adjust detection priority so CODEX_THREAD_ID is checked before CLAUDECODE.
     Option (a) is safer. Check tests/helpers/cli.ts for how env vars are merged.
   spec_ref: "@platform-renderer-trait"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85805,6 +85805,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T11:42:51.288Z
+  session_id: 01KKBRJZHN2WN5N85XR3MHSJ4X
 - _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
   title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
