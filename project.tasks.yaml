@@ -84802,7 +84802,7 @@
   type: task
   spec_ref: "@session-list-infinite-scroll"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -84810,7 +84810,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKCYCTTSNY7FX735HMW85AK8
+  session_id: null
   created_at: 2026-03-10T05:32:15.078Z
   started_at: 2026-03-10T23:27:26.248Z
   submitted_at: 2026-03-10T23:27:29.865Z
@@ -84899,6 +84899,13 @@
 
         E2E test updates: Fixed scroll-down tests to target the correct scroll container
         (main.overflow-auto instead of parentElement of sessions-list).
+      supersedes: null
+    - _ulid: 01KKD2V5JFYEQSHCR928SF1PE3
+      created_at: 2026-03-10T23:55:46.639Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: @ui-url-panel-state ac-4 is only annotated
+        inside block comments instead of standalone // AC:/# AC: N/A tracking, and full npm test is
+        red on PR #762 (local run surfaced 16 failures before interruption)."
       supersedes: null
   todos: []
   automation: eligible
@@ -85005,6 +85012,7 @@
   session_id: 01KKD181CBWBVNQ6FA2MG8P98N
   created_at: 2026-03-10T05:32:16.165Z
   started_at: 2026-03-10T23:33:51.816Z
+  submitted_at: 2026-03-10T23:51:21.692Z
   notes:
     - _ulid: 01KKB3PJX5W3ZEBX5CG34Y49HD
       created_at: 2026-03-10T05:32:16.165Z
@@ -85062,7 +85070,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T23:51:21.692Z
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
   slugs:
     - implement-task-and-spec-session-context
