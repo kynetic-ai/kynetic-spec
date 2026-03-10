@@ -84813,6 +84813,7 @@
   session_id: 01KKCQPTNE9NJTP8FSAWYB3NZP
   created_at: 2026-03-10T05:32:15.078Z
   started_at: 2026-03-10T20:47:09.390Z
+  submitted_at: 2026-03-10T20:59:31.776Z
   notes:
     - _ulid: 01KKB3PHV7HT3R85BJ2WVXWS7G
       created_at: 2026-03-10T05:32:15.079Z
@@ -84854,7 +84855,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T20:59:31.776Z
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
   slugs:
     - implement-session-filter-controls
@@ -86941,14 +86941,14 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKCPKK6B5D890RC7ZM3K6F8H
+  session_id: null
   created_at: 2026-03-10T08:18:18.277Z
   started_at: 2026-03-10T20:29:20.621Z
   submitted_at: 2026-03-10T20:40:52.524Z
@@ -87050,6 +87050,12 @@
 
         4. file-lock.test.ts shard 3 failure is pre-existing race condition in CI (count: 4 vs
         count: 5) — not related to this PR. Same failure reproduces on main.
+      supersedes: null
+    - _ulid: 01KKCS74SNDH3NW7NASJ26YWVA
+      created_at: 2026-03-10T21:07:33.302Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: SHOULD-FIX: add direct regression coverage for the
+        WebSocket registration path in daemon session-sync lifecycle"
       supersedes: null
   todos: []
   automation: eligible
