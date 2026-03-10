@@ -76,9 +76,16 @@ function checkDependencies() {
  * Returns { ok: boolean, reason?: string }
  */
 function checkBuild() {
-  const distCli = path.join(projectRoot, 'dist', 'cli', 'index.js');
-  if (!fs.existsSync(distCli)) {
-    return { ok: false, reason: 'dist/cli/index.js not found' };
+  const requiredArtifacts = [
+    'dist/cli/index.js',
+    'dist/web-ui/index.html',
+    'dist/daemon/index.ts',
+  ];
+  for (const artifact of requiredArtifacts) {
+    const fullPath = path.join(projectRoot, artifact);
+    if (!fs.existsSync(fullPath)) {
+      return { ok: false, reason: `${artifact} not found` };
+    }
   }
   return { ok: true };
 }
