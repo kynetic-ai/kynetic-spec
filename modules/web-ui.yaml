@@ -2465,6 +2465,9 @@ features:
         when: the rendering pipeline determines content type
         then: ANSI parsing applies only inside pre blocks for tool output — agent text messages use the
           markdown renderer and the two pipelines never process the same content
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
