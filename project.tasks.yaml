@@ -86356,7 +86356,7 @@
     set, skip the cascade confirmation and apply change only to the targeted item. Update batch
     commands list if needed.
   spec_ref: "@trait-confirmation-prompt"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86377,6 +86377,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T13:49:24.386Z
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
