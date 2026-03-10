@@ -85259,7 +85259,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -85283,6 +85283,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T09:50:42.080Z
 - _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
   slugs: []
   title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
