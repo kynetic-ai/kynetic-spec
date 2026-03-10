@@ -233,6 +233,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-10
+    // AC: @ui-url-panel-state ac-4 — filter state uses goto() so $page.url stays in sync
     test('URL updates with filter query params', async ({ page, daemon }) => {
       await page.goto('/tasks');
 
@@ -256,6 +257,7 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @web-dashboard ac-10
+    // AC: @ui-url-panel-state ac-4 — filter URL params restored correctly via goto()-based sync
     test('restores filters from URL query params on page load', async ({ page, daemon }) => {
       // Navigate directly with query params
       await page.goto('/tasks?status=pending&tag=e2e');
@@ -522,6 +524,8 @@ test.describe('Tasks View', () => {
 
   test.describe('Modal URL Cleanup', () => {
     // AC: @ui-task-board ac-7
+    // AC: @ui-url-panel-state ac-1 — opens dialog via click, URL updated with goto()
+    // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), dialog stays closed
     test('closing task detail dialog removes ?ref= query param from URL', async ({
       page,
       daemon,
@@ -552,6 +556,8 @@ test.describe('Tasks View', () => {
     });
 
     // AC: @ui-task-board ac-7
+    // AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), stays closed
+    // AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
     test('closing task detail opened via URL param removes ?ref= and stays closed', async ({
       page,
       daemon,

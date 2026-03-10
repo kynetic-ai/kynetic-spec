@@ -2,6 +2,7 @@
 	// AC: @web-dashboard ac-11, ac-12, ac-13, ac-14, ac-15
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { base } from '$app/paths';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { ItemSummary } from '@kynetic-ai/shared';
 	import { fetchItems } from '$lib/api';
@@ -37,20 +38,20 @@
 		selectedRef = event.detail;
 		detailOpen = true;
 
-		// Update URL
-		const url = new URL(window.location.href);
+		// AC: @ui-url-panel-state ac-1 — Use goto() so $page.url updates reactively
+		const url = new URL($page.url);
 		url.searchParams.set('ref', event.detail);
-		window.history.pushState({}, '', url);
+		goto(url, { replaceState: true, keepFocus: true, noScroll: true });
 	}
 
 
-	// Clear URL param when detail panel closes via bind:open
+	// AC: @ui-url-panel-state ac-2 — Clear URL param when detail panel closes
 	$effect(() => {
 		if (!detailOpen && selectedRef) {
 			selectedRef = null;
-			const url = new URL(window.location.href);
+			const url = new URL($page.url);
 			url.searchParams.delete('ref');
-			window.history.pushState({}, '', url);
+			goto(url, { replaceState: true, keepFocus: true, noScroll: true });
 		}
 	});
 

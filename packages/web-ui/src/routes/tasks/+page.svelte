@@ -3,7 +3,7 @@
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
-	import { replaceState } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
 	import TaskFilters, { ACTIVE_STATUSES } from '$lib/components/TaskFilters.svelte';
@@ -119,7 +119,7 @@
 		loadTasks();
 	}
 
-	// AC: @ui-task-board ac-7 — Reset panel state and clear URL param when dialog closes
+	// AC: @ui-task-board ac-7, @ui-url-panel-state ac-2 — Reset panel state and clear URL param when dialog closes
 	$effect(() => {
 		if (!dialogOpen) {
 			panelTask = null;
@@ -128,7 +128,7 @@
 			const url = new URL($page.url);
 			if (url.searchParams.has('ref')) {
 				url.searchParams.delete('ref');
-				replaceState(url, {});
+				goto(url, { replaceState: true, keepFocus: true, noScroll: true });
 			}
 		}
 	});
