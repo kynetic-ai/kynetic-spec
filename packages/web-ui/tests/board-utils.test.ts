@@ -151,6 +151,58 @@ describe('distributeToColumns', () => {
 			'done'
 		]);
 	});
+
+	// AC: @ui-task-board ac-all-active-tasks
+	it('shows all active tasks in their columns with no arbitrary cap', () => {
+		// Simulate what the board does: fetch all tasks, then distribute.
+		// With 100+ active tasks across all active statuses, every one
+		// must appear in the correct column — no limit truncation.
+		const activeTasks = [
+			...Array.from({ length: 40 }, (_, i) =>
+				makeTask({ status: 'pending', automation: undefined, title: `Backlog ${i}` })
+			),
+			...Array.from({ length: 30 }, (_, i) =>
+				makeTask({ status: 'pending', automation: 'eligible', title: `Ready ${i}` })
+			),
+			...Array.from({ length: 25 }, (_, i) =>
+				makeTask({ status: 'in_progress', title: `InProgress ${i}` })
+			),
+			...Array.from({ length: 10 }, (_, i) =>
+				makeTask({ status: 'needs_work', title: `NeedsWork ${i}` })
+			),
+			...Array.from({ length: 15 }, (_, i) =>
+				makeTask({ status: 'pending_review', title: `Review ${i}` })
+			),
+			...Array.from({ length: 5 }, (_, i) =>
+				makeTask({ status: 'blocked', title: `Blocked ${i}` })
+			),
+		];
+		// Also add completed tasks (should be capped at 20)
+		const completedTasks = Array.from({ length: 50 }, (_, i) =>
+			makeTask({
+				status: 'completed',
+				title: `Done ${i}`,
+				created_at: new Date(Date.now() - i * 86400000).toISOString()
+			})
+		);
+		const allTasks = [...activeTasks, ...completedTasks];
+
+		const columns = distributeToColumns(allTasks);
+
+		// Active columns must show every matching task — no arbitrary limit
+		expect(columns.find((c) => c.id === 'backlog')!.tasks).toHaveLength(40);
+		expect(columns.find((c) => c.id === 'ready')!.tasks).toHaveLength(30);
+		expect(columns.find((c) => c.id === 'in_progress')!.tasks).toHaveLength(25 + 10 + 5); // in_progress + needs_work + blocked
+		expect(columns.find((c) => c.id === 'review')!.tasks).toHaveLength(15);
+		// Done column should be capped at 20
+		expect(columns.find((c) => c.id === 'done')!.tasks).toHaveLength(20);
+
+		// Total visible active tasks = sum of active columns
+		const activeColumnCount = columns
+			.filter((c) => c.id !== 'done')
+			.reduce((sum, col) => sum + col.tasks.length, 0);
+		expect(activeColumnCount).toBe(activeTasks.length);
+	});
 });
 
 describe('getStatusClasses', () => {

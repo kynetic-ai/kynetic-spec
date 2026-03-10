@@ -299,6 +299,45 @@ describe('static API snapshot adapters', () => {
 		expect(alignment.stats.orphanedSpecs).toBe(1);
 	});
 
+	// AC: @ui-task-board ac-all-active-tasks — static paginate returns all tasks when no limit
+	it('returns all tasks when no limit is specified (board fetch path)', () => {
+		// Create a snapshot with many tasks across active statuses
+		const snapshot = createSnapshot();
+		const statuses = ['pending', 'in_progress', 'needs_work', 'pending_review', 'blocked', 'completed'];
+		const extraTasks = Array.from({ length: 60 }, (_, i) => ({
+			_ulid: `01TASK0000000000000000${String(i + 10).padStart(5, '0')}`,
+			slugs: [`task-extra-${i}`],
+			title: `Extra Task ${i}`,
+			type: 'task' as const,
+			status: statuses[i % statuses.length],
+			priority: 3,
+			tags: [],
+			depends_on: [],
+			automation: 'eligible' as const,
+			notes: [],
+			todos: [],
+			notes_count: 0,
+			todos_count: 0,
+			created_at: new Date(Date.now() - i * 86400000).toISOString()
+		}));
+		snapshot.tasks = [...snapshot.tasks, ...extraTasks];
+		modeState.snapshot = snapshot;
+
+		// Board calls fetchTasks() with no params — should return ALL tasks
+		const result = fetchTasksStatic();
+		expect(result.items).toHaveLength(snapshot.tasks.length);
+		expect(result.total).toBe(snapshot.tasks.length);
+		expect(result.limit).toBe(snapshot.tasks.length);
+	});
+
+	// AC: @ui-task-board ac-all-active-tasks — explicit limit still works
+	it('respects explicit limit when provided', () => {
+		const result = fetchTasksStatic({ limit: 1 });
+		expect(result.items).toHaveLength(1);
+		expect(result.total).toBe(2); // snapshot has 2 tasks
+		expect(result.limit).toBe(1);
+	});
+
 	// AC: @gh-pages-export ac-23
 	it('supports plan filtering for static task and item lists', () => {
 		const tasks = fetchTasksStatic({ plan: 'plan-one' });
