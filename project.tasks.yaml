@@ -86365,6 +86365,10 @@
   spec_ref: "@trait-confirmation-prompt"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #752. Added --no-cascade flag to kspec item set command. When provided,
+    skips handleStatusCascade entirely so status changes apply only to the target item without
+    prompting to cascade to children. Two integration tests verify: no prompt shown and children
+    remain unchanged."
   depends_on: []
   context: []
   priority: 3
@@ -86374,6 +86378,7 @@
   created_at: 2026-03-10T08:17:47.882Z
   started_at: 2026-03-10T13:41:32.638Z
   submitted_at: 2026-03-10T13:49:24.386Z
+  completed_at: 2026-03-10T14:01:19.339Z
   notes:
     - _ulid: 01KKC04M1E409H3W0DSZ9GPQ5K
       created_at: 2026-03-10T13:49:16.206Z
@@ -86385,11 +86390,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T14:01:19.339Z
-  closed_reason: "Merged in PR #752. Added --no-cascade flag to kspec item set command. When provided,
-    skips handleStatusCascade entirely so status changes apply only to the target item without
-    prompting to cascade to children. Two integration tests verify: no prompt shown and children
-    remain unchanged."
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
@@ -86408,7 +86408,7 @@
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: "@ref-validation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86419,6 +86419,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T14:02:44.952Z
+  session_id: 01KKC0688YF74PFYQB0KKBHXVE
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
   title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
