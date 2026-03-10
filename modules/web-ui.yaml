@@ -2393,6 +2393,26 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKCA3PZDN8667JGTAE51ZSQB
+    slugs:
+      - ansi-terminal-rendering
+    title: ANSI Terminal Output Rendering
+    type: feature
+    tags:
+      - web-ui
+      - session
+      - dx
+    description: Parse and render ANSI SGR (Select Graphic Rendition) escape sequences in terminal/bash
+      tool output displayed in the session stream. Convert ANSI color codes to styled HTML spans so
+      terminal output appears with the same colors and formatting as a real terminal. Currently
+      ToolCallView.svelte renders output in a plain <pre> tag — ANSI codes show as garbled raw text.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T16:43:32.205Z
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
