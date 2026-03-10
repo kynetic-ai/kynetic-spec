@@ -198,9 +198,12 @@ function isStateActive(state: AnsiState): boolean {
 	);
 }
 
-/** Check if a string contains any ANSI escape sequences. */
+/** Check if a string contains any ANSI escape sequences or orphaned CSI fragments. */
 export function containsAnsi(text: string): boolean {
-	return text.includes('\x1b[');
+	if (text.includes('\x1b[')) return true;
+	// Reset lastIndex since ORPHANED_CSI_RE has the global flag
+	ORPHANED_CSI_RE.lastIndex = 0;
+	return ORPHANED_CSI_RE.test(text);
 }
 
 /**

@@ -235,12 +235,34 @@ describe('ac-5: orphaned CSI parameter stripping', () => {
 		expect(result).toContain('obj[key]');
 	});
 
-	it('containsAnsi returns false for orphaned sequences', () => {
-		expect(containsAnsi('[32mtext[0m')).toBe(false);
+	// AC: @ansi-terminal-rendering ac-5
+	it('containsAnsi returns true for orphaned CSI sequences so they route through cleanup', () => {
+		expect(containsAnsi('[32mtext[0m')).toBe(true);
 	});
 
 	it('stripOrphanedCsi works directly', () => {
 		expect(stripOrphanedCsi('[32mPASS[0m')).toBe('PASS');
+	});
+
+	// AC: @ansi-terminal-rendering ac-5
+	it('orphaned CSI input detected by containsAnsi routes through ansiToHtml for clean output', () => {
+		// Simulates the ToolCallView render path: containsAnsi gates which branch runs
+		const input = '[32mPASS[0m some output [31mFAIL[0m';
+		// containsAnsi must detect orphaned CSI so the ANSI branch runs
+		expect(containsAnsi(input)).toBe(true);
+		// ansiToHtml strips orphaned CSI and returns clean text
+		const result = ansiToHtml(input);
+		expect(result).toBe('PASS some output FAIL');
+		expect(result).not.toContain('[32m');
+		expect(result).not.toContain('[0m');
+	});
+
+	// AC: @ansi-terminal-rendering ac-5
+	it('containsAnsi returns true for orphaned CSI even when called repeatedly (lastIndex safety)', () => {
+		// Regression: ORPHANED_CSI_RE with global flag has stateful lastIndex
+		expect(containsAnsi('[32mtext[0m')).toBe(true);
+		expect(containsAnsi('[32mtext[0m')).toBe(true);
+		expect(containsAnsi('[32mtext[0m')).toBe(true);
 	});
 });
 
@@ -333,10 +355,12 @@ describe('ac-7: performance with large inputs', () => {
 
 // AC: @ansi-terminal-rendering ac-8
 describe('ac-8: pipeline isolation (pre blocks only)', () => {
-	it('containsAnsi correctly detects ANSI sequences', () => {
+	it('containsAnsi correctly detects ANSI sequences and orphaned CSI', () => {
 		expect(containsAnsi('\x1b[32mtext\x1b[0m')).toBe(true);
+		expect(containsAnsi('[32mtext[0m')).toBe(true); // orphaned CSI
 		expect(containsAnsi('plain text')).toBe(false);
 		expect(containsAnsi('')).toBe(false);
+		expect(containsAnsi('array[0] and obj[key]')).toBe(false); // regular brackets
 	});
 
 	it('ansiToHtml returns plain HTML-escaped text when no ANSI present', () => {
