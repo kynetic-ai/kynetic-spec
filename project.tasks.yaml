@@ -83920,7 +83920,7 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -83930,7 +83930,7 @@
     - bug
     - cli
   vcs_refs: []
-  session_id: 01KKAMDS40JFFY3CSB5F36B5TP
+  session_id: null
   created_at: 2026-03-10T00:07:55.716Z
   started_at: 2026-03-10T01:11:33.510Z
   submitted_at: 2026-03-10T01:18:28.028Z
@@ -83985,6 +83985,13 @@
         (timeout floor via fake timers, diagnostic error messages, configurable override). Moved
         AC-4 annotation from setup.ts comment to 2 behavioral tests (polyfill availability, UUID
         generation). All 55 tests in cli-agent-commands.test.ts pass, shard1 (1335 tests) green."
+      supersedes: null
+    - _ulid: 01KKANA9SNFYYDACWCTKX81QHG
+      created_at: 2026-03-10T01:20:53.558Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: ac-4 coverage is still incomplete; the new tests
+        do not exercise the missing-globalThis.crypto path, so they do not prove the polyfill
+        prevents ReferenceError."
       supersedes: null
   todos: []
   automation: eligible
