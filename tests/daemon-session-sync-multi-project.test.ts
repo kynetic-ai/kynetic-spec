@@ -92,6 +92,41 @@ describe('Multi-project session sync', () => {
       expect(onUnregistered).toHaveBeenCalledWith(projectA);
     });
 
+    it('should normalize path before calling onProjectUnregistered (regression: non-canonical DELETE)', async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const onUnregistered = vi.fn();
+      const manager = new ProjectContextManager();
+      // Register with canonical path
+      manager.registerProject(projectA);
+
+      const routes = createProjectsRoutes({
+        projectManager: manager,
+        onProjectRegistered: onRegistered,
+        onProjectUnregistered: onUnregistered,
+      });
+
+      const { Elysia } = await import('elysia');
+      const app = new Elysia().use(routes);
+
+      // DELETE with non-canonical path (trailing "/./" appended)
+      const nonCanonicalPath = projectA + '/./';
+      const encodedPath = encodeURIComponent(nonCanonicalPath);
+      const response = await app.handle(
+        new Request(`http://localhost/api/projects/${encodedPath}`, {
+          method: 'DELETE',
+        })
+      );
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.success).toBe(true);
+
+      // onProjectUnregistered should receive the normalized path, not the raw non-canonical one
+      expect(onUnregistered).toHaveBeenCalledTimes(1);
+      expect(onUnregistered).toHaveBeenCalledWith(projectA);
+      expect(onUnregistered).not.toHaveBeenCalledWith(nonCanonicalPath);
+    });
+
     it('should not fail registration if onProjectRegistered throws', async () => {
       const onRegistered = vi.fn().mockRejectedValue(new Error('Session sync failed'));
       const manager = new ProjectContextManager();
