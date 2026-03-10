@@ -83962,6 +83962,17 @@
     - ralph
   vcs_refs: []
   created_at: 2026-03-10T00:08:03.348Z
-  notes: []
+  notes:
+    - _ulid: 01KKAH61EB381X4GS4S66DQ927
+      created_at: 2026-03-10T00:08:39.627Z
+      author: "@claude"
+      content: "Original fix (task @task-fix-flaky-ralph-budget-test): changed cwd from process.cwd() to
+        tempDir, initialized clean git repo with initial commit, added .gitignore for sessions/.
+        This prevented getWorkingTreeStatus() from returning dirty and triggering the 2-minute
+        wrap-up agent. Verification: run tests/ralph/session-budget-integration.test.ts 5x
+        back-to-back, then once as part of full suite. If all pass, close as verified. If any fail,
+        check whether the tempDir git repo is still dirty (new files being written that .gitignore
+        does not cover)."
+      supersedes: null
   todos: []
   automation: eligible
