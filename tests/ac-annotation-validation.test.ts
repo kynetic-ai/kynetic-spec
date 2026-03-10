@@ -35,6 +35,7 @@ describe("AC annotation validation", () => {
   async function setupProject(opts: {
     specItems: unknown[];
     testFiles?: Record<string, string>;
+    tasks?: unknown[];
   }) {
     const specDir = path.join(tempDir, "spec");
     const modulesDir = path.join(specDir, "modules");
@@ -53,6 +54,14 @@ describe("AC annotation validation", () => {
       path.join(modulesDir, "specs.yaml"),
       opts.specItems,
     );
+
+    // Write tasks file
+    if (opts.tasks) {
+      await writeYamlFilePreserveFormat(
+        path.join(specDir, "project.tasks.yaml"),
+        { tasks: opts.tasks },
+      );
+    }
 
     // Write test files
     if (opts.testFiles) {
@@ -453,6 +462,71 @@ it('invalid trait AC ref', () => {});
       expect(invalidAnnotations[0].details).toContain("my-feature.test.ts");
       expect(invalidAnnotations[0].details).toContain(":1");
     });
+
+    it("should warn when AC annotation references a task instead of a spec item", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["real-spec"],
+            title: "Real Spec",
+            type: "requirement",
+            description: "A real spec",
+            status: { maturity: "draft", implementation: "not_started" },
+          },
+        ],
+        tasks: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG91A",
+            slugs: ["task-example"],
+            title: "Example Task",
+            status: "pending",
+            priority: 3,
+          },
+        ],
+        testFiles: {
+          "example.test.ts":
+            '// AC: @task-example ac-1\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("@task-example");
+      expect(invalidAnnotations[0].message).toContain("not a spec item or trait");
+    });
+
+    it("should warn when AC annotation references a task even without AC ids", async () => {
+      const ctx = await setupProject({
+        specItems: [],
+        tasks: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG91A",
+            slugs: ["task-example"],
+            title: "Example Task",
+            status: "pending",
+            priority: 3,
+          },
+        ],
+        testFiles: {
+          "example.test.ts":
+            '// AC: @task-example\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("@task-example");
+      expect(invalidAnnotations[0].message).toContain("not a spec item or trait");
+    });
   });
 
   describe("validateACAnnotations unit tests", () => {
@@ -506,6 +580,67 @@ it('invalid trait AC ref', () => {});
       // ac-1 exists, ac-3 does not
       expect(warnings).toHaveLength(1);
       expect(warnings[0].message).toContain("ac-3");
+    });
+
+    it("should warn when ref resolves to a task (not a spec item or trait)", () => {
+      // Task is in the reference index but NOT in the spec items list
+      const tasks = [
+        {
+          _ulid: "01KFCRVY8ERZEE2MNHEQXSG91A",
+          slugs: ["task-example"],
+          title: "Example Task",
+          status: "pending" as const,
+          priority: 3,
+          _sourceFile: "project.tasks.yaml",
+        },
+      ];
+
+      // Index has the task, but items list is empty (no spec items)
+      const index = new ReferenceIndex(tasks as any, []);
+      const annotations = [
+        {
+          specRef: "@task-example",
+          acIds: ["ac-1"],
+          file: "/tmp/test.test.ts",
+          line: 5,
+        },
+      ];
+
+      const warnings = validateACAnnotations(annotations, [], index);
+
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].message).toContain("@task-example");
+      expect(warnings[0].message).toContain("not a spec item or trait");
+    });
+
+    it("should warn when ref resolves to a task even without specific AC ids", () => {
+      const tasks = [
+        {
+          _ulid: "01KFCRVY8ERZEE2MNHEQXSG91A",
+          slugs: ["task-example"],
+          title: "Example Task",
+          status: "pending" as const,
+          priority: 3,
+          _sourceFile: "project.tasks.yaml",
+        },
+      ];
+
+      const index = new ReferenceIndex(tasks as any, []);
+      const annotations = [
+        {
+          specRef: "@task-example",
+          acIds: [],
+          file: "/tmp/test.test.ts",
+          line: 5,
+        },
+      ];
+
+      const warnings = validateACAnnotations(annotations, [], index);
+
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0].type).toBe("invalid_ac_annotation");
+      expect(warnings[0].message).toContain("not a spec item or trait");
     });
   });
 });
