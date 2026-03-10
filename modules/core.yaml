@@ -1101,7 +1101,7 @@ features:
               implementation: implemented
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KK7T2BN1AGYHZHDPY3HD28H6
         slugs:
           - session-legacy-migration
