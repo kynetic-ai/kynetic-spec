@@ -1365,18 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJXFS1A8QE3YPJ0J0HDY4SVJ
-    text: "`kspec setup` renders codex skills to `.agents/skills/` but does not store render hashes in
-      the kspec-meta branch. This leaves all codex skills showing as `drifted` in `kspec skill
-      status` immediately after a fresh setup. Workaround: delete rendered files and re-run `kspec
-      skill render` so hashes are written. Fix: setup should store render hashes when it renders
-      skills."
-    created_at: 2026-03-04T22:33:57.320Z
-    tags:
-      - setup
-      - skill
-      - render-hash
-    added_by: "@claude"
   - _ulid: 01KJXP5TGJ6CCC2D45C4RS9B4X
     text: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
       to targeted item. Needed when bulk-updating many specs in scripts — currently requires yes |

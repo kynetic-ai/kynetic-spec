@@ -2672,13 +2672,14 @@ triage:
       skill status` immediately after a fresh setup. Workaround: delete rendered files and re-run
       `kspec skill render` so hashes are written. Fix: setup should store render hashes when it
       renders skills."
-    status: triaged
+    status: acted_on
     action: duplicate
     reasoning: "Duplicate of promoted task @01KKBBSD — same issue: codex skill render hashes not stored"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.700Z
-    updated_at: 2026-03-10T08:17:09.718Z
+    updated_at: 2026-03-10T08:17:45.746Z
+    acted_at: 2026-03-10T08:17:45.720Z
   - _ulid: 01KKBD4GM79AAZZFVMDX00VMAF
     inbox_ref: 01KJXFRHPQ44N29GATSVJZAZTN
     item_snapshot: When running `kspec setup` or `kspec init --setup`, automatically install default
@@ -2692,10 +2693,10 @@ triage:
     reasoning: Auto-install default workflows during setup — clear scope, extends existing setup flow
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.767Z
-    updated_at: 2026-03-10T08:17:43.567Z
     acted_at: 2026-03-10T08:17:43.544Z
     result_ref: "@01KKBD5G"
+    created_at: 2026-03-10T08:17:09.767Z
+    updated_at: 2026-03-10T08:17:43.567Z
   - _ulid: 01KKBD4GQCRDWTDRVNCTG27VKM
     inbox_ref: 01KJVY4MRHGP0V4ZH4QSMP0Q4M
     item_snapshot: "Dispatch: add refresh command to re-bootstrap engine state without stopping/starting
