@@ -86504,6 +86504,14 @@
         invalid_ac_annotation warning. Restrict valid targets to spec items/traits and add
         regression coverage."
       supersedes: null
+    - _ulid: 01KKC42B5JBD0FRZ3DYWDEHSGQ
+      created_at: 2026-03-10T14:57:55.890Z
+      author: "@claude"
+      content: "Re-review (fix cycle 1): MUST-FIX still unresolved. No new commits since f955a29. The same
+        issue persists — validateACAnnotations() silently skips refs that resolve to
+        tasks/plans/meta items instead of warning. Posted follow-up review on PR #753 with inline
+        comment on src/parser/validate.ts:962. Task remains in needs_work."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
