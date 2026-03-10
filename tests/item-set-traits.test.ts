@@ -84,6 +84,7 @@ describe('item set --trait (replace with validation)', () => {
   });
 });
 
+// AC: @item-set ac-add-trait
 describe('item set --add-trait (append)', () => {
   let tempDir: string;
 
@@ -143,6 +144,7 @@ describe('item set --add-trait (append)', () => {
   });
 });
 
+// AC: @item-set ac-remove-trait
 describe('item set --remove-trait', () => {
   let tempDir: string;
 
@@ -190,6 +192,7 @@ describe('item set --remove-trait', () => {
   });
 });
 
+// AC: @item-set ac-clear-traits
 describe('item set --clear-traits', () => {
   let tempDir: string;
 
@@ -217,6 +220,7 @@ describe('item set --clear-traits', () => {
   });
 });
 
+// AC: @item-set ac-trait-mutual-exclusivity
 describe('item set trait flag mutual exclusivity', () => {
   let tempDir: string;
 
@@ -266,6 +270,8 @@ describe('item set trait flag mutual exclusivity', () => {
   });
 });
 
+// AC: @item-set ac-diff-output
+// AC: @item-set ac-noop-detection
 describe('item set before→after diff display', () => {
   let tempDir: string;
 
@@ -297,6 +303,7 @@ describe('item set before→after diff display', () => {
     expect(result.stdout).toContain('traits');
   });
 
+  // AC: @trait-json-output ac-2 — JSON output includes changes array with before/after data
   it('should include changes array in JSON output', () => {
     const result = kspecJson<{ changes: Array<{ field: string; before: unknown; after: unknown }> }>(
       'item set @test-feat --title "New Title"',
@@ -329,6 +336,8 @@ describe('item set before→after diff display', () => {
   });
 });
 
+// AC: @task-set ac-diff-output
+// AC: @task-set ac-noop-clear
 describe('task set before→after diff display', () => {
   let tempDir: string;
 
@@ -359,6 +368,7 @@ describe('task set before→after diff display', () => {
     expect(result.stdout).toContain('priority');
   });
 
+  // AC: @trait-json-output ac-2 — JSON output includes changes array with before/after data
   it('should include changes array in task set JSON output', () => {
     const result = kspecJson<{ task: { priority: number }; changes: Array<{ field: string; before: unknown; after: unknown }> }>(
       'task set @my-task --priority 1',
@@ -382,8 +392,16 @@ describe('task set before→after diff display', () => {
     expect(tagChange!.before).toEqual([]);
     expect(tagChange!.after).toEqual(['cli', 'urgent']);
   });
+
+  // AC: @task-set ac-noop-clear
+  it('should not record diff when clearing an already-null field', () => {
+    // Task has no spec_ref by default — clearing should be a no-op
+    const result = kspec('task set @my-task --spec-ref null', tempDir);
+    expect(result.stdout + result.stderr).toContain('No changes');
+  });
 });
 
+// AC: @item-ac ac-item-ac-set
 describe('item ac set before→after diff display', () => {
   let tempDir: string;
 
@@ -423,6 +441,7 @@ describe('item ac set before→after diff display', () => {
     expect(result.stdout).toContain('given');
   });
 
+  // AC: @trait-json-output ac-2 — JSON output includes changes array with before/after data
   it('should include changes array in ac set JSON output', () => {
     const result = kspecJson<{ changes: Array<{ field: string; before: unknown; after: unknown }> }>(
       'item ac set @ac-feat ac-1 --then "new expected outcome"',
