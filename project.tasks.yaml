@@ -86408,7 +86408,7 @@
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: "@ref-validation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86438,6 +86438,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T14:11:18.971Z
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
   title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
