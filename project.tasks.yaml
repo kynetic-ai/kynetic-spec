@@ -84562,7 +84562,7 @@
   type: task
   spec_ref: "@session-list-pagination-api"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-summary-cache"
@@ -84570,7 +84570,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKC25T1FWA75JJRTPD1DHVAR
+  session_id: null
   created_at: 2026-03-10T05:32:13.964Z
   started_at: 2026-03-10T14:44:46.614Z
   submitted_at: 2026-03-10T14:54:36.101Z
@@ -84647,6 +84647,13 @@
       content: "Fix cycle 1 complete. All 3 review threads resolved — fixes were already in 08e09c2.
         Replied to threads and resolved via GraphQL. CI re-run confirms: all test shards pass, E2E
         smoke passes, unresolved-comments check passes. PR ready for re-review."
+      supersedes: null
+    - _ulid: 01KKC674G79JNC6C09XE83KKG2
+      created_at: 2026-03-10T15:35:30.055Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: session list pagination still reads events.jsonl
+        during cache build, violating @session-list-pagination-api ac-metadata-only; E2E coverage
+        for that AC is also not meaningful yet."
       supersedes: null
   todos: []
   automation: eligible
