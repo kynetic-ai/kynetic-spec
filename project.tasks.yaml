@@ -86459,16 +86459,16 @@
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: "@ref-validation"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKC4WPAWE5JBXDC0Z4T15W26
   created_at: 2026-03-10T08:17:51.248Z
-  started_at: 2026-03-10T14:02:44.952Z
+  started_at: 2026-03-10T15:12:34.096Z
   submitted_at: 2026-03-10T14:11:18.971Z
   notes:
     - _ulid: 01KKC121YKQRB3GD3JEMRP66RJ
