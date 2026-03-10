@@ -84655,6 +84655,36 @@
         during cache build, violating @session-list-pagination-api ac-metadata-only; E2E coverage
         for that AC is also not meaningful yet."
       supersedes: null
+    - _ulid: 01KKC8V0Y095DR5DZ4J940GF2J
+      created_at: 2026-03-10T16:21:18.913Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 addressed. Changes:
+
+
+        1. **store.ts**: Added getSessionMetadataOnly() — reads only session.yaml, returns summary
+        with stats=0. Existing getSessionLogSummary() unchanged for CLI/detail use.
+
+
+        2. **cache.ts**: getAll() (list path) now uses getSessionMetadataOnly() instead of
+        getSessionLogSummary(). The cache never reads events.jsonl. The get() (detail path) still
+        uses getSessionLogSummary() for full stats.
+
+
+        3. **session-summary-cache.test.ts**: Updated tests to verify getAll() returns 0 for
+        event_count/iteration_count/tasks_completed (metadata-only), while get() computes full stats
+        from events.jsonl.
+
+
+        4. **api-sessions-pagination.spec.ts**: New E2E test creates sessions with NO events.jsonl
+        files and verifies the list endpoint returns 200 with 3 sessions and stats=0. This fails if
+        the endpoint tries to read events.jsonl. Second test verifies metadata fields from
+        session.yaml are correct.
+
+
+        All 143 session-related tests pass. 9 pre-existing failures in unrelated tests (trait-cli,
+        item-set-relationships, cli-plan-import) — confirmed same failures exist on main.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
