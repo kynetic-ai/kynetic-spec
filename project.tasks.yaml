@@ -85268,12 +85268,21 @@
     - web-ui
     - feature
   vcs_refs: []
+  session_id: 01KKBHMSGC4GHYX8QBJAR74VYQ
   created_at: 2026-03-10T06:24:31.178Z
-  notes: []
+  started_at: 2026-03-10T09:43:36.005Z
+  notes:
+    - _ulid: 01KKBJF8QJPFG688SKTFPDGXYB
+      created_at: 2026-03-10T09:50:25.010Z
+      author: "@claude"
+      content: Removed arbitrary limit:500 from board fetchTasks() call. Daemon API defaults to returning
+        all tasks when no limit is provided. Also fixed api-static paginate() to match daemon
+        behavior (default to items.length instead of 50). Done column remains capped at 20 most
+        recent via client-side board-utils. Added unit test for ac-all-active-tasks covering all
+        active columns with large counts.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T09:43:36.005Z
-  session_id: 01KKBHMSGC4GHYX8QBJAR74VYQ
 - _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
   slugs: []
   title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
