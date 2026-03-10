@@ -2425,13 +2425,14 @@ triage:
       (e.g., /tmp task worktrees) fails with No kspec manifest found. KSPEC_SPEC_DIR env var exists
       for batch mode but general CLI commands dont use it. Reported from imgen project task-work
       automation.
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Mechanism looks correct in code; could not reproduce. Defer until next confirmed occurrence
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T07:53:09.337Z
-    updated_at: 2026-03-10T07:53:09.356Z
+    updated_at: 2026-03-10T07:53:35.446Z
+    acted_at: 2026-03-10T07:53:35.421Z
   - _ulid: 01KKBBRJ1A4MVJJTV65ZJB11YX
     inbox_ref: 01KK6BVYGH1PCV2N3Q2NZGAX5W
     item_snapshot: kspec shadow repair removes the .kspec worktree before verifying it can recreate it.
@@ -2446,10 +2447,10 @@ triage:
       loss window. Needs verify-before-delete pattern"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T07:53:09.418Z
-    updated_at: 2026-03-10T07:53:32.997Z
     acted_at: 2026-03-10T07:53:32.981Z
     result_ref: "@01KKBBS7"
+    created_at: 2026-03-10T07:53:09.418Z
+    updated_at: 2026-03-10T07:53:32.997Z
   - _ulid: 01KKBBRJ3VXX39KZPZ2Q6K3M0N
     inbox_ref: 01KJN378XQQETSAS8DKWAQ7F0F
     item_snapshot: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
