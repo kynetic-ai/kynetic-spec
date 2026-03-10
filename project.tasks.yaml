@@ -86732,6 +86732,11 @@
   spec_ref: "@platform-renderer-trait"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #756. Documented the skill-update workflow by adding a
+    regenerate-derived-files step to the task-work skill, adding the corresponding agent convention,
+    and regenerating the rendered task-work/agent outputs. Review verified this was a docs-only
+    change; full local test suite and PR CI passed, and workflow/rendered output alignment was
+    confirmed."
   depends_on: []
   context: []
   priority: 3
@@ -86741,6 +86746,7 @@
   created_at: 2026-03-10T08:18:01.609Z
   started_at: 2026-03-10T16:47:47.960Z
   submitted_at: 2026-03-10T16:55:02.244Z
+  completed_at: 2026-03-10T17:22:18.634Z
   notes:
     - _ulid: 01KKCAR3P91K7E7QF71SSXMEQJ
       created_at: 2026-03-10T16:54:40.585Z
@@ -86751,12 +86757,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T17:22:18.634Z
-  closed_reason: "Merged in PR #756. Documented the skill-update workflow by adding a
-    regenerate-derived-files step to the task-work skill, adding the corresponding agent convention,
-    and regenerating the rendered task-work/agent outputs. Review verified this was a docs-only
-    change; full local test suite and PR CI passed, and workflow/rendered output alignment was
-    confirmed."
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
@@ -86905,7 +86905,7 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86916,6 +86916,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T17:22:51.318Z
+  session_id: 01KKCC0VTAADPJRB8H207NTZBZ
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
