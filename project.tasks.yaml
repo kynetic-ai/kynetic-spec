@@ -85498,7 +85498,7 @@
     Fix approach: Either (a) fix env isolation in the test so CLAUDECODE is properly unset (not just
     empty string), or (b) adjust detection priority so CODEX_THREAD_ID is checked before CLAUDECODE.
     Option (a) is safer. Check tests/helpers/cli.ts for how env vars are merged.
-  spec_ref: null
+  spec_ref: "@platform-renderer-trait"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85529,7 +85529,7 @@
     test expectations need updating, (3) verify what the current codex setup flow actually does vs
     what the test expects. Fix either the implementation to create the file or update the test to
     match current behavior.
-  spec_ref: null
+  spec_ref: "@platform-renderer-trait"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85590,7 +85590,7 @@
     Fix: Add a plugin-provided case to the switch statement that reports the appropriate status
     (these skills are managed by the plugin, not locally rendered, so drift detection does not
     apply). Update tests in tests/skill-rendering.test.ts.
-  spec_ref: null
+  spec_ref: "@platform-renderer-trait"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85734,7 +85734,7 @@
     Fix: Ensure all output after the opening { goes through the JSON formatter. Check
     src/cli/commands/validate.ts for any console.log calls that bypass the JSON output mode. Add a
     test that pipes validate --json output through JSON.parse to catch regressions.
-  spec_ref: null
+  spec_ref: "@trait-json-output"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85791,7 +85791,7 @@
     Fix: Add --no-cascade boolean flag to the item set command in src/cli/commands/item.ts. When
     set, skip the cascade confirmation and apply change only to the targeted item. Update batch
     commands list if needed.
-  spec_ref: null
+  spec_ref: "@trait-confirmation-prompt"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85820,7 +85820,7 @@
     This catches typos in AC annotations before they reach PR review. Implement in
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
-  spec_ref: null
+  spec_ref: "@ref-validation"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85849,7 +85849,7 @@
     items: [...], total: N }. Check for existing consumers (batch, tests, agents) before changing to
     avoid breaking them. This is a breaking change to the JSON output contract — consider if a
     --format flag or version header is needed.
-  spec_ref: null
+  spec_ref: "@trait-json-output"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85908,7 +85908,7 @@
     Fix: Add a step to the task-work skill (templates/skills/task-work.md) or a convention in
     AGENTS.md: if task modifies any file in templates/skills/ or .kspec/skills/, run kspec skill
     render and commit the rendered output. Small documentation change.
-  spec_ref: null
+  spec_ref: "@platform-renderer-trait"
   status: pending
   blocked_by: []
   depends_on: []
@@ -85958,7 +85958,7 @@
     Fix: In src/agent-runtime/invocation.ts or the agent run CLI handler, use the agent
     prompt_template when available, falling back to the default only when no template is defined.
     Also address adapter-safe prompt handling for codex-acp runs.
-  spec_ref: null
+  spec_ref: "@trait-task-readiness"
   status: pending
   blocked_by: []
   depends_on: []
@@ -86037,7 +86037,7 @@
     Fix: In the daemon sync loop (src/daemon/), iterate over all registered project paths and sync
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
-  spec_ref: null
+  spec_ref: "@config-daemon"
   status: pending
   blocked_by: []
   depends_on: []
@@ -86069,7 +86069,7 @@
 
     Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
     in src/cli/commands/item.ts. Consider backward compatibility.
-  spec_ref: null
+  spec_ref: "@trait-confirmation-prompt"
   status: pending
   blocked_by: []
   depends_on: []
