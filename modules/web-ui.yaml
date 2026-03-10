@@ -1675,12 +1675,6 @@ requirements:
         given: a page uses URL query parameters for filter state (status, tag, plan)
         when: filters are updated
         then: goto() is used for URL mutations so $page.url stays in sync with the browser URL bar
-      - id: ac-5
-        given: a developer or agent needs to update URL query parameters in web UI code
-        when: they look up conventions or patterns
-        then: "documentation exists (in conventions and/or inline code comments) stating that goto() must be
-          used for all URL mutations, explaining that replaceState/pushState do not update
-          $page.url, and referencing SvelteKit issue #10661"
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
