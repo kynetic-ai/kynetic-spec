@@ -265,6 +265,61 @@ The bits-ui trigger components support two rendering modes:
 
 Using `let:builder` expects mode 2 but the component tries to render mode 1, causing Svelte 5 to throw `invalid_default_snippet`.
 
+## URL State Management
+
+### Problem: replaceState/pushState Don't Update $page.url
+
+**Symptoms:**
+- Detail panels or modals reopen immediately after being dismissed
+- URL bar shows updated params but `$page.url.searchParams` still has old values
+- `$effect` watching `$page.url` doesn't fire after URL change
+
+**Root Cause:**
+`replaceState` and `pushState` (both from `$app/navigation` and `window.history`) do **not** go through the SvelteKit router. They update the browser URL bar but `$page.url` remains stale. Any `$effect` or `$derived` watching `$page.url` won't react.
+
+**Solution: Always use `goto()` for URL mutations.**
+
+```svelte
+<script lang="ts">
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+
+  // BAD — $page.url won't update
+  function openPanel(ref: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('ref', ref);
+    window.history.pushState({}, '', url);  // broken
+  }
+
+  // BAD — same problem with SvelteKit's replaceState
+  function closePanel() {
+    const url = new URL($page.url);
+    url.searchParams.delete('ref');
+    replaceState(url, {});  // broken
+  }
+
+  // GOOD — goes through router, $page.url updates reactively
+  function openPanel(ref: string) {
+    const url = new URL($page.url);
+    url.searchParams.set('ref', ref);
+    goto(url, { replaceState: true, keepFocus: true, noScroll: true });
+  }
+
+  function closePanel() {
+    const url = new URL($page.url);
+    url.searchParams.delete('ref');
+    goto(url, { replaceState: true, keepFocus: true, noScroll: true });
+  }
+</script>
+```
+
+**Key `goto()` options:**
+- `replaceState: true` — don't pollute browser history with param changes
+- `keepFocus: true` — don't steal focus from the current element
+- `noScroll: true` — don't scroll to top of page
+
+**Reference:** SvelteKit issue #10661. This is intentional behavior — `replaceState`/`pushState` are for history state objects, not for reactive URL tracking.
+
 ## Common Mistakes
 
 ### 1. Mixing Stores and Runes
