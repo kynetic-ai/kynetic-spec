@@ -84564,6 +84564,13 @@
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #751 (merge commit fd2497a96). Implemented offset/limit pagination and
+    multi-field filtering for GET /api/sessions, including status, agent_type, agent_id, trigger,
+    task_id, spec_ref, and since filters; added 404 handling for unknown task/spec refs; and changed
+    the list path to read only session.yaml metadata while leaving full event-derived stats to
+    session detail reads. AC coverage verified for all own criteria plus @trait-api-endpoint ac-1
+    through ac-4. Review threads resolved, CI green on the merged head, and local npm test completed
+    clean on the PR head."
   depends_on:
     - "@implement-session-summary-cache"
   context: []
@@ -84574,6 +84581,7 @@
   created_at: 2026-03-10T05:32:13.964Z
   started_at: 2026-03-10T16:21:35.185Z
   submitted_at: 2026-03-10T16:21:39.013Z
+  completed_at: 2026-03-10T16:47:24.328Z
   notes:
     - _ulid: 01KKB3PGRCW197BCZK8YS6ZE61
       created_at: 2026-03-10T05:32:13.964Z
@@ -84687,14 +84695,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T16:47:24.328Z
-  closed_reason: "Merged in PR #751 (merge commit fd2497a96). Implemented offset/limit pagination and
-    multi-field filtering for GET /api/sessions, including status, agent_type, agent_id, trigger,
-    task_id, spec_ref, and since filters; added 404 handling for unknown task/spec refs; and changed
-    the list path to read only session.yaml metadata while leaving full event-derived stats to
-    session detail reads. AC coverage verified for all own criteria plus @trait-api-endpoint ac-1
-    through ac-4. Review threads resolved, CI green on the merged head, and local npm test completed
-    clean on the PR head."
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
@@ -86725,7 +86725,7 @@
     AGENTS.md: if task modifies any file in templates/skills/ or .kspec/skills/, run kspec skill
     render and commit the rendered output. Small documentation change.
   spec_ref: "@platform-renderer-trait"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86736,6 +86736,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T16:47:47.960Z
+  session_id: 01KKCA2PMHVR86ANRH9F8Y06JZ
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
