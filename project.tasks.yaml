@@ -85957,6 +85957,16 @@
         leaves the default rendered test skill in place, so the exit-code assertion is not
         validating the intended condition."
       supersedes: null
+    - _ulid: 01KKBWQ4ZEB2KB6TTGBDX2XRYP
+      created_at: 2026-03-10T12:49:29.070Z
+      author: "@claude"
+      content: "Fix cycle 1: Addressed MUST-FIX from PR #747. The test 'should not exit non-zero when only
+        plugin-provided skills are present' was not actually creating a plugin-provided-only
+        scenario — it had a broken skill remove that expected failure, leaving non-core skills in
+        place. Fixed by: (1) removing the broken remove/re-add sequence (setupTempFixtures creates
+        no skills, so one core skill add is sufficient), (2) adding assertions that parse the JSON
+        output and verify ALL results are plugin-provided, not just checking exit code."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
