@@ -1235,17 +1235,6 @@ inbox:
       - observability
       - idea
     added_by: "@claude"
-  - _ulid: 01KJTFVPPB46K87NGGA3Z44EFK
-    text: "kspec batch item ac add silently drops items when shadow branch has concurrent commits. Batch
-      reports N/N succeeded but only last item survives due to AC numbering collision. Workaround:
-      add items individually or ensure no concurrent shadow writes. Needs investigation into batch
-      atomicity under concurrent shadow commits."
-    created_at: 2026-03-03T18:37:41.451Z
-    tags:
-      - bug
-      - batch
-      - shadow
-    added_by: "@claude"
   - _ulid: 01KJTP6AB8ZDDGWEC8H42CV0XW
     text: "Codex-only: capture harness guidance to close completed subagents proactively (or auto-close
       after waits) to avoid thread-limit stalls."
