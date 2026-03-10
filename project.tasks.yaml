@@ -85056,5 +85056,26 @@
     - web-ui
   vcs_refs: []
   created_at: 2026-03-10T06:04:44.563Z
-  notes: []
+  notes:
+    - _ulid: 01KKB5PJYZ44QFKMX90RAKDRGP
+      created_at: 2026-03-10T06:07:13.375Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Existing specs that already render markdown need the trait-markdown-rendering
+        trait added to them
+
+        - Scope: Add trait-markdown-rendering to @ui-session-stream and @ui-plans-view specs
+
+        - IMPORTANT: kspec item set --trait REPLACES the entire traits array. Must include ALL
+        existing traits plus the new one.
+
+        - Steps: 1) kspec item get @ui-session-stream to see current traits, 2) kspec item set
+        @ui-session-stream --trait existing-1 --trait existing-2 --trait trait-markdown-rendering,
+        3) repeat for @ui-plans-view
+
+        - Verification: kspec item get @ui-session-stream shows trait-markdown-rendering in traits
+        list alongside all previous traits. Same for @ui-plans-view.
+      supersedes: null
   todos: []
