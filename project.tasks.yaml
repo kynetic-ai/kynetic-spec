@@ -86433,14 +86433,14 @@
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: "@ref-validation"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKC0688YF74PFYQB0KKBHXVE
+  session_id: null
   created_at: 2026-03-10T08:17:51.248Z
   started_at: 2026-03-10T14:02:44.952Z
   submitted_at: 2026-03-10T14:11:18.971Z
@@ -86476,6 +86476,14 @@
         - CLI displays invalid annotations in completeness warnings section
         - 15 tests covering resolution, AC existence, traits, and edge cases
         - Full test suite passes (198 files, 4352 tests)
+      supersedes: null
+    - _ulid: 01KKC38D3A8A9C6PWKTQ3AE17V
+      created_at: 2026-03-10T14:43:45.898Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC annotation validation accepts refs that
+        resolve to tasks/plans/meta items. Example repro: // AC: @task-example ac-1 yields no
+        invalid_ac_annotation warning. Restrict valid targets to spec items/traits and add
+        regression coverage."
       supersedes: null
   todos: []
   automation: eligible
