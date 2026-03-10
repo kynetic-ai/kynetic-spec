@@ -86790,7 +86790,7 @@
     prompt_template when available, falling back to the default only when no template is defined.
     Also address adapter-safe prompt handling for codex-acp runs.
   spec_ref: "@trait-task-readiness"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86824,6 +86824,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T17:16:10.999Z
 - _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
   title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
