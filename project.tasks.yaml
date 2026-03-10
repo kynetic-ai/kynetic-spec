@@ -84887,7 +84887,7 @@
   type: task
   spec_ref: "@session-filter-controls"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -84909,6 +84909,8 @@
         distinct values in the session data (unique agent types, agent IDs).
   todos: []
   automation: eligible
+  started_at: 2026-03-10T22:17:15.533Z
+  session_id: 01KKCWTF84YCFZPPV9GTFXQQJ1
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
   slugs:
     - implement-session-cli-unified-filtering
