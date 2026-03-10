@@ -86991,14 +86991,14 @@
     Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
     in src/cli/commands/item.ts. Consider backward compatibility.
   spec_ref: "@trait-confirmation-prompt"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKCGHMSH2XDNA2ATKGZJFST1
+  session_id: null
   created_at: 2026-03-10T08:18:22.055Z
   started_at: 2026-03-10T19:05:46.954Z
   submitted_at: 2026-03-10T19:05:50.827Z
@@ -87048,6 +87048,13 @@
         6. item ac set now detects no-op changes and warns
 
         7. All 4373 tests pass (198 files)
+      supersedes: null
+    - _ulid: 01KKCKP2KR80E8GXPKEY4D2X9Y
+      created_at: 2026-03-10T19:30:51.128Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: task set records fake before→after diffs when
+        clearing already-empty fields, and the new mutation/diff behavior still lacks matching spec
+        updates plus AC annotations."
       supersedes: null
   todos: []
   automation: eligible
