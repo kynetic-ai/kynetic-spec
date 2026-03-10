@@ -84247,6 +84247,14 @@
         checkBuild logic instead of exercising the shipped missing-artifact path for
         @test-suite-perf-reliability ac-5; current PR head also has red CI."
       supersedes: null
+    - _ulid: 01KKAS32ZYS01PQA2D0RNXBTDY
+      created_at: 2026-03-10T02:26:51.519Z
+      author: "@claude"
+      content: "Fix cycle 3: Added optional root parameter to checkBuild() and checkDependencies() so
+        tests exercise the actual shipped functions against temp dirs instead of reimplementing
+        artifact-checking logic inline. Also added checkDependencies temp-dir tests for
+        completeness. All 19 tests pass. Resolved all 7 review threads."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAJ7N0ZD6WEDAAX1EPRHKZB
