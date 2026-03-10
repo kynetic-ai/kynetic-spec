@@ -71,20 +71,17 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
           if (projectPath) {
             // AC: @multi-directory-daemon ac-1, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8b, ac-8c
             // Try to get existing or register new project
-            try {
-              projectContext = manager.getProject(projectPath);
-            } catch (err) {
-              // Not registered - try to register (ac-4: auto-register)
-              projectContext = manager.registerProject(projectPath);
+            const result = manager.getOrRegisterProject(projectPath);
+            projectContext = result.context;
+            if (result.wasRegistered) {
               // Start watcher asynchronously (don't block request)
-              void manager.startWatcher(projectPath).catch((watcherError) => {
-                console.error(`[daemon] Failed to start watcher for ${projectPath}:`, watcherError);
+              void manager.startWatcher(projectContext.path).catch((watcherError) => {
+                console.error(`[daemon] Failed to start watcher for ${projectContext.path}:`, watcherError);
               });
               // Start session sync asynchronously (don't block request)
-              // Use normalized path from projectContext — raw header may have trailing slashes or "." segments
               if (options.onProjectRegistered) {
                 void options.onProjectRegistered(projectContext.path).catch((syncError) => {
-                  console.error(`[daemon] Failed to start session sync for ${projectPath}:`, syncError);
+                  console.error(`[daemon] Failed to start session sync for ${projectContext.path}:`, syncError);
                 });
               }
             }

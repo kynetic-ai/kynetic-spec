@@ -257,13 +257,16 @@ export async function createServer(options: ServerOptions) {
     // AC-3: Enforce localhost-only connections
     .onRequest(localhostOnly());
 
+  // Shared callback for all registration paths (middleware, projects API, WebSocket)
+  const onProjectRegistered = async (projectPath: string) => {
+    await startSessionSyncForProject(projectPath, pubsubManager);
+  };
+
   // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
   const { manager: projectContextManager, middleware: projectMiddleware } = projectContextMiddleware({
     startupProject: startupProjectPath,
     pubsub: pubsubManager,
-    onProjectRegistered: async (projectPath) => {
-      await startSessionSyncForProject(projectPath, pubsubManager);
-    },
+    onProjectRegistered,
   });
 
   // Store manager globally for shutdown
@@ -301,9 +304,7 @@ export async function createServer(options: ServerOptions) {
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
     .use(createProjectsRoutes({
       projectManager: projectContextManager,
-      onProjectRegistered: async (projectPath) => {
-        await startSessionSyncForProject(projectPath, pubsubManager);
-      },
+      onProjectRegistered,
       onProjectUnregistered: (projectPath) => {
         stopSessionSyncForProject(projectPath);
       },
@@ -345,11 +346,14 @@ export async function createServer(options: ServerOptions) {
           let projectContext;
           if (projectPath) {
             // Explicit project specified
-            try {
-              projectContext = manager.getProject(projectPath);
-            } catch {
-              // AC: @multi-directory-daemon ac-4 - auto-register
-              projectContext = manager.registerProject(projectPath);
+            // AC: @multi-directory-daemon ac-4 - auto-register
+            const result = manager.getOrRegisterProject(projectPath);
+            projectContext = result.context;
+            if (result.wasRegistered) {
+              // Start session sync for newly auto-registered project (don't block upgrade)
+              void onProjectRegistered(projectContext.path).catch((syncError) => {
+                console.error(`[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`, syncError);
+              });
             }
           } else {
             // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject

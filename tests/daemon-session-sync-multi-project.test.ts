@@ -151,6 +151,78 @@ describe('Multi-project session sync', () => {
     });
   });
 
+  describe('getOrRegisterProject (shared by WebSocket, middleware, and API)', () => {
+    it('should register new project and return wasRegistered=true', () => {
+      const manager = new ProjectContextManager();
+
+      const result = manager.getOrRegisterProject(projectA);
+
+      expect(result.wasRegistered).toBe(true);
+      expect(result.context.path).toBe(projectA);
+      expect(manager.hasProject(projectA)).toBe(true);
+    });
+
+    it('should return existing project with wasRegistered=false', () => {
+      const manager = new ProjectContextManager();
+      manager.registerProject(projectA);
+
+      const result = manager.getOrRegisterProject(projectA);
+
+      expect(result.wasRegistered).toBe(false);
+      expect(result.context.path).toBe(projectA);
+    });
+
+    it('should normalize path and return normalized context', () => {
+      const manager = new ProjectContextManager();
+      const nonNormalizedPath = projectA + '/./';
+
+      const result = manager.getOrRegisterProject(nonNormalizedPath);
+
+      expect(result.wasRegistered).toBe(true);
+      // Context path should be normalized
+      expect(result.context.path).toBe(projectA);
+      // Subsequent call with normalized path should find the same project
+      const result2 = manager.getOrRegisterProject(projectA);
+      expect(result2.wasRegistered).toBe(false);
+      expect(result2.context.path).toBe(projectA);
+    });
+
+    it('should not double-register when called with same non-normalized path twice', () => {
+      const manager = new ProjectContextManager();
+      const nonNormalizedPath = projectA + '/./';
+
+      const result1 = manager.getOrRegisterProject(nonNormalizedPath);
+      const result2 = manager.getOrRegisterProject(nonNormalizedPath);
+
+      expect(result1.wasRegistered).toBe(true);
+      expect(result2.wasRegistered).toBe(false);
+      expect(result1.context.path).toBe(projectA);
+      expect(result2.context.path).toBe(projectA);
+    });
+
+    it('should enable callers to trigger session sync only for new registrations', async () => {
+      // This test verifies the pattern used by WebSocket beforeHandle, middleware,
+      // and projects API: call onProjectRegistered only when wasRegistered is true
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+
+      // First call — new registration, should trigger callback
+      const result1 = manager.getOrRegisterProject(projectA);
+      if (result1.wasRegistered) {
+        await onRegistered(result1.context.path);
+      }
+
+      // Second call — already registered, should NOT trigger callback
+      const result2 = manager.getOrRegisterProject(projectA);
+      if (result2.wasRegistered) {
+        await onRegistered(result2.context.path);
+      }
+
+      expect(onRegistered).toHaveBeenCalledTimes(1);
+      expect(onRegistered).toHaveBeenCalledWith(projectA);
+    });
+  });
+
   describe('Middleware auto-registration callback', () => {
     it('should call onProjectRegistered when project is auto-registered via middleware', async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
