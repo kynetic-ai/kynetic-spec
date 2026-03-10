@@ -86510,7 +86510,7 @@
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: "@ref-validation"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86626,6 +86626,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T17:02:38.936Z
+  closed_reason: "Merged in PR #753 (merge commit fb7892b9d5e2d4155ee656d7a2467d1baf88ab1c). Added AC
+    annotation validation to kspec validate, including unresolved-ref, non-spec target, missing-AC,
+    and multi-ref comment-line handling. Verified targeted AC annotation suite and full npm test
+    pass on current HEAD; GitHub checks green on merge head."
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
   title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
@@ -86735,6 +86740,7 @@
   session_id: 01KKCA2PMHVR86ANRH9F8Y06JZ
   created_at: 2026-03-10T08:18:01.609Z
   started_at: 2026-03-10T16:47:47.960Z
+  submitted_at: 2026-03-10T16:55:02.244Z
   notes:
     - _ulid: 01KKCAR3P91K7E7QF71SSXMEQJ
       created_at: 2026-03-10T16:54:40.585Z
@@ -86745,7 +86751,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T16:55:02.244Z
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
