@@ -1215,7 +1215,7 @@ features:
     created: 2026-03-05T01:30:02.752Z
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
   - _ulid: 01KJXSVF4FP4GY593BCW3XZHQM
     slugs:
       - ui-session-stream
