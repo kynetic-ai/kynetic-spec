@@ -85034,6 +85034,32 @@
 
         - Verification: npm test covering all 6 spec ACs + trait ACs
       supersedes: null
+    - _ulid: 01KKD2JTBGK0VKZNFYVRPXTGAM
+      created_at: 2026-03-10T23:51:13.008Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+        1. Extracted shared filterSessions() in log.ts - used by list, stats, and search commands
+
+        2. Added --agent-id, --trigger, --task, --agent-type, --offset flags to session log list
+
+        3. --agent and --agent-type are synonyms for backward compat (ac-backward-compat)
+
+        4. --trigger dispatched matches all task.* triggers (ac-trigger-filter)
+
+        5. JSON output now returns {items, total, offset, limit, filters?} matching daemon API shape
+        (ac-json-output)
+
+        6. Stats and search commands also accept new filters via shared SessionFilterOptions
+
+        7. Search uses pre-filtered session IDs when new filters are present
+
+        8. Updated 3 test files: session-log-list.test.ts (55 tests, all pass),
+        session-model-evolution.test.ts, session-legacy-cli.test.ts
+
+        9. Full test suite: 4432 passed, 3 skipped
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
