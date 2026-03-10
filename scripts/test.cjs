@@ -57,10 +57,12 @@ function logErr(msg) {
 
 /**
  * Verify node_modules exists and has key dependencies.
+ * @param {string} [root] - Project root to check (defaults to this repo's root)
  * Returns { ok: boolean, reason?: string }
  */
-function checkDependencies() {
-  const nodeModules = path.join(projectRoot, 'node_modules');
+function checkDependencies(root) {
+  const rootDir = root || projectRoot;
+  const nodeModules = path.join(rootDir, 'node_modules');
   if (!fs.existsSync(nodeModules)) {
     return { ok: false, reason: 'node_modules/ not found' };
   }
@@ -73,16 +75,18 @@ function checkDependencies() {
 
 /**
  * Verify build artifacts exist.
+ * @param {string} [root] - Project root to check (defaults to this repo's root)
  * Returns { ok: boolean, reason?: string }
  */
-function checkBuild() {
+function checkBuild(root) {
+  const rootDir = root || projectRoot;
   const requiredArtifacts = [
     'dist/cli/index.js',
     'dist/web-ui/index.html',
     'dist/daemon/index.ts',
   ];
   for (const artifact of requiredArtifacts) {
-    const fullPath = path.join(projectRoot, artifact);
+    const fullPath = path.join(rootDir, artifact);
     if (!fs.existsSync(fullPath)) {
       return { ok: false, reason: `${artifact} not found` };
     }

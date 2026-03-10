@@ -28,98 +28,35 @@ function runTestRunner(
   };
 }
 
-/**
- * Create a temp directory that simulates a project root for checkBuild testing.
- * Writes a minimal test script that requires checkBuild with a custom projectRoot.
- */
-function createTempProjectRoot(): string {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-runner-'));
-  return tempDir;
-}
-
-/**
- * Run checkBuild against a temp dir by spawning a node process with an inline
- * script that overrides the module's projectRoot.
- */
-function runCheckBuildInTempDir(
-  tempDir: string,
-  artifacts: string[],
-): { ok: boolean; reason?: string } {
-  // Create the requested artifact files
-  for (const artifact of artifacts) {
-    const fullPath = path.join(tempDir, artifact);
-    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
-    fs.writeFileSync(fullPath, '');
-  }
-
-  // Write a small script that patches projectRoot before requiring checkBuild
-  const testScript = `
-    const path = require('path');
-    // Create a fake scripts/ dir so path.dirname(__dirname) resolves to tempDir
-    const origModule = require('module');
-    const mod = require('${runnerScript.replace(/\\/g, '\\\\')}');
-    // We can't override projectRoot in the module, so we call checkBuild
-    // by directly testing the file existence logic
-    const requiredArtifacts = [
-      'dist/cli/index.js',
-      'dist/web-ui/index.html',
-      'dist/daemon/index.ts',
-    ];
-    const fs = require('fs');
-    for (const artifact of requiredArtifacts) {
-      const fullPath = path.join('${tempDir.replace(/\\/g, '\\\\')}', artifact);
-      if (!fs.existsSync(fullPath)) {
-        console.log(JSON.stringify({ ok: false, reason: artifact + ' not found' }));
-        process.exit(0);
-      }
-    }
-    console.log(JSON.stringify({ ok: true }));
-  `;
-
-  const result = spawnSync('node', ['-e', testScript], {
-    encoding: 'utf8',
-    timeout: 10_000,
-  });
-
-  if (result.stdout.trim()) {
-    return JSON.parse(result.stdout.trim());
-  }
-  return { ok: false, reason: 'script failed to produce output' };
-}
+// Import the shipped module — tests exercise this, not reimplemented logic
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const runner = require('../scripts/test.cjs');
 
 describe('test runner environment checks', () => {
   // AC: @test-suite-perf-reliability ac-5
   describe('prerequisite verification and auto-fix', () => {
-    it('detects missing build artifacts and reports which are missing', () => {
-      const { checkBuild } = require('../scripts/test.cjs');
-
-      // When all artifacts exist (global-setup ensures dist/ before tests), returns ok
-      const result = checkBuild();
-      expect(result.ok).toBe(true);
-    });
-
     it('dry-run succeeds when environment is ready', () => {
       const result = runTestRunner(['--dry-run']);
       expect(result.status).toBe(0);
       expect(result.stderr).toContain('Environment check passed');
     });
 
-    it('checkDependencies detects missing node_modules', () => {
-      const { checkDependencies } = require('../scripts/test.cjs');
-      // Currently running, so node_modules exists
-      expect(checkDependencies().ok).toBe(true);
+    it('checkDependencies passes against real project root', () => {
+      expect(runner.checkDependencies().ok).toBe(true);
+    });
+
+    it('checkBuild passes against real project root', () => {
+      expect(runner.checkBuild().ok).toBe(true);
     });
 
     it('ensureEnvironment runs all hooks and returns fix count', () => {
-      const { ensureEnvironment } = require('../scripts/test.cjs');
       // Environment is already ready, so fixedCount should be 0
-      const fixedCount = ensureEnvironment();
+      const fixedCount = runner.ensureEnvironment();
       expect(fixedCount).toBe(0);
     });
 
     it('build hook respects SKIP_BUILD env var', () => {
-      const { preTestHooks } = require('../scripts/test.cjs');
-      const buildHook = preTestHooks.find((h: { name: string }) => h.name === 'build');
+      const buildHook = runner.preTestHooks.find((h: { name: string }) => h.name === 'build');
       expect(buildHook).toBeDefined();
       expect(typeof buildHook.skip).toBe('function');
 
@@ -142,16 +79,14 @@ describe('test runner environment checks', () => {
   // AC: @test-suite-perf-reliability ac-5
   describe('auto-fix flow', () => {
     it('ensureEnvironment calls fix when check fails, then re-checks', () => {
-      const { preTestHooks, ensureEnvironment } = require('../scripts/test.cjs');
-
       // Save original hooks and inject a simulated failing hook
-      const originalHooks = [...preTestHooks];
+      const originalHooks = [...runner.preTestHooks];
       let fixCalled = false;
       let checkCallCount = 0;
 
       // Clear hooks and add a test hook that fails first, then passes after fix
-      preTestHooks.length = 0;
-      preTestHooks.push({
+      runner.preTestHooks.length = 0;
+      runner.preTestHooks.push({
         name: 'test-hook',
         check: () => {
           checkCallCount++;
@@ -166,7 +101,7 @@ describe('test runner environment checks', () => {
       });
 
       try {
-        const fixedCount = ensureEnvironment();
+        const fixedCount = runner.ensureEnvironment();
 
         // Fix was called
         expect(fixCalled).toBe(true);
@@ -176,16 +111,16 @@ describe('test runner environment checks', () => {
         expect(checkCallCount).toBe(2);
       } finally {
         // Restore original hooks
-        preTestHooks.length = 0;
-        preTestHooks.push(...originalHooks);
+        runner.preTestHooks.length = 0;
+        runner.preTestHooks.push(...originalHooks);
       }
     });
 
-    describe('checkBuild artifact detection (temp-dir isolated)', () => {
+    describe('checkBuild missing-artifact detection (temp-dir isolated)', () => {
       let tempDir: string;
 
       beforeEach(() => {
-        tempDir = createTempProjectRoot();
+        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-runner-'));
       });
 
       afterEach(() => {
@@ -194,42 +129,90 @@ describe('test runner environment checks', () => {
 
       it('detects when dist/daemon/index.ts is missing', () => {
         // Create all artifacts except dist/daemon/index.ts
-        const result = runCheckBuildInTempDir(tempDir, [
-          'dist/cli/index.js',
-          'dist/web-ui/index.html',
-          // dist/daemon/index.ts intentionally omitted
-        ]);
+        for (const artifact of ['dist/cli/index.js', 'dist/web-ui/index.html']) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, '');
+        }
+
+        const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
         expect(result.reason).toContain('dist/daemon/index.ts not found');
       });
 
       it('detects when dist/web-ui/index.html is missing', () => {
-        // Create all artifacts except dist/web-ui/index.html
-        const result = runCheckBuildInTempDir(tempDir, [
-          'dist/cli/index.js',
-          // dist/web-ui/index.html intentionally omitted
-          'dist/daemon/index.ts',
-        ]);
+        for (const artifact of ['dist/cli/index.js', 'dist/daemon/index.ts']) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, '');
+        }
+
+        const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
         expect(result.reason).toContain('dist/web-ui/index.html not found');
       });
 
       it('detects when dist/cli/index.js is missing', () => {
-        const result = runCheckBuildInTempDir(tempDir, [
-          // dist/cli/index.js intentionally omitted
-          'dist/web-ui/index.html',
-          'dist/daemon/index.ts',
-        ]);
+        for (const artifact of ['dist/web-ui/index.html', 'dist/daemon/index.ts']) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, '');
+        }
+
+        const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);
         expect(result.reason).toContain('dist/cli/index.js not found');
       });
 
       it('succeeds when all artifacts are present', () => {
-        const result = runCheckBuildInTempDir(tempDir, [
+        for (const artifact of [
           'dist/cli/index.js',
           'dist/web-ui/index.html',
           'dist/daemon/index.ts',
-        ]);
+        ]) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, '');
+        }
+
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(true);
+      });
+
+      it('detects empty temp dir with no artifacts', () => {
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain('not found');
+      });
+    });
+
+    describe('checkDependencies missing detection (temp-dir isolated)', () => {
+      let tempDir: string;
+
+      beforeEach(() => {
+        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'kspec-test-runner-'));
+      });
+
+      afterEach(() => {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      });
+
+      it('detects missing node_modules', () => {
+        const result = runner.checkDependencies(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain('node_modules/ not found');
+      });
+
+      it('detects missing vitest in node_modules', () => {
+        fs.mkdirSync(path.join(tempDir, 'node_modules'), { recursive: true });
+        const result = runner.checkDependencies(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain('vitest not found');
+      });
+
+      it('passes when node_modules and vitest exist', () => {
+        fs.mkdirSync(path.join(tempDir, 'node_modules', 'vitest'), { recursive: true });
+        const result = runner.checkDependencies(tempDir);
         expect(result.ok).toBe(true);
       });
     });
@@ -245,12 +228,9 @@ describe('test runner environment checks', () => {
     });
 
     it('setup noise is suppressed — fix steps only emit runner-level status', () => {
-      // Verify that the fix helpers use stdio: 'pipe' (not 'inherit')
-      // by reading the source and checking the subprocess doesn't stream raw output.
-      // We test this behaviorally: run dry-run and confirm no npm/build noise appears.
+      // Run dry-run and confirm all output is runner-prefixed, no raw npm noise
       const result = runTestRunner(['--dry-run']);
-      // Should see only [test-runner] prefixed lines, not raw npm output
-      for (const line of result.stderr.split('\n').filter(l => l.trim())) {
+      for (const line of result.stderr.split('\n').filter((l) => l.trim())) {
         expect(line).toContain('[test-runner]');
       }
     });
@@ -291,13 +271,12 @@ describe('test runner environment checks', () => {
     });
 
     it('exposes preTestHooks and postTestHooks arrays for extensibility', () => {
-      const { preTestHooks, postTestHooks } = require('../scripts/test.cjs');
-      expect(preTestHooks).toBeInstanceOf(Array);
-      expect(preTestHooks.length).toBeGreaterThanOrEqual(2);
-      expect(postTestHooks).toBeInstanceOf(Array);
+      expect(runner.preTestHooks).toBeInstanceOf(Array);
+      expect(runner.preTestHooks.length).toBeGreaterThanOrEqual(2);
+      expect(runner.postTestHooks).toBeInstanceOf(Array);
 
       // Each hook has the required interface
-      for (const hook of preTestHooks) {
+      for (const hook of runner.preTestHooks) {
         expect(hook).toHaveProperty('name');
         expect(typeof hook.name).toBe('string');
         expect(typeof hook.check).toBe('function');
