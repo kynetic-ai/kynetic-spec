@@ -85109,28 +85109,153 @@
   notes: []
   todos: []
   automation: eligible
-- title: Board view should load all active tasks without arbitrary limit
+- _ulid: 01KKB6P8EEJ355H2QWT50V4HGC
+  slugs: []
+  title: Board view should load all active tasks without arbitrary limit
+  type: task
   description: "The task board currently fetches with limit: 500, which means projects with more tasks
     will have incomplete active columns. Remove the arbitrary limit for active status columns
     (Backlog, Ready, In Progress, Review) so they show all matching tasks. The Done column should
     keep its limit of 20 most recent. May require paginated loading or removing the limit param
     entirely for board fetches."
-  type: task
   spec_ref: "@ui-task-board"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - web-ui
+    - feature
+  vcs_refs: []
+  created_at: 2026-03-10T06:24:31.178Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
+  slugs: []
+  title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
+  type: task
+  description: >-
+    The checkAutomationEligibility() function in src/parser/validate.ts warns on ALL automation:
+    eligible tasks without spec_ref, regardless of status. 145 of 147 current warnings are completed
+    tasks and 2 are cancelled — zero are active. The warning is only actionable for active tasks.
+
+
+    **Code change**: In checkAutomationEligibility(), filter out tasks with status completed or
+    cancelled before checking for missing spec_ref.
+
+
+    **Spec gap**: @task-automation-eligibility ac-21 says 'when a task has automation: eligible but
+    no spec_ref' — it doesn't mention task status. Update ac-21 (and ac-23 if needed) to specify
+    that this warning only applies to non-terminal task statuses (pending, in_progress, needs_work,
+    pending_review, blocked). Completed and cancelled tasks have already been assessed and don't
+    need this guardrail.
+
+
+    **Done when**: (1) kspec validate no longer warns for completed/cancelled eligible tasks without
+    spec_ref. (2) ac-21 updated to specify non-terminal status scope. (3) Existing tests updated to
+    cover the status filtering. (4) Active eligible tasks without spec_ref still trigger the
+    warning.
+  spec_ref: "@task-automation-eligibility"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - validation
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-10T06:52:48.964Z
+  notes: []
+  todos: []
+  automation: eligible
+- _ulid: 01KKB8A3MS1V2CHTC1CEYCS96M
+  slugs: []
+  title: Remove stale observations skill entry and directory from shadow branch
+  type: task
+  description: >-
+    The @observations slug ambiguity fix (task @01KJDQ11E, completed Feb 28) didn't fully clean up.
+    Two remnants persist:
+
+
+    1. kynetic.meta.yaml line ~8149 still has a core skill with id: observations
+
+    2. .kspec/skills/observations/ directory exists (near-empty, only .render-hash-codex)
+
+
+    The correct skill is 'observe' (id: observe), which works fine. The stale 'observations' skill
+    entry collides with the @observations spec feature (01KF1XFBK00000000000000000) causing 6
+    reference errors and 1 schema error in kspec validate.
+
+
+    **Fix**: (1) Remove the observations skill entry from kynetic.meta.yaml (kspec skill delete or
+    batch). (2) Remove the .kspec/skills/observations/ directory. (3) Verify kspec validate reports
+    0 reference errors for @observations. (4) Verify kspec agents generate still works and
+    references /kspec:observe correctly.
+
+
+    **Done when**: kspec validate shows 0 schema errors and 0 reference errors related to
+    @observations.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - meta
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-10T06:52:50.201Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Fix 4 spec implementation status mismatches flagged by validate
+  description: >-
+    kspec validate reports 4 alignment warnings where spec implementation status doesn't match task
+    progress:
+
+
+    1. Daemon Background Sync Pushes — currently 'in_progress', should be 'implemented'
+
+    2. Web Dashboard — currently 'implemented', should be 'in_progress' (new tasks added)
+
+    3. Task Board (Kanban) — currently 'implemented', should be 'in_progress' (new tasks added)
+
+    4. Dashboard Overview — currently 'implemented', should be 'in_progress' (new tasks added)
+
+
+    **Fix**: Use kspec batch to update each spec's implementation status to match what validate
+    recommends. For specs with new pending tasks against them, set to 'in_progress'. For specs whose
+    tasks are all done, set to 'implemented'.
+
+
+    **Done when**: kspec validate reports 0 status mismatch alignment warnings.
+  type: task
+  spec_ref: null
   meta_ref: null
   plan_ref: null
   priority: 3
   slugs: []
   tags:
-    - web-ui
-    - feature
+    - meta
+    - chore
   depends_on: []
   automation: eligible
-  _ulid: 01KKB6P8EEJ355H2QWT50V4HGC
+  _ulid: 01KKB8A4TTPD484SR73N4DQE0F
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T06:24:31.178Z
+  created_at: 2026-03-10T06:52:51.418Z
   notes: []
   todos: []
