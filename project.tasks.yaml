@@ -86905,7 +86905,7 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86939,6 +86939,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T17:32:48.619Z
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
