@@ -85482,9 +85482,22 @@
   title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
     CODEX_THREAD_"
   type: task
-  description: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
-    CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated to
-    daemon isolation."
+  description: >-
+    Fix failing test: core-skill-install.test.ts "should auto-detect codex platform when
+    CODEX_THREAD_ID is present" (line ~280 in tests/core-skill-install.test.ts).
+
+
+    Current failure: expects platform "codex" but gets "claude-code".
+
+
+    Root cause: Agent detection in src/parser/agent-detection.ts checks CLAUDECODE (line 33) before
+    CODEX_THREAD_ID (line 105). The test sets CLAUDECODE to empty string, but the parent shell may
+    have CLAUDECODE=1 which leaks through env merging in the CLI test helper.
+
+
+    Fix approach: Either (a) fix env isolation in the test so CLAUDECODE is properly unset (not just
+    empty string), or (b) adjust detection priority so CODEX_THREAD_ID is checked before CLAUDECODE.
+    Option (a) is safer. Check tests/helpers/cli.ts for how env vars are merged.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85496,15 +85509,26 @@
   created_at: 2026-03-10T07:53:25.296Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
   title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
     fails — ."
   type: task
-  description: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
-    detected' fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash
-    test). Likely related to completed task @01KJEWKG — may need test update to match new codex
-    config behavior."
+  description: >-
+    Fix failing test: enhanced-setup.test.ts "should render core skills to codex output when codex
+    is detected" (line ~416 in tests/enhanced-setup.test.ts).
+
+
+    Current failure: ENOENT on .codex/config.toml — the file is not created during setup when codex
+    platform is detected.
+
+
+    Investigate: (1) Check if ensureCodexProjectDocFallback() in src/lib/codex-config.ts is being
+    called during setup, (2) check if a prior task (@01KJEWKG) changed codex config behavior and the
+    test expectations need updating, (3) verify what the current codex setup flow actually does vs
+    what the test expects. Fix either the implementation to create the file or update the test to
+    match current behavior.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85516,6 +85540,7 @@
   created_at: 2026-03-10T07:53:28.621Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBBS7YHFWP6RT427884JV12
   slugs: []
   title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
@@ -85553,26 +85578,18 @@
   title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
   type: task
   description: >-
-    Diagnose skill verify drift/no-hash for plugin-provided core skills.
+    Fix skill verify reporting drift/no-hash for plugin-provided core skills.
 
 
-    Observed behavior:
-
-    - kspec skill verify reports codex statuses as drifted/no-hash for help, observations, triage,
-    reflect, triage-inbox, writing-specs.
-
-    - kspec skill diff reports plugin-provided (no local render to diff).
-
-    - Rendered skill files exist under .agents/skills.
+    The skill verify command in src/cli/commands/skill-diff.ts (lines ~1022-1050) has a switch
+    statement handling skill statuses: in-sync, drifted, not-rendered, no-hash. It is missing a case
+    for plugin-provided status. When plugin-provided skills are checked, they fall through without
+    proper handling.
 
 
-    Investigate:
-
-    - render-hash semantics in .kspec/skills for plugin-provided skills
-
-    - plugin-provided status handling in skill verify/status/diff paths
-
-    - whether this is expected behavior or a bug in drift detection
+    Fix: Add a plugin-provided case to the switch statement that reports the appropriate status
+    (these skills are managed by the plugin, not locally rendered, so drift detection does not
+    apply). Update tests in tests/skill-rendering.test.ts.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85584,6 +85601,7 @@
   created_at: 2026-03-10T07:53:37.938Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
@@ -85622,10 +85640,15 @@
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
     imply b
   type: task
-  description: Clarify @task-work submit timing and pending_review ownership semantics. Current
-    wording can imply both 'submit after PR created' and 'submit before PR creation'. Normalize to
-    one sequence (submit transitions ownership to pr-reviewer queue before PR handoff) and make
-    worker/reviewer responsibilities explicit.
+  description: >-
+    Clarify task-work submit timing and pending_review ownership semantics in the task-work skill
+    (templates/skills/task-work.md).
+
+
+    Current wording can imply both submit after PR created and submit before PR creation. Normalize
+    to one sequence: kspec task submit transitions task to pending_review queue, then create PR,
+    then pr-reviewer picks up. Make worker/reviewer ownership handoff explicit. This is a
+    documentation/skill template fix, no code changes expected.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85642,8 +85665,17 @@
   title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
     default to "
   type: task
-  description: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe)
-    to default to the single active run instead of requiring explicit run-ref."
+  description: >-
+    Allow kspec workflow show and kspec workflow step to default to the single active workflow run
+    instead of requiring an explicit run-ref argument.
+
+
+    Current behavior: all workflow commands require a run-ref even when only one run is active.
+
+
+    Fix: In the CLI handler (src/cli/commands/workflow.ts), check for active runs. If exactly one is
+    active, use it as default. If multiple are active, show error listing them. If none, show no
+    active runs message. Small CLI UX improvement.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85660,9 +85692,17 @@
   title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
     include cu"
   type: task
-  description: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
-    should include current step metadata (step_index, step_type, step_content) so users/agents can
-    progress workflows without manually opening meta YAML."
+  description: >-
+    Add step metadata to kspec workflow show --json output.
+
+
+    Current behavior: --json output includes workflow definition and run status but not the current
+    step details (step_index, step_type, step_content).
+
+
+    Fix: In the workflow show JSON formatter (src/cli/commands/workflow.ts), include current_step
+    object with index, type, and content fields. This enables agents to progress workflows
+    programmatically without parsing YAML.
   spec_ref: null
   status: pending
   blocked_by: []
