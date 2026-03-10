@@ -83947,6 +83947,25 @@
         Tests to validate: run the full cli-agent-commands.test.ts file 5x in sequence under load
         (e.g., with other test files running)."
       supersedes: null
+    - _ulid: 01KKAJG4J0NH8BRPPDGM9JJ1RR
+      created_at: 2026-03-10T00:31:39.072Z
+      author: "@claude"
+      content: >-
+        Stabilized dispatch watch WebSocket mock timing:
+
+        1. Increased waitFor default timeout from 500ms to 2000ms (AC-3 compliance)
+
+        2. Updated all explicit timeout values (1000ms → 2000ms) in reconnect tests
+
+        3. Added crypto polyfill via tests/setup.ts (AC-4) - ensures globalThis.crypto exists in
+        older Node envs
+
+        4. Improved diagnostic timeout messages - waitFor now includes description parameter and
+        reconnect flush probe includes boolean state flags
+
+        5. Verified: 5 consecutive runs pass, concurrent load test passes (115 tests), shard1 passes
+        (1335 tests)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
