@@ -1077,20 +1077,6 @@ inbox:
       - cli
       - tasks
     added_by: Jacob Chapel
-  - _ulid: 01KJKY1H3C2SEQJ3ZAPSPXZP75
-    text: "Reflection follow-up: kspec batch can fail during copy-back with ENOTEMPTY on
-      .kspec/sessions/<session-id> (observed while batching task start+note). The batch reports all
-      subcommands succeeded, but exits non-zero and leaves shadow worktree in a temporarily
-      broken/deleted-file state until manual recovery (e.g., git -C .kspec restore .). Improve batch
-      copy-back robustness for session blob directories and avoid failing the batch when payload
-      writes succeeded."
-    created_at: 2026-03-01T05:30:51.372Z
-    tags:
-      - reflection
-      - bug
-      - batch
-      - shadow
-    added_by: Jacob Chapel
   - _ulid: 01KJN5MB6E6DCF3VMTDHHJ1ZWQ
     text: "Fix pre-existing test failure: tests/enhanced-setup.test.ts 'should render core skills to
       codex output when codex is detected' fails with ENOENT on .codex/config.toml — test expects

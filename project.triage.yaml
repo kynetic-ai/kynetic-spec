@@ -2306,13 +2306,14 @@ triage:
       broken/deleted-file state until manual recovery (e.g., git -C .kspec restore .). Improve batch
       copy-back robustness for session blob directories and avoid failing the batch when payload
       writes succeeded."
-    status: triaged
+    status: acted_on
     action: delete
     reasoning: Fixed by in-memory WriteBuffer (commit 52f86b8f9) + sessions moved to .kspec-sessions/
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T07:53:08.628Z
-    updated_at: 2026-03-10T07:53:08.657Z
+    updated_at: 2026-03-10T07:53:55.835Z
+    acted_at: 2026-03-10T07:53:55.815Z
   - _ulid: 01KKBBRHCAEZR3VKMBPY62YGYZ
     inbox_ref: 01KJS6ESNC2EMH2K2ATJCV1CMR
     item_snapshot: "kspec batch: item add + item set in same batch fails — newly created item slug not
@@ -2323,9 +2324,9 @@ triage:
     reasoning: Fixed by buffer-aware readFileBufferAware() in loadSpecFile (commit 2083d5fe3)
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-03-10T07:53:53.551Z
     created_at: 2026-03-10T07:53:08.746Z
     updated_at: 2026-03-10T07:53:53.573Z
-    acted_at: 2026-03-10T07:53:53.551Z
   - _ulid: 01KKBBRHF0M25PY8B74ETN0T8G
     inbox_ref: 01KJTFVPPB46K87NGGA3Z44EFK
     item_snapshot: "kspec batch item ac add silently drops items when shadow branch has concurrent
