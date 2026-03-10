@@ -84401,3 +84401,29 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: "Fix URL state management: replace replaceState/pushState with goto() across all detail panels"
+  description: "replaceState and pushState (both from $app/navigation and window.history) do not
+    update $page.url. This causes detail panels/modals to reopen after dismissal because reactive
+    effects still see the old URL. Fix all 3 affected files to use goto(url, { replaceState: true,
+    keepFocus: true, noScroll: true }) instead."
+  type: task
+  spec_ref: "@ui-url-panel-state"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-fix-url-state-goto
+  tags:
+    - bug
+    - web-ui
+    - navigation
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKAYTEBQ8GBS0W3MZ0218E8F
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T04:06:59.703Z
+  notes: []
+  todos: []
