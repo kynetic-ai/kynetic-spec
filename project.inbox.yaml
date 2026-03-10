@@ -1714,3 +1714,14 @@ inbox:
       - cli
       - ux
     added_by: "@claude"
+  - _ulid: 01KKB9X155J0DJ8PFQ6DAFDG25
+    text: "CLI DX: audit and normalize argument naming across all subcommands. Inconsistencies found:
+      task note uses positional <message> but plan note uses --text flag; item ac set vs expected
+      item ac update; task set --depends-on requires array but gives poor error on comma-separated
+      string. Evaluate entire CLI surface area for consistency or add aliases based on
+      actual/expected usage patterns."
+    created_at: 2026-03-10T07:20:38.821Z
+    tags:
+      - cli
+      - dx
+    added_by: "@claude"
