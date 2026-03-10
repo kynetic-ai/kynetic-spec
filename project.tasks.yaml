@@ -85794,7 +85794,7 @@
     empty string), or (b) adjust detection priority so CODEX_THREAD_ID is checked before CLAUDECODE.
     Option (a) is safer. Check tests/helpers/cli.ts for how env vars are merged.
   spec_ref: "@platform-renderer-trait"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85815,6 +85815,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T11:55:55.065Z
+  closed_reason: "Merged in PR #745. Fixed the codex auto-detect install-core test by blanking all
+    Claude detection env vars in the test override, preserving production detection priority while
+    restoring deterministic env isolation. AC coverage reviewed for the changed test path and CI
+    passed on the merged HEAD."
 - _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
   title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
