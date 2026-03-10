@@ -86030,7 +86030,7 @@
     then pr-reviewer picks up. Make worker/reviewer ownership handoff explicit. This is a
     documentation/skill template fix, no code changes expected.
   spec_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86041,6 +86041,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T12:23:16.400Z
+  session_id: 01KKBTYH6EF618EJ0106MT8HP8
 - _ulid: 01KKBD52ND0SRD9WXYT6ZXZ776
   slugs: []
   title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
