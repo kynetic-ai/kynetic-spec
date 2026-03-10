@@ -1122,9 +1122,9 @@ requirements:
         then: only tasks without an automation field are shown
       - id: ac-21
         given: kspec validate is run
-        when: "a task has automation: eligible but no spec_ref"
+        when: "a non-terminal task (not completed or cancelled) has automation: eligible but no spec_ref"
         then: a warning (not error) is emitted suggesting eligible tasks should have linked specs;
-          validation still passes
+          validation still passes. Completed and cancelled tasks are skipped.
       - id: ac-22
         given: a task's automation status needs to change
         when: considering valid transitions
