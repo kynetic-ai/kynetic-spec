@@ -2509,12 +2509,10 @@ requirements:
       governs conventions, workflows, skills, and observations.
     acceptance_criteria:
       - id: ac-coverage
-        given: |
-          All feature and requirement items under @meta and @shadow-branch modules
+        given: All feature and requirement items under @meta module
         when: |
           kspec validate --completeness runs
-        then: |
-          Zero "missing acceptance criteria" warnings for their descendants
+        then: Zero missing acceptance criteria warnings for @meta descendants
       - id: ac-testable
         given: |
           Each newly added AC

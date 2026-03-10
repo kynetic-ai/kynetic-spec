@@ -85406,24 +85406,62 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
-- title: Implement Missing Description Backfill
+- _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
+  slugs:
+    - implement-missing-description-backfill
+  title: Implement Missing Description Backfill
   type: task
   spec_ref: "@description-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  priority: 3
-  slugs:
-    - implement-missing-description-backfill
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:55:47.719Z
   notes:
     - _ulid: 01KKB8FH07B0SP63HBCG2VNRKT
       created_at: 2026-03-10T06:55:47.719Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
-  _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
+  todos: []
+- title: "Implement: Shadow Branch AC Backfill"
+  type: task
+  spec_ref: "@shadow-ac-backfill"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-shadow-branch-ac-backfill
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KKB93TP8WHJMPYGH18YTENP6
+      created_at: 2026-03-10T07:06:53.000Z
+      author: "@claude"
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        Add acceptance criteria to spec items under @shadow-branch that lack them. Covers orphan
+        branch worktree mechanics, auto-commit, sync, and merge driver.
+
+
+
+        Acceptance Criteria:
+
+        - ac-coverage: Given All feature and requirement items under @shadow-branch module, when
+        kspec validate --completeness runs, then Zero missing acceptance criteria warnings for
+        @shadow-branch descendants
+
+        - ac-testable: Given Each newly added AC, when It is reviewed, then It follows
+        given/when/then format with concrete, observable outcomes
+      supersedes: null
+  _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T06:55:47.719Z
+  created_at: 2026-03-10T07:06:53.000Z
   todos: []

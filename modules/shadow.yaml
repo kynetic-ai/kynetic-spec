@@ -1135,3 +1135,12 @@ requirements:
     traits: []
     notes: []
     created: 2026-03-10T07:06:34.457Z
+    acceptance_criteria:
+      - id: ac-coverage
+        given: All feature and requirement items under @shadow-branch module
+        when: kspec validate --completeness runs
+        then: Zero missing acceptance criteria warnings for @shadow-branch descendants
+      - id: ac-testable
+        given: Each newly added AC
+        when: It is reviewed
+        then: It follows given/when/then format with concrete, observable outcomes
