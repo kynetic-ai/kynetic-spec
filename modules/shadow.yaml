@@ -933,7 +933,7 @@ features:
         created: 2026-03-09T21:25:11.358Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KFM78SSTQR07F36DKWJS85ZY
     slugs:
       - yaml-merge-driver
