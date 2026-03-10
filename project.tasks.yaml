@@ -83790,28 +83790,53 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Replace subprocess loops with fixture seeding in session-start-format timeline tests
+- _ulid: 01KKAH4A7E0TM0RARWBVWBCXFA
+  slugs:
+    - task-fix-session-start-format-timeout
+  title: Replace subprocess loops with fixture seeding in session-start-format timeline tests
+  type: task
   description: Two tests in tests/cli/session-start-format.test.ts create 12 tasks via 48 sequential
     CLI subprocess calls each. Under CI load these exceed 30s timeout. Fix by writing completed
     tasks directly into fixture YAML instead of CLI loops.
+  spec_ref: "@test-suite-perf-reliability"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - testing
+    - bug
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-10T00:07:43.085Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Make daemon-web-ui-bundle tests skip gracefully when dist/web-ui/ missing
+  description: 3 tests in tests/daemon-web-ui-bundle.test.ts fail with opaque assertion errors when
+    dist/web-ui/index.html missing. Agents retry without rebuilding, wasting cycles. Add
+    describe-level skip with diagnostic message when build artifacts absent.
   type: task
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
   priority: 3
   slugs:
-    - task-fix-session-start-format-timeout
+    - task-fix-web-ui-bundle-test-skip
   tags:
     - testing
     - bug
-    - cli
+    - daemon
   depends_on: []
   automation: eligible
-  _ulid: 01KKAH4A7E0TM0RARWBVWBCXFA
+  _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T00:07:43.085Z
+  created_at: 2026-03-10T00:07:51.766Z
   notes: []
   todos: []
