@@ -85982,14 +85982,14 @@
     allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
     checkBudget() does not block task start.
   spec_ref: "@session-model-evolution"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKBT1P2G40V1BCTPG7CR70DF
+  session_id: null
   created_at: 2026-03-10T07:53:41.361Z
   started_at: 2026-03-10T12:16:01.201Z
   submitted_at: 2026-03-10T12:18:06.147Z
@@ -86012,6 +86012,14 @@
 
         - Tests: 4 new unit tests covering: missing session, completed session, abandoned session,
         active session still blocks. All 485 session tests pass.
+      supersedes: null
+    - _ulid: 01KKBWCRS6EHF4DQ891XJ2GK7X
+      created_at: 2026-03-10T12:43:48.902Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #748 fails fresh CI on the merge ref. The new
+        checkBudget() branch at src/sessions/store.ts:3512 treats missing sessions as allowed, which
+        breaks existing task-budget-enforcement integration tests and lets budget-exhausted task
+        starts succeed."
       supersedes: null
   todos: []
   automation: eligible
