@@ -83814,6 +83814,7 @@
   session_id: 01KKAH4ZGNRK7E3GE22EN4Y33Z
   created_at: 2026-03-10T00:07:43.085Z
   started_at: 2026-03-10T00:08:18.365Z
+  submitted_at: 2026-03-10T00:13:16.816Z
   notes:
     - _ulid: 01KKAH5B8CJ9176335ST1J1378
       created_at: 2026-03-10T00:08:16.908Z
@@ -83845,7 +83846,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T00:13:16.816Z
 - _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
   slugs:
     - task-fix-web-ui-bundle-test-skip
@@ -83857,7 +83857,7 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: blocked
   blocked_by: []
   depends_on: []
   context: []
@@ -83880,6 +83880,11 @@
         dist/web-ui/. Skip message should say: 'dist/web-ui/ not populated — run npm run build to
         include bundled web UI tests'. Keep any tests that DON'T depend on build artifacts running
         normally."
+      supersedes: null
+    - _ulid: 01KKAHF5KG066FYKBS8A391GC0
+      created_at: 2026-03-10T00:13:38.800Z
+      author: Jacob Chapel
+      content: "Blocked: Need to decide how to handle this, as skipping tests is not the right answer"
       supersedes: null
   todos: []
   automation: eligible
