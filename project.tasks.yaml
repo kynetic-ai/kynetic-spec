@@ -86968,6 +86968,32 @@
         registered via /ws?project=... or X-Kspec-Dir WebSocket binding still miss periodic session
         pulls."
       supersedes: null
+    - _ulid: 01KKCM84FNVANBA5758YBD8Y94
+      created_at: 2026-03-10T19:40:42.869Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 addressed: Wired WebSocket auto-registration into session-sync lifecycle.
+        Changes:
+
+        1. Added getOrRegisterProject() to ProjectContextManager — returns {context, wasRegistered}
+        to unify the try-get-or-register pattern
+
+        2. All three registration paths (middleware, projects API, WebSocket beforeHandle) now use
+        the same shared onProjectRegistered callback
+
+        3. WebSocket beforeHandle now calls onProjectRegistered(projectContext.path) when
+        wasRegistered=true, starting session sync for WebSocket-registered projects
+
+        4. Added 5 new tests for getOrRegisterProject covering: new registration, existing project,
+        path normalization, double-register prevention, and callback-only-on-new-registration
+        pattern
+
+        5. Middleware also refactored to use getOrRegisterProject for consistency, and error log
+        messages now use normalized projectContext.path
+
+        All 12 tests in daemon-session-sync-multi-project.test.ts pass. Full suite green except
+        pre-existing trait-retrospective failures.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
