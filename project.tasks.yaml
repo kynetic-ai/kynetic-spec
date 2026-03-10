@@ -84832,6 +84832,18 @@
 
         SSR note: All SvelteKit pages in this project export ssr=false,
         so DOMPurify and highlight.js DOM dependencies are not a concern.
+    - _ulid: 01KKB5MTA5Y60GSAG9DR3FP6F7
+      created_at: 2026-03-10T06:06:15.365Z
+      author: "@claude"
+      content: |-
+        Execution context:
+        - Background: Port proven streaming markdown pattern from kynetic-internal to kspec web UI
+        - Scope: Create StreamingMarkdown.svelte component, highlight.ts wrapper, shared sanitize.ts. Install streaming-markdown@^0.2.15 + highlight.js@^11.11.1. Drop KaTeX/Mermaid from the port.
+        - Files to port FROM: /home/chapel/Projects/kynetic-internal/packages/hub-ui/src/lib/components/chat/StreamingMarkdown.svelte, highlight.ts, sanitize.ts, app.css (lines 256-331 for syntax theme)
+        - Files to create IN: packages/web-ui/src/lib/components/markdown/StreamingMarkdown.svelte, packages/web-ui/src/lib/utils/highlight.ts, packages/web-ui/src/lib/utils/sanitize.ts
+        - Key decisions: Use highlight.js/lib/core with individual language imports (15 languages). Create shared sanitize.ts with unified DOMPurify config used by both StreamingMarkdown and static renderMarkdown.
+        - Verification: npm run build succeeds. Component renders streaming content with incremental updates. Code blocks get syntax highlighting after streaming ends.
+      supersedes: null
   todos: []
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
   slugs:
