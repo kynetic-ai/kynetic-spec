@@ -1512,14 +1512,6 @@ inbox:
       - validate
       - alignment
     added_by: "@claude"
-  - _ulid: 01KK3HRRVMQDEQP7NDRHAKEG8J
-    text: Triage page (routes/triage/+page.svelte) still uses $app/stores instead of $app/state — same
-      filter dropdown reactivity bug as inbox page
-    created_at: 2026-03-07T07:04:12.404Z
-    tags:
-      - bug
-      - web-ui
-    added_by: "@claude"
   - _ulid: 01KK5ETB1FQVBVFX99G95C1TZJ
     text: Multi-project agent dashboard — tmux-style live view of all running agent sessions across
       projects. Show terminal-like panes for each active session with real-time output, agent name,
