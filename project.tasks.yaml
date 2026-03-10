@@ -84413,7 +84413,7 @@
   spec_ref: "@ui-url-panel-state"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -84423,7 +84423,7 @@
     - web-ui
     - navigation
   vcs_refs: []
-  session_id: 01KKBE178788KNTDG8FGREN2YB
+  session_id: null
   created_at: 2026-03-10T04:06:59.703Z
   started_at: 2026-03-10T08:33:07.080Z
   submitted_at: 2026-03-10T08:40:05.398Z
@@ -84529,6 +84529,14 @@
         Build passes cleanly. 2 pre-existing test failures (codex platform detection) confirmed on
         main — unrelated to this change.
       supersedes: null
+    - _ulid: 01KKBFEJTQWJ2C8JXS4VQK0Z6W
+      created_at: 2026-03-10T08:57:36.855Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #738 implements @ui-url-panel-state with
+        goto(), but the branch has no test annotations for @ui-url-panel-state ac-1..ac-4. Local npm
+        test passed and CI is green; blocker is missing trait AC coverage documented in review
+        3920803050."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PGRCT3XKTY3MVBVKTM87
@@ -84578,6 +84586,7 @@
   session_id: 01KKBEFENC21KYK05KCP8E26TD
   created_at: 2026-03-10T05:32:14.534Z
   started_at: 2026-03-10T08:40:55.285Z
+  submitted_at: 2026-03-10T08:50:20.803Z
   notes:
     - _ulid: 01KKB3PHA6F3AFZ9F6JQ2TQ3PX
       created_at: 2026-03-10T05:32:14.534Z
@@ -84619,7 +84628,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T08:50:20.803Z
 - _ulid: 01KKB3PHV6B1KRKKKHPVAZJZTR
   slugs:
     - implement-session-list-infinite-scroll-ui
