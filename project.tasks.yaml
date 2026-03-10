@@ -84643,6 +84643,7 @@
         for backward compat. Share filter logic between CLI and daemon where
         possible — extract to a shared filterSessions() function.
   todos: []
+  automation: eligible
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
   slugs:
     - implement-task-and-spec-session-context
