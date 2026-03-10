@@ -83834,6 +83834,15 @@
         done yet — this session only created the spec and tasks. Task is ready for an agent to pick
         up. Leaving in_progress for next dispatch cycle.
       supersedes: null
+    - _ulid: 01KKAHDWR4BE8HGXPMP1SVY4G9
+      created_at: 2026-03-10T00:12:56.964Z
+      author: "@claude"
+      content: Replaced 2 timeline tests that used 48 sequential CLI subprocess calls each (12 iterations
+        × 4 task lifecycle calls) with direct YAML fixture seeding via seedCompletedTasks() helper.
+        The helper reads existing project.tasks.yaml, appends completed task entries with staggered
+        timestamps, and writes back. Tests no longer need the 30s timeout override. All 43 tests in
+        the file pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
