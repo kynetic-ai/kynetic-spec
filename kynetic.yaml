@@ -51,6 +51,9 @@ traits:
         description: Test-only trait for validating trait inheritance mechanics in the kspec system. Used by
           test fixtures to verify that traits correctly propagate acceptance criteria to inheriting
           specs.
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFDZSHFAV02EW1F6Y20MAF51
     slugs:
       - trait-multi-ref-batch
