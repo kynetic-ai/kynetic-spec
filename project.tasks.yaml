@@ -84918,7 +84918,9 @@
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-batch-item-fetch-api"
+    - "@implement-streaming-markdown-component"
   context: []
   priority: 3
   tags: []
