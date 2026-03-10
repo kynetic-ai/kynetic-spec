@@ -87132,7 +87132,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -87142,7 +87142,7 @@
     - session
     - dx
   vcs_refs: []
-  session_id: 01KKCJ8XZYEXY33AYK09X4E6N7
+  session_id: null
   created_at: 2026-03-10T16:43:54.869Z
   started_at: 2026-03-10T19:13:14.842Z
   submitted_at: 2026-03-10T19:23:24.052Z
@@ -87224,6 +87224,14 @@
         sequences), so ToolCallView routes orphaned CSI text through ansiToHtml() which strips the
         fragments. Added 3 new tests: integration path test, lastIndex safety regression test, and
         expanded ac-8 detection test. 52/52 ANSI tests pass."
+      supersedes: null
+    - _ulid: 01KKCMKRMR06QYWDZ7AHCK32RW
+      created_at: 2026-03-10T19:47:03.961Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: ANSI parser leaves private-mode CSI sequences
+        like \\x1b[?25l/[?25l visible instead of stripping them, and npm test currently fails on PR
+        head (9 failing tests across integration.test.ts and trait-retrospective.test.ts). Review
+        posted on PR #760."
       supersedes: null
   todos: []
   automation: eligible
