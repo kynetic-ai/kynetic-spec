@@ -85920,7 +85920,7 @@
     (these skills are managed by the plugin, not locally rendered, so drift detection does not
     apply). Update tests in tests/skill-rendering.test.ts.
   spec_ref: "@platform-renderer-trait"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85978,6 +85978,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T13:09:21.555Z
+  closed_reason: "Merged in PR #747 (commit c235f052b56431ae66fb85729f223d3c0045a1d2). Added explicit
+    plugin-provided handling to skill verify so plugin-managed core skills are surfaced instead of
+    falling through as drift/no-hash, updated output summaries, and verified the fix-cycle test now
+    creates a true plugin-provided-only scenario. AC coverage confirmed via behavioral tests for
+    @platform-renderer-trait ac-2 and current-head CI passing."
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
