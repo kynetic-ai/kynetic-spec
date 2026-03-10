@@ -1,7 +1,6 @@
 /**
  * Vitest setup file — runs before each test file.
  *
- * AC: @test-suite-perf-reliability ac-4
  * Ensures globalThis.crypto exists in Node environments that lack it.
  */
 import crypto from "node:crypto";

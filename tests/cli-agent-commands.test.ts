@@ -1399,7 +1399,6 @@ function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): 
  * Poll for a condition to become true, up to maxWaitMs.
  * Used to handle async initContext() completing before WebSocket is created.
  */
-// AC: @test-suite-perf-reliability ac-3
 async function waitFor(
   condition: () => boolean,
   maxWaitMs = 2000,
@@ -2438,5 +2437,99 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(exitCode).toBe(4);
     expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
     expect(wsCtor).not.toHaveBeenCalled();
+  });
+});
+
+// AC: @test-suite-perf-reliability ac-3
+describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("should enforce 2000ms default timeout floor for waitFor wrapper", async () => {
+    // AC-3 requires polling timeout >= 2000ms with configurable override.
+    // Use fake timers so we can verify the timeout duration without real-time waits.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    let probeCount = 0;
+    let rejected = false;
+    let rejectionError: Error | undefined;
+
+    // Start the waitFor — attach a handler immediately to prevent unhandled rejection
+    const waitPromise = waitFor(() => {
+      probeCount++;
+      return false; // never resolves
+    }).catch((e: Error) => {
+      rejected = true;
+      rejectionError = e;
+    });
+
+    // Advance just under 2000ms — should NOT have thrown yet
+    await vi.advanceTimersByTimeAsync(1900);
+    // probeCount > 0 confirms the helper is actually polling
+    expect(probeCount).toBeGreaterThan(0);
+    expect(rejected).toBe(false);
+
+    // Advance past 2000ms — should reject with timeout
+    await vi.advanceTimersByTimeAsync(200);
+    await waitPromise;
+
+    expect(rejected).toBe(true);
+    expect(rejectionError?.message).toMatch(/timed out/i);
+    expect(rejectionError?.message).toContain("2000ms");
+  });
+
+  it("should include last observed state in timeout error message", async () => {
+    // AC-3 requires timeout errors include the last observed state for diagnosis.
+    const err = await waitForStartup(
+      "diagnostic-probe",
+      async () => ({ ok: false, details: "ws_connected=false pending_ack=true" }),
+      { timeoutMs: 50, intervalMs: 10 },
+    ).catch((e: Error) => e);
+
+    expect(err).toBeInstanceOf(Error);
+    // Must include the description
+    expect((err as Error).message).toContain("diagnostic-probe");
+    // Must include the last observed state details
+    expect((err as Error).message).toContain("ws_connected=false pending_ack=true");
+    // Must include "Last observation" label for diagnosis
+    expect((err as Error).message).toContain("Last observation");
+  });
+
+  it("should allow configurable timeout override", async () => {
+    // AC-3: "configurable override" — callers can pass a custom timeout.
+    const start = Date.now();
+    await expect(
+      waitForStartup(
+        "short override test",
+        async () => ({ ok: false, details: "still waiting" }),
+        { timeoutMs: 100, intervalMs: 10 },
+      ),
+    ).rejects.toThrow(/timed out/i);
+    const elapsed = Date.now() - start;
+    // Should respect the override (100ms), not the default
+    expect(elapsed).toBeLessThan(2000);
+    expect(elapsed).toBeGreaterThanOrEqual(100);
+  });
+});
+
+// AC: @test-suite-perf-reliability ac-4
+describe("AC-4: crypto polyfill prevents ReferenceError", () => {
+  it("should have globalThis.crypto available after setup", () => {
+    // The vitest setup file (tests/setup.ts) polyfills globalThis.crypto
+    // for Node environments that lack it. This test verifies the polyfill
+    // is active and crypto.randomUUID does not throw ReferenceError.
+    expect(globalThis.crypto).toBeDefined();
+    expect(typeof globalThis.crypto.randomUUID).toBe("function");
+  });
+
+  it("should produce valid UUIDs via globalThis.crypto.randomUUID", () => {
+    // Verify the polyfilled crypto.randomUUID returns a well-formed UUID,
+    // not just that it exists. Code using WebSocket or crypto APIs in tests
+    // depends on this producing real values.
+    const uuid = globalThis.crypto.randomUUID();
+    expect(uuid).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
   });
 });
