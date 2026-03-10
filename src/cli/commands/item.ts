@@ -895,6 +895,10 @@ Examples:
     .option("--clear-relates-to", "Clear all relates_to references")
     .option("--clear-implements", "Clear all implements references")
     .option("--clear-depends-on", "Clear all depends_on references")
+    .option(
+      "--no-cascade",
+      "Skip child status cascade prompt (apply change only to target item)",
+    )
     .addHelpText(
       "after",
       `
@@ -904,7 +908,8 @@ Examples:
   $ kspec item set @item-ref --trait reusable testable
   $ kspec item set @item-ref --relates-to @other-item
   $ kspec item set @item-ref --implements @feature-spec
-  $ kspec item set @item-ref --depends-on @prereq-spec`,
+  $ kspec item set @item-ref --depends-on @prereq-spec
+  $ kspec item set @item-ref --status implemented --no-cascade`,
     )
     .action(async (ref, options) => {
       try {
@@ -1129,7 +1134,7 @@ Examples:
 
         // Handle cascade for implementation status updates
         const updatedItems: LoadedSpecItem[] = [updated];
-        if (options.status) {
+        if (options.status && options.cascade !== false) {
           const cascadeResult = await handleStatusCascade(
             ctx,
             updated,
