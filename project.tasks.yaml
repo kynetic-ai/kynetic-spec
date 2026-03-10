@@ -84137,6 +84137,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #735. Added scripts/test.cjs as the default npm test entry point to
+    verify/fix dependencies and build artifacts before vitest runs, with cleaner runner-level
+    summaries and extensible pre/post hooks. AC coverage for @test-suite-perf-reliability ac-5 and
+    ac-6 was verified on the merged head; spec has no inherited traits."
   depends_on: []
   context: []
   priority: 3
@@ -84149,6 +84153,7 @@
   created_at: 2026-03-10T00:20:53.439Z
   started_at: 2026-03-10T02:27:03.743Z
   submitted_at: 2026-03-10T02:27:07.860Z
+  completed_at: 2026-03-10T02:35:39.053Z
   notes:
     - _ulid: 01KKAHWRN13YXRYTM9KH4C6HWM
       created_at: 2026-03-10T00:21:04.289Z
@@ -84257,11 +84262,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T02:35:39.053Z
-  closed_reason: "Merged in PR #735. Added scripts/test.cjs as the default npm test entry point to
-    verify/fix dependencies and build artifacts before vitest runs, with cleaner runner-level
-    summaries and extensible pre/post hooks. AC coverage for @test-suite-perf-reliability ac-5 and
-    ac-6 was verified on the merged head; spec has no inherited traits."
 - _ulid: 01KKAJ7N0ZD6WEDAAX1EPRHKZB
   slugs:
     - task-fix-modal-ref-cleanup
@@ -84275,12 +84275,9 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: "Merged in PR #736 (merge commit 7fa4a5919f23bd51f9beb804224d2d56470a5dd2). Fixed
-    task detail modal URL cleanup on both /tasks and /tasks/board so closing the modal removes ?ref=
-    and it does not immediately reopen. AC coverage for @ui-task-board ac-7 was reviewed in the
-    added E2E tests and regression checks passed on the reviewed HEAD."
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
@@ -84288,11 +84285,11 @@
     - bug
     - web-ui
   vcs_refs: []
-  session_id: 01KKAP67JHGG955HVD798Z2DE6
+  session_id: null
   created_at: 2026-03-10T00:27:01.022Z
-  started_at: 2026-03-10T01:40:10.549Z
+  started_at: null
   submitted_at: 2026-03-10T01:45:08.614Z
-  completed_at: 2026-03-10T02:16:50.047Z
+  completed_at: null
   notes:
     - _ulid: 01KKAJ81X8MK59XVYTTPKNJDVW
       created_at: 2026-03-10T00:27:14.216Z
@@ -84344,6 +84341,11 @@
 
         3. E2E tests added to both tasks.spec.ts and task-board.spec.ts covering: closing modal via
         ESC removes param, closing modal opened via URL param removes param and modal stays closed
+      supersedes: null
+    - _ulid: 01KKAV3XR051P34JJTW3KMV8AM
+      created_at: 2026-03-10T03:02:16.064Z
+      author: "@claude"
+      content: Reset from completed to pending
       supersedes: null
   todos: []
   automation: eligible
