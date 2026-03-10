@@ -1364,6 +1364,9 @@ conventions:
         sequences when tests need distinct IDs.
       - In tests that run git commit in temp repos, set git config user.name and git config
         user.email after git init.
+      - Always use npm test (or npm run test:shard1/2/3 for faster dev runs) to run tests. Never
+        invoke vitest or npx vitest directly — the test runner script (scripts/test.cjs) performs
+        environment readiness checks before executing.
     examples: []
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
