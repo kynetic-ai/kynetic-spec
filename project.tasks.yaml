@@ -86730,7 +86730,7 @@
     AGENTS.md: if task modifies any file in templates/skills/ or .kspec/skills/, run kspec skill
     render and commit the rendered output. Small documentation change.
   spec_ref: "@platform-renderer-trait"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86751,6 +86751,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T17:22:18.634Z
+  closed_reason: "Merged in PR #756. Documented the skill-update workflow by adding a
+    regenerate-derived-files step to the task-work skill, adding the corresponding agent convention,
+    and regenerating the rendered task-work/agent outputs. Review verified this was a docs-only
+    change; full local test suite and PR CI passed, and workflow/rendered output alignment was
+    confirmed."
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
@@ -86800,6 +86806,7 @@
   session_id: 01KKCATEVGR2MJMFRSWHVHQP1Z
   created_at: 2026-03-10T08:18:08.350Z
   started_at: 2026-03-10T17:05:09.234Z
+  submitted_at: 2026-03-10T17:16:10.999Z
   notes:
     - _ulid: 01KKCBYYG2AYE507EP3K3Q827E
       created_at: 2026-03-10T17:15:53.219Z
@@ -86824,7 +86831,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T17:16:10.999Z
 - _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
   title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
