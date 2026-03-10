@@ -83920,7 +83920,7 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -84004,6 +84004,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T01:51:40.911Z
+  closed_reason: "Merged in PR #734 (f98853148230fa02df52bc14950b9ddd57b3db14). Stabilized dispatch
+    watch WebSocket timing by raising wait/poll timeouts to 2000ms, improving timeout diagnostics,
+    and adding a global crypto polyfill plus behavioral AC-3/AC-4 tests that exercise the
+    missing-crypto path. AC coverage for the scoped task was verified, targeted cli-agent-commands
+    tests passed on the PR head, and CI/full regression were green."
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
   slugs:
     - task-verify-cli-serve-foreground-stable
@@ -84241,6 +84247,7 @@
   session_id: 01KKAP67JHGG955HVD798Z2DE6
   created_at: 2026-03-10T00:27:01.022Z
   started_at: 2026-03-10T01:40:10.549Z
+  submitted_at: 2026-03-10T01:45:08.614Z
   notes:
     - _ulid: 01KKAJ81X8MK59XVYTTPKNJDVW
       created_at: 2026-03-10T00:27:14.216Z
@@ -84295,4 +84302,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T01:45:08.614Z
