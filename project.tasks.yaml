@@ -86363,7 +86363,7 @@
     set, skip the cascade confirmation and apply change only to the targeted item. Update batch
     commands list if needed.
   spec_ref: "@trait-confirmation-prompt"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86385,6 +86385,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T14:01:19.339Z
+  closed_reason: "Merged in PR #752. Added --no-cascade flag to kspec item set command. When provided,
+    skips handleStatusCascade entirely so status changes apply only to the target item without
+    prompting to cascade to children. Two integration tests verify: no prompt shown and children
+    remain unchanged."
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
