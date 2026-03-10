@@ -2631,13 +2631,15 @@ triage:
       pairs which are difficult to parse programmatically. Should return flat { "items": [...],
       "total": N } shape consistent with other JSON commands. Check for existing consumers before
       changing.'
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: item list --json returns nested pairs instead of flat object — breaks programmatic usage
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.495Z
-    updated_at: 2026-03-10T08:17:09.514Z
+    updated_at: 2026-03-10T08:17:55.917Z
+    acted_at: 2026-03-10T08:17:55.897Z
+    result_ref: "@01KKBD5W"
   - _ulid: 01KKBD4GDTXZ4K7A5S84VG5RCE
     inbox_ref: 01KJXP9CS7E3GJ27DM8970MM46
     item_snapshot: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug
@@ -2650,10 +2652,10 @@ triage:
       validate command
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.562Z
-    updated_at: 2026-03-10T08:17:52.378Z
     acted_at: 2026-03-10T08:17:52.359Z
     result_ref: "@01KKBD5S"
+    created_at: 2026-03-10T08:17:09.562Z
+    updated_at: 2026-03-10T08:17:52.378Z
   - _ulid: 01KKBD4GG08Z4BFCS9AZZYSA2X
     inbox_ref: 01KJXP5TGJ6CCC2D45C4RS9B4X
     item_snapshot: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply

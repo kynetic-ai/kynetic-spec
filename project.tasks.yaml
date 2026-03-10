@@ -85723,22 +85723,42 @@
   created_at: 2026-03-10T08:17:47.882Z
   notes: []
   todos: []
-- title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
+- _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
+  slugs: []
+  title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
     comments and v"
+  type: task
+  description: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
+    comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec. Surface
+    as completeness warnings. Catches typos like @alignment-validation-warnings before review."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:51.248Z
+  notes: []
+  todos: []
+- title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
+    which are"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
-    comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec. Surface
-    as completeness warnings. Catches typos like @alignment-validation-warnings before review."
-  _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
+  description: 'Fix kspec item list --json output structure: currently returns nested [items, count]
+    pairs which are difficult to parse programmatically. Should return flat { "items": [...],
+    "total": N } shape consistent with other JSON commands. Check for existing consumers before
+    changing.'
+  _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:51.248Z
+  created_at: 2026-03-10T08:17:54.728Z
   notes: []
   todos: []

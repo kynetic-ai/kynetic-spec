@@ -1365,14 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJXPG80VDQWGT01KTJ7GGWYW
-    text: 'Fix kspec item list --json output structure: currently returns nested [items, count] pairs
-      which are difficult to parse programmatically. Should return flat { "items": [...], "total": N
-      } shape consistent with other JSON commands. Check for existing consumers before changing.'
-    created_at: 2026-03-05T00:31:29.308Z
-    tags:
-      - cli
-    added_by: "@claude"
   - _ulid: 01KJY9H27H9HRBH303RQJCKH4B
     text: Alignment status calculation should treat needs_work and pending_review as active work states
       (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
