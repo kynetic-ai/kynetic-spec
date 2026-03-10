@@ -86418,6 +86418,7 @@
   session_id: 01KKC0688YF74PFYQB0KKBHXVE
   created_at: 2026-03-10T08:17:51.248Z
   started_at: 2026-03-10T14:02:44.952Z
+  submitted_at: 2026-03-10T14:11:18.971Z
   notes:
     - _ulid: 01KKC121YKQRB3GD3JEMRP66RJ
       created_at: 2026-03-10T14:05:20.723Z
@@ -86436,9 +86437,23 @@
 
         - Verification: New test file + full test suite pass
       supersedes: null
+    - _ulid: 01KKC1E83BS6CQRN7RXGDF8FAG
+      created_at: 2026-03-10T14:12:00.236Z
+      author: "@claude"
+      content: |-
+        PR created: https://github.com/kynetic-ai/kynetic-spec/pull/753
+
+        Implementation summary:
+        - Added scanACAnnotations() for structured AC annotation scanning (file/line info)
+        - Added validateACAnnotations() to check @slug resolution and ac-N existence
+        - Added 'invalid_ac_annotation' CompletenessWarningType
+        - Integrated into validate() completeness checks (runs by default)
+        - CLI displays invalid annotations in completeness warnings section
+        - 15 tests covering resolution, AC existence, traits, and edge cases
+        - Full test suite passes (198 files, 4352 tests)
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T14:11:18.971Z
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
   slugs: []
   title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
