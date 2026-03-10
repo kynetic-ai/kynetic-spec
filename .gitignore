@@ -1,3 +1,4 @@
 # Ephemeral artifacts - reports, exports, one-off generated files
 # Not tracked in shadow branch
 artifacts/
+sessions/
