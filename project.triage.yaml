@@ -2311,9 +2311,9 @@ triage:
     reasoning: Fixed by in-memory WriteBuffer (commit 52f86b8f9) + sessions moved to .kspec-sessions/
     decided_by: "@claude"
     evidence_refs: []
+    acted_at: 2026-03-10T07:53:55.815Z
     created_at: 2026-03-10T07:53:08.628Z
     updated_at: 2026-03-10T07:53:55.835Z
-    acted_at: 2026-03-10T07:53:55.815Z
   - _ulid: 01KKBBRHCAEZR3VKMBPY62YGYZ
     inbox_ref: 01KJS6ESNC2EMH2K2ATJCV1CMR
     item_snapshot: "kspec batch: item add + item set in same batch fails — newly created item slug not
@@ -2492,3 +2492,278 @@ triage:
     result_ref: "@01KKBBS1"
     created_at: 2026-03-10T07:53:09.574Z
     updated_at: 2026-03-10T07:53:26.466Z
+  - _ulid: 01KKBD4FNZ7XP910HKGVCR4BCT
+    inbox_ref: 01KKB9X155J0DJ8PFQ6DAFDG25
+    item_snapshot: "CLI DX: audit and normalize argument naming across all subcommands. Inconsistencies
+      found: task note uses positional <message> but plan note uses --text flag; item ac set vs
+      expected item ac update; task set --depends-on requires array but gives poor error on
+      comma-separated string. Evaluate entire CLI surface area for consistency or add aliases based
+      on actual/expected usage patterns."
+    status: triaged
+    action: defer
+    reasoning: Large scope audit — no single fix, defer until CLI stabilization phase
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:08.799Z
+    updated_at: 2026-03-10T08:17:08.822Z
+  - _ulid: 01KKBD4FS43KP9AJCY18GND080
+    inbox_ref: 01KKB0WWM9QRKCVE1CBMKE6ZY4
+    item_snapshot: "CLI mutation commands should show what changed (before → after) in output,
+      especially for array fields like --trait that replace rather than append. Two improvements:
+      (1) item set --trait should append by default (or have --add-trait / --remove-trait), (2) all
+      mutating commands should display diffs of what they changed so silent data loss is visible.
+      Triggered by --trait silently replacing existing traits array."
+    status: triaged
+    action: promote
+    reasoning: "User-facing footgun: --trait replaces instead of appending. Known gotcha already
+      documented in MEMORY.md"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:08.900Z
+    updated_at: 2026-03-10T08:17:08.921Z
+  - _ulid: 01KKBD4FVFFQZ0BHFMSRE2PW0V
+    inbox_ref: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
+    item_snapshot: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
+      so additional registered projects get periodic session pulls too."
+    status: triaged
+    action: promote
+    reasoning: "SHOULD-FIX from PR #723 review — daemon session-branch sync limited to startupProjectPath"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:08.975Z
+    updated_at: 2026-03-10T08:17:08.995Z
+  - _ulid: 01KKBD4FXSGWA95VA8WXBKK5E6
+    inbox_ref: 01KK69HXSET7B215A80ZY1EKJH
+    item_snapshot: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style
+      scheduled triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift
+      check, hourly inbox triage). (2) Boundary/lifecycle triggers — fire after task.completed for
+      cleanup (branch deletion, stale worktree cleanup, docs regeneration), after PR merge for
+      downstream updates, after session.end for reflection capture. (3) Project health agents —
+      dedicated agents for validation sweeps, dependency freshness, test coverage gaps, dead code
+      detection, spec-code alignment drift. (4) Multi-agent review — dispatch multiple reviewers
+      concurrently on pending_review with different perspectives (code quality vs spec alignment vs
+      security), then synthesize findings before merge decision. (5) Event composition — triggers
+      that combine conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or
+      when validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
+      webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
+    status: triaged
+    action: promote
+    reasoning: Design/spec task for dispatch trigger expansion — cron, webhook, file-watch triggers.
+      Manual only, design phase first
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.049Z
+    updated_at: 2026-03-10T08:17:09.071Z
+  - _ulid: 01KKBD4G0EJHEYW88GHVEEZ6Z3
+    inbox_ref: 01KK6168DMHH6H5EM7277P4Y1B
+    item_snapshot: "kspec setup should update existing agent definitions on version bumps. Currently
+      skips agents with matching IDs, so agents created with older kspec versions miss new fields
+      like auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve
+      set, blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add
+      kspec setup --upgrade flag, (3) warn when agent config is missing expected fields."
+    status: triaged
+    action: promote
+    reasoning: "Clear DX improvement: setup should update agent defs on version bumps instead of
+      skipping matching IDs"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.134Z
+    updated_at: 2026-03-10T08:17:09.158Z
+  - _ulid: 01KKBD4G38VNC1HHRB7T9EE4JC
+    inbox_ref: 01KK5WHSWGB2SNA5B1498X0JAQ
+    item_snapshot: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores
+      agent prompt_template and always injects a hardcoded work prompt, so review agents drift into
+      implementation. Prompt-driven codex-acp runs are also brittle and can fail with RPC parse
+      errors. Need a reliable readonly review path with prompt_template parity, dry-run parity, and
+      adapter-safe prompt handling."
+    status: triaged
+    action: promote
+    reasoning: "Bug in agent run: --task ignores prompt_template, injects hardcoded work prompt. Review
+      agents drift into implementation"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.224Z
+    updated_at: 2026-03-10T08:17:09.244Z
+  - _ulid: 01KKBD4G5DAVCGDV23HKVMACDK
+    inbox_ref: 01KK5ETB1FQVBVFX99G95C1TZJ
+    item_snapshot: Multi-project agent dashboard — tmux-style live view of all running agent sessions
+      across projects. Show terminal-like panes for each active session with real-time output, agent
+      name, task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances.
+      Think mission control for agent fleet monitoring without navigating to individual project UIs.
+    status: triaged
+    action: promote
+    reasoning: Design/spec task for multi-project agent dashboard. Manual only, needs design phase
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.293Z
+    updated_at: 2026-03-10T08:17:09.313Z
+  - _ulid: 01KKBD4G7K79AXXGJCB219MSAM
+    inbox_ref: 01KK30AYASRF6F546A5W3G14DR
+    item_snapshot: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies
+      a SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
+      Currently agents don't know this step exists and users have to remind them. Could be a
+      post-step in task-work or a convention in AGENTS.md."
+    status: triaged
+    action: promote
+    reasoning: Document skill update workflow — agents dont know to run kspec skill render after
+      modifying SKILL.md
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.363Z
+    updated_at: 2026-03-10T08:17:09.379Z
+  - _ulid: 01KKBD4G9ME9DYQ9NRCZPWCNJY
+    inbox_ref: 01KJY9H27H9HRBH303RQJCKH4B
+    item_snapshot: Alignment status calculation should treat needs_work and pending_review as active
+      work states (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
+      @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
+      task.
+    status: triaged
+    action: promote
+    reasoning: Alignment calculation fix — needs_work and pending_review should map to in_progress. Was
+      prototyped already
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.428Z
+    updated_at: 2026-03-10T08:17:09.447Z
+  - _ulid: 01KKBD4GBQ9PYTEFH346EW03QG
+    inbox_ref: 01KJXPG80VDQWGT01KTJ7GGWYW
+    item_snapshot: 'Fix kspec item list --json output structure: currently returns nested [items, count]
+      pairs which are difficult to parse programmatically. Should return flat { "items": [...],
+      "total": N } shape consistent with other JSON commands. Check for existing consumers before
+      changing.'
+    status: triaged
+    action: promote
+    reasoning: item list --json returns nested pairs instead of flat object — breaks programmatic usage
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.495Z
+    updated_at: 2026-03-10T08:17:09.514Z
+  - _ulid: 01KKBD4GDTXZ4K7A5S84VG5RCE
+    inbox_ref: 01KJXP9CS7E3GJ27DM8970MM46
+    item_snapshot: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug
+      ac-N comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec.
+      Surface as completeness warnings. Catches typos like @alignment-validation-warnings before
+      review."
+    status: triaged
+    action: promote
+    reasoning: AC annotation validation — verify slug resolves and ac-N exists. Extends existing
+      validate command
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.562Z
+    updated_at: 2026-03-10T08:17:09.578Z
+  - _ulid: 01KKBD4GG08Z4BFCS9AZZYSA2X
+    inbox_ref: 01KJXP5TGJ6CCC2D45C4RS9B4X
+    item_snapshot: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
+      change only to targeted item. Needed when bulk-updating many specs in scripts — currently
+      requires yes | workaround which breaks kspec batch."
+    status: triaged
+    action: promote
+    reasoning: --no-cascade flag for item set — needed for bulk scripting, currently requires yes pipe
+      workaround
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.632Z
+    updated_at: 2026-03-10T08:17:09.650Z
+  - _ulid: 01KKBD4GJ477Y6HZ22BR49RD7W
+    inbox_ref: 01KJXFS1A8QE3YPJ0J0HDY4SVJ
+    item_snapshot: "`kspec setup` renders codex skills to `.agents/skills/` but does not store render
+      hashes in the kspec-meta branch. This leaves all codex skills showing as `drifted` in `kspec
+      skill status` immediately after a fresh setup. Workaround: delete rendered files and re-run
+      `kspec skill render` so hashes are written. Fix: setup should store render hashes when it
+      renders skills."
+    status: triaged
+    action: duplicate
+    reasoning: "Duplicate of promoted task @01KKBBSD — same issue: codex skill render hashes not stored"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.700Z
+    updated_at: 2026-03-10T08:17:09.718Z
+  - _ulid: 01KKBD4GM79AAZZFVMDX00VMAF
+    inbox_ref: 01KJXFRHPQ44N29GATSVJZAZTN
+    item_snapshot: When running `kspec setup` or `kspec init --setup`, automatically install default
+      workflows referenced in core skills (e.g. `session-reflect`, `session-reflect-loop`,
+      `task-work-session`, `local-review`, etc). Currently these workflows are referenced in core
+      skill docs but not installed by default, causing `kspec workflow start @session-reflect` to
+      fail on a fresh project. They should be bundled and installed the same way core skills are via
+      `install-core`.
+    status: triaged
+    action: promote
+    reasoning: Auto-install default workflows during setup — clear scope, extends existing setup flow
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.767Z
+    updated_at: 2026-03-10T08:17:09.809Z
+  - _ulid: 01KKBD4GQCRDWTDRVNCTG27VKM
+    inbox_ref: 01KJVY4MRHGP0V4ZH4QSMP0Q4M
+    item_snapshot: "Dispatch: add refresh command to re-bootstrap engine state without stopping/starting
+      (reload agents + re-evaluate in_progress tasks)."
+    status: triaged
+    action: defer
+    reasoning: Nice-to-have dispatch refresh — stop/start works for now
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.868Z
+    updated_at: 2026-03-10T08:17:09.888Z
+  - _ulid: 01KKBD4GSRDV0WQQ7XZM477KRW
+    inbox_ref: 01KJVP7YTYMMXN9K64WTS1XEP4
+    item_snapshot: "Reflection: Harden machine-readable output contracts for JSON commands (especially
+      'kspec validate --json') so output is strict JSON with no trailing text, enabling reliable
+      jq-based automation."
+    status: triaged
+    action: promote
+    reasoning: validate --json outputs non-strict JSON with trailing text — breaks jq automation
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:09.944Z
+    updated_at: 2026-03-10T08:17:09.963Z
+  - _ulid: 01KKBD4GVXH7K1XTYDT75DA41A
+    inbox_ref: 01KJVP7W2N189NDC4SMQHR18GM
+    item_snapshot: "Reflection: Improve task note readability by supporting filtered views for
+      superseded history (for example latest-only and/or hide-superseded) to reduce stale guidance
+      noise during implementation."
+    status: triaged
+    action: defer
+    reasoning: Filtered note views nice-to-have, not urgent — current full output workable
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:10.013Z
+    updated_at: 2026-03-10T08:17:10.030Z
+  - _ulid: 01KKBD4GY981HDE9VBNQ38PW5Q
+    inbox_ref: 01KJVP7VSXE38QW7TNTPSW4CNP
+    item_snapshot: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
+      should include current step metadata (step_index, step_type, step_content) so users/agents can
+      progress workflows without manually opening meta YAML."
+    status: triaged
+    action: promote
+    reasoning: Workflow show --json with step metadata — enables workflow automation and agent progress
+      tracking
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:10.089Z
+    updated_at: 2026-03-10T08:17:10.108Z
+  - _ulid: 01KKBD4H0FWTTAM74TKAB41SSZ
+    inbox_ref: 01KJVP3S8TYHGHFHT4KZ1BQZ9C
+    item_snapshot: "Workflow UX: allow kspec workflow show (and related workflow run commands where
+      safe) to default to the single active run instead of requiring explicit run-ref."
+    status: triaged
+    action: promote
+    reasoning: "Small UX fix: workflow show should default to single active run instead of requiring
+      explicit ref"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:10.159Z
+    updated_at: 2026-03-10T08:17:10.181Z
+  - _ulid: 01KKBD4H2V9S48KWYCBEQ47D7A
+    inbox_ref: 01KJVFDRC70KAZ98MJ9ERFY6JJ
+    item_snapshot: Clarify @task-work submit timing and pending_review ownership semantics. Current
+      wording can imply both 'submit after PR created' and 'submit before PR creation'. Normalize to
+      one sequence (submit transitions ownership to pr-reviewer queue before PR handoff) and make
+      worker/reviewer responsibilities explicit.
+    status: triaged
+    action: promote
+    reasoning: "Small doc fix: update plan-review dispatch naming to avoid role overload with pr-reviewer"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T08:17:10.235Z
+    updated_at: 2026-03-10T08:17:10.258Z
