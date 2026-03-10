@@ -576,7 +576,7 @@ traits:
           must pass base readiness before any consumer filter is evaluated.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KKB5HX59RKS2EVNG7DPND7YE
     slugs:
       - trait-markdown-rendering
