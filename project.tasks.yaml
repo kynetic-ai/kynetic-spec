@@ -84079,3 +84079,29 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix task detail modal not clearing ?ref= query param on close
+  description: When a task detail modal is open (via ?ref= URL param), clicking outside/ESC/close
+    button closes the modal but does not remove the ?ref= param from the URL. The modal immediately
+    reopens because the reactive effect sees the param still present. Fix both /tasks (list view)
+    and /tasks/board (board view). Reference implementation exists in /specs page that correctly
+    cleans up the URL on modal close.
+  type: task
+  spec_ref: "@ui-task-board"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-fix-modal-ref-cleanup
+  tags:
+    - bug
+    - web-ui
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKAJ7N0ZD6WEDAAX1EPRHKZB
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T00:27:01.022Z
+  notes: []
+  todos: []
