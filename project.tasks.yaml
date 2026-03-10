@@ -87339,6 +87339,16 @@
         parsing, so previews can leak dangling ESC bytes when the 1000-char cutoff splits a control
         sequence. Review posted on PR #760."
       supersedes: null
+    - _ulid: 01KKCSX77W6JD0ECQGKE0YXTBX
+      created_at: 2026-03-10T21:19:36.700Z
+      author: "@claude"
+      content: "Fix cycle 3: Added safeTruncateAnsi() that strips trailing partial ESC sequences after
+        slicing, so the 1000-char preview cutoff never leaves dangling ESC bytes. ToolCallView now
+        uses safeTruncateAnsi(outputText, 1000) instead of raw .slice(0, 1000). Added 8 regression
+        tests covering: cutoff mid-sequence, lone trailing ESC, partial ESC[, preserved complete
+        sequences, and orphaned CSI fragments at boundary. All 65 ANSI tests pass. 14 pre-existing
+        failures (integration.test.ts + trait-retrospective.test.ts) confirmed identical on main."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEDW31WB42ZX52NJA51B4V
