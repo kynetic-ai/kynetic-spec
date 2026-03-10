@@ -84556,6 +84556,7 @@
         For stats, scan events.jsonl line count (fast) and grep for iteration
         markers. Only active sessions need stats refresh.
   todos: []
+  automation: eligible
 - _ulid: 01KKB3PHV6B1KRKKKHPVAZJZTR
   slugs:
     - implement-session-list-infinite-scroll-ui
