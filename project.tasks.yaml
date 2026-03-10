@@ -86502,16 +86502,16 @@
     src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
     infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: "@ref-validation"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKC8W4QBKS3Q1DNZZS811T91
   created_at: 2026-03-10T08:17:51.248Z
-  started_at: 2026-03-10T15:12:34.096Z
+  started_at: 2026-03-10T16:29:10.097Z
   submitted_at: 2026-03-10T15:25:34.884Z
   notes:
     - _ulid: 01KKC121YKQRB3GD3JEMRP66RJ
@@ -86627,6 +86627,10 @@
   spec_ref: "@trait-json-output"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #755. Updated item list/get JSON serialization to strip internal loader
+    fields, expose ulid/ref, and keep item list output as a clean structured payload with downstream
+    tests adjusted. AC coverage reviewed for @trait-json-output, targeted tests passed locally, full
+    npm test passed (4344 passed, 3 skipped), and CI was green on merged HEAD."
   depends_on: []
   context: []
   priority: 3
@@ -86636,6 +86640,7 @@
   created_at: 2026-03-10T08:17:54.728Z
   started_at: 2026-03-10T15:36:15.348Z
   submitted_at: 2026-03-10T16:04:10.105Z
+  completed_at: 2026-03-10T16:28:40.004Z
   notes:
     - _ulid: 01KKC7VBK7BB0TCEZVJ6VPA9H2
       created_at: 2026-03-10T16:04:01.255Z
@@ -86647,11 +86652,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T16:28:40.004Z
-  closed_reason: "Merged in PR #755. Updated item list/get JSON serialization to strip internal loader
-    fields, expose ulid/ref, and keep item list output as a clean structured payload with downstream
-    tests adjusted. AC coverage reviewed for @trait-json-output, targeted tests passed locally, full
-    npm test passed (4344 passed, 3 skipped), and CI was green on merged HEAD."
 - _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
   slugs: []
   title: "Alignment status calculation should treat needs_work and pending_review as active work
