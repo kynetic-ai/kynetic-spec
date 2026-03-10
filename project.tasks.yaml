@@ -86271,14 +86271,14 @@
     src/cli/commands/validate.ts for any console.log calls that bypass the JSON output mode. Add a
     test that pipes validate --json output through JSON.parse to catch regressions.
   spec_ref: "@trait-json-output"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKBXNQVPQP7ZBS4Z15MJFHR0
+  session_id: null
   created_at: 2026-03-10T08:17:37.116Z
   started_at: 2026-03-10T13:16:57.183Z
   submitted_at: 2026-03-10T13:24:10.097Z
@@ -86301,6 +86301,13 @@
           3. validate.ts: Lint command similarly restructured for JSON output purity
           4. tests/validate-exit-codes.test.ts: Added 5 new tests for JSON output purity covering ANSI-free output, completeness/alignment/skills data in JSON, and lint --json
         - Verification: All 4335 tests pass (197 files), 0 failures
+      supersedes: null
+    - _ulid: 01KKC0F8CGKN9RCRRNN0FKAAT2
+      created_at: 2026-03-10T13:55:04.720Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #750 fails npm test on current head.
+        tests/validate-exit-codes.test.ts expects validate --json to include alignmentWarnings and
+        skillValidation, but the submitted deliverable does not emit them."
       supersedes: null
   todos: []
   automation: eligible
@@ -86366,6 +86373,7 @@
   session_id: 01KKBYQZ8AZVY8AQN6CRK8106E
   created_at: 2026-03-10T08:17:47.882Z
   started_at: 2026-03-10T13:41:32.638Z
+  submitted_at: 2026-03-10T13:49:24.386Z
   notes:
     - _ulid: 01KKC04M1E409H3W0DSZ9GPQ5K
       created_at: 2026-03-10T13:49:16.206Z
@@ -86377,7 +86385,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T13:49:24.386Z
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
