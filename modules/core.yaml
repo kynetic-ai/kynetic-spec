@@ -895,7 +895,7 @@ features:
     created: 2026-03-02T01:22:19.874Z
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     requirements:
       - _ulid: 01KK7T2BMFFBH7PPST20MPC2TY
         slugs:
@@ -1101,7 +1101,7 @@ features:
               implementation: implemented
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KK7T2BN1AGYHZHDPY3HD28H6
         slugs:
           - session-legacy-migration
@@ -1172,7 +1172,7 @@ features:
         created: 2026-03-08T22:46:12.897Z
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KK7T2BRVFT4E3NK8N44J9P98
         slugs:
           - session-spec-path-updates
@@ -1254,7 +1254,7 @@ features:
         created: 2026-03-08T22:46:13.019Z
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KKB3PGBGX289R1JWSKP66683
         slugs:
           - session-cli-unified-filtering
@@ -1321,6 +1321,9 @@ features:
           - "@trait-json-output"
         notes: []
         created: 2026-03-10T05:32:13.552Z
+        status:
+          maturity: draft
+          implementation: in_progress
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z

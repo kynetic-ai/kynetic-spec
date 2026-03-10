@@ -831,7 +831,7 @@ features:
             then: Spec implementation status is 'in_progress' (partial completion)
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
       - _ulid: 01KFA4KB1QBJ1KFT5KEXQCATGQ
         slugs:
           - alignment-index
@@ -856,7 +856,7 @@ features:
             then: Returns the LoadedSpecItem that task implements
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
       - _ulid: 01KFA4KTKFC1JW1F4002Q58VT9
         slugs:
           - alignment-warnings
@@ -886,7 +886,7 @@ features:
               predating the task system
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
       - _ulid: 01KFA4M9J3FDXJ50PTMQQK82PT
         slugs:
           - alignment-summaries
@@ -908,7 +908,7 @@ features:
               isAligned boolean
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
       - _ulid: 01KFA4MKV8QHT9ZAJQGZ8F7MQF
         slugs:
           - alignment-stats
@@ -929,7 +929,7 @@ features:
             then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
     status:
       maturity: draft
       implementation: implemented

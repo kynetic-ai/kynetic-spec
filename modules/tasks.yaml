@@ -702,7 +702,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
         description: |
           For smaller projects, tasks next to specs:
 
@@ -720,7 +720,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: not_started
+          implementation: in_progress
         description: |
           For larger projects, separate tasks directory:
 

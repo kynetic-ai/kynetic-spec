@@ -1781,7 +1781,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta show
 
@@ -1802,7 +1802,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta agents [options]
 
@@ -1820,7 +1820,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta workflows [options]
 
@@ -1838,7 +1838,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta conventions [options]
 
@@ -1856,7 +1856,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta observe <type> "content" [options]
 
@@ -1916,7 +1916,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta observations [options]
 
@@ -1937,7 +1937,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta promote <ref> [options]
 
@@ -1959,7 +1959,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta resolve <ref> "resolution"
 
@@ -1982,7 +1982,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta focus [ref]
 
@@ -2001,7 +2001,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta thread <action> [text]
 
@@ -2021,7 +2021,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta question <action> [text]
 
@@ -2041,7 +2041,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta context [options]
 
@@ -2065,7 +2065,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta get <ref>
 
@@ -2088,7 +2088,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta list [options]
 
@@ -2109,7 +2109,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta add <type> [options]
 
@@ -2160,7 +2160,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta set <ref> [options]
 
@@ -2188,7 +2188,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         description: |
           kspec meta delete <ref> [options]
 
