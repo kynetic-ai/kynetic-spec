@@ -1254,7 +1254,7 @@ features:
         created: 2026-03-08T22:46:13.019Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKB3PGBGX289R1JWSKP66683
         slugs:
           - session-cli-unified-filtering
