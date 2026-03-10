@@ -570,14 +570,14 @@ describe('Trait CLI - item add --trait', () => {
 
   it('should deduplicate traits when same trait passed via different ref forms', () => {
     // Get the ULID of json-output trait
-    const traitResult = kspecJson<{ _ulid: string }>(
+    const traitResult = kspecJson<{ ulid: string }>(
       'item get @json-output',
       tempDir
     );
 
     // Pass same trait twice - once by slug, once by ULID
     const result = kspecJson<{ item: { traits: string[] } }>(
-      `item add --under @test-core --title "Dedup test" --trait @json-output --trait @${traitResult._ulid}`,
+      `item add --under @test-core --title "Dedup test" --trait @json-output --trait @${traitResult.ulid}`,
       tempDir
     );
 
@@ -588,20 +588,20 @@ describe('Trait CLI - item add --trait', () => {
 
   it('should store canonical slug form instead of ULID', () => {
     // Get the ULID of json-output trait
-    const traitResult = kspecJson<{ _ulid: string }>(
+    const traitResult = kspecJson<{ ulid: string }>(
       'item get @json-output',
       tempDir
     );
 
     // Pass trait by ULID
     const result = kspecJson<{ item: { traits: string[] } }>(
-      `item add --under @test-core --title "Canonical test" --trait @${traitResult._ulid}`,
+      `item add --under @test-core --title "Canonical test" --trait @${traitResult.ulid}`,
       tempDir
     );
 
     // Should be stored as @json-output (slug), not @ULID
     expect(result.item.traits).toContain('@json-output');
-    expect(result.item.traits).not.toContain(`@${traitResult._ulid}`);
+    expect(result.item.traits).not.toContain(`@${traitResult.ulid}`);
   });
 
   // AC: @item-add ac-1
@@ -612,14 +612,13 @@ describe('Trait CLI - item add --trait', () => {
     );
     expect(humanResult.stdout).toContain('Created item: @root-trait in project root traits');
 
-    const result = kspecJson<{ type: string; slugs: string[]; _sourceFile: string }>(
+    const result = kspecJson<{ type: string; slugs: string[] }>(
       'item get @root-trait',
       tempDir
     );
 
     expect(result.type).toBe('trait');
     expect(result.slugs).toContain('root-trait');
-    expect(result._sourceFile).toContain('kynetic.yaml');
 
     const manifest = await fs.readFile(
       path.join(tempDir, 'kynetic.yaml'),

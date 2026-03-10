@@ -1279,14 +1279,14 @@ Ensure backward compatibility.
       type: string;
       description: string;
       acceptance_criteria: Array<{ id: string }>;
-      _sourceFile: string;
     }>("item get @trait-json-output --json", tempDir);
 
     expect(item.type).toBe("trait");
     expect(item.description).toBe("Cross-cutting trait for JSON output support");
     expect(item.acceptance_criteria).toHaveLength(1);
     // Trait should be sourced from kynetic.yaml (project-level), not a module file
-    expect(item._sourceFile).toContain("kynetic.yaml");
+    const kyneticYaml = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf8");
+    expect(kyneticYaml).toContain("trait-json-output");
   });
 
   // AC: @plan-import ac-11 - Trait type specs with parent go under parent, not project-level
@@ -1319,13 +1319,14 @@ Ensure backward compatibility.
     const parent = kspecJson<{ type: string }>("item get @parent-for-trait --json", tempDir);
     expect(parent.type).toBe("feature");
 
-    const trait = kspecJson<{ type: string; _sourceFile: string }>(
+    const trait = kspecJson<{ type: string }>(
       "item get @scoped-trait --json",
       tempDir,
     );
     expect(trait.type).toBe("trait");
     // Trait with parent should NOT be in kynetic.yaml - it should be in the module file
-    expect(trait._sourceFile).not.toContain("kynetic.yaml");
+    const kyneticYaml = await fs.readFile(path.join(tempDir, "kynetic.yaml"), "utf8");
+    expect(kyneticYaml).not.toContain("scoped-trait");
   });
 
   // AC: @plan-import ac-15 - Dry-run reports project-level trait placement
