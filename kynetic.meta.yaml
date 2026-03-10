@@ -7871,6 +7871,42 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KKBE0CA681FW0JW36PGF9CC0
+    type: friction
+    content: triage act promote dumps raw inbox text as task description — requires manual rewrite of
+      every promoted task to be standalone and actionable. Should generate a structured description
+      template or allow --description override during promote.
+    created_at: 2026-03-10T08:32:22.854Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKBE0CEMYB7JYQ3BWAVWG3NT
+    type: friction
+    content: kspec inbox list --json uses _ulid field for item ID but this is not documented. First
+      instinct is .id which returns undefined. JSON output contracts should document field names or
+      use conventional names.
+    created_at: 2026-03-10T08:32:22.996Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKBE0CJ68591NF8R5CYR32A1
+    type: success
+    content: "Investigate-before-triage pattern: spawning parallel agents to verify bug validity before
+      recording triage decisions caught 7/12 already-fixed bugs. Prevents waste tasks and keeps the
+      task list clean."
+    created_at: 2026-03-10T08:32:23.110Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKBE0CNBSHZEJMBXC4BPTKXS
+    type: success
+    content: Checking spec coverage during triage surfaced real spec gaps (workflow, setup, alignment
+      have no specs). Triage is a natural spec-gap discovery mechanism — setting tasks to
+      needs_review for missing specs creates a forcing function.
+    created_at: 2026-03-10T08:32:23.211Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
