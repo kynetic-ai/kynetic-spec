@@ -85182,7 +85182,7 @@
   spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85208,6 +85208,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T09:28:32.990Z
+  closed_reason: "Merged in PR #740 (977c164). Default task list now shows active statuses by default,
+    with explicit All Statuses opt-in for completed/cancelled tasks. Verified own AC
+    ac-default-active-filter with static and E2E coverage, confirmed @ui-url-panel-state ac-4
+    coverage remained intact, and ran full local npm test on PR head (4295 passed, 3 skipped)."
 - _ulid: 01KKB6P8EEJ355H2QWT50V4HGC
   slugs: []
   title: Board view should load all active tasks without arbitrary limit
