@@ -2513,14 +2513,16 @@ triage:
       (1) item set --trait should append by default (or have --add-trait / --remove-trait), (2) all
       mutating commands should display diffs of what they changed so silent data loss is visible.
       Triggered by --trait silently replacing existing traits array."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "User-facing footgun: --trait replaces instead of appending. Known gotcha already
       documented in MEMORY.md"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:08.900Z
-    updated_at: 2026-03-10T08:17:08.921Z
+    updated_at: 2026-03-10T08:18:23.201Z
+    acted_at: 2026-03-10T08:18:23.177Z
+    result_ref: "@01KKBD6Q"
   - _ulid: 01KKBD4FVFFQZ0BHFMSRE2PW0V
     inbox_ref: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
     item_snapshot: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
@@ -2530,10 +2532,10 @@ triage:
     reasoning: "SHOULD-FIX from PR #723 review — daemon session-branch sync limited to startupProjectPath"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:08.975Z
-    updated_at: 2026-03-10T08:18:19.406Z
     acted_at: 2026-03-10T08:18:19.387Z
     result_ref: "@01KKBD6K"
+    created_at: 2026-03-10T08:17:08.975Z
+    updated_at: 2026-03-10T08:18:19.406Z
   - _ulid: 01KKBD4FXSGWA95VA8WXBKK5E6
     inbox_ref: 01KK69HXSET7B215A80ZY1EKJH
     item_snapshot: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style

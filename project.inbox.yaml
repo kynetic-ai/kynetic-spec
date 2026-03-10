@@ -1396,17 +1396,6 @@ inbox:
       - multi-project
       - concurrency
     added_by: "@claude"
-  - _ulid: 01KKB0WWM9QRKCVE1CBMKE6ZY4
-    text: "CLI mutation commands should show what changed (before → after) in output, especially for
-      array fields like --trait that replace rather than append. Two improvements: (1) item set
-      --trait should append by default (or have --add-trait / --remove-trait), (2) all mutating
-      commands should display diffs of what they changed so silent data loss is visible. Triggered
-      by --trait silently replacing existing traits array."
-    created_at: 2026-03-10T04:43:17.001Z
-    tags:
-      - cli
-      - ux
-    added_by: "@claude"
   - _ulid: 01KKB9X155J0DJ8PFQ6DAFDG25
     text: "CLI DX: audit and normalize argument naming across all subcommands. Inconsistencies found:
       task note uses positional <message> but plan note uses --text flag; item ac set vs expected

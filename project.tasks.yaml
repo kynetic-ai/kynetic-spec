@@ -85892,21 +85892,42 @@
   created_at: 2026-03-10T08:18:15.020Z
   notes: []
   todos: []
-- title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
+- _ulid: 01KKBD6KH5F5MVC5BXV2NQG474
+  slugs: []
+  title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
     additional r"
+  type: task
+  description: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
+    so additional registered projects get periodic session pulls too."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:18:18.277Z
+  notes: []
+  todos: []
+- title: CLI mutation commands should show what changed (before → after) in output, especially for
+    array fiel
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
-    so additional registered projects get periodic session pulls too."
-  _ulid: 01KKBD6KH5F5MVC5BXV2NQG474
+  description: "CLI mutation commands should show what changed (before → after) in output, especially
+    for array fields like --trait that replace rather than append. Two improvements: (1) item set
+    --trait should append by default (or have --add-trait / --remove-trait), (2) all mutating
+    commands should display diffs of what they changed so silent data loss is visible. Triggered by
+    --trait silently replacing existing traits array."
+  _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:18:18.277Z
+  created_at: 2026-03-10T08:18:22.055Z
   notes: []
   todos: []
