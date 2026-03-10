@@ -2433,10 +2433,11 @@ features:
         when: the output is displayed in ToolCallView
         then: the text renders with corresponding CSS colors instead of showing raw escape codes
       - id: ac-2
-        given: tool output uses standard ANSI colors (30-37 foreground, 40-47 background, 90-97 bright,
-          100-107 bright background)
+        given: "tool output uses ANSI color codes: standard 16 colors (30-37, 40-47, 90-97, 100-107),
+          256-color mode (38;5;N / 48;5;N), or 24-bit true color (38;2;R;G;B / 48;2;R;G;B)"
         when: rendered in the web UI
-        then: colors map to a terminal-like palette that works in both light and dark themes
+        then: colors render correctly using CSS custom properties that integrate with the existing oklch
+          token system and work in both light and dark themes
       - id: ac-3
         given: tool output contains formatting codes (bold=1, dim=2, italic=3, underline=4, strikethrough=9)
         when: rendered in the web UI
