@@ -84710,3 +84710,229 @@
         The daemon endpoint can stream results or use a reasonable timeout.
   todos: []
   automation: eligible
+- _ulid: 01KKB5HXP2K7F3R0PYESC796G9
+  slugs:
+    - implement-markdown-rendering-trait
+  title: Implement Markdown Rendering Trait
+  type: task
+  spec_ref: "@trait-markdown-rendering"
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:40.514Z
+  notes:
+    - _ulid: 01KKB5HXP234Y9B9SNTZXX3N2Y
+      created_at: 2026-03-10T06:04:40.514Z
+      author: "@claude"
+      content: See plan @plan-ui-wide-markdown-rendering-plan-embedded-views for implementation notes
+  todos: []
+- _ulid: 01KKB5HY9RAJPTK1R0NW7RN11C
+  slugs:
+    - implement-prose-typography-setup
+  title: Implement Prose Typography Setup
+  type: task
+  spec_ref: "@prose-typography-setup"
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:41.144Z
+  notes:
+    - _ulid: 01KKB5HY9RPWCVPGZ8FXXKWCBC
+      created_at: 2026-03-10T06:04:41.145Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Check Tailwind v4 compatibility. Options:
+        1. Install @tailwindcss/typography v4-compatible version
+        2. Use Tailwind v4 built-in prose if available
+        3. Write custom prose styles if neither works
+        This is a prerequisite for all other markdown work — existing prose
+        classes are currently no-ops.
+  todos: []
+- _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
+  slugs:
+    - implement-streaming-markdown-component
+  title: Implement Streaming Markdown Component
+  type: task
+  spec_ref: "@streaming-markdown-component"
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:41.789Z
+  notes:
+    - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
+      created_at: 2026-03-10T06:04:41.789Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Port streaming-markdown + highlight.js pattern from kynetic-internal's
+        packages/hub-ui/src/lib/components/chat/StreamingMarkdown.svelte.
+
+        Proven versions from kynetic-internal:
+        - streaming-markdown@^0.2.15
+        - highlight.js@^11.11.1
+
+        Key files to reference:
+        - StreamingMarkdown.svelte (component with 3 $effect blocks)
+        - highlight.ts (highlight.js wrapper with language subset)
+        - sanitize.ts (DOMPurify config with custom element handling)
+        - app.css lines 256-331 (syntax highlight theme)
+
+        Adapt for kspec's needs:
+        - Drop KaTeX/Mermaid support (not needed for kspec content)
+        - Keep streaming-markdown parser, highlight.js, DOMPurify stack
+        - Replace current renderMarkdown() utility with this component for
+          streaming contexts; keep renderMarkdown() for simple static use
+        - Add highlight.js CSS theme to web-ui app.css
+
+        Bundle size strategy: Use highlight.js/lib/core with individual
+        language imports (not the full highlight.js bundle). Register only
+        the 15 target languages.
+
+        CSS scoping: streaming-markdown uses direct DOM manipulation with
+        :global() selectors. Scope highlight theme and streaming styles
+        carefully to avoid conflicts with other component styles.
+
+        SSR note: All SvelteKit pages in this project export ssr=false,
+        so DOMPurify and highlight.js DOM dependencies are not a concern.
+  todos: []
+- _ulid: 01KKB5HZFRP75B7J88E89SQSMB
+  slugs:
+    - implement-batch-item-fetch-api
+  title: Implement Batch Item Fetch API
+  type: task
+  spec_ref: "@batch-item-fetch-api"
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:42.360Z
+  notes:
+    - _ulid: 01KKB5HZFRZPQY645FJ4266NQ7
+      created_at: 2026-03-10T06:04:42.360Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Add route to packages/daemon/src/routes/items.ts.
+        Use existing initContext + item/task loading patterns.
+        Resolve refs using the same logic as findItemByRef/findTaskByRef.
+  todos: []
+- _ulid: 01KKB5J02DQA312B76P7PNAT9X
+  slugs:
+    - implement-plan-content-embedded-views
+  title: Implement Plan Content Embedded Views
+  type: task
+  spec_ref: "@plan-embedded-views"
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:42.957Z
+  notes:
+    - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
+      created_at: 2026-03-10T06:04:42.957Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Depends on batch-item-fetch-api for resolving derived refs.
+
+        The plan detail API already returns derived_specs and derived_tasks
+        as string arrays. After fetching plan detail, use the batch API to
+        resolve those refs into summary objects for the embedded cards.
+
+        Parse plan content to identify YAML blocks by heading context,
+        match against derived refs, and render embedded components.
+        Account for YAML flow scalars (>) vs block scalars (|) in stored
+        plan content which may affect heading detection.
+  todos: []
+- _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
+  slugs:
+    - implement-markdown-adoption-across-ui-surfaces
+  title: Implement Markdown Adoption Across UI Surfaces
+  type: task
+  spec_ref: "@markdown-ui-adoption"
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:43.564Z
+  notes:
+    - _ulid: 01KKB5J0NCHXW2CDXS6EDJ8XKA
+      created_at: 2026-03-10T06:04:43.564Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        This is primarily a component swap task. For each surface:
+        1. Import renderMarkdown or the StreamingMarkdown component
+        2. Replace plain text / whitespace-pre-wrap rendering with
+           {@html renderMarkdown(content)} wrapped in prose classes
+        3. Ensure prose styling works in each component's layout context
+
+        Priority order (most impactful first):
+        - Task notes (heavily used, often contain code blocks)
+        - Task descriptions
+        - Spec descriptions
+        - Observations
+        - Workflow descriptions
+        - Inbox items
+        - AC text (inline formatting only)
+
+        ThinkingBlock and ToolCallView are intentionally excluded — they
+        render agent internals where monospace/pre is the correct format.
+        SystemBlock is also excluded — it shows structured system events,
+        not user-authored markdown content.
+
+        Shared DOMPurify config: Both the static renderMarkdown() utility
+        and the StreamingMarkdown component must use the same DOMPurify
+        allowlist configuration. Extract to a shared sanitize.ts module.
+  todos: []
+- title: Add markdown rendering trait to existing specs
+  type: task
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  priority: 1
+  slugs:
+    - task-add-markdown-trait
+  tags:
+    - spec
+    - web-ui
+  depends_on: []
+  notes: []
+  _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:04:44.563Z
+  todos: []

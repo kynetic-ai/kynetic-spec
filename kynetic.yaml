@@ -565,6 +565,104 @@ traits:
         when: It selects tasks for work
         then: Consumer-specific filters are applied on top of base readiness, never instead of it. A task
           must pass base readiness before any consumer filter is evaluated.
+  - _ulid: 01KKB5HX59RKS2EVNG7DPND7YE
+    slugs:
+      - trait-markdown-rendering
+    title: Markdown Rendering Trait
+    type: trait
+    tags: []
+    description: |
+      Cross-cutting trait defining quality requirements for any UI component
+      that renders user or agent-authored markdown content. Ensures consistent
+      rendering, syntax highlighting, sanitization, and dark mode support
+      across all markdown surfaces.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          a component renders markdown content
+        when: |
+          the content includes GFM elements (headings, lists, tables, links,
+          emphasis, strikethrough, task lists, blockquotes)
+        then: |
+          all GFM elements render with correct semantic HTML and Tailwind
+          prose typography styling
+      - id: ac-2
+        given: |
+          markdown content contains fenced code blocks with a language tag
+        when: |
+          the content is rendered
+        then: |
+          code blocks display with syntax highlighting for the specified
+          language using highlight.js, with at least 15 common languages
+          supported (bash, typescript, javascript, python, rust, go, json,
+          yaml, sql, css, html, java, c, cpp, diff)
+      - id: ac-3
+        given: |
+          markdown content contains inline code spans
+        when: |
+          the content is rendered
+        then: |
+          inline code renders with a visually distinct background and
+          monospace font, distinguishable from surrounding prose
+      - id: ac-4
+        given: |
+          markdown content contains any HTML including script tags,
+          event handlers, or javascript: URLs
+        when: |
+          the content is rendered
+        then: |
+          all unsafe HTML is stripped via DOMPurify sanitization while
+          preserving safe structural markup (p, strong, em, code, pre,
+          lists, tables, blockquotes)
+      - id: ac-5
+        given: |
+          the UI is in dark mode
+        when: |
+          markdown content is rendered
+        then: |
+          prose typography and syntax highlighting use dark-mode-compatible
+          color schemes (prose-invert, dark highlight theme)
+      - id: ac-6
+        given: |
+          markdown content contains external links (href starting with
+          http://, https://, or //)
+        when: |
+          the content is rendered
+        then: |
+          external links include target="_blank" and rel="noopener noreferrer"
+          attributes for security
+      - id: ac-7
+        given: |
+          a component receives empty or undefined content
+        when: |
+          the markdown renderer is invoked
+        then: |
+          the component renders an empty container with no errors or
+          console warnings
+      - id: ac-8
+        given: |
+          markdown content contains malformed or unclosed syntax
+          (e.g., unclosed code fences, broken table rows)
+        when: |
+          the content is rendered
+        then: |
+          the content renders gracefully with best-effort formatting
+          and no runtime errors
+      - id: ac-9
+        given: |
+          markdown content is very long (10,000+ lines or 500KB+)
+        when: |
+          the content is rendered
+        then: |
+          the component renders without blocking the main thread for
+          more than 100ms and does not cause memory errors
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T06:04:39.977Z
 includes:
   - modules/core.yaml
   - modules/schema.yaml

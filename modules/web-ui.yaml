@@ -790,6 +790,179 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    requirements:
+      - _ulid: 01KKB5HX5SNRHQR556DAASNNH9
+        slugs:
+          - prose-typography-setup
+        title: Prose Typography Setup
+        type: requirement
+        tags: []
+        description: |
+          Install and configure @tailwindcss/typography (or equivalent Tailwind v4
+          prose plugin) so that prose utility classes produce correct typography
+          styling. Currently prose classes are used in MessageBlock and plans page
+          but have no effect because the typography plugin is not installed.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a container element has class "prose prose-sm dark:prose-invert"
+            when: |
+              the page renders
+            then: |
+              headings, paragraphs, lists, blockquotes, code blocks, and tables
+              display with appropriate sizing, spacing, and typography styles
+          - id: ac-2
+            given: |
+              the typography plugin is configured
+            when: |
+              the web-ui builds
+            then: |
+              the prose styles are included in the CSS bundle and work correctly
+              with the existing dark theme
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-10T06:04:39.993Z
+      - _ulid: 01KKB5HX7KDDWHXT5KFKXE407V
+        slugs:
+          - batch-item-fetch-api
+        title: Batch Item Fetch API
+        type: requirement
+        tags: []
+        description: |
+          A daemon API endpoint to fetch multiple spec items and/or tasks by
+          reference in a single request. Required by plan embedded views to
+          resolve derived_specs and derived_tasks into renderable summaries
+          without N+1 individual API calls.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a POST request to /api/items/batch with a JSON body containing
+              a "refs" array of item references (ULIDs or @slugs)
+            when: |
+              all references resolve to existing items
+            then: |
+              the response contains an "items" array with each item's summary
+              (ulid, slugs, title, type, status, maturity, traits, ac_count)
+          - id: ac-2
+            given: |
+              a POST request to /api/items/batch includes refs that do not
+              resolve to any existing item
+            when: |
+              the request is processed
+            then: |
+              resolved items are returned normally and unresolved refs appear
+              in a separate "unresolved" array in the response
+          - id: ac-3
+            given: |
+              a POST request to /api/items/batch includes task refs
+              (refs that resolve to tasks rather than spec items)
+            when: |
+              the request is processed
+            then: |
+              tasks are returned with task-specific summary fields
+              (ulid, slugs, title, status, priority, spec_ref)
+          - id: ac-4
+            given: |
+              a POST request to /api/items/batch has an empty refs array
+            when: |
+              the request is processed
+            then: |
+              the response contains an empty items array and empty
+              unresolved array with no errors
+          - id: ac-5
+            given: |
+              a POST request to /api/items/batch has more than 100 refs
+            when: |
+              the request is processed
+            then: |
+              the response is a 400 error with a descriptive message
+              indicating the maximum batch size
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-api-endpoint"
+        notes: []
+        created: 2026-03-10T06:04:40.051Z
+    features:
+      - _ulid: 01KKB5HX9DV87K2SYVPHBQ40KG
+        slugs:
+          - markdown-ui-adoption
+        title: Markdown Adoption Across UI Surfaces
+        type: feature
+        tags: []
+        description: |
+          Adopt the markdown rendering component across all UI surfaces that
+          display user or agent-authored text content. Currently only plan
+          content and agent messages use markdown rendering. Task descriptions,
+          task notes, observations, workflow descriptions, spec descriptions,
+          inbox items, and acceptance criteria text should all render markdown.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a task's description field contains markdown formatting
+            when: |
+              the task detail panel is displayed
+            then: |
+              the description renders as formatted markdown instead of plain text
+          - id: ac-2
+            given: |
+              a task note contains markdown (code blocks, links, lists)
+            when: |
+              the note is displayed in the task detail panel
+            then: |
+              the note content renders as formatted markdown instead of
+              whitespace-preserved plain text
+          - id: ac-3
+            given: |
+              an observation's content or context contains markdown
+            when: |
+              the observation is displayed on the observations page
+            then: |
+              the content renders as formatted markdown
+          - id: ac-4
+            given: |
+              a workflow's description contains markdown
+            when: |
+              the workflow is displayed on the workflows page
+            then: |
+              the description renders as formatted markdown instead of
+              whitespace-preserved plain text
+          - id: ac-5
+            given: |
+              a spec item's description contains markdown
+            when: |
+              the item detail panel is displayed
+            then: |
+              the description renders as formatted markdown
+          - id: ac-6
+            given: |
+              acceptance criteria given/when/then text contains inline code
+              or other markdown formatting
+            when: |
+              the AC detail is expanded or viewed
+            then: |
+              the text renders with inline markdown formatting preserved
+          - id: ac-7
+            given: |
+              an inbox item's text contains markdown formatting
+            when: |
+              the inbox page or triage view displays the item
+            then: |
+              the item text renders as formatted markdown
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-markdown-rendering"
+        notes: []
+        created: 2026-03-10T06:04:40.109Z
   - _ulid: 01KFHMFMN8PNQ78K7X7GATNQ2P
     slugs:
       - gh-pages-export
@@ -1442,6 +1615,88 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    features:
+      - _ulid: 01KKB5HX6T1CP4CDG6TNV0F7X1
+        slugs:
+          - streaming-markdown-component
+        title: Streaming Markdown Component
+        type: feature
+        tags: []
+        description: |
+          A shared Svelte component that renders markdown content with support for
+          both streaming (incremental) and static rendering modes. Ported from
+          kynetic-internal's StreamingMarkdown pattern, adapted for kspec's web UI.
+          Uses streaming-markdown for incremental parsing during live output, with
+          highlight.js syntax highlighting applied on finalization.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              the component receives content that is actively streaming
+              (isStreaming=true)
+            when: |
+              new content chunks arrive (content string grows)
+            then: |
+              the component incrementally renders the new content without
+              re-rendering the entire output
+          - id: ac-2
+            given: |
+              the component is rendering streaming content
+            when: |
+              content includes fenced code blocks
+            then: |
+              syntax highlighting is deferred until streaming ends
+              (isStreaming transitions to false)
+          - id: ac-3
+            given: |
+              streaming ends (isStreaming transitions from true to false)
+            when: |
+              the parser finalizes
+            then: |
+              the parser flushes remaining content and DOMPurify sanitization
+              runs on the finalized HTML
+          - id: ac-4
+            given: |
+              streaming has ended and sanitization is complete
+            when: |
+              code blocks exist in the rendered output
+            then: |
+              highlight.js syntax highlighting is applied to all code blocks
+              with recognized language tags
+          - id: ac-5
+            given: |
+              the component is used in static mode (isStreaming=false, content
+              is complete)
+            when: |
+              content is provided
+            then: |
+              the full rendering pipeline runs immediately (parse, sanitize,
+              highlight) without streaming behavior
+          - id: ac-6
+            given: |
+              the component is rendering streaming content
+            when: |
+              the content updates rapidly (multiple chunks per frame)
+            then: |
+              DOM updates are batched via requestAnimationFrame so that at
+              most one DOM write occurs per animation frame
+          - id: ac-7
+            given: |
+              the streaming markdown component replaces the current plain text
+              streaming view in SessionStream
+            when: |
+              a live session streams agent output
+            then: |
+              the streaming text area renders with markdown formatting and
+              displays a blinking cursor element with the ds-streaming-cursor
+              class and cursor-blink animation
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-markdown-rendering"
+        notes: []
+        created: 2026-03-10T06:04:40.026Z
   - _ulid: 01KJXSVF4YR57EJQTNSHFQKZHE
     slugs:
       - ui-agent-dispatch
@@ -1890,6 +2145,97 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    features:
+      - _ulid: 01KKB5HX8MAESY62HW9EXZPMFV
+        slugs:
+          - plan-embedded-views
+        title: Plan Content Embedded Views
+        type: feature
+        tags: []
+        description: |
+          When viewing plan content in the UI, YAML code blocks containing spec
+          and task definitions are detected and replaced with rich embedded cards
+          that show the derived items' current state. Each embedded card links to
+          the source spec or task. Non-YAML markdown content renders normally.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a plan's content contains a ```yaml code block under a "## Specs"
+              heading with spec definitions that match derived_specs references
+            when: |
+              the plan content is rendered
+            then: |
+              the YAML block is replaced with embedded spec cards showing each
+              spec's title, type, status/maturity, trait list, and acceptance
+              criteria count
+          - id: ac-2
+            given: |
+              a plan's content contains a ```yaml code block under a "## Tasks"
+              heading with task definitions or derive_from_specs directive
+            when: |
+              the plan content is rendered
+            then: |
+              the YAML block is replaced with embedded task cards showing each
+              derived task's title, status, assignee, and priority
+          - id: ac-3
+            given: |
+              an embedded spec or task card is displayed
+            when: |
+              the user clicks the card or its link
+            then: |
+              navigation occurs to the spec's detail view or task's detail view
+              (using existing item/task navigation patterns)
+          - id: ac-4
+            given: |
+              a plan references derived specs/tasks but the content YAML block
+              cannot be parsed or the parsed slugs do not match any
+              derived_specs/derived_tasks references
+            when: |
+              the plan content is rendered
+            then: |
+              the YAML block renders as a normal syntax-highlighted code block
+              (graceful fallback)
+          - id: ac-5
+            given: |
+              the batch item fetch for embedded cards is loading
+            when: |
+              the plan content is first expanded
+            then: |
+              the embedded card areas display skeleton/loading placeholders
+              while data is fetched
+          - id: ac-6
+            given: |
+              the batch item fetch for embedded cards fails
+            when: |
+              the plan content is rendered
+            then: |
+              the YAML blocks fall back to syntax-highlighted code block
+              rendering and an error indicator is shown
+          - id: ac-7
+            given: |
+              an embedded spec card is expanded or shown in detail
+            when: |
+              the spec has acceptance criteria
+            then: |
+              acceptance criteria display in a structured format showing
+              given/when/then text with proper formatting
+          - id: ac-8
+            given: |
+              the plan content contains non-YAML markdown sections
+              (Implementation Notes, prose descriptions)
+            when: |
+              the plan content is rendered
+            then: |
+              those sections render as standard formatted markdown with full
+              prose typography and code highlighting
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-markdown-rendering"
+        notes: []
+        created: 2026-03-10T06:04:40.084Z
   - _ulid: 01KJXSVF6TWXS4Z07QE6R2JEG8
     slugs:
       - ui-validation-view
