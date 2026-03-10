@@ -10,21 +10,20 @@
  * - @ui-session-stream ac-1: Session events as structured blocks
  * - @ui-session-stream ac-4: Session metadata, spec context, budget for context panel
  * - @session-legacy-migration ac-read-fallback: Detect-and-warn on all session read endpoints
+ * - @session-summary-cache ac-cache-build: Cache built on first list request
+ * - @session-summary-cache ac-cache-invalidate: Cache refreshed via directory listing diff
+ * - @session-summary-cache ac-active-refresh: Active sessions recomputed on each request
  */
 
 import { Elysia, t } from 'elysia';
 import {
   getSession,
-  listSessions,
   readEvents,
   deduplicatePhasedToolCalls,
-  getSessionLogSummary,
-  getAllSessionLogSummaries,
   resolveSessionId,
   getBudget,
 } from '../../sessions/store.js';
 import {
-  hasLegacySessions,
   countLegacySessions,
 } from '../../sessions/legacy.js';
 import {
@@ -33,15 +32,19 @@ import {
   loadAllItems,
   ReferenceIndex,
 } from '../../parser/index.js';
+import { getSessionCache } from '../../sessions/cache.js';
 
 export function createSessionRoutes() {
   return new Elysia({ prefix: '/api/sessions' })
 
     // List all sessions with summaries
     // AC: @session-legacy-migration ac-read-fallback ac-list-merge — detect-and-warn for legacy sessions
+    // AC: @session-summary-cache ac-cache-build — Uses cached summaries instead of re-reading all files
     .get('/', async ({ projectContext }) => {
       const ctx = await initContext(projectContext.path);
-      const summaries = await getAllSessionLogSummaries(ctx.sessionsDir);
+      // AC: @session-summary-cache ac-cache-build — Per-project cache scoped by sessionsDir
+      const sessionCache = getSessionCache(ctx.sessionsDir);
+      const summaries = await sessionCache.getAll(ctx.sessionsDir);
 
       // Sort by started_at descending (most recent first)
       summaries.sort((a, b) =>
@@ -83,7 +86,8 @@ export function createSessionRoutes() {
         });
       }
 
-      const detail = await getSessionLogSummary(ctx.sessionsDir, resolution.id);
+      const sessionCache = getSessionCache(ctx.sessionsDir);
+      const detail = await sessionCache.get(ctx.sessionsDir, resolution.id);
       if (!detail) {
         return errorResponse(404, {
           error: 'not_found',
