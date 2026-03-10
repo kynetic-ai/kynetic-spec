@@ -773,6 +773,59 @@ async function findTestFilesRecursive(dir: string): Promise<string[]> {
   return testFiles;
 }
 
+/** Prefix pattern that identifies an AC annotation line. */
+const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
+
+/**
+ * Parse all @ref groups from an AC annotation line.
+ * Handles single and multiple @ref groups separated by commas or spaces.
+ * Examples:
+ *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
+ *   "// AC: @spec-a ac-1, ac-2"                  → [{specRef:"@spec-a", acIds:["ac-1","ac-2"]}]
+ *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
+ *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
+ */
+export function parseACAnnotationLine(
+  lineText: string,
+): { specRef: string; acIds: string[] }[] {
+  const prefixMatch = AC_LINE_PREFIX.exec(lineText);
+  if (!prefixMatch) return [];
+
+  // Get everything after "// AC: "
+  let remainder = lineText.slice(prefixMatch.index + prefixMatch[0].length);
+
+  // Strip N/A suffix: " — N/A: ..." or " -- N/A: ..."
+  remainder = remainder.replace(/\s*[—–-]{1,3}\s*N\/A\b.*$/, "");
+
+  // Strip parenthetical comments: " (some comment)"
+  remainder = remainder.replace(/\s*\(.*$/, "");
+
+  const groups: { specRef: string; acIds: string[] }[] = [];
+
+  // Match each @ref followed by its optional ac-N ids
+  // This regex captures @ref and then all ac-N tokens until the next @ref or end
+  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-\d+)*)/g;
+  let match;
+
+  while ((match = refGroupPattern.exec(remainder)) !== null) {
+    const specRef = match[1];
+    const acPart = match[2].trim();
+    const acIds: string[] = [];
+
+    if (acPart) {
+      // Extract individual ac-N tokens
+      const acMatches = acPart.match(/ac-\d+/g);
+      if (acMatches) {
+        acIds.push(...acMatches);
+      }
+    }
+
+    groups.push({ specRef, acIds });
+  }
+
+  return groups;
+}
+
 /**
  * Scan a directory of test files for AC annotations and add to the coverage set.
  */
@@ -791,27 +844,20 @@ async function scanDirForACAnnotations(
 
   for (const filePath of testFiles) {
     const content = await fs.readFile(filePath, "utf-8");
+    const lines = content.split("\n");
 
-    // Match AC annotations: // AC: @spec-ref ac-N
-    // Also handle multiple ACs on one line: // AC: @spec-ref ac-1, ac-2
-    const acPattern =
-      /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
-    let match;
+    for (const lineText of lines) {
+      if (!AC_LINE_PREFIX.test(lineText)) continue;
 
-    while ((match = acPattern.exec(content)) !== null) {
-      const specRef = match[1]; // @spec-ref
-      const acList = match[2]; // "ac-1, ac-2" or just "ac-1" or undefined
-
-      if (acList) {
-        // Split by comma and trim
-        const acs = acList.split(",").map((ac) => ac.trim());
-        for (const ac of acs) {
-          coveredACs.add(`${specRef} ${ac}`);
+      const groups = parseACAnnotationLine(lineText);
+      for (const { specRef, acIds } of groups) {
+        if (acIds.length > 0) {
+          for (const ac of acIds) {
+            coveredACs.add(`${specRef} ${ac}`);
+          }
+        } else {
+          coveredACs.add(specRef);
         }
-      } else {
-        // No specific AC mentioned, just the spec ref
-        // We'll consider this as generic coverage
-        coveredACs.add(specRef);
       }
     }
   }
@@ -876,23 +922,10 @@ async function scanDirForACAnnotationsStructured(
 
     for (let i = 0; i < lines.length; i++) {
       const lineText = lines[i];
-      // Match AC annotations: // AC: @spec-ref ac-N
-      // Also handle: // AC: @spec-ref ac-1, ac-2
-      // Also handle N/A annotations: // AC: @spec-ref ac-N — N/A: reason
-      const acPattern =
-        /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
-      let match;
+      if (!AC_LINE_PREFIX.test(lineText)) continue;
 
-      while ((match = acPattern.exec(lineText)) !== null) {
-        const specRef = match[1];
-        const acList = match[2];
-        const acIds: string[] = [];
-
-        if (acList) {
-          const acs = acList.split(",").map((ac) => ac.trim());
-          acIds.push(...acs);
-        }
-
+      const groups = parseACAnnotationLine(lineText);
+      for (const { specRef, acIds } of groups) {
         annotations.push({
           specRef,
           acIds,

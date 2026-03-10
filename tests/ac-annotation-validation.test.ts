@@ -14,6 +14,7 @@ import {
   validate,
   scanACAnnotations,
   validateACAnnotations,
+  parseACAnnotationLine,
 } from "../src/parser/validate.js";
 import { initContext, writeYamlFilePreserveFormat } from "../src/parser/yaml.js";
 import { ReferenceIndex } from "../src/parser/refs.js";
@@ -641,6 +642,193 @@ it('invalid trait AC ref', () => {});
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
       expect(warnings[0].message).toContain("not a spec item or trait");
+    });
+  });
+
+  describe("parseACAnnotationLine - multi-group annotations", () => {
+    it("should parse a single @ref with single AC", () => {
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1");
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
+    });
+
+    it("should parse a single @ref with multiple comma-separated ACs", () => {
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1, ac-2, ac-3");
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1", "ac-2", "ac-3"] },
+      ]);
+    });
+
+    it("should parse multiple @ref groups on the same line", () => {
+      const groups = parseACAnnotationLine(
+        "// AC: @spec-a ac-1, @spec-b ac-2",
+      );
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1"] },
+        { specRef: "@spec-b", acIds: ["ac-2"] },
+      ]);
+    });
+
+    it("should parse multiple @ref groups with multiple ACs each", () => {
+      const groups = parseACAnnotationLine(
+        "// AC: @spec-a ac-1, ac-2, @spec-b ac-3, ac-4",
+      );
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1", "ac-2"] },
+        { specRef: "@spec-b", acIds: ["ac-3", "ac-4"] },
+      ]);
+    });
+
+    it("should parse three @ref groups", () => {
+      const groups = parseACAnnotationLine(
+        "// AC: @agent-instruction-gen ac-5, @agents-cli ac-3, @agents-cli ac-4",
+      );
+      expect(groups).toEqual([
+        { specRef: "@agent-instruction-gen", acIds: ["ac-5"] },
+        { specRef: "@agents-cli", acIds: ["ac-3"] },
+        { specRef: "@agents-cli", acIds: ["ac-4"] },
+      ]);
+    });
+
+    it("should parse @ref without AC ids", () => {
+      const groups = parseACAnnotationLine("// AC: @some-spec");
+      expect(groups).toEqual([{ specRef: "@some-spec", acIds: [] }]);
+    });
+
+    it("should strip N/A suffix", () => {
+      const groups = parseACAnnotationLine(
+        "// AC: @spec-a ac-1 — N/A: reason why",
+      );
+      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"] }]);
+    });
+
+    it("should strip parenthetical comments", () => {
+      const groups = parseACAnnotationLine(
+        "// AC: @cli-exit-codes (exit 4 for validation errors)",
+      );
+      expect(groups).toEqual([{ specRef: "@cli-exit-codes", acIds: [] }]);
+    });
+
+    it("should return empty array for non-AC lines", () => {
+      expect(parseACAnnotationLine("// just a comment")).toEqual([]);
+      expect(parseACAnnotationLine("const x = 1;")).toEqual([]);
+    });
+  });
+
+  describe("scanACAnnotations - multi-group lines", () => {
+    it("should produce separate annotations for each @ref group on a line", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "multi-ref.test.ts"),
+        `// AC: @spec-a ac-1, @spec-b ac-2
+it('test', () => {});
+`,
+      );
+
+      const annotations = await scanACAnnotations(tempDir);
+
+      expect(annotations).toHaveLength(2);
+      expect(annotations[0]).toEqual(
+        expect.objectContaining({ specRef: "@spec-a", acIds: ["ac-1"], line: 1 }),
+      );
+      expect(annotations[1]).toEqual(
+        expect.objectContaining({ specRef: "@spec-b", acIds: ["ac-2"], line: 1 }),
+      );
+    });
+
+    it("should produce separate annotations for three @ref groups on a line", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "triple-ref.test.ts"),
+        `// AC: @feat-a ac-1, @feat-b ac-2, @feat-c ac-3
+it('test', () => {});
+`,
+      );
+
+      const annotations = await scanACAnnotations(tempDir);
+
+      expect(annotations).toHaveLength(3);
+      expect(annotations[0].specRef).toBe("@feat-a");
+      expect(annotations[1].specRef).toBe("@feat-b");
+      expect(annotations[2].specRef).toBe("@feat-c");
+    });
+  });
+
+  describe("validateACAnnotations - multi-group validation", () => {
+    it("should validate all @ref groups on a single line", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["spec-a"],
+            title: "Spec A",
+            type: "requirement",
+            description: "A spec",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+            ],
+          },
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG91B",
+            slugs: ["spec-b"],
+            title: "Spec B",
+            type: "requirement",
+            description: "Another spec",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+        testFiles: {
+          "multi.test.ts":
+            '// AC: @spec-a ac-1, @spec-b ac-99\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      // @spec-a ac-1 is valid, @spec-b ac-99 is invalid
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("@spec-b ac-99");
+    });
+
+    it("should warn for unresolved secondary @ref on a multi-group line", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["spec-a"],
+            title: "Spec A",
+            type: "requirement",
+            description: "A spec",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              { id: "ac-1", given: "g", when: "w", then: "t" },
+            ],
+          },
+        ],
+        testFiles: {
+          "multi.test.ts":
+            '// AC: @spec-a ac-1, @nonexistent ac-1\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("@nonexistent");
+      expect(invalidAnnotations[0].message).toContain("cannot be resolved");
     });
   });
 });
