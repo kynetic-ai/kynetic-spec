@@ -84105,7 +84105,7 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -84131,6 +84131,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-10T00:50:49.833Z
+  session_id: 01KKAK8NRVPV1G4FR2GGAEQ9HY
 - _ulid: 01KKAJ7N0ZD6WEDAAX1EPRHKZB
   slugs:
     - task-fix-modal-ref-cleanup
