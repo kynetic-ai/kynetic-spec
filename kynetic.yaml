@@ -531,7 +531,7 @@ traits:
         then: a per-platform render hash is written to .kspec/skills/<id>/.render-hash-<platform>
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KK7WM78BVYN7W8W9CJ37CV6H
     slugs:
       - trait-task-readiness
