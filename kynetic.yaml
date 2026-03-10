@@ -53,7 +53,7 @@ traits:
           specs.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFDZSHFAV02EW1F6Y20MAF51
     slugs:
       - trait-multi-ref-batch
