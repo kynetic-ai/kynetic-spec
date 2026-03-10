@@ -86605,6 +86605,17 @@
       content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: AC annotation validation still misses secondary
         @ref groups on a single // AC: line, so invalid annotations can slip through unvalidated."
       supersedes: null
+    - _ulid: 01KKCA1WP1Z4CMQX5GCCERDGAC
+      created_at: 2026-03-10T16:42:32.513Z
+      author: "@claude"
+      content: "Fix cycle 2 addressed: The AC annotation regex required // AC: prefix for every match, so
+        secondary @ref groups on the same line (e.g. // AC: @spec-a ac-1, @spec-b ac-2) were never
+        validated. Extracted parseACAnnotationLine() shared helper that splits the remainder after
+        // AC: into individual @ref groups. Both scanDirForACAnnotations (coverage) and
+        scanDirForACAnnotationsStructured (validation) now use this parser. Added 13 regression
+        tests covering unit, scan, and validate layers. Full suite passes (198 files, 4376 tests).
+        Rebased on latest main."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
