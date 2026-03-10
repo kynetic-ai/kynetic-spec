@@ -84570,7 +84570,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKBY8FAGBA946T24HRBACQJK
   created_at: 2026-03-10T05:32:13.964Z
+  started_at: 2026-03-10T13:31:45.180Z
   notes:
     - _ulid: 01KKB3PGRCW197BCZK8YS6ZE61
       created_at: 2026-03-10T05:32:13.964Z
@@ -84583,10 +84585,36 @@
         Multi-value params use t.Union([t.String(), t.Array(t.String())]).
         The expensive part is reading 700+ session.yaml files — consider a
         metadata cache that invalidates on directory mtime changes.
+    - _ulid: 01KKBZKBE95WCKZFRS1XGVB96V
+      created_at: 2026-03-10T13:39:50.345Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. **packages/daemon/src/routes/sessions.ts**: Added pagination (offset/limit) and
+        multi-field filtering to GET /api/sessions. Supports: status (multi-value OR), agent_type,
+        agent_id, trigger (with 'dispatched' shorthand for task.* triggers), task_id (resolves via
+        ReferenceIndex), spec_ref (resolves via AlignmentIndex to linked tasks), since (date
+        filter). Invalid status values return 400 with details array. Pagination applies after all
+        filtering. Response uses {items, total, offset, limit} wrapper matching task list API
+        pattern.
+
+
+        2. **src/sessions/store.ts**: Added agent_id field to SessionLogSummary interface and
+        getSessionLogSummary() builder function, enabling the agent_id filter.
+
+
+        3. **packages/web-ui/tests/e2e/api-sessions-pagination.spec.ts**: Comprehensive E2E test
+        suite covering all 11 spec ACs plus trait ACs. Creates 6 test sessions with varied statuses,
+        agent types/IDs, triggers, and dates. Tests pagination, each filter individually, combined
+        AND filters, invalid filter validation, and empty results.
+
+
+        All 197 vitest files (4335 tests) pass. TypeScript compiles clean.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T13:31:45.180Z
-  session_id: 01KKBY8FAGBA946T24HRBACQJK
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
