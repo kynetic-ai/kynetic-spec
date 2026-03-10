@@ -2413,6 +2413,38 @@ features:
     traits: []
     notes: []
     created: 2026-03-10T16:43:32.205Z
+    acceptance_criteria:
+      - id: ac-1
+        given: tool output contains ANSI SGR escape sequences (e.g. \x1b[32mPASS\x1b[0m)
+        when: the output is displayed in ToolCallView
+        then: the text renders with corresponding CSS colors instead of showing raw escape codes
+      - id: ac-2
+        given: tool output uses standard ANSI colors (30-37 foreground, 40-47 background, 90-97 bright,
+          100-107 bright background)
+        when: rendered in the web UI
+        then: colors map to a terminal-like palette that works in both light and dark themes
+      - id: ac-3
+        given: tool output contains formatting codes (bold=1, dim=2, italic=3, underline=4, strikethrough=9)
+        when: rendered in the web UI
+        then: corresponding CSS styles are applied (font-weight, opacity, font-style, text-decoration)
+      - id: ac-4
+        given: tool output contains reset codes (\x1b[0m for full reset, or specific resets like \x1b[22m)
+        when: rendered
+        then: styling resets correctly without leaking to subsequent text
+      - id: ac-5
+        given: tool output contains ANSI parameter sequences but the ESC character was stripped or lost
+          during storage
+        when: rendered
+        then: the raw bracket sequences are stripped rather than displayed as garbled text — fallback to
+          clean plain text
+      - id: ac-6
+        given: tool output may contain user-controlled content alongside ANSI codes
+        when: ANSI codes are converted to HTML
+        then: all non-ANSI content is HTML-escaped before insertion to prevent XSS
+      - id: ac-7
+        given: tool output is 10000+ characters with many ANSI sequences
+        when: rendered
+        then: parsing and rendering completes without visible delay
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
