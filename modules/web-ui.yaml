@@ -1205,7 +1205,7 @@ features:
     relates_to: []
     tests: []
     traits:
-      - "@trait-task-readiness"
+      - "@ui-url-panel-state"
     notes: []
     created: 2026-03-05T01:30:02.752Z
     status:
