@@ -280,6 +280,7 @@ agents:
       - git
       - npm
     conventions: []
+    adapter: claude-agent-acp
     dispatch:
       - on: task.in_progress
         filter:
@@ -295,7 +296,8 @@ agents:
     concurrency:
       max_concurrent: 1
     auto_approve: true
-    adapter: claude-agent-acp
+    budget:
+      timeout_minutes: 120
   - _ulid: 01KKBVD4P3DSVN0YJF8VHCP22M
     id: pr-reviewer
     name: PR Reviewer
