@@ -84575,7 +84575,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKBEFENC21KYK05KCP8E26TD
   created_at: 2026-03-10T05:32:14.534Z
+  started_at: 2026-03-10T08:40:55.285Z
   notes:
     - _ulid: 01KKB3PHA6F3AFZ9F6JQ2TQ3PX
       created_at: 2026-03-10T05:32:14.534Z
@@ -84587,10 +84589,36 @@
         On startup, list session directories and read metadata in parallel.
         For stats, scan events.jsonl line count (fast) and grep for iteration
         markers. Only active sessions need stats refresh.
+    - _ulid: 01KKBF0VT6S7CBD4X3C4FZPJD5
+      created_at: 2026-03-10T08:50:07.302Z
+      author: "@claude"
+      content: >-
+        Implemented SessionSummaryCache class in src/sessions/cache.ts:
+
+        - In-memory Map<sessionId, CacheEntry> stores session summaries
+
+        - First getAll() builds cache by reading all session.yaml files in parallel (ac-cache-build)
+
+        - Subsequent calls diff directory listing to detect new/removed sessions
+        (ac-cache-invalidate)
+
+        - Corrupt/missing session.yaml files are skipped with warning (ac-cache-graceful)
+
+        - Summary stats (event_count, iteration_count, tasks_completed) computed from events.jsonl
+        and context-iter files (ac-summary-stats)
+
+        - Active sessions have stats recomputed on each request; completed sessions use cached stats
+        (ac-active-refresh)
+
+        - In-flight promise dedup prevents concurrent cache builds
+
+        - Integrated into daemon session routes (replaced getAllSessionLogSummaries with
+        cache.getAll)
+
+        - 21 tests covering all 5 ACs pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T08:40:55.285Z
-  session_id: 01KKBEFENC21KYK05KCP8E26TD
 - _ulid: 01KKB3PHV6B1KRKKKHPVAZJZTR
   slugs:
     - implement-session-list-infinite-scroll-ui
