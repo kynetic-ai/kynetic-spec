@@ -87025,7 +87025,7 @@
     Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
     in src/cli/commands/item.ts. Consider backward compatibility.
   spec_ref: "@trait-confirmation-prompt"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -87113,6 +87113,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T20:28:46.553Z
+  closed_reason: "Merged in PR #759. Implemented item set trait mutation flags
+    (--add-trait/--remove-trait/--clear-traits), before→after diff output for item/task/item-ac
+    mutation flows, shared diff rendering, and no-op suppression for already-empty task clears.
+    Reviewed AC coverage for @item-set, @task-set, @item-ac, and @trait-json-output ac-2; full npm
+    test passed (4374 tests)."
 - _ulid: 01KKCA4D3NW1MPW6SW5N3T7SN6
   slugs:
     - task-ansi-terminal-output-rendering
