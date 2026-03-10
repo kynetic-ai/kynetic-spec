@@ -1959,7 +1959,7 @@ features:
         type: requirement
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         description: |
           kspec meta resolve <ref> "resolution"
 
