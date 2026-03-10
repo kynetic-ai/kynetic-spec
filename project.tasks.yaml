@@ -84860,6 +84860,16 @@
         and the /sessions live-update path does not satisfy @session-list-infinite-scroll
         ac-live-update (count/top-of-list behavior plus missing E2E coverage)."
       supersedes: null
+    - _ulid: 01KKCVY3BBW9TVJPQNXZR3QTG4
+      created_at: 2026-03-10T21:55:02.635Z
+      author: "@claude"
+      content: "Fix cycle 1 addressed. Created clean branch fix/session-infinite-scroll-v2 from main with
+        only session infinite-scroll changes (cherry-picked original commit + fix). Closed conflated
+        PR #761, opened clean PR #762. Changes: (1) ac-live-update handler now increments total
+        immediately, re-fetches page 1 when user is at top, shows indicator when scrolled. (2) Added
+        scroll position tracking via onscroll handler. (3) Added 4 new E2E tests covering count
+        update, at-top re-fetch, scrolled-down indicator, and indicator click refresh."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
