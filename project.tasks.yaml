@@ -85311,6 +85311,13 @@
         kspec-agents.md and the current PR head has no CI checks. Rebase to task-only changes and
         rerun CI before re-review."
       supersedes: null
+    - _ulid: 01KKBQ94AF4MZ07TAKD7F9H7HM
+      created_at: 2026-03-10T11:14:26.767Z
+      author: "@claude"
+      content: "Fix cycle 2: Rebased PR #744 onto current main, dropping unrelated commit 9d39c989e (from
+        task @01KKB8A3MS1V2CHTC1CEYCS96M). PR now contains only the 4 task-relevant files. Closed
+        stale PR #741. CI running on new head a5d14be29."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
@@ -85343,6 +85350,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #742. Updated checkAutomationEligibility() to skip completed/cancelled
+    automation-eligible tasks before both missing-spec_ref and unresolvable-spec_ref warnings, and
+    updated spec ac-21/ac-23 to scope warnings to non-terminal statuses. AC coverage verified in
+    tests/automation-eligibility.test.ts for active warning paths plus completed/cancelled skip
+    cases; focused tests and full npm test passed."
   depends_on: []
   context: []
   priority: 2
@@ -85355,6 +85367,7 @@
   created_at: 2026-03-10T06:52:48.964Z
   started_at: 2026-03-10T10:49:46.692Z
   submitted_at: 2026-03-10T10:49:50.372Z
+  completed_at: 2026-03-10T11:10:20.579Z
   notes:
     - _ulid: 01KKBKJ6RGEBKP16P76HB0YXES
       created_at: 2026-03-10T10:09:29.872Z
@@ -85382,12 +85395,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T11:10:20.579Z
-  closed_reason: "Merged in PR #742. Updated checkAutomationEligibility() to skip completed/cancelled
-    automation-eligible tasks before both missing-spec_ref and unresolvable-spec_ref warnings, and
-    updated spec ac-21/ac-23 to scope warnings to non-terminal statuses. AC coverage verified in
-    tests/automation-eligibility.test.ts for active warning paths plus completed/cancelled skip
-    cases; focused tests and full npm test passed."
 - _ulid: 01KKB8A3MS1V2CHTC1CEYCS96M
   slugs: []
   title: Remove stale observations skill entry and directory from shadow branch
