@@ -83995,7 +83995,9 @@
     - verification
     - cli
   vcs_refs: []
+  session_id: 01KKAJHZBW4YC3ARGV8J7DWRF7
   created_at: 2026-03-10T00:07:59.554Z
+  started_at: 2026-03-10T00:32:55.180Z
   notes:
     - _ulid: 01KKAH5XEE6KAME7P9ZXG1AJX1
       created_at: 2026-03-10T00:08:35.535Z
@@ -84009,10 +84011,20 @@
         isolation works. If all pass across all runs, close as verified. If any fail, capture the
         exact error and investigate the remaining race."
       supersedes: null
+    - _ulid: 01KKAK7FMTYEF8N8ZJN6YR7KK6
+      created_at: 2026-03-10T00:44:24.090Z
+      author: "@claude"
+      content: "Verification results: (1) cli-serve.test.ts: 5/5 runs passed (29/29 tests each), ~85s per
+        run. Ambient daemon running on port 3456 during all tests — isolation working correctly. (2)
+        test:shard3: 2/2 runs completed. 1365/1366 tests passed. Single failure is in
+        core-skill-install.test.ts (codex platform auto-detection) — unrelated to daemon isolation.
+        Filed as inbox item. (3) Conditions: real daemon on host (port 3456, 2123s uptime),
+        back-to-back execution (no cooldown), 5x repetition for cli-serve. Conclusion: cli-serve
+        foreground tests are stable. PRs #658, #673, #674 resolved the flakiness. No remaining race
+        conditions."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T00:32:55.180Z
-  session_id: 01KKAJHZBW4YC3ARGV8J7DWRF7
 - _ulid: 01KKAH4Y0MPPD3S2T6593RDTRM
   slugs:
     - task-verify-budget-cleanup-stable
