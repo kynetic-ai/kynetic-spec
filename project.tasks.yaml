@@ -87002,6 +87002,25 @@
         leave an orphaned scheduler running. Also, PR #758 is not mergeable on March 10, 2026
         because GitHub Actions test (shard 3/3) is failing on tests/file-lock.test.ts."
       supersedes: null
+    - _ulid: 01KKCQP27XWNYMB9CN8T6ZM5R5
+      created_at: 2026-03-10T20:40:45.053Z
+      author: "@claude"
+      content: >-
+        Fix cycle 3 addressed: Normalized path in DELETE /api/projects route before passing to
+        onProjectUnregistered callback. Changes:
+
+        1. DELETE handler now uses getProject(projectPath) to resolve normalized ProjectContext
+        instead of passing raw decoded URL parameter
+
+        2. All downstream calls (onProjectUnregistered, stopWatcher, unregisterProject) use
+        context.path (normalized)
+
+        3. Added regression test: DELETE with non-canonical path (projectA + '/./') verifies
+        onProjectUnregistered receives normalized path
+
+        4. file-lock.test.ts shard 3 failure is pre-existing race condition in CI (count: 4 vs
+        count: 5) — not related to this PR. Same failure reproduces on main.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
