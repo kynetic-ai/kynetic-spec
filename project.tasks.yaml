@@ -85365,6 +85365,14 @@
         terminal-status skip behavior for unresolved spec_ref warnings, but tests only cover the
         ac-21 no-spec path and do not verify completed/cancelled tasks are skipped for ac-23."
       supersedes: null
+    - _ulid: 01KKBNVK4RF2SKWXS66VX1J8HB
+      created_at: 2026-03-10T10:49:34.616Z
+      author: "@claude"
+      content: "Fix cycle 1: Added 2 tests for ac-23 terminal status skip with unresolvable spec_ref.
+        Tests verify completed and cancelled eligible tasks with broken spec_ref do NOT emit
+        warnings. All 28 automation-eligibility tests pass. Full suite: 4297 passed (2 pre-existing
+        codex-related failures unrelated to this change)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8A3MS1V2CHTC1CEYCS96M
