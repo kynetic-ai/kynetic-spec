@@ -85974,7 +85974,7 @@
     allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
     checkBudget() does not block task start.
   spec_ref: "@session-model-evolution"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86006,6 +86006,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T12:18:06.147Z
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
