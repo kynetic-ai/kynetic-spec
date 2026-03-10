@@ -5,6 +5,7 @@
   AC: @ui-task-board ac-4 — Active Fleet row
   AC: @ui-task-board ac-5 — Real-time WebSocket updates
   AC: @ui-task-board ac-6 — Task action buttons in modal
+  AC: @ui-task-board ac-all-active-tasks — No arbitrary limit on active columns
 -->
 <script lang="ts">
 	import { page } from '$app/stores';
@@ -110,7 +111,7 @@
 		error = '';
 		try {
 			const [taskResponse, statusResponse] = await Promise.all([
-				fetchTasks({ limit: 500 }),
+				fetchTasks(),
 				fetchAgentStatus().catch(() => null)
 			]);
 			tasks = taskResponse.items;

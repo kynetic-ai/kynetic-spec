@@ -107,6 +107,36 @@ describe('distributeToColumns', () => {
 		expect(visibleCount).toBeLessThan(allTasks.length);
 	});
 
+	// AC: @ui-task-board ac-all-active-tasks
+	it('active columns show all tasks without arbitrary limit, Done capped at 20', () => {
+		const backlogTasks = Array.from({ length: 50 }, (_, i) =>
+			makeTask({ status: 'pending', automation: 'manual_only', priority: i })
+		);
+		const readyTasks = Array.from({ length: 60 }, (_, i) =>
+			makeTask({ status: 'pending', automation: 'eligible', priority: i })
+		);
+		const inProgressTasks = Array.from({ length: 40 }, (_, i) =>
+			makeTask({ status: 'in_progress', priority: i })
+		);
+		const reviewTasks = Array.from({ length: 30 }, (_, i) =>
+			makeTask({ status: 'pending_review', priority: i })
+		);
+		const doneTasks = Array.from({ length: 50 }, (_, i) =>
+			makeTask({
+				status: 'completed',
+				created_at: new Date(Date.now() - i * 86400000).toISOString()
+			})
+		);
+		const allTasks = [...backlogTasks, ...readyTasks, ...inProgressTasks, ...reviewTasks, ...doneTasks];
+		const columns = distributeToColumns(allTasks);
+
+		expect(columns.find((c) => c.id === 'backlog')!.tasks).toHaveLength(50);
+		expect(columns.find((c) => c.id === 'ready')!.tasks).toHaveLength(60);
+		expect(columns.find((c) => c.id === 'in_progress')!.tasks).toHaveLength(40);
+		expect(columns.find((c) => c.id === 'review')!.tasks).toHaveLength(30);
+		expect(columns.find((c) => c.id === 'done')!.tasks).toHaveLength(20);
+	});
+
 	// AC: @ui-task-board ac-1
 	it('places blocked tasks in In Progress column', () => {
 		const tasks = [makeTask({ status: 'blocked' })];

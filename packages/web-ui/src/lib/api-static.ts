@@ -177,7 +177,7 @@ function paginate<T>(
 	items: T[],
 	params?: { limit?: number; offset?: number }
 ): PaginatedResponse<T> {
-	const limit = params?.limit ?? 50;
+	const limit = params?.limit ?? items.length;
 	const offset = params?.offset ?? 0;
 	const paged = items.slice(offset, offset + limit);
 
