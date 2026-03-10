@@ -83801,7 +83801,7 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -83827,6 +83827,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-10T00:08:18.365Z
+  session_id: 01KKAH4ZGNRK7E3GE22EN4Y33Z
 - _ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
   slugs:
     - task-fix-web-ui-bundle-test-skip
