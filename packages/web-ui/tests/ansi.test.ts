@@ -510,12 +510,46 @@ describe('safeTruncateAnsi: truncation boundary safety', () => {
 		expect(result).toBe(seq + 'x'.repeat(10));
 	});
 
-	it('strips trailing orphaned CSI fragment at cutoff boundary', () => {
-		// Orphaned CSI: text ends with [31 (no final letter)
+	it('preserves truncated orphaned CSI fragment — downstream parser handles cleanup', () => {
+		// Orphaned CSI: text ends with [31m (a complete orphaned CSI), cutoff splits it to [31
 		const input = 'x'.repeat(997) + '[31m' + 'more';
 		const result = safeTruncateAnsi(input, 1000);
-		// The [31 at the end (without final letter) might be split
+		// safeTruncateAnsi only strips real ESC byte sequences; orphaned CSI is
+		// handled by ansiToHtml/stripOrphanedCsi. The truncated [31 (no final letter)
+		// is just literal text — not a valid orphaned CSI — so it passes through.
+		expect(result).toBe('x'.repeat(997) + '[31');
+		// When rendered, [31 without a final letter is literal text, not ANSI
 		const html = ansiToHtml(result);
-		expect(html).not.toContain('[31');
+		expect(html).toContain('[31');
+	});
+
+	it('preserves literal bracket+digits in plain non-ANSI text at cutoff', () => {
+		// Exact repro from review: plain text ending with [12 at the 1000-char boundary
+		const result = safeTruncateAnsi('x'.repeat(998) + '[12more', 1000);
+		// Should be exactly 1000 chars — the [1 is literal text, not an orphaned CSI
+		expect(result).toBe('x'.repeat(998) + '[1');
+		expect(result.length).toBe(1000);
+	});
+
+	it('preserves literal bracket+digits in various plain text patterns', () => {
+		// Array-like output: "items[31]" at boundary
+		const input = 'data'.repeat(249) + 'items[31]end';
+		const result = safeTruncateAnsi(input, 1000);
+		// Should slice at 1000, not strip [31
+		expect(result).toBe(input.slice(0, 1000));
+	});
+
+	it('preserves trailing bracket+digits even with real ANSI content', () => {
+		// \x1b[32m = 5 chars, "green" = 5 chars, \x1b[0m = 4 chars = 14 chars prefix
+		// Need [31 to land at positions 998-1000 of the slice
+		const padding = 1000 - 14 - 3; // 983 x's so [31 ends at position 1000
+		const input = '\x1b[32mgreen\x1b[0m' + 'x'.repeat(padding) + '[31mExtra';
+		const result = safeTruncateAnsi(input, 1000);
+		// safeTruncateAnsi only strips real ESC sequences; [31 without final
+		// letter is ambiguous — downstream ansiToHtml handles cleanup
+		expect(result).toMatch(/\[31$/);
+		// ansiToHtml handles full processing — [31 without final letter is literal text
+		const html = ansiToHtml(result);
+		expect(html).toContain('color:var(--ansi-green)'); // real ANSI preserved
 	});
 });

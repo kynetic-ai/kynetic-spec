@@ -225,10 +225,12 @@ export function stripOrphanedCsi(text: string): string {
 export function safeTruncateAnsi(text: string, maxLen: number): string {
 	if (text.length <= maxLen) return text;
 	let truncated = text.slice(0, maxLen);
-	// Strip any trailing incomplete ESC sequence: \x1b possibly followed by [ and partial params
+	// Strip any trailing incomplete ESC sequence: \x1b possibly followed by [ and partial params.
+	// This only fires when a real ESC byte (0x1B) was split by the cutoff.
+	// Orphaned CSI fragments (where ESC was already stripped) are handled downstream
+	// by ansiToHtml/stripOrphanedCsi — truncation must not touch them because
+	// bracket+digits like "[12" could be literal text (e.g. array indices, log output).
 	truncated = truncated.replace(/\x1b(?:\[[\x20-\x3f]*)?$/, '');
-	// Also strip orphaned trailing [ that could be the start of an orphaned CSI
-	truncated = truncated.replace(/\[\??[0-9;]*$/, '');
 	return truncated;
 }
 
