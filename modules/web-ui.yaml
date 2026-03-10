@@ -479,8 +479,7 @@ features:
     relates_to: []
     tests: []
     traits:
-      - "@trait-filterable-list"
-      - "@trait-websocket-protocol"
+      - "@ui-url-panel-state"
     notes: []
     created: 2026-01-22T01:18:11.366Z
     acceptance_criteria:
