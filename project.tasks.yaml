@@ -87398,6 +87398,15 @@
       content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: safeTruncateAnsi corrupts plain non-ANSI output
         previews at the 1000-char boundary by stripping literal bracketed text like [12."
       supersedes: null
+    - _ulid: 01KKCWSG9QKNBF19QQ1JCBWS3H
+      created_at: 2026-03-10T22:10:00.631Z
+      author: "@claude"
+      content: "Fix cycle 4: Removed orphaned CSI regex from safeTruncateAnsi entirely. The function now
+        only strips real ESC byte sequences split by truncation. Orphaned CSI cleanup is handled
+        downstream by ansiToHtml/stripOrphanedCsi. Added 3 regression tests: exact repro case (x*998
+        + '[12more'), array-like patterns, and ANSI+bracket mixed content. 68/68 ANSI tests pass, no
+        regressions."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEDW31WB42ZX52NJA51B4V
