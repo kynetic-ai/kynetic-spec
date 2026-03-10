@@ -1396,26 +1396,6 @@ inbox:
       - multi-project
       - concurrency
     added_by: "@claude"
-  - _ulid: 01KK69HXSET7B215A80ZY1EKJH
-    text: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
-      triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift check,
-      hourly inbox triage). (2) Boundary/lifecycle triggers — fire after task.completed for cleanup
-      (branch deletion, stale worktree cleanup, docs regeneration), after PR merge for downstream
-      updates, after session.end for reflection capture. (3) Project health agents — dedicated
-      agents for validation sweeps, dependency freshness, test coverage gaps, dead code detection,
-      spec-code alignment drift. (4) Multi-agent review — dispatch multiple reviewers concurrently
-      on pending_review with different perspectives (code quality vs spec alignment vs security),
-      then synthesize findings before merge decision. (5) Event composition — triggers that combine
-      conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or when
-      validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
-      webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
-    created_at: 2026-03-08T08:38:22.766Z
-    tags:
-      - agent
-      - dispatch
-      - design
-      - feature
-    added_by: "@claude"
   - _ulid: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
     text: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
       additional registered projects get periodic session pulls too."

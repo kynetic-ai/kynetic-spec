@@ -2546,14 +2546,16 @@ triage:
       that combine conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or
       when validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
       webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: Design/spec task for dispatch trigger expansion — cron, webhook, file-watch triggers.
       Manual only, design phase first
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.049Z
-    updated_at: 2026-03-10T08:17:09.071Z
+    updated_at: 2026-03-10T08:18:16.192Z
+    acted_at: 2026-03-10T08:18:16.172Z
+    result_ref: "@01KKBD6G"
   - _ulid: 01KKBD4G0EJHEYW88GHVEEZ6Z3
     inbox_ref: 01KK6168DMHH6H5EM7277P4Y1B
     item_snapshot: "kspec setup should update existing agent definitions on version bumps. Currently
@@ -2567,10 +2569,10 @@ triage:
       skipping matching IDs"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.134Z
-    updated_at: 2026-03-10T08:18:12.849Z
     acted_at: 2026-03-10T08:18:12.829Z
     result_ref: "@01KKBD6D"
+    created_at: 2026-03-10T08:17:09.134Z
+    updated_at: 2026-03-10T08:18:12.849Z
   - _ulid: 01KKBD4G38VNC1HHRB7T9EE4JC
     inbox_ref: 01KK5WHSWGB2SNA5B1498X0JAQ
     item_snapshot: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores

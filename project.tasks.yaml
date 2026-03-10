@@ -85843,24 +85843,52 @@
   created_at: 2026-03-10T08:18:08.350Z
   notes: []
   todos: []
-- title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
+- _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
+  slugs: []
+  title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
     with m
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "kspec setup should update existing agent definitions on version bumps. Currently skips
     agents with matching IDs, so agents created with older kspec versions miss new fields like
     auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve set,
     blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add kspec
     setup --upgrade flag, (3) warn when agent config is missing expected fields."
-  _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:18:11.677Z
+  notes: []
+  todos: []
+- title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
+    triggers"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style
+    scheduled triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift
+    check, hourly inbox triage). (2) Boundary/lifecycle triggers — fire after task.completed for
+    cleanup (branch deletion, stale worktree cleanup, docs regeneration), after PR merge for
+    downstream updates, after session.end for reflection capture. (3) Project health agents —
+    dedicated agents for validation sweeps, dependency freshness, test coverage gaps, dead code
+    detection, spec-code alignment drift. (4) Multi-agent review — dispatch multiple reviewers
+    concurrently on pending_review with different perspectives (code quality vs spec alignment vs
+    security), then synthesize findings before merge decision. (5) Event composition — triggers that
+    combine conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or when
+    validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
+    webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
+  _ulid: 01KKBD6GBCWTZA2ECFWN62F92F
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:18:11.677Z
+  created_at: 2026-03-10T08:18:15.020Z
   notes: []
   todos: []
