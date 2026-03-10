@@ -129,7 +129,7 @@ traits:
         then: operations require explicit --force flag
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KFDZSHFAP21C8TDCQ54Z1R0T
     slugs:
       - trait-filterable-list
