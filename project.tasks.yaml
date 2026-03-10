@@ -85166,7 +85166,7 @@
   spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85179,6 +85179,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T08:58:07.353Z
+  session_id: 01KKBF2PDKX0M6G6J911XTPY73
 - _ulid: 01KKB6P8EEJ355H2QWT50V4HGC
   slugs: []
   title: Board view should load all active tasks without arbitrary limit
