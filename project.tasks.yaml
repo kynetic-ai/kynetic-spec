@@ -85521,12 +85521,21 @@
   title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
     is not o
   type: task
-  description: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If
-    git is not on PATH (e.g. spawn git ENOENT), repair leaves the project in a worse state than
-    before — worktree gone, branch exists but disconnected. Repair should almost never remove the
-    worktree; instead it should try to re-link or fix in place. If removal is truly necessary,
-    verify git is available before removing. Observed in kynetic-spec-ui when repair failed with
-    'spawn git ENOENT' and left .kspec missing entirely.
+  description: >-
+    Shadow repair safety: repairShadow() in src/parser/shadow.ts calls fs.rm(worktreeDir) at line
+    2729 BEFORE attempting git worktree add at line 2739. If worktree recreation fails (git
+    unavailable, disk error, permissions), the .kspec directory is gone with no recovery path for
+    the user.
+
+
+    The kspec-meta branch data survives in .git/ and can be recovered with git worktree add .kspec
+    kspec-meta, but users would not know this.
+
+
+    Design decision needed: (1) Verify git availability and worktree add feasibility BEFORE any
+    fs.rm, (2) consider in-place repair (re-link broken worktree without deletion), (3) add a
+    backup/restore mechanism, (4) at minimum print recovery instructions if recreation fails. Manual
+    task because it touches data safety and needs human review of the repair strategy.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85538,6 +85547,7 @@
   created_at: 2026-03-10T07:53:31.856Z
   notes: []
   todos: []
+  automation: manual_only
 - _ulid: 01KKBBSDWJ9VTVY1HTHDYC69KP
   slugs: []
   title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
@@ -85574,24 +85584,24 @@
   created_at: 2026-03-10T07:53:37.938Z
   notes: []
   todos: []
-- title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
+- _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
+  slugs: []
+  title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
     (observed in co
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
     (observed in codex session). Repro: with KSPEC_SESSION_ID set to an old session that has
     budget.json started_this_cycle=max_per_cycle, 'kspec task start @ref' fails with 'Task budget
     exhausted ... let iteration end naturally' even when not running ralph and no in-progress tasks.
     Expected: budget guard should apply only during active ralph loop iteration context, or
     stale/non-ralph session IDs should be ignored."
-  _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-03-10T07:53:41.361Z
   notes: []
