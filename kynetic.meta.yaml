@@ -293,11 +293,11 @@ agents:
           automation: eligible
     skills:
       - task-work
+    budget:
+      timeout_minutes: 120
     concurrency:
       max_concurrent: 1
     auto_approve: true
-    budget:
-      timeout_minutes: 120
   - _ulid: 01KKBVD4P3DSVN0YJF8VHCP22M
     id: pr-reviewer
     name: PR Reviewer
@@ -315,7 +315,10 @@ agents:
       - pr-review
     concurrency:
       max_concurrent: 1
-    auto_approve: false
+    auto_approve: true
+    adapter: codex-acp
+    budget:
+      timeout_minutes: 120
 workflows:
   - _ulid: 01KF782ZSH8JG4CCJRWVQQ9G5R
     id: spec-first
