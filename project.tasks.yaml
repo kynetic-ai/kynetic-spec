@@ -86796,7 +86796,7 @@
     prompt_template when available, falling back to the default only when no template is defined.
     Also address adapter-safe prompt handling for codex-acp runs.
   spec_ref: "@trait-task-readiness"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86831,6 +86831,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T17:47:32.912Z
+  closed_reason: "Merged in PR #757. Updated direct 'kspec agent run --task <ref>' to respect agent
+    prompt_template with interpolation, kept explicit prompt precedence and fallback behavior, and
+    preserved backward-compatible interpolateTemplate exports. Review verified task intent, posted
+    GitHub review record, and confirmed regression coverage with local npm test (4348 passed, 3
+    skipped) plus passing CI on commit d219645ec252c69e99ea40ce3ead17013bf5bb76."
 - _ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
   slugs: []
   title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
@@ -86915,6 +86921,7 @@
   session_id: 01KKCC0VTAADPJRB8H207NTZBZ
   created_at: 2026-03-10T08:18:18.277Z
   started_at: 2026-03-10T17:22:51.318Z
+  submitted_at: 2026-03-10T17:32:48.619Z
   notes:
     - _ulid: 01KKCCRYC9T4N7VMF98HFE4CME
       created_at: 2026-03-10T17:30:05.066Z
@@ -86939,7 +86946,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T17:32:48.619Z
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
