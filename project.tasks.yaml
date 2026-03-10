@@ -86326,6 +86326,14 @@
         build artifact (tests invoke the compiled CLI binary, not source). Rebased on main (picked
         up 2 new commits), rebuilt, confirmed all 15 tests pass. Force-pushed to trigger fresh CI."
       supersedes: null
+    - _ulid: 01KKC31177XP0XZTZS9VPMAKRE
+      created_at: 2026-03-10T14:39:44.359Z
+      author: "@claude"
+      content: "Fix cycle 1 resolved: All review threads resolved (MUST-FIX was stale build artifact
+        issue). All CI checks now green — test shards 1-3 pass, e2e pass, claude-review pass,
+        check-unresolved-comments pass. No code changes needed; the rebase+rebuild from prior note
+        was the fix."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
