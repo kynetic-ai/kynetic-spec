@@ -85920,7 +85920,7 @@
     (these skills are managed by the plugin, not locally rendered, so drift detection does not
     apply). Update tests in tests/skill-rendering.test.ts.
   spec_ref: "@platform-renderer-trait"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -85930,7 +85930,7 @@
   session_id: 01KKBVGXV023QDNPP5SGE39XQH
   created_at: 2026-03-10T07:53:37.938Z
   started_at: 2026-03-10T12:46:33.364Z
-  submitted_at: 2026-03-10T12:02:05.795Z
+  submitted_at: 2026-03-10T12:49:36.500Z
   notes:
     - _ulid: 01KKBSZZADM5Q8B2XGX3VGDM76
       created_at: 2026-03-10T12:01:52.462Z
