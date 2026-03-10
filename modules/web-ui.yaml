@@ -1658,6 +1658,12 @@ requirements:
     traits: []
     notes: []
     created: 2026-03-10T04:05:38.162Z
+    acceptance_criteria:
+      - id: ac-1
+        given: a detail panel or modal is opened by setting a URL query parameter (e.g. ?ref=)
+        when: the code updates the URL
+        then: "goto(url, { replaceState: true, keepFocus: true, noScroll: true }) is used instead of
+          replaceState, pushState, or window.history methods, ensuring $page.url updates reactively"
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
