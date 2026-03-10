@@ -86951,6 +86951,15 @@
         non-normalized project path into session-sync scheduler bookkeeping, so daemon
         dedupe/cleanup can miss duplicate or orphaned schedulers for the same project."
       supersedes: null
+    - _ulid: 01KKCGGJBW2R5GG05ZTGG86V4D
+      created_at: 2026-03-10T18:35:24.924Z
+      author: "@claude"
+      content: "Fix cycle 1 addressed: Changed middleware auto-registration to pass projectContext.path
+        (normalized) instead of raw projectPath header to onProjectRegistered callback. Added
+        regression test with non-canonical path (/tmp/project-a/./) verifying normalization. All 7
+        tests in daemon-session-sync-multi-project.test.ts pass. Full suite green except
+        pre-existing trait-retrospective failure on main."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
