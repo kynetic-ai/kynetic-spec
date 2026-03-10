@@ -84027,29 +84027,41 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Create test runner script that ensures environment readiness before running tests
+- _ulid: 01KKAHWE1ZAPWVTPNZNTW5B8CH
+  slugs:
+    - task-test-runner-script
+  title: Create test runner script that ensures environment readiness before running tests
+  type: task
   description: Create a test runner script (like bootstrap.cjs for dev setup) that agents and
     developers use instead of raw npm test. Script verifies environment prerequisites (build
     artifacts like dist/web-ui/, dependencies, config), fixes gaps automatically, then runs vitest.
     Provides extensible hook points for pre/post-test actions and cleaner output.
-  type: task
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-test-runner-script
   tags:
     - testing
     - infra
     - cli
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKAHWE1ZAPWVTPNZNTW5B8CH
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-10T00:20:53.439Z
-  notes: []
+  notes:
+    - _ulid: 01KKAHWRN13YXRYTM9KH4C6HWM
+      created_at: 2026-03-10T00:21:04.289Z
+      author: "@claude"
+      content: "Design notes from user: Model after bootstrap.cjs — a script that ensures the environment
+        is good for running tests and fixes gaps. All agents should run through this instead of raw
+        test commands. Key features: (1) Check and build dist/web-ui/ if missing. (2) Verify
+        node_modules are installed. (3) Ensure any other prerequisites are met. (4) Extensible hook
+        points for future needs (pre-test setup, post-test cleanup). (5) Cleaner/less noisy output
+        than raw vitest. (6) Could live at scripts/test.cjs or similar, invoked via npm run test
+        wrapper. Convention update needed: agents should use this script instead of npx vitest or
+        npm test directly."
+      supersedes: null
   todos: []
+  automation: eligible
