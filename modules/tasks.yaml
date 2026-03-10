@@ -1132,9 +1132,10 @@ requirements:
           --auto) does NOT mark tasks eligible, but agents/humans reviewing interactively CAN mark
           eligible via kspec task set
       - id: ac-23
-        given: "a task has automation: eligible"
+        given: "a non-terminal task (not completed or cancelled) has automation: eligible"
         when: its spec_ref is removed or the referenced spec is deleted
-        then: the automation status is preserved but kspec validate emits a warning
+        then: the automation status is preserved but kspec validate emits a warning. Completed and cancelled
+          tasks are skipped.
       - id: ac-24
         given: kspec tasks ready is run
         when: the --needs-review flag is provided
