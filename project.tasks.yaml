@@ -87017,16 +87017,16 @@
     Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
     in src/cli/commands/item.ts. Consider backward compatibility.
   spec_ref: "@trait-confirmation-prompt"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKCM99CBTB9CKYBAYGKMWBCW
   created_at: 2026-03-10T08:18:22.055Z
-  started_at: 2026-03-10T19:05:46.954Z
+  started_at: 2026-03-10T20:01:51.926Z
   submitted_at: 2026-03-10T19:05:50.827Z
   notes:
     - _ulid: 01KKCDZA4YHXHYK95XAEZB9AJC
