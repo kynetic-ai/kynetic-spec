@@ -84509,7 +84509,8 @@
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-session-summary-cache"
   context: []
   priority: 3
   tags: []
@@ -84666,15 +84667,21 @@
         endpoints (/tasks/:ref/sessions, /items/:ref/sessions) are simpler
         than overloading the main sessions endpoint with spec resolution logic.
   todos: []
-- title: Implement Session Text Search
+- _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
+  slugs:
+    - implement-session-text-search
+  title: Implement Session Text Search
   type: task
   spec_ref: "@session-text-search"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  priority: 3
-  slugs:
-    - implement-session-text-search
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:17.278Z
   notes:
     - _ulid: 01KKB3PKZZTGCX16EXAAF8DY6Y
       created_at: 2026-03-10T05:32:17.279Z
@@ -84688,10 +84695,4 @@
         (status, since, agent, task) BEFORE scanning events.jsonl. For 7-day
         windows this typically means scanning 20-50 sessions instead of 700+.
         The daemon endpoint can stream results or use a reasonable timeout.
-  _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-03-10T05:32:17.278Z
   todos: []
