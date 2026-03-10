@@ -8013,6 +8013,31 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KKCYXPP2A731MV0RE14TVN8Y
+    type: success
+    content: Dual review pattern (internal agent + Codex) catches complementary issues. Internal agent
+      finds structural gaps, Codex finds semantic/testability issues. Worth formalizing as a
+      standard plan review workflow.
+    created_at: 2026-03-10T22:47:15.394Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKCYXPVFB1FKVEA0Z3J6618K
+    type: success
+    content: AC migration tables as a review tool — mapping every existing AC to its fate
+      (moves/stays/obsolete) surfaces gaps invisible in prose descriptions.
+    created_at: 2026-03-10T22:47:15.567Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKCYXQ014AA088EVR464BRKJ
+    type: friction
+    content: Session checkpoint hooks fire for unrelated dispatch agent work. No way to scope checkpoint
+      to current interactive session vs background dispatch tasks. Had to dismiss 5+ warnings.
+    created_at: 2026-03-10T22:47:15.714Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill

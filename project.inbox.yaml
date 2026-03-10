@@ -1424,3 +1424,12 @@ inbox:
       - bug
       - cli
     added_by: "@claude"
+  - _ulid: 01KKCYXQ4CE025A37KS9Q25B60
+    text: "Plan doc pre-import validation: kspec plan validate <file> to check YAML structure, AC
+      completeness, trait refs, and parent refs before importing. Currently no validation until
+      --dry-run."
+    created_at: 2026-03-10T22:47:15.852Z
+    tags:
+      - cli
+      - planning
+    added_by: "@claude"
