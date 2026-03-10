@@ -1147,7 +1147,7 @@ requirements:
           from previous iterations)"
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     traits:
       - "@trait-task-readiness"
   - _ulid: 01KFFFZTA9V1WPHADEDRYJ78XM
