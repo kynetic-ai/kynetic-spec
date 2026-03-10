@@ -83888,7 +83888,20 @@
     - cli
   vcs_refs: []
   created_at: 2026-03-10T00:07:55.716Z
-  notes: []
+  notes:
+    - _ulid: 01KKAH5PXMC2WQ9ASX5NV7AVBH
+      created_at: 2026-03-10T00:08:28.852Z
+      author: "@claude"
+      content: "Root cause analysis from session data: (1) waitForDispatchWatchReady uses 500ms timeout —
+        too short under load. (2) Fake WebSocket onopen/onmessage scheduling races with the test
+        assertions. (3) 'crypto is not defined' in some CI envs. Fix checklist: [a] Increase all
+        dispatch watch waitFor/poll timeouts to min 2000ms. [b] In vitest setup or test beforeAll,
+        ensure globalThis.crypto exists (import crypto from 'node:crypto' and assign if missing).
+        [c] Make timeout error messages include last received data for diagnosis. [d] Check if fake
+        WS onopen can use queueMicrotask instead of setTimeout for more deterministic scheduling.
+        Tests to validate: run the full cli-agent-commands.test.ts file 5x in sequence under load
+        (e.g., with other test files running)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
