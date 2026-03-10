@@ -1424,3 +1424,14 @@ inbox:
       - bug
       - cli
     added_by: "@claude"
+  - _ulid: 01KKD19GBG0WM588Z8TYR04PCE
+    text: "Smart test filtering: run only tests affected by branch changes. Vitest --changed works for
+      direct imports but misses CLI subprocess integration tests (majority of suite). Would need
+      custom dependency graph that maps source files → test files including subprocess boundaries.
+      Goal: faster agent feedback loops. See conversation analysis for full tradeoffs."
+    created_at: 2026-03-10T23:28:39.280Z
+    tags:
+      - infra
+      - testing
+      - post-mvp
+    added_by: "@claude"
