@@ -86589,7 +86589,7 @@
     avoid breaking them. This is a breaking change to the JSON output contract — consider if a
     --format flag or version header is needed.
   spec_ref: "@trait-json-output"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86600,6 +86600,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T15:36:15.348Z
+  session_id: 01KKC5PE1JYHMCK25JRVFS9M2C
 - _ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
   slugs: []
   title: "Alignment status calculation should treat needs_work and pending_review as active work
