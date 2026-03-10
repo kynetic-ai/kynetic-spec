@@ -86911,14 +86911,14 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKCC0VTAADPJRB8H207NTZBZ
+  session_id: null
   created_at: 2026-03-10T08:18:18.277Z
   started_at: 2026-03-10T17:22:51.318Z
   submitted_at: 2026-03-10T17:32:48.619Z
@@ -86943,6 +86943,13 @@
         startup init, POST /api/projects, and middleware auto-registration via X-Kspec-Dir header.
 
         - Verification: TypeScript compiles clean, new tests pass, full suite running.
+      supersedes: null
+    - _ulid: 01KKCF2479WQZ6RDASDVHZPH6T
+      created_at: 2026-03-10T18:10:03.113Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: middleware auto-registration passes a
+        non-normalized project path into session-sync scheduler bookkeeping, so daemon
+        dedupe/cleanup can miss duplicate or orphaned schedulers for the same project."
       supersedes: null
   todos: []
   automation: eligible
