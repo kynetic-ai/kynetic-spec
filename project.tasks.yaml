@@ -85864,12 +85864,11 @@
   created_at: 2026-03-10T08:18:11.677Z
   notes: []
   todos: []
-- title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
+- _ulid: 01KKBD6GBCWTZA2ECFWN62F92F
+  slugs: []
+  title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
     triggers"
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style
     scheduled triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift
     check, hourly inbox triage). (2) Boundary/lifecycle triggers — fire after task.completed for
@@ -85882,13 +85881,32 @@
     combine conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or when
     validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
     webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
-  _ulid: 01KKBD6GBCWTZA2ECFWN62F92F
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:18:15.020Z
+  notes: []
+  todos: []
+- title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
+    additional r"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
+    so additional registered projects get periodic session pulls too."
+  _ulid: 01KKBD6KH5F5MVC5BXV2NQG474
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:18:15.020Z
+  created_at: 2026-03-10T08:18:18.277Z
   notes: []
   todos: []

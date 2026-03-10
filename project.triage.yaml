@@ -2525,13 +2525,15 @@ triage:
     inbox_ref: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
     item_snapshot: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
       so additional registered projects get periodic session pulls too."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "SHOULD-FIX from PR #723 review — daemon session-branch sync limited to startupProjectPath"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:08.975Z
-    updated_at: 2026-03-10T08:17:08.995Z
+    updated_at: 2026-03-10T08:18:19.406Z
+    acted_at: 2026-03-10T08:18:19.387Z
+    result_ref: "@01KKBD6K"
   - _ulid: 01KKBD4FXSGWA95VA8WXBKK5E6
     inbox_ref: 01KK69HXSET7B215A80ZY1EKJH
     item_snapshot: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style
@@ -2552,10 +2554,10 @@ triage:
       Manual only, design phase first
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.049Z
-    updated_at: 2026-03-10T08:18:16.192Z
     acted_at: 2026-03-10T08:18:16.172Z
     result_ref: "@01KKBD6G"
+    created_at: 2026-03-10T08:17:09.049Z
+    updated_at: 2026-03-10T08:18:16.192Z
   - _ulid: 01KKBD4G0EJHEYW88GHVEEZ6Z3
     inbox_ref: 01KK6168DMHH6H5EM7277P4Y1B
     item_snapshot: "kspec setup should update existing agent definitions on version bumps. Currently

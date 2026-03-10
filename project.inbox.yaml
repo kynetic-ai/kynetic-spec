@@ -1396,12 +1396,6 @@ inbox:
       - multi-project
       - concurrency
     added_by: "@claude"
-  - _ulid: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
-    text: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
-      additional registered projects get periodic session pulls too."
-    created_at: 2026-03-09T07:16:32.329Z
-    tags: []
-    added_by: Jacob Chapel
   - _ulid: 01KKB0WWM9QRKCVE1CBMKE6ZY4
     text: "CLI mutation commands should show what changed (before → after) in output, especially for
       array fields like --trait that replace rather than append. Two improvements: (1) item set
