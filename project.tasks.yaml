@@ -84622,6 +84622,25 @@
         refs to pass, and unknown task/spec refs currently return empty 200 responses instead of the
         inherited 404 contract."
       supersedes: null
+    - _ulid: 01KKC3W063CVAA806Z5N372JEX
+      created_at: 2026-03-10T14:54:28.036Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed. Changes:
+
+
+        1. **Route (sessions.ts)**: Unknown task_id and spec_ref refs now return 404 with {error,
+        message, suggestion} per @trait-api-endpoint ac-2, instead of silently returning empty 200.
+
+
+        2. **E2E tests**: 
+           - ac-filter-task: Test sessions now use @test-task-ready and @test-task-in-progress (real fixture tasks) instead of fake @task-alpha/@task-beta. Asserts exact session matches (2 sessions for @test-task-ready, 1 for @test-task-in-progress).
+           - ac-filter-spec-ref: New tests exercise spec_ref=@test-feature resolving through AlignmentIndex to linked tasks. Verifies 3 matching sessions. Also tests combined spec_ref+status filter.
+           - @trait-api-endpoint ac-2: New 404 tests for unknown task_id and spec_ref, verifying error shape.
+
+        All 197 vitest files (4335 tests) pass. TypeScript compiles clean. E2E tests require daemon
+        (CI only).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
