@@ -1211,16 +1211,6 @@ inbox:
       - cli
       - bug
     added_by: "@claude"
-  - _ulid: 01KJS9PR6ZKT6M25HGE716V01B
-    text: "Bug: after agent.failed, task remains stuck in in_progress with no note. invocation.ts should
-      append a failure note and optionally reset task to pending so dispatch can retry cleanly.
-      Currently requires manual intervention to close out the task."
-    created_at: 2026-03-03T07:30:53.279Z
-    tags:
-      - bug
-      - agent
-      - dispatch
-    added_by: "@claude"
   - _ulid: 01KJTB75K1532350ZAG271VC3X
     text: Document acp-mock.js bidirectional RPC pattern in testing conventions — the
       MOCK_ACP_SEND_PERMISSION_REQUEST env var and the pending-requests map pattern for agent→client
