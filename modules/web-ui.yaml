@@ -1670,6 +1670,10 @@ requirements:
         then: the URL query parameter is removed via goto() and the reactive effect that watches
           $page.url.searchParams does not reopen the panel because $page.url reflects the updated
           URL
+      - id: ac-3
+        given: a user navigates to a page with ?ref= in the URL (e.g. from a cross-page link)
+        when: the page loads and the detail panel opens
+        then: dismissing the panel works correctly on the first attempt and the panel stays closed
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
