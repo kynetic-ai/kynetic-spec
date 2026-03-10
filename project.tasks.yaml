@@ -86048,6 +86048,17 @@
         !session => allow bypass) is still present. Waiting for worker to push a fix before
         re-review."
       supersedes: null
+    - _ulid: 01KKBXMPMGHZS36EEW6CHBPKMS
+      created_at: 2026-03-10T13:05:37.424Z
+      author: "@claude"
+      content: "Fix cycle 1 resolution: Narrowed the stale session check from `\\!session ||
+        session.status \\!== 'active'` to `session && session.status \\!== 'active'`. The original
+        logic treated missing session metadata as stale (allow bypass), which broke integration
+        tests that create budget files without session metadata. Now: missing metadata → proceed
+        with normal budget checks; existing non-active session → skip enforcement. Added test for
+        the missing-metadata-with-budget scenario. All 56 budget tests pass, integration tests
+        pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
