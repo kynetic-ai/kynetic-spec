@@ -1326,18 +1326,6 @@ inbox:
       - testing
       - devx
     added_by: Jacob Chapel
-  - _ulid: 01KJVFDRC70KAZ98MJ9ERFY6JJ
-    text: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
-      imply both 'submit after PR created' and 'submit before PR creation'. Normalize to one
-      sequence (submit transitions ownership to pr-reviewer queue before PR handoff) and make
-      worker/reviewer responsibilities explicit.
-    created_at: 2026-03-04T03:49:18.856Z
-    tags:
-      - docs
-      - workflow
-      - dispatch
-      - review
-    added_by: Jacob Chapel
   - _ulid: 01KJVFDRCWYX9S41335NHP93JK
     text: Disambiguate automation status vs lifecycle status in @triage-automation docs. Add explicit
       note that automation:needs_review is an eligibility flag (not lifecycle

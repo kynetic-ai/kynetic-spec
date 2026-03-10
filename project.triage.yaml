@@ -2760,10 +2760,12 @@ triage:
       wording can imply both 'submit after PR created' and 'submit before PR creation'. Normalize to
       one sequence (submit transitions ownership to pr-reviewer queue before PR handoff) and make
       worker/reviewer responsibilities explicit.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Small doc fix: update plan-review dispatch naming to avoid role overload with pr-reviewer"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:10.235Z
-    updated_at: 2026-03-10T08:17:10.258Z
+    updated_at: 2026-03-10T08:17:25.981Z
+    acted_at: 2026-03-10T08:17:25.963Z
+    result_ref: "@01KKBD4Z"
