@@ -85842,6 +85842,11 @@
   spec_ref: "@platform-renderer-trait"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #746. Fixed the codex setup detection test by blanking all Claude env
+    markers so CODEX_THREAD_ID reaches the codex render path. Reviewed diff, verified
+    @new-project-bootstrapping ac-3 coverage in tests/enhanced-setup.test.ts, confirmed
+    @platform-renderer-trait coverage remained intact, and validated with targeted vitest plus full
+    npm test on the PR head (4328 passing)."
   depends_on: []
   context: []
   priority: 3
@@ -85851,6 +85856,7 @@
   created_at: 2026-03-10T07:53:28.621Z
   started_at: 2026-03-10T11:44:47.834Z
   submitted_at: 2026-03-10T11:48:55.658Z
+  completed_at: 2026-03-10T12:15:11.268Z
   notes:
     - _ulid: 01KKBS8KAYZ11RGPPFPXYHYCCN
       created_at: 2026-03-10T11:49:06.526Z
@@ -85864,12 +85870,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T12:15:11.268Z
-  closed_reason: "Merged in PR #746. Fixed the codex setup detection test by blanking all Claude env
-    markers so CODEX_THREAD_ID reaches the codex render path. Reviewed diff, verified
-    @new-project-bootstrapping ac-3 coverage in tests/enhanced-setup.test.ts, confirmed
-    @platform-renderer-trait coverage remained intact, and validated with targeted vitest plus full
-    npm test on the PR head (4328 passing)."
 - _ulid: 01KKBBS7YHFWP6RT427884JV12
   slugs: []
   title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
@@ -85974,7 +85974,7 @@
     allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
     checkBudget() does not block task start.
   spec_ref: "@session-model-evolution"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85985,6 +85985,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T12:16:01.201Z
+  session_id: 01KKBT1P2G40V1BCTPG7CR70DF
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
