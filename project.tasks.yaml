@@ -85341,7 +85341,7 @@
   spec_ref: "@task-automation-eligibility"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85382,6 +85382,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T11:10:20.579Z
+  closed_reason: "Merged in PR #742. Updated checkAutomationEligibility() to skip completed/cancelled
+    automation-eligible tasks before both missing-spec_ref and unresolvable-spec_ref warnings, and
+    updated spec ac-21/ac-23 to scope warnings to non-terminal statuses. AC coverage verified in
+    tests/automation-eligibility.test.ts for active warning paths plus completed/cancelled skip
+    cases; focused tests and full npm test passed."
 - _ulid: 01KKB8A3MS1V2CHTC1CEYCS96M
   slugs: []
   title: Remove stale observations skill entry and directory from shadow branch
