@@ -1,6 +1,6 @@
 /**
- * Tests for item set trait mutation flags and before→after diff display
- * AC: @trait-confirmation-prompt ac-1, ac-4
+ * Tests for CLI mutation command before→after diff display
+ * Covers: item set, task set, item ac set
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -325,6 +325,121 @@ describe('item set before→after diff display', () => {
     // Set title to same value
     const result = kspec('item set @test-feat --title "Test Feature"', tempDir);
     // Should warn about no changes
+    expect(result.stdout + result.stderr).toContain('No changes');
+  });
+});
+
+describe('task set before→after diff display', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    // Create a task directly
+    kspec(
+      'task add --title "My Task" --slug my-task --priority 3',
+      tempDir,
+    );
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should show changed fields in task set success message', () => {
+    const result = kspec('task set @my-task --priority 1', tempDir);
+    expect(result.stdout).toContain('priority');
+    expect(result.stdout).toContain('Updated task');
+  });
+
+  it('should show before→after for priority change in text output', () => {
+    const result = kspec('task set @my-task --priority 1', tempDir);
+    // Should show before→after values
+    expect(result.stdout).toContain('priority');
+  });
+
+  it('should include changes array in task set JSON output', () => {
+    const result = kspecJson<{ task: { priority: number }; changes: Array<{ field: string; before: unknown; after: unknown }> }>(
+      'task set @my-task --priority 1',
+      tempDir,
+    );
+    expect(result.changes).toBeDefined();
+    expect(result.changes.length).toBeGreaterThan(0);
+    const priorityChange = result.changes.find(c => c.field === 'priority');
+    expect(priorityChange).toBeDefined();
+    expect(priorityChange!.after).toBe(1);
+  });
+
+  it('should include tag changes in task set JSON output', () => {
+    const result = kspecJson<{ changes: Array<{ field: string; before: unknown; after: unknown }> }>(
+      'task set @my-task --tag cli urgent',
+      tempDir,
+    );
+    expect(result.changes).toBeDefined();
+    const tagChange = result.changes.find(c => c.field === 'tags');
+    expect(tagChange).toBeDefined();
+    expect(tagChange!.before).toEqual([]);
+    expect(tagChange!.after).toEqual(['cli', 'urgent']);
+  });
+});
+
+describe('item ac set before→after diff display', () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+
+    kspec(
+      'item add --under @test-core --title "AC Feature" --slug ac-feat',
+      tempDir,
+    );
+    kspec(
+      'item ac add @ac-feat --given "a precondition" --when "action occurs" --then "expected outcome"',
+      tempDir,
+    );
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  it('should show changed fields in ac set success message', () => {
+    const result = kspec(
+      'item ac set @ac-feat ac-1 --then "new expected outcome"',
+      tempDir,
+    );
+    expect(result.stdout).toContain('then');
+    expect(result.stdout).toContain('Updated acceptance criterion');
+  });
+
+  it('should show before→after for ac field change in text output', () => {
+    const result = kspec(
+      'item ac set @ac-feat ac-1 --given "new precondition"',
+      tempDir,
+    );
+    // Should show the given field changed
+    expect(result.stdout).toContain('given');
+  });
+
+  it('should include changes array in ac set JSON output', () => {
+    const result = kspecJson<{ changes: Array<{ field: string; before: unknown; after: unknown }> }>(
+      'item ac set @ac-feat ac-1 --then "new expected outcome"',
+      tempDir,
+    );
+    expect(result.changes).toBeDefined();
+    expect(result.changes.length).toBe(1);
+    expect(result.changes[0].field).toBe('then');
+    expect(result.changes[0].before).toBe('expected outcome');
+    expect(result.changes[0].after).toBe('new expected outcome');
+  });
+
+  it('should warn when ac values are already set (no-op)', () => {
+    const result = kspec(
+      'item ac set @ac-feat ac-1 --given "a precondition"',
+      tempDir,
+    );
     expect(result.stdout + result.stderr).toContain('No changes');
   });
 });

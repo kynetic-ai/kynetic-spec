@@ -44,7 +44,7 @@ import { errors } from "../../strings/errors.js";
 import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, isJsonMode, output, success, warn } from "../output.js";
+import { error, isJsonMode, output, showChangeDiff, success, warn } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
 
 /**
@@ -1262,19 +1262,7 @@ Examples:
         });
 
         // Show before→after diff in text mode
-        if (!isJsonMode()) {
-          for (const change of changes) {
-            const formatVal = (v: unknown): string => {
-              if (v === undefined || v === null) return chalk.gray("(none)");
-              if (Array.isArray(v)) return v.length === 0 ? chalk.gray("[]") : v.join(", ");
-              if (typeof v === "object") return JSON.stringify(v);
-              return String(v);
-            };
-            console.log(
-              `  ${chalk.gray(change.field + ":")} ${chalk.red(formatVal(change.before))} → ${chalk.green(formatVal(change.after))}`,
-            );
-          }
-        }
+        showChangeDiff(changes);
 
         // Derive hint
         if (!isJsonMode()) {
@@ -1969,9 +1957,10 @@ Examples:
           process.exit(EXIT_CODES.CONFLICT);
         }
 
-        // Build updated AC
+        // Build updated AC and track before→after changes
         const updatedAc = [...existingAc];
-        const updatedFields: string[] = [];
+        const originalAc = { ...updatedAc[acIndex] };
+        const changes: Array<{ field: string; before: unknown; after: unknown }> = [];
 
         updatedAc[acIndex] = {
           ...updatedAc[acIndex],
@@ -1981,20 +1970,37 @@ Examples:
           ...(options.then && { then: options.then }),
         };
 
-        if (options.id) updatedFields.push("id");
-        if (options.given) updatedFields.push("given");
-        if (options.when) updatedFields.push("when");
-        if (options.then) updatedFields.push("then");
+        if (options.id && options.id !== originalAc.id) {
+          changes.push({ field: "id", before: originalAc.id, after: options.id });
+        }
+        if (options.given && options.given !== originalAc.given) {
+          changes.push({ field: "given", before: originalAc.given, after: options.given });
+        }
+        if (options.when && options.when !== originalAc.when) {
+          changes.push({ field: "when", before: originalAc.when, after: options.when });
+        }
+        if (options.then && options.then !== originalAc.then) {
+          changes.push({ field: "then", before: originalAc.then, after: options.then });
+        }
+
+        if (changes.length === 0) {
+          warn("No changes: values are already set to the specified values");
+          return;
+        }
 
         // Update item
         await updateSpecItem(ctx, item, { acceptance_criteria: updatedAc });
 
         const itemSlug = item.slugs[0] || refIndex.shortUlid(item._ulid);
         await commitIfShadow(ctx.shadow, "item-ac-set", itemSlug);
+        const changedFields = changes.map((c) => c.field).join(", ");
         success(
-          `Updated acceptance criterion: ${acId} on @${itemSlug} (${updatedFields.join(", ")})`,
-          { ac: updatedAc[acIndex] },
+          `Updated acceptance criterion: ${acId} on @${itemSlug} (${changedFields})`,
+          { ac: updatedAc[acIndex], changes },
         );
+
+        // Show before→after diff in text mode
+        showChangeDiff(changes);
       } catch (err) {
         error(errors.failures.updateAc, err);
         process.exit(EXIT_CODES.ERROR);
