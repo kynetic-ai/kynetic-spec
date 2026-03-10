@@ -84802,7 +84802,7 @@
   type: task
   spec_ref: "@session-list-infinite-scroll"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -84810,7 +84810,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKCTZ0XR5T9TMPM3ZPPHXVRE
+  session_id: null
   created_at: 2026-03-10T05:32:15.078Z
   started_at: 2026-03-10T21:54:52.195Z
   submitted_at: 2026-03-10T21:55:12.390Z
@@ -84869,6 +84869,14 @@
         immediately, re-fetches page 1 when user is at top, shows indicator when scrolled. (2) Added
         scroll position tracking via onscroll handler. (3) Added 4 new E2E tests covering count
         update, at-top re-fetch, scrolled-down indicator, and indicator click refresh."
+      supersedes: null
+    - _ulid: 01KKCX5KS94Q0KAGCXA7FTCV5J
+      created_at: 2026-03-10T22:16:37.417Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #762 does not satisfy
+        @session-list-infinite-scroll ac-live-update in real scrolling, inherited trait AC
+        @ui-url-panel-state ac-4 lacks tracked coverage/N-A annotation, and fresh npm test fails in
+        tests/cli-agent-commands.test.ts prompt_template cases."
       supersedes: null
   todos: []
   automation: eligible
