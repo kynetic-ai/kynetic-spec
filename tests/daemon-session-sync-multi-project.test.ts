@@ -12,6 +12,7 @@ import { setupMultiDirFixtures, cleanupTempDir } from './helpers/cli';
 import { join } from 'path';
 import { ProjectContextManager } from '../packages/daemon/src/project-context';
 import { createProjectsRoutes } from '../packages/daemon/src/routes/projects';
+import { resolveWebSocketProject } from '../packages/daemon/src/websocket/project-resolution';
 
 describe('Multi-project session sync', () => {
   let fixturesRoot: string;
@@ -349,6 +350,160 @@ describe('Multi-project session sync', () => {
 
       expect(response.status).toBe(200);
       expect(onRegistered).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('WebSocket registration path (resolveWebSocketProject)', () => {
+    it('should call onProjectRegistered for new project via X-Kspec-Dir header', async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+
+      const request = new Request('http://localhost/ws', {
+        headers: { 'Host': 'localhost', 'X-Kspec-Dir': projectA },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+        onProjectRegistered: onRegistered,
+      });
+
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(true);
+
+      // Allow the void promise to settle
+      await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
+      expect(onRegistered).toHaveBeenCalledWith(projectA);
+    });
+
+    it('should call onProjectRegistered for new project via ?project= query param', async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+
+      const encodedPath = encodeURIComponent(projectB);
+      const request = new Request(`http://localhost/ws?project=${encodedPath}`, {
+        headers: { 'Host': 'localhost' },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+        onProjectRegistered: onRegistered,
+      });
+
+      expect(result.resolvedPath).toBe(projectB);
+      expect(result.wasRegistered).toBe(true);
+
+      await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
+      expect(onRegistered).toHaveBeenCalledWith(projectB);
+    });
+
+    it('should NOT call onProjectRegistered for already-registered project', () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+      manager.registerProject(projectA);
+
+      const request = new Request('http://localhost/ws', {
+        headers: { 'Host': 'localhost', 'X-Kspec-Dir': projectA },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+        onProjectRegistered: onRegistered,
+      });
+
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(false);
+      expect(onRegistered).not.toHaveBeenCalled();
+    });
+
+    it('should normalize non-canonical path before calling onProjectRegistered (regression)', async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+
+      const nonCanonicalPath = projectA + '/./';
+      const request = new Request('http://localhost/ws', {
+        headers: { 'Host': 'localhost', 'X-Kspec-Dir': nonCanonicalPath },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+        onProjectRegistered: onRegistered,
+      });
+
+      // Should resolve to the normalized path
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(true);
+
+      await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
+      // Callback receives the normalized path, not the raw non-canonical one
+      expect(onRegistered).toHaveBeenCalledWith(projectA);
+      expect(onRegistered).not.toHaveBeenCalledWith(nonCanonicalPath);
+    });
+
+    it('should use default project when no project path is specified', () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager(projectA);
+      manager.registerProject(projectA);
+
+      const request = new Request('http://localhost/ws', {
+        headers: { 'Host': 'localhost' },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+        onProjectRegistered: onRegistered,
+      });
+
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(false);
+      expect(onRegistered).not.toHaveBeenCalled();
+    });
+
+    it('should throw when no project path specified and no default project', () => {
+      const manager = new ProjectContextManager();
+
+      const request = new Request('http://localhost/ws', {
+        headers: { 'Host': 'localhost' },
+      });
+
+      expect(() => resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+      })).toThrow('No project specified');
+    });
+
+    it('should prefer X-Kspec-Dir header over ?project= query param', async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const manager = new ProjectContextManager();
+
+      const encodedB = encodeURIComponent(projectB);
+      const request = new Request(`http://localhost/ws?project=${encodedB}`, {
+        headers: { 'Host': 'localhost', 'X-Kspec-Dir': projectA },
+      });
+
+      const result = resolveWebSocketProject({
+        request,
+        manager,
+        fallbackPath: '/fallback',
+        onProjectRegistered: onRegistered,
+      });
+
+      // Header takes precedence
+      expect(result.resolvedPath).toBe(projectA);
+      expect(result.wasRegistered).toBe(true);
+
+      await vi.waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
+      expect(onRegistered).toHaveBeenCalledWith(projectA);
     });
   });
 });

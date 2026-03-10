@@ -16,6 +16,7 @@ import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
 import { handleWebSocketClose } from './websocket/lifecycle';
+import { resolveWebSocketProject } from './websocket/project-resolution';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { PidFileManager } from './pid';
 import { projectContextMiddleware } from './middleware/project-context';
@@ -323,14 +324,6 @@ export async function createServer(options: ServerOptions) {
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
       beforeHandle({ request, store }) {
-        // AC: @multi-directory-daemon ac-21, ac-22, ac-23, ac-34 - Extract and validate project binding
-        // AC: @multi-directory-daemon ac-34 - Browser WebSocket API doesn't support custom headers,
-        // so we also accept project path as query parameter
-        const url = new URL(request.url, `http://${request.headers.get('host')}`);
-        const projectPath = request.headers.get('X-Kspec-Dir')
-                        || url.searchParams.get('project')
-                        || undefined;
-
         // IMPORTANT: Do NOT return a value from ws beforeHandle.
         // In Elysia 1.4 with derive middleware, returning a value short-circuits
         // the WebSocket upgrade and sends the value as an HTTP 200 response.
@@ -343,33 +336,15 @@ export async function createServer(options: ServerOptions) {
             return;
           }
 
-          let projectContext;
-          if (projectPath) {
-            // Explicit project specified
-            // AC: @multi-directory-daemon ac-4 - auto-register
-            const result = manager.getOrRegisterProject(projectPath);
-            projectContext = result.context;
-            if (result.wasRegistered) {
-              // Start session sync for newly auto-registered project (don't block upgrade)
-              void onProjectRegistered(projectContext.path).catch((syncError) => {
-                console.error(`[daemon] Failed to start session sync for WebSocket-registered ${projectContext.path}:`, syncError);
-              });
-            }
-          } else {
-            // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject
-            try {
-              projectContext = manager.getProject();
-            } catch (err: unknown) {
-              // AC: @multi-directory-daemon ac-23 - Reject when no default
-              if (err instanceof Error && err.message.includes('No default project configured')) {
-                throw new Error('No project specified');
-              }
-              throw err;
-            }
-          }
+          const { resolvedPath } = resolveWebSocketProject({
+            request,
+            manager,
+            fallbackPath: startupProjectPath,
+            onProjectRegistered,
+          });
 
           // Store resolved path for open() handler via WeakMap
-          wsProjectPaths.set(request, projectContext.path);
+          wsProjectPaths.set(request, resolvedPath);
         } catch (err: unknown) {
           console.error(`[daemon] WebSocket connection rejected: ${err instanceof Error ? err.message : String(err)}`);
           throw err;
