@@ -2576,14 +2576,16 @@ triage:
       implementation. Prompt-driven codex-acp runs are also brittle and can fail with RPC parse
       errors. Need a reliable readonly review path with prompt_template parity, dry-run parity, and
       adapter-safe prompt handling."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Bug in agent run: --task ignores prompt_template, injects hardcoded work prompt. Review
       agents drift into implementation"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.224Z
-    updated_at: 2026-03-10T08:17:09.244Z
+    updated_at: 2026-03-10T08:18:09.494Z
+    acted_at: 2026-03-10T08:18:09.474Z
+    result_ref: "@01KKBD69"
   - _ulid: 01KKBD4G5DAVCGDV23HKVMACDK
     inbox_ref: 01KK5ETB1FQVBVFX99G95C1TZJ
     item_snapshot: Multi-project agent dashboard — tmux-style live view of all running agent sessions
@@ -2595,10 +2597,10 @@ triage:
     reasoning: Design/spec task for multi-project agent dashboard. Manual only, needs design phase
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.293Z
-    updated_at: 2026-03-10T08:18:05.907Z
     acted_at: 2026-03-10T08:18:05.887Z
     result_ref: "@01KKBD66"
+    created_at: 2026-03-10T08:17:09.293Z
+    updated_at: 2026-03-10T08:18:05.907Z
   - _ulid: 01KKBD4G7K79AXXGJCB219MSAM
     inbox_ref: 01KK30AYASRF6F546A5W3G14DR
     item_snapshot: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies

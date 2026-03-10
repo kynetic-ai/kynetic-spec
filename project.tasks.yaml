@@ -85802,23 +85802,44 @@
   created_at: 2026-03-10T08:18:01.609Z
   notes: []
   todos: []
-- title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
+- _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
+  slugs: []
+  title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
     projects. "
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: Multi-project agent dashboard — tmux-style live view of all running agent sessions
     across projects. Show terminal-like panes for each active session with real-time output, agent
     name, task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances.
     Think mission control for agent fleet monitoring without navigating to individual project UIs.
-  _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:18:04.769Z
+  notes: []
+  todos: []
+- title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
+    prompt_te"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores
+    agent prompt_template and always injects a hardcoded work prompt, so review agents drift into
+    implementation. Prompt-driven codex-acp runs are also brittle and can fail with RPC parse
+    errors. Need a reliable readonly review path with prompt_template parity, dry-run parity, and
+    adapter-safe prompt handling."
+  _ulid: 01KKBD69TY1M3FMTQ6ZV1FNTBT
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:18:04.769Z
+  created_at: 2026-03-10T08:18:08.350Z
   notes: []
   todos: []
