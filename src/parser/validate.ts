@@ -951,15 +951,22 @@ export function validateACAnnotations(
       continue;
     }
 
-    // If no specific AC ids, annotation is just a generic spec reference — skip AC existence check
-    if (acIds.length === 0) {
+    // Find the resolved item in our loaded spec items
+    const item = items.find((i) => i._ulid === result.ulid);
+    if (!item) {
+      // Resolved to a non-spec item (task, plan, meta) — AC annotations must target spec items or traits
+      warnings.push({
+        type: "invalid_ac_annotation",
+        itemRef: specRef,
+        itemTitle: `${relFile}:${line}`,
+        message: `AC annotation references '${specRef}' which resolves but is not a spec item or trait`,
+        details: `${file}:${line}`,
+      });
       continue;
     }
 
-    // Find the resolved item in our loaded items to check its ACs
-    const item = items.find((i) => i._ulid === result.ulid);
-    if (!item) {
-      // Resolved to a non-spec item (task, meta, plan) — skip AC check
+    // If no specific AC ids, annotation is just a generic spec reference — skip AC existence check
+    if (acIds.length === 0) {
       continue;
     }
 
