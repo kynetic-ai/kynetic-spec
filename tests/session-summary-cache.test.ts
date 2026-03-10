@@ -302,9 +302,9 @@ describe("SessionSummaryCache", () => {
     });
   });
 
-  // AC: @session-summary-cache ac-summary-stats
-  describe("ac-summary-stats: compute and cache stats from events.jsonl", () => {
-    it("should compute event_count from events.jsonl", async () => {
+  // AC: @session-list-pagination-api ac-metadata-only
+  describe("ac-metadata-only: getAll reads only session.yaml, not events.jsonl", () => {
+    it("should return 0 for event_count/iteration_count/tasks_completed in list results", async () => {
       await createTestSession(sessionsDir, "session-001", {
         status: "completed",
       });
@@ -317,181 +317,121 @@ describe("SessionSummaryCache", () => {
 
       const summaries = await cache.getAll(sessionsDir);
       const session = summaries.find((s) => s.id === "session-001");
+      expect(session).toBeDefined();
+      // getAll() reads metadata only — stats are 0
+      expect(session!.event_count).toBe(0);
+      expect(session!.iteration_count).toBe(0);
+      expect(session!.tasks_completed).toBe(0);
+    });
+
+    it("should compute full stats via get() for single session detail", async () => {
+      await createTestSession(sessionsDir, "session-001", {
+        status: "completed",
+      });
+      await createTestEvents(sessionsDir, "session-001", [
+        { ts: 1000, seq: 0, type: "session.start", session_id: "session-001", data: {} },
+        { ts: 2000, seq: 1, type: "prompt.sent", session_id: "session-001", data: {} },
+        { ts: 3000, seq: 2, type: "tool.call", session_id: "session-001", data: {} },
+        { ts: 4000, seq: 3, type: "session.end", session_id: "session-001", data: {} },
+      ]);
+
+      // get() reads events.jsonl for full stats
+      const session = await cache.get(sessionsDir, "session-001");
       expect(session).toBeDefined();
       expect(session!.event_count).toBe(4);
     });
 
-    it("should compute iteration_count from context files", async () => {
+    it("should work when events.jsonl does not exist", async () => {
       await createTestSession(sessionsDir, "session-001", {
         status: "completed",
       });
-      await createTestIterations(sessionsDir, "session-001", 3);
+      // No events.jsonl created — getAll should still work
 
       const summaries = await cache.getAll(sessionsDir);
-      const session = summaries.find((s) => s.id === "session-001");
-      expect(session).toBeDefined();
-      expect(session!.iteration_count).toBeGreaterThanOrEqual(3);
-    });
-
-    it("should compute tasks_completed by scanning events for task complete commands", async () => {
-      await createTestSession(sessionsDir, "session-001", {
-        status: "completed",
-      });
-      await createTestEvents(sessionsDir, "session-001", [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "session-001", data: {} },
-        {
-          ts: 2000,
-          seq: 1,
-          type: "tool.call",
-          session_id: "session-001",
-          data: {
-            update: {
-              rawInput: {
-                command: "kspec task complete @task-foo --reason done",
-              },
-            },
-          },
-        },
-        { ts: 3000, seq: 2, type: "session.end", session_id: "session-001", data: {} },
-      ]);
-
-      const summaries = await cache.getAll(sessionsDir);
-      const session = summaries.find((s) => s.id === "session-001");
-      expect(session).toBeDefined();
-      expect(session!.tasks_completed).toBe(1);
-    });
-
-    it("should not recompute stats for completed sessions on subsequent requests", async () => {
-      await createTestSession(sessionsDir, "session-001", {
-        status: "completed",
-      });
-      await createTestEvents(sessionsDir, "session-001", [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "session-001", data: {} },
-        { ts: 2000, seq: 1, type: "session.end", session_id: "session-001", data: {} },
-      ]);
-
-      // First call builds cache with stats
-      const first = await cache.getAll(sessionsDir);
-      expect(first).toHaveLength(1);
-      expect(first[0].event_count).toBe(2);
-
-      // Add more events to the file (simulating corruption or external write)
-      await createTestEvents(sessionsDir, "session-001", [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "session-001", data: {} },
-        { ts: 2000, seq: 1, type: "prompt.sent", session_id: "session-001", data: {} },
-        { ts: 3000, seq: 2, type: "tool.call", session_id: "session-001", data: {} },
-        { ts: 4000, seq: 3, type: "session.end", session_id: "session-001", data: {} },
-      ]);
-
-      // Second call should use cached stats (completed sessions don't change)
-      const second = await cache.getAll(sessionsDir);
-      expect(second).toHaveLength(1);
-      // Stats should still be the original cached values
-      expect(second[0].event_count).toBe(2);
+      expect(summaries).toHaveLength(1);
+      expect(summaries[0].id).toBe("session-001");
+      expect(summaries[0].event_count).toBe(0);
     });
   });
 
   // AC: @session-summary-cache ac-active-refresh
-  describe("ac-active-refresh: recompute stats for active sessions", () => {
-    it("should recompute stats for active sessions on each request", async () => {
+  describe("ac-active-refresh: re-read metadata for active sessions", () => {
+    it("should re-read metadata for active sessions on each getAll() request", async () => {
       await createTestSession(sessionsDir, "session-active", {
         status: "active",
         started_at: "2026-03-01T00:00:00.000Z",
         ended_at: undefined,
       });
-      await createTestEvents(sessionsDir, "session-active", [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "session-active", data: {} },
-        { ts: 2000, seq: 1, type: "prompt.sent", session_id: "session-active", data: {} },
-      ]);
 
       // First call
       const first = await cache.getAll(sessionsDir);
       expect(first).toHaveLength(1);
-      expect(first[0].event_count).toBe(2);
+      expect(first[0].status).toBe("active");
 
-      // Add more events (session is still active, events are being appended)
-      await createTestEvents(sessionsDir, "session-active", [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "session-active", data: {} },
-        { ts: 2000, seq: 1, type: "prompt.sent", session_id: "session-active", data: {} },
-        { ts: 3000, seq: 2, type: "tool.call", session_id: "session-active", data: {} },
-        { ts: 4000, seq: 3, type: "tool.result", session_id: "session-active", data: {} },
-      ]);
+      // Wait for mtime to change
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
-      // Second call should recompute stats for active session
+      // Session completes — status changes in session.yaml
+      await createTestSession(sessionsDir, "session-active", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T02:00:00.000Z",
+      });
+
+      // Second call should detect the active session changed
       const second = await cache.getAll(sessionsDir);
       expect(second).toHaveLength(1);
-      expect(second[0].event_count).toBe(4);
+      expect(second[0].status).toBe("completed");
     });
 
-    it("should not recompute stats for completed/failed/abandoned sessions", async () => {
-      for (const status of ["completed", "failed", "abandoned"] as const) {
-        const cache = new SessionSummaryCache();
-        const id = `session-${status}`;
-        await createTestSession(sessionsDir, id, {
-          status,
-          started_at: "2026-03-01T00:00:00.000Z",
-          ended_at: "2026-03-01T01:00:00.000Z",
-        });
-        await createTestEvents(sessionsDir, id, [
-          { ts: 1000, seq: 0, type: "session.start", session_id: id, data: {} },
-        ]);
+    it("should not re-read completed sessions on getAll()", async () => {
+      await createTestSession(sessionsDir, "session-done", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+      });
 
-        const first = await cache.getAll(sessionsDir);
-        const sessionBefore = first.find((s) => s.id === id)!;
-        expect(sessionBefore.event_count).toBe(1);
+      const first = await cache.getAll(sessionsDir);
+      expect(first).toHaveLength(1);
+      expect(first[0].status).toBe("completed");
 
-        // Add more events
-        await createTestEvents(sessionsDir, id, [
-          { ts: 1000, seq: 0, type: "session.start", session_id: id, data: {} },
-          { ts: 2000, seq: 1, type: "prompt.sent", session_id: id, data: {} },
-          { ts: 3000, seq: 2, type: "session.end", session_id: id, data: {} },
-        ]);
-
-        // Should use cached stats
-        const second = await cache.getAll(sessionsDir);
-        const sessionAfter = second.find((s) => s.id === id)!;
-        expect(sessionAfter.event_count).toBe(1);
-
-        // Cleanup for next status
-        await fs.rm(path.join(sessionsDir, id), { recursive: true, force: true });
-      }
+      // Completed sessions are stable in the list cache
+      const second = await cache.getAll(sessionsDir);
+      expect(second).toHaveLength(1);
+      expect(second[0].id).toBe("session-done");
     });
 
-    it("should use cached summary for completed sessions in single get()", async () => {
+    it("should compute full stats via get() for detail view", async () => {
       await createTestSession(sessionsDir, "session-001", {
         status: "completed",
       });
+      await createTestEvents(sessionsDir, "session-001", [
+        { ts: 1000, seq: 0, type: "session.start", session_id: "session-001", data: {} },
+        { ts: 2000, seq: 1, type: "prompt.sent", session_id: "session-001", data: {} },
+        { ts: 3000, seq: 2, type: "tool.call", session_id: "session-001", data: {} },
+      ]);
 
-      // Build cache via getAll
+      // Build list cache (metadata only)
       await cache.getAll(sessionsDir);
 
-      // Single get should return cached value
+      // Detail get() should compute full stats from events.jsonl
       const result = await cache.get(sessionsDir, "session-001");
       expect(result).toBeDefined();
-      expect(result!.id).toBe("session-001");
-      expect(result!.status).toBe("completed");
+      expect(result!.event_count).toBe(3);
     });
 
-    it("should re-read active sessions in single get()", async () => {
+    it("should compute full stats via get() for active sessions", async () => {
       await createTestSession(sessionsDir, "session-active", {
         status: "active",
         ended_at: undefined,
       });
       await createTestEvents(sessionsDir, "session-active", [
         { ts: 1000, seq: 0, type: "session.start", session_id: "session-active", data: {} },
-      ]);
-
-      // Build cache
-      await cache.getAll(sessionsDir);
-
-      // Add more events
-      await createTestEvents(sessionsDir, "session-active", [
-        { ts: 1000, seq: 0, type: "session.start", session_id: "session-active", data: {} },
         { ts: 2000, seq: 1, type: "prompt.sent", session_id: "session-active", data: {} },
         { ts: 3000, seq: 2, type: "tool.call", session_id: "session-active", data: {} },
       ]);
 
-      // Single get should re-read from disk for active sessions
+      // Detail get() always computes fresh stats
       const result = await cache.get(sessionsDir, "session-active");
       expect(result).toBeDefined();
       expect(result!.event_count).toBe(3);

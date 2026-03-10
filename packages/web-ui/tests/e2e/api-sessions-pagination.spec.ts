@@ -558,7 +558,58 @@ test.describe('Session List Pagination API', () => {
 
   test.describe('Metadata Only', () => {
     // AC: @session-list-pagination-api ac-metadata-only
-    test('session list items include metadata fields from session.yaml', async ({ request, daemon }) => {
+    test('session list works without events.jsonl files', async ({ request, daemon }) => {
+      // Create sessions with ONLY session.yaml — no events.jsonl
+      // This proves the list endpoint reads only metadata.
+      // If it tried to read events.jsonl, it would either fail or behave differently.
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      mkdirSync(sessionsDir, { recursive: true });
+
+      const metadataOnlySession = (id: string, status: string, startedAt: string) => {
+        const sessionDir = join(sessionsDir, id);
+        mkdirSync(sessionDir, { recursive: true });
+        writeFileSync(join(sessionDir, 'session.yaml'), YAML.stringify({
+          id,
+          agent_type: 'claude-agent-acp',
+          agent_id: 'worker',
+          status,
+          started_at: startedAt,
+          ended_at: '2026-03-01T12:00:00.000Z',
+          trigger: 'manual',
+        }));
+        // Deliberately NO events.jsonl
+      };
+
+      metadataOnlySession('01KTEST_NOEVENTS_00000001', 'completed', '2026-03-01T10:00:00.000Z');
+      metadataOnlySession('01KTEST_NOEVENTS_00000002', 'failed', '2026-03-02T10:00:00.000Z');
+      metadataOnlySession('01KTEST_NOEVENTS_00000003', 'completed', '2026-03-03T10:00:00.000Z');
+
+      const response = await request.get(`${daemon.baseUrl}/api/sessions`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.items.length).toBe(3);
+      expect(body.total).toBe(3);
+
+      // Metadata fields are present from session.yaml
+      for (const item of body.items) {
+        expect(item).toHaveProperty('id');
+        expect(item).toHaveProperty('status');
+        expect(item).toHaveProperty('agent_type');
+        expect(item).toHaveProperty('started_at');
+        expect(item).toHaveProperty('duration_ms');
+      }
+
+      // Summary stats are 0 because events.jsonl is not read in list path
+      for (const item of body.items) {
+        expect(item.event_count).toBe(0);
+        expect(item.iteration_count).toBe(0);
+        expect(item.tasks_completed).toBe(0);
+      }
+    });
+
+    // AC: @session-list-pagination-api ac-metadata-only
+    test('session list metadata fields are correct from session.yaml', async ({ request, daemon }) => {
       const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
       setupTestSessions(sessionsDir);
 
@@ -568,15 +619,14 @@ test.describe('Session List Pagination API', () => {
       const body = await response.json();
       expect(body.items.length).toBeGreaterThan(0);
 
-      // Verify metadata fields are present (from session.yaml cache)
+      // Verify metadata fields from session.yaml are populated correctly
       const item = body.items[0];
       expect(item).toHaveProperty('id');
       expect(item).toHaveProperty('status');
       expect(item).toHaveProperty('agent_type');
       expect(item).toHaveProperty('started_at');
       expect(item).toHaveProperty('duration_ms');
-      expect(item).toHaveProperty('event_count');
-      expect(item).toHaveProperty('iteration_count');
+      expect(typeof item.duration_ms).toBe('number');
     });
   });
 
