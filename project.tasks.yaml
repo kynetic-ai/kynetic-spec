@@ -87184,6 +87184,14 @@
         ansiToHtml() only runs when a real ESC sequence is present. Review posted with inline
         comments."
       supersedes: null
+    - _ulid: 01KKCK8738NWSM9TCZGQGSC83Z
+      created_at: 2026-03-10T19:23:16.968Z
+      author: "@claude"
+      content: "Fix cycle 1: containsAnsi() now detects orphaned CSI patterns (not just real ESC
+        sequences), so ToolCallView routes orphaned CSI text through ansiToHtml() which strips the
+        fragments. Added 3 new tests: integration path test, lastIndex safety regression test, and
+        expanded ac-8 detection test. 52/52 ANSI tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEDW31WB42ZX52NJA51B4V
