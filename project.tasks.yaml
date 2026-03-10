@@ -85093,7 +85093,7 @@
     Completed and cancelled tasks should be hidden unless the user explicitly selects them. This
     likely requires changing the status filter from a single-select dropdown to a multi-select
     approach, or adding preset filter groups.
-  spec_ref: null
+  spec_ref: "@web-dashboard"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -85109,3 +85109,28 @@
   notes: []
   todos: []
   automation: eligible
+- title: Board view should load all active tasks without arbitrary limit
+  description: "The task board currently fetches with limit: 500, which means projects with more tasks
+    will have incomplete active columns. Remove the arbitrary limit for active status columns
+    (Backlog, Ready, In Progress, Review) so they show all matching tasks. The Done column should
+    keep its limit of 20 most recent. May require paginated loading or removing the limit param
+    entirely for board fetches."
+  type: task
+  spec_ref: "@ui-task-board"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - web-ui
+    - feature
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKB6P8EEJ355H2QWT50V4HGC
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:24:31.178Z
+  notes: []
+  todos: []
