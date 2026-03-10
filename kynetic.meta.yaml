@@ -7957,6 +7957,24 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KKCAN6MJQ4TMF47M2VKMP5XQ
+    type: success
+    content: "Worktree isolation pattern for non-conflicting changes: when main tree has in-progress
+      agent work, create git worktree off origin/main, make the change, PR from there. Avoids
+      conflicts and doesnt require coordinating with running agents."
+    created_at: 2026-03-10T16:53:05.298Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKCAN6S4XQ17B4AAGRH4HVA0
+    type: success
+    content: "Spec review via agent before finalizing: spawning an Explore agent to review a new spec
+      for gaps (missing color modes, pipeline separation, palette definition) catches real issues
+      before the spec enters the system. Worth doing for any non-trivial spec."
+    created_at: 2026-03-10T16:53:05.445Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
