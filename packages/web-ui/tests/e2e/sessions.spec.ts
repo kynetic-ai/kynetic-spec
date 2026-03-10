@@ -7,11 +7,46 @@
  * Covered ACs:
  * - @ui-session-history ac-1: Session list shows ID, agent type, task ref, status, duration, age
  * - @ui-session-history ac-2: Click navigates to /sessions/:id
+ * - @session-list-infinite-scroll ac-initial-load: First page loads with skeleton, shows count
+ * - @session-list-infinite-scroll ac-scroll-load: IntersectionObserver triggers next page
+ * - @session-list-infinite-scroll ac-scroll-end: End of list indicator when all loaded
+ * - @session-list-infinite-scroll ac-filter-reset: Filter change resets to page 1
+ * - @session-list-infinite-scroll ac-live-update: WebSocket updates total and shows indicator
  */
 
 import { test, expect } from '../fixtures/test-base';
 
-/** Mock session data for API interception. */
+/** Generate a session with a specific index for stable ordering. */
+function makeSession(index: number, overrides: Partial<{
+	status: string;
+	agent_type: string;
+	trigger: string;
+	task_id: string;
+	started_at: string;
+	ended_at: string;
+	duration_ms: number;
+	event_count: number;
+	iteration_count: number;
+	tasks_completed: number;
+}> = {}) {
+	const padded = String(index).padStart(3, '0');
+	return {
+		id: `01JTEST00000000000000000${padded}`,
+		status: overrides.status ?? 'completed',
+		agent_type: overrides.agent_type ?? 'task-worker',
+		session_type: 'invocation' as const,
+		trigger: overrides.trigger ?? 'task.ready',
+		task_id: overrides.task_id,
+		started_at: overrides.started_at ?? `2026-03-${String(Math.max(1, 28 - index)).padStart(2, '0')}T10:00:00.000Z`,
+		ended_at: overrides.ended_at ?? `2026-03-${String(Math.max(1, 28 - index)).padStart(2, '0')}T11:00:00.000Z`,
+		duration_ms: overrides.duration_ms ?? 3600000,
+		event_count: overrides.event_count ?? 10,
+		iteration_count: overrides.iteration_count ?? 1,
+		tasks_completed: overrides.tasks_completed ?? 0,
+	};
+}
+
+/** Mock session data for API interception — legacy 3-session set for existing tests. */
 function mockSessions() {
 	return {
 		items: [
@@ -57,6 +92,39 @@ function mockSessions() {
 			},
 		],
 		total: 3,
+		offset: 0,
+		limit: 25,
+	};
+}
+
+/** Route handler that serves mock sessions with pagination support. */
+function mockSessionsRoute(sessions: ReturnType<typeof mockSessions>) {
+	return (route: any) => {
+		const url = new URL(route.request().url());
+		const offset = Number(url.searchParams.get('offset') ?? '0');
+		const limit = Number(url.searchParams.get('limit') ?? String(sessions.total));
+		const triggerParam = url.searchParams.get('trigger');
+
+		let filtered = sessions.items;
+		if (triggerParam === 'manual') {
+			filtered = filtered.filter((s: any) => s.trigger === 'manual');
+		} else if (triggerParam === 'dispatched') {
+			filtered = filtered.filter((s: any) => s.trigger?.startsWith('task.'));
+		}
+
+		const total = filtered.length;
+		const paginated = filtered.slice(offset, offset + limit);
+
+		route.fulfill({
+			status: 200,
+			contentType: 'application/json',
+			body: JSON.stringify({
+				items: paginated,
+				total,
+				offset,
+				limit,
+			}),
+		});
 	};
 }
 
@@ -64,14 +132,7 @@ test.describe('Session History View', () => {
 	test.describe('Session List (AC-1)', () => {
 		// AC: @ui-session-history ac-1
 		test('shows session list with required metadata fields', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 
 			const list = page.getByTestId('sessions-list');
@@ -83,58 +144,30 @@ test.describe('Session History View', () => {
 
 		// AC: @ui-session-history ac-1 — Status badge visible
 		test('shows status badge for each session', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Check status badges are visible with correct text
 			const rows = page.getByTestId('session-row');
-			const firstRow = rows.nth(0);
-			await expect(firstRow).toContainText('completed');
-
-			const secondRow = rows.nth(1);
-			await expect(secondRow).toContainText('active');
-
-			const thirdRow = rows.nth(2);
-			await expect(thirdRow).toContainText('failed');
+			await expect(rows.nth(0)).toContainText('completed');
+			await expect(rows.nth(1)).toContainText('active');
+			await expect(rows.nth(2)).toContainText('failed');
 		});
 
 		// AC: @ui-session-history ac-1 — Session ID displayed
 		test('shows session ID for each row', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
 			const ids = page.getByTestId('session-id');
 			await expect(ids).toHaveCount(3);
-			// First 8 chars of the ULID
 			await expect(ids.nth(0)).toContainText('01JTEST0');
 		});
 
 		// AC: @ui-session-history ac-1 — Agent type displayed
 		test('shows agent type for each row', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
@@ -145,58 +178,34 @@ test.describe('Session History View', () => {
 
 		// AC: @ui-session-history ac-1 — Task ref displayed when present
 		test('shows task ref when session has a task_id', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Sessions with task_id should show task ref
 			const taskRefs = page.getByTestId('session-task-ref');
-			await expect(taskRefs).toHaveCount(2); // Only 2 of 3 have task_id
+			await expect(taskRefs).toHaveCount(2);
 			await expect(taskRefs.nth(0)).toContainText('@01JTASK0');
 		});
 
 		// AC: @ui-session-history ac-1 — Duration displayed
 		test('shows duration for each row', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
 			const durations = page.getByTestId('session-duration');
 			await expect(durations).toHaveCount(3);
-			// 5400000ms = 1h 30m
 			await expect(durations.nth(0)).toContainText('1h 30m');
 		});
 
 		// AC: @ui-session-history ac-1 — Age displayed
 		test('shows age for each row', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
 			const ages = page.getByTestId('session-age');
 			await expect(ages).toHaveCount(3);
-			// Ages should be non-empty strings
 			for (let i = 0; i < 3; i++) {
 				await expect(ages.nth(i)).not.toBeEmpty();
 			}
@@ -204,24 +213,13 @@ test.describe('Session History View', () => {
 
 		// AC: @ui-session-history ac-1 — Sorted by most recent first
 		test('sessions are sorted by most recent first', async ({ page, daemon }) => {
-			// Provide mock data in most-recent-first order (as daemon would return).
-			// Session 2 (Mar 5) > Session 1 (Mar 4) > Session 3 (Mar 3).
 			const sorted = mockSessions();
 			sorted.items = [sorted.items[1], sorted.items[0], sorted.items[2]];
 
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(sorted),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(sorted));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Verify rendered order matches daemon's most-recent-first sort:
-			// First row = session 2 (Mar 5), second = session 1 (Mar 4), third = session 3 (Mar 3)
 			const rows = page.getByTestId('session-row');
 			await expect(rows.nth(0)).toHaveAttribute('data-session-id', '01JTEST0000000000000000002');
 			await expect(rows.nth(1)).toHaveAttribute('data-session-id', '01JTEST0000000000000000001');
@@ -234,19 +232,8 @@ test.describe('Session History View', () => {
 		test('clicking a session navigates to /sessions/:id and shows stream view', async ({ page, daemon }) => {
 			const sessionDetail = mockSessions().items[0];
 
-			// Register routes from least-specific to most-specific.
-			// Playwright checks LIFO, so the last-registered (most specific) is checked first.
+			await page.route('**/api/sessions', mockSessionsRoute(mockSessions()));
 
-			// 1. Session list: /api/sessions
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
-			// 2. Session detail: /api/sessions/:id
 			await page.route('**/api/sessions/01JTEST0000000000000000001', (route) => {
 				route.fulfill({
 					status: 200,
@@ -255,7 +242,6 @@ test.describe('Session History View', () => {
 				});
 			});
 
-			// 3. Session events: /api/sessions/:id/events
 			await page.route('**/api/sessions/01JTEST0000000000000000001/events', (route) => {
 				route.fulfill({
 					status: 200,
@@ -270,23 +256,13 @@ test.describe('Session History View', () => {
 			const firstRow = page.getByTestId('session-row').first();
 			await firstRow.click();
 
-			// Verify navigation to session detail URL
 			await expect(page).toHaveURL(/\/sessions\/01JTEST0000000000000000001/);
-
-			// Verify session stream view renders (not just URL change)
 			await expect(page.getByTestId('session-stream')).toBeVisible({ timeout: 5000 });
 		});
 
 		// AC: @ui-session-history ac-2
 		test('session row links point to correct detail URL', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
@@ -298,11 +274,11 @@ test.describe('Session History View', () => {
 
 	test.describe('Empty State', () => {
 		test('shows empty state when no sessions exist', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
+			await page.route('**/api/sessions*', (route) => {
 				route.fulfill({
 					status: 200,
 					contentType: 'application/json',
-					body: JSON.stringify({ items: [], total: 0 }),
+					body: JSON.stringify({ items: [], total: 0, offset: 0, limit: 25 }),
 				});
 			});
 
@@ -316,7 +292,7 @@ test.describe('Session History View', () => {
 
 	test.describe('Loading State', () => {
 		test('shows loading skeleton while fetching', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', async (route) => {
+			await page.route('**/api/sessions*', async (route) => {
 				await new Promise((r) => setTimeout(r, 500));
 				route.fulfill({
 					status: 200,
@@ -330,14 +306,13 @@ test.describe('Session History View', () => {
 			const skeleton = page.getByTestId('sessions-loading');
 			await expect(skeleton).toBeVisible();
 
-			// Eventually content appears
 			await expect(page.getByTestId('sessions-list')).toBeVisible({ timeout: 5000 });
 		});
 	});
 
 	test.describe('Error State', () => {
 		test('shows error message on API failure', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
+			await page.route('**/api/sessions*', (route) => {
 				route.fulfill({
 					status: 500,
 					contentType: 'application/json',
@@ -355,14 +330,7 @@ test.describe('Session History View', () => {
 	test.describe('Session Type Indicators', () => {
 		// AC: @ui-session-history ac-1 — Trigger labels distinguish dispatched vs manual
 		test('shows trigger label for each session', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
@@ -374,14 +342,7 @@ test.describe('Session History View', () => {
 		});
 
 		test('shows trigger icon for each session', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
@@ -392,14 +353,7 @@ test.describe('Session History View', () => {
 
 	test.describe('Trigger Filter', () => {
 		test('filter buttons are visible when sessions exist', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
@@ -410,13 +364,13 @@ test.describe('Session History View', () => {
 			await expect(filter.getByText('Dispatched')).toBeVisible();
 		});
 
+		// AC: @session-list-infinite-scroll ac-filter-reset — Filter change triggers new API call
 		test('dispatched filter shows only dispatched sessions', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
+			const apiCalls: string[] = [];
+
+			await page.route('**/api/sessions*', (route) => {
+				apiCalls.push(route.request().url());
+				mockSessionsRoute(mockSessions())(route);
 			});
 
 			await page.goto('/sessions');
@@ -424,22 +378,17 @@ test.describe('Session History View', () => {
 
 			await page.getByTestId('trigger-filter').getByText('Dispatched').click();
 
-			const rows = page.getByTestId('session-row');
-			await expect(rows).toHaveCount(2);
-			// Only dispatched sessions remain (task.ready and task.pending_review)
-			await expect(rows.nth(0)).toHaveAttribute('data-session-id', '01JTEST0000000000000000001');
-			await expect(rows.nth(1)).toHaveAttribute('data-session-id', '01JTEST0000000000000000002');
+			// Wait for the filtered result
+			await expect(page.getByTestId('session-row')).toHaveCount(2);
+
+			// Verify a new API request was made with trigger param
+			const dispatchedCalls = apiCalls.filter(url => url.includes('trigger=dispatched'));
+			expect(dispatchedCalls.length).toBeGreaterThan(0);
 		});
 
+		// AC: @session-list-infinite-scroll ac-filter-reset
 		test('manual filter shows only manual sessions', async ({ page, daemon }) => {
-			await page.route('**/api/sessions', (route) => {
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify(mockSessions()),
-				});
-			});
-
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
@@ -466,7 +415,6 @@ test.describe('Session History View', () => {
 	// AC: @gh-pages-export ac-22
 	test.describe('Static Mode (@gh-pages-export ac-22)', () => {
 		test('session detail shows read-only message in static mode', async ({ page, daemon }) => {
-			// Force static mode: intercept health check to fail, serve a snapshot instead
 			await page.route('**/health', (route) => {
 				route.fulfill({ status: 503, body: 'Service Unavailable' });
 			});
@@ -493,11 +441,8 @@ test.describe('Session History View', () => {
 				});
 			});
 
-			// Navigate to a session detail page — the route exists but session data
-			// is not included in the static export
 			await page.goto('/sessions/01JTEST0000000000000000001');
 
-			// Verify the static-mode read-only message renders
 			const staticMessage = page.getByTestId('session-static-message');
 			await expect(staticMessage).toBeVisible({ timeout: 10000 });
 			await expect(staticMessage).toContainText(
@@ -506,7 +451,6 @@ test.describe('Session History View', () => {
 		});
 
 		test('session detail does not attempt API calls in static mode', async ({ page, daemon }) => {
-			// Force static mode: intercept health check to fail, serve a snapshot instead
 			let sessionApiFetched = false;
 
 			await page.route('**/health', (route) => {
@@ -535,7 +479,6 @@ test.describe('Session History View', () => {
 				});
 			});
 
-			// Track whether the session API endpoint is ever called
 			await page.route('**/api/sessions/**', (route) => {
 				sessionApiFetched = true;
 				route.fulfill({
@@ -547,11 +490,380 @@ test.describe('Session History View', () => {
 
 			await page.goto('/sessions/01JTEST0000000000000000001');
 
-			// Wait for the static message to appear (proves the route rendered)
 			await expect(page.getByTestId('session-static-message')).toBeVisible({ timeout: 10000 });
-
-			// The session API should NOT have been called in static mode
 			expect(sessionApiFetched).toBe(false);
+		});
+	});
+
+	// ─── Infinite Scroll Tests ───
+
+	test.describe('Infinite Scroll', () => {
+		// AC: @session-list-infinite-scroll ac-initial-load
+		test('initial load fetches only first page of sessions', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 50 }, (_, i) => makeSession(i + 1));
+			const requestUrls: string[] = [];
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				requestUrls.push(url.search);
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: allSessions.slice(offset, offset + limit),
+						total: allSessions.length,
+						offset,
+						limit,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Should show only 25 rows initially
+			const rows = page.getByTestId('session-row');
+			await expect(rows).toHaveCount(25);
+
+			// Should show total count "25 of 50 sessions"
+			const count = page.getByTestId('sessions-count');
+			await expect(count).toContainText('25 of 50 sessions');
+		});
+
+		// AC: @session-list-infinite-scroll ac-initial-load — Loading skeleton shows during fetch
+		test('shows loading skeleton during initial fetch', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', async (route) => {
+				await new Promise((r) => setTimeout(r, 500));
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: [makeSession(1)],
+						total: 1,
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+
+			// Skeleton should appear immediately
+			await expect(page.getByTestId('sessions-loading')).toBeVisible();
+
+			// Content replaces skeleton
+			await expect(page.getByTestId('sessions-list')).toBeVisible({ timeout: 5000 });
+			await expect(page.getByTestId('sessions-loading')).not.toBeVisible();
+		});
+
+		// AC: @session-list-infinite-scroll ac-scroll-load
+		test('scrolling near bottom triggers next page load', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 50 }, (_, i) => makeSession(i + 1));
+			let pagesFetched = 0;
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+				pagesFetched++;
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: allSessions.slice(offset, offset + limit),
+						total: allSessions.length,
+						offset,
+						limit,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			await expect(page.getByTestId('session-row')).toHaveCount(25);
+
+			// Scroll to trigger the sentinel IntersectionObserver
+			await page.getByTestId('scroll-sentinel').scrollIntoViewIfNeeded();
+
+			// Wait for second page to load
+			await expect(page.getByTestId('session-row')).toHaveCount(50, { timeout: 5000 });
+
+			// Count should update
+			await expect(page.getByTestId('sessions-count')).toContainText('50 of 50 sessions');
+		});
+
+		// AC: @session-list-infinite-scroll ac-scroll-load — Already-loaded sessions remain in place
+		test('previously loaded sessions remain when next page loads', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 30 }, (_, i) => makeSession(i + 1));
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: allSessions.slice(offset, offset + limit),
+						total: allSessions.length,
+						offset,
+						limit,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Capture first session's ID
+			const firstRow = page.getByTestId('session-row').first();
+			const firstId = await firstRow.getAttribute('data-session-id');
+
+			// Scroll to load more
+			await page.getByTestId('scroll-sentinel').scrollIntoViewIfNeeded();
+			await expect(page.getByTestId('session-row')).toHaveCount(30, { timeout: 5000 });
+
+			// First session should still be first
+			const firstRowAfter = page.getByTestId('session-row').first();
+			await expect(firstRowAfter).toHaveAttribute('data-session-id', firstId!);
+		});
+
+		// AC: @session-list-infinite-scroll ac-scroll-end
+		test('shows end of list indicator when all sessions loaded', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 10 }, (_, i) => makeSession(i + 1));
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: allSessions.slice(offset, offset + limit),
+						total: allSessions.length,
+						offset,
+						limit,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// All 10 sessions fit in one page (limit=25)
+			await expect(page.getByTestId('session-row')).toHaveCount(10);
+
+			// End of list indicator should be visible
+			await expect(page.getByTestId('sessions-end-of-list')).toBeVisible();
+			await expect(page.getByTestId('sessions-end-of-list')).toContainText('All 10 sessions loaded');
+
+			// Sentinel should NOT be present (no more pages)
+			await expect(page.getByTestId('scroll-sentinel')).not.toBeVisible();
+		});
+
+		// AC: @session-list-infinite-scroll ac-scroll-end — No more requests after all loaded
+		test('does not make additional requests after all sessions loaded', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 30 }, (_, i) => makeSession(i + 1));
+			let requestCount = 0;
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+				requestCount++;
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: allSessions.slice(offset, offset + limit),
+						total: allSessions.length,
+						offset,
+						limit,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Load page 2 via scroll
+			await page.getByTestId('scroll-sentinel').scrollIntoViewIfNeeded();
+			await expect(page.getByTestId('session-row')).toHaveCount(30, { timeout: 5000 });
+			await expect(page.getByTestId('sessions-end-of-list')).toBeVisible();
+
+			const countAfterFullLoad = requestCount;
+
+			// Wait a bit and verify no more requests
+			await page.waitForTimeout(500);
+			expect(requestCount).toBe(countAfterFullLoad);
+		});
+
+		// AC: @session-list-infinite-scroll ac-filter-reset — Filter change resets to page 1
+		test('changing filter resets list to page 1', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 50 }, (_, i) => makeSession(i + 1, {
+				trigger: i < 30 ? 'task.ready' : 'manual',
+			}));
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+				const triggerParam = url.searchParams.get('trigger');
+
+				let filtered = allSessions;
+				if (triggerParam === 'manual') {
+					filtered = filtered.filter(s => s.trigger === 'manual');
+				} else if (triggerParam === 'dispatched') {
+					filtered = filtered.filter(s => s.trigger?.startsWith('task.'));
+				}
+
+				const total = filtered.length;
+				const paginated = filtered.slice(offset, offset + limit);
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({ items: paginated, total, offset, limit }),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			await expect(page.getByTestId('session-row')).toHaveCount(25);
+			await expect(page.getByTestId('sessions-count')).toContainText('25 of 50 sessions');
+
+			// Switch to manual filter — should reset to page 1 with filtered results
+			await page.getByTestId('trigger-filter').getByText('Manual').click();
+
+			// Manual sessions = 20 (indices 30-49), all fit in one page
+			await expect(page.getByTestId('session-row')).toHaveCount(20, { timeout: 5000 });
+			await expect(page.getByTestId('sessions-count')).toContainText('20 of 20 sessions');
+
+			// Switch to dispatched — should reset again
+			await page.getByTestId('trigger-filter').getByText('Dispatched').click();
+			await expect(page.getByTestId('session-row')).toHaveCount(25, { timeout: 5000 });
+			await expect(page.getByTestId('sessions-count')).toContainText('25 of 30 sessions');
+		});
+
+		// AC: @session-list-infinite-scroll ac-filter-reset — Previously loaded items cleared
+		test('filter change clears previously loaded items', async ({ page, daemon }) => {
+			const allSessions = Array.from({ length: 30 }, (_, i) => makeSession(i + 1, {
+				trigger: i < 15 ? 'task.ready' : 'manual',
+				agent_type: i < 15 ? 'task-worker' : 'manual-worker',
+			}));
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				const offset = Number(url.searchParams.get('offset') ?? '0');
+				const limit = Number(url.searchParams.get('limit') ?? '25');
+				const triggerParam = url.searchParams.get('trigger');
+
+				let filtered = allSessions;
+				if (triggerParam === 'manual') {
+					filtered = filtered.filter(s => s.trigger === 'manual');
+				} else if (triggerParam === 'dispatched') {
+					filtered = filtered.filter(s => s.trigger?.startsWith('task.'));
+				}
+
+				const total = filtered.length;
+				const paginated = filtered.slice(offset, offset + limit);
+
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({ items: paginated, total, offset, limit }),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Initially shows all 30 sessions
+			await expect(page.getByTestId('session-row')).toHaveCount(25);
+
+			// Switch to manual filter
+			await page.getByTestId('trigger-filter').getByText('Manual').click();
+			await expect(page.getByTestId('session-row')).toHaveCount(15, { timeout: 5000 });
+
+			// All visible sessions should be manual-worker type
+			const rows = page.getByTestId('session-row');
+			const count = await rows.count();
+			for (let i = 0; i < count; i++) {
+				await expect(rows.nth(i)).toContainText('manual-worker');
+			}
+		});
+
+		// AC: @session-list-infinite-scroll ac-live-update — New sessions indicator
+		test('new sessions indicator is hidden when no new sessions arrive', async ({ page, daemon }) => {
+			const sessions = [makeSession(1)];
+
+			await page.route('**/api/sessions*', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: sessions,
+						total: sessions.length,
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// The new sessions indicator should NOT be visible when no events arrived
+			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
+		});
+
+		// AC: @session-list-infinite-scroll ac-live-update — Subscribes to agents topic
+		test('subscribes to agents WebSocket topic for live updates', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: [makeSession(1)],
+						total: 1,
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			// Track WebSocket subscribe messages
+			const wsMessages: string[] = [];
+			page.on('websocket', ws => {
+				ws.on('framesent', frame => {
+					if (typeof frame.payload === 'string') {
+						wsMessages.push(frame.payload);
+					}
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Wait for WebSocket subscription to be sent
+			await page.waitForTimeout(1000);
+
+			// Should have subscribed to 'agents' topic
+			const subscribeMessages = wsMessages.filter(msg => {
+				try {
+					const parsed = JSON.parse(msg);
+					return parsed.command === 'subscribe' && parsed.topics?.includes('agents');
+				} catch { return false; }
+			});
+			expect(subscribeMessages.length).toBeGreaterThan(0);
 		});
 	});
 });

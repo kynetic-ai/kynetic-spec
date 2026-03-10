@@ -899,15 +899,48 @@ export interface SessionEvent {
 }
 
 /**
- * Fetch all sessions with summaries.
- * AC: @ui-session-stream ac-1
+ * Pagination parameters for session list.
+ * AC: @session-list-infinite-scroll ac-initial-load
  */
-export async function fetchSessions(): Promise<{ items: SessionSummary[]; total: number }> {
+export interface FetchSessionsParams {
+	offset?: number;
+	limit?: number;
+	trigger?: string;
+}
+
+/**
+ * Paginated session list response.
+ * AC: @session-list-infinite-scroll ac-initial-load
+ */
+export interface SessionListResponse {
+	items: SessionSummary[];
+	total: number;
+	offset: number;
+	limit: number;
+}
+
+/**
+ * Fetch sessions with pagination and filtering.
+ * AC: @ui-session-stream ac-1
+ * AC: @session-list-infinite-scroll ac-initial-load
+ */
+export async function fetchSessions(params?: FetchSessionsParams): Promise<SessionListResponse> {
 	if (isStaticMode()) {
-		return { items: [], total: 0 };
+		return { items: [], total: 0, offset: 0, limit: 25 };
 	}
 
-	const response = await fetch(`${API_BASE}/api/sessions`, {
+	const url = new URL(`${API_BASE}/api/sessions`);
+	if (params?.offset !== undefined) {
+		url.searchParams.set('offset', String(params.offset));
+	}
+	if (params?.limit !== undefined) {
+		url.searchParams.set('limit', String(params.limit));
+	}
+	if (params?.trigger) {
+		url.searchParams.set('trigger', params.trigger);
+	}
+
+	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
