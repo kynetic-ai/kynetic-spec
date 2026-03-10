@@ -86911,16 +86911,16 @@
     each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync
     timer for where startupProjectPath is hardcoded.
   spec_ref: "@config-daemon"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKCPKK6B5D890RC7ZM3K6F8H
   created_at: 2026-03-10T08:18:18.277Z
-  started_at: 2026-03-10T19:40:56.850Z
+  started_at: 2026-03-10T20:29:20.621Z
   submitted_at: 2026-03-10T19:41:00.889Z
   notes:
     - _ulid: 01KKCCRYC9T4N7VMF98HFE4CME
@@ -87027,6 +87027,11 @@
   spec_ref: "@trait-confirmation-prompt"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #759. Implemented item set trait mutation flags
+    (--add-trait/--remove-trait/--clear-traits), before→after diff output for item/task/item-ac
+    mutation flows, shared diff rendering, and no-op suppression for already-empty task clears.
+    Reviewed AC coverage for @item-set, @task-set, @item-ac, and @trait-json-output ac-2; full npm
+    test passed (4374 tests)."
   depends_on: []
   context: []
   priority: 3
@@ -87036,6 +87041,7 @@
   created_at: 2026-03-10T08:18:22.055Z
   started_at: 2026-03-10T20:01:51.926Z
   submitted_at: 2026-03-10T20:01:56.157Z
+  completed_at: 2026-03-10T20:28:46.553Z
   notes:
     - _ulid: 01KKCDZA4YHXHYK95XAEZB9AJC
       created_at: 2026-03-10T17:51:02.302Z
@@ -87113,12 +87119,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T20:28:46.553Z
-  closed_reason: "Merged in PR #759. Implemented item set trait mutation flags
-    (--add-trait/--remove-trait/--clear-traits), before→after diff output for item/task/item-ac
-    mutation flows, shared diff rendering, and no-op suppression for already-empty task clears.
-    Reviewed AC coverage for @item-set, @task-set, @item-ac, and @trait-json-output ac-2; full npm
-    test passed (4374 tests)."
 - _ulid: 01KKCA4D3NW1MPW6SW5N3T7SN6
   slugs:
     - task-ansi-terminal-output-rendering
