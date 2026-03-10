@@ -84587,6 +84587,7 @@
         WebSocket updates use the existing global subscription — no new
         connection management needed per-component.
   todos: []
+  automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
   slugs:
     - implement-session-filter-controls
