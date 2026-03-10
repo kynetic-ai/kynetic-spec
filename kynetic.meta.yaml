@@ -105,8 +105,7 @@ agents:
       - gh
     conventions: []
     adapter: codex-acp
-    dispatch:
-      - on: task.pending_review
+    dispatch: []
     skills:
       - pr-review
     budget:
