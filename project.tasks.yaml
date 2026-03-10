@@ -83985,7 +83985,7 @@
   spec_ref: "@daemon-sensitive-cli-test-determinism"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -84025,6 +84025,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T00:44:42.483Z
 - _ulid: 01KKAH4Y0MPPD3S2T6593RDTRM
   slugs:
     - task-verify-budget-cleanup-stable
