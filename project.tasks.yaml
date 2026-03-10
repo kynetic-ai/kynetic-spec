@@ -86317,6 +86317,15 @@
         tests/validate-exit-codes.test.ts expects validate --json to include alignmentWarnings and
         skillValidation, but the submitted deliverable does not emit them."
       supersedes: null
+    - _ulid: 01KKC24M00YXWVQ9MZ97Y7GPHG
+      created_at: 2026-03-10T14:24:13.313Z
+      author: "@claude"
+      content: "Fix cycle 1 resolution: Verified source code was already correct — alignmentWarnings,
+        alignmentStats, skillValidation are all included in JSON output when runAll=true (lines
+        919-1020 of validate.ts). The reviewer's test failure was from running tests against a stale
+        build artifact (tests invoke the compiled CLI binary, not source). Rebased on main (picked
+        up 2 new commits), rebuilt, confirmed all 15 tests pass. Force-pushed to trigger fresh CI."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
