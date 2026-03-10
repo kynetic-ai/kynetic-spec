@@ -85835,19 +85835,20 @@
     what the test expects. Fix either the implementation to create the file or update the test to
     match current behavior.
   spec_ref: "@platform-renderer-trait"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKBS09DQN0GZ1G6FYG66NV9J
   created_at: 2026-03-10T07:53:28.621Z
+  started_at: 2026-03-10T11:44:47.834Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-10T11:44:47.834Z
-  session_id: 01KKBS09DQN0GZ1G6FYG66NV9J
+  submitted_at: 2026-03-10T11:48:55.658Z
 - _ulid: 01KKBBS7YHFWP6RT427884JV12
   slugs: []
   title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
