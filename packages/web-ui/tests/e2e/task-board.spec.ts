@@ -12,6 +12,7 @@ import { test, expect } from '../fixtures/test-base';
  * - AC-4: Active Fleet row shows running agents
  * - AC-5: Real-time updates via WebSocket
  * - AC-6: Action buttons in detail modal execute mutations via API
+ * - AC-7: Closing detail modal removes ?ref= query param from URL
  */
 
 test.describe('Task Board (Kanban)', () => {
@@ -528,6 +529,53 @@ test.describe('Task Board (Kanban)', () => {
 
 		// Verify aria-live attribute for accessibility
 		await expect(outputEl).toHaveAttribute('aria-live', 'polite');
+	});
+
+	// AC: @ui-task-board ac-7
+	test('closing detail modal removes ?ref= query param from URL', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click a task card to open the modal
+		const card = page.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should open
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Close modal by pressing Escape
+		await page.keyboard.press('Escape');
+		await expect(modal).not.toBeVisible();
+
+		// URL should NOT have ?ref= param
+		expect(page.url()).not.toContain('ref=');
+
+		// Modal should stay closed (not reopen from stale URL param)
+		await page.waitForTimeout(500);
+		await expect(modal).not.toBeVisible();
+	});
+
+	// AC: @ui-task-board ac-7
+	test('closing detail modal opened via URL param removes ?ref= from URL', async ({ page, daemon }) => {
+		// Navigate directly with ?ref= param to open modal
+		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');
+
+		// Modal should open from URL param
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Close modal by pressing Escape
+		await page.keyboard.press('Escape');
+		await expect(modal).not.toBeVisible();
+
+		// URL should no longer contain ?ref=
+		expect(page.url()).not.toContain('ref=');
+
+		// Modal should stay closed
+		await page.waitForTimeout(500);
+		await expect(modal).not.toBeVisible();
 	});
 
 	// View toggle navigation
