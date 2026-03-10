@@ -7879,6 +7879,11 @@ requirements:
         then: environment prerequisites (build artifacts, dependencies, config) are verified and gaps are
           fixed automatically before tests execute, similar to how bootstrap.cjs ensures dev
           environment readiness
+      - id: ac-6
+        given: the test runner script is used instead of raw npm test
+        when: tests complete
+        then: output is structured with clear pass/fail summary, noise from setup steps is suppressed, and
+          the script provides an extensible hook point for future pre/post-test actions
     status:
       maturity: draft
       implementation: in_progress
