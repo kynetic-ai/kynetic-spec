@@ -85477,22 +85477,42 @@
         given/when/then format with concrete, observable outcomes
       supersedes: null
   todos: []
-- title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
+- _ulid: 01KKBBS1HGRR363BSDMG07EC19
+  slugs: []
+  title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
     CODEX_THREAD_"
+  type: task
+  description: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
+    CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated to
+    daemon isolation."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T07:53:25.296Z
+  notes: []
+  todos: []
+- title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
+    fails — ."
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
-    CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated to
-    daemon isolation."
-  _ulid: 01KKBBS1HGRR363BSDMG07EC19
+  description: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
+    detected' fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash
+    test). Likely related to completed task @01KJEWKG — may need test update to match new codex
+    config behavior."
+  _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T07:53:25.296Z
+  created_at: 2026-03-10T07:53:28.621Z
   notes: []
   todos: []

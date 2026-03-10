@@ -2454,14 +2454,16 @@ triage:
       detected' fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash
       test). Likely related to completed task @01KJEWKG — may need test update to match new codex
       config behavior."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Still failing: enhanced-setup.test.ts codex config not created. Related to codex
       detection priority"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T07:53:09.499Z
-    updated_at: 2026-03-10T07:53:09.519Z
+    updated_at: 2026-03-10T07:53:29.799Z
+    acted_at: 2026-03-10T07:53:29.780Z
+    result_ref: "@01KKBBS4"
   - _ulid: 01KKBBRJ66VR6K02MHTQ2Q2XC3
     inbox_ref: 01KKAK7EYPM7ZSZWBH9ZZQ4JVK
     item_snapshot: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform
@@ -2473,7 +2475,7 @@ triage:
       insufficient"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T07:53:09.574Z
-    updated_at: 2026-03-10T07:53:26.466Z
     acted_at: 2026-03-10T07:53:26.449Z
     result_ref: "@01KKBBS1"
+    created_at: 2026-03-10T07:53:09.574Z
+    updated_at: 2026-03-10T07:53:26.466Z

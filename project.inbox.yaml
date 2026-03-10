@@ -1134,16 +1134,6 @@ inbox:
       - batch
       - shadow
     added_by: Jacob Chapel
-  - _ulid: 01KJN378XQQETSAS8DKWAQ7F0F
-    text: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
-      fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash test). Likely
-      related to completed task @01KJEWKG — may need test update to match new codex config
-      behavior."
-    created_at: 2026-03-01T16:20:36.919Z
-    tags:
-      - bug
-      - testing
-    added_by: "@claude"
   - _ulid: 01KJN5MB6E6DCF3VMTDHHJ1ZWQ
     text: "Fix pre-existing test failure: tests/enhanced-setup.test.ts 'should render core skills to
       codex output when codex is detected' fails with ENOENT on .codex/config.toml — test expects
