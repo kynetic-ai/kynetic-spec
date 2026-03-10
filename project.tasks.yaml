@@ -86363,12 +86363,20 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKBYQZ8AZVY8AQN6CRK8106E
   created_at: 2026-03-10T08:17:47.882Z
-  notes: []
+  started_at: 2026-03-10T13:41:32.638Z
+  notes:
+    - _ulid: 01KKC04M1E409H3W0DSZ9GPQ5K
+      created_at: 2026-03-10T13:49:16.206Z
+      author: "@claude"
+      content: "Added --no-cascade flag to item set command. Commander parses it as options.cascade=false
+        (negated boolean pattern used elsewhere in codebase). When set, skips handleStatusCascade
+        entirely. No batch changes needed — flag auto-discovered via Commander option introspection.
+        Two tests added: no prompt shown + children not updated."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T13:41:32.638Z
-  session_id: 01KKBYQZ8AZVY8AQN6CRK8106E
 - _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
