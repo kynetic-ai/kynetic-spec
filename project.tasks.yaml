@@ -85663,22 +85663,44 @@
   created_at: 2026-03-10T08:17:31.495Z
   notes: []
   todos: []
-- title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
+- _ulid: 01KKBD5BAX4M5G9C5FH431MSMF
+  slugs: []
+  title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
     validate -"
+  type: task
+  description: "Reflection: Harden machine-readable output contracts for JSON commands (especially
+    'kspec validate --json') so output is strict JSON with no trailing text, enabling reliable
+    jq-based automation."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:37.116Z
+  notes: []
+  todos: []
+- title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
+    referenc
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Reflection: Harden machine-readable output contracts for JSON commands (especially
-    'kspec validate --json') so output is strict JSON with no trailing text, enabling reliable
-    jq-based automation."
-  _ulid: 01KKBD5BAX4M5G9C5FH431MSMF
+  description: When running `kspec setup` or `kspec init --setup`, automatically install default
+    workflows referenced in core skills (e.g. `session-reflect`, `session-reflect-loop`,
+    `task-work-session`, `local-review`, etc). Currently these workflows are referenced in core
+    skill docs but not installed by default, causing `kspec workflow start @session-reflect` to fail
+    on a fresh project. They should be bundled and installed the same way core skills are via
+    `install-core`.
+  _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:37.116Z
+  created_at: 2026-03-10T08:17:42.389Z
   notes: []
   todos: []

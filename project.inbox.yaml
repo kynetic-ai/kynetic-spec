@@ -1365,19 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJXFRHPQ44N29GATSVJZAZTN
-    text: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
-      referenced in core skills (e.g. `session-reflect`, `session-reflect-loop`,
-      `task-work-session`, `local-review`, etc). Currently these workflows are referenced in core
-      skill docs but not installed by default, causing `kspec workflow start @session-reflect` to
-      fail on a fresh project. They should be bundled and installed the same way core skills are via
-      `install-core`.
-    created_at: 2026-03-04T22:33:41.335Z
-    tags:
-      - workflow
-      - setup
-      - install-core
-    added_by: "@claude"
   - _ulid: 01KJXFS1A8QE3YPJ0J0HDY4SVJ
     text: "`kspec setup` renders codex skills to `.agents/skills/` but does not store render hashes in
       the kspec-meta branch. This leaves all codex skills showing as `drifted` in `kspec skill
