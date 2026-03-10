@@ -84275,9 +84275,12 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
-  closed_reason: null
+  closed_reason: "Merged in PR #737. Fixed task detail modal close behavior in both /tasks and
+    /tasks/board by clearing component state and removing the ?ref= query param with SvelteKit
+    replaceState on close. AC-7 coverage verified in the updated E2E tests for list and board views;
+    local npm test and PR CI passed on the merged head."
   depends_on: []
   context: []
   priority: 3
@@ -84289,7 +84292,7 @@
   created_at: 2026-03-10T00:27:01.022Z
   started_at: 2026-03-10T03:03:56.083Z
   submitted_at: 2026-03-10T03:12:16.591Z
-  completed_at: null
+  completed_at: 2026-03-10T03:21:57.494Z
   notes:
     - _ulid: 01KKAJ81X8MK59XVYTTPKNJDVW
       created_at: 2026-03-10T00:27:14.216Z
