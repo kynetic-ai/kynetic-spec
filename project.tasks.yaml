@@ -87082,6 +87082,27 @@
         clearing already-empty fields, and the new mutation/diff behavior still lacks matching spec
         updates plus AC annotations."
       supersedes: null
+    - _ulid: 01KKCNEEA6A33927REGYK8J0Z9
+      created_at: 2026-03-10T20:01:38.118Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 - addressed review feedback:
+
+        1. Fixed fake diffs when clearing already-null/undefined fields in task set (spec_ref,
+        meta_ref, plan_ref, review_url, description, automation) - now guards each clear path
+
+        2. Updated @item-set spec: added ACs for --add-trait, --remove-trait, --clear-traits, trait
+        mutual exclusivity, diff output, and no-op detection
+
+        3. Updated @task-set spec: added ACs for diff output and no-op clear behavior
+
+        4. Added AC annotations throughout tests/item-set-traits.test.ts mapping to @item-set,
+        @task-set, @item-ac, and @trait-json-output ACs
+
+        5. Added regression test for clearing already-null spec_ref
+
+        6. All 4374 tests pass, kspec validate passes
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCA4D3NW1MPW6SW5N3T7SN6
