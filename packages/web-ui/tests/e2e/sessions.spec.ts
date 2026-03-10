@@ -865,5 +865,286 @@ test.describe('Session History View', () => {
 			});
 			expect(subscribeMessages.length).toBeGreaterThan(0);
 		});
+
+		// AC: @session-list-infinite-scroll ac-live-update — Total count updates on new session
+		test('total count increments when WebSocket event arrives', async ({ page, daemon }) => {
+			const sessions = Array.from({ length: 5 }, (_, i) => makeSession(i + 1));
+
+			await page.route('**/api/sessions*', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: sessions,
+						total: sessions.length,
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			// Capture WebSocket instances for event injection
+			await page.addInitScript(() => {
+				const instances: WebSocket[] = [];
+				const OriginalWebSocket = window.WebSocket;
+				(window as any).__test_ws_instances = instances;
+				window.WebSocket = new Proxy(OriginalWebSocket, {
+					construct(target, args) {
+						const ws = new target(...(args as [string, ...any[]]));
+						instances.push(ws);
+						return ws;
+					}
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			await expect(page.getByTestId('sessions-count')).toContainText('5 of 5 sessions');
+
+			// Inject agent_invocation started event via WebSocket
+			const injected = await page.evaluate(() => {
+				const instances = (window as any).__test_ws_instances as WebSocket[];
+				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+				if (!ws) return false;
+
+				const msg = JSON.stringify({
+					msg_id: 'test-live-001',
+					seq: 9999,
+					timestamp: new Date().toISOString(),
+					topic: 'agents',
+					event: 'agent_invocation',
+					data: {
+						session_id: 'new-session-001',
+						agent_id: 'task-worker',
+						task_id: null,
+						status: 'started',
+						timestamp: Date.now()
+					}
+				});
+				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
+				return true;
+			});
+			expect(injected).toBe(true);
+
+			// Total count should update to 6 (5 + 1 new)
+			await expect(page.getByTestId('sessions-count')).toContainText('of 6 sessions', { timeout: 3000 });
+		});
+
+		// AC: @session-list-infinite-scroll ac-live-update — At-top prepend behavior
+		test('re-fetches page when user is at top and new session arrives', async ({ page, daemon }) => {
+			let fetchCount = 0;
+			const sessions = Array.from({ length: 3 }, (_, i) => makeSession(i + 1));
+
+			await page.route('**/api/sessions*', (route) => {
+				fetchCount++;
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: sessions,
+						total: sessions.length,
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			// Capture WebSocket instances
+			await page.addInitScript(() => {
+				const instances: WebSocket[] = [];
+				const OriginalWebSocket = window.WebSocket;
+				(window as any).__test_ws_instances = instances;
+				window.WebSocket = new Proxy(OriginalWebSocket, {
+					construct(target, args) {
+						const ws = new target(...(args as [string, ...any[]]));
+						instances.push(ws);
+						return ws;
+					}
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			const fetchCountBeforeEvent = fetchCount;
+
+			// User is at top (default position) — inject new session event
+			const injected = await page.evaluate(() => {
+				const instances = (window as any).__test_ws_instances as WebSocket[];
+				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+				if (!ws) return false;
+
+				const msg = JSON.stringify({
+					msg_id: 'test-live-002',
+					seq: 9998,
+					timestamp: new Date().toISOString(),
+					topic: 'agents',
+					event: 'agent_invocation',
+					data: {
+						session_id: 'new-session-002',
+						agent_id: 'task-worker',
+						task_id: null,
+						status: 'started',
+						timestamp: Date.now()
+					}
+				});
+				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
+				return true;
+			});
+			expect(injected).toBe(true);
+
+			// At top: should trigger a re-fetch (loadInitialPage), not show indicator
+			await page.waitForTimeout(500);
+			expect(fetchCount).toBeGreaterThan(fetchCountBeforeEvent);
+
+			// Indicator should NOT show when at top
+			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
+		});
+
+		// AC: @session-list-infinite-scroll ac-live-update — Scrolled-down indicator behavior
+		test('shows indicator when user is scrolled down and new session arrives', async ({ page, daemon }) => {
+			// Need enough sessions to enable scrolling
+			const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
+
+			await page.route('**/api/sessions*', (route) => {
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: sessions,
+						total: 50, // More than one page so sentinel is visible
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			// Capture WebSocket instances
+			await page.addInitScript(() => {
+				const instances: WebSocket[] = [];
+				const OriginalWebSocket = window.WebSocket;
+				(window as any).__test_ws_instances = instances;
+				window.WebSocket = new Proxy(OriginalWebSocket, {
+					construct(target, args) {
+						const ws = new target(...(args as [string, ...any[]]));
+						instances.push(ws);
+						return ws;
+					}
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Scroll down past the top threshold
+			await page.evaluate(() => {
+				const container = document.querySelector('[data-testid="sessions-list"]')?.parentElement;
+				if (container) container.scrollTop = 500;
+			});
+			await page.waitForTimeout(100); // Let scroll handler fire
+
+			// Inject new session event while scrolled down
+			const injected = await page.evaluate(() => {
+				const instances = (window as any).__test_ws_instances as WebSocket[];
+				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+				if (!ws) return false;
+
+				const msg = JSON.stringify({
+					msg_id: 'test-live-003',
+					seq: 9997,
+					timestamp: new Date().toISOString(),
+					topic: 'agents',
+					event: 'agent_invocation',
+					data: {
+						session_id: 'new-session-003',
+						agent_id: 'task-worker',
+						task_id: null,
+						status: 'started',
+						timestamp: Date.now()
+					}
+				});
+				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
+				return true;
+			});
+			expect(injected).toBe(true);
+
+			// Indicator should appear when scrolled down
+			await expect(page.getByTestId('new-sessions-indicator')).toBeVisible({ timeout: 3000 });
+			await expect(page.getByTestId('new-sessions-indicator')).toContainText('1 new session');
+
+			// Total count should also be updated
+			await expect(page.getByTestId('sessions-count')).toContainText('of 51 sessions');
+		});
+
+		// AC: @session-list-infinite-scroll ac-live-update — Clicking indicator refreshes
+		test('clicking new sessions indicator refreshes the list', async ({ page, daemon }) => {
+			let callCount = 0;
+			const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
+
+			await page.route('**/api/sessions*', (route) => {
+				callCount++;
+				route.fulfill({
+					status: 200,
+					contentType: 'application/json',
+					body: JSON.stringify({
+						items: sessions,
+						total: 50,
+						offset: 0,
+						limit: 25,
+					}),
+				});
+			});
+
+			// Capture WebSocket instances
+			await page.addInitScript(() => {
+				const instances: WebSocket[] = [];
+				const OriginalWebSocket = window.WebSocket;
+				(window as any).__test_ws_instances = instances;
+				window.WebSocket = new Proxy(OriginalWebSocket, {
+					construct(target, args) {
+						const ws = new target(...(args as [string, ...any[]]));
+						instances.push(ws);
+						return ws;
+					}
+				});
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			// Scroll down to trigger indicator behavior
+			await page.evaluate(() => {
+				const container = document.querySelector('[data-testid="sessions-list"]')?.parentElement;
+				if (container) container.scrollTop = 500;
+			});
+			await page.waitForTimeout(100);
+
+			// Inject event while scrolled
+			await page.evaluate(() => {
+				const instances = (window as any).__test_ws_instances as WebSocket[];
+				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+				if (!ws) return;
+				ws.dispatchEvent(new MessageEvent('message', { data: JSON.stringify({
+					msg_id: 'test-live-004',
+					seq: 9996,
+					timestamp: new Date().toISOString(),
+					topic: 'agents',
+					event: 'agent_invocation',
+					data: { session_id: 'new-session-004', agent_id: 'task-worker', task_id: null, status: 'started', timestamp: Date.now() }
+				}) }));
+			});
+
+			await expect(page.getByTestId('new-sessions-indicator')).toBeVisible({ timeout: 3000 });
+			const callsBeforeClick = callCount;
+
+			// Click the indicator to refresh
+			await page.getByTestId('new-sessions-indicator').click();
+
+			// Should trigger a new fetch
+			await page.waitForTimeout(500);
+			expect(callCount).toBeGreaterThan(callsBeforeClick);
+
+			// Indicator should disappear after refresh
+			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
+		});
 	});
 });

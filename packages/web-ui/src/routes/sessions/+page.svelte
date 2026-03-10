@@ -47,6 +47,7 @@
 
 	// AC: @session-list-infinite-scroll ac-live-update — Track new sessions
 	let newSessionsAvailable = $state(0);
+	let isAtTop = $state(true);
 	let scrollContainer: HTMLDivElement | undefined = $state();
 
 	// IntersectionObserver sentinel element
@@ -138,9 +139,16 @@
 		if (event.event === 'agent_invocation') {
 			const data = event.data;
 			if (data?.status === 'started') {
-				// A new session just started — check if it would match current filter
-				// We can't know for sure without re-querying, so just bump the count
-				newSessionsAvailable++;
+				// Always update total count immediately
+				total++;
+
+				if (isAtTop) {
+					// User is at top — re-fetch page 1 to show the new session
+					loadInitialPage();
+				} else {
+					// User is scrolled down — show "new sessions available" indicator
+					newSessionsAvailable++;
+				}
 			}
 		}
 	}
@@ -151,6 +159,13 @@
 		loadInitialPage();
 		// Scroll to top to see the new sessions
 		scrollContainer?.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	// AC: @session-list-infinite-scroll ac-live-update — Track scroll position
+	function handleScroll() {
+		if (scrollContainer) {
+			isAtTop = scrollContainer.scrollTop <= 10;
+		}
 	}
 
 	function statusColor(status: string): string {
@@ -217,7 +232,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4 p-6" bind:this={scrollContainer}>
+<div class="flex flex-col gap-4 p-6" bind:this={scrollContainer} onscroll={handleScroll}>
 	<div class="flex items-end justify-between gap-4">
 		<div>
 			<h1 class="text-2xl font-bold">Sessions</h1>
