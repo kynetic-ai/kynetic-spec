@@ -85496,23 +85496,45 @@
   created_at: 2026-03-10T07:53:25.296Z
   notes: []
   todos: []
-- title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
+- _ulid: 01KKBBS4SDEHGFVFT1D10851EB
+  slugs: []
+  title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
     fails — ."
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
     detected' fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash
     test). Likely related to completed task @01KJEWKG — may need test update to match new codex
     config behavior."
-  _ulid: 01KKBBS4SDEHGFVFT1D10851EB
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T07:53:28.621Z
+  notes: []
+  todos: []
+- title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
+    is not o
+  type: task
+  priority: 3
+  spec_ref: null
+  tags: []
+  description: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If
+    git is not on PATH (e.g. spawn git ENOENT), repair leaves the project in a worse state than
+    before — worktree gone, branch exists but disconnected. Repair should almost never remove the
+    worktree; instead it should try to re-link or fix in place. If removal is truly necessary,
+    verify git is available before removing. Observed in kynetic-spec-ui when repair failed with
+    'spawn git ENOENT' and left .kspec missing entirely.
+  _ulid: 01KKBBS7YHFWP6RT427884JV12
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T07:53:28.621Z
+  created_at: 2026-03-10T07:53:31.856Z
   notes: []
   todos: []

@@ -2440,14 +2440,16 @@ triage:
       worktree; instead it should try to re-link or fix in place. If removal is truly necessary,
       verify git is available before removing. Observed in kynetic-spec-ui when repair failed with
       'spawn git ENOENT' and left .kspec missing entirely.
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: "Still valid: repairShadow() calls fs.rm before git worktree add — narrow but real data
       loss window. Needs verify-before-delete pattern"
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T07:53:09.418Z
-    updated_at: 2026-03-10T07:53:09.439Z
+    updated_at: 2026-03-10T07:53:32.997Z
+    acted_at: 2026-03-10T07:53:32.981Z
+    result_ref: "@01KKBBS7"
   - _ulid: 01KKBBRJ3VXX39KZPZ2Q6K3M0N
     inbox_ref: 01KJN378XQQETSAS8DKWAQ7F0F
     item_snapshot: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
@@ -2460,10 +2462,10 @@ triage:
       detection priority"
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T07:53:09.499Z
-    updated_at: 2026-03-10T07:53:29.799Z
     acted_at: 2026-03-10T07:53:29.780Z
     result_ref: "@01KKBBS4"
+    created_at: 2026-03-10T07:53:09.499Z
+    updated_at: 2026-03-10T07:53:29.799Z
   - _ulid: 01KKBBRJ66VR6K02MHTQ2Q2XC3
     inbox_ref: 01KKAK7EYPM7ZSZWBH9ZZQ4JVK
     item_snapshot: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform

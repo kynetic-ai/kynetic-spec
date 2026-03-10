@@ -1656,19 +1656,6 @@ inbox:
       - design
       - feature
     added_by: "@claude"
-  - _ulid: 01KK6BVYGH1PCV2N3Q2NZGAX5W
-    text: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git is
-      not on PATH (e.g. spawn git ENOENT), repair leaves the project in a worse state than before —
-      worktree gone, branch exists but disconnected. Repair should almost never remove the worktree;
-      instead it should try to re-link or fix in place. If removal is truly necessary, verify git is
-      available before removing. Observed in kynetic-spec-ui when repair failed with 'spawn git
-      ENOENT' and left .kspec missing entirely.
-    created_at: 2026-03-08T09:18:48.337Z
-    tags:
-      - bug
-      - shadow
-      - dx
-    added_by: "@claude"
   - _ulid: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
     text: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
       additional registered projects get periodic session pulls too."
