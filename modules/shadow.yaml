@@ -1119,3 +1119,19 @@ features:
     status:
       maturity: draft
       implementation: in_progress
+requirements:
+  - _ulid: 01KKB938JSR6M7ZBN3NHR6ABRS
+    slugs:
+      - shadow-ac-backfill
+    title: Shadow Branch AC Backfill
+    type: requirement
+    tags: []
+    description: Add acceptance criteria to spec items under @shadow-branch that lack them. Covers
+      orphan branch worktree mechanics, auto-commit, sync, and merge driver.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-10T07:06:34.457Z

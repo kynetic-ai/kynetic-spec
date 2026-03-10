@@ -2502,14 +2502,11 @@ requirements:
   - _ulid: 01KKB8FCK90N26ZQATXNFPZY84
     slugs:
       - meta-shadow-ac-backfill
-    title: Meta and Shadow Branch AC Backfill
+    title: Meta System AC Backfill
     type: requirement
     tags: []
-    description: |
-      Add acceptance criteria to spec items under @meta and @shadow-branch
-      that lack them. These modules govern the meta-spec system
-      (conventions, workflows, skills, observations) and shadow branch
-      mechanics.
+    description: Add acceptance criteria to spec items under @meta that lack them. The meta module
+      governs conventions, workflows, skills, and observations.
     acceptance_criteria:
       - id: ac-coverage
         given: |
@@ -2523,8 +2520,7 @@ requirements:
           Each newly added AC
         when: |
           It is reviewed
-        then: |
-          It follows given/when/then format and is specific enough to write a test against
+        then: It follows given/when/then format with concrete, observable outcomes
     depends_on: []
     implements: []
     relates_to: []
@@ -2551,15 +2547,13 @@ requirements:
           All specs that inherit traits with acceptance criteria
         when: |
           kspec validate --completeness runs
-        then: |
-          Zero "missing trait AC coverage" warnings (currently 13)
+        then: Zero missing trait AC coverage warnings
       - id: ac-own-coverage-reduction
         given: |
           All specs with own acceptance criteria
         when: |
           kspec validate --completeness runs
-        then: |
-          Missing own AC coverage warnings reduced by at least 50% from current 118
+        then: Missing own AC coverage warnings reduced by at least 50% from the count at task start time
       - id: ac-annotation-format
         given: |
           Each added test annotation
@@ -4239,8 +4233,7 @@ decisions:
           A spec item has type feature, requirement, constraint, or trait
         when: |
           The item has no acceptance_criteria defined
-        then: |
-          A completeness warning is emitted
+        then: A completeness warning is emitted for each item without acceptance_criteria
       - id: ac-description-required
         given: |
           A spec item has any type except module
@@ -4248,6 +4241,11 @@ decisions:
           The item has no description field
         then: |
           A completeness warning is emitted
+      - id: ac-decision-required
+        given: A spec item has type decision
+        when: The item has no acceptance_criteria defined
+        then: A completeness warning is emitted — decisions document rationale via ACs just like features
+          and requirements
     depends_on: []
     implements: []
     relates_to: []

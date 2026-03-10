@@ -48,6 +48,9 @@ traits:
         traits: []
         notes: []
         created: 2026-03-01T15:57:25.668Z
+        description: Test-only trait for validating trait inheritance mechanics in the kspec system. Used by
+          test fixtures to verify that traits correctly propagate acceptance criteria to inheriting
+          specs.
   - _ulid: 01KFDZSHFAV02EW1F6Y20MAF51
     slugs:
       - trait-multi-ref-batch

@@ -1400,8 +1400,7 @@ requirements:
           Each newly added AC
         when: |
           It is reviewed
-        then: |
-          It follows given/when/then format and is specific enough to write a test against
+        then: It follows given/when/then format with concrete, observable outcomes
     depends_on: []
     implements: []
     relates_to: []
