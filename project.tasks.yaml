@@ -84229,7 +84229,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -84274,3 +84274,5 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-10T01:40:10.549Z
+  session_id: 01KKAP67JHGG955HVD798Z2DE6
