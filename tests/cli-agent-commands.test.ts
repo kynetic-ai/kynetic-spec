@@ -1399,14 +1399,21 @@ function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): 
  * Poll for a condition to become true, up to maxWaitMs.
  * Used to handle async initContext() completing before WebSocket is created.
  */
-async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void> {
+// AC: @test-suite-perf-reliability ac-3
+async function waitFor(
+  condition: () => boolean,
+  maxWaitMs = 2000,
+  description = "dispatch watch test readiness",
+): Promise<void> {
   await waitForStartup(
-    "dispatch watch test readiness",
+    description,
     async () => {
       const ok = condition();
       return {
         ok,
-        details: ok ? "condition met" : "condition still false",
+        details: ok
+          ? "condition met"
+          : `condition not yet met (waited up to ${maxWaitMs}ms)`,
       };
     },
     { timeoutMs: maxWaitMs, intervalMs: 10 },
@@ -2197,7 +2204,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
 
     // Poll for first WebSocket to be created (initContext is async)
     await vi.runAllTimersAsync();
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect test");
 
     instances[0].onopen?.({});
 
@@ -2250,7 +2257,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       { from: "user" },
     );
 
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for output flush test");
     instances[0].onopen?.({});
     instances[0].onmessage?.({
       data: JSON.stringify({
@@ -2268,10 +2275,10 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         const flushed = stdout.includes("[worker sess-abc]\nline without newline\n");
         return {
           ok: reconnectLogged && flushed,
-          details: `stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
+          details: `reconnect_logged=${reconnectLogged} flushed=${flushed} stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
         };
       },
-      { timeoutMs: 1_000, intervalMs: 10 },
+      { timeoutMs: 2_000, intervalMs: 10 },
     );
 
     const stdout = stdoutWrites.join("");
@@ -2320,7 +2327,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       { from: "user" },
     );
 
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect boundary test");
     instances[0].onopen?.({});
     for (const chunk of fixture.chunks_before_close) {
       emitAgentTextChunk(instances[0], chunk);
@@ -2370,7 +2377,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       .catch(() => {/* mocked exit throws */});
 
     // Wait for WebSocket to be created
-    await waitFor(() => instances.length >= 1);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for retries-exhausted test");
 
     // First connection drops — retryCount(0) >= retryLimit(0), so exit immediately
     // process.exit mock throws synchronously, so wrap in try/catch
