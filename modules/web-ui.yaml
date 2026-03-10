@@ -1200,11 +1200,6 @@ features:
           The user clicks action buttons (Start, Submit, Complete, Block, Add Note)
         then: |
           The corresponding task transition or mutation is executed via API
-      - id: ac-7
-        given: the task detail modal is open with a ?ref= query parameter in the URL
-        when: the user closes the modal (click outside, ESC key, or close button)
-        then: the ?ref= query parameter is removed from the URL via history.pushState so the modal does not
-          reopen on navigation
     depends_on: []
     implements: []
     relates_to: []
