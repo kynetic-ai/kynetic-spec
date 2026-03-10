@@ -1365,16 +1365,6 @@ inbox:
     created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
-  - _ulid: 01KJXP9CS7E3GJ27DM8970MM46
-    text: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
-      comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec.
-      Surface as completeness warnings. Catches typos like @alignment-validation-warnings before
-      review."
-    created_at: 2026-03-05T00:27:44.807Z
-    tags:
-      - cli
-      - validation
-    added_by: "@claude"
   - _ulid: 01KJXPG80VDQWGT01KTJ7GGWYW
     text: 'Fix kspec item list --json output structure: currently returns nested [items, count] pairs
       which are difficult to parse programmatically. Should return flat { "items": [...], "total": N

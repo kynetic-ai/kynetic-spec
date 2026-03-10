@@ -2644,14 +2644,16 @@ triage:
       ac-N comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec.
       Surface as completeness warnings. Catches typos like @alignment-validation-warnings before
       review."
-    status: triaged
+    status: acted_on
     action: promote
     reasoning: AC annotation validation — verify slug resolves and ac-N exists. Extends existing
       validate command
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:09.562Z
-    updated_at: 2026-03-10T08:17:09.578Z
+    updated_at: 2026-03-10T08:17:52.378Z
+    acted_at: 2026-03-10T08:17:52.359Z
+    result_ref: "@01KKBD5S"
   - _ulid: 01KKBD4GG08Z4BFCS9AZZYSA2X
     inbox_ref: 01KJXP5TGJ6CCC2D45C4RS9B4X
     item_snapshot: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
@@ -2663,10 +2665,10 @@ triage:
       workaround
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:09.632Z
-    updated_at: 2026-03-10T08:17:49.001Z
     acted_at: 2026-03-10T08:17:48.982Z
     result_ref: "@01KKBD5N"
+    created_at: 2026-03-10T08:17:09.632Z
+    updated_at: 2026-03-10T08:17:49.001Z
   - _ulid: 01KKBD4GJ477Y6HZ22BR49RD7W
     inbox_ref: 01KJXFS1A8QE3YPJ0J0HDY4SVJ
     item_snapshot: "`kspec setup` renders codex skills to `.agents/skills/` but does not store render

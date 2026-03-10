@@ -85704,22 +85704,41 @@
   created_at: 2026-03-10T08:17:42.389Z
   notes: []
   todos: []
-- title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
+- _ulid: 01KKBD5NVA05J5XM039Y5XVNT0
+  slugs: []
+  title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
     to targ"
+  type: task
+  description: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
+    change only to targeted item. Needed when bulk-updating many specs in scripts — currently
+    requires yes | workaround which breaks kspec batch."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T08:17:47.882Z
+  notes: []
+  todos: []
+- title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
+    comments and v"
   type: task
   priority: 3
   spec_ref: null
   tags: []
-  description: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
-    change only to targeted item. Needed when bulk-updating many specs in scripts — currently
-    requires yes | workaround which breaks kspec batch."
-  _ulid: 01KKBD5NVA05J5XM039Y5XVNT0
+  description: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
+    comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec. Surface
+    as completeness warnings. Catches typos like @alignment-validation-warnings before review."
+  _ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
   slugs: []
   status: pending
   blocked_by: []
   depends_on: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T08:17:47.882Z
+  created_at: 2026-03-10T08:17:51.248Z
   notes: []
   todos: []
