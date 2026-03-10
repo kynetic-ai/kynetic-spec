@@ -84368,5 +84368,30 @@
         clear selectedTaskRef, clear URL. The specs page pattern works there because its state model
         is simpler (detailOpen + selectedRef). The task views have more state to clear."
       supersedes: null
+    - _ulid: 01KKAVNFVPECZZ0HDA5V0H2AJQ
+      created_at: 2026-03-10T03:11:51.670Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 resolution: Root cause was using window.history.pushState which doesn't update
+        SvelteKit's $page store synchronously, creating a race condition where the URL-watching
+        $effect could re-trigger before seeing the param removal.
+
+
+        Changes:
+
+        1. Both task views now use SvelteKit's replaceState() from $app/navigation instead of
+        window.history.pushState — this ensures $page.url updates atomically
+
+        2. Board view cleanup effect now clears selectedTaskRef = null (was missing)
+
+        3. Both views construct new URL from $page.url (reactive source) instead of
+        window.location.href
+
+        4. Using replaceState instead of pushState prevents browser back button going to stale ?ref=
+        state
+
+        5. E2E tests strengthened: increased stability wait from 500ms to 1000ms, added test
+        verifying same task can be reopened after close
+      supersedes: null
   todos: []
   automation: eligible
