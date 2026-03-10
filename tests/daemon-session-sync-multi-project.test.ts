@@ -183,6 +183,39 @@ describe('Multi-project session sync', () => {
       expect(onRegistered).toHaveBeenCalledWith(projectA);
     });
 
+    it('should normalize path before calling onProjectRegistered (regression: non-canonical header)', async () => {
+      const onRegistered = vi.fn().mockResolvedValue(undefined);
+      const { projectContextMiddleware } = await import('../packages/daemon/src/middleware/project-context');
+
+      const { manager, middleware } = projectContextMiddleware({
+        onProjectRegistered: onRegistered,
+      });
+
+      const { Elysia } = await import('elysia');
+      const app = new Elysia()
+        .use(middleware)
+        .get('/api/test', () => ({ ok: true }));
+
+      // Send a request with a non-normalized path (trailing "/./")
+      const nonNormalizedPath = projectA + '/./';
+      const response = await app.handle(
+        new Request('http://localhost/api/test', {
+          headers: {
+            'Host': 'localhost',
+            'X-Kspec-Dir': nonNormalizedPath,
+          },
+        })
+      );
+
+      expect(response.status).toBe(200);
+
+      // Callback should receive the normalized path, not the raw header value
+      expect(onRegistered).toHaveBeenCalledTimes(1);
+      expect(onRegistered).toHaveBeenCalledWith(projectA);
+      // Critically: NOT called with the non-normalized path
+      expect(onRegistered).not.toHaveBeenCalledWith(nonNormalizedPath);
+    });
+
     it('should not call onProjectRegistered for already-registered projects', async () => {
       const onRegistered = vi.fn().mockResolvedValue(undefined);
       const { projectContextMiddleware } = await import('../packages/daemon/src/middleware/project-context');

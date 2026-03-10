@@ -81,8 +81,9 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
                 console.error(`[daemon] Failed to start watcher for ${projectPath}:`, watcherError);
               });
               // Start session sync asynchronously (don't block request)
+              // Use normalized path from projectContext — raw header may have trailing slashes or "." segments
               if (options.onProjectRegistered) {
-                void options.onProjectRegistered(projectPath).catch((syncError) => {
+                void options.onProjectRegistered(projectContext.path).catch((syncError) => {
                   console.error(`[daemon] Failed to start session sync for ${projectPath}:`, syncError);
                 });
               }
