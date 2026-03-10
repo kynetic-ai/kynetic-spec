@@ -270,7 +270,7 @@ agents:
       - git
       - npm
     conventions: []
-    adapter: claude-agent-acp
+    adapter: codex-acp
     dispatch:
       - on: task.in_progress
         filter:
