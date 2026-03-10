@@ -84415,6 +84415,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #738 (merge commit 10e7dca2a0116f74cd9a830b3293c53b3453a001). Replaced
+    replaceState/pushState/window.history URL mutations with goto(url, { replaceState: true,
+    keepFocus: true, noScroll: true }) across the affected detail panels, added URL-state guidance
+    to the svelte-5 skill and development conventions, and added trait AC coverage annotations for
+    @ui-url-panel-state ac-1 through ac-4 in existing behavioral E2E tests. Verified spec alignment
+    and fresh regression coverage with npm test passing (4294 passed, 3 skipped)."
   depends_on: []
   context: []
   priority: 3
@@ -84427,6 +84433,7 @@
   created_at: 2026-03-10T04:06:59.703Z
   started_at: 2026-03-10T09:20:51.548Z
   submitted_at: 2026-03-10T09:20:59.745Z
+  completed_at: 2026-03-10T09:43:02.634Z
   notes:
     - _ulid: 01KKAYTY8TVVD8AWDJ5HAGVE3S
       created_at: 2026-03-10T04:07:15.994Z
@@ -84548,13 +84555,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T09:43:02.634Z
-  closed_reason: "Merged in PR #738 (merge commit 10e7dca2a0116f74cd9a830b3293c53b3453a001). Replaced
-    replaceState/pushState/window.history URL mutations with goto(url, { replaceState: true,
-    keepFocus: true, noScroll: true }) across the affected detail panels, added URL-state guidance
-    to the svelte-5 skill and development conventions, and added trait AC coverage annotations for
-    @ui-url-panel-state ac-1 through ac-4 in existing behavioral E2E tests. Verified spec alignment
-    and fresh regression coverage with npm test passing (4294 passed, 3 skipped)."
 - _ulid: 01KKB3PGRCT3XKTY3MVBVKTM87
   slugs:
     - implement-session-list-pagination-api
@@ -85259,7 +85259,7 @@
   spec_ref: "@ui-task-board"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85272,6 +85272,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T09:43:36.005Z
+  session_id: 01KKBHMSGC4GHYX8QBJAR74VYQ
 - _ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
   slugs: []
   title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
