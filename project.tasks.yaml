@@ -85807,10 +85807,10 @@
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
     projects. "
   type: task
-  description: Multi-project agent dashboard — tmux-style live view of all running agent sessions
-    across projects. Show terminal-like panes for each active session with real-time output, agent
-    name, task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances.
-    Think mission control for agent fleet monitoring without navigating to individual project UIs.
+  description: "Design spec for multi-project agent dashboard. Concept: tmux-style live view of all
+    running agent sessions across projects with real-time output, agent name, task ref, elapsed
+    time, and status. Deliverable: spec items covering dashboard layout, data sources (daemon API,
+    WebSocket), multi-project discovery, and interaction model. No implementation yet."
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85822,6 +85822,7 @@
   created_at: 2026-03-10T08:18:04.769Z
   notes: []
   todos: []
+  automation: manual_only
 - _ulid: 01KKBD69TY1M3FMTQ6ZV1FNTBT
   slugs: []
   title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
@@ -85869,18 +85870,11 @@
   title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
     triggers"
   type: task
-  description: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style
-    scheduled triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift
-    check, hourly inbox triage). (2) Boundary/lifecycle triggers — fire after task.completed for
-    cleanup (branch deletion, stale worktree cleanup, docs regeneration), after PR merge for
-    downstream updates, after session.end for reflection capture. (3) Project health agents —
-    dedicated agents for validation sweeps, dependency freshness, test coverage gaps, dead code
-    detection, spec-code alignment drift. (4) Multi-agent review — dispatch multiple reviewers
-    concurrently on pending_review with different perspectives (code quality vs spec alignment vs
-    security), then synthesize findings before merge decision. (5) Event composition — triggers that
-    combine conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or when
-    validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
-    webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
+  description: "Design spec for dispatch trigger expansion. Current dispatch only supports task state
+    change triggers. Design and spec out: (1) Cron-style scheduled triggers — run agents on
+    intervals (nightly audit, weekly spec drift, hourly inbox triage), (2) Webhook/external event
+    triggers, (3) File-watch triggers for spec/code changes. Deliverable: spec items with ACs
+    covering trigger registration, scheduling, and execution semantics. No implementation yet."
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85892,6 +85886,7 @@
   created_at: 2026-03-10T08:18:15.020Z
   notes: []
   todos: []
+  automation: manual_only
 - _ulid: 01KKBD6KH5F5MVC5BXV2NQG474
   slugs: []
   title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
@@ -85910,23 +85905,23 @@
   created_at: 2026-03-10T08:18:18.277Z
   notes: []
   todos: []
-- title: CLI mutation commands should show what changed (before → after) in output, especially for
+- _ulid: 01KKBD6Q77H016BZD3G0JFE16E
+  slugs: []
+  title: CLI mutation commands should show what changed (before → after) in output, especially for
     array fiel
   type: task
-  priority: 3
-  spec_ref: null
-  tags: []
   description: "CLI mutation commands should show what changed (before → after) in output, especially
     for array fields like --trait that replace rather than append. Two improvements: (1) item set
     --trait should append by default (or have --add-trait / --remove-trait), (2) all mutating
     commands should display diffs of what they changed so silent data loss is visible. Triggered by
     --trait silently replacing existing traits array."
-  _ulid: 01KKBD6Q77H016BZD3G0JFE16E
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-03-10T08:18:22.055Z
   notes: []
