@@ -7984,6 +7984,35 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KKCTKKYQVWTFVWPMV6YXDMN8
+    type: success
+    content: "Dual review pattern (internal agent + Codex in parallel) catches complementary issues:
+      agent finds architectural gaps, Codex finds format/consistency issues. Used on
+      plan-iterative-planning through 4 iterations. Worth formalizing as standard plan review
+      workflow."
+    created_at: 2026-03-10T21:31:50.615Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKCTKM5THCQ4RZ3C9VRBXKPG
+    type: success
+    content: "Iterative plan design through review cycles: v1 had update-from-file, reviews identified
+      round-trip gap, v2 added import --into, v3 decoupled task derivation, v4 decoupled spec
+      creation. Each review cycle produced a cleaner design. User steering at key decisions (v2→v3:
+      delay spec creation) was the most impactful improvement."
+    created_at: 2026-03-10T21:31:50.842Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKCTKMAYAWH3BDMQ5CWMD1ZD
+    type: friction
+    content: Codex plan review output file (/tmp/codex-plan-review.md) is not unique per invocation.
+      Stale output from previous sessions can be mistaken for current results. Need to check
+      timestamps or use unique filenames (e.g., include plan slug or timestamp).
+    created_at: 2026-03-10T21:31:51.006Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
