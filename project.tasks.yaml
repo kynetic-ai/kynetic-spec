@@ -86732,12 +86732,12 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKCA2PMHVR86ANRH9F8Y06JZ
   created_at: 2026-03-10T08:18:01.609Z
+  started_at: 2026-03-10T16:47:47.960Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-10T16:47:47.960Z
-  session_id: 01KKCA2PMHVR86ANRH9F8Y06JZ
 - _ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
   slugs: []
   title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
@@ -86914,37 +86914,43 @@
     Implement ANSI terminal color rendering in the web UI session stream.
 
 
+    Spec: @ansi-terminal-rendering (8 ACs)
+
+
     Integration point: packages/web-ui/src/lib/components/session/ToolCallView.svelte (line ~112,
     the <pre> tag rendering outputText).
 
 
     Approach:
 
-    1. Add ansi-to-html package to packages/web-ui/
+    1. Add ansi-to-html (or similar) package to packages/web-ui/
 
-    2. Create a shared utility (e.g. lib/utils/ansi.ts) that converts ANSI escape sequences to
-    styled HTML spans
+    2. Create a shared utility (e.g. lib/utils/ansi.ts) that converts ANSI SGR sequences to styled
+    HTML spans
 
     3. In ToolCallView.svelte, pipe outputText through the ANSI parser before rendering with {@html}
 
-    4. Handle graceful degradation: if ESC chars (0x1B) were stripped, detect orphaned CSI
+    4. Support standard 16 colors, 256-color (38;5;N), and 24-bit true color (38;2;R;G;B)
+
+    5. Define ANSI color palette as CSS custom properties using oklch, integrated with existing
+    token system in tokens.css
+
+    6. Handle graceful degradation: if ESC chars (0x1B) were stripped, detect orphaned CSI
     parameters like [32m and strip them for clean plain text
 
-    5. Ensure HTML escaping of non-ANSI content before insertion (XSS safety)
+    7. HTML-escape all non-ANSI content before insertion (XSS safety) — DOMPurify already in
+    codebase
 
-    6. Use CSS custom properties for the color palette so it works with light/dark theme
+    8. Strip non-SGR codes (cursor movement, clear screen) rather than rendering them
 
-    7. Consider reuse: other views (session log, agent fleet cards) may also display terminal output
+    9. Pipeline: ANSI parsing applies only to tool/bash output in <pre> blocks — never touches
+    markdown-rendered agent text
 
 
     Data flow: events.jsonl → daemon API → session-utils.ts parseEventsToBlocks() →
     ToolCallView.svelte
 
-    ANSI codes survive JSON serialization as UTF-8 (\x1b → \u001b). The browser ignores the
-    invisible ESC char, leaving bracket params visible as garbled text.
-
-
-    Spec: @ansi-terminal-rendering (7 ACs)
+    ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
   status: pending
