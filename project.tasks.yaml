@@ -86912,12 +86912,33 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKCC0VTAADPJRB8H207NTZBZ
   created_at: 2026-03-10T08:18:18.277Z
-  notes: []
+  started_at: 2026-03-10T17:22:51.318Z
+  notes:
+    - _ulid: 01KKCCRYC9T4N7VMF98HFE4CME
+      created_at: 2026-03-10T17:30:05.066Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Daemon session sync only ran for startupProjectPath. Additional projects
+        registered via API or middleware auto-registration did not get periodic session pulls.
+
+        - Scope: Extend session sync to all registered projects, not just startup project.
+
+        - Files changed:
+          - packages/daemon/src/server.ts: Extracted startSessionSyncForProject/stopSessionSyncForProject helpers, changed single scheduler to Map, wired callbacks
+          - packages/daemon/src/routes/projects.ts: Added onProjectRegistered/onProjectUnregistered callbacks
+          - packages/daemon/src/middleware/project-context.ts: Added onProjectRegistered callback for auto-registration path
+          - tests/daemon-session-sync-multi-project.test.ts: New test file with 6 behavioral tests
+        - Approach: Follow existing watcher-per-project pattern. Three registration paths covered:
+        startup init, POST /api/projects, and middleware auto-registration via X-Kspec-Dir header.
+
+        - Verification: TypeScript compiles clean, new tests pass, full suite running.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T17:22:51.318Z
-  session_id: 01KKCC0VTAADPJRB8H207NTZBZ
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
