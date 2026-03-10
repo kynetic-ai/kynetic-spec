@@ -7,16 +7,25 @@
   AC: @session-list-infinite-scroll ac-filter-reset — Filter change resets to page 1.
   AC: @session-list-infinite-scroll ac-live-update — WebSocket updates total and shows indicator.
   AC: @ui-url-panel-state ac-4 — goto() for filter URL mutations.
+  AC: @session-filter-controls ac-status-filter — Status filter via URL params.
+  AC: @session-filter-controls ac-agent-filter — Agent ID filter via URL params.
+  AC: @session-filter-controls ac-agent-type-filter — Agent type filter via URL params.
+  AC: @session-filter-controls ac-trigger-filter — Trigger filter via URL params.
+  AC: @session-filter-controls ac-date-filter — Date range filter via URL params.
+  AC: @session-filter-controls ac-clear-filters — Clear all filters button.
+  AC: @session-filter-controls ac-filter-counts — Filtered vs total count display.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { page } from '$app/stores';
 	import { base } from '$app/paths';
-	import type { SessionSummary } from '$lib/api';
+	import type { SessionSummary, FetchSessionsParams } from '$lib/api';
 	import { fetchSessions, fetchTasks } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
+	import SessionFilters from '$lib/components/session/SessionFilters.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import Activity from '@lucide/svelte/icons/activity';
@@ -41,9 +50,12 @@
 	let taskTitles = $state<Record<string, string>>({});
 	let taskTitlesLoaded = $state(false);
 
-	// Filter state
-	type TriggerFilter = 'all' | 'manual' | 'dispatched';
-	let triggerFilter = $state<TriggerFilter>('all');
+	// AC: @session-filter-controls ac-filter-counts — Track unfiltered total for count display
+	let unfilteredTotal = $state(0);
+
+	// AC: @session-filter-controls ac-agent-filter, ac-agent-type-filter — Distinct values for filter dropdowns
+	let distinctAgentIds = $state<string[]>([]);
+	let distinctAgentTypes = $state<string[]>([]);
 
 	// AC: @session-list-infinite-scroll ac-live-update — Track new sessions
 	let newSessionsAvailable = $state(0);
@@ -54,14 +66,83 @@
 	let sentinel: HTMLDivElement | undefined = $state();
 	let observer: IntersectionObserver | undefined;
 
+	// AC: @ui-url-panel-state ac-4 — Derive filter values from URL params
+	let filterStatus = $derived($page.url.searchParams.get('status') || '');
+	let filterAgentId = $derived($page.url.searchParams.get('agent_id') || '');
+	let filterAgentType = $derived($page.url.searchParams.get('agent_type') || '');
+	let filterTrigger = $derived($page.url.searchParams.get('trigger') || '');
+	let filterDateRange = $derived($page.url.searchParams.get('date_range') || '');
+	let hasFilters = $derived(filterStatus || filterAgentId || filterAgentType || filterTrigger || filterDateRange);
+
 	/**
-	 * Map trigger filter to daemon API parameter.
-	 * 'all' sends no trigger param; 'manual' uses 'manual'; 'dispatched' uses the shorthand.
+	 * Convert date_range shorthand to ISO 8601 date for the API `since` param.
+	 * AC: @session-filter-controls ac-date-filter
 	 */
-	function getTriggerParam(filter: TriggerFilter): string | undefined {
-		if (filter === 'manual') return 'manual';
-		if (filter === 'dispatched') return 'dispatched';
-		return undefined;
+	function dateRangeToSince(range: string): string | undefined {
+		if (!range) return undefined;
+		const now = new Date();
+		switch (range) {
+			case 'today': {
+				const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+				return today.toISOString();
+			}
+			case '7d': {
+				const d = new Date(now);
+				d.setDate(d.getDate() - 7);
+				return d.toISOString();
+			}
+			case '30d': {
+				const d = new Date(now);
+				d.setDate(d.getDate() - 30);
+				return d.toISOString();
+			}
+			default:
+				return undefined;
+		}
+	}
+
+	/**
+	 * Build FetchSessionsParams from current URL search params.
+	 */
+	function buildFetchParams(extraOffset?: number): FetchSessionsParams {
+		const params: FetchSessionsParams = {
+			offset: extraOffset ?? 0,
+			limit: PAGE_SIZE
+		};
+		if (filterStatus) params.status = [filterStatus];
+		if (filterAgentId) params.agent_id = filterAgentId;
+		if (filterAgentType) params.agent_type = filterAgentType;
+		if (filterTrigger) params.trigger = filterTrigger;
+		const since = dateRangeToSince(filterDateRange);
+		if (since) params.since = since;
+		return params;
+	}
+
+	/**
+	 * Fetch unfiltered distinct values for filter dropdowns.
+	 * Fetches a single page of metadata-only summaries to extract unique values.
+	 */
+	async function loadFilterOptions() {
+		try {
+			// Get unfiltered total and distinct values
+			const data = await fetchSessions({ offset: 0, limit: 1 });
+			unfilteredTotal = data.total;
+
+			// Fetch all summaries for distinct values (metadata only, fast)
+			if (data.total > 0) {
+				const allData = await fetchSessions({ offset: 0, limit: data.total });
+				const agentIdSet = new Set<string>();
+				const agentTypeSet = new Set<string>();
+				for (const s of allData.items) {
+					if (s.agent_id) agentIdSet.add(s.agent_id);
+					agentTypeSet.add(s.agent_type);
+				}
+				distinctAgentIds = [...agentIdSet].sort();
+				distinctAgentTypes = [...agentTypeSet].sort();
+			}
+		} catch {
+			// Non-critical — filter options just won't be populated
+		}
 	}
 
 	// AC: @session-list-infinite-scroll ac-initial-load — Load first page
@@ -74,7 +155,7 @@
 		newSessionsAvailable = 0;
 		try {
 			const [data, tasksData] = await Promise.all([
-				fetchSessions({ offset: 0, limit: PAGE_SIZE, trigger: getTriggerParam(triggerFilter) }),
+				fetchSessions(buildFetchParams(0)),
 				// Only load task titles once
 				taskTitlesLoaded ? Promise.resolve(null) : fetchTasks({ limit: 1000 })
 			]);
@@ -82,6 +163,11 @@
 			sessions = data.items;
 			total = data.total;
 			offset = data.items.length;
+
+			// AC: @session-filter-controls ac-filter-counts — Update unfiltered total if no filters active
+			if (!hasFilters) {
+				unfilteredTotal = data.total;
+			}
 
 			// Build task title lookup for ReferenceLink display
 			if (tasksData) {
@@ -109,11 +195,7 @@
 		if (loadingMore || allLoaded) return;
 		loadingMore = true;
 		try {
-			const data = await fetchSessions({
-				offset,
-				limit: PAGE_SIZE,
-				trigger: getTriggerParam(triggerFilter)
-			});
+			const data = await fetchSessions(buildFetchParams(offset));
 			sessions = [...sessions, ...data.items];
 			total = data.total;
 			offset += data.items.length;
@@ -124,16 +206,6 @@
 		}
 	}
 
-	// AC: @session-list-infinite-scroll ac-filter-reset — Reset on filter change
-	let previousFilter: TriggerFilter | undefined;
-	$effect(() => {
-		const currentFilter = triggerFilter;
-		if (previousFilter !== undefined && previousFilter !== currentFilter) {
-			loadInitialPage();
-		}
-		previousFilter = currentFilter;
-	});
-
 	// AC: @session-list-infinite-scroll ac-live-update — WebSocket handler
 	function handleAgentEvent(event: { event: string; data?: { session_id?: string; status?: string } }) {
 		if (event.event === 'agent_invocation') {
@@ -141,6 +213,7 @@
 			if (data?.status === 'started') {
 				// Always update total count immediately
 				total++;
+				unfilteredTotal++;
 
 				if (isAtTop) {
 					// User is at top — re-fetch page 1 to show the new session
@@ -191,7 +264,19 @@
 		const version = getProjectVersion();
 		const ready = isProjectInitialized();
 		if (!ready) return;
+		loadFilterOptions();
 		loadInitialPage();
+	});
+
+	// AC: @session-list-infinite-scroll ac-filter-reset — Reload when URL filter params change
+	let previousFilterKey: string | undefined;
+	$effect(() => {
+		// Build a stable key from all filter params to detect changes
+		const key = `${filterStatus}|${filterAgentId}|${filterAgentType}|${filterTrigger}|${filterDateRange}`;
+		if (previousFilterKey !== undefined && previousFilterKey !== key) {
+			loadInitialPage();
+		}
+		previousFilterKey = key;
 	});
 
 	// AC: @session-list-infinite-scroll ac-scroll-load — IntersectionObserver for sentinel
@@ -233,43 +318,25 @@
 </script>
 
 <div class="flex flex-col gap-4 p-6" bind:this={scrollContainer} onscroll={handleScroll}>
-	<div class="flex items-end justify-between gap-4">
-		<div>
-			<h1 class="text-2xl font-bold">Sessions</h1>
-			<!-- AC: @session-list-infinite-scroll ac-initial-load — Show count -->
-			{#if !loading && total > 0}
-				<p class="text-sm text-muted-foreground" data-testid="sessions-count">
-					{sessions.length} of {total} session{total === 1 ? '' : 's'}
-				</p>
-			{/if}
-		</div>
-
-		{#if !loading && total > 0}
-			<!-- AC: @session-list-infinite-scroll ac-filter-reset — Filter buttons reset list -->
-			<div class="flex gap-1" data-testid="trigger-filter">
-				<button
-					class="px-2.5 py-1 text-xs rounded-md transition-colors {triggerFilter === 'all' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}"
-					onclick={() => triggerFilter = 'all'}
-				>
-					All
-				</button>
-				<button
-					class="px-2.5 py-1 text-xs rounded-md transition-colors inline-flex items-center gap-1 {triggerFilter === 'manual' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}"
-					onclick={() => triggerFilter = 'manual'}
-				>
-					<Terminal class="size-3" />
-					Manual
-				</button>
-				<button
-					class="px-2.5 py-1 text-xs rounded-md transition-colors inline-flex items-center gap-1 {triggerFilter === 'dispatched' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-accent'}"
-					onclick={() => triggerFilter = 'dispatched'}
-				>
-					<Zap class="size-3" />
-					Dispatched
-				</button>
-			</div>
+	<div>
+		<h1 class="text-2xl font-bold">Sessions</h1>
+		<!-- AC: @session-list-infinite-scroll ac-initial-load — Show count -->
+		{#if !loading && total > 0 && !hasFilters}
+			<p class="text-sm text-muted-foreground" data-testid="sessions-count">
+				{sessions.length} of {total} session{total === 1 ? '' : 's'}
+			</p>
 		{/if}
 	</div>
+
+	<!-- AC: @session-filter-controls — Filter controls with URL state -->
+	{#if !loading || sessions.length > 0}
+		<SessionFilters
+			filteredTotal={total}
+			{unfilteredTotal}
+			agentIds={distinctAgentIds}
+			agentTypes={distinctAgentTypes}
+		/>
+	{/if}
 
 	{#if error}
 		<div class="bg-destructive/10 text-destructive p-4 rounded-lg" role="alert" data-testid="sessions-error">
@@ -299,10 +366,18 @@
 	{:else if sessions.length === 0 && total === 0}
 		<div class="flex flex-col items-center justify-center py-16" data-testid="sessions-empty">
 			<Activity class="size-12 text-muted-foreground/30 mb-4" />
-			<h2 class="text-lg font-medium text-muted-foreground mb-1">No sessions yet</h2>
+			<h2 class="text-lg font-medium text-muted-foreground mb-1">
+				{#if hasFilters}
+					No matching sessions
+				{:else}
+					No sessions yet
+				{/if}
+			</h2>
 			<p class="text-sm text-muted-foreground">
 				{#if isStaticMode()}
 					Session data is not available in static mode.
+				{:else if hasFilters}
+					Try adjusting your filters.
 				{:else}
 					Sessions are created when agents run tasks.
 				{/if}
