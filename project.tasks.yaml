@@ -85796,6 +85796,10 @@
   spec_ref: "@platform-renderer-trait"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #745. Fixed the codex auto-detect install-core test by blanking all
+    Claude detection env vars in the test override, preserving production detection priority while
+    restoring deterministic env isolation. AC coverage reviewed for the changed test path and CI
+    passed on the merged HEAD."
   depends_on: []
   context: []
   priority: 3
@@ -85805,6 +85809,7 @@
   created_at: 2026-03-10T07:53:25.296Z
   started_at: 2026-03-10T11:42:51.288Z
   submitted_at: 2026-03-10T11:43:58.435Z
+  completed_at: 2026-03-10T11:55:55.065Z
   notes:
     - _ulid: 01KKBS00AJ3F1H8ETPHSTZ2KE4
       created_at: 2026-03-10T11:44:24.914Z
@@ -85815,11 +85820,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T11:55:55.065Z
-  closed_reason: "Merged in PR #745. Fixed the codex auto-detect install-core test by blanking all
-    Claude detection env vars in the test override, preserving production detection priority while
-    restoring deterministic env isolation. AC coverage reviewed for the changed test path and CI
-    passed on the merged HEAD."
 - _ulid: 01KKBBS4SDEHGFVFT1D10851EB
   slugs: []
   title: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is detected'
@@ -85914,7 +85914,7 @@
     (these skills are managed by the plugin, not locally rendered, so drift detection does not
     apply). Update tests in tests/skill-rendering.test.ts.
   spec_ref: "@platform-renderer-trait"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85925,6 +85925,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-10T11:56:22.934Z
+  session_id: 01KKBS9HNSXX4DH5HDD0VWJYAN
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
