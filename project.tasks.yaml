@@ -85922,6 +85922,11 @@
   spec_ref: "@platform-renderer-trait"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #747 (commit c235f052b56431ae66fb85729f223d3c0045a1d2). Added explicit
+    plugin-provided handling to skill verify so plugin-managed core skills are surfaced instead of
+    falling through as drift/no-hash, updated output summaries, and verified the fix-cycle test now
+    creates a true plugin-provided-only scenario. AC coverage confirmed via behavioral tests for
+    @platform-renderer-trait ac-2 and current-head CI passing."
   depends_on: []
   context: []
   priority: 3
@@ -85931,6 +85936,7 @@
   created_at: 2026-03-10T07:53:37.938Z
   started_at: 2026-03-10T12:46:33.364Z
   submitted_at: 2026-03-10T12:49:36.500Z
+  completed_at: 2026-03-10T13:09:21.555Z
   notes:
     - _ulid: 01KKBSZZADM5Q8B2XGX3VGDM76
       created_at: 2026-03-10T12:01:52.462Z
@@ -85978,12 +85984,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T13:09:21.555Z
-  closed_reason: "Merged in PR #747 (commit c235f052b56431ae66fb85729f223d3c0045a1d2). Added explicit
-    plugin-provided handling to skill verify so plugin-managed core skills are surfaced instead of
-    falling through as drift/no-hash, updated output summaries, and verified the fix-cycle test now
-    creates a true plugin-provided-only scenario. AC coverage confirmed via behavioral tests for
-    @platform-renderer-trait ac-2 and current-head CI passing."
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
@@ -86064,6 +86064,16 @@
         with normal budget checks; existing non-active session → skip enforcement. Added test for
         the missing-metadata-with-budget scenario. All 56 budget tests pass, integration tests
         pass."
+      supersedes: null
+    - _ulid: 01KKBY7YERPTWPS8QTEW1MT2XJ
+      created_at: 2026-03-10T13:16:08.024Z
+      author: "@claude"
+      content: "Fix cycle 1 addressed: Verified commit 58018ac (narrowed stale session check) passes all
+        CI — 3/3 test shards + E2E + claude-review all green. Replied to MUST-FIX review comment
+        explaining the fix and resolved the thread. The condition `session && session.status \\!==
+        'active'` correctly: (1) falls through to normal budget checks when session metadata is
+        missing, (2) skips enforcement for completed/abandoned sessions, (3) enforces for active
+        sessions."
       supersedes: null
   todos: []
   automation: eligible
