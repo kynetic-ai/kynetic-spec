@@ -12,6 +12,9 @@
  * - @session-list-infinite-scroll ac-scroll-end: End of list indicator when all loaded
  * - @session-list-infinite-scroll ac-filter-reset: Filter change resets to page 1
  * - @session-list-infinite-scroll ac-live-update: WebSocket updates total and shows indicator
+ *
+ * Trait AC N/A:
+ * // AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state (triggerFilter), not URL query parameters. No URL mutations occur on filter change.
  */
 
 import { test, expect } from '../fixtures/test-base';
@@ -1035,12 +1038,13 @@ test.describe('Session History View', () => {
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Scroll down past the top threshold
+			// Scroll down past the top threshold — the real scroll container is
+			// the layout's <main class="overflow-auto">, not the page div
 			await page.evaluate(() => {
-				const container = document.querySelector('[data-testid="sessions-list"]')?.parentElement;
-				if (container) container.scrollTop = 500;
+				const main = document.querySelector('main.overflow-auto') as HTMLElement | null;
+				if (main) main.scrollTop = 500;
 			});
-			await page.waitForTimeout(100); // Let scroll handler fire
+			await page.waitForTimeout(200); // Let scroll handler fire
 
 			// Inject new session event while scrolled down
 			const injected = await page.evaluate(() => {
@@ -1111,12 +1115,12 @@ test.describe('Session History View', () => {
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Scroll down to trigger indicator behavior
+			// Scroll down to trigger indicator behavior — layout's <main> is the scroll container
 			await page.evaluate(() => {
-				const container = document.querySelector('[data-testid="sessions-list"]')?.parentElement;
-				if (container) container.scrollTop = 500;
+				const main = document.querySelector('main.overflow-auto') as HTMLElement | null;
+				if (main) main.scrollTop = 500;
 			});
-			await page.waitForTimeout(100);
+			await page.waitForTimeout(200);
 
 			// Inject event while scrolled
 			await page.evaluate(() => {

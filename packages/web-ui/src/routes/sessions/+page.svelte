@@ -6,7 +6,7 @@
   AC: @session-list-infinite-scroll ac-scroll-end — End of list indicator when all loaded.
   AC: @session-list-infinite-scroll ac-filter-reset — Filter change resets to page 1.
   AC: @session-list-infinite-scroll ac-live-update — WebSocket updates total and shows indicator.
-  AC: @ui-url-panel-state ac-4 — goto() for filter URL mutations.
+  AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state, not URL query parameters.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -48,7 +48,8 @@
 	// AC: @session-list-infinite-scroll ac-live-update — Track new sessions
 	let newSessionsAvailable = $state(0);
 	let isAtTop = $state(true);
-	let scrollContainer: HTMLDivElement | undefined = $state();
+	let pageRoot: HTMLDivElement | undefined = $state();
+	let scrollContainer: HTMLElement | undefined = $state();
 
 	// IntersectionObserver sentinel element
 	let sentinel: HTMLDivElement | undefined = $state();
@@ -216,7 +217,13 @@
 	});
 
 	// AC: @session-list-infinite-scroll ac-live-update — Subscribe to agent events
+	// AC: @session-list-infinite-scroll ac-live-update — Find the layout's <main> scroll container
 	onMount(() => {
+		// The actual scroll container is the layout's <main class="overflow-auto">,
+		// not the page's root div. Attach scroll listener there.
+		scrollContainer = pageRoot?.closest('main') ?? undefined;
+		scrollContainer?.addEventListener('scroll', handleScroll);
+
 		if (!isStaticMode()) {
 			subscribe(['agents']);
 			on('agents', handleAgentEvent);
@@ -224,6 +231,7 @@
 	});
 
 	onDestroy(() => {
+		scrollContainer?.removeEventListener('scroll', handleScroll);
 		if (!isStaticMode()) {
 			off('agents', handleAgentEvent);
 			unsubscribe(['agents']);
@@ -232,7 +240,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4 p-6" bind:this={scrollContainer} onscroll={handleScroll}>
+<div class="flex flex-col gap-4 p-6" bind:this={pageRoot}>
 	<div class="flex items-end justify-between gap-4">
 		<div>
 			<h1 class="text-2xl font-bold">Sessions</h1>
