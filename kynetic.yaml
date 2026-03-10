@@ -127,6 +127,9 @@ traits:
         given: command supports --force
         when: used in non-interactive environment
         then: operations require explicit --force flag
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KFDZSHFAP21C8TDCQ54Z1R0T
     slugs:
       - trait-filterable-list
