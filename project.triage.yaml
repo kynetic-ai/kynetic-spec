@@ -2722,13 +2722,14 @@ triage:
     item_snapshot: "Reflection: Improve task note readability by supporting filtered views for
       superseded history (for example latest-only and/or hide-superseded) to reduce stale guidance
       noise during implementation."
-    status: triaged
+    status: acted_on
     action: defer
     reasoning: Filtered note views nice-to-have, not urgent — current full output workable
     decided_by: "@claude"
     evidence_refs: []
     created_at: 2026-03-10T08:17:10.013Z
-    updated_at: 2026-03-10T08:17:10.030Z
+    updated_at: 2026-03-10T08:17:35.018Z
+    acted_at: 2026-03-10T08:17:34.991Z
   - _ulid: 01KKBD4GY981HDE9VBNQ38PW5Q
     inbox_ref: 01KJVP7VSXE38QW7TNTPSW4CNP
     item_snapshot: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
@@ -2740,10 +2741,10 @@ triage:
       tracking
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-10T08:17:10.089Z
-    updated_at: 2026-03-10T08:17:32.620Z
     acted_at: 2026-03-10T08:17:32.601Z
     result_ref: "@01KKBD55"
+    created_at: 2026-03-10T08:17:10.089Z
+    updated_at: 2026-03-10T08:17:32.620Z
   - _ulid: 01KKBD4H0FWTTAM74TKAB41SSZ
     inbox_ref: 01KJVP3S8TYHGHFHT4KZ1BQZ9C
     item_snapshot: "Workflow UX: allow kspec workflow show (and related workflow run commands where
