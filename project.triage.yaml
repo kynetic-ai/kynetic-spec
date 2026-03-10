@@ -2294,7 +2294,184 @@ triage:
       dispatch. No spec gap, runtime bug to fix.
     decided_by: "@claude"
     evidence_refs: []
-    created_at: 2026-03-08T05:04:13.707Z
-    updated_at: 2026-03-08T05:04:40.819Z
     acted_at: 2026-03-08T05:04:40.799Z
     result_ref: "@01KK5XAJ"
+    created_at: 2026-03-08T05:04:13.707Z
+    updated_at: 2026-03-08T05:04:40.819Z
+  - _ulid: 01KKBBRH8MT4VNF90KSJNPK1A6
+    inbox_ref: 01KJKY1H3C2SEQJ3ZAPSPXZP75
+    item_snapshot: "Reflection follow-up: kspec batch can fail during copy-back with ENOTEMPTY on
+      .kspec/sessions/<session-id> (observed while batching task start+note). The batch reports all
+      subcommands succeeded, but exits non-zero and leaves shadow worktree in a temporarily
+      broken/deleted-file state until manual recovery (e.g., git -C .kspec restore .). Improve batch
+      copy-back robustness for session blob directories and avoid failing the batch when payload
+      writes succeeded."
+    status: triaged
+    action: delete
+    reasoning: Fixed by in-memory WriteBuffer (commit 52f86b8f9) + sessions moved to .kspec-sessions/
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:08.628Z
+    updated_at: 2026-03-10T07:53:08.657Z
+  - _ulid: 01KKBBRHCAEZR3VKMBPY62YGYZ
+    inbox_ref: 01KJS6ESNC2EMH2K2ATJCV1CMR
+    item_snapshot: "kspec batch: item add + item set in same batch fails — newly created item slug not
+      resolvable until after shadow commit. Explore deferred slug resolution or two-phase batch
+      execution so items can be created and updated atomically."
+    status: triaged
+    action: delete
+    reasoning: Fixed by buffer-aware readFileBufferAware() in loadSpecFile (commit 2083d5fe3)
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:08.746Z
+    updated_at: 2026-03-10T07:53:08.767Z
+  - _ulid: 01KKBBRHF0M25PY8B74ETN0T8G
+    inbox_ref: 01KJTFVPPB46K87NGGA3Z44EFK
+    item_snapshot: "kspec batch item ac add silently drops items when shadow branch has concurrent
+      commits. Batch reports N/N succeeded but only last item survives due to AC numbering
+      collision. Workaround: add items individually or ensure no concurrent shadow writes. Needs
+      investigation into batch atomicity under concurrent shadow commits."
+    status: triaged
+    action: delete
+    reasoning: Retracted as invalid (commit 9728253fa); buffer-aware reads prevent the issue
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:08.832Z
+    updated_at: 2026-03-10T07:53:08.853Z
+  - _ulid: 01KKBBRHHPC2ACVQ4ZB2VZ6X71
+    inbox_ref: 01KJS9PR6ZKT6M25HGE716V01B
+    item_snapshot: "Bug: after agent.failed, task remains stuck in in_progress with no note.
+      invocation.ts should append a failure note and optionally reset task to pending so dispatch
+      can retry cleanly. Currently requires manual intervention to close out the task."
+    status: triaged
+    action: delete
+    reasoning: "Fixed: AGENT-FAIL note auto-appended + retry threshold blocks task (invocation.ts:530-551)"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:08.918Z
+    updated_at: 2026-03-10T07:53:08.945Z
+  - _ulid: 01KKBBRHMYR8RX133SQMSQ040A
+    inbox_ref: 01KKA99RAZF7NRTY4XF891HXJ3
+    item_snapshot: Session checkpoint hook fires for tasks owned by other sessions/agents. Should only
+      checkpoint tasks owned by the current session. Possible regression or spec gap.
+    status: triaged
+    action: delete
+    reasoning: "Fixed: session-scoped filtering in checkpoint.ts (PR #537)"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.022Z
+    updated_at: 2026-03-10T07:53:09.040Z
+  - _ulid: 01KKBBRHQVB99SFEGSHYDXKRKX
+    inbox_ref: 01KK3HRRVMQDEQP7NDRHAKEG8J
+    item_snapshot: Triage page (routes/triage/+page.svelte) still uses $app/stores instead of $app/state
+      — same filter dropdown reactivity bug as inbox page
+    status: triaged
+    action: delete
+    reasoning: "Fixed: $derived + goto() pattern (commit 55b1810ae)"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.115Z
+    updated_at: 2026-03-10T07:53:09.138Z
+  - _ulid: 01KKBBRHTAWZ4A2117WQN7YE7S
+    inbox_ref: 01KJG5A7Q8WZDHNTH9M600RZZ9
+    item_snapshot: "Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
+      (observed in codex session). Repro: with KSPEC_SESSION_ID set to an old session that has
+      budget.json started_this_cycle=max_per_cycle, 'kspec task start @ref' fails with 'Task budget
+      exhausted ... let iteration end naturally' even when not running ralph and no in-progress
+      tasks. Expected: budget guard should apply only during active ralph loop iteration context, or
+      stale/non-ralph session IDs should be ignored."
+    status: triaged
+    action: promote
+    reasoning: "Still valid: checkBudget() does not validate session is active — blocks legitimate work
+      with stale KSPEC_SESSION_ID"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.194Z
+    updated_at: 2026-03-10T07:53:09.212Z
+  - _ulid: 01KKBBRHWKTJMG5YSCKEZH34TY
+    inbox_ref: 01KJGA18V9VY86ZFAVJ9CP2PNA
+    item_snapshot: >-
+      Diagnose skill verify drift/no-hash for plugin-provided core skills.
+
+
+      Observed behavior:
+
+      - kspec skill verify reports codex statuses as drifted/no-hash for help, observations, triage,
+      reflect, triage-inbox, writing-specs.
+
+      - kspec skill diff reports plugin-provided (no local render to diff).
+
+      - Rendered skill files exist under .agents/skills.
+
+
+      Investigate:
+
+      - render-hash semantics in .kspec/skills for plugin-provided skills
+
+      - plugin-provided status handling in skill verify/status/diff paths
+
+      - whether this is expected behavior or a bug in drift detection
+    status: triaged
+    action: promote
+    reasoning: "Still valid: skill verify switch missing plugin-provided case in skill-diff.ts"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.267Z
+    updated_at: 2026-03-10T07:53:09.285Z
+  - _ulid: 01KKBBRHYST9FVS44128Y72KE3
+    inbox_ref: 01KJS1XVH2AV1JX8X1QT9RMFC3
+    item_snapshot: kspec commands should support manifest discovery from nested task worktrees (or
+      accept explicit --project-root). Running kspec validate/note/submit from isolated worktrees
+      (e.g., /tmp task worktrees) fails with No kspec manifest found. KSPEC_SPEC_DIR env var exists
+      for batch mode but general CLI commands dont use it. Reported from imgen project task-work
+      automation.
+    status: triaged
+    action: defer
+    reasoning: Mechanism looks correct in code; could not reproduce. Defer until next confirmed occurrence
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.337Z
+    updated_at: 2026-03-10T07:53:09.356Z
+  - _ulid: 01KKBBRJ1A4MVJJTV65ZJB11YX
+    inbox_ref: 01KK6BVYGH1PCV2N3Q2NZGAX5W
+    item_snapshot: kspec shadow repair removes the .kspec worktree before verifying it can recreate it.
+      If git is not on PATH (e.g. spawn git ENOENT), repair leaves the project in a worse state than
+      before — worktree gone, branch exists but disconnected. Repair should almost never remove the
+      worktree; instead it should try to re-link or fix in place. If removal is truly necessary,
+      verify git is available before removing. Observed in kynetic-spec-ui when repair failed with
+      'spawn git ENOENT' and left .kspec missing entirely.
+    status: triaged
+    action: promote
+    reasoning: "Still valid: repairShadow() calls fs.rm before git worktree add — narrow but real data
+      loss window. Needs verify-before-delete pattern"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.418Z
+    updated_at: 2026-03-10T07:53:09.439Z
+  - _ulid: 01KKBBRJ3VXX39KZPZ2Q6K3M0N
+    inbox_ref: 01KJN378XQQETSAS8DKWAQ7F0F
+    item_snapshot: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
+      detected' fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash
+      test). Likely related to completed task @01KJEWKG — may need test update to match new codex
+      config behavior."
+    status: triaged
+    action: promote
+    reasoning: "Still failing: enhanced-setup.test.ts codex config not created. Related to codex
+      detection priority"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.499Z
+    updated_at: 2026-03-10T07:53:09.519Z
+  - _ulid: 01KKBBRJ66VR6K02MHTQ2Q2XC3
+    inbox_ref: 01KKAK7EYPM7ZSZWBH9ZZQ4JVK
+    item_snapshot: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform
+      when CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated
+      to daemon isolation."
+    status: triaged
+    action: promote
+    reasoning: "Still failing: agent detection checks CLAUDECODE before CODEX_THREAD_ID, env override
+      insufficient"
+    decided_by: "@claude"
+    evidence_refs: []
+    created_at: 2026-03-10T07:53:09.574Z
+    updated_at: 2026-03-10T07:53:09.593Z
