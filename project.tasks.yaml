@@ -85052,7 +85052,8 @@
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-markdown-rendering-trait"
   context: []
   priority: 1
   tags:
