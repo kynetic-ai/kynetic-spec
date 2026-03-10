@@ -84562,7 +84562,7 @@
   type: task
   spec_ref: "@session-list-pagination-api"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-summary-cache"
@@ -84615,6 +84615,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T13:40:20.091Z
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
