@@ -619,6 +619,105 @@ describe("AC-7: kspec agent run --adapter override", () => {
   });
 });
 
+// ─── prompt_template support in one-shot mode ────────────────────────────────
+
+describe("agent run --task respects prompt_template", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-run-tpl-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  function setupProject(agents: Agent[]): void {
+    initGitRepo(testDir);
+    const fs_sync = require("node:fs");
+    const path_sync = require("node:path");
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        agents: agents.map((a) => ({
+          _ulid: a._ulid,
+          id: a.id,
+          name: a.name,
+          dispatch: [],
+          concurrency: a.concurrency,
+          adapter: a.adapter,
+          auto_approve: false,
+          ...(a.prompt_template && { prompt_template: a.prompt_template }),
+        })),
+      }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+  }
+
+  it("should use prompt_template when --task is provided and no explicit prompt", () => {
+    const agent = makeTestAgent({
+      id: "review-agent",
+      prompt_template: "Review task {{task_ref}} with trigger {{trigger}}",
+    });
+    setupProject([agent]);
+
+    const result = kspec("agent run review-agent --task @TASK123 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.prompt).toContain("Review task @TASK123 with trigger manual");
+  });
+
+  it("should fall back to default prompt when no prompt_template is defined", () => {
+    const agent = makeTestAgent({ id: "plain-agent" });
+    setupProject([agent]);
+
+    const result = kspec("agent run plain-agent --task @TASK456 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.prompt).toContain("Work on task @TASK456 according to your configuration and skills.");
+  });
+
+  it("should prefer explicit prompt over prompt_template", () => {
+    const agent = makeTestAgent({
+      id: "override-agent",
+      prompt_template: "Template prompt for {{task_ref}}",
+    });
+    setupProject([agent]);
+
+    const result = kspec("agent run override-agent 'My custom prompt' --task @TASK789 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.prompt).toContain("My custom prompt");
+    expect(data.prompt).not.toContain("Template prompt for");
+  });
+
+  it("should interpolate review_url as empty string for manual runs", () => {
+    const agent = makeTestAgent({
+      id: "url-agent",
+      prompt_template: "Review {{task_ref}} at {{review_url}} end",
+    });
+    setupProject([agent]);
+
+    const result = kspec("agent run url-agent --task @TASK000 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    // review_url should resolve to empty string, not remain as {{review_url}}
+    expect(data.prompt).toContain("Review @TASK000 at  end");
+  });
+});
+
 // ─── AC-2: One-shot invocation with task binding ─────────────────────────────
 
 // AC: @cli-agent-commands ac-2
