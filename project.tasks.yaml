@@ -83993,6 +83993,15 @@
         do not exercise the missing-globalThis.crypto path, so they do not prove the polyfill
         prevents ReferenceError."
       supersedes: null
+    - _ulid: 01KKAP5EAHGEQ1H31XZMT5BCDH
+      created_at: 2026-03-10T01:35:42.929Z
+      author: "@claude"
+      content: "Fix cycle 2 addressed: Replaced ac-4 tests with behavioral tests that exercise the
+        missing-crypto path. Tests now (1) delete globalThis.crypto, (2) verify it's undefined, (3)
+        re-run polyfill logic, (4) verify crypto.randomUUID() works after polyfill. Second test
+        proves the exact failure mode: calling randomUUID() without polyfill throws, with polyfill
+        it succeeds. All 55 cli-agent-commands tests pass, shard1 (1335 tests) green."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
