@@ -85289,7 +85289,8 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-spec-completeness-policy"
   context: []
   priority: 3
   tags: []
@@ -85310,7 +85311,8 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-spec-completeness-policy"
   context: []
   priority: 3
   tags: []
@@ -85331,7 +85333,8 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-spec-completeness-policy"
   context: []
   priority: 3
   tags: []
@@ -85352,7 +85355,8 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-spec-completeness-policy"
   context: []
   priority: 3
   tags: []
@@ -85373,7 +85377,8 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-spec-completeness-policy"
   context: []
   priority: 3
   tags: []
@@ -85394,7 +85399,13 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-core-primitives-ac-backfill"
+    - "@implement-schema-and-structure-ac-backfill"
+    - "@implement-cli-ac-backfill"
+    - "@implement-task-system-ac-backfill"
+    - "@implement-meta-and-shadow-branch-ac-backfill"
+    - "@task-shadow-branch-ac-backfill"
   context: []
   priority: 3
   tags: []
@@ -85427,15 +85438,22 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
-- title: "Implement: Shadow Branch AC Backfill"
+- _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
+  slugs:
+    - task-shadow-branch-ac-backfill
+  title: "Implement: Shadow Branch AC Backfill"
   type: task
   spec_ref: "@shadow-ac-backfill"
   derivation: auto
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@implement-spec-completeness-policy"
+  context: []
   priority: 3
-  slugs:
-    - task-shadow-branch-ac-backfill
   tags: []
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-03-10T07:06:53.000Z
   notes:
     - _ulid: 01KKB93TP8WHJMPYGH18YTENP6
       created_at: 2026-03-10T07:06:53.000Z
@@ -85458,10 +85476,4 @@
         - ac-testable: Given Each newly added AC, when It is reviewed, then It follows
         given/when/then format with concrete, observable outcomes
       supersedes: null
-  _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-03-10T07:06:53.000Z
   todos: []
