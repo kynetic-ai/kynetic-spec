@@ -84115,7 +84115,9 @@
     - infra
     - cli
   vcs_refs: []
+  session_id: 01KKAK8NRVPV1G4FR2GGAEQ9HY
   created_at: 2026-03-10T00:20:53.439Z
+  started_at: 2026-03-10T00:50:49.833Z
   notes:
     - _ulid: 01KKAHWRN13YXRYTM9KH4C6HWM
       created_at: 2026-03-10T00:21:04.289Z
@@ -84129,10 +84131,33 @@
         wrapper. Convention update needed: agents should use this script instead of npx vitest or
         npm test directly."
       supersedes: null
+    - _ulid: 01KKAMBXXM0R5A32YD76BTZWHN
+      created_at: 2026-03-10T01:04:18.356Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+        - Created scripts/test.cjs: test runner that checks node_modules + dist/cli/index.js, fixes
+        gaps automatically, then runs vitest with pass-through args
+
+        - Added npm run test:runner script for convenient invocation
+
+        - Updated tests/global-setup.ts to respect SKIP_BUILD=1 env var (avoids redundant builds
+        when test runner already ensured build)
+
+        - Extensible via preTestHooks/postTestHooks arrays
+
+        - Supports --dry-run to check environment without running tests
+
+        - Supports --shard and vitest filters as pass-through args
+
+        - Added 6 tests covering AC coverage for ac-5 and ac-6
+
+        - All tests pass. 3 pre-existing failures on main (codex platform detection, web-ui bundle)
+        confirmed unrelated.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T00:50:49.833Z
-  session_id: 01KKAK8NRVPV1G4FR2GGAEQ9HY
 - _ulid: 01KKAJ7N0ZD6WEDAAX1EPRHKZB
   slugs:
     - task-fix-modal-ref-cleanup
