@@ -86234,7 +86234,7 @@
     src/cli/commands/validate.ts for any console.log calls that bypass the JSON output mode. Add a
     test that pipes validate --json output through JSON.parse to catch regressions.
   spec_ref: "@trait-json-output"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86266,6 +86266,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T13:24:10.097Z
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
   slugs: []
   title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
