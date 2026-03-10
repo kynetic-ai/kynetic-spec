@@ -84500,3 +84500,198 @@
       supersedes: null
   todos: []
   automation: eligible
+- _ulid: 01KKB3PGRCT3XKTY3MVBVKTM87
+  slugs:
+    - implement-session-list-pagination-api
+  title: Implement Session List Pagination API
+  type: task
+  spec_ref: "@session-list-pagination-api"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:13.964Z
+  notes:
+    - _ulid: 01KKB3PGRCW197BCZK8YS6ZE61
+      created_at: 2026-03-10T05:32:13.964Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Follow the existing tasks endpoint pattern in dist/daemon/routes/tasks.ts.
+        Use Elysia query validation with t.Optional for all filter params.
+        Multi-value params use t.Union([t.String(), t.Array(t.String())]).
+        The expensive part is reading 700+ session.yaml files — consider a
+        metadata cache that invalidates on directory mtime changes.
+  todos: []
+- _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
+  slugs:
+    - implement-session-summary-cache
+  title: Implement Session Summary Cache
+  type: task
+  spec_ref: "@session-summary-cache"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:14.534Z
+  notes:
+    - _ulid: 01KKB3PHA6F3AFZ9F6JQ2TQ3PX
+      created_at: 2026-03-10T05:32:14.534Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Store cache in memory on the daemon. Use Map<sessionId, CachedSummary>.
+        On startup, list session directories and read metadata in parallel.
+        For stats, scan events.jsonl line count (fast) and grep for iteration
+        markers. Only active sessions need stats refresh.
+  todos: []
+- _ulid: 01KKB3PHV6B1KRKKKHPVAZJZTR
+  slugs:
+    - implement-session-list-infinite-scroll-ui
+  title: Implement Session List Infinite Scroll UI
+  type: task
+  spec_ref: "@session-list-infinite-scroll"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:15.078Z
+  notes:
+    - _ulid: 01KKB3PHV7HT3R85BJ2WVXWS7G
+      created_at: 2026-03-10T05:32:15.079Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Use IntersectionObserver on a sentinel element at the bottom of the
+        list. Track offset/limit/total in component state. Reset offset to 0
+        when any filter changes. Append new pages to existing items array.
+        WebSocket updates use the existing global subscription — no new
+        connection management needed per-component.
+  todos: []
+- _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
+  slugs:
+    - implement-session-filter-controls
+  title: Implement Session Filter Controls
+  type: task
+  spec_ref: "@session-filter-controls"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:15.615Z
+  notes:
+    - _ulid: 01KKB3PJBZ7MFYQ6WY8HHE1G99
+      created_at: 2026-03-10T05:32:15.615Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        Follow the TaskFilters.svelte pattern. Use goto() for URL state
+        (never replaceState/pushState directly — see SvelteKit URL state
+        management notes). Populate filter options dynamically from the
+        distinct values in the session data (unique agent types, agent IDs).
+  todos: []
+- _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
+  slugs:
+    - implement-session-cli-unified-filtering
+  title: Implement Session CLI Unified Filtering
+  type: task
+  spec_ref: "@session-cli-unified-filtering"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:16.165Z
+  notes:
+    - _ulid: 01KKB3PJX5W3ZEBX5CG34Y49HD
+      created_at: 2026-03-10T05:32:16.165Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        The CLI already has --status, --agent (agent_type), --since. Add
+        --agent-id, --trigger, --task. The --agent flag maps to agent_type
+        for backward compat. Share filter logic between CLI and daemon where
+        possible — extract to a shared filterSessions() function.
+  todos: []
+- _ulid: 01KKB3PKERP55BQ8GMEKS472ER
+  slugs:
+    - implement-task-and-spec-session-context
+  title: Implement Task and Spec Session Context
+  type: task
+  spec_ref: "@task-spec-session-context"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:16.728Z
+  notes:
+    - _ulid: 01KKB3PKERJB48MA2GFKAA03PS
+      created_at: 2026-03-10T05:32:16.728Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        For task filtering, a direct task_id match on session metadata suffices.
+        For spec filtering, use the existing AlignmentIndex to resolve spec →
+        tasks, then filter sessions by those task IDs. Add a "Sessions" section
+        to TaskDetail and ItemDetail components. The dedicated sub-resource
+        endpoints (/tasks/:ref/sessions, /items/:ref/sessions) are simpler
+        than overloading the main sessions endpoint with spec resolution logic.
+  todos: []
+- title: Implement Session Text Search
+  type: task
+  spec_ref: "@session-text-search"
+  plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+  priority: 3
+  slugs:
+    - implement-session-text-search
+  tags: []
+  depends_on: []
+  notes:
+    - _ulid: 01KKB3PKZZTGCX16EXAAF8DY6Y
+      created_at: 2026-03-10T05:32:17.279Z
+      author: "@claude"
+      content: |
+        Implementation notes:
+
+        No index needed if metadata filters narrow scope first. The existing
+        CLI search already does case-insensitive substring matching on event
+        payloads. The key optimization is filtering sessions by metadata
+        (status, since, agent, task) BEFORE scanning events.jsonl. For 7-day
+        windows this typically means scanning 20-50 sessions instead of 700+.
+        The daemon endpoint can stream results or use a reasonable timeout.
+  _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T05:32:17.278Z
+  todos: []

@@ -1255,6 +1255,72 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KKB3PGBGX289R1JWSKP66683
+        slugs:
+          - session-cli-unified-filtering
+        title: Session CLI Unified Filtering
+        type: requirement
+        tags: []
+        description: |
+          Align CLI session log commands with the daemon API filtering
+          capabilities. Currently the CLI has --status, --agent, --since
+          but lacks --agent-id, --trigger, --task, and combined filters.
+          Unify the filter vocabulary so CLI and UI use the same fields.
+        acceptance_criteria:
+          - id: ac-agent-id-filter
+            given: |
+              Sessions exist with different agent_id values
+            when: |
+              kspec session log list --agent-id worker is run
+            then: |
+              Only sessions with agent_id "worker" are listed
+          - id: ac-trigger-filter
+            given: |
+              Sessions exist with various triggers
+            when: |
+              kspec session log list --trigger manual is run
+            then: |
+              Only sessions with matching trigger are listed.
+              --trigger dispatched matches all task.* triggers.
+          - id: ac-task-filter
+            given: |
+              Sessions exist with task_id references
+            when: |
+              kspec session log list --task @task-slug is run
+            then: |
+              Only sessions linked to that task are listed
+          - id: ac-backward-compat
+            given: |
+              The existing --agent flag is used
+            when: |
+              kspec session log list --agent claude-agent-acp is run
+            then: |
+              --agent continues to filter by agent_type as before.
+              Both --agent and --agent-type are accepted as synonyms.
+          - id: ac-combined
+            given: |
+              Multiple filters are specified
+            when: |
+              kspec session log list --status completed --agent-id worker --since 7d is run
+            then: |
+              All filters are AND'd together
+          - id: ac-json-output
+            given: |
+              Any filter combination is applied
+            when: |
+              --json flag is used
+            then: |
+              Output includes the filter criteria and filtered results in
+              structured JSON matching the daemon API response shape
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-filterable-list"
+          - "@trait-json-output"
+        notes: []
+        created: 2026-03-10T05:32:13.552Z
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z
