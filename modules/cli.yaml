@@ -7864,11 +7864,6 @@ requirements:
         when: the test is authored or modified
         then: setup uses pre-seeded YAML fixture files written directly to the temp dir instead of CLI
           subprocess loops
-      - id: ac-2
-        given: a test asserts on the existence of build artifacts (e.g. dist/web-ui/)
-        when: the build artifact does not exist at test time
-        then: the test skips gracefully with a diagnostic message rather than failing with an opaque
-          assertion error
       - id: ac-3
         given: WebSocket or async event tests use polling/waitFor helpers
         when: the poll timeout is set
