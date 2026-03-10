@@ -87930,6 +87930,7 @@
       author: "@claude"
       content: See plan @plan-iterative-plan-editing for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
   slugs:
     - implement-plan-import-into-existing-plan
@@ -87952,6 +87953,7 @@
       author: "@claude"
       content: See plan @plan-iterative-plan-editing for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
   slugs:
     - implement-plan-import-content-only-storage
@@ -87973,25 +87975,27 @@
       author: "@claude"
       content: See plan @plan-iterative-plan-editing for implementation notes
   todos: []
-- title: Implement Enhanced Plan Derivation
+  automation: eligible
+- _ulid: 01KKCYMET3QGYY364J00V0AQZJ
+  slugs:
+    - implement-enhanced-plan-derivation
+  title: Implement Enhanced Plan Derivation
   type: task
   spec_ref: "@plan-derive-enhanced"
   plan_ref: "@plan-iterative-plan-editing"
-  priority: 3
-  slugs:
-    - implement-enhanced-plan-derivation
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@implement-plan-import-content-only-storage"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-10T22:42:12.419Z
   notes:
     - _ulid: 01KKCYMET33J4X0Q2MQRCJQQAW
       created_at: 2026-03-10T22:42:12.419Z
       author: "@claude"
       content: See plan @plan-iterative-plan-editing for implementation notes
-  _ulid: 01KKCYMET3QGYY364J00V0AQZJ
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-03-10T22:42:12.419Z
   todos: []
+  automation: eligible
