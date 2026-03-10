@@ -84529,6 +84529,7 @@
         The expensive part is reading 700+ session.yaml files — consider a
         metadata cache that invalidates on directory mtime changes.
   todos: []
+  automation: eligible
 - _ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
   slugs:
     - implement-session-summary-cache
