@@ -1647,7 +1647,8 @@ requirements:
       after dismissal.
     depends_on: []
     implements: []
-    relates_to: []
+    relates_to:
+      - "@web-dashboard"
     tests: []
     traits: []
     notes: []
