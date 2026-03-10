@@ -552,13 +552,14 @@ test.describe('Task Board (Kanban)', () => {
 		// URL should NOT have ?ref= param
 		expect(page.url()).not.toContain('ref=');
 
-		// Modal should stay closed (not reopen from stale URL param)
-		await page.waitForTimeout(500);
+		// Modal should stay closed — verify component state was fully cleared
+		// and the reactive effect watching ?ref= does not reopen the modal
+		await page.waitForTimeout(1000);
 		await expect(modal).not.toBeVisible();
 	});
 
 	// AC: @ui-task-board ac-7
-	test('closing detail modal opened via URL param removes ?ref= from URL', async ({ page, daemon }) => {
+	test('closing detail modal opened via URL param removes ?ref= and stays closed', async ({ page, daemon }) => {
 		// Navigate directly with ?ref= param to open modal
 		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');
 
@@ -573,9 +574,32 @@ test.describe('Task Board (Kanban)', () => {
 		// URL should no longer contain ?ref=
 		expect(page.url()).not.toContain('ref=');
 
-		// Modal should stay closed
-		await page.waitForTimeout(500);
+		// Modal should stay closed — component state (selectedTaskRef, modalOpen)
+		// must be cleared so the reactive effect doesn't reopen
+		await page.waitForTimeout(1000);
 		await expect(modal).not.toBeVisible();
+	});
+
+	// AC: @ui-task-board ac-7
+	test('can reopen same task after closing modal opened via URL param', async ({ page, daemon }) => {
+		// Open modal via URL param
+		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');
+
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Close modal
+		await page.keyboard.press('Escape');
+		await expect(modal).not.toBeVisible();
+
+		// Click the same task card to reopen — verifies lastProcessedRef was reset
+		const card = page.locator('[data-task-id="01KG0RR8CB8N4YGP991WD7XS9R"]');
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should reopen successfully
+		await expect(modal).toBeVisible();
+		await expect(page.getByTestId('task-detail-title')).toBeVisible();
 	});
 
 	// View toggle navigation

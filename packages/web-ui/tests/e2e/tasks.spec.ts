@@ -474,13 +474,14 @@ test.describe('Tasks View', () => {
       // URL should NOT have ?ref= param
       expect(page.url()).not.toContain('ref=');
 
-      // Modal should stay closed (not reopen from stale URL param)
-      await page.waitForTimeout(500);
+      // Modal should stay closed — component state must be fully cleared
+      // so the reactive effect watching ?ref= does not reopen the modal
+      await page.waitForTimeout(1000);
       await expect(detailPanel).not.toBeVisible();
     });
 
     // AC: @ui-task-board ac-7
-    test('closing task detail opened via URL param removes ?ref= from URL', async ({
+    test('closing task detail opened via URL param removes ?ref= and stays closed', async ({
       page,
       daemon,
     }) => {
@@ -498,8 +499,9 @@ test.describe('Tasks View', () => {
       // URL should no longer have ?ref=
       expect(page.url()).not.toContain('ref=');
 
-      // Modal should stay closed
-      await page.waitForTimeout(500);
+      // Modal should stay closed — component state (dialogOpen, panelTask,
+      // lastProcessedRef) must be cleared so reactive effects don't reopen
+      await page.waitForTimeout(1000);
       await expect(detailPanel).not.toBeVisible();
     });
   });

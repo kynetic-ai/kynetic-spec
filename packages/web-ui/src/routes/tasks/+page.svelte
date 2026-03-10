@@ -3,6 +3,7 @@
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
+	import { replaceState } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
 	import TaskFilters from '$lib/components/TaskFilters.svelte';
@@ -117,10 +118,10 @@
 			panelTask = null;
 			panelError = '';
 			lastProcessedRef = '';
-			const url = new URL(window.location.href);
+			const url = new URL($page.url);
 			if (url.searchParams.has('ref')) {
 				url.searchParams.delete('ref');
-				window.history.pushState({}, '', url);
+				replaceState(url, {});
 			}
 		}
 	});
