@@ -449,6 +449,61 @@ test.describe('Tasks View', () => {
     });
   });
 
+  test.describe('Modal URL Cleanup', () => {
+    // AC: @ui-task-board ac-7
+    test('closing task detail dialog removes ?ref= query param from URL', async ({
+      page,
+      daemon,
+    }) => {
+      await page.goto('/tasks');
+
+      // Wait for task list to load
+      const taskItem = page.getByTestId('task-list-item').first();
+      await expect(taskItem).toBeVisible();
+
+      // Click task to open dialog
+      await taskItem.click();
+
+      const detailPanel = page.getByTestId('task-detail-panel');
+      await expect(detailPanel).toBeVisible();
+
+      // Close dialog by pressing Escape
+      await page.keyboard.press('Escape');
+      await expect(detailPanel).not.toBeVisible();
+
+      // URL should NOT have ?ref= param
+      expect(page.url()).not.toContain('ref=');
+
+      // Modal should stay closed (not reopen from stale URL param)
+      await page.waitForTimeout(500);
+      await expect(detailPanel).not.toBeVisible();
+    });
+
+    // AC: @ui-task-board ac-7
+    test('closing task detail opened via URL param removes ?ref= from URL', async ({
+      page,
+      daemon,
+    }) => {
+      // Navigate directly with ?ref= to open the modal
+      await page.goto('/tasks?ref=01KG0RR8CB8N4YGP991WD7XS9R');
+
+      // Dialog should open
+      const detailPanel = page.getByTestId('task-detail-panel');
+      await expect(detailPanel).toBeVisible();
+
+      // Close dialog by pressing Escape
+      await page.keyboard.press('Escape');
+      await expect(detailPanel).not.toBeVisible();
+
+      // URL should no longer have ?ref=
+      expect(page.url()).not.toContain('ref=');
+
+      // Modal should stay closed
+      await page.waitForTimeout(500);
+      await expect(detailPanel).not.toBeVisible();
+    });
+  });
+
   test.describe('Responsive Layout', () => {
     // AC: @web-dashboard ac-26
     test('adapts to mobile viewport', async ({ page, daemon }) => {

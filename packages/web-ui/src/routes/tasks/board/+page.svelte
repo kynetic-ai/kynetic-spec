@@ -91,6 +91,18 @@
 		}
 	});
 
+	// AC: @ui-task-board ac-7 — Clear URL param when modal closes
+	$effect(() => {
+		if (!modalOpen) {
+			lastProcessedRef = '';
+			const url = new URL(window.location.href);
+			if (url.searchParams.has('ref')) {
+				url.searchParams.delete('ref');
+				window.history.pushState({}, '', url);
+			}
+		}
+	});
+
 	async function loadBoard() {
 		loading = true;
 		error = '';

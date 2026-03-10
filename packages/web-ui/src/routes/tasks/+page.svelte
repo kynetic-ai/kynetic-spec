@@ -111,12 +111,17 @@
 		loadTasks();
 	}
 
-	// Reset panel state when dialog closes
+	// AC: @ui-task-board ac-7 — Reset panel state and clear URL param when dialog closes
 	$effect(() => {
 		if (!dialogOpen) {
 			panelTask = null;
 			panelError = '';
 			lastProcessedRef = '';
+			const url = new URL(window.location.href);
+			if (url.searchParams.has('ref')) {
+				url.searchParams.delete('ref');
+				window.history.pushState({}, '', url);
+			}
 		}
 	});
 
