@@ -86983,7 +86983,7 @@
     Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix
     in src/cli/commands/item.ts. Consider backward compatibility.
   spec_ref: "@trait-confirmation-prompt"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86993,7 +86993,7 @@
   session_id: 01KKCGHMSH2XDNA2ATKGZJFST1
   created_at: 2026-03-10T08:18:22.055Z
   started_at: 2026-03-10T19:05:46.954Z
-  submitted_at: 2026-03-10T18:02:56.541Z
+  submitted_at: 2026-03-10T19:05:50.827Z
   notes:
     - _ulid: 01KKCDZA4YHXHYK95XAEZB9AJC
       created_at: 2026-03-10T17:51:02.302Z
