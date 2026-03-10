@@ -85914,7 +85914,7 @@
     (these skills are managed by the plugin, not locally rendered, so drift detection does not
     apply). Update tests in tests/skill-rendering.test.ts.
   spec_ref: "@platform-renderer-trait"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -85944,6 +85944,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T12:02:05.795Z
 - _ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
   slugs: []
   title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
