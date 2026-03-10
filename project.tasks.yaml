@@ -85719,9 +85719,17 @@
   title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
     validate -"
   type: task
-  description: "Reflection: Harden machine-readable output contracts for JSON commands (especially
-    'kspec validate --json') so output is strict JSON with no trailing text, enabling reliable
-    jq-based automation."
+  description: >-
+    Harden kspec validate --json to output strict JSON with no trailing text.
+
+
+    Current behavior: validate --json may append human-readable summary text after the JSON object,
+    breaking jq pipelines and programmatic consumers.
+
+
+    Fix: Ensure all output after the opening { goes through the JSON formatter. Check
+    src/cli/commands/validate.ts for any console.log calls that bypass the JSON output mode. Add a
+    test that pipes validate --json output through JSON.parse to catch regressions.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85738,12 +85746,18 @@
   title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
     referenc
   type: task
-  description: When running `kspec setup` or `kspec init --setup`, automatically install default
-    workflows referenced in core skills (e.g. `session-reflect`, `session-reflect-loop`,
-    `task-work-session`, `local-review`, etc). Currently these workflows are referenced in core
-    skill docs but not installed by default, causing `kspec workflow start @session-reflect` to fail
-    on a fresh project. They should be bundled and installed the same way core skills are via
-    `install-core`.
+  description: >-
+    Auto-install default workflows during kspec setup / kspec init --setup.
+
+
+    Current behavior: Core skills reference workflows (session-reflect, session-reflect-loop,
+    task-work-session, local-review, etc.) but these workflows are not installed by default. Running
+    kspec workflow start @session-reflect fails on a fresh project.
+
+
+    Fix: Bundle default workflow definitions in templates/workflows/ (or similar). During setup,
+    install them the same way core skills are installed via install-core. Add idempotent check to
+    skip already-installed workflows. Update tests in tests/enhanced-setup.test.ts.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85760,9 +85774,17 @@
   title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
     to targ"
   type: task
-  description: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
-    change only to targeted item. Needed when bulk-updating many specs in scripts — currently
-    requires yes | workaround which breaks kspec batch."
+  description: >-
+    Add --no-cascade flag to kspec item set to skip child status cascade prompt.
+
+
+    Current behavior: When updating a parent item status, kspec prompts to cascade the change to
+    children. This blocks batch/scripted usage (yes | workaround breaks kspec batch).
+
+
+    Fix: Add --no-cascade boolean flag to the item set command in src/cli/commands/item.ts. When
+    set, skip the cascade confirmation and apply change only to the targeted item. Update batch
+    commands list if needed.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85779,9 +85801,18 @@
   title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
     comments and v"
   type: task
-  description: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
-    comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec. Surface
-    as completeness warnings. Catches typos like @alignment-validation-warnings before review."
+  description: >-
+    Add AC annotation validation to kspec validate.
+
+
+    New validation rule: scan test files for // AC: @slug ac-N comments and verify (1) @slug
+    resolves to a real spec item or trait, (2) ac-N exists on that item. Surface mismatches as
+    completeness warnings.
+
+
+    This catches typos in AC annotations before they reach PR review. Implement in
+    src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
+    infrastructure (scanTestCoverage) already exists — extend it to validate references.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85798,10 +85829,18 @@
   title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
     which are"
   type: task
-  description: 'Fix kspec item list --json output structure: currently returns nested [items, count]
-    pairs which are difficult to parse programmatically. Should return flat { "items": [...],
-    "total": N } shape consistent with other JSON commands. Check for existing consumers before
-    changing.'
+  description: >-
+    Fix kspec item list --json output to return a flat { items: [...], total: N } structure.
+
+
+    Current behavior: Returns nested [items, count] pairs which are difficult to parse
+    programmatically.
+
+
+    Fix: Update the JSON formatter in the item list command (src/cli/commands/item.ts) to output {
+    items: [...], total: N }. Check for existing consumers (batch, tests, agents) before changing to
+    avoid breaking them. This is a breaking change to the JSON output contract — consider if a
+    --format flag or version header is needed.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85818,10 +85857,19 @@
   title: "Alignment status calculation should treat needs_work and pending_review as active work
     states (maps "
   type: task
-  description: Alignment status calculation should treat needs_work and pending_review as active work
-    states (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
-    @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
-    task.
+  description: >-
+    Update alignment status calculation to treat needs_work and pending_review as active work
+    states.
+
+
+    Current behavior: Alignment maps these task states to unexpected spec statuses, causing
+    misleading alignment warnings.
+
+
+    Fix: In the alignment calculation (likely src/parser/validate.ts or src/parser/alignment.ts),
+    map needs_work and pending_review task states to in_progress expected spec status. Was
+    prototyped in a previous fix cycle but reverted as out-of-scope. Standalone change with test
+    updates.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85838,10 +85886,18 @@
   title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
     SKILL.md, the"
   type: task
-  description: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
-    SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
-    Currently agents don't know this step exists and users have to remind them. Could be a post-step
-    in task-work or a convention in AGENTS.md."
+  description: >-
+    Document the skill update workflow so agents know to run kspec skill render after modifying
+    SKILL.md files.
+
+
+    Current gap: Agents modify skill source files but do not know they need to regenerate rendered
+    output. Users must manually remind them.
+
+
+    Fix: Add a step to the task-work skill (templates/skills/task-work.md) or a convention in
+    AGENTS.md: if task modifies any file in templates/skills/ or .kspec/skills/, run kspec skill
+    render and commit the rendered output. Small documentation change.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85879,11 +85935,18 @@
   title: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores agent
     prompt_te"
   type: task
-  description: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores
-    agent prompt_template and always injects a hardcoded work prompt, so review agents drift into
-    implementation. Prompt-driven codex-acp runs are also brittle and can fail with RPC parse
-    errors. Need a reliable readonly review path with prompt_template parity, dry-run parity, and
-    adapter-safe prompt handling."
+  description: >-
+    Fix kspec agent run --task to respect agent prompt_template instead of injecting a hardcoded
+    work prompt.
+
+
+    Current behavior: agent run --task always uses a hardcoded task-work prompt, ignoring the agent
+    definition prompt_template. This causes review agents to drift into implementation mode.
+
+
+    Fix: In src/agent-runtime/invocation.ts or the agent run CLI handler, use the agent
+    prompt_template when available, falling back to the default only when no template is defined.
+    Also address adapter-safe prompt handling for codex-acp runs.
   spec_ref: null
   status: pending
   blocked_by: []
@@ -85900,11 +85963,18 @@
   title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
     with m
   type: task
-  description: "kspec setup should update existing agent definitions on version bumps. Currently skips
-    agents with matching IDs, so agents created with older kspec versions miss new fields like
-    auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve set,
-    blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add kspec
-    setup --upgrade flag, (3) warn when agent config is missing expected fields."
+  description: >-
+    Make kspec setup update existing agent definitions on version bumps instead of skipping them.
+
+
+    Current behavior: setup skips agents with matching IDs, so agents from older kspec versions miss
+    new fields (e.g. auto_approve). Reported in GitHub issue #700 — users get stuck on headless
+    dispatch.
+
+
+    Fix options: (1) Merge new defaults into existing agents preserving user customizations, (2) add
+    kspec setup --upgrade flag, (3) warn when agent config is missing expected fields. Option 1 is
+    most user-friendly. Implementation in src/cli/commands/setup.ts agent installation logic.
   spec_ref: null
   status: pending
   blocked_by: []
