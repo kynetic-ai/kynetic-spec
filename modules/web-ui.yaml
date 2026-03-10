@@ -2477,6 +2477,9 @@ requirements:
         given: a page uses URL query parameters for filter state (status, tag, plan)
         when: filters are updated
         then: goto() is used for URL mutations so $page.url stays in sync with the browser URL bar
+    status:
+      maturity: draft
+      implementation: in_progress
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm
