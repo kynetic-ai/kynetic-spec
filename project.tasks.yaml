@@ -83641,6 +83641,10 @@
   plan_ref: "@plan-lazy-shadow-sync"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #732. Verified @shadow-write-sync implementation: commitIfShadow()
+    write entrypoint always reaches pull-rebase-before-push sync, and mutating command initContext()
+    calls skip the redundant pre-read drift check. AC coverage confirmed for ac-write-always-syncs
+    and ac-write-skips-read-check; full npm test passed on PR HEAD (4265 passed, 3 skipped)."
   depends_on:
     - "@implement-lazy-shadow-sync-on-reads"
   context: []
@@ -83651,6 +83655,7 @@
   created_at: 2026-03-09T21:25:12.363Z
   started_at: 2026-03-09T23:40:26.415Z
   submitted_at: 2026-03-09T23:47:15.123Z
+  completed_at: 2026-03-09T23:53:18.619Z
   notes:
     - _ulid: 01KKA7TR1B9T1JRBW6455W337P
       created_at: 2026-03-09T21:25:12.363Z
@@ -83719,11 +83724,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-09T23:53:18.619Z
-  closed_reason: "Merged in PR #732. Verified @shadow-write-sync implementation: commitIfShadow()
-    write entrypoint always reaches pull-rebase-before-push sync, and mutating command initContext()
-    calls skip the redundant pre-read drift check. AC coverage confirmed for ac-write-always-syncs
-    and ac-write-skips-read-check; full npm test passed on PR HEAD (4265 passed, 3 skipped)."
 - _ulid: 01KKA7TRJ3AEW9JJ5DHABWAS4H
   slugs:
     - implement-daemon-background-sync-pushes
@@ -83790,3 +83790,28 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Replace subprocess loops with fixture seeding in session-start-format timeline tests
+  description: Two tests in tests/cli/session-start-format.test.ts create 12 tasks via 48 sequential
+    CLI subprocess calls each. Under CI load these exceed 30s timeout. Fix by writing completed
+    tasks directly into fixture YAML instead of CLI loops.
+  type: task
+  spec_ref: "@test-suite-perf-reliability"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-fix-session-start-format-timeout
+  tags:
+    - testing
+    - bug
+    - cli
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKAH4A7E0TM0RARWBVWBCXFA
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T00:07:43.085Z
+  notes: []
+  todos: []
