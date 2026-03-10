@@ -86007,7 +86007,7 @@
     allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
     checkBudget() does not block task start.
   spec_ref: "@session-model-evolution"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86077,6 +86077,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T13:31:18.049Z
+  closed_reason: "Merged in PR #748 (c37259b). checkBudget() now skips task-budget enforcement only
+    for existing non-active sessions, while still enforcing budgets when metadata is missing but a
+    budget file exists. Added stale-session regression coverage for missing metadata, completed
+    session, abandoned session, and active-session enforcement; fresh local npm test and GitHub CI
+    passed, and touched task-budget/session-model behavior remains covered."
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
@@ -86244,6 +86250,7 @@
   session_id: 01KKBXNQVPQP7ZBS4Z15MJFHR0
   created_at: 2026-03-10T08:17:37.116Z
   started_at: 2026-03-10T13:16:57.183Z
+  submitted_at: 2026-03-10T13:24:10.097Z
   notes:
     - _ulid: 01KKBYPE6WCXGV22RYRF1V4A0W
       created_at: 2026-03-10T13:24:02.908Z
@@ -86266,7 +86273,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T13:24:10.097Z
 - _ulid: 01KKBD5GFNBY509D4R4BTW2PP9
   slugs: []
   title: When running `kspec setup` or `kspec init --setup`, automatically install default workflows
