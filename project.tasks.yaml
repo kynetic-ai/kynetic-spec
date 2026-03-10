@@ -84709,3 +84709,4 @@
         windows this typically means scanning 20-50 sessions instead of 700+.
         The daemon endpoint can stream results or use a reasonable timeout.
   todos: []
+  automation: eligible
