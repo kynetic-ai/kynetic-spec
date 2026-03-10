@@ -87124,24 +87124,45 @@
   created_at: 2026-03-10T17:58:59.425Z
   notes: []
   todos: []
-- title: "Call site migration: daemon identity headers + dispatch cwd"
+- _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
+  slugs:
+    - task-worktree-callsite-migration
+  title: "Call site migration: daemon identity headers + dispatch cwd"
+  type: task
+  spec_ref: "@worktree-support"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-worktree-core-resolution"
+  context: []
+  priority: 3
+  tags:
+    - infra
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-10T17:59:06.557Z
+  notes: []
+  todos: []
+- title: "Command surface cleanup: shadow commands, serve defaults, false positive fix"
   type: task
   spec_ref: "@worktree-support"
   meta_ref: null
   plan_ref: null
   priority: 3
   slugs:
-    - task-worktree-callsite-migration
+    - task-worktree-command-cleanup
   tags:
     - infra
     - cli
   depends_on:
     - "@task-worktree-core-resolution"
-  _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
+  _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T17:59:06.557Z
+  created_at: 2026-03-10T17:59:13.926Z
   notes: []
   todos: []
