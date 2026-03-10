@@ -83922,6 +83922,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #734 (f98853148230fa02df52bc14950b9ddd57b3db14). Stabilized dispatch
+    watch WebSocket timing by raising wait/poll timeouts to 2000ms, improving timeout diagnostics,
+    and adding a global crypto polyfill plus behavioral AC-3/AC-4 tests that exercise the
+    missing-crypto path. AC coverage for the scoped task was verified, targeted cli-agent-commands
+    tests passed on the PR head, and CI/full regression were green."
   depends_on: []
   context: []
   priority: 3
@@ -83934,6 +83939,7 @@
   created_at: 2026-03-10T00:07:55.716Z
   started_at: 2026-03-10T01:31:57.191Z
   submitted_at: 2026-03-10T01:35:54.245Z
+  completed_at: 2026-03-10T01:51:40.911Z
   notes:
     - _ulid: 01KKAH5PXMC2WQ9ASX5NV7AVBH
       created_at: 2026-03-10T00:08:28.852Z
@@ -84004,12 +84010,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T01:51:40.911Z
-  closed_reason: "Merged in PR #734 (f98853148230fa02df52bc14950b9ddd57b3db14). Stabilized dispatch
-    watch WebSocket timing by raising wait/poll timeouts to 2000ms, improving timeout diagnostics,
-    and adding a global crypto polyfill plus behavioral AC-3/AC-4 tests that exercise the
-    missing-crypto path. AC coverage for the scoped task was verified, targeted cli-agent-commands
-    tests passed on the PR head, and CI/full regression were green."
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
   slugs:
     - task-verify-cli-serve-foreground-stable
@@ -84219,6 +84219,26 @@
       content: '[FIX_CYCLE: 2] Review findings: MUST-FIX: ac-6 still streams raw setup noise, the summary
         test uses invalid reporter="silent" and passes on a failure path, and the new dist-artifact
         tests are not temp-dir isolated.'
+      supersedes: null
+    - _ulid: 01KKAR17JEF5BCSA348H0NRM67
+      created_at: 2026-03-10T02:08:22.094Z
+      author: "@claude"
+      content: >-
+        Fix cycle 2 addressed all 3 MUST-FIX findings:
+
+        1. Setup noise suppressed: installDependencies() and runBuild() now use stdio:'pipe' — raw
+        npm/build output is captured, only surfaced on failure via logErr
+
+        2. Summary test fixed: replaced invalid --reporter=silent with --reporter=dot, uses a
+        trivial temp test file to avoid recursion, asserts specifically 'Tests passed' (not
+        'passed|failed')
+
+        3. Dist-artifact tests now temp-dir isolated: createTempProjectRoot() +
+        runCheckBuildInTempDir() create isolated temp dirs with selective artifacts, no longer
+        mutating real dist/
+
+        Pre-existing codex detection failures (core-skill-install, enhanced-setup) confirmed on
+        main.
       supersedes: null
   todos: []
   automation: eligible
