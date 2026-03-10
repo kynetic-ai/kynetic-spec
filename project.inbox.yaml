@@ -1201,16 +1201,6 @@ inbox:
       - dx
       - reflection
     added_by: "@claude"
-  - _ulid: 01KJS6ESNC2EMH2K2ATJCV1CMR
-    text: "kspec batch: item add + item set in same batch fails — newly created item slug not resolvable
-      until after shadow commit. Explore deferred slug resolution or two-phase batch execution so
-      items can be created and updated atomically."
-    created_at: 2026-03-03T06:34:06.892Z
-    tags:
-      - batch
-      - cli
-      - bug
-    added_by: "@claude"
   - _ulid: 01KJTB75K1532350ZAG271VC3X
     text: Document acp-mock.js bidirectional RPC pattern in testing conventions — the
       MOCK_ACP_SEND_PERMISSION_REQUEST env var and the pending-requests map pattern for agent→client
