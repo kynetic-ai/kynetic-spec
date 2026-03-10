@@ -84179,6 +84179,25 @@
         bypasses the runner, and ac-5/ac-6 tests do not verify the missing-prerequisite/fix or
         summary behaviors. See PR #735 review comments."
       supersedes: null
+    - _ulid: 01KKANXCZ6XQJ0E1XTQVXZ8E08
+      created_at: 2026-03-10T01:31:19.398Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed all 3 MUST-FIX findings:
+
+        1. checkBuild() now verifies dist/cli/index.js, dist/web-ui/index.html, and
+        dist/daemon/index.ts
+
+        2. npm test now routes through scripts/test.cjs (removed pretest hook, removed test:runner
+        alias, updated shard scripts)
+
+        3. Replaced static analysis tests with behavioral tests: injected simulated hook to verify
+        auto-fix flow (check→fix→recheck pattern), real artifact rename tests for dist/daemon and
+        dist/web-ui detection, subprocess tests for structured output and pass/fail summary
+
+        Pre-existing enhanced-setup codex detection failure confirmed on main, not caused by these
+        changes.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKAJ7N0ZD6WEDAAX1EPRHKZB
