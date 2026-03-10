@@ -1,12 +1,12 @@
 <script lang="ts">
-	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33
+	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33, ac-default-active-filter
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
 	import { replaceState } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
-	import TaskFilters from '$lib/components/TaskFilters.svelte';
+	import TaskFilters, { ACTIVE_STATUSES } from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import TaskDetailContent from '$lib/components/board/TaskDetailContent.svelte';
 	import { fetchTasks, fetchTask } from '$lib/api';
@@ -29,9 +29,16 @@
 	let panelLoading = $state(false);
 	let panelError = $state('');
 
-	// Reactive: re-fetch when URL params change
+	// AC: @web-dashboard ac-default-active-filter - Default to active statuses when no status param
+	// "all" means show everything (no status filter), empty/absent means show active only
+	function getStatusFilter(urlStatus: string | null): string | string[] | undefined {
+		if (urlStatus === 'all') return undefined;
+		if (urlStatus) return urlStatus;
+		return [...ACTIVE_STATUSES];
+	}
+
 	let filterParams = $derived({
-		status: $page.url.searchParams.get('status') || undefined,
+		status: getStatusFilter($page.url.searchParams.get('status')),
 		tag: $page.url.searchParams.get('tag') || undefined,
 		assignee: $page.url.searchParams.get('assignee') || undefined,
 		automation: $page.url.searchParams.get('automation') || undefined,

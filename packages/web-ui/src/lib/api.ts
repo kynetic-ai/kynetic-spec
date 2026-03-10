@@ -102,7 +102,7 @@ export async function fetchProjects(): Promise<{ projects: Project[] }> {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchTasks(params?: {
-	status?: string;
+	status?: string | string[];
 	tag?: string;
 	assignee?: string;
 	automation?: string;
@@ -120,7 +120,11 @@ export async function fetchTasks(params?: {
 	if (params) {
 		Object.entries(params).forEach(([key, value]) => {
 			if (value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
+				if (Array.isArray(value)) {
+					value.forEach((v) => url.searchParams.append(key, v));
+				} else {
+					url.searchParams.set(key, String(value));
+				}
 			}
 		});
 	}
