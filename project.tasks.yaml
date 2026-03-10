@@ -85687,9 +85687,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-10T08:17:28.237Z
-  notes: []
+  notes:
+    - _ulid: 01KKBDYC52NPD2R2DQHCD9D75G
+      created_at: 2026-03-10T08:31:17.154Z
+      author: "@claude"
+      content: "Automation status set to needs_review: No workflow spec exists — need spec coverage before
+        automation"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
   slugs: []
   title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
@@ -85715,9 +85721,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-10T08:17:31.495Z
-  notes: []
+  notes:
+    - _ulid: 01KKBDYDH7M0EWFE4444SGZF6M
+      created_at: 2026-03-10T08:31:18.567Z
+      author: "@claude"
+      content: "Automation status set to needs_review: No workflow spec exists — need spec coverage before
+        automation"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KKBD5BAX4M5G9C5FH431MSMF
   slugs: []
   title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
@@ -85772,9 +85784,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-10T08:17:42.389Z
-  notes: []
+  notes:
+    - _ulid: 01KKBDYEVMPBF6ZT85GGFV1APT
+      created_at: 2026-03-10T08:31:19.924Z
+      author: "@claude"
+      content: "Automation status set to needs_review: No setup spec exists — need spec coverage before
+        automation"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KKBD5NVA05J5XM039Y5XVNT0
   slugs: []
   title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
@@ -85888,9 +85906,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-10T08:17:58.132Z
-  notes: []
+  notes:
+    - _ulid: 01KKBDYG6A8EJKAW6JWR6X1RH1
+      created_at: 2026-03-10T08:31:21.290Z
+      author: "@claude"
+      content: "Automation status set to needs_review: No alignment spec exists — need spec coverage
+        before automation"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KKBD6389SFFMQH6645YXWCVK
   slugs: []
   title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
@@ -85996,9 +86020,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-10T08:18:11.677Z
-  notes: []
+  notes:
+    - _ulid: 01KKBDYHHJ2SMN62BQQ8XAANE6
+      created_at: 2026-03-10T08:31:22.674Z
+      author: "@claude"
+      content: "Automation status set to needs_review: No setup spec exists — need spec coverage before
+        automation"
+      supersedes: null
   todos: []
-  automation: eligible
+  automation: needs_review
 - _ulid: 01KKBD6GBCWTZA2ECFWN62F92F
   slugs: []
   title: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style scheduled
