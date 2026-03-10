@@ -23,6 +23,7 @@ import {
 } from "../parser/index.js";
 import { runInvocation } from "./invocation.js";
 import type { InvocationOptions } from "./invocation.js";
+import { interpolateTemplate } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import type {
   AgentDispatchRule,
@@ -120,23 +121,10 @@ const STATUS_PRECEDENCE: Record<TaskStatus, number> = {
   cancelled: 6,
 };
 
-// ─── Prompt Helpers (exported for testing) ───────────────────────────────────
+// ─── Prompt Helpers ──────────────────────────────────────────────────────────
 
-/**
- * Interpolate {{variable}} placeholders in a prompt template.
- * Unresolved variables pass through unchanged.
- *
- * AC: @agent-dispatch-engine ac-16
- */
-export function interpolateTemplate(
-  template: string,
-  vars: Record<string, string>,
-): string {
-  return template.replace(
-    /\{\{(\w+)\}\}/g,
-    (match, key: string) => vars[key] ?? match,
-  );
-}
+// AC: @agent-dispatch-engine ac-16 — re-exported from prompts.ts for backwards compat
+export { interpolateTemplate };
 
 /**
  * Human-readable trigger description for orientation context.
