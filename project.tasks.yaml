@@ -84887,7 +84887,7 @@
   type: task
   spec_ref: "@session-filter-controls"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -84932,6 +84932,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-10T22:37:05.253Z
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
   slugs:
     - implement-session-cli-unified-filtering
