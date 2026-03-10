@@ -86960,6 +86960,11 @@
   spec_ref: "@config-daemon"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #758. Extended daemon session-branch sync lifecycle across all
+    registered project paths, including API, middleware, and WebSocket registration paths, with
+    normalized teardown and direct regression coverage for multi-project/session-sync behavior.
+    Review confirmed no remaining MUST-FIX or SHOULD-FIX findings; targeted daemon regression tests
+    passed locally and GitHub CI was green on the merged head."
   depends_on: []
   context: []
   priority: 3
@@ -86969,6 +86974,7 @@
   created_at: 2026-03-10T08:18:18.277Z
   started_at: 2026-03-10T21:26:09.396Z
   submitted_at: 2026-03-10T21:37:47.975Z
+  completed_at: 2026-03-10T22:02:08.076Z
   notes:
     - _ulid: 01KKCCRYC9T4N7VMF98HFE4CME
       created_at: 2026-03-10T17:30:05.066Z
@@ -87096,12 +87102,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-10T22:02:08.076Z
-  closed_reason: "Merged in PR #758. Extended daemon session-branch sync lifecycle across all
-    registered project paths, including API, middleware, and WebSocket registration paths, with
-    normalized teardown and direct regression coverage for multi-project/session-sync behavior.
-    Review confirmed no remaining MUST-FIX or SHOULD-FIX findings; targeted daemon regression tests
-    passed locally and GitHub CI was green on the merged head."
 - _ulid: 01KKBD6Q77H016BZD3G0JFE16E
   slugs: []
   title: CLI mutation commands should show what changed (before → after) in output, especially for
@@ -87265,7 +87265,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -87275,9 +87275,9 @@
     - session
     - dx
   vcs_refs: []
-  session_id: null
+  session_id: 01KKCVYZC1KM3J3S07BVPJXXKQ
   created_at: 2026-03-10T16:43:54.869Z
-  started_at: 2026-03-10T21:08:04.033Z
+  started_at: 2026-03-10T22:02:48.296Z
   submitted_at: 2026-03-10T21:19:25.040Z
   notes:
     - _ulid: 01KKCA4D3MMM0WBJG558VVF8JW
