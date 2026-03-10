@@ -83930,7 +83930,9 @@
     - bug
     - cli
   vcs_refs: []
+  session_id: 01KKAHFC1XZS5RYGXWTAGEA1JQ
   created_at: 2026-03-10T00:07:55.716Z
+  started_at: 2026-03-10T00:23:40.129Z
   notes:
     - _ulid: 01KKAH5PXMC2WQ9ASX5NV7AVBH
       created_at: 2026-03-10T00:08:28.852Z
@@ -83947,8 +83949,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-10T00:23:40.129Z
-  session_id: 01KKAHFC1XZS5RYGXWTAGEA1JQ
 - _ulid: 01KKAH4TA290SW82M66ZWVDF7P
   slugs:
     - task-verify-cli-serve-foreground-stable
@@ -83996,10 +83996,9 @@
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
-  status: completed
+  status: pending
   blocked_by: []
-  closed_reason: "Cancelled: Ralph is being replaced by the dispatch engine. Verifying ralph test
-    stability is moot — ralph and its tests should be purged instead."
+  closed_reason: null
   depends_on: []
   context: []
   priority: 3
@@ -84009,8 +84008,8 @@
     - ralph
   vcs_refs: []
   created_at: 2026-03-10T00:08:03.348Z
-  started_at: 2026-03-10T00:20:08.812Z
-  completed_at: 2026-03-10T00:20:08.812Z
+  started_at: null
+  completed_at: null
   notes:
     - _ulid: 01KKAH61EB381X4GS4S66DQ927
       created_at: 2026-03-10T00:08:39.627Z
@@ -84034,6 +84033,11 @@
       content: "Completed with --force from blocked state. Was blocked by: (dependency-blocked). Reason:
         Cancelled: Ralph is being replaced by the dispatch engine. Verifying ralph test stability is
         moot — ralph and its tests should be purged instead."
+      supersedes: null
+    - _ulid: 01KKAJ1HNV9N6V67JHNVVYZNZ2
+      created_at: 2026-03-10T00:23:40.988Z
+      author: "@claude"
+      content: Reset from completed to pending
       supersedes: null
   todos: []
   automation: eligible
