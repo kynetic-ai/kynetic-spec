@@ -1388,6 +1388,8 @@ conventions:
       - In web UI code, use goto() from $app/navigation for all URL query parameter changes. Never
         use replaceState, pushState, or window.history methods — they do not update $page.url and
         break reactive effects. See /svelte-5 skill for details.
+      - After modifying skill sources (templates/skills/ or .kspec/skills/), run kspec skill render
+        and commit the regenerated .agents/skills/ output alongside your changes.
     examples: []
   - _ulid: 01KHYXJYDW2FWSYRVDR9J5A6XM
     domain: ci
