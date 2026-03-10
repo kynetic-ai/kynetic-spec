@@ -85920,14 +85920,14 @@
     (these skills are managed by the plugin, not locally rendered, so drift detection does not
     apply). Update tests in tests/skill-rendering.test.ts.
   spec_ref: "@platform-renderer-trait"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKBS9HNSXX4DH5HDD0VWJYAN
+  session_id: null
   created_at: 2026-03-10T07:53:37.938Z
   started_at: 2026-03-10T11:56:22.934Z
   submitted_at: 2026-03-10T12:02:05.795Z
@@ -85948,6 +85948,14 @@
         4. Updated summary messages to include plugin-provided counts
 
         5. Added 2 behavioral tests: status correctness and exit code behavior
+      supersedes: null
+    - _ulid: 01KKBV5JMF7YAPX8Z5ZPDPP5S2
+      created_at: 2026-03-10T12:22:24.656Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX from PR #747: tests/skill-rendering.test.ts does
+        not actually create the 'only plugin-provided skills' scenario it claims to verify; it
+        leaves the default rendered test skill in place, so the exit-code assertion is not
+        validating the intended condition."
       supersedes: null
   todos: []
   automation: eligible
@@ -85984,6 +85992,7 @@
   session_id: 01KKBT1P2G40V1BCTPG7CR70DF
   created_at: 2026-03-10T07:53:41.361Z
   started_at: 2026-03-10T12:16:01.201Z
+  submitted_at: 2026-03-10T12:18:06.147Z
   notes:
     - _ulid: 01KKBTX20S1JVHMVTXGAYGMJ4P
       created_at: 2026-03-10T12:17:45.498Z
@@ -86006,7 +86015,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-10T12:18:06.147Z
 - _ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
   slugs: []
   title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
