@@ -17,10 +17,12 @@ import chalk from "chalk";
 import {
   initContext,
   loadMetaContext,
+  loadAllTasks,
+  findTaskByRef,
 } from "../../parser/index.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
 import type { SessionUpdate } from "../../acp/index.js";
-import { buildPromptWithSkills } from "../../agent-runtime/prompts.js";
+import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
@@ -261,11 +263,34 @@ export function registerAgentCommands(program: Command): void {
         const adapterId = opts.adapter ?? agentDef.adapter ?? "claude-agent-acp";
         const adapter = resolveAdapter(adapterId);
 
-        // Build the prompt
+        // Build the prompt — respect agent prompt_template when --task is used
         const taskRef = opts.task as string | undefined;
-        const basePrompt = prompt ?? (taskRef
-          ? `Work on task ${taskRef} according to your configuration and skills.`
-          : `Run as requested.`);
+        let basePrompt: string;
+        if (prompt) {
+          // Explicit user prompt always wins
+          basePrompt = prompt;
+        } else if (taskRef && agentDef.prompt_template) {
+          // Use agent's prompt_template with variable interpolation.
+          // Best-effort task title resolution — falls back to "(unavailable)".
+          let taskTitle = "(unavailable)";
+          try {
+            const tasks = await loadAllTasks(ctx);
+            const task = findTaskByRef(tasks, taskRef);
+            if (task?.title) taskTitle = task.title;
+          } catch {
+            // Non-fatal — template still works with fallback title
+          }
+          basePrompt = interpolateTemplate(agentDef.prompt_template, {
+            task_ref: taskRef,
+            task_title: taskTitle,
+            trigger: "manual",
+            review_url: "",
+          });
+        } else if (taskRef) {
+          basePrompt = `Work on task ${taskRef} according to your configuration and skills.`;
+        } else {
+          basePrompt = `Run as requested.`;
+        }
 
         // Note: buildPromptWithSkills is called here for the dry-run preview path.
         // runInvocation also calls buildPromptWithSkills internally, so we pass basePrompt
