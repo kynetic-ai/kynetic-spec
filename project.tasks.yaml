@@ -85084,3 +85084,27 @@
         list alongside all previous traits. Same for @ui-plans-view.
       supersedes: null
   todos: []
+- title: Default task list to active statuses
+  description: The task list view currently shows all statuses by default. Change it to default to
+    showing only active statuses (pending, in_progress, pending_review, needs_work, blocked).
+    Completed and cancelled tasks should be hidden unless the user explicitly selects them. This
+    likely requires changing the status filter from a single-select dropdown to a multi-select
+    approach, or adding preset filter groups.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - web-ui
+    - feature
+  depends_on: []
+  _ulid: 01KKB66JH0KPXXAJ359JDWJZ0W
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-10T06:15:57.215Z
+  notes: []
+  todos: []
