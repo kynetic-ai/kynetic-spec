@@ -10,12 +10,13 @@
  * All non-ANSI content is HTML-escaped to prevent XSS.
  */
 
-// Match a real ANSI escape sequence: ESC [ ... final-byte
-const ANSI_RE = /\x1b\[([0-9;]*)([A-Za-z])/g;
+// Match a real ANSI escape sequence: ESC [ (optional private-mode prefix) params final-byte
+const ANSI_RE = /\x1b\[(\??[0-9;]*)([A-Za-z])/g;
 
 // Match orphaned CSI parameters where ESC was stripped: bare [digits;digits followed by letter
+// Also matches private-mode sequences like [?25l where ESC was stripped
 // Only matches sequences that look like ANSI codes, not regular bracket usage
-const ORPHANED_CSI_RE = /\[([0-9]+(?:;[0-9]+)*)([A-HJKSTfhilmnpsu])/g;
+const ORPHANED_CSI_RE = /\[(\??[0-9]+(?:;[0-9]+)*)([A-HJKSTfhilmnpsu])/g;
 
 /** HTML-escape a string to prevent XSS. */
 function escapeHtml(str: string): string {
@@ -238,18 +239,18 @@ export function ansiToHtml(text: string): string {
 	let match: RegExpExecArray | null;
 
 	while ((match = ANSI_RE.exec(text)) !== null) {
-		// Append text before this escape sequence (HTML-escaped)
+		// Append text before this escape sequence (strip orphaned CSI, then HTML-escape)
 		if (match.index > lastIndex) {
-			const chunk = text.slice(lastIndex, match.index);
-			output.push(escapeHtml(chunk));
+			const chunk = stripOrphanedCsi(text.slice(lastIndex, match.index));
+			if (chunk) output.push(escapeHtml(chunk));
 		}
 		lastIndex = match.index + match[0].length;
 
 		const paramsStr = match[1];
 		const finalByte = match[2];
 
-		// Only process SGR sequences (final byte 'm')
-		if (finalByte === 'm') {
+		// Only process SGR sequences (final byte 'm', no private-mode prefix)
+		if (finalByte === 'm' && !paramsStr.startsWith('?')) {
 			const params =
 				paramsStr === '' ? [0] : paramsStr.split(';').map((s) => parseInt(s, 10) || 0);
 			applySgr(params, state);
@@ -270,10 +271,10 @@ export function ansiToHtml(text: string): string {
 		// Non-SGR sequences are simply stripped (not rendered)
 	}
 
-	// Append remaining text
+	// Append remaining text (strip orphaned CSI, then HTML-escape)
 	if (lastIndex < text.length) {
-		const remaining = text.slice(lastIndex);
-		output.push(escapeHtml(remaining));
+		const remaining = stripOrphanedCsi(text.slice(lastIndex));
+		if (remaining) output.push(escapeHtml(remaining));
 	}
 
 	// Close any open span

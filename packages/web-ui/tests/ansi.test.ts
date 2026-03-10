@@ -371,6 +371,46 @@ describe('ac-8: pipeline isolation (pre blocks only)', () => {
 	});
 });
 
+describe('private-mode CSI sequences', () => {
+	// AC: @ansi-terminal-rendering ac-5
+	it('strips real private-mode CSI sequences like \\x1b[?25l (hide cursor)', () => {
+		const input = '\x1b[?25l\x1b[32mHello\x1b[0m\x1b[?25h';
+		const result = ansiToHtml(input);
+		expect(result).not.toContain('\x1b');
+		expect(result).not.toContain('?25');
+		expect(result).toContain('Hello');
+		expect(result).toContain('color:var(--ansi-green)');
+	});
+
+	it('strips orphaned private-mode CSI sequences like [?25l (ESC stripped)', () => {
+		const input = '[?25lsome text[?25h';
+		const result = ansiToHtml(input);
+		expect(result).not.toContain('[?25');
+		expect(result).toContain('some text');
+	});
+
+	it('containsAnsi detects orphaned private-mode CSI', () => {
+		expect(containsAnsi('[?25l')).toBe(true);
+		expect(containsAnsi('[?25h')).toBe(true);
+		expect(containsAnsi('[?1049h')).toBe(true);
+	});
+
+	it('strips mixed real and orphaned private-mode sequences', () => {
+		const input = '\x1b[?25l[?1049h\x1b[31mred\x1b[0m[?25h';
+		const result = ansiToHtml(input);
+		expect(result).not.toContain('?25');
+		expect(result).not.toContain('?1049');
+		expect(result).toContain('color:var(--ansi-red)');
+		expect(result).toContain('red');
+	});
+
+	it('strips private-mode sequences in output that is only private-mode (no SGR)', () => {
+		const input = '\x1b[?25l\x1b[?1049h';
+		const result = ansiToHtml(input);
+		expect(result).toBe('');
+	});
+});
+
 describe('edge cases', () => {
 	it('handles non-SGR escape sequences by stripping them', () => {
 		// Cursor up (CSI A), clear screen (CSI J) — should be stripped
