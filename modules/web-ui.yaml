@@ -1200,6 +1200,12 @@ features:
           The user clicks action buttons (Start, Submit, Complete, Block, Add Note)
         then: |
           The corresponding task transition or mutation is executed via API
+      - id: ac-7
+        given: the task detail modal is open (via click or ?ref= URL param)
+        when: the user dismisses the modal (click outside, ESC key, or close button)
+        then: "the modal closes and stays closed: component state (selectedTaskRef, modalOpen) is cleared,
+          the ?ref= query parameter is removed from the URL, and the reactive effect that watches
+          ?ref= does not reopen the modal"
     depends_on: []
     implements: []
     relates_to: []
