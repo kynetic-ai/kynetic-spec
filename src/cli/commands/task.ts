@@ -397,9 +397,11 @@ async function setTaskFields(
 
       if (options.description !== undefined) {
         if (options.description === "null" || options.description.trim() === "") {
-          const before = latestTask.description;
-          delete nextTask.description;
-          mutationChanges.push({ field: "description", before, after: null });
+          if (latestTask.description !== undefined) {
+            const before = latestTask.description;
+            delete nextTask.description;
+            mutationChanges.push({ field: "description", before, after: null });
+          }
         } else if (options.description !== latestTask.description) {
           mutationChanges.push({ field: "description", before: latestTask.description, after: options.description });
           nextTask.description = options.description;
@@ -408,8 +410,10 @@ async function setTaskFields(
 
       if (options.specRef !== undefined) {
         if (options.specRef === "null") {
-          mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: null });
-          nextTask.spec_ref = null;
+          if (latestTask.spec_ref != null) {
+            mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: null });
+            nextTask.spec_ref = null;
+          }
         } else {
           const newVal = normalizeRefInput(options.specRef);
           if (newVal !== latestTask.spec_ref) {
@@ -421,8 +425,10 @@ async function setTaskFields(
 
       if (options.metaRef !== undefined) {
         if (options.metaRef === "null") {
-          mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: null });
-          nextTask.meta_ref = null;
+          if (latestTask.meta_ref != null) {
+            mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: null });
+            nextTask.meta_ref = null;
+          }
         } else {
           const newVal = normalizeRefInput(options.metaRef);
           if (newVal !== latestTask.meta_ref) {
@@ -434,8 +440,10 @@ async function setTaskFields(
 
       if (options.planRef !== undefined) {
         if (options.planRef === "null") {
-          mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: null });
-          nextTask.plan_ref = null;
+          if (latestTask.plan_ref != null) {
+            mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: null });
+            nextTask.plan_ref = null;
+          }
         } else {
           const newVal = normalizeRefInput(options.planRef);
           if (newVal !== latestTask.plan_ref) {
@@ -447,8 +455,10 @@ async function setTaskFields(
 
       if (options.reviewUrl !== undefined) {
         if (options.reviewUrl === "null") {
-          mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: null });
-          delete nextTask.review_url;
+          if (latestTask.review_url != null) {
+            mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: null });
+            delete nextTask.review_url;
+          }
         } else if (options.reviewUrl !== latestTask.review_url) {
           mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: options.reviewUrl });
           nextTask.review_url = options.reviewUrl;
@@ -502,8 +512,10 @@ async function setTaskFields(
       }
 
       if (options.automation === false) {
-        mutationChanges.push({ field: "automation", before: latestTask.automation, after: null });
-        delete nextTask.automation;
+        if (latestTask.automation != null) {
+          mutationChanges.push({ field: "automation", before: latestTask.automation, after: null });
+          delete nextTask.automation;
+        }
       } else if (validatedAutomation && validatedAutomation !== latestTask.automation) {
         mutationChanges.push({ field: "automation", before: latestTask.automation, after: validatedAutomation });
         nextTask.automation = validatedAutomation;
