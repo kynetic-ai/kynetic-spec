@@ -83840,28 +83840,53 @@
   notes: []
   todos: []
   automation: eligible
-- title: Stabilize dispatch watch WebSocket mock timing in cli-agent-commands tests
+- _ulid: 01KKAH4PJ4YBZ0ZXFBEBYZER9E
+  slugs:
+    - task-fix-dispatch-watch-timing
+  title: Stabilize dispatch watch WebSocket mock timing in cli-agent-commands tests
+  type: task
   description: Dispatch watch tests (AC-13, AC-14, AC-16, AC-18) in tests/cli-agent-commands.test.ts
     use fake WebSocket mocks with short poll timeouts. Under load, events do not propagate before
     timeout. Increase timeouts to 2000ms+, add crypto polyfill, ensure diagnostic timeout messages.
-  type: task
   spec_ref: "@test-suite-perf-reliability"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-fix-dispatch-watch-timing
   tags:
     - testing
     - bug
     - cli
+  vcs_refs: []
+  created_at: 2026-03-10T00:07:55.716Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Verify cli-serve foreground test stability after daemon isolation fixes
+  description: "Foreground mode test was most frequent flaky failure (3+ sessions). PRs #658, #673,
+    #674 landed fixes. Verification task: run cli-serve tests 5x in sequence plus shard3 twice. Fix
+    remaining race if any failure found."
+  type: task
+  spec_ref: "@daemon-sensitive-cli-test-determinism"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-verify-cli-serve-foreground-stable
+  tags:
+    - testing
+    - verification
+    - cli
   depends_on: []
   automation: eligible
-  _ulid: 01KKAH4PJ4YBZ0ZXFBEBYZER9E
+  _ulid: 01KKAH4TA290SW82M66ZWVDF7P
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-10T00:07:55.716Z
+  created_at: 2026-03-10T00:07:59.554Z
   notes: []
   todos: []
