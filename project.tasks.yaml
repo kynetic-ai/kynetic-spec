@@ -86056,7 +86056,7 @@
     then pr-reviewer picks up. Make worker/reviewer ownership handoff explicit. This is a
     documentation/skill template fix, no code changes expected.
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86108,6 +86108,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-10T12:55:01.519Z
+  closed_reason: "Merged in PR #749. Clarified the task-work skill so workers submit before PR
+    creation, made pending_review handoff to the reviewer explicit in lifecycle/fix-cycle/loop-mode
+    guidance, and kept the rendered skill aligned. AC coverage N/A for this internal/docs task; npm
+    test passed locally and PR CI was green."
 - _ulid: 01KKBD52ND0SRD9WXYT6ZXZ776
   slugs: []
   title: "Workflow UX: allow kspec workflow show (and related workflow run commands where safe) to
