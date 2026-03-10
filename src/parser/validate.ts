@@ -1314,8 +1314,12 @@ function checkAutomationEligibility(
   index: ReferenceIndex,
 ): CompletenessWarning[] {
   const warnings: CompletenessWarning[] = [];
+  const terminalStatuses = new Set(["completed", "cancelled"]);
 
   for (const task of tasks) {
+    // AC: @task-automation-eligibility ac-21 — skip terminal statuses
+    if (terminalStatuses.has(task.status)) continue;
+
     const taskRef = task.slugs?.[0]
       ? `@${task.slugs[0]}`
       : `@${index.shortUlid(task._ulid)}`;
