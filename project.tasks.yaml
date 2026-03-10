@@ -87249,7 +87249,7 @@
     ANSI codes survive JSON serialization as UTF-8.
   spec_ref: "@ansi-terminal-rendering"
   derivation: auto
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -87259,7 +87259,7 @@
     - session
     - dx
   vcs_refs: []
-  session_id: 01KKCRTAKQX0A4CVNQK9N0V8YS
+  session_id: null
   created_at: 2026-03-10T16:43:54.869Z
   started_at: 2026-03-10T21:08:04.033Z
   submitted_at: 2026-03-10T21:19:25.040Z
@@ -87375,6 +87375,12 @@
         tests covering: cutoff mid-sequence, lone trailing ESC, partial ESC[, preserved complete
         sequences, and orphaned CSI fragments at boundary. All 65 ANSI tests pass. 14 pre-existing
         failures (integration.test.ts + trait-retrospective.test.ts) confirmed identical on main."
+      supersedes: null
+    - _ulid: 01KKCV978YFFD9HEMFQFQ8DX0T
+      created_at: 2026-03-10T21:43:38.527Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: safeTruncateAnsi corrupts plain non-ANSI output
+        previews at the 1000-char boundary by stripping literal bracketed text like [12."
       supersedes: null
   todos: []
   automation: eligible
