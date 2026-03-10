@@ -86558,6 +86558,17 @@
 
         All 19 AC annotation tests pass. All 49 validation-related tests pass.
       supersedes: null
+    - _ulid: 01KKC684AC8ZKZD6M397CR7G4D
+      created_at: 2026-03-10T15:36:02.636Z
+      author: "@claude"
+      content: "Fix cycle 1 addressed: commit 3d7bdb7 rejects AC annotations targeting non-spec/non-trait
+        items (tasks, plans, meta). Changed silent continue to emit invalid_ac_annotation warning.
+        Also moved spec-item check before empty-AC-ids check so // AC: @task-example (no AC ids) is
+        also caught. Added 4 regression tests: 2 integration (via validate()) and 2 unit (via
+        ReferenceIndex). All 19 AC annotation tests pass. 8 pre-existing test failures (timeouts in
+        session-start, cli-serve, native-guard-setup) are unrelated — branch only touches validation
+        files."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
