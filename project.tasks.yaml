@@ -85725,6 +85725,7 @@
   session_id: 01KKDXPP2QN2EVZ7GS3KMXMZF0
   created_at: 2026-03-10T06:04:41.144Z
   started_at: 2026-03-11T07:52:54.702Z
+  submitted_at: 2026-03-11T08:01:36.339Z
   notes:
     - _ulid: 01KKB5HY9RPWCVPGZ8FXXKWCBC
       created_at: 2026-03-10T06:04:41.145Z
@@ -85784,7 +85785,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T08:01:36.339Z
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
@@ -85859,7 +85859,7 @@
   type: task
   spec_ref: "@batch-item-fetch-api"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85900,6 +85900,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-11T08:02:37.478Z
+  session_id: 01KKDYNW0HGY4JW1HQHY6RSRXB
 - _ulid: 01KKB5J02DQA312B76P7PNAT9X
   slugs:
     - implement-plan-content-embedded-views
