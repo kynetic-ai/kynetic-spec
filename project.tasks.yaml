@@ -78849,6 +78849,13 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #773 (merge commit e54b16db4efcd0e3c50ce72d31d2d859fb7adae2). Replaced
+    note-based retry streak tracking with session-backed invocation outcome history in
+    src/agent-runtime/invocation.ts, preserved failure/timeout task notes, and updated
+    AC-4/ac-5/ac-9 coverage in tests/agent-invocation-lifecycle.test.ts to seed prior invocation
+    sessions. AC coverage for the reviewed change was verified and GitHub CI passed on the merged
+    HEAD; local dispatch-host npm test reproduced the known cli-serve ECONNREFUSED startup failure
+    but was not treated as a blocker because CI was green on the same commit."
   depends_on: []
   context: []
   priority: 3
@@ -78860,6 +78867,7 @@
   created_at: 2026-03-06T03:18:52.146Z
   started_at: 2026-03-11T07:42:51.931Z
   submitted_at: 2026-03-11T07:42:58.983Z
+  completed_at: 2026-03-11T07:52:15.619Z
   notes:
     - _ulid: 01KKDV2MB4JVGYDNHTFNWHD5FJ
       created_at: 2026-03-11T06:59:16.964Z
@@ -78913,14 +78921,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T07:52:15.619Z
-  closed_reason: "Merged in PR #773 (merge commit e54b16db4efcd0e3c50ce72d31d2d859fb7adae2). Replaced
-    note-based retry streak tracking with session-backed invocation outcome history in
-    src/agent-runtime/invocation.ts, preserved failure/timeout task notes, and updated
-    AC-4/ac-5/ac-9 coverage in tests/agent-invocation-lifecycle.test.ts to seed prior invocation
-    sessions. AC coverage for the reviewed change was verified and GitHub CI passed on the merged
-    HEAD; local dispatch-host npm test reproduced the known cli-serve ECONNREFUSED startup failure
-    but was not treated as a blocker because CI was green on the same commit."
 - _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
   slugs: []
   title: "Fix validate page runtime error: Cannot read properties of undefined (reading 'length')"
@@ -85715,7 +85715,7 @@
   type: task
   spec_ref: "@prose-typography-setup"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -85758,6 +85758,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-11T07:52:54.702Z
+  session_id: 01KKDXPP2QN2EVZ7GS3KMXMZF0
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
