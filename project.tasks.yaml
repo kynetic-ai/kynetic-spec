@@ -85385,7 +85385,7 @@
   type: task
   spec_ref: "@session-text-search"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-cli-unified-filtering"
@@ -85397,7 +85397,7 @@
   session_id: 01KKDQ3KKWT6PW0ZBB7RD5GT23
   created_at: 2026-03-10T05:32:17.278Z
   started_at: 2026-03-11T05:55:46.210Z
-  submitted_at: 2026-03-11T04:28:33.965Z
+  submitted_at: 2026-03-11T05:55:52.814Z
   notes:
     - _ulid: 01KKB3PKZZTGCX16EXAAF8DY6Y
       created_at: 2026-03-10T05:32:17.279Z
