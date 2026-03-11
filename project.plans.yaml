@@ -13145,4 +13145,10 @@ plans:
     created_at: 2026-03-11T15:25:19.964Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKER4FT5KP7VAA4XJ8CSHESA
+        created_at: 2026-03-11T15:27:06.566Z
+        author: "@claude"
+        content: "Manually created spec and tasks (enhanced derive not yet merged). Spec:
+          @invocation-initial-activity-watchdog (5 ACs). Tasks: @task-implement-stall-watchdog,
+          @task-test-stall-watchdog. Both tasks have plan_ref set."
