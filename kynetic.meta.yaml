@@ -305,7 +305,7 @@ agents:
     skills:
       - pr-review
     budget:
-      timeout_minutes: 120
+      timeout_minutes: 30
     concurrency:
       max_concurrent: 1
     auto_approve: true
