@@ -78893,6 +78893,15 @@
         changes for @daemon-server/@01KKDPW5237717QNKEKPRWERW7; split or rebase the PR so it only
         contains the invocation outcome work."
       supersedes: null
+    - _ulid: 01KKDXDZ13HDNPQS893C29SFRP
+      created_at: 2026-03-11T07:40:25.508Z
+      author: Jacob Chapel
+      content: "Fix cycle update:\\n- Rebased fix/invocation-outcome-data onto main at
+        3d6fc0307b72a85fff53413b453038e1c4008603 so PR #773 drops unrelated @daemon-server watcher
+        commits.\\n- Verified resulting branch diff only touches src/agent-runtime/invocation.ts and
+        tests/agent-invocation-lifecycle.test.ts.\\n- Re-running targeted and full verification on
+        the cleaned branch before resubmission."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
@@ -81898,6 +81907,13 @@
   spec_ref: "@agent-invocation-lifecycle"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #774 (merge commit 3d6fc0307b72a85fff53413b453038e1c4008603). Removed
+    process-level KSPEC_SESSION_ID mutation from the invocation lifecycle, relying on
+    adapter-specific injection plus child spawn env only, and added regression coverage for spawned
+    child env propagation and concurrent invocation isolation. AC coverage verified for
+    @agent-invocation-lifecycle ac-2; inherited @trait-error-guidance ACs remain explicitly marked
+    N/A for this library module. Local focused tests, full npm test, and hosted CI all passed on the
+    merged HEAD."
   depends_on: []
   context: []
   priority: 2
@@ -81908,6 +81924,7 @@
   created_at: 2026-03-08T05:04:39.277Z
   started_at: 2026-03-11T07:24:12.110Z
   submitted_at: 2026-03-11T07:29:09.242Z
+  completed_at: 2026-03-11T07:38:53.381Z
   notes:
     - _ulid: 01KKDWGPVX9Z039W1CTN1E2KW3
       created_at: 2026-03-11T07:24:26.877Z
@@ -81946,14 +81963,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T07:38:53.381Z
-  closed_reason: "Merged in PR #774 (merge commit 3d6fc0307b72a85fff53413b453038e1c4008603). Removed
-    process-level KSPEC_SESSION_ID mutation from the invocation lifecycle, relying on
-    adapter-specific injection plus child spawn env only, and added regression coverage for spawned
-    child env propagation and concurrent invocation isolation. AC coverage verified for
-    @agent-invocation-lifecycle ac-2; inherited @trait-error-guidance ACs remain explicitly marked
-    N/A for this library module. Local focused tests, full npm test, and hosted CI all passed on the
-    merged HEAD."
 - _ulid: 01KK60VVZRX87B64NJTRN0QYA1
   slugs: []
   title: Sanitize inherited env vars in agent spawner
