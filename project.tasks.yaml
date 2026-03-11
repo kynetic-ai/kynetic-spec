@@ -88309,14 +88309,14 @@
   type: task
   spec_ref: "@plan-export"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKDBHEKYVSWZKFQBY319RDAA
+  session_id: null
   created_at: 2026-03-10T22:42:10.239Z
   started_at: 2026-03-11T02:36:33.605Z
   submitted_at: 2026-03-11T02:38:16.928Z
@@ -88372,6 +88372,13 @@
         successfully; npm test -- tests/cli-plan.test.ts passed (49/49); kspec validate returned
         warnings only from the pre-existing repository backlog, with no new errors from
         @plan-export."
+      supersedes: null
+    - _ulid: 01KKDE06Z0R0WS30J1TDV4D2RP
+      created_at: 2026-03-11T03:10:46.241Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #767 is missing executable coverage for
+        @trait-semantic-exit-codes ac-4. The runtime error branch in plan export's --output
+        file-write path is only annotated, not tested."
       supersedes: null
   todos: []
   automation: eligible
