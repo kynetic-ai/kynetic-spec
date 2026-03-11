@@ -5541,7 +5541,7 @@ features:
         created: 2026-03-10T22:42:09.347Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKCYMBXMDRXZ023PF6GFR5DE
         slugs:
           - plan-import-into
