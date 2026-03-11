@@ -25,6 +25,8 @@ import {
   closeSession,
   appendEvent,
   injectEnvForAdapter,
+  getSession,
+  listSessions,
   removeEnvForAdapter,
 } from "../sessions/store.js";
 import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
@@ -133,30 +135,55 @@ function blockTask(taskRef: string, reason: string, cwd: string, kspecCliPath: s
   runKspecCli(["task", "block", taskRef, "--reason", reason], cwd, kspecCliPath);
 }
 
-/**
- * Get the consecutive failure count for a task from its notes.
- * Looks for AGENT-FAIL notes added by previous invocations.
- */
-function getConsecutiveFailureCount(taskRef: string, cwd: string, kspecCliPath: string): number {
-  const result = runKspecCli(["task", "get", taskRef, "--json"], cwd, kspecCliPath);
-  if (result.status !== 0) return 0;
-
-  try {
-    const task = JSON.parse(result.stdout);
-    const notes: Array<{ content: string }> = task.notes ?? [];
-    // Count consecutive AGENT-FAIL notes from the end
-    let count = 0;
-    for (let i = notes.length - 1; i >= 0; i--) {
-      if (notes[i].content?.includes("[AGENT-FAIL]")) {
-        count++;
-      } else {
-        break;
-      }
-    }
-    return count;
-  } catch {
-    return 0;
+function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outcome"] | null {
+  switch (metadata.status) {
+    case "completed":
+      return "success";
+    case "timed_out":
+      return "timed_out";
+    case "failed":
+      return "failed";
+    default:
+      return null;
   }
+}
+
+/**
+ * Get the current consecutive failure count for a task/agent from prior
+ * invocation outcomes recorded in session metadata.
+ */
+async function getConsecutiveFailureCount(
+  sessionsDir: string,
+  taskRef: string,
+  agentId: string,
+): Promise<number> {
+  const sessionIds = await listSessions(sessionsDir);
+  const sessions = await Promise.all(sessionIds.map((sessionId) => getSession(sessionsDir, sessionId)));
+
+  const relevantSessions = sessions
+    .filter((session): session is SessionMetadata => session !== null)
+    .filter((session) =>
+      session.task_id === taskRef &&
+      (session.agent_id ?? session.agent_type) === agentId,
+    )
+    .map((session) => ({
+      ...session,
+      invocationOutcome: toInvocationOutcome(session),
+      sortMs: new Date(session.ended_at ?? session.started_at).getTime(),
+    }))
+    .filter((session) => session.invocationOutcome !== null && Number.isFinite(session.sortMs))
+    .sort((a, b) => b.sortMs - a.sortMs);
+
+  let consecutiveFailures = 0;
+  for (const session of relevantSessions) {
+    if (session.invocationOutcome === "failed") {
+      consecutiveFailures++;
+      continue;
+    }
+    break;
+  }
+
+  return consecutiveFailures;
 }
 
 /**
@@ -426,17 +453,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // ─── Close session as completed ───────────────────────────────────────
     const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
 
-    // Add success note to reset consecutive failure streak (only when a task is bound)
-    // AC: @agent-invocation-lifecycle ac-9
-    if (taskRef) {
-      addTaskNote(
-        taskRef,
-        `[AGENT-SUCCESS] Invocation completed successfully`,
-        cwd,
-        kspecCliPath,
-      );
-    }
-
     return {
       session: finalSession ?? session,
       outcome: "success",
@@ -515,7 +531,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       type: "agent.failed",
       data: {
         task_id: taskRef,
+        outcome: "failed",
         error: errorMessage,
+        reason: errorMessage,
         duration_ms: durationMs,
       },
     });
@@ -534,7 +552,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       // ─── Check retry threshold ────────────────────────────────────────────
       // AC: @agent-invocation-lifecycle ac-9
       const retryLimit = agent.budget?.max_retries ?? 3;
-      const consecutiveFailures = getConsecutiveFailureCount(taskRef, cwd, kspecCliPath);
+      const consecutiveFailures = await getConsecutiveFailureCount(sessionsDir, taskRef, agent.id);
 
       if (consecutiveFailures >= retryLimit) {
         blockTask(
