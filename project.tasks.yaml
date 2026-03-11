@@ -85501,6 +85501,15 @@
         @trait-api-endpoint ac-3/ac-4/ac-5 N/A coverage into standalone line comments so
         validation/review tooling can see them."
       supersedes: null
+    - _ulid: 01KKDSRN7TP9WY0DV271CCQVEM
+      created_at: 2026-03-11T06:36:21.626Z
+      author: Jacob Chapel
+      content: "Fix cycle 2 applied on PR #770: added explicit @session-text-search ac-performance
+        coverage to packages/web-ui/tests/e2e/api-sessions-search.spec.ts and converted
+        @trait-api-endpoint ac-3/ac-4/ac-5 search-endpoint N/A coverage into standalone // AC
+        annotations. Verification: npm test -- tests/ac-annotation-validation.test.ts passed; kspec
+        validate --warnings-ok passed (project warning baseline only)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
@@ -88893,7 +88902,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Prioritize pending_review over pending in dispatch scheduling
+- _ulid: 01KKDSR3C5YJW5T0W3AFJZCKJ5
+  slugs: []
+  title: Prioritize pending_review over pending in dispatch scheduling
+  type: task
   description: "Without git worktree isolation, dispatch serializes agents into a single slot. Current
     STATUS_PRECEDENCE ranks pending (2) above pending_review (3), so the worker picks up new tasks
     before the reviewer handles submitted work. This creates a bottleneck: completed work sits in
@@ -88901,22 +88913,19 @@
     (pending_review: 2, pending: 3). Once worktree-based agent isolation lands and agents run
     concurrently in separate working copies, this ordering becomes moot — but until then it ensures
     the review-then-work cycle completes faster."
-  type: task
   spec_ref: "@dispatch-in-progress-priority"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - dispatch
     - agent
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKDSR3C5YJW5T0W3AFJZCKJ5
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-11T06:36:03.332Z
   notes: []
   todos: []
+  automation: eligible
