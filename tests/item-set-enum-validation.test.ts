@@ -1,6 +1,8 @@
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { setupTempFixtures, kspec, kspecJson, cleanupTempDir } from './helpers/cli.js';
 
+// AC: @status-lifecycle
+
 describe('Item Set Enum Validation', () => {
   let tempDir: string;
 

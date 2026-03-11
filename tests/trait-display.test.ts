@@ -3,6 +3,8 @@
  * AC: @trait-display ac-1, ac-2, ac-3, ac-4, ac-5
  */
 
+// AC: @spec-traits
+
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';

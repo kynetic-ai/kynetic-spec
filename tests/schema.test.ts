@@ -15,6 +15,15 @@ import {
   PlansFileSchema,
 } from '../src/schema/index.js';
 
+// AC: @item-types
+// AC: @type-module
+// AC: @type-feature
+// AC: @type-requirement
+// AC: @type-constraint
+// AC: @type-decision
+// AC: @type-task
+// AC: @zod-schema
+
 describe('UlidSchema', () => {
   it('should accept valid ULIDs', () => {
     const validUlid = '01HQ3K5XJ8MPVB2XCJZ0KE9YWN';

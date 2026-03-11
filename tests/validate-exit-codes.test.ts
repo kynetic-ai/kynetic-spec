@@ -12,6 +12,8 @@
  * not completeness warnings.
  */
 
+// AC: @validation-output
+
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir } from './helpers/cli';
 import * as fs from 'node:fs/promises';

@@ -3,10 +3,17 @@
  *
  * AC: @manifest-discovery ac-1, ac-2, ac-3, ac-4, ac-5
  * AC: @meta-manifest-discovery ac-1, ac-2, ac-3
+ * AC: @file-structure
+ * AC: @single-file-structure
+ * AC: @directory-structure
  *
  * Note: These tests use traditional mode (spec/ subdirectory) since shadow mode
  * requires proper git worktree setup which is complex for unit tests.
  */
+
+// AC: @file-structure
+// AC: @single-file-structure
+// AC: @directory-structure
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";

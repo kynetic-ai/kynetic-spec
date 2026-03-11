@@ -9,6 +9,7 @@ import {
   testUlid,
 } from "./helpers/cli";
 
+// AC: @alignment-system
 // AC: @alignment-warnings ac-1
 
 describe("validate alignment: no-task spec warning policy", () => {
