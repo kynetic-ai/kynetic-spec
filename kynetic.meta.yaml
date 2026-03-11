@@ -8155,6 +8155,15 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KKFAF3FVMEVZ1YMMW9EJ9CGR
+    type: friction
+    content: "Fresh full npm test on PR #789 head later passed after a review-time failure in
+      packages/web-ui/tests/prose-typography.test.ts, suggesting the built-CSS typography test can
+      fail transiently and send shadow-branch-only tasks into unnecessary fix cycles."
+    created_at: 2026-03-11T20:47:28.763Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
