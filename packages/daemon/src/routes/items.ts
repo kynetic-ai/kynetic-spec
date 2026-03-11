@@ -111,6 +111,7 @@ function getItemMaturity(item: LoadedSpecItem): string | undefined {
 
 function toBatchSpecItemSummary(item: LoadedSpecItem) {
   return {
+    kind: 'item',
     ulid: item._ulid,
     slugs: item.slugs,
     title: item.title,
@@ -124,12 +125,14 @@ function toBatchSpecItemSummary(item: LoadedSpecItem) {
 
 function toBatchTaskSummary(task: LoadedTask) {
   return {
+    kind: 'task',
     ulid: task._ulid,
     slugs: task.slugs,
     title: task.title,
     status: task.status,
     priority: task.priority,
     spec_ref: task.spec_ref,
+    assignee: task.assignee,
   };
 }
 

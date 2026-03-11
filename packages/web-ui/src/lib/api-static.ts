@@ -14,6 +14,9 @@ import type {
 	TaskDetail,
 	ItemSummary,
 	ItemDetail,
+	BatchItemsResponse,
+	BatchSpecItemSummary,
+	BatchTaskSummary,
 	InboxItem,
 	PlanDetail,
 	PlanSummary,
@@ -65,6 +68,37 @@ function toItemSummary(item: ExportedItem): ItemSummary {
 		tags: item.tags,
 		created_at: item.created_at ?? new Date().toISOString(),
 		acceptance_criteria_count: item.acceptance_criteria?.length ?? 0
+	};
+}
+
+function toBatchSpecItemSummary(item: ExportedItem): BatchSpecItemSummary {
+	const rawStatus = (item as ExportedItem & { status?: string | { maturity?: string } }).status;
+
+	return {
+		kind: 'item',
+		ulid: item._ulid,
+		slugs: item.slugs,
+		title: item.title,
+		type: item.type,
+		status: typeof rawStatus === 'string' ? rawStatus : undefined,
+		maturity: typeof rawStatus === 'object' && rawStatus ? rawStatus.maturity : undefined,
+		traits: item.traits ?? [],
+		ac_count: item.acceptance_criteria?.length ?? 0
+	};
+}
+
+function toBatchTaskSummary(task: ExportedTask): BatchTaskSummary {
+	const assignee = (task as ExportedTask & { assignee?: string }).assignee;
+
+	return {
+		kind: 'task',
+		ulid: task._ulid,
+		slugs: task.slugs,
+		title: task.title,
+		status: task.status,
+		priority: task.priority,
+		spec_ref: task.spec_ref ?? undefined,
+		assignee
 	};
 }
 
@@ -337,6 +371,34 @@ export function fetchItemTasksStatic(ref: string): PaginatedResponse<TaskSummary
 		offset: 0,
 		limit: linkedTasks.length
 	};
+}
+
+export function fetchBatchItemsStatic(refs: string[]): BatchItemsResponse {
+	const snapshot = getSnapshot();
+	if (!snapshot || refs.length === 0) {
+		return { items: [], unresolved: [] };
+	}
+
+	const items = [];
+	const unresolved: string[] = [];
+
+	for (const ref of refs) {
+		const task = findTaskByRef(snapshot.tasks, ref);
+		if (task) {
+			items.push(toBatchTaskSummary(task));
+			continue;
+		}
+
+		const item = findItemByRef(snapshot.items, ref);
+		if (item) {
+			items.push(toBatchSpecItemSummary(item));
+			continue;
+		}
+
+		unresolved.push(ref);
+	}
+
+	return { items, unresolved };
 }
 
 /**

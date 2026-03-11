@@ -6,6 +6,7 @@ tasks:
     type: task
     status: pending
     priority: 2
+    assignee: "@alice"
     tags:
       - test
     description: |

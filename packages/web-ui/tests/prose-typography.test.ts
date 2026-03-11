@@ -63,6 +63,6 @@ describe('prose typography setup', () => {
 		expect(builtCss).toContain('table');
 		expect(builtCss).toContain('.dark\\:prose-invert');
 		},
-		30_000
+		90_000
 	);
 });

@@ -5,16 +5,17 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { base } from '$app/paths';
-	import type { PlanSummary } from '@kynetic-ai/shared';
-	import { fetchPlans, fetchPlanContent } from '$lib/api';
+	import type { BatchItemSummary, PlanDetail, PlanSummary } from '@kynetic-ai/shared';
+	import { fetchPlans, fetchPlanContent, fetchBatchItems } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
-	import { renderMarkdown } from '$lib/utils/markdown';
+	import { buildPlanContentBlocks } from '$lib/utils/plan-embedded-content';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Skeleton } from '$lib/components/ui/skeleton';
+	import PlanEmbeddedBlocks from '$lib/components/plans/PlanEmbeddedBlocks.svelte';
 	import MapIcon from '@lucide/svelte/icons/map';
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import ListTodoIcon from '@lucide/svelte/icons/list-todo';
@@ -32,9 +33,12 @@
 	// ── Plan content expansion state ──
 	// AC: @ui-plans-view ac-2 — Track expanded plans and their lazy-loaded content
 	let expandedPlanId = $state<string | null>(null);
-	let contentCache = $state<Record<string, string>>({});
+	let detailCache = $state<Record<string, PlanDetail>>({});
 	let contentLoading = $state<Record<string, boolean>>({});
 	let contentError = $state<Record<string, string>>({});
+	let embeddedItemsCache = $state<Record<string, BatchItemSummary[]>>({});
+	let embeddedItemsLoading = $state<Record<string, boolean>>({});
+	let embeddedItemsError = $state<Record<string, string>>({});
 
 	// ── Plan status labels and colors ──
 	// AC: @ui-plans-view ac-1 — visually distinct statuses with text labels
@@ -126,7 +130,16 @@
 		expandedPlanId = plan._ulid;
 
 		// Skip loading if already cached
-		if (contentCache[plan._ulid] !== undefined) return;
+		if (detailCache[plan._ulid] !== undefined) {
+			if (
+				embeddedItemsCache[plan._ulid] === undefined &&
+				!embeddedItemsLoading[plan._ulid] &&
+				plan.derived_specs.length + plan.derived_tasks.length > 0
+			) {
+				void loadEmbeddedItems(plan);
+			}
+			return;
+		}
 
 		// Don't re-fetch if already loading
 		if (contentLoading[plan._ulid]) return;
@@ -136,7 +149,10 @@
 
 		try {
 			const detail = await fetchPlanContent(planRef);
-			contentCache = { ...contentCache, [plan._ulid]: detail.content };
+			detailCache = { ...detailCache, [plan._ulid]: detail };
+			if (detail.derived_specs.length + detail.derived_tasks.length > 0) {
+				void loadEmbeddedItems(detail);
+			}
 		} catch (err) {
 			contentError = {
 				...contentError,
@@ -144,6 +160,31 @@
 			};
 		} finally {
 			contentLoading = { ...contentLoading, [plan._ulid]: false };
+		}
+	}
+
+	async function loadEmbeddedItems(plan: Pick<PlanDetail, '_ulid' | 'derived_specs' | 'derived_tasks'>) {
+		if (embeddedItemsLoading[plan._ulid]) return;
+
+		const refs = [...plan.derived_specs, ...plan.derived_tasks];
+		if (refs.length === 0) {
+			embeddedItemsCache = { ...embeddedItemsCache, [plan._ulid]: [] };
+			return;
+		}
+
+		embeddedItemsLoading = { ...embeddedItemsLoading, [plan._ulid]: true };
+		embeddedItemsError = { ...embeddedItemsError, [plan._ulid]: '' };
+
+		try {
+			const response = await fetchBatchItems(refs);
+			embeddedItemsCache = { ...embeddedItemsCache, [plan._ulid]: response.items };
+		} catch (err) {
+			embeddedItemsError = {
+				...embeddedItemsError,
+				[plan._ulid]: err instanceof Error ? err.message : 'Failed to load embedded items'
+			};
+		} finally {
+			embeddedItemsLoading = { ...embeddedItemsLoading, [plan._ulid]: false };
 		}
 	}
 
@@ -168,6 +209,17 @@
 	function progressPercent(plan: PlanSummary): number {
 		if (plan.task_progress.total === 0) return 0;
 		return Math.round((plan.task_progress.completed / plan.task_progress.total) * 100);
+	}
+
+	function planBlocks(planId: string): ReturnType<typeof buildPlanContentBlocks> {
+		const detail = detailCache[planId];
+		if (!detail) return [];
+
+		return buildPlanContentBlocks(detail, {
+			batchItems: embeddedItemsCache[planId],
+			batchLoading: embeddedItemsLoading[planId],
+			batchError: embeddedItemsError[planId]
+		});
 	}
 </script>
 
@@ -346,22 +398,20 @@
 								</Button>
 							{/if}
 							<!-- AC: @ui-plans-view ac-2 — Expand/collapse button for plan content -->
-							{#if !isStaticMode()}
-								<Button
-									variant="ghost"
-									size="sm"
-									class="h-7 gap-1.5 text-xs ml-auto"
-									onclick={() => togglePlanContent(plan)}
-									aria-expanded={expandedPlanId === plan._ulid}
-									aria-controls="plan-content-{plan._ulid}"
-									data-testid="plan-expand-toggle"
-								>
-									{expandedPlanId === plan._ulid ? 'Hide Content' : 'Show Content'}
-									<ChevronDownIcon
-										class="size-3.5 transition-transform duration-200 {expandedPlanId === plan._ulid ? 'rotate-180' : ''}"
-									/>
-								</Button>
-							{/if}
+							<Button
+								variant="ghost"
+								size="sm"
+								class="h-7 gap-1.5 text-xs ml-auto"
+								onclick={() => togglePlanContent(plan)}
+								aria-expanded={expandedPlanId === plan._ulid}
+								aria-controls="plan-content-{plan._ulid}"
+								data-testid="plan-expand-toggle"
+							>
+								{expandedPlanId === plan._ulid ? 'Hide Content' : 'Show Content'}
+								<ChevronDownIcon
+									class="size-3.5 transition-transform duration-200 {expandedPlanId === plan._ulid ? 'rotate-180' : ''}"
+								/>
+							</Button>
 						</div>
 
 						<!-- AC: @ui-plans-view ac-2 — Expandable plan content section -->
@@ -387,13 +437,10 @@
 									>
 										{contentError[plan._ulid]}
 									</div>
-								{:else if contentCache[plan._ulid] !== undefined}
-									{#if contentCache[plan._ulid]}
-										<div
-											class="prose prose-sm dark:prose-invert max-w-none"
-											data-testid="plan-content-rendered"
-										>
-											{@html renderMarkdown(contentCache[plan._ulid])}
+								{:else if detailCache[plan._ulid] !== undefined}
+									{#if detailCache[plan._ulid].content}
+										<div class="prose prose-sm dark:prose-invert max-w-none">
+											<PlanEmbeddedBlocks blocks={planBlocks(plan._ulid)} />
 										</div>
 									{:else}
 										<p class="text-sm text-muted-foreground italic" data-testid="plan-content-empty">
