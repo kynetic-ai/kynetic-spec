@@ -7557,7 +7557,7 @@ features:
               automation-eligible tasks
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y
     slugs:
       - cli-agent-commands
