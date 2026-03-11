@@ -86680,14 +86680,14 @@
   type: task
   spec_ref: "@description-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKE0B5RQA67KDX6Z5Z118V3S
+  session_id: null
   created_at: 2026-03-10T06:55:47.719Z
   started_at: 2026-03-11T08:40:06.260Z
   submitted_at: 2026-03-11T08:41:45.704Z
@@ -86721,6 +86721,15 @@
         @workflow-prune. Re-ran kspec validate --completeness and confirmed missing-description
         warnings dropped to zero. Note: plan text still mentions Test Trait, but @01KJN1WT already
         had a description before this task started."
+      supersedes: null
+    - _ulid: 01KKE218G5R358387WFRHSEN7V
+      created_at: 2026-03-11T09:00:52.101Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: Review blocked: no PR found for task
+        @01KKB8FH07NJ34FF5GC8XJW7XR (no open/closed PR body match and branch
+        fix/implement-missing-description-backfill has no task diff), and npm test failed during
+        review with shadow sync regression in tests/shadow.test.ts and mirrored
+        .review/pr775/tests/shadow.test.ts."
       supersedes: null
   todos: []
   automation: eligible
@@ -89246,6 +89255,7 @@
   session_id: 01KKE0YK3HYB0EB0D2VR9JSH7B
   created_at: 2026-03-11T06:36:03.332Z
   started_at: 2026-03-11T08:47:27.731Z
+  submitted_at: 2026-03-11T08:55:27.966Z
   notes:
     - _ulid: 01KKE18PC1W7B3DPE7XNM1C5JA
       created_at: 2026-03-11T08:47:27.105Z
@@ -89289,4 +89299,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T08:55:27.966Z
