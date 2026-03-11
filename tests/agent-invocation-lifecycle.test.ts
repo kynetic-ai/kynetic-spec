@@ -79,6 +79,24 @@ function registerMockAdapter(env: Record<string, string> = {}): void {
   });
 }
 
+async function seedInvocationOutcome(
+  sessionsDir: string,
+  sessionId: string,
+  taskRef: string,
+  agentId: string,
+  status: "completed" | "failed" | "timed_out",
+): Promise<void> {
+  await createSession(sessionsDir, {
+    id: sessionId,
+    agent_type: "mock-acp",
+    agent_id: agentId,
+    task_id: taskRef,
+    trigger: "task.ready",
+  });
+  await closeSession(sessionsDir, sessionId, status, `Seeded ${status} outcome`);
+  await new Promise((resolve) => setTimeout(resolve, 2));
+}
+
 // ─── AC-1: Session creation with trigger, agent_id, task_id ──────────────────
 
 // AC: @agent-invocation-lifecycle ac-1
@@ -576,7 +594,9 @@ describe("Failure handling", () => {
     expect(failedEvent).toBeDefined();
     // AC: @agent-invocation-lifecycle ac-5 — error details
     expect(failedEvent.data.task_id).toBe(taskRef);
+    expect(failedEvent.data.outcome).toBe("failed");
     expect(failedEvent.data.error).toBeDefined();
+    expect(failedEvent.data.reason).toBe(failedEvent.data.error);
   });
 
   it("should close session with status failed on failure", async () => {
@@ -1135,48 +1155,18 @@ describe("Consecutive failure threshold and task blocking", () => {
 
   it("should block the task with a failure note when consecutive failures reach retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — consecutive failures → task blocked with note
-    // The agent's retry limit is derived from agent.budget.max_retries (default 3).
-    // We pre-populate the capture file to simulate prior failure notes already recorded
-    // by previous invocations, then trigger the threshold-crossing invocation.
     const captureFile = path.join(testDir, "kspec-calls.json");
     const taskRef = "@" + testUlid("TASK");
+    const sessionsDir = path.join(testDir, "sessions");
+    const agentId = "test-worker";
 
-    // Mock kspec CLI: simulate "task get" returning a task with 3 existing AGENT-FAIL notes.
-    // The implementation calls getConsecutiveFailureCount (kspec task get --json) to read
-    // the note history. With 3 consecutive AGENT-FAIL notes and a retry limit of 3, blocking
-    // must be triggered.
-    const taskGetMockPath = path.join(testDir, "kspec-threshold-mock.cjs");
-    const mockTask = {
-      notes: [
-        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
-        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
-        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
-      ],
-    };
-    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const captureFile = process.env.KSPEC_CAPTURE_FILE;
-
-if (captureFile) {
-  let calls = [];
-  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
-  calls.push({ args, timestamp: Date.now() });
-  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
-}
-
-// Return task JSON for "task get ... --json" to simulate 3 consecutive prior failures
-if (args.includes('task') && args.includes('get') && args.includes('--json')) {
-  process.stdout.write(JSON.stringify(${JSON.stringify(mockTask)}) + '\\n');
-}
-
-process.exit(0);
-`);
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 1), taskRef, agentId, "failed");
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 2), taskRef, agentId, "failed");
 
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
       const agent = makeTestAgent({
+        id: agentId,
         adapter: "always-fail-acp",
         budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
@@ -1184,12 +1174,12 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
+        sessionsDir,
         cwd: process.cwd(),
         taskRef,
         prompt: "Test consecutive failure blocking",
         trigger: "task.ready",
-        kspecCliPath: taskGetMockPath,
+        kspecCliPath: MOCK_KSPEC_CLI,
       });
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -1214,29 +1204,6 @@ process.exit(0);
     const captureFile = path.join(testDir, "kspec-calls-below.json");
     const taskRef = "@" + testUlid("TASK");
 
-    // Mock kspec CLI: simulate task with 0 prior AGENT-FAIL notes (first failure)
-    const taskGetMockPath = path.join(testDir, "kspec-below-mock.cjs");
-    const emptyTask = { notes: [] };
-    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const captureFile = process.env.KSPEC_CAPTURE_FILE;
-
-if (captureFile) {
-  let calls = [];
-  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
-  calls.push({ args, timestamp: Date.now() });
-  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
-}
-
-if (args.includes('task') && args.includes('get') && args.includes('--json')) {
-  process.stdout.write(JSON.stringify(${JSON.stringify(emptyTask)}) + '\\n');
-}
-
-process.exit(0);
-`);
-
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
       const agent = makeTestAgent({
@@ -1252,7 +1219,7 @@ process.exit(0);
         taskRef,
         prompt: "Test below threshold",
         trigger: "task.ready",
-        kspecCliPath: taskGetMockPath,
+        kspecCliPath: MOCK_KSPEC_CLI,
       });
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -1275,44 +1242,19 @@ process.exit(0);
 
   it("should reset consecutive failure count after a successful invocation", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — streak resets after success; fail→success→fail is not consecutive
-    // Simulate: task has 2 prior AGENT-FAIL notes then 1 AGENT-SUCCESS note (streak reset).
-    // With retry limit=3, the next failure is count=1 → should NOT block.
     const captureFile = path.join(testDir, "kspec-calls-reset.json");
     const taskRef = "@" + testUlid("TASK");
+    const sessionsDir = path.join(testDir, "sessions");
+    const agentId = "test-worker";
 
-    // Mock kspec CLI: simulate task with AGENT-FAIL, AGENT-FAIL, AGENT-SUCCESS notes.
-    // The last note is AGENT-SUCCESS, so consecutive count (from end) = 0 before this failure.
-    const taskGetMockPath = path.join(testDir, "kspec-reset-mock.cjs");
-    const taskWithResetNotes = {
-      notes: [
-        { content: "[AGENT-FAIL] Invocation failed: first failure" },
-        { content: "[AGENT-FAIL] Invocation failed: second failure" },
-        { content: "[AGENT-SUCCESS] Invocation completed successfully" },
-      ],
-    };
-    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const captureFile = process.env.KSPEC_CAPTURE_FILE;
-
-if (captureFile) {
-  let calls = [];
-  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
-  calls.push({ args, timestamp: Date.now() });
-  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
-}
-
-if (args.includes('task') && args.includes('get') && args.includes('--json')) {
-  process.stdout.write(JSON.stringify(${JSON.stringify(taskWithResetNotes)}) + '\\n');
-}
-
-process.exit(0);
-`);
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 3), taskRef, agentId, "failed");
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 4), taskRef, agentId, "failed");
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 5), taskRef, agentId, "completed");
 
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
       const agent = makeTestAgent({
+        id: agentId,
         adapter: "always-fail-acp",
         budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
@@ -1320,12 +1262,12 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
+        sessionsDir,
         cwd: process.cwd(),
         taskRef,
         prompt: "Test streak reset after success",
         trigger: "task.ready",
-        kspecCliPath: taskGetMockPath,
+        kspecCliPath: MOCK_KSPEC_CLI,
       });
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -1339,7 +1281,7 @@ process.exit(0);
     );
     expect(noteCall).toBeDefined();
 
-    // Block should NOT be called — streak was reset by AGENT-SUCCESS, so only 1 consecutive failure now
+    // Block should NOT be called — the completed invocation reset the failure streak
     const blockCall = calls.find((c) =>
       c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
     );
