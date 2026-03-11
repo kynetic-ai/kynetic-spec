@@ -86172,6 +86172,34 @@
         - Verification: targeted web-ui tests for each adopted surface plus kspec validate and full
         project test suite.
       supersedes: null
+    - _ulid: 01KKEKJJ005CSPFYATBDFMQV63
+      created_at: 2026-03-11T14:07:24.672Z
+      author: Jacob Chapel
+      content: >-
+        Implemented markdown adoption across the remaining static text surfaces in web-ui.
+
+
+        Changes:
+
+        - Added renderInlineMarkdown() for short GWT strings while keeping renderMarkdown() for full
+        prose blocks.
+
+        - Swapped task descriptions/notes, spec descriptions/AC text, observations, workflows, inbox
+        list items, and triage card text to sanitized markdown rendering with prose styling.
+
+        - Seeded E2E fixtures with markdown-rich content and added browser assertions for spec ACs
+        ac-1 through ac-7.
+
+
+        Verification:
+
+        - tests/web-ui-session-stream.test.ts passed.
+
+        - npm run build:e2e passed on current HEAD.
+
+        - Playwright execution is blocked in dispatch because the shared fixture still tries to run
+        kspec serve start.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
