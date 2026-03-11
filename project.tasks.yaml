@@ -86897,6 +86897,14 @@
         local .kspec shadow worktree and fails CI on PR #786 current HEAD; rework the regression to
         use isolated checked-in/temp data."
       supersedes: null
+    - _ulid: 01KKF7QAJ1TYDXH847WR2TCQG7
+      created_at: 2026-03-11T19:59:32.417Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 8] Reworked tests/core-ac-backfill.test.ts to build an isolated temp kspec
+        project from checked-in fixture data instead of reading the repo root .kspec worktree.
+        Scoped regressions now pass: npm test -- --run tests/core-ac-backfill.test.ts
+        tests/ac-annotation-validation.test.ts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
