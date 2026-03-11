@@ -85406,7 +85406,7 @@
   type: task
   spec_ref: "@session-text-search"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-cli-unified-filtering"
@@ -85512,6 +85512,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T06:58:00.140Z
+  closed_reason: "Merged in PR #770. Implemented shared metadata-prefiltered session text search
+    across CLI, daemon, and the /sessions UI, including GET /api/sessions/search, q= URL
+    persistence, grouped match rendering, relative since support, and explicit AC coverage for
+    performance plus trait N/A annotations. AC coverage confirmed for @session-text-search own
+    criteria and inherited @trait-api-endpoint criteria; CI and local npm test passed on the merged
+    head."
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
   slugs:
     - implement-markdown-rendering-trait
