@@ -87012,6 +87012,13 @@
         - Verification: inspect @tasks descendants, run kspec validate --completeness, and confirm
         zero missing-AC warnings for @tasks descendants.
       supersedes: null
+    - _ulid: 01KKEZVNKZC7N83AX2HS85V3N7
+      created_at: 2026-03-11T17:42:06.207Z
+      author: Jacob Chapel
+      content: Added one concrete acceptance criterion to each previously uncovered feature/requirement
+        under @tasks via a single atomic kspec batch mutation. Covered task types, lifecycle states,
+        schema fields, derive semantics, notes/todos, storage modes, and task query variants.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
