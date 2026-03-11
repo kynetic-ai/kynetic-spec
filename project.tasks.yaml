@@ -85864,6 +85864,17 @@
         port StreamingMarkdown.svelte, wire SessionStream streaming view to it, and extend web-ui
         tests for streaming + trait coverage."
       supersedes: null
+    - _ulid: 01KKE5HTM4HN7GCPCPXJCYZN4M
+      created_at: 2026-03-11T10:02:20.676Z
+      author: Jacob Chapel
+      content: "Implemented shared streaming markdown stack for web-ui. Added StreamingMarkdown.svelte
+        plus shared highlight/sanitize helpers, updated static renderMarkdown() to use the same
+        sanitization/highlight path, wired SessionStream live output through the component, and
+        added AC-linked coverage in tests/web-ui-session-stream.test.ts. Verification: web-ui build
+        passed, package web-ui test slice passed, lint no-static-analysis passed. Full npm test has
+        one remaining unrelated failure in .review/pr775/tests/clone-for-testing.test.ts about
+        reusing a temp clone directory."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
