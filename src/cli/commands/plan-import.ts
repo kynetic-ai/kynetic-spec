@@ -10,26 +10,34 @@ import { markMutating } from "../command-annotations.js";
 import {
   buildIndexes,
   createPlan,
+  findPlanByRef,
+  getAuthor,
   initContext,
+  mutatePlanAtomically,
+  type LoadedPlan,
   loadPlans,
   savePlan,
   type LoadedSpecItem,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
+  type Note,
   type PlanInput,
   PlanStatusSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success, warn } from "../output.js";
+import { ulid } from "ulid";
 
 interface ImportOptions {
+  into?: string;
   module?: string;
   dryRun?: boolean;
   update?: boolean;
   json?: boolean;
   status?: string;
+  reason?: string;
 }
 
 interface ImportPreview {
@@ -41,6 +49,8 @@ interface ImportPreview {
   source_path: string;
   derived_specs: string[];
   derived_tasks: string[];
+  changes: string[];
+  note_message: string | null;
 }
 
 /**
@@ -50,10 +60,12 @@ interface ImportPreview {
 export function registerPlanImportCommand(planCommand: Command): void {
   markMutating(planCommand.command("import <path>"))
     .description("Import a plan document as stored content without deriving work")
+    .option("--into <ref>", "Update an existing draft or approved plan with file content")
     .option("--module <ref>", "Optional module to store on the plan for later derive")
     .option("--status <status>", "Initial plan status (default: draft)")
     .option("--dry-run", "Show the plan record that would be created without saving")
     .option("--update", "Ignored for content-only import; derivation happens separately")
+    .option("--reason <text>", "Reason note when updating an existing plan via --into")
     .option("--json", "Output as JSON")
     .addHelpText(
       "after",
@@ -66,7 +78,8 @@ Format:
 Examples:
   $ kspec plan import ./plan.md
   $ kspec plan import ./plan.md --status approved --json
-  $ kspec plan import ./plan.md --module @core --dry-run`,
+  $ kspec plan import ./plan.md --module @core --dry-run
+  $ kspec plan import ./edited.md --into @plan-ref --reason "Addressed review feedback"`,
     )
     .action(async (planPath: string, options: ImportOptions) => {
       try {
@@ -92,6 +105,11 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
   } catch (err) {
     error(`Failed to read plan file: ${planPath}`, err);
     process.exit(EXIT_CODES.USAGE_ERROR);
+  }
+
+  if (options.into) {
+    await importIntoExistingPlan(ctx, fullPath, content, options);
+    return;
   }
 
   if (options.update) {
@@ -128,7 +146,7 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
       : `@${options.module}`;
   }
 
-  const title = extractPlanTitle(content);
+  const title = extractOptionalPlanTitle(content) ?? "Untitled Plan";
   const planSlug = nextAvailablePlanSlug(title, refIndex);
   const preview: ImportPreview = {
     ref: `@${planSlug}`,
@@ -139,6 +157,8 @@ async function importPlan(planPath: string, options: ImportOptions): Promise<voi
     source_path: fullPath,
     derived_specs: [],
     derived_tasks: [],
+    changes: [],
+    note_message: null,
   };
 
   if (options.dryRun) {
@@ -175,6 +195,135 @@ async function saveImportedPlan(
   );
 }
 
+async function importIntoExistingPlan(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  fullPath: string,
+  content: string,
+  options: ImportOptions,
+): Promise<void> {
+  const foundPlan = await findPlanByRef(ctx, options.into!);
+  if (!foundPlan) {
+    exitImportWithGuidance(
+      errors.reference.planNotFound(options.into!),
+      EXIT_CODES.NOT_FOUND,
+      "Check available plans with: kspec plan list",
+      { ref: options.into, entity: "plan" },
+    );
+  }
+
+  const titleFromFile = extractOptionalPlanTitle(content);
+  const nextTitle = titleFromFile ?? foundPlan.title;
+  const noteMessage = options.reason || "Content updated from file";
+  const preview: ImportPreview = {
+    ref: foundPlan.slugs[0] ? `@${foundPlan.slugs[0]}` : `@${foundPlan._ulid}`,
+    title: nextTitle,
+    status: foundPlan.status,
+    content,
+    module_ref: foundPlan.module_ref ?? null,
+    source_path: fullPath,
+    derived_specs: [...foundPlan.derived_specs],
+    derived_tasks: [...foundPlan.derived_tasks],
+    changes: titleFromFile ? ["title", "content"] : ["content"],
+    note_message: noteMessage,
+  };
+
+  if (options.module) {
+    warn("--module is ignored with --into. Existing plan module assignment is unchanged.");
+  }
+  if (options.update) {
+    warn("--update is ignored with --into. Existing plan specs are not modified during re-import.");
+  }
+  if (options.status) {
+    warn("--status is ignored with --into. Existing plan status is unchanged.");
+  }
+
+  assertImportIntoAllowed(foundPlan);
+
+  if (options.dryRun) {
+    emitImportResult(preview, { dryRun: true });
+    return;
+  }
+
+  const author = getAuthor(ctx.config?.identity?.author);
+  const note = createPlanNote(noteMessage, author);
+  const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {
+    assertImportIntoAllowed(latestPlan);
+    return {
+      ...latestPlan,
+      title: nextTitle,
+      content,
+      notes: [...latestPlan.notes, note],
+    };
+  });
+
+  await commitIfShadow(
+    ctx.shadow,
+    "plan-import",
+    updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
+    updatedPlan.title,
+  );
+  emitImportResult(preview, { dryRun: false, createdAt: updatedPlan.created_at });
+}
+
+function assertImportIntoAllowed(plan: LoadedPlan): void {
+  if (plan.status === "active") {
+    exitImportWithGuidance(
+      "Cannot update active plan. Derive is a one-shot operation.",
+      EXIT_CODES.CONFLICT,
+      "Create a new plan iteration instead of re-importing into an active plan.",
+      {
+        current_status: plan.status,
+        valid_statuses: ["draft", "approved"],
+      },
+    );
+  }
+
+  if (plan.status === "completed" || plan.status === "rejected") {
+    exitImportWithGuidance(
+      "Cannot update plan in terminal status",
+      EXIT_CODES.CONFLICT,
+      "Reopen or replace the plan with a new draft/approved plan.",
+      {
+        current_status: plan.status,
+        valid_statuses: ["draft", "approved"],
+      },
+    );
+  }
+}
+
+function createPlanNote(content: string, author?: string): Note {
+  return {
+    _ulid: ulid(),
+    created_at: new Date().toISOString(),
+    author,
+    content,
+  };
+}
+
+function exitImportWithGuidance(
+  message: string,
+  exitCode: number,
+  suggestion?: string,
+  details?: Record<string, unknown>,
+): never {
+  if (suggestion) {
+    if (isJsonMode()) {
+      error(message, {
+        ...details,
+        suggestion,
+        guidance: suggestion,
+      });
+    } else {
+      error(message);
+      console.error(`Suggestion: ${suggestion}`);
+    }
+  } else {
+    error(message, isJsonMode() ? details : undefined);
+  }
+
+  process.exit(exitCode);
+}
+
 function emitImportResult(
   preview: ImportPreview,
   options: { dryRun: boolean; createdAt?: string },
@@ -190,6 +339,8 @@ function emitImportResult(
     derived_specs: preview.derived_specs,
     derived_tasks: preview.derived_tasks,
     content: preview.content,
+    changes: preview.changes,
+    note_message: preview.note_message,
   };
 
   if (isJsonMode()) {
@@ -211,15 +362,21 @@ function emitImportResult(
   console.log("Content stored: full document");
   console.log("Derived specs: 0");
   console.log("Derived tasks: 0");
+  if (preview.changes.length > 0) {
+    console.log(`Changes: ${preview.changes.join(", ")}`);
+  }
+  if (preview.note_message) {
+    console.log(`Note: ${preview.note_message}`);
+  }
 
   if (!options.dryRun) {
     success("Imported plan content");
   }
 }
 
-function extractPlanTitle(content: string): string {
+function extractOptionalPlanTitle(content: string): string | null {
   const titleMatch = content.match(/^#\s+(.+)$/m);
-  return titleMatch ? titleMatch[1].trim() : "Untitled Plan";
+  return titleMatch ? titleMatch[1].trim() : null;
 }
 
 function nextAvailablePlanSlug(
