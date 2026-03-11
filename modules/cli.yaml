@@ -50,6 +50,12 @@ features:
           - kspec tasks ready
         implements:
           - "@cli-design"
+        acceptance_criteria:
+          - id: ac-1
+            given: A documented kspec command is exposed to users.
+            when: The command syntax is shown in help text or examples.
+            then: It follows the pattern `kspec <resource> <action> [args] [flags]` so the resource and action
+              are explicit.
       - _ulid: 01KEZCJPHWKVBFSAEP0MMH57DQ
         slugs:
           - cli-json-output
@@ -70,6 +76,12 @@ features:
           - errors: Array of error objects (if any)
         implements:
           - "@cli-design"
+        acceptance_criteria:
+          - id: ac-1
+            given: A command is run with the `--json` flag.
+            when: The command finishes successfully or with a handled failure.
+            then: Stdout is valid JSON containing `success`, `data`, and `errors` fields for machine
+              consumption.
       - _ulid: 01KEZCJPHWB81SAWT4ZGCV75FC
         slugs:
           - cli-exit-codes
@@ -238,6 +250,13 @@ features:
             status:
               maturity: draft
               implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: An agent runs a command in non-interactive automation mode.
+            when: It uses agent-oriented flags such as `--json`, `--dry-run`, `--if-not-exists`, `--quiet`, or
+              disables prompting.
+            then: The command can complete without interactive input while honoring the requested
+              machine-friendly behavior.
       - _ulid: 01KFHZSJVGEX3KTM5CHM8J1XAN
         slugs:
           - cli-version
@@ -545,6 +564,12 @@ features:
           implementation: implemented
         description: Execute multiple mutating kspec commands from inline JSON, files, or stdin with shared
           validation, atomic or immediate execution modes, and structured result reporting.
+    acceptance_criteria:
+      - id: ac-1
+        given: A user compares multiple kspec commands across resources such as item, task, and link.
+        when: They inspect the command names, output shape, and error messaging.
+        then: The CLI presents a consistent command vocabulary and predictable human-readable responses
+          instead of resource-specific one-offs.
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
@@ -667,6 +692,11 @@ features:
           - "@trait-filterable-list"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: Spec items exist with different types, tags, and optional fields.
+            when: The user runs `kspec item list` with one or more filters.
+            then: Only items matching all requested filters are listed.
       - _ulid: 01KEZCJPHX678F01J6TZE5SX1Q
         slugs:
           - item-set
@@ -767,6 +797,12 @@ features:
           - "@trait-confirmation-prompt"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: A target item has child items or active references from other specs.
+            when: The user runs `kspec item delete` without the force or cascade option required by the
+              situation.
+            then: The command warns or blocks deletion instead of silently removing the item graph.
       - _ulid: 01KF374D6206HGMP55HGE8VNAQ
         slugs:
           - item-ac
@@ -1090,6 +1126,11 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: A pending task exists and is not blocked.
+            when: The user runs `kspec task start <ref>`.
+            then: The task moves to `in_progress` and records a `started_at` timestamp.
       - _ulid: 01JHNKA8W9CTSK300000000000
         slugs:
           - task-complete
@@ -1115,6 +1156,11 @@ features:
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
           - "@trait-multi-ref-batch"
+        acceptance_criteria:
+          - id: ac-1
+            given: An active task is ready to close and the user provides a completion reason.
+            when: The user runs `kspec task complete <ref> --reason "..."`.
+            then: The task moves to `completed`, stores the reason, and records `completed_at`.
       - _ulid: 01KFDZYWG0CTSK250000000000
         slugs:
           - task-submit
@@ -1172,6 +1218,11 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: A task is waiting on an external blocker.
+            when: The user runs `kspec task block <ref> --reason "..."`.
+            then: The task moves to `blocked` and the blocker reason is added to `blocked_by`.
       - _ulid: 01JHNKA9W1CTSK500000000000
         slugs:
           - task-unblock
@@ -1191,6 +1242,11 @@ features:
           - "@trait-json-output"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: A blocked task no longer has active blockers.
+            when: The user runs `kspec task unblock <ref>`.
+            then: The task leaves the blocked state and clears its `blocked_by` entries.
       - _ulid: 01JHNKA9W2CTSK600000000000
         slugs:
           - task-cancel
@@ -1216,6 +1272,11 @@ features:
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
           - "@trait-multi-ref-batch"
+        acceptance_criteria:
+          - id: ac-1
+            given: A task should not be completed and a cancellation reason is supplied.
+            when: The user runs `kspec task cancel <ref> --reason "..."`.
+            then: The task moves to the terminal `cancelled` state with the reason recorded in task history.
       - _ulid: 01KF0VJEHSCEQ5SVD6XRYV81M1
         slugs:
           - cmd-task-delete
@@ -1348,6 +1409,11 @@ features:
         created: 2026-01-16T00:51:19.234Z
         status:
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A task exists with status, dependencies, refs, and notes.
+            when: The user runs `kspec task get <ref>`.
+            then: The command shows the task details needed to inspect its current state without modifying it.
       - _ulid: 01KF24J46CY5Y7MPN1PXZT2GRB
         slugs:
           - task-note
@@ -1369,6 +1435,11 @@ features:
         created: 2026-01-16T00:51:21.422Z
         status:
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A task exists and the user provides a note message.
+            when: The user runs `kspec task note <ref> <message>`.
+            then: A timestamped note is appended to the task history with the chosen or default author.
       - _ulid: 01KF24J6HENWZ8KS5ZHQHCMA9B
         slugs:
           - task-notes-cmd
@@ -1387,6 +1458,11 @@ features:
         created: 2026-01-16T00:51:23.823Z
         status:
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A task has multiple notes recorded over time.
+            when: The user runs `kspec task notes <ref>`.
+            then: The notes are displayed in chronological order with timestamp, author, and content.
       - _ulid: 01KF24J8KKT3Y1N6M6JR7ACHQ8
         slugs:
           - task-todos-cmd
@@ -1405,6 +1481,11 @@ features:
         created: 2026-01-16T00:51:25.939Z
         status:
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A task contains todo items.
+            when: The user runs `kspec task todos <ref>`.
+            then: Each todo is listed with its status and completion details.
       - _ulid: 01KF24JAEM65BGJ5ZK0QM4XQNN
         slugs:
           - task-todo
@@ -1427,6 +1508,11 @@ features:
         created: 2026-01-16T00:51:27.829Z
         status:
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A task already exists.
+            when: The user uses `kspec task todo add`, `done`, or `remove` on that task.
+            then: The task checklist is updated to reflect the requested todo mutation.
       - _ulid: 01KF3E3S2Y8PZ1E75G202DG2JR
         slugs:
           - task-patch
@@ -1604,6 +1690,12 @@ features:
           - "@trait-filterable-list"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: Tasks exist in a mix of pending, needs_work, blocked, and incomplete-dependency states.
+            when: The user runs `kspec tasks ready`.
+            then: Only tasks that are actually ready are returned, with fix-cycle work listed before plain
+              pending tasks.
       - _ulid: 01JHNKA9W5CQRY200000000000
         slugs:
           - cmd-tasks-next
@@ -1620,6 +1712,11 @@ features:
         implements:
           - "@query-commands"
           - "@query-next"
+        acceptance_criteria:
+          - id: ac-1
+            given: More than one task is ready to work on.
+            when: The user runs `kspec tasks next`.
+            then: The command returns the single highest-priority ready task.
       - _ulid: 01JHNKA9W6CQRY300000000000
         slugs:
           - cmd-tasks-list
@@ -1640,6 +1737,11 @@ features:
           - "@trait-filterable-list"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: Project tasks exist with different statuses and metadata.
+            when: The user runs `kspec tasks list` with optional filters.
+            then: The command lists tasks that match the requested filter set.
       - _ulid: 01JHNKA9W7CQRY400000000000
         slugs:
           - cmd-tasks-blocked
@@ -1660,6 +1762,11 @@ features:
           - "@trait-filterable-list"
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: Some tasks are blocked and store blocker details.
+            when: The user runs `kspec tasks blocked`.
+            then: The output includes blocked tasks together with the blockers keeping them from progressing.
       - _ulid: 01KF41T5PN7Z6K6SXQK2S8K6DH
         slugs:
           - cmd-log
@@ -1815,6 +1922,11 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: A user needs to inspect project state before taking action.
+        when: They run CLI query commands for specs, tasks, or search results.
+        then: The commands return current project information without mutating spec or task state.
   - _ulid: 01KEZCJPHX1XC0F94K2HJ2F99X
     slugs:
       - link-commands
@@ -1848,6 +1960,11 @@ features:
           Updates the source item's relationship array.
         implements:
           - "@link-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: A source item, target item, and relationship type are valid.
+            when: The user runs `kspec link create <from> <to> --type <type>`.
+            then: The specified relationship is added to the source item.
       - _ulid: 01KEZCJPHY64RH5PPE6WJSPH03
         slugs:
           - link-list
@@ -1867,6 +1984,11 @@ features:
           Shows relationships matching filters.
         implements:
           - "@link-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: Relationships exist between spec items.
+            when: The user runs `kspec link list` with `--from`, `--to`, or `--type` filters.
+            then: Only links matching the supplied filters are shown.
       - _ulid: 01KEZCJPHYBD2BSED0D9ZHRMGQ
         slugs:
           - link-delete
@@ -1884,6 +2006,16 @@ features:
           Removes relationship. Updates source item.
         implements:
           - "@link-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: A relationship currently exists between two items.
+            when: The user runs `kspec link delete <from> <to>` with the relevant type filter if needed.
+            then: The matching relationship is removed from the source item.
+    acceptance_criteria:
+      - id: ac-1
+        given: Two items have a relationship that needs to be created, inspected, or removed.
+        when: The user uses the link command group.
+        then: The CLI can manage item relationships without editing spec files by hand.
   - _ulid: 01KEZCJPHYBMBBKESVKBBV4CGM
     slugs:
       - validate-commands
@@ -2018,6 +2150,12 @@ features:
             status:
               maturity: draft
               implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: The user selects one or more validation modes such as `--refs` or `--completeness`.
+            when: They run `kspec validate`.
+            then: Only the requested validation surfaces are executed and the command exits according to the
+              findings.
       - _ulid: 01KEZCJPHYVBG79TSAVC1KB0SZ
         slugs:
           - cmd-lint
@@ -2037,6 +2175,12 @@ features:
           Good for CI: kspec lint --strict
         implements:
           - "@validate-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: Validation or style issues are present in the project.
+            when: The user runs `kspec lint --strict`.
+            then: The command combines the lint surfaces and exits non-zero for warning or error findings that
+              strict mode treats as failures.
       - _ulid: 01KFADE3F4XFXX4E0WTFYZ839W
         slugs:
           - stale-status-detection
@@ -2133,6 +2277,12 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: The project may contain schema, reference, alignment, or completeness issues.
+        when: The user runs validation-oriented commands.
+        then: The CLI reports integrity findings clearly so the project can be checked before automation or
+          CI proceeds.
   - _ulid: 01JHNKAA05CDRV000000000000
     slugs:
       - derive-commands
@@ -2304,6 +2454,11 @@ features:
           spec when creating a new implementation task.
     traits:
       - "@trait-priority-parameter"
+    acceptance_criteria:
+      - id: ac-1
+        given: A spec item is ready to produce implementation work.
+        when: The user runs derive commands explicitly.
+        then: Tasks are created on demand from the referenced spec instead of appearing implicitly.
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
     slugs:
       - init-commands
@@ -2342,6 +2497,11 @@ features:
           Interactive prompts unless --no-prompt.
         implements:
           - "@init-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: The current repository has not been initialized for kspec yet.
+            when: The user runs `kspec init` with the chosen project options.
+            then: The command creates the initial manifest and module structure described by the selected mode.
       - _ulid: 01KEZCJPHYZKAW6006AM7P5KWT
         slugs:
           - cmd-hooks
@@ -2359,6 +2519,12 @@ features:
           Sets up git hooks for validation.
         implements:
           - "@init-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: Hooks are configured in the project manifest.
+            when: The user runs `kspec hooks install`, `list`, or `uninstall`.
+            then: The command reads the manifest configuration and manages the corresponding git hook files
+              accordingly.
       - _ulid: 01KF14PTK6XWQPE0ZG32WMVJRK
         slugs:
           - cmd-setup
@@ -2666,6 +2832,11 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: A repository needs kspec project scaffolding or configuration updates.
+        when: The user runs init or related configuration commands.
+        then: The CLI creates or updates the project setup artifacts needed to use kspec.
   - _ulid: 01KF15N59C28PGQYJQNADVFHPA
     slugs:
       - inbox-commands
@@ -2995,6 +3166,11 @@ features:
           implementation: implemented
     traits:
       - "@trait-priority-parameter"
+    acceptance_criteria:
+      - id: ac-1
+        given: A user wants to capture an idea before it is ready to become a task.
+        when: They use inbox commands to add and later inspect the entry.
+        then: The idea is stored in inbox state for later triage instead of being lost in chat history.
   - _ulid: 01KF1A8NP424N6FAY64C7T49R2
     slugs:
       - fuzzy-matching
@@ -3141,6 +3317,16 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: A user enters an unknown command such as `kspec task list` or a mistyped subcommand.
+            when: The CLI fails command resolution.
+            then: It suggests a sufficiently close valid command instead of only reporting the failure.
+    acceptance_criteria:
+      - id: ac-1
+        given: A user input is close to an existing item title, task slug, or command path but not exact.
+        when: Fuzzy matching is invoked for lookup or suggestion flows.
+        then: Close candidates are scored and returned so the user can recover from approximate input.
   - _ulid: 01KF3M0JFKF5578HVXEE99F0ZT
     slugs:
       - auto-cli-docs
@@ -4639,6 +4825,11 @@ features:
     relates_to: []
     tests: []
     created: 2026-01-17T15:18:25.264Z
+    acceptance_criteria:
+      - id: ac-1
+        given: An ACP agent requests filesystem or terminal access through the handler layer.
+        when: The request targets a permitted action within configured security boundaries.
+        then: The handler executes the request and rejects requests that violate those security checks.
   - _ulid: 01KF68JJ2XEPEEN5XTKQSJ36MT
     slugs:
       - ralph-orchestrator
@@ -4653,6 +4844,12 @@ features:
     relates_to: []
     tests: []
     created: 2026-01-17T15:18:27.678Z
+    acceptance_criteria:
+      - id: ac-1
+        given: Orchestrator agent mode is enabled and multiple task agents are available.
+        when: The orchestrator coordinates work across those agents.
+        then: It delegates task execution while keeping enough session context to guide and monitor the
+          workers.
   - _ulid: 01KFACEZX6E7G3XJAHE3H8ZT8B
     slugs:
       - multi-ref-batch
@@ -7959,6 +8156,20 @@ requirements:
         relates_to: []
         tests: []
         created: 2026-01-15T18:04:41.618Z
+        acceptance_criteria:
+          - id: ac-1
+            given: The UserPromptSubmit hook is invoked for a user prompt.
+            when: The `kspec session prompt-check` command runs.
+            then: It writes the single-line spec-first reminder to stdout.
+          - id: ac-2
+            given: The hook runs without any piped prompt payload.
+            when: The command executes.
+            then: It completes without needing to read or parse stdin.
+          - id: ac-3
+            given: A user runs `kspec setup` in a Claude Code project.
+            when: Project hooks are installed.
+            then: The setup flow installs `kspec session prompt-check` as a `UserPromptSubmit` hook alongside
+              the session checkpoint hook.
     acceptance_criteria:
       - id: ac-session-scope
         given: KSPEC_SESSION_ID is set in the environment
