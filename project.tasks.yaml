@@ -78859,6 +78859,7 @@
   created_at: 2026-03-06T03:18:52.146Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
   slugs: []
   title: "Fix validate page runtime error: Cannot read properties of undefined (reading 'length')"
