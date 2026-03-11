@@ -86705,6 +86705,15 @@
 
         - Verification: kspec validate --completeness returns zero missing description warnings.
       supersedes: null
+    - _ulid: 01KKE0Y7D8DB84X4BRY2PJ630N
+      created_at: 2026-03-11T08:41:44.104Z
+      author: Jacob Chapel
+      content: "Completed description backfill for the six currently flagged spec items: @batch-exec,
+        @batch-command-schema, @task-add-depends-on, @derive-title-override, @ralph-end-loop, and
+        @workflow-prune. Re-ran kspec validate --completeness and confirmed missing-description
+        warnings dropped to zero. Note: plan text still mentions Test Trait, but @01KJN1WT already
+        had a description before this task started."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
