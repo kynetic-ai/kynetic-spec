@@ -87529,7 +87529,7 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-core-primitives-ac-backfill"
@@ -87588,6 +87588,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T23:47:35.767Z
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
   slugs:
     - implement-missing-description-backfill
