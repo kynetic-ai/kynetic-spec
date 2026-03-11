@@ -89866,7 +89866,7 @@
   type: task
   spec_ref: "@plan-import-into"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@plan-import"
@@ -89874,9 +89874,10 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKFA0CMHGFQDPQN0NNPQCJR6
+  session_id: null
   created_at: 2026-03-10T22:42:10.959Z
   started_at: 2026-03-11T20:46:58.740Z
+  submitted_at: 2026-03-11T20:55:14.274Z
   notes:
     - _ulid: 01KKCYMDCFS1DS81P1VE42PDQZ
       created_at: 2026-03-10T22:42:10.959Z
@@ -89907,9 +89908,15 @@
         -- tests/cli-plan-import.test.ts, npm test, kspec validate (warnings-only exit 6 from
         pre-existing project warnings)."
       supersedes: null
+    - _ulid: 01KKFCKR6DGQDJYF4MBC13P6RF
+      created_at: 2026-03-11T21:24:58.189Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: add command-level shadow commit coverage for
+        plan import --into and cover the missing ref-not-found guidance path; full npm test did not
+        clear in review."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T20:55:14.274Z
 - _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
   slugs:
     - implement-plan-import-content-only-storage
