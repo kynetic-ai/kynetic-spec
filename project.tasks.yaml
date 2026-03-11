@@ -81841,7 +81841,7 @@
     mutation remains as a race vector. Fix: either remove the process.env mutation entirely (rely
     solely on adapter config injection + spawn env), or add a process-level lock around the env
     mutation window."
-  spec_ref: null
+  spec_ref: "@agent-invocation-lifecycle"
   status: pending
   blocked_by: []
   depends_on: []
