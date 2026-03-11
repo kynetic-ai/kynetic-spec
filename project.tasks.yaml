@@ -89609,23 +89609,45 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Implement initial activity watchdog in invocation lifecycle
+- _ulid: 01KKER2K6CEG5M9066MNKQQ770
+  slugs:
+    - task-implement-stall-watchdog
+  title: Implement initial activity watchdog in invocation lifecycle
+  type: task
+  spec_ref: "@invocation-initial-activity-watchdog"
+  meta_ref: null
+  plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - mvp
+    - agent-runtime
+  vcs_refs: []
+  created_at: 2026-03-11T15:26:04.492Z
+  notes: []
+  todos: []
+- title: Test initial activity watchdog behavior
   type: task
   spec_ref: "@invocation-initial-activity-watchdog"
   meta_ref: null
   plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
   priority: 3
   slugs:
-    - task-implement-stall-watchdog
+    - task-test-stall-watchdog
   tags:
     - mvp
     - agent-runtime
-  depends_on: []
-  _ulid: 01KKER2K6CEG5M9066MNKQQ770
+    - test
+  depends_on:
+    - "@task-implement-stall-watchdog"
+  _ulid: 01KKER2T4XPE935X4SHBYZ3T1G
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-11T15:26:04.492Z
+  created_at: 2026-03-11T15:26:11.612Z
   notes: []
   todos: []
