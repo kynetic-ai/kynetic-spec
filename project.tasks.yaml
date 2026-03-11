@@ -86230,6 +86230,15 @@
         renderInlineMarkdown() on top of main's existing static markdown sanitizer so PR scope stays
         isolated to @markdown-ui-adoption."
       supersedes: null
+    - _ulid: 01KKEX924VMN26Q9FQ5W2RG31T
+      created_at: 2026-03-11T16:56:59.291Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Verification on the rebuilt branch: kspec validate still exits 6 with the
+        repository's pre-existing warning set; npm test passed cleanly after clearing transient
+        SvelteKit build output (211 files, 4539 tests, 3 skipped); npm run build:e2e still fails in
+        packages/web-ui with a SvelteKit-generated .svelte-kit/output ENOENT/adapter copy error that
+        appears environmental and unrelated to the markdown diff."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
