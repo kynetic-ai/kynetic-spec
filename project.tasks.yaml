@@ -86687,7 +86687,7 @@
   type: task
   spec_ref: "@description-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -86697,7 +86697,7 @@
   session_id: 01KKE24FP3Z8QXN2VGDZDGQ77E
   created_at: 2026-03-10T06:55:47.719Z
   started_at: 2026-03-11T09:08:52.294Z
-  submitted_at: 2026-03-11T08:41:45.704Z
+  submitted_at: 2026-03-11T09:12:10.772Z
   notes:
     - _ulid: 01KKB8FH07B0SP63HBCG2VNRKT
       created_at: 2026-03-10T06:55:47.719Z
