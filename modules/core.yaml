@@ -721,7 +721,7 @@ features:
                   separate calls
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
       - _ulid: 01KHVXK25SDYTAEKZN28S2X66K
         slugs:
           - config-author
