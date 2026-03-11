@@ -13288,8 +13288,10 @@ plans:
             when: |
               The branch is first provisioned
             then: |
-              The branch name follows one deterministic format that includes the task
-              identity and is collision-safe without relying on role-specific prefixes
+              The branch name follows the deterministic format
+              `dispatch/task/<normalized-task-slug-or-task>/<short-task-ulid>` where
+              the slug portion is normalized to kebab-case and the ULID suffix makes
+              collisions impossible without relying on role-specific prefixes
 
       - title: Dispatch Workspace Registry
         slug: dispatch-workspace-registry
@@ -13353,6 +13355,18 @@ plans:
             then: |
               The workspace record transitions through explicit lifecycle states such
               as ready, active, stale, closing, and closed
+          - id: ac-7
+            given: |
+              A workspace record is tracked over time
+            when: |
+              Its lifecycle state changes
+            then: |
+              The transition triggers are behavioral and explicit: `ready` after
+              successful provisioning/bootstrap with no running invocation, `active`
+              while a role invocation is attached, `stale` when reconciliation finds
+              missing or invalid recorded workspace state, `closing` when terminal
+              task state or explicit reset schedules cleanup, and `closed` after
+              tracked worktrees are removed and the record is finalized
 
       - title: Dispatched Invocation Worktree Isolation
         slug: dispatch-invocation-worktree-isolation
@@ -13718,6 +13732,8 @@ plans:
         depends_on:
           - "@task-implement-dispatch-worktree-provisioning"
           - "@task-implement-dispatch-bootstrap-contract"
+          - "@task-implement-dispatch-orientation-prompt"
+          - "@task-implement-dispatch-role-entrypoints"
           - "@task-scope-dispatch-shadow-serialization"
           - "@task-implement-priority-aware-dispatch-scheduler"
       ```
@@ -13741,6 +13757,9 @@ plans:
       - Reviewer isolation comes from a separate worktree on that same branch.
 
       - Fix-cycle work returns to the same branch lineage after review.
+
+      - The intended canonical branch format is
+      `dispatch/task/<normalized-task-slug-or-task>/<short-task-ulid>`.
 
       - Group-level shared branches are out of scope here and belong in the grouped-work plan.
 
@@ -13810,6 +13829,11 @@ plans:
         author: Jacob Chapel
         content: Tighten workspace identity, registry persistence, bootstrap boundaries, scheduler contract,
           and prerequisite task ordering after holistic review
+      - _ulid: 01KKFKJDN1BKMJN72RABHAF515
+        created_at: 2026-03-11T23:26:34.658Z
+        author: Jacob Chapel
+        content: Clarify canonical branch format, explicit workspace lifecycle transitions, and end-to-end
+          test coverage for orientation and role entrypoints
   - _ulid: 01KKFJY4FKCRQH1YPZNMRCTPNR
     slugs:
       - plan-review-records-and-gates
