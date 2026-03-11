@@ -88800,7 +88800,7 @@
   spec_ref: "@daemon-server"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -88809,7 +88809,7 @@
     - bug
     - daemon
   vcs_refs: []
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  session_id: null
   created_at: 2026-03-11T05:45:50.403Z
   started_at: 2026-03-11T05:46:26.642Z
   submitted_at: 2026-03-11T05:46:55.000Z
@@ -88821,6 +88821,13 @@
         Chokidar followSymlinks:false, lstat check in processFileChange), added .kspec to
         .kspec/.gitignore. Spec gap analysis: ac-7 covers this adequately, no AC updates needed.
         Root cause: likely kspec init ran from inside .kspec/ directory around Mar 10 04:25."
+      supersedes: null
+    - _ulid: 01KKDRKABAAHP10ZS8ZP6VSKXM
+      created_at: 2026-03-11T06:15:58.059Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #772 breaks the Chokidar fallback by ignoring
+        every .kspec path, and the symlink-loop fix shipped without regression coverage for fallback
+        delivery."
       supersedes: null
   todos: []
   automation: eligible
