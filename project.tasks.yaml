@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85806,9 +85806,9 @@
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/781
-  session_id: null
+  session_id: 01KKEHEKG6PYN3TBPRQ7QJHT9K
   created_at: 2026-03-10T06:04:41.789Z
-  started_at: 2026-03-11T10:53:26.044Z
+  started_at: 2026-03-11T13:40:21.216Z
   submitted_at: 2026-03-11T11:16:00.081Z
   notes:
     - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
@@ -86753,6 +86753,10 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #779. Completed the missing description backfill for the spec items
+    tracked by @description-backfill, validated that the missing-description warning is gone for
+    this task's scope, and cleared the review fix-cycle regressions with passing full npm test
+    coverage on the merged head."
   depends_on: []
   context: []
   priority: 3
@@ -86762,6 +86766,7 @@
   created_at: 2026-03-10T06:55:47.719Z
   started_at: 2026-03-11T11:20:31.654Z
   submitted_at: 2026-03-11T11:26:54.779Z
+  completed_at: 2026-03-11T13:34:43.635Z
   notes:
     - _ulid: 01KKB8FH07B0SP63HBCG2VNRKT
       created_at: 2026-03-10T06:55:47.719Z
@@ -86879,11 +86884,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T13:34:43.635Z
-  closed_reason: "Merged in PR #779. Completed the missing description backfill for the spec items
-    tracked by @description-backfill, validated that the missing-description warning is gone for
-    this task's scope, and cleared the review fix-cycle regressions with passing full npm test
-    coverage on the merged head."
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
   slugs:
     - task-shadow-branch-ac-backfill
