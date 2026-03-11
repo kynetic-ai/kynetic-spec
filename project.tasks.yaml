@@ -87767,6 +87767,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #766. Added worktree-aware project root resolution via
+    resolveProjectRoots(), threaded projectRoot through initContext/config/shadow detection, updated
+    daemon/dispatch headers and serve/shadow defaults for linked worktrees, and verified explicit AC
+    coverage for all @worktree-support criteria plus full npm test coverage (205 files / 4536
+    tests)."
   depends_on: []
   context: []
   priority: 3
@@ -87778,6 +87783,7 @@
   created_at: 2026-03-10T17:58:59.425Z
   started_at: 2026-03-11T02:02:07.523Z
   submitted_at: 2026-03-11T02:05:38.814Z
+  completed_at: 2026-03-11T02:34:44.052Z
   notes:
     - _ulid: 01KKCEF8PK7H5BKQZPBG45S9RP
       created_at: 2026-03-10T17:59:45.108Z
@@ -87979,12 +87985,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T02:34:44.052Z
-  closed_reason: "Merged in PR #766. Added worktree-aware project root resolution via
-    resolveProjectRoots(), threaded projectRoot through initContext/config/shadow detection, updated
-    daemon/dispatch headers and serve/shadow defaults for linked worktrees, and verified explicit AC
-    coverage for all @worktree-support criteria plus full npm test coverage (205 files / 4536
-    tests)."
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
   slugs:
     - task-worktree-callsite-migration
@@ -88275,16 +88275,16 @@
   type: task
   spec_ref: "@plan-export"
   plan_ref: "@plan-iterative-plan-editing"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKDBHEKYVSWZKFQBY319RDAA
   created_at: 2026-03-10T22:42:10.239Z
-  started_at: 2026-03-11T01:53:27.156Z
+  started_at: 2026-03-11T02:36:33.605Z
   submitted_at: 2026-03-11T02:01:06.179Z
   notes:
     - _ulid: 01KKCYMCNZG4J4JQ1NMNWRH4P1
