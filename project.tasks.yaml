@@ -81848,7 +81848,7 @@
     should support a --output or --text mode that replays the assistant text from session.update
     events. Workaround: jq/python one-liner on events.jsonl."
   spec_ref: "@cli-agent-commands"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -81872,6 +81872,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T07:17:51.120Z
 - _ulid: 01KK5XAJVEJZNYR7GRDPEFP2M0
   slugs: []
   title: Fix KSPEC_SESSION_ID race condition in concurrent multi-project dispatch
