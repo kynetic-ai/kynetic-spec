@@ -85394,7 +85394,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKDH57X43YNKMHZ0X8PGH2ZX
   created_at: 2026-03-10T05:32:17.278Z
+  started_at: 2026-03-11T04:14:19.909Z
   notes:
     - _ulid: 01KKB3PKZZTGCX16EXAAF8DY6Y
       created_at: 2026-03-10T05:32:17.279Z
@@ -85408,10 +85410,25 @@
         (status, since, agent, task) BEFORE scanning events.jsonl. For 7-day
         windows this typically means scanning 20-50 sessions instead of 700+.
         The daemon endpoint can stream results or use a reasonable timeout.
+    - _ulid: 01KKDHMSP3CMREZ41V6WYQBP8V
+      created_at: 2026-03-11T04:14:26.499Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: add daemon API and /sessions UI support on top of existing CLI session text
+        search.
+
+        - Scope: shared metadata-prefiltered search path, API route, UI query persistence/results
+        rendering, and AC coverage.
+
+        - Files: session search/filtering code, daemon session routes, web UI sessions
+        page/components, relevant tests.
+
+        - Verification: targeted CLI/API/UI tests, npm test, and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T04:14:19.909Z
-  session_id: 01KKDH57X43YNKMHZ0X8PGH2ZX
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
   slugs:
     - implement-markdown-rendering-trait
