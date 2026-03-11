@@ -4,6 +4,7 @@
 <script lang="ts">
 	import type { ToolCallBlock } from './session-utils';
 	import { getToolIcon, getToolInputPreview, formatDuration, formatTime } from './session-utils';
+	import { ansiToHtml, containsAnsi, safeTruncateAnsi } from '$lib/utils/ansi';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Check from '@lucide/svelte/icons/check';
 	import X from '@lucide/svelte/icons/x';
@@ -43,11 +44,13 @@
 	}
 
 	let outputText = $derived(block.output ? formatOutput(block.output) : '');
-	let truncatedOutput = $derived(
-		outputText.length > 1000 ? outputText.slice(0, 1000) : outputText
-	);
+	let truncatedOutput = $derived(safeTruncateAnsi(outputText, 1000));
 	let isOutputTruncated = $derived(outputText.length > 1000);
 	let showFullOutput = $state(false);
+	let hasAnsi = $derived(containsAnsi(outputText));
+	let renderedOutput = $derived(
+		hasAnsi ? ansiToHtml(showFullOutput ? outputText : truncatedOutput) : ''
+	);
 </script>
 
 <div
@@ -109,7 +112,11 @@
 							<span class="text-destructive">(error)</span>
 						{/if}
 					</p>
+					{#if hasAnsi}
+					<pre class="text-xs font-mono bg-secondary/50 rounded p-2 overflow-x-auto max-h-80 whitespace-pre-wrap break-words {block.status === 'failed' ? 'text-destructive' : ''}">{@html renderedOutput}</pre>
+				{:else}
 					<pre class="text-xs font-mono bg-secondary/50 rounded p-2 overflow-x-auto max-h-80 whitespace-pre-wrap break-words {block.status === 'failed' ? 'text-destructive' : ''}">{showFullOutput ? outputText : truncatedOutput}</pre>
+				{/if}
 					{#if isOutputTruncated && !showFullOutput}
 						<button
 							class="text-xs text-primary hover:underline mt-1"

@@ -16,6 +16,7 @@ import { PubSubManager } from './websocket/pubsub';
 import { HeartbeatManager } from './websocket/heartbeat';
 import { WebSocketHandler } from './websocket/handler';
 import { handleWebSocketClose } from './websocket/lifecycle';
+import { resolveWebSocketProject } from './websocket/project-resolution';
 import type { ConnectionData, ConnectedEvent } from './websocket/types';
 import { PidFileManager } from './pid';
 import { projectContextMiddleware } from './middleware/project-context';
@@ -94,7 +95,59 @@ let heartbeatManager: HeartbeatManager;
 let wsHandler: WebSocketHandler;
 let projectManager: import('./project-context').ProjectContextManager | undefined;
 let shadowSyncScheduler: ShadowSyncScheduler | undefined;
-let sessionSyncScheduler: SessionSyncScheduler | undefined;
+const sessionSyncSchedulers: Map<string, SessionSyncScheduler> = new Map();
+
+/**
+ * Start a session sync scheduler for a project if it has session branch configured.
+ * Safe to call multiple times — skips if scheduler already exists for that project.
+ */
+async function startSessionSyncForProject(
+  projectPath: string,
+  pubsub: PubSubManager,
+): Promise<void> {
+  if (sessionSyncSchedulers.has(projectPath)) {
+    return;
+  }
+
+  const { loadProjectConfig } = await import('../parser/config.js');
+  const { config } = await loadProjectConfig(projectPath);
+  const specDir = join(projectPath, config.shadow.directory);
+
+  const { readYamlFile } = await import('../parser/yaml.js');
+  const manifestPath = join(specDir, 'kynetic.yaml');
+  const manifest = await readYamlFile<{ sessions?: { storage?: string; branch?: string } }>(manifestPath);
+
+  if (manifest?.sessions?.storage === 'branch') {
+    const syncInterval = config.shadow.sync_interval;
+
+    if (syncInterval > 0) {
+      const { resolveSessionBranchConfig } = await import('../parser/session-branch.js');
+      const sessionConfig = resolveSessionBranchConfig(projectPath, manifest);
+
+      if (sessionConfig) {
+        const scheduler = new SessionSyncScheduler({
+          worktreeDir: sessionConfig.worktreeDir,
+          intervalSeconds: syncInterval,
+          branchName: sessionConfig.branchName,
+          pubsub,
+        });
+        scheduler.start();
+        sessionSyncSchedulers.set(projectPath, scheduler);
+      }
+    }
+  }
+}
+
+/**
+ * Stop session sync scheduler for a specific project.
+ */
+function stopSessionSyncForProject(projectPath: string): void {
+  const scheduler = sessionSyncSchedulers.get(projectPath);
+  if (scheduler) {
+    scheduler.stop();
+    sessionSyncSchedulers.delete(projectPath);
+  }
+}
 
 /**
  * Middleware to enforce localhost-only connections.
@@ -205,10 +258,16 @@ export async function createServer(options: ServerOptions) {
     // AC-3: Enforce localhost-only connections
     .onRequest(localhostOnly());
 
+  // Shared callback for all registration paths (middleware, projects API, WebSocket)
+  const onProjectRegistered = async (projectPath: string) => {
+    await startSessionSyncForProject(projectPath, pubsubManager);
+  };
+
   // AC: @multi-directory-daemon ac-1, ac-2, ac-3 - Project context middleware
   const { manager: projectContextManager, middleware: projectMiddleware } = projectContextMiddleware({
     startupProject: startupProjectPath,
-    pubsub: pubsubManager
+    pubsub: pubsubManager,
+    onProjectRegistered,
   });
 
   // Store manager globally for shutdown
@@ -244,7 +303,13 @@ export async function createServer(options: ServerOptions) {
     .use(createValidationRoutes())
 
     // AC: @multi-directory-daemon ac-28, ac-29, ac-30 - Projects management endpoints
-    .use(createProjectsRoutes({ projectManager: projectContextManager }))
+    .use(createProjectsRoutes({
+      projectManager: projectContextManager,
+      onProjectRegistered,
+      onProjectUnregistered: (projectPath) => {
+        stopSessionSyncForProject(projectPath);
+      },
+    }))
 
     // AC: @ui-session-stream ac-1, ac-4 - Session data endpoints
     .use(createSessionRoutes())
@@ -259,14 +324,6 @@ export async function createServer(options: ServerOptions) {
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {
       beforeHandle({ request, store }) {
-        // AC: @multi-directory-daemon ac-21, ac-22, ac-23, ac-34 - Extract and validate project binding
-        // AC: @multi-directory-daemon ac-34 - Browser WebSocket API doesn't support custom headers,
-        // so we also accept project path as query parameter
-        const url = new URL(request.url, `http://${request.headers.get('host')}`);
-        const projectPath = request.headers.get('X-Kspec-Dir')
-                        || url.searchParams.get('project')
-                        || undefined;
-
         // IMPORTANT: Do NOT return a value from ws beforeHandle.
         // In Elysia 1.4 with derive middleware, returning a value short-circuits
         // the WebSocket upgrade and sends the value as an HTTP 200 response.
@@ -279,30 +336,15 @@ export async function createServer(options: ServerOptions) {
             return;
           }
 
-          let projectContext;
-          if (projectPath) {
-            // Explicit project specified
-            try {
-              projectContext = manager.getProject(projectPath);
-            } catch {
-              // AC: @multi-directory-daemon ac-4 - auto-register
-              projectContext = manager.registerProject(projectPath);
-            }
-          } else {
-            // AC: @multi-directory-daemon ac-22, ac-23 - Use default or reject
-            try {
-              projectContext = manager.getProject();
-            } catch (err: unknown) {
-              // AC: @multi-directory-daemon ac-23 - Reject when no default
-              if (err instanceof Error && err.message.includes('No default project configured')) {
-                throw new Error('No project specified');
-              }
-              throw err;
-            }
-          }
+          const { resolvedPath } = resolveWebSocketProject({
+            request,
+            manager,
+            fallbackPath: startupProjectPath,
+            onProjectRegistered,
+          });
 
           // Store resolved path for open() handler via WeakMap
-          wsProjectPaths.set(request, projectContext.path);
+          wsProjectPaths.set(request, resolvedPath);
         } catch (err: unknown) {
           console.error(`[daemon] WebSocket connection rejected: ${err instanceof Error ? err.message : String(err)}`);
           throw err;
@@ -452,33 +494,7 @@ export async function createServer(options: ServerOptions) {
   // Session sync runs independently from kspec-meta sync — failures in one do not affect the other
   if (startupProjectPath) {
     try {
-      const { loadProjectConfig } = await import('../parser/config.js');
-      const { config } = await loadProjectConfig(startupProjectPath);
-      const specDir = join(startupProjectPath, config.shadow.directory);
-
-      // Load manifest from config-derived specDir (not hardcoded .kspec/)
-      const { readYamlFile } = await import('../parser/yaml.js');
-      const manifestPath = join(specDir, 'kynetic.yaml');
-      const manifest = await readYamlFile<{ sessions?: { storage?: string; branch?: string } }>(manifestPath);
-
-      if (manifest?.sessions?.storage === 'branch') {
-        const syncInterval = config.shadow.sync_interval;
-
-        if (syncInterval > 0) {
-          const { resolveSessionBranchConfig } = await import('../parser/session-branch.js');
-          const sessionConfig = resolveSessionBranchConfig(startupProjectPath, manifest);
-
-          if (sessionConfig) {
-            sessionSyncScheduler = new SessionSyncScheduler({
-              worktreeDir: sessionConfig.worktreeDir,
-              intervalSeconds: syncInterval,
-              branchName: sessionConfig.branchName,
-              pubsub: pubsubManager,
-            });
-            sessionSyncScheduler.start();
-          }
-        }
-      }
+      await startSessionSyncForProject(startupProjectPath, pubsubManager);
     } catch (error) {
       // Session sync init failure does not block daemon startup
       console.error('[daemon] Failed to initialize session sync scheduler:', error);
@@ -499,8 +515,11 @@ export async function createServer(options: ServerOptions) {
       // AC: @config-shadow ac-12 - Stop shadow sync scheduler
       shadowSyncScheduler?.stop();
 
-      // AC: @session-branch-worktree ac-sync - Stop session sync scheduler
-      sessionSyncScheduler?.stop();
+      // AC: @session-branch-worktree ac-sync - Stop all session sync schedulers
+      for (const scheduler of sessionSyncSchedulers.values()) {
+        scheduler.stop();
+      }
+      sessionSyncSchedulers.clear();
 
       // AC: @agent-dispatch-engine ac-11 - Stop all dispatch engines before shutting down
       await stopAllEngines();
