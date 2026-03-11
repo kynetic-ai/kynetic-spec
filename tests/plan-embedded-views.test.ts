@@ -1,10 +1,11 @@
+import { join } from "node:path";
 import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { createServer } from "vite";
 import type { BatchItemSummary, PlanDetail } from "@kynetic-ai/shared";
 import { buildPlanContentBlocks } from "../packages/web-ui/src/lib/utils/plan-embedded-content";
 
 type WebUiViteServer = Awaited<ReturnType<typeof createServer>>;
-const WEB_UI_ROOT = "/home/chapel/Projects/kynetic-spec-dispatch/packages/web-ui";
+const WEB_UI_ROOT = join(process.cwd(), "packages", "web-ui");
 const ORIGINAL_CWD = process.cwd();
 let webUiViteServer: WebUiViteServer;
 
