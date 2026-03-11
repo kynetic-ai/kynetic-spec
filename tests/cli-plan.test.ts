@@ -429,6 +429,16 @@ describe("Integration: plan commands", () => {
       expect(fileContents).toBe("# Iterative Plan\n\n## Specs\n\n- export me");
     });
 
+    // AC: @trait-semantic-exit-codes ac-4
+    it("should return a runtime error when writing the export file fails", () => {
+      const result = kspecRun(`plan export @export-plan --output "${tempDir}"`, tempDir, {
+        expectFail: true,
+      });
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain(`Failed to write plan export file: ${tempDir}`);
+    });
+
     // AC: @plan-export ac-empty
     // AC: @trait-semantic-exit-codes ac-2
     it("should fail when plan content is empty", () => {
@@ -487,7 +497,6 @@ describe("Integration: plan commands", () => {
 
     // AC: @trait-json-output ac-6 — N/A: plan export has no competing output-format flags beyond global --json.
     // AC: @trait-semantic-exit-codes ac-3 — N/A: plan export has no confirmation prompt.
-    // AC: @trait-semantic-exit-codes ac-4 — covered by shared runtime error handling in plan.ts for file-write failures.
     // AC: @trait-semantic-exit-codes ac-5 — N/A: plan export is single-record lookup, not an empty-result query.
     // AC: @trait-semantic-exit-codes ac-6 — N/A: invalid flag handling is provided by commander globally.
     // AC: @trait-semantic-exit-codes ac-7 — N/A: plan export is not a batch command.
