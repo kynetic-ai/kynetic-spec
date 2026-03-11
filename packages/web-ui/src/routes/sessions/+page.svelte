@@ -73,8 +73,16 @@
 	let filterAgentType = $derived($page.url.searchParams.get('agent_type') || '');
 	let filterTrigger = $derived($page.url.searchParams.get('trigger') || '');
 	let filterSince = $derived($page.url.searchParams.get('since') || '');
+	let filterTaskId = $derived($page.url.searchParams.get('task_id') || '');
+	let filterSpecRef = $derived($page.url.searchParams.get('spec_ref') || '');
 	let hasFilters = $derived(
-		filterStatuses.length > 0 || filterAgentId || filterAgentType || filterTrigger || filterSince
+		filterStatuses.length > 0 ||
+			filterAgentId ||
+			filterAgentType ||
+			filterTrigger ||
+			filterSince ||
+			filterTaskId ||
+			filterSpecRef
 	);
 
 	function updateDistinctFilters(items: SessionSummary[], options?: { reset?: boolean }) {
@@ -107,6 +115,8 @@
 		if (filterAgentType) params.agent_type = filterAgentType;
 		if (filterTrigger) params.trigger = filterTrigger;
 		if (filterSince) params.since = filterSince;
+		if (filterTaskId) params.task_id = filterTaskId;
+		if (filterSpecRef) params.spec_ref = filterSpecRef;
 		return params;
 	}
 
@@ -252,7 +262,7 @@
 	let previousFilterKey: string | undefined;
 	$effect(() => {
 		// Build a stable key from all filter params to detect changes
-		const key = `${filterStatuses.join(',')}|${filterAgentId}|${filterAgentType}|${filterTrigger}|${filterSince}`;
+		const key = `${filterStatuses.join(',')}|${filterAgentId}|${filterAgentType}|${filterTrigger}|${filterSince}|${filterTaskId}|${filterSpecRef}`;
 		if (previousFilterKey !== undefined && previousFilterKey !== key) {
 			loadInitialPage();
 		}

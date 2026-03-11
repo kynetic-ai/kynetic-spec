@@ -67,8 +67,12 @@
 	let agentType = $derived($page.url.searchParams.get('agent_type') || '');
 	let trigger = $derived($page.url.searchParams.get('trigger') || '');
 	let since = $derived($page.url.searchParams.get('since') || '');
+	let taskId = $derived($page.url.searchParams.get('task_id') || '');
+	let specRef = $derived($page.url.searchParams.get('spec_ref') || '');
 
-	let hasFilters = $derived(statuses.length > 0 || agentId || agentType || trigger || since);
+	let hasFilters = $derived(
+		statuses.length > 0 || agentId || agentType || trigger || since || taskId || specRef
+	);
 
 	let triggerDisplay = $derived(trigger || 'all');
 	let dateRangeDisplay = $derived(getDateRangeDisplay(since));
