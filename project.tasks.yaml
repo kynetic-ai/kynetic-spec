@@ -87014,7 +87014,7 @@
   type: task
   spec_ref: "@tasks-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -87022,7 +87022,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKEZAGDXQCFEDY0VAY5CCXA2
+  session_id: null
   created_at: 2026-03-10T06:55:45.973Z
   started_at: 2026-03-11T17:38:17.520Z
   submitted_at: 2026-03-11T17:54:14.190Z
@@ -87077,6 +87077,12 @@
       author: Jacob Chapel
       content: "Review artifact created: PR #787 https://github.com/kynetic-ai/kynetic-spec/pull/787 on
         branch fix/task-system-ac-backfill."
+      supersedes: null
+    - _ulid: 01KKF2342XKYV7RFHH7XWR1HM3
+      created_at: 2026-03-11T18:21:07.549Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #787 includes unrelated core-backfill changes
+        and still lacks own AC coverage annotations for @tasks-ac-backfill."
       supersedes: null
   todos: []
   automation: eligible
