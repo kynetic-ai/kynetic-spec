@@ -86908,6 +86908,22 @@
         atomic kspec batch update so the shadow branch history stays scoped to this reconciliation
         step.
       supersedes: null
+    - _ulid: 01KKEYCVXT03ZE2BFMC7XPXX2E
+      created_at: 2026-03-11T17:16:32.570Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - kspec item list --under @cli --limit 999 --json | jq ... now returns no
+        feature/requirement descendants with empty acceptance_criteria.
+
+        - kspec validate --completeness reduced global missing acceptance criteria warnings from 116
+        to 78, matching the 38 @cli items backfilled in this task.
+
+        - npm test passed after the metadata update; remaining validate warnings are outside this
+        task scope (own AC coverage, trait AC coverage, and invalid annotation debt tracked
+        separately).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
