@@ -87187,6 +87187,22 @@
               /home/chapel/Projects/kynetic-spec-dispatch/tests/ac-annotation-validation.test.ts:127
             ... and 88 more dropped missing acceptance criteria warnings from 54 to 11; remaining warnings are outside @meta (shadow-branch items and unrelated specs).
       supersedes: null
+    - _ulid: 01KKF1SRJ9Y646R8JBJRF513YN
+      created_at: 2026-03-11T18:16:00.841Z
+      author: Jacob Chapel
+      content: >-
+        Completed meta-module AC backfill.
+
+        - Added concrete given/when/then acceptance criteria to all previously uncovered feature and
+        requirement items under @meta, covering manifest, agents, workflows, conventions,
+        observations, session context, meta CLI commands, and task meta_ref behavior.
+
+        - Verification: a full @meta descendant listing now shows no feature or requirement items
+        with missing or empty acceptance criteria.
+
+        - Verification: kspec validate --completeness reduced global missing acceptance criteria
+        warnings from 54 to 11; remaining warnings are outside @meta.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FGF6K5NP97PEEXRP2PY7
