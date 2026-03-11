@@ -756,9 +756,10 @@ features:
           - "@task-todos"
         acceptance_criteria:
           - id: ac-1
-            given: a todo is added or promoted on a task
+            given: a todo is added to a task and later marked done or not done
             when: the todo entry is stored
-            then: it records a local id, text, done state, timestamps, author, and optional promoted_to task ref
+            then: it records a local id, text, done state, timestamps, author, and keeps the same identity
+              across later status changes
       - _ulid: 01KEZCJPJ4WPM1XREVKF00QM2K
         slugs:
           - todo-cli
@@ -778,9 +779,10 @@ features:
           - "@task-todos"
         acceptance_criteria:
           - id: ac-1
-            given: a user runs kspec todo add, kspec todo done, or kspec todo promote
+            given: a user runs kspec task todo add, kspec task todo done, kspec task todo undone, or kspec task
+              todos
             when: the command succeeds
-            then: the task todo list is updated and promotion records the linked task on the todo entry
+            then: the task todo list is updated and the current todo entries can be listed from the task
   - _ulid: 01JHNKA6W7TSTR000000000000
     slugs:
       - task-storage
