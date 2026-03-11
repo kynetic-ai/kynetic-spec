@@ -13608,7 +13608,7 @@ plans:
       - CI check records and approval policy
 
       - grouped human-facing review packages across multiple tasks
-    status: approved
+    status: draft
     derived_tasks: []
     derived_specs: []
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-worktree-isolation-and-scheduling.md
