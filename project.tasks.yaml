@@ -86143,6 +86143,14 @@
         tests/plan-embedded-views.test.ts with join(process.cwd(), 'packages', 'web-ui') so the test
         resolves the workspace portably across CI and non-identical checkout paths."
       supersedes: null
+    - _ulid: 01KKFK7VNCTMKRDK6J37JBK1AC
+      created_at: 2026-03-11T23:20:48.556Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Verification after portability fix: npm test --
+        tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts (passed). Observed a
+        transient Vite HMR port 24678-in-use warning on stderr, but both target suites passed and
+        the repo test runner exited successfully."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
