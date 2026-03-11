@@ -1457,9 +1457,21 @@ inbox:
       - plan
     added_by: "@claude"
   - _ulid: 01KKF402MAHT1EMR1MEF3X75C6
-    text: Dispatch queue does not sort by task priority (p1-p5). _compareQueueEntries sorts by status
+    text: >-
+      Dispatch queue does not sort by task priority (p1-p5). _compareQueueEntries sorts by status
       precedence then FIFO (enqueue sequence). A P3 task enqueued before a P1 task gets dispatched
       first. Likely a spec gap — no AC requires priority-based ordering within the dispatch queue.
+
+
+      ---
+
+
+      Investigation: This is a spec gap, not an implementation bug. @dispatch-in-progress-priority
+      only defines status bucket ordering (in_progress > needs_work > pending_review > pending). No
+      spec requires task priority (p1-p5) as a tiebreaker within the same status bucket.
+      Implementation matches spec — _compareQueueEntries sorts by STATUS_PRECEDENCE then FIFO
+      (enqueue sequence). Fix: add AC to @dispatch-in-progress-priority requiring priority as
+      secondary sort within each status bucket.
     created_at: 2026-03-11T18:54:24.906Z
     tags:
       - dispatch
