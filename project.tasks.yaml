@@ -86091,7 +86091,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKEJFB8H7Y1T6FDAJTWTP71K
   created_at: 2026-03-10T06:04:43.564Z
+  started_at: 2026-03-11T13:55:20.622Z
   notes:
     - _ulid: 01KKB5J0NCHXW2CDXS6EDJ8XKA
       created_at: 2026-03-10T06:04:43.564Z
@@ -86152,10 +86154,26 @@
         - Verification: Each surface renders markdown formatting. Code blocks highlighted. Dark mode
         works. No XSS via sanitization.
       supersedes: null
+    - _ulid: 01KKEJWEAM0QPZ60K0WDR422ZR
+      created_at: 2026-03-11T13:55:20.020Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: static markdown rendering is already in place for plans and agent messages;
+        this task extends it to remaining user/agent-authored UI surfaces.
+
+        - Scope: task description and notes, spec description and AC text, observations, workflows,
+        inbox, and triage inbox views.
+
+        - Exclusions: ThinkingBlock, ToolCallView, SystemBlock remain plain/structured renderers by
+        design.
+
+        - Verification: targeted web-ui tests for each adopted surface plus kspec validate and full
+        project test suite.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T13:55:20.622Z
-  session_id: 01KKEJFB8H7Y1T6FDAJTWTP71K
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
   slugs:
     - task-add-markdown-trait
