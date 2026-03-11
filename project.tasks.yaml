@@ -86867,6 +86867,15 @@
         completeness for @core-ac-backfill still reports invalid @ref-validation annotations
         (ac-2/ac-3/ac-4) at tests/ac-annotation-validation.test.ts:159, :224, and :341."
       supersedes: null
+    - _ulid: 01KKF3NW54Y9Z6GN4ET188DB61
+      created_at: 2026-03-11T18:48:50.596Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Working branch fix/core-primitives-ac-backfill-v2. Scope: remove the
+        timeout regression in tests/core-ac-backfill.test.ts and correct invalid @ref-validation AC
+        annotations in tests/ac-annotation-validation.test.ts so scoped completeness for
+        @core-ac-backfill is clean again. Verification target: npm test plus filtered kspec validate
+        --completeness --json for @core-ac-backfill and in-scope refs."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
