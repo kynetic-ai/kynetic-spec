@@ -87154,7 +87154,7 @@
   type: task
   spec_ref: "@tasks-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -87270,6 +87270,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T22:31:54.243Z
+  closed_reason: "Merged in PR #787. Backfilled missing acceptance criteria across the targeted @tasks
+    descendants and added snapshot-backed task-system coverage for the touched refs plus
+    @tasks-ac-backfill own ACs. Fresh GitHub checks passed on merge head
+    9756f9b44a614db12a86225b69ae3d94c132da81; no trait ACs applied to this spec."
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
   slugs:
     - implement-meta-and-shadow-branch-ac-backfill
@@ -90613,6 +90618,7 @@
   session_id: 01KKFBD67T1HHYA1STWBW0EWYV
   created_at: 2026-03-11T22:02:30.384Z
   started_at: 2026-03-11T22:08:16.462Z
+  submitted_at: 2026-03-11T22:17:34.755Z
   notes:
     - _ulid: 01KKFF30ZQE4T4GVC5V8H2FD76
       created_at: 2026-03-11T22:08:15.863Z
@@ -90648,4 +90654,3 @@
       supersedes: null
   todos: []
   automation: manual_only
-  submitted_at: 2026-03-11T22:17:34.755Z
