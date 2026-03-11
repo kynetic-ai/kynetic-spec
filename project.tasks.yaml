@@ -90271,7 +90271,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -90280,7 +90280,7 @@
     - dispatch
     - bug
   vcs_refs: []
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  session_id: null
   created_at: 2026-03-11T17:47:04.848Z
   started_at: 2026-03-11T17:52:37.385Z
   submitted_at: 2026-03-11T18:05:04.261Z
@@ -90372,5 +90372,12 @@
         completes, pending_review tasks written to disk during invocation are discovered by
         re-evaluation and reviewer spawns next, (2) skipIfActive dedup prevents double-enqueue, (3)
         re-evaluation failure still allows existing queue to drain."
+      supersedes: null
+    - _ulid: 01KKF4SRH2VP3XSSEQKAJMAPTC
+      created_at: 2026-03-11T19:08:26.530Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #788 is missing inherited AC coverage for
+        @trait-task-readiness ac-status on @agent-dispatch-engine. Review posted:
+        https://github.com/kynetic-ai/kynetic-spec/pull/788#pullrequestreview-3931872074"
       supersedes: null
   todos: []
