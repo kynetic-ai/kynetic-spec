@@ -85867,7 +85867,14 @@
         - Verification: kspec item get @ui-session-stream shows trait-markdown-rendering in traits
         list alongside all previous traits. Same for @ui-plans-view.
       supersedes: null
+    - _ulid: 01KKDQKG2H75177KWHXT5RHMG4
+      created_at: 2026-03-11T05:58:35.346Z
+      author: "@claude"
+      content: "Automation status set to needs_review: Meta-spec work (adding traits to specs) - unclear
+        if agent can do this safely"
+      supersedes: null
   todos: []
+  automation: needs_review
 - _ulid: 01KKB66JH0KPXXAJ359JDWJZ0W
   slugs: []
   title: Default task list to active statuses
