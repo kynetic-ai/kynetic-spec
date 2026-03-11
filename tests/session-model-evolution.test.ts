@@ -349,11 +349,11 @@ describe("kspec session log list session type display (CLI)", () => {
   });
 
   it("should show session_type field in JSON output", () => {
-    const sessions = kspecJson<SessionLogSummary[]>("session log list", tempDir);
-    expect(sessions).toHaveLength(2);
+    const result = kspecJson<{ items: SessionLogSummary[] }>("session log list", tempDir);
+    expect(result.items).toHaveLength(2);
 
-    const legacy = sessions.find((s) => s.agent_type === "ralph");
-    const invocation = sessions.find((s) => s.agent_type === "claude-agent-acp");
+    const legacy = result.items.find((s) => s.agent_type === "ralph");
+    const invocation = result.items.find((s) => s.agent_type === "claude-agent-acp");
 
     expect(legacy).toBeDefined();
     expect(legacy!.session_type).toBe("loop");
