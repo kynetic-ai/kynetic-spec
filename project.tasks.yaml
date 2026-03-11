@@ -85287,7 +85287,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKDC504W6AYTSQRZYMP0CCTD
   created_at: 2026-03-10T05:32:16.728Z
+  started_at: 2026-03-11T02:45:44.986Z
   notes:
     - _ulid: 01KKB3PKERJB48MA2GFKAA03PS
       created_at: 2026-03-10T05:32:16.728Z
@@ -85301,10 +85303,24 @@
         to TaskDetail and ItemDetail components. The dedicated sub-resource
         endpoints (/tasks/:ref/sessions, /items/:ref/sessions) are simpler
         than overloading the main sessions endpoint with spec resolution logic.
+    - _ulid: 01KKDCJYJMHJ37YD94RBKEEB78
+      created_at: 2026-03-11T02:46:03.093Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: session browsing already supports task_id/spec_ref filters on /sessions; this
+        task adds bidirectional links from task/spec detail surfaces back into session history.
+
+        - Scope: add task/item session API endpoints, surface related sessions in task and spec
+        detail views, and verify filter-link navigation.
+
+        - Files: daemon task/item routes plus corresponding web UI detail components and tests.
+
+        - Verification: targeted daemon/UI tests, npm test, and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T02:45:44.986Z
-  session_id: 01KKDC504W6AYTSQRZYMP0CCTD
 - _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
   slugs:
     - implement-session-text-search
