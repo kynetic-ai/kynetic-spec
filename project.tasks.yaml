@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86053,9 +86053,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKFMT5H56QP7TFM5JQ4Q72SF
   created_at: 2026-03-10T06:04:42.957Z
-  started_at: 2026-03-11T23:18:48.808Z
+  started_at: 2026-03-11T23:57:23.001Z
   submitted_at: 2026-03-11T23:21:02.067Z
   notes:
     - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
