@@ -2682,6 +2682,54 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     await cleanupTempDir(testDir);
   });
 
+  // AC: @trait-task-readiness ac-status
+  it("should only consider pending and needs_work tasks as ready, excluding all other statuses", async () => {
+    const agent = makeTestAgent({
+      dispatch: [
+        { on: "task.ready", filter: { automation: "eligible" } },
+        { on: "task.needs_work", filter: { automation: "eligible" } },
+      ],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [readyId, needsWorkId, inProgressId, reviewId, completedId, blockedId, cancelledId] = testUlids("STAT", 7);
+    await writeTasks(testDir, [
+      { _ulid: readyId, status: "pending", automation: "eligible" },
+      { _ulid: needsWorkId, status: "needs_work", automation: "eligible" },
+      { _ulid: inProgressId, status: "in_progress", automation: "eligible" },
+      { _ulid: reviewId, status: "pending_review", automation: "eligible" },
+      { _ulid: completedId, status: "completed", automation: "eligible" },
+      { _ulid: blockedId, status: "blocked", automation: "eligible" },
+      { _ulid: cancelledId, status: "cancelled", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const enqueuedTaskIds: string[] = [];
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation((_agent, change) => {
+      enqueuedTaskIds.push((change as TaskStateChange).taskId);
+    });
+
+    await engine.start();
+
+    // Only pending and needs_work should be enqueued via task.ready / task.needs_work rules
+    expect(enqueuedTaskIds).toContain(readyId);
+    expect(enqueuedTaskIds).toContain(needsWorkId);
+    expect(enqueuedTaskIds).not.toContain(inProgressId);
+    expect(enqueuedTaskIds).not.toContain(reviewId);
+    expect(enqueuedTaskIds).not.toContain(completedId);
+    expect(enqueuedTaskIds).not.toContain(blockedId);
+    expect(enqueuedTaskIds).not.toContain(cancelledId);
+
+    await engine.stop();
+    vi.restoreAllMocks();
+  });
+
   // AC: @trait-task-readiness ac-deps
   it("should not dispatch task.ready when depends_on tasks are not completed", async () => {
     const [depId, taskId] = testUlids("RDEP", 2);
