@@ -85385,7 +85385,7 @@
   type: task
   spec_ref: "@session-text-search"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-cli-unified-filtering"
@@ -85394,7 +85394,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKDH57X43YNKMHZ0X8PGH2ZX
+  session_id: null
   created_at: 2026-03-10T05:32:17.278Z
   started_at: 2026-03-11T04:14:19.909Z
   submitted_at: 2026-03-11T04:28:33.965Z
@@ -85439,6 +85439,13 @@
         validate --warnings-ok passed. Note: Playwright daemon-backed E2E tests could not run in
         dispatch mode because this environment forbids kspec serve start/stop inside agent
         execution."
+      supersedes: null
+    - _ulid: 01KKDMEF997NW6XYNSGH47GTTR
+      created_at: 2026-03-11T05:03:24.969Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: /api/sessions/search rejects relative since
+        filters like 7d, so the daemon/UI search path does not satisfy @session-text-search
+        ac-api-search/ac-scope-narrowing."
       supersedes: null
   todos: []
   automation: eligible
@@ -88113,6 +88120,7 @@
   session_id: 01KKDJFABKTMV7JFSK41617QRB
   created_at: 2026-03-10T17:59:06.557Z
   started_at: 2026-03-11T04:35:43.175Z
+  submitted_at: 2026-03-11T04:59:58.311Z
   notes:
     - _ulid: 01KKCEFY92JAJKT9DJ5VFARHEF
       created_at: 2026-03-10T18:00:07.203Z
@@ -88285,7 +88293,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T04:59:58.311Z
 - _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
   slugs:
     - task-worktree-command-cleanup
