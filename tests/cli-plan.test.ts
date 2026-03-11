@@ -715,5 +715,66 @@ describe("Integration: plan commands", () => {
       );
       expect(task.plan_ref).toBe("@my-feature");
     });
+
+    it("should use the stored module_ref from an imported plan when --module is omitted", async () => {
+      const planPath = path.join(tempDir, "imported-plan.md");
+      await fs.writeFile(
+        planPath,
+        `# Imported Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Imported Feature
+  slug: imported-feature
+  type: feature
+\`\`\`
+`,
+      );
+
+      kspec(
+        `plan import "${planPath}" --module @test-core --status approved`,
+        tempDir,
+      );
+
+      const result = kspecJson<{ module_ref: string | null; task: { plan_ref: string } }>(
+        "plan derive @plan-imported-plan",
+        tempDir,
+      );
+
+      expect(result.module_ref).toBe("@test-core");
+      expect(result.task.plan_ref).toBe("@plan-imported-plan");
+    });
+
+    it("should let --module override the stored module_ref from import", async () => {
+      kspec('item add --under @test-core --title "Second Module" --type module --slug second-module', tempDir);
+
+      const planPath = path.join(tempDir, "override-plan.md");
+      await fs.writeFile(
+        planPath,
+        `# Override Plan
+
+## Specs
+
+\`\`\`yaml
+- title: Override Feature
+  slug: override-feature
+  type: feature
+\`\`\`
+`,
+      );
+
+      kspec(
+        `plan import "${planPath}" --module @test-core --status approved`,
+        tempDir,
+      );
+
+      const result = kspecJson<{ module_ref: string | null }>(
+        "plan derive @plan-override-plan --module @second-module",
+        tempDir,
+      );
+
+      expect(result.module_ref).toBe("@second-module");
+    });
   });
 });

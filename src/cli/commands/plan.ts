@@ -16,6 +16,7 @@ import {
   getAuthor,
   initContext,
   type LoadedPlan,
+  type LoadedSpecItem,
   loadAllTasks,
   loadPlans,
   mutatePlanAtomically,
@@ -67,6 +68,33 @@ function shortPlanRef(plan: LoadedPlan, plans: LoadedPlan[]): string {
     plan._ulid,
     plans.map((candidate) => candidate._ulid),
   );
+}
+
+async function resolveDeriveModuleRef(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  plans: LoadedPlan[],
+  foundPlan: LoadedPlan,
+  moduleOption?: string,
+): Promise<string | null> {
+  const moduleRef = moduleOption ?? foundPlan.module_ref ?? null;
+  if (!moduleRef) {
+    return null;
+  }
+
+  const { refIndex } = await buildIndexes(ctx, plans);
+  const moduleResult = refIndex.resolve(moduleRef);
+  if (!moduleResult.ok) {
+    error(errors.reference.itemNotFound(moduleRef));
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  const moduleItem = moduleResult.item as LoadedSpecItem;
+  if (moduleItem.type !== "module") {
+    error(`${moduleRef} is not a module (type: ${moduleItem.type})`);
+    process.exit(EXIT_CODES.USAGE_ERROR);
+  }
+
+  return moduleRef.startsWith("@") ? moduleRef : `@${moduleRef}`;
 }
 
 /**
@@ -487,6 +515,10 @@ Examples:
   // AC: @plan-derive ac-5, ac-6
   markMutating(plan.command("derive <ref>"))
     .description("Create a task from a plan")
+    .option(
+      "--module <ref>",
+      "Module context for derivation (overrides stored plan module)",
+    )
     .option("--title <title>", "Override task title")
     .option("--priority <n>", "Set task priority (1-5)")
     .addHelpText(
@@ -494,6 +526,7 @@ Examples:
       `
 Examples:
   $ kspec plan derive @plan-ref
+  $ kspec plan derive @plan-ref --module @core
   $ kspec plan derive @plan-ref --title "Custom title"
   $ kspec plan derive @plan-ref --priority 1`,
     )
@@ -526,6 +559,13 @@ Examples:
           // Replace raw string with validated number for downstream use
           options.priority = priorityResult.value;
         }
+
+        const moduleRef = await resolveDeriveModuleRef(
+          ctx,
+          plans,
+          foundPlan,
+          options.module,
+        );
 
         // Generate task slug from plan title
         const generateSlug = (title: string): string => {
@@ -604,6 +644,7 @@ Examples:
         success(`Created task from plan: ${taskRef}`, {
           task: newTask,
           plan: updatedPlan,
+          module_ref: moduleRef,
         });
       } catch (err) {
         error("Failed to derive task from plan", err);
