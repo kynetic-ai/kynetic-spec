@@ -87258,6 +87258,16 @@
         validates a synthetic @tasks fixture instead of the real backfilled task specs, so
         @tasks-ac-backfill own-AC coverage is not trustworthy."
       supersedes: null
+    - _ulid: 01KKFFGX7K0Z6JSKPA6N753XMZ
+      created_at: 2026-03-11T22:15:50.771Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Replaced the synthetic in-test @tasks module with a checked-in snapshot of
+        the real backfilled @tasks refs and AC text, then rebuilt the isolated fixture from that
+        snapshot so CI still runs without repo shadow state while own-AC coverage stays tied to the
+        actual backfill content. Verification: npm test -- task-system-ac-backfill.test.ts passed;
+        npm run test:shard3 passed (71 files, 1418 tests); npm test passed (213 files, 4564 passed,
+        3 skipped); kspec validate exits 6 with only the pre-existing global warning debt."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
