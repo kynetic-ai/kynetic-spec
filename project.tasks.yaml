@@ -88713,6 +88713,11 @@
   plan_ref: "@plan-iterative-plan-editing"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #768. Implemented content-only plan import with draft default, optional
+    status override, persisted module_ref storage, warning-only --update behavior, and derive-time
+    fallback to stored module context when --module is omitted. AC coverage verified for
+    @plan-import-content-only plus inherited dry-run/json/semantic-exit-code/shadow-commit
+    expectations; GitHub CI passed on the merged head."
   depends_on: []
   context: []
   priority: 3
@@ -88723,6 +88728,7 @@
   created_at: 2026-03-10T22:42:11.659Z
   started_at: 2026-03-11T06:10:51.747Z
   submitted_at: 2026-03-11T06:11:00.949Z
+  completed_at: 2026-03-11T06:43:15.106Z
   notes:
     - _ulid: 01KKCYME2BQ3Q0PW830AKSQMY9
       created_at: 2026-03-10T22:42:11.659Z
@@ -88837,12 +88843,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T06:43:15.106Z
-  closed_reason: "Merged in PR #768. Implemented content-only plan import with draft default, optional
-    status override, persisted module_ref storage, warning-only --update behavior, and derive-time
-    fallback to stored module context when --module is omitted. AC coverage verified for
-    @plan-import-content-only plus inherited dry-run/json/semantic-exit-code/shadow-commit
-    expectations; GitHub CI passed on the merged head."
 - _ulid: 01KKCYMET3QGYY364J00V0AQZJ
   slugs:
     - implement-enhanced-plan-derivation
@@ -88905,6 +88905,17 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #772 breaks the Chokidar fallback by ignoring
         every .kspec path, and the symlink-loop fix shipped without regression coverage for fallback
         delivery."
+      supersedes: null
+    - _ulid: 01KKDTFJG384CG79ZWJBT4V3K8
+      created_at: 2026-03-11T06:48:52.483Z
+      author: Jacob Chapel
+      content: "Fix cycle 1 addressed review feedback: narrowed watcher symlink guard to ignore only
+        nested .kspec loop paths, preserved Chokidar fallback delivery for real YAML files, and
+        added deterministic fallback regression coverage for the .kspec/.kspec -> .kspec case.
+        Verification: npm test -- --run tests/daemon-watcher-fallback.test.ts
+        tests/daemon-watcher-multi-project.test.ts passes. kspec validate reports existing repo-wide
+        warnings only. Full npm test still has unrelated pre-existing failures in
+        tests/cli-plan.test.ts, tests/cli-serve.test.ts, and tests/cli-worktree-resolution.test.ts."
       supersedes: null
   todos: []
   automation: eligible
