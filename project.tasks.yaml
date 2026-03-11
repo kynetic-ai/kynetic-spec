@@ -85765,6 +85765,14 @@
         MessageBlock to dark-only prose inversion, and added spec-annotated web-ui tests that verify
         prose classes are present and emitted into the built CSS bundle."
       supersedes: null
+    - _ulid: 01KKDYDW9CK0SPB1MWRYR85Q5M
+      created_at: 2026-03-11T07:57:51.277Z
+      author: Jacob Chapel
+      content: "Verification update: full npm test initially failed only because the new build-backed
+        prose typography test hit Vitest's 15s default timeout. Updated the test to cache the build
+        artifact and use a 30s explicit timeout so it remains a real build assertion without flaking
+        in the full suite."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
