@@ -2598,7 +2598,7 @@ requirements:
     created: 2026-03-10T06:55:43.295Z
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 modules:
   - _ulid: 01KHFBSP8ABF1QSGXRW86P323E
     slugs:
