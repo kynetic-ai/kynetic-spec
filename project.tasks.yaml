@@ -85913,6 +85913,14 @@
         @streaming-markdown-component ac-5/ac-6/ac-7 plus @trait-markdown-rendering ac-9 still
         relies on transformed-source checks instead of runtime behavior."
       supersedes: null
+    - _ulid: 01KKEJ13GV8GZGZHYM1RE00NTP
+      created_at: 2026-03-11T13:40:24.219Z
+      author: Jacob Chapel
+      content: "Fix-cycle plan: extract a testable streaming markdown controller from the Svelte wrapper,
+        replace remaining source-shape assertions with DOM/runtime coverage for static mode, frame
+        batching, and large-input scheduling, and add a browser-path assertion for live
+        SessionStream markdown + cursor rendering before re-submitting PR #781."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
