@@ -85672,6 +85672,7 @@
         returns empty arrays. >100 refs returns 400. Invalid refs appear in unresolved array.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKB5J02DQA312B76P7PNAT9X
   slugs:
     - implement-plan-content-embedded-views
