@@ -85717,6 +85717,10 @@
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #775. Installed and configured Tailwind typography for web-ui prose
+    surfaces, updated MessageBlock dark-mode inversion, and added build-backed AC coverage verifying
+    prose classes and emitted CSS bundle. No spec deviations. AC coverage verified for
+    @prose-typography-setup ac-1 and ac-2; no inherited trait ACs."
   depends_on: []
   context: []
   priority: 3
@@ -85726,6 +85730,7 @@
   created_at: 2026-03-10T06:04:41.144Z
   started_at: 2026-03-11T07:52:54.702Z
   submitted_at: 2026-03-11T08:01:36.339Z
+  completed_at: 2026-03-11T08:17:31.192Z
   notes:
     - _ulid: 01KKB5HY9RPWCVPGZ8FXXKWCBC
       created_at: 2026-03-10T06:04:41.145Z
@@ -85785,11 +85790,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T08:17:31.192Z
-  closed_reason: "Merged in PR #775. Installed and configured Tailwind typography for web-ui prose
-    surfaces, updated MessageBlock dark-mode inversion, and added build-backed AC coverage verifying
-    prose classes and emitted CSS bundle. No spec deviations. AC coverage verified for
-    @prose-typography-setup ac-1 and ac-2; no inherited trait ACs."
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
@@ -86459,7 +86459,7 @@
   type: task
   spec_ref: "@spec-completeness-policy"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -86474,6 +86474,8 @@
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-03-11T08:18:08.481Z
+  session_id: 01KKDZ4Z8R7VPNA8HZ9TM6NP1C
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
   slugs:
     - implement-core-primitives-ac-backfill
