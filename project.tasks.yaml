@@ -85715,7 +85715,7 @@
   type: task
   spec_ref: "@prose-typography-setup"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -85784,6 +85784,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T08:01:36.339Z
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
