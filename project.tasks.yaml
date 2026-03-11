@@ -81903,12 +81903,30 @@
   priority: 2
   tags: []
   vcs_refs: []
+  session_id: 01KKDW602F060W4C6K78RGTYVJ
   created_at: 2026-03-08T05:04:39.277Z
-  notes: []
+  started_at: 2026-03-11T07:24:12.110Z
+  notes:
+    - _ulid: 01KKDWGPVX9Z039W1CTN1E2KW3
+      created_at: 2026-03-11T07:24:26.877Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: concurrent multi-project dispatch can race on process-level KSPEC_SESSION_ID
+        mutation inside agent invocation startup/cleanup.
+
+        - Scope: remove or isolate shared env mutation so concurrent invocations cannot leak session
+        identity across projects.
+
+        - Files: expected focus in src/agent/invocation.ts plus targeted tests around invocation env
+        injection/spawn behavior.
+
+        - Verification: focused tests for invocation/session env behavior, then full npm test and
+        kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T07:24:12.110Z
-  session_id: 01KKDW602F060W4C6K78RGTYVJ
 - _ulid: 01KK60VVZRX87B64NJTRN0QYA1
   slugs: []
   title: Sanitize inherited env vars in agent spawner
