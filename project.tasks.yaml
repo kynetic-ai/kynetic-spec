@@ -88727,6 +88727,7 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-11T05:45:50.403Z
   started_at: 2026-03-11T05:46:26.642Z
+  submitted_at: 2026-03-11T05:46:55.000Z
   notes:
     - _ulid: 01KKDPXBBVHZ5XW2PYBJAN0XQH
       created_at: 2026-03-11T05:46:29.627Z
@@ -88737,4 +88738,4 @@
         Root cause: likely kspec init ran from inside .kspec/ directory around Mar 10 04:25."
       supersedes: null
   todos: []
-  submitted_at: 2026-03-11T05:46:55.000Z
+  automation: eligible
