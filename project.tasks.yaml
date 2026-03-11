@@ -85884,6 +85884,13 @@
         do not validate the claimed behavior for @streaming-markdown-component /
         @trait-markdown-rendering. Inline review comments posted on PR #781."
       supersedes: null
+    - _ulid: 01KKE8FRPPTXR57A8W9DK5JYQM
+      created_at: 2026-03-11T10:53:38.902Z
+      author: Jacob Chapel
+      content: "Fix cycle: reproducing PR #781 failures locally, replacing weak markdown AC assertions
+        with runtime behavioral coverage, and investigating the shard 2/3 merge-ref regression
+        before re-submitting."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
