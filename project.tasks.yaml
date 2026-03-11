@@ -86221,6 +86221,15 @@
         task @01KKB5HYXXE1DH0T13T6BK2SYC / PR #781 (streaming markdown component). Rebase or rebuild
         the branch so review covers only @markdown-ui-adoption."
       supersedes: null
+    - _ulid: 01KKEX15AKW8ZBJ8E8F2ART3GG
+      created_at: 2026-03-11T16:52:40.403Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Rebuilt the task onto a clean branch from main and replayed only the
+        markdown-adoption changes. The only conflict was packages/web-ui/src/lib/utils/markdown.ts
+        because main lacks the streaming branch sanitize/highlight refactor; resolved by adding
+        renderInlineMarkdown() on top of main's existing static markdown sanitizer so PR scope stays
+        isolated to @markdown-ui-adoption."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
@@ -89444,6 +89453,11 @@
   plan_ref: "@plan-iterative-plan-editing"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #780. Enhanced plan derive now materializes specs from stored plan
+    content, supports module fallback/override, optional task derivation, implementation-note
+    propagation, dry-run/JSON output, status/link updates, and unresolved-ref guidance. Verified
+    with targeted derive/plan/task suites, full npm test (4520 passed, 3 skipped), and kspec
+    validate --warnings-ok."
   depends_on:
     - "@implement-plan-import-content-only-storage"
   context: []
@@ -89455,6 +89469,7 @@
   created_at: 2026-03-10T22:42:12.419Z
   started_at: 2026-03-11T13:47:46.067Z
   submitted_at: 2026-03-11T13:47:51.701Z
+  completed_at: 2026-03-11T16:51:06.176Z
   notes:
     - _ulid: 01KKCYMET33J4X0Q2MQRCJQQAW
       created_at: 2026-03-10T22:42:12.419Z
@@ -89534,12 +89549,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T16:51:06.176Z
-  closed_reason: "Merged in PR #780. Enhanced plan derive now materializes specs from stored plan
-    content, supports module fallback/override, optional task derivation, implementation-note
-    propagation, dry-run/JSON output, status/link updates, and unresolved-ref guidance. Verified
-    with targeted derive/plan/task suites, full npm test (4520 passed, 3 skipped), and kspec
-    validate --warnings-ok."
 - _ulid: 01KKDPW5237717QNKEKPRWERW7
   slugs: []
   title: "Fix: daemon watcher ELOOP crash from .kspec symlink loop"
