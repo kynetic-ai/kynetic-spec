@@ -84992,6 +84992,26 @@
         uses date_range instead of the spec's since URL param, and is missing agent_id/agent_type AC
         coverage."
       supersedes: null
+    - _ulid: 01KKD3C01B657ZNHHTFXDQB99E
+      created_at: 2026-03-11T00:04:58.027Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 1 completed:
+
+        - Replaced single-value status handling with repeated status URL params and multi-select
+        status chips.
+
+        - Changed time-range URL contract from date_range to spec-compliant since=<iso-date> while
+        keeping Today/7d/30d UX.
+
+        - Added dedicated E2E AC coverage for agent_id, agent_type, repeated status params, since
+        URL state, clear filters, and URL persistence.
+
+        - Verification: npm test passed (199 files, 4409 tests, 3 skipped). kspec validate reported
+        only existing project warning debt. Targeted Playwright sessions.spec could not run in
+        dispatch because its fixture attempts kspec serve start, which is disallowed when
+        KSPEC_SESSION_ID is set.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
