@@ -8064,6 +8064,16 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKDJDVR9HZBHEK5J7Q15YMNY
+    type: friction
+    content: Dispatch mode blocks Playwright fixtures that start a test daemon with kspec serve, so
+      daemon-backed web UI E2E coverage cannot run during autonomous task work even when the code is
+      ready.
+    workflow_ref: "@task-work-loop"
+    created_at: 2026-03-11T04:28:07.817Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
