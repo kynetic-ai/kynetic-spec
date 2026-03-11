@@ -47,6 +47,16 @@ test.describe('Workflows View', () => {
       await expect(descriptions.first()).toContainText('Check spec coverage before implementing');
     });
 
+    // AC: @markdown-ui-adoption ac-4
+    test('workflow description renders markdown formatting', async ({ page, daemon }) => {
+      await page.goto('/workflows');
+      await expect(page.getByTestId('workflows-loading')).toHaveCount(0);
+
+      const firstDescription = page.getByTestId('workflow-description').first();
+      await expect(firstDescription.locator('strong')).toContainText('spec coverage');
+      await expect(firstDescription.locator('code')).toContainText('kspec item get');
+    });
+
     // AC: @ui-workflows-view ac-1 — trigger type badge
     test('workflow card shows trigger type', async ({ page, daemon }) => {
       await page.goto('/workflows');

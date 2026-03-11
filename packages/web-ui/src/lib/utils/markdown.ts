@@ -60,3 +60,25 @@ export function renderMarkdown(content: string): string {
 		]
 	});
 }
+
+/**
+ * Render inline markdown string to sanitized HTML without wrapping block elements.
+ * Useful for short fields like acceptance criteria labels that still need code/link formatting.
+ */
+export function renderInlineMarkdown(content: string): string {
+	if (!content) return '';
+	const rawHtml = marked.parseInline(content) as string;
+	return DOMPurify.sanitize(rawHtml, {
+		ADD_ATTR: ['target'],
+		ALLOWED_TAGS: [
+			'strong',
+			'em',
+			'del',
+			'code',
+			'a',
+			'span',
+			'br'
+		],
+		ALLOWED_ATTR: ['href', 'target', 'rel', 'title', 'class']
+	});
+}

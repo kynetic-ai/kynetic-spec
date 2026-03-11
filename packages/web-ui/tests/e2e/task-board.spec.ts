@@ -170,6 +170,40 @@ test.describe('Task Board (Kanban)', () => {
 		await expect(page.getByTestId('task-notes')).toBeVisible();
 	});
 
+	// AC: @markdown-ui-adoption ac-1
+	test('renders task description markdown in the detail modal', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+
+		const backlogColumn = page.locator('[data-column-id="backlog"]');
+		const card = backlogColumn.locator('[data-task-id="01KG0RR6CA45ZT43W2T6HJMVA1"]');
+		await expect(card).toBeVisible();
+		await card.click();
+
+		const description = page.getByTestId('task-description');
+		await expect(description).toBeVisible();
+		await expect(description.locator('strong')).toContainText('pending');
+		await expect(description.locator('code')).toContainText('kspec task start @test-task-ready');
+	});
+
+	// AC: @markdown-ui-adoption ac-2
+	test('renders task note markdown in the detail modal', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+
+		const inProgressColumn = page.locator('[data-column-id="in_progress"]');
+		const card = inProgressColumn.locator('[data-task-id="01KG0RR8CB8N4YGP991WD7XS9R"]');
+		await expect(card).toBeVisible();
+		await card.click();
+
+		const note = page.getByTestId('note-item').first();
+		await expect(note).toBeVisible();
+		await expect(note.getByTestId('note-content').locator('code')).toContainText('npm test');
+		await expect(note.getByTestId('note-content').locator('a')).toHaveAttribute(
+			'href',
+			'https://example.com/task-docs'
+		);
+		await expect(note.getByTestId('note-content').locator('li')).toHaveCount(2);
+	});
+
 	// AC: @ui-task-board ac-1
 	test('shows empty state when no tasks exist', async ({ page }) => {
 		// Navigate to board (if daemon has no tasks it should show empty state)

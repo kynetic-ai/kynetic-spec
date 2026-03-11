@@ -105,6 +105,20 @@ test.describe('Observations', () => {
 			}
 		});
 
+		// AC: @markdown-ui-adoption ac-3
+		test('renders observation markdown content and context', async ({ page }) => {
+			await page.goto('/observations');
+
+			const firstItem = page.getByTestId('observation-item').first();
+			await expect(firstItem).toBeVisible();
+			await expect(firstItem.getByTestId('observation-content').locator('code')).toContainText(
+				'kspec validate'
+			);
+			await expect(firstItem.getByTestId('observation-context').locator('strong')).toContainText(
+				'test setup'
+			);
+		});
+
 		// AC: @web-dashboard ac-22
 		test('shows empty state when no unresolved observations', async ({ page }) => {
 			await page.goto('/observations');

@@ -76,6 +76,16 @@ test.describe('Interactive Triage UI', () => {
     }
   });
 
+  // AC: @markdown-ui-adoption ac-7
+  test('renders markdown formatting in triage card text', async ({ page }) => {
+    const card = page.getByTestId('triage-card');
+    const hasCard = await card.isVisible().catch(() => false);
+
+    if (hasCard) {
+      await expect(card.getByTestId('triage-card-text').locator('code')).toContainText('kspec triage');
+    }
+  });
+
   // AC: @interactive-triage-ui ac-2
   test('shows agent recommendation section for triaged items', async ({ page }) => {
     // Navigate to find a triaged item (may need multiple cards)
