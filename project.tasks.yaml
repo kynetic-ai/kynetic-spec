@@ -84802,7 +84802,7 @@
   type: task
   spec_ref: "@session-list-infinite-scroll"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -84991,6 +84991,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T01:15:20.721Z
+  closed_reason: "Merged in PR #765 (commit 48b0c6a68) via the superseding sessions-page branch.
+    Implemented infinite-scroll pagination, page-reset-on-filter-change, and live session updates
+    with top-of-list refresh / scrolled-down indicator behavior on /sessions. AC coverage verified
+    in packages/web-ui/tests/e2e/sessions.spec.ts for initial load, scroll load, scroll end, filter
+    reset, and live update behavior."
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
   slugs:
     - implement-session-filter-controls
@@ -85000,6 +85006,11 @@
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #765 (commit 48b0c6a68). Implemented URL-driven session filter controls
+    with repeated status params, agent/agent-type/trigger/since filters, clear-filters behavior,
+    filtered-vs-total counts, and paginated filter-option hydration that avoids full dataset
+    fetches. AC coverage verified in packages/web-ui/tests/e2e/sessions.spec.ts for all own ACs plus
+    @ui-url-panel-state ac-4."
   depends_on:
     - "@implement-session-list-pagination-api"
   context: []
@@ -85011,6 +85022,7 @@
   created_at: 2026-03-10T05:32:15.615Z
   started_at: 2026-03-11T00:51:29.611Z
   submitted_at: 2026-03-11T00:51:38.055Z
+  completed_at: 2026-03-11T01:15:20.679Z
   notes:
     - _ulid: 01KKB3PJBZ7MFYQ6WY8HHE1G99
       created_at: 2026-03-10T05:32:15.615Z
@@ -85127,12 +85139,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T01:15:20.679Z
-  closed_reason: "Merged in PR #765 (commit 48b0c6a68). Implemented URL-driven session filter controls
-    with repeated status params, agent/agent-type/trigger/since filters, clear-filters behavior,
-    filtered-vs-total counts, and paginated filter-option hydration that avoids full dataset
-    fetches. AC coverage verified in packages/web-ui/tests/e2e/sessions.spec.ts for all own ACs plus
-    @ui-url-panel-state ac-4."
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
   slugs:
     - implement-session-cli-unified-filtering
