@@ -25,6 +25,7 @@ import {
   computeACCoverage,
   type LoadedSpecItem,
 } from '../../parser/index.js';
+import { getRelatedSessionsForItem } from './session-related.js';
 
 interface ItemsRouteOptions {}
 
@@ -333,6 +334,37 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
         return {
           items: result_items,
           total: result_items.length,
+        };
+      },
+      {
+        params: t.Object({
+          ref: t.String(),
+        }),
+      }
+    )
+
+    .get(
+      '/:ref/sessions',
+      async ({ params, error: errorResponse, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const items = await loadAllItems(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const result = await getRelatedSessionsForItem({
+          itemRef: params.ref,
+          items,
+          tasks,
+          sessionsDir: ctx.sessionsDir,
+        });
+
+        if ('error' in result) {
+          return errorResponse(404, result.error);
+        }
+
+        return {
+          items: result.sessions,
+          total: result.sessions.length,
+          offset: 0,
+          limit: result.sessions.length,
         };
       },
       {

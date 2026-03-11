@@ -2,6 +2,7 @@
 	// AC: @web-dashboard ac-12, ac-13, ac-14, ac-15
 	import type { ItemDetail, TaskSummary } from '@kynetic-ai/shared';
 	import { base } from '$app/paths';
+	import type { SessionSummary } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
 		Sheet,
@@ -18,8 +19,9 @@
 	} from '$lib/components/ui/accordion';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { fetchItem, fetchItemTasks } from '$lib/api';
+	import { fetchItem, fetchItemTasks, fetchItemSessions } from '$lib/api';
 	import { CheckCircle, XCircle, HelpCircle } from 'lucide-svelte';
+	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
 
 	interface Props {
 		ref: string | null;
@@ -30,24 +32,36 @@
 
 	let item = $state<ItemDetail | null>(null);
 	let linkedTasks = $state<TaskSummary[]>([]);
+	let relatedSessions = $state<SessionSummary[]>([]);
+	let sessionsError = $state('');
 	let loading = $state(false);
 	let error = $state<string | null>(null);
 
 	async function loadItem(itemRef: string) {
 		loading = true;
 		error = null;
+		sessionsError = '';
 		try {
-			// Fetch item details
-			item = await fetchItem(itemRef);
-
-			// Fetch linked tasks
-			// AC: @web-dashboard ac-13
-			const tasksResponse = await fetchItemTasks(itemRef);
+			const [itemResponse, tasksResponse] = await Promise.all([
+				fetchItem(itemRef),
+				fetchItemTasks(itemRef)
+			]);
+			item = itemResponse;
 			linkedTasks = tasksResponse.items;
+			try {
+				const sessionsResponse = await fetchItemSessions(itemRef);
+				relatedSessions = sessionsResponse.items;
+			} catch (sessionErr) {
+				sessionsError =
+					sessionErr instanceof Error ? sessionErr.message : 'Failed to load related sessions';
+				relatedSessions = [];
+			}
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load item';
 			item = null;
 			linkedTasks = [];
+			relatedSessions = [];
+			sessionsError = '';
 		} finally {
 			loading = false;
 		}
@@ -222,6 +236,17 @@
 						<p class="text-sm text-muted-foreground">No tasks linked to this spec item yet.</p>
 					</div>
 				{/if}
+
+				<!-- AC: @task-spec-session-context ac-spec-detail-sessions, ac-session-list-spec-filter -->
+				<RelatedSessionsSection
+					title="Sessions"
+					sessions={relatedSessions}
+					loading={false}
+					error={sessionsError}
+					filterHref={`${base}/sessions?spec_ref=${encodeURIComponent(`@${item.slugs[0] || item._ulid}`)}`}
+					emptyMessage="No sessions are linked to tasks for this spec item yet."
+					dataTestId="item-related-sessions"
+				/>
 			</div>
 		{/if}
 	</SheetContent>

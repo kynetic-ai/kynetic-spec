@@ -10,12 +10,15 @@
 -->
 <script lang="ts">
 	import type { TaskDetail } from '@kynetic-ai/shared';
+	import { base } from '$app/paths';
 	import {
 		startTask,
 		submitTask,
 		completeTask,
 		blockTask,
-		addTaskNote
+		addTaskNote,
+		fetchTaskSessions,
+		type SessionSummary
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -29,6 +32,7 @@
 	import { getStatusClasses, formatVcsRef } from './board-utils';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
 
 	interface Props {
 		/** The task detail to display, or null if not yet loaded. */
@@ -45,6 +49,9 @@
 
 	let actionError = $state('');
 	let isSubmitting = $state(false);
+	let relatedSessions = $state<SessionSummary[]>([]);
+	let sessionsLoading = $state(false);
+	let sessionsError = $state('');
 
 	// Note form
 	let noteContent = $state('');
@@ -62,6 +69,37 @@
 			reasonInput = '';
 			showReasonFor = null;
 		}
+	});
+
+	$effect(() => {
+		if (!task) {
+			relatedSessions = [];
+			sessionsLoading = false;
+			sessionsError = '';
+			return;
+		}
+
+		let cancelled = false;
+		sessionsLoading = true;
+		sessionsError = '';
+
+		fetchTaskSessions(task._ulid)
+			.then((response) => {
+				if (cancelled) return;
+				relatedSessions = response.items;
+			})
+			.catch((err) => {
+				if (cancelled) return;
+				sessionsError = err instanceof Error ? err.message : 'Failed to load related sessions';
+				relatedSessions = [];
+			})
+			.finally(() => {
+				if (!cancelled) sessionsLoading = false;
+			});
+
+		return () => {
+			cancelled = true;
+		};
 	});
 
 	async function handleAction(action: () => Promise<void>) {
@@ -284,6 +322,17 @@
 				<ReferenceLink ref={task.session_ref} type="session" />
 			</div>
 		{/if}
+
+		<!-- AC: @task-spec-session-context ac-task-detail-sessions, ac-session-list-task-filter -->
+		<RelatedSessionsSection
+			title="Sessions"
+			sessions={relatedSessions}
+			loading={sessionsLoading}
+			error={sessionsError}
+			filterHref={`${base}/sessions?task_id=${encodeURIComponent(`@${slug}`)}`}
+			emptyMessage="No sessions have referenced this task yet."
+			dataTestId="task-related-sessions"
+		/>
 
 		<Separator />
 

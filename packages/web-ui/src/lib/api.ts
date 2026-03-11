@@ -913,6 +913,8 @@ export interface FetchSessionsParams {
 	agent_type?: string;
 	trigger?: string;
 	since?: string;
+	task_id?: string;
+	spec_ref?: string;
 }
 
 /**
@@ -965,8 +967,44 @@ export async function fetchSessions(params?: FetchSessionsParams): Promise<Sessi
 	if (params?.since) {
 		url.searchParams.set('since', params.since);
 	}
+	if (params?.task_id) {
+		url.searchParams.set('task_id', params.task_id);
+	}
+	if (params?.spec_ref) {
+		url.searchParams.set('spec_ref', params.spec_ref);
+	}
 
 	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/sessions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchItemSessions(ref: string): Promise<SessionListResponse> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const response = await fetch(`${API_BASE}/api/items/${ref}/sessions`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
