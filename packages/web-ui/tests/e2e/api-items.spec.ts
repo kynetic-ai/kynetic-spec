@@ -14,6 +14,12 @@
 
 import { test, expect } from '../fixtures/test-base';
 
+// AC: @trait-api-endpoint ac-2 — N/A: POST /api/items/batch reports missing refs in an
+// unresolved array by design instead of failing the whole batch with 404.
+// AC: @trait-api-endpoint ac-4 — N/A: POST /api/items/batch returns {items, unresolved};
+// it is a batch lookup endpoint, not a paginated list endpoint.
+// AC: @trait-api-endpoint ac-5 — N/A: POST /api/items/batch is read-only and does not mutate shadow state.
+
 test.describe('Items API', () => {
   test.describe('GET /api/items', () => {
     // AC: @api-contract ac-8
@@ -357,6 +363,166 @@ test.describe('Items API', () => {
       expect(Array.isArray(body.items)).toBe(true);
       expect(body.total).toBe(0);
       expect(body.items.length).toBe(0);
+    });
+  });
+
+  test.describe('POST /api/items/batch', () => {
+    // AC: @batch-item-fetch-api ac-1
+    // AC: @trait-api-endpoint ac-1
+    test('returns spec item summaries for valid item refs', async ({ request, daemon }) => {
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: { refs: ['@test-feature', '@test-requirement'] },
+      });
+
+      expect(response.status()).toBe(200);
+      expect(response.headers()['content-type']).toContain('application/json');
+
+      const body = await response.json();
+      expect(body.unresolved).toEqual([]);
+      expect(body.items).toHaveLength(2);
+
+      expect(body.items[0]).toMatchObject({
+        ulid: '01KF1645CBDJYHWBPYWRN3HYPJ',
+        slugs: ['test-feature'],
+        title: 'Test Feature',
+        type: 'feature',
+        status: 'in_progress',
+        maturity: 'draft',
+        traits: ['@test-trait'],
+        ac_count: 2,
+      });
+
+      expect(body.items[1]).toMatchObject({
+        ulid: '01KF1645CBKJNPWH1E02WN4MMX',
+        slugs: ['test-requirement'],
+        title: 'Test Requirement',
+        type: 'requirement',
+        status: 'not_started',
+        maturity: 'draft',
+        traits: [],
+        ac_count: 0,
+      });
+    });
+
+    // AC: @batch-item-fetch-api ac-2
+    test('returns unresolved refs separately while preserving resolved results', async ({
+      request,
+      daemon,
+    }) => {
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: { refs: ['@test-feature', '@does-not-exist', '@test-task-ready'] },
+      });
+
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.items).toHaveLength(2);
+      expect(body.unresolved).toEqual(['@does-not-exist']);
+      expect(body.items[0].title).toBe('Test Feature');
+      expect(body.items[1].title).toBe('Ready task');
+    });
+
+    // AC: @batch-item-fetch-api ac-3
+    test('returns task summaries when refs resolve to tasks', async ({ request, daemon }) => {
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: { refs: ['@test-task-ready', '@test-task-in-progress'] },
+      });
+
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.unresolved).toEqual([]);
+      expect(body.items).toHaveLength(2);
+
+      expect(body.items[0]).toEqual({
+        ulid: '01KG0RR6CA45ZT43W2T6HJMVA1',
+        slugs: ['test-task-ready'],
+        title: 'Ready task',
+        status: 'pending',
+        priority: 2,
+        spec_ref: '@test-feature',
+      });
+
+      expect(body.items[1]).toEqual({
+        ulid: '01KG0RR8CB8N4YGP991WD7XS9R',
+        slugs: ['test-task-in-progress'],
+        title: 'In progress task',
+        status: 'in_progress',
+        priority: 3,
+        spec_ref: '@test-feature',
+      });
+    });
+
+    // AC: @batch-item-fetch-api ac-4
+    test('returns empty arrays for an empty batch', async ({ request, daemon }) => {
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: { refs: [] },
+      });
+
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body).toEqual({
+        items: [],
+        unresolved: [],
+      });
+    });
+
+    // AC: @batch-item-fetch-api ac-5
+    test('returns 400 with a descriptive message when batch size exceeds 100 refs', async ({
+      request,
+      daemon,
+    }) => {
+      const refs = Array.from({ length: 101 }, (_, index) => `@missing-${index}`);
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: { refs },
+      });
+
+      expect(response.status()).toBe(400);
+
+      const body = await response.json();
+      expect(body).toEqual({
+        error: 'validation_error',
+        details: [
+          {
+            field: 'refs',
+            message: 'Maximum batch size is 100 refs',
+          },
+        ],
+      });
+    });
+
+    // AC: @trait-api-endpoint ac-3
+    test('returns 400 with validation details when refs is missing', async ({
+      request,
+      daemon,
+    }) => {
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: {},
+      });
+
+      expect(response.status()).toBe(400);
+
+      const body = await response.json();
+      expect(body).toEqual({
+        error: 'validation_error',
+        details: [
+          {
+            field: 'refs',
+            message: 'Refs is required and must be an array of item references',
+          },
+        ],
+      });
+    });
+
+    // AC: @trait-api-endpoint ac-6
+    test('includes x-request-id header on batch responses', async ({ request, daemon }) => {
+      const response = await request.post(`${daemon.baseUrl}/api/items/batch`, {
+        data: { refs: ['@test-feature'] },
+      });
+
+      expect(response.status()).toBe(200);
+      expect(response.headers()['x-request-id']).toBeTruthy();
     });
   });
 
