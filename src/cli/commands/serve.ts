@@ -14,7 +14,7 @@ import { PidFileManager } from '../pid-utils.js';
 import { loadProjectConfig } from '../../parser/config.js';
 import { initContext } from '../../parser/yaml.js';
 
-async function resolveDefaultKspecDir(explicitDir?: string): Promise<string> {
+export async function resolveDefaultKspecDir(explicitDir?: string): Promise<string> {
   if (explicitDir) {
     return explicitDir;
   }
