@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85808,7 +85808,7 @@
   session_id: 01KKE7YPQVVX4YASN4P6VXMDMW
   created_at: 2026-03-10T06:04:41.789Z
   started_at: 2026-03-11T10:53:26.044Z
-  submitted_at: 2026-03-11T10:02:36.579Z
+  submitted_at: 2026-03-11T11:16:00.081Z
   notes:
     - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
       created_at: 2026-03-10T06:04:41.789Z
@@ -85906,6 +85906,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/781
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
   slugs:
     - implement-batch-item-fetch-api
