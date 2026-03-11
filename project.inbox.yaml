@@ -1456,3 +1456,12 @@ inbox:
       - cli
       - plan
     added_by: "@claude"
+  - _ulid: 01KKF402MAHT1EMR1MEF3X75C6
+    text: Dispatch queue does not sort by task priority (p1-p5). _compareQueueEntries sorts by status
+      precedence then FIFO (enqueue sequence). A P3 task enqueued before a P1 task gets dispatched
+      first. Likely a spec gap — no AC requires priority-based ordering within the dispatch queue.
+    created_at: 2026-03-11T18:54:24.906Z
+    tags:
+      - dispatch
+      - bug
+    added_by: "@claude"
