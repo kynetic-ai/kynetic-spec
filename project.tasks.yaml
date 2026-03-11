@@ -87542,16 +87542,35 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKFK8GDPK3TR834C39RPN3XZ
   created_at: 2026-03-10T06:55:47.174Z
+  started_at: 2026-03-11T23:26:46.904Z
   notes:
     - _ulid: 01KKB8FGF6N80GSKNB97A7RXS4
       created_at: 2026-03-10T06:55:47.174Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    - _ulid: 01KKFKKN8W8W5EPD69SBXTW3FE
+      created_at: 2026-03-11T23:27:15.229Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: annotation-only sweep to align existing tests with spec coverage tracking
+
+        - Scope: add machine-parseable AC comments to existing tests that already exercise
+        spec/trait behavior; no behavior changes
+
+        - Files: expected changes are test files plus any generated verification artifacts only if
+        required
+
+        - Verification: kspec validate --completeness, npm test
+
+        - Baseline: 2026-03-11 validate --completeness shows 196 missing own AC coverage warnings
+        and 6 missing trait AC coverage warnings
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T23:26:46.904Z
-  session_id: 01KKFK8GDPK3TR834C39RPN3XZ
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
   slugs:
     - implement-missing-description-backfill
