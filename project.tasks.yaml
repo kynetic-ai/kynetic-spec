@@ -88378,7 +88378,9 @@
     - infra
     - cli
   vcs_refs: []
+  session_id: 01KKDRAYB0QEVB9HA4EAKHEYMQ
   created_at: 2026-03-10T17:59:13.926Z
+  started_at: 2026-03-11T06:16:42.839Z
   notes:
     - _ulid: 01KKCEGR5VZQW3SP442BA17BJY
       created_at: 2026-03-10T18:00:33.723Z
@@ -88503,10 +88505,26 @@
         const kspecDir = roots ? path.join(roots.mainRoot, '.kspec') : path.join(process.cwd(),
         '.kspec');"
       supersedes: null
+    - _ulid: 01KKDRR78EVXMNYXPB56MF346G
+      created_at: 2026-03-11T06:18:38.734Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: verify whether worktree command cleanup is still outstanding after upstream
+        fast-forward.
+
+        - Scope: shadow command root resolution, serve default kspec-dir behavior, and
+        shadow-worktree false-positive guard.
+
+        - Files: src/cli/commands/shadow.ts, src/cli/commands/serve.ts, src/parser/shadow.ts,
+        related tests.
+
+        - Verification: npm test -- tests/cli-worktree-resolution.test.ts
+        tests/parser/resolve-project-roots.test.ts tests/shadow.test.ts tests/cli-serve.test.ts
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T06:16:42.839Z
-  session_id: 01KKDRAYB0QEVB9HA4EAKHEYMQ
 - _ulid: 01KKCYMCNZ94ZJKP84XYCCBVNM
   slugs:
     - implement-plan-export-command
