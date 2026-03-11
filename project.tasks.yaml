@@ -84998,7 +84998,7 @@
   type: task
   spec_ref: "@session-filter-controls"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -85127,6 +85127,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T01:15:20.679Z
+  closed_reason: "Merged in PR #765 (commit 48b0c6a68). Implemented URL-driven session filter controls
+    with repeated status params, agent/agent-type/trigger/since filters, clear-filters behavior,
+    filtered-vs-total counts, and paginated filter-option hydration that avoids full dataset
+    fetches. AC coverage verified in packages/web-ui/tests/e2e/sessions.spec.ts for all own ACs plus
+    @ui-url-panel-state ac-4."
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
   slugs:
     - implement-session-cli-unified-filtering
