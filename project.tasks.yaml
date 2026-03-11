@@ -85624,6 +85624,7 @@
         - Verification: npm run build succeeds. Component renders streaming content with incremental updates. Code blocks get syntax highlighting after streaming ends.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
   slugs:
     - implement-batch-item-fetch-api
