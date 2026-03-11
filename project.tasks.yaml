@@ -89866,7 +89866,7 @@
   type: task
   spec_ref: "@plan-import-into"
   plan_ref: "@plan-iterative-plan-editing"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@plan-import"
@@ -89909,6 +89909,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T20:55:14.274Z
 - _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
   slugs:
     - implement-plan-import-content-only-storage
