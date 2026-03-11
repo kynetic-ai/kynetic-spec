@@ -403,3 +403,82 @@ describe("Task storage discovery coverage", () => {
     expect(tasks.every((task) => task._sourceFile?.startsWith(tasksDir))).toBe(true);
   });
 });
+
+describe("Task system AC backfill spec quality", () => {
+  const repoRoot = process.cwd();
+  const touchedTaskRefs = [
+    "@task-types",
+    "@state-pending",
+    "@state-in-progress",
+    "@state-completed",
+    "@state-cancelled",
+    "@state-blocked",
+    "@task-schema",
+    "@task-spec-ref",
+    "@task-work-fields",
+    "@task-timestamps",
+    "@task-vcs-refs",
+    "@derived-ready",
+    "@query-ready",
+    "@query-next",
+    "@query-filters",
+    "@derive-command",
+    "@derive-idempotency",
+    "@note-structure",
+    "@note-cli",
+    "@todo-structure",
+    "@todo-cli",
+    "@task-storage",
+    "@task-storage-alongside",
+    "@task-storage-separate",
+  ];
+
+  // AC: @tasks-ac-backfill ac-coverage
+  it("leaves no non-module @tasks descendants without acceptance criteria", () => {
+    const listing = kspecJson<{
+      items: Array<{
+        ref: string;
+        type: string;
+        acceptance_criteria?: Array<unknown>;
+      }>;
+    }>("item list --under @tasks --limit 999", repoRoot);
+
+    const missing = listing.items
+      .filter((item) => item.ref !== "@tasks" && item.type !== "module")
+      .filter((item) => (item.acceptance_criteria?.length ?? 0) === 0)
+      .map((item) => item.ref);
+
+    expect(missing).toEqual([]);
+  });
+
+  // AC: @tasks-ac-backfill ac-testable
+  it("keeps each touched task-system AC in concrete given/when/then form", () => {
+    const listing = kspecJson<{
+      items: Array<{
+        ref: string;
+        acceptance_criteria?: Array<{
+          id: string;
+          given: string;
+          when: string;
+          then: string;
+        }>;
+      }>;
+    }>("item list --under @tasks --limit 999", repoRoot);
+
+    const touchedItems = listing.items.filter((item) => touchedTaskRefs.includes(item.ref));
+    expect(touchedItems).toHaveLength(touchedTaskRefs.length);
+
+    for (const item of touchedItems) {
+      expect(item.acceptance_criteria?.length ?? 0).toBeGreaterThan(0);
+
+      for (const criterion of item.acceptance_criteria ?? []) {
+        expect(criterion.id).toMatch(/^ac-/);
+        expect(criterion.given.trim().length).toBeGreaterThan(10);
+        expect(criterion.when.trim().length).toBeGreaterThan(10);
+        expect(criterion.then.trim().length).toBeGreaterThan(10);
+        expect(`${criterion.given} ${criterion.when} ${criterion.then}`).not.toContain("...");
+        expect(criterion.then.toLowerCase()).not.toContain("works correctly");
+      }
+    }
+  });
+});
