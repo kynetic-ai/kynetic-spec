@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85806,7 +85806,7 @@
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/781
-  session_id: 01KKEHEKG6PYN3TBPRQ7QJHT9K
+  session_id: null
   created_at: 2026-03-10T06:04:41.789Z
   started_at: 2026-03-11T13:40:21.216Z
   submitted_at: 2026-03-11T13:45:52.271Z
@@ -85933,6 +85933,14 @@
         smoke assertion could not be executed locally because dispatch-mode policy forbids the test
         fixture from starting its own daemon inside this agent invocation; it is expected to run in
         CI on PR #781."
+      supersedes: null
+    - _ulid: 01KKEJTS0KY27A955KF66QP97B
+      created_at: 2026-03-11T13:54:25.427Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: @trait-markdown-rendering ac-3 is still not
+        covered by a behavioral assertion. The current annotated test only checks for a <code> tag
+        plus prose wrapper source strings, which does not validate the required visually distinct
+        monospace styling."
       supersedes: null
   todos: []
   automation: eligible
