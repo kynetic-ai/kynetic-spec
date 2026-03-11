@@ -38,6 +38,7 @@ import {
 } from '../../parser/index.js';
 import { getSessionCache } from '../../sessions/cache.js';
 import { SessionStatusSchema } from '../../sessions/types.js';
+import { parseTimeSpec } from '../../utils/time.js';
 
 type SessionListQuery = {
   status?: string | string[];
@@ -218,8 +219,8 @@ async function filterSessionSummaries(
   }
 
   if (query.since) {
-    const sinceDate = new Date(query.since);
-    if (Number.isNaN(sinceDate.getTime())) {
+    const sinceDate = parseTimeSpec(query.since);
+    if (!sinceDate) {
       return {
         error: {
           status: 400,
@@ -228,7 +229,7 @@ async function filterSessionSummaries(
             details: [
               {
                 field: 'since',
-                message: `Invalid date value: "${query.since}". Use ISO 8601 format (e.g., 2025-03-01 or 2025-03-01T00:00:00Z).`,
+                message: `Invalid time value: "${query.since}". Use ISO 8601 format or a relative value like 7d, 24h, 2w, or 1m.`,
               },
             ],
           },

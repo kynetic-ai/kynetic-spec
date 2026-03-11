@@ -74,12 +74,14 @@ test.describe('Session Search API', () => {
 	}) => {
 		const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
 		mkdirSync(sessionsDir, { recursive: true });
+		const recentStartedAt = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+		const staleStartedAt = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString();
 
 		writeSession(sessionsDir, '01KSEARCH000000000000000001', {
 			agentId: 'worker',
 			status: 'completed',
 			taskId: '@test-task-ready',
-			startedAt: '2026-03-01T10:00:00.000Z',
+			startedAt: recentStartedAt,
 			events: [
 				{ type: 'session.start', text: 'Starting run' },
 				{ type: 'session.update', text: 'Error handling added to daemon search' }
@@ -90,12 +92,12 @@ test.describe('Session Search API', () => {
 			agentId: 'pr-reviewer',
 			status: 'failed',
 			taskId: '@test-task-ready',
-			startedAt: '2026-02-01T10:00:00.000Z',
+			startedAt: staleStartedAt,
 			events: [{ type: 'session.update', text: 'Error handling in unrelated review' }]
 		});
 
 		const response = await request.get(
-			`${daemon.baseUrl}/api/sessions/search?q=error+handling&status=completed&agent_id=worker&since=2026-03-01&task_id=@test-task-ready`
+			`${daemon.baseUrl}/api/sessions/search?q=error+handling&status=completed&agent_id=worker&since=7d&task_id=@test-task-ready`
 		);
 		expect(response.status()).toBe(200);
 
