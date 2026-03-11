@@ -86104,6 +86104,15 @@
         embedded cards with fallback to syntax-highlighted markdown, and cover ACs with web UI
         tests."
       supersedes: null
+    - _ulid: 01KKFH96EC5MW4PC4ENFM5RWFD
+      created_at: 2026-03-11T22:46:35.212Z
+      author: Jacob Chapel
+      content: Implemented plan-content embedded view pipeline in the plans UI. Added a parser/view-model
+        for Specs/Tasks YAML block detection, wired batch item fetch summaries into embedded
+        spec/task cards with loading and fetch-failure fallback states, preserved prose rendering
+        for non-YAML markdown, and extended the batch summaries to include task assignee for
+        task-card display.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
