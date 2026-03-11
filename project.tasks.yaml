@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85857,6 +85857,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-11T09:46:52.430Z
+  session_id: 01KKE444EWZEX0VNJ6BKVW82VY
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
   slugs:
     - implement-batch-item-fetch-api
