@@ -86791,6 +86791,21 @@
         the current PR head (first in cli-serve, second in clone-for-testing), so the review cannot
         merge until the suite is green on HEAD."
       supersedes: null
+    - _ulid: 01KKE694AT7X2VK4X90HMMCR6K
+      created_at: 2026-03-11T10:15:04.282Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle work:
+
+        - Reproduced full npm test failure on PR head.
+
+        - Root causes found: (1) serve start --daemon returns before health endpoint is reachable,
+        causing npm-installed-package startup race; (2) root Vitest run is discovering nested
+        .review/ test trees from local review artifacts, which contaminates regression runs.
+
+        - Scope of fix: harden daemon readiness wait in src/cli/commands/serve.ts and exclude
+        workspace-local review/worktree directories from root vitest config.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
