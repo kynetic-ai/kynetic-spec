@@ -135,6 +135,12 @@ features:
             status:
               maturity: draft
               implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: a project has been initialized with the shadow branch worktree
+            when: the user inspects the project root and the .kspec directory layout
+            then: the main worktree contains a gitignored .kspec worktree and the shadow worktree root contains
+              the manifest, task/inbox files, and modules directory at top-level paths
       - _ulid: 01KF1V1ZTYSNNVT5WP56VCP5YB
         slugs:
           - shadow-autocommit
@@ -232,6 +238,12 @@ features:
           - Source file tracking uses .kspec/ paths
         implements:
           - "@shadow-concept"
+        acceptance_criteria:
+          - id: ac-1
+            given: shadow branch mode is enabled and .kspec contains the latest spec state
+            when: the user runs a read command such as kspec item get or kspec tasks ready
+            then: the command resolves data from files under .kspec rather than from copies in the main branch
+              working tree
       - _ulid: 01KF1V209B3C1C7AB3Y63SPSPB
         slugs:
           - shadow-write-path
@@ -248,6 +260,12 @@ features:
           - No interaction with main branch's working tree
         implements:
           - "@shadow-concept"
+        acceptance_criteria:
+          - id: ac-1
+            given: shadow branch mode is enabled
+            when: the user runs a mutating kspec command
+            then: the command writes updated YAML under .kspec, triggers a shadow auto-commit, and does not
+              modify tracked spec files in the current code branch working tree
       - _ulid: 01KF1V20H5PEMHYR3AEA9FQF6T
         slugs:
           - shadow-errors
@@ -332,6 +350,12 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: a project is initialized with shadow branch support
+        when: a mutating kspec command updates spec or task state and git history is inspected
+        then: the metadata change is committed on the orphan shadow branch through the .kspec worktree and
+          the current code branch history remains unchanged
   - _ulid: 01KF1V20REJ21SN3JPGXQ9NM25
     slugs:
       - shadow-init
@@ -399,6 +423,12 @@ features:
         implements:
           - "@shadow-init"
           - "@cmd-init"
+        acceptance_criteria:
+          - id: ac-1
+            given: a CI runner checks out the repository without an existing .kspec worktree
+            when: the documented shadow bootstrap step recreates the worktree before running kspec commands
+            then: the shadow worktree exists and subsequent kspec commands can read and write spec state
+              successfully
     features:
       - _ulid: 01KF47G9P4VFQZR8MX8WPN3YZ0
         slugs:
@@ -482,6 +512,12 @@ features:
           - No uncommitted changes (should be none with auto-commit)
         implements:
           - "@shadow-cli"
+        acceptance_criteria:
+          - id: ac-1
+            given: the project has a healthy shadow branch worktree
+            when: the user runs kspec shadow status
+            then: the command reports the shadow branch name, worktree directory, current health, recent commit
+              summary, and the results of worktree, branch, and cleanliness checks
       - _ulid: 01KF1V21P816NQFKF0C8426M0D
         slugs:
           - shadow-log-cmd
@@ -507,6 +543,18 @@ features:
           - --json: Structured output
         implements:
           - "@shadow-cli"
+        acceptance_criteria:
+          - id: ac-1
+            given: the shadow branch has commit history
+            when: the user runs kspec shadow log -n 3 --oneline
+            then: the command prints the three most recent shadow commits in reverse chronological order using
+              the compact one-line format
+    acceptance_criteria:
+      - id: ac-1
+        given: a user needs to inspect or repair shadow branch health
+        when: the user runs kspec shadow --help
+        then: the CLI lists status, log, and repair subcommands as the management surface for the shadow
+          branch
   - _ulid: 01KF1VBPN5J53QJJM3FTXK2J9R
     slugs:
       - shadow-recovery
@@ -580,6 +628,12 @@ features:
           - Idempotent (safe to run multiple times)
         implements:
           - "@shadow-recovery"
+        acceptance_criteria:
+          - id: ac-1
+            given: the .kspec worktree is missing or stale while the shadow branch still exists
+            when: the user runs kspec shadow repair
+            then: the command recreates or reconnects the worktree and reports either a repaired state or that
+              the worktree was already healthy when run again
       - _ulid: 01KF1VBRG99HYJ00CVABVKV0QM
         slugs:
           - shadow-validation
@@ -598,6 +652,12 @@ features:
           - All spec files valid YAML with correct schema
         implements:
           - "@shadow-recovery"
+        acceptance_criteria:
+          - id: ac-1
+            given: a project uses shadow branch mode
+            when: the user runs kspec validate
+            then: validation checks the shadow worktree link, branch reachability, clean shadow status, and
+              schema-valid shadow spec files before reporting success
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
