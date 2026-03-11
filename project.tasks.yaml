@@ -86904,6 +86904,20 @@
         coverage warnings for the touched @schema items and @schema-ac-backfill under the active
         review gates."
       supersedes: null
+    - _ulid: 01KKF15CNFPRXP0S1R5YSGMG8X
+      created_at: 2026-03-11T18:04:53.295Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Added own-AC coverage markers for the schema backfill refs in existing test
+        files and a small metadata-only annotation test for versioning/backfill-only items.
+        Verification: kspec validate --completeness --warnings-ok --json now reports no completeness
+        warnings for the touched refs (@item-types, @status-lifecycle, @file-structure family,
+        @yaml-conventions, @zod-schema, @validation-output, @versioning family, @alignment-system,
+        @spec-traits, @schema-ac-backfill). Targeted regression: npm test -- tests/schema.test.ts
+        tests/schema-ac-backfill-annotations.test.ts tests/item-set-enum-validation.test.ts
+        tests/parser/manifest-discovery.test.ts tests/validate-exit-codes.test.ts
+        tests/trait-display.test.ts tests/merge-parse.test.ts
+        tests/validate-alignment-no-task-policy.test.ts => 8 files passed, 97 tests passed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
