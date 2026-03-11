@@ -88170,6 +88170,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #771. Migrated daemon-facing identity headers to projectRoot, added
+    worktree cwd validation/conflict handling for dispatch start, and fixed remaining worktree path
+    leaks in batch config, agent hash freshness, and daemon meta reporting. AC coverage verified for
+    @worktree-support, with local npm test passing and kspec validate showing only pre-existing
+    repository warning debt."
   depends_on:
     - "@task-worktree-core-resolution"
   context: []
@@ -88182,6 +88187,7 @@
   created_at: 2026-03-10T17:59:06.557Z
   started_at: 2026-03-11T04:35:43.175Z
   submitted_at: 2026-03-11T04:59:58.311Z
+  completed_at: 2026-03-11T06:03:03.477Z
   notes:
     - _ulid: 01KKCEFY92JAJKT9DJ5VFARHEF
       created_at: 2026-03-10T18:00:07.203Z
@@ -88354,12 +88360,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T06:03:03.477Z
-  closed_reason: "Merged in PR #771. Migrated daemon-facing identity headers to projectRoot, added
-    worktree cwd validation/conflict handling for dispatch start, and fixed remaining worktree path
-    leaks in batch config, agent hash freshness, and daemon meta reporting. AC coverage verified for
-    @worktree-support, with local npm test passing and kspec validate showing only pre-existing
-    repository warning debt."
 - _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
   slugs:
     - task-worktree-command-cleanup
@@ -88745,6 +88745,15 @@
       content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: PR #768 fails full regression. npm test reports
         11 failures, led by stale/broken plan import runtime behavior (built CLI still requires
         --module and rejects --status) plus a remaining cli-worktree-resolution regression."
+      supersedes: null
+    - _ulid: 01KKDR2N3NF0G6W4K5W5E6M2T2
+      created_at: 2026-03-11T06:06:52.022Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Root cause confirmed: npm test only checked for dist/ artifact existence,
+        so reused workspaces kept running a stale built CLI after src/ plan import changes.
+        Tightened scripts/test.cjs to treat newer source inputs as stale build output and trigger
+        npm run build automatically; added coverage in tests/test-runner.test.ts for stale-artifact
+        detection before re-running plan import/worktree regressions."
       supersedes: null
   todos: []
   automation: eligible
