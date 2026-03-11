@@ -10,6 +10,8 @@ export default defineConfig({
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/.review/**',
+      '**/.worktrees/**',
       '**/packages/web-ui/tests/e2e/**',
     ],
   },
