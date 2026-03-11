@@ -327,6 +327,8 @@ features:
             status:
               maturity: draft
               implementation: implemented
+            description: Define the JSON shape for kspec batch command entries so mutating CLI commands can be
+              validated, mapped to arguments consistently, and correlated in batch output.
           - _ulid: 01KGR05MG2NNH5AVVC159HYQEN
             slugs:
               - batch-allowed-commands
@@ -541,6 +543,8 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        description: Execute multiple mutating kspec commands from inline JSON, files, or stdin with shared
+          validation, atomic or immediate execution modes, and structured result reporting.
   - _ulid: 01KEZCJPHXV1SK9BY02J6GK719
     slugs:
       - item-commands
@@ -1493,6 +1497,8 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        description: Allow task creation to declare dependency relationships at creation time so newly added
+          tasks can immediately encode prerequisite task refs in their depends_on field.
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
@@ -2294,6 +2300,8 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        description: Allow the derive command to override the default task title inherited from the source
+          spec when creating a new implementation task.
     traits:
       - "@trait-priority-parameter"
   - _ulid: 01KEZCJPHYV1GH5KP8T0VSXWWS
@@ -3727,6 +3735,8 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        description: Provide an explicit CLI signal for Ralph loop agents to request graceful loop
+          termination, including optional audit context and cleanup of loop marker state.
       - _ulid: 01KJDCYRHZXAZJYWTXT6EB9KXJ
         slugs:
           - ralph-per-role-adapters

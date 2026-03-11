@@ -1220,6 +1220,9 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        description: Remove stale or abandoned workflow run records based on age, status, and dry-run
+          filtering so workflow state can be cleaned up without deleting active history
+          unintentionally.
   - _ulid: 01KF1XCNV00000000000000000
     slugs:
       - convention-definitions
