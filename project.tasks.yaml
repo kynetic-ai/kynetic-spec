@@ -87569,6 +87569,23 @@
         - Baseline: 2026-03-11 validate --completeness shows 196 missing own AC coverage warnings
         and 6 missing trait AC coverage warnings
       supersedes: null
+    - _ulid: 01KKFMQFSMSCDT6WE93WHWEC01
+      created_at: 2026-03-11T23:46:49.268Z
+      author: Jacob Chapel
+      content: >-
+        Completed annotation sweep:
+
+        - Baseline completeness before edits: 196 own coverage warnings, 6 trait coverage warnings.
+
+        - Current completeness after sweep: 61 own coverage warnings, 0 trait coverage warnings.
+
+        - Added machine-readable // AC: annotations across touched suites, plus regression coverage
+        in tests/test-annotation-sweep.test.ts and registry coverage in
+        tests/annotation-sweep-registry.test.ts.
+
+        - Verification: npx vitest run tests/test-annotation-sweep.test.ts
+        tests/annotation-sweep-registry.test.ts; npm test.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
