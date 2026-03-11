@@ -10,7 +10,7 @@
  */
 
 import { watch, type FSWatcher } from 'fs';
-import { readFile } from 'fs/promises';
+import { readFile, lstat } from 'fs/promises';
 import { parse as parseYaml } from 'yaml';
 import chokidar, { type FSWatcher as ChokidarWatcher } from 'chokidar';
 import { join } from 'path';
@@ -66,6 +66,8 @@ export class KspecWatcher {
       { recursive: true },
       (eventType, filename) => {
         if (!filename || !filename.endsWith('.yaml')) return;
+        // Guard against symlink loops (e.g. .kspec/.kspec -> .kspec)
+        if (filename.includes('.kspec')) return;
 
         const fullPath = join(this.options.kspecDir, filename);
         this.handleFileChange(fullPath);
@@ -81,6 +83,8 @@ export class KspecWatcher {
   private async startChokidarWatcher(): Promise<void> {
     this.watcher = chokidar.watch(join(this.options.kspecDir, '**/*.yaml'), {
       ignoreInitial: true,
+      followSymlinks: false,
+      ignored: /\.kspec/,
       awaitWriteFinish: {
         stabilityThreshold: 100,
         pollInterval: 50
@@ -123,6 +127,10 @@ export class KspecWatcher {
    */
   private async processFileChange(filePath: string): Promise<void> {
     try {
+      // Skip symlinks to prevent ELOOP errors
+      const stat = await lstat(filePath);
+      if (stat.isSymbolicLink()) return;
+
       const content = await readFile(filePath, 'utf-8');
 
       // AC-6: Validate YAML before broadcasting
