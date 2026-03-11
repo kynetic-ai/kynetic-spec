@@ -1477,3 +1477,18 @@ inbox:
       - dispatch
       - bug
     added_by: "@claude"
+  - _ulid: 01KKFH3AZS3J258JVM3ZA8KQ3C
+    text: "Improve discoverability/docs for editing and updating skills across the full pipeline.
+      Current flow is hard to infer: core skills authored in templates/skills/ behave differently
+      from project skills in .kspec/skills/, some rendered outputs are plugin-provided, and commands
+      like skill render vs skill install-core/update are not obvious from the moment you hit stale
+      generated skill output. Document the source-of-truth matrix, when to use skill render vs skill
+      install-core/update vs setup, how plugin-provided skills affect diff/verify behavior, and the
+      expected regeneration steps after editing templates/skills/, .kspec/skills/, or rendered
+      outputs."
+    created_at: 2026-03-11T22:43:23.257Z
+    tags:
+      - reflection
+      - skills
+      - docs
+    added_by: Jacob Chapel
