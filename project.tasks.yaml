@@ -86868,7 +86868,7 @@
   type: task
   spec_ref: "@cli-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86926,6 +86926,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T17:16:38.710Z
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
   slugs:
     - implement-task-system-ac-backfill
