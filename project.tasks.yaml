@@ -86419,6 +86419,7 @@
         given/when/then format with concrete, observable outcomes
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKBBS1HGRR363BSDMG07EC19
   slugs: []
   title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
