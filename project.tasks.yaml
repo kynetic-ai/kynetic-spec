@@ -86839,7 +86839,7 @@
   type: task
   spec_ref: "@schema-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86847,9 +86847,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKF0K3EETBGM7HYRBEGXEQHZ
   created_at: 2026-03-10T06:55:44.873Z
-  started_at: 2026-03-11T17:03:35.099Z
+  started_at: 2026-03-11T18:00:03.485Z
   submitted_at: 2026-03-11T17:07:14.628Z
   notes:
     - _ulid: 01KKB8FE79QVHMK021RZNJQRQM
