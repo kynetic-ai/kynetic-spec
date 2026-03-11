@@ -3,16 +3,16 @@
  *
  * Covered ACs:
  * - @session-text-search ac-api-search
+ * - @session-text-search ac-performance
  * - @session-text-search ac-scope-narrowing
  * - @trait-api-endpoint ac-1
  * - @trait-api-endpoint ac-2
  * - @trait-api-endpoint ac-6
- *
- * N/A coverage:
- * - @trait-api-endpoint ac-3 — N/A: GET /api/sessions/search does not accept a request body.
- * - @trait-api-endpoint ac-4 — N/A: search results are bounded by limit, not offset/limit pagination.
- * - @trait-api-endpoint ac-5 — N/A: the search endpoint is read-only and does not mutate shadow state.
  */
+
+// AC: @trait-api-endpoint ac-3 — N/A: GET /api/sessions/search does not accept a request body.
+// AC: @trait-api-endpoint ac-4 — N/A: search results are bounded by limit, not offset/limit pagination.
+// AC: @trait-api-endpoint ac-5 — N/A: the search endpoint is read-only and does not mutate shadow state.
 
 import { test, expect } from '../fixtures/test-base';
 import { mkdirSync, writeFileSync } from 'fs';
@@ -66,6 +66,7 @@ function writeSession(
 
 test.describe('Session Search API', () => {
 	// AC: @session-text-search ac-api-search
+	// AC: @session-text-search ac-performance
 	// AC: @session-text-search ac-scope-narrowing
 	// AC: @trait-api-endpoint ac-1
 	test('returns grouped matches and narrows the search set with metadata filters', async ({
