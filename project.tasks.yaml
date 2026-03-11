@@ -87765,7 +87765,7 @@
   spec_ref: "@worktree-support"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -87957,6 +87957,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T01:48:55.532Z
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
   slugs:
     - task-worktree-callsite-migration
