@@ -85557,6 +85557,7 @@
         produce visible typography styling. Existing dark mode theme still works.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
