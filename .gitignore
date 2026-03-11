@@ -2,3 +2,5 @@
 # Not tracked in shadow branch
 artifacts/
 sessions/
+# Prevent symlink loops from kspec init running inside .kspec
+.kspec
