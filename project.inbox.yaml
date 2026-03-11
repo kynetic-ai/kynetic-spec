@@ -1492,3 +1492,12 @@ inbox:
       - skills
       - docs
     added_by: Jacob Chapel
+  - _ulid: 01KKFKT5TBTDEBHJW3D194V0PV
+    text: plan import --into leaves source_path pointing at the temporary import file instead of
+      reflecting the updated plan provenance or clearing stale file paths
+    created_at: 2026-03-11T23:30:48.779Z
+    tags:
+      - planning
+      - bug
+      - metadata
+    added_by: Jacob Chapel
