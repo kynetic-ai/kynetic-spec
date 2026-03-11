@@ -1726,7 +1726,7 @@ features:
         created: 2026-03-10T06:04:40.026Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KJXSVF4YR57EJQTNSHFQKZHE
     slugs:
       - ui-agent-dispatch
