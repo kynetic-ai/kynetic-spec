@@ -847,7 +847,12 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     // AC: @cli-agent-commands ac-4 - dispatch engine started
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/agent/dispatch/start"),
-      expect.objectContaining({ method: "POST" }),
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.not.objectContaining({
+          "X-Kspec-Cwd": expect.any(String),
+        }),
+      }),
     );
     expect(logs.some((l) => /start|running/i.test(l))).toBe(true);
   });

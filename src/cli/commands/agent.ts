@@ -577,7 +577,9 @@ export function registerAgentCommands(program: Command): void {
         };
         if (ctx.projectRoot) {
           headers["X-Kspec-Dir"] = ctx.projectRoot;
-          headers["X-Kspec-Cwd"] = ctx.rootDir;
+          if (ctx.rootDir !== ctx.projectRoot) {
+            headers["X-Kspec-Cwd"] = ctx.rootDir;
+          }
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/start`, {

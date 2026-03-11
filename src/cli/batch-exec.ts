@@ -774,7 +774,7 @@ async function executeAtomic(
   const savedChalkLevel = chalk.level;
   const savedBatchProjectRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
   // AC: @project-config ac-7 — set real project root for config resolution
-  process.env.KSPEC_BATCH_PROJECT_ROOT = ctx.rootDir;
+  process.env.KSPEC_BATCH_PROJECT_ROOT = ctx.projectRoot;
   setBatchMode(true);
   chalk.level = 0;
 
