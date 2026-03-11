@@ -86283,6 +86283,7 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
   slugs:
     - implement-task-system-ac-backfill
