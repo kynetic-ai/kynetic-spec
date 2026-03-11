@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85805,7 +85805,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKE444EWZEX0VNJ6BKVW82VY
+  session_id: null
   created_at: 2026-03-10T06:04:41.789Z
   started_at: 2026-03-11T09:46:52.430Z
   submitted_at: 2026-03-11T10:02:36.579Z
@@ -85875,6 +85875,14 @@
         passed, package web-ui test slice passed, lint no-static-analysis passed. Full npm test has
         one remaining unrelated failure in .review/pr775/tests/clone-for-testing.test.ts about
         reusing a temp clone directory."
+      supersedes: null
+    - _ulid: 01KKE76XB7MGG2X0AEPKDTV62A
+      created_at: 2026-03-11T10:31:20.167Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #781 is red in CI (web-ui session-stream
+        tests fail on shard 3/3, plus merge-ref shard 2/3 exits non-zero) and several AC annotations
+        do not validate the claimed behavior for @streaming-markdown-component /
+        @trait-markdown-rendering. Inline review comments posted on PR #781."
       supersedes: null
   todos: []
   automation: eligible
