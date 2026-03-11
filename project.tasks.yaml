@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86053,7 +86053,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKFJTVSGSAY3E2CW43C40W21
+  session_id: null
   created_at: 2026-03-10T06:04:42.957Z
   started_at: 2026-03-11T23:18:48.808Z
   submitted_at: 2026-03-11T23:21:02.067Z
@@ -86150,6 +86150,12 @@
         tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts (passed). Observed a
         transient Vite HMR port 24678-in-use warning on stderr, but both target suites passed and
         the repo test runner exited successfully."
+      supersedes: null
+    - _ulid: 01KKFKGXB89SG2EYPPSMS9PBMR
+      created_at: 2026-03-11T23:25:45.192Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: plan embedded task parsing misses the documented
+        derive_from_specs YAML-block format required by @plan-embedded-views ac-2."
       supersedes: null
   todos: []
   automation: eligible
