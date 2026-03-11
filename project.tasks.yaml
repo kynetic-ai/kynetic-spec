@@ -89185,7 +89185,7 @@
   type: task
   spec_ref: "@plan-derive-enhanced"
   plan_ref: "@plan-iterative-plan-editing"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-plan-import-content-only-storage"
@@ -89232,6 +89232,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T09:36:21.760Z
 - _ulid: 01KKDPW5237717QNKEKPRWERW7
   slugs: []
   title: "Fix: daemon watcher ELOOP crash from .kspec symlink loop"
