@@ -85397,6 +85397,7 @@
   session_id: 01KKDH57X43YNKMHZ0X8PGH2ZX
   created_at: 2026-03-10T05:32:17.278Z
   started_at: 2026-03-11T04:14:19.909Z
+  submitted_at: 2026-03-11T04:28:33.965Z
   notes:
     - _ulid: 01KKB3PKZZTGCX16EXAAF8DY6Y
       created_at: 2026-03-10T05:32:17.279Z
@@ -85441,7 +85442,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T04:28:33.965Z
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
   slugs:
     - implement-markdown-rendering-trait
@@ -88510,7 +88510,7 @@
   type: task
   spec_ref: "@plan-import-content-only"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -88518,7 +88518,7 @@
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/768
-  session_id: 01KKDGB0Z6SAZ24R6AQ1N7ZKJM
+  session_id: null
   created_at: 2026-03-10T22:42:11.659Z
   started_at: 2026-03-11T04:05:23.101Z
   submitted_at: 2026-03-11T04:05:34.664Z
@@ -88608,6 +88608,13 @@
         tests/cli-plan.test.ts passed, npm test -- tests/cli-plan-import.test.ts passed, kspec
         validate --warnings-ok returned existing repo warnings only, and full npm test passed (205
         files, 4498 tests passed, 3 skipped)."
+      supersedes: null
+    - _ulid: 01KKDJST1RQAPAY6Y9E97DRPF2
+      created_at: 2026-03-11T04:34:39.288Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: PR #768 fails full regression. npm test reports
+        11 failures, led by stale/broken plan import runtime behavior (built CLI still requires
+        --module and rejects --status) plus a remaining cli-worktree-resolution regression."
       supersedes: null
   todos: []
   automation: eligible
