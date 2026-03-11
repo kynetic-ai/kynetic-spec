@@ -86739,6 +86739,11 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #786. Backfilled review coverage for @core-ac-backfill and the in-scope
+    core primitive refs, including isolated regressions for completeness/testability plus targeted
+    schema, refs, and integration AC coverage. Verified with full npm test, task-scoped completeness
+    warnings filtered to [] for the in-scope refs, and fresh green CI on head dea2cb8b0. No trait
+    ACs applied to this change."
   depends_on:
     - "@implement-spec-completeness-policy"
   context: []
@@ -86749,6 +86754,7 @@
   created_at: 2026-03-10T06:55:44.280Z
   started_at: 2026-03-11T20:03:24.977Z
   submitted_at: 2026-03-11T20:03:30.938Z
+  completed_at: 2026-03-11T20:14:27.839Z
   notes:
     - _ulid: 01KKB8FDMR8G970BYB2NNW4V9R
       created_at: 2026-03-10T06:55:44.280Z
@@ -86918,12 +86924,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T20:14:27.839Z
-  closed_reason: "Merged in PR #786. Backfilled review coverage for @core-ac-backfill and the in-scope
-    core primitive refs, including isolated regressions for completeness/testability plus targeted
-    schema, refs, and integration AC coverage. Verified with full npm test, task-scoped completeness
-    warnings filtered to [] for the in-scope refs, and fresh green CI on head dea2cb8b0. No trait
-    ACs applied to this change."
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
   slugs:
     - implement-schema-and-structure-ac-backfill
@@ -86931,7 +86931,7 @@
   type: task
   spec_ref: "@schema-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86939,9 +86939,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKF7YXFBJX9SP7QQ1H35AZZ6
   created_at: 2026-03-10T06:55:44.873Z
-  started_at: 2026-03-11T18:56:00.746Z
+  started_at: 2026-03-11T20:15:32.262Z
   submitted_at: 2026-03-11T19:03:55.668Z
   notes:
     - _ulid: 01KKB8FE79QVHMK021RZNJQRQM
