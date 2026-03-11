@@ -85942,6 +85942,19 @@
         plus prose wrapper source strings, which does not validate the required visually distinct
         monospace styling."
       supersedes: null
+    - _ulid: 01KKEW40NS853YM07PTVKNX0R4
+      created_at: 2026-03-11T16:36:45.369Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Replaced the remaining @trait-markdown-rendering ac-3 source-shape check
+        with runtime inline-code coverage. Added shared inline-code decoration for both static and
+        finalized streaming markdown output so code spans now carry explicit background + monospace
+        styling, and updated web-ui-session-stream tests to assert rendered DOM behavior instead of
+        transformed component source. Verification: npm test -- --run
+        tests/web-ui-session-stream.test.ts; npm --workspace packages/web-ui run build; node
+        dist/cli/index.js validate (warnings-only baseline). Also repaired local workspace drift
+        with npm install after the runner surfaced a missing streaming-markdown package during the
+        pre-test build step."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
