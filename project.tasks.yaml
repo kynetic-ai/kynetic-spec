@@ -84923,6 +84923,26 @@
         - Updated the three failing CLI test files to the paginated shape and made one
         active-session duration assertion deterministic by setting started_at explicitly.
       supersedes: null
+    - _ulid: 01KKD4A3HMMAXJ41PD4P4A7VPS
+      created_at: 2026-03-11T00:21:24.660Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 3 completed:
+
+        - Replaced block-comment-only @ui-url-panel-state ac-4 N/A markers with standalone // AC:
+        annotations in the sessions route and sessions E2E spec.
+
+        - Updated stale CLI tests to the current paginated session log list JSON contract ({ items,
+        total, offset, limit }) so this branch is green against current main-era expectations.
+
+        - Removed a flaky active-session duration assertion by using an explicit past started_at
+        fixture.
+
+        - Verification: npm test -- tests/session-legacy-cli.test.ts tests/session-log-list.test.ts
+        tests/session-model-evolution.test.ts; npm test (199 files, 4409 tests, 3 skipped, exit 0).
+
+        - Pushed commit 8ee26bd72 to PR #762 branch fix/session-infinite-scroll-v2.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
