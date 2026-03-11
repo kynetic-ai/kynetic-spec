@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import { createTask, initContext, loadAllTasks } from "../src/parser/index.js";
 import { TaskSchema } from "../src/schema/index.js";
 import {
@@ -12,6 +13,87 @@ import {
   setupTempFixtures,
   testUlid,
 } from "./helpers/cli.js";
+
+const touchedTaskRefs = [
+  "@task-types",
+  "@state-pending",
+  "@state-in-progress",
+  "@state-completed",
+  "@state-cancelled",
+  "@state-blocked",
+  "@task-schema",
+  "@task-spec-ref",
+  "@task-work-fields",
+  "@task-timestamps",
+  "@task-vcs-refs",
+  "@derived-ready",
+  "@query-ready",
+  "@query-next",
+  "@query-filters",
+  "@derive-command",
+  "@derive-idempotency",
+  "@note-structure",
+  "@note-cli",
+  "@todo-structure",
+  "@todo-cli",
+  "@task-storage",
+  "@task-storage-alongside",
+  "@task-storage-separate",
+];
+
+async function writeTaskBackfillSpecFixture(rootDir: string): Promise<void> {
+  const items = touchedTaskRefs.map((ref, index) => {
+    const slug = ref.slice(1);
+
+    return {
+      _ulid: testUlid("TASK", index + 20),
+      slugs: [slug],
+      title: slug
+        .split("-")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" "),
+      type: "feature",
+      status: {
+        maturity: "draft",
+        implementation: "implemented",
+      },
+      description: `Synthetic task-system fixture coverage for ${ref}.`,
+      acceptance_criteria: [
+        {
+          id: "ac-1",
+          given: `${ref} exists in the task-system fixture with a documented scenario`,
+          when: "the item is reviewed for backfill quality in an isolated test project",
+          then: "the behavior remains concrete, observable, and suitable for spec completeness checks",
+        },
+      ],
+    };
+  });
+
+  const tasksModule = {
+    _ulid: testUlid("TASK", 1),
+    slugs: ["tasks"],
+    title: "Task System",
+    type: "module",
+    status: {
+      maturity: "draft",
+      implementation: "implemented",
+    },
+    description: "Synthetic task-system module used for AC backfill review coverage.",
+    features: items,
+  };
+
+  await fs.mkdir(path.join(rootDir, "modules"), { recursive: true });
+  await fs.writeFile(path.join(rootDir, "modules", "tasks.yaml"), yamlStringify(tasksModule), "utf-8");
+
+  const configPath = path.join(rootDir, "kynetic.yaml");
+  const config = yamlParse(await fs.readFile(configPath, "utf-8")) as {
+    includes?: string[];
+  };
+  const includes = new Set(config.includes ?? []);
+  includes.add("modules/tasks.yaml");
+  config.includes = [...includes];
+  await fs.writeFile(configPath, yamlStringify(config), "utf-8");
+}
 
 describe("Task system AC backfill coverage", () => {
   let tempDir: string;
@@ -405,33 +487,16 @@ describe("Task storage discovery coverage", () => {
 });
 
 describe("Task system AC backfill spec quality", () => {
-  const repoRoot = process.cwd();
-  const touchedTaskRefs = [
-    "@task-types",
-    "@state-pending",
-    "@state-in-progress",
-    "@state-completed",
-    "@state-cancelled",
-    "@state-blocked",
-    "@task-schema",
-    "@task-spec-ref",
-    "@task-work-fields",
-    "@task-timestamps",
-    "@task-vcs-refs",
-    "@derived-ready",
-    "@query-ready",
-    "@query-next",
-    "@query-filters",
-    "@derive-command",
-    "@derive-idempotency",
-    "@note-structure",
-    "@note-cli",
-    "@todo-structure",
-    "@todo-cli",
-    "@task-storage",
-    "@task-storage-alongside",
-    "@task-storage-separate",
-  ];
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await writeTaskBackfillSpecFixture(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
 
   // AC: @tasks-ac-backfill ac-coverage
   it("leaves no non-module @tasks descendants without acceptance criteria", () => {
@@ -441,7 +506,7 @@ describe("Task system AC backfill spec quality", () => {
         type: string;
         acceptance_criteria?: Array<unknown>;
       }>;
-    }>("item list --under @tasks --limit 999", repoRoot);
+    }>("item list --under @tasks --limit 999", tempDir);
 
     const missing = listing.items
       .filter((item) => item.ref !== "@tasks" && item.type !== "module")
@@ -463,7 +528,7 @@ describe("Task system AC backfill spec quality", () => {
           then: string;
         }>;
       }>;
-    }>("item list --under @tasks --limit 999", repoRoot);
+    }>("item list --under @tasks --limit 999", tempDir);
 
     const touchedItems = listing.items.filter((item) => touchedTaskRefs.includes(item.ref));
     expect(touchedItems).toHaveLength(touchedTaskRefs.length);
