@@ -108,6 +108,16 @@ features:
           Version field enables schema evolution.
         implements:
           - "@meta-manifest"
+        acceptance_criteria:
+          - id: ac-1
+            given: a project defines a meta manifest with kynetic_meta, agents, workflows, conventions, or
+              observations sections
+            when: the manifest is loaded by kspec
+            then: the file is parsed as a meta manifest using the declared kynetic_meta version field
+          - id: ac-2
+            given: a meta manifest uses an unsupported or malformed version declaration
+            when: kspec validate runs
+            then: validation reports a meta-manifest schema error instead of silently accepting the file
       - _ulid: 01KF1XMNF20000000000000000
         slugs:
           - meta-includes
@@ -130,6 +140,15 @@ features:
           Same pattern as spec manifest includes.
         implements:
           - "@meta-manifest"
+        acceptance_criteria:
+          - id: ac-1
+            given: a meta manifest declares include files for agents, workflows, or conventions
+            when: the project meta context is loaded
+            then: items from the included files are merged into the effective meta manifest
+          - id: ac-2
+            given: a meta manifest references an include path that cannot be loaded
+            when: kspec validate runs
+            then: validation reports the missing or unreadable include instead of ignoring it
       - _ulid: 01KF1XMNF30000000000000000
         slugs:
           - meta-validation
@@ -148,6 +167,15 @@ features:
           Unified validation ensures consistency across both layers.
         implements:
           - "@meta-manifest"
+        acceptance_criteria:
+          - id: ac-1
+            given: a meta item violates its schema or contains an invalid field value
+            when: kspec validate runs
+            then: the output includes a meta-scoped validation error describing the failure
+          - id: ac-2
+            given: a workflow, observation, or task meta_ref references a missing or wrong target
+            when: kspec validate runs
+            then: reference validation reports the unresolved or invalid meta reference
       - _ulid: 01KG386XTQ7XB205RJBSWNW318
         slugs:
           - meta-manifest-discovery
@@ -273,6 +301,15 @@ features:
           All agents have ULIDs for tracking and references.
         implements:
           - "@agent-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: an agent definition contains _ulid, id, name, description, and capabilities
+            when: the meta manifest is parsed
+            then: the agent validates and can be referenced as a meta item
+          - id: ac-2
+            given: an agent definition omits a required identity field such as id or name
+            when: kspec validate runs
+            then: validation reports the missing required field for that agent entry
       - _ulid: 01KF1XAGT20000000000000000
         slugs:
           - agent-capabilities
@@ -296,6 +333,15 @@ features:
           Capabilities inform workflow decisions and task routing.
         implements:
           - "@agent-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: an agent declares one or more standard capability strings such as code, test, or review
+            when: the agent is listed or fetched
+            then: those capabilities are preserved and shown as part of the agent definition
+          - id: ac-2
+            given: a project defines a custom capability string on an agent
+            when: the meta manifest is loaded
+            then: the capability is accepted without needing to be one of the documented standard values
       - _ulid: 01KF1XAGT30000000000000000
         slugs:
           - agent-session-protocol
@@ -318,6 +364,15 @@ features:
           Commands are strings (not enforced, just documented).
         implements:
           - "@agent-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: an agent defines start, checkpoint, and optional end commands in session_protocol
+            when: the agent is retrieved via meta commands
+            then: the protocol is shown as documented command strings for that agent
+          - id: ac-2
+            given: an agent omits the optional end command from session_protocol
+            when: the manifest is validated
+            then: the agent still validates as long as the remaining session protocol fields are valid strings
   - _ulid: 01KF1XWKF00000000000000000
     slugs:
       - workflow-definitions
@@ -397,6 +452,15 @@ features:
           on_fail provides guidance when checks fail.
         implements:
           - "@workflow-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a workflow definition includes id, trigger, description, and an ordered steps array
+            when: the meta manifest is parsed
+            then: the workflow validates as a workflow definition
+          - id: ac-2
+            given: a workflow step uses an unsupported type or malformed on_fail structure
+            when: kspec validate runs
+            then: validation reports the invalid workflow step schema
       - _ulid: 01KF1XWKF20000000000000000
         slugs:
           - workflow-steps
@@ -421,6 +485,15 @@ features:
           they're not automatically enforced.
         implements:
           - "@workflow-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a workflow step has type check and an on_fail message
+            when: the workflow is displayed or run
+            then: the step is presented as a verification step with explicit failure guidance
+          - id: ac-2
+            given: a workflow step has type action or decision
+            when: the step list is interpreted
+            then: action steps are treated as ordered work items and decision steps are treated as branch points
       - _ulid: 01KF2XWKF40000000000000000
         slugs:
           - workflow-execution-model
@@ -474,6 +547,16 @@ features:
           - skip: Skip in checklist mode (documentation only)
         implements:
           - "@workflow-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a workflow is defined in meta and no interactive run is started
+            when: kspec meta workflows is used
+            then: the workflow is available as advisory documentation without automatic enforcement
+          - id: ac-2
+            given: a workflow is run in checklist mode with execution hints on steps
+            when: the guided runner advances through the workflow
+            then: prompt, silent, and skip execution modes change how each step is surfaced without changing the
+              underlying workflow definition
       - _ulid: 01KF1XWKF30000000000000000
         slugs:
           - workflow-triggers
@@ -494,6 +577,16 @@ features:
           Agents decide when workflows apply based on context.
         implements:
           - "@workflow-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a workflow defines a freeform trigger string such as session start or behavior change
+            when: the workflow is listed or retrieved
+            then: the trigger text is shown as part of the workflow metadata
+          - id: ac-2
+            given: multiple workflows use different trigger strings
+            when: agents inspect workflow metadata
+            then: trigger matching remains advisory and is resolved by context rather than hard-coded automation
+              rules
     features:
       - _ulid: 01KFES9NEJJ4EVPXH45H53B650
         slugs:
@@ -513,7 +606,15 @@ features:
         traits: []
         notes: []
         created: 2026-01-20T22:44:37.458Z
-        acceptance_criteria: []
+        acceptance_criteria:
+          - id: ac-1
+            given: a workflow with entry and exit criteria is started through the guided workflow system
+            when: the run is created
+            then: a durable workflow-run artifact is recorded with the workflow reference and current step state
+          - id: ac-2
+            given: a guided workflow is configured for advisory or strict enforcement
+            when: a user progresses through its steps
+            then: the run records step-by-step progression while respecting the configured enforcement mode
         requirements:
           - _ulid: 01KFESSZRTYN4J605PA7NYQ8WY
             slugs:
