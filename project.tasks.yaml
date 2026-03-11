@@ -88704,26 +88704,28 @@
       content: See plan @plan-iterative-plan-editing for implementation notes
   todos: []
   automation: eligible
-- title: "Fix: daemon watcher ELOOP crash from .kspec symlink loop"
+- _ulid: 01KKDPW5237717QNKEKPRWERW7
+  slugs: []
+  title: "Fix: daemon watcher ELOOP crash from .kspec symlink loop"
+  type: task
   description: "Bun fs.watch with recursive:true follows symlinks. A rogue .kspec/.kspec symlink
     pointing back to .kspec caused infinite recursion (ELOOP). Fix: remove symlink, add symlink
     guards in both Bun and Chokidar watchers, skip symlinks in processFileChange, add .kspec to
     .kspec/.gitignore."
-  type: task
   spec_ref: "@daemon-server"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - daemon
-  depends_on: []
-  _ulid: 01KKDPW5237717QNKEKPRWERW7
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-11T05:45:50.403Z
   notes: []
   todos: []
+  started_at: 2026-03-11T05:46:26.642Z
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
