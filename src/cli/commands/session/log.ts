@@ -1029,16 +1029,9 @@ export async function sessionLogSearchAction(
       limit = parsed;
     }
 
-    // Pre-filter sessions using shared filter logic when new filters are present
-    const hasNewFilters = !!(options.agentId || options.trigger || options.task || options.agentType);
-    let sessionIds: string[] | undefined;
-    if (hasNewFilters) {
-      const allSummaries = await getAllSessionLogSummaries(ctx.sessionsDir);
-      const filtered = filterSessions(allSummaries, options);
-      sessionIds = filtered.map((s) => s.id);
-    }
-
-    const sinceDate = options.since ? parseTimeSpec(options.since) : undefined;
+    // AC: @session-text-search ac-scope-narrowing — apply metadata filters before scanning events
+    const allSummaries = await getAllSessionLogSummaries(ctx.sessionsDir);
+    const filteredSummaries = filterSessions(allSummaries, options);
 
     // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
     const results = await searchSessionEvents(
@@ -1046,9 +1039,7 @@ export async function sessionLogSearchAction(
       pattern,
       {
         eventType: options.type,
-        sinceDate: hasNewFilters ? undefined : (sinceDate || undefined),
-        agentType: hasNewFilters ? undefined : options.agent,
-        sessionIds,
+        sessionSummaries: filteredSummaries,
         limit,
         resolveBlobs: options.resolveBlobs,
       },

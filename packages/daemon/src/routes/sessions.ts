@@ -22,6 +22,8 @@ import {
   deduplicatePhasedToolCalls,
   resolveSessionId,
   getBudget,
+  searchSessionEvents,
+  type SessionLogSummary,
 } from '../../sessions/store.js';
 import {
   countLegacySessions,
@@ -32,9 +34,214 @@ import {
   loadAllItems,
   ReferenceIndex,
   AlignmentIndex,
+  type KspecContext,
 } from '../../parser/index.js';
 import { getSessionCache } from '../../sessions/cache.js';
 import { SessionStatusSchema } from '../../sessions/types.js';
+
+type SessionListQuery = {
+  status?: string | string[];
+  agent_type?: string | string[];
+  agent_id?: string | string[];
+  trigger?: string | string[];
+  task_id?: string;
+  spec_ref?: string;
+  since?: string;
+};
+
+function normalizeValues(value?: string | string[]): string[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function sortSessionSummaries(summaries: SessionLogSummary[]): SessionLogSummary[] {
+  return [...summaries].sort(
+    (a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime(),
+  );
+}
+
+function buildTaskRefSet(task: { _ulid: string; slugs: string[] }): Set<string> {
+  const refs = new Set<string>([task._ulid, `@${task._ulid}`]);
+  for (const slug of task.slugs) {
+    refs.add(slug);
+    refs.add(`@${slug}`);
+  }
+  return refs;
+}
+
+function filterSessionsByTaskRefs(
+  summaries: SessionLogSummary[],
+  refs: Set<string>,
+): SessionLogSummary[] {
+  return summaries.filter((summary) => {
+    if (!summary.task_id) return false;
+    const normalized = summary.task_id.startsWith('@')
+      ? summary.task_id.slice(1)
+      : summary.task_id;
+    return refs.has(summary.task_id) || refs.has(normalized);
+  });
+}
+
+async function filterSessionSummaries(
+  ctx: KspecContext,
+  query: SessionListQuery,
+): Promise<
+  | { summaries: SessionLogSummary[] }
+  | {
+      error: {
+        status: number;
+        body: {
+          error: string;
+          message?: string;
+          suggestion?: string;
+          details?: Array<{ field: string; message: string }>;
+        };
+      };
+    }
+> {
+  const validStatuses = SessionStatusSchema.options;
+  const statusValues = normalizeValues(query.status);
+  const invalidStatuses = statusValues.filter(
+    (status) => !validStatuses.includes(status as typeof validStatuses[number]),
+  );
+  if (invalidStatuses.length > 0) {
+    return {
+      error: {
+        status: 400,
+        body: {
+          error: 'invalid_filter',
+          details: [
+            {
+              field: 'status',
+              message: `Invalid status value(s): ${invalidStatuses.join(', ')}. Valid values: ${validStatuses.join(', ')}`,
+            },
+          ],
+        },
+      },
+    };
+  }
+
+  const sessionCache = getSessionCache(ctx.sessionsDir);
+  let filtered = sortSessionSummaries(await sessionCache.getAll(ctx.sessionsDir));
+
+  if (statusValues.length > 0) {
+    filtered = filtered.filter((summary) => statusValues.includes(summary.status));
+  }
+
+  const agentTypeValues = normalizeValues(query.agent_type);
+  if (agentTypeValues.length > 0) {
+    filtered = filtered.filter((summary) => agentTypeValues.includes(summary.agent_type));
+  }
+
+  const agentIdValues = normalizeValues(query.agent_id);
+  if (agentIdValues.length > 0) {
+    filtered = filtered.filter(
+      (summary) => summary.agent_id != null && agentIdValues.includes(summary.agent_id),
+    );
+  }
+
+  const triggerValues = normalizeValues(query.trigger);
+  if (triggerValues.length > 0) {
+    filtered = filtered.filter((summary) => {
+      if (!summary.trigger) return false;
+      return triggerValues.some((value) => {
+        if (value === 'dispatched') return summary.trigger!.startsWith('task.');
+        return summary.trigger === value;
+      });
+    });
+  }
+
+  let tasks: Awaited<ReturnType<typeof loadAllTasks>> | null = null;
+  let items: Awaited<ReturnType<typeof loadAllItems>> | null = null;
+  const ensureAlignmentContext = async () => {
+    if (!tasks) tasks = await loadAllTasks(ctx);
+    if (!items) items = await loadAllItems(ctx);
+    return { tasks, items };
+  };
+
+  if (query.task_id) {
+    const { tasks: loadedTasks, items: loadedItems } = await ensureAlignmentContext();
+    const refIndex = new ReferenceIndex(loadedTasks, loadedItems);
+    const resolved = refIndex.resolve(
+      query.task_id.startsWith('@') ? query.task_id.slice(1) : query.task_id,
+    );
+    if (!resolved.ok) {
+      return {
+        error: {
+          status: 404,
+          body: {
+            error: 'not_found',
+            message: `Task reference "${query.task_id}" not found`,
+            suggestion: 'Use GET /api/tasks or kspec task list to find valid task references',
+          },
+        },
+      };
+    }
+
+    const matchTask = loadedTasks.find((task) => task._ulid === resolved.ulid);
+    if (matchTask) {
+      filtered = filterSessionsByTaskRefs(filtered, buildTaskRefSet(matchTask));
+    } else {
+      filtered = [];
+    }
+  }
+
+  if (query.spec_ref) {
+    const { tasks: loadedTasks, items: loadedItems } = await ensureAlignmentContext();
+    const refIndex = new ReferenceIndex(loadedTasks, loadedItems);
+    const alignmentIndex = new AlignmentIndex(loadedTasks, loadedItems);
+    alignmentIndex.buildLinks(refIndex);
+
+    const resolved = refIndex.resolve(
+      query.spec_ref.startsWith('@') ? query.spec_ref.slice(1) : query.spec_ref,
+    );
+    if (!resolved.ok) {
+      return {
+        error: {
+          status: 404,
+          body: {
+            error: 'not_found',
+            message: `Spec reference "${query.spec_ref}" not found`,
+            suggestion: 'Use GET /api/items or kspec item list to find valid spec references',
+          },
+        },
+      };
+    }
+
+    const taskRefs = new Set<string>();
+    for (const task of alignmentIndex.getTasksForSpec(resolved.ulid)) {
+      for (const ref of buildTaskRefSet(task)) {
+        taskRefs.add(ref);
+      }
+    }
+    filtered = filterSessionsByTaskRefs(filtered, taskRefs);
+  }
+
+  if (query.since) {
+    const sinceDate = new Date(query.since);
+    if (Number.isNaN(sinceDate.getTime())) {
+      return {
+        error: {
+          status: 400,
+          body: {
+            error: 'invalid_filter',
+            details: [
+              {
+                field: 'since',
+                message: `Invalid date value: "${query.since}". Use ISO 8601 format (e.g., 2025-03-01 or 2025-03-01T00:00:00Z).`,
+              },
+            ],
+          },
+        },
+      };
+    }
+    filtered = filtered.filter(
+      (summary) => new Date(summary.started_at).getTime() >= sinceDate.getTime(),
+    );
+  }
+
+  return { summaries: filtered };
+}
 
 export function createSessionRoutes() {
   return new Elysia({ prefix: '/api/sessions' })
@@ -46,147 +253,11 @@ export function createSessionRoutes() {
     // AC: @session-list-pagination-api ac-metadata-only — Only reads session.yaml, uses cache
     .get('/', async ({ query, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
-
-      // AC: @session-list-pagination-api ac-invalid-filter — Validate status values
-      const validStatuses = SessionStatusSchema.options;
-      if (query.status) {
-        const statusValues = Array.isArray(query.status) ? query.status : [query.status];
-        const invalid = statusValues.filter(s => !validStatuses.includes(s as typeof validStatuses[number]));
-        if (invalid.length > 0) {
-          return errorResponse(400, {
-            error: 'invalid_filter',
-            details: [{
-              field: 'status',
-              message: `Invalid status value(s): ${invalid.join(', ')}. Valid values: ${validStatuses.join(', ')}`,
-            }],
-          });
-        }
+      const filteredResult = await filterSessionSummaries(ctx, query);
+      if ('error' in filteredResult) {
+        return errorResponse(filteredResult.error.status, filteredResult.error.body);
       }
-
-      // AC: @session-summary-cache ac-cache-build — Per-project cache scoped by sessionsDir
-      const sessionCache = getSessionCache(ctx.sessionsDir);
-      const summaries = await sessionCache.getAll(ctx.sessionsDir);
-
-      // AC: @session-list-pagination-api ac-pagination — Sort by started_at descending (most recent first)
-      summaries.sort((a, b) =>
-        new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
-      );
-
-      // Apply filters — all are AND'd together
-      // AC: @session-list-pagination-api ac-combined-filters
-      let filtered = summaries;
-
-      // AC: @session-list-pagination-api ac-filter-status — Multi-value OR filter
-      if (query.status) {
-        const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
-        filtered = filtered.filter(s => statusFilters.includes(s.status));
-      }
-
-      // AC: @session-list-pagination-api ac-filter-agent-type
-      if (query.agent_type) {
-        const agentTypeFilters = Array.isArray(query.agent_type) ? query.agent_type : [query.agent_type];
-        filtered = filtered.filter(s => agentTypeFilters.includes(s.agent_type));
-      }
-
-      // AC: @session-list-pagination-api ac-filter-agent-id
-      if (query.agent_id) {
-        const agentIdFilters = Array.isArray(query.agent_id) ? query.agent_id : [query.agent_id];
-        filtered = filtered.filter(s => s.agent_id != null && agentIdFilters.includes(s.agent_id));
-      }
-
-      // AC: @session-list-pagination-api ac-filter-trigger — with "dispatched" shorthand
-      if (query.trigger) {
-        const triggerFilters = Array.isArray(query.trigger) ? query.trigger : [query.trigger];
-        filtered = filtered.filter(s => {
-          if (!s.trigger) return false;
-          return triggerFilters.some(tf => {
-            if (tf === 'dispatched') return s.trigger!.startsWith('task.');
-            return s.trigger === tf;
-          });
-        });
-      }
-
-      // AC: @session-list-pagination-api ac-filter-task
-      // AC: @trait-api-endpoint ac-2 — 404 for unknown task_id ref
-      if (query.task_id) {
-        const taskRef = query.task_id.startsWith('@') ? query.task_id.slice(1) : query.task_id;
-        // Resolve the task ref to find matching sessions
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const refIndex = new ReferenceIndex(tasks, items);
-        const resolved = refIndex.resolve(taskRef);
-        if (resolved.ok) {
-          // Match by ULID or any slug
-          const matchTask = tasks.find(t => t._ulid === resolved.ulid);
-          const matchRefs = new Set<string>([resolved.ulid]);
-          if (matchTask) {
-            for (const slug of matchTask.slugs) matchRefs.add(slug);
-            matchRefs.add(`@${resolved.ulid}`);
-            for (const slug of matchTask.slugs) matchRefs.add(`@${slug}`);
-          }
-          filtered = filtered.filter(s => {
-            if (!s.task_id) return false;
-            const tid = s.task_id.startsWith('@') ? s.task_id.slice(1) : s.task_id;
-            return matchRefs.has(tid) || matchRefs.has(s.task_id);
-          });
-        } else {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Task reference "${query.task_id}" not found`,
-            suggestion: 'Use GET /api/tasks or kspec task list to find valid task references',
-          });
-        }
-      }
-
-      // AC: @session-list-pagination-api ac-filter-spec-ref — resolve spec to linked tasks
-      // AC: @trait-api-endpoint ac-2 — 404 for unknown spec_ref
-      if (query.spec_ref) {
-        const specRef = query.spec_ref.startsWith('@') ? query.spec_ref.slice(1) : query.spec_ref;
-        const tasks = await loadAllTasks(ctx);
-        const items = await loadAllItems(ctx);
-        const refIndex = new ReferenceIndex(tasks, items);
-        const alignIndex = new AlignmentIndex(tasks, items);
-        alignIndex.buildLinks(refIndex);
-
-        const specResult = refIndex.resolve(specRef);
-        if (specResult.ok) {
-          const linkedTasks = alignIndex.getTasksForSpec(specResult.ulid);
-          const taskRefs = new Set<string>();
-          for (const t of linkedTasks) {
-            taskRefs.add(t._ulid);
-            for (const slug of t.slugs) taskRefs.add(slug);
-            taskRefs.add(`@${t._ulid}`);
-            for (const slug of t.slugs) taskRefs.add(`@${slug}`);
-          }
-          filtered = filtered.filter(s => {
-            if (!s.task_id) return false;
-            const tid = s.task_id.startsWith('@') ? s.task_id.slice(1) : s.task_id;
-            return taskRefs.has(tid) || taskRefs.has(s.task_id);
-          });
-        } else {
-          return errorResponse(404, {
-            error: 'not_found',
-            message: `Spec reference "${query.spec_ref}" not found`,
-            suggestion: 'Use GET /api/items or kspec item list to find valid spec references',
-          });
-        }
-      }
-
-      // AC: @session-list-pagination-api ac-filter-since
-      if (query.since) {
-        const sinceDate = new Date(query.since);
-        if (isNaN(sinceDate.getTime())) {
-          return errorResponse(400, {
-            error: 'invalid_filter',
-            details: [{
-              field: 'since',
-              message: `Invalid date value: "${query.since}". Use ISO 8601 format (e.g., 2025-03-01 or 2025-03-01T00:00:00Z).`,
-            }],
-          });
-        }
-        const sinceMs = sinceDate.getTime();
-        filtered = filtered.filter(s => new Date(s.started_at).getTime() >= sinceMs);
-      }
+      const filtered = filteredResult.summaries;
 
       // AC: @session-list-pagination-api ac-pagination — Apply pagination after filtering
       // AC: @trait-api-endpoint ac-4 — {items, total, offset, limit} wrapper
@@ -218,6 +289,52 @@ export function createSessionRoutes() {
         since: t.Optional(t.String()),
         limit: t.Optional(t.String()),
         offset: t.Optional(t.String()),
+      }),
+    })
+
+    // AC: @session-text-search ac-api-search
+    // AC: @session-text-search ac-scope-narrowing — metadata filters narrow the scanned sessions first
+    .get('/search', async ({ query, error: errorResponse, projectContext }) => {
+      const ctx = await initContext(projectContext.path);
+      const normalizedQuery = query.q.trim();
+      if (normalizedQuery.length === 0) {
+        return {
+          items: [],
+          total_sessions: 0,
+          total_matches: 0,
+          query: '',
+        };
+      }
+
+      const filteredResult = await filterSessionSummaries(ctx, query);
+      if ('error' in filteredResult) {
+        return errorResponse(filteredResult.error.status, filteredResult.error.body);
+      }
+
+      const limit = Number(query.limit) || 50;
+      const items = await searchSessionEvents(ctx.sessionsDir, normalizedQuery, {
+        sessionSummaries: filteredResult.summaries,
+        limit,
+      });
+      const totalMatches = items.reduce((sum, session) => sum + session.matches.length, 0);
+
+      return {
+        items,
+        total_sessions: items.length,
+        total_matches: totalMatches,
+        query: normalizedQuery,
+      };
+    }, {
+      query: t.Object({
+        q: t.String(),
+        status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        agent_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        agent_id: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        trigger: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        task_id: t.Optional(t.String()),
+        spec_ref: t.Optional(t.String()),
+        since: t.Optional(t.String()),
+        limit: t.Optional(t.String()),
       }),
     })
 
