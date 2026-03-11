@@ -19,11 +19,14 @@ import {
   loadAllItems,
   loadAllTasks,
   loadPlans,
+  findItemByRef,
+  findTaskByRef,
   ReferenceIndex,
   AlignmentIndex,
   getCachedTestCoverage,
   computeACCoverage,
   type LoadedSpecItem,
+  type LoadedTask,
 } from '../../parser/index.js';
 import { getRelatedSessionsForItem } from './session-related.js';
 
@@ -88,6 +91,46 @@ function computeParentMap(items: LoadedSpecItem[]): Map<string, string | undefin
   }
 
   return parentMap;
+}
+
+function getItemImplementationStatus(item: LoadedSpecItem): string | undefined {
+  if (typeof item.status === 'string') {
+    return item.status;
+  }
+
+  return item.status?.implementation;
+}
+
+function getItemMaturity(item: LoadedSpecItem): string | undefined {
+  if (typeof item.status === 'object') {
+    return item.status?.maturity;
+  }
+
+  return undefined;
+}
+
+function toBatchSpecItemSummary(item: LoadedSpecItem) {
+  return {
+    ulid: item._ulid,
+    slugs: item.slugs,
+    title: item.title,
+    type: item.type,
+    status: getItemImplementationStatus(item),
+    maturity: getItemMaturity(item),
+    traits: item.traits ?? [],
+    ac_count: item.acceptance_criteria?.length ?? 0,
+  };
+}
+
+function toBatchTaskSummary(task: LoadedTask) {
+  return {
+    ulid: task._ulid,
+    slugs: task.slugs,
+    title: task.title,
+    status: task.status,
+    priority: task.priority,
+    spec_ref: task.spec_ref,
+  };
 }
 
 export function createItemsRoutes(options: ItemsRouteOptions = {}) {
@@ -203,6 +246,73 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
           plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),
+        }),
+      }
+    )
+
+    .post(
+      '/batch',
+      async ({ body, error: errorResponse, projectContext }) => {
+        const refs = body.refs;
+
+        // AC: @trait-api-endpoint ac-3 - Validate body
+        if (!Array.isArray(refs)) {
+          return errorResponse(400, {
+            error: 'validation_error',
+            details: [
+              {
+                field: 'refs',
+                message: 'Refs is required and must be an array of item references',
+              },
+            ],
+          });
+        }
+
+        // AC: @batch-item-fetch-api ac-5 - Enforce max batch size
+        if (refs.length > 100) {
+          return errorResponse(400, {
+            error: 'validation_error',
+            details: [
+              {
+                field: 'refs',
+                message: 'Maximum batch size is 100 refs',
+              },
+            ],
+          });
+        }
+
+        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+        const ctx = await initContext(projectContext.path);
+        const items = await loadAllItems(ctx);
+        const tasks = await loadAllTasks(ctx);
+
+        const resolvedItems = [];
+        const unresolved: string[] = [];
+
+        for (const ref of refs) {
+          const task = findTaskByRef(tasks, ref);
+          if (task) {
+            resolvedItems.push(toBatchTaskSummary(task));
+            continue;
+          }
+
+          const item = findItemByRef(items, ref);
+          if (item) {
+            resolvedItems.push(toBatchSpecItemSummary(item));
+            continue;
+          }
+
+          unresolved.push(ref);
+        }
+
+        return {
+          items: resolvedItems,
+          unresolved,
+        };
+      },
+      {
+        body: t.Object({
+          refs: t.Optional(t.Array(t.String())),
         }),
       }
     )
