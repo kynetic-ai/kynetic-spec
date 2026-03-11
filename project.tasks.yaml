@@ -81896,7 +81896,7 @@
     solely on adapter config injection + spawn env), or add a process-level lock around the env
     mutation window."
   spec_ref: "@agent-invocation-lifecycle"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -81944,6 +81944,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T07:29:09.242Z
 - _ulid: 01KK60VVZRX87B64NJTRN0QYA1
   slugs: []
   title: Sanitize inherited env vars in agent spawner
