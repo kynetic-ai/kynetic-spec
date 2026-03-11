@@ -89995,3 +89995,29 @@
         MOCK_ACP_CUSTOM_UPDATE_TYPE.
       supersedes: null
   todos: []
+- title: Fix dispatch review starvation
+  description: Add post-invocation task re-evaluation to the dispatch engine so the drain loop has a
+    full and current view of all dispatchable tasks when deciding what to spawn next. Currently,
+    pending_review tasks from earlier invocations are invisible to the drain loop until the
+    60-second reconciliation timer fires, causing PRs to stack up. See
+    .kspec/artifacts/plan-dispatch-review-priority.md for full plan, implementation details, and
+    verification checklist.
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs:
+    - task-fix-dispatch-review-starvation
+  tags:
+    - dispatch
+    - bug
+  depends_on: []
+  _ulid: 01KKF04S8GB02P04FA3CGWZJHR
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-11T17:47:04.848Z
+  notes: []
+  todos: []
