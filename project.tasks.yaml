@@ -86915,6 +86915,10 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #785. Reviewed and landed the shadow-branch-only CLI AC backfill
+    artifact after confirming @cli descendants now have zero missing acceptance criteria and the
+    newly added ACs are present in given/when/then form. AC coverage confirmed for @cli-ac-backfill
+    own criteria; no inherited traits applied."
   depends_on:
     - "@implement-spec-completeness-policy"
   context: []
@@ -86925,6 +86929,7 @@
   created_at: 2026-03-10T06:55:45.423Z
   started_at: 2026-03-11T17:10:39.871Z
   submitted_at: 2026-03-11T17:16:38.710Z
+  completed_at: 2026-03-11T17:58:43.507Z
   notes:
     - _ulid: 01KKB8FERFE58KMK98C8Q0KJFH
       created_at: 2026-03-10T06:55:45.423Z
@@ -86970,13 +86975,17 @@
         task scope (own AC coverage, trait AC coverage, and invalid annotation debt tracked
         separately).
       supersedes: null
+    - _ulid: 01KKF0VA1XB6JP2XVT8F4VFTA1
+      created_at: 2026-03-11T17:59:22.941Z
+      author: Jacob Chapel
+      content: "Review closed cleanly in PR #785 and merged via merge commit
+        9120f31197a92bab6de8cfd9654857bd66c984fa at 2026-03-11T17:58:44Z. Review artifact PR had no
+        main-branch file diff by design; reviewer audit confirmed @cli descendants now have zero
+        missing acceptance criteria and the added ACs are structurally complete given/when/then
+        entries."
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T17:58:43.507Z
-  closed_reason: "Merged in PR #785. Reviewed and landed the shadow-branch-only CLI AC backfill
-    artifact after confirming @cli descendants now have zero missing acceptance criteria and the
-    newly added ACs are present in given/when/then form. AC coverage confirmed for @cli-ac-backfill
-    own criteria; no inherited traits applied."
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
   slugs:
     - implement-task-system-ac-backfill
