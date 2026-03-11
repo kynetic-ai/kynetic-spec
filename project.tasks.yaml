@@ -89696,8 +89696,39 @@
     - agent-runtime
     - test
   vcs_refs: []
-  created_at: 2026-03-11T15:26:11.612Z
-  notes: []
-  todos: []
-  started_at: 2026-03-11T15:45:23.831Z
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  created_at: 2026-03-11T15:26:11.612Z
+  started_at: 2026-03-11T15:45:23.831Z
+  notes:
+    - _ulid: 01KKESERCHTDPW2GJWV2GFA1Y3
+      created_at: 2026-03-11T15:50:11.602Z
+      author: "@claude"
+      content: >-
+        18 tests covering all 5 spec ACs plus trait N/A annotations:
+
+        - ac-1: stall detection with no updates, stall with only non-meaningful updates
+        (available_commands_update)
+
+        - ac-2: session closed as stalled with reason, agent.stalled event logged, no task note, ACP
+        cancel dispatched
+
+        - ac-3: 6 parameterized tests (agent_message_chunk, agent_thought_chunk, tool_call,
+        tool_call_update, plan, usage_update)
+
+        - ac-4: stalled sessions excluded from consecutive failure count, don't break failure
+        streaks
+
+        - ac-5: custom initial_response_timeout_seconds, default constant is 120
+
+        - cleanup: stall timer doesn't leak on normal completion
+
+        - error class: InvocationStallError name, message, property
+
+        - trait-error-guidance: all 6 ACs annotated N/A (infrastructure-level error, not CLI
+        command)
+
+
+        Extended acp-mock.js with MOCK_ACP_SUPPRESS_UPDATES, MOCK_ACP_SEND_NON_MEANINGFUL_ONLY,
+        MOCK_ACP_CUSTOM_UPDATE_TYPE.
+      supersedes: null
+  todos: []
