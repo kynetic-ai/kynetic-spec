@@ -1206,4 +1206,4 @@ requirements:
         then: It follows given/when/then format with concrete, observable outcomes
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
