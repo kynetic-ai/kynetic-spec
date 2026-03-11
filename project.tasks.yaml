@@ -86464,7 +86464,7 @@
   type: task
   spec_ref: "@spec-completeness-policy"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86537,6 +86537,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T09:16:47.120Z
+  closed_reason: "Merged in PR #777. Implemented the spec completeness policy so module items are
+    exempt from missing acceptance-criteria and description warnings, while decisions, traits,
+    features, requirements, and constraints remain covered by completeness checks. Added focused
+    parser tests covering all four spec ACs; own AC coverage verified and full npm test passed on PR
+    head."
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
   slugs:
     - implement-core-primitives-ac-backfill
