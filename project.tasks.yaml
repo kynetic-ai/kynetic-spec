@@ -85805,7 +85805,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKE444EWZEX0VNJ6BKVW82VY
   created_at: 2026-03-10T06:04:41.789Z
+  started_at: 2026-03-11T09:46:52.430Z
   notes:
     - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
       created_at: 2026-03-10T06:04:41.789Z
@@ -85855,10 +85857,15 @@
         - Key decisions: Use highlight.js/lib/core with individual language imports (15 languages). Create shared sanitize.ts with unified DOMPurify config used by both StreamingMarkdown and static renderMarkdown.
         - Verification: npm run build succeeds. Component renders streaming content with incremental updates. Code blocks get syntax highlighting after streaming ends.
       supersedes: null
+    - _ulid: 01KKE4Q2E9YH10N6NF5BF5H95W
+      created_at: 2026-03-11T09:47:43.946Z
+      author: Jacob Chapel
+      content: "Implementing shared markdown rendering stack for web UI: add highlight/sanitize utilities,
+        port StreamingMarkdown.svelte, wire SessionStream streaming view to it, and extend web-ui
+        tests for streaming + trait coverage."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T09:46:52.430Z
-  session_id: 01KKE444EWZEX0VNJ6BKVW82VY
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
   slugs:
     - implement-batch-item-fetch-api
