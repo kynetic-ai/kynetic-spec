@@ -603,7 +603,7 @@ export function formatTaskDetails(
     console.log(`${fieldLabels.specRef}  ${task.spec_ref}`);
   }
 
-  // AC: @plan-derive ac-6 - display plan_ref
+  // AC: @plan-derive-enhanced ac-bidirectional-links - display plan_ref
   if (task.plan_ref) {
     console.log(`Plan ref:  ${task.plan_ref}`);
   }

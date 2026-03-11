@@ -845,7 +845,7 @@ Examples:
           automationValue = automationResult.value;
         }
 
-        // Validate plan_ref if provided (AC: @plan-derive ac-5, ac-6)
+        // Validate plan_ref if provided (AC: @plan-derive-enhanced ac-task-refs, ac-bidirectional-links)
         if (options.planRef) {
           // First check if it's a task or spec item (wrong type)
           const cleanRef = options.planRef.startsWith("@")
