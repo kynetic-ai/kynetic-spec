@@ -88376,6 +88376,24 @@
         - Verification: targeted plan import tests, kspec validate, then full npm test before
         submit.
       supersedes: null
+    - _ulid: 01KKDBFFEDET2WNHX2YZGDPY9V
+      created_at: 2026-03-11T02:26:40.717Z
+      author: Jacob Chapel
+      content: >-
+        Implemented content-only plan import.
+
+        - Changed plan import to create only a plan record, defaulting status to draft unless
+        --status overrides it.
+
+        - Made --module optional and persisted it as module_ref on the plan record for later derive.
+
+        - Made --update a warning-only no-op, updated plan get/export surfaces for module_ref, and
+        replaced the legacy import tests plus batch import expectation with content-only coverage.
+
+        - Verification: npm run build; npm test -- tests/cli-plan-import.test.ts; npm test --
+        tests/batch-exec-engine.test.ts; kspec validate (warnings-only repo debt); full npm test
+        passed.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMET3QGYY364J00V0AQZJ
