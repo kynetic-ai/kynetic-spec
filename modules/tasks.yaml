@@ -147,6 +147,12 @@ features:
             when: the task is validated
             then: "it is accepted as infrastructure/tooling work without requiring spec_ref (examples: CI setup,
               dependency updates)"
+    acceptance_criteria:
+      - id: ac-1
+        given: a task is created or derived
+        when: its type field is validated
+        then: "the type is stored as one of the supported task classifications: task, epic, bug, spike, or
+          infra"
   - _ulid: 01JHNKA4W6TSTA000000000000
     slugs:
       - task-states
@@ -193,6 +199,11 @@ features:
           Transitions: start -> in_progress, cancel -> cancelled
         implements:
           - "@task-states"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task has status pending
+            when: a user runs kspec task start or kspec task cancel
+            then: the task transitions to in_progress or cancelled respectively
       - _ulid: 01JHNKA4W8TSTA200000000000
         slugs:
           - state-in-progress
@@ -211,6 +222,11 @@ features:
           - cancel -> cancelled
         implements:
           - "@task-states"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task has status in_progress
+            when: a user runs complete, block, or cancel
+            then: the task transitions to completed, blocked, or cancelled respectively
       - _ulid: 01JHNKA4W9TSTA300000000000
         slugs:
           - state-blocked
@@ -229,6 +245,12 @@ features:
           Transitions: unblock -> in_progress (or pending)
         implements:
           - "@task-states"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task has status blocked
+            when: the blocker is cleared and the task is unblocked
+            then: the task returns to pending or in_progress instead of transitioning directly to a terminal
+              state
       - _ulid: 01JHNKA5W0TSTA400000000000
         slugs:
           - state-completed
@@ -244,6 +266,12 @@ features:
           Should include closed_reason describing outcome.
         implements:
           - "@task-states"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task is marked completed
+            when: the completion is persisted
+            then: the task remains in the terminal completed state and stores a closed_reason describing the
+              outcome
       - _ulid: 01JHNKA5W1TSTA500000000000
         slugs:
           - state-cancelled
@@ -259,6 +287,12 @@ features:
           Should include closed_reason explaining why.
         implements:
           - "@task-states"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task is cancelled
+            when: the cancellation is persisted
+            then: the task remains in the terminal cancelled state and stores a closed_reason explaining why
+              work stopped
       - _ulid: 01JHNKA5W2TSTA600000000000
         slugs:
           - derived-ready
@@ -277,6 +311,12 @@ features:
           needs_work tasks are sorted before pending — fix cycles take priority.
         implements:
           - "@task-states"
+        acceptance_criteria:
+          - id: ac-1
+            given: tasks exist in pending, needs_work, blocked, and unmet-dependency states
+            when: kspec tasks ready runs
+            then: only pending or needs_work tasks with completed dependencies and no blockers are returned,
+              with needs_work tasks listed before pending tasks
       - _ulid: 01KF3H24BBZ5JXXMEP8JJS9SEJ
         slugs:
           - task-completion-guardrails
@@ -441,6 +481,12 @@ features:
           Optional for free-form tasks (bug, infra).
         implements:
           - "@task-schema"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task implements a spec item or represents free-form work
+            when: the task schema is validated
+            then: spec_ref points to the linked spec item when present and may be omitted for free-form bug or
+              infra tasks
       - _ulid: 01JHNKA5W5TSCH200000000000
         slugs:
           - task-work-fields
@@ -461,6 +507,12 @@ features:
           These fields don't exist on regular spec items.
         implements:
           - "@task-schema"
+        acceptance_criteria:
+          - id: ac-1
+            given: task-specific metadata is present
+            when: task schema validation runs
+            then: priority, complexity, assignee, blocked_by, and closed_reason are accepted on tasks without
+              becoming required fields on regular spec items
       - _ulid: 01JHNKA5W6TSCH300000000000
         slugs:
           - task-timestamps
@@ -479,6 +531,12 @@ features:
           Format: ISO 8601 (2025-01-14T10:00:00Z)
         implements:
           - "@task-schema"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task is created, started, or completed or cancelled
+            when: task lifecycle commands persist the change
+            then: created_at, started_at, and completed_at are auto-populated as ISO 8601 timestamps at the
+              matching lifecycle transition
       - _ulid: 01JHNKA5W7TSCH400000000000
         slugs:
           - task-vcs-refs
@@ -499,6 +557,17 @@ features:
           Minimal schema, extensible as needed.
         implements:
           - "@task-schema"
+        acceptance_criteria:
+          - id: ac-1
+            given: vcs_refs are attached to a task
+            when: task data is validated
+            then: each vcs_refs entry stores a git reference string and a type such as branch, commit, or tag
+    acceptance_criteria:
+      - id: ac-1
+        given: a task implements a spec item
+        when: task data is stored
+        then: the task keeps execution metadata plus a spec_ref link instead of duplicating the linked
+          spec's description and acceptance criteria
   - _ulid: 01JHNKA5W8TDRV000000000000
     slugs:
       - task-derivation
@@ -544,6 +613,11 @@ features:
           - derivation: auto
         implements:
           - "@task-derivation"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user runs kspec derive @item or kspec derive --all
+            when: derivation creates work for an uncovered item
+            then: the created task includes a derived title, task type, spec_ref, and derivation metadata
       - _ulid: 01JHNKA6W0TDRV200000000000
         slugs:
           - derive-idempotency
@@ -559,6 +633,11 @@ features:
           - Useful for re-running derive without duplicates
         implements:
           - "@task-derivation"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task already exists for an item's spec_ref
+            when: kspec derive is run again without --force
+            then: no duplicate task is created for that spec item
   - _ulid: 01KEZCJPJ4A4QG2DY5F3BBVFVB
     slugs:
       - task-notes
@@ -603,6 +682,12 @@ features:
           Notes are never deleted, only superseded.
         implements:
           - "@task-notes"
+        acceptance_criteria:
+          - id: ac-1
+            given: a note is added to a task
+            when: the note is stored
+            then: the entry records its ULID, created_at timestamp, author, content, and optional supersedes
+              reference while preserving earlier notes
       - _ulid: 01KEZCJPJ4Y0CGNFZREY3QS225
         slugs:
           - note-cli
@@ -619,6 +704,12 @@ features:
           JSON output available for all commands.
         implements:
           - "@task-notes"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user runs kspec task note @task "message" or kspec task notes @task
+            when: the command succeeds
+            then: the note is appended to the task log and the notes command returns the append-only note
+              history
   - _ulid: 01KEZCJPJ41NHFPF7WV6PF68SW
     slugs:
       - task-todos
@@ -663,6 +754,11 @@ features:
           - promoted_to: @ref if promoted to task (optional)
         implements:
           - "@task-todos"
+        acceptance_criteria:
+          - id: ac-1
+            given: a todo is added or promoted on a task
+            when: the todo entry is stored
+            then: it records a local id, text, done state, timestamps, author, and optional promoted_to task ref
       - _ulid: 01KEZCJPJ4WPM1XREVKF00QM2K
         slugs:
           - todo-cli
@@ -680,6 +776,11 @@ features:
           Todos are for quick capture; promote when complex.
         implements:
           - "@task-todos"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user runs kspec todo add, kspec todo done, or kspec todo promote
+            when: the command succeeds
+            then: the task todo list is updated and promotion records the linked task on the todo entry
   - _ulid: 01JHNKA6W7TSTR000000000000
     slugs:
       - task-storage
@@ -713,6 +814,11 @@ features:
           Simple, keeps related items together.
         implements:
           - "@task-storage"
+        acceptance_criteria:
+          - id: ac-1
+            given: a smaller project stores tasks alongside specs
+            when: a module has a companion .tasks.yaml file next to its spec file
+            then: tasks for that module remain colocated with the related spec
       - _ulid: 01JHNKA6W9TSTR200000000000
         slugs:
           - task-storage-separate
@@ -736,6 +842,17 @@ features:
           Separates concerns, enables archiving.
         implements:
           - "@task-storage"
+        acceptance_criteria:
+          - id: ac-1
+            given: a larger project uses separate task storage
+            when: tasks are persisted under tasks backlog, active, or archive files
+            then: task data is stored separately from module spec files and can be archived independently
+    acceptance_criteria:
+      - id: ac-1
+        given: a project uses the task system
+        when: tasks are persisted
+        then: the system supports storing them either alongside module specs or in a dedicated tasks
+          directory without changing task semantics
   - _ulid: 01JHNKA7W0TQRY000000000000
     slugs:
       - task-queries
@@ -787,6 +904,11 @@ features:
           - "@task-queries"
         traits:
           - "@trait-task-readiness"
+        acceptance_criteria:
+          - id: ac-1
+            given: tasks have mixed statuses, blockers, and dependencies
+            when: kspec tasks ready runs
+            then: it returns only ready tasks and orders needs_work ahead of pending
       - _ulid: 01JHNKA7W2TQRY200000000000
         slugs:
           - query-next
@@ -806,6 +928,12 @@ features:
           - "@task-queries"
         traits:
           - "@trait-task-readiness"
+        acceptance_criteria:
+          - id: ac-1
+            given: multiple ready tasks exist
+            when: kspec tasks next runs
+            then: it returns the single ready task with the highest priority, breaking ties by oldest created_at
+              first
       - _ulid: 01JHNKA7W3TQRY300000000000
         slugs:
           - query-filters
@@ -888,6 +1016,12 @@ features:
             status:
               maturity: draft
               implementation: implemented
+        acceptance_criteria:
+          - id: ac-1
+            given: a user runs kspec tasks list with --status, --type, --tag, --assignee, or --spec-ref and
+              optionally --json
+            when: the query executes
+            then: only matching tasks are returned and JSON output remains available
   - _ulid: 01KFEJW283E3ADMC1G6WGV7MGC
     slugs:
       - tasks-assess-automation
