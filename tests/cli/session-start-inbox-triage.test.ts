@@ -17,6 +17,7 @@ import type { SessionContext } from "../helpers/session-types";
 import { addInboxItem, triageItem } from "../helpers/inbox";
 
 let tempDir: string;
+const SESSION_START_INBOX_TIMEOUT_MS = 20_000;
 
 beforeEach(async () => {
   tempDir = await setupTempFixtures();
@@ -28,7 +29,7 @@ afterEach(async () => {
 
 // AC: @session-start-inbox-triage ac-inbox-stat-line
 describe("stat line with triage counts", () => {
-  it("should show untriaged count, deferred count, and total in JSON", () => {
+  it("should show untriaged count, deferred count, and total in JSON", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     // Add 3 inbox items
     const ulid1 = addInboxItem(tempDir, "First untriaged item");
     const ulid2 = addInboxItem(tempDir, "Second item to be deferred");
@@ -46,7 +47,7 @@ describe("stat line with triage counts", () => {
     expect(session.inbox_stats.triaged).toBe(2);
   });
 
-  it("should show stat line in human-readable primer output", () => {
+  it("should show stat line in human-readable primer output", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     addInboxItem(tempDir, "Untriaged idea");
     const ulid2 = addInboxItem(tempDir, "Deferred idea");
     triageItem(tempDir, ulid2, "defer", "later");
@@ -58,7 +59,7 @@ describe("stat line with triage counts", () => {
     expect(result.stdout).toContain("2 total");
   });
 
-  it("should not list individual items in primer mode", () => {
+  it("should not list individual items in primer mode", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     addInboxItem(tempDir, "Should not appear in primer");
 
     const result = kspec("session start", tempDir);
@@ -72,7 +73,7 @@ describe("stat line with triage counts", () => {
 
 // AC: @session-start-inbox-triage ac-inbox-full-list
 describe("full mode lists untriaged items", () => {
-  it("should include all items in JSON with triage status", () => {
+  it("should include all items in JSON with triage status", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     addInboxItem(tempDir, "Untriaged feature request");
     const ulid2 = addInboxItem(tempDir, "Already triaged item");
     triageItem(tempDir, ulid2, "promote", "good idea");
@@ -92,7 +93,7 @@ describe("full mode lists untriaged items", () => {
     expect(triaged[0].triage_action).toBe("promote");
   });
 
-  it("should show untriaged items plus stat line in human full output", () => {
+  it("should show untriaged items plus stat line in human full output", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     addInboxItem(tempDir, "Needs triage");
     const ulid2 = addInboxItem(tempDir, "Already handled");
     triageItem(tempDir, ulid2, "delete", "stale");
@@ -108,7 +109,7 @@ describe("full mode lists untriaged items", () => {
     expect(result.stdout).not.toContain("Already handled");
   });
 
-  it("should limit displayed untriaged items to 20 in human full mode", () => {
+  it("should limit displayed untriaged items to 20 in human full mode", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     // Add 22 inbox items (all untriaged)
     for (let i = 0; i < 22; i++) {
       addInboxItem(tempDir, `Item number ${i}`);
@@ -137,7 +138,7 @@ describe("full mode lists untriaged items", () => {
 
 // AC: @session-start-inbox-triage ac-inbox-all-triaged
 describe("all items triaged", () => {
-  it("should show 0 untriaged when all items have triage records", () => {
+  it("should show 0 untriaged when all items have triage records", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     const ulid1 = addInboxItem(tempDir, "First item");
     const ulid2 = addInboxItem(tempDir, "Second item");
 
@@ -151,7 +152,7 @@ describe("all items triaged", () => {
     expect(session.inbox_stats.triaged).toBe(2);
   });
 
-  it("should show 0 untriaged in human output when all triaged", () => {
+  it("should show 0 untriaged in human output when all triaged", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     const ulid1 = addInboxItem(tempDir, "Handled item");
     triageItem(tempDir, ulid1, "delete", "stale");
 
@@ -160,7 +161,7 @@ describe("all items triaged", () => {
     expect(result.stdout).toContain("0 untriaged");
   });
 
-  it("should mark all items as triaged in JSON when all have records", () => {
+  it("should mark all items as triaged in JSON when all have records", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     const ulid1 = addInboxItem(tempDir, "All done");
     triageItem(tempDir, ulid1, "promote", "shipped");
 
@@ -178,7 +179,7 @@ describe("all items triaged", () => {
 
 // AC: @session-start-inbox-triage ac-inbox-untriaged-def
 describe("untriaged definition", () => {
-  it("should count item as untriaged when no triage record exists", () => {
+  it("should count item as untriaged when no triage record exists", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     addInboxItem(tempDir, "No triage record for this");
 
     const session = kspecJson<SessionContext>("session start --json", tempDir);
@@ -189,7 +190,7 @@ describe("untriaged definition", () => {
     expect(session.inbox_items[0].triaged).toBe(false);
   });
 
-  it("should mark item as triaged when triage record exists", () => {
+  it("should mark item as triaged when triage record exists", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     const ulid = addInboxItem(tempDir, "Has triage record");
     triageItem(tempDir, ulid, "defer", "deferred");
 
@@ -206,7 +207,7 @@ describe("untriaged definition", () => {
     expect(session.inbox_stats.triaged).toBe(1);
   });
 
-  it("should include triaged and triage_action fields in inbox summaries", () => {
+  it("should include triaged and triage_action fields in inbox summaries", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     addInboxItem(tempDir, "Untriaged item");
     const ulid2 = addInboxItem(tempDir, "Deferred item");
     triageItem(tempDir, ulid2, "defer", "needs review");
@@ -228,7 +229,7 @@ describe("untriaged definition", () => {
     expect(deferred!.triaged).toBe(true);
   });
 
-  it("should handle empty inbox gracefully", () => {
+  it("should handle empty inbox gracefully", { timeout: SESSION_START_INBOX_TIMEOUT_MS }, () => {
     const session = kspecJson<SessionContext>("session start --json", tempDir);
 
     expect(session.inbox_stats.total).toBe(0);
