@@ -85864,7 +85864,7 @@
   type: task
   spec_ref: "@batch-item-fetch-api"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85925,6 +85925,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T08:39:29.791Z
+  closed_reason: "Merged in PR #776. Implemented POST /api/items/batch for mixed spec/task ref lookup
+    with unresolved tracking, empty-batch handling, and 100-ref validation. AC coverage verified for
+    @batch-item-fetch-api and applicable @trait-api-endpoint criteria, and current HEAD passed npm
+    test in a clean temporary worktree before merge."
 - _ulid: 01KKB5J02DQA312B76P7PNAT9X
   slugs:
     - implement-plan-content-embedded-views
@@ -86469,6 +86474,7 @@
   session_id: 01KKDZ4Z8R7VPNA8HZ9TM6NP1C
   created_at: 2026-03-10T06:55:43.699Z
   started_at: 2026-03-11T08:18:08.481Z
+  submitted_at: 2026-03-11T08:29:28.690Z
   notes:
     - _ulid: 01KKB8FD2K1M4EZREF1S3RRM1R
       created_at: 2026-03-10T06:55:43.700Z
@@ -86517,7 +86523,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T08:29:28.690Z
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
   slugs:
     - implement-core-primitives-ac-backfill
