@@ -86466,16 +86466,34 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKDZ4Z8R7VPNA8HZ9TM6NP1C
   created_at: 2026-03-10T06:55:43.699Z
+  started_at: 2026-03-11T08:18:08.481Z
   notes:
     - _ulid: 01KKB8FD2K1M4EZREF1S3RRM1R
       created_at: 2026-03-10T06:55:43.700Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    - _ulid: 01KKDZKF1DMNHFFQSH37B6YTAG
+      created_at: 2026-03-11T08:18:22.893Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: completeness validation currently warns on modules missing acceptance
+        criteria, but the approved policy exempts modules while still requiring ACs for decisions,
+        traits, features, requirements, and constraints.
+
+        - Scope: update completeness validation policy and add/adjust tests for the warning rules
+        only.
+
+        - Files: expected changes in validate/completeness implementation and corresponding tests.
+
+        - Verification: targeted tests for completeness warnings plus kspec validate coverage where
+        practical.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T08:18:08.481Z
-  session_id: 01KKDZ4Z8R7VPNA8HZ9TM6NP1C
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
   slugs:
     - implement-core-primitives-ac-backfill
