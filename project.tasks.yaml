@@ -87087,7 +87087,7 @@
   type: task
   spec_ref: "@meta-shadow-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -87122,6 +87122,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T18:15:43.720Z
 - _ulid: 01KKB8FGF6K5NP97PEEXRP2PY7
   slugs:
     - implement-test-coverage-annotation-sweep
