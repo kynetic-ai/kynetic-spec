@@ -86837,6 +86837,28 @@
         uncovered and mis-tags/partially covers @item-required-fields, @item-optional-fields, and
         @ulid-immutability."
       supersedes: null
+    - _ulid: 01KKF2FS2V837WPWAE8RBV77BN
+      created_at: 2026-03-11T18:28:02.267Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 3] Closed review gaps on branch fix/core-primitives-ac-backfill-v2.
+
+        - Added a metadata regression test for @core-ac-backfill covering zero missing-AC warnings
+        for the in-scope core refs and concrete given/when/then structure for each backfilled AC.
+
+        - Replaced the mis-tagged schema annotations for @item-required-fields and
+        @item-optional-fields with integration tests that exercise stored items created without
+        optional metadata.
+
+        - Extended @ulid-immutability coverage to prove both original-item stability and
+        replacement-item ULID divergence when a superseding item is created.
+
+        - Verification: npm test -- --run tests/core-ac-backfill.test.ts; npm test -- --run
+        tests/schema.test.ts; npm test -- --run tests/integration.test.ts -t "required user-provided
+        field|optional metadata is omitted|updated or superseded"; kspec validate --completeness
+        --json filtered to
+        @core-ac-backfill/@item-required-fields/@item-optional-fields/@ulid-immutability => []
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
