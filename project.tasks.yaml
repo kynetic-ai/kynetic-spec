@@ -85252,6 +85252,16 @@
         trait coverage for @trait-filterable-list ac-1/ac-2 and @trait-json-output ac-3 in session
         log list tests."
       supersedes: null
+    - _ulid: 01KKD7PTFBQ245H546K1DGP0AJ
+      created_at: 2026-03-11T01:20:47.083Z
+      author: Jacob Chapel
+      content: Fix cycle 2 addressed:\n- Added explicit inherited trait coverage for
+        @trait-filterable-list ac-1 on the existing --status session log list test.\n- Added
+        explicit N/A annotation for @trait-filterable-list ac-2 because session log list does not
+        implement --tag filtering.\n- Added a JSON-mode invalid --status error-path test covering
+        @trait-json-output ac-3.\nVerification:\n- npm test -- tests/session-log-list.test.ts\n- npm
+        test\n- kspec validate (warnings-only baseline, exit 6)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
