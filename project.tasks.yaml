@@ -85287,6 +85287,7 @@
   priority: 3
   tags: []
   vcs_refs: []
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/769
   session_id: 01KKDF744V2A0W1CGQ81EK7ZHF
   created_at: 2026-03-10T05:32:16.728Z
   started_at: 2026-03-11T03:50:48.464Z
@@ -85371,7 +85372,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/769
 - _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
   slugs:
     - implement-session-text-search
@@ -88344,7 +88344,7 @@
   type: task
   spec_ref: "@plan-export"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -88436,6 +88436,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T03:58:26.246Z
+  closed_reason: "Merged in PR #767. Implemented `kspec plan export <ref>` with stdout, file output,
+    and JSON export modes plus semantic error handling for missing plans, empty content, and runtime
+    write failures. AC coverage verified for @plan-export and inherited
+    @trait-json-output/@trait-semantic-exit-codes via tests/cli-plan.test.ts; current PR head passed
+    local plan CLI tests, full npm test, and green CI."
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
   slugs:
     - implement-plan-import-into-existing-plan
