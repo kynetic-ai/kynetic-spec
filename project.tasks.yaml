@@ -86737,7 +86737,7 @@
   type: task
   spec_ref: "@core-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86745,7 +86745,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKF39MXK6ENZE4D6EPEC1660
+  session_id: null
   created_at: 2026-03-10T06:55:44.280Z
   started_at: 2026-03-11T18:48:51.248Z
   submitted_at: 2026-03-11T18:53:37.025Z
@@ -86889,6 +86889,13 @@
         tests/ac-annotation-validation.test.ts; filtered kspec validate --completeness --warnings-ok
         --json for @core-ac-backfill and in-scope refs => []; full npm test => 213 files passed,
         4559 tests passed, 3 skipped."
+      supersedes: null
+    - _ulid: 01KKF6G2VRGVKFPM4F6A6WQ737
+      created_at: 2026-03-11T19:38:06.584Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 8] Review findings: MUST-FIX: tests/core-ac-backfill.test.ts depends on the
+        local .kspec shadow worktree and fails CI on PR #786 current HEAD; rework the regression to
+        use isolated checked-in/temp data."
       supersedes: null
   todos: []
   automation: eligible
@@ -90302,6 +90309,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #788. Added post-invocation task re-evaluation before queue draining so
+    pending_review tasks created during prior invocations are visible immediately, preserved
+    best-effort draining when re-evaluation fails, and backfilled inherited @trait-task-readiness
+    ac-status coverage. AC coverage verified for @agent-dispatch-engine ac-23, ac-24, ac-25 and
+    @trait-task-readiness ac-status; focused dispatch tests and full npm test suite passed."
   depends_on: []
   context: []
   priority: 1
@@ -90313,6 +90325,7 @@
   created_at: 2026-03-11T17:47:04.848Z
   started_at: 2026-03-11T19:10:50.501Z
   submitted_at: 2026-03-11T19:10:58.673Z
+  completed_at: 2026-03-11T19:19:32.422Z
   notes:
     - _ulid: 01KKF077Q8J4XCV2PQ41TC0C0M
       created_at: 2026-03-11T17:48:25.192Z
@@ -90410,9 +90423,3 @@
         https://github.com/kynetic-ai/kynetic-spec/pull/788#pullrequestreview-3931872074"
       supersedes: null
   todos: []
-  completed_at: 2026-03-11T19:19:32.422Z
-  closed_reason: "Merged in PR #788. Added post-invocation task re-evaluation before queue draining so
-    pending_review tasks created during prior invocations are visible immediately, preserved
-    best-effort draining when re-evaluation fails, and backfilled inherited @trait-task-readiness
-    ac-status coverage. AC coverage verified for @agent-dispatch-engine ac-23, ac-24, ac-25 and
-    @trait-task-readiness ac-status; focused dispatch tests and full npm test suite passed."
