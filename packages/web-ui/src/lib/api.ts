@@ -842,6 +842,8 @@ export interface SessionSummary {
 	id: string;
 	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
 	agent_type: string;
+	/** Agent definition ID (e.g. worker, pr-reviewer). */
+	agent_id?: string;
 	session_type: 'loop' | 'invocation';
 	/** Dispatch trigger for distinguishing dispatched agent vs manual CLI run. */
 	trigger?: string;
@@ -899,15 +901,72 @@ export interface SessionEvent {
 }
 
 /**
- * Fetch all sessions with summaries.
- * AC: @ui-session-stream ac-1
+ * Pagination and filter parameters for session list.
+ * AC: @session-list-infinite-scroll ac-initial-load
+ * AC: @session-filter-controls ac-status-filter, ac-agent-filter, ac-agent-type-filter, ac-trigger-filter, ac-date-filter
  */
-export async function fetchSessions(): Promise<{ items: SessionSummary[]; total: number }> {
+export interface FetchSessionsParams {
+	offset?: number;
+	limit?: number;
+	status?: string[];
+	agent_id?: string;
+	agent_type?: string;
+	trigger?: string;
+	since?: string;
+}
+
+/**
+ * Paginated session list response.
+ * AC: @session-list-infinite-scroll ac-initial-load
+ */
+export interface SessionListResponse {
+	items: SessionSummary[];
+	total: number;
+	offset: number;
+	limit: number;
+}
+
+/**
+ * Fetch sessions with pagination and filtering.
+ * AC: @ui-session-stream ac-1
+ * AC: @session-list-infinite-scroll ac-initial-load
+ */
+export async function fetchSessions(params?: FetchSessionsParams): Promise<SessionListResponse> {
 	if (isStaticMode()) {
-		return { items: [], total: 0 };
+		return { items: [], total: 0, offset: 0, limit: 25 };
 	}
 
-	const response = await fetch(`${API_BASE}/api/sessions`, {
+	const url = new URL(`${API_BASE}/api/sessions`);
+	if (params?.offset !== undefined) {
+		url.searchParams.set('offset', String(params.offset));
+	}
+	if (params?.limit !== undefined) {
+		url.searchParams.set('limit', String(params.limit));
+	}
+	// AC: @session-filter-controls ac-status-filter — Multi-value status filter
+	if (params?.status?.length) {
+		for (const s of params.status) {
+			url.searchParams.append('status', s);
+		}
+	}
+	// AC: @session-filter-controls ac-agent-filter
+	if (params?.agent_id) {
+		url.searchParams.set('agent_id', params.agent_id);
+	}
+	// AC: @session-filter-controls ac-agent-type-filter
+	if (params?.agent_type) {
+		url.searchParams.set('agent_type', params.agent_type);
+	}
+	// AC: @session-filter-controls ac-trigger-filter
+	if (params?.trigger) {
+		url.searchParams.set('trigger', params.trigger);
+	}
+	// AC: @session-filter-controls ac-date-filter
+	if (params?.since) {
+		url.searchParams.set('since', params.since);
+	}
+
+	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
