@@ -86986,6 +86986,24 @@
         claims in tests/schema.test.ts and unsupported N/A markers / trivial assertions in
         tests/schema-ac-backfill-annotations.test.ts."
       supersedes: null
+    - _ulid: 01KKF4GDW5EP3QAM0ZSP20J2M1
+      created_at: 2026-03-11T19:03:20.710Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Replaced the blanket schema backfill annotations with behavior-specific AC
+        coverage. Removed the placeholder-only schema-ac-backfill annotation test, added substantive
+        review tests for file-structure transitions, YAML round-tripping, manifest version
+        separation, alignment indexing, and schema backfill metadata/completeness, and moved
+        schema/validation/trait/status annotations onto assertions that actually exercise those
+        behaviors. Verification: npm test -- tests/schema.test.ts
+        tests/schema-ac-backfill-review.test.ts tests/item-set-enum-validation.test.ts
+        tests/parser/manifest-discovery.test.ts tests/merge-parse.test.ts
+        tests/validate-exit-codes.test.ts tests/validate-alignment-no-task-policy.test.ts
+        tests/trait-display.test.ts tests/trait-ac-coverage.test.ts => 9 files passed, 110 tests
+        passed. kspec validate --completeness --warnings-ok --json filtered to the touched refs
+        (@item-types, @status-lifecycle, @file-structure family, @auto-adaptive-structure,
+        @yaml-conventions, @zod-schema, @validation-output, @versioning family, @alignment-system,
+        @spec-traits, @schema-ac-backfill) now returns no matching completeness warnings."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
