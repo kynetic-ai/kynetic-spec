@@ -85021,7 +85021,7 @@
   type: task
   spec_ref: "@session-cli-unified-filtering"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -85029,7 +85029,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKD181CBWBVNQ6FA2MG8P98N
+  session_id: null
   created_at: 2026-03-10T05:32:16.165Z
   started_at: 2026-03-10T23:33:51.816Z
   submitted_at: 2026-03-10T23:51:21.692Z
@@ -85087,6 +85087,13 @@
         session-model-evolution.test.ts, session-legacy-cli.test.ts
 
         9. Full test suite: 4432 passed, 3 skipped
+      supersedes: null
+    - _ulid: 01KKD3NZ08W7BC72772GS2YAVN
+      created_at: 2026-03-11T00:10:24.649Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: session log JSON uses task instead of task_id in
+        unified filters, and filtered human summary omits filter state unless pagination truncates
+        results."
       supersedes: null
   todos: []
   automation: eligible
