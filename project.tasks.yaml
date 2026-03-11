@@ -86801,16 +86801,33 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKEX9XGE1DSKE1VS06F9AHW1
   created_at: 2026-03-10T06:55:44.873Z
+  started_at: 2026-03-11T17:03:35.099Z
   notes:
     - _ulid: 01KKB8FE79QVHMK021RZNJQRQM
       created_at: 2026-03-10T06:55:44.873Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    - _ulid: 01KKEXNPRB7DSVG5JY42J1BM89
+      created_at: 2026-03-11T17:03:53.611Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Completeness reconciliation plan requires @schema descendants to stop emitting
+        missing-AC warnings.
+
+        - Scope: Backfill only missing acceptance criteria under @schema; no behavior changes.
+
+        - Files: Shadow branch spec state only, via kspec CLI.
+
+        - Verification: kspec item list --under @schema --json confirms no feature/requirement
+        descendants with empty acceptance_criteria; kspec validate --completeness warnings for
+        @schema AC gaps drop to zero.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T17:03:35.099Z
-  session_id: 01KKEX9XGE1DSKE1VS06F9AHW1
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
   slugs:
     - implement-cli-ac-backfill
