@@ -85454,6 +85454,17 @@
         filters like 7d fail even though CLI uses parseTimeSpec(). Updating the shared daemon filter
         path to accept relative specs and expanding API coverage to exercise since=7d explicitly."
       supersedes: null
+    - _ulid: 01KKDQD71022FMW03MHT1GMCEM
+      created_at: 2026-03-11T05:55:09.472Z
+      author: Jacob Chapel
+      content: "Fix applied: daemon session filtering now parses since with parseTimeSpec(), so
+        /api/sessions/search accepts relative values like 7d and narrows metadata scope before
+        scanning events. Updated API E2E coverage to use since=7d with dynamic recent/stale
+        fixtures. Verification: npm run build:e2e passed; kspec validate --warnings-ok passed; npm
+        test hit one unrelated failure in tests/cli-serve.test.ts foreground serve shutdown
+        (child.exitCode null in this dispatch environment). Direct Playwright API run remains
+        blocked here because daemon start/stop is forbidden under KSPEC_SESSION_ID."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
