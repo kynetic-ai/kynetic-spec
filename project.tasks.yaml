@@ -81848,7 +81848,7 @@
     should support a --output or --text mode that replays the assistant text from session.update
     events. Workaround: jq/python one-liner on events.jsonl."
   spec_ref: "@cli-agent-commands"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -81859,6 +81859,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-11T07:16:18.408Z
+  session_id: 01KKDVDTBMBTC1DYSK94TMAGFJ
 - _ulid: 01KK5XAJVEJZNYR7GRDPEFP2M0
   slugs: []
   title: Fix KSPEC_SESSION_ID race condition in concurrent multi-project dispatch
@@ -88914,6 +88916,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #772. Fixed the daemon watcher ELOOP symlink-loop crash by narrowing
+    nested .kspec guards so Bun and Chokidar skip only recursive loop paths, preserving legitimate
+    YAML fallback delivery, and by adding deterministic regression coverage for the .kspec/.kspec ->
+    .kspec case. AC coverage confirmed for @daemon-server ac-8 and related watcher behavior; full
+    npm test passed on the reviewed PR head after a fresh build."
   depends_on: []
   context: []
   priority: 3
@@ -88925,6 +88932,7 @@
   created_at: 2026-03-11T05:45:50.403Z
   started_at: 2026-03-11T06:49:24.178Z
   submitted_at: 2026-03-11T06:49:32.687Z
+  completed_at: 2026-03-11T07:15:29.930Z
   notes:
     - _ulid: 01KKDPXBBVHZ5XW2PYBJAN0XQH
       created_at: 2026-03-11T05:46:29.627Z
@@ -88954,12 +88962,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T07:15:29.930Z
-  closed_reason: "Merged in PR #772. Fixed the daemon watcher ELOOP symlink-loop crash by narrowing
-    nested .kspec guards so Bun and Chokidar skip only recursive loop paths, preserving legitimate
-    YAML fallback delivery, and by adding deterministic regression coverage for the .kspec/.kspec ->
-    .kspec case. AC coverage confirmed for @daemon-server ac-8 and related watcher behavior; full
-    npm test passed on the reviewed PR head after a fresh build."
 - _ulid: 01KKDSR3C5YJW5T0W3AFJZCKJ5
   slugs: []
   title: Prioritize pending_review over pending in dispatch scheduling
