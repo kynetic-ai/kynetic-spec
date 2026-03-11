@@ -88279,6 +88279,16 @@
         - Files: src/cli/commands/plan.ts, tests/cli-plan.test.ts.
         - Verification: targeted CLI tests, full npm test, kspec validate.
       supersedes: null
+    - _ulid: 01KKD9ZZY9ND5HZ3F8E5J6FD1A
+      created_at: 2026-03-11T02:00:44.745Z
+      author: Jacob Chapel
+      content: "Implemented `kspec plan export <ref>` in `src/cli/commands/plan.ts` with stdout,
+        `--output`, and `--json` modes. Added AC-annotated CLI coverage in `tests/cli-plan.test.ts`
+        for content export, file export, empty-content validation, unresolved refs, and JSON trait
+        behavior. Verification: `npm run build`, `npm test -- tests/cli-plan.test.ts`, full `npm
+        test` (203 files / 4538 tests passed), `kspec validate` (warnings only from pre-existing
+        repo-wide backlog)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
