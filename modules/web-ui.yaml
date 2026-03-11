@@ -840,7 +840,7 @@ features:
         created: 2026-03-10T06:04:39.993Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKB5HX7KDDWHXT5KFKXE407V
         slugs:
           - batch-item-fetch-api
