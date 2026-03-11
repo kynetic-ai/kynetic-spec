@@ -81848,7 +81848,7 @@
     should support a --output or --text mode that replays the assistant text from session.update
     events. Workaround: jq/python one-liner on events.jsonl."
   spec_ref: "@cli-agent-commands"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -81858,6 +81858,7 @@
   session_id: 01KKDVDTBMBTC1DYSK94TMAGFJ
   created_at: 2026-03-08T05:04:37.219Z
   started_at: 2026-03-11T07:16:18.408Z
+  submitted_at: 2026-03-11T07:17:51.120Z
   notes:
     - _ulid: 01KKDW47M6N1DX7XY475Z6VCS1
       created_at: 2026-03-11T07:17:38.054Z
@@ -81872,7 +81873,9 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T07:17:51.120Z
+  completed_at: 2026-03-11T07:17:59.459Z
+  closed_reason: Already implemented on main. Verified agent run live streaming, JSON suppression, and
+    session log --text replay via focused CLI tests (110 passing).
 - _ulid: 01KK5XAJVEJZNYR7GRDPEFP2M0
   slugs: []
   title: Fix KSPEC_SESSION_ID race condition in concurrent multi-project dispatch
