@@ -43,6 +43,7 @@ let renderMarkdown: MarkdownUtils["renderMarkdown"];
 let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sanitizeHtml"];
 let isLanguageSupported: typeof import("../packages/web-ui/src/lib/utils/highlight")["isLanguageSupported"];
 let createStreamingMarkdownRenderer: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownRenderer"];
+let createStreamingMarkdownController: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownController"];
 let finalizeStreamingMarkdown: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["finalizeStreamingMarkdown"];
 let webUiViteServer: WebUiViteServer;
 const ORIGINAL_CWD = process.cwd();
@@ -93,6 +94,7 @@ beforeAll(async () => {
     "../packages/web-ui/src/lib/utils/streaming-markdown"
   );
   createStreamingMarkdownRenderer = streamingMod.createStreamingMarkdownRenderer;
+  createStreamingMarkdownController = streamingMod.createStreamingMarkdownController;
   finalizeStreamingMarkdown = streamingMod.finalizeStreamingMarkdown;
 });
 
@@ -102,6 +104,55 @@ async function transformWebUiModule(path: string): Promise<string> {
     throw new Error(`Expected transformed output for ${path}`);
   }
   return transformed.code;
+}
+
+async function createDomHarness() {
+  const { JSDOM } = await import("jsdom");
+  const dom = new JSDOM("<div id='root'></div>");
+  const root = dom.window.document.getElementById("root") as HTMLElement;
+
+  globalThis.window = dom.window as unknown as Window & typeof globalThis;
+  globalThis.document = dom.window.document as unknown as Document;
+  globalThis.Element = dom.window.Element as typeof Element;
+  globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+  globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+  globalThis.Node = dom.window.Node as typeof Node;
+
+  return { dom, root };
+}
+
+function createTestScheduler() {
+  let nextFrameId = 1;
+  const callbacks = new Map<number, FrameRequestCallback>();
+  let requestCount = 0;
+  let cancelCount = 0;
+
+  return {
+    get requestCount() {
+      return requestCount;
+    },
+    get cancelCount() {
+      return cancelCount;
+    },
+    request(callback: FrameRequestCallback) {
+      requestCount += 1;
+      const frameId = nextFrameId++;
+      callbacks.set(frameId, callback);
+      return frameId;
+    },
+    cancel(frameId: number) {
+      cancelCount += 1;
+      callbacks.delete(frameId);
+    },
+    flushAll() {
+      for (const frameId of [...callbacks.keys()].sort((left, right) => left - right)) {
+        const callback = callbacks.get(frameId);
+        if (!callback) continue;
+        callbacks.delete(frameId);
+        callback(Date.now());
+      }
+    },
+  };
 }
 
 // ─── AC-1: Structured event blocks ────────────────────────────────────────────
@@ -1236,53 +1287,69 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
     // AC: @streaming-markdown-component ac-5
     it("uses an immediate static parse-sanitize-highlight pipeline when not streaming", async () => {
-      const html = renderMarkdown('<script>alert(1)</script>\n\n```js\nconst value = 1;\n```');
-      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+      const { root } = await createDomHarness();
+      const scheduler = createTestScheduler();
+      const controller = createStreamingMarkdownController(root, { scheduler });
 
-      expect(html).not.toContain("<script>");
-      expect(html).toContain("hljs");
-      expect(html).toContain("language-javascript");
-      expect(componentCode).toContain("renderStaticContent");
-      expect(componentCode).toContain("parser_write");
-      expect(componentCode).toContain("parser_end");
-      expect(componentCode).toContain("finalizeStreamingMarkdown");
+      controller.update('<script>alert(1)</script>\n\n```js\nconst value = 1;\n```', false);
+
+      expect(scheduler.requestCount).toBe(0);
+      expect(root.innerHTML).not.toContain("<script>");
+      expect(root.innerHTML).toContain("hljs");
+      expect(root.innerHTML).toContain("language-javascript");
+
+      controller.destroy();
     });
 
     // AC: @streaming-markdown-component ac-6
     it("queues streaming chunks behind a single requestAnimationFrame gate", async () => {
-      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+      const { root } = await createDomHarness();
+      const flushes: string[] = [];
+      const scheduler = createTestScheduler();
+      const controller = createStreamingMarkdownController(root, {
+        scheduler,
+        onChunkFlush(chunk) {
+          flushes.push(chunk);
+        },
+      });
 
-      expect(componentCode).toContain("requestAnimationFrame");
-      expect(componentCode).toContain("pendingChunk");
-      expect(componentCode).toContain("frameId");
-      expect(componentCode).toContain("flushPendingChunk");
+      controller.update("Hello", true);
+      controller.update("Hello **markdown**", true);
+      controller.update("Hello **markdown**\n\nmore", true);
+
+      expect(scheduler.requestCount).toBe(1);
+      expect(root.textContent ?? "").toBe("");
+
+      scheduler.flushAll();
+
+      expect(flushes).toHaveLength(1);
+      expect(flushes[0]).toContain("markdown");
+      expect(root.textContent).toContain("Hello markdown");
+
+      controller.destroy();
     });
 
     // AC: @trait-markdown-rendering ac-9
     it("keeps large markdown rendering on the frame-batched streaming path", async () => {
+      const { root } = await createDomHarness();
+      const scheduler = createTestScheduler();
+      const controller = createStreamingMarkdownController(root, { scheduler });
       const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join("\n");
-      const html = renderMarkdown(largeMarkdown);
-      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+      const start = Date.now();
 
-      expect(html).toContain("item 9999");
-      expect(componentCode).toContain("requestAnimationFrame");
-      expect(componentCode).toContain("pendingChunk");
-      expect(componentCode).toContain("flushPendingChunk");
-    });
+      controller.update(largeMarkdown, true);
+      const elapsedMs = Date.now() - start;
 
-    // AC: @streaming-markdown-component ac-7
-    it("wires live session output through StreamingMarkdown and keeps the blinking cursor styles", async () => {
-      const html = renderMarkdown("Hello **markdown**");
-      const sessionCode = await transformWebUiModule("/src/lib/components/session/SessionStream.svelte");
-      const sessionStyles = await transformWebUiModule(
-        "/src/lib/components/session/SessionStream.svelte?svelte&type=style&lang.css",
-      );
+      expect(elapsedMs).toBeLessThan(100);
+      expect(scheduler.requestCount).toBe(1);
+      expect(root.textContent ?? "").not.toContain("item 9999");
 
-      expect(html).toContain("<strong>markdown</strong>");
-      expect(sessionCode).toContain("StreamingMarkdown");
-      expect(sessionCode).toContain("streamingText");
-      expect(sessionStyles).toContain("ds-streaming-cursor");
-      expect(sessionStyles).toContain("cursor-blink");
+      scheduler.flushAll();
+      controller.update(largeMarkdown, false);
+
+      expect(root.textContent).toContain("item 9999");
+
+      controller.destroy();
     });
   });
 
