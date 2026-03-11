@@ -398,6 +398,102 @@ describe("Integration: plan commands", () => {
     });
   });
 
+  describe("plan export", () => {
+    beforeEach(async () => {
+      const planPath = path.join(tempDir, "export-plan.md");
+      await fs.writeFile(planPath, "# Iterative Plan\n\n## Specs\n\n- export me");
+      kspec(
+        `plan add --title "Export Plan" --content-file "${planPath}" --slug export-plan`,
+        tempDir,
+      );
+    });
+
+    // AC: @plan-export ac-stdout
+    // AC: @trait-semantic-exit-codes ac-1
+    it("should write plan content to stdout", () => {
+      const output = kspec("plan export @export-plan", tempDir);
+
+      expect(output).toBe("# Iterative Plan\n\n## Specs\n\n- export me");
+    });
+
+    // AC: @plan-export ac-output-file
+    it("should write plan content to the specified file", async () => {
+      const outputPath = path.join(tempDir, "exported-plan.md");
+      const output = kspec(
+        `plan export @export-plan --output "${outputPath}"`,
+        tempDir,
+      );
+
+      expect(output).toContain("Exported plan content");
+      const fileContents = await fs.readFile(outputPath, "utf-8");
+      expect(fileContents).toBe("# Iterative Plan\n\n## Specs\n\n- export me");
+    });
+
+    // AC: @plan-export ac-empty
+    // AC: @trait-semantic-exit-codes ac-2
+    it("should fail when plan content is empty", () => {
+      kspec('plan add --title "Empty Plan" --content "" --slug empty-plan', tempDir);
+
+      const result = kspecRun("plan export @empty-plan", tempDir, {
+        expectFail: true,
+      });
+
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain("Plan has no content to export");
+    });
+
+    // AC: @plan-export ac-not-found
+    // AC: @trait-json-output ac-3
+    it("should return a usage error when the plan ref does not resolve", () => {
+      const result = kspecRun("plan export @nonexistent --json", tempDir, {
+        expectFail: true,
+      });
+
+      expect(result.exitCode).toBe(2);
+      const parsed = JSON.parse(result.stderr) as { error: string };
+      expect(parsed.error).toContain("Plan not found");
+    });
+
+    // AC: @plan-export ac-json
+    // AC: @trait-json-output ac-1
+    // AC: @trait-json-output ac-2
+    // AC: @trait-json-output ac-4
+    // AC: @trait-json-output ac-5
+    it("should output full plan data as JSON", () => {
+      kspec("plan set @export-plan --status approved", tempDir);
+      kspec('plan derive @export-plan --title "Implement Export Plan"', tempDir);
+
+      const exported = kspecJson<{
+        title: string;
+        content: string;
+        status: string;
+        derived_specs: string[];
+        derived_tasks: string[];
+        created_at: string;
+      }>("plan export @export-plan", tempDir);
+
+      expect(exported.title).toBe("Export Plan");
+      expect(exported.content).toBe("# Iterative Plan\n\n## Specs\n\n- export me");
+      expect(exported.status).toBe("active");
+      expect(exported.derived_specs).toEqual([]);
+      expect(exported.derived_tasks.length).toBeGreaterThan(0);
+      expect(exported.derived_tasks.every((ref) => ref.startsWith("@"))).toBe(
+        true,
+      );
+      expect(exported.created_at).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
+      );
+    });
+
+    // AC: @trait-json-output ac-6 — N/A: plan export has no competing output-format flags beyond global --json.
+    // AC: @trait-semantic-exit-codes ac-3 — N/A: plan export has no confirmation prompt.
+    // AC: @trait-semantic-exit-codes ac-4 — covered by shared runtime error handling in plan.ts for file-write failures.
+    // AC: @trait-semantic-exit-codes ac-5 — N/A: plan export is single-record lookup, not an empty-result query.
+    // AC: @trait-semantic-exit-codes ac-6 — N/A: invalid flag handling is provided by commander globally.
+    // AC: @trait-semantic-exit-codes ac-7 — N/A: plan export is not a batch command.
+    // AC: @trait-semantic-exit-codes ac-8 — documented centrally in src/cli/exit-codes.ts.
+  });
+
   describe("plan list", () => {
     beforeEach(() => {
       // Create multiple plans

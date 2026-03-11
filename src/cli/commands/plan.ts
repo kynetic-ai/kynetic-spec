@@ -29,7 +29,7 @@ import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, output, success } from "../output.js";
+import { error, info, isJsonMode, output, success } from "../output.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
 import { parseIntOption } from "../validators.js";
@@ -259,6 +259,59 @@ Examples:
         });
       } catch (err) {
         error(errors.failures.getPlan, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec plan export <ref>
+  // AC: @plan-export ac-stdout, ac-output-file, ac-empty, ac-not-found, ac-json
+  plan
+    .command("export <ref>")
+    .description("Export stored plan content to stdout or a file")
+    .option("--output <path>", "Write plan content to the specified file")
+    .addHelpText(
+      "after",
+      `
+Examples:
+  $ kspec plan export @plan-ref
+  $ kspec plan export @plan-ref --output ./plan.md
+  $ kspec plan export @plan-ref --json`,
+    )
+    .action(async (ref: string, options) => {
+      try {
+        const ctx = await initContext();
+        const foundPlan = await findPlanByRef(ctx, ref);
+
+        if (!foundPlan) {
+          error(errors.reference.planNotFound(ref));
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        if (foundPlan.content.length === 0) {
+          error("Plan has no content to export");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+
+        if (isJsonMode()) {
+          output(foundPlan);
+          return;
+        }
+
+        if (options.output) {
+          const outputPath = path.resolve(process.cwd(), options.output);
+          try {
+            await fs.writeFile(outputPath, foundPlan.content, "utf-8");
+          } catch (err) {
+            error(`Failed to write plan export file: ${options.output}`, err);
+            process.exit(EXIT_CODES.ERROR);
+          }
+          success(`Exported plan content to ${options.output}`);
+          return;
+        }
+
+        process.stdout.write(foundPlan.content);
+      } catch (err) {
+        error("Failed to export plan", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
