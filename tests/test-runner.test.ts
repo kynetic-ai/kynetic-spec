@@ -179,6 +179,29 @@ describe('test runner environment checks', () => {
         expect(result.ok).toBe(true);
       });
 
+      it('detects stale build artifacts when a source file is newer', async () => {
+        for (const artifact of [
+          'dist/cli/index.js',
+          'dist/web-ui/index.html',
+          'dist/daemon/index.ts',
+        ]) {
+          const fullPath = path.join(tempDir, artifact);
+          fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+          fs.writeFileSync(fullPath, '');
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 20));
+
+        const sourcePath = path.join(tempDir, 'src', 'cli', 'commands', 'plan-import.ts');
+        fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+        fs.writeFileSync(sourcePath, '// newer than dist');
+
+        const result = runner.checkBuild(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain('src');
+        expect(result.reason).toContain('is newer than build artifacts');
+      });
+
       it('detects empty temp dir with no artifacts', () => {
         const result = runner.checkBuild(tempDir);
         expect(result.ok).toBe(false);

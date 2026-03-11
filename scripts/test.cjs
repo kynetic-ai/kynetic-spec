@@ -34,6 +34,25 @@ const c = {
 };
 
 const projectRoot = path.dirname(__dirname);
+const BUILD_ARTIFACTS = [
+  'dist/cli/index.js',
+  'dist/web-ui/index.html',
+  'dist/daemon/index.ts',
+];
+const BUILD_INPUT_PATHS = [
+  'src',
+  'packages/shared/src',
+  'packages/daemon/src',
+  'packages/web-ui/src',
+  'packages/web-ui/static',
+  'package.json',
+  'tsconfig.json',
+  'packages/shared/package.json',
+  'packages/daemon/package.json',
+  'packages/web-ui/package.json',
+  'packages/web-ui/vite.config.ts',
+  'packages/web-ui/svelte.config.js',
+];
 
 // ─── Output helpers ────────────────────────────────────────────────
 
@@ -80,18 +99,67 @@ function checkDependencies(root) {
  */
 function checkBuild(root) {
   const rootDir = root || projectRoot;
-  const requiredArtifacts = [
-    'dist/cli/index.js',
-    'dist/web-ui/index.html',
-    'dist/daemon/index.ts',
-  ];
-  for (const artifact of requiredArtifacts) {
+  for (const artifact of BUILD_ARTIFACTS) {
     const fullPath = path.join(rootDir, artifact);
     if (!fs.existsSync(fullPath)) {
       return { ok: false, reason: `${artifact} not found` };
     }
   }
+
+  const oldestArtifactMtime = Math.min(
+    ...BUILD_ARTIFACTS.map((artifact) => fs.statSync(path.join(rootDir, artifact)).mtimeMs),
+  );
+  const newestInput = newestBuildInput(rootDir);
+
+  if (newestInput && newestInput.mtimeMs > oldestArtifactMtime) {
+    return {
+      ok: false,
+      reason: `${newestInput.relativePath} is newer than build artifacts`,
+    };
+  }
+
   return { ok: true };
+}
+
+function newestBuildInput(rootDir) {
+  let newest = null;
+
+  for (const relativePath of BUILD_INPUT_PATHS) {
+    const fullPath = path.join(rootDir, relativePath);
+    if (!fs.existsSync(fullPath)) {
+      continue;
+    }
+
+    const candidate = newestPathMtime(fullPath, relativePath);
+    if (!candidate) {
+      continue;
+    }
+
+    if (!newest || candidate.mtimeMs > newest.mtimeMs) {
+      newest = candidate;
+    }
+  }
+
+  return newest;
+}
+
+function newestPathMtime(fullPath, relativePath) {
+  const stat = fs.statSync(fullPath);
+  if (!stat.isDirectory()) {
+    return { relativePath, mtimeMs: stat.mtimeMs };
+  }
+
+  let newest = { relativePath, mtimeMs: stat.mtimeMs };
+  for (const entry of fs.readdirSync(fullPath, { withFileTypes: true })) {
+    const childFullPath = path.join(fullPath, entry.name);
+    const childRelativePath = path.join(relativePath, entry.name);
+    const candidate = newestPathMtime(childFullPath, childRelativePath);
+    if (candidate && candidate.mtimeMs > newest.mtimeMs) {
+      newest = candidate;
+    }
+  }
+
+  return newest;
 }
 
 // ─── Fix helpers ───────────────────────────────────────────────────
