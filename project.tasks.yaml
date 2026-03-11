@@ -85921,6 +85921,19 @@
         batching, and large-input scheduling, and add a browser-path assertion for live
         SessionStream markdown + cursor rendering before re-submitting PR #781."
       supersedes: null
+    - _ulid: 01KKEJAZRYANMV4T3B7T2N9X56
+      created_at: 2026-03-11T13:45:48.062Z
+      author: Jacob Chapel
+      content: "Fix-cycle verification: extracted the streaming markdown update state machine into a
+        shared controller, replaced ac-5/ac-6/@trait-markdown-rendering ac-9 source-shape checks
+        with DOM/runtime controller assertions, and moved ac-7 coverage to a browser-path smoke test
+        on the live session page. Verification: npm --workspace packages/web-ui run build; npm test
+        -- --run tests/web-ui-session-stream.test.ts tests/daemon-agent-dispatch-routes.test.ts;
+        node dist/cli/index.js validate (warnings-only baseline). Limitation: the new Playwright
+        smoke assertion could not be executed locally because dispatch-mode policy forbids the test
+        fixture from starting its own daemon inside this agent invocation; it is expected to run in
+        CI on PR #781."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
