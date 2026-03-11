@@ -87154,7 +87154,7 @@
   type: task
   spec_ref: "@tasks-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -87162,7 +87162,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKF8XEDKDWQRQ22CWDARG213
+  session_id: null
   created_at: 2026-03-10T06:55:45.973Z
   started_at: 2026-03-11T20:38:58.085Z
   submitted_at: 2026-03-11T20:39:08.752Z
@@ -87250,6 +87250,13 @@
         backfilled refs there instead of assuming CI has live .kspec state. Verification: npm test
         -- task-system-ac-backfill.test.ts passed; npm run test:shard3 passed; npm test passed (213
         files, 4564 tests, 3 skipped)."
+      supersedes: null
+    - _ulid: 01KKFA6TH93ARFA7H8K8DD743M
+      created_at: 2026-03-11T20:42:57.449Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: tests/task-system-ac-backfill.test.ts now
+        validates a synthetic @tasks fixture instead of the real backfilled task specs, so
+        @tasks-ac-backfill own-AC coverage is not trustworthy."
       supersedes: null
   todos: []
   automation: eligible
