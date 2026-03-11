@@ -14,7 +14,7 @@ import {
 } from "../src/parser/yaml.js";
 import { validate } from "../src/parser/validate.js";
 import { ManifestSchema } from "../src/schema/spec.js";
-import { cleanupTempDir, createTempDir } from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
 function requireItem(items: LoadedSpecItem[], ref: string): LoadedSpecItem {
   const item = findItemByRef(items, ref);
@@ -30,6 +30,145 @@ function logicalGraph(items: LoadedSpecItem[]) {
       slugs: [...item.slugs].sort(),
     }))
     .sort((a, b) => a.title.localeCompare(b.title));
+}
+
+async function setupSchemaBackfillProject(): Promise<string> {
+  const projectDir = await createTempDir("kspec-schema-backfill-");
+  initGitRepo(projectDir);
+
+  const specDir = path.join(projectDir, "spec");
+  await fs.mkdir(path.join(specDir, "modules"), { recursive: true });
+
+  await fs.writeFile(
+    path.join(specDir, "kynetic.yaml"),
+    `kynetic: "1.0"
+project:
+  name: schema-backfill-review
+  version: "0.1.0"
+includes:
+  - modules/schema.yaml
+`,
+  );
+
+  await fs.writeFile(path.join(specDir, "project.tasks.yaml"), "tasks: []\n");
+  await fs.writeFile(
+    path.join(specDir, "modules", "schema.yaml"),
+    `- _ulid: ${testUlid("SCHMOD", 1)}
+  slugs:
+    - schema
+  title: Schema
+  type: module
+  description: Schema and structure module
+- _ulid: ${testUlid("SCHBKF", 1)}
+  slugs:
+    - schema-ac-backfill
+  title: Schema AC Backfill
+  type: requirement
+  description: Backfill schema acceptance criteria with reviewable wording
+  status:
+    maturity: draft
+    implementation: in_progress
+  acceptance_criteria:
+    - id: ac-coverage
+      given: All feature and requirement items under @schema module
+      when: kspec validate --completeness runs
+      then: Zero missing acceptance criteria warnings remain for @schema descendants
+    - id: ac-testable
+      given: Each backfilled schema acceptance criterion
+      when: it is reviewed
+      then: It uses specific given/when/then language with observable outcomes
+  relates_to:
+    - "@schema"
+- _ulid: ${testUlid("VERSNG", 1)}
+  slugs:
+    - versioning
+  title: Versioning
+  type: feature
+  description: Track version fields and comparison metadata separately
+  status:
+    maturity: draft
+    implementation: not_started
+  acceptance_criteria:
+    - id: ac-1
+      given: A spec defines both a format version and project metadata
+      when: A reviewer inspects the spec
+      then: It can distinguish storage format from historical comparison semantics
+  relates_to:
+    - "@schema"
+- _ulid: ${testUlid("FMTVER", 1)}
+  slugs:
+    - format-version
+  title: Format Version
+  type: requirement
+  description: Capture the serialized manifest format version
+  status:
+    maturity: draft
+    implementation: not_started
+  acceptance_criteria:
+    - id: ac-1
+      given: A manifest declares a kynetic version
+      when: The manifest is parsed
+      then: The format version remains separate from project version fields
+  relates_to:
+    - "@schema"
+- _ulid: ${testUlid("SPCVER", 1)}
+  slugs:
+    - spec-version
+  title: Spec Version
+  type: requirement
+  description: Track the project-specific specification version
+  status:
+    maturity: draft
+    implementation: not_started
+  acceptance_criteria:
+    - id: ac-1
+      given: A project manifest includes project.version
+      when: The manifest is parsed
+      then: The spec version is preserved separately from the file format version
+  relates_to:
+    - "@schema"
+- _ulid: ${testUlid("GITBAS", 1)}
+  slugs:
+    - git-baselines
+  title: Git Baselines
+  type: requirement
+  description: Define comparison baselines for spec history
+  status:
+    maturity: draft
+    implementation: not_started
+  implements:
+    - "@versioning"
+  acceptance_criteria:
+    - id: ac-1
+      given: A reviewer compares spec revisions across git history
+      when: Baseline rules are consulted
+      then: They identify a stable comparison point for spec diffs
+  relates_to:
+    - "@schema"
+- _ulid: ${testUlid("AADAPT", 1)}
+  slugs:
+    - auto-adaptive-structure
+  title: Auto Adaptive Structure
+  type: requirement
+  description: Describe suggest/apply transitions for project structure changes
+  status:
+    maturity: draft
+    implementation: not_started
+  acceptance_criteria:
+    - id: ac-1
+      given: A project could benefit from structure changes
+      when: A user runs kspec split --suggest
+      then: Suggested structure updates are presented without modifying files
+    - id: ac-2
+      given: A suggested split has been accepted
+      when: kspec split --apply runs
+      then: The project files are updated to match the suggested structure
+  relates_to:
+    - "@schema"
+`,
+  );
+
+  return projectDir;
 }
 
 describe("schema AC backfill review coverage", () => {
@@ -285,22 +424,28 @@ notes:
 
   // AC: @schema-ac-backfill ac-coverage
   it("keeps schema descendants free of missing acceptance criteria warnings", async () => {
-    const ctx = await initContext(process.cwd());
-    const items = await loadAllItems(ctx);
-    const schemaItems = items.filter(
-      (item) =>
-        item._sourceFile?.endsWith(`${path.sep}schema.yaml`) &&
-        (item.type === "feature" || item.type === "requirement"),
-    );
-    const result = await validate(ctx, { completeness: true });
+    const projectDir = await setupSchemaBackfillProject();
 
-    const warnings = result.completenessWarnings.filter(
-      (warning) =>
-        warning.type === "missing_acceptance_criteria" &&
-        schemaItems.some((item) => warning.itemRef === `@${item.slugs[0]}` || warning.itemRef === `@${item._ulid}`),
-    );
+    try {
+      const ctx = await initContext(projectDir);
+      const items = await loadAllItems(ctx);
+      const schemaItems = items.filter(
+        (item) =>
+          item._sourceFile?.endsWith(`${path.sep}schema.yaml`) &&
+          (item.type === "feature" || item.type === "requirement"),
+      );
+      const result = await validate(ctx, { completeness: true });
 
-    expect(warnings).toEqual([]);
+      const warnings = result.completenessWarnings.filter(
+        (warning) =>
+          warning.type === "missing_acceptance_criteria" &&
+          schemaItems.some((item) => warning.itemRef === `@${item.slugs[0]}` || warning.itemRef === `@${item._ulid}`),
+      );
+
+      expect(warnings).toEqual([]);
+    } finally {
+      await cleanupTempDir(projectDir);
+    }
   });
 
   // AC: @schema-ac-backfill ac-testable
@@ -309,43 +454,49 @@ notes:
   // AC: @auto-adaptive-structure ac-1
   // AC: @auto-adaptive-structure ac-2
   it("keeps backfilled schema requirements specific and reviewable", async () => {
-    const items = await loadAllItems(await initContext(process.cwd()));
-    const versioning = requireItem(items, "@versioning");
-    const gitBaselines = requireItem(items, "@git-baselines");
-    const autoAdaptive = requireItem(items, "@auto-adaptive-structure");
+    const projectDir = await setupSchemaBackfillProject();
 
-    expect(versioning.acceptance_criteria?.[0]).toMatchObject({
-      given: expect.stringContaining("format version"),
-      when: expect.stringContaining("inspects the spec"),
-      then: expect.stringContaining("historical comparison"),
-    });
+    try {
+      const items = await loadAllItems(await initContext(projectDir));
+      const versioning = requireItem(items, "@versioning");
+      const gitBaselines = requireItem(items, "@git-baselines");
+      const autoAdaptive = requireItem(items, "@auto-adaptive-structure");
 
-    expect(gitBaselines.implements).toContain("@versioning");
-    expect(gitBaselines.acceptance_criteria?.[0]?.then).toContain(
-      "comparison point for spec diffs",
-    );
+      expect(versioning.acceptance_criteria?.[0]).toMatchObject({
+        given: expect.stringContaining("format version"),
+        when: expect.stringContaining("inspects the spec"),
+        then: expect.stringContaining("historical comparison"),
+      });
 
-    expect(autoAdaptive.status?.implementation).toBe("not_started");
-    expect(autoAdaptive.acceptance_criteria?.map((ac) => ac.when)).toEqual([
-      "A user runs kspec split --suggest",
-      "kspec split --apply runs",
-    ]);
+      expect(gitBaselines.implements).toContain("@versioning");
+      expect(gitBaselines.acceptance_criteria?.[0]?.then).toContain(
+        "comparison point for spec diffs",
+      );
 
-    for (const ref of [
-      "@schema-ac-backfill",
-      "@versioning",
-      "@format-version",
-      "@spec-version",
-      "@git-baselines",
-      "@auto-adaptive-structure",
-    ]) {
-      const item = requireItem(items, ref);
-      expect(item.acceptance_criteria?.length).toBeGreaterThan(0);
-      for (const ac of item.acceptance_criteria ?? []) {
-        expect(ac.given.trim().split(/\s+/).length).toBeGreaterThanOrEqual(3);
-        expect(ac.when.trim().split(/\s+/).length).toBeGreaterThanOrEqual(3);
-        expect(ac.then.trim().split(/\s+/).length).toBeGreaterThanOrEqual(4);
+      expect(autoAdaptive.status?.implementation).toBe("not_started");
+      expect(autoAdaptive.acceptance_criteria?.map((ac) => ac.when)).toEqual([
+        "A user runs kspec split --suggest",
+        "kspec split --apply runs",
+      ]);
+
+      for (const ref of [
+        "@schema-ac-backfill",
+        "@versioning",
+        "@format-version",
+        "@spec-version",
+        "@git-baselines",
+        "@auto-adaptive-structure",
+      ]) {
+        const item = requireItem(items, ref);
+        expect(item.acceptance_criteria?.length).toBeGreaterThan(0);
+        for (const ac of item.acceptance_criteria ?? []) {
+          expect(ac.given.trim().split(/\s+/).length).toBeGreaterThanOrEqual(3);
+          expect(ac.when.trim().split(/\s+/).length).toBeGreaterThanOrEqual(3);
+          expect(ac.then.trim().split(/\s+/).length).toBeGreaterThanOrEqual(4);
+        }
       }
+    } finally {
+      await cleanupTempDir(projectDir);
     }
   });
 });
