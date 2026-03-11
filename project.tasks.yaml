@@ -85406,7 +85406,7 @@
   type: task
   spec_ref: "@session-text-search"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-session-cli-unified-filtering"
@@ -85415,7 +85415,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKDQ3KKWT6PW0ZBB7RD5GT23
+  session_id: null
   created_at: 2026-03-10T05:32:17.278Z
   started_at: 2026-03-11T05:55:46.210Z
   submitted_at: 2026-03-11T05:55:52.814Z
@@ -85485,6 +85485,13 @@
         test hit one unrelated failure in tests/cli-serve.test.ts foreground serve shutdown
         (child.exitCode null in this dispatch environment). Direct Playwright API run remains
         blocked here because daemon start/stop is forbidden under KSPEC_SESSION_ID."
+      supersedes: null
+    - _ulid: 01KKDS6STB8AAKGQB3Q8AQKWC1
+      created_at: 2026-03-11T06:26:36.492Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: add explicit @session-text-search ac-performance
+        coverage and convert @trait-api-endpoint ac-3/ac-4/ac-5 search-endpoint N/A notes into
+        standalone // AC annotations."
       supersedes: null
   todos: []
   automation: eligible
@@ -88370,6 +88377,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Already implemented on main. Verified shadow command root resolution, serve default
+    .kspec resolution, and shadow false-positive guard from merged worktree fixes in PR #766 (commit
+    84660d46e) and PR #771 (commit a5332c007). Targeted tests passed:
+    tests/parser/resolve-project-roots.test.ts, tests/cli-worktree-resolution.test.ts,
+    tests/shadow.test.ts. kspec validate returned warnings-only unrelated to this task."
   depends_on:
     - "@task-worktree-core-resolution"
   context: []
@@ -88382,6 +88394,7 @@
   created_at: 2026-03-10T17:59:13.926Z
   started_at: 2026-03-11T06:16:42.839Z
   submitted_at: 2026-03-11T06:19:30.376Z
+  completed_at: 2026-03-11T06:19:38.198Z
   notes:
     - _ulid: 01KKCEGR5VZQW3SP442BA17BJY
       created_at: 2026-03-10T18:00:33.723Z
@@ -88546,12 +88559,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T06:19:38.198Z
-  closed_reason: "Already implemented on main. Verified shadow command root resolution, serve default
-    .kspec resolution, and shadow false-positive guard from merged worktree fixes in PR #766 (commit
-    84660d46e) and PR #771 (commit a5332c007). Targeted tests passed:
-    tests/parser/resolve-project-roots.test.ts, tests/cli-worktree-resolution.test.ts,
-    tests/shadow.test.ts. kspec validate returned warnings-only unrelated to this task."
 - _ulid: 01KKCYMCNZ94ZJKP84XYCCBVNM
   slugs:
     - implement-plan-export-command
