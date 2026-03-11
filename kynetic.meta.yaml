@@ -8047,6 +8047,14 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKDDHTRKY91QMYWH9PQDN07K
+    type: friction
+    content: Dispatch-mode agents cannot run daemon-backed Playwright fixtures because kspec serve start
+      is intentionally blocked inside agent invocations.
+    created_at: 2026-03-11T03:02:54.996Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
