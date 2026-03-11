@@ -86113,6 +86113,21 @@
         for non-YAML markdown, and extended the batch summaries to include task assignee for
         task-card display.
       supersedes: null
+    - _ulid: 01KKFHSYPHVP98TX8E2FH09BAD
+      created_at: 2026-03-11T22:55:44.337Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - npm test -- tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts
+
+        - npm test -- packages/web-ui/tests/prose-typography.test.ts
+
+        - npm test (full suite: 216 files, 4599 passed, 3 skipped)
+
+        - kspec validate (warnings only; existing project-wide warning debt remains, no new
+        validation errors introduced)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
