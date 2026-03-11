@@ -84907,6 +84907,22 @@
         inside block comments instead of standalone // AC:/# AC: N/A tracking, and full npm test is
         red on PR #762 (local run surfaced 16 failures before interruption)."
       supersedes: null
+    - _ulid: 01KKD43TGVYKZN66AGV6V24XF9
+      created_at: 2026-03-11T00:17:58.811Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 3 progress:
+
+        - Converted @ui-url-panel-state ac-4 coverage to standalone // AC: N/A annotations in the
+        sessions page and sessions E2E spec so coverage tracking can see them.
+
+        - Investigated red full suite on PR branch: failures were stale CLI tests expecting session
+        log list --json to return a bare array; current contract is paginated { items, total,
+        offset, limit }.
+
+        - Updated the three failing CLI test files to the paginated shape and made one
+        active-session duration assertion deterministic by setting started_at explicitly.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
