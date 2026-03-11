@@ -7348,6 +7348,25 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    features:
+      - _ulid: 01KKER1SDTFB94KPQA4D16C1B6
+        slugs:
+          - invocation-initial-activity-watchdog
+        title: Initial Activity Watchdog
+        type: feature
+        tags: []
+        description: Detects when an agent accepts a prompt via ACP but never starts producing meaningful
+          output. Races a stall timer alongside the prompt promise and fails fast on detection,
+          allowing the dispatch engine's reconciliation cycle to retry without penalty. Prevents
+          wasting the full invocation timeout budget on non-responsive agent sessions.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-11T15:25:38.107Z
   - _ulid: 01KJP27657CZ9AJP5T0XBDEDVK
     slugs:
       - agent-dispatch-engine
