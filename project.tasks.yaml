@@ -87114,6 +87114,15 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #787 includes unrelated core-backfill changes
         and still lacks own AC coverage annotations for @tasks-ac-backfill."
       supersedes: null
+    - _ulid: 01KKF380PVK2DD5FE8K8DK18HD
+      created_at: 2026-03-11T18:41:16.508Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Removed the unrelated core-backfill base commit by rebasing
+        fix/task-system-ac-backfill onto main, then added explicit own-AC coverage for
+        @tasks-ac-backfill in tests/task-system-ac-backfill.test.ts. Verification: npm test --
+        task-system-ac-backfill.test.ts passed; npm test passed (213 files, 4564 tests, 3 skipped);
+        kspec validate still reports only the pre-existing global warning debt."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
