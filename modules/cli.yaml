@@ -5777,6 +5777,9 @@ features:
           - "@trait-semantic-exit-codes"
         notes: []
         created: 2026-03-10T22:42:09.570Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKCYMC46TRPDTA3ZP6B01ERT
         slugs:
           - plan-derive-enhanced
