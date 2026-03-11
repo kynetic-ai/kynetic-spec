@@ -231,10 +231,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     adapterId,
   });
 
-  // Capture the pre-existing KSPEC_SESSION_ID so we can restore it in finally.
-  // AC: @agent-invocation-lifecycle ac-8
-  const previousKspecSessionId = process.env.KSPEC_SESSION_ID;
-
   const state: InvocationState = {
     sessionId,
     specDir,
@@ -298,7 +294,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // AC: @agent-invocation-lifecycle ac-2
     const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
     state.previousEnvValue = injectionResult?.previousValue;
-    process.env.KSPEC_SESSION_ID = sessionId;
 
     // ─── Spawn agent ──────────────────────────────────────────────────────
     state.agent = await spawnAndInitialize(adapter, {
@@ -575,14 +570,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);
-
-    // Restore process.env.KSPEC_SESSION_ID to its pre-invocation value.
-    // AC: @agent-invocation-lifecycle ac-8
-    if (previousKspecSessionId === undefined) {
-      delete process.env.KSPEC_SESSION_ID;
-    } else {
-      process.env.KSPEC_SESSION_ID = previousKspecSessionId;
-    }
   }
 }
 

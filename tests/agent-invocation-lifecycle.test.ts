@@ -146,32 +146,32 @@ describe("Session creation on invocation start", () => {
 // AC: @agent-invocation-lifecycle ac-2
 describe("KSPEC_SESSION_ID injection", () => {
   let testDir: string;
-  let capturedSessionId: string | undefined;
+  let originalSessionId: string | undefined;
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-invoc-ac2-");
-    capturedSessionId = undefined;
+    originalSessionId = process.env.KSPEC_SESSION_ID;
 
-    // Register a mock adapter that captures the env var
-    // The mock ACP agent receives KSPEC_SESSION_ID through process env
     registerMockAdapter();
   });
 
   afterEach(async () => {
-    // Restore process.env.KSPEC_SESSION_ID if it was set
-    delete process.env.KSPEC_SESSION_ID;
+    if (originalSessionId === undefined) {
+      delete process.env.KSPEC_SESSION_ID;
+    } else {
+      process.env.KSPEC_SESSION_ID = originalSessionId;
+    }
     await cleanupTempDir(testDir);
   });
 
-  it("should set KSPEC_SESSION_ID in process env during invocation", async () => {
+  it("should inject KSPEC_SESSION_ID into the spawned agent environment", async () => {
+    const captureFile = path.join(testDir, "mock-agent-env.json");
+    registerMockAdapter({
+      MOCK_ACP_VERIFY_ENV_FILE: captureFile,
+      MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_SESSION_ID",
+    });
+
     const agent = makeTestAgent();
-    let envDuringInvocation: string | undefined;
-
-    // We can't easily intercept the spawned process env, but we can verify
-    // that KSPEC_SESSION_ID was set and cleared on the invoking process
-    // by checking that it was cleaned up after
-    const beforeSessionId = process.env.KSPEC_SESSION_ID;
-
     const result = await runInvocation({
       agent,
       specDir: testDir,
@@ -182,17 +182,16 @@ describe("KSPEC_SESSION_ID injection", () => {
       trigger: "task.ready",
     });
 
-    // After invocation, KSPEC_SESSION_ID should be restored (or deleted)
-    const afterSessionId = process.env.KSPEC_SESSION_ID;
-    expect(afterSessionId).toBe(beforeSessionId);
     expect(result.outcome).toBe("success");
+    const capturedEnv = JSON.parse(await fs.readFile(captureFile, "utf-8")) as {
+      KSPEC_SESSION_ID: string | null;
+    };
+    expect(capturedEnv.KSPEC_SESSION_ID).toBe(result.session.id);
   });
 
-  it("should restore a pre-existing KSPEC_SESSION_ID after invocation completes", async () => {
+  it("should not overwrite a pre-existing parent KSPEC_SESSION_ID during invocation", async () => {
     const agent = makeTestAgent();
     const preExistingId = "01EXISTNG0000000000000000";
-
-    // Simulate a pre-existing KSPEC_SESSION_ID
     process.env.KSPEC_SESSION_ID = preExistingId;
 
     await runInvocation({
@@ -205,12 +204,68 @@ describe("KSPEC_SESSION_ID injection", () => {
       trigger: "task.ready",
     });
 
-    // After invocation, env should be restored to the pre-existing value,
-    // not deleted or overwritten with the invocation session id.
     expect(process.env.KSPEC_SESSION_ID).toBe(preExistingId);
+  });
 
-    // Clean up for subsequent tests
-    delete process.env.KSPEC_SESSION_ID;
+  it("should keep concurrent invocations isolated across parent and child env", async () => {
+    process.env.KSPEC_SESSION_ID = "01PARENT000000000000000000";
+
+    const captureFileA = path.join(testDir, "mock-agent-env-a.json");
+    const captureFileB = path.join(testDir, "mock-agent-env-b.json");
+
+    registerAdapter("mock-acp-concurrent-a", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: captureFileA,
+        MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_SESSION_ID",
+      },
+      description: "Mock ACP agent for concurrent env test A",
+    });
+    registerAdapter("mock-acp-concurrent-b", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: captureFileB,
+        MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_SESSION_ID",
+      },
+      description: "Mock ACP agent for concurrent env test B",
+    });
+
+    const [resultA, resultB] = await Promise.all([
+      runInvocation({
+        agent: makeTestAgent({ adapter: "mock-acp-concurrent-a" }),
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK", 1),
+        prompt: "Concurrent env injection A",
+        trigger: "task.ready",
+      }),
+      runInvocation({
+        agent: makeTestAgent({ adapter: "mock-acp-concurrent-b" }),
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK", 2),
+        prompt: "Concurrent env injection B",
+        trigger: "task.ready",
+      }),
+    ]);
+
+    const capturedEnvA = JSON.parse(await fs.readFile(captureFileA, "utf-8")) as {
+      KSPEC_SESSION_ID: string | null;
+    };
+    const capturedEnvB = JSON.parse(await fs.readFile(captureFileB, "utf-8")) as {
+      KSPEC_SESSION_ID: string | null;
+    };
+
+    expect(capturedEnvA.KSPEC_SESSION_ID).toBe(resultA.session.id);
+    expect(capturedEnvB.KSPEC_SESSION_ID).toBe(resultB.session.id);
+    expect(capturedEnvA.KSPEC_SESSION_ID).not.toBe(capturedEnvB.KSPEC_SESSION_ID);
+    expect(process.env.KSPEC_SESSION_ID).toBe("01PARENT000000000000000000");
   });
 });
 
@@ -973,8 +1028,6 @@ describe("Cleanup on completion or failure", () => {
       trigger: "task.ready",
     });
 
-    // After invocation, env should be back to original
-    // (either undefined or the original value)
     expect(process.env.KSPEC_SESSION_ID).toBe(originalValue);
   });
 
