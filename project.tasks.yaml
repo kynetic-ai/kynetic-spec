@@ -88471,6 +88471,15 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #768 misannotates @trait-semantic-exit-codes
         ac-6 in tests/cli-plan-import.test.ts, so inherited AC coverage is incomplete."
       supersedes: null
+    - _ulid: 01KKDE6CHYEHKVBR35SHBF6S9T
+      created_at: 2026-03-11T03:14:08.574Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Corrected trait AC coverage in tests/cli-plan-import.test.ts by adding a
+        real invalid-flag usage test for @trait-semantic-exit-codes ac-6 and removing that
+        annotation from the missing-file test, which exercises a different error path. Verification
+        in progress: npm run build; npm test -- tests/cli-plan-import.test.ts; kspec validate
+        --warnings-ok; full npm test pending."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMET3QGYY364J00V0AQZJ
