@@ -88724,8 +88724,16 @@
     - bug
     - daemon
   vcs_refs: []
-  created_at: 2026-03-11T05:45:50.403Z
-  notes: []
-  todos: []
-  started_at: 2026-03-11T05:46:26.642Z
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  created_at: 2026-03-11T05:45:50.403Z
+  started_at: 2026-03-11T05:46:26.642Z
+  notes:
+    - _ulid: 01KKDPXBBVHZ5XW2PYBJAN0XQH
+      created_at: 2026-03-11T05:46:29.627Z
+      author: "@claude"
+      content: "Fix implemented: removed rogue symlink, hardened watcher with symlink guards (Bun filter,
+        Chokidar followSymlinks:false, lstat check in processFileChange), added .kspec to
+        .kspec/.gitignore. Spec gap analysis: ac-7 covers this adequately, no AC updates needed.
+        Root cause: likely kspec init ran from inside .kspec/ directory around Mar 10 04:25."
+      supersedes: null
+  todos: []
