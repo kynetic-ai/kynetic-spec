@@ -531,6 +531,10 @@ export class DispatchEngine {
     return this.shadowMutex;
   }
 
+  getCwd(): string {
+    return this.cwd;
+  }
+
   /**
    * Returns current engine status info including per-invocation details.
    * AC: @cli-agent-commands ac-6

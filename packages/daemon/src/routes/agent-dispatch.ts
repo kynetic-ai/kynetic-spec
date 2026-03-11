@@ -44,9 +44,14 @@ export interface AgentDispatchRouteOptions {
  * Create a new dispatch engine with optional WebSocket broadcast wiring.
  * AC: @daemon-agent-dispatch ac-3, ac-4
  */
-function createEngine(projectDir: string, pubsub?: PubSubManager): DispatchEngine {
+function createEngine(
+  projectDir: string,
+  cwd?: string,
+  pubsub?: PubSubManager,
+): DispatchEngine {
   return new DispatchEngine({
     projectDir,
+    cwd,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
     onInvocationEvent: pubsub
       ? (event: InvocationEvent) => {
@@ -134,16 +139,24 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
     }, { body: stateChangeBodySchema })
 
     // AC: @daemon-agent-dispatch ac-6 - Unified dispatch start/stop via action field
-    .post('/dispatch', async ({ body, projectContext }) => {
+    .post('/dispatch', async ({ body, projectContext, request, set }) => {
       const projectDir = projectContext.path;
+      const requestedCwd = request.headers.get('X-Kspec-Cwd') || projectDir;
 
       if (body.action === 'start') {
         let engine = engines.get(projectDir);
         if (engine?.getStatus().running) {
+          if (engine.getCwd() !== requestedCwd) {
+            set.status = 409;
+            return {
+              dispatch_enabled: true,
+              error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
+            };
+          }
           return { dispatch_enabled: true, reason: 'Already running' };
         }
 
-        engine = createEngine(projectDir, pubsub);
+        engine = createEngine(projectDir, requestedCwd, pubsub);
         engines.set(projectDir, engine);
         await engine.start();
 
@@ -166,16 +179,25 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
     })
 
     // Start dispatch engine (legacy route)
-    .post('/dispatch/start', async ({ projectContext }) => {
+    .post('/dispatch/start', async ({ projectContext, request, set }) => {
       const projectDir = projectContext.path;
+      const requestedCwd = request.headers.get('X-Kspec-Cwd') || projectDir;
 
       let engine = engines.get(projectDir);
       if (engine?.getStatus().running) {
+        if (engine.getCwd() !== requestedCwd) {
+          set.status = 409;
+          return {
+            started: false,
+            error: `Dispatch engine already running for ${projectDir} with cwd ${engine.getCwd()}`,
+            status: engine.getStatus(),
+          };
+        }
         return { started: false, reason: 'Already running', status: engine.getStatus() };
       }
 
       // AC: @agent-dispatch-engine ac-10 - pass kspecCliPath so task notes work from daemon-started engine
-      engine = createEngine(projectDir, pubsub);
+      engine = createEngine(projectDir, requestedCwd, pubsub);
       engines.set(projectDir, engine);
 
       await engine.start();

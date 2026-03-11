@@ -14,6 +14,19 @@ import { PidFileManager } from '../pid-utils.js';
 import { loadProjectConfig } from '../../parser/config.js';
 import { initContext } from '../../parser/yaml.js';
 
+async function resolveDefaultKspecDir(explicitDir?: string): Promise<string> {
+  if (explicitDir) {
+    return explicitDir;
+  }
+
+  try {
+    const ctx = await initContext();
+    return ctx.specDir;
+  } catch {
+    return join(process.cwd(), '.kspec');
+  }
+}
+
 /**
  * Check if Bun runtime is available.
  * Daemon requires Bun to run TypeScript directly.
@@ -131,7 +144,7 @@ export function registerServeCommands(program: Command): void {
     .description('Start the daemon server')
     .option('-d, --daemon', 'Run in background (detached mode)')
     .option('-p, --port <port>', 'Server port (uses config daemon.port if not specified)')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
     .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
@@ -150,7 +163,7 @@ export function registerServeCommands(program: Command): void {
   serve
     .command('stop')
     .description('Stop the daemon server')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
     .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
@@ -169,7 +182,7 @@ export function registerServeCommands(program: Command): void {
   serve
     .command('status')
     .description('Check daemon server status')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
     .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
@@ -188,7 +201,7 @@ export function registerServeCommands(program: Command): void {
   serve
     .command('restart')
     .description('Restart the daemon server')
-    .option('--kspec-dir <dir>', 'Path to .kspec directory', join(process.cwd(), '.kspec'))
+    .option('--kspec-dir <dir>', 'Path to .kspec directory (defaults to resolved project .kspec)')
     .option('--json', 'Output as JSON')
     .action(async (opts) => {
       try {
@@ -212,11 +225,12 @@ export function registerServeCommands(program: Command): void {
 async function startServer(opts: {
   daemon?: boolean;
   port?: string;
-  kspecDir: string;
+  kspecDir?: string;
 }): Promise<void> {
   // AC: @cli-serve-commands ac-11
   guardAgentContext('start');
   const jsonMode = isJsonMode();
+  const kspecDir = await resolveDefaultKspecDir(opts.kspecDir);
 
   // AC: @config-daemon ac-1, ac-2 — load config for default port, CLI flag overrides
   const { config } = await loadProjectConfig();
@@ -302,7 +316,7 @@ async function startServer(opts: {
     // Spawn detached process
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
     // which can cause asset hash mismatches in the web UI
-    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', opts.kspecDir], {
+    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
       detached: true,
       stdio: 'ignore', // TODO: redirect to log file when logging implemented
       cwd: process.cwd(),
@@ -350,7 +364,7 @@ async function startServer(opts: {
     const runtime = 'bun';
 
     // Set BUN_ENV=production to prevent Bun dev mode HTML transformation
-    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', opts.kspecDir], {
+    const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
       stdio: 'inherit',
       cwd: process.cwd(),
       env: { ...process.env, BUN_ENV: 'production' },
@@ -384,7 +398,7 @@ async function startServer(opts: {
  * Stop the daemon server
  * AC: @cli-serve-commands ac-4 (stop), ac-5 (idempotent)
  */
-async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   // AC: @cli-serve-commands ac-11
   guardAgentContext('stop');
 
@@ -458,7 +472,7 @@ async function stopServer(opts: { kspecDir: string; json?: boolean }): Promise<v
  * Check daemon server status
  * AC: @cli-serve-commands ac-6, @multi-directory-daemon ac-12
  */
-async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   if (isJsonMode()) {
   }
 
@@ -563,7 +577,7 @@ async function statusServer(opts: { kspecDir: string; json?: boolean }): Promise
  * Restart the daemon server
  * AC: @cli-serve-commands ac-7
  */
-async function restartServer(opts: { kspecDir: string; json?: boolean }): Promise<void> {
+async function restartServer(opts: { kspecDir?: string; json?: boolean }): Promise<void> {
   // AC: @cli-serve-commands ac-11
   guardAgentContext('restart');
   const pidManager = new PidFileManager();

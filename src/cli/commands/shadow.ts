@@ -6,6 +6,7 @@ import {
   getShadowStatus,
   hasRemoteTracking,
   repairShadow,
+  resolveProjectRoots,
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
@@ -20,6 +21,10 @@ import {
 import { shadowCommands } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn } from "../output.js";
+
+function resolveCliProjectRoot(): string | null {
+  return resolveProjectRoots(process.cwd())?.mainRoot ?? getGitRoot(process.cwd());
+}
 
 /**
  * Format shadow status for display
@@ -140,7 +145,7 @@ export function registerShadowCommands(program: Command): void {
     .description("Show shadow branch status")
     .action(async () => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -204,7 +209,7 @@ export function registerShadowCommands(program: Command): void {
     .description("Repair broken shadow branch worktree")
     .action(async () => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -294,7 +299,7 @@ export function registerShadowCommands(program: Command): void {
     .option("-n, --count <n>", "Number of commits to show", "10")
     .action(async (options) => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -343,7 +348,7 @@ export function registerShadowCommands(program: Command): void {
     .option("--ours", "Keep all local changes, discard remote")
     .action(async (options) => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -456,7 +461,7 @@ export function registerShadowCommands(program: Command): void {
     .description("Manually sync shadow branch with remote (pull then push)")
     .action(async () => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);

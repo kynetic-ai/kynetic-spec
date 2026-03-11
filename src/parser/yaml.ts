@@ -38,6 +38,7 @@ import {
   detectRunningFromShadowWorktree,
   detectShadow,
   hasRemoteTracking,
+  resolveProjectRoots,
   shadowNeedsSync,
   shadowPull,
   type ShadowConfig,
@@ -283,17 +284,21 @@ export async function findManifest(startDir: string): Promise<string | null> {
  * Context for working with spec/task files.
  *
  * When shadow branch is enabled:
- * - rootDir points to the project root (where .kspec/ lives)
+ * - rootDir points to the active code checkout root
+ * - projectRoot points to the main repo root (where .kspec/ lives)
  * - specDir points to .kspec/ (where spec files are read/written)
  * - All file operations use specDir for resolution
  *
  * Without shadow branch:
- * - rootDir is the project root
+ * - rootDir is the active checkout root
+ * - projectRoot is the same directory as rootDir
  * - specDir is rootDir/spec/ (traditional layout)
  */
 export interface KspecContext {
-  /** Project root directory */
+  /** Active code checkout root (linked worktree root when applicable) */
   rootDir: string;
+  /** Main repo root used for .kspec and daemon identity */
+  projectRoot: string;
   /** Spec files directory (.kspec/ when shadow enabled, otherwise spec/) */
   specDir: string;
   /**
@@ -332,10 +337,11 @@ export interface KspecContext {
  */
 export async function initContext(startDir?: string): Promise<KspecContext> {
   const cwd = startDir || process.cwd();
+  const projectRoots = resolveProjectRoots(cwd);
 
   // AC: @project-config ac-2, ac-6, ac-7 — load config before shadow detection
   // Config is loaded from git root, not cwd or KSPEC_SPEC_DIR temp dir
-  const configResult = await loadProjectConfig(cwd);
+  const configResult = await loadProjectConfig(cwd, projectRoots?.mainRoot);
 
   // AC: @project-config ac-3 — emit warning to stderr if config had issues
   if (configResult.warning) {
@@ -363,6 +369,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     const rootDir = path.dirname(specDir);
     return {
       rootDir,
+      projectRoot: rootDir,
       specDir,
       sessionsDir: path.join(rootDir, ".kspec-sessions"),
       manifestPath,
@@ -391,7 +398,7 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   const shadow = await detectShadow(cwd, {
     branchName: config.shadow.branch,
     directory: config.shadow.directory,
-  });
+  }, projectRoots?.mainRoot);
 
   if (shadow?.enabled) {
     // Shadow mode: use .kspec/ for everything
@@ -463,7 +470,8 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     }
 
     return {
-      rootDir: shadow.projectRoot,
+      rootDir: projectRoots?.worktreeRoot ?? shadow.projectRoot,
+      projectRoot: shadow.projectRoot,
       specDir,
       sessionsDir: path.join(shadow.projectRoot, ".kspec-sessions"),
       manifestPath,
@@ -477,8 +485,9 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   const manifestPath = await findManifest(cwd);
 
   let manifest: Manifest | null = null;
-  let rootDir = cwd;
-  let specDir = cwd;
+  let rootDir = projectRoots?.worktreeRoot ?? cwd;
+  const projectRoot = projectRoots?.mainRoot ?? rootDir;
+  let specDir = rootDir;
 
   if (manifestPath) {
     const manifestDir = path.dirname(manifestPath);
@@ -501,8 +510,9 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
 
   return {
     rootDir,
+    projectRoot,
     specDir,
-    sessionsDir: path.join(rootDir, ".kspec-sessions"),
+    sessionsDir: path.join(projectRoot, ".kspec-sessions"),
     manifestPath,
     manifest,
     shadow: null,

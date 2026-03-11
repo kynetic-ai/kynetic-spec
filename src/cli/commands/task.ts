@@ -1344,7 +1344,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, {
@@ -1568,7 +1568,7 @@ Examples:
                 taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
                 fromStatus: transitionFromStatus,
                 toStatus: updatedTask.status,
-                projectPath: ctx.rootDir,
+                projectPath: ctx.projectRoot,
               });
 
               // Sync spec implementation status (unless --no-sync)
@@ -1724,7 +1724,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(
@@ -1802,7 +1802,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(
@@ -1867,7 +1867,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, {
@@ -1926,7 +1926,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, {

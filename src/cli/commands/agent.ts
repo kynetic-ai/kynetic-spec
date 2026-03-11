@@ -477,8 +477,8 @@ export function registerAgentCommands(program: Command): void {
         const ctx = await initContext();
 
         const headers: Record<string, string> = {};
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/status`, { headers });
@@ -575,8 +575,9 @@ export function registerAgentCommands(program: Command): void {
         const headers: Record<string, string> = {
           "Content-Type": "application/json",
         };
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
+          headers["X-Kspec-Cwd"] = ctx.rootDir;
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/start`, {
@@ -631,8 +632,8 @@ export function registerAgentCommands(program: Command): void {
         const headers: Record<string, string> = {
           "Content-Type": "application/json",
         };
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/stop`, {
@@ -687,8 +688,8 @@ export function registerAgentCommands(program: Command): void {
         const ctx = await initContext();
 
         const headers: Record<string, string> = {};
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
         // Get dispatch status
@@ -864,7 +865,7 @@ export function registerAgentCommands(program: Command): void {
       let projectDir: string | undefined;
       try {
         const ctx = await initContext();
-        projectDir = ctx.rootDir;
+        projectDir = ctx.projectRoot;
       } catch {
         // non-fatal: WebSocket will use daemon default
       }
