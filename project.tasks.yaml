@@ -89272,5 +89272,20 @@
         expectations so pending_review now sorts ahead of pending while preserving in_progress-first
         behavior.
       supersedes: null
+    - _ulid: 01KKE1PR2PPC0164596V3BNZG9
+      created_at: 2026-03-11T08:55:07.606Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - Passed: npm test -- agent-dispatch-engine.test.ts
+
+        - Passed with warnings only: kspec validate
+
+        - Full npm test is currently polluted by untracked .review/pr775 test trees in the worktree;
+        failures reproduced there are outside this task's touched files and include
+        clone-for-testing/cli-serve/daemon-executable cases from the review sandbox rather than the
+        tracked project suite.
+      supersedes: null
   todos: []
   automation: eligible
