@@ -8066,11 +8066,20 @@ observations:
     resolution: null
   - _ulid: 01KKDJDVR9HZBHEK5J7Q15YMNY
     type: friction
+    workflow_ref: "@task-work-loop"
     content: Dispatch mode blocks Playwright fixtures that start a test daemon with kspec serve, so
       daemon-backed web UI E2E coverage cannot run during autonomous task work even when the code is
       ready.
-    workflow_ref: "@task-work-loop"
     created_at: 2026-03-11T04:28:07.817Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
+  - _ulid: 01KKDR3HZBJ7DM4H0SK7MHZKM5
+    type: friction
+    content: Reused workspaces can keep stale dist/ build artifacts because npm test only checked for
+      artifact existence, which hid source/runtime mismatches until a manual rebuild. Added
+      stale-build freshness detection so tests rebuild automatically when source inputs are newer.
+    created_at: 2026-03-11T06:07:21.579Z
     author: Jacob Chapel
     resolved: false
     resolution: null
