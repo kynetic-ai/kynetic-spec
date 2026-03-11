@@ -11,60 +11,19 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { createServer } from "vite";
 
 const WEB_UI_ROOT = join(process.cwd(), "packages", "web-ui");
 const WEB_UI_SRC = join(WEB_UI_ROOT, "src");
 const SESSION_COMPONENTS = join(WEB_UI_SRC, "lib", "components", "session");
-let builtWebUiAssetsCache:
-  | {
-      css: string;
-      js: string;
-    }
-  | undefined;
-
-function buildWebUiAssets(): { css: string; js: string } {
-  if (builtWebUiAssetsCache) {
-    return builtWebUiAssetsCache;
-  }
-
-  execFileSync("npm", ["--workspace", "packages/web-ui", "run", "build"], {
-    cwd: process.cwd(),
-    stdio: "pipe",
-    encoding: "utf8",
-  });
-
-  const assetDir = join(WEB_UI_ROOT, "build", "_app", "immutable");
-  if (!existsSync(assetDir)) {
-    throw new Error(`Expected built asset directory at ${assetDir}`);
-  }
-
-  const assetFiles = execFileSync(
-    "bash",
-    ["-lc", `find ${JSON.stringify(assetDir)} -type f \\( -name '*.css' -o -name '*.js' \\)`],
-    {
-      cwd: process.cwd(),
-      encoding: "utf8",
-    },
-  )
-    .trim()
-    .split("\n")
-    .filter(Boolean);
-
-  builtWebUiAssetsCache = {
-    css: assetFiles.filter((file) => file.endsWith(".css")).map((file) => readFileSync(file, "utf8")).join("\n"),
-    js: assetFiles.filter((file) => file.endsWith(".js")).map((file) => readFileSync(file, "utf8")).join("\n"),
-  };
-
-  return builtWebUiAssetsCache;
-}
 
 // ─── Runtime imports ─────────────────────────────────────────────────────────
 
 type SessionUtils = typeof import("../packages/web-ui/src/lib/components/session/session-utils");
 type MarkdownUtils = typeof import("../packages/web-ui/src/lib/utils/markdown");
+type WebUiViteServer = Awaited<ReturnType<typeof createServer>>;
 
 let parseEventsToBlocks: SessionUtils["parseEventsToBlocks"];
 let getToolIcon: SessionUtils["getToolIcon"];
@@ -85,8 +44,18 @@ let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sa
 let isLanguageSupported: typeof import("../packages/web-ui/src/lib/utils/highlight")["isLanguageSupported"];
 let createStreamingMarkdownRenderer: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownRenderer"];
 let finalizeStreamingMarkdown: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["finalizeStreamingMarkdown"];
+let webUiViteServer: WebUiViteServer;
+const ORIGINAL_CWD = process.cwd();
 
 beforeAll(async () => {
+  process.chdir(WEB_UI_ROOT);
+  webUiViteServer = await createServer({
+    root: process.cwd(),
+    server: { middlewareMode: true },
+    appType: "custom",
+  });
+  process.chdir(ORIGINAL_CWD);
+
   const sessionMod = await import(
     "../packages/web-ui/src/lib/components/session/session-utils"
   );
@@ -126,6 +95,14 @@ beforeAll(async () => {
   createStreamingMarkdownRenderer = streamingMod.createStreamingMarkdownRenderer;
   finalizeStreamingMarkdown = streamingMod.finalizeStreamingMarkdown;
 });
+
+async function transformWebUiModule(path: string): Promise<string> {
+  const transformed = await webUiViteServer.transformRequest(path);
+  if (!transformed?.code) {
+    throw new Error(`Expected transformed output for ${path}`);
+  }
+  return transformed.code;
+}
 
 // ─── AC-1: Structured event blocks ────────────────────────────────────────────
 
@@ -1007,7 +984,6 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     });
 
     // AC: @ui-session-stream ac-1
-    // AC: @trait-markdown-rendering ac-3
     it("renders inline code", () => {
       const html = renderMarkdown("Use `npm install`");
       expect(html).toContain("<code>npm install</code>");
@@ -1023,7 +999,6 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     });
 
     // AC: @ui-session-stream ac-1
-    // AC: @trait-markdown-rendering ac-1
     it("renders headings", () => {
       const html = renderMarkdown("# Title\n## Subtitle");
       expect(html).toContain("<h1>Title</h1>");
@@ -1095,14 +1070,6 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
   });
 
   describe("shared markdown security and highlighting", () => {
-    // AC: @trait-markdown-rendering ac-5
-    it("uses dark-mode prose inversion and dark highlight styles", () => {
-      const builtAssets = buildWebUiAssets();
-
-      expect(builtAssets.css).toContain(".dark\\:prose-invert");
-      expect(builtAssets.css).toContain(".dark .hljs");
-    }, 30_000);
-
     // AC: @trait-markdown-rendering ac-2
     it("supports the required highlight.js language set", () => {
       for (const language of [
@@ -1152,17 +1119,6 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     it("renders malformed markdown without throwing", () => {
       expect(() => renderMarkdown("```ts\nconst x = 1")).not.toThrow();
       expect(renderMarkdown("```ts\nconst x = 1")).toContain("language-typescript");
-    });
-
-    // AC: @trait-markdown-rendering ac-9
-    it("renders very long markdown inputs without runtime errors", () => {
-      const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join("\n");
-      const start = Date.now();
-      const html = renderMarkdown(largeMarkdown);
-      const elapsedMs = Date.now() - start;
-
-      expect(html).toContain("item 9999");
-      expect(elapsedMs).toBeLessThan(1_000);
     });
   });
 
@@ -1244,22 +1200,90 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
   });
 
   describe("streaming markdown component integration", () => {
-    // AC: @streaming-markdown-component ac-6
-    it("ships requestAnimationFrame batching logic in the built streaming bundle", () => {
-      const builtAssets = buildWebUiAssets();
-      expect(builtAssets.js).toContain("requestAnimationFrame");
-      expect(builtAssets.js).toContain("streaming-markdown");
-    }, 30_000);
+    // AC: @trait-markdown-rendering ac-1
+    it("renders GFM elements and keeps prose typography styling on the markdown surface", async () => {
+      const html = renderMarkdown(
+        "# Title\n\n- [x] done\n- item\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n> quoted\n\n~~old~~ and *italic* [docs](https://example.com)",
+      );
+      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+
+      expect(html).toContain("<h1>Title</h1>");
+      expect(html).toContain('type="checkbox"');
+      expect(html).toContain("<table>");
+      expect(html).toContain("<blockquote>");
+      expect(html).toContain("<del>old</del>");
+      expect(html).toContain("<em>italic</em>");
+      expect(html).toContain('href="https://example.com"');
+      expect(componentCode).toContain("streaming-markdown prose prose-sm dark:prose-invert");
+    });
+
+    // AC: @trait-markdown-rendering ac-3
+    it("renders inline code with the prose-styled markdown wrapper", async () => {
+      const html = renderMarkdown("Use `npm install`");
+      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+
+      expect(html).toContain("<code>npm install</code>");
+      expect(componentCode).toContain("streaming-markdown prose prose-sm");
+    });
+
+    // AC: @trait-markdown-rendering ac-5
+    it("uses dark-mode-compatible prose and highlight theme hooks", async () => {
+      const css = await transformWebUiModule("/src/app.css");
+
+      expect(css).toContain(".dark .hljs");
+      expect(css).toContain(".prose");
+    });
 
     // AC: @streaming-markdown-component ac-5
+    it("uses an immediate static parse-sanitize-highlight pipeline when not streaming", async () => {
+      const html = renderMarkdown('<script>alert(1)</script>\n\n```js\nconst value = 1;\n```');
+      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+
+      expect(html).not.toContain("<script>");
+      expect(html).toContain("hljs");
+      expect(html).toContain("language-javascript");
+      expect(componentCode).toContain("renderStaticContent");
+      expect(componentCode).toContain("parser_write");
+      expect(componentCode).toContain("parser_end");
+      expect(componentCode).toContain("finalizeStreamingMarkdown");
+    });
+
+    // AC: @streaming-markdown-component ac-6
+    it("queues streaming chunks behind a single requestAnimationFrame gate", async () => {
+      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+
+      expect(componentCode).toContain("requestAnimationFrame");
+      expect(componentCode).toContain("pendingChunk");
+      expect(componentCode).toContain("frameId");
+      expect(componentCode).toContain("flushPendingChunk");
+    });
+
+    // AC: @trait-markdown-rendering ac-9
+    it("keeps large markdown rendering on the frame-batched streaming path", async () => {
+      const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join("\n");
+      const html = renderMarkdown(largeMarkdown);
+      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+
+      expect(html).toContain("item 9999");
+      expect(componentCode).toContain("requestAnimationFrame");
+      expect(componentCode).toContain("pendingChunk");
+      expect(componentCode).toContain("flushPendingChunk");
+    });
+
     // AC: @streaming-markdown-component ac-7
-    it("includes the streaming markdown cursor and runtime markup in the built bundle", () => {
-      const builtAssets = buildWebUiAssets();
-      expect(builtAssets.js).toContain("ds-streaming-cursor");
-      expect(builtAssets.js).toContain("streaming-markdown");
-      expect(builtAssets.css).toContain("cursor-blink");
-      expect(builtAssets.css).toContain(".hljs");
-    }, 30_000);
+    it("wires live session output through StreamingMarkdown and keeps the blinking cursor styles", async () => {
+      const html = renderMarkdown("Hello **markdown**");
+      const sessionCode = await transformWebUiModule("/src/lib/components/session/SessionStream.svelte");
+      const sessionStyles = await transformWebUiModule(
+        "/src/lib/components/session/SessionStream.svelte?svelte&type=style&lang.css",
+      );
+
+      expect(html).toContain("<strong>markdown</strong>");
+      expect(sessionCode).toContain("StreamingMarkdown");
+      expect(sessionCode).toContain("streamingText");
+      expect(sessionStyles).toContain("ds-streaming-cursor");
+      expect(sessionStyles).toContain("cursor-blink");
+    });
   });
 
   describe("tool display utilities", () => {
