@@ -89250,7 +89250,7 @@
   spec_ref: "@dispatch-in-progress-priority"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -89306,3 +89306,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T09:07:32.506Z
+  closed_reason: "Merged in PR #778. Swapped dispatch precedence so pending_review sorts ahead of
+    pending while preserving in_progress-first scheduling, and extended dispatch tests to cover ac-4
+    alongside ac-1 through ac-3. AC coverage verified in tests/agent-dispatch-engine.test.ts and
+    regression checks passed via full npm test on the PR head."
