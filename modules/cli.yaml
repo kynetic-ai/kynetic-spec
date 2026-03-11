@@ -7563,7 +7563,7 @@ features:
               assignments
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y
     slugs:
       - cli-agent-commands
