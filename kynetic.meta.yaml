@@ -8083,6 +8083,14 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKDZ2HB1RRJ11SXSEVYAPRRF
+    type: friction
+    content: Playwright E2E daemon fixtures always attempt to start kspec serve, which makes daemon/API
+      E2E specs fail under dispatch sessions where serve start/stop/restart is forbidden by design.
+    created_at: 2026-03-11T08:09:08.193Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
