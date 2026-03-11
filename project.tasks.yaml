@@ -86737,7 +86737,7 @@
   type: task
   spec_ref: "@core-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86745,7 +86745,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKF1T2CRA54XW1XXTGP78GZ5
+  session_id: null
   created_at: 2026-03-10T06:55:44.280Z
   started_at: 2026-03-11T18:22:12.040Z
   submitted_at: 2026-03-11T18:28:21.826Z
@@ -86858,6 +86858,14 @@
         field|optional metadata is omitted|updated or superseded"; kspec validate --completeness
         --json filtered to
         @core-ac-backfill/@item-required-fields/@item-optional-fields/@ulid-immutability => []
+      supersedes: null
+    - _ulid: 01KKF2XRT41FVBSFRGJ3605FKC
+      created_at: 2026-03-11T18:35:40.740Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: npm test fails on current HEAD because
+        tests/core-ac-backfill.test.ts times out in the ac-testable regression. MUST-FIX: scoped
+        completeness for @core-ac-backfill still reports invalid @ref-validation annotations
+        (ac-2/ac-3/ac-4) at tests/ac-annotation-validation.test.ts:159, :224, and :341."
       supersedes: null
   todos: []
   automation: eligible
