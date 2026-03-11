@@ -294,16 +294,7 @@ agents:
       - npm
     conventions: []
     adapter: codex-acp
-    dispatch:
-      - on: task.in_progress
-        filter:
-          automation: eligible
-      - on: task.ready
-        filter:
-          automation: eligible
-      - on: task.needs_work
-        filter:
-          automation: eligible
+    dispatch: []
     skills:
       - task-work
     budget:
