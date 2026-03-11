@@ -89234,7 +89234,7 @@
   spec_ref: "@dispatch-in-progress-priority"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -89289,3 +89289,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T08:55:27.966Z
