@@ -90300,7 +90300,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -90410,3 +90410,9 @@
         https://github.com/kynetic-ai/kynetic-spec/pull/788#pullrequestreview-3931872074"
       supersedes: null
   todos: []
+  completed_at: 2026-03-11T19:19:32.422Z
+  closed_reason: "Merged in PR #788. Added post-invocation task re-evaluation before queue draining so
+    pending_review tasks created during prior invocations are visible immediately, preserved
+    best-effort draining when re-evaluation fails, and backfilled inherited @trait-task-readiness
+    ac-status coverage. AC coverage verified for @agent-dispatch-engine ac-23, ac-24, ac-25 and
+    @trait-task-readiness ac-status; focused dispatch tests and full npm test suite passed."
