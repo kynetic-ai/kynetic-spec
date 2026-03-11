@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85809,7 +85809,7 @@
   session_id: 01KKEHEKG6PYN3TBPRQ7QJHT9K
   created_at: 2026-03-10T06:04:41.789Z
   started_at: 2026-03-11T13:40:21.216Z
-  submitted_at: 2026-03-11T11:16:00.081Z
+  submitted_at: 2026-03-11T13:45:52.271Z
   notes:
     - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
       created_at: 2026-03-10T06:04:41.789Z
