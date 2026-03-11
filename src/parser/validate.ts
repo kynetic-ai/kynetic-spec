@@ -1069,6 +1069,7 @@ export function computeACCoverage<
 /**
  * Check spec items for completeness
  * AC: @spec-completeness ac-1, ac-2, ac-3
+ * AC: @spec-completeness-policy ac-module-exempt, ac-feature-required, ac-description-required, ac-decision-required
  * AC: @trait-validation ac-1, ac-2, ac-3
  */
 async function checkCompleteness(
@@ -1087,11 +1088,15 @@ async function checkCompleteness(
       ? `@${item.slugs[0]}`
       : `@${index.shortUlid(item._ulid)}`;
     const isTrait = item.type === "trait";
+    const isModule = item.type === "module";
 
     // AC: @spec-completeness ac-1
+    // AC: @spec-completeness-policy ac-module-exempt
+    // AC: @spec-completeness-policy ac-feature-required
+    // AC: @spec-completeness-policy ac-decision-required
     // AC: @trait-type ac-2 - Traits should have acceptance criteria for completeness
     // Check for missing acceptance criteria
-    if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
+    if (!isModule && (!item.acceptance_criteria || item.acceptance_criteria.length === 0)) {
       warnings.push({
         type: "missing_acceptance_criteria",
         itemRef,
@@ -1101,9 +1106,10 @@ async function checkCompleteness(
     }
 
     // AC: @spec-completeness ac-2
+    // AC: @spec-completeness-policy ac-description-required
     // AC: @trait-type ac-3 - Traits should have description for completeness
     // Check for missing description
-    if (!item.description || item.description.trim() === "") {
+    if (!isModule && (!item.description || item.description.trim() === "")) {
       warnings.push({
         type: "missing_description",
         itemRef,
