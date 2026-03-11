@@ -89264,5 +89264,13 @@
         - Verification: run targeted dispatch tests, then kspec validate, then broader automated
         tests if the touched area warrants it.
       supersedes: null
+    - _ulid: 01KKE1BQQFBMS5REJCKZ3STESH
+      created_at: 2026-03-11T08:49:06.799Z
+      author: Jacob Chapel
+      content: Updated @dispatch-in-progress-priority with ac-4 to document reviewer-first fallback when
+        no in_progress work is waiting, then changed dispatch STATUS_PRECEDENCE and test
+        expectations so pending_review now sorts ahead of pending while preserving in_progress-first
+        behavior.
+      supersedes: null
   todos: []
   automation: eligible
