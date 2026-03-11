@@ -85493,6 +85493,14 @@
         coverage and convert @trait-api-endpoint ac-3/ac-4/ac-5 search-endpoint N/A notes into
         standalone // AC annotations."
       supersedes: null
+    - _ulid: 01KKDSPT4TAJH515N715H9J0DP
+      created_at: 2026-03-11T06:35:21.114Z
+      author: Jacob Chapel
+      content: "Fix cycle 2 execution: patching API E2E coverage to add explicit @session-text-search
+        ac-performance annotation on the metadata-prefilter search test and converting
+        @trait-api-endpoint ac-3/ac-4/ac-5 N/A coverage into standalone line comments so
+        validation/review tooling can see them."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
