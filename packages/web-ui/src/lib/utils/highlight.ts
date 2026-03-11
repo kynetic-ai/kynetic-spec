@@ -59,6 +59,8 @@ export const SUPPORTED_MARKDOWN_LANGUAGES = [
 	'diff'
 ] as const;
 
+export const INLINE_CODE_CLASS_NAMES = ['rounded-sm', 'bg-muted', 'px-1', 'py-0.5', 'font-mono', 'text-[0.9em]'] as const;
+
 export function normalizeLanguage(language?: string | null): string | undefined {
 	if (!language) return undefined;
 	const normalized = language.toLowerCase().trim().replace(/^language-/, '');
@@ -116,6 +118,13 @@ export function highlightCodeBlocks(root: ParentNode): void {
 			codeBlock.classList.add(`language-${normalized}`);
 			codeBlock.dataset.language = normalized;
 		}
+	}
+}
+
+export function decorateInlineCodeElements(root: ParentNode): void {
+	for (const inlineCode of root.querySelectorAll('code')) {
+		if (!(inlineCode instanceof HTMLElement) || inlineCode.closest('pre')) continue;
+		inlineCode.classList.add(...INLINE_CODE_CLASS_NAMES);
 	}
 }
 

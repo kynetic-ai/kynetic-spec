@@ -42,6 +42,7 @@ let getLastSeq: SessionUtils["getLastSeq"];
 let renderMarkdown: MarkdownUtils["renderMarkdown"];
 let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sanitizeHtml"];
 let isLanguageSupported: typeof import("../packages/web-ui/src/lib/utils/highlight")["isLanguageSupported"];
+let INLINE_CODE_CLASS_NAMES: typeof import("../packages/web-ui/src/lib/utils/highlight")["INLINE_CODE_CLASS_NAMES"];
 let createStreamingMarkdownRenderer: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownRenderer"];
 let createStreamingMarkdownController: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownController"];
 let finalizeStreamingMarkdown: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["finalizeStreamingMarkdown"];
@@ -89,6 +90,7 @@ beforeAll(async () => {
     "../packages/web-ui/src/lib/utils/highlight"
   );
   isLanguageSupported = highlightMod.isLanguageSupported;
+  INLINE_CODE_CLASS_NAMES = highlightMod.INLINE_CODE_CLASS_NAMES;
 
   const streamingMod = await import(
     "../packages/web-ui/src/lib/utils/streaming-markdown"
@@ -1037,7 +1039,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     // AC: @ui-session-stream ac-1
     it("renders inline code", () => {
       const html = renderMarkdown("Use `npm install`");
-      expect(html).toContain("<code>npm install</code>");
+      expect(html).toContain('<code class="rounded-sm bg-muted px-1 py-0.5 font-mono text-[0.9em]">npm install</code>');
     });
 
     // AC: @ui-session-stream ac-1
@@ -1269,12 +1271,32 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     });
 
     // AC: @trait-markdown-rendering ac-3
-    it("renders inline code with the prose-styled markdown wrapper", async () => {
+    it("renders inline code with distinct monospace styling", async () => {
       const html = renderMarkdown("Use `npm install`");
-      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+      const { root } = await createDomHarness();
+      root.innerHTML = html;
+      const inlineCode = root.querySelector("code");
 
-      expect(html).toContain("<code>npm install</code>");
-      expect(componentCode).toContain("streaming-markdown prose prose-sm");
+      expect(inlineCode).not.toBeNull();
+      expect(inlineCode?.textContent).toBe("npm install");
+      expect(inlineCode?.closest("pre")).toBeNull();
+      expect(Array.from(INLINE_CODE_CLASS_NAMES).every((className) => inlineCode?.classList.contains(className))).toBe(true);
+      expect(inlineCode?.classList.contains("hljs")).toBe(false);
+    });
+
+    it("decorates finalized streaming inline code spans without treating them as fenced blocks", async () => {
+      const { root } = await createDomHarness();
+      root.innerHTML = "<p>Use <code>npm install</code> before <code>npm test</code>.</p>";
+
+      finalizeStreamingMarkdown(root);
+
+      const inlineCodes = [...root.querySelectorAll("code")];
+      expect(inlineCodes).toHaveLength(2);
+      for (const inlineCode of inlineCodes) {
+        expect(inlineCode.closest("pre")).toBeNull();
+        expect(Array.from(INLINE_CODE_CLASS_NAMES).every((className) => inlineCode.classList.contains(className))).toBe(true);
+        expect(inlineCode.classList.contains("hljs")).toBe(false);
+      }
     });
 
     // AC: @trait-markdown-rendering ac-5

@@ -1,5 +1,5 @@
 import * as smd from 'streaming-markdown';
-import { highlightCodeBlocks, normalizeLanguage } from './highlight';
+import { decorateInlineCodeElements, highlightCodeBlocks, normalizeLanguage } from './highlight';
 import { isExternalHref, sanitizeHtml } from './sanitize';
 
 type Parser = ReturnType<typeof smd.parser>;
@@ -50,6 +50,7 @@ export function createStreamingMarkdownRenderer(root: HTMLElement): smd.Default_
 
 export function finalizeStreamingMarkdown(root: HTMLElement): void {
 	root.innerHTML = sanitizeHtml(root.innerHTML);
+	decorateInlineCodeElements(root);
 	highlightCodeBlocks(root);
 }
 

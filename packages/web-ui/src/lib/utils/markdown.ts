@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import { highlightCode, normalizeLanguage } from './highlight';
+import { highlightCode, INLINE_CODE_CLASS_NAMES, normalizeLanguage } from './highlight';
 import { isExternalHref, sanitizeHtml } from './sanitize';
 
 marked.setOptions({
@@ -18,6 +18,9 @@ marked.use({
 			}
 
 			return `<pre><code class="${classNames.join(' ')}"${language ? ` data-language="${escapeHtmlAttribute(language)}"` : ''}>${highlightCode(text, language)}</code></pre>`;
+		},
+		codespan({ text }) {
+			return `<code class="${INLINE_CODE_CLASS_NAMES.join(' ')}">${escapeInlineCode(text)}</code>`;
 		},
 		link({ href, title, tokens }) {
 			const text = this.parser.parseInline(tokens);
@@ -50,6 +53,13 @@ function escapeHtmlAttribute(value: string): string {
 	return value
 		.replaceAll('&', '&amp;')
 		.replaceAll('"', '&quot;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;');
+}
+
+function escapeInlineCode(value: string): string {
+	return value
+		.replaceAll('&', '&amp;')
 		.replaceAll('<', '&lt;')
 		.replaceAll('>', '&gt;');
 }
