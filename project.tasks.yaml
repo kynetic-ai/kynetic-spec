@@ -81896,13 +81896,14 @@
     solely on adapter config injection + spawn env), or add a process-level lock around the env
     mutation window."
   spec_ref: "@agent-invocation-lifecycle"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
   priority: 2
   tags: []
   vcs_refs: []
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/774
   session_id: 01KKDW602F060W4C6K78RGTYVJ
   created_at: 2026-03-08T05:04:39.277Z
   started_at: 2026-03-11T07:24:12.110Z
@@ -81945,7 +81946,14 @@
       supersedes: null
   todos: []
   automation: eligible
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/774
+  completed_at: 2026-03-11T07:38:53.381Z
+  closed_reason: "Merged in PR #774 (merge commit 3d6fc0307b72a85fff53413b453038e1c4008603). Removed
+    process-level KSPEC_SESSION_ID mutation from the invocation lifecycle, relying on
+    adapter-specific injection plus child spawn env only, and added regression coverage for spawned
+    child env propagation and concurrent invocation isolation. AC coverage verified for
+    @agent-invocation-lifecycle ac-2; inherited @trait-error-guidance ACs remain explicitly marked
+    N/A for this library module. Local focused tests, full npm test, and hosted CI all passed on the
+    merged HEAD."
 - _ulid: 01KK60VVZRX87B64NJTRN0QYA1
   slugs: []
   title: Sanitize inherited env vars in agent spawner
