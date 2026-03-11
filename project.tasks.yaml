@@ -88371,7 +88371,7 @@
   type: task
   spec_ref: "@plan-import-content-only"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -88379,7 +88379,7 @@
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/768
-  session_id: 01KKDA98JVQJXT126V63KGCGKV
+  session_id: null
   created_at: 2026-03-10T22:42:11.659Z
   started_at: 2026-03-11T02:14:51.469Z
   submitted_at: 2026-03-11T02:27:01.391Z
@@ -88423,6 +88423,12 @@
         - Verification: npm run build; npm test -- tests/cli-plan-import.test.ts; npm test --
         tests/batch-exec-engine.test.ts; kspec validate (warnings-only repo debt); full npm test
         passed.
+      supersedes: null
+    - _ulid: 01KKDCH9TQ9PFP3YKCF0X6YVEE
+      created_at: 2026-03-11T02:45:09.080Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #768 misannotates @trait-semantic-exit-codes
+        ac-6 in tests/cli-plan-import.test.ts, so inherited AC coverage is incomplete."
       supersedes: null
   todos: []
   automation: eligible
