@@ -86876,16 +86876,33 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKEXWTYTSVWK0Y52GSHJ2PFX
   created_at: 2026-03-10T06:55:45.423Z
+  started_at: 2026-03-11T17:10:39.871Z
   notes:
     - _ulid: 01KKB8FERFE58KMK98C8Q0KJFH
       created_at: 2026-03-10T06:55:45.423Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    - _ulid: 01KKEY29PD38JQFNQG9GMWSXPW
+      created_at: 2026-03-11T17:10:46.222Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Completeness reconciliation task for @cli descendants missing acceptance
+        criteria.
+
+        - Scope: Add or backfill given/when/then ACs only for CLI spec items lacking them; no
+        behavior change.
+
+        - Files: Shadow-branch spec items under @cli via kspec CLI only.
+
+        - Verification: kspec item list/item get for @cli descendants, then kspec validate
+        --completeness and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T17:10:39.871Z
-  session_id: 01KKEXWTYTSVWK0Y52GSHJ2PFX
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
   slugs:
     - implement-task-system-ac-backfill
