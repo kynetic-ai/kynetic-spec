@@ -85319,6 +85319,16 @@
 
         - Verification: targeted daemon/UI tests, npm test, and kspec validate.
       supersedes: null
+    - _ulid: 01KKDDHVJB4YSEXKZERDP5XAX6
+      created_at: 2026-03-11T03:02:55.819Z
+      author: Jacob Chapel
+      content: "Implemented task/spec session context end-to-end: added /api/tasks/:ref/sessions and
+        /api/items/:ref/sessions, surfaced related sessions in task/spec detail UI, and wired
+        /sessions page to honor task_id/spec_ref URL filters. Verification: npm run build passed;
+        npm test -- session-related-routes passed. Playwright coverage file added with AC
+        annotations, but daemon-backed E2E could not run in dispatch because kspec serve start is
+        blocked by design inside agent invocations."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
