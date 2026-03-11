@@ -85146,7 +85146,7 @@
   type: task
   spec_ref: "@session-cli-unified-filtering"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -85264,6 +85264,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T01:34:18.475Z
+  closed_reason: "Merged in PR #764 (merge commit d66a15098). Implemented unified session log CLI
+    filtering with --agent-id, --trigger, --task, backward-compatible --agent/--agent-type aliases,
+    shared filterSessions() reuse across session log commands, and JSON/list output alignment with
+    daemon filter vocabulary and summary behavior. Own spec ACs and inherited @trait-filterable-list
+    / @trait-json-output coverage were verified in tests/session-log-list.test.ts, and full
+    regression passed (npm test: 4434 passed, 3 skipped)."
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
   slugs:
     - implement-task-and-spec-session-context
