@@ -88368,7 +88368,7 @@
   spec_ref: "@worktree-support"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-worktree-core-resolution"
@@ -88545,6 +88545,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T06:19:30.376Z
 - _ulid: 01KKCYMCNZ94ZJKP84XYCCBVNM
   slugs:
     - implement-plan-export-command
