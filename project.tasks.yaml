@@ -89863,16 +89863,32 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKFA0CMHGFQDPQN0NNPQCJR6
   created_at: 2026-03-10T22:42:10.959Z
+  started_at: 2026-03-11T20:46:58.740Z
   notes:
     - _ulid: 01KKCYMDCFS1DS81P1VE42PDQZ
       created_at: 2026-03-10T22:42:10.959Z
       author: "@claude"
       content: See plan @plan-iterative-plan-editing for implementation notes
+    - _ulid: 01KKFAEKPHP5PQGPF84WYTYNJ9
+      created_at: 2026-03-11T20:47:12.594Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: add plan re-import into an existing plan record without deriving specs/tasks
+
+        - Scope: extend plan import with --into, status guards, warnings, note reasons, and dry-run
+        support
+
+        - Files: src/cli/commands/plan-import.ts, related helpers/types,
+        tests/cli-plan-import.test.ts
+
+        - Verification: targeted plan import tests, full npm test, kspec validate
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T20:46:58.740Z
-  session_id: 01KKFA0CMHGFQDPQN0NNPQCJR6
 - _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
   slugs:
     - implement-plan-import-content-only-storage
