@@ -1020,10 +1020,10 @@ features:
               implementation: implemented
         acceptance_criteria:
           - id: ac-1
-            given: a user runs kspec tasks list with --status, --type, --tag, --assignee, or --spec-ref and
-              optionally --json
+            given: a user runs kspec tasks list with --status, --type, --tag, or --meta-ref and optionally
+              --json
             when: the query executes
-            then: only matching tasks are returned and JSON output remains available
+            then: only matching tasks are returned and JSON output remains available for the filtered result set
   - _ulid: 01KFEJW283E3ADMC1G6WGV7MGC
     slugs:
       - tasks-assess-automation
