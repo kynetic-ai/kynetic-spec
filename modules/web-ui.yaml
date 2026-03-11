@@ -2032,6 +2032,9 @@ features:
         traits: []
         notes: []
         created: 2026-03-10T05:32:13.565Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKB3PGCQAR66WMVWM29MPQBF
         slugs:
           - session-text-search
