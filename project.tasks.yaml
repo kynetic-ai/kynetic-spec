@@ -86214,6 +86214,7 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
   slugs:
     - implement-core-primitives-ac-backfill
