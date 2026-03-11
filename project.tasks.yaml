@@ -87936,6 +87936,25 @@
         - Verification: targeted parser/worktree/agent/serve/shadow tests plus npm test for affected
         files if runtime permits.
       supersedes: null
+    - _ulid: 01KKD99HNEM81T2GSX09BK7JQJ
+      created_at: 2026-03-11T01:48:29.230Z
+      author: Jacob Chapel
+      content: >-
+        Implemented worktree-aware root resolution end-to-end.
+
+        - Added resolveProjectRoots() and threaded projectRoot through initContext/config/shadow
+        detection.
+
+        - Updated agent/task daemon identity headers to use projectRoot and dispatch start to send
+        X-Kspec-Cwd=rootDir.
+
+        - Fixed serve/shadow command default resolution from linked worktrees.
+
+        - Added worktree/root-resolution coverage plus false-positive guard regression tests.
+
+        - Verification: targeted npm test subset passed, full npm test passed (203 files / 4533
+        tests), kspec validate returned existing repo warnings only.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
