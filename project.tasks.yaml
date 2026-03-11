@@ -86738,6 +86738,18 @@
         review with shadow sync regression in tests/shadow.test.ts and mirrored
         .review/pr775/tests/shadow.test.ts."
       supersedes: null
+    - _ulid: 01KKE2N329P4JTHRY861S35WHJ
+      created_at: 2026-03-11T09:11:41.898Z
+      author: Jacob Chapel
+      content: Fix cycle resolution:\n- Verified on branch fix/implement-missing-description-backfill that
+        kspec validate --completeness still reports zero missing-description warnings.\n- Ran npm
+        test; prior shadow.test.ts failure from review is no longer present. Full-suite run showed a
+        transient failure in tests/cli-serve.test.ts for the npm-installed-package daemon case, but
+        the targeted rerun via npm test -- tests/cli-serve.test.ts -t "should start daemon from
+        npm-installed package with all deps available" passed in both tests/ and .review/pr775/.\n-
+        This task changes shadow-branch spec metadata only, so created a dedicated code-branch
+        review artifact/PR to satisfy fix-cycle traceability.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
