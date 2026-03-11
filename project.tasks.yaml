@@ -89995,29 +89995,107 @@
         MOCK_ACP_CUSTOM_UPDATE_TYPE.
       supersedes: null
   todos: []
-- title: Fix dispatch review starvation
+- _ulid: 01KKF04S8GB02P04FA3CGWZJHR
+  slugs:
+    - task-fix-dispatch-review-starvation
+  title: Fix dispatch review starvation
+  type: task
   description: Add post-invocation task re-evaluation to the dispatch engine so the drain loop has a
     full and current view of all dispatchable tasks when deciding what to spawn next. Currently,
     pending_review tasks from earlier invocations are invisible to the drain loop until the
     60-second reconciliation timer fires, causing PRs to stack up. See
     .kspec/artifacts/plan-dispatch-review-priority.md for full plan, implementation details, and
     verification checklist.
-  type: task
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - task-fix-dispatch-review-starvation
   tags:
     - dispatch
     - bug
-  depends_on: []
-  _ulid: 01KKF04S8GB02P04FA3CGWZJHR
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-11T17:47:04.848Z
-  notes: []
+  notes:
+    - _ulid: 01KKF077Q8J4XCV2PQ41TC0C0M
+      created_at: 2026-03-11T17:48:25.192Z
+      author: "@claude"
+      content: >-
+        Implementation details:
+
+
+        File: src/agent-runtime/dispatch.ts
+
+        Location: _spawnInvocation() .then() callback (~line 1144)
+
+
+        Current code:
+
+        .then(async () => {
+          if (!this.running) return;
+          try {
+            const agents = await this._loadAgents();
+            await this._drainQueues(agents);
+          } catch { /* Best effort */ }
+        })
+
+
+        Change to:
+
+        .then(async () => {
+          if (!this.running) return;
+          // AC: @agent-dispatch-engine ac-23, ac-24
+          try {
+            await this._evaluateAllTasks({ skipIfActive: true });
+          } catch (err) {
+            // AC: @agent-dispatch-engine ac-25
+            console.warn("[dispatch] Post-invocation re-evaluation failed, proceeding with existing queue:", err);
+          }
+          try {
+            const agents = await this._loadAgents();
+            await this._drainQueues(agents);
+          } catch { /* best effort drain */ }
+        })
+
+
+        Key details:
+
+        - _evaluateAllTasks({ skipIfActive: true }) re-scans all tasks on disk and enqueues any
+        matching dispatch rules. skipIfActive prevents double-enqueue via
+        _hasActiveOrQueuedInvocation (checks agentId + taskId).
+
+        - Separate try/catch blocks so re-evaluation failure doesn't prevent draining already-queued
+        items (ac-25).
+
+        - _evaluateAllTasks internally calls _loadAgents() (line 629). Optimization: could return
+        agents to avoid redundant second load. Not blocking.
+
+        - Retry setTimeout path (~line 1112) has the same pattern but is intentionally excluded — it
+        re-attempts failed spawns, not task discovery.
+
+
+        Verification checklist:
+
+        1. Unit test: 2+ tasks in pending_review, 1 task.ready. After worker completes, reviewer
+        spawns next (not worker). Validates ac-23, ac-24, @dispatch-in-progress-priority ac-4.
+
+        2. Unit test: Re-evaluation doesn't double-enqueue tasks already queued (skipIfActive
+        dedup).
+
+        3. Unit test: After reviewer completes with remaining pending_review tasks, another reviewer
+        spawns before worker.
+
+        4. Unit test: _evaluateAllTasks throws → drain still runs on existing queue (validates
+        ac-25).
+
+        5. Manual: Run dispatch with multiple queued PRs, observe reviews clear before new work.
+
+
+        Context: Reviewer-first ordering relies on pr-reviewer being defined before task-worker in
+        kynetic.meta.yaml (already applied). _drainQueues iterates agents in definition order. Test
+        setup must preserve this ordering.
+      supersedes: null
   todos: []
