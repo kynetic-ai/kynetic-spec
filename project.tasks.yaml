@@ -88110,7 +88110,9 @@
     - infra
     - cli
   vcs_refs: []
+  session_id: 01KKDJFABKTMV7JFSK41617QRB
   created_at: 2026-03-10T17:59:06.557Z
+  started_at: 2026-03-11T04:35:43.175Z
   notes:
     - _ulid: 01KKCEFY92JAJKT9DJ5VFARHEF
       created_at: 2026-03-10T18:00:07.203Z
@@ -88228,10 +88230,27 @@
         (lines 54-56) explaining that main-root resolution is correct for .agents/skills/ since it's
         git-tracked and present in all worktrees. No code change needed, just documentation."
       supersedes: null
+    - _ulid: 01KKDJW860DMK0GB2V2CYEM2SR
+      created_at: 2026-03-11T04:35:59.297Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: worktree root resolution landed; remaining work is propagating projectRoot/cwd
+        through daemon-facing call sites.
+
+        - Scope: migrate daemon identity headers and dispatch cwd handling, plus directly related
+        regression coverage.
+
+        - Files: expected in src/cli/commands/agent.ts, src/cli/commands/task.ts,
+        src/cli/batch-exec.ts, src/cli/commands/agents.ts, packages/daemon/src/routes/*, and tests
+        covering CLI/daemon dispatch flows.
+
+        - Verification: targeted tests for worktree dispatch/daemon headers plus npm test and kspec
+        validate before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T04:35:43.175Z
-  session_id: 01KKDJFABKTMV7JFSK41617QRB
 - _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
   slugs:
     - task-worktree-command-cleanup
