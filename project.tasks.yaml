@@ -87267,7 +87267,7 @@
   type: task
   spec_ref: "@meta-shadow-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -87439,6 +87439,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T22:06:31.288Z
+  closed_reason: "Merged in PR #789. Verified the shadow-branch-only @meta acceptance-criteria
+    backfill: @meta feature/requirement descendants now have no missing acceptance_criteria entries,
+    the added ACs are concrete given/when/then outcomes, and fresh npm test passed (212/212 files,
+    4552 tests, 3 skipped, 0 failed)."
 - _ulid: 01KKB8FGF6K5NP97PEEXRP2PY7
   slugs:
     - implement-test-coverage-annotation-sweep
@@ -90569,7 +90574,11 @@
         https://github.com/kynetic-ai/kynetic-spec/pull/788#pullrequestreview-3931872074"
       supersedes: null
   todos: []
-- title: Update iterative plan workflow and skill guidance
+- _ulid: 01KKFERFKHQ6RMSZ76HKMQMV1F
+  slugs:
+    - update-iterative-plan-workflow-and-skill-guidance
+  title: Update iterative plan workflow and skill guidance
+  type: task
   description: The iterative plan editing commands are implemented, but the process/docs layer still
     describes the old import behavior. Follow up by updating @spec-plan-import (and any related plan
     workflow/meta text) to reflect content-only import, optional stored module_ref, approval before
@@ -90577,25 +90586,21 @@
     Update templates/skills/plan/SKILL.md to match the same flow, regenerate
     kspec-agents.md/rendered skills as needed, and verify the documented workflow matches current
     CLI behavior.
-  type: task
   spec_ref: null
   meta_ref: "@spec-plan-import"
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs:
-    - update-iterative-plan-workflow-and-skill-guidance
   tags:
     - docs
     - workflow
     - skills
     - plan
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKFERFKHQ6RMSZ76HKMQMV1F
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-11T22:02:30.384Z
   notes: []
   todos: []
+  automation: eligible
