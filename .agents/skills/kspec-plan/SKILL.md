@@ -21,11 +21,14 @@ Translate approved plans into specs and tasks. Plans are durable artifacts — t
 
 ### Import Path (Recommended for 3+ Specs)
 
-Write a structured markdown document, then import it. All specs, tasks, and notes created atomically.
+Write a structured markdown document, import it as a durable plan record, iterate as needed, then derive specs/tasks when the plan is ready.
 
 ```bash
-kspec plan import ./plan.md --module @target-module --dry-run  # Preview
-kspec plan import ./plan.md --module @target-module             # Execute
+kspec plan import ./plan.md --dry-run                           # Preview plan record
+kspec plan import ./plan.md --module @target-module             # Store plan (+ optional module)
+kspec plan import ./edited.md --into @plan-ref                  # Re-import edits into existing plan
+kspec plan set @plan-ref --status approved                      # Approve when ready
+kspec plan derive @plan-ref --module @target-module --tasks     # Materialize specs/tasks
 ```
 
 ### Manual Path (1-2 Specs)
@@ -48,7 +51,7 @@ kspec derive @slug
 | Multiple related specs with parent/child | Import |
 | Quick bug fix that needs spec coverage | Manual |
 | Translating design doc with many specs | Import |
-| Iterating on previously imported plan | Import (`--update`) |
+| Iterating on previously imported plan | Import (`--into`) |
 
 ## Three-Phase Workflow
 
@@ -81,7 +84,7 @@ kspec workflow start @spec-plan-manual
 
 ### Phase 3: Validate
 
-After creating specs:
+After import and derive:
 
 ```bash
 kspec validate              # Check spec quality
@@ -254,34 +257,37 @@ acceptance_criteria:
 ## Always Dry-Run First
 
 ```bash
-kspec plan import ./plan.md --module @target --dry-run
+kspec plan import ./plan.md --dry-run
 ```
 
-Dry-run catches:
-- YAML syntax errors before partial state is created
-- Missing parent refs
-- Invalid trait references
-- Duplicate slugs
+Import dry-run confirms:
+- Title, status, and stored module look right
+- The file is readable and the full document will be stored as plan content
+- No plan state is changed while previewing
 
 ## Post-Import Checklist
 
-After importing, verify the results:
+After importing, verify the stored plan record:
 
 ```bash
-# Verify each spec has ACs
-kspec item get @spec-slug
-
-# Check trait coverage
-kspec validate
-
-# Set task dependencies (import doesn't infer these)
-kspec task set @task-slug --depends-on @other-task
-
-# Review plan record
+# Review plan title/content/status/module
 kspec plan get @plan-slug
+
+# Iterate on the document if needed
+kspec plan export @plan-slug --output ./plan.md
+kspec plan import ./plan.md --into @plan-slug --reason "Refined scope"
+
+# Approve when ready to materialize work
+kspec plan set @plan-slug --status approved
+
+# Derive specs/tasks from the stored plan document
+kspec plan derive @plan-slug --tasks
+
+# Validate the resulting refs and coverage surface
+kspec validate
 ```
 
-If derived tasks are too generic to execute without chat history, add a structured task note immediately:
+If derived tasks are too generic to execute without chat history, add a structured task note immediately after derive:
 
 ```bash
 kspec task note @task-slug "Execution context:
@@ -299,8 +305,10 @@ draft → approved → active → completed
                   rejected
 ```
 
-- **Import** auto-creates plan as `active`
+- **Import** stores the full document as a plan record and defaults to `draft`
+- **Import** may optionally store `module_ref` for later derive
 - **Manual** creates plan as `approved`
+- **Derive** materializes an approved plan into specs and optional tasks, then transitions it to `active`
 - Mark completed when all derived work is done:
 
 ```bash
@@ -328,9 +336,12 @@ Atomic — all succeed or all roll back. Use `--dry-run` to preview.
 kspec workflow start @spec-plan-design
 
 # Import path
-kspec plan import <path> --module @module --dry-run   # Preview
-kspec plan import <path> --module @module             # Create
-kspec plan import <path> --module @module --update    # Re-import
+kspec plan import <path> [--module @module] --dry-run         # Preview plan record
+kspec plan import <path> [--module @module] [--status approved]  # Create stored plan record
+kspec plan export <plan-ref> --output ./plan.md
+kspec plan import <path> --into <plan-ref> [--reason "..."]  # Re-import edits
+kspec plan set <plan-ref> --status approved
+kspec plan derive <plan-ref> [--module @module] [--tasks]
 
 # Manual path
 kspec plan add --title "..." --content "..." --status approved
