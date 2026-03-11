@@ -88893,3 +88893,30 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Prioritize pending_review over pending in dispatch scheduling
+  description: "Without git worktree isolation, dispatch serializes agents into a single slot. Current
+    STATUS_PRECEDENCE ranks pending (2) above pending_review (3), so the worker picks up new tasks
+    before the reviewer handles submitted work. This creates a bottleneck: completed work sits in
+    review while more work piles up. Fix: swap pending_review above pending in STATUS_PRECEDENCE
+    (pending_review: 2, pending: 3). Once worktree-based agent isolation lands and agents run
+    concurrently in separate working copies, this ordering becomes moot — but until then it ensures
+    the review-then-work cycle completes faster."
+  type: task
+  spec_ref: "@dispatch-in-progress-priority"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - dispatch
+    - agent
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKDSR3C5YJW5T0W3AFJZCKJ5
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-11T06:36:03.332Z
+  notes: []
+  todos: []
