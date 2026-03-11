@@ -86913,7 +86913,7 @@
   type: task
   spec_ref: "@cli-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86972,6 +86972,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T17:58:43.507Z
+  closed_reason: "Merged in PR #785. Reviewed and landed the shadow-branch-only CLI AC backfill
+    artifact after confirming @cli descendants now have zero missing acceptance criteria and the
+    newly added ACs are present in given/when/then form. AC coverage confirmed for @cli-ac-backfill
+    own criteria; no inherited traits applied."
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
   slugs:
     - implement-task-system-ac-backfill
