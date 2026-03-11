@@ -85148,6 +85148,12 @@
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #764 (merge commit d66a15098). Implemented unified session log CLI
+    filtering with --agent-id, --trigger, --task, backward-compatible --agent/--agent-type aliases,
+    shared filterSessions() reuse across session log commands, and JSON/list output alignment with
+    daemon filter vocabulary and summary behavior. Own spec ACs and inherited @trait-filterable-list
+    / @trait-json-output coverage were verified in tests/session-log-list.test.ts, and full
+    regression passed (npm test: 4434 passed, 3 skipped)."
   depends_on:
     - "@implement-session-list-pagination-api"
   context: []
@@ -85158,6 +85164,7 @@
   created_at: 2026-03-10T05:32:16.165Z
   started_at: 2026-03-11T01:15:58.759Z
   submitted_at: 2026-03-11T01:21:04.822Z
+  completed_at: 2026-03-11T01:34:18.475Z
   notes:
     - _ulid: 01KKB3PJX5W3ZEBX5CG34Y49HD
       created_at: 2026-03-10T05:32:16.165Z
@@ -85264,13 +85271,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T01:34:18.475Z
-  closed_reason: "Merged in PR #764 (merge commit d66a15098). Implemented unified session log CLI
-    filtering with --agent-id, --trigger, --task, backward-compatible --agent/--agent-type aliases,
-    shared filterSessions() reuse across session log commands, and JSON/list output alignment with
-    daemon filter vocabulary and summary behavior. Own spec ACs and inherited @trait-filterable-list
-    / @trait-json-output coverage were verified in tests/session-log-list.test.ts, and full
-    regression passed (npm test: 4434 passed, 3 skipped)."
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
   slugs:
     - implement-task-and-spec-session-context
@@ -87765,7 +87765,7 @@
   spec_ref: "@worktree-support"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -87917,6 +87917,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-11T01:35:03.949Z
+  session_id: 01KKD7QN6WATCDF9451KP2QBV4
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
   slugs:
     - task-worktree-callsite-migration
