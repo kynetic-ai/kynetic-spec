@@ -85427,6 +85427,18 @@
 
         - Verification: targeted CLI/API/UI tests, npm test, and kspec validate.
       supersedes: null
+    - _ulid: 01KKDJDWBSPWX2017CRA6K84AQ
+      created_at: 2026-03-11T04:28:08.441Z
+      author: Jacob Chapel
+      content: "Implemented shared metadata-prefiltered session text search across CLI, daemon, and
+        /sessions UI. Added GET /api/sessions/search, wired q= URL state with grouped match
+        rendering, and extended CLI search to honor --status plus shared metadata narrowing before
+        scanning events.jsonl. Verification: npm run build passed; npm test --
+        tests/session-log-search.test.ts passed; npm test passed (4525 tests, 202 files); kspec
+        validate --warnings-ok passed. Note: Playwright daemon-backed E2E tests could not run in
+        dispatch mode because this environment forbids kspec serve start/stop inside agent
+        execution."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
