@@ -86466,6 +86466,11 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #777. Implemented the spec completeness policy so module items are
+    exempt from missing acceptance-criteria and description warnings, while decisions, traits,
+    features, requirements, and constraints remain covered by completeness checks. Added focused
+    parser tests covering all four spec ACs; own AC coverage verified and full npm test passed on PR
+    head."
   depends_on: []
   context: []
   priority: 3
@@ -86475,6 +86480,7 @@
   created_at: 2026-03-10T06:55:43.699Z
   started_at: 2026-03-11T09:01:45.077Z
   submitted_at: 2026-03-11T09:02:23.924Z
+  completed_at: 2026-03-11T09:16:47.120Z
   notes:
     - _ulid: 01KKB8FD2K1M4EZREF1S3RRM1R
       created_at: 2026-03-10T06:55:43.700Z
@@ -86537,12 +86543,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T09:16:47.120Z
-  closed_reason: "Merged in PR #777. Implemented the spec completeness policy so module items are
-    exempt from missing acceptance-criteria and description warnings, while decisions, traits,
-    features, requirements, and constraints remain covered by completeness checks. Added focused
-    parser tests covering all four spec ACs; own AC coverage verified and full npm test passed on PR
-    head."
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
   slugs:
     - implement-core-primitives-ac-backfill
@@ -89185,7 +89185,7 @@
   type: task
   spec_ref: "@plan-derive-enhanced"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-plan-import-content-only-storage"
@@ -89201,6 +89201,8 @@
       content: See plan @plan-iterative-plan-editing for implementation notes
   todos: []
   automation: eligible
+  started_at: 2026-03-11T09:17:33.624Z
+  session_id: 01KKE2PQAQM7C5E8JQP480ME93
 - _ulid: 01KKDPW5237717QNKEKPRWERW7
   slugs: []
   title: "Fix: daemon watcher ELOOP crash from .kspec symlink loop"
