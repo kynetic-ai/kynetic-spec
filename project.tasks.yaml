@@ -88268,6 +88268,21 @@
         - Added regression coverage for daemon dispatch route cwd validation/conflicts plus CLI
         header behavior.
       supersedes: null
+    - _ulid: 01KKDM7H8WM8342W8MFSA4FSTX
+      created_at: 2026-03-11T04:59:37.628Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - npm test passes after rebuilding CLI/daemon artifacts used by the test harness (207 files,
+        4549 tests passed, 3 skipped).
+
+        - kspec validate still exits 6 due existing project-wide warning debt only; no new
+        validation errors introduced by this task.
+
+        - Focus regressions covered: CLI header emission, daemon dispatch cwd validation/conflict
+        handling, worktree shadow defaults, and agents hash freshness behavior.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
