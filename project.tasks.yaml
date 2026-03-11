@@ -86706,7 +86706,7 @@
   type: task
   spec_ref: "@core-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86760,6 +86760,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T16:45:11.804Z
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
   slugs:
     - implement-schema-and-structure-ac-backfill
