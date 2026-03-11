@@ -6060,7 +6060,7 @@ features:
         created: 2026-03-10T22:42:09.670Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     status:
       maturity: draft
       implementation: implemented
