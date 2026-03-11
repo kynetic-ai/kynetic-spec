@@ -85797,7 +85797,7 @@
   type: task
   spec_ref: "@streaming-markdown-component"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -85806,9 +85806,9 @@
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/781
-  session_id: null
+  session_id: 01KKEVVAD651XRE8BQ56468T4C
   created_at: 2026-03-10T06:04:41.789Z
-  started_at: 2026-03-11T13:40:21.216Z
+  started_at: 2026-03-11T16:32:39.339Z
   submitted_at: 2026-03-11T13:45:52.271Z
   notes:
     - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
@@ -89691,6 +89691,7 @@
   plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #783. 18 tests covering all 5 spec ACs plus trait N/A annotations."
   depends_on:
     - "@task-implement-stall-watchdog"
   context: []
@@ -89704,6 +89705,7 @@
   created_at: 2026-03-11T15:26:11.612Z
   started_at: 2026-03-11T15:45:23.831Z
   submitted_at: 2026-03-11T15:50:23.518Z
+  completed_at: 2026-03-11T16:13:29.455Z
   notes:
     - _ulid: 01KKESERCHTDPW2GJWV2GFA1Y3
       created_at: 2026-03-11T15:50:11.602Z
@@ -89737,5 +89739,3 @@
         MOCK_ACP_CUSTOM_UPDATE_TYPE.
       supersedes: null
   todos: []
-  completed_at: 2026-03-11T16:13:29.455Z
-  closed_reason: "Merged in PR #783. 18 tests covering all 5 spec ACs plus trait N/A annotations."
