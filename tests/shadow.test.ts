@@ -1885,6 +1885,29 @@ describe('Shadow Branch', () => {
       // Cleanup
       execSync(`git worktree remove ${otherWorktreeDir}`, { cwd: testDir, stdio: 'pipe' });
     });
+
+    // AC: @worktree-support ac-false-positive-guard
+    it('does not mistake a code worktree with kspec in the name for the shadow worktree', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git branch feature-branch', { cwd: testDir, stdio: 'pipe' });
+
+      const kspecNamedWorktreeDir = path.join(testDir, 'kspec-feature');
+      execSync(`git worktree add ${kspecNamedWorktreeDir} feature-branch`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const result = await detectRunningFromShadowWorktree(kspecNamedWorktreeDir);
+      expect(result).toBeNull();
+
+      execSync(`git worktree remove ${kspecNamedWorktreeDir}`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+    });
   });
 
   // AC: @shadow-errors ac-4 - Running from inside .kspec

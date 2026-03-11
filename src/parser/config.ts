@@ -319,12 +319,19 @@ export interface LoadConfigResult {
  *
  * AC: @project-config ac-6 — loads from git root, not cwd subdirectory
  */
-export function findProjectRoot(startDir: string): string | null {
+export function findProjectRoot(
+  startDir: string,
+  mainRoot?: string,
+): string | null {
   // In batch mode, the batch executor should set this to the real root
   // before redirecting KSPEC_SPEC_DIR
   const batchRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
   if (batchRoot) {
     return batchRoot;
+  }
+
+  if (mainRoot) {
+    return mainRoot;
   }
 
   // Normal mode: find git root
@@ -346,8 +353,9 @@ export function findProjectRoot(startDir: string): string | null {
  */
 export async function loadProjectConfig(
   startDir: string = process.cwd(),
+  mainRoot?: string,
 ): Promise<LoadConfigResult> {
-  const gitRoot = findProjectRoot(startDir);
+  const gitRoot = findProjectRoot(startDir, mainRoot);
 
   if (!gitRoot) {
     // Not in a git repo, use defaults

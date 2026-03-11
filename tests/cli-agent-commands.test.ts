@@ -25,6 +25,7 @@ import { runInvocation } from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import { setJsonMode, isJsonMode } from "../src/cli/output.js";
 import type { SessionUpdate } from "../src/acp/index.js";
+import * as parser from "../src/parser/index.js";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Mock ACP for unit-level tests ───────────────────────────────────────────
@@ -850,6 +851,121 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     );
     expect(logs.some((l) => /start|running/i.test(l))).toBe(true);
   });
+
+  // AC: @worktree-support ac-daemon-identity
+  // AC: @worktree-support ac-dispatch-cwd
+  it("should send projectRoot and worktree cwd headers when dispatch starts from a worktree", async () => {
+    const mainProjectRoot = "/tmp/main-project";
+    const worktreeRoot = "/tmp/worktrees/feature-a";
+    vi.spyOn(parser, "initContext").mockResolvedValue({
+      rootDir: worktreeRoot,
+      projectRoot: mainProjectRoot,
+      specDir: `${mainProjectRoot}/.kspec`,
+      sessionsDir: `${mainProjectRoot}/.kspec-sessions`,
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: {
+        shadow: { branch: "kspec-meta", directory: ".kspec", remote: null, sync_interval: 60 },
+        identity: { author: null },
+        validation: { strict_refs: true, require_acceptance: false },
+        daemon: { port: 3456, host: "localhost", auto_start: true },
+        ralph: {
+          skills: {
+            task_work: "/kspec:task-work",
+            reflect: "/kspec:reflect",
+            pr_review: "/kspec:review",
+          },
+        },
+      },
+    } as Awaited<ReturnType<typeof parser.initContext>>);
+
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        started: true,
+        status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
+      }),
+    } as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const program = createTestProgram();
+    try {
+      await program.parseAsync(["agent", "dispatch", "start"], { from: "user" });
+    } catch {
+      // exitOverride
+    }
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/agent/dispatch/start"),
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+          "X-Kspec-Dir": mainProjectRoot,
+          "X-Kspec-Cwd": worktreeRoot,
+        }),
+      }),
+    );
+  });
+
+  // AC: @worktree-support ac-dispatch-conflict
+  it("should surface a 409 conflict when dispatch is already running for a different worktree cwd", async () => {
+    vi.spyOn(parser, "initContext").mockResolvedValue({
+      rootDir: "/tmp/worktrees/b",
+      projectRoot: "/tmp/main-project",
+      specDir: "/tmp/main-project/.kspec",
+      sessionsDir: "/tmp/main-project/.kspec-sessions",
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: {
+        shadow: { branch: "kspec-meta", directory: ".kspec", remote: null, sync_interval: 60 },
+        identity: { author: null },
+        validation: { strict_refs: true, require_acceptance: false },
+        daemon: { port: 3456, host: "localhost", auto_start: true },
+        ralph: {
+          skills: {
+            task_work: "/kspec:task-work",
+            reflect: "/kspec:reflect",
+            pr_review: "/kspec:review",
+          },
+        },
+      },
+    } as Awaited<ReturnType<typeof parser.initContext>>);
+
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 409,
+      text: async () =>
+        "Dispatch engine already running for /tmp/main-project with cwd /tmp/worktrees/a",
+    } as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const program = createTestProgram();
+    const errors: string[] = [];
+    const origError = console.error;
+    console.error = (...args) => { errors.push(args.join(" ")); };
+
+    try {
+      await program.parseAsync(["agent", "dispatch", "start"], { from: "user" });
+    } catch {
+      // exitOverride
+    } finally {
+      console.error = origError;
+    }
+
+    expect(errors.join("\n")).toContain("409");
+    expect(errors.join("\n")).toContain("/tmp/worktrees/a");
+  });
 });
 
 // ─── AC-5: Dispatch stop when daemon is running ───────────────────────────────
@@ -979,7 +1095,11 @@ describe("AC-6: kspec agent status with running daemon", () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/agent/dispatch/status"),
-      expect.anything(),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          "X-Kspec-Dir": testDir,
+        }),
+      }),
     );
     const combined = logs.join("\n");
     // AC: @cli-agent-commands ac-6 - session ID shown

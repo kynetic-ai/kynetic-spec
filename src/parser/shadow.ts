@@ -286,6 +286,12 @@ export const SHADOW_WORKTREE_DIR = ".kspec";
  */
 export const SESSIONS_WORKTREE_DIR = ".kspec-sessions";
 
+export interface ProjectRoots {
+  mainRoot: string;
+  worktreeRoot: string;
+  isWorktree: boolean;
+}
+
 /**
  * Options for shadow branch operations.
  *
@@ -377,6 +383,53 @@ export function getGitRoot(dir: string): string | null {
   return result.stdout.trim();
 }
 
+function isSubmoduleCommonDir(commonDir: string): boolean {
+  const segments = path.normalize(commonDir).split(path.sep).filter(Boolean);
+  const gitIndex = segments.lastIndexOf(".git");
+  return gitIndex >= 0 && segments[gitIndex + 1] === "modules";
+}
+
+export function resolveProjectRoots(dir: string): ProjectRoots | null {
+  const result = runGitSync(dir, [
+    "rev-parse",
+    "--show-toplevel",
+    "--git-common-dir",
+  ]);
+  if (!result.ok) {
+    return null;
+  }
+
+  const [rawTopLevel, rawCommonDir] = result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!rawTopLevel || !rawCommonDir) {
+    return null;
+  }
+
+  const worktreeRoot = path.resolve(rawTopLevel);
+  const commonDir = path.isAbsolute(rawCommonDir)
+    ? path.resolve(rawCommonDir)
+    : path.resolve(worktreeRoot, rawCommonDir);
+
+  if (
+    isSubmoduleCommonDir(commonDir) ||
+    commonDir === path.join(worktreeRoot, ".git")
+  ) {
+    return {
+      mainRoot: worktreeRoot,
+      worktreeRoot,
+      isWorktree: false,
+    };
+  }
+
+  return {
+    mainRoot: path.dirname(commonDir),
+    worktreeRoot,
+    isWorktree: true,
+  };
+}
+
 /**
  * Check if a branch exists
  */
@@ -450,24 +503,22 @@ export async function detectRunningFromShadowWorktree(
       return null;
     }
 
-    const gitdir = match[1];
+    const gitdir = path.resolve(cwd, match[1]);
 
     // Check if this is a worktree (pattern: <project>/.git/worktrees/<name>)
     if (gitdir.includes(".git/worktrees/")) {
-      const worktreesMatch = gitdir.match(/^(.+)\/\.git\/worktrees\//);
+      const worktreesMatch = gitdir.match(/^(.*?)[/\\]\.git[/\\]worktrees[/\\]/);
       if (worktreesMatch) {
         const mainProjectRoot = worktreesMatch[1];
         const cwdBase = path.basename(cwd);
-        const worktreeName = path.basename(gitdir);
 
         // AC: ac-8 — check multiple patterns for shadow worktree detection
         const directoryToCheck = configuredDirectory || SHADOW_WORKTREE_DIR;
 
-        // Check if directory name matches default, configured, or worktree contains "kspec"
+        // Exact shadow directory names are always considered shadow worktrees.
         if (
           cwdBase === SHADOW_WORKTREE_DIR ||
-          cwdBase === directoryToCheck ||
-          worktreeName.includes("kspec")
+          cwdBase === directoryToCheck
         ) {
           return mainProjectRoot;
         }
@@ -514,8 +565,9 @@ export async function detectRunningFromShadowWorktree(
 export async function detectShadow(
   startDir: string,
   options?: ShadowOptions,
+  mainRoot?: string,
 ): Promise<ShadowConfig | null> {
-  const gitRoot = getGitRoot(startDir);
+  const gitRoot = mainRoot ?? getGitRoot(startDir);
   if (!gitRoot) {
     return null;
   }
