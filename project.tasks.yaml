@@ -87726,6 +87726,17 @@
         - Verification: kspec validate --completeness and targeted kspec item get checks for updated
         items.
       supersedes: null
+    - _ulid: 01KKFJS0GE2BY3GA06QNGN1Q98
+      created_at: 2026-03-11T23:12:41.999Z
+      author: Jacob Chapel
+      content: "Backfilled acceptance criteria for all previously uncovered descendants under
+        @shadow-branch: @shadow-concept, @shadow-structure, @shadow-read-path, @shadow-write-path,
+        @shadow-ci, @shadow-cli, @shadow-status-cmd, @shadow-log-cmd, @shadow-repair-cmd, and
+        @shadow-validation. Verified with `kspec item list --under @shadow-branch --limit 999 --json
+        | jq` returning zero descendants without ACs, `kspec validate --completeness` leaving only
+        unrelated global missing-AC warnings, and `npm test` passing after refreshing generated
+        caches/build artifacts."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKBBS1HGRR363BSDMG07EC19
