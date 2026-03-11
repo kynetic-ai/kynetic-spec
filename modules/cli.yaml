@@ -7367,6 +7367,32 @@ features:
           - "@trait-error-guidance"
         notes: []
         created: 2026-03-11T15:25:38.107Z
+        acceptance_criteria:
+          - id: ac-1
+            given: An agent invocation has sent the prompt via session/prompt
+            when: No meaningful session updates (agent_message_chunk, agent_thought_chunk, tool_call,
+              tool_call_update, plan, usage_update) are received within the configured
+              initial_response_timeout_seconds (default 120)
+            then: The invocation detects the stall and cancels the ACP session
+          - id: ac-2
+            given: A stall has been detected per ac-1
+            when: The invocation handles the stall
+            then: The agent process is terminated, the session is closed with status stalled and a reason
+              indicating the duration, and no task note is added
+          - id: ac-3
+            given: An agent invocation has sent the prompt via session/prompt
+            when: A meaningful session update arrives before the stall timer fires
+            then: The stall timer is cancelled and never fires for the remainder of the invocation, allowing the
+              normal invocation timeout to govern session lifetime
+          - id: ac-4
+            given: A prior invocation ended with status stalled
+            when: The consecutive failure counter evaluates the task history
+            then: Stalled sessions are excluded from the count because they are transient infrastructure issues
+              not agent logic failures
+          - id: ac-5
+            given: An agent definition includes a budget configuration
+            when: The initial_response_timeout_seconds field is set
+            then: The stall watchdog uses the configured value instead of the default 120 seconds
   - _ulid: 01KJP27657CZ9AJP5T0XBDEDVK
     slugs:
       - agent-dispatch-engine
