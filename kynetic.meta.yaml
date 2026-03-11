@@ -8099,6 +8099,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKE41EF18DGK46PCQEQ6N1XF
+    type: friction
+    content: Full npm test includes an intermittent daemon startup failure in tests/cli-serve.test.ts
+      ('should start daemon from npm-installed package with all deps available') that can fail with
+      ECONNREFUSED during the health check while passing on isolated rerun.
+    created_at: 2026-03-11T09:35:55.361Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
