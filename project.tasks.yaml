@@ -88386,6 +88386,14 @@
         @trait-semantic-exit-codes ac-4. The runtime error branch in plan export's --output
         file-write path is only annotated, not tested."
       supersedes: null
+    - _ulid: 01KKDEVYNAWWVS1T2J3EMEAA3Y
+      created_at: 2026-03-11T03:25:55.242Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Implementing executable coverage for @trait-semantic-exit-codes ac-4 by
+        exporting to an existing directory path in tests/cli-plan.test.ts. This deterministically
+        forces fs.writeFile to fail in the --output branch and verifies the runtime error exit path
+        without changing production behavior."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
