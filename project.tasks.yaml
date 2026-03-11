@@ -86157,6 +86157,13 @@
       content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: plan embedded task parsing misses the documented
         derive_from_specs YAML-block format required by @plan-embedded-views ac-2."
       supersedes: null
+    - _ulid: 01KKFND1GKP53W5EAV4RACN0K3
+      created_at: 2026-03-11T23:58:35.539Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Addressing the task-embed parser gap by recognizing derive_from_specs
+        inside the fenced ## Tasks YAML block as well as section text outside the fence, then adding
+        a regression test for the block-only format called out in PR review."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
