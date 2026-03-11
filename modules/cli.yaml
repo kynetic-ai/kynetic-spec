@@ -7395,7 +7395,7 @@ features:
             then: The stall watchdog uses the configured value instead of the default 120 seconds
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KJP27657CZ9AJP5T0XBDEDVK
     slugs:
       - agent-dispatch-engine
