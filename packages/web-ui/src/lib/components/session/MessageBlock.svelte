@@ -22,7 +22,7 @@
 				<span class="text-[10px] text-muted-foreground/60 font-mono">{formatTime(block.timestamp)}</span>
 			</div>
 			<div
-				class="text-sm break-words leading-relaxed prose prose-sm prose-invert max-w-none"
+				class="text-sm break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
 				data-testid="message-content"
 			>
 				{@html html}

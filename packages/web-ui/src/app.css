@@ -4,6 +4,8 @@
 @import "./lib/ds/tokens.css";
 @import "./lib/ds/animations.css";
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
