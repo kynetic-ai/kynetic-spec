@@ -85715,7 +85715,7 @@
   type: task
   spec_ref: "@prose-typography-setup"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -85785,6 +85785,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T08:17:31.192Z
+  closed_reason: "Merged in PR #775. Installed and configured Tailwind typography for web-ui prose
+    surfaces, updated MessageBlock dark-mode inversion, and added build-backed AC coverage verifying
+    prose classes and emitted CSS bundle. No spec deviations. AC coverage verified for
+    @prose-typography-setup ac-1 and ac-2; no inherited trait ACs."
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
@@ -85869,6 +85874,7 @@
   session_id: 01KKDYNW0HGY4JW1HQHY6RSRXB
   created_at: 2026-03-10T06:04:42.360Z
   started_at: 2026-03-11T08:02:37.478Z
+  submitted_at: 2026-03-11T08:09:37.179Z
   notes:
     - _ulid: 01KKB5HZFRZPQY645FJ4266NQ7
       created_at: 2026-03-10T06:04:42.360Z
@@ -85919,7 +85925,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T08:09:37.179Z
 - _ulid: 01KKB5J02DQA312B76P7PNAT9X
   slugs:
     - implement-plan-content-embedded-views
