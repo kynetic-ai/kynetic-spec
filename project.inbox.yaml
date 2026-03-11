@@ -1447,3 +1447,12 @@ inbox:
       - sessions
       - dx
     added_by: "@claude"
+  - _ulid: 01KKERNEEY3VWJABDM620YN1P9
+    text: plan set should support --derived-tasks and --derived-specs flags to link work items without
+      manual YAML edits. Currently requires bypassing the shadow branch pre-commit hook to populate
+      these fields.
+    created_at: 2026-03-11T15:36:22.239Z
+    tags:
+      - cli
+      - plan
+    added_by: "@claude"
