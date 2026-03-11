@@ -89627,7 +89627,7 @@
   spec_ref: "@invocation-initial-activity-watchdog"
   meta_ref: null
   plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -89639,11 +89639,21 @@
   created_at: 2026-03-11T15:26:04.492Z
   notes: []
   todos: []
+  started_at: 2026-03-11T15:36:59.209Z
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
 - _ulid: 01KKER2T4XPE935X4SHBYZ3T1G
   slugs:
     - task-test-stall-watchdog
   title: Test initial activity watchdog behavior
   type: task
+  description: "Test cases using mock-acp adapter: (1) No updates after prompt — stall fires, session
+    closed as stalled. (2) available_commands_update only — still stalls. (3) agent_message_chunk
+    before timer — stall cancelled. (4) tool_call before timer — stall cancelled. (5)
+    agent_thought_chunk before timer — stall cancelled. (6) plan before timer — stall cancelled. (7)
+    usage_update before timer — stall cancelled. (8) Custom initial_response_timeout_seconds
+    respected. (9) Stalled sessions excluded from consecutive failure count. (10) No task note added
+    on stall. (11) agent.stalled event logged to session JSONL. (12) Stall timer cleaned up on
+    normal completion."
   spec_ref: "@invocation-initial-activity-watchdog"
   meta_ref: null
   plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
@@ -89661,11 +89671,3 @@
   created_at: 2026-03-11T15:26:11.612Z
   notes: []
   todos: []
-  description: "Test cases using mock-acp adapter: (1) No updates after prompt — stall fires, session
-    closed as stalled. (2) available_commands_update only — still stalls. (3) agent_message_chunk
-    before timer — stall cancelled. (4) tool_call before timer — stall cancelled. (5)
-    agent_thought_chunk before timer — stall cancelled. (6) plan before timer — stall cancelled. (7)
-    usage_update before timer — stall cancelled. (8) Custom initial_response_timeout_seconds
-    respected. (9) Stalled sessions excluded from consecutive failure count. (10) No task note added
-    on stall. (11) agent.stalled event logged to session JSONL. (12) Stall timer cleaned up on
-    normal completion."
