@@ -86876,6 +86876,20 @@
         @core-ac-backfill is clean again. Verification target: npm test plus filtered kspec validate
         --completeness --json for @core-ac-backfill and in-scope refs."
       supersedes: null
+    - _ulid: 01KKF3XFKXSP2CESTKMSM3EC0Q
+      created_at: 2026-03-11T18:52:59.901Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Closed the remaining review blockers on branch
+        fix/core-primitives-ac-backfill-v2. - Reworked tests/core-ac-backfill.test.ts to use
+        in-process parser loading plus one completeness validation pass, removing the per-ref CLI
+        spawning that caused the ac-testable regression to time out in the full suite. - Removed
+        invalid @ref-validation ac-2/ac-3/ac-4 annotations from
+        tests/ac-annotation-validation.test.ts; only the real @ref-validation ac-1 coverage tag
+        remains. - Verification: npm test -- --run tests/core-ac-backfill.test.ts
+        tests/ac-annotation-validation.test.ts; filtered kspec validate --completeness --warnings-ok
+        --json for @core-ac-backfill and in-scope refs => []; full npm test => 213 files passed,
+        4559 tests passed, 3 skipped."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
