@@ -412,6 +412,7 @@ describe('kspec session log list (CLI)', () => {
   });
 
   // AC: @session-log-list ac-2
+  // AC: @trait-filterable-list ac-1
   it('should filter by --status', () => {
     const result = kspecJson<SessionListResult>('session log list --status completed', tempDir);
     expect(result.items).toHaveLength(3);
@@ -797,4 +798,18 @@ describe('kspec session log list (CLI)', () => {
     expect(parsed).toHaveProperty('items');
     expect(parsed).toHaveProperty('total');
   });
+
+  // AC: @trait-json-output ac-3
+  it('should return JSON error payload for invalid status in --json mode', () => {
+    const result = kspec('session log list --json --status invalid_status', tempDir, { expectFail: true });
+    expect(result.exitCode).toBe(2);
+    expect(result.stdout).toBe('');
+    const parsed = JSON.parse(result.stderr);
+    expect(parsed.success).toBe(false);
+    expect(parsed.error).toContain("Invalid status: 'invalid_status'");
+    expect(parsed.error).toContain('active');
+    expect(parsed.error).toContain('completed');
+  });
+
+  // AC: @trait-filterable-list ac-2 — N/A: session log list does not implement a --tag filter; supported filters are status, agent_type, agent_id, trigger, task_id, and since.
 });
