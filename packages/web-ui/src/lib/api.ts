@@ -917,6 +917,40 @@ export interface FetchSessionsParams {
 	spec_ref?: string;
 }
 
+export interface SessionSearchMatch {
+	session_id: string;
+	event_seq: number;
+	timestamp: number;
+	event_type: string;
+	content_excerpt: string;
+}
+
+export interface SessionSearchResult {
+	session_id: string;
+	agent_type: string;
+	started_at: string;
+	matches: SessionSearchMatch[];
+}
+
+export interface FetchSessionSearchParams {
+	q: string;
+	status?: string[];
+	agent_id?: string;
+	agent_type?: string;
+	trigger?: string;
+	since?: string;
+	task_id?: string;
+	spec_ref?: string;
+	limit?: number;
+}
+
+export interface SessionSearchResponse {
+	items: SessionSearchResult[];
+	total_sessions: number;
+	total_matches: number;
+	query: string;
+}
+
 /**
  * Paginated session list response.
  * AC: @session-list-infinite-scroll ac-initial-load
@@ -971,6 +1005,52 @@ export async function fetchSessions(params?: FetchSessionsParams): Promise<Sessi
 		url.searchParams.set('task_id', params.task_id);
 	}
 	if (params?.spec_ref) {
+		url.searchParams.set('spec_ref', params.spec_ref);
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchSessionSearch(
+	params: FetchSessionSearchParams
+): Promise<SessionSearchResponse> {
+	if (isStaticMode()) {
+		return { items: [], total_sessions: 0, total_matches: 0, query: params.q };
+	}
+
+	const url = new URL(`${API_BASE}/api/sessions/search`);
+	url.searchParams.set('q', params.q);
+	if (params.limit !== undefined) {
+		url.searchParams.set('limit', String(params.limit));
+	}
+	if (params.status?.length) {
+		for (const s of params.status) {
+			url.searchParams.append('status', s);
+		}
+	}
+	if (params.agent_id) {
+		url.searchParams.set('agent_id', params.agent_id);
+	}
+	if (params.agent_type) {
+		url.searchParams.set('agent_type', params.agent_type);
+	}
+	if (params.trigger) {
+		url.searchParams.set('trigger', params.trigger);
+	}
+	if (params.since) {
+		url.searchParams.set('since', params.since);
+	}
+	if (params.task_id) {
+		url.searchParams.set('task_id', params.task_id);
+	}
+	if (params.spec_ref) {
 		url.searchParams.set('spec_ref', params.spec_ref);
 	}
 

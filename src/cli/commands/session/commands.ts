@@ -299,6 +299,7 @@ export function registerSessionCommands(program: Command): void {
     .command("search <pattern>")
     .description("Search across session events by content")
     .option("-t, --type <type>", "Only search events of this type (e.g., session.update)")
+    .option("--status <status>", "Only search sessions with this status")
     .option(
       "--since <time>",
       "Only search sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",

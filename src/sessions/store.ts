@@ -2685,6 +2685,8 @@ export function computeTimePeriodStats(
 export interface SearchMatch {
   /** Session ID */
   session_id: string;
+  /** Event sequence number within the session log */
+  event_seq: number;
   /** Event timestamp (Unix ms) */
   timestamp: number;
   /** Event type */
@@ -2719,6 +2721,8 @@ export interface SearchOptions {
   agentType?: string;
   /** Pre-filtered session IDs to search (bypasses internal metadata filtering) */
   sessionIds?: string[];
+  /** Pre-filtered session summaries to search (avoids reloading metadata) */
+  sessionSummaries?: SessionLogSummary[];
   /** Maximum total matches to return (default: 50) */
   limit?: number;
   /** Resolve blob pointers and search full payload content */
@@ -2792,7 +2796,9 @@ export async function searchSessionEvents(
 
   // Use pre-filtered session IDs if provided, otherwise load and filter
   let filteredSummaries: SessionLogSummary[];
-  if (options.sessionIds) {
+  if (options.sessionSummaries) {
+    filteredSummaries = [...options.sessionSummaries];
+  } else if (options.sessionIds) {
     const idSet = new Set(options.sessionIds);
     const allSummaries = await getAllSessionLogSummaries(sessionsDir);
     filteredSummaries = allSummaries.filter((s) => idSet.has(s.id));
@@ -2873,6 +2879,7 @@ export async function searchSessionEvents(
         // AC: @session-log-search ac-4 - Create match with excerpt
         matches.push({
           session_id: summary.id,
+          event_seq: typeof event.seq === "number" ? event.seq : -1,
           timestamp: event.ts,
           event_type: event.type,
           content_excerpt: extractContentExcerpt(searchableData, pattern, 200),

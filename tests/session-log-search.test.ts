@@ -333,6 +333,7 @@ describe('searchSessionEvents', () => {
 
 describe('kspec session log search (CLI)', () => {
   let tempDir: string;
+  let activeBuildSessionId: string;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
@@ -348,7 +349,9 @@ describe('kspec session log search (CLI)', () => {
     await fs.writeFile(path.join(s1Dir, 'session.yaml'), YAML.stringify({
       id: s1,
       agent_type: 'claude-agent-acp',
+      agent_id: 'pr-reviewer',
       status: 'completed',
+      task_id: '@legacy-build-task',
       started_at: '2026-01-15T10:00:00.000Z',
       ended_at: '2026-01-15T11:30:00.000Z',
     }));
@@ -383,12 +386,15 @@ describe('kspec session log search (CLI)', () => {
 
     // Session 2: different agent, recent
     const s2 = testUlid('SESS', 2);
+    activeBuildSessionId = s2;
     const s2Dir = path.join(sessionsDir, s2);
     await fs.mkdir(s2Dir);
     await fs.writeFile(path.join(s2Dir, 'session.yaml'), YAML.stringify({
       id: s2,
       agent_type: 'custom-agent',
+      agent_id: 'worker',
       status: 'active',
+      task_id: '@build-task',
       started_at: '2026-02-05T08:00:00.000Z',
     }));
     await fs.writeFile(path.join(s2Dir, 'events.jsonl'), [
@@ -420,6 +426,7 @@ describe('kspec session log search (CLI)', () => {
     await fs.writeFile(path.join(s3Dir, 'session.yaml'), YAML.stringify({
       id: s3,
       agent_type: 'claude-agent-acp',
+      agent_id: 'worker',
       status: 'completed',
       started_at: '2026-02-04T14:00:00.000Z',
       ended_at: '2026-02-04T15:00:00.000Z',
@@ -545,9 +552,24 @@ describe('kspec session log search (CLI)', () => {
 
     const match = results[0].matches[0];
     expect(match).toHaveProperty('session_id');
+    expect(match).toHaveProperty('event_seq');
     expect(match).toHaveProperty('timestamp');
     expect(match).toHaveProperty('event_type');
     expect(match).toHaveProperty('content_excerpt');
+  });
+
+  // AC: @session-text-search ac-cli-search
+  // AC: @session-text-search ac-scope-narrowing
+  it('narrows CLI search by status, agent id, since, and task filters before scanning events', () => {
+    const results = kspecJson<SessionSearchResult[]>(
+      'session log search build --status active --agent-id worker --since 2026-02-01 --task @build-task',
+      tempDir,
+    );
+
+    expect(results).toHaveLength(1);
+    expect(results[0].agent_type).toBe('custom-agent');
+    expect(results[0].session_id).toBe(activeBuildSessionId);
+    expect(results[0].matches[0].event_seq).toBeGreaterThanOrEqual(0);
   });
 
   // AC: @session-log-search ac-4

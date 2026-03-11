@@ -153,6 +153,57 @@ function mockSessionsRoute(sessions: ReturnType<typeof mockSessions>) {
 	};
 }
 
+function mockSearchRoute() {
+	return (route: any) => {
+		const url = new URL(route.request().url());
+		const query = url.searchParams.get('q') ?? '';
+		const statusParam = url.searchParams.getAll('status');
+		const agentIdParam = url.searchParams.get('agent_id');
+		let items =
+			query.toLowerCase() === 'error handling'
+				? [
+						{
+							session_id: '01JTEST0000000000000000001',
+							agent_type: 'task-worker',
+							started_at: '2026-03-04T10:00:00.000Z',
+							matches: [
+								{
+									session_id: '01JTEST0000000000000000001',
+									event_seq: 4,
+									timestamp: Date.parse('2026-03-04T10:15:00.000Z'),
+									event_type: 'session.update',
+									content_excerpt: 'Error handling added to the worker session'
+								}
+							]
+						}
+					]
+				: [];
+
+		if (statusParam.length > 0) {
+			items = statusParam.includes('completed') ? items : [];
+		}
+		if (agentIdParam) {
+			items = agentIdParam === 'worker' ? items : [];
+		}
+
+		const totalMatches = items.reduce(
+			(sum: number, item: any) => sum + item.matches.length,
+			0
+		);
+
+		route.fulfill({
+			status: 200,
+			contentType: 'application/json',
+			body: JSON.stringify({
+				items,
+				total_sessions: items.length,
+				total_matches: totalMatches,
+				query
+			})
+		});
+	};
+}
+
 test.describe('Session History View', () => {
 	test.describe('Session List (AC-1)', () => {
 		// AC: @ui-session-history ac-1
@@ -430,6 +481,45 @@ test.describe('Session History View', () => {
 
 			// AC: @ui-url-panel-state ac-4 — URL updated via goto()
 			await expect(page).toHaveURL(/trigger=manual/);
+		});
+	});
+
+	test.describe('Session Search', () => {
+		// AC: @session-text-search ac-ui-search
+		test('submitting search persists q in the URL and shows grouped matches', async ({
+			page,
+			daemon
+		}) => {
+			await page.route('**/api/sessions/search*', mockSearchRoute());
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			await page.getByTestId('session-search-input').fill('error handling');
+			await page.getByTestId('session-search-submit').click();
+
+			await expect(page).toHaveURL(/q=error(\+|%20)handling/);
+			await expect(page.getByTestId('session-search-results')).toBeVisible();
+			await expect(page.getByTestId('session-search-session')).toHaveCount(1);
+			await expect(page.getByTestId('session-search-match')).toContainText('Error handling added');
+		});
+
+		// AC: @session-text-search ac-empty-query
+		test('submitting an empty search clears q and keeps the unfiltered session list', async ({
+			page,
+			daemon
+		}) => {
+			await page.route('**/api/sessions/search*', mockSearchRoute());
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+			await page.goto('/sessions?q=error+handling');
+			await expect(page.getByTestId('session-search-results')).toBeVisible();
+
+			await page.getByTestId('session-search-input').fill('   ');
+			await page.getByTestId('session-search-submit').click();
+
+			await expect(page).not.toHaveURL(/[\?&]q=/);
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			await expect(page.getByTestId('session-row')).toHaveCount(3);
 		});
 	});
 
