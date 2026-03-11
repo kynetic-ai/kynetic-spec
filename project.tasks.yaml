@@ -85063,6 +85063,29 @@
         dataset to populate filter controls, which defeats the new infinite-scroll pagination design
         and regresses initial load scalability."
       supersedes: null
+    - _ulid: 01KKD5XSN7HZC8YN9Q8XK388NB
+      created_at: 2026-03-11T00:49:38.472Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 2 addressed:
+
+        - Removed the sessions page's unfiltered limit=total fetch for filter control hydration.
+
+        - Filter options now seed from the first unfiltered page and grow from already-loaded
+        paginated data, preserving infinite-scroll scalability.
+
+        - Kept active agent/agent-type controls visible even when only the selected value is
+        currently known.
+
+        - Added E2E regression coverage that asserts filter-control seeding never requests more than
+        the page size.
+
+        - Verification: kspec validate returned only existing project warning debt. npm test still
+        fails in inherited CLI suites (tests/session-log-list.test.ts,
+        tests/session-legacy-cli.test.ts, tests/session-model-evolution.test.ts) that are already
+        tracked under the separate session-list infinite-scroll fix cycle and are unrelated to this
+        web-ui patch.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJX5AMD33KWQ0CQ6N3GR
