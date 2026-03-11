@@ -82435,7 +82435,13 @@
         entry: move stable patterns to project docs, remove anything already covered, keep only
         truly agent-specific preferences in memory."
       supersedes: null
+    - _ulid: 01KKDQKCT8X3JP5230QNC2RH3Z
+      created_at: 2026-03-11T05:58:32.008Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Knowledge curation requires human audit for accuracy"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KK7GC44BYAW3B3HD9BPY0TB9
   slugs: []
   title: Switch task list detail panel from Sheet to Dialog modal
