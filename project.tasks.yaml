@@ -78877,6 +78877,14 @@
 
         - Verification: targeted invocation/session tests, then full npm test and kspec validate.
       supersedes: null
+    - _ulid: 01KKDV7YPZZ9YJE9MY5BMCVFCZ
+      created_at: 2026-03-11T07:02:11.423Z
+      author: Jacob Chapel
+      content: Replaced retry streak detection with session-backed invocation outcomes keyed by task_id
+        and agent_id. Failure handling still writes AGENT-FAIL notes for operator context, but
+        success notes are no longer used as tracking state. Updated AC-5/AC-9 tests to seed prior
+        invocation sessions instead of mocked task note history.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
