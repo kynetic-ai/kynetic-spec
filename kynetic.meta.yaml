@@ -1208,6 +1208,96 @@ workflows:
             3. Stop responding — pr-reviewer agent handles PR review via dispatch
         execution:
           mode: silent
+  - _ulid: 01KKFF8PWQ5AFCMM1MG19VK1KH
+    id: spec-plan-import
+    trigger: manual
+    description: Execute plan via structured document import - write document, preview import, import as
+      a durable plan record, iterate with --into, approve, derive, validate, and start work. Follows
+      @spec-plan-design.
+    steps:
+      - type: action
+        content: >
+          Write or finalize plan document.
+
+          Format: # Title, ## Specs with YAML code block (title required, optional: slug, type,
+          parent, AC, traits),
+
+          ## Tasks with derive_from_specs flag, ## Implementation Notes (plain text).
+        inputs:
+          - name: plan_file_path
+            description: Path to the markdown plan file
+            type: string
+      - type: action
+        content: >
+          Choose whether to store a target module on the plan now or defer it until derive.
+
+          Use: kspec item list --type module
+
+          If you already know the destination module, capture its ref for import or derive. If not,
+          you can import first and pass --module later to kspec plan derive.
+        inputs:
+          - name: module_ref
+            description: Optional module reference to store on the plan for later derive
+            type: ref
+      - type: action
+        content: |
+          Preview import with dry-run.
+          Use: kspec plan import <path> [--module @module] --dry-run
+          Review: plan title, status, stored module_ref, and that import is content-only storage.
+      - type: check
+        content: Dry-run output acceptable - plan record preview looks correct and the document is ready to
+          store
+        on_fail: >
+          Fix the plan file, title, or module choice, then re-run dry-run.
+
+          Note: import dry-run previews the stored plan record; spec/task validation happens during
+          derive.
+      - type: action
+        content: |
+          Run actual import.
+          Use: kspec plan import <path> [--module @module] [--status approved]
+          Verify: kspec plan get @plan-slug
+          Import stores the full document on the plan record; it does not create specs or tasks.
+          For revised drafts, re-import with: kspec plan import <path> --into @plan-ref
+      - type: action
+        content: >
+          Iterate and approve.
+
+          If the document still needs changes, use kspec plan export @plan-ref --output ./plan.md,
+          edit it, then kspec plan import ./plan.md --into @plan-ref.
+
+          When the plan is ready to materialize, approve it: kspec plan set @plan-ref --status
+          approved
+      - type: action
+        content: >
+          Derive specs and tasks.
+
+          Use: kspec plan derive @plan-ref [--module @module] --tasks
+
+          Stored module_ref from import is used automatically when present; explicit --module
+          overrides it.
+
+          If you want specs only first, omit --tasks.
+      - type: action
+        content: >
+          Review derived specs/tasks and apply any missing traits.
+
+          Use: kspec trait list for available traits.
+
+          For each created spec, consider cross-cutting concerns (json-output, dry-run,
+          error-guidance, semantic-exit-codes, shadow-commit, filterable-list).
+
+          Apply any missing traits: kspec item trait add @spec @trait
+      - type: check
+        content: Validate references - kspec validate --refs
+        on_fail: Fix reference issues (dangling refs, missing spec_ref/plan_ref links, stale plan/module
+          assumptions)
+      - type: action
+        content: |
+          Start implementation.
+          Pick first task from: kspec plan get @plan --json (derived_tasks).
+          Use: kspec task start @task
+          Then follow /task-work for task lifecycle.
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
