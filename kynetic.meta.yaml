@@ -257,6 +257,27 @@ agents:
       - Information density: cards/views are scannable, not cluttered.
 
       - Reference ../imgen/packages/design-system/src/token-contract.css for expected token usage.
+  - _ulid: 01KKBVD4P3DSVN0YJF8VHCP22M
+    id: pr-reviewer
+    name: PR Reviewer
+    description: Automated PR reviewer. Reviews pending_review tasks and merges when quality gates pass.
+    capabilities:
+      - review
+    tools:
+      - kspec
+      - git
+      - gh
+    conventions: []
+    adapter: codex-acp
+    dispatch:
+      - on: task.pending_review
+    skills:
+      - pr-review
+    budget:
+      timeout_minutes: 30
+    concurrency:
+      max_concurrent: 1
+    auto_approve: true
   - _ulid: 01KKBVD4KQP5KH27QXR0C7WJG9
     id: task-worker
     name: Task Worker
@@ -283,27 +304,6 @@ agents:
           automation: eligible
     skills:
       - task-work
-    budget:
-      timeout_minutes: 30
-    concurrency:
-      max_concurrent: 1
-    auto_approve: true
-  - _ulid: 01KKBVD4P3DSVN0YJF8VHCP22M
-    id: pr-reviewer
-    name: PR Reviewer
-    description: Automated PR reviewer. Reviews pending_review tasks and merges when quality gates pass.
-    capabilities:
-      - review
-    tools:
-      - kspec
-      - git
-      - gh
-    conventions: []
-    adapter: codex-acp
-    dispatch:
-      - on: task.pending_review
-    skills:
-      - pr-review
     budget:
       timeout_minutes: 30
     concurrency:
