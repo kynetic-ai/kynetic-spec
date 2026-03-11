@@ -86737,7 +86737,7 @@
   type: task
   spec_ref: "@core-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86918,6 +86918,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T20:14:27.839Z
+  closed_reason: "Merged in PR #786. Backfilled review coverage for @core-ac-backfill and the in-scope
+    core primitive refs, including isolated regressions for completeness/testability plus targeted
+    schema, refs, and integration AC coverage. Verified with full npm test, task-scoped completeness
+    warnings filtered to [] for the in-scope refs, and fresh green CI on head dea2cb8b0. No trait
+    ACs applied to this change."
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
   slugs:
     - implement-schema-and-structure-ac-backfill
