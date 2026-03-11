@@ -86053,7 +86053,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKFGJMGRQ3CGY2KRTVP5DEZ0
   created_at: 2026-03-10T06:04:42.957Z
+  started_at: 2026-03-11T22:35:26.422Z
   notes:
     - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
       created_at: 2026-03-10T06:04:42.957Z
@@ -86094,10 +86096,16 @@
         item/task detail. Non-YAML markdown renders with prose typography. Fallback works when YAML
         parsing fails.
       supersedes: null
+    - _ulid: 01KKFGMWATET3H1REYGZWV9ZZX
+      created_at: 2026-03-11T22:35:29.499Z
+      author: Jacob Chapel
+      content: "Starting implementation on web UI plan detail surface. Scope: detect Specs/Tasks YAML
+        blocks in plan content, resolve derived refs through the batch item fetch API, render
+        embedded cards with fallback to syntax-highlighted markdown, and cover ACs with web UI
+        tests."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T22:35:26.422Z
-  session_id: 01KKFGJMGRQ3CGY2KRTVP5DEZ0
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
     - implement-markdown-adoption-across-ui-surfaces
