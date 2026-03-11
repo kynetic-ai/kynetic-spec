@@ -89636,11 +89636,39 @@
     - mvp
     - agent-runtime
   vcs_refs: []
-  created_at: 2026-03-11T15:26:04.492Z
-  notes: []
-  todos: []
-  started_at: 2026-03-11T15:36:59.209Z
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  created_at: 2026-03-11T15:26:04.492Z
+  started_at: 2026-03-11T15:36:59.209Z
+  notes:
+    - _ulid: 01KKES3JWBA3YMNZ2XRPBPM3NV
+      created_at: 2026-03-11T15:44:05.515Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes across 9 files:
+
+
+        Schema: Added initial_response_timeout_seconds to AgentBudgetSchema (meta.ts)
+
+        Types: Added 'stalled' to SessionStatusSchema and 'agent.stalled' to EventTypeSchema
+        (sessions/types.ts)
+
+        Invocation: Added InvocationStallError class, MEANINGFUL_UPDATE_TYPES set, stallResolved
+        flag in updateHandler, stallPromise in race, catch block for stall between abort and generic
+        failure, clearTimeout(stallHandle) in finally, 'stalled' returns null from
+        toInvocationOutcome (invocation.ts)
+
+        Store: Added 'stalled' to statusCounts Record and status breakdown loop (store.ts)
+
+        CLI: Updated session log list help text and added magenta color for stalled status
+        (session/commands.ts, session/log.ts)
+
+        Web UI: Added 'stalled' to SessionSummary type union and statusColor switch in sessions page
+        and RelatedSessionsSection component (api.ts, +page.svelte, RelatedSessionsSection.svelte)
+
+
+        All 4521 tests pass. TypeScript compiles clean.
+      supersedes: null
+  todos: []
 - _ulid: 01KKER2T4XPE935X4SHBYZ3T1G
   slugs:
     - task-test-stall-watchdog
