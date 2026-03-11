@@ -87156,6 +87156,10 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #787. Backfilled missing acceptance criteria across the targeted @tasks
+    descendants and added snapshot-backed task-system coverage for the touched refs plus
+    @tasks-ac-backfill own ACs. Fresh GitHub checks passed on merge head
+    9756f9b44a614db12a86225b69ae3d94c132da81; no trait ACs applied to this spec."
   depends_on:
     - "@implement-spec-completeness-policy"
   context: []
@@ -87166,6 +87170,7 @@
   created_at: 2026-03-10T06:55:45.973Z
   started_at: 2026-03-11T22:16:14.623Z
   submitted_at: 2026-03-11T22:16:20.429Z
+  completed_at: 2026-03-11T22:31:54.243Z
   notes:
     - _ulid: 01KKB8FF9NT30VT4802Y6WWV4M
       created_at: 2026-03-10T06:55:45.973Z
@@ -87270,11 +87275,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T22:31:54.243Z
-  closed_reason: "Merged in PR #787. Backfilled missing acceptance criteria across the targeted @tasks
-    descendants and added snapshot-backed task-system coverage for the touched refs plus
-    @tasks-ac-backfill own ACs. Fresh GitHub checks passed on merge head
-    9756f9b44a614db12a86225b69ae3d94c132da81; no trait ACs applied to this spec."
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
   slugs:
     - implement-meta-and-shadow-branch-ac-backfill
@@ -90604,7 +90604,7 @@
   spec_ref: null
   meta_ref: "@spec-plan-import"
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -90654,3 +90654,8 @@
       supersedes: null
   todos: []
   automation: manual_only
+  completed_at: 2026-03-11T22:34:06.208Z
+  closed_reason: "Merged in PR #791 (cb163790d5bd46c9e2b3dccf45c1a839f18df6d0). Updated iterative plan
+    workflow and plan skill guidance to match content-only import, optional stored module_ref,
+    approval before derive, plan derive as the materialization step, and re-import via --into;
+    regenerated kspec-agents.md and rendered plan skill output."
