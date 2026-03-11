@@ -84967,6 +84967,28 @@
         tests/session-log-list.test.ts tests/session-model-evolution.test.ts tests/cli-serve.test.ts
         (all passing).
       supersedes: null
+    - _ulid: 01KKD6ZJBPAHF2MG69ZQD9X781
+      created_at: 2026-03-11T01:08:05.110Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 4 completed:
+
+        - Merged current origin/main into fix/session-infinite-scroll-v2 so PR #762 matches the real
+        merge ref that CI evaluates.
+
+        - Reproduced the prior shard-1 failure from the GitHub log: stale local main had hidden that
+        the merge ref was still testing against current main-era session-log expectations.
+
+        - Verified on the updated branch: npm test -- tests/session-legacy-cli.test.ts
+        tests/session-log-list.test.ts tests/session-model-evolution.test.ts tests/cli-serve.test.ts
+        (all passing).
+
+        - Full verification: npm test -> 201 files, 4497 tests passed, 3 skipped; kspec validate ->
+        warnings only (existing project-wide warning debt, exit 6).
+
+        - Pushed merge commit 957569c75 to PR #762 and resolved the stale review threads so
+        check-unresolved-comments can rerun cleanly.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
