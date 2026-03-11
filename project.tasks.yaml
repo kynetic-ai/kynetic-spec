@@ -87545,6 +87545,7 @@
   session_id: 01KKFK8GDPK3TR834C39RPN3XZ
   created_at: 2026-03-10T06:55:47.174Z
   started_at: 2026-03-11T23:26:46.904Z
+  submitted_at: 2026-03-11T23:47:35.767Z
   notes:
     - _ulid: 01KKB8FGF6N80GSKNB97A7RXS4
       created_at: 2026-03-10T06:55:47.174Z
@@ -87588,7 +87589,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T23:47:35.767Z
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/794
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
   slugs:
     - implement-missing-description-backfill
