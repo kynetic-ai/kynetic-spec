@@ -14,6 +14,12 @@ import {
   testUlid,
 } from "./helpers/cli.js";
 
+const taskBackfillSnapshotPath = path.join(
+  __dirname,
+  "fixtures",
+  "task-system-ac-backfill.snapshot.json",
+);
+
 const touchedTaskRefs = [
   "@task-types",
   "@state-pending",
@@ -41,44 +47,60 @@ const touchedTaskRefs = [
   "@task-storage-separate",
 ];
 
-async function writeTaskBackfillSpecFixture(rootDir: string): Promise<void> {
-  const items = touchedTaskRefs.map((ref, index) => {
-    const slug = ref.slice(1);
+interface BackfillCriterionSnapshot {
+  id: string;
+  given: string;
+  when: string;
+  then: string;
+}
 
-    return {
-      _ulid: testUlid("TASK", index + 20),
-      slugs: [slug],
-      title: slug
-        .split("-")
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(" "),
-      type: "feature",
-      status: {
-        maturity: "draft",
-        implementation: "implemented",
-      },
-      description: `Synthetic task-system fixture coverage for ${ref}.`,
-      acceptance_criteria: [
-        {
-          id: "ac-1",
-          given: `${ref} exists in the task-system fixture with a documented scenario`,
-          when: "the item is reviewed for backfill quality in an isolated test project",
-          then: "the behavior remains concrete, observable, and suitable for spec completeness checks",
-        },
-      ],
-    };
-  });
+interface BackfillItemSnapshot {
+  ref: string;
+  title: string;
+  type: "feature" | "requirement";
+  description: string;
+  acceptance_criteria: BackfillCriterionSnapshot[];
+}
+
+interface TaskBackfillSnapshot {
+  module: {
+    ref: string;
+    type: "module";
+    title: string;
+    description: string;
+  };
+  items: BackfillItemSnapshot[];
+}
+
+async function loadTaskBackfillSnapshot(): Promise<TaskBackfillSnapshot> {
+  return JSON.parse(await fs.readFile(taskBackfillSnapshotPath, "utf-8")) as TaskBackfillSnapshot;
+}
+
+async function writeTaskBackfillSpecFixture(rootDir: string): Promise<TaskBackfillSnapshot> {
+  const snapshot = await loadTaskBackfillSnapshot();
+  const items = snapshot.items.map((item, index) => ({
+    _ulid: testUlid("TASK", index + 20),
+    slugs: [item.ref.slice(1)],
+    title: item.title,
+    type: item.type,
+    status: {
+      maturity: "draft",
+      implementation: "implemented",
+    },
+    description: item.description,
+    acceptance_criteria: item.acceptance_criteria,
+  }));
 
   const tasksModule = {
     _ulid: testUlid("TASK", 1),
     slugs: ["tasks"],
-    title: "Task System",
+    title: snapshot.module.title,
     type: "module",
     status: {
       maturity: "draft",
       implementation: "implemented",
     },
-    description: "Synthetic task-system module used for AC backfill review coverage.",
+    description: snapshot.module.description,
     features: items,
   };
 
@@ -93,6 +115,8 @@ async function writeTaskBackfillSpecFixture(rootDir: string): Promise<void> {
   includes.add("modules/tasks.yaml");
   config.includes = [...includes];
   await fs.writeFile(configPath, yamlStringify(config), "utf-8");
+
+  return snapshot;
 }
 
 describe("Task system AC backfill coverage", () => {
@@ -488,10 +512,11 @@ describe("Task storage discovery coverage", () => {
 
 describe("Task system AC backfill spec quality", () => {
   let tempDir: string;
+  let backfillSnapshot: TaskBackfillSnapshot;
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
-    await writeTaskBackfillSpecFixture(tempDir);
+    backfillSnapshot = await writeTaskBackfillSpecFixture(tempDir);
   });
 
   afterEach(async () => {
@@ -499,12 +524,14 @@ describe("Task system AC backfill spec quality", () => {
   });
 
   // AC: @tasks-ac-backfill ac-coverage
-  it("leaves no non-module @tasks descendants without acceptance criteria", () => {
+  it("keeps the exported real @tasks backfill snapshot free of non-module descendants without acceptance criteria", () => {
     const listing = kspecJson<{
       items: Array<{
         ref: string;
+        title: string;
         type: string;
-        acceptance_criteria?: Array<unknown>;
+        description?: string;
+        acceptance_criteria?: BackfillCriterionSnapshot[];
       }>;
     }>("item list --under @tasks --limit 999", tempDir);
 
@@ -514,29 +541,28 @@ describe("Task system AC backfill spec quality", () => {
       .map((item) => item.ref);
 
     expect(missing).toEqual([]);
+
+    const touchedItems = listing.items
+      .filter((item) => touchedTaskRefs.includes(item.ref))
+      .map(({ ref, title, type, description, acceptance_criteria }) => ({
+        ref,
+        title,
+        type,
+        description: description ?? "",
+        acceptance_criteria: acceptance_criteria ?? [],
+      }));
+
+    expect(touchedItems).toEqual(backfillSnapshot.items);
   });
 
   // AC: @tasks-ac-backfill ac-testable
-  it("keeps each touched task-system AC in concrete given/when/then form", () => {
-    const listing = kspecJson<{
-      items: Array<{
-        ref: string;
-        acceptance_criteria?: Array<{
-          id: string;
-          given: string;
-          when: string;
-          then: string;
-        }>;
-      }>;
-    }>("item list --under @tasks --limit 999", tempDir);
+  it("keeps each exported task-system AC in concrete given/when/then form", () => {
+    expect(backfillSnapshot.items.map((item) => item.ref).sort()).toEqual([...touchedTaskRefs].sort());
 
-    const touchedItems = listing.items.filter((item) => touchedTaskRefs.includes(item.ref));
-    expect(touchedItems).toHaveLength(touchedTaskRefs.length);
+    for (const item of backfillSnapshot.items) {
+      expect(item.acceptance_criteria.length).toBeGreaterThan(0);
 
-    for (const item of touchedItems) {
-      expect(item.acceptance_criteria?.length ?? 0).toBeGreaterThan(0);
-
-      for (const criterion of item.acceptance_criteria ?? []) {
+      for (const criterion of item.acceptance_criteria) {
         expect(criterion.id).toMatch(/^ac-/);
         expect(criterion.given.trim().length).toBeGreaterThan(10);
         expect(criterion.when.trim().length).toBeGreaterThan(10);

@@ -1,0 +1,346 @@
+{
+  "module": {
+    "ref": "@tasks",
+    "type": "module",
+    "title": "Task System",
+    "description": "Tasks are first-class items that track work. They can be derived\nfrom spec items or created standalone. The task system enables\nkspec to function as a work tracker, not just a spec format.\n"
+  },
+  "items": [
+    {
+      "ref": "@task-types",
+      "title": "Task Types",
+      "type": "feature",
+      "description": "Tasks have types that indicate their nature and relationship\nto spec items. Some types expect spec linkage; others don't.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task is created or derived",
+          "when": "its type field is validated",
+          "then": "the type is stored as one of the supported task classifications: task, epic, bug, spike, or infra"
+        }
+      ]
+    },
+    {
+      "ref": "@state-pending",
+      "title": "State - pending",
+      "type": "requirement",
+      "description": "status: pending\n\nInitial state. Work not yet started.\nTransitions: start -> in_progress, cancel -> cancelled\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task has status pending",
+          "when": "a user runs kspec task start or kspec task cancel",
+          "then": "the task transitions to in_progress or cancelled respectively"
+        }
+      ]
+    },
+    {
+      "ref": "@state-in-progress",
+      "title": "State - in_progress",
+      "type": "requirement",
+      "description": "status: in_progress\n\nWork actively being done.\nTransitions:\n- complete -> completed\n- block -> blocked\n- cancel -> cancelled\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task has status in_progress",
+          "when": "a user runs kspec task submit, kspec task block, or kspec task cancel",
+          "then": "the task transitions to pending_review, blocked, or cancelled respectively"
+        }
+      ]
+    },
+    {
+      "ref": "@state-blocked",
+      "title": "State - blocked",
+      "type": "requirement",
+      "description": "status: blocked\n\nWork paused due to blocker.\nCan be set manually (external blocker) or auto-computed\nwhen depends_on items aren't completed.\n\nTransitions: unblock -> in_progress (or pending)\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task has status blocked",
+          "when": "the blocker is cleared and the task is unblocked",
+          "then": "the task returns to pending or in_progress instead of transitioning directly to a terminal state"
+        }
+      ]
+    },
+    {
+      "ref": "@state-completed",
+      "title": "State - completed",
+      "type": "requirement",
+      "description": "status: completed\n\nWork finished successfully. Terminal state.\nShould include closed_reason describing outcome.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task is marked completed",
+          "when": "the completion is persisted",
+          "then": "the task remains in the terminal completed state and stores a closed_reason describing the outcome"
+        }
+      ]
+    },
+    {
+      "ref": "@state-cancelled",
+      "title": "State - cancelled",
+      "type": "requirement",
+      "description": "status: cancelled\n\nWork abandoned. Terminal state.\nShould include closed_reason explaining why.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task is cancelled",
+          "when": "the cancellation is persisted",
+          "then": "the task remains in the terminal cancelled state and stores a closed_reason explaining why work stopped"
+        }
+      ]
+    },
+    {
+      "ref": "@derived-ready",
+      "title": "Derived State - ready",
+      "type": "requirement",
+      "description": "\"ready\" is a computed view, not stored state:\nready = (pending OR needs_work) + all depends_on completed + no blockers\n\n`kspec tasks ready` returns tasks in this state.\nThis is the primary query for \"what can I work on?\"\n\nneeds_work tasks are sorted before pending — fix cycles take priority.",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "tasks exist in pending, needs_work, blocked, and unmet-dependency states",
+          "when": "kspec tasks ready runs",
+          "then": "only pending or needs_work tasks with completed dependencies and no blockers are returned, with needs_work tasks listed before pending tasks"
+        }
+      ]
+    },
+    {
+      "ref": "@task-schema",
+      "title": "Task Schema",
+      "type": "feature",
+      "description": "Tasks are items with additional fields for work tracking.\nKey principle: don't duplicate spec content, reference it.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task implements a spec item",
+          "when": "task data is stored",
+          "then": "the task keeps execution metadata plus a spec_ref link instead of duplicating the linked spec's description and acceptance criteria"
+        }
+      ]
+    },
+    {
+      "ref": "@task-spec-ref",
+      "title": "Spec Reference Field",
+      "type": "requirement",
+      "description": "spec_ref: \"@feature-slug\"\n\nLinks task to the spec item it implements.\nThe spec item has the full description, acceptance\ncriteria, etc. Task adds only execution metadata.\n\nOptional for free-form tasks (bug, infra).\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task implements a spec item or represents free-form work",
+          "when": "the task schema is validated",
+          "then": "spec_ref points to the linked spec item when present and may be omitted for free-form bug or infra tasks"
+        }
+      ]
+    },
+    {
+      "ref": "@task-work-fields",
+      "title": "Work Metadata Fields",
+      "type": "requirement",
+      "description": "Task-specific fields for work tracking:\n\n- priority: 1-5 (1 highest) or high/medium/low\n- complexity: Relative size estimate (fibonacci or 1-5)\n- assignee: Who's working on it (optional)\n- blocked_by: Manual blockers (strings, not refs)\n- closed_reason: Why completed/cancelled\n\nThese fields don't exist on regular spec items.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "task-specific metadata is present",
+          "when": "task schema validation runs",
+          "then": "priority, complexity, assignee, blocked_by, and closed_reason are accepted on tasks without becoming required fields on regular spec items"
+        }
+      ]
+    },
+    {
+      "ref": "@task-timestamps",
+      "title": "Task Timestamps",
+      "type": "requirement",
+      "description": "Auto-populated timestamps:\n\n- created_at: When task was created\n- started_at: When status became in_progress\n- completed_at: When status became completed/cancelled\n\nFormat: ISO 8601 (2025-01-14T10:00:00Z)\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task is created, started, or completed or cancelled",
+          "when": "task lifecycle commands persist the change",
+          "then": "created_at, started_at, and completed_at are auto-populated as ISO 8601 timestamps at the matching lifecycle transition"
+        }
+      ]
+    },
+    {
+      "ref": "@task-vcs-refs",
+      "title": "VCS References",
+      "type": "requirement",
+      "description": "vcs_refs links tasks to git branches/commits/tags:\n\nvcs_refs:\n  - ref: \"feat/user-login\"\n    type: branch\n  - ref: \"abc123\"\n    type: commit\n\nMinimal schema, extensible as needed.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "vcs_refs are attached to a task",
+          "when": "task data is validated",
+          "then": "each vcs_refs entry stores a git reference string and a type such as branch, commit, or tag"
+        }
+      ]
+    },
+    {
+      "ref": "@derive-command",
+      "title": "Derive Command",
+      "type": "requirement",
+      "description": "kspec derive <ref>     # Derive task for single item\nkspec derive --all    # Derive for all items without tasks\n\nCreates task with:\n- title: \"Implement <item title>\" (adjustable)\n- type: task (or epic for features with children)\n- spec_ref: @<item>\n- derivation: auto\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a user runs kspec derive @item or kspec derive --all",
+          "when": "derivation creates work for an uncovered item",
+          "then": "the created task includes a derived title, task type, spec_ref, and derivation metadata"
+        }
+      ]
+    },
+    {
+      "ref": "@derive-idempotency",
+      "title": "Derivation Idempotency",
+      "type": "requirement",
+      "description": "Derivation is idempotent:\n- If task with spec_ref to item exists, skip creation\n- Use --force to create additional task anyway\n- Useful for re-running derive without duplicates\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a task already exists for an item's spec_ref",
+          "when": "kspec derive is run again without --force",
+          "then": "no duplicate task is created for that spec item"
+        }
+      ]
+    },
+    {
+      "ref": "@note-structure",
+      "title": "Note Structure",
+      "type": "requirement",
+      "description": "Note entries have:\n- _ulid: Entry identifier\n- created_at: Timestamp\n- author: Who added it\n- content: The note text (multiline)\n- supersedes: ULID of entry this corrects (optional)\n\nNotes are never deleted, only superseded.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a note is added to a task",
+          "when": "the note is stored",
+          "then": "the entry records its ULID, created_at timestamp, author, content, and optional supersedes reference while preserving earlier notes"
+        }
+      ]
+    },
+    {
+      "ref": "@note-cli",
+      "title": "Note CLI Commands",
+      "type": "requirement",
+      "description": "kspec task note <ref> \"message\"      # Add note\nkspec task note <ref> --supersedes <id> \"correction\"\nkspec task notes <ref>               # Show notes log\n\nJSON output available for all commands.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a user runs kspec task note @task \"message\" or kspec task notes @task",
+          "when": "the command succeeds",
+          "then": "the note is appended to the task log and the notes command returns the append-only note history"
+        }
+      ]
+    },
+    {
+      "ref": "@todo-structure",
+      "title": "Todo Structure",
+      "type": "requirement",
+      "description": "Todo entries have:\n- id: Local numeric ID (within task)\n- text: The todo description\n- done: Boolean\n- done_at: When marked done (if done)\n- added_at: When created\n- added_by: Who added it\n- promoted_to: @ref if promoted to task (optional)\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a todo is added to a task and later marked done or not done",
+          "when": "the todo entry is stored",
+          "then": "it records a local id, text, done state, timestamps, author, and keeps the same identity across later status changes"
+        }
+      ]
+    },
+    {
+      "ref": "@todo-cli",
+      "title": "Todo CLI Commands",
+      "type": "requirement",
+      "description": "kspec todo add <ref> \"text\"     # Add todo\nkspec todo done <ref> <id>      # Mark complete\nkspec todo promote <ref> <id>   # Promote to task\nkspec task todos <ref>          # List todos\n\nTodos are for quick capture; promote when complex.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a user runs kspec task todo add, kspec task todo done, kspec task todo undone, or kspec task todos",
+          "when": "the command succeeds",
+          "then": "the task todo list is updated and the current todo entries can be listed from the task"
+        }
+      ]
+    },
+    {
+      "ref": "@task-storage",
+      "title": "Task Storage",
+      "type": "feature",
+      "description": "Tasks are stored alongside or separate from specs.\nAuto-adaptive: start alongside, separate when volume grows.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a project uses the task system",
+          "when": "tasks are persisted",
+          "then": "the system supports storing them either alongside module specs or in a dedicated tasks directory without changing task semantics"
+        }
+      ]
+    },
+    {
+      "ref": "@task-storage-alongside",
+      "title": "Storage - Alongside Specs",
+      "type": "requirement",
+      "description": "For smaller projects, tasks next to specs:\n\nspec/\n  auth.yaml           # Spec items\n  auth.tasks.yaml     # Tasks for auth module\n\nSimple, keeps related items together.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a smaller project stores tasks alongside specs",
+          "when": "a module has a companion .tasks.yaml file next to its spec file",
+          "then": "tasks for that module remain colocated with the related spec"
+        }
+      ]
+    },
+    {
+      "ref": "@task-storage-separate",
+      "title": "Storage - Separate Directory",
+      "type": "requirement",
+      "description": "For larger projects, separate tasks directory:\n\nspec/\n  modules/\n    auth.yaml\ntasks/\n  backlog.yaml\n  active.yaml\n  archive/\n    2025-01.yaml\n\nSeparates concerns, enables archiving.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a larger project uses separate task storage",
+          "when": "tasks are persisted under tasks backlog, active, or archive files",
+          "then": "task data is stored separately from module spec files and can be archived independently"
+        }
+      ]
+    },
+    {
+      "ref": "@query-ready",
+      "title": "Ready Tasks Query",
+      "type": "requirement",
+      "description": "kspec tasks ready\n\nReturns tasks where:\n- status = pending OR needs_work\n- all depends_on tasks are completed\n- no manual blocked_by entries\n- sorted: needs_work first, then pending (fix cycles take priority)\n\nThis is THE command for \"what can I work on next?\"",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "tasks have mixed statuses, blockers, and dependencies",
+          "when": "kspec tasks ready runs",
+          "then": "it returns only ready tasks and orders needs_work ahead of pending"
+        }
+      ]
+    },
+    {
+      "ref": "@query-next",
+      "title": "Next Task Query",
+      "type": "requirement",
+      "description": "kspec tasks next\n\nReturns single highest-priority ready task.\nSorting: priority (asc) -> created_at (asc)\n\nUseful for agents: \"give me one thing to do\"\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "multiple ready tasks exist",
+          "when": "kspec tasks next runs",
+          "then": "it returns the single ready task with the highest priority, breaking ties by oldest created_at first"
+        }
+      ]
+    },
+    {
+      "ref": "@query-filters",
+      "title": "Task Query Filters",
+      "type": "requirement",
+      "description": "kspec tasks list [filters]\n\nFilters:\n- --status <state>    # By status\n- --type <type>       # By task type\n- --tag <tag>         # By tag\n- --assignee <who>    # By assignee\n- --spec-ref <ref>    # By linked spec item\n\nAll queries support --json output.\n",
+      "acceptance_criteria": [
+        {
+          "id": "ac-1",
+          "given": "a user runs kspec tasks list with --status, --type, --tag, or --meta-ref and optionally --json",
+          "when": "the query executes",
+          "then": "only matching tasks are returned and JSON output remains available for the filtered result set"
+        }
+      ]
+    }
+  ]
+}
