@@ -70,8 +70,15 @@ function resolvePlanRef(ref: string, plans: LoadedPlan[]): LoadedPlan {
   );
 
   if (!plan) {
-    error(errors.reference.planNotFound(ref));
-    process.exit(EXIT_CODES.NOT_FOUND);
+    exitDeriveWithGuidance(
+      errors.reference.planNotFound(ref),
+      EXIT_CODES.NOT_FOUND,
+      "Check available plans with: kspec plan list",
+      {
+        ref,
+        entity: "plan",
+      },
+    );
   }
 
   return plan;
@@ -98,14 +105,28 @@ async function resolveDeriveModuleRef(
   const { refIndex } = await buildIndexes(ctx, plans);
   const moduleResult = refIndex.resolve(moduleRef);
   if (!moduleResult.ok) {
-    error(errors.reference.itemNotFound(moduleRef));
-    process.exit(EXIT_CODES.NOT_FOUND);
+    exitDeriveWithGuidance(
+      errors.reference.itemNotFound(moduleRef),
+      EXIT_CODES.NOT_FOUND,
+      "Check available modules with: kspec item list --type module",
+      {
+        ref: moduleRef,
+        entity: "module",
+      },
+    );
   }
 
   const moduleItem = moduleResult.item as LoadedSpecItem;
   if (moduleItem.type !== "module") {
-    error(`${moduleRef} is not a module (type: ${moduleItem.type})`);
-    process.exit(EXIT_CODES.USAGE_ERROR);
+    exitDeriveWithGuidance(
+      `${moduleRef} is not a module (type: ${moduleItem.type})`,
+      EXIT_CODES.USAGE_ERROR,
+      "Pass a module @ref from: kspec item list --type module",
+      {
+        field: "module",
+        value: moduleItem.type,
+      },
+    );
   }
 
   return moduleRef.startsWith("@") ? moduleRef : `@${moduleRef}`;
@@ -187,6 +208,30 @@ interface PendingTaskPlan {
   localKey: string;
   ref: string;
   input: TaskInput;
+}
+
+function exitDeriveWithGuidance(
+  message: string,
+  exitCode: number,
+  suggestion?: string,
+  details?: Record<string, unknown>,
+): never {
+  if (suggestion) {
+    if (isJsonMode()) {
+      error(message, {
+        ...details,
+        suggestion,
+        guidance: suggestion,
+      });
+    } else {
+      error(message);
+      console.error(`Suggestion: ${suggestion}`);
+    }
+  } else {
+    error(message, isJsonMode() ? details : undefined);
+  }
+
+  process.exit(exitCode);
 }
 
 function emitDeriveResult(result: DeriveResult): void {
@@ -310,8 +355,14 @@ async function materializePlanSpecs(
 ): Promise<MaterializedSpec[]> {
   const sortResult = topologicalSort(parsedPlan.specs);
   if (sortResult.error) {
-    error(sortResult.error.message);
-    process.exit(EXIT_CODES.USAGE_ERROR);
+    exitDeriveWithGuidance(
+      sortResult.error.message,
+      EXIT_CODES.USAGE_ERROR,
+      "Fix the parent references in the plan content so they form an acyclic tree.",
+      {
+        type: sortResult.error.type,
+      },
+    );
   }
 
   const createdSpecs = new Map<string, MaterializedSpec>();
@@ -319,8 +370,15 @@ async function materializePlanSpecs(
 
   const moduleResult = refIndex.resolve(moduleRef);
   if (!moduleResult.ok) {
-    error(errors.reference.itemNotFound(moduleRef));
-    process.exit(EXIT_CODES.NOT_FOUND);
+    exitDeriveWithGuidance(
+      errors.reference.itemNotFound(moduleRef),
+      EXIT_CODES.NOT_FOUND,
+      "Check available modules with: kspec item list --type module",
+      {
+        ref: moduleRef,
+        entity: "module",
+      },
+    );
   }
   const moduleItem = moduleResult.item as LoadedSpecItem;
 
@@ -1052,13 +1110,27 @@ Examples:
         const author = getAuthor(ctx.config?.identity?.author);
 
         if (foundPlan.status === "active") {
-          error("Plan already derived. Manage specs directly via kspec item set.");
-          process.exit(EXIT_CODES.CONFLICT);
+          exitDeriveWithGuidance(
+            "Plan already derived. Manage specs directly via kspec item set.",
+            EXIT_CODES.CONFLICT,
+            `Update derived work directly, for example: kspec item set ${planRef} ...`,
+            {
+              current_status: foundPlan.status,
+              valid_next_states: ["manage-derived-work"],
+            },
+          );
         }
 
         if (foundPlan.status !== "approved") {
-          error("Plan must be in approved status to derive");
-          process.exit(EXIT_CODES.CONFLICT);
+          exitDeriveWithGuidance(
+            `Plan must be in approved status to derive (current: ${foundPlan.status})`,
+            EXIT_CODES.CONFLICT,
+            `Approve the plan first with: kspec plan set ${planRef} --status approved`,
+            {
+              current_status: foundPlan.status,
+              valid_next_states: ["approved"],
+            },
+          );
         }
 
         const moduleRef = await resolveDeriveModuleRef(
@@ -1068,8 +1140,15 @@ Examples:
           options.module,
         );
         if (!moduleRef) {
-          error("Plan derive requires --module when the plan has no stored module ref");
-          process.exit(EXIT_CODES.USAGE_ERROR);
+          exitDeriveWithGuidance(
+            "Plan derive requires --module when the plan has no stored module ref",
+            EXIT_CODES.USAGE_ERROR,
+            `Re-run with a module, for example: kspec plan derive ${planRef} --module @your-module`,
+            {
+              field: "module",
+              value: null,
+            },
+          );
         }
 
         const parsedPlan = parsePlanDocument(foundPlan.content);
@@ -1079,8 +1158,14 @@ Examples:
 
         for (const parseError of parsedPlan.errors) {
           if (parseError.type === "yaml") {
-            error(parseError.message);
-            process.exit(EXIT_CODES.USAGE_ERROR);
+            exitDeriveWithGuidance(
+              parseError.message,
+              EXIT_CODES.USAGE_ERROR,
+              "Fix the YAML block in the plan document and run kspec plan derive again.",
+              {
+                type: parseError.type,
+              },
+            );
           }
           errorsList.push({
             type: parseError.type,
@@ -1089,10 +1174,11 @@ Examples:
         }
 
         if (parsedPlan.specs.length === 0) {
-          error(
+          exitDeriveWithGuidance(
             "No specs found in plan content. Ensure ## Specs section contains a fenced YAML code block.",
+            EXIT_CODES.USAGE_ERROR,
+            "Add a ## Specs section with a ```yaml fenced block, then re-run derive.",
           );
-          process.exit(EXIT_CODES.USAGE_ERROR);
         }
 
         const { refIndex, items, tasks } = await buildIndexes(ctx, plans);

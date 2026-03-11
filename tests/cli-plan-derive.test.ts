@@ -2,34 +2,97 @@
  * Integration tests for enhanced plan derivation.
  */
 
-// AC: @trait-shadow-commit ac-1 — N/A: plan derive delegates shadow commit creation to shared commitIfShadow coverage in shadow.test.ts.
 // AC: @trait-shadow-commit ac-2 — N/A: commit message formatting is covered centrally by commitIfShadow tests.
 // AC: @trait-shadow-commit ac-3 — N/A: commit message ref formatting is covered centrally by commitIfShadow tests.
 // AC: @trait-shadow-commit ac-4 — N/A: shadow-disabled behavior is covered centrally by commitIfShadow tests.
 // AC: @trait-shadow-commit ac-5 — N/A: save-failure short-circuit is covered by shared shadow commit tests.
 // AC: @trait-shadow-commit ac-6 — N/A: fire-and-forget push behavior is covered centrally by commitIfShadow tests.
 // AC: @trait-shadow-commit ac-7 — N/A: commit/push warning behavior is covered centrally by commitIfShadow tests.
-// AC: @trait-shadow-commit ac-8 — N/A: temp CLI fixtures do not provision a shadow worktree; single-commit behavior is exercised in repositories with shadow enabled.
 // AC: @trait-dry-run ac-5 — N/A: plan derive has no --force flag.
 // AC: @trait-json-output ac-6 — N/A: plan derive has no competing format flags beyond --json.
 // AC: @trait-semantic-exit-codes ac-3 — N/A: plan derive has no confirmation prompt.
 // AC: @trait-semantic-exit-codes ac-5 — N/A: plan derive is a mutation command, not an empty-result query.
 // AC: @trait-semantic-exit-codes ac-7 — N/A: partial materialization is warning-based success, not a batch failure mode.
 
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   cleanupTempDir,
+  createTempDir,
+  initGitRepo,
   kspec as kspecRun,
   kspecJson,
   kspecOutput as kspec,
   setupTempFixtures,
 } from "./helpers/cli";
+import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
+
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+const canRunShadowTests = (() => {
+  try {
+    const version = execSync("git --version", { encoding: "utf-8" }).trim();
+    const match = version.match(/(\d+)\.(\d+)/);
+    if (!match) return false;
+    const [, major, minor] = match.map(Number);
+    const gitSupportsOrphan = major > 2 || (major === 2 && minor >= 42);
+    return gitSupportsOrphan && existsSync(projectCli);
+  } catch {
+    return false;
+  }
+})();
 
 function writePlanFile(tempDir: string, name: string, content: string): Promise<string> {
   const planPath = path.join(tempDir, name);
   return fs.writeFile(planPath, content).then(() => planPath);
+}
+
+async function setupShadowProject(projectDir: string): Promise<void> {
+  initGitRepo(projectDir);
+  await fs.writeFile(path.join(projectDir, "README.md"), "# Test", "utf-8");
+  execSync('git add README.md && git commit -m "initial"', {
+    cwd: projectDir,
+    stdio: "pipe",
+  });
+
+  const result = kspecRun("init --no-prompt", projectDir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
+}
+
+function getShadowCommitCount(projectDir: string): number {
+  const worktreeDir = path.join(projectDir, SHADOW_WORKTREE_DIR);
+  return parseInt(
+    execSync("git rev-list --count HEAD", {
+      cwd: worktreeDir,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim(),
+    10,
+  );
+}
+
+function getShadowHeadSubject(projectDir: string): string {
+  const worktreeDir = path.join(projectDir, SHADOW_WORKTREE_DIR);
+  return execSync("git log --format=%s -1", {
+    cwd: worktreeDir,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
+
+function getShadowStatus(projectDir: string): string {
+  const worktreeDir = path.join(projectDir, SHADOW_WORKTREE_DIR);
+  return execSync("git status --porcelain", {
+    cwd: worktreeDir,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
 }
 
 describe("Integration: enhanced plan derive", () => {
@@ -146,6 +209,7 @@ describe("Integration: enhanced plan derive", () => {
     expect(result.stderr).toContain(
       "Plan derive requires --module when the plan has no stored module ref",
     );
+    expect(result.stderr).toContain("Suggestion:");
   });
 
   it("lets --module override the stored module ref from import", async () => {
@@ -224,7 +288,7 @@ describe("Integration: enhanced plan derive", () => {
   });
 
   it("deduplicates colliding slugs during derivation", async () => {
-    // AC: @plan-derive-enhanced ac-slug-dedup, ac-commit
+    // AC: @plan-derive-enhanced ac-slug-dedup
     kspec(
       'item add --under @test-core --title "Existing Collision" --slug collision-item',
       tempDir,
@@ -255,6 +319,46 @@ describe("Integration: enhanced plan derive", () => {
     );
 
     expect(result.created_specs).toEqual(["@collision-item-1"]);
+  });
+
+  it.runIf(canRunShadowTests)("creates a single clean shadow-branch commit when derive succeeds", async () => {
+    // AC: @plan-derive-enhanced ac-commit
+    // AC: @trait-shadow-commit ac-1, ac-8
+    const shadowDir = await createTempDir("kspec-plan-derive-shadow-");
+
+    try {
+      await setupShadowProject(shadowDir);
+      kspec('module add --title "Test Core" --slug test-core', shadowDir);
+
+      const planPath = await writePlanFile(
+        shadowDir,
+        "shadow-derive.md",
+        `# Shadow Derive
+
+## Specs
+
+\`\`\`yaml
+- title: Shadow Feature
+  slug: shadow-feature
+\`\`\`
+`,
+      );
+
+      kspec(
+        `plan import "${planPath}" --module @test-core --status approved`,
+        shadowDir,
+      );
+
+      const commitsBefore = getShadowCommitCount(shadowDir);
+      kspec("plan derive @plan-shadow-derive --module @test-core", shadowDir);
+      const commitsAfter = getShadowCommitCount(shadowDir);
+
+      expect(commitsAfter).toBe(commitsBefore + 1);
+      expect(getShadowStatus(shadowDir)).toBe("");
+      expect(getShadowHeadSubject(shadowDir)).toContain("plan-derive");
+    } finally {
+      await cleanupTempDir(shadowDir);
+    }
   });
 
   it("derives tasks, maps refs, carries priorities, and stores global plus per-spec implementation notes", async () => {
@@ -477,6 +581,35 @@ Just prose, no structured specs section.
     expect(result.stderr).toContain("No specs found in plan content");
   });
 
+  it("includes actionable ref guidance in text and JSON errors when the plan ref does not resolve", () => {
+    // AC: @trait-error-guidance ac-1, ac-2, ac-3, ac-6
+    const textResult = kspecRun(
+      "plan derive @does-not-exist --module @test-core",
+      tempDir,
+      { expectFail: true },
+    );
+
+    expect(textResult.stderr).toContain("Plan not found: @does-not-exist");
+    expect(textResult.stderr).toContain(
+      "Suggestion: Check available plans with: kspec plan list",
+    );
+
+    const jsonResult = kspecRun(
+      "plan derive @does-not-exist --module @test-core --json",
+      tempDir,
+      { expectFail: true },
+    );
+    const parsed = JSON.parse(jsonResult.stderr);
+
+    expect(parsed.error).toBe("Plan not found: @does-not-exist");
+    expect(parsed.details.suggestion).toBe(
+      "Check available plans with: kspec plan list",
+    );
+    expect(parsed.details.guidance).toBe(
+      "Check available plans with: kspec plan list",
+    );
+  });
+
   it("returns structured JSON errors for invalid usage and guards draft plus already-derived plans", async () => {
     // AC: @plan-derive-enhanced ac-status-guard, ac-already-derived
     // AC: @trait-error-guidance ac-4, ac-6
@@ -503,8 +636,12 @@ Just prose, no structured specs section.
       { expectFail: true },
     );
     expect(draftResult.exitCode).toBe(5);
-    expect(JSON.parse(draftResult.stderr).error).toBe(
-      "Plan must be in approved status to derive",
+    const draftError = JSON.parse(draftResult.stderr);
+    expect(draftError.error).toBe(
+      "Plan must be in approved status to derive (current: draft)",
+    );
+    expect(draftError.details.suggestion).toContain(
+      "kspec plan set @plan-draft-plan --status approved",
     );
 
     const approvedPath = await writePlanFile(
@@ -532,8 +669,12 @@ Just prose, no structured specs section.
       { expectFail: true },
     );
     expect(activeResult.exitCode).toBe(5);
-    expect(JSON.parse(activeResult.stderr).error).toBe(
+    const activeError = JSON.parse(activeResult.stderr);
+    expect(activeError.error).toBe(
       "Plan already derived. Manage specs directly via kspec item set.",
+    );
+    expect(activeError.details.suggestion).toContain(
+      "kspec item set @plan-already-derived",
     );
   });
 });
