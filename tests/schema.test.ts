@@ -16,6 +16,7 @@ import {
 } from '../src/schema/index.js';
 
 describe('UlidSchema', () => {
+  // AC: @ulid-format ac-1
   it('should accept valid ULIDs', () => {
     const validUlid = '01HQ3K5XJ8MPVB2XCJZ0KE9YWN';
     expect(UlidSchema.safeParse(validUlid).success).toBe(true);
@@ -36,6 +37,7 @@ describe('SlugSchema', () => {
     expect(SlugSchema.safeParse('task123').success).toBe(true);
   });
 
+  // AC: @slug-format ac-1
   it('should reject invalid slugs', () => {
     expect(SlugSchema.safeParse('Auth-Login').success).toBe(false); // uppercase
     expect(SlugSchema.safeParse('123-task').success).toBe(false);   // starts with number
@@ -45,6 +47,7 @@ describe('SlugSchema', () => {
 });
 
 describe('RefSchema', () => {
+  // AC: @ref-syntax ac-1
   it('should accept valid references', () => {
     expect(RefSchema.safeParse('@auth-login').success).toBe(true);
     expect(RefSchema.safeParse('@01HQ3K').success).toBe(true);
@@ -169,6 +172,29 @@ describe('ItemTypeSchema', () => {
 });
 
 describe('SpecItemSchema - traits field', () => {
+  // AC: @item-required-fields ac-1
+  it('should accept a minimal spec item with only required fields', () => {
+    const spec = {
+      _ulid: '01HQ3K5XJ8MPVB2XCJZ0KE9YWN',
+      slugs: ['minimal-spec'],
+      title: 'Minimal Spec',
+      type: 'requirement',
+      status: { maturity: 'draft', implementation: 'not_started' },
+      depends_on: [],
+      implements: [],
+      relates_to: [],
+      tests: [],
+      notes: [],
+      created: '2025-01-14T10:00:00Z'
+    };
+    const result = SpecItemSchema.safeParse(spec);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data._ulid).toBe('01HQ3K5XJ8MPVB2XCJZ0KE9YWN');
+      expect(result.data.title).toBe('Minimal Spec');
+    }
+  });
+
   // AC: @trait-type ac-4
   it('should accept non-trait items with traits field', () => {
     const feature = {
@@ -192,6 +218,7 @@ describe('SpecItemSchema - traits field', () => {
     }
   });
 
+  // AC: @item-optional-fields ac-1
   // AC: @traits-field ac-4
   it('should default traits field to empty array when omitted', () => {
     const spec = {

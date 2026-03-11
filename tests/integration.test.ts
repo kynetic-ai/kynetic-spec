@@ -734,6 +734,19 @@ describe('Integration: item set', () => {
     const result = kspecRun('item set @only-slug --remove-slug only-slug', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
   });
+
+  // AC: @ulid-immutability ac-1
+  it('should preserve the original ULID when an item is updated', () => {
+    kspec('item add --under @test-core --title "Immutable ULID Item" --slug immutable-ulid --type feature', tempDir);
+
+    const before = kspecJson<{ ulid: string }>('item get @immutable-ulid --json', tempDir);
+
+    kspec('item set @immutable-ulid --description "Updated without replacing identity"', tempDir);
+
+    const after = kspecJson<{ ulid: string; description?: string }>('item get @immutable-ulid --json', tempDir);
+    expect(after.ulid).toBe(before.ulid);
+    expect(after.description).toContain('Updated without replacing identity');
+  });
 });
 
 describe('Integration: item patch', () => {
