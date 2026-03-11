@@ -629,6 +629,8 @@ describe('kspec serve commands', () => {
       // Daemon should have started — output contains PID and port
       expect(result).toContain(`port ${port}`);
 
+      await waitForDaemonHealth(port);
+
       // Verify health endpoint responds (daemon is actually running with Elysia)
       const healthResponse = await fetch(`http://localhost:${port}/api/health`);
       expect(healthResponse.ok, 'daemon health endpoint should respond').toBe(true);
