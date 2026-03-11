@@ -89866,7 +89866,7 @@
   type: task
   spec_ref: "@plan-import-into"
   plan_ref: "@plan-iterative-plan-editing"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@plan-import"
@@ -89877,7 +89877,7 @@
   session_id: 01KKFBD67T1HHYA1STWBW0EWYV
   created_at: 2026-03-10T22:42:10.959Z
   started_at: 2026-03-11T21:26:12.950Z
-  submitted_at: 2026-03-11T20:55:14.274Z
+  submitted_at: 2026-03-11T21:30:33.587Z
   notes:
     - _ulid: 01KKCYMDCFS1DS81P1VE42PDQZ
       created_at: 2026-03-10T22:42:10.959Z
