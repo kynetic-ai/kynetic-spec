@@ -142,6 +142,7 @@ export function createPlan(input: PlanInput, author?: string): Plan {
     derived_tasks: input.derived_tasks ?? [],
     derived_specs: input.derived_specs ?? [],
     source_path: input.source_path ?? null,
+    module_ref: input.module_ref ?? null,
     created_at: input.created_at ?? now,
     approved_at: input.approved_at ?? null,
     completed_at: input.completed_at ?? null,

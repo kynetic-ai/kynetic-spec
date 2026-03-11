@@ -48,6 +48,7 @@ export const PlanSchema = z.object({
   // Source tracking (if imported from file)
   // AC: @plan-import ac-24
   source_path: z.string().nullable().optional(),
+  module_ref: RefSchema.nullable().optional(),
 
   // Timestamps (auto-populated if not provided)
   created_at: DateTimeSchema.default(() => new Date().toISOString()),
@@ -81,6 +82,7 @@ export const PlanInputSchema = z.object({
 
   // Source tracking
   source_path: z.string().nullable().optional(),
+  module_ref: RefSchema.nullable().optional(),
 
   // Timestamps
   created_at: DateTimeSchema.optional(),

@@ -206,6 +206,14 @@ Examples:
             console.log(`Slugs:    ${foundPlan.slugs.join(", ")}`);
           }
 
+          if (foundPlan.module_ref) {
+            console.log(`Module:   ${foundPlan.module_ref}`);
+          }
+
+          if (foundPlan.source_path) {
+            console.log(`Source:   ${foundPlan.source_path}`);
+          }
+
           console.log(
             `${fieldLabels.created}  ${foundPlan.created_at} (${formatRelativeTime(foundPlan.created_at)})`,
           );

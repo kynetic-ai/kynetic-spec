@@ -250,6 +250,8 @@ function expandPlans(
       task_count: linkedTasks.length,
       task_progress: countTaskProgress(linkedTasks),
       content: plan.content,
+      module_ref: plan.module_ref ?? null,
+      source_path: plan.source_path ?? null,
     };
   });
 }
