@@ -86933,6 +86933,11 @@
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #784 (69420642a28584e531c216b9f7083bbfc262a98d). Added review-artifact
+    test coverage for the schema/structure AC backfill with isolated temp fixtures, verified the
+    touched schema refs have no completeness warnings, and confirmed full regression plus fresh PR
+    CI passed on the merged head. AC coverage for @schema-ac-backfill and the touched backfill refs
+    was reviewed and confirmed."
   depends_on:
     - "@implement-spec-completeness-policy"
   context: []
@@ -86943,6 +86948,7 @@
   created_at: 2026-03-10T06:55:44.873Z
   started_at: 2026-03-11T20:15:32.262Z
   submitted_at: 2026-03-11T20:20:12.245Z
+  completed_at: 2026-03-11T20:30:31.902Z
   notes:
     - _ulid: 01KKB8FE79QVHMK021RZNJQRQM
       created_at: 2026-03-10T06:55:44.873Z
@@ -87061,12 +87067,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T20:30:31.902Z
-  closed_reason: "Merged in PR #784 (69420642a28584e531c216b9f7083bbfc262a98d). Added review-artifact
-    test coverage for the schema/structure AC backfill with isolated temp fixtures, verified the
-    touched schema refs have no completeness warnings, and confirmed full regression plus fresh PR
-    CI passed on the merged head. AC coverage for @schema-ac-backfill and the touched backfill refs
-    was reviewed and confirmed."
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
   slugs:
     - implement-cli-ac-backfill
@@ -87240,6 +87240,16 @@
         tests in tests/task-system-ac-backfill.test.ts fail CI on shard 3 because they call 'item
         list --under @tasks' against repo-root state where @tasks is unavailable in PR checkout, and
         npm test on PR head is not fully green."
+      supersedes: null
+    - _ulid: 01KKF9Y5Q3RE6QGBWJ0TK8CJM2
+      created_at: 2026-03-11T20:38:13.987Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Reworked tests/task-system-ac-backfill.test.ts to stop querying repo-root
+        shadow state. The spec-quality coverage now builds an isolated synthetic @tasks module
+        inside setupTempFixtures(), updates the fixture manifest includes, and verifies the
+        backfilled refs there instead of assuming CI has live .kspec state. Verification: npm test
+        -- task-system-ac-backfill.test.ts passed; npm run test:shard3 passed; npm test passed (213
+        files, 4564 tests, 3 skipped)."
       supersedes: null
   todos: []
   automation: eligible
