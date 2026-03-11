@@ -85278,7 +85278,7 @@
   type: task
   spec_ref: "@task-spec-session-context"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -85372,6 +85372,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T04:13:30.416Z
+  closed_reason: "Merged in PR #769 as 14fabb3dce08b4e133afba35b437e3a6bd1f014f. Implemented task/item
+    session subresource endpoints, added related session sections to task/spec detail views, and
+    wired /sessions task_id/spec_ref filters for bidirectional navigation. AC coverage verified for
+    all six task-spec-session-context criteria via tests/session-related-routes.test.ts and
+    packages/web-ui/tests/e2e/session-context.spec.ts; no inherited trait ACs on this spec."
 - _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
   slugs:
     - implement-session-text-search
