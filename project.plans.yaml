@@ -13155,3 +13155,465 @@ plans:
         content: "Manually created spec and tasks (enhanced derive not yet merged). Spec:
           @invocation-initial-activity-watchdog (5 ACs). Tasks: @task-implement-stall-watchdog,
           @task-test-stall-watchdog. Both tasks have plan_ref set."
+  - _ulid: 01KKFJY0ZS26PY4QC9594S9K2E
+    slugs:
+      - plan-dispatch-worktree-isolation-and-scheduling
+    title: Dispatch Worktree Isolation and Scheduling
+    content: >
+      # Dispatch Worktree Isolation and Scheduling
+
+
+      This plan covers the highest-priority dispatcher/runtime gaps for autonomous task execution:
+
+
+      - each dispatched worker or reviewer should run inside an isolated git worktree on a
+      deterministic branch
+
+      - the dispatcher should prepare that workspace enough that agents do not have to rediscover
+      setup and dependency steps every time
+
+      - worker and reviewer invocations should share tracked branch/workspace state where
+      appropriate
+
+      - dispatch ordering should account for actual priority (`P1`-`P5`) in addition to state-based
+      urgency
+
+      - shadow-branch serialization should be narrowed so code work can run in parallel while kspec
+      metadata mutations stay safe
+
+
+      This plan supersedes the older artifact-oriented framing in
+      `.kspec/artifacts/task-isolation-and-review-system.md` for the dispatch/isolation area.
+      Planning is no longer import-only; this plan assumes the current `plan import` / `plan import
+      --into` / `plan derive` lifecycle.
+
+
+      ## Context
+
+
+      The current dispatch engine has improved state visibility after invocation completion, but
+      several structural gaps remain:
+
+
+      1. Invocations still share one code checkout, so worker/reviewer overlap is fragile.
+
+      2. The global shadow mutex still wraps the full invocation instead of just the kspec mutation
+      windows.
+
+      3. The dispatcher does not own workspace creation, branch naming, or runtime bootstrap in a
+      first-class way.
+
+      4. Reviewers do not have a durable branch/workspace model to attach to.
+
+      5. Queue ordering still does not use task priority as a tie-breaker within equivalent urgency
+      bands.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Dispatched Invocation Worktree Isolation
+        slug: dispatch-invocation-worktree-isolation
+        type: feature
+        parent: "@worktree-support"
+        description: |
+          Each dispatched agent invocation runs in a dedicated git worktree rooted
+          under a dispatcher-managed workspace directory instead of sharing the
+          primary checkout. This isolation applies to both workers and reviewers.
+        traits:
+          - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              The dispatch engine is about to spawn an invocation for a task
+            when: |
+              The invocation is created
+            then: |
+              The engine creates or reuses a dedicated git worktree for that
+              invocation rather than running in the main checkout
+          - id: ac-2
+            given: |
+              A worker invocation is dispatched for task @task-ref
+            when: |
+              The worktree is prepared
+            then: |
+              The worktree is checked out on a deterministic branch name derived
+              from the task identity using a stable naming convention
+          - id: ac-3
+            given: |
+              A reviewer invocation is dispatched for task @task-ref and the task
+              already has tracked workspace/branch state from the worker
+            when: |
+              The reviewer worktree is prepared
+            then: |
+              The reviewer is attached to the tracked branch/workspace context for
+              that task instead of starting from an unrelated checkout
+          - id: ac-4
+            given: |
+              A dispatcher-managed worktree already exists for a task and is still
+              valid for reuse
+            when: |
+              A later invocation for the same tracked workspace is spawned
+            then: |
+              The engine reuses the existing worktree instead of creating a fresh one
+          - id: ac-5
+            given: |
+              A tracked worktree is missing, broken, or cannot be checked out
+            when: |
+              The dispatch engine prepares an invocation
+            then: |
+              The engine either repairs/recreates the workspace automatically or
+              blocks the task with actionable guidance; it does not silently fall
+              back to the shared main checkout
+
+      - title: Dispatch Workspace and Branch Tracking
+        slug: dispatch-workspace-and-branch-tracking
+        type: requirement
+        parent: "@agent-dispatch-engine"
+        description: |
+          The dispatcher persists enough workspace metadata to let later worker,
+          reviewer, and follow-up invocations return to the same branch and
+          workspace intentionally.
+        traits:
+          - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              The dispatcher provisions a task workspace
+            when: |
+              The provisioning step completes
+            then: |
+              A durable workspace record captures at minimum task ref, branch name,
+              worktree path, head commit, role ownership, and lifecycle status
+          - id: ac-2
+            given: |
+              A task transitions from worker execution to pending_review
+            when: |
+              The reviewer invocation is selected
+            then: |
+              The dispatcher resolves the task's tracked branch/worktree metadata and
+              uses it to load the reviewer into the correct code context
+          - id: ac-3
+            given: |
+              A task enters needs_work after review
+            when: |
+              The next worker invocation is prepared
+            then: |
+              The dispatcher reuses the task's tracked branch/workspace metadata so
+              the fix cycle continues on the same line of work
+          - id: ac-4
+            given: |
+              A task is completed, cancelled, or reset away from the tracked
+              workspace lifecycle
+            when: |
+              Cleanup policy runs
+            then: |
+              The dispatcher marks the workspace as closable and can prune or archive
+              it according to configured retention policy
+
+      - title: Dispatch Runtime Bootstrap
+        slug: dispatch-runtime-bootstrap
+        type: requirement
+        parent: "@agent-invocation-lifecycle"
+        description: |
+          The dispatcher can perform reliable preflight/bootstrap work inside a task
+          workspace so agents do not have to manually rediscover routine dependency
+          and runtime setup on every invocation.
+        traits:
+          - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task workspace is ready to use
+            when: |
+              Invocation preflight runs
+            then: |
+              The dispatcher can execute a configured bootstrap workflow for the
+              project or agent role before the agent prompt is delivered
+          - id: ac-2
+            given: |
+              Bootstrap steps are configured for the workspace
+            when: |
+              The same workspace is reused for a later invocation
+            then: |
+              The dispatcher can skip, refresh, or rerun bootstrap steps based on
+              cached success state and invalidation signals instead of blindly
+              redoing everything every time
+          - id: ac-3
+            given: |
+              Bootstrap fails because dependencies or runtime requirements cannot be
+              satisfied automatically
+            when: |
+              The invocation would otherwise start
+            then: |
+              The dispatcher records the failure with actionable detail and either
+              blocks the task or marks the workspace unhealthy; it does not hand the
+              agent an unexplained broken environment
+          - id: ac-4
+            given: |
+              Worker and reviewer roles need different bootstrap behavior
+            when: |
+              Their invocations are prepared
+            then: |
+              Role-specific bootstrap configuration is supported without duplicating
+              the core workspace provisioning flow
+
+      - title: Dispatch Workspace Orientation Prompt
+        slug: dispatch-workspace-orientation-prompt
+        type: requirement
+        parent: "@agent-dispatch-engine"
+        description: |
+          The dispatch prompt should explicitly orient the agent to its workspace,
+          branch, role, and current focus so that the agent starts from the correct
+          operational context without guesswork.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A worker or reviewer invocation prompt is built
+            when: |
+              Workspace metadata is available
+            then: |
+              The prompt includes the workspace path, branch name, task ref, role,
+              and the reason this invocation was selected
+          - id: ac-2
+            given: |
+              The dispatcher has bootstrap or dependency status for the workspace
+            when: |
+              The prompt is built
+            then: |
+              The prompt summarizes the relevant prepared state and any remaining
+              runtime caveats the agent must respect
+          - id: ac-3
+            given: |
+              A role-specific skill or workflow entrypoint is configured
+            when: |
+              The prompt is rendered
+            then: |
+              The orientation text and invocation instructions consistently direct the
+              agent to the correct workflow for that workspace role
+
+      - title: Scoped Dispatch Shadow Serialization
+        slug: scoped-dispatch-shadow-serialization
+        type: requirement
+        parent: "@agent-dispatch-engine"
+        description: |
+          Shadow-branch protection should serialize only kspec metadata mutations,
+          not the full lifetime of every invocation, so isolated code work can
+          overlap safely across worker and reviewer roles.
+        traits:
+          - "@trait-error-guidance"
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Two isolated invocations are running concurrently in separate code
+              worktrees
+            when: |
+              Neither invocation is performing a kspec mutation
+            then: |
+              They are allowed to continue in parallel without waiting on a global
+              invocation-level mutex
+          - id: ac-2
+            given: |
+              Multiple invocations attempt shadow-branch mutations such as task note,
+              task submit, task needs-work, or plan/task metadata writes
+            when: |
+              Those mutation windows overlap
+            then: |
+              Only the mutation sections are serialized so shadow branch integrity is
+              preserved
+          - id: ac-3
+            given: |
+              A mutation-level lock cannot be acquired or a protected mutation fails
+            when: |
+              The invocation handles the failure
+            then: |
+              The error is surfaced as a mutation failure, not disguised as a generic
+              workspace execution failure
+
+      - title: Dispatch Scheduling Priority Model
+        slug: dispatch-scheduling-priority-model
+        type: requirement
+        parent: "@agent-dispatch-engine"
+        description: |
+          Dispatch ordering should combine urgency bands (in_progress, needs_work,
+          pending_review, pending) with actual task priority and readiness signals so
+          the next invocation chosen reflects intended work ordering instead of FIFO
+          within broad status buckets.
+        traits:
+          - "@trait-priority-parameter"
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Multiple queued candidates share the same dispatch urgency band
+            when: |
+              The scheduler selects the next invocation
+            then: |
+              Lower numeric task priority values (P1 before P5) are selected first
+              before falling back to FIFO
+          - id: ac-2
+            given: |
+              pending_review and pending candidates both exist and no in_progress or
+              needs_work work is waiting
+            when: |
+              The scheduler selects the next invocation
+            then: |
+              pending_review work remains ahead of pending work even after priority
+              tie-breaking is added
+          - id: ac-3
+            given: |
+              A task is not actually ready because dependencies are incomplete or the
+              task is blocked
+            when: |
+              The scheduler evaluates queue candidates
+            then: |
+              The task is excluded regardless of its numeric priority
+          - id: ac-4
+            given: |
+              The dispatch engine has visibility into workspace affinity or active
+              review/fix-cycle context
+            when: |
+              Two otherwise similar candidates compete for the next slot
+            then: |
+              The scheduler can prefer the candidate that reduces review starvation or
+              continues an active fix/review chain, but this preference is secondary
+              to explicit readiness and status-band rules
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ```yaml
+
+      - slug: task-design-dispatch-workspace-model
+        title: Design dispatcher-managed workspace model
+        spec_ref: "@dispatch-workspace-and-branch-tracking"
+        priority: 1
+        tags: [dispatch, worktree, design]
+
+      - slug: task-implement-dispatch-worktree-provisioning
+        title: Implement dispatched worktree provisioning and branch naming
+        spec_ref: "@dispatch-invocation-worktree-isolation"
+        priority: 1
+        tags: [dispatch, worktree, runtime]
+
+      - slug: task-implement-dispatch-bootstrap
+        title: Implement dispatcher runtime bootstrap and reuse policy
+        spec_ref: "@dispatch-runtime-bootstrap"
+        priority: 1
+        tags: [dispatch, runtime, bootstrap]
+
+      - slug: task-implement-dispatch-orientation
+        title: Implement workspace-aware dispatch prompt and workflow entrypoints
+        spec_ref: "@dispatch-workspace-orientation-prompt"
+        priority: 2
+        tags: [dispatch, prompts, skills]
+
+      - slug: task-scope-dispatch-mutex
+        title: Narrow dispatch serialization to mutation windows
+        spec_ref: "@scoped-dispatch-shadow-serialization"
+        priority: 1
+        tags: [dispatch, concurrency, shadow]
+
+      - slug: task-implement-priority-aware-dispatch
+        title: Implement priority-aware dispatch scheduling
+        spec_ref: "@dispatch-scheduling-priority-model"
+        priority: 1
+        tags: [dispatch, scheduling, priority]
+      ```
+
+
+      ## Implementation Notes
+
+
+      ### Scope boundaries
+
+
+      This plan is intentionally focused on dispatch/runtime behavior and scheduling. It is not the
+      full review-record system and it is not the full human-facing review package model.
+
+
+      ### Recommended implementation slices
+
+
+      1. Introduce a durable workspace/branch tracking model first.
+
+      2. Make the dispatcher own worktree creation and deterministic branch naming.
+
+      3. Thread workspace metadata through prompt construction and role selection.
+
+      4. Move shadow serialization down to the actual kspec mutation windows.
+
+      5. Add priority-aware ordering once queue entries can carry enough current task metadata.
+
+
+      ### Branch/worktree naming assumptions
+
+
+      The dispatcher should own the naming convention. A reasonable default is a role-aware prefix
+      plus task slug/ULID, for example:
+
+
+      - worker: `dispatch/task-worker/<task-slug>`
+
+      - reviewer: `dispatch/pr-reviewer/<task-slug>`
+
+
+      If later fix-cycle and reviewer flows should converge on a single branch per task, the
+      persisted workspace record should be the source of truth rather than recomputing names ad hoc.
+
+
+      ### Bootstrap assumptions
+
+
+      Bootstrap should support:
+
+
+      - repository-level setup commands
+
+      - role-specific additions
+
+      - caching / freshness checks for reused workspaces
+
+      - failure modes that block with guidance rather than handing agents a broken workspace
+
+
+      ### Scheduling model
+
+
+      The current status-band precedence should remain, but same-band ordering should become:
+
+
+      1. readiness / validity
+
+      2. urgency band
+
+      3. numeric priority (`1` before `5`)
+
+      4. chain/review affinity signals
+
+      5. FIFO enqueue order
+
+
+      ### Out of scope for this plan
+
+
+      - generic review record storage and line comments
+
+      - CI check records and approval policy
+
+      - grouped human-facing review packages across multiple tasks
+    status: approved
+    derived_tasks: []
+    derived_specs: []
+    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-worktree-isolation-and-scheduling.md
+    module_ref: null
+    created_at: 2026-03-11T23:15:26.329Z
+    approved_at: null
+    completed_at: null
+    notes: []
