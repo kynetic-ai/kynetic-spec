@@ -89915,6 +89915,14 @@
         plan import --into and cover the missing ref-not-found guidance path; full npm test did not
         clear in review."
       supersedes: null
+    - _ulid: 01KKFCX8YV9APP6X1XHFVTKFVP
+      created_at: 2026-03-11T21:30:10.268Z
+      author: Jacob Chapel
+      content: "Fix cycle 1: added shadow-enabled integration coverage for plan import --into commits and
+        added not-found guidance coverage for missing target plan refs (text + JSON). Verification:
+        npm test -- tests/cli-plan-import.test.ts, npm test, kspec validate (warnings-only exit 6
+        from pre-existing project warnings)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
