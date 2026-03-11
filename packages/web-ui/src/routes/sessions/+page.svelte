@@ -67,39 +67,14 @@
 	let observer: IntersectionObserver | undefined;
 
 	// AC: @ui-url-panel-state ac-4 — Derive filter values from URL params
-	let filterStatus = $derived($page.url.searchParams.get('status') || '');
+	let filterStatuses = $derived($page.url.searchParams.getAll('status'));
 	let filterAgentId = $derived($page.url.searchParams.get('agent_id') || '');
 	let filterAgentType = $derived($page.url.searchParams.get('agent_type') || '');
 	let filterTrigger = $derived($page.url.searchParams.get('trigger') || '');
-	let filterDateRange = $derived($page.url.searchParams.get('date_range') || '');
-	let hasFilters = $derived(filterStatus || filterAgentId || filterAgentType || filterTrigger || filterDateRange);
-
-	/**
-	 * Convert date_range shorthand to ISO 8601 date for the API `since` param.
-	 * AC: @session-filter-controls ac-date-filter
-	 */
-	function dateRangeToSince(range: string): string | undefined {
-		if (!range) return undefined;
-		const now = new Date();
-		switch (range) {
-			case 'today': {
-				const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-				return today.toISOString();
-			}
-			case '7d': {
-				const d = new Date(now);
-				d.setDate(d.getDate() - 7);
-				return d.toISOString();
-			}
-			case '30d': {
-				const d = new Date(now);
-				d.setDate(d.getDate() - 30);
-				return d.toISOString();
-			}
-			default:
-				return undefined;
-		}
-	}
+	let filterSince = $derived($page.url.searchParams.get('since') || '');
+	let hasFilters = $derived(
+		filterStatuses.length > 0 || filterAgentId || filterAgentType || filterTrigger || filterSince
+	);
 
 	/**
 	 * Build FetchSessionsParams from current URL search params.
@@ -109,12 +84,11 @@
 			offset: extraOffset ?? 0,
 			limit: PAGE_SIZE
 		};
-		if (filterStatus) params.status = [filterStatus];
+		if (filterStatuses.length > 0) params.status = filterStatuses;
 		if (filterAgentId) params.agent_id = filterAgentId;
 		if (filterAgentType) params.agent_type = filterAgentType;
 		if (filterTrigger) params.trigger = filterTrigger;
-		const since = dateRangeToSince(filterDateRange);
-		if (since) params.since = since;
+		if (filterSince) params.since = filterSince;
 		return params;
 	}
 
@@ -272,7 +246,7 @@
 	let previousFilterKey: string | undefined;
 	$effect(() => {
 		// Build a stable key from all filter params to detect changes
-		const key = `${filterStatus}|${filterAgentId}|${filterAgentType}|${filterTrigger}|${filterDateRange}`;
+		const key = `${filterStatuses.join(',')}|${filterAgentId}|${filterAgentType}|${filterTrigger}|${filterSince}`;
 		if (previousFilterKey !== undefined && previousFilterKey !== key) {
 			loadInitialPage();
 		}
