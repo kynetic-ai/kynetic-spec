@@ -89196,6 +89196,7 @@
   session_id: 01KKE2PQAQM7C5E8JQP480ME93
   created_at: 2026-03-10T22:42:12.419Z
   started_at: 2026-03-11T09:17:33.624Z
+  submitted_at: 2026-03-11T09:36:21.760Z
   notes:
     - _ulid: 01KKCYMET33J4X0Q2MQRCJQQAW
       created_at: 2026-03-10T22:42:12.419Z
@@ -89232,7 +89233,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T09:36:21.760Z
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/780
 - _ulid: 01KKDPW5237717QNKEKPRWERW7
   slugs: []
   title: "Fix: daemon watcher ELOOP crash from .kspec symlink loop"
