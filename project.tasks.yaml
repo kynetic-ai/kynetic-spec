@@ -85891,6 +85891,19 @@
         with runtime behavioral coverage, and investigating the shard 2/3 merge-ref regression
         before re-submitting."
       supersedes: null
+    - _ulid: 01KKE9QMTVK9860VSD1JQY72WZ
+      created_at: 2026-03-11T11:15:25.659Z
+      author: Jacob Chapel
+      content: "Fix cycle resolution: replaced brittle bundle/source-file scans in web-ui session stream
+        tests with direct markdown behavior checks plus Vite-transformed module assertions for the
+        streaming/static paths and SessionStream wiring. Synced origin/main to pick up latest
+        dispatch/validation fixes affecting merge-ref CI. Verification: npm test -- --run
+        tests/web-ui-session-stream.test.ts tests/daemon-agent-dispatch-routes.test.ts
+        tests/agent-dispatch-engine.test.ts tests/parser/spec-completeness-policy.test.ts; node
+        dist/cli/index.js validate (warnings-only baseline). Local shard3 is still polluted by
+        untracked .worktrees/.review copies, but the task-owned test file and related dispatch suite
+        are green."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
