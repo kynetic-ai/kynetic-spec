@@ -88331,6 +88331,14 @@
         tests/helpers/cli.ts runs dist/cli, so plan export was missing from the built output until
         npm run build refreshed dist on feat/plan-export. Rebuilding before rerunning CLI tests."
       supersedes: null
+    - _ulid: 01KKDC4FD8B6EMCJZJPED9T9N6
+      created_at: 2026-03-11T02:38:08.808Z
+      author: Jacob Chapel
+      content: "Fix-cycle verification on the cleaned feat/plan-export branch: npm run build completed
+        successfully; npm test -- tests/cli-plan.test.ts passed (49/49); kspec validate returned
+        warnings only from the pre-existing repository backlog, with no new errors from
+        @plan-export."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
