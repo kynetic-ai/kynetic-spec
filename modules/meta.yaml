@@ -1400,6 +1400,15 @@ features:
           Examples provide concrete guidance.
         implements:
           - "@convention-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a convention entry defines a domain, one or more rules, and optional examples
+            when: the meta manifest is parsed
+            then: the convention validates and is available to meta convention commands
+          - id: ac-2
+            given: a convention example includes paired good and bad values
+            when: the convention is rendered in agent instructions or CLI output
+            then: the examples are preserved as concrete guidance for that convention
       - _ulid: 01KF1XCNV20000000000000000
         slugs:
           - convention-domains
@@ -1421,6 +1430,15 @@ features:
           Projects can define custom domains as needed.
         implements:
           - "@convention-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a project uses one of the documented standard domains such as commits or naming
+            when: the convention is listed
+            then: it is grouped and described under its domain without extra configuration
+          - id: ac-2
+            given: a project defines a convention with a custom domain not in the standard list
+            when: the meta manifest is loaded
+            then: the convention is accepted and remains queryable by that custom domain
       - _ulid: 01KF2XCNV30000000000000000
         slugs:
           - convention-validation
@@ -1475,6 +1493,15 @@ features:
           Prose-type conventions are skipped with info message.
         implements:
           - "@convention-definitions"
+        acceptance_criteria:
+          - id: ac-1
+            given: a convention includes regex, enum, or range validation metadata
+            when: kspec validate --conventions runs
+            then: the corresponding validation strategy is applied to matching content
+          - id: ac-2
+            given: a convention uses prose validation guidance only
+            when: kspec validate --conventions runs
+            then: the convention is reported as advisory and skipped from automated enforcement
   - _ulid: 01KF1XFBK00000000000000000
     slugs:
       - observations
@@ -1582,6 +1609,15 @@ features:
           workflow_ref links to relevant workflow for tracking.
         implements:
           - "@observations"
+        acceptance_criteria:
+          - id: ac-1
+            given: an observation defines type, content, author, created_at, and optional workflow_ref
+            when: the meta manifest is parsed
+            then: the observation validates and can be listed by meta observation commands
+          - id: ac-2
+            given: an observation references a workflow that does not exist
+            when: kspec validate runs
+            then: validation reports the invalid workflow_ref instead of accepting the observation silently
       - _ulid: 01KF1XFBK20000000000000000
         slugs:
           - observation-types
@@ -1603,6 +1639,15 @@ features:
           what's working. Questions may reveal documentation gaps.
         implements:
           - "@observations"
+        acceptance_criteria:
+          - id: ac-1
+            given: an observation is recorded with type friction, success, question, or idea
+            when: it is listed or filtered
+            then: the observation remains categorized under that type
+          - id: ac-2
+            given: an observation uses a type outside the documented set
+            when: the meta manifest is validated
+            then: validation rejects the unsupported observation type
       - _ulid: 01KF1XFBK30000000000000000
         slugs:
           - observation-promotion
@@ -1629,6 +1674,17 @@ features:
           Original observation marked with promoted_to reference.
         implements:
           - "@observations"
+        acceptance_criteria:
+          - id: ac-1
+            given: an unresolved observation is promoted with kspec meta promote and a task title
+            when: the command completes
+            then: a new task is created with origin observation_promotion and description seeded from the
+              observation content
+          - id: ac-2
+            given: an observation has a related workflow_ref when it is promoted
+            when: the created task is inspected
+            then: its meta_ref points to the same related workflow and the observation records the promoted task
+              reference
       - _ulid: 01KF1XFBK40000000000000000
         slugs:
           - observation-resolution
@@ -1654,6 +1710,15 @@ features:
           Unresolved observations show in session context.
         implements:
           - "@observations"
+        acceptance_criteria:
+          - id: ac-1
+            given: an unresolved observation is resolved with a resolution message
+            when: kspec meta resolve completes
+            then: the observation is marked resolved and stores the resolution text with resolver metadata
+          - id: ac-2
+            given: session context is generated while unresolved observations still exist
+            when: the session summary is shown
+            then: those unresolved observations are surfaced until they are explicitly resolved
       - _ulid: 01KF2XFBK50000000000000000
         slugs:
           - observation-task-loop
@@ -1714,6 +1779,17 @@ features:
           complete, and creates traceable process improvement history.
         implements:
           - "@observations"
+        acceptance_criteria:
+          - id: ac-1
+            given: an observation was promoted to a task and that task is later completed
+            when: the task completion is recorded
+            then: the linked observation remains unresolved until an explicit meta resolve step is taken
+          - id: ac-2
+            given: an observation points to a completed promoted task and kspec meta resolve is run without
+              custom text
+            when: resolution is inferred from the task linkage
+            then: the observation is resolved using task-based context instead of requiring a manual duplicate
+              explanation
       - _ulid: 01KHA83NQTFEPV80HS4JYZNEBZ
         slugs:
           - observation-content-search
@@ -1814,6 +1890,15 @@ features:
           Ephemeral by design - not part of project history.
         implements:
           - "@session-context"
+        acceptance_criteria:
+          - id: ac-1
+            given: session context contains focus, threads, open_questions, and updated_at
+            when: kspec meta context or session start reads the file
+            then: the values are parsed and presented as structured session state
+          - id: ac-2
+            given: the .kspec-session file is malformed
+            when: context commands attempt to read it
+            then: the user receives a parse or validation error instead of corrupted context state
       - _ulid: 01KF1XCTX20000000000000000
         slugs:
           - context-storage
@@ -1834,6 +1919,16 @@ features:
           from session-level state (focus, threads).
         implements:
           - "@session-context"
+        acceptance_criteria:
+          - id: ac-1
+            given: a context command writes focus, thread, or question data for the first time
+            when: the command completes
+            then: a .kspec-session file is created separately from the meta manifest
+          - id: ac-2
+            given: the .kspec-session file is deleted
+            when: the project meta manifest is inspected
+            then: agents, workflows, conventions, and observations remain unchanged because session context is
+              stored independently
       - _ulid: 01KF1XCTX30000000000000000
         slugs:
           - context-integration
@@ -1859,6 +1954,24 @@ features:
           Helps agents quickly understand current state.
         implements:
           - "@session-context"
+        acceptance_criteria:
+          - id: ac-1
+            given: session context has a focus, active thread, and open question
+            when: kspec session start runs
+            then: the startup output includes a session-context block summarizing those values
+          - id: ac-2
+            given: session context is empty
+            when: kspec session start runs
+            then: the command still completes without requiring any session-context entries to exist
+    acceptance_criteria:
+      - id: ac-1
+        given: a session has focus, active threads, or open questions stored in .kspec-session
+        when: kspec session start runs
+        then: the current session context is shown alongside other startup information
+      - id: ac-2
+        given: no .kspec-session file exists for the project
+        when: session context is requested
+        then: kspec treats context as empty instead of failing to start the session
   - _ulid: 01KF1XCMD00000000000000000
     slugs:
       - meta-commands
