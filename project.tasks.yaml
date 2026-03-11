@@ -88249,6 +88249,25 @@
         - Verification: targeted tests for worktree dispatch/daemon headers plus npm test and kspec
         validate before submit.
       supersedes: null
+    - _ulid: 01KKDK9CFKCMRX4TC3FE8QPKQ7
+      created_at: 2026-03-11T04:43:09.683Z
+      author: Jacob Chapel
+      content: >-
+        Implemented worktree call-site migration:
+
+        - CLI dispatch start now sends X-Kspec-Cwd only for linked worktrees while keeping
+        X-Kspec-Dir pinned to projectRoot.
+
+        - Daemon dispatch routes now validate X-Kspec-Cwd as absolute and same-git-project, preserve
+        per-project 409 conflicts across different worktree cwd values, and keep engine cwd bound to
+        the originating worktree.
+
+        - Fixed remaining worktree path leaks in batch project-root env, agent instruction hash
+        storage, and daemon meta config root_dir.
+
+        - Added regression coverage for daemon dispatch route cwd validation/conflicts plus CLI
+        header behavior.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEEA86V1852H3Q4H9K3Y9H
