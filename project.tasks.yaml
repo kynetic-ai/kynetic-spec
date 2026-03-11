@@ -87019,6 +87019,23 @@
         under @tasks via a single atomic kspec batch mutation. Covered task types, lifecycle states,
         schema fields, derive semantics, notes/todos, storage modes, and task query variants.
       supersedes: null
+    - _ulid: 01KKF0HE4VC3KB7C43HB1Y64RR
+      created_at: 2026-03-11T17:53:59.451Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - kspec item list --under @tasks --limit 999 --json | jq ... now returns no non-module
+        @tasks descendants with empty acceptance_criteria.
+
+        - Added tests/task-system-ac-backfill.test.ts to cover the touched task-system refs and keep
+        own AC coverage off the active review gap list.
+
+        - npm test passed (213 files, 4565 tests, 3 skipped).
+
+        - kspec validate still reports existing global project warnings, but the touched @tasks refs
+        no longer appear in missing-AC warnings.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
@@ -90018,7 +90035,9 @@
     - dispatch
     - bug
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-11T17:47:04.848Z
+  started_at: 2026-03-11T17:52:37.385Z
   notes:
     - _ulid: 01KKF077Q8J4XCV2PQ41TC0C0M
       created_at: 2026-03-11T17:48:25.192Z
@@ -90099,5 +90118,3 @@
         setup must preserve this ordering.
       supersedes: null
   todos: []
-  started_at: 2026-03-11T17:52:37.385Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
