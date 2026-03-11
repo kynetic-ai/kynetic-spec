@@ -85809,6 +85809,7 @@
         works. No XSS via sanitization.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
   slugs:
     - task-add-markdown-trait
