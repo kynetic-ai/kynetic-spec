@@ -87304,6 +87304,17 @@
         ULID, task slug, spec ref, and branch fix/meta-shadow-ac-backfill; no matching PR exists,
         and the candidate local branch points to unrelated @core-ac-backfill work."
       supersedes: null
+    - _ulid: 01KKF4X5RSSSYQC7BS59RVXGEC
+      created_at: 2026-03-11T19:10:18.393Z
+      author: Jacob Chapel
+      content: "Fix-cycle scope correction:\\n- The completed work for this task lives on the shadow
+        branch only; there are no main-worktree file changes to review.\\n- The branch named
+        fix/meta-shadow-ac-backfill was contaminated with unrelated core backfill work, so this fix
+        cycle is creating a clean review-artifact branch from main instead of reusing it.\\n-
+        Verified @meta-shadow-ac-backfill remains scoped to @meta only; shadow-branch backfill now
+        has its own spec/task (@shadow-ac-backfill).\\n- Next steps: clean artifact branch, full
+        verification, empty review-artifact commit, push, PR, resubmit."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FGF6K5NP97PEEXRP2PY7
