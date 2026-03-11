@@ -88317,6 +88317,13 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #767 mixes @plan-export with unrelated
         @worktree-support commits; rebase/split the branch so the review scope matches the task."
       supersedes: null
+    - _ulid: 01KKDC1HVC1R9N9AKJEP5DV6KR
+      created_at: 2026-03-11T02:36:33.004Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Rebased feat/plan-export onto main so PR #767 contains only the
+        @plan-export implementation commit. Verified main...HEAD diff is limited to
+        src/cli/commands/plan.ts and tests/cli-plan.test.ts before re-running checks."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
