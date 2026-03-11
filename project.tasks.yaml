@@ -89866,7 +89866,7 @@
   type: task
   spec_ref: "@plan-import-into"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@plan-import"
@@ -89925,6 +89925,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T21:42:55.140Z
+  closed_reason: "Merged in PR #790. Added `kspec plan import --into` support for re-importing
+    draft/approved plans in place with status guards, ignored-flag warnings, default/custom reason
+    notes, dry-run previews, and shadow-commit coverage. No deviations from spec noted. AC coverage
+    verified for own and inherited trait criteria; local npm test and all PR checks passed before
+    merge."
 - _ulid: 01KKCYME2BVRRC4M1BA91C1ZJ7
   slugs:
     - implement-plan-import-content-only-storage
