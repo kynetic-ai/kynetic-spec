@@ -85146,7 +85146,7 @@
   type: task
   spec_ref: "@session-cli-unified-filtering"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-session-list-pagination-api"
@@ -85157,7 +85157,7 @@
   session_id: 01KKD70411JA7WSBW6GCG87YFV
   created_at: 2026-03-10T05:32:16.165Z
   started_at: 2026-03-11T01:15:58.759Z
-  submitted_at: 2026-03-11T00:35:03.927Z
+  submitted_at: 2026-03-11T01:21:04.822Z
   notes:
     - _ulid: 01KKB3PJX5W3ZEBX5CG34Y49HD
       created_at: 2026-03-10T05:32:16.165Z
