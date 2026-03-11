@@ -247,6 +247,22 @@ function sortSessions(
   });
 }
 
+function getActiveSessionFilterDescriptions(
+  options: SessionFilterOptions,
+): string[] {
+  const agentType = options.agent ?? options.agentType;
+  const descriptions: string[] = [];
+
+  if (options.status) descriptions.push(`status=${options.status}`);
+  if (agentType) descriptions.push(`agent_type=${agentType}`);
+  if (options.agentId) descriptions.push(`agent_id=${options.agentId}`);
+  if (options.trigger) descriptions.push(`trigger=${options.trigger}`);
+  if (options.task) descriptions.push(`task_id=${options.task}`);
+  if (options.since) descriptions.push(`since=${options.since}`);
+
+  return descriptions;
+}
+
 /**
  * Format the session log list as a table.
  *
@@ -256,8 +272,13 @@ function sortSessions(
 function formatSessionLogList(
   sessions: SessionLogSummary[],
   total?: number,
-  hasFilters?: boolean,
+  filterDescriptions: string[] = [],
 ): void {
+  const hasFilters = filterDescriptions.length > 0;
+  const filterInfo = hasFilters
+    ? ` (filtered: ${filterDescriptions.join(", ")})`
+    : "";
+
   // AC: @trait-filterable-list ac-6 — empty list with informative message
   if (sessions.length === 0) {
     if (hasFilters) {
@@ -297,10 +318,10 @@ function formatSessionLogList(
 
   // AC: @trait-filterable-list ac-7 — summary shows total matching items and filter state
   const totalCount = total ?? sessions.length;
-  if (hasFilters && totalCount !== sessions.length) {
-    console.log(chalk.gray(`\n${sessions.length} of ${totalCount} session(s) (filtered)`));
+  if (totalCount !== sessions.length) {
+    console.log(chalk.gray(`\n${sessions.length} of ${totalCount} session(s)${filterInfo}`));
   } else {
-    console.log(chalk.gray(`\n${totalCount} session(s)`));
+    console.log(chalk.gray(`\n${totalCount} session(s)${filterInfo}`));
   }
 }
 
@@ -353,7 +374,8 @@ export async function sessionLogListAction(
     }
 
     // AC: @session-cli-unified-filtering ac-json-output — structured JSON with filter criteria
-    const hasFilters = !!(options.status || options.agent || options.agentType || options.agentId || options.trigger || options.task || options.since);
+    const activeFilters = getActiveSessionFilterDescriptions(options);
+    const hasFilters = activeFilters.length > 0;
     const jsonOutput = {
       items: sessions,
       total: totalFiltered,
@@ -365,14 +387,14 @@ export async function sessionLogListAction(
           ...((options.agent ?? options.agentType) ? { agent_type: options.agent ?? options.agentType } : {}),
           ...(options.agentId ? { agent_id: options.agentId } : {}),
           ...(options.trigger ? { trigger: options.trigger } : {}),
-          ...(options.task ? { task: options.task } : {}),
+          ...(options.task ? { task_id: options.task } : {}),
           ...(options.since ? { since: options.since } : {}),
         },
       } : {}),
     };
 
     // AC: @trait-filterable-list ac-7 — summary shows total matching items and filter state
-    output(jsonOutput, () => formatSessionLogList(sessions, totalFiltered, hasFilters));
+    output(jsonOutput, () => formatSessionLogList(sessions, totalFiltered, activeFilters));
   } catch (err) {
     error("Failed to list session logs", err);
     process.exit(EXIT_CODES.ERROR);

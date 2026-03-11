@@ -33,7 +33,7 @@ interface SessionListResult {
   total: number;
   offset: number;
   limit: number | null;
-  filters?: Record<string, string>;
+  filters?: Partial<Record<"status" | "agent_type" | "agent_id" | "trigger" | "task_id" | "since", string>>;
 }
 
 // ─── Store Unit Tests ───────────────────────────────────────────────────────
@@ -727,7 +727,7 @@ describe('kspec session log list (CLI)', () => {
     expect(result.filters).toBeDefined();
     expect(result.filters!.agent_id).toBe('worker');
     expect(result.filters!.trigger).toBe('dispatched');
-    expect(result.filters!.task).toBe('@task-auth');
+    expect(result.filters!.task_id).toBe('@task-auth');
     expect(result.filters!.since).toBe('2026-01-01');
   });
 
@@ -742,8 +742,14 @@ describe('kspec session log list (CLI)', () => {
   it('should show filtered count in summary when filters active', () => {
     const result = kspec('session log list --agent-id worker -n 1', tempDir);
     expect(result.exitCode).toBe(0);
-    // Shows "1 of 2 session(s) (filtered)" because limit truncates the filtered result
-    expect(result.stdout).toContain('1 of 2 session(s) (filtered)');
+    expect(result.stdout).toContain('1 of 2 session(s) (filtered: agent_id=worker)');
+  });
+
+  // AC: @trait-filterable-list ac-7 — filter state shown even when all filtered results are displayed
+  it('should show filter state in summary without truncation', () => {
+    const result = kspec('session log list --agent-id worker', tempDir);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('2 session(s) (filtered: agent_id=worker)');
   });
 
   // AC: @trait-filterable-list ac-8 — --count with new filters
@@ -777,7 +783,7 @@ describe('kspec session log list (CLI)', () => {
   // AC: @trait-json-output ac-4 — references use @ prefix
   it('should preserve @ prefix in task references in JSON output', () => {
     const result = kspecJson<SessionListResult>('session log list --task @task-auth', tempDir);
-    expect(result.filters!.task).toBe('@task-auth');
+    expect(result.filters!.task_id).toBe('@task-auth');
     for (const s of result.items) {
       expect(s.task_id).toBe('@task-auth');
     }
