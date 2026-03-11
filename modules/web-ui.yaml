@@ -1886,7 +1886,7 @@ features:
         created: 2026-03-10T05:32:13.505Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKB3PGARYEXE4FQW17ZK7WHM
         slugs:
           - session-filter-controls
