@@ -84951,6 +84951,22 @@
         tests/session-log-list.test.ts, tests/session-model-evolution.test.ts, and
         tests/cli-serve.test.ts, so the task cannot merge yet."
       supersedes: null
+    - _ulid: 01KKD6QC85CCRJVQBBMVN481DW
+      created_at: 2026-03-11T01:03:36.710Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 4 progress:
+
+        - Merged current origin/main into fix/session-infinite-scroll-v2 to reproduce the actual PR
+        merge ref instead of the stale branch tip.
+
+        - Confirmed shard-1 red was caused by main-era session log JSON expectations on the merge
+        ref; branch-local runs had been misleading because local main was behind.
+
+        - Verification after merge: npm test -- tests/session-legacy-cli.test.ts
+        tests/session-log-list.test.ts tests/session-model-evolution.test.ts tests/cli-serve.test.ts
+        (all passing).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PJBZ4RBWGVYWB3VSXXMC
