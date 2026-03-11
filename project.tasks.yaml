@@ -87968,6 +87968,15 @@
       content: "Fix cycle: restoring task to in_progress on branch fix/task-worktree-core-resolution to
         add missing @worktree-support AC coverage for shadow, serve, and performance cases."
       supersedes: null
+    - _ulid: 01KKDA894KA8N53MY1FNJ54XMF
+      created_at: 2026-03-11T02:05:16.307Z
+      author: Jacob Chapel
+      content: "Addressed FIX_CYCLE 1 review feedback by adding explicit @worktree-support AC coverage for
+        shadow command root resolution, serve default .kspec resolution, and initContext single-call
+        git root resolution. Verification: npm test -- tests/worktree-context.test.ts
+        tests/parser/resolve-project-roots.test.ts tests/cli-worktree-resolution.test.ts
+        tests/parser/init-context-performance.test.ts; kspec validate (repo warnings only)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
