@@ -13,8 +13,8 @@
  * - @session-list-infinite-scroll ac-filter-reset: Filter change resets to page 1
  * - @session-list-infinite-scroll ac-live-update: WebSocket updates total and shows indicator
  *
- * Trait AC N/A:
- * // AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state (triggerFilter), not URL query parameters. No URL mutations occur on filter change.
+ * Trait ACs:
+ * - @ui-url-panel-state ac-4: Filter URL mutations use goto() and stay reactive.
  */
 
 import { test, expect } from '../fixtures/test-base';
@@ -1283,6 +1283,35 @@ test.describe('Session History View', () => {
 			// Should show filtered count
 			await expect(page.getByTestId('session-filter-count')).toBeVisible({ timeout: 5000 });
 			await expect(page.getByTestId('session-filter-count')).toContainText('of');
+		});
+
+		test('does not fetch the full session dataset to seed filter controls', async ({ page, daemon }) => {
+			const sessions = {
+				items: Array.from({ length: 80 }, (_, index) =>
+					makeSession(index + 1, {
+						agent_type: index < 40 ? 'task-worker' : 'pr-reviewer',
+						agent_id: index < 40 ? 'worker' : 'reviewer',
+						trigger: index % 2 === 0 ? 'manual' : 'task.ready'
+					})
+				),
+				total: 80,
+				offset: 0,
+				limit: 25
+			};
+			const requestedLimits: number[] = [];
+
+			await page.route('**/api/sessions*', (route) => {
+				const url = new URL(route.request().url());
+				requestedLimits.push(Number(url.searchParams.get('limit') ?? '0'));
+				return mockSessionsRoute(sessions)(route);
+			});
+
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			expect(requestedLimits.length).toBeGreaterThan(0);
+			expect(requestedLimits.every((limit) => limit <= 25)).toBe(true);
+			expect(requestedLimits).not.toContain(80);
 		});
 
 		// AC: @session-filter-controls ac-filter-counts — No count when no filters

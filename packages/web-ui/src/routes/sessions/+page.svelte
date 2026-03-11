@@ -77,6 +77,23 @@
 		filterStatuses.length > 0 || filterAgentId || filterAgentType || filterTrigger || filterSince
 	);
 
+	function updateDistinctFilters(items: SessionSummary[], options?: { reset?: boolean }) {
+		const reset = options?.reset ?? false;
+		const agentIdSet = new Set(reset ? [] : distinctAgentIds);
+		const agentTypeSet = new Set(reset ? [] : distinctAgentTypes);
+
+		for (const session of items) {
+			if (session.agent_id) agentIdSet.add(session.agent_id);
+			agentTypeSet.add(session.agent_type);
+		}
+
+		if (filterAgentId) agentIdSet.add(filterAgentId);
+		if (filterAgentType) agentTypeSet.add(filterAgentType);
+
+		distinctAgentIds = [...agentIdSet].sort();
+		distinctAgentTypes = [...agentTypeSet].sort();
+	}
+
 	/**
 	 * Build FetchSessionsParams from current URL search params.
 	 */
@@ -94,27 +111,13 @@
 	}
 
 	/**
-	 * Fetch unfiltered distinct values for filter dropdowns.
-	 * Fetches a single page of metadata-only summaries to extract unique values.
+	 * Seed filter metadata from the first unfiltered page so controls scale with pagination.
 	 */
 	async function loadFilterOptions() {
 		try {
-			// Get unfiltered total and distinct values
-			const data = await fetchSessions({ offset: 0, limit: 1 });
+			const data = await fetchSessions({ offset: 0, limit: PAGE_SIZE });
 			unfilteredTotal = data.total;
-
-			// Fetch all summaries for distinct values (metadata only, fast)
-			if (data.total > 0) {
-				const allData = await fetchSessions({ offset: 0, limit: data.total });
-				const agentIdSet = new Set<string>();
-				const agentTypeSet = new Set<string>();
-				for (const s of allData.items) {
-					if (s.agent_id) agentIdSet.add(s.agent_id);
-					agentTypeSet.add(s.agent_type);
-				}
-				distinctAgentIds = [...agentIdSet].sort();
-				distinctAgentTypes = [...agentTypeSet].sort();
-			}
+			updateDistinctFilters(data.items, { reset: true });
 		} catch {
 			// Non-critical — filter options just won't be populated
 		}
@@ -138,6 +141,7 @@
 			sessions = data.items;
 			total = data.total;
 			offset = data.items.length;
+			updateDistinctFilters(data.items, { reset: !hasFilters });
 
 			// AC: @session-filter-controls ac-filter-counts — Update unfiltered total if no filters active
 			if (!hasFilters) {
@@ -174,6 +178,7 @@
 			sessions = [...sessions, ...data.items];
 			total = data.total;
 			offset += data.items.length;
+			updateDistinctFilters(data.items);
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load more sessions';
 		} finally {

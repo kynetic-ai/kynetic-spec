@@ -215,7 +215,7 @@
 	</div>
 
 	<!-- AC: @session-filter-controls ac-agent-type-filter -->
-	{#if agentTypes.length > 1}
+	{#if agentTypes.length > 1 || agentType}
 		<div class="min-w-[150px]">
 			<label for="session-agent-type-filter" class="text-xs font-medium text-muted-foreground mb-1 block">Agent Type</label>
 			<Select
@@ -236,7 +236,7 @@
 	{/if}
 
 	<!-- AC: @session-filter-controls ac-agent-filter -->
-	{#if agentIds.length > 1}
+	{#if agentIds.length > 1 || agentId}
 		<div class="min-w-[130px]">
 			<label for="session-agent-filter" class="text-xs font-medium text-muted-foreground mb-1 block">Agent</label>
 			<Select
