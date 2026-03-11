@@ -88324,6 +88324,13 @@
         @plan-export implementation commit. Verified main...HEAD diff is limited to
         src/cli/commands/plan.ts and tests/cli-plan.test.ts before re-running checks."
       supersedes: null
+    - _ulid: 01KKDC2XSJAAJWY87VCJJXFQ90
+      created_at: 2026-03-11T02:37:18.002Z
+      author: Jacob Chapel
+      content: "Rebased branch verification surfaced stale dist artifacts after switching branches:
+        tests/helpers/cli.ts runs dist/cli, so plan export was missing from the built output until
+        npm run build refreshed dist on feat/plan-export. Rebuilding before rerunning CLI tests."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
