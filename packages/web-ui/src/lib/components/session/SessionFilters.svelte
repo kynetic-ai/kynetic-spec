@@ -62,17 +62,57 @@
 	};
 
 	// AC: @ui-url-panel-state ac-4 — Derive filter values from $page.url.searchParams
-	let status = $derived($page.url.searchParams.get('status') || '');
+	let statuses = $derived($page.url.searchParams.getAll('status'));
 	let agentId = $derived($page.url.searchParams.get('agent_id') || '');
 	let agentType = $derived($page.url.searchParams.get('agent_type') || '');
 	let trigger = $derived($page.url.searchParams.get('trigger') || '');
-	let dateRange = $derived($page.url.searchParams.get('date_range') || '');
+	let since = $derived($page.url.searchParams.get('since') || '');
 
-	let hasFilters = $derived(status || agentId || agentType || trigger || dateRange);
+	let hasFilters = $derived(statuses.length > 0 || agentId || agentType || trigger || since);
 
-	let statusDisplay = $derived(status || 'all');
 	let triggerDisplay = $derived(trigger || 'all');
-	let dateRangeDisplay = $derived(dateRange || 'all');
+	let dateRangeDisplay = $derived(getDateRangeDisplay(since));
+
+	function getPresetSince(preset: string): string | undefined {
+		const now = new Date();
+		switch (preset) {
+			case 'today': {
+				const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+				return today.toISOString();
+			}
+			case '7d': {
+				const d = new Date(now);
+				d.setDate(d.getDate() - 7);
+				return d.toISOString();
+			}
+			case '30d': {
+				const d = new Date(now);
+				d.setDate(d.getDate() - 30);
+				return d.toISOString();
+			}
+			default:
+				return undefined;
+		}
+	}
+
+	function getDateRangeDisplay(value: string): string {
+		if (!value) return 'all';
+
+		const parsed = new Date(value);
+		if (Number.isNaN(parsed.getTime())) return 'all';
+
+		const now = Date.now();
+		const diffMs = now - parsed.getTime();
+		const oneDayMs = 24 * 60 * 60 * 1000;
+
+		const today = new Date();
+		const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+		if (Math.abs(parsed.getTime() - startOfToday) < 60 * 1000) return 'today';
+		if (Math.abs(diffMs - 7 * oneDayMs) < 10 * 60 * 1000) return '7d';
+		if (Math.abs(diffMs - 30 * oneDayMs) < 10 * 60 * 1000) return '30d';
+
+		return 'all';
+	}
 
 	// AC: @ui-url-panel-state ac-4 — All URL mutations use goto()
 	function updateFilter(key: string, value: string | string[] | undefined) {
@@ -99,6 +139,29 @@
 		goto(newUrl, { replaceState: true, keepFocus: true, noScroll: true });
 	}
 
+	// AC: @session-filter-controls ac-status-filter — Repeated status params preserve multi-select state
+	function toggleStatus(status: string) {
+		const params = new URLSearchParams($page.url.searchParams);
+		const currentStatuses = params.getAll('status');
+		const nextStatuses = currentStatuses.includes(status)
+			? currentStatuses.filter((s) => s !== status)
+			: [...currentStatuses, status];
+
+		params.delete('status');
+		for (const value of nextStatuses) {
+			params.append('status', value);
+		}
+		params.delete('offset');
+
+		const qs = params.toString();
+		const newUrl = qs ? `${base}/sessions?${qs}` : `${base}/sessions`;
+		goto(newUrl, { replaceState: true, keepFocus: true, noScroll: true });
+	}
+
+	function clearStatusFilter() {
+		updateFilter('status', undefined);
+	}
+
 	// AC: @session-filter-controls ac-clear-filters
 	function clearFilters() {
 		goto(`${base}/sessions`, { replaceState: true, keepFocus: true, noScroll: true });
@@ -107,22 +170,30 @@
 
 <div class="flex flex-wrap items-end gap-3" data-testid="session-filter-controls">
 	<!-- AC: @session-filter-controls ac-status-filter -->
-	<div class="min-w-[130px]">
-		<label for="session-status-filter" class="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
-		<Select
-			value={statusDisplay}
-			onValueChange={(v) => updateFilter('status', v)}
-		>
-			<SelectTrigger id="session-status-filter" data-testid="session-filter-status" class="h-8 text-xs">
-				{statusLabels[statusDisplay] || 'All Statuses'}
-			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="all">All Statuses</SelectItem>
-				{#each SESSION_STATUSES as s}
-					<SelectItem value={s}>{statusLabels[s]}</SelectItem>
-				{/each}
-			</SelectContent>
-		</Select>
+	<div class="min-w-[240px]">
+		<label class="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
+		<div class="flex flex-wrap gap-1.5" data-testid="session-filter-status-group">
+			<button
+				type="button"
+				class="h-8 rounded-md border px-2.5 text-xs transition-colors {statuses.length === 0 ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent'}"
+				onclick={clearStatusFilter}
+				data-testid="session-filter-status-all"
+				aria-pressed={statuses.length === 0}
+			>
+				All
+			</button>
+			{#each SESSION_STATUSES as s}
+				<button
+					type="button"
+					class="h-8 rounded-md border px-2.5 text-xs transition-colors {statuses.includes(s) ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-accent'}"
+					onclick={() => toggleStatus(s)}
+					data-testid={`session-filter-status-${s}`}
+					aria-pressed={statuses.includes(s)}
+				>
+					{statusLabels[s]}
+				</button>
+			{/each}
+		</div>
 	</div>
 
 	<!-- AC: @session-filter-controls ac-trigger-filter -->
@@ -190,7 +261,7 @@
 		<label for="session-date-filter" class="text-xs font-medium text-muted-foreground mb-1 block">Time Range</label>
 		<Select
 			value={dateRangeDisplay}
-			onValueChange={(v) => updateFilter('date_range', v)}
+			onValueChange={(v) => updateFilter('since', getPresetSince(v))}
 		>
 			<SelectTrigger id="session-date-filter" data-testid="session-filter-date" class="h-8 text-xs">
 				{dateRangeLabels[dateRangeDisplay] || 'All Time'}

@@ -1190,35 +1190,65 @@ test.describe('Session History View', () => {
 
 	test.describe('Session Filter Controls', () => {
 		// AC: @session-filter-controls ac-status-filter
-		test('status filter updates URL and filters sessions', async ({ page, daemon }) => {
+		test('status filter appends repeated status params and filters sessions', async ({ page, daemon }) => {
 			const sessions = mockSessions();
 			await page.route('**/api/sessions*', mockSessionsRoute(sessions));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Select "Completed" status filter
-			await page.getByTestId('session-filter-status').click();
-			await page.getByRole('option', { name: 'Completed' }).click();
-
-			// URL should update with status param
+			await page.getByTestId('session-filter-status-completed').click();
 			await expect(page).toHaveURL(/status=completed/);
-
-			// Only completed sessions shown
 			await expect(page.getByTestId('session-row')).toHaveCount(1);
+
+			await page.getByTestId('session-filter-status-failed').click();
+
+			// URL should preserve repeated status params.
+			await expect(page).toHaveURL(/status=completed/);
+			await expect(page).toHaveURL(/status=failed/);
+
+			// Completed + failed sessions remain.
+			await expect(page.getByTestId('session-row')).toHaveCount(2);
 		});
 
-		// AC: @session-filter-controls ac-date-filter
-		test('date filter updates URL with date_range param', async ({ page, daemon }) => {
+		// AC: @session-filter-controls ac-agent-filter
+		test('agent filter updates URL with agent_id and filters sessions', async ({ page, daemon }) => {
 			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 
-			// Select "Today" date range
+			await page.getByTestId('session-filter-agent').click();
+			await page.getByRole('option', { name: 'pr-reviewer' }).click();
+
+			await expect(page).toHaveURL(/agent_id=pr-reviewer/);
+			await expect(page.getByTestId('session-row')).toHaveCount(1);
+			await expect(page.getByTestId('session-row').first()).toContainText('pr-reviewer');
+		});
+
+		// AC: @session-filter-controls ac-agent-type-filter
+		test('agent type filter updates URL with agent_type and filters sessions', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
+			await page.getByTestId('session-filter-agent-type').click();
+			await page.getByRole('option', { name: 'pr-reviewer' }).click();
+
+			await expect(page).toHaveURL(/agent_type=pr-reviewer/);
+			await expect(page.getByTestId('session-row')).toHaveCount(1);
+			await expect(page.getByTestId('session-row').first()).toContainText('pr-reviewer');
+		});
+
+		// AC: @session-filter-controls ac-date-filter
+		test('date filter updates URL with since param', async ({ page, daemon }) => {
+			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
+			await page.goto('/sessions');
+			await expect(page.getByTestId('sessions-list')).toBeVisible();
+
 			await page.getByTestId('session-filter-date').click();
 			await page.getByRole('option', { name: 'Today' }).click();
 
-			// URL should update with date_range param
-			await expect(page).toHaveURL(/date_range=today/);
+			// URL should update with a concrete since date.
+			await expect(page).toHaveURL(/since=/);
 		});
 
 		// AC: @session-filter-controls ac-clear-filters
@@ -1226,7 +1256,7 @@ test.describe('Session History View', () => {
 			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 
 			// Navigate with filters already in URL
-			await page.goto('/sessions?trigger=manual&status=completed');
+			await page.goto('/sessions?trigger=manual&status=completed&agent_id=worker');
 			await expect(page.getByTestId('session-filter-controls')).toBeVisible();
 
 			// Clear filters button should be visible
@@ -1270,10 +1300,10 @@ test.describe('Session History View', () => {
 			await page.route('**/api/sessions*', mockSessionsRoute(mockSessions()));
 
 			// Navigate directly with filter params
-			await page.goto('/sessions?trigger=manual');
+			await page.goto('/sessions?trigger=manual&status=failed&agent_id=worker');
 			await expect(page.getByTestId('session-filter-controls')).toBeVisible();
 
-			// Only manual session should be shown
+			// Only the matching manual session should be shown.
 			await expect(page.getByTestId('session-row')).toHaveCount(1);
 		});
 	});
