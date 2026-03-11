@@ -86714,16 +86714,35 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKEW57SQ1TCNEEEMBF7DRKYY
   created_at: 2026-03-10T06:55:44.280Z
+  started_at: 2026-03-11T16:40:55.669Z
   notes:
     - _ulid: 01KKB8FDMR8G970BYB2NNW4V9R
       created_at: 2026-03-10T06:55:44.280Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    - _ulid: 01KKEWEQNWM6ZX4Z3S878974HM
+      created_at: 2026-03-11T16:42:36.604Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Close @core completeness warnings by adding missing ACs to foundational
+        primitives under @core.
+
+        - Scope: Backfill ACs only for @item-required-fields, @item-optional-fields, @ulid-format,
+        @ulid-immutability, @ulid-shortening, @slug-format, @ref-syntax, @ref-validation,
+        @relationship-types, @rel-tests, and @rel-supersedes.
+
+        - Files: Shadow-branch spec state only via kspec CLI; no src/ or test changes expected in
+        this task.
+
+        - Verification: Run kspec validate --completeness and confirm zero missing acceptance
+        criteria warnings for @core descendants.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T16:40:55.669Z
-  session_id: 01KKEW57SQ1TCNEEEMBF7DRKYY
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
   slugs:
     - implement-schema-and-structure-ac-backfill
