@@ -85722,7 +85722,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKDXPP2QN2EVZ7GS3KMXMZF0
   created_at: 2026-03-10T06:04:41.144Z
+  started_at: 2026-03-11T07:52:54.702Z
   notes:
     - _ulid: 01KKB5HY9RPWCVPGZ8FXXKWCBC
       created_at: 2026-03-10T06:04:41.145Z
@@ -85756,10 +85758,15 @@
         - Verification: npm run build in packages/web-ui succeeds. Visual check that prose classes
         produce visible typography styling. Existing dark mode theme still works.
       supersedes: null
+    - _ulid: 01KKDY7XMSRQB6A78SP625AF34
+      created_at: 2026-03-11T07:54:36.058Z
+      author: Jacob Chapel
+      content: "Execution update: installed Tailwind typography plugin via the web-ui workspace, switched
+        MessageBlock to dark-only prose inversion, and added spec-annotated web-ui tests that verify
+        prose classes are present and emitted into the built CSS bundle."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T07:52:54.702Z
-  session_id: 01KKDXPP2QN2EVZ7GS3KMXMZF0
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
   slugs:
     - implement-streaming-markdown-component
