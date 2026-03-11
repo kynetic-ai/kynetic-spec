@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86053,9 +86053,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKFJTVSGSAY3E2CW43C40W21
   created_at: 2026-03-10T06:04:42.957Z
-  started_at: 2026-03-11T22:35:26.422Z
+  started_at: 2026-03-11T23:18:48.808Z
   submitted_at: 2026-03-11T22:56:41.123Z
   notes:
     - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
@@ -87678,6 +87678,11 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #793. Backfilled acceptance criteria for previously uncovered
+    descendants under @shadow-branch, including shadow worktree mechanics, CLI management commands,
+    CI/bootstrap behavior, and validation semantics. Verified zero missing-AC descendants under
+    @shadow-branch, reviewed the new ACs for concrete given/when/then outcomes, and confirmed
+    regression coverage with a full npm test pass."
   depends_on:
     - "@implement-spec-completeness-policy"
   context: []
@@ -87688,6 +87693,7 @@
   created_at: 2026-03-10T07:06:53.000Z
   started_at: 2026-03-11T23:01:04.549Z
   submitted_at: 2026-03-11T23:13:01.451Z
+  completed_at: 2026-03-11T23:17:55.853Z
   notes:
     - _ulid: 01KKB93TP8WHJMPYGH18YTENP6
       created_at: 2026-03-10T07:06:53.000Z
@@ -87740,12 +87746,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T23:17:55.853Z
-  closed_reason: "Merged in PR #793. Backfilled acceptance criteria for previously uncovered
-    descendants under @shadow-branch, including shadow worktree mechanics, CLI management commands,
-    CI/bootstrap behavior, and validation semantics. Verified zero missing-AC descendants under
-    @shadow-branch, reviewed the new ACs for concrete given/when/then outcomes, and confirmed
-    regression coverage with a full npm test pass."
 - _ulid: 01KKBBS1HGRR363BSDMG07EC19
   slugs: []
   title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
