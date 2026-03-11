@@ -81936,8 +81936,14 @@
     - dx
   vcs_refs: []
   created_at: 2026-03-08T06:11:51.101Z
-  notes: []
+  notes:
+    - _ulid: 01KKDQK5KNPCZECYACJ05WJDER
+      created_at: 2026-03-11T05:58:24.629Z
+      author: "@claude"
+      content: "Automation status set to manual_only: Documentation authoring requires human judgment"
+      supersedes: null
   todos: []
+  automation: manual_only
 - _ulid: 01KK617H896Z5RHSCVA51G9QFQ
   slugs: []
   title: Fix dispatch watch WebSocket crash on Node 20
