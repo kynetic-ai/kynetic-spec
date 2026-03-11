@@ -85138,6 +85138,31 @@
         unified filters, and filtered human summary omits filter state unless pagination truncates
         results."
       supersedes: null
+    - _ulid: 01KKD52MB2RB7648SVZDJBY32F
+      created_at: 2026-03-11T00:34:48.290Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle 1 addressed:
+
+        - Session log JSON filter payload now uses task_id instead of task for API shape parity.
+
+        - Human summary now always includes active filter state, even when pagination does not
+        truncate filtered results.
+
+        - Added/updated session log list assertions for filters.task_id and summary text with filter
+        descriptions.
+
+        Verification:
+
+        - npm run build
+
+        - npm test -- tests/session-log-list.test.ts (passes)
+
+        - npm test (session-log changes pass; suite has an unrelated existing failure in
+        tests/cli-serve.test.ts foreground Ctrl+C exitCode expectation)
+
+        - kspec validate (warnings-only baseline, exit 6)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB3PKERP55BQ8GMEKS472ER
