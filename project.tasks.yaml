@@ -86751,7 +86751,7 @@
   type: task
   spec_ref: "@description-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -86879,6 +86879,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T13:34:43.635Z
+  closed_reason: "Merged in PR #779. Completed the missing description backfill for the spec items
+    tracked by @description-backfill, validated that the missing-description warning is gone for
+    this task's scope, and cleared the review fix-cycle regressions with passing full npm test
+    coverage on the merged head."
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
   slugs:
     - task-shadow-branch-ac-backfill
