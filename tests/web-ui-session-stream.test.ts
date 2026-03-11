@@ -11,12 +11,55 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const WEB_UI_ROOT = join(process.cwd(), "packages", "web-ui");
 const WEB_UI_SRC = join(WEB_UI_ROOT, "src");
 const SESSION_COMPONENTS = join(WEB_UI_SRC, "lib", "components", "session");
+let builtWebUiAssetsCache:
+  | {
+      css: string;
+      js: string;
+    }
+  | undefined;
+
+function buildWebUiAssets(): { css: string; js: string } {
+  if (builtWebUiAssetsCache) {
+    return builtWebUiAssetsCache;
+  }
+
+  execFileSync("npm", ["--workspace", "packages/web-ui", "run", "build"], {
+    cwd: process.cwd(),
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+
+  const assetDir = join(WEB_UI_ROOT, "build", "_app", "immutable");
+  if (!existsSync(assetDir)) {
+    throw new Error(`Expected built asset directory at ${assetDir}`);
+  }
+
+  const assetFiles = execFileSync(
+    "bash",
+    ["-lc", `find ${JSON.stringify(assetDir)} -type f \\( -name '*.css' -o -name '*.js' \\)`],
+    {
+      cwd: process.cwd(),
+      encoding: "utf8",
+    },
+  )
+    .trim()
+    .split("\n")
+    .filter(Boolean);
+
+  builtWebUiAssetsCache = {
+    css: assetFiles.filter((file) => file.endsWith(".css")).map((file) => readFileSync(file, "utf8")).join("\n"),
+    js: assetFiles.filter((file) => file.endsWith(".js")).map((file) => readFileSync(file, "utf8")).join("\n"),
+  };
+
+  return builtWebUiAssetsCache;
+}
 
 // ─── Runtime imports ─────────────────────────────────────────────────────────
 
@@ -38,6 +81,10 @@ let shouldShowJumpButton: SessionUtils["shouldShowJumpButton"];
 let accumulateStreamingText: SessionUtils["accumulateStreamingText"];
 let getLastSeq: SessionUtils["getLastSeq"];
 let renderMarkdown: MarkdownUtils["renderMarkdown"];
+let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sanitizeHtml"];
+let isLanguageSupported: typeof import("../packages/web-ui/src/lib/utils/highlight")["isLanguageSupported"];
+let createStreamingMarkdownRenderer: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownRenderer"];
+let finalizeStreamingMarkdown: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["finalizeStreamingMarkdown"];
 
 beforeAll(async () => {
   const sessionMod = await import(
@@ -62,6 +109,22 @@ beforeAll(async () => {
     "../packages/web-ui/src/lib/utils/markdown"
   );
   renderMarkdown = markdownMod.renderMarkdown;
+
+  const sanitizeMod = await import(
+    "../packages/web-ui/src/lib/utils/sanitize"
+  );
+  sanitizeHtml = sanitizeMod.sanitizeHtml;
+
+  const highlightMod = await import(
+    "../packages/web-ui/src/lib/utils/highlight"
+  );
+  isLanguageSupported = highlightMod.isLanguageSupported;
+
+  const streamingMod = await import(
+    "../packages/web-ui/src/lib/utils/streaming-markdown"
+  );
+  createStreamingMarkdownRenderer = streamingMod.createStreamingMarkdownRenderer;
+  finalizeStreamingMarkdown = streamingMod.finalizeStreamingMarkdown;
 });
 
 // ─── AC-1: Structured event blocks ────────────────────────────────────────────
@@ -944,6 +1007,7 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     });
 
     // AC: @ui-session-stream ac-1
+    // AC: @trait-markdown-rendering ac-3
     it("renders inline code", () => {
       const html = renderMarkdown("Use `npm install`");
       expect(html).toContain("<code>npm install</code>");
@@ -953,11 +1017,13 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     it("renders fenced code blocks", () => {
       const html = renderMarkdown("```js\nconst x = 1;\n```");
       expect(html).toContain("<pre>");
-      expect(html).toContain("<code");
-      expect(html).toContain("const x = 1;");
+      expect(html).toContain('<code class="hljs language-javascript"');
+      expect(html).toContain("hljs-keyword");
+      expect(html).toContain("hljs-number");
     });
 
     // AC: @ui-session-stream ac-1
+    // AC: @trait-markdown-rendering ac-1
     it("renders headings", () => {
       const html = renderMarkdown("# Title\n## Subtitle");
       expect(html).toContain("<h1>Title</h1>");
@@ -980,6 +1046,8 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const html = renderMarkdown("[Click here](https://example.com)");
       expect(html).toContain("<a");
       expect(html).toContain('href="https://example.com"');
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('rel="noopener noreferrer"');
       expect(html).toContain("Click here</a>");
     });
 
@@ -1007,9 +1075,13 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
       const imgXss = renderMarkdown('<img onerror="alert(1)" src="x">');
       expect(imgXss).not.toContain("onerror");
+
+      const badLink = renderMarkdown('[xss](javascript:alert("xss"))');
+      expect(badLink).not.toContain("javascript:");
     });
 
     // AC: @ui-session-stream ac-1
+    // AC: @trait-markdown-rendering ac-7
     it("returns empty string for empty input", () => {
       expect(renderMarkdown("")).toBe("");
       expect(renderMarkdown(null as unknown as string)).toBe("");
@@ -1020,6 +1092,174 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const html = renderMarkdown("Line 1\nLine 2");
       expect(html).toContain("<br");
     });
+  });
+
+  describe("shared markdown security and highlighting", () => {
+    // AC: @trait-markdown-rendering ac-5
+    it("uses dark-mode prose inversion and dark highlight styles", () => {
+      const builtAssets = buildWebUiAssets();
+
+      expect(builtAssets.css).toContain(".dark\\:prose-invert");
+      expect(builtAssets.css).toContain(".dark .hljs");
+    }, 30_000);
+
+    // AC: @trait-markdown-rendering ac-2
+    it("supports the required highlight.js language set", () => {
+      for (const language of [
+        "bash",
+        "typescript",
+        "javascript",
+        "python",
+        "rust",
+        "go",
+        "json",
+        "yaml",
+        "sql",
+        "css",
+        "html",
+        "java",
+        "c",
+        "cpp",
+        "diff",
+      ]) {
+        expect(isLanguageSupported(language)).toBe(true);
+      }
+    });
+
+    // AC: @trait-markdown-rendering ac-2
+    it("highlights static code fences with highlight.js markup", () => {
+      const html = renderMarkdown("```python\nprint('hi')\n```");
+      expect(html).toContain("hljs");
+      expect(html).toContain("language-python");
+    });
+
+    // AC: @trait-markdown-rendering ac-4
+    // AC: @trait-markdown-rendering ac-6
+    it("sanitizes unsafe HTML while keeping external link security attributes", () => {
+      const clean = sanitizeHtml(
+        '<p>safe</p><script>alert(1)</script><a href="https://example.com">x</a><a href="/local">y</a>',
+      );
+
+      expect(clean).toContain("<p>safe</p>");
+      expect(clean).not.toContain("<script>");
+      expect(clean).toContain('href="https://example.com"');
+      expect(clean).toContain('target="_blank"');
+      expect(clean).toContain('rel="noopener noreferrer"');
+      expect(clean).toContain('href="/local"');
+    });
+
+    // AC: @trait-markdown-rendering ac-8
+    it("renders malformed markdown without throwing", () => {
+      expect(() => renderMarkdown("```ts\nconst x = 1")).not.toThrow();
+      expect(renderMarkdown("```ts\nconst x = 1")).toContain("language-typescript");
+    });
+
+    // AC: @trait-markdown-rendering ac-9
+    it("renders very long markdown inputs without runtime errors", () => {
+      const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join("\n");
+      const start = Date.now();
+      const html = renderMarkdown(largeMarkdown);
+      const elapsedMs = Date.now() - start;
+
+      expect(html).toContain("item 9999");
+      expect(elapsedMs).toBeLessThan(1_000);
+    });
+  });
+
+  describe("streaming markdown renderer", () => {
+    // AC: @streaming-markdown-component ac-1
+    it("appends new chunks without rewriting earlier rendered nodes", async () => {
+      const { JSDOM } = await import("jsdom");
+      const dom = new JSDOM("<div id='root'></div>");
+      const root = dom.window.document.getElementById("root") as HTMLElement;
+
+      globalThis.document = dom.window.document as unknown as Document;
+      globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+      globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+
+      const renderer = createStreamingMarkdownRenderer(root);
+      const parser = (await import("streaming-markdown")).parser(renderer);
+      const smd = await import("streaming-markdown");
+
+      smd.parser_write(parser, "Hello ");
+      const paragraph = root.querySelector("p");
+      expect(paragraph).toBeTruthy();
+      const initialText = root.textContent ?? "";
+
+      smd.parser_write(parser, "world");
+      expect(root.querySelector("p")).toBe(paragraph);
+      expect(root.textContent).toContain("Hello");
+      expect((root.textContent ?? "").length).toBeGreaterThan(initialText.length);
+    });
+
+    // AC: @streaming-markdown-component ac-2
+    // AC: @streaming-markdown-component ac-3
+    // AC: @streaming-markdown-component ac-4
+    // AC: @trait-markdown-rendering ac-4
+    it("defers code highlighting until finalization and sanitizes the final HTML", async () => {
+      const { JSDOM } = await import("jsdom");
+      const dom = new JSDOM("<div id='root'></div>");
+      const root = dom.window.document.getElementById("root") as HTMLElement;
+
+      globalThis.document = dom.window.document as unknown as Document;
+      globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+      globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+
+      const smd = await import("streaming-markdown");
+      const parser = smd.parser(createStreamingMarkdownRenderer(root));
+
+      smd.parser_write(parser, "```js\nconst value = 1;\n```");
+      expect(root.innerHTML).not.toContain("hljs");
+
+      root.insertAdjacentHTML("beforeend", '<script>alert("xss")</script>');
+      smd.parser_end(parser);
+      finalizeStreamingMarkdown(root);
+
+      expect(root.innerHTML).not.toContain("<script>");
+      expect(root.innerHTML).toContain("hljs");
+      expect(root.innerHTML).toContain("language-javascript");
+    });
+
+    // AC: @trait-markdown-rendering ac-6
+    it("adds safe attributes to external links emitted by the streaming renderer", async () => {
+      const { JSDOM } = await import("jsdom");
+      const dom = new JSDOM("<div id='root'></div>");
+      const root = dom.window.document.getElementById("root") as HTMLElement;
+
+      globalThis.document = dom.window.document as unknown as Document;
+      globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+      globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+
+      const smd = await import("streaming-markdown");
+      const parser = smd.parser(createStreamingMarkdownRenderer(root));
+
+      smd.parser_write(parser, "[docs](https://example.com)");
+      smd.parser_end(parser);
+      finalizeStreamingMarkdown(root);
+
+      const link = root.querySelector("a");
+      expect(link?.getAttribute("target")).toBe("_blank");
+      expect(link?.getAttribute("rel")).toBe("noopener noreferrer");
+    });
+  });
+
+  describe("streaming markdown component integration", () => {
+    // AC: @streaming-markdown-component ac-6
+    it("ships requestAnimationFrame batching logic in the built streaming bundle", () => {
+      const builtAssets = buildWebUiAssets();
+      expect(builtAssets.js).toContain("requestAnimationFrame");
+      expect(builtAssets.js).toContain("streaming-markdown");
+    }, 30_000);
+
+    // AC: @streaming-markdown-component ac-5
+    // AC: @streaming-markdown-component ac-7
+    it("includes the streaming markdown cursor and runtime markup in the built bundle", () => {
+      const builtAssets = buildWebUiAssets();
+      expect(builtAssets.js).toContain("ds-streaming-cursor");
+      expect(builtAssets.js).toContain("streaming-markdown");
+      expect(builtAssets.css).toContain("cursor-blink");
+      expect(builtAssets.css).toContain(".hljs");
+    }, 30_000);
   });
 
   describe("tool display utilities", () => {
