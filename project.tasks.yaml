@@ -86722,14 +86722,14 @@
   type: task
   spec_ref: "@description-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKE5JWESZNG7KCMR10CDM76A
+  session_id: null
   created_at: 2026-03-10T06:55:47.719Z
   started_at: 2026-03-11T10:26:06.133Z
   submitted_at: 2026-03-11T10:26:12.729Z
@@ -86829,6 +86829,13 @@
 
         - Verification: npm test passed on fix/implement-missing-description-backfill (209 files,
         4517 tests, 3 skipped).
+      supersedes: null
+    - _ulid: 01KKE8D2T9AT104JJZ8HVTRPCQ
+      created_at: 2026-03-11T10:52:10.953Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: clean isolated npm ci && npm test still fails on
+        PR #779 (session-start-inbox-triage timeout and session-start-notes timeout), so regression
+        gate is not clean on current HEAD."
       supersedes: null
   todos: []
   automation: eligible
