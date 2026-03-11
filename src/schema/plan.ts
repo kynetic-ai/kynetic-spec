@@ -41,7 +41,7 @@ export const PlanSchema = z.object({
   status: PlanStatusSchema.default("draft"),
 
   // Links to derived work
-  // AC: @plan-derive ac-5 - updated when tasks are derived
+  // AC: @plan-derive-enhanced ac-status-transition - updated when plans are derived
   derived_tasks: z.array(RefSchema).default([]),
   derived_specs: z.array(RefSchema).default([]),
 
