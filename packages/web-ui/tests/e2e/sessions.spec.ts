@@ -12,10 +12,8 @@
  * - @session-list-infinite-scroll ac-scroll-end: End of list indicator when all loaded
  * - @session-list-infinite-scroll ac-filter-reset: Filter change resets to page 1
  * - @session-list-infinite-scroll ac-live-update: WebSocket updates total and shows indicator
- *
- * Trait AC N/A:
- * // AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state (triggerFilter), not URL query parameters. No URL mutations occur on filter change.
  */
+// AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state (triggerFilter), not URL query parameters. No URL mutations occur on filter change.
 
 import { test, expect } from '../fixtures/test-base';
 

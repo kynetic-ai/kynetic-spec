@@ -6,7 +6,6 @@
   AC: @session-list-infinite-scroll ac-scroll-end — End of list indicator when all loaded.
   AC: @session-list-infinite-scroll ac-filter-reset — Filter change resets to page 1.
   AC: @session-list-infinite-scroll ac-live-update — WebSocket updates total and shows indicator.
-  AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state, not URL query parameters.
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -44,6 +43,7 @@
 	// Filter state
 	type TriggerFilter = 'all' | 'manual' | 'dispatched';
 	let triggerFilter = $state<TriggerFilter>('all');
+	// AC: @ui-url-panel-state ac-4 — N/A: Session filters use local component state, not URL query parameters.
 
 	// AC: @session-list-infinite-scroll ac-live-update — Track new sessions
 	let newSessionsAvailable = $state(0);

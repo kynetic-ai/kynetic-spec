@@ -29,6 +29,13 @@ import {
   testUlid,
 } from "./helpers/cli";
 
+interface SessionLogListJson {
+  items: SessionLogSummary[];
+  total: number;
+  offset: number;
+  limit: number | null;
+}
+
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
 const PRIMARY_SESSION_ID = testUlid("PRMY", 1);
@@ -114,12 +121,14 @@ describe("Legacy session detect-and-warn (CLI)", () => {
         agentType: "legacy-agent",
       });
 
-      const sessions = kspecJson<SessionLogSummary[]>(
+      const sessions = kspecJson<SessionLogListJson>(
         "session log list",
         tempDir,
       );
-      expect(sessions).toHaveLength(1);
-      expect(sessions[0].id).toBe(PRIMARY_SESSION_ID);
+      expect(sessions.items).toHaveLength(1);
+      expect(sessions.total).toBe(1);
+      expect(sessions.offset).toBe(0);
+      expect(sessions.items[0].id).toBe(PRIMARY_SESSION_ID);
     });
 
     it("shows only primary sessions even when both locations have sessions", async () => {
@@ -131,13 +140,14 @@ describe("Legacy session detect-and-warn (CLI)", () => {
       });
       await writeSession(legacyDir, LEGACY_SESSION_ID);
 
-      const sessions = kspecJson<SessionLogSummary[]>(
+      const sessions = kspecJson<SessionLogListJson>(
         "session log list",
         tempDir,
       );
-      expect(sessions).toHaveLength(1);
-      expect(sessions[0].id).toBe(BOTH_SESSION_ID);
-      expect(sessions[0].agent_type).toBe("primary-agent");
+      expect(sessions.items).toHaveLength(1);
+      expect(sessions.total).toBe(1);
+      expect(sessions.items[0].id).toBe(BOTH_SESSION_ID);
+      expect(sessions.items[0].agent_type).toBe("primary-agent");
     });
 
     it("filters by --status work with primary-only results", async () => {
@@ -145,11 +155,12 @@ describe("Legacy session detect-and-warn (CLI)", () => {
         status: "completed",
       });
 
-      const activeSessions = kspecJson<SessionLogSummary[]>(
+      const activeSessions = kspecJson<SessionLogListJson>(
         "session log list --status active",
         tempDir,
       );
-      expect(activeSessions).toHaveLength(0);
+      expect(activeSessions.items).toHaveLength(0);
+      expect(activeSessions.total).toBe(0);
     });
   });
 

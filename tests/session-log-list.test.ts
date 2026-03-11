@@ -26,6 +26,13 @@ import {
   testUlid,
 } from './helpers/cli';
 
+interface SessionLogListJson {
+  items: SessionLogSummary[];
+  total: number;
+  offset: number;
+  limit: number | null;
+}
+
 // ─── Store Unit Tests ───────────────────────────────────────────────────────
 
 describe('getSessionLogSummary', () => {
@@ -124,9 +131,11 @@ describe('getSessionLogSummary', () => {
 
   it('should compute duration from now for active sessions', async () => {
     const sessionId = testUlid('SESS', 1);
+    const startedAt = new Date(Date.now() - 60_000).toISOString();
     await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
+      started_at: startedAt,
     });
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);
@@ -358,10 +367,13 @@ describe('kspec session log list (CLI)', () => {
 
   // AC: @session-log-list ac-1 (JSON variant)
   it('should output valid JSON with all fields in --json mode', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list', tempDir);
-    expect(sessions).toHaveLength(3);
+    const sessions = kspecJson<SessionLogListJson>('session log list', tempDir);
+    expect(sessions.items).toHaveLength(3);
+    expect(sessions.total).toBe(3);
+    expect(sessions.offset).toBe(0);
+    expect(sessions.limit).toBeNull();
 
-    for (const session of sessions) {
+    for (const session of sessions.items) {
       expect(session).toHaveProperty('id');
       expect(session).toHaveProperty('status');
       expect(session).toHaveProperty('agent_type');
@@ -375,72 +387,77 @@ describe('kspec session log list (CLI)', () => {
 
   // AC: @session-log-list ac-2
   it('should filter by --status', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --status completed', tempDir);
-    expect(sessions).toHaveLength(2);
-    for (const s of sessions) {
+    const sessions = kspecJson<SessionLogListJson>('session log list --status completed', tempDir);
+    expect(sessions.items).toHaveLength(2);
+    expect(sessions.total).toBe(2);
+    for (const s of sessions.items) {
       expect(s.status).toBe('completed');
     }
   });
 
   // AC: @session-log-list ac-2
   it('should filter by --status active', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --status active', tempDir);
-    expect(sessions).toHaveLength(1);
-    expect(sessions[0].status).toBe('active');
-    expect(sessions[0].agent_type).toBe('custom-agent');
+    const sessions = kspecJson<SessionLogListJson>('session log list --status active', tempDir);
+    expect(sessions.items).toHaveLength(1);
+    expect(sessions.total).toBe(1);
+    expect(sessions.items[0].status).toBe('active');
+    expect(sessions.items[0].agent_type).toBe('custom-agent');
   });
 
   // AC: @session-log-list ac-3
   it('should filter by --since', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --since 2026-02-01', tempDir);
+    const sessions = kspecJson<SessionLogListJson>('session log list --since 2026-02-01', tempDir);
     // Only sessions 2 and 3 are after Feb 1
-    expect(sessions).toHaveLength(2);
-    for (const s of sessions) {
+    expect(sessions.items).toHaveLength(2);
+    expect(sessions.total).toBe(2);
+    for (const s of sessions.items) {
       expect(new Date(s.started_at).getTime()).toBeGreaterThanOrEqual(new Date('2026-02-01').getTime());
     }
   });
 
   // AC: @session-log-list ac-4
   it('should filter by --agent', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --agent custom-agent', tempDir);
-    expect(sessions).toHaveLength(1);
-    expect(sessions[0].agent_type).toBe('custom-agent');
+    const sessions = kspecJson<SessionLogListJson>('session log list --agent custom-agent', tempDir);
+    expect(sessions.items).toHaveLength(1);
+    expect(sessions.total).toBe(1);
+    expect(sessions.items[0].agent_type).toBe('custom-agent');
   });
 
   // AC: @session-log-list ac-4
   it('should filter by --agent for claude-agent-acp', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --agent claude-agent-acp', tempDir);
-    expect(sessions).toHaveLength(2);
-    for (const s of sessions) {
+    const sessions = kspecJson<SessionLogListJson>('session log list --agent claude-agent-acp', tempDir);
+    expect(sessions.items).toHaveLength(2);
+    expect(sessions.total).toBe(2);
+    for (const s of sessions.items) {
       expect(s.agent_type).toBe('claude-agent-acp');
     }
   });
 
   // AC: @session-log-list ac-5
   it('should sort by started_at descending by default', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list', tempDir);
-    expect(sessions).toHaveLength(3);
+    const sessions = kspecJson<SessionLogListJson>('session log list', tempDir);
+    expect(sessions.items).toHaveLength(3);
     // Most recent first
-    for (let i = 1; i < sessions.length; i++) {
-      expect(new Date(sessions[i - 1].started_at).getTime())
-        .toBeGreaterThanOrEqual(new Date(sessions[i].started_at).getTime());
+    for (let i = 1; i < sessions.items.length; i++) {
+      expect(new Date(sessions.items[i - 1].started_at).getTime())
+        .toBeGreaterThanOrEqual(new Date(sessions.items[i].started_at).getTime());
     }
   });
 
   // AC: @session-log-list ac-5
   it('should sort by events when --sort events is provided', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --sort events', tempDir);
+    const sessions = kspecJson<SessionLogListJson>('session log list --sort events', tempDir);
     // Highest event count first
-    for (let i = 1; i < sessions.length; i++) {
-      expect(sessions[i - 1].event_count).toBeGreaterThanOrEqual(sessions[i].event_count);
+    for (let i = 1; i < sessions.items.length; i++) {
+      expect(sessions.items[i - 1].event_count).toBeGreaterThanOrEqual(sessions.items[i].event_count);
     }
   });
 
   // AC: @session-log-list ac-5
   it('should sort by iterations when --sort iterations is provided', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --sort iterations', tempDir);
-    for (let i = 1; i < sessions.length; i++) {
-      expect(sessions[i - 1].iteration_count).toBeGreaterThanOrEqual(sessions[i].iteration_count);
+    const sessions = kspecJson<SessionLogListJson>('session log list --sort iterations', tempDir);
+    for (let i = 1; i < sessions.items.length; i++) {
+      expect(sessions.items[i - 1].iteration_count).toBeGreaterThanOrEqual(sessions.items[i].iteration_count);
     }
   });
 
@@ -462,8 +479,8 @@ describe('kspec session log list (CLI)', () => {
     await fs.rm(sessionsDir, { recursive: true });
     await fs.mkdir(sessionsDir);
 
-    const sessions = kspecJson<SessionLogSummary[]>('session log list', tempDir);
-    expect(sessions).toEqual([]);
+    const sessions = kspecJson<SessionLogListJson>('session log list', tempDir);
+    expect(sessions).toEqual({ items: [], total: 0, offset: 0, limit: null });
   });
 
   // AC: @session-log-list ac-7
@@ -487,41 +504,44 @@ describe('kspec session log list (CLI)', () => {
 
   // --limit flag
   it('should limit number of sessions with -n flag', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list -n 2', tempDir);
-    expect(sessions).toHaveLength(2);
+    const sessions = kspecJson<SessionLogListJson>('session log list -n 2', tempDir);
+    expect(sessions.items).toHaveLength(2);
+    expect(sessions.total).toBe(3);
+    expect(sessions.limit).toBe(2);
   });
 
   // Combined filters
   it('should combine --status and --agent filters', () => {
-    const sessions = kspecJson<SessionLogSummary[]>(
+    const sessions = kspecJson<SessionLogListJson>(
       'session log list --status active --agent custom-agent',
       tempDir,
     );
-    expect(sessions).toHaveLength(1);
-    expect(sessions[0].status).toBe('active');
-    expect(sessions[0].agent_type).toBe('custom-agent');
+    expect(sessions.items).toHaveLength(1);
+    expect(sessions.total).toBe(1);
+    expect(sessions.items[0].status).toBe('active');
+    expect(sessions.items[0].agent_type).toBe('custom-agent');
   });
 
   // Task completion counting
   it('should count task completions', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --status completed', tempDir);
-    const withTasks = sessions.find(s => s.tasks_completed > 0);
+    const sessions = kspecJson<SessionLogListJson>('session log list --status completed', tempDir);
+    const withTasks = sessions.items.find(s => s.tasks_completed > 0);
     expect(withTasks).toBeDefined();
     expect(withTasks!.tasks_completed).toBe(1);
   });
 
   // Iteration counting
   it('should count iterations correctly', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list --status active', tempDir);
-    expect(sessions).toHaveLength(1);
-    expect(sessions[0].iteration_count).toBe(3);
+    const sessions = kspecJson<SessionLogListJson>('session log list --status active', tempDir);
+    expect(sessions.items).toHaveLength(1);
+    expect(sessions.items[0].iteration_count).toBe(3);
   });
 
   // Trait: JSON output has ISO 8601 timestamps
   // AC: @trait-json-output ac-5
   it('should use ISO 8601 timestamps in JSON output', () => {
-    const sessions = kspecJson<SessionLogSummary[]>('session log list', tempDir);
-    for (const s of sessions) {
+    const sessions = kspecJson<SessionLogListJson>('session log list', tempDir);
+    for (const s of sessions.items) {
       expect(s.started_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
     }
   });

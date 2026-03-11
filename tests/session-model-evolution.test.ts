@@ -35,6 +35,13 @@ import {
   testUlid,
 } from "./helpers/cli.js";
 
+interface SessionLogListJson {
+  items: SessionLogSummary[];
+  total: number;
+  offset: number;
+  limit: number | null;
+}
+
 // ─── AC-3: SessionStatusSchema extension ────────────────────────────────────
 
 // AC: @session-model-evolution ac-3
@@ -349,11 +356,12 @@ describe("kspec session log list session type display (CLI)", () => {
   });
 
   it("should show session_type field in JSON output", () => {
-    const sessions = kspecJson<SessionLogSummary[]>("session log list", tempDir);
-    expect(sessions).toHaveLength(2);
+    const sessions = kspecJson<SessionLogListJson>("session log list", tempDir);
+    expect(sessions.items).toHaveLength(2);
+    expect(sessions.total).toBe(2);
 
-    const legacy = sessions.find((s) => s.agent_type === "ralph");
-    const invocation = sessions.find((s) => s.agent_type === "claude-agent-acp");
+    const legacy = sessions.items.find((s) => s.agent_type === "ralph");
+    const invocation = sessions.items.find((s) => s.agent_type === "claude-agent-acp");
 
     expect(legacy).toBeDefined();
     expect(legacy!.session_type).toBe("loop");
