@@ -86260,6 +86260,7 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
   slugs:
     - implement-cli-ac-backfill
