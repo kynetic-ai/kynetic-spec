@@ -86839,7 +86839,7 @@
   type: task
   spec_ref: "@schema-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86847,7 +86847,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKEX9XGE1DSKE1VS06F9AHW1
+  session_id: null
   created_at: 2026-03-10T06:55:44.873Z
   started_at: 2026-03-11T17:03:35.099Z
   submitted_at: 2026-03-11T17:07:14.628Z
@@ -86896,6 +86896,13 @@
 
         - Remaining completeness warnings are outside this task scope and primarily belong to later
         backfill and annotation-sweep tasks.
+      supersedes: null
+    - _ulid: 01KKEZK3BWX056C81MZ3JVR0N7
+      created_at: 2026-03-11T17:37:25.372Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: schema AC backfill introduced missing own AC
+        coverage warnings for the touched @schema items and @schema-ac-backfill under the active
+        review gates."
       supersedes: null
   todos: []
   automation: eligible
