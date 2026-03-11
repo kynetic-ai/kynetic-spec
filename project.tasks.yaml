@@ -78847,7 +78847,7 @@
   spec_ref: "@agent-invocation-lifecycle"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -78856,7 +78856,7 @@
     - infra
     - cli
   vcs_refs: []
-  session_id: 01KKDTHDNXJCZNE6WVPE4GMQJN
+  session_id: null
   created_at: 2026-03-06T03:18:52.146Z
   started_at: 2026-03-11T06:58:48.581Z
   submitted_at: 2026-03-11T07:05:06.048Z
@@ -78885,6 +78885,13 @@
         and agent_id. Failure handling still writes AGENT-FAIL notes for operator context, but
         success notes are no longer used as tracking state. Updated AC-5/AC-9 tests to seed prior
         invocation sessions instead of mocked task note history.
+      supersedes: null
+    - _ulid: 01KKDWEXB7V03SV4VQCYC543AA
+      created_at: 2026-03-11T07:23:27.976Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #773 includes unrelated daemon watcher
+        changes for @daemon-server/@01KKDPW5237717QNKEKPRWERW7; split or rebase the PR so it only
+        contains the invocation outcome work."
       supersedes: null
   todos: []
   automation: eligible
@@ -81850,6 +81857,8 @@
   spec_ref: "@cli-agent-commands"
   status: completed
   blocked_by: []
+  closed_reason: Already implemented on main. Verified agent run live streaming, JSON suppression, and
+    session log --text replay via focused CLI tests (110 passing).
   depends_on: []
   context: []
   priority: 2
@@ -81859,6 +81868,7 @@
   created_at: 2026-03-08T05:04:37.219Z
   started_at: 2026-03-11T07:16:18.408Z
   submitted_at: 2026-03-11T07:17:51.120Z
+  completed_at: 2026-03-11T07:17:59.459Z
   notes:
     - _ulid: 01KKDW47M6N1DX7XY475Z6VCS1
       created_at: 2026-03-11T07:17:38.054Z
@@ -81873,9 +81883,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T07:17:59.459Z
-  closed_reason: Already implemented on main. Verified agent run live streaming, JSON suppression, and
-    session log --text replay via focused CLI tests (110 passing).
 - _ulid: 01KK5XAJVEJZNYR7GRDPEFP2M0
   slugs: []
   title: Fix KSPEC_SESSION_ID race condition in concurrent multi-project dispatch
