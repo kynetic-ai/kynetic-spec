@@ -85447,6 +85447,13 @@
         filters like 7d, so the daemon/UI search path does not satisfy @session-text-search
         ac-api-search/ac-scope-narrowing."
       supersedes: null
+    - _ulid: 01KKDQ5372ZWWC7D544QM3FEKA
+      created_at: 2026-03-11T05:50:43.426Z
+      author: Jacob Chapel
+      content: "Fix cycle: daemon /api/sessions/search currently parses since with Date(), so relative
+        filters like 7d fail even though CLI uses parseTimeSpec(). Updating the shared daemon filter
+        path to accept relative specs and expanding API coverage to exercise since=7d explicitly."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
