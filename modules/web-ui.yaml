@@ -906,7 +906,7 @@ features:
         created: 2026-03-10T06:04:40.051Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     features:
       - _ulid: 01KKB5HX9DV87K2SYVPHBQ40KG
         slugs:
