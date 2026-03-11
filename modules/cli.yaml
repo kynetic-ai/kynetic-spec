@@ -7757,6 +7757,24 @@ features:
         when: the default dispatch rules are generated
         then: "task-worker's task.ready and task.needs_work rules include filter: { automation: eligible }
           by default"
+      - id: ac-23
+        given: the dispatch engine has just completed an agent invocation and is about to choose the next
+          invocation to spawn
+        when: the engine prepares to drain queues
+        then: the engine operates on a full and current view of all task states loaded from disk, not a
+          stale or partial snapshot from prior queue entries alone
+      - id: ac-24
+        given: an agent invocation completes (success or failure after retry exhaustion)
+        when: the dispatch engine prepares to drain queues for the next invocation
+        then: the engine re-evaluates all current task states against dispatch rules (with skipIfActive
+          deduplication) before draining, ensuring tasks that reached a dispatchable state during
+          the prior invocation are visible to the drain loop
+      - id: ac-25
+        given: the post-invocation re-evaluation (ac-24) fails due to a transient error (disk read failure,
+          parse error, etc.)
+        when: the dispatch engine proceeds to drain queues
+        then: the failure is logged as a warning, and the drain still runs on pre-existing queue entries —
+          re-evaluation failure does not block dispatch of already-queued work
     depends_on: []
     implements: []
     relates_to: []
