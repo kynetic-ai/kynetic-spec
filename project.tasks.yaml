@@ -86987,16 +86987,33 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKEZAGDXQCFEDY0VAY5CCXA2
   created_at: 2026-03-10T06:55:45.973Z
+  started_at: 2026-03-11T17:38:17.520Z
   notes:
     - _ulid: 01KKB8FF9NT30VT4802Y6WWV4M
       created_at: 2026-03-10T06:55:45.973Z
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    - _ulid: 01KKEZN0ATF1YBDBXHHBZWN7Z6
+      created_at: 2026-03-11T17:38:27.802Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: backfill missing acceptance criteria under @tasks to reduce completeness debt
+        without changing runtime behavior.
+
+        - Scope: spec items under @tasks lacking ACs, specifically task types, task schema, task
+        storage, and alignment system.
+
+        - Files: .kspec spec state via kspec CLI only; no manual YAML edits.
+
+        - Verification: inspect @tasks descendants, run kspec validate --completeness, and confirm
+        zero missing-AC warnings for @tasks descendants.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T17:38:17.520Z
-  session_id: 01KKEZAGDXQCFEDY0VAY5CCXA2
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
   slugs:
     - implement-meta-and-shadow-branch-ac-backfill
