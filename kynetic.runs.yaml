@@ -13539,7 +13539,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KKFH03E0VB9YGYK06MQ492G9
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: aborted
     current_step: 1
     total_steps: 6
     started_at: 2026-03-11T22:41:37.216Z
@@ -13556,3 +13556,4 @@ runs:
         started_at: 2026-03-11T22:43:27.886Z
         completed_at: 2026-03-11T22:43:27.886Z
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-11T22:46:02.122Z
