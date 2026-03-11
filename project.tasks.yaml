@@ -85280,6 +85280,11 @@
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #769 as 14fabb3dce08b4e133afba35b437e3a6bd1f014f. Implemented task/item
+    session subresource endpoints, added related session sections to task/spec detail views, and
+    wired /sessions task_id/spec_ref filters for bidirectional navigation. AC coverage verified for
+    all six task-spec-session-context criteria via tests/session-related-routes.test.ts and
+    packages/web-ui/tests/e2e/session-context.spec.ts; no inherited trait ACs on this spec."
   depends_on:
     - "@implement-session-list-pagination-api"
     - "@implement-session-filter-controls"
@@ -85292,6 +85297,7 @@
   created_at: 2026-03-10T05:32:16.728Z
   started_at: 2026-03-11T03:50:48.464Z
   submitted_at: 2026-03-11T03:51:14.304Z
+  completed_at: 2026-03-11T04:13:30.416Z
   notes:
     - _ulid: 01KKB3PKERJB48MA2GFKAA03PS
       created_at: 2026-03-10T05:32:16.728Z
@@ -85372,12 +85378,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T04:13:30.416Z
-  closed_reason: "Merged in PR #769 as 14fabb3dce08b4e133afba35b437e3a6bd1f014f. Implemented task/item
-    session subresource endpoints, added related session sections to task/spec detail views, and
-    wired /sessions task_id/spec_ref filters for bidirectional navigation. AC coverage verified for
-    all six task-spec-session-context criteria via tests/session-related-routes.test.ts and
-    packages/web-ui/tests/e2e/session-context.spec.ts; no inherited trait ACs on this spec."
 - _ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
   slugs:
     - implement-session-text-search
@@ -85385,7 +85385,7 @@
   type: task
   spec_ref: "@session-text-search"
   plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-session-cli-unified-filtering"
@@ -85410,6 +85410,8 @@
         The daemon endpoint can stream results or use a reasonable timeout.
   todos: []
   automation: eligible
+  started_at: 2026-03-11T04:14:19.909Z
+  session_id: 01KKDH57X43YNKMHZ0X8PGH2ZX
 - _ulid: 01KKB5HXP2K7F3R0PYESC796G9
   slugs:
     - implement-markdown-rendering-trait
