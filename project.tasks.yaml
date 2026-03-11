@@ -89400,6 +89400,14 @@
         @implement-missing-description-backfill; rebase/drop the foreign commit before merge so
         preserved Task/Spec history stays accurate."
       supersedes: null
+    - _ulid: 01KKEJD63PTHJCZ2P2MC7QPZQK
+      created_at: 2026-03-11T13:47:00.086Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Rebased feat/enhanced-plan-derivation onto current origin/main to drop the
+        unrelated @implement-missing-description-backfill review-artifact commit from PR #780 before
+        resubmission. Verification will be GitHub PR commit list plus a clean main..branch range
+        containing only this task's commits."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKDPW5237717QNKEKPRWERW7
