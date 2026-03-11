@@ -2012,6 +2012,12 @@ features:
           Quick overview of project process definitions.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: meta items and session context exist in a project
+            when: kspec meta show runs
+            then: the output summarizes agent, workflow, convention, and unresolved observation counts plus
+              session-context status
       - _ulid: 01KF1XCMD20000000000000000
         slugs:
           - meta-agents-cmd
@@ -2030,6 +2036,15 @@ features:
           Output shows id, name, capabilities for each agent.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: agents are defined in meta
+            when: kspec meta agents runs
+            then: the command lists each agent with its id, name, and capabilities
+          - id: ac-2
+            given: agents are defined in meta
+            when: kspec meta agents --capabilities runs
+            then: the output groups or organizes agents by capability instead of only raw row order
       - _ulid: 01KF1XCMD30000000000000000
         slugs:
           - meta-workflows-cmd
@@ -2048,6 +2063,15 @@ features:
           Output shows id, trigger, step count for each workflow.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: workflows are defined in meta
+            when: kspec meta workflows runs
+            then: the command lists each workflow with its id, trigger, and step count
+          - id: ac-2
+            given: a workflow includes detailed steps
+            when: kspec meta workflows --verbose runs
+            then: the output expands the workflow to show the full ordered step list
       - _ulid: 01KF1XCMD40000000000000000
         slugs:
           - meta-conventions-cmd
@@ -2066,6 +2090,15 @@ features:
           Output shows domain, rule count for each convention.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: conventions are defined in meta
+            when: kspec meta conventions runs
+            then: the command lists convention domains together with their rule counts
+          - id: ac-2
+            given: a user requests one convention domain
+            when: kspec meta conventions --domain <domain> runs
+            then: only conventions for the requested domain are returned
       - _ulid: 01KF1XCMD50000000000000000
         slugs:
           - meta-observe-cmd
@@ -2147,6 +2180,15 @@ features:
           Shows unresolved observations by default.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: observations include resolved and unresolved entries of multiple types
+            when: kspec meta observations runs with no flags
+            then: only unresolved observations are shown by default
+          - id: ac-2
+            given: observations span multiple types or workflows
+            when: kspec meta observations is run with --type or --workflow
+            then: the result set is filtered to matching observations only
       - _ulid: 01KF1XCMD70000000000000000
         slugs:
           - meta-promote-cmd
@@ -2169,6 +2211,15 @@ features:
           - "@meta-commands"
         traits:
           - "@trait-shadow-commit"
+        acceptance_criteria:
+          - id: ac-1
+            given: an observation reference and title are provided
+            when: kspec meta promote runs successfully
+            then: it returns or records the created task linked to the observation
+          - id: ac-2
+            given: an observation is promoted to a task
+            when: the source observation is inspected afterward
+            then: it records the promoted_to linkage instead of remaining an unlinked idea
       - _ulid: 01KF1XCMD80000000000000000
         slugs:
           - meta-resolve-cmd
@@ -2192,6 +2243,11 @@ features:
           - "@meta-commands"
         traits:
           - "@trait-shadow-commit"
+        acceptance_criteria:
+          - id: ac-1
+            given: an observation ref and resolution string are provided
+            when: kspec meta resolve runs
+            then: the observation becomes resolved with the supplied explanation
       - _ulid: 01KF1XCMD90000000000000000
         slugs:
           - meta-focus-cmd
@@ -2211,6 +2267,15 @@ features:
           Focus is stored in .kspec-session.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: no reference argument is passed
+            when: kspec meta focus runs
+            then: the current session focus is shown without changing stored context
+          - id: ac-2
+            given: a reference or --clear flag is passed
+            when: kspec meta focus runs
+            then: the stored session focus is updated or cleared in .kspec-session
       - _ulid: 01KF1XCMDA0000000000000000
         slugs:
           - meta-thread-cmd
@@ -2231,6 +2296,15 @@ features:
           Threads are stored in .kspec-session.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user adds or removes a thread through kspec meta thread
+            when: the command completes
+            then: the threads list in session context reflects the requested mutation
+          - id: ac-2
+            given: the list or clear action is used
+            when: kspec meta thread runs
+            then: all current threads are shown or removed without touching focus or open questions
       - _ulid: 01KF1XCMK00000000000000000
         slugs:
           - meta-question-cmd
@@ -2251,6 +2325,15 @@ features:
           Questions are stored in .kspec-session.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user adds or removes an open question through kspec meta question
+            when: the command completes
+            then: the open_questions list in session context reflects the requested mutation
+          - id: ac-2
+            given: the list or clear action is used
+            when: kspec meta question runs
+            then: all current open questions are shown or removed without modifying focus or threads
       - _ulid: 01KF1XCMX00000000000000000
         slugs:
           - meta-context-cmd
@@ -2275,6 +2358,15 @@ features:
           Reads from .kspec-session.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: session context has stored focus, threads, and questions
+            when: kspec meta context runs
+            then: the command shows the full current context including last-updated information
+          - id: ac-2
+            given: the --clear flag is passed
+            when: kspec meta context --clear runs
+            then: all stored session-context fields are removed from .kspec-session
       - _ulid: 01KF2XCMG00000000000000000
         slugs:
           - meta-get-cmd
@@ -2298,6 +2390,15 @@ features:
           Unified access to any meta item by reference.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: a valid agent, workflow, convention, or observation reference is provided
+            when: kspec meta get <ref> runs
+            then: the referenced meta item is returned in a type-appropriate representation
+          - id: ac-2
+            given: the requested meta ref does not resolve
+            when: kspec meta get runs
+            then: the command returns an error instead of unrelated output
       - _ulid: 01KF2XCMN00000000000000000
         slugs:
           - meta-list-cmd
@@ -2319,6 +2420,15 @@ features:
           with a unified view of all meta items.
         implements:
           - "@meta-commands"
+        acceptance_criteria:
+          - id: ac-1
+            given: multiple meta item types exist in the project
+            when: kspec meta list runs
+            then: the output includes a unified list showing each item's type and context-specific label
+          - id: ac-2
+            given: the user supplies --type <type>
+            when: kspec meta list runs
+            then: only meta items of the requested type are returned
       - _ulid: 01KF2XCMA00000000000000000
         slugs:
           - meta-add-cmd
@@ -2398,6 +2508,16 @@ features:
           - "@meta-commands"
         traits:
           - "@trait-shadow-commit"
+        acceptance_criteria:
+          - id: ac-1
+            given: a mutable meta item field such as description, capability, step, or rule is provided via
+              command options
+            when: kspec meta set runs
+            then: only the targeted fields are updated and all other fields are preserved
+          - id: ac-2
+            given: a workflow or convention is updated with additive flags such as --add-step or --add-rule
+            when: the command completes
+            then: the new value is appended without removing existing entries
       - _ulid: 01KF2XCMD00000000000000000
         slugs:
           - meta-delete-cmd
@@ -2423,8 +2543,27 @@ features:
           - "@meta-commands"
         traits:
           - "@trait-shadow-commit"
+        acceptance_criteria:
+          - id: ac-1
+            given: a meta item is still referenced by a task meta_ref or observation workflow_ref
+            when: kspec meta delete runs
+            then: the command fails with guidance about the dangling reference
+          - id: ac-2
+            given: an unreferenced meta item is deleted with confirmation satisfied
+            when: kspec meta delete completes
+            then: the item is removed from the meta manifest
     traits:
       - "@trait-priority-parameter"
+    acceptance_criteria:
+      - id: ac-1
+        given: a user invokes meta-spec functionality from the CLI
+        when: the command set is inspected
+        then: meta operations are organized under the kspec meta <action> namespace instead of ad hoc
+          top-level commands
+      - id: ac-2
+        given: a meta command supports structured output or machine handling
+        when: the corresponding command is run with supported flags
+        then: it follows the same JSON and exit-code conventions used by other kspec command groups
   - _ulid: 01KF1XREF00000000000000000
     slugs:
       - meta-ref
@@ -2493,6 +2632,11 @@ features:
           Enables queries like "what tasks improve this workflow?"
         implements:
           - "@meta-ref"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task is created or updated with meta_ref pointing to a workflow, agent, or convention
+            when: the task is inspected later
+            then: the linked meta_ref is stored alongside task metadata parallel to spec_ref
       - _ulid: 01KF1XREF20000000000000000
         slugs:
           - task-add-meta-ref
@@ -2515,6 +2659,11 @@ features:
           Validation ensures meta_ref resolves to valid meta item.
         implements:
           - "@meta-ref"
+        acceptance_criteria:
+          - id: ac-1
+            given: kspec task add is run with --meta-ref @some-meta-item
+            when: the command succeeds
+            then: the created task stores that meta reference for later queries and validation
       - _ulid: 01KF1XREF30000000000000000
         slugs:
           - meta-ref-queries
@@ -2534,6 +2683,11 @@ features:
           Useful for tracking improvement progress.
         implements:
           - "@meta-ref"
+        acceptance_criteria:
+          - id: ac-1
+            given: multiple tasks reference the same workflow or other meta item
+            when: kspec tasks list --meta-ref @ref runs
+            then: only tasks linked to that meta item are returned
       - _ulid: 01KF2XREF40000000000000000
         slugs:
           - meta-ref-validation
@@ -2575,6 +2729,15 @@ features:
           or by explicit type markers.
         implements:
           - "@meta-ref"
+        acceptance_criteria:
+          - id: ac-1
+            given: a task meta_ref does not resolve to any item
+            when: the task is created, updated, or validated
+            then: validation reports that the meta_ref cannot be resolved
+          - id: ac-2
+            given: a task meta_ref points to a product spec item or mismatched hinted type
+            when: validation is applied
+            then: the command rejects the reference with an error explaining the expected meta-item type
   - _ulid: 01KJP2761RCGPM00NSJGHVHXWR
     slugs:
       - agent-definition-schema
