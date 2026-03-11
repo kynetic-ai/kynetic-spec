@@ -1144,12 +1144,26 @@ export class DispatchEngine {
       .then(async () => {
         if (!this.running) return;
 
-        // Try to drain more items
+        // AC: @agent-dispatch-engine ac-23, ac-24
+        // Re-evaluate all tasks from disk so the drain loop sees tasks that
+        // reached a dispatchable state during the prior invocation (e.g.
+        // pending_review tasks submitted by a worker).
+        try {
+          await this._evaluateAllTasks({ skipIfActive: true });
+        } catch (err) {
+          // AC: @agent-dispatch-engine ac-25
+          console.warn(
+            "[dispatch] Post-invocation re-evaluation failed, proceeding with existing queue:",
+            err,
+          );
+        }
+
+        // Drain queues with current state
         try {
           const agents = await this._loadAgents();
           await this._drainQueues(agents);
         } catch {
-          // Best effort
+          // Best effort drain
         }
       })
       .finally(() => {
