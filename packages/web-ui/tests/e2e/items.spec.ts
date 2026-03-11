@@ -148,6 +148,23 @@ test.describe('Items View', () => {
       await expect(description).toContainText('A test feature for integration testing');
     });
 
+    // AC: @markdown-ui-adoption ac-5
+    test('renders spec description markdown in the detail panel', async ({ page, daemon }) => {
+      await page.goto('/items');
+
+      const specTree = page.getByTestId('spec-tree').first();
+      const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
+
+      const childContainer = moduleNode.getByTestId('tree-node-child');
+      const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
+
+      const description = page.getByTestId('spec-description');
+      await expect(description.locator('strong')).toContainText('integration testing');
+      await expect(description.locator('code')).toContainText('kspec item get');
+    });
+
     test('displays item type badge', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -189,6 +206,27 @@ test.describe('Items View', () => {
       // First AC should show given text in collapsed state
       const firstAcGiven = acItems.first().getByTestId('ac-given');
       await expect(firstAcGiven).toContainText('a user is viewing the feature');
+    });
+
+    // AC: @markdown-ui-adoption ac-6
+    test('renders acceptance criteria markdown in collapsed and expanded views', async ({ page, daemon }) => {
+      await page.goto('/items');
+
+      const specTree = page.getByTestId('spec-tree').first();
+      const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
+
+      const childContainer = moduleNode.getByTestId('tree-node-child');
+      const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
+
+      const firstAc = page.getByTestId('ac-item').first();
+      await expect(firstAc.getByTestId('ac-given').locator('code')).toContainText(
+        'kspec item get @test-feature'
+      );
+
+      await firstAc.getByTestId('ac-expand-toggle').click();
+      await expect(firstAc.getByTestId('ac-then-full').locator('code')).toContainText('in_progress');
     });
   });
 

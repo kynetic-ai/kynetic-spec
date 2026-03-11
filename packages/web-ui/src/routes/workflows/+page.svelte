@@ -21,6 +21,7 @@
 	import CircleDotIcon from '@lucide/svelte/icons/circle-dot';
 	import CircleIcon from '@lucide/svelte/icons/circle';
 	import CopyIcon from '@lucide/svelte/icons/copy';
+	import { renderMarkdown } from '$lib/utils/markdown';
 
 	// ── Data state ──
 	let workflows = $state<Workflow[]>([]);
@@ -168,9 +169,12 @@
 									{/if}
 								</div>
 								{#if workflow.description}
-									<p class="text-sm text-muted-foreground whitespace-pre-line" data-testid="workflow-description">
-										{workflow.description.trim()}
-									</p>
+									<div
+										class="text-sm text-muted-foreground break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+										data-testid="workflow-description"
+									>
+										{@html renderMarkdown(workflow.description.trim())}
+									</div>
 								{/if}
 							</div>
 							<!-- AC: @ui-workflows-view ac-1 — Start button -->

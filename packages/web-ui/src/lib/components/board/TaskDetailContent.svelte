@@ -28,6 +28,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import { renderMarkdown } from '$lib/utils/markdown';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getStatusClasses, formatVcsRef } from './board-utils';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
@@ -204,9 +205,12 @@
 	<div class="flex flex-col gap-4">
 		<!-- Description -->
 		{#if task.description}
-			<p class="text-sm text-muted-foreground" data-testid="task-description">
-				{task.description}
-			</p>
+			<div
+				class="text-sm text-muted-foreground break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+				data-testid="task-description"
+			>
+				{@html renderMarkdown(task.description)}
+			</div>
 		{/if}
 
 		<!-- Status, priority, type -->
@@ -570,7 +574,12 @@
 								<span class="text-[10px] text-muted-foreground">{note.author}</span>
 								<span class="text-[10px] text-muted-foreground" data-testid="note-timestamp">{formatDate(note.created_at)}</span>
 							</div>
-							<p class="text-sm whitespace-pre-wrap">{note.content}</p>
+							<div
+								class="text-sm break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+								data-testid="note-content"
+							>
+								{@html renderMarkdown(note.content)}
+							</div>
 						</div>
 					{/each}
 				{/if}

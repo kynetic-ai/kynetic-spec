@@ -51,6 +51,12 @@ test.describe('Inbox View', () => {
 		await expect(summary).toContainText('untriaged');
 	});
 
+	// AC: @markdown-ui-adoption ac-7
+	test('renders inbox item markdown in the list view', async ({ page }) => {
+		const firstItem = page.getByTestId('inbox-item').filter({ hasText: 'First inbox item' });
+		await expect(firstItem.getByTestId('inbox-text').locator('code')).toContainText('kspec triage');
+	});
+
 	// AC: @ui-inbox-enhanced ac-1
 	test('shows quick triage link for untriaged items', async ({ page }) => {
 		const inboxList = page.getByTestId('inbox-list');

@@ -7,7 +7,6 @@
 	import {
 		Sheet,
 		SheetContent,
-		SheetDescription,
 		SheetHeader,
 		SheetTitle
 	} from '$lib/components/ui/sheet';
@@ -20,6 +19,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { fetchItem, fetchItemTasks, fetchItemSessions } from '$lib/api';
+	import { renderInlineMarkdown, renderMarkdown } from '$lib/utils/markdown';
 	import { CheckCircle, XCircle, HelpCircle } from 'lucide-svelte';
 	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
 
@@ -125,7 +125,12 @@
 						<SheetTitle data-testid="spec-title">{item.title}</SheetTitle>
 					</div>
 					{#if item.description}
-						<SheetDescription data-testid="spec-description">{item.description}</SheetDescription>
+						<div
+							class="text-muted-foreground text-sm prose prose-sm dark:prose-invert max-w-none"
+							data-testid="spec-description"
+						>
+							{@html renderMarkdown(item.description)}
+						</div>
 					{/if}
 				</SheetHeader>
 
@@ -149,21 +154,32 @@
 							{#each item.acceptance_criteria as ac, i}
 								<AccordionItem value={ac._ulid} data-testid="ac-item">
 									<AccordionTrigger data-testid="ac-expand-toggle">
-										<span class="text-sm" data-testid="ac-given">AC-{i + 1}: {ac.given}</span>
+										<span class="text-sm" data-testid="ac-given">
+											{@html renderInlineMarkdown(`AC-${i + 1}: ${ac.given}`)}
+										</span>
 									</AccordionTrigger>
 									<AccordionContent>
 										<div class="space-y-2 text-sm pl-4">
-											<div data-testid="ac-given-full">
+											<div
+												data-testid="ac-given-full"
+												class="prose prose-sm dark:prose-invert max-w-none"
+											>
 												<span class="font-medium text-muted-foreground">Given:</span>
-												{ac.given}
+												{@html renderInlineMarkdown(` ${ac.given}`)}
 											</div>
-											<div data-testid="ac-when-full">
+											<div
+												data-testid="ac-when-full"
+												class="prose prose-sm dark:prose-invert max-w-none"
+											>
 												<span class="font-medium text-muted-foreground">When:</span>
-												{ac.when}
+												{@html renderInlineMarkdown(` ${ac.when}`)}
 											</div>
-											<div data-testid="ac-then-full">
+											<div
+												data-testid="ac-then-full"
+												class="prose prose-sm dark:prose-invert max-w-none"
+											>
 												<span class="font-medium text-muted-foreground">Then:</span>
-												{ac.then}
+												{@html renderInlineMarkdown(` ${ac.then}`)}
 											</div>
 											<!-- AC: @web-dashboard ac-15 - Test coverage indicator -->
 											<div
