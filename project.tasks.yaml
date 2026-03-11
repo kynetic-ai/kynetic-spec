@@ -86096,7 +86096,7 @@
   type: task
   spec_ref: "@markdown-ui-adoption"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -86104,7 +86104,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKEJFB8H7Y1T6FDAJTWTP71K
+  session_id: null
   created_at: 2026-03-10T06:04:43.564Z
   started_at: 2026-03-11T13:55:20.622Z
   submitted_at: 2026-03-11T14:07:50.792Z
@@ -86213,6 +86213,13 @@
 
         - Playwright execution is blocked in dispatch because the shared fixture still tries to run
         kspec serve start.
+      supersedes: null
+    - _ulid: 01KKEWAB77X1288E7GXWNBFAGK
+      created_at: 2026-03-11T16:40:12.775Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #782 includes unrelated commits from open
+        task @01KKB5HYXXE1DH0T13T6BK2SYC / PR #781 (streaming markdown component). Rebase or rebuild
+        the branch so review covers only @markdown-ui-adoption."
       supersedes: null
   todos: []
   automation: eligible
