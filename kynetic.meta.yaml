@@ -271,8 +271,6 @@ agents:
     adapter: codex-acp
     dispatch:
       - on: task.pending_review
-        filter:
-          priority: 1
     skills:
       - pr-review
     budget:
