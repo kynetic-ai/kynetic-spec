@@ -86357,6 +86357,7 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
   slugs:
     - implement-missing-description-backfill
