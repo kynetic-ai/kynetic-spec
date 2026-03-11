@@ -719,6 +719,9 @@ features:
                 when: it resolves project roots via git
                 then: it uses a single git rev-parse call (--show-toplevel --git-common-dir) instead of multiple
                   separate calls
+            status:
+              maturity: draft
+              implementation: in_progress
       - _ulid: 01KHVXK25SDYTAEKZN28S2X66K
         slugs:
           - config-author
