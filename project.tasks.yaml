@@ -86103,7 +86103,7 @@
   type: task
   spec_ref: "@markdown-ui-adoption"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -86248,6 +86248,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T17:23:48.265Z
+  closed_reason: "Merged in PR #782. Adopted markdown rendering across task details/notes, spec
+    descriptions and AC text, observations, workflows, inbox, and triage surfaces in web-ui. Added
+    inline markdown rendering for GWT acceptance-criteria text and E2E coverage for spec ACs ac-1
+    through ac-7; inherited @trait-markdown-rendering coverage verified via shared renderer tests.
+    Local npm test passed on PR head and GitHub checks were green before merge."
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
   slugs:
     - task-add-markdown-trait
@@ -86879,6 +86885,7 @@
   session_id: 01KKEXWTYTSVWK0Y52GSHJ2PFX
   created_at: 2026-03-10T06:55:45.423Z
   started_at: 2026-03-11T17:10:39.871Z
+  submitted_at: 2026-03-11T17:16:38.710Z
   notes:
     - _ulid: 01KKB8FERFE58KMK98C8Q0KJFH
       created_at: 2026-03-10T06:55:45.423Z
@@ -86926,7 +86933,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T17:16:38.710Z
 - _ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
   slugs:
     - implement-task-system-ac-backfill
