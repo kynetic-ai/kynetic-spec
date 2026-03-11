@@ -87051,6 +87051,14 @@
         fix/schema-structure-ac-backfill. Focus: remove repo-root ambient context dependency from
         tests/schema-ac-backfill-review.test.ts and keep AC coverage behavior-specific."
       supersedes: null
+    - _ulid: 01KKF8W9YZ9ZWE3R7QYS76PD2C
+      created_at: 2026-03-11T20:19:44.223Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Replaced repo-root dependent schema review assertions with a self-contained
+        temp spec fixture in tests/schema-ac-backfill-review.test.ts. Verification: npm test --
+        tests/schema-ac-backfill-review.test.ts (7/7 passed) and npm run test:shard1 (71 files, 1427
+        tests passed) on fix/schema-structure-ac-backfill."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
