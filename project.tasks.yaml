@@ -85643,7 +85643,7 @@
   type: task
   spec_ref: "@trait-markdown-rendering"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -85695,6 +85695,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T07:44:53.647Z
 - _ulid: 01KKB5HY9RAJPTK1R0NW7RN11C
   slugs:
     - implement-prose-typography-setup
