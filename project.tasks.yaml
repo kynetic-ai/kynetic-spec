@@ -86687,16 +86687,16 @@
   type: task
   spec_ref: "@description-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKE24FP3Z8QXN2VGDZDGQ77E
   created_at: 2026-03-10T06:55:47.719Z
-  started_at: 2026-03-11T08:40:06.260Z
+  started_at: 2026-03-11T09:08:52.294Z
   submitted_at: 2026-03-11T08:41:45.704Z
   notes:
     - _ulid: 01KKB8FH07B0SP63HBCG2VNRKT
@@ -89252,6 +89252,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #778. Swapped dispatch precedence so pending_review sorts ahead of
+    pending while preserving in_progress-first scheduling, and extended dispatch tests to cover ac-4
+    alongside ac-1 through ac-3. AC coverage verified in tests/agent-dispatch-engine.test.ts and
+    regression checks passed via full npm test on the PR head."
   depends_on: []
   context: []
   priority: 3
@@ -89263,6 +89267,7 @@
   created_at: 2026-03-11T06:36:03.332Z
   started_at: 2026-03-11T08:47:27.731Z
   submitted_at: 2026-03-11T08:55:27.966Z
+  completed_at: 2026-03-11T09:07:32.506Z
   notes:
     - _ulid: 01KKE18PC1W7B3DPE7XNM1C5JA
       created_at: 2026-03-11T08:47:27.105Z
@@ -89306,8 +89311,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-11T09:07:32.506Z
-  closed_reason: "Merged in PR #778. Swapped dispatch precedence so pending_review sorts ahead of
-    pending while preserving in_progress-first scheduling, and extended dispatch tests to cover ac-4
-    alongside ac-1 through ac-3. AC coverage verified in tests/agent-dispatch-engine.test.ts and
-    regression checks passed via full npm test on the PR head."
