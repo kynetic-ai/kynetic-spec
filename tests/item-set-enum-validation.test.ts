@@ -1,8 +1,6 @@
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { setupTempFixtures, kspec, kspecJson, cleanupTempDir } from './helpers/cli.js';
 
-// AC: @status-lifecycle
-
 describe('Item Set Enum Validation', () => {
   let tempDir: string;
 
@@ -14,6 +12,23 @@ describe('Item Set Enum Validation', () => {
 
   afterEach(async () => {
     await cleanupTempDir(tempDir);
+  });
+
+  describe('status dimension independence', () => {
+    // AC: @status-lifecycle ac-1
+    // AC: @status-lifecycle ac-2
+    it('should update implementation status without overwriting maturity', () => {
+      kspec('item set @enum-test --maturity proposed', tempDir);
+      kspec('item set @enum-test --status in_progress', tempDir);
+
+      const item = kspecJson<{ status: { implementation?: string; maturity?: string } }>(
+        'item get @enum-test',
+        tempDir,
+      );
+
+      expect(item.status.implementation).toBe('in_progress');
+      expect(item.status.maturity).toBe('proposed');
+    });
   });
 
   describe('--status validation', () => {

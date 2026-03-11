@@ -91,6 +91,7 @@ describe('Trait AC coverage validation', () => {
   });
 
   // AC: @trait-validation ac-2
+  // AC: @spec-traits ac-2
   it('should not warn when trait AC has test annotation', async () => {
     // Setup minimal kspec structure
     const specDir = path.join(tempDir, 'spec');

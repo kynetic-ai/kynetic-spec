@@ -15,15 +15,6 @@ import {
   PlansFileSchema,
 } from '../src/schema/index.js';
 
-// AC: @item-types
-// AC: @type-module
-// AC: @type-feature
-// AC: @type-requirement
-// AC: @type-constraint
-// AC: @type-decision
-// AC: @type-task
-// AC: @zod-schema
-
 describe('UlidSchema', () => {
   it('should accept valid ULIDs', () => {
     const validUlid = '01HQ3K5XJ8MPVB2XCJZ0KE9YWN';
@@ -164,6 +155,8 @@ describe('ItemTypeSchema', () => {
     expect(ItemTypeSchema.safeParse('trait').success).toBe(true);
   });
 
+  // AC: @item-types ac-1
+  // AC: @zod-schema ac-1
   it('should accept all valid item types', () => {
     expect(ItemTypeSchema.safeParse('feature').success).toBe(true);
     expect(ItemTypeSchema.safeParse('requirement').success).toBe(true);
@@ -171,6 +164,8 @@ describe('ItemTypeSchema', () => {
     expect(ItemTypeSchema.safeParse('trait').success).toBe(true);
   });
 
+  // AC: @item-types ac-2
+  // AC: @zod-schema ac-1
   it('should reject invalid types', () => {
     expect(ItemTypeSchema.safeParse('invalid').success).toBe(false);
     expect(ItemTypeSchema.safeParse('').success).toBe(false);

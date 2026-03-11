@@ -3,8 +3,6 @@
  * AC: @trait-display ac-1, ac-2, ac-3, ac-4, ac-5
  */
 
-// AC: @spec-traits
-
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -102,6 +100,7 @@ features:
   });
 
   // AC: @trait-display ac-1
+  // AC: @spec-traits ac-1
   it('should show own AC followed by inherited AC in text mode', () => {
     const output = kspec('item get @feature-with-trait', tempDir);
 

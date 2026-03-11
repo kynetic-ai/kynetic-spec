@@ -2,8 +2,6 @@
  * Tests for merge driver parsing functionality.
  */
 
-// AC: @yaml-conventions
-
 import { describe, expect, it } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
