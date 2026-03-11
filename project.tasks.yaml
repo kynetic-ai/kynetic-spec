@@ -85859,7 +85859,7 @@
   type: task
   spec_ref: "@batch-item-fetch-api"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -85919,6 +85919,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T08:09:37.179Z
 - _ulid: 01KKB5J02DQA312B76P7PNAT9X
   slugs:
     - implement-plan-content-embedded-views
