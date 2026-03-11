@@ -85773,6 +85773,15 @@
         artifact and use a 30s explicit timeout so it remains a real build assertion without flaking
         in the full suite."
       supersedes: null
+    - _ulid: 01KKDYKZXBSRKFPHG3W5PDG7SZ
+      created_at: 2026-03-11T08:01:11.595Z
+      author: Jacob Chapel
+      content: "Verification status: targeted prose typography test passes, web-ui production build
+        passes, and kspec validate reports only existing repository warnings. Full npm test still
+        fails on unrelated pre-existing test tests/cli-serve.test.ts ('should start daemon from
+        npm-installed package with all deps available') with ECONNREFUSED while checking the daemon
+        health endpoint after startup."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
