@@ -86306,6 +86306,7 @@
       author: "@claude"
       content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
   todos: []
+  automation: eligible
 - _ulid: 01KKB8FFVD9YD15SEGTGCBDCJY
   slugs:
     - implement-meta-and-shadow-branch-ac-backfill
