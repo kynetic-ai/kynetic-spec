@@ -165,7 +165,8 @@ describe("Dispatch in-progress priority", () => {
   });
 
   // AC: @dispatch-in-progress-priority ac-1
-  it("should prioritize in_progress entries ahead of pending/needs_work/pending_review", async () => {
+  // AC: @dispatch-in-progress-priority ac-4
+  it("should prioritize in_progress first and pending_review ahead of pending", async () => {
     const agent = makeTestAgent({
       id: "priority-worker",
       dispatch: [
@@ -236,8 +237,8 @@ describe("Dispatch in-progress priority", () => {
     expect(queue.map((entry) => entry.change.toStatus)).toEqual([
       "in_progress",
       "needs_work",
-      "pending",
       "pending_review",
+      "pending",
     ]);
 
     await engine.stop();
