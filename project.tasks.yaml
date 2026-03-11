@@ -86748,6 +86748,16 @@
         rather than @core, so its AC backfill belongs to the schema task even though the plan
         description mentioned status lifecycle alongside core primitives."
       supersedes: null
+    - _ulid: 01KKEWK5B8TZQ8EVP39HJBKWCS
+      created_at: 2026-03-11T16:45:01.672Z
+      author: Jacob Chapel
+      content: "Backfilled acceptance criteria for all in-scope @core descendants that were missing them:
+        @item-required-fields, @item-optional-fields, @ulid-format, @ulid-immutability,
+        @ulid-shortening, @slug-format, @ref-syntax, @ref-validation, @relationship-types,
+        @rel-tests, and @rel-supersedes. Re-ran completeness validation afterward; remaining
+        missing-AC warnings are outside this task's scope (for example @item-types and
+        @status-lifecycle under @schema)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
