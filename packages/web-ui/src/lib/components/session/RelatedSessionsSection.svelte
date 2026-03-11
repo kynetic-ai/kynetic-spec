@@ -29,6 +29,8 @@
 				return 'bg-status-needs-work text-status-needs-work-fg';
 			case 'timed_out':
 				return 'bg-status-pending text-status-pending-fg';
+			case 'stalled':
+				return 'bg-status-needs-work text-status-needs-work-fg';
 			default:
 				return 'bg-status-cancelled text-status-cancelled-fg';
 		}

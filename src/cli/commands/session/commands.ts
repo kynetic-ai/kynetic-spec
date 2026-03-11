@@ -243,7 +243,7 @@ export function registerSessionCommands(program: Command): void {
     .description("List session logs with summary statistics")
     .option(
       "-s, --status <status>",
-      "Filter by status (active, completed, abandoned, timed_out, failed)",
+      "Filter by status (active, completed, abandoned, timed_out, failed, stalled)",
     )
     .option("--agent <type>", "Filter by agent type (alias for --agent-type)")
     .option("--agent-type <type>", "Filter by agent type")

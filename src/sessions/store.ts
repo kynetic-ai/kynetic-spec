@@ -2487,6 +2487,7 @@ export function computeSessionLogStats(
     abandoned: 0,
     timed_out: 0,
     failed: 0,
+    stalled: 0,
   };
 
   for (const s of summaries) {
@@ -2501,7 +2502,7 @@ export function computeSessionLogStats(
 
   // Build status breakdown
   const statusBreakdown: { status: SessionStatus; count: number; percentage: number }[] = [];
-  for (const status of ["completed", "active", "abandoned", "timed_out", "failed"] as SessionStatus[]) {
+  for (const status of ["completed", "active", "abandoned", "timed_out", "failed", "stalled"] as SessionStatus[]) {
     const count = statusCounts[status] || 0;
     if (count > 0) {
       statusBreakdown.push({
@@ -3563,7 +3564,7 @@ export async function checkBudget(
   }
 
   // Skip budget enforcement when session exists but is not active (stale KSPEC_SESSION_ID).
-  // A completed, abandoned, timed_out, or failed session should not block task starts.
+  // A completed, abandoned, timed_out, failed, or stalled session should not block task starts.
   // If session metadata is missing, proceed with normal budget checks — the budget file
   // itself is the authority on whether enforcement applies.
   const session = await getSession(sessionsDir, sessionId);

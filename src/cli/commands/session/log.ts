@@ -97,6 +97,8 @@ function sessionStatusColor(
       return chalk.blue;
     case "abandoned":
       return chalk.yellow;
+    case "stalled":
+      return chalk.magenta;
     default:
       return chalk.gray;
   }
@@ -548,6 +550,14 @@ function summarizeEventData(event: SessionEvent): string {
   if (event.type === "agent.timeout") {
     const taskId = data.task_id;
     return typeof taskId === "string" ? `Timeout on ${taskId}` : "Agent timed out";
+  }
+  if (event.type === "agent.stalled") {
+    const taskId = data.task_id;
+    const stallTimeout = data.stall_timeout_seconds;
+    if (typeof taskId === "string" && typeof stallTimeout === "number") {
+      return `Stalled on ${taskId} (no response within ${stallTimeout}s)`;
+    }
+    return "Agent stalled (no initial response)";
   }
 
   // Default: show first key
