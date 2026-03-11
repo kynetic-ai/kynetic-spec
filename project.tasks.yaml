@@ -85808,6 +85808,7 @@
   session_id: 01KKE444EWZEX0VNJ6BKVW82VY
   created_at: 2026-03-10T06:04:41.789Z
   started_at: 2026-03-11T09:46:52.430Z
+  submitted_at: 2026-03-11T10:02:36.579Z
   notes:
     - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
       created_at: 2026-03-10T06:04:41.789Z
@@ -85877,7 +85878,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T10:02:36.579Z
 - _ulid: 01KKB5HZFRP75B7J88E89SQSMB
   slugs:
     - implement-batch-item-fetch-api
@@ -89214,7 +89214,7 @@
   type: task
   spec_ref: "@plan-derive-enhanced"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-plan-import-content-only-storage"
@@ -89223,7 +89223,7 @@
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/780
-  session_id: 01KKE2PQAQM7C5E8JQP480ME93
+  session_id: null
   created_at: 2026-03-10T22:42:12.419Z
   started_at: 2026-03-11T09:17:33.624Z
   submitted_at: 2026-03-11T09:36:21.760Z
@@ -89260,6 +89260,13 @@
         debt. Full npm test is flaky outside this task scope: tests/cli-serve.test.ts intermittently
         failed on daemon health-check ECONNREFUSED during the npm-installed package startup case,
         but the same file passed when rerun in isolation immediately after."
+      supersedes: null
+    - _ulid: 01KKE5YDBZKZ1GV91M3CM8VY9N
+      created_at: 2026-03-11T10:09:13.087Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: plan derive still misses inherited
+        error-guidance for unresolved refs, and PR #780 claims AC coverage for ac-commit /
+        trait-error-guidance ac-6 without real verification."
       supersedes: null
   todos: []
   automation: eligible
