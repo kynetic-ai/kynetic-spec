@@ -86741,6 +86741,13 @@
         - Verification: Run kspec validate --completeness and confirm zero missing acceptance
         criteria warnings for @core descendants.
       supersedes: null
+    - _ulid: 01KKEWEQQHZBZ8CF4PR52SJ19D
+      created_at: 2026-03-11T16:42:36.658Z
+      author: Jacob Chapel
+      content: "Scoped @status-lifecycle out of this task after verification: it exists under @schema
+        rather than @core, so its AC backfill belongs to the schema task even though the plan
+        description mentioned status lifecycle alongside core primitives."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
