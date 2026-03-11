@@ -85507,6 +85507,7 @@
         inherited ACs. kspec validate passes for trait references.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKB5HY9RAJPTK1R0NW7RN11C
   slugs:
     - implement-prose-typography-setup
