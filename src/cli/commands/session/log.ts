@@ -97,6 +97,8 @@ function sessionStatusColor(
       return chalk.blue;
     case "abandoned":
       return chalk.yellow;
+    case "stalled":
+      return chalk.magenta;
     default:
       return chalk.gray;
   }

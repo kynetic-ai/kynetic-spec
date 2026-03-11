@@ -38,6 +38,26 @@ export const DEFAULT_KSPEC_CLI_PATH = path.resolve(
   "../../bin/kspec.cjs",
 );
 
+/**
+ * Default stall detection timeout in seconds.
+ * AC: @invocation-initial-activity-watchdog ac-1, ac-5
+ */
+export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
+
+/**
+ * Session update types that count as meaningful agent activity.
+ * These prove the agent received the prompt and is processing it.
+ * AC: @invocation-initial-activity-watchdog ac-1, ac-3
+ */
+const MEANINGFUL_UPDATE_TYPES = new Set([
+  "agent_message_chunk",
+  "agent_thought_chunk",
+  "tool_call",
+  "tool_call_update",
+  "plan",
+  "usage_update",
+]);
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 /**
@@ -81,7 +101,7 @@ export interface InvocationResult {
   /** Session that was created for this invocation */
   session: SessionMetadata;
   /** How the invocation ended */
-  outcome: "success" | "timed_out" | "failed";
+  outcome: "success" | "timed_out" | "failed" | "stalled";
   /** Stop reason from ACP (e.g., "end_turn") if the invocation completed */
   stopReason?: string;
   /** Error message if the invocation failed */
@@ -143,6 +163,11 @@ function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outco
       return "timed_out";
     case "failed":
       return "failed";
+    case "stalled":
+      // AC: @invocation-initial-activity-watchdog ac-4
+      // Stalled sessions are transient infrastructure issues, not agent logic failures.
+      // Excluded from consecutive failure count by returning null.
+      return null;
     default:
       return null;
   }
@@ -353,10 +378,22 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       },
     });
 
+    // ─── Stall watchdog state ──────────────────────────────────────────────
+    // AC: @invocation-initial-activity-watchdog ac-1, ac-3
+    let stallResolved = false;
+    let stallHandle: ReturnType<typeof setTimeout> | undefined;
+
     // ─── Register update handler ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-6
     const updateHandler = async (acpSessionId: string, update: SessionUpdate) => {
       if (acpSessionId !== state.acpSessionId) return;
+
+      // AC: @invocation-initial-activity-watchdog ac-3
+      // Cancel stall timer on first meaningful activity
+      if (!stallResolved && MEANINGFUL_UPDATE_TYPES.has(update.sessionUpdate)) {
+        stallResolved = true;
+        clearTimeout(stallHandle);
+      }
 
       // Log event to JSONL (with blob externalization from store.ts)
       await appendSessionEvent({
@@ -410,6 +447,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }, timeoutMs);
     });
 
+    // AC: @invocation-initial-activity-watchdog ac-1, ac-5
+    const stallTimeoutSeconds =
+      agent.budget?.initial_response_timeout_seconds ??
+      DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS;
+    const stallPromise = new Promise<never>((_, reject) => {
+      stallHandle = setTimeout(() => {
+        if (!stallResolved) {
+          reject(new InvocationStallError(stallTimeoutSeconds));
+        }
+      }, stallTimeoutSeconds * 1000);
+    });
+
     // AC: @agent-dispatch-engine ac-11 - Abort signal for graceful cancellation
     const abortPromise = abortSignal
       ? new Promise<never>((_, reject) => {
@@ -428,13 +477,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     let promptResult: Awaited<typeof promptPromise>;
     try {
-      const racers: Array<Promise<typeof promptResult | never>> = [promptPromise, timeoutPromise];
+      const racers: Array<Promise<typeof promptResult | never>> = [promptPromise, timeoutPromise, stallPromise];
       if (abortPromise) racers.push(abortPromise);
       promptResult = await Promise.race(racers);
     } finally {
-      // Clear the timeout handle to prevent timer leaks whether prompt
-      // resolves normally or the timeout fires.
+      // Clear timer handles to prevent leaks whether prompt resolves
+      // normally or one of the race promises fires.
       clearTimeout(timeoutHandle);
+      clearTimeout(stallHandle);
     }
 
     // ─── Log agent.completed event ────────────────────────────────────────
@@ -523,6 +573,45 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       };
     }
 
+    if (err instanceof InvocationStallError) {
+      // ─── Handle stall (no initial response) ───────────────────────────
+      // AC: @invocation-initial-activity-watchdog ac-1, ac-2
+      try {
+        if (state.acpSessionId && state.agent) {
+          await state.agent.client.cancel(state.acpSessionId);
+        }
+      } catch {
+        // Best-effort cancel
+      }
+
+      await appendSessionEvent({
+        type: "agent.stalled",
+        data: {
+          task_id: taskRef,
+          stall_timeout_seconds: err.stallTimeoutSeconds,
+          duration_ms: durationMs,
+        },
+      });
+
+      const finalSession = await closeSession(
+        sessionsDir,
+        sessionId,
+        "stalled",
+        `No initial response within ${err.stallTimeoutSeconds}s`,
+      );
+
+      // AC: @invocation-initial-activity-watchdog ac-2
+      // Do NOT add task note — stalls are transient infrastructure issues
+      // Do NOT call getConsecutiveFailureCount — stalls are excluded
+
+      return {
+        session: finalSession ?? session,
+        outcome: "stalled",
+        error: err.message,
+        durationMs,
+      };
+    }
+
     // ─── Handle failure ──────────────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-5
     const errorMessage = err instanceof Error ? err.message : String(err);
@@ -600,6 +689,18 @@ export class InvocationTimeoutError extends Error {
   constructor(public readonly timeoutMinutes: number) {
     super(`Agent invocation timed out after ${timeoutMinutes} minutes`);
     this.name = "InvocationTimeoutError";
+  }
+}
+
+/**
+ * Thrown when an agent accepts a prompt but produces no meaningful output
+ * within the configured stall timeout.
+ * AC: @invocation-initial-activity-watchdog ac-1, ac-2
+ */
+export class InvocationStallError extends Error {
+  constructor(public readonly stallTimeoutSeconds: number) {
+    super(`Agent stalled: no initial response within ${stallTimeoutSeconds}s`);
+    this.name = "InvocationStallError";
   }
 }
 

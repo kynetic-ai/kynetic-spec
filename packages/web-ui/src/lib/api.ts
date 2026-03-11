@@ -840,7 +840,7 @@ export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: numb
  */
 export interface SessionSummary {
 	id: string;
-	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
+	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed' | 'stalled';
 	agent_type: string;
 	/** Agent definition ID (e.g. worker, pr-reviewer). */
 	agent_id?: string;
