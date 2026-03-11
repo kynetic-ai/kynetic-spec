@@ -86083,7 +86083,7 @@
   type: task
   spec_ref: "@markdown-ui-adoption"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -86202,6 +86202,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T14:07:50.792Z
 - _ulid: 01KKB5J1MKW831Y70QWHNVV2M3
   slugs:
     - task-add-markdown-trait
