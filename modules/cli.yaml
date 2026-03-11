@@ -7555,6 +7555,12 @@ features:
             when: dispatch event types are validated and built-in worker defaults are seeded
             then: in_progress-compatible dispatch configuration is supported and can be constrained to
               automation-eligible tasks
+          - id: ac-4
+            given: the dispatch engine has both pending_review and pending task candidates and no in_progress
+              work is waiting
+            when: the scheduler decides which eligible invocation to dispatch next
+            then: pending_review work is selected before pending work so review handoff is not starved by new
+              assignments
         status:
           maturity: draft
           implementation: in_progress
