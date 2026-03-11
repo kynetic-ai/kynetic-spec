@@ -174,10 +174,22 @@ derive_from_specs: true
     expect(plans.some((plan) => plan.slugs.includes("plan-test-plan"))).toBe(false);
   });
 
+  // AC: @trait-semantic-exit-codes ac-6
+  // Commander rejects unknown flags before the command action runs.
+  it("returns a usage-style error for invalid flags", async () => {
+    const planPath = await writePlan("invalid-flags-plan.md");
+
+    const result = kspecRun(`plan import "${planPath}" --bogus-flag`, tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("unknown option '--bogus-flag'");
+  });
+
   // AC: @trait-dry-run ac-4
   // AC: @trait-json-output ac-3
   // AC: @trait-semantic-exit-codes ac-2
-  // AC: @trait-semantic-exit-codes ac-6
   it("returns a JSON usage error when the source file cannot be read", () => {
     const missingPath = path.join(tempDir, "missing-plan.md");
 
