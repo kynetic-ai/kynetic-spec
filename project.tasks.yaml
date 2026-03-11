@@ -88394,6 +88394,17 @@
         forces fs.writeFile to fail in the --output branch and verifies the runtime error exit path
         without changing production behavior."
       supersedes: null
+    - _ulid: 01KKDF5YQNYQAFX7HQYH1VH1M3
+      created_at: 2026-03-11T03:31:22.997Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Verification after adding executable runtime-error coverage: npm test --
+        tests/cli-plan.test.ts passed (50/50) with the new --output directory-path failure case
+        covering @trait-semantic-exit-codes ac-4; kspec validate returned only the existing
+        repository warning backlog. Full npm test on current HEAD still reports unrelated
+        timeout-heavy failures in tests/enhanced-setup.test.ts, tests/native-guard-setup.test.ts,
+        tests/setup-pipeline-unification.test.ts, tests/cli/session-start-inbox-triage.test.ts, and
+        tests/cli/session-start-notes.test.ts; none touch the plan export files in this branch."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
