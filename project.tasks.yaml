@@ -88711,7 +88711,7 @@
   type: task
   spec_ref: "@plan-import-content-only"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -88837,6 +88837,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-11T06:43:15.106Z
+  closed_reason: "Merged in PR #768. Implemented content-only plan import with draft default, optional
+    status override, persisted module_ref storage, warning-only --update behavior, and derive-time
+    fallback to stored module context when --module is omitted. AC coverage verified for
+    @plan-import-content-only plus inherited dry-run/json/semantic-exit-code/shadow-commit
+    expectations; GitHub CI passed on the merged head."
 - _ulid: 01KKCYMET3QGYY364J00V0AQZJ
   slugs:
     - implement-enhanced-plan-derivation
