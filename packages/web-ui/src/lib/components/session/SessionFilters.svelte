@@ -34,7 +34,7 @@
 
 	let { filteredTotal, unfilteredTotal, agentIds, agentTypes }: Props = $props();
 
-	const SESSION_STATUSES = ['active', 'completed', 'failed', 'abandoned', 'timed_out'] as const;
+	const SESSION_STATUSES = ['active', 'completed', 'failed', 'abandoned', 'timed_out', 'stalled'] as const;
 
 	const statusLabels: Record<string, string> = {
 		'': 'All Statuses',
@@ -43,7 +43,8 @@
 		completed: 'Completed',
 		failed: 'Failed',
 		abandoned: 'Abandoned',
-		timed_out: 'Timed Out'
+		timed_out: 'Timed Out',
+		stalled: 'Stalled'
 	};
 
 	const dateRangeLabels: Record<string, string> = {
