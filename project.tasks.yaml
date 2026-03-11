@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86096,6 +86096,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-11T22:35:26.422Z
+  session_id: 01KKFGJMGRQ3CGY2KRTVP5DEZ0
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
     - implement-markdown-adoption-across-ui-surfaces
@@ -90606,6 +90608,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #791 (cb163790d5bd46c9e2b3dccf45c1a839f18df6d0). Updated iterative plan
+    workflow and plan skill guidance to match content-only import, optional stored module_ref,
+    approval before derive, plan derive as the materialization step, and re-import via --into;
+    regenerated kspec-agents.md and rendered plan skill output."
   depends_on: []
   context: []
   priority: 2
@@ -90619,6 +90625,7 @@
   created_at: 2026-03-11T22:02:30.384Z
   started_at: 2026-03-11T22:08:16.462Z
   submitted_at: 2026-03-11T22:17:34.755Z
+  completed_at: 2026-03-11T22:34:06.208Z
   notes:
     - _ulid: 01KKFF30ZQE4T4GVC5V8H2FD76
       created_at: 2026-03-11T22:08:15.863Z
@@ -90654,8 +90661,3 @@
       supersedes: null
   todos: []
   automation: manual_only
-  completed_at: 2026-03-11T22:34:06.208Z
-  closed_reason: "Merged in PR #791 (cb163790d5bd46c9e2b3dccf45c1a839f18df6d0). Updated iterative plan
-    workflow and plan skill guidance to match content-only import, optional stored module_ref,
-    approval before derive, plan derive as the materialization step, and re-import via --into;
-    regenerated kspec-agents.md and rendered plan skill output."
