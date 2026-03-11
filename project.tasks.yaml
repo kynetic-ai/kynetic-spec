@@ -87684,7 +87684,9 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKFHW3NBQJCWQGZG49BZYKFA
   created_at: 2026-03-10T07:06:53.000Z
+  started_at: 2026-03-11T23:01:04.549Z
   notes:
     - _ulid: 01KKB93TP8WHJMPYGH18YTENP6
       created_at: 2026-03-10T07:06:53.000Z
@@ -87707,10 +87709,25 @@
         - ac-testable: Given Each newly added AC, when It is reviewed, then It follows
         given/when/then format with concrete, observable outcomes
       supersedes: null
+    - _ulid: 01KKFJ4SR2YVGM8CKX8JJMQDFR
+      created_at: 2026-03-11T23:01:39.714Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: this task reduces completeness warning debt in the shadow branch module by
+        backfilling missing acceptance criteria.
+
+        - Scope: add concrete given/when/then ACs only for feature and requirement items under
+        @shadow-branch that currently lack them.
+
+        - Files: .kspec shadow-branch state only via kspec CLI; no manual YAML edits.
+
+        - Verification: kspec validate --completeness and targeted kspec item get checks for updated
+        items.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T23:01:04.549Z
-  session_id: 01KKFHW3NBQJCWQGZG49BZYKFA
 - _ulid: 01KKBBS1HGRR363BSDMG07EC19
   slugs: []
   title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
