@@ -202,7 +202,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
       return {
         project: manifest?.project ?? null,
         spec_version: manifest?.kynetic ?? null,
-        root_dir: ctx.rootDir,
+        root_dir: ctx.projectRoot,
         remote_tracking: config.shadow.remote
           ? { value: config.shadow.remote.value, type: config.shadow.remote.type }
           : null,

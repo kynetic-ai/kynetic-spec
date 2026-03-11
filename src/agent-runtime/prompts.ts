@@ -52,6 +52,8 @@ function getSkillReferencePlatform(adapterId?: string): "claude-code" | "codex" 
 }
 
 function getProjectRootFromSpecDir(specDir: string): string {
+  // .agents/skills is tracked at the project root, so resolving upward from
+  // .kspec/ stays correct in both the primary checkout and linked worktrees.
   return path.basename(specDir) === ".kspec" ? path.dirname(specDir) : specDir;
 }
 
