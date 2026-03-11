@@ -86096,7 +86096,7 @@
   type: task
   spec_ref: "@markdown-ui-adoption"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-prose-typography-setup"
@@ -86107,7 +86107,7 @@
   session_id: 01KKEWKWP2FE38WHWFDQKQK39H
   created_at: 2026-03-10T06:04:43.564Z
   started_at: 2026-03-11T16:53:01.072Z
-  submitted_at: 2026-03-11T14:07:50.792Z
+  submitted_at: 2026-03-11T16:57:12.574Z
   notes:
     - _ulid: 01KKB5J0NCHXW2CDXS6EDJ8XKA
       created_at: 2026-03-10T06:04:43.564Z
