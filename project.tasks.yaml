@@ -86905,6 +86905,17 @@
         Scoped regressions now pass: npm test -- --run tests/core-ac-backfill.test.ts
         tests/ac-annotation-validation.test.ts."
       supersedes: null
+    - _ulid: 01KKF7Y40MRJ7N7N6JZYT8AWKX
+      created_at: 2026-03-11T20:03:15.093Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 8] Pushed fix(test): isolate core AC backfill regression (dea2cb8b0) to
+        fix/core-primitives-ac-backfill-v2 / PR #786. Verification: npm test -- --run
+        tests/core-ac-backfill.test.ts tests/ac-annotation-validation.test.ts; kspec validate
+        --completeness --warnings-ok --json filtered to @core-ac-backfill and in-scope refs => [];
+        npm test -- --run packages/web-ui/tests/prose-typography.test.ts
+        tests/cli/session-start-inbox-triage.test.ts tests/cli/session-start-notes.test.ts passed to
+        confirm the earlier full-suite timeout failures were unrelated to this change."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
