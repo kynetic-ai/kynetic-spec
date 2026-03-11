@@ -1,32 +1,94 @@
 /**
  * CLI Plan Import Tests
  */
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   cleanupTempDir,
+  createTempDir,
+  initGitRepo,
   kspec as kspecRun,
   kspecJson,
   kspecOutput,
   setupTempFixtures,
 } from "./helpers/cli";
+import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 
-// AC: @trait-shadow-commit ac-1 — N/A: plan import delegates commit behavior to shared commitIfShadow coverage in shadow.test.ts.
 // AC: @trait-shadow-commit ac-2 — N/A: commit message formatting is covered by shared commitIfShadow tests in shadow.test.ts.
 // AC: @trait-shadow-commit ac-3 — N/A: commit ref formatting is covered by shared commitIfShadow tests in shadow.test.ts.
 // AC: @trait-shadow-commit ac-4 — N/A: shadow-disabled behavior is covered by generic commitIfShadow tests in shadow.test.ts.
 // AC: @trait-shadow-commit ac-5 — N/A: save/commit failure behavior is covered by generic commitIfShadow tests in shadow.test.ts.
 // AC: @trait-shadow-commit ac-6 — N/A: push fire-and-forget behavior depends on remote shadow setup and is covered in shadow.test.ts.
 // AC: @trait-shadow-commit ac-7 — N/A: git commit/push failure handling is covered in shadow.test.ts.
-// AC: @trait-shadow-commit ac-8 — N/A: atomic single-commit behavior is covered by shared commitIfShadow tests in shadow.test.ts.
 // AC: @trait-dry-run ac-5 — N/A: plan import does not implement a --force flag.
 // AC: @trait-json-output ac-6 — N/A: plan import has no competing format flags beyond --json.
 // AC: @trait-semantic-exit-codes ac-3 — N/A: plan import has no confirmation prompt path.
 // AC: @trait-semantic-exit-codes ac-5 — N/A: plan import is a mutation command, not a query with empty-result semantics.
 // AC: @trait-semantic-exit-codes ac-7 — N/A: plan import is no longer a batch partial-success operation.
 // AC: @trait-semantic-exit-codes ac-8 — N/A: exit code meanings are documented centrally in src/cli/exit-codes.ts.
-// AC: @plan-import-into ac-into-commit — N/A: the command delegates shadow commit creation to commitIfShadow; shadow-specific commit coverage lives in shadow.test.ts.
+
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+const canRunShadowTests = (() => {
+  try {
+    const version = execSync("git --version", { encoding: "utf-8" }).trim();
+    const match = version.match(/(\d+)\.(\d+)/);
+    if (!match) return false;
+    const [, major, minor] = match.map(Number);
+    const gitSupportsOrphan = major > 2 || (major === 2 && minor >= 42);
+    return gitSupportsOrphan && existsSync(projectCli);
+  } catch {
+    return false;
+  }
+})();
+
+async function setupShadowProject(projectDir: string): Promise<void> {
+  initGitRepo(projectDir);
+  await fs.writeFile(path.join(projectDir, "README.md"), "# Test", "utf-8");
+  execSync('git add README.md && git commit -m "initial"', {
+    cwd: projectDir,
+    stdio: "pipe",
+  });
+
+  const result = kspecRun("init --no-prompt", projectDir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
+}
+
+function getShadowCommitCount(projectDir: string): number {
+  const worktreeDir = path.join(projectDir, SHADOW_WORKTREE_DIR);
+  return parseInt(
+    execSync("git rev-list --count HEAD", {
+      cwd: worktreeDir,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim(),
+    10,
+  );
+}
+
+function getShadowHeadSubject(projectDir: string): string {
+  const worktreeDir = path.join(projectDir, SHADOW_WORKTREE_DIR);
+  return execSync("git log --format=%s -1", {
+    cwd: worktreeDir,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
+
+function getShadowStatus(projectDir: string): string {
+  const worktreeDir = path.join(projectDir, SHADOW_WORKTREE_DIR);
+  return execSync("git status --porcelain", {
+    cwd: worktreeDir,
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
 
 describe("Integration: plan import content-only", () => {
   let tempDir: string;
@@ -260,7 +322,6 @@ Updated body.
     expect(plan.source_path).toBeNull();
     expect(plan.module_ref).toBeNull();
     expect(plan.notes.at(-1)?.content).toBe("Content updated from file");
-
   });
 
   // AC: @plan-import-into ac-into-no-title
@@ -390,6 +451,36 @@ Edited content.
     expect(plan.notes).toEqual([]);
   });
 
+  it.runIf(canRunShadowTests)("creates a single clean shadow-branch commit when --into succeeds", async () => {
+    // AC: @plan-import-into ac-into-commit
+    // AC: @trait-shadow-commit ac-1, ac-8
+    const shadowDir = await createTempDir("kspec-plan-import-into-shadow-");
+
+    try {
+      await setupShadowProject(shadowDir);
+      kspecOutput('plan add --title "Shadow Plan" --content "Original content"', shadowDir);
+
+      const editedPath = path.join(shadowDir, "shadow-edit.md");
+      await fs.writeFile(
+        editedPath,
+        `# Shadow Plan Updated
+
+Updated body.
+`,
+      );
+
+      const commitsBefore = getShadowCommitCount(shadowDir);
+      kspecOutput(`plan import "${editedPath}" --into @plan-shadow-plan`, shadowDir);
+      const commitsAfter = getShadowCommitCount(shadowDir);
+
+      expect(commitsAfter).toBe(commitsBefore + 1);
+      expect(getShadowStatus(shadowDir)).toBe("");
+      expect(getShadowHeadSubject(shadowDir)).toContain("plan-import");
+    } finally {
+      await cleanupTempDir(shadowDir);
+    }
+  });
+
   // AC: @plan-import-into ac-into-active
   // AC: @trait-error-guidance ac-1
   // AC: @trait-error-guidance ac-2
@@ -408,6 +499,42 @@ Edited content.
     expect(result.exitCode).toBe(5);
     expect(result.stderr).toContain("Cannot update active plan. Derive is a one-shot operation.");
     expect(result.stderr).toContain("Suggestion:");
+  });
+
+  // AC: @trait-error-guidance ac-3
+  // AC: @trait-error-guidance ac-6
+  it("includes actionable guidance when the target plan ref does not resolve", async () => {
+    const editedPath = await writePlan("missing-target.md", "# Missing Target\n");
+
+    const textResult = kspecRun(
+      `plan import "${editedPath}" --into @plan-does-not-exist`,
+      tempDir,
+      { expectFail: true },
+    );
+
+    expect(textResult.exitCode).toBe(3);
+    expect(textResult.stderr).toContain("Plan not found: @plan-does-not-exist");
+    expect(textResult.stderr).toContain(
+      "Suggestion: Check available plans with: kspec plan list",
+    );
+
+    const jsonResult = kspecRun(
+      `plan import "${editedPath}" --into @plan-does-not-exist --json`,
+      tempDir,
+      { expectFail: true },
+    );
+
+    expect(jsonResult.exitCode).toBe(3);
+    expect(JSON.parse(jsonResult.stderr)).toMatchObject({
+      success: false,
+      error: "Plan not found: @plan-does-not-exist",
+      details: {
+        ref: "@plan-does-not-exist",
+        entity: "plan",
+        suggestion: "Check available plans with: kspec plan list",
+        guidance: "Check available plans with: kspec plan list",
+      },
+    });
   });
 
   // AC: @plan-import-into ac-into-terminal
