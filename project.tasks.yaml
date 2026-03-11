@@ -86806,6 +86806,22 @@
         - Scope of fix: harden daemon readiness wait in src/cli/commands/serve.ts and exclude
         workspace-local review/worktree directories from root vitest config.
       supersedes: null
+    - _ulid: 01KKE6WC2HTRPKZHHWBMVGHEWM
+      created_at: 2026-03-11T10:25:34.801Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle resolution:
+
+        - Added a readiness wait to the npm-installed-package daemon test so it waits for
+        /api/health before asserting startup success, eliminating the packaged daemon startup race
+        seen in full-suite runs.
+
+        - Updated vitest.config.ts to exclude nested .review/ and .worktrees/ directories so local
+        review artifacts do not contaminate root npm test runs.
+
+        - Verification: npm test passed on fix/implement-missing-description-backfill (209 files,
+        4517 tests, 3 skipped).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
