@@ -1,7 +1,7 @@
 /**
  * Tests for AC annotation validation in test files.
  *
- * AC: @ref-validation ac-1, ac-2, ac-3, ac-4
+ * AC: @ref-validation ac-1
  *
  * Validates that // AC: @slug ac-N comments reference real spec items/traits
  * and that ac-N exists on the referenced item.
@@ -156,7 +156,7 @@ it('should also work', () => {});
     });
   });
 
-  // AC: @ref-validation ac-2
+  // Unresolved references should emit invalid_ac_annotation warnings.
   describe("validateACAnnotations - unresolved references", () => {
     it("should warn when @slug does not resolve to any item", async () => {
       const ctx = await setupProject({
@@ -221,7 +221,7 @@ it('should also work', () => {});
     });
   });
 
-  // AC: @ref-validation ac-3
+  // Non-existent AC ids should emit invalid_ac_annotation warnings.
   describe("validateACAnnotations - non-existent AC ids", () => {
     it("should warn when ac-N does not exist on the resolved item", async () => {
       const ctx = await setupProject({
@@ -338,7 +338,7 @@ it('should also work', () => {});
     });
   });
 
-  // AC: @ref-validation ac-4
+  // Trait references should validate against real trait AC ids.
   describe("validateACAnnotations - trait references", () => {
     it("should validate annotations referencing traits", async () => {
       const ctx = await setupProject({

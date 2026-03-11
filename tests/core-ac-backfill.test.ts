@@ -1,6 +1,12 @@
 import * as path from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { kspecJson } from './helpers/cli';
+import { beforeAll, describe, expect, it } from 'vitest';
+import {
+  initContext,
+  loadAllItems,
+  ReferenceIndex,
+  validate,
+  type LoadedSpecItem,
+} from '../src/parser/index.js';
 
 const projectRoot = path.resolve(__dirname, '..');
 const backfilledCoreRefs = [
@@ -22,10 +28,6 @@ interface ValidateWarning {
   itemRef?: string;
 }
 
-interface ValidateResult {
-  completenessWarnings: ValidateWarning[];
-}
-
 interface AcceptanceCriterion {
   id: string;
   given: string;
@@ -37,13 +39,35 @@ interface ItemJson {
   acceptance_criteria: AcceptanceCriterion[];
 }
 
+let completenessWarnings: ValidateWarning[] = [];
+let refIndex: ReferenceIndex;
+
+function getBackfilledItem(ref: (typeof backfilledCoreRefs)[number]): ItemJson {
+  const resolved = refIndex.resolve(ref);
+  expect(resolved.ok).toBe(true);
+  if (!resolved.ok) {
+    throw new Error(`Expected ${ref} to resolve`);
+  }
+
+  return resolved.item as LoadedSpecItem as ItemJson;
+}
+
 describe('Core AC backfill regressions', () => {
+  beforeAll(async () => {
+    const ctx = await initContext(projectRoot);
+    const [validationResult, items] = await Promise.all([
+      validate(ctx, { completeness: true }),
+      loadAllItems(ctx),
+    ]);
+
+    completenessWarnings = validationResult.completenessWarnings;
+    refIndex = new ReferenceIndex([], items);
+  });
+
   // AC: @core-ac-backfill ac-coverage
   it('keeps in-scope core refs free of missing acceptance criteria warnings', () => {
-    const result = kspecJson<ValidateResult>('validate --completeness', projectRoot);
-
     const missingAcRefs = new Set(
-      result.completenessWarnings
+      completenessWarnings
         .filter((warning) => warning.type === 'missing_acceptance_criteria')
         .map((warning) => warning.itemRef)
         .filter((itemRef): itemRef is string => Boolean(itemRef))
@@ -57,7 +81,7 @@ describe('Core AC backfill regressions', () => {
   // AC: @core-ac-backfill ac-testable
   it('gives each backfilled core AC a concrete given/when/then assertion', () => {
     for (const ref of backfilledCoreRefs) {
-      const item = kspecJson<ItemJson>(`item get ${ref}`, projectRoot);
+      const item = getBackfilledItem(ref);
       expect(item.acceptance_criteria.length).toBeGreaterThan(0);
 
       for (const ac of item.acceptance_criteria) {
