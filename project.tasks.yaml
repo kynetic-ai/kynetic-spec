@@ -88269,14 +88269,14 @@
   type: task
   spec_ref: "@plan-export"
   plan_ref: "@plan-iterative-plan-editing"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKD9B48PFYG1726NF0NBXAQF
+  session_id: null
   created_at: 2026-03-10T22:42:10.239Z
   started_at: 2026-03-11T01:53:27.156Z
   submitted_at: 2026-03-11T02:01:06.179Z
@@ -88304,6 +88304,12 @@
         behavior. Verification: `npm run build`, `npm test -- tests/cli-plan.test.ts`, full `npm
         test` (203 files / 4538 tests passed), `kspec validate` (warnings only from pre-existing
         repo-wide backlog)."
+      supersedes: null
+    - _ulid: 01KKDARRMGVTEPJH9NGWWKY1RV
+      created_at: 2026-03-11T02:14:16.465Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #767 mixes @plan-export with unrelated
+        @worktree-support commits; rebase/split the branch so the review scope matches the task."
       supersedes: null
   todos: []
   automation: eligible
