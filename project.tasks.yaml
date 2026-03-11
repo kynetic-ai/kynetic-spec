@@ -86464,14 +86464,14 @@
   type: task
   spec_ref: "@spec-completeness-policy"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKDZ4Z8R7VPNA8HZ9TM6NP1C
+  session_id: null
   created_at: 2026-03-10T06:55:43.699Z
   started_at: 2026-03-11T08:18:08.481Z
   submitted_at: 2026-03-11T08:29:28.690Z
@@ -86520,6 +86520,13 @@
         tests; isolated reruns of the shadow cleanup case and cli-serve daemon-start case passed.
         Untracked .review/ mirror in workspace causes duplicate vitest discovery and temp-dir
         collisions in shadow tests.
+      supersedes: null
+    - _ulid: 01KKE175RSJ5KXNW4Y5ZS6BPC9
+      created_at: 2026-03-11T08:46:37.338Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #777 still includes unrelated
+        @batch-item-fetch-api daemon/web-ui changes. Rebase or split to a dedicated branch so only
+        @spec-completeness-policy changes remain."
       supersedes: null
   todos: []
   automation: eligible
@@ -86683,6 +86690,7 @@
   session_id: 01KKE0B5RQA67KDX6Z5Z118V3S
   created_at: 2026-03-10T06:55:47.719Z
   started_at: 2026-03-11T08:40:06.260Z
+  submitted_at: 2026-03-11T08:41:45.704Z
   notes:
     - _ulid: 01KKB8FH07B0SP63HBCG2VNRKT
       created_at: 2026-03-10T06:55:47.719Z
@@ -86716,7 +86724,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T08:41:45.704Z
 - _ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
   slugs:
     - task-shadow-branch-ac-backfill
