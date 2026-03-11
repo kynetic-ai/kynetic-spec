@@ -86876,7 +86876,7 @@
   type: task
   spec_ref: "@schema-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86884,7 +86884,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKF0K3EETBGM7HYRBEGXEQHZ
+  session_id: null
   created_at: 2026-03-10T06:55:44.873Z
   started_at: 2026-03-11T18:00:03.485Z
   submitted_at: 2026-03-11T18:05:27.792Z
@@ -86954,6 +86954,14 @@
         tests/parser/manifest-discovery.test.ts tests/validate-exit-codes.test.ts
         tests/trait-display.test.ts tests/merge-parse.test.ts
         tests/validate-alignment-no-task-policy.test.ts => 8 files passed, 97 tests passed."
+      supersedes: null
+    - _ulid: 01KKF3M1GNTE33MJW0N2MTWGEW
+      created_at: 2026-03-11T18:47:50.550Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: review artifact suppresses schema AC warnings
+        with annotations that do not match the behaviors actually tested, including generic coverage
+        claims in tests/schema.test.ts and unsupported N/A markers / trivial assertions in
+        tests/schema-ac-backfill-annotations.test.ts."
       supersedes: null
   todos: []
   automation: eligible
