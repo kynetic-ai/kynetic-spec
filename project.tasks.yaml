@@ -81925,6 +81925,23 @@
         - Verification: focused tests for invocation/session env behavior, then full npm test and
         kspec validate.
       supersedes: null
+    - _ulid: 01KKDWRA5V297JDCJ4MWJHK6CW
+      created_at: 2026-03-11T07:28:36.027Z
+      author: Jacob Chapel
+      content: >-
+        Implemented fix for concurrent multi-project dispatch session injection.
+
+        - Removed process-level KSPEC_SESSION_ID mutation from invocation lifecycle.
+
+        - Kept per-adapter injection plus child spawn env injection as the only session propagation
+        path.
+
+        - Replaced AC-2 tests with child-env verification and a concurrent isolation regression
+        test.
+
+        - Verification: npm test -- tests/agent-invocation-lifecycle.test.ts, npm test, kspec
+        validate (warnings only; pre-existing repo debt).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KK60VVZRX87B64NJTRN0QYA1
