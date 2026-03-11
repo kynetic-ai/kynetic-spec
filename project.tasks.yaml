@@ -88254,7 +88254,7 @@
   type: task
   spec_ref: "@plan-export"
   plan_ref: "@plan-iterative-plan-editing"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -88291,6 +88291,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T02:01:06.179Z
 - _ulid: 01KKCYMDCFDDQS50CK9P6WEJW0
   slugs:
     - implement-plan-import-into-existing-plan
