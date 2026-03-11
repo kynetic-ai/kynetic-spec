@@ -86826,6 +86826,15 @@
         descendants with empty acceptance_criteria; kspec validate --completeness warnings for
         @schema AC gaps drop to zero.
       supersedes: null
+    - _ulid: 01KKEXSQ33BXYND0PB53FHMHDZ
+      created_at: 2026-03-11T17:06:05.028Z
+      author: Jacob Chapel
+      content: Backfilled acceptance criteria for 15 @schema feature/requirement items using kspec batch.
+        Covered item typing, status lifecycle, file structure modes, YAML conventions, Zod schema
+        definition, validation output, versioning, alignment, and traits. This intentionally
+        increases own-AC coverage work for the separate annotation sweep task rather than adding
+        test annotations here.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FERF22X0ADS5T97D1EAB
