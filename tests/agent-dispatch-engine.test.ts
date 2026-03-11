@@ -2682,6 +2682,54 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     await cleanupTempDir(testDir);
   });
 
+  // AC: @trait-task-readiness ac-status
+  it("should only consider pending and needs_work tasks as ready, excluding all other statuses", async () => {
+    const agent = makeTestAgent({
+      dispatch: [
+        { on: "task.ready", filter: { automation: "eligible" } },
+        { on: "task.needs_work", filter: { automation: "eligible" } },
+      ],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [readyId, needsWorkId, inProgressId, reviewId, completedId, blockedId, cancelledId] = testUlids("STAT", 7);
+    await writeTasks(testDir, [
+      { _ulid: readyId, status: "pending", automation: "eligible" },
+      { _ulid: needsWorkId, status: "needs_work", automation: "eligible" },
+      { _ulid: inProgressId, status: "in_progress", automation: "eligible" },
+      { _ulid: reviewId, status: "pending_review", automation: "eligible" },
+      { _ulid: completedId, status: "completed", automation: "eligible" },
+      { _ulid: blockedId, status: "blocked", automation: "eligible" },
+      { _ulid: cancelledId, status: "cancelled", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const enqueuedTaskIds: string[] = [];
+    vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation((_agent, change) => {
+      enqueuedTaskIds.push((change as TaskStateChange).taskId);
+    });
+
+    await engine.start();
+
+    // Only pending and needs_work should be enqueued via task.ready / task.needs_work rules
+    expect(enqueuedTaskIds).toContain(readyId);
+    expect(enqueuedTaskIds).toContain(needsWorkId);
+    expect(enqueuedTaskIds).not.toContain(inProgressId);
+    expect(enqueuedTaskIds).not.toContain(reviewId);
+    expect(enqueuedTaskIds).not.toContain(completedId);
+    expect(enqueuedTaskIds).not.toContain(blockedId);
+    expect(enqueuedTaskIds).not.toContain(cancelledId);
+
+    await engine.stop();
+    vi.restoreAllMocks();
+  });
+
   // AC: @trait-task-readiness ac-deps
   it("should not dispatch task.ready when depends_on tasks are not completed", async () => {
     const [depId, taskId] = testUlids("RDEP", 2);
@@ -3028,6 +3076,231 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
 
     expect(enqueueCount).toBeGreaterThanOrEqual(1);
 
+    await engine.stop();
+  });
+});
+
+// ─── AC-23, AC-24, AC-25: Post-invocation re-evaluation ─────────────────────
+
+describe("Post-invocation re-evaluation", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-post-invocation-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-23
+  // AC: @agent-dispatch-engine ac-24
+  it("should re-evaluate tasks from disk after invocation completes, discovering new pending_review tasks", async () => {
+    // Setup: pr-reviewer defined BEFORE task-worker (definition order controls drain priority).
+    // Both share max_concurrent: 1 per agent. The key scenario: a worker runs, and during its
+    // execution a task transitions to pending_review on disk. Without re-evaluation, the drain
+    // loop after worker completion won't see it (it was never in any queue).
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [reviewer, worker]);
+
+    const [taskA, taskB] = testUlids("PREV", 2);
+
+    // Initially: only taskA is pending (ready for worker). No pending_review tasks yet.
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending", automation: "eligible" },
+    ]);
+
+    const spawned: Array<{ agentId: string; taskRef: string }> = [];
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
+      invocationCount++;
+      const agentId = (opts as any).agent?.id ?? "unknown";
+      const taskRef = (opts as any).taskRef ?? "unknown";
+      spawned.push({ agentId, taskRef });
+
+      if (invocationCount === 1) {
+        // Simulate the worker finishing: taskA moves to pending_review,
+        // and taskB appears as pending_review (submitted during worker run).
+        await writeTasks(testDir, [
+          { _ulid: taskA, status: "pending_review" },
+          { _ulid: taskB, status: "pending_review" },
+        ]);
+        await firstBlock;
+      }
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0, // Disable periodic reconciliation
+    });
+
+    await engine.start();
+
+    // Wait for first invocation (worker picks up taskA via bootstrap)
+    for (let i = 0; i < 100 && invocationCount === 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(1);
+    expect(spawned[0].agentId).toBe("task-worker");
+
+    // Release worker — post-invocation re-evaluation should discover pending_review tasks
+    resolveFirst();
+
+    // Wait for reviewer to be spawned
+    for (let i = 0; i < 100 && invocationCount < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    // The second spawn should be the reviewer, discovering the pending_review tasks
+    // that appeared on disk during the worker's execution.
+    expect(invocationCount).toBeGreaterThanOrEqual(2);
+    expect(spawned[1].agentId).toBe("pr-reviewer");
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-24
+  it("should not double-enqueue tasks already queued via skipIfActive dedup", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [taskA, taskB] = testUlids("DDUP", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending", automation: "eligible" },
+      { _ulid: taskB, status: "pending", automation: "eligible" },
+    ]);
+
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+      invocationCount++;
+      if (invocationCount === 1) {
+        await firstBlock;
+      }
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    await engine.start();
+
+    // Wait for first invocation to start
+    for (let i = 0; i < 100 && invocationCount === 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(1);
+
+    // Release first invocation — re-evaluation runs, but should NOT double-enqueue taskB
+    resolveFirst();
+
+    // Wait for second invocation
+    for (let i = 0; i < 100 && invocationCount < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    // Exactly 2 invocations (one per task), not 3+ from double-enqueue
+    expect(invocationCount).toBe(2);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-25
+  it("should still drain existing queue when re-evaluation fails", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [taskA, taskB] = testUlids("FAIL", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending", automation: "eligible" },
+      { _ulid: taskB, status: "pending", automation: "eligible" },
+    ]);
+
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+      invocationCount++;
+      if (invocationCount === 1) {
+        await firstBlock;
+      }
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    await engine.start();
+
+    // Wait for first invocation to start
+    for (let i = 0; i < 100 && invocationCount === 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(1);
+
+    // Sabotage _evaluateAllTasks so it throws on the next call (post-invocation re-eval).
+    // The already-queued taskB should still drain.
+    const evaluateSpy = vi.spyOn(
+      engine as unknown as { _evaluateAllTasks: (opts: { skipIfActive: boolean }) => Promise<number> },
+      "_evaluateAllTasks",
+    );
+    evaluateSpy.mockRejectedValueOnce(new Error("simulated disk failure"));
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    // Release first invocation
+    resolveFirst();
+
+    // Wait for second invocation (from pre-existing queue, not re-evaluation)
+    for (let i = 0; i < 100 && invocationCount < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    // taskB should still have been drained from the existing queue
+    expect(invocationCount).toBe(2);
+
+    // Verify warning was logged
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Post-invocation re-evaluation failed"),
+      expect.any(Error),
+    );
+
+    warnSpy.mockRestore();
     await engine.stop();
   });
 });
