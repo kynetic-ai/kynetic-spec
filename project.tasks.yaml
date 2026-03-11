@@ -87962,6 +87962,12 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: missing @worktree-support AC coverage for
         ac-shadow-commands, ac-serve-default, and ac-performance"
       supersedes: null
+    - _ulid: 01KKDA2KNRZRWKM8W57WZ597G4
+      created_at: 2026-03-11T02:02:10.488Z
+      author: Jacob Chapel
+      content: "Fix cycle: restoring task to in_progress on branch fix/task-worktree-core-resolution to
+        add missing @worktree-support AC coverage for shadow, serve, and performance cases."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
