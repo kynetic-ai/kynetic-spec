@@ -85731,6 +85731,7 @@
         parsing fails.
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
     - implement-markdown-adoption-across-ui-surfaces
