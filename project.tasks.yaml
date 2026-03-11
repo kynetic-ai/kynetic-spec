@@ -86806,6 +86806,24 @@
         newly backfilled core specs, without expanding beyond the core items already accepted into
         scope."
       supersedes: null
+    - _ulid: 01KKEZ8VG4ATZX567RBSMNDPXY
+      created_at: 2026-03-11T17:31:49.636Z
+      author: Jacob Chapel
+      content: >-
+        Verification after fix cycle:
+
+        - Added AC annotations/regression coverage for the in-scope core refs that were backfilled
+        by this task: @item-required-fields, @item-optional-fields, @ulid-format,
+        @ulid-immutability, @ulid-shortening, @slug-format, @ref-syntax, @relationship-types,
+        @rel-tests, and @rel-supersedes.
+
+        - npm test -- --run tests/schema.test.ts tests/refs.test.ts passed.
+
+        - npm test -- --run tests/integration.test.ts -t "should preserve the original ULID when an
+        item is updated" passed.
+
+        - kspec validate --completeness --json filtered to this task's in-scope refs now returns [].
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FE79G64FCFBRF9C4ADM7
