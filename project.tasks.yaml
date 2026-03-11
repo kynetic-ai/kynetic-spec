@@ -89639,6 +89639,7 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-11T15:26:04.492Z
   started_at: 2026-03-11T15:36:59.209Z
+  submitted_at: 2026-03-11T15:50:19.672Z
   notes:
     - _ulid: 01KKES3JWBA3YMNZ2XRPBPM3NV
       created_at: 2026-03-11T15:44:05.515Z
@@ -89669,7 +89670,6 @@
         All 4521 tests pass. TypeScript compiles clean.
       supersedes: null
   todos: []
-  submitted_at: 2026-03-11T15:50:19.672Z
 - _ulid: 01KKER2T4XPE935X4SHBYZ3T1G
   slugs:
     - task-test-stall-watchdog
@@ -89686,7 +89686,7 @@
   spec_ref: "@invocation-initial-activity-watchdog"
   meta_ref: null
   plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-stall-watchdog"
@@ -89733,3 +89733,4 @@
         MOCK_ACP_CUSTOM_UPDATE_TYPE.
       supersedes: null
   todos: []
+  submitted_at: 2026-03-11T15:50:23.518Z
