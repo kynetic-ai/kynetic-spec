@@ -86737,7 +86737,7 @@
   type: task
   spec_ref: "@core-ac-backfill"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-spec-completeness-policy"
@@ -86748,7 +86748,7 @@
   session_id: 01KKF39MXK6ENZE4D6EPEC1660
   created_at: 2026-03-10T06:55:44.280Z
   started_at: 2026-03-11T18:48:51.248Z
-  submitted_at: 2026-03-11T18:28:21.826Z
+  submitted_at: 2026-03-11T18:53:37.025Z
   notes:
     - _ulid: 01KKB8FDMR8G970BYB2NNW4V9R
       created_at: 2026-03-10T06:55:44.280Z
