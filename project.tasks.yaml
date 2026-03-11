@@ -88523,6 +88523,26 @@
         - Verification: npm test -- tests/cli-worktree-resolution.test.ts
         tests/parser/resolve-project-roots.test.ts tests/shadow.test.ts tests/cli-serve.test.ts
       supersedes: null
+    - _ulid: 01KKDRS714ZNMHB7H224GPWBYP
+      created_at: 2026-03-11T06:19:11.268Z
+      author: Jacob Chapel
+      content: >-
+        Verified on origin/main after fast-forward:
+
+        - src/cli/commands/shadow.ts resolves project root via resolveProjectRoots(...).mainRoot
+        before shadow status/repair/log/resolve/sync.
+
+        - src/cli/commands/serve.ts defaults --kspec-dir through resolveDefaultKspecDir() backed by
+        initContext().specDir, which is worktree-aware.
+
+        - src/parser/shadow.ts detectRunningFromShadowWorktree() only treats exact
+        configured/default shadow directory names as definitive; code worktrees like kspec-feature
+        return null unless the shadow file structure is present.
+
+        - Targeted tests passed: tests/parser/resolve-project-roots.test.ts,
+        tests/cli-worktree-resolution.test.ts, tests/shadow.test.ts. kspec validate returned
+        warnings-only (exit 6) unrelated to this task.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKCYMCNZ94ZJKP84XYCCBVNM
