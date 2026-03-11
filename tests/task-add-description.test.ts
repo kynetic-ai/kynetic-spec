@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { setupTempFixtures, cleanupTempDir, kspecOutput as kspec, kspecJson } from './helpers/cli';
 
+// AC: @task-add
 describe('Integration: task add --description', () => {
   let tempDir: string;
 

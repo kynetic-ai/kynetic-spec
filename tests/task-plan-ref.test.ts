@@ -12,6 +12,8 @@ import {
   kspecJson,
 } from "./helpers/cli";
 
+// AC: @task-add
+// AC: @plan-support
 describe("Integration: task plan_ref field", () => {
   let tempDir: string;
 

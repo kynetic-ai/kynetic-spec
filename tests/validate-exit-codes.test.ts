@@ -17,6 +17,8 @@ import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir } fro
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
+// AC: @validation
+// AC: @spec-completeness
 describe('validate exit codes', () => {
   let tempDir: string;
 

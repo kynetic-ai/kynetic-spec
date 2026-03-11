@@ -763,6 +763,8 @@ describe('ReferenceIndex', () => {
     },
   ];
 
+  // AC: @reference-system
+  // AC: @slug-resolution
   describe('resolve', () => {
     it('should resolve by exact slug', () => {
       const index = new ReferenceIndex(tasks, items);
@@ -964,6 +966,7 @@ describe('ReferenceIndex', () => {
     });
   });
 
+  // AC: @slug-uniqueness
   describe('duplicate slug detection', () => {
     it('should detect duplicate slugs', () => {
       const duplicateItems: LoadedSpecItem[] = [
@@ -1328,6 +1331,7 @@ describe('checkSlugUniqueness', () => {
     },
   ];
 
+  // AC: @slug-uniqueness
   it('should return ok for unique slugs', () => {
     const index = new ReferenceIndex([], existingItems);
     const result = checkSlugUniqueness(index, ['brand-new-slug']);

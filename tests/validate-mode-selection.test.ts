@@ -9,6 +9,7 @@ import {
   testUlid,
 } from "./helpers/cli";
 
+// AC: @validation-modes
 describe("validate mode selection", () => {
   let tmpDir: string;
 

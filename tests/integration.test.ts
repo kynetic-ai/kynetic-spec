@@ -274,6 +274,8 @@ describe('Integration: task submit (pending_review state)', () => {
 });
 
 describe('Integration: task add', () => {
+  // AC: @task-add
+  // AC: @trait-priority-parameter
   let tempDir: string;
 
   beforeEach(async () => {
@@ -315,6 +317,14 @@ describe('Integration: task add', () => {
     kspec('task add --title "P notation add" --priority p3 --slug p-notation-add', tempDir);
 
     const task = kspecJson<{ priority: number }>('task get @p-notation-add', tempDir);
+    expect(task.priority).toBe(3);
+  });
+
+  // AC: @trait-priority-parameter ac-4
+  it('should default task priority to 3 when omitted', () => {
+    kspec('task add --title "Default priority add" --slug default-priority-add', tempDir);
+
+    const task = kspecJson<{ priority: number }>('task get @default-priority-add', tempDir);
     expect(task.priority).toBe(3);
   });
 });

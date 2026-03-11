@@ -29,6 +29,8 @@ import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 // AC: @trait-semantic-exit-codes ac-5 — N/A: plan import is a mutation command, not a query with empty-result semantics.
 // AC: @trait-semantic-exit-codes ac-7 — N/A: plan import is no longer a batch partial-success operation.
 // AC: @trait-semantic-exit-codes ac-8 — N/A: exit code meanings are documented centrally in src/cli/exit-codes.ts.
+// AC: @plan-support
+// AC: @plan-import
 
 const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
 const canRunShadowTests = (() => {

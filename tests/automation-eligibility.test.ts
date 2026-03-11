@@ -13,6 +13,7 @@ import {
   cleanupTempDir,
 } from './helpers/cli';
 
+// AC: @task-automation-eligibility
 describe('Task Automation Eligibility', () => {
   let tempDir: string;
 

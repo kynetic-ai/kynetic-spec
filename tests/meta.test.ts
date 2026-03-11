@@ -1209,6 +1209,7 @@ describe('Integration: meta resolve batch mode', () => {
 });
 
 describe('Integration: meta_ref in tasks', () => {
+  // AC: @task-add
   let tempDir: string;
 
   beforeEach(async () => {
