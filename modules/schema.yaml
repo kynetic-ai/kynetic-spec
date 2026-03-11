@@ -178,6 +178,16 @@ features:
             when: validation runs
             then: task structure is validated (must have title, can have spec_ref to link to spec item, can have
               task-specific fields like priority and status)
+    acceptance_criteria:
+      - id: ac-1
+        given: A spec item is created with type set to a supported core item type
+        when: The item is loaded and validated
+        then: The type is accepted and the item is classified according to that schema type for downstream
+          commands
+      - id: ac-2
+        given: A spec item omits the type field or uses an unsupported type value
+        when: Schema validation runs
+        then: Validation fails with an error indicating that a recognized item type is required
   - _ulid: 01JHNKA2W0STAT000000000000
     slugs:
       - status-lifecycle
@@ -299,6 +309,15 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: A spec item defines both status.maturity and status.implementation
+        when: The item is loaded, displayed, or updated
+        then: Both status dimensions are preserved and handled independently on the same item
+      - id: ac-2
+        given: A command changes only one status dimension on an item
+        when: The update is written
+        then: The targeted status dimension changes without overwriting the other status dimension
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs:
       - file-structure
@@ -332,6 +351,12 @@ features:
           All items inline in the manifest.
         implements:
           - "@file-structure"
+        acceptance_criteria:
+          - id: ac-1
+            given: A project keeps all spec content inline in a single kynetic.yaml or kynetic.spec.yaml
+              manifest
+            when: kspec loads the project
+            then: Items are read from that single manifest without requiring includes
       - _ulid: 01KEZCJPJ3X51ZZADWKWFNV4R9
         slugs:
           - directory-structure
@@ -355,6 +380,11 @@ features:
           Uses `includes` field in manifest to reference files.
         implements:
           - "@file-structure"
+        acceptance_criteria:
+          - id: ac-1
+            given: A root manifest declares includes for module or decision files
+            when: kspec loads the project
+            then: The included files are resolved and merged into one loaded project spec
       - _ulid: 01KEZCJPJ3WDMJX9K17J63CYXS
         slugs:
           - auto-adaptive-structure
@@ -372,6 +402,16 @@ features:
           Not MVP - this is a convenience feature.
         implements:
           - "@file-structure"
+        acceptance_criteria:
+          - id: ac-1
+            given: A project grows to roughly 500 lines or 20 or more items
+            when: A user runs kspec split --suggest
+            then: The CLI reports recommendations for which spec content should be split into separate files
+          - id: ac-2
+            given: A user accepts the recommended split plan
+            when: kspec split --apply runs
+            then: Spec files are reorganized with git-friendly renames and manifest includes are updated to
+              match the new layout
       - _ulid: 01KG385W7W2R2HV8ZG5XQHJMBF
         slugs:
           - manifest-discovery
@@ -427,6 +467,16 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: A project stores its spec as a single manifest file or as a root manifest plus included files
+        when: kspec loads the project spec
+        then: Both layouts are supported and produce the same logical spec graph
+      - id: ac-2
+        given: A project begins with a small manifest and later needs to split spec content across files
+        when: The structure is reviewed for growth
+        then: The file organization model supports starting simple and moving to a directory-based layout
+          without changing the spec model
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
@@ -537,6 +587,15 @@ features:
           a workaround that filters whitespace-only lines from output. See src/parser/yaml.ts for
           implementation details.
         supersedes: null
+    acceptance_criteria:
+      - id: ac-1
+        given: A manifest contains YAML values that are prone to implicit coercion or formatting ambiguity
+        when: kspec parses or rewrites the file
+        then: The YAML conventions preserve predictable values instead of silently changing their meaning
+      - id: ac-2
+        given: A project follows the quoting and literal-block conventions defined under @yaml-conventions
+        when: Its YAML is round-tripped through kspec
+        then: The resulting file remains readable and semantically equivalent to the original content
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs:
       - validation
@@ -586,6 +645,12 @@ features:
           - "@validation"
         depends_on:
           - "@spec-item"
+        acceptance_criteria:
+          - id: ac-1
+            given: Manifest or item data is loaded into kspec
+            when: Schema validation runs
+            then: Zod definitions act as the source of truth for accepted structure and for any validation
+              errors that are reported
       - _ulid: 01KEZCJPJ373KGN2PK8P3XQ929
         slugs:
           - validation-modes
@@ -663,6 +728,16 @@ features:
           { "valid": false, "errors": [...], "warnings": [...] }
         implements:
           - "@validation"
+        acceptance_criteria:
+          - id: ac-1
+            given: Validation finds schema, reference, or completeness issues
+            when: kspec validate finishes in text mode
+            then: Output lists the errors, warnings, and summary counts needed to understand the result
+          - id: ac-2
+            given: A user runs kspec validate --json
+            when: Validation completes
+            then: Stdout contains valid JSON with validity, errors, and warnings fields for programmatic
+              consumers
       - _ulid: 01KF3GST2YDS6MA1A04WK7A9FJ
         slugs:
           - spec-completeness
@@ -752,6 +827,12 @@ features:
           Breaking format changes bump major version.
         implements:
           - "@versioning"
+        acceptance_criteria:
+          - id: ac-1
+            given: A manifest declares a kynetic format version
+            when: kspec loads the manifest
+            then: The declared format version determines which schema compatibility rules are applied to that
+              file
       - _ulid: 01JHNKA3W7VERS200000000000
         slugs:
           - spec-version
@@ -772,6 +853,11 @@ features:
           - PATCH: Typos, editorial
         implements:
           - "@versioning"
+        acceptance_criteria:
+          - id: ac-1
+            given: A manifest declares project.version as a semver string
+            when: The project spec is loaded or displayed
+            then: That version is preserved as the spec own-version separate from the manifest format version
       - _ulid: 01JHNKA3W8VERS300000000000
         slugs:
           - git-baselines
@@ -788,6 +874,17 @@ features:
           Enables: kspec diff --since spec-v1.0.0
         implements:
           - "@versioning"
+        acceptance_criteria:
+          - id: ac-1
+            given: A repository has annotated tags marking spec baselines
+            when: A user compares spec history against a baseline tag
+            then: The tagged revision can be used as the comparison point for spec diffs
+    acceptance_criteria:
+      - id: ac-1
+        given: A project defines format version, spec version, and git tag baselines
+        when: Version-aware tooling inspects the spec
+        then: Those three version signals are treated as distinct concerns for schema compatibility, spec
+          release tracking, and historical comparison
   - _ulid: 01KFA4JCFV3NSEG6TMZFX1PCVH
     slugs:
       - alignment-system
@@ -933,6 +1030,17 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: Tasks reference specs through spec_ref links
+        when: Alignment data is built or queried
+        then: The system can resolve both specs for a task and tasks for a spec from the same alignment
+          model
+      - id: ac-2
+        given: Linked task state changes or alignment validation runs
+        when: Implementation progress is summarized
+        then: The system exposes status synchronization, alignment warnings, and progress visibility for the
+          affected spec items
   - _ulid: 01KFC190RJFWPWSYTC128B8Y3N
     slugs:
       - spec-traits
@@ -1228,6 +1336,17 @@ features:
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - id: ac-1
+        given: A trait item defines acceptance criteria and another spec implements that trait
+        when: The spec or a linked task is viewed
+        then: Inherited trait acceptance criteria are shown inline with clear indication of their source
+          trait
+      - id: ac-2
+        given: A spec implements one or more traits but lacks test annotations for inherited trait AC
+        when: kspec validate --completeness runs
+        then: Validation emits trait coverage warnings until each inherited AC is covered or explicitly
+          marked not applicable
 requirements:
   - _ulid: 01KFFG4ZFPVR9GT7X321TH50FF
     slugs:
