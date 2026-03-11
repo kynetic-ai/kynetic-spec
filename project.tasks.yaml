@@ -87774,7 +87774,9 @@
     - infra
     - shadow
   vcs_refs: []
+  session_id: 01KKD7QN6WATCDF9451KP2QBV4
   created_at: 2026-03-10T17:58:59.425Z
+  started_at: 2026-03-11T01:35:03.949Z
   notes:
     - _ulid: 01KKCEF8PK7H5BKQZPBG45S9RP
       created_at: 2026-03-10T17:59:45.108Z
@@ -87915,10 +87917,27 @@
         null (same outcome as 'not a git repo' since --show-toplevel fails on bare repos, but
         distinct setup: git init --bare)."
       supersedes: null
+    - _ulid: 01KKD8MT1ZGDTXRXEPW193HA5X
+      created_at: 2026-03-11T01:37:09.695Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: worktree-aware root resolution must distinguish code checkout root from main
+        project root where .kspec and daemon identity live.
+
+        - Scope: add resolveProjectRoots(), thread projectRoot through initContext/config/shadow
+        detection, fix agent/dispatch headers and serve/shadow command defaults.
+
+        - Files: src/parser/shadow.ts, src/parser/yaml.ts, src/parser/config.ts,
+        src/cli/commands/agent.ts, src/cli/commands/serve.ts, src/cli/commands/shadow.ts,
+        packages/daemon/src/routes/agent-dispatch.ts, related tests.
+
+        - Verification: targeted parser/worktree/agent/serve/shadow tests plus npm test for affected
+        files if runtime permits.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-11T01:35:03.949Z
-  session_id: 01KKD7QN6WATCDF9451KP2QBV4
 - _ulid: 01KKCEE31YMBRNYTF7G1VVR9GH
   slugs:
     - task-worktree-callsite-migration
