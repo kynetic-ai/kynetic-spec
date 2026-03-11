@@ -91,6 +91,7 @@ items:
       // These should cause exit 6 (warnings) not 4 (errors)
       const result = kspec('validate', tempDir);
       expect(result.exitCode).toBe(6);
+      // AC: @validation-output ac-1
       expect(result.stderr + result.stdout).toContain('Completeness warnings');
       expect(result.stderr + result.stdout).toContain(
         'Validation produced warnings; exiting 6'
@@ -173,11 +174,14 @@ items:
     });
 
     // AC: @trait-json-output ac-2 — JSON includes all data from human-readable mode
+    // AC: @validation-output ac-2
     it('should include completeness warnings in JSON output', () => {
       const result = kspec('validate --json', tempDir);
       const parsed = JSON.parse(result.stdout);
       expect(parsed).toHaveProperty('completenessWarnings');
       expect(parsed).toHaveProperty('valid');
+      expect(parsed).toHaveProperty('schemaErrors');
+      expect(parsed).toHaveProperty('refErrors');
       expect(parsed).toHaveProperty('stats');
     });
 

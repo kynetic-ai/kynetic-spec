@@ -158,6 +158,8 @@ describe('ItemTypeSchema', () => {
     expect(ItemTypeSchema.safeParse('trait').success).toBe(true);
   });
 
+  // AC: @item-types ac-1
+  // AC: @zod-schema ac-1
   it('should accept all valid item types', () => {
     expect(ItemTypeSchema.safeParse('feature').success).toBe(true);
     expect(ItemTypeSchema.safeParse('requirement').success).toBe(true);
@@ -165,6 +167,8 @@ describe('ItemTypeSchema', () => {
     expect(ItemTypeSchema.safeParse('trait').success).toBe(true);
   });
 
+  // AC: @item-types ac-2
+  // AC: @zod-schema ac-1
   it('should reject invalid types', () => {
     expect(ItemTypeSchema.safeParse('invalid').success).toBe(false);
     expect(ItemTypeSchema.safeParse('').success).toBe(false);
