@@ -225,8 +225,8 @@ features:
         acceptance_criteria:
           - id: ac-1
             given: a task has status in_progress
-            when: a user runs complete, block, or cancel
-            then: the task transitions to completed, blocked, or cancelled respectively
+            when: a user runs kspec task submit, kspec task block, or kspec task cancel
+            then: the task transitions to pending_review, blocked, or cancelled respectively
       - _ulid: 01JHNKA4W9TSTA300000000000
         slugs:
           - state-blocked
