@@ -55,6 +55,11 @@ features:
           All other fields are optional with sensible defaults.
         implements:
           - "@spec-item"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user creates a new spec item with only a title
+            when: the item is stored
+            then: the item has a generated ULID and preserves the provided title as required fields
       - _ulid: 01KEZCJPHZ67B47NKNJZ8C1H3G
         slugs:
           - item-optional-fields
@@ -77,6 +82,12 @@ features:
           - created, created_by: Lifecycle metadata
         implements:
           - "@spec-item"
+        acceptance_criteria:
+          - id: ac-1
+            given: a spec item is created without optional metadata such as slugs, tags, description, or
+              relationships
+            when: the item is retrieved or validated
+            then: the item remains valid and the omitted fields do not prevent storage
       - _ulid: 01KF3H8QTT6W0FMEGQ97FH5VYA
         slugs:
           - item-derive-hint
@@ -153,6 +164,12 @@ features:
           Example: 01KEZCJPHZ86X9PA509GREWDM0
         implements:
           - "@ulid-system"
+        acceptance_criteria:
+          - id: ac-1
+            given: the system generates a ULID for a new item
+            when: the identifier is inspected
+            then: it is a 26-character Crockford base32 string with a 10-character time component followed by a
+              16-character random component
       - _ulid: 01KEZCJPJ0MZSX946EF3ZPW9TA
         slugs:
           - ulid-immutability
@@ -167,6 +184,11 @@ features:
           item gets a new ULID and links via supersedes relationship.
         implements:
           - "@ulid-system"
+        acceptance_criteria:
+          - id: ac-1
+            given: an existing item is updated, deprecated, or superseded
+            when: its metadata or relationships change
+            then: the original ULID remains unchanged and any replacement item receives a different ULID
       - _ulid: 01KEZCJPJ0W8V4JZRYZFX56DX5
         slugs:
           - ulid-shortening
@@ -184,6 +206,11 @@ features:
           Full length: 26 characters
         implements:
           - "@ulid-system"
+        acceptance_criteria:
+          - id: ac-1
+            given: an item has a full ULID
+            when: a unique shortened ULID prefix is used for display or as an @reference
+            then: the system resolves that prefix back to the same full ULID
   - _ulid: 01KEZCJPJ0K5S6G1QMBXEVC54W
     slugs:
       - slug-system
@@ -231,6 +258,11 @@ features:
           Examples: auth-login, user-model, impl-session-v2
         implements:
           - "@slug-system"
+        acceptance_criteria:
+          - id: ac-1
+            given: a user provides a slug containing uppercase letters, spaces, or underscores
+            when: the slug is validated during item creation or update
+            then: the command rejects the slug because it does not match the lowercase hyphenated slug pattern
       - _ulid: 01KEZCJPJ1HD0JRARXD5AY3ZAW
         slugs:
           - slug-uniqueness
@@ -351,6 +383,12 @@ features:
           depends_on, implements, relates_to, tests, supersedes, blocked_by
         implements:
           - "@reference-system"
+        acceptance_criteria:
+          - id: ac-1
+            given: a relationship field contains @slug, @short-ulid, or @full-ulid values
+            when: the item is parsed or validated
+            then: those values are recognized as references rather than plain text and are available for
+              resolution
       - _ulid: 01JHNKA0W4REFS200000000000
         slugs:
           - ref-validation
@@ -369,6 +407,11 @@ features:
           Validation is triggered by `kspec validate --refs`
         implements:
           - "@reference-system"
+        acceptance_criteria:
+          - id: ac-1
+            given: an item contains one valid reference and one unresolved @reference
+            when: kspec validate --refs runs
+            then: the valid reference resolves successfully and the unresolved reference is reported as an error
   - _ulid: 01KEZCJPJ1SMT5AJJ2Y6Z0S21K
     slugs:
       - relationship-types
@@ -501,6 +544,11 @@ features:
           Used for: linking test items to features/requirements.
         implements:
           - "@relationship-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: item A declares a tests relationship to item B
+            when: verification traceability is viewed
+            then: item A is shown as evidence that validates item B
       - _ulid: 01KEZCJPJ2ZJMV482PPMTCSZKN
         slugs:
           - rel-supersedes
@@ -514,6 +562,18 @@ features:
           The old item's ULID remains stable; the relationship links them.
         implements:
           - "@relationship-types"
+        acceptance_criteria:
+          - id: ac-1
+            given: item A supersedes item B
+            when: the superseded item is reviewed
+            then: item B remains identifiable by its original ULID and the relationship points to item A as its
+              replacement
+    acceptance_criteria:
+      - id: ac-1
+        given: an item links to other items using depends_on, implements, relates_to, tests, or supersedes
+        when: the item graph is inspected
+        then: each link retains its relationship type so tools can distinguish prerequisite, realization,
+          association, verification, and replacement semantics
   - _ulid: 01KHVXK254VHT2WXKK073TB5ZT
     slugs:
       - project-config
