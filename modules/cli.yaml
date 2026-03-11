@@ -7393,6 +7393,9 @@ features:
             given: An agent definition includes a budget configuration
             when: The initial_response_timeout_seconds field is set
             then: The stall watchdog uses the configured value instead of the default 120 seconds
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KJP27657CZ9AJP5T0XBDEDVK
     slugs:
       - agent-dispatch-engine
