@@ -86528,6 +86528,13 @@
         @batch-item-fetch-api daemon/web-ui changes. Rebase or split to a dedicated branch so only
         @spec-completeness-policy changes remain."
       supersedes: null
+    - _ulid: 01KKE23NQC81S9F8WSWB4ATSQ6
+      created_at: 2026-03-11T09:02:11.181Z
+      author: Jacob Chapel
+      content: "Fix cycle: rebased fix/spec-completeness-policy onto current main to remove inherited
+        @batch-item-fetch-api commit from PR #777. No code changes beyond the already-implemented
+        completeness-policy diff; this update is branch/PR scoping only."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
