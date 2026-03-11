@@ -8117,6 +8117,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKEWK4RC3WZT4GAWG2MWG34P
+    type: friction
+    content: Backfill task descriptions can drift across module boundaries; this core backfill task
+      referenced @status-lifecycle and item types that actually live under @schema, which required
+      extra CLI lookups before starting the in-scope work.
+    created_at: 2026-03-11T16:45:01.068Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
