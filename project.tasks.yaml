@@ -78847,7 +78847,7 @@
   spec_ref: "@agent-invocation-lifecycle"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -78887,6 +78887,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T07:05:06.048Z
 - _ulid: 01KK2N0AM3G0F1SCXTB749CPEQ
   slugs: []
   title: "Fix validate page runtime error: Cannot read properties of undefined (reading 'length')"
