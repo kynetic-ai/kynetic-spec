@@ -696,6 +696,54 @@ describe('Integration: item set', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @item-required-fields ac-1
+  it('should store a new item created with only its required user-provided field', () => {
+    const created = kspecJson<{
+      item: { _ulid: string; title: string; slugs: string[] };
+    }>(
+      'item add --under @test-core --title "Required Fields Only" --type feature',
+      tempDir
+    );
+
+    const stored = kspecJson<{
+      ulid: string;
+      title: string;
+      slugs: string[];
+    }>(`item get @${created.item._ulid}`, tempDir);
+
+    expect(stored.ulid).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+    expect(stored.title).toBe('Required Fields Only');
+    expect(stored.slugs).toEqual([]);
+  });
+
+  // AC: @item-optional-fields ac-1
+  it('should keep items valid when optional metadata is omitted at creation time', () => {
+    const created = kspecJson<{
+      item: { _ulid: string };
+    }>(
+      'item add --under @test-core --title "Optional Metadata Omitted" --type requirement',
+      tempDir
+    );
+
+    const stored = kspecJson<{
+      title: string;
+      slugs: string[];
+      tags: string[];
+      description?: string;
+      depends_on: string[];
+      implements: string[];
+      relates_to: string[];
+    }>(`item get @${created.item._ulid}`, tempDir);
+
+    expect(stored.title).toBe('Optional Metadata Omitted');
+    expect(stored.slugs).toEqual([]);
+    expect(stored.tags).toEqual([]);
+    expect(stored.description).toBeUndefined();
+    expect(stored.depends_on).toEqual([]);
+    expect(stored.implements).toEqual([]);
+    expect(stored.relates_to).toEqual([]);
+  });
+
   // AC: @item-set ac-1
   it('should add slug to existing slugs', () => {
     // Create an item with one slug
@@ -736,16 +784,44 @@ describe('Integration: item set', () => {
   });
 
   // AC: @ulid-immutability ac-1
-  it('should preserve the original ULID when an item is updated', () => {
+  it('should preserve the original ULID when an item is updated or superseded', () => {
     kspec('item add --under @test-core --title "Immutable ULID Item" --slug immutable-ulid --type feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Immutable ULID Replacement" --slug immutable-ulid-replacement --type feature',
+      tempDir
+    );
 
-    const before = kspecJson<{ ulid: string }>('item get @immutable-ulid --json', tempDir);
+    const beforeOriginal = kspecJson<{ ulid: string }>('item get @immutable-ulid --json', tempDir);
+    const beforeReplacement = kspecJson<{ ulid: string }>(
+      'item get @immutable-ulid-replacement --json',
+      tempDir
+    );
 
-    kspec('item set @immutable-ulid --description "Updated without replacing identity"', tempDir);
+    kspec(
+      'item set @immutable-ulid --description "Updated without replacing identity" --maturity deprecated',
+      tempDir
+    );
+    kspec(
+      'item patch @immutable-ulid-replacement --data \'{"supersedes":"@immutable-ulid"}\'',
+      tempDir
+    );
 
-    const after = kspecJson<{ ulid: string; description?: string }>('item get @immutable-ulid --json', tempDir);
-    expect(after.ulid).toBe(before.ulid);
-    expect(after.description).toContain('Updated without replacing identity');
+    const afterOriginal = kspecJson<{
+      ulid: string;
+      description?: string;
+      status?: { maturity?: string };
+    }>('item get @immutable-ulid --json', tempDir);
+    const afterReplacement = kspecJson<{
+      ulid: string;
+      supersedes?: string;
+    }>('item get @immutable-ulid-replacement --json', tempDir);
+
+    expect(afterOriginal.ulid).toBe(beforeOriginal.ulid);
+    expect(afterOriginal.description).toContain('Updated without replacing identity');
+    expect(afterOriginal.status?.maturity).toBe('deprecated');
+    expect(afterReplacement.ulid).toBe(beforeReplacement.ulid);
+    expect(afterReplacement.ulid).not.toBe(afterOriginal.ulid);
+    expect(afterReplacement.supersedes).toBe('@immutable-ulid');
   });
 });
 

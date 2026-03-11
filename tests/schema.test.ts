@@ -172,7 +172,6 @@ describe('ItemTypeSchema', () => {
 });
 
 describe('SpecItemSchema - traits field', () => {
-  // AC: @item-required-fields ac-1
   it('should accept a minimal spec item with only required fields', () => {
     const spec = {
       _ulid: '01HQ3K5XJ8MPVB2XCJZ0KE9YWN',
@@ -218,7 +217,6 @@ describe('SpecItemSchema - traits field', () => {
     }
   });
 
-  // AC: @item-optional-fields ac-1
   // AC: @traits-field ac-4
   it('should default traits field to empty array when omitted', () => {
     const spec = {
