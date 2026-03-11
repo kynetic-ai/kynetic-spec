@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86130,6 +86130,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-11T22:56:41.123Z
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
     - implement-markdown-adoption-across-ui-surfaces
