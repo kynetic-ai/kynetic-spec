@@ -81906,6 +81906,7 @@
   session_id: 01KKDW602F060W4C6K78RGTYVJ
   created_at: 2026-03-08T05:04:39.277Z
   started_at: 2026-03-11T07:24:12.110Z
+  submitted_at: 2026-03-11T07:29:09.242Z
   notes:
     - _ulid: 01KKDWGPVX9Z039W1CTN1E2KW3
       created_at: 2026-03-11T07:24:26.877Z
@@ -81944,7 +81945,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-11T07:29:09.242Z
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/774
 - _ulid: 01KK60VVZRX87B64NJTRN0QYA1
   slugs: []
   title: Sanitize inherited env vars in agent spawner
