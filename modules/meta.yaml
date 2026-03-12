@@ -2912,16 +2912,13 @@ requirements:
   - _ulid: 01KKB8FCMKWPH6DXDZMQ34558C
     slugs:
       - test-annotation-sweep
-    title: Test Coverage Annotation Sweep
+    title: AC Annotation Coverage Semantics
     type: requirement
     tags: []
-    description: |
-      Systematically add AC: @spec-ref ac-N annotations to existing tests
-      that cover spec acceptance criteria but lack the machine-parseable
-      annotation. This closes the gap between implemented behavior and
-      validate's test coverage tracking. Prioritize traits with downstream
-      impact (trait-priority-parameter, trait-markdown-rendering,
-      ui-url-panel-state) then work through own-AC coverage gaps.
+    description: Coverage annotations map behavior tests to specific acceptance criteria so completeness
+      validation reflects real behavior coverage. For specs and traits that define acceptance
+      criteria, completeness accounting uses explicit AC-level mappings rather than bare spec-level
+      references.
     acceptance_criteria:
       - id: ac-trait-coverage
         given: |
