@@ -91452,6 +91452,13 @@
         tests/agent-dispatch-engine.test.ts; SKIP_BUILD=1 npm test --
         tests/session-log-list.test.ts; npm run dev -- validate --warnings-ok; npm test."
       supersedes: null
+    - _ulid: 01KKHFSQZ651EF3QNPV5SEDQGA
+      created_at: 2026-03-12T16:59:09.158Z
+      author: Jacob Chapel
+      content: "Unblocked after removing the failing external Claude Code Review workflow via PR #801 and
+        merging main into PR #800 branch feat/dispatch-workspace-registry-v2 so the stale check no
+        longer blocks review."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
