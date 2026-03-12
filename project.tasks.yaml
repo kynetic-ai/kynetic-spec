@@ -91075,6 +91075,24 @@
 
         - Verification: npm test plus targeted dispatch/config tests and kspec validate.
       supersedes: null
+    - _ulid: 01KKG0AJV2185E1EFRKYX80HTG
+      created_at: 2026-03-12T03:09:29.314Z
+      author: Jacob Chapel
+      content: >-
+        Implemented dispatch workspace config resolution:
+
+        - Added dispatch.base_branch and dispatch.worktree_root to kspec.config.yaml
+        parsing/defaults.
+
+        - Added resolver that validates configured branches, falls back to remote HEAD/current
+        branch/main deterministically, and resolves worktree roots against projectRoot.
+
+        - Dispatch engine now loads and validates resolved workspace config at startup so unusable
+        settings fail early with guidance.
+
+        - Verified with targeted tests, full npm test, and kspec validate (warnings only; existing
+        repo-wide warning debt remains).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
