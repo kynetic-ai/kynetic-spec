@@ -87685,6 +87685,19 @@
         mappings, then re-run completeness to measure the honest remaining gap before deciding on
         any follow-up task split."
       supersedes: null
+    - _ulid: 01KKHJ9TVT6QSP7KX6S2787TZF
+      created_at: 2026-03-12T17:42:53.562Z
+      author: chapel
+      content: "Fix-cycle progress: removed all remaining bare spec-level AC annotations from the current
+        PR diff, deleted the filename-registry coverage shortcut, and updated the AC scanner to
+        parse named ac-* ids (for specs like @task-add). Verification: npm run build; npm test --
+        tests/ac-annotation-validation.test.ts. Honest completeness after cleanup is now 222 missing
+        own-coverage warnings, 0 trait-coverage warnings, 1 missing-AC warning, 1
+        automation-without-spec warning, and 99 invalid-annotation warnings. The no-blanket-ref
+        sweep guard now passes, but the sweep threshold test fails against this honest baseline,
+        confirming the task needs scope re-cut or follow-up tasks rather than more synthetic
+        coverage."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
