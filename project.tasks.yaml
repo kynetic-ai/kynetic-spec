@@ -92143,6 +92143,15 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #806 is currently CONFLICTING against main,
         so it cannot be merged. Rebase/update the branch and rerun review gates on the new HEAD."
       supersedes: null
+    - _ulid: 01KKJ2GT1SNCP270QZ3VWTE98P
+      created_at: 2026-03-12T22:26:19.321Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Rebased task branch onto main and fixed a workspace-registry mutation race
+        introduced by narrowing the invocation lock. Dispatch now still overlaps invocation
+        execution, but markDispatchWorkspaceActive/Idle re-enter the shadow mutex so lifecycle
+        transitions cannot be overwritten back to pending. Verification: npm test passed on the
+        rebased head; kspec validate still reports only the repository's existing warnings."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9JJ9SDWB05ZBQSV2VBDW
