@@ -1509,3 +1509,13 @@ inbox:
     created_at: 2026-03-12T02:53:21.617Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KKHF53QMEE4FPJEXYJV7874X
+    text: "GitHub Actions maintenance: fix Node.js 20 deprecation warnings in workflows. PR checks now
+      show that actions/github-script@v7 is running on Node.js 20, which GitHub says will be forced
+      to Node.js 24 by default starting June 3, 2026. Audit workflow actions and either update
+      affected actions to Node 24-compatible versions or set FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true
+      / ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true as an interim compatibility step where
+      appropriate."
+    created_at: 2026-03-12T16:47:53.076Z
+    tags: []
+    added_by: Jacob Chapel
