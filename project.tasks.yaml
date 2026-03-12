@@ -91612,8 +91612,11 @@
   spec_ref: "@plan-embedded-views"
   meta_ref: null
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Review blocked: full-suite gate cannot clear because stacked base branch
+      fix/plan-embedded-live-loading already fails npm test on unresolved import
+      @lucide/svelte/icons/triangle-alert in packages/web-ui/src/routes/+page.svelte."
   depends_on:
     - "@bug-plan-embedded-views-live-loading"
   context: []
