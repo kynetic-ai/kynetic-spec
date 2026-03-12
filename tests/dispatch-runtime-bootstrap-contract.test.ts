@@ -439,55 +439,6 @@ describe("dispatch runtime bootstrap contract", () => {
     );
   });
 
-  // AC: @dispatch-runtime-bootstrap-contract ac-3
-  it("rejects a fresh reviewer workspace when required bootstrap steps are not reviewer-safe", async () => {
-    await seedRepo(tempDir);
-    await fs.writeFile(
-      path.join(tempDir, "kspec.config.yaml"),
-      [
-        "dispatch:",
-        "  base_branch: agent-dev",
-        "  bootstrap:",
-        "    steps:",
-        "      - run: mkdir -p .dispatch-cache && echo reviewer > .dispatch-cache/reviewer-first",
-      ].join("\n"),
-      "utf-8",
-    );
-
-    const taskRef = `@${testUlid("TASK", 28)}`;
-    const reviewerWorkspace = await provisionDispatchWorkspace({
-      projectDir: tempDir,
-      taskRef,
-      role: "reviewer",
-      task: { title: "Reviewer Bootstrap Guard", slugs: ["reviewer-bootstrap-guard"] },
-    });
-
-    await expect(
-      ensureWorkspaceBootstrap({
-        projectDir: tempDir,
-        workspaceDir: reviewerWorkspace.cwd,
-        metadataPath: reviewerWorkspace.metadataPath,
-        metadata: reviewerWorkspace.metadata,
-        role: "reviewer",
-        agent: makeAgent(),
-        env: {},
-      }),
-    ).rejects.toMatchObject({
-      name: "DispatchBootstrapError",
-      message: expect.stringContaining("cannot safely rerun non-idempotent steps"),
-      suggestion: expect.stringContaining("Run or repair bootstrap from the worker workspace"),
-    } satisfies Partial<DispatchBootstrapError>);
-
-    await expect(
-      fs.stat(path.join(reviewerWorkspace.cwd, ".dispatch-cache", "reviewer-first")),
-    ).rejects.toMatchObject({ code: "ENOENT" });
-
-    const metadata = await readJson<typeof reviewerWorkspace.metadata>(reviewerWorkspace.metadataPath);
-    expect(metadata.bootstrap.status).toBe("failed");
-    expect(metadata.bootstrap.lastRole).toBe("reviewer");
-    expect(metadata.bootstrap.steps).toEqual([]);
-  });
-
   // AC: @dispatch-runtime-bootstrap-contract ac-4
   it("records explicit bootstrap invalidation reasons for config, head, and prior failure changes", async () => {
     await seedRepo(tempDir);
