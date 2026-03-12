@@ -97,4 +97,84 @@ derive_from_specs: true
 			])
 		);
 	});
+
+	// AC: @plan-embedded-views ac-2
+	// AC: @plan-embedded-views ac-9
+	it('still prefers derive_from_specs when the manual task yaml appears before the directive', () => {
+		const blocks = buildPlanContentBlocks(
+			{
+				...basePlan,
+				content: `# Example
+
+## Tasks
+
+\`\`\`yaml
+- title: Add markdown rendering trait to existing specs
+  slug: task-add-markdown-trait
+  priority: 1
+\`\`\`
+
+derive_from_specs: true
+`,
+				derived_specs: [],
+				derived_tasks: [
+					'@implement-markdown-rendering-trait',
+					'@implement-prose-typography-setup',
+					'@task-add-markdown-trait'
+				]
+			},
+			{ batchLoading: true }
+		);
+
+		expect(blocks).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					type: 'embedded',
+					embedType: 'task',
+					state: 'loading',
+					refs: [
+						'@implement-markdown-rendering-trait',
+						'@implement-prose-typography-setup',
+						'@task-add-markdown-trait'
+					]
+				})
+			])
+		);
+	});
+
+	// AC: @plan-embedded-views ac-2
+	it('uses manual task refs when derive_from_specs is not enabled', () => {
+		const blocks = buildPlanContentBlocks(
+			{
+				...basePlan,
+				content: `# Example
+
+## Tasks
+
+\`\`\`yaml
+- title: Add markdown rendering trait to existing specs
+  slug: task-add-markdown-trait
+\`\`\`
+`,
+				derived_specs: [],
+				derived_tasks: [
+					'@implement-markdown-rendering-trait',
+					'@implement-prose-typography-setup',
+					'@task-add-markdown-trait'
+				]
+			},
+			{ batchLoading: true }
+		);
+
+		expect(blocks).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					type: 'embedded',
+					embedType: 'task',
+					state: 'loading',
+					refs: ['@task-add-markdown-trait']
+				})
+			])
+		);
+	});
 });

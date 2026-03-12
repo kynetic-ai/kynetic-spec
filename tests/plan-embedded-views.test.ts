@@ -137,6 +137,32 @@ derive_from_specs: true
 		});
 	});
 
+	it("maps task sections to derived task cards even when derive_from_specs appears after the manual yaml list", () => {
+		const plan = createPlan({
+			content: `# Demo Plan
+
+## Tasks
+
+\`\`\`yaml
+- title: Manual follow-up
+  slug: unrelated-manual-task
+\`\`\`
+
+derive_from_specs: true
+`
+		});
+
+		const blocks = buildPlanContentBlocks(plan, { batchItems: createBatchItems() });
+		const embedded = blocks.find((block) => block.type === "embedded");
+
+		expect(embedded).toMatchObject({
+			type: "embedded",
+			embedType: "task",
+			state: "ready",
+			refs: ["@task-alpha", "@task-beta"]
+		});
+	});
+
 	it("maps fenced derive_from_specs directives to embedded task cards", () => {
 		const plan = createPlan({
 			content: `# Demo Plan
@@ -218,6 +244,28 @@ derive_from_specs: true
 			embedType: "task",
 			state: "error",
 			errorMessage: "boom"
+		});
+	});
+
+	it("uses manual task yaml refs when derive_from_specs is absent", () => {
+		const plan = createPlan({
+			content: `## Tasks
+
+\`\`\`yaml
+- title: Task Alpha
+  slug: task-alpha
+\`\`\`
+`
+		});
+
+		const blocks = buildPlanContentBlocks(plan, { batchItems: createBatchItems() });
+		const embedded = blocks.find((block) => block.type === "embedded");
+
+		expect(embedded).toMatchObject({
+			type: "embedded",
+			embedType: "task",
+			state: "ready",
+			refs: ["@task-alpha"]
 		});
 	});
 
