@@ -91628,6 +91628,7 @@
   session_id: 01KKG3Q58YVKYJKE66HCSNP5AC
   created_at: 2026-03-12T03:17:43.331Z
   started_at: 2026-03-12T04:19:31.659Z
+  submitted_at: 2026-03-12T04:27:04.084Z
   notes:
     - _ulid: 01KKG4BC358EYHKY6X48NJP6B2
       created_at: 2026-03-12T04:19:49.477Z
@@ -91655,6 +91656,13 @@
         the rendered embedded task set. Added regression coverage for directive-before-list,
         list-before-directive, and manual-list-without-derive cases."
       supersedes: null
+    - _ulid: 01KKG4VC2H0NKHCQHMHPJ4ESDD
+      created_at: 2026-03-12T04:28:33.745Z
+      author: Jacob Chapel
+      content: "Submitted for review in PR #798 on branch fix/mixed-task-precedence, stacked on
+        fix/plan-embedded-live-loading. Verification: npm test -- plan-embedded-content
+        plan-embedded-views; npm test; node dist/cli/index.js validate (warnings-only baseline, no
+        errors)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-12T04:27:04.084Z
