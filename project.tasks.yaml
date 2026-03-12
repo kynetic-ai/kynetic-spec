@@ -92130,6 +92130,7 @@
   created_at: 2026-03-12T02:49:31.460Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
   slugs:
     - bug-plan-embedded-views-live-loading
