@@ -90958,7 +90958,7 @@
   spec_ref: "@canonical-task-workspace-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-design-dispatch-workspace-config"
@@ -90969,12 +90969,24 @@
     - worktree
     - design
   vcs_refs: []
+  session_id: 01KKFZR12513W1TM51ABJWE1VF
   created_at: 2026-03-12T02:33:51.819Z
-  notes: []
+  started_at: 2026-03-12T02:59:45.780Z
+  notes:
+    - _ulid: 01KKFZTN7EE60RD4T4D2CHRYF5
+      created_at: 2026-03-12T03:00:47.470Z
+      author: Jacob Chapel
+      content: "Completed with --force from in_progress state. Reason: Design captured in approved plan
+        @plan-dispatch-worktree-isolation-and-scheduling and spec
+        @canonical-task-workspace-contract; implementation remains for
+        @task-implement-canonical-task-workspace-contract and related dispatch worktree tasks."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T02:59:45.780Z
-  session_id: 01KKFZR12513W1TM51ABJWE1VF
+  completed_at: 2026-03-12T03:00:46.691Z
+  closed_reason: Design captured in approved plan @plan-dispatch-worktree-isolation-and-scheduling and
+    spec @canonical-task-workspace-contract; implementation remains for
+    @task-implement-canonical-task-workspace-contract and related dispatch worktree tasks.
 - _ulid: 01KKFY9C0SFWHB65MV02D65PXN
   slugs:
     - task-design-dispatch-workspace-registry
