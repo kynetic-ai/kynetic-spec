@@ -360,7 +360,8 @@ function resolveRegistryStateForTaskStatus(
     };
   }
 
-  const shouldResetLifecycle = existingRecord.integration.status === "merged"
+  const shouldResetLifecycle = existingRecord.lifecycle_state === "closing"
+    || existingRecord.integration.status === "merged"
     || existingRecord.integration.status === "abandoned"
     || existingRecord.cleanup.status !== "not_scheduled"
     || existingRecord.cleanup.eligible;

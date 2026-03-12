@@ -441,16 +441,18 @@ export class DispatchEngine {
     const cleanupState = resolveCleanupStateForTaskChange(change);
     if (cleanupState) {
       try {
-        await reconcileDispatchWorkspaceLifecycle({
-          projectDir: this.projectDir,
-          taskRef: change.taskRef,
-          task: change.task
-            ? {
-                title: change.task.title,
-                slugs: change.task.slugs,
-              }
-            : undefined,
-          cleanupState,
+        await this.shadowMutex.runExclusive(async () => {
+          await reconcileDispatchWorkspaceLifecycle({
+            projectDir: this.projectDir,
+            taskRef: change.taskRef,
+            task: change.task
+              ? {
+                  title: change.task.title,
+                  slugs: change.task.slugs,
+                }
+              : undefined,
+            cleanupState,
+          });
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
