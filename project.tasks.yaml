@@ -91724,6 +91724,27 @@
         files, 4629 passed, 3 skipped); npm test (run 2: 221 files, 4629 passed, 3 skipped); kspec
         validate (warnings-only baseline, exit 6).
       supersedes: null
+    - _ulid: 01KKHSMMFYNAMD8WA20SJ64MY6
+      created_at: 2026-03-12T19:51:07.518Z
+      author: Jacob Chapel
+      content: >-
+        Fix cycle resolution:
+
+        - Stabilized shared YAML persistence by switching parser YAML writes to atomic temp-file
+        rename semantics so dispatch workspace registry/state readers cannot observe partially
+        rewritten files.
+
+        - Hardened the foreground daemon CLI test to wait deterministically for child exit after
+        SIGINT, removing the timing-sensitive child.exitCode === null failure mode seen in repeated
+        full-suite review reruns.
+
+        - Added regression coverage for atomic YAML temp-file cleanup.
+
+        - Verification: npm test -- tests/yaml-atomic-write.test.ts
+        tests/dispatch-workspace-registry.test.ts tests/cli-serve.test.ts; npm test (run 1: 221
+        files, 4629 passed, 3 skipped); npm test (run 2: 221 files, 4629 passed, 3 skipped); kspec
+        validate (warnings-only baseline, exit 6).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9F0VXEG6YWVBA20N7DJ2
