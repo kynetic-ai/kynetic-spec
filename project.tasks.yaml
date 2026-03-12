@@ -91586,6 +91586,14 @@
         tests/dispatch-workspace-config.test.ts tests/agent-dispatch-engine.test.ts and kspec
         validate.
       supersedes: null
+    - _ulid: 01KKHHNH0XVWDB04R4PP2MEMRH
+      created_at: 2026-03-12T17:31:48.126Z
+      author: Jacob Chapel
+      content: Implemented explicit dispatch branch integration metadata in the workspace record,
+        including integration target branch/commit, publication mode, and integration outcome state.
+        Also wired branch/publication context into dispatch orientation text and added spec-focused
+        tests covering PR-target and manual-merge guidance.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9FK58T570QTKKYMPTK98
