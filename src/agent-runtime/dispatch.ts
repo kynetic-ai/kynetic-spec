@@ -28,6 +28,7 @@ import { getAdapter } from "../agents/adapters.js";
 import {
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
+  reconcileDispatchWorkspaceLifecycle,
 } from "./workspace.js";
 import type {
   AgentDispatchRule,
@@ -222,6 +223,24 @@ export interface TaskStateChange {
   task?: LoadedTask;
 }
 
+function resolveCleanupStateForTaskChange(
+  change: TaskStateChange,
+): {
+  integrationState?: "merged" | "abandoned" | "reset";
+  taskStatus: TaskStatus;
+} | null {
+  if (change.toStatus === "completed") {
+    return { integrationState: "merged", taskStatus: "completed" };
+  }
+  if (change.toStatus === "cancelled") {
+    return { integrationState: "abandoned", taskStatus: "cancelled" };
+  }
+  if (change.fromStatus === "completed" || change.fromStatus === "cancelled") {
+    return { integrationState: "reset", taskStatus: change.toStatus };
+  }
+  return null;
+}
+
 /**
  * An entry in the dispatch queue.
  */
@@ -404,6 +423,28 @@ export class DispatchEngine {
       return;
     }
     this._recordEvent(change);
+
+    const cleanupState = resolveCleanupStateForTaskChange(change);
+    if (cleanupState) {
+      try {
+        await reconcileDispatchWorkspaceLifecycle({
+          projectDir: this.projectDir,
+          taskRef: change.taskRef,
+          task: change.task
+            ? {
+                title: change.task.title,
+                slugs: change.task.slugs,
+              }
+            : undefined,
+          cleanupState,
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(
+          `[dispatch] Failed to reconcile workspace lifecycle for ${change.taskRef}: ${message}`,
+        );
+      }
+    }
 
     // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
     const agents = await this._loadAgents();
@@ -999,6 +1040,10 @@ export class DispatchEngine {
       workspace = await provisionDispatchWorkspace({
         projectDir: this.projectDir,
         taskRef: entry.change.taskRef,
+        role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+        cleanupState: {
+          taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+        },
         task: entry.change.task
           ? {
               title: entry.change.task.title,
