@@ -8368,7 +8368,7 @@ features:
                 created: 2026-03-12T02:33:44.181Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KKFY93X0Z8AEJ57RVNHR8N73
             slugs:
               - dispatch-branch-integration-contract
