@@ -68,6 +68,13 @@ export interface DispatchWorkspaceMetadata {
   closedAt: string | null;
 }
 
+export interface DispatchWorkspaceHealth {
+  exists: boolean;
+  healthy: boolean;
+  reason: string | null;
+  metadata: DispatchWorkspaceMetadata | null;
+}
+
 export type DispatchWorkspaceRole = "worker" | "reviewer";
 
 export type DispatchWorkspacePublicationMode = RegistryPublicationMode;
@@ -1201,5 +1208,58 @@ export async function markDispatchWorkspaceIdle(options: {
     cwd: record.worktrees.worker.path,
     metadataPath,
     metadata: toMetadata(record),
+  };
+}
+
+export async function getDispatchWorkspaceHealth(
+  options: ProvisionDispatchWorkspaceOptions,
+): Promise<DispatchWorkspaceHealth> {
+  const { projectDir, taskRef, role = "worker" } = options;
+  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  if (!existingRecord) {
+    return {
+      exists: false,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    };
+  }
+
+  const now = new Date().toISOString();
+  const health = reconcileWorkspaceHealth(projectDir, existingRecord, now);
+  const cleanup = {
+    ...existingRecord.cleanup,
+    updated_at: now,
+  };
+  const reviewerMissingRecordedWorktree = role === "reviewer"
+    && existingRecord.worktrees.reviewer !== null
+    && !pathExists(existingRecord.worktrees.reviewer.path);
+  const healthy = health.status === "healthy"
+    && !cleanup.eligible
+    && !reviewerMissingRecordedWorktree;
+  const primaryIssue = health.issues[0];
+  const reason = reviewerMissingRecordedWorktree
+    ? "missing-reviewer-worktree"
+    : cleanup.eligible
+      ? (cleanup.reason ?? "workspace-marked-for-cleanup")
+      : primaryIssue
+        ? primaryIssue.code.replace(/_/g, "-")
+        : health.status === "healthy"
+          ? null
+          : health.status;
+
+  return {
+    exists: true,
+    healthy,
+    reason,
+    metadata: toMetadata({
+      ...existingRecord,
+      health,
+      cleanup,
+      timestamps: {
+        ...existingRecord.timestamps,
+        updated_at: now,
+      },
+    }),
   };
 }

@@ -31,6 +31,7 @@ import {
   markDispatchWorkspaceActive,
   markDispatchWorkspaceIdle,
   reconcileDispatchWorkspaceRegistry,
+  getDispatchWorkspaceHealth,
   reconcileDispatchWorkspaceLifecycle,
   type DispatchWorkspaceMetadata,
   type DispatchWorkspaceRole,
@@ -130,6 +131,8 @@ const STATUS_PRECEDENCE: Record<TaskStatus, number> = {
   completed: 5,
   cancelled: 6,
 };
+
+const CONTINUITY_STARVATION_THRESHOLD = 2;
 
 // ─── Prompt Helpers ──────────────────────────────────────────────────────────
 
@@ -285,6 +288,15 @@ interface QueueEntry {
   enqueuedAtMs: number;
   /** Monotonic sequence for deterministic tie-breaking */
   sequence: number;
+  /** Count of times affinity skipped this entry despite equal band+priority. */
+  starvationDeferrals: number;
+}
+
+interface SchedulerCandidate {
+  agent: LoadedAgent;
+  queue: QueueEntry[];
+  queueIndex: number;
+  entry: QueueEntry;
 }
 
 interface KspecCommandResult {
@@ -408,6 +420,8 @@ export class DispatchEngine {
   private inFlightTaskKeys = new Set<string>();
   /** Monotonic enqueue sequence for deterministic queue ordering */
   private nextQueueSequence = 0;
+  /** Last task selected/completed, used as continuity affinity signal. */
+  private recentTaskAffinityRef: string | null = null;
   /** Timer handle for periodic reconciliation. AC: @agent-dispatch-engine ac-20 */
   private reconcileTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -846,23 +860,24 @@ export class DispatchEngine {
     // task.ready and task.needs_work when no filter is specified
     const defaultsToEligible =
       rule.on === "task.ready" || rule.on === "task.needs_work";
-    if (!rule.filter && !defaultsToEligible) return true;
 
     // We need the task to evaluate filters — if not provided, reject to avoid
     // enqueuing non-matching tasks (AC-6: all filters must match)
-    if (!task) return false;
+    if (!task) return !rule.filter && !defaultsToEligible;
 
-    // AC: @trait-task-readiness ac-not-blocked — blocked_by must be empty
-    if (defaultsToEligible && (task.blocked_by ?? []).length > 0) {
+    // Any unresolved blocker excludes the candidate from scheduling.
+    if ((task.blocked_by ?? []).length > 0) {
       return false;
     }
 
-    // AC: @trait-task-readiness ac-deps — all depends_on must be completed
-    if (defaultsToEligible && allTasks && (task.depends_on ?? []).length > 0) {
+    // Any unresolved dependency excludes the candidate from scheduling.
+    if (allTasks && (task.depends_on ?? []).length > 0) {
       if (!areDependenciesMet(task, allTasks)) {
         return false;
       }
     }
+
+    if (!rule.filter && !defaultsToEligible) return true;
 
     // AC: @trait-task-readiness ac-composable — consumer filters applied after base readiness
     const filter: AgentDispatchFilter = rule.filter ?? {};
@@ -947,6 +962,7 @@ export class DispatchEngine {
       nextRetryAt: 0,
       enqueuedAtMs: Date.now(),
       sequence: this.nextQueueSequence++,
+      starvationDeferrals: 0,
     };
     this._insertQueueEntry(queue, entry);
     this.queues.set(agent.id, queue);
@@ -966,13 +982,194 @@ export class DispatchEngine {
   }
 
   /**
-   * Compare queue entries by dispatch precedence, then by enqueue sequence.
+   * Compare queue entries by dispatch precedence, numeric task priority, then FIFO.
    * AC: @dispatch-in-progress-priority ac-1
    */
   private _compareQueueEntries(a: QueueEntry, b: QueueEntry): number {
     const statusDelta = STATUS_PRECEDENCE[a.change.toStatus] - STATUS_PRECEDENCE[b.change.toStatus];
     if (statusDelta !== 0) return statusDelta;
+    const priorityDelta = this._taskPriorityForEntry(a) - this._taskPriorityForEntry(b);
+    if (priorityDelta !== 0) return priorityDelta;
     return a.sequence - b.sequence;
+  }
+
+  private _taskPriorityForEntry(entry: QueueEntry): number {
+    return entry.change.task?.priority ?? 3;
+  }
+
+  private _hasContinuityAffinity(entry: QueueEntry): boolean {
+    if (!this.recentTaskAffinityRef) return false;
+    return entry.change.taskRef === this.recentTaskAffinityRef;
+  }
+
+  private _compareSchedulerCandidates(a: SchedulerCandidate, b: SchedulerCandidate): number {
+    const statusDelta =
+      STATUS_PRECEDENCE[a.entry.change.toStatus] - STATUS_PRECEDENCE[b.entry.change.toStatus];
+    if (statusDelta !== 0) {
+      return statusDelta;
+    }
+
+    const priorityDelta = this._taskPriorityForEntry(a.entry) - this._taskPriorityForEntry(b.entry);
+    if (priorityDelta !== 0) {
+      return priorityDelta;
+    }
+
+    const sameBand =
+      STATUS_PRECEDENCE[a.entry.change.toStatus] === STATUS_PRECEDENCE[b.entry.change.toStatus];
+    const samePriority = this._taskPriorityForEntry(a.entry) === this._taskPriorityForEntry(b.entry);
+
+    if (sameBand && samePriority) {
+      const aAffinity = this._hasContinuityAffinity(a.entry);
+      const bAffinity = this._hasContinuityAffinity(b.entry);
+      if (aAffinity !== bAffinity) {
+        if (aAffinity && b.entry.starvationDeferrals < CONTINUITY_STARVATION_THRESHOLD) {
+          return -1;
+        }
+        if (bAffinity && a.entry.starvationDeferrals < CONTINUITY_STARVATION_THRESHOLD) {
+          return 1;
+        }
+      }
+    }
+
+    return a.entry.sequence - b.entry.sequence;
+  }
+
+  private _recordContinuityDeferrals(
+    selected: SchedulerCandidate,
+    candidates: SchedulerCandidate[],
+  ): void {
+    const selectedAffinity = this._hasContinuityAffinity(selected.entry);
+    if (!selectedAffinity) {
+      selected.entry.starvationDeferrals = 0;
+      return;
+    }
+
+    const selectedBand = STATUS_PRECEDENCE[selected.entry.change.toStatus];
+    const selectedPriority = this._taskPriorityForEntry(selected.entry);
+
+    for (const candidate of candidates) {
+      if (candidate.entry === selected.entry) continue;
+      const sameBand =
+        STATUS_PRECEDENCE[candidate.entry.change.toStatus] === selectedBand;
+      const samePriority =
+        this._taskPriorityForEntry(candidate.entry) === selectedPriority;
+      if (!sameBand || !samePriority) continue;
+      if (this._hasContinuityAffinity(candidate.entry)) continue;
+      candidate.entry.starvationDeferrals += 1;
+    }
+
+    selected.entry.starvationDeferrals = 0;
+  }
+
+  private async _workspaceCandidateEligible(entry: QueueEntry): Promise<boolean> {
+    const role = entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
+    const health = await getDispatchWorkspaceHealth({
+      projectDir: this.projectDir,
+      taskRef: entry.change.taskRef,
+      task: entry.change.task
+        ? {
+            title: entry.change.task.title,
+            slugs: entry.change.task.slugs,
+          }
+        : undefined,
+      role,
+    });
+
+    if (!health.exists) {
+      return entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review";
+    }
+
+    return health.healthy;
+  }
+
+  private async _pruneIneligibleQueueEntries(
+    agents: LoadedAgent[],
+    currentTasks?: LoadedTask[],
+    currentTaskStates?: Map<string, TaskStatus>,
+  ): Promise<void> {
+    const tasksById = new Map((currentTasks ?? []).map((task) => [task._ulid, task]));
+
+    for (const agent of agents) {
+      const queue = this.queues.get(agent.id) ?? [];
+      const before = queue.length;
+
+      for (let i = queue.length - 1; i >= 0; i--) {
+        const entry = queue[i];
+        const currentStatus = currentTaskStates?.get(entry.change.taskId);
+        const expectedEvent = STATUS_TO_EVENT[entry.change.toStatus];
+
+        if (expectedEvent) {
+          if (currentStatus === undefined) {
+            if (this.prevTaskStates.has(entry.change.taskId)) {
+              queue.splice(i, 1);
+              continue;
+            }
+          } else {
+            const currentEvent = STATUS_TO_EVENT[currentStatus];
+            if (currentEvent !== expectedEvent) {
+              queue.splice(i, 1);
+              continue;
+            }
+          }
+        }
+
+        const currentTask = tasksById.get(entry.change.taskId);
+        if (currentTask) {
+          entry.change.task = currentTask;
+          if (currentTask.blocked_by.length > 0) {
+            queue.splice(i, 1);
+            continue;
+          }
+          if (
+            currentTask.depends_on.length > 0 &&
+            currentTasks &&
+            !areDependenciesMet(currentTask, currentTasks)
+          ) {
+            queue.splice(i, 1);
+            continue;
+          }
+        }
+
+        if (!(await this._workspaceCandidateEligible(entry))) {
+          queue.splice(i, 1);
+        }
+      }
+
+      if (before > queue.length) {
+        console.log(
+          `[dispatch] Discarded ${before - queue.length} ineligible queue entr${before - queue.length === 1 ? "y" : "ies"} for agent "${agent.id}"`,
+        );
+      }
+
+      this.queues.set(agent.id, queue);
+    }
+  }
+
+  private _selectNextCandidate(agents: LoadedAgent[]): SchedulerCandidate | null {
+    const now = Date.now();
+    const candidates: SchedulerCandidate[] = [];
+
+    for (const agent of agents) {
+      const maxConcurrent = agent.concurrency?.max_concurrent ?? 1;
+      const active = this.activeCount.get(agent.id) ?? 0;
+      if (active >= maxConcurrent) continue;
+
+      const queue = this.queues.get(agent.id) ?? [];
+      for (let index = 0; index < queue.length; index++) {
+        const entry = queue[index];
+        if (entry.nextRetryAt > now) continue;
+        candidates.push({ agent, queue, queueIndex: index, entry });
+      }
+    }
+
+    if (candidates.length === 0) {
+      return null;
+    }
+
+    candidates.sort((a, b) => this._compareSchedulerCandidates(a, b));
+    const selected = candidates[0];
+    this._recordContinuityDeferrals(selected, candidates);
+    return selected;
   }
 
   /**
@@ -996,71 +1193,21 @@ export class DispatchEngine {
       // If we can't load tasks, skip staleness checks (best effort)
     }
 
-    for (const agent of agents) {
-      const maxConcurrent = agent.concurrency?.max_concurrent ?? 1;
-      const active = this.activeCount.get(agent.id) ?? 0;
-      const queue = this.queues.get(agent.id) ?? [];
+    await this._pruneIneligibleQueueEntries(agents, currentTasks, currentTaskStates);
 
-      // AC: @agent-dispatch-engine ac-17 - Discard stale entries before spawning.
-      // Only discard when we have positive evidence the task moved: either the task
-      // exists on disk with a different status, or the task was previously tracked
-      // (in prevTaskStates) but is no longer found (deleted).
-      if (currentTaskStates) {
-        const before = queue.length;
-        for (let i = queue.length - 1; i >= 0; i--) {
-          const entry = queue[i];
-          const currentStatus = currentTaskStates.get(entry.change.taskId);
-          const expectedEvent = STATUS_TO_EVENT[entry.change.toStatus];
-          if (!expectedEvent) continue; // No event mapping — skip check
-          if (currentStatus === undefined) {
-            // Task not on disk — only discard if we previously knew about it
-            // (it was deleted). Tasks from pure handleStateChange events without
-            // on-disk presence should still be processed.
-            if (this.prevTaskStates.has(entry.change.taskId)) {
-              queue.splice(i, 1);
-            }
-          } else {
-            const currentEvent = STATUS_TO_EVENT[currentStatus];
-            if (currentEvent !== expectedEvent) {
-              queue.splice(i, 1);
-            }
-          }
-        }
-        if (before > queue.length) {
-          console.log(
-            `[dispatch] Discarded ${before - queue.length} stale queue entries for agent "${agent.id}"`,
-          );
-        }
+    while (this.running) {
+      const candidate = this._selectNextCandidate(agents);
+      if (!candidate) {
+        break;
       }
 
-      // AC: @trait-task-readiness ac-deps, ac-not-blocked — discard entries
-      // where deps are no longer met or task became blocked since enqueue
-      if (currentTasks) {
-        for (let i = queue.length - 1; i >= 0; i--) {
-          const entry = queue[i];
-          const eventType = STATUS_TO_EVENT[entry.change.toStatus];
-          if (eventType !== "task.ready" && eventType !== "task.needs_work") continue;
-          const task = currentTasks.find((t) => t._ulid === entry.change.taskId);
-          if (!task) continue; // already handled by staleness check above
-          if (task.blocked_by.length > 0 || !areDependenciesMet(task, currentTasks)) {
-            queue.splice(i, 1);
-          }
-        }
-      }
+      const [entry] = candidate.queue.splice(candidate.queueIndex, 1);
+      this.queues.set(candidate.agent.id, candidate.queue);
 
-      let slots = maxConcurrent - active;
-      while (slots > 0 && queue.length > 0) {
-        const now = Date.now();
-        const nextReadyIndex = queue.findIndex((entry) => entry.nextRetryAt <= now);
-        if (nextReadyIndex === -1) {
-          break;
-        }
-        const [entry] = queue.splice(nextReadyIndex, 1);
-        const spawned = await this._spawnInvocation(agent, entry);
-        if (spawned) slots--;
+      const spawned = await this._spawnInvocation(candidate.agent, entry);
+      if (!spawned) {
+        continue;
       }
-
-      this.queues.set(agent.id, queue);
     }
   }
 
@@ -1243,6 +1390,7 @@ export class DispatchEngine {
       startedAtMs: Date.now(),
     };
     this.activeInvocationDetails.set(invocationId, trackingRecord);
+    this.recentTaskAffinityRef = entry.change.taskRef;
 
     let startedEventEmitted = false;
     const emitStartedEvent = (): void => {
@@ -1354,6 +1502,8 @@ export class DispatchEngine {
           await runInvocation(options);
           // Reset retry count on success
           entry.retryCount = 0;
+          entry.starvationDeferrals = 0;
+          this.recentTaskAffinityRef = entry.change.taskRef;
           terminalEvent = {
             type: "completed",
             session_id: preSessionId,
