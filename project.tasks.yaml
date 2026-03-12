@@ -91418,6 +91418,19 @@
         tests/dispatch-workspace-registry.test.ts:485 because reset reconciliation leaves the
         workspace lifecycle at ready instead of closing/task-reset cleanup."
       supersedes: null
+    - _ulid: 01KKGDBXZ3BGXRH2FDC6EGPQW2
+      created_at: 2026-03-12T06:57:24.963Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 6] Serialized dispatch workspace lifecycle reconciliation under the dispatch
+        shadow mutex to stop pending-review invocation idle writes from clobbering later
+        completed/reset lifecycle snapshots. Also treat persisted closing records as reset-worthy
+        during registry reconciliation. Verification: npm run typecheck; repeated SKIP_BUILD=1 npm
+        test -- tests/dispatch-workspace-registry.test.ts (10x, stable); SKIP_BUILD=1 npm test --
+        tests/dispatch-workspace-registry.test.ts; SKIP_BUILD=1 npm test --
+        tests/canonical-task-workspace-contract.test.ts; SKIP_BUILD=1 npm run test:shard1 no longer
+        fails tests/dispatch-workspace-registry.test.ts (remaining shard failures are unrelated
+        tests/daemon-web-ui-bundle.test.ts under SKIP_BUILD=1)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
