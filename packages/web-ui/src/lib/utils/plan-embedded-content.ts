@@ -137,11 +137,27 @@ function hasDeriveFromSpecsDirective(source: string): boolean {
 	return /(?:^|\n)\s*derive_from_specs\s*:\s*true\s*$/im.test(source);
 }
 
+function collectSectionSource(lines: string[], headingIndex: number): string {
+	const sectionLines: string[] = [];
+
+	for (let index = headingIndex; index < lines.length; index += 1) {
+		const line = lines[index] ?? '';
+
+		if (index > headingIndex && /^##\s+.+?\s*$/.test(line)) {
+			break;
+		}
+
+		sectionLines.push(line);
+	}
+
+	return sectionLines.join('\n');
+}
+
 function detectEmbeddedCandidate(
 	sectionHeading: string | null,
 	rawMarkdown: string,
 	code: string,
-	sectionContext: string,
+	sectionSource: string,
 	plan: PlanLike
 ): EmbeddedCandidate | null {
 	if (sectionHeading === 'specs') {
@@ -158,7 +174,7 @@ function detectEmbeddedCandidate(
 
 	if (sectionHeading === 'tasks') {
 		const deriveFromSpecs =
-			hasDeriveFromSpecsDirective(code) || hasDeriveFromSpecsDirective(sectionContext);
+			hasDeriveFromSpecsDirective(code) || hasDeriveFromSpecsDirective(sectionSource);
 		if (deriveFromSpecs && plan.derived_tasks.length > 0) {
 			return {
 				type: 'embedded-candidate',
@@ -196,8 +212,8 @@ function parsePlanContentCandidates(content: string, plan: PlanLike): Array<Mark
 	const lines = content.split('\n');
 	const blocks: Array<MarkdownBlock | EmbeddedCandidate> = [];
 	const markdownBuffer: string[] = [];
-	const sectionContext: string[] = [];
 	let currentH2: string | null = null;
+	let currentSectionSource = '';
 
 	for (let index = 0; index < lines.length; index += 1) {
 		const line = lines[index] ?? '';
@@ -205,16 +221,14 @@ function parsePlanContentCandidates(content: string, plan: PlanLike): Array<Mark
 
 		if (headingMatch) {
 			currentH2 = headingMatch[1]?.trim().toLowerCase() ?? null;
-			sectionContext.length = 0;
+			currentSectionSource = collectSectionSource(lines, index);
 			markdownBuffer.push(line);
-			sectionContext.push(line);
 			continue;
 		}
 
 		const fenceMatch = line.match(/^```([A-Za-z0-9_-]+)?\s*$/);
 		if (!fenceMatch) {
 			markdownBuffer.push(line);
-			sectionContext.push(line);
 			continue;
 		}
 
@@ -239,19 +253,17 @@ function parsePlanContentCandidates(content: string, plan: PlanLike): Array<Mark
 				currentH2,
 				rawMarkdown,
 				code,
-				sectionContext.join('\n'),
+				currentSectionSource,
 				plan
 			);
 			if (candidate) {
 				flushMarkdown(markdownBuffer, blocks as PlanContentBlock[]);
 				blocks.push(candidate);
-				sectionContext.push(rawMarkdown);
 				continue;
 			}
 		}
 
 		markdownBuffer.push(rawMarkdown);
-		sectionContext.push(rawMarkdown);
 	}
 
 	flushMarkdown(markdownBuffer, blocks as PlanContentBlock[]);
