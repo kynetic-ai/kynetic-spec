@@ -87741,6 +87741,20 @@
         cleanup should be split from the validator-semantics change rather than folded back into
         this PR."
       supersedes: null
+    - _ulid: 01KKHM9X18NN1STSFDXP3BV1GR
+      created_at: 2026-03-12T18:17:52.937Z
+      author: Jacob Chapel
+      content: "Implemented the rewritten AC annotation semantics in source validate logic: blanket refs
+        on specs/traits with acceptance criteria now emit invalid_ac_annotation warnings and provide
+        no coverage credit, while named ac-* ids remain supported end-to-end (including
+        computeACCoverage). Removed the task-specific sweep guard test and folded durable coverage
+        checks into ac-annotation-validation/coverage-cache tests. Verification: npm test --
+        tests/ac-annotation-validation.test.ts tests/coverage-cache.test.ts
+        tests/trait-ac-coverage.test.ts tests/validate-exit-codes.test.ts. Honest current baseline
+        from source validate(): 230 missing own-coverage warnings, 0 trait-coverage warnings, 164
+        invalid AC annotation warnings, 1 missing-acceptance warning, 1 automation-without-spec
+        warning."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
