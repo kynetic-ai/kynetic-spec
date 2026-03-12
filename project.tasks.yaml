@@ -91927,6 +91927,7 @@
   session_id: 01KKHWE6FRYZE1FKE3TKQ2ER8R
   created_at: 2026-03-12T02:33:56.654Z
   started_at: 2026-03-12T20:46:14.901Z
+  submitted_at: 2026-03-12T20:58:14.811Z
   notes:
     - _ulid: 01KKHWSNS1Y1X6K2FNW5C4HRC6
       created_at: 2026-03-12T20:46:18.401Z
@@ -91964,9 +91965,16 @@
         tests/parser/config.test.ts; npm test; kspec validate (warnings only: existing repo-wide
         alignment/completeness debt).
       supersedes: null
+    - _ulid: 01KKHXGYGZ59JR6T0V7FJPS835
+      created_at: 2026-03-12T20:59:01.023Z
+      author: Jacob Chapel
+      content: |-
+        PR opened: https://github.com/kynetic-ai/kynetic-spec/pull/805
+        Commit: c7baae499
+        Ready for reviewer dispatch.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-12T20:58:14.811Z
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
   slugs:
     - task-implement-dispatch-orientation-prompt
