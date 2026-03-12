@@ -91552,6 +91552,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #802. Implemented canonical dispatch worktree provisioning with
+    isolated worker/fix-cycle reuse and reviewer snapshot worktrees, enforced blocked-task handling
+    on unrecoverable provisioning failures, and stabilized related YAML persistence/test flake
+    behavior. AC coverage verified for @dispatch-invocation-worktree-isolation ac-1..ac-5 with
+    @trait-error-guidance ac-1..ac-6 explicitly annotated N/A for this internal runtime surface."
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
     - "@task-implement-dispatch-workspace-registry"
@@ -91566,6 +91571,7 @@
   created_at: 2026-03-12T02:33:54.840Z
   started_at: 2026-03-12T19:41:25.673Z
   submitted_at: 2026-03-12T19:52:02.591Z
+  completed_at: 2026-03-12T20:03:27.251Z
   notes:
     - _ulid: 01KKHGMDR4TDNM7QGTH61G0YQB
       created_at: 2026-03-12T17:13:43.429Z
@@ -91747,12 +91753,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T20:03:27.251Z
-  closed_reason: "Merged in PR #802. Implemented canonical dispatch worktree provisioning with
-    isolated worker/fix-cycle reuse and reviewer snapshot worktrees, enforced blocked-task handling
-    on unrecoverable provisioning failures, and stabilized related YAML persistence/test flake
-    behavior. AC coverage verified for @dispatch-invocation-worktree-isolation ac-1..ac-5 with
-    @trait-error-guidance ac-1..ac-6 explicitly annotated N/A for this internal runtime surface."
 - _ulid: 01KKFY9F0VXEG6YWVBA20N7DJ2
   slugs:
     - task-implement-dispatch-branch-integration-contract
@@ -91852,6 +91852,14 @@
       content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: legacy dispatch workspace records default to
         manual_merge and violate @dispatch-branch-integration-contract ac-3/ac-4 for PR-capable
         repos on reload."
+      supersedes: null
+    - _ulid: 01KKHTF4Y7RXH8PGP45RFN7RMY
+      created_at: 2026-03-12T20:05:36.328Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Reworking legacy workspace reload semantics so pending/in-progress records
+        recompute publication_mode from current repo capabilities instead of inheriting the parser's
+        manual_merge compatibility fallback. Adding a regression test for legacy registry reload in
+        a PR-capable repo."
       supersedes: null
   todos: []
   automation: eligible
