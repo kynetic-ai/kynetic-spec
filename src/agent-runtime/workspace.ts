@@ -41,6 +41,7 @@ export interface ProvisionDispatchWorkspaceOptions {
   projectDir: string;
   taskRef: string;
   role?: DispatchWorkspaceRole;
+  cleanupState?: ResolveDispatchWorkspaceCleanupStateOptions;
   task?: {
     title?: string;
     slugs?: string[];
@@ -61,6 +62,16 @@ export interface DispatchWorkspaceCleanupState {
 export interface ResolveDispatchWorkspaceCleanupStateOptions {
   integrationState?: "pending" | "merged" | "abandoned" | "reset" | null;
   taskStatus?: "pending" | "in_progress" | "needs_work" | "pending_review" | "blocked" | "completed" | "cancelled" | null;
+}
+
+export interface ReconcileDispatchWorkspaceLifecycleOptions {
+  projectDir: string;
+  taskRef: string;
+  cleanupState: ResolveDispatchWorkspaceCleanupStateOptions;
+  task?: {
+    title?: string;
+    slugs?: string[];
+  };
 }
 
 export class DispatchWorkspaceError extends Error {
@@ -376,6 +387,60 @@ function resolveBaseBranchPoint(
   return resolveCommit(projectDir, resolvedBaseStartPoint);
 }
 
+function resolvePersistedCleanupState(
+  cleanupState: ResolveDispatchWorkspaceCleanupStateOptions | undefined,
+  existingMetadata: DispatchWorkspaceMetadata | null,
+): DispatchWorkspaceCleanupState {
+  if (cleanupState) {
+    return resolveDispatchWorkspaceCleanupState(cleanupState);
+  }
+  if (existingMetadata?.cleanupEligible) {
+    return {
+      cleanupEligible: true,
+      cleanupReason: existingMetadata.cleanupReason,
+    };
+  }
+  return resolveDispatchWorkspaceCleanupState({});
+}
+
+export async function reconcileDispatchWorkspaceLifecycle(
+  options: ReconcileDispatchWorkspaceLifecycleOptions,
+): Promise<ProvisionedDispatchWorkspace | null> {
+  const { projectDir, taskRef, task, cleanupState } = options;
+  const slug = normalizeTaskSlug(taskRef, task);
+  const shortId = shortTaskId(taskRef);
+  const canonicalBranch = `dispatch/task/${slug}/${shortId}`;
+  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, canonicalBranch);
+  if (!workerWorktreeDir) {
+    return null;
+  }
+
+  const existingMetadata = await readWorkspaceMetadata(workerWorktreeDir);
+  if (!existingMetadata) {
+    return null;
+  }
+
+  const persistedCleanupState = resolveDispatchWorkspaceCleanupState(cleanupState);
+  const now = new Date().toISOString();
+  const canonicalBranchHead = refExists(projectDir, `refs/heads/${canonicalBranch}`)
+    ? resolveCommit(projectDir, canonicalBranch)
+    : existingMetadata.canonicalBranchHead;
+  const metadata: DispatchWorkspaceMetadata = {
+    ...existingMetadata,
+    canonicalBranchHead,
+    cleanupEligible: persistedCleanupState.cleanupEligible,
+    cleanupReason: persistedCleanupState.cleanupReason,
+    updatedAt: now,
+  };
+  const metadataPath = await writeWorkspaceMetadata(workerWorktreeDir, metadata);
+
+  return {
+    cwd: workerWorktreeDir,
+    metadataPath,
+    metadata,
+  };
+}
+
 async function ensureReviewerWorktree(
   projectDir: string,
   reviewerWorktreeDir: string,
@@ -410,7 +475,7 @@ async function ensureReviewerWorktree(
 export async function provisionDispatchWorkspace(
   options: ProvisionDispatchWorkspaceOptions,
 ): Promise<ProvisionedDispatchWorkspace> {
-  const { projectDir, taskRef, task, role = "worker" } = options;
+  const { projectDir, taskRef, task, role = "worker", cleanupState } = options;
   const slug = normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
   const canonicalBranch = `dispatch/task/${slug}/${shortId}`;
@@ -436,7 +501,7 @@ export async function provisionDispatchWorkspace(
     existingMetadata,
   );
   const mergeTargetBranch = existingMetadata?.mergeTargetBranch ?? baseBranch;
-  const cleanupState = resolveDispatchWorkspaceCleanupState({});
+  const persistedCleanupState = resolvePersistedCleanupState(cleanupState, existingMetadata);
 
   if (!existingWorktreeDir) {
     const branchExists = refExists(projectDir, `refs/heads/${canonicalBranch}`);
@@ -476,8 +541,8 @@ export async function provisionDispatchWorkspace(
     worktreeRoot: resolvedConfig.worktreeRoot,
     workerWorktreeDir,
     reviewerWorktreeDir,
-    cleanupEligible: cleanupState.cleanupEligible,
-    cleanupReason: cleanupState.cleanupReason,
+    cleanupEligible: persistedCleanupState.cleanupEligible,
+    cleanupReason: persistedCleanupState.cleanupReason,
     createdAt: existingMetadata?.createdAt ?? now,
     updatedAt: now,
   };

@@ -240,4 +240,140 @@ describe("canonical task workspace contract", () => {
       cleanupReason: null,
     });
   });
+
+  // AC: @canonical-task-workspace-contract ac-6
+  it("persists cleanup eligibility into canonical workspace metadata during runtime reconciliation", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const completedTaskId = testUlid("TASK", 14);
+    const completedTaskRef = `@${completedTaskId}`;
+    const completedWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: completedTaskRef,
+      task: {
+        title: "Cleanup Eligibility Completed",
+        slugs: ["task-cleanup-eligibility-completed"],
+      },
+    });
+
+    const cancelledTaskId = testUlid("TASK", 15);
+    const cancelledTaskRef = `@${cancelledTaskId}`;
+    const cancelledWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: cancelledTaskRef,
+      task: {
+        title: "Cleanup Eligibility Cancelled",
+        slugs: ["task-cleanup-eligibility-cancelled"],
+      },
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: tempDir,
+      specDir: tempDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+    await engine.start();
+
+    await engine.handleStateChange({
+      taskId: completedTaskId,
+      taskRef: completedTaskRef,
+      fromStatus: "pending_review",
+      toStatus: "completed",
+      timestamp: Date.now(),
+      task: {
+        _ulid: completedTaskId,
+        title: "Cleanup Eligibility Completed",
+        slugs: ["task-cleanup-eligibility-completed"],
+        status: "completed",
+        type: "task",
+        priority: 1,
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        automation: "eligible",
+      } as never,
+    });
+
+    let completedMetadata = JSON.parse(
+      await fs.readFile(completedWorkspace.metadataPath, "utf-8"),
+    ) as { cleanupEligible: boolean; cleanupReason: string | null };
+    expect(completedMetadata).toMatchObject({
+      cleanupEligible: true,
+      cleanupReason: "integrated-into-base-branch",
+    });
+
+    await engine.handleStateChange({
+      taskId: completedTaskId,
+      taskRef: completedTaskRef,
+      fromStatus: "completed",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: {
+        _ulid: completedTaskId,
+        title: "Cleanup Eligibility Completed",
+        slugs: ["task-cleanup-eligibility-completed"],
+        status: "pending",
+        type: "task",
+        priority: 1,
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        automation: "eligible",
+      } as never,
+    });
+
+    completedMetadata = JSON.parse(
+      await fs.readFile(completedWorkspace.metadataPath, "utf-8"),
+    ) as { cleanupEligible: boolean; cleanupReason: string | null };
+    expect(completedMetadata).toMatchObject({
+      cleanupEligible: true,
+      cleanupReason: "task-reset",
+    });
+
+    await engine.handleStateChange({
+      taskId: cancelledTaskId,
+      taskRef: cancelledTaskRef,
+      fromStatus: "in_progress",
+      toStatus: "cancelled",
+      timestamp: Date.now(),
+      task: {
+        _ulid: cancelledTaskId,
+        title: "Cleanup Eligibility Cancelled",
+        slugs: ["task-cleanup-eligibility-cancelled"],
+        status: "cancelled",
+        type: "task",
+        priority: 1,
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        automation: "eligible",
+      } as never,
+    });
+
+    const cancelledMetadata = JSON.parse(
+      await fs.readFile(cancelledWorkspace.metadataPath, "utf-8"),
+    ) as { cleanupEligible: boolean; cleanupReason: string | null };
+    expect(cancelledMetadata).toMatchObject({
+      cleanupEligible: true,
+      cleanupReason: "task-abandoned",
+    });
+
+    await engine.stop();
+  });
 });
