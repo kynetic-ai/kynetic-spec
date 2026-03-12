@@ -1519,3 +1519,10 @@ inbox:
     created_at: 2026-03-12T16:47:53.076Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KKJ0MSEWNKQDBTMG1QTZF509
+    text: Add a public `kspec plan delete` command. Internal deletePlan support exists in the parser
+      layer, but there is no CLI surface for deleting invalid/test/duplicate plans, which forced
+      cleanup work to use internal APIs instead of the normal kspec workflow.
+    created_at: 2026-03-12T21:53:32.636Z
+    tags: []
+    added_by: Jacob Chapel
