@@ -91955,6 +91955,17 @@
         guard when cleanup is attempted before integration becomes cleanup-eligible, so both
         canonical-branch blocker paths are now covered.
       supersedes: null
+    - _ulid: 01KKJ7PCFDWDFV171BGPX5GJT0
+      created_at: 2026-03-12T23:56:44.909Z
+      author: Jacob Chapel
+      content: "Rebased the cleanup branch onto origin/main and resolved the runtime merge against the
+        registry-backed workspace model. Added unresolved-integration coverage for
+        @dispatch-workspace-cleanup-policy ac-4, updated cleanup persistence so reviewer cleanup and
+        cleanup_blocked state stay consistent in both the registry and worktree sidecar, and aligned
+        the dispatch/canonical cleanup tests with the merged behavior. Verification: npm test --
+        dispatch-workspace-cleanup agent-dispatch-engine canonical-task-workspace-contract
+        dispatch-workspace-config dispatch-workspace-registry, npm test, kspec validate."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
