@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86053,9 +86053,9 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKFQZD2XWTTBE53F169CFE7K
   created_at: 2026-03-10T06:04:42.957Z
-  started_at: 2026-03-11T23:57:23.001Z
+  started_at: 2026-03-12T00:45:57.783Z
   submitted_at: 2026-03-12T00:03:09.019Z
   notes:
     - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
@@ -86178,6 +86178,13 @@
       content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: the new plan embedded view AC annotations
         over-claim UI coverage. Add runtime coverage for the rendered spec/task cards, navigation,
         loading placeholders, and error fallback before merge."
+      supersedes: null
+    - _ulid: 01KKFR3SV6G9F5ESYBSTB748V6
+      created_at: 2026-03-12T00:45:58.503Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Resuming work to replace parser-only AC coverage with runtime web UI
+        assertions for rendered spec/task cards, card navigation, loading skeletons, and error
+        fallback on the existing PR branch."
       supersedes: null
   todos: []
   automation: eligible
