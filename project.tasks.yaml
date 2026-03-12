@@ -91550,7 +91550,7 @@
   spec_ref: "@dispatch-invocation-worktree-isolation"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91747,6 +91747,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T20:03:27.251Z
+  closed_reason: "Merged in PR #802. Implemented canonical dispatch worktree provisioning with
+    isolated worker/fix-cycle reuse and reviewer snapshot worktrees, enforced blocked-task handling
+    on unrecoverable provisioning failures, and stabilized related YAML persistence/test flake
+    behavior. AC coverage verified for @dispatch-invocation-worktree-isolation ac-1..ac-5 with
+    @trait-error-guidance ac-1..ac-6 explicitly annotated N/A for this internal runtime surface."
 - _ulid: 01KKFY9F0VXEG6YWVBA20N7DJ2
   slugs:
     - task-implement-dispatch-branch-integration-contract
