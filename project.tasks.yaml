@@ -91438,6 +91438,20 @@
         workspace state, reset reconciliation leaves reopened tasks on the cleanup path, and
         provisioning still allows duplicate dispatch enqueue windows."
       supersedes: null
+    - _ulid: 01KKGENZP9QDB88V3WHCZ4E1MX
+      created_at: 2026-03-12T07:20:22.985Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 8] Fixed the remaining PR #800 review blockers: periodic reconciliation now
+        preserves live active workspace roles, reset reconciliation keeps reopened tasks reusable
+        instead of leaving lifecycle_state on closing, and dispatch tracks in-flight provisioning so
+        reconcile cannot enqueue duplicate invocations before active tracking is registered. Added
+        regression coverage for active-role preservation, reset->ready lifecycle recovery, and the
+        provisioning dedup window. Also made tests/session-log-list.test.ts deterministic after the
+        full-suite gate exposed a 0ms active-duration race. Verification: npm run typecheck;
+        SKIP_BUILD=1 npm test -- tests/dispatch-workspace-registry.test.ts; SKIP_BUILD=1 npm test --
+        tests/agent-dispatch-engine.test.ts; SKIP_BUILD=1 npm test --
+        tests/session-log-list.test.ts; npm run dev -- validate --warnings-ok; npm test."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
