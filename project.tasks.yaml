@@ -91033,12 +91033,29 @@
     - worktree
     - schema
   vcs_refs: []
+  session_id: 01KKG0CBDH54B6D3A7ANDXK4GJ
   created_at: 2026-03-12T02:33:52.409Z
-  notes: []
+  started_at: 2026-03-12T03:16:16.318Z
+  notes:
+    - _ulid: 01KKG0Q3NHVBKW00WCFYTYXRD3
+      created_at: 2026-03-12T03:16:19.761Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: design the persistent registry that makes canonical dispatch workspaces
+        durable across daemon restarts and review/fix cycles.
+
+        - Scope: define persisted record shape, lifecycle states, reconciliation rules, and how
+        dispatcher/worker/reviewer flows use it.
+
+        - Files: plan/spec artifacts plus any generated agent docs only if sources change.
+
+        - Verification: plan/spec review, search for overlap, and kspec validate alignment if
+        metadata changes.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T03:16:16.318Z
-  session_id: 01KKG0CBDH54B6D3A7ANDXK4GJ
 - _ulid: 01KKFY9CKEP7X52W1WFV9TF47Q
   slugs:
     - task-implement-dispatch-workspace-config
