@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86217,6 +86217,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T01:58:41.204Z
+  closed_reason: "Merged in PR #792 (22a27883afc2a1f5b57ea2534158a8df08687710). Implemented
+    plan-content embedded spec/task views on the web UI using batch item summaries, added
+    loading/error fallback behavior, supported fenced derive_from_specs task embeds, and covered
+    runtime card rendering/navigation plus structured AC display. AC coverage verified for
+    @plan-embedded-views and inherited @trait-markdown-rendering coverage remains satisfied."
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
     - implement-markdown-adoption-across-ui-surfaces
