@@ -160,7 +160,7 @@ describe("dispatch workspace registry", () => {
         },
       },
       bootstrap: {
-        status: "not_started",
+        status: "not_run",
       },
       integration: {
         status: "pending",
@@ -200,7 +200,7 @@ describe("dispatch workspace registry", () => {
       task_ref: taskRef,
       lifecycle_state: "provisioning",
       bootstrap: {
-        status: "not_started",
+        status: "not_run",
       },
     });
     expect(saveSpy.mock.calls.at(-1)?.[1]).toMatchObject({
@@ -238,7 +238,7 @@ describe("dispatch workspace registry", () => {
         reviewer: null,
       },
       bootstrap: {
-        status: "not_started" as const,
+        status: "not_run" as const,
         detail: null,
         updated_at: now,
       },
@@ -310,7 +310,7 @@ describe("dispatch workspace registry", () => {
               reviewer: null,
             },
             bootstrap: {
-              status: "not_started",
+              status: "not_run",
               detail: null,
               updated_at: now,
             },
@@ -695,7 +695,7 @@ describe("dispatch workspace registry", () => {
           reviewer: null,
         },
         bootstrap: {
-          status: "not_started",
+          status: "not_run",
           detail: null,
           updated_at: new Date().toISOString(),
         },

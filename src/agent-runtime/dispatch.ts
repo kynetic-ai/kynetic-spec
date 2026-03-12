@@ -36,6 +36,10 @@ import {
   type DispatchWorkspaceMetadata,
   type DispatchWorkspaceRole,
 } from "./workspace.js";
+import {
+  ensureWorkspaceBootstrap,
+  DispatchBootstrapError,
+} from "./bootstrap.js";
 import type {
   AgentDispatchRule,
   AgentDispatchFilter,
@@ -1349,6 +1353,51 @@ export class DispatchEngine {
       return false;
     }
 
+    const dispatchEnv = {
+      KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
+      KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
+      KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+      KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
+      KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+    };
+
+    try {
+      const bootstrap = await ensureWorkspaceBootstrap({
+        projectDir: this.projectDir,
+        workspaceDir: workspace.cwd,
+        metadataPath: workspace.metadataPath,
+        metadata: workspace.metadata,
+        role,
+        agent,
+        env: dispatchEnv,
+      });
+      workspace = {
+        ...workspace,
+        metadata: bootstrap.metadata,
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const guidance = err instanceof DispatchBootstrapError
+        ? err.suggestion
+        : "Inspect dispatch bootstrap configuration, dependency prerequisites, and workspace health.";
+      console.error(
+        `[dispatch] Failed to bootstrap workspace for ${entry.change.taskRef}: ${message}`,
+      );
+      if (this.kspecCliPath) {
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "note", entry.change.taskRef,
+          `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
+        ], { cwd: this.cwd });
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "block", entry.change.taskRef,
+          "--reason", `Dispatch bootstrap failed: ${message}`,
+        ], { cwd: this.cwd });
+      }
+      return false;
+    }
+
     // Increment active count
     this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
 
@@ -1456,6 +1505,8 @@ export class DispatchEngine {
         KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
         KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
         KSPEC_DISPATCH_WORKSPACE_ID: workspace.metadata.workspaceId,
+        KSPEC_DISPATCH_BOOTSTRAP_STATUS: workspace.metadata.bootstrap.status,
+        KSPEC_DISPATCH_BOOTSTRAP_LAST_ROLE: workspace.metadata.bootstrap.lastRole ?? "",
       },
       onUpdate,
     };
