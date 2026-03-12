@@ -91532,6 +91532,13 @@
 
         - Verification: targeted web-ui tests, then kspec validate.
       supersedes: null
+    - _ulid: 01KKG254QYDVF0AJN7MQC7SM4K
+      created_at: 2026-03-12T03:41:28.191Z
+      author: Jacob Chapel
+      content: Investigating live-path regression on current origin/main. The embedded view implementation
+        exists, so the focus is reproducing why daemon-backed /plans never reaches POST
+        /api/items/batch even though fixture-based browser coverage passes.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKG0SN9325ERD0JW6H97SNFE
