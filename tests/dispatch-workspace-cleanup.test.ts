@@ -244,6 +244,54 @@ describe("dispatch workspace cleanup", () => {
     );
   });
 
+  // AC: @dispatch-workspace-cleanup-policy ac-4
+  it("marks cleanup_blocked when branch deletion is attempted before integration is resolved", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 25)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Unresolved Integration Cleanup Workspace",
+        slugs: ["task-unresolved-integration-cleanup-workspace"],
+      },
+    });
+
+    const result = await reapDispatchWorkspace(tempDir, taskRef, {
+      task: {
+        title: "Unresolved Integration Cleanup Workspace",
+        slugs: ["task-unresolved-integration-cleanup-workspace"],
+      },
+    });
+
+    expect(result).toEqual({
+      taskRef,
+      action: "cleanup_blocked",
+      blockedReason:
+        "Cleanup blocked: workspace integration outcome is unresolved, so the canonical branch must be retained.",
+    });
+
+    const metadata = JSON.parse(
+      await fs.readFile(workspace.metadataPath, "utf-8"),
+    ) as {
+      lifecycleState: string;
+      cleanupBlockedReason: string | null;
+      cleanupScheduledAt: string | null;
+    };
+    expect(metadata.lifecycleState).toBe("cleanup_blocked");
+    expect(metadata.cleanupBlockedReason).toContain("integration outcome is unresolved");
+    expect(metadata.cleanupScheduledAt).toBeTruthy();
+    await fs.access(workspace.cwd);
+    expect(
+      git(
+        tempDir,
+        "branch --list dispatch/task/task-unresolved-integration-cleanup-workspace/01task00",
+      ),
+    ).toContain("dispatch/task/task-unresolved-integration-cleanup-workspace/01task00");
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-5
   it("cleans orphaned dispatch worktrees and branches during reconciliation", async () => {
     await seedRepo(tempDir);
