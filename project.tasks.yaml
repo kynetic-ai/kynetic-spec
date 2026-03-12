@@ -91550,7 +91550,7 @@
   spec_ref: "@dispatch-invocation-worktree-isolation"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91562,7 +91562,7 @@
     - worktree
     - runtime
   vcs_refs: []
-  session_id: 01KKHPZKVERWW0D10WXMSE3JYP
+  session_id: null
   created_at: 2026-03-12T02:33:54.840Z
   started_at: 2026-03-12T19:17:28.371Z
   submitted_at: 2026-03-12T19:17:38.442Z
@@ -91684,6 +91684,14 @@
         tests/dispatch-workspace-config.test.ts tests/canonical-task-workspace-contract.test.ts
         tests/agent-dispatch-engine.test.ts`); full `npm test` passed (220 files, 4628 passed, 3
         skipped); `kspec validate` remained warnings-only baseline (exit 6).
+      supersedes: null
+    - _ulid: 01KKHRABSRV812JV23BH17630X
+      created_at: 2026-03-12T19:28:02.360Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: full npm test is unstable on PR #802 head
+        bfa72bd2466d68523b5733a26ed52de57034fd50. Two consecutive reruns failed in different suites
+        (cli-serve and dispatch-workspace-registry), so the branch must be stabilized and
+        revalidated before merge."
       supersedes: null
   todos: []
   automation: eligible
