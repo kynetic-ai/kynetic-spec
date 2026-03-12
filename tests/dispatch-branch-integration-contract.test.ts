@@ -240,6 +240,103 @@ describe("dispatch branch integration contract", () => {
     );
   });
 
+  // AC: @dispatch-branch-integration-contract ac-3
+  // AC: @dispatch-branch-integration-contract ac-4
+  it("re-evaluates publication mode for legacy pending workspace records when PR tooling is available", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    git(tempDir, "remote add origin https://github.com/example/repo.git");
+    const toolDir = await createToolPath({ gh: true });
+    toolDirs.push(toolDir);
+    process.env.PATH = `${toolDir}:${originalPath ?? ""}`;
+
+    const taskRef = `@${testUlid("TASK", 26)}`;
+    const baseCommit = git(tempDir, "rev-parse agent-dev");
+    const registryPath = path.join(specDir, "project.dispatch-workspaces.yaml");
+    await fs.writeFile(
+      registryPath,
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [
+          {
+            workspace_id: "dispatch-workspace-legacy",
+            task_ref: taskRef,
+            task_slug: "task-legacy-branch-integration",
+            worktree_root: path.join(tempDir, ".kspec-worktrees"),
+            resolved_base_branch: "agent-dev",
+            base_branch_point: baseCommit,
+            canonical_branch: "dispatch/task/task-legacy-branch-integration/legacy",
+            canonical_branch_head: baseCommit,
+            lifecycle_state: "ready",
+            active_role: null,
+            worktrees: {
+              worker: {
+                path: path.join(tempDir, ".kspec-worktrees", "task-legacy-branch-integration-legacy"),
+                branch_mode: "branch",
+                branch_ref: "dispatch/task/task-legacy-branch-integration/legacy",
+                head: baseCommit,
+                last_seen_at: new Date().toISOString(),
+              },
+              reviewer: null,
+            },
+            bootstrap: {
+              status: "not_started",
+              detail: null,
+              updated_at: new Date().toISOString(),
+            },
+            integration: {
+              status: "pending",
+              target_branch: "agent-dev",
+              detail: null,
+              updated_at: new Date().toISOString(),
+            },
+            health: {
+              status: "healthy",
+              summary: "healthy",
+              issues: [],
+              updated_at: new Date().toISOString(),
+            },
+            cleanup: {
+              status: "not_scheduled",
+              eligible: false,
+              reason: null,
+              detail: null,
+              updated_at: new Date().toISOString(),
+            },
+            timestamps: {
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              last_reconciled_at: new Date().toISOString(),
+              last_active_at: null,
+              closed_at: null,
+            },
+          },
+        ],
+      }),
+      "utf-8",
+    );
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Legacy Dispatch Branch Integration",
+        slugs: ["task-legacy-branch-integration"],
+      },
+    });
+
+    expect(workspace.metadata.publicationMode).toBe("pull_request");
+    expect(workspace.metadata.integrationOutcome).toBe("pull_request");
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(record.integration).toMatchObject({
+      status: "pending",
+      target_branch: "agent-dev",
+      target_commit: baseCommit,
+      publication_mode: "pull_request",
+      outcome: "pull_request",
+    });
+  });
+
   // AC: @dispatch-branch-integration-contract ac-6
   it("persists integration outcomes when merge-back state changes become known", async () => {
     await seedRepo(tempDir);

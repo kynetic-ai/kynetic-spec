@@ -262,6 +262,23 @@ function resolvePublicationMode(projectDir: string): DispatchWorkspacePublicatio
     : "manual_merge";
 }
 
+function resolveWorkspacePublicationMode(
+  projectDir: string,
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+): DispatchWorkspacePublicationMode {
+  if (!existingRecord) {
+    return resolvePublicationMode(projectDir);
+  }
+
+  switch (existingRecord.integration.status) {
+    case "pending":
+    case "in_progress":
+      return resolvePublicationMode(projectDir);
+    default:
+      return existingRecord.integration.publication_mode;
+  }
+}
+
 function resolveIntegrationOutcome(
   publicationMode: DispatchWorkspacePublicationMode,
   integrationState: DispatchWorkspaceIntegrationState,
@@ -948,7 +965,7 @@ export async function provisionDispatchWorkspace(
   );
   const mergeTargetBranch = existingRecord?.integration.target_branch ?? baseBranch;
   const integrationTargetCommit = existingRecord?.integration.target_commit ?? baseBranchPoint;
-  const publicationMode = existingRecord?.integration.publication_mode ?? resolvePublicationMode(projectDir);
+  const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord);
   const now = new Date().toISOString();
   const provisioningRecord: DispatchWorkspaceRecord = {
     workspace_id: workspaceId,
