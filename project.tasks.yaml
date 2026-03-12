@@ -91021,7 +91021,7 @@
   spec_ref: "@dispatch-workspace-registry"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-design-dispatch-workspace-config"
@@ -91037,6 +91037,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-12T03:16:16.318Z
+  session_id: 01KKG0CBDH54B6D3A7ANDXK4GJ
 - _ulid: 01KKFY9CKEP7X52W1WFV9TF47Q
   slugs:
     - task-implement-dispatch-workspace-config
