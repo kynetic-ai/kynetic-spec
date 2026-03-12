@@ -91282,6 +91282,25 @@
         becomes cleanup-eligible when task lifecycle indicates merge, cancellation, completion, or
         reset transitions. Verification will cover metadata persistence, not just helper output."
       supersedes: null
+    - _ulid: 01KKG6H8CK536HQ08WJXZJFSE8
+      created_at: 2026-03-12T04:57:59.444Z
+      author: Jacob Chapel
+      content: >-
+        Addressed PR #799 MUST-FIX for AC-6.
+
+        - Dispatch runtime now reconciles canonical workspace metadata on completed, cancelled, and
+        reset transitions.
+
+        - Workspace provisioning accepts lifecycle cleanup state and preserves cleanup-eligible
+        metadata once recorded.
+
+        - Added runtime-level AC coverage proving metadata persistence for integrated, abandoned,
+        and reset reconciliation paths.
+
+        - Verification: npm test -- canonical-task-workspace-contract; npm test --
+        dispatch-workspace-config; npm test; node dist/cli/index.js validate (warnings-only
+        baseline, exit 6).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9DTC71FAYKHS3TD7DXV4
