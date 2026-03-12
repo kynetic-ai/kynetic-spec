@@ -782,6 +782,72 @@ features:
             status:
               maturity: draft
               implementation: implemented
+            features:
+              - _ulid: 01KKFY93WHPD9KSVER6KFCYN6W
+                slugs:
+                  - dispatch-invocation-worktree-isolation
+                title: Dispatched Invocation Worktree Isolation
+                type: feature
+                tags: []
+                description: |
+                  Each dispatched agent invocation runs in an isolated git worktree rooted
+                  under a dispatcher-managed worktree root instead of sharing the primary
+                  checkout.
+                acceptance_criteria:
+                  - id: ac-1
+                    given: |
+                      The dispatch engine is about to spawn a worker or fix-cycle invocation
+                      for a task
+                    when: |
+                      The invocation is created
+                    then: |
+                      The engine creates or reuses an isolated mutable worktree under a
+                      dedicated dispatch worktree root rather than running in the main
+                      checkout
+                  - id: ac-2
+                    given: |
+                      A reviewer invocation is prepared for a task with a canonical branch
+                    when: |
+                      The review worktree is prepared
+                    then: |
+                      The reviewer uses a separate worktree directory positioned at the
+                      recorded canonical branch head without checking out the same local
+                      branch a second time
+                  - id: ac-3
+                    given: |
+                      A role-specific worktree already exists for a task and is healthy for
+                      reuse
+                    when: |
+                      A later invocation for that role is spawned
+                    then: |
+                      The dispatcher may reuse that role worktree by reconciling it to the
+                      recorded canonical state appropriate to the role rather than creating a
+                      fresh checkout every time
+                  - id: ac-4
+                    given: |
+                      A tracked worktree is missing, broken, or cannot be prepared safely
+                    when: |
+                      The dispatch engine prepares an invocation
+                    then: |
+                      The engine either repairs or recreates the worktree using the canonical
+                      workspace record, or blocks the task with guidance; it does not fall
+                      back to the shared main checkout
+                  - id: ac-5
+                    given: |
+                      Dispatch worktrees are created on disk
+                    when: |
+                      Their location is chosen
+                    then: |
+                      They live outside the shadow worktree itself and under one configurable
+                      dispatch worktree root with deterministic path derivation
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits:
+                  - "@trait-error-guidance"
+                notes: []
+                created: 2026-03-12T02:33:44.081Z
       - _ulid: 01KHVXK25SDYTAEKZN28S2X66K
         slugs:
           - config-author
@@ -909,6 +975,62 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KKFY93P2Z8C7D0TY42H1RBHD
+        slugs:
+          - dispatch-workspace-configuration
+        title: Dispatch Workspace Configuration
+        type: feature
+        tags: []
+        description: |
+          kspec.config.yaml exposes dispatch-specific configuration for canonical
+          base branch selection and dispatcher-managed worktree placement.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec.config.yaml sets dispatch.base_branch to a branch such as
+              agent-dev
+            when: |
+              The dispatcher provisions a task workspace
+            then: |
+              Canonical task branches are created from that branch and the same
+              branch is recorded as the default PR or manual merge target for the
+              task
+          - id: ac-2
+            given: |
+              dispatch.base_branch is not configured
+            when: |
+              A task workspace is provisioned
+            then: |
+              The dispatcher resolves the repository's default integration branch
+              deterministically using remote HEAD when available, otherwise the
+              current symbolic branch of the main repo checkout, otherwise `main`,
+              and records the resolved value on the workspace so later invocations do
+              not drift
+          - id: ac-3
+            given: |
+              kspec.config.yaml sets dispatch.worktree_root to a relative or absolute
+              path
+            when: |
+              The dispatch worktree root is resolved
+            then: |
+              Relative paths resolve from the project root, absolute paths are used
+              as-is, and the default when unset is `.kspec-worktrees`
+          - id: ac-4
+            given: |
+              The configured base branch or worktree root is invalid or unusable
+            when: |
+              The dispatcher provisions a workspace
+            then: |
+              Dispatch fails with actionable guidance instead of silently falling back
+              to a shared checkout or hardcoded branch
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-12T02:33:43.875Z
     requirements:
       - _ulid: 01KHVXK26MF758N8ZPPSYY9ZKD
         slugs:

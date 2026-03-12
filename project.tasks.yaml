@@ -90892,3 +90892,557 @@
       supersedes: null
   todos: []
   automation: manual_only
+- _ulid: 01KKFY94FXCHBSD9V65FCNPSEF
+  slugs:
+    - implement-dispatch-workspace-configuration
+  title: Implement Dispatch Workspace Configuration
+  type: task
+  spec_ref: "@dispatch-workspace-configuration"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:44.701Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9530Z8TBS5GAKY94NB3X
+  slugs:
+    - implement-canonical-task-workspace-contract
+  title: Implement Canonical Task Workspace Contract
+  type: task
+  spec_ref: "@canonical-task-workspace-contract"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:45.312Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY95NY4Q1HFDSAVSRQRE46
+  slugs:
+    - implement-dispatch-workspace-registry
+  title: Implement Dispatch Workspace Registry
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:45.918Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY967YZ3F90C9PAE9T81EP
+  slugs:
+    - implement-dispatched-invocation-worktree-isolation
+  title: Implement Dispatched Invocation Worktree Isolation
+  type: task
+  spec_ref: "@dispatch-invocation-worktree-isolation"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:46.494Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY96TEEYDVHT0GM1QSGPHP
+  slugs:
+    - implement-dispatch-branch-integration-contract
+  title: Implement Dispatch Branch Integration Contract
+  type: task
+  spec_ref: "@dispatch-branch-integration-contract"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:47.086Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY97C9QW87Q19GWQG121Q8
+  slugs:
+    - implement-dispatch-workspace-cleanup-policy
+  title: Implement Dispatch Workspace Cleanup Policy
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:47.657Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY97ZANZ5D5Z5EXTD9V9KF
+  slugs:
+    - implement-dispatch-runtime-bootstrap-contract
+  title: Implement Dispatch Runtime Bootstrap Contract
+  type: task
+  spec_ref: "@dispatch-runtime-bootstrap-contract"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:48.266Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY98H9EMDJZBMCZV9ESCVF
+  slugs:
+    - implement-dispatch-workspace-orientation-prompt
+  title: Implement Dispatch Workspace Orientation Prompt
+  type: task
+  spec_ref: "@dispatch-workspace-orientation-prompt"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:48.841Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY992VGPAE46AKK8RW7VQH
+  slugs:
+    - implement-dispatch-role-workflow-entry-contract
+  title: Implement Dispatch Role Workflow Entry Contract
+  type: task
+  spec_ref: "@dispatch-role-workflow-entry-contract"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:49.403Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY99P2MCBX4RKDJJ2J2836
+  slugs:
+    - implement-scoped-dispatch-shadow-serialization
+  title: Implement Scoped Dispatch Shadow Serialization
+  type: task
+  spec_ref: "@scoped-dispatch-shadow-serialization"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:50.018Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9A7VMJ5BQDEEWSN7YSJ0
+  slugs:
+    - implement-dispatch-scheduling-priority-model
+  title: Implement Dispatch Scheduling Priority Model
+  type: task
+  spec_ref: "@dispatch-scheduling-priority-model"
+  derivation: auto
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:50.587Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9ATBBWNMAH3ESRG7V92H
+  slugs:
+    - task-design-dispatch-workspace-config
+  title: Design dispatch config for base branch and worktree root
+  type: task
+  spec_ref: "@dispatch-workspace-configuration"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - config
+    - worktree
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:51.179Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9BEBX6E315PYQDP6HAS9
+  slugs:
+    - task-design-canonical-task-workspace-contract
+  title: Design canonical task branch and workspace contract
+  type: task
+  spec_ref: "@canonical-task-workspace-contract"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-design-dispatch-workspace-config"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - worktree
+    - design
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:51.819Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9C0SFWHB65MV02D65PXN
+  slugs:
+    - task-design-dispatch-workspace-registry
+  title: Design persistent dispatch workspace registry
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-design-dispatch-workspace-config"
+    - "@task-design-canonical-task-workspace-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - worktree
+    - schema
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:52.409Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9CKEP7X52W1WFV9TF47Q
+  slugs:
+    - task-implement-dispatch-workspace-config
+  title: Implement dispatch config for base branch and worktree root
+  type: task
+  spec_ref: "@dispatch-workspace-configuration"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-design-dispatch-workspace-config"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - config
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:53.006Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
+  slugs:
+    - task-implement-canonical-task-workspace-contract
+  title: Implement canonical task branch lineage contract
+  type: task
+  spec_ref: "@canonical-task-workspace-contract"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-design-canonical-task-workspace-contract"
+    - "@task-implement-dispatch-workspace-config"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - branch
+    - worktree
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:53.662Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9DTC71FAYKHS3TD7DXV4
+  slugs:
+    - task-implement-dispatch-workspace-registry
+  title: Implement persistent dispatch workspace registry
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-design-dispatch-workspace-registry"
+    - "@task-implement-canonical-task-workspace-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - worktree
+    - schema
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:54.252Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
+  slugs:
+    - task-implement-dispatch-worktree-provisioning
+  title: Implement canonical worktree provisioning and reviewer snapshot isolation
+  type: task
+  spec_ref: "@dispatch-invocation-worktree-isolation"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-canonical-task-workspace-contract"
+    - "@task-implement-dispatch-workspace-registry"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - worktree
+    - runtime
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:54.840Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9F0VXEG6YWVBA20N7DJ2
+  slugs:
+    - task-implement-dispatch-branch-integration-contract
+  title: Implement dispatch branch integration target contract
+  type: task
+  spec_ref: "@dispatch-branch-integration-contract"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-canonical-task-workspace-contract"
+    - "@task-implement-dispatch-workspace-registry"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - branch
+    - review
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:55.483Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9FK58T570QTKKYMPTK98
+  slugs:
+    - task-implement-dispatch-workspace-cleanup
+  title: Implement dispatch workspace cleanup and reaping
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-dispatch-worktree-provisioning"
+    - "@task-implement-dispatch-branch-integration-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - cleanup
+    - worktree
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:56.069Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
+  slugs:
+    - task-implement-dispatch-bootstrap-contract
+  title: Implement dispatcher-owned runtime bootstrap contract
+  type: task
+  spec_ref: "@dispatch-runtime-bootstrap-contract"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-dispatch-workspace-registry"
+    - "@task-implement-dispatch-worktree-provisioning"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - runtime
+    - bootstrap
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:56.654Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
+  slugs:
+    - task-implement-dispatch-orientation-prompt
+  title: Implement workspace-aware dispatch orientation prompt
+  type: task
+  spec_ref: "@dispatch-workspace-orientation-prompt"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-dispatch-branch-integration-contract"
+    - "@task-implement-dispatch-bootstrap-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - prompts
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:57.285Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9HBMSAW4DD924SYTEJ0P
+  slugs:
+    - task-implement-dispatch-role-entrypoints
+  title: Implement role-specific workflow, PR target, and manual merge entry contract
+  type: task
+  spec_ref: "@dispatch-role-workflow-entry-contract"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-dispatch-orientation-prompt"
+    - "@task-implement-dispatch-branch-integration-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - prompts
+    - skills
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:57.875Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
+  slugs:
+    - task-scope-dispatch-shadow-serialization
+  title: Narrow dispatch serialization to mutation windows
+  type: task
+  spec_ref: "@scoped-dispatch-shadow-serialization"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-dispatch-worktree-provisioning"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - concurrency
+    - shadow
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:58.466Z
+  notes: []
+  todos: []
+- _ulid: 01KKFY9JJ9SDWB05ZBQSV2VBDW
+  slugs:
+    - task-implement-priority-aware-dispatch-scheduler
+  title: Implement explicit cross-agent dispatch scheduler
+  type: task
+  spec_ref: "@dispatch-scheduling-priority-model"
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-dispatch-workspace-registry"
+    - "@task-implement-canonical-task-workspace-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - scheduling
+    - priority
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:59.113Z
+  notes: []
+  todos: []
+- title: Test base-branch sourcing, isolated worktree flow, cleanup, and scheduler ordering
+  type: task
+  slugs:
+    - task-test-dispatch-workspace-and-scheduler-flow
+  spec_ref: null
+  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+  priority: 1
+  tags:
+    - dispatch
+    - test
+    - integration
+  depends_on:
+    - "@task-implement-dispatch-workspace-config"
+    - "@task-implement-dispatch-worktree-provisioning"
+    - "@task-implement-dispatch-branch-integration-contract"
+    - "@task-implement-dispatch-workspace-cleanup"
+    - "@task-implement-dispatch-bootstrap-contract"
+    - "@task-implement-dispatch-orientation-prompt"
+    - "@task-implement-dispatch-role-entrypoints"
+    - "@task-scope-dispatch-shadow-serialization"
+    - "@task-implement-priority-aware-dispatch-scheduler"
+  notes: []
+  origin: derived
+  _ulid: 01KKFY9K4NK8JC0ANF9TS7H769
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-12T02:33:59.701Z
+  todos: []

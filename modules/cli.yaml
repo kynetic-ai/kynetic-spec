@@ -7596,6 +7596,135 @@ features:
         status:
           maturity: draft
           implementation: implemented
+    requirements:
+      - _ulid: 01KKFY942D1S33SMNNFKS0EB1H
+        slugs:
+          - dispatch-runtime-bootstrap-contract
+        title: Dispatch Runtime Bootstrap Contract
+        type: requirement
+        tags: []
+        description: |
+          The dispatcher performs bounded, reproducible bootstrap and dependency
+          preparation for task workspaces so agents do not have to rediscover routine
+          environment setup on every invocation.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task workspace is ready to use
+            when: |
+              Invocation preflight runs
+            then: |
+              The dispatcher resolves bootstrap configuration from explicit dispatch
+              or agent configuration and runs the configured bootstrap workflow
+              before delivering the prompt
+          - id: ac-2
+            given: |
+              Bootstrap steps are configured for a workspace
+            when: |
+              The dispatcher executes them
+            then: |
+              The bootstrap contract explicitly distinguishes allowed environment or
+              dependency provisioning from tracked source mutations, and tracked
+              source mutations require explicit opt-in
+          - id: ac-3
+            given: |
+              A reviewer invocation is prepared for a workspace that a worker already
+              bootstrapped
+            when: |
+              Reviewer preflight runs
+            then: |
+              The reviewer reuses recorded bootstrap state where valid and may rerun
+              only idempotent or explicitly allowed bootstrap steps; it does not
+              silently introduce new tracked source changes
+          - id: ac-4
+            given: |
+              Bootstrap state is cached for workspace reuse
+            when: |
+              The dispatcher decides whether to reuse or rerun bootstrap
+            then: |
+              The invalidation signals are explicit and testable, including recorded
+              canonical branch head changes, bootstrap config changes, and failed
+              prior bootstrap state
+          - id: ac-5
+            given: |
+              A workspace has already completed bootstrap and no invalidation signal
+              is present
+            when: |
+              A later invocation for that workspace is prepared
+            then: |
+              The dispatcher reuses the prior bootstrap result instead of rerunning
+              expensive setup blindly
+          - id: ac-6
+            given: |
+              Bootstrap fails because dependencies or runtime requirements cannot be
+              satisfied automatically
+            when: |
+              The invocation would otherwise start
+            then: |
+              The dispatcher records the failure with actionable detail and either
+              blocks the task or marks the workspace unhealthy; it does not hand the
+              agent an unexplained broken environment
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-12T02:33:44.269Z
+      - _ulid: 01KKFY947T52DYFSX45MGQNGB3
+        slugs:
+          - dispatch-role-workflow-entry-contract
+        title: Dispatch Role Workflow Entry Contract
+        type: requirement
+        tags: []
+        description: |
+          Role-specific workflow entry is a dispatcher-owned contract separate from
+          workspace orientation. The dispatcher selects and renders the correct work,
+          review, PR-target, and manual merge guidance entrypoint for the adapter and
+          role.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A worker or reviewer invocation is prepared
+            when: |
+              The dispatcher builds the actionable part of the invocation
+            then: |
+              The dispatcher selects the configured workflow or skill entrypoint for
+              that role independently from the orientation block
+          - id: ac-2
+            given: |
+              Worker and reviewer adapters or harnesses differ
+            when: |
+              Their role entrypoints are rendered
+            then: |
+              The dispatcher renders adapter-appropriate invocation syntax and
+              includes the publish path instructions against the recorded base branch,
+              using the recorded publication mode for that workspace
+          - id: ac-3
+            given: |
+              Manual merge-back is the selected publication path
+            when: |
+              The role entrypoint is rendered
+            then: |
+              It includes explicit conflict-handling guidance and when to stop or
+              escalate rather than auto-resolving blindly
+          - id: ac-4
+            given: |
+              A role-specific workflow entrypoint or publication mode is missing or
+              invalid
+            when: |
+              The invocation is prepared
+            then: |
+              The dispatcher fails fast with actionable guidance instead of
+              delivering a half-oriented prompt with no valid workflow entry
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-12T02:33:44.442Z
   - _ulid: 01KJP27657CZ9AJP5T0XBDEDVK
     slugs:
       - agent-dispatch-engine
@@ -7833,6 +7962,476 @@ features:
         status:
           maturity: draft
           implementation: implemented
+        requirements:
+          - _ulid: 01KKFY94D7CQSY0ABQ35SHCCER
+            slugs:
+              - dispatch-scheduling-priority-model
+            title: Dispatch Scheduling Priority Model
+            type: requirement
+            tags: []
+            description: |
+              Dispatch ordering is governed by one explicit cross-agent scheduler
+              contract spanning candidate kind, numeric task priority, continuity or
+              affinity, and fairness. Agent definition order must not be the deciding
+              rule for cross-agent work ordering.
+            acceptance_criteria:
+              - id: ac-1
+                given: |
+                  The scheduler evaluates queued or candidate invocations
+                when: |
+                  It determines eligibility
+                then: |
+                  Only candidates that satisfy the applicable eligibility contract are
+                  ranked: pending and needs_work candidates must pass base task
+                  readiness, in_progress and pending_review candidates must come from
+                  explicit continuation or handoff dispatch support, and any candidate
+                  with stale workspace state or unresolved dependency blocking is
+                  excluded
+              - id: ac-2
+                given: |
+                  Eligible candidates exist across candidate bands
+                when: |
+                  The scheduler ranks them
+                then: |
+                  The fixed band order is in_progress first, then needs_work, then
+                  pending_review, then pending
+              - id: ac-3
+                given: |
+                  Multiple eligible candidates share the same candidate band
+                when: |
+                  The scheduler ranks them
+                then: |
+                  Lower numeric task priority values (P1 before P5) rank ahead of higher
+                  numeric values before continuity or FIFO is considered
+              - id: ac-4
+                given: |
+                  Multiple eligible candidates share the same candidate band and the same
+                  numeric priority
+                when: |
+                  The scheduler ranks them
+                then: |
+                  Continuity or affinity signals may prefer continuing an active review
+                  or fix-cycle chain before unrelated work
+              - id: ac-5
+                given: |
+                  Continuity or affinity would otherwise keep skipping other equal-band,
+                  equal-priority work indefinitely
+                when: |
+                  A candidate exceeds the scheduler's starvation threshold
+                then: |
+                  Continuity or affinity is ignored for that comparison and the oldest
+                  equal-band, equal-priority eligible candidate wins
+              - id: ac-6
+                given: |
+                  pending_review and pending candidates both exist and no in_progress or
+                  needs_work work is waiting
+                when: |
+                  The scheduler selects the next invocation
+                then: |
+                  pending_review work remains ahead of pending work as a hard scheduler
+                  rule, not merely an affinity preference
+              - id: ac-7
+                given: |
+                  The scheduler chooses between worker and reviewer candidates
+                when: |
+                  Their relative rank is determined
+                then: |
+                  The chosen order follows the scheduler contract above rather than agent
+                  definition order alone
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-priority-parameter"
+            notes: []
+            created: 2026-03-12T02:33:44.615Z
+      - _ulid: 01KKFY9455V9VQ1N1B2FV7SQXS
+        slugs:
+          - dispatch-workspace-orientation-prompt
+        title: Dispatch Workspace Orientation Prompt
+        type: requirement
+        tags: []
+        description: |
+          The dispatch prompt explicitly orients the agent to its workspace, branch,
+          integration target, role, focus, and current bootstrap state so the agent
+          starts from the correct operational context without guesswork.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A worker or reviewer invocation prompt is built
+            when: |
+              Workspace metadata is available
+            then: |
+              The prompt includes the workspace path, canonical branch, integration
+              target branch, task ref, role, focus, and the reason this invocation
+              was selected
+          - id: ac-2
+            given: |
+              The dispatcher has branch mode, canonical head, bootstrap, health, or
+              dependency status for the workspace
+            when: |
+              The prompt is built
+            then: |
+              The prompt states whether the workspace is a mutable worker branch or a
+              detached review snapshot, identifies the canonical head being resumed or
+              reviewed, and summarizes relevant prepared state and caveats
+          - id: ac-3
+            given: |
+              The invocation is part of a fix cycle or review cycle
+            when: |
+              The prompt is rendered
+            then: |
+              The prompt makes the cycle context explicit, including whether a
+              follow-up worker will resume the same canonical branch after review and
+              which base branch remains the publication target
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-12T02:33:44.357Z
+      - _ulid: 01KKFY94AJP149MMKWA8TK89G2
+        slugs:
+          - scoped-dispatch-shadow-serialization
+        title: Scoped Dispatch Shadow Serialization
+        type: requirement
+        tags: []
+        description: |
+          Shadow-branch protection serializes only kspec metadata mutations, not the
+          full lifetime of every invocation, so isolated code work can overlap safely
+          across worker and reviewer roles.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Two isolated invocations are running concurrently in separate code
+              worktrees
+            when: |
+              Neither invocation is performing a kspec mutation
+            then: |
+              They are allowed to continue in parallel without waiting on a global
+              invocation-level mutex
+          - id: ac-2
+            given: |
+              Multiple invocations attempt shadow-branch mutations such as task note,
+              task submit, task needs-work, or plan/task metadata writes
+            when: |
+              Those mutation windows overlap
+            then: |
+              Only the mutation sections are serialized so shadow branch integrity is
+              preserved
+          - id: ac-3
+            given: |
+              A mutation-level lock cannot be acquired or a protected mutation fails
+            when: |
+              The invocation handles the failure
+            then: |
+              The error is surfaced as a mutation failure, not disguised as a generic
+              workspace execution failure
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-12T02:33:44.530Z
+    features:
+      - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
+        slugs:
+          - canonical-task-workspace-contract
+        title: Canonical Task Workspace Contract
+        type: feature
+        tags: []
+        description: |
+          Each dispatchable task owns one canonical mutable branch lineage and one
+          canonical workspace identity. Workers and fix-cycle workers attach to the
+          mutable task branch, while reviewers attach to an isolated snapshot context
+          anchored to that branch lineage.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              The dispatcher provisions workspace state for a task and the base
+              branch has been resolved
+            when: |
+              It establishes the task's code identity
+            then: |
+              One canonical task branch is created from the resolved base branch and
+              the originating base commit is recorded
+          - id: ac-2
+            given: |
+              A worker invocation and a later needs_work fix-cycle invocation run for
+              the same task
+            when: |
+              The dispatcher prepares their code context
+            then: |
+              Both use the same canonical mutable task branch rather than creating a
+              new branch per cycle
+          - id: ac-3
+            given: |
+              A reviewer invocation is prepared for a task with an existing canonical
+              branch
+            when: |
+              The reviewer workspace is created
+            then: |
+              The reviewer gets a separate isolated worktree materialized from the
+              recorded canonical branch head in detached HEAD or equivalent read-only
+              mode, and the dispatcher never attempts to check out the same local
+              branch in two worktrees
+          - id: ac-4
+            given: |
+              A task transitions to needs_work after review
+            when: |
+              A follow-up worker invocation is prepared
+            then: |
+              The worker resumes on the same canonical branch lineage instead of
+              forking a new task branch
+          - id: ac-5
+            given: |
+              The dispatcher generates a canonical branch name for a task
+            when: |
+              The branch is first provisioned
+            then: |
+              The branch name follows the deterministic format
+              `dispatch/task/<normalized-task-slug-or-task>/<short-task-ulid>` where
+              the slug portion is normalized to kebab-case and the ULID suffix makes
+              collisions impossible without relying on role-specific prefixes
+          - id: ac-6
+            given: |
+              A task branch has been integrated into its recorded base branch or the
+              task has been explicitly abandoned or reset
+            when: |
+              The dispatcher reconciles the workspace lifecycle
+            then: |
+              The canonical task branch becomes cleanup-eligible rather than
+              remaining indefinitely active
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-12T02:33:43.900Z
+        requirements:
+          - _ulid: 01KKFY93SSX2FY5R38ZRQEC50A
+            slugs:
+              - dispatch-workspace-registry
+            title: Dispatch Workspace Registry
+            type: requirement
+            tags: []
+            description: |
+              The dispatcher persists canonical workspace metadata in a first-party
+              registry so branch, worktree, integration, and cleanup identity survive
+              restarts and can be reused across worker, reviewer, and fix-cycle
+              invocations.
+            acceptance_criteria:
+              - id: ac-1
+                given: |
+                  A canonical task workspace is provisioned
+                when: |
+                  The dispatcher persists its identity
+                then: |
+                  A first-party workspace record is stored in kspec-managed metadata on
+                  the shadow branch rather than existing only in daemon memory
+              - id: ac-2
+                given: |
+                  A task has an active canonical workspace
+                when: |
+                  The registry is validated
+                then: |
+                  At most one active canonical workspace record exists for that task
+              - id: ac-3
+                given: |
+                  A workspace record exists
+                when: |
+                  It is stored in the registry
+                then: |
+                  The record includes at minimum workspace id, task ref, resolved base
+                  branch, base head at branch point, canonical branch, canonical branch
+                  head, per-role worktrees, bootstrap state, integration status, health
+                  status, timestamps, and cleanup state
+              - id: ac-4
+                given: |
+                  The daemon restarts or reloads dispatch state
+                when: |
+                  It reconstructs active workspace state
+                then: |
+                  The dispatcher reloads workspace records from the registry and
+                  reconciles them against the filesystem instead of losing
+                  branch/worktree continuity
+              - id: ac-5
+                given: |
+                  A workspace record's referenced branch or worktree is missing,
+                  unhealthy, or out of sync with its recorded state
+                when: |
+                  Reconciliation runs
+                then: |
+                  The record transitions to an explicit non-healthy state such as invalid
+                  or stale, with actionable recovery data rather than silent fallback
+              - id: ac-6
+                given: |
+                  A workspace record is tracked over time
+                when: |
+                  Its lifecycle state changes
+                then: |
+                  The transition states are explicit and behavioral: `provisioning`
+                  during initial branch/worktree/bootstrap setup, `ready` after
+                  provisioning/bootstrap with no running invocation, `active` while a
+                  role invocation is attached, `stale` when reconciliation finds missing
+                  or invalid recorded state, `integrating` when PR or manual merge-back
+                  is pending or in progress, `closing` when merged or abandoned state
+                  schedules cleanup, `cleanup_blocked` when cleanup safety checks fail,
+                  and `closed` after tracked worktrees are removed and the record is
+                  finalized
+              - id: ac-7
+                given: |
+                  Integration or cleanup state changes over the life of the task
+                when: |
+                  The registry is updated
+                then: |
+                  Those transitions are durably persisted on the shadow branch for
+                  restart recovery and later review workflows
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-error-guidance"
+            notes: []
+            created: 2026-03-12T02:33:43.993Z
+            requirements:
+              - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
+                slugs:
+                  - dispatch-workspace-cleanup-policy
+                title: Dispatch Workspace Cleanup Policy
+                type: requirement
+                tags: []
+                description: |
+                  The dispatcher cleans up dispatch worktrees and task branches
+                  deterministically so it does not leave stale directories or refs behind.
+                acceptance_criteria:
+                  - id: ac-1
+                    given: |
+                      A reviewer snapshot worktree finishes and no retention or debug hold
+                      exists
+                    when: |
+                      Cleanup policy evaluates role worktrees
+                    then: |
+                      The reviewer worktree becomes immediately cleanup-eligible while the
+                      canonical worker worktree persists across in_progress and needs_work
+                      continuity
+                  - id: ac-2
+                    given: |
+                      A task reaches completed or cancelled status, or the workspace
+                      integration outcome becomes merged or explicitly abandoned
+                    when: |
+                      Cleanup policy runs
+                    then: |
+                      The workspace enters `closing` and scheduled cleanup is created
+                  - id: ac-3
+                    given: |
+                      Cleanup executes for a workspace with tracked dispatch worktrees
+                    when: |
+                      The cleanup steps run
+                    then: |
+                      Worktree directories and their corresponding git worktree metadata are
+                      removed from the configured dispatch root without touching the main or
+                      shadow worktrees
+                  - id: ac-4
+                    given: |
+                      A canonical task branch still has active invocation ownership or
+                      unresolved integration status
+                    when: |
+                      Cleanup evaluates branch deletion
+                    then: |
+                      The branch is not deleted and the record moves to `cleanup_blocked`
+                      with actionable guidance
+                  - id: ac-5
+                    given: |
+                      Daemon startup or periodic reconciliation finds orphaned dispatch
+                      worktrees or task branches under the dispatch root
+                    when: |
+                      Registry and filesystem state are compared
+                    then: |
+                      The dispatcher either reattaches them to a workspace record or cleans
+                      them up deterministically instead of leaving orphaned state
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits:
+                  - "@trait-error-guidance"
+                notes: []
+                created: 2026-03-12T02:33:44.181Z
+          - _ulid: 01KKFY93X0Z8AEJ57RVNHR8N73
+            slugs:
+              - dispatch-branch-integration-contract
+            title: Dispatch Branch Integration Contract
+            type: requirement
+            tags: []
+            description: |
+              Each canonical task branch carries explicit integration metadata so workers
+              and reviewers know which base branch to target for PRs or local merge-back
+              instead of assuming `main`.
+            acceptance_criteria:
+              - id: ac-1
+                given: |
+                  A canonical task branch is provisioned
+                when: |
+                  The workspace record is created
+                then: |
+                  The resolved base branch and branch-point commit are recorded as the
+                  integration target metadata for that task
+              - id: ac-2
+                given: |
+                  A worker or reviewer invocation is prepared
+                when: |
+                  Orientation or workflow entry content is rendered
+                then: |
+                  The canonical branch, integration target branch, and canonical head or
+                  snapshot under review are included explicitly
+              - id: ac-3
+                given: |
+                  Publication guidance must be prepared for a task workspace
+                when: |
+                  Repository capabilities and dispatch configuration are evaluated
+                then: |
+                  The dispatcher selects one explicit publication mode for that workspace,
+                  such as `pull_request` or `manual_merge`, and records that selection
+                  before rendering role instructions
+              - id: ac-4
+                given: |
+                  Hosted PR tooling is available and selected for publication
+                when: |
+                  Publish instructions are rendered
+                then: |
+                  PR creation or update targets the recorded base branch rather than a
+                  hardcoded branch name
+              - id: ac-5
+                given: |
+                  Hosted PR tooling is unavailable or disabled
+                when: |
+                  Publish instructions are rendered
+                then: |
+                  The dispatcher provides deterministic manual merge-back guidance against
+                  the recorded base branch, including explicit conflict-handling
+                  escalation
+              - id: ac-6
+                given: |
+                  Merge-back or PR integration outcomes become known
+                when: |
+                  Workspace state is updated
+                then: |
+                  The integration outcome is recorded in a form that later cleanup or
+                  fix-cycle logic can consume
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-12T02:33:44.096Z
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y
     slugs:
       - cli-agent-commands

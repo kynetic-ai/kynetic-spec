@@ -14153,9 +14153,46 @@ plans:
 
       - chain-of-work ancestry that intentionally forks work from something other than the
       configured base branch
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@implement-dispatch-workspace-configuration"
+      - "@implement-canonical-task-workspace-contract"
+      - "@implement-dispatch-workspace-registry"
+      - "@implement-dispatched-invocation-worktree-isolation"
+      - "@implement-dispatch-branch-integration-contract"
+      - "@implement-dispatch-workspace-cleanup-policy"
+      - "@implement-dispatch-runtime-bootstrap-contract"
+      - "@implement-dispatch-workspace-orientation-prompt"
+      - "@implement-dispatch-role-workflow-entry-contract"
+      - "@implement-scoped-dispatch-shadow-serialization"
+      - "@implement-dispatch-scheduling-priority-model"
+      - "@task-design-dispatch-workspace-config"
+      - "@task-design-canonical-task-workspace-contract"
+      - "@task-design-dispatch-workspace-registry"
+      - "@task-implement-dispatch-workspace-config"
+      - "@task-implement-canonical-task-workspace-contract"
+      - "@task-implement-dispatch-workspace-registry"
+      - "@task-implement-dispatch-worktree-provisioning"
+      - "@task-implement-dispatch-branch-integration-contract"
+      - "@task-implement-dispatch-workspace-cleanup"
+      - "@task-implement-dispatch-bootstrap-contract"
+      - "@task-implement-dispatch-orientation-prompt"
+      - "@task-implement-dispatch-role-entrypoints"
+      - "@task-scope-dispatch-shadow-serialization"
+      - "@task-implement-priority-aware-dispatch-scheduler"
+      - "@task-test-dispatch-workspace-and-scheduler-flow"
+    derived_specs:
+      - "@dispatch-workspace-configuration"
+      - "@canonical-task-workspace-contract"
+      - "@dispatch-workspace-registry"
+      - "@dispatch-invocation-worktree-isolation"
+      - "@dispatch-branch-integration-contract"
+      - "@dispatch-workspace-cleanup-policy"
+      - "@dispatch-runtime-bootstrap-contract"
+      - "@dispatch-workspace-orientation-prompt"
+      - "@dispatch-role-workflow-entry-contract"
+      - "@scoped-dispatch-shadow-serialization"
+      - "@dispatch-scheduling-priority-model"
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-worktree-isolation-and-scheduling.md
     module_ref: null
     created_at: 2026-03-11T23:15:26.329Z
@@ -14184,6 +14221,124 @@ plans:
         created_at: 2026-03-12T00:34:26.167Z
         author: chapel
         content: Content updated from file
+      - _ulid: 01KKFY9KQ4SC6K0TBADFZ1934R
+        created_at: 2026-03-12T02:34:00.292Z
+        author: Jacob Chapel
+        content: >-
+          ### Scope boundaries
+
+
+          This plan is intentionally focused on dispatch/runtime behavior, scheduling, and the
+          branch/worktree lifecycle needed to make them reliable. It is not the full review-record
+          system and it is not the full human-facing review package model.
+
+
+          ### Base branch and worktree root assumptions
+
+
+          - The canonical source and integration branch comes from `dispatch.base_branch` in
+          `kspec.config.yaml`.
+
+          - If `dispatch.base_branch` is unset, the dispatcher resolves a deterministic fallback and
+          records it on the workspace at provisioning time so later invocations do not drift.
+
+          - The default dispatch worktree root is `.kspec-worktrees/` under the project root.
+
+          - `/tmp` is intentionally not the default because dispatch workspaces must survive daemon
+          restarts and remain inspectable.
+
+          - Chain-of-work custom ancestry is out of scope here and belongs in the grouped-work plan.
+
+
+          ### Git-safe reviewer model
+
+
+          - One canonical mutable task branch exists per task.
+
+          - That canonical branch may be checked out in at most one mutable worker worktree at a
+          time.
+
+          - Reviewer isolation comes from a separate worktree materialized from the canonical branch
+          head in detached or equivalent read-only mode.
+
+          - Fix-cycle work returns to the same canonical task branch lineage after review.
+
+          - The intended canonical branch format is
+          `dispatch/task/<normalized-task-slug-or-task>/<short-task-ulid>`.
+
+
+          ### Storage assumptions
+
+
+          The workspace registry should be a first-party kspec artifact persisted on the shadow
+          branch, not daemon-only memory. It must carry enough identity to recover base branch,
+          canonical branch, per-role worktrees, integration status, cleanup status, and bootstrap
+          state after restart.
+
+
+          ### Integration and merge assumptions
+
+
+          - Every task workspace records both its canonical task branch and its base or integration
+          branch.
+
+          - Orientation and role-entry content must always name that target branch so agents know
+          where PRs or manual merge-back should land.
+
+          - PR publication should target the recorded base branch when hosted tooling is available.
+
+          - Manual merge-back guidance is part of this plan only at the level of deterministic
+          instructions and conflict escalation; fuller review approval and merge policy remains in
+          the review-system plan.
+
+
+          ### Bootstrap assumptions
+
+
+          Bootstrap should support:
+
+
+          - repository-level setup commands
+
+          - role-specific additions
+
+          - cached reuse with explicit invalidation rules
+
+          - bounded mutation rules so tracked source changes are never introduced accidentally by
+          reviewer or bootstrap flows
+
+
+          ### Scheduler contract
+
+
+          The intended deterministic order is:
+
+
+          1. candidate band (`in_progress`, then `needs_work`, then `pending_review`, then
+          `pending`)
+
+          2. numeric priority
+
+          3. continuity or affinity preference
+
+          4. FIFO enqueue order
+
+
+          Fairness overrides continuity only when an equal-band, equal-priority candidate crosses
+          the starvation threshold. It does not invert `P1` to `P5` ordering.
+
+
+          ### Out of scope for this plan
+
+
+          - generic review record storage and line comments
+
+          - CI check records and approval policy
+
+          - grouped human-facing review packages across multiple tasks
+
+          - chain-of-work ancestry that intentionally forks work from something other than the
+          configured base branch
   - _ulid: 01KKFJY4FKCRQH1YPZNMRCTPNR
     slugs:
       - plan-review-records-and-gates
