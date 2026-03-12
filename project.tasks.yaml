@@ -91912,7 +91912,7 @@
   spec_ref: "@dispatch-runtime-bootstrap-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-workspace-registry"
@@ -91928,7 +91928,7 @@
   session_id: 01KKJ2M92ZEBADBJMXJ9RMAQEP
   created_at: 2026-03-12T02:33:56.654Z
   started_at: 2026-03-12T22:50:37.595Z
-  submitted_at: 2026-03-12T22:10:24.636Z
+  submitted_at: 2026-03-12T22:50:44.143Z
   notes:
     - _ulid: 01KKHWSNS1Y1X6K2FNW5C4HRC6
       created_at: 2026-03-12T20:46:18.401Z
