@@ -903,6 +903,47 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
     }
   });
+
+  it("throws when dispatch workspace blocking cannot be executed successfully", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.mkdir(path.join(testDir, ".kspec"), { recursive: true });
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .kspec/worktrees\n",
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-workspace-block-failure-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    process.env.KSPEC_CAPTURE_FAIL_ON = "task:block";
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const taskRef = `@${testUlid("TASK", 34)}`;
+      const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      await expect((engine as unknown as EngineInternal)._spawnInvocation(agent, entry)).rejects.toThrow(
+        /Failed to run `kspec task block/,
+      );
+      expect(runSpy).not.toHaveBeenCalled();
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
+      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+
+      expect(noteCall).toBeDefined();
+      expect(blockCall).toBeDefined();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      delete process.env.KSPEC_CAPTURE_FAIL_ON;
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────

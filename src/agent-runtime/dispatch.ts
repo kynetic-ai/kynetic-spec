@@ -21,7 +21,7 @@ import {
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
-import { runInvocation } from "./invocation.js";
+import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import type { InvocationOptions } from "./invocation.js";
 import { interpolateTemplate } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
@@ -256,6 +256,12 @@ interface QueueEntry {
   enqueuedAtMs: number;
   /** Monotonic sequence for deterministic tie-breaking */
   sequence: number;
+}
+
+interface KspecCommandResult {
+  status: number | null;
+  stdout: string;
+  stderr: string;
 }
 
 /**
@@ -1079,6 +1085,51 @@ export class DispatchEngine {
     return `${basePrompt}\n\n${orientation}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
+  private _runKspecCommand(args: string[]): KspecCommandResult {
+    const result = spawnSync(
+      process.execPath,
+      [this.kspecCliPath ?? DEFAULT_KSPEC_CLI_PATH, ...args],
+      {
+        cwd: this.cwd,
+        encoding: "utf-8",
+        stdio: "pipe",
+      },
+    );
+
+    return {
+      status: result.status,
+      stdout: result.stdout ?? "",
+      stderr: result.stderr ?? "",
+    };
+  }
+
+  private _taskCommandError(args: string[], result: KspecCommandResult): Error {
+    const exitDetail =
+      result.status === null ? "terminated by signal" : `exited with status ${result.status}`;
+    const details = [result.stderr.trim(), result.stdout.trim()].filter(Boolean).join(" ");
+    return new Error(
+      `Failed to run \`kspec ${args.join(" ")}\`: ${exitDetail}${details ? `. ${details}` : ""}`,
+    );
+  }
+
+  private _addTaskNote(taskRef: string, note: string): void {
+    const args = ["task", "note", taskRef, note];
+    const result = this._runKspecCommand(args);
+    if (result.status !== 0) {
+      console.warn(
+        `[dispatch] Failed to add task note for ${taskRef}: ${this._taskCommandError(args, result).message}`,
+      );
+    }
+  }
+
+  private _blockTask(taskRef: string, reason: string): void {
+    const args = ["task", "block", taskRef, "--reason", reason];
+    const result = this._runKspecCommand(args);
+    if (result.status !== 0) {
+      throw this._taskCommandError(args, result);
+    }
+  }
+
   /**
    * Spawn a single invocation for a queue entry.
    * Returns true if an invocation was actually started, false if skipped.
@@ -1111,18 +1162,14 @@ export class DispatchEngine {
       console.error(
         `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
       );
-      if (this.kspecCliPath) {
-        spawnSync(process.execPath, [
-          this.kspecCliPath,
-          "task", "note", entry.change.taskRef,
-          `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
-        ], { cwd: this.cwd });
-        spawnSync(process.execPath, [
-          this.kspecCliPath,
-          "task", "block", entry.change.taskRef,
-          "--reason", `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
-        ], { cwd: this.cwd });
-      }
+      this._addTaskNote(
+        entry.change.taskRef,
+        `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+      );
+      this._blockTask(
+        entry.change.taskRef,
+        `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+      );
       this.inFlightTaskKeys.delete(inFlightKey);
       return false;
     }
