@@ -91921,6 +91921,24 @@
         - Verification: run focused tests for dispatch workspace lifecycle, then npm test and kspec
         validate before submit.
       supersedes: null
+    - _ulid: 01KKJ538ZY3FEHTQAX8A5VZAR4
+      created_at: 2026-03-12T23:11:21.598Z
+      author: Jacob Chapel
+      content: >-
+        Implemented dispatch workspace cleanup lifecycle:
+
+        - reviewer snapshots are removed after pending_review invocations while canonical worker
+        worktrees persist.
+
+        - cleanup-eligible workspaces now persist closing/scheduled cleanup metadata and
+        branch-deletion blockers move to cleanup_blocked with recorded guidance.
+
+        - startup/periodic reconciliation now reaps orphaned dispatch worktrees, stray dispatch root
+        directories, and orphaned dispatch/task branches deterministically.
+
+        - Verification: focused dispatch workspace tests passed; full npm test is passing on rerun;
+        kspec validate still exits 6 on the repo's pre-existing warning backlog only.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
