@@ -91359,6 +91359,16 @@
         active/integrating/closing states, and focused registry/config/canonical workspace tests are
         green.
       supersedes: null
+    - _ulid: 01KKG9P8D7PQC0NPJGGJ1BMDBJ
+      created_at: 2026-03-12T05:53:09.031Z
+      author: Jacob Chapel
+      content: "Registry persistence implemented on shadow branch with lifecycle/health reconciliation.
+        Fixed dispatch timing regressions by starting invocations before registry activation
+        completes, moving terminal event publication after cleanup, and tying started events to
+        actual agent activity. Targeted tests green: dispatch-workspace-registry,
+        dispatch-workspace-config, canonical-task-workspace-contract, agent-dispatch-engine,
+        cli-serve."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
