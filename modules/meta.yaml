@@ -2920,11 +2920,12 @@ requirements:
       criteria, completeness accounting uses explicit AC-level mappings rather than bare spec-level
       references.
     acceptance_criteria:
-      - id: ac-explicit-ac-mapping
-        given: A spec or trait defines acceptance criteria
-        when: A test annotation is used for completeness coverage
-        then: The annotation must reference one or more explicit ac-* ids rather than only the spec or trait
-          ref
+      - id: ac-trait-coverage
+        given: |
+          All specs that inherit traits with acceptance criteria
+        when: |
+          kspec validate --completeness runs
+        then: Zero missing trait AC coverage warnings
       - id: ac-own-coverage-reduction
         given: |
           All specs with own acceptance criteria
@@ -2932,13 +2933,10 @@ requirements:
           kspec validate --completeness runs
         then: Missing own AC coverage warnings reduced by at least 50% from the count at task start time
       - id: ac-annotation-format
-        given: |
-          Each added test annotation
-        when: |
-          It is reviewed
-        then: >
-          It uses the format "// AC: @spec-ref ac-N" (or language-appropriate comment prefix) and is
-          machine-parseable
+        given: A machine-parseable coverage annotation
+        when: kspec validate scans source files
+        then: "It accepts the form // AC: @spec-ref ac-id [ac-id ...], where each ac-id may be numeric or
+          named"
     depends_on: []
     implements: []
     relates_to: []
