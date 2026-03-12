@@ -87708,6 +87708,16 @@
         targeted sweep set, and no filename-registry shortcut test. Honest completeness should be
         measured for follow-up scoping, not pinned as a unit-test threshold."
       supersedes: null
+    - _ulid: 01KKHKYXH6E5R9K40WDDYMAJZ4
+      created_at: 2026-03-12T18:11:52.998Z
+      author: chapel
+      content: "Spec scope rewritten from a one-time annotation sweep target into durable AC annotation
+        coverage semantics. Task focus is now: (1) support explicit numeric or named ac-* ids, (2)
+        require explicit ac-* mapping for specs/traits with acceptance criteria, (3) treat bare
+        spec/trait refs as invalid coverage metadata that provide no completeness credit, and (4)
+        clean up the blanket refs touched in this PR. Broader repo-wide own-coverage reduction stays
+        out of this task and should be handled as follow-up debt-scope work."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
