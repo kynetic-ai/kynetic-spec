@@ -107,6 +107,19 @@ function extractSlugsFromYamlArray(source: string): string[] | null {
 	}
 }
 
+function hasDeriveFromSpecsDirective(source: string): boolean {
+	try {
+		const parsed = parseYaml(source);
+		if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+			return (parsed as { derive_from_specs?: unknown }).derive_from_specs === true;
+		}
+	} catch {
+		// Fall back to textual detection for incomplete or malformed YAML snippets.
+	}
+
+	return /(?:^|\n)\s*derive_from_specs\s*:\s*true\s*$/im.test(source);
+}
+
 function detectEmbeddedCandidate(
 	sectionHeading: string | null,
 	rawMarkdown: string,
@@ -127,18 +140,20 @@ function detectEmbeddedCandidate(
 	}
 
 	if (sectionHeading === 'tasks') {
+		const deriveFromSpecs =
+			hasDeriveFromSpecsDirective(code) || hasDeriveFromSpecsDirective(sectionContext);
 		const slugs = extractSlugsFromYamlArray(code);
-		if (!slugs) return null;
+		if (slugs) {
+			const refs = slugs
+				.map((slug) => resolveDerivedRef(plan.derived_tasks, slug))
+				.filter((ref): ref is string => Boolean(ref));
 
-		const refs = slugs
-			.map((slug) => resolveDerivedRef(plan.derived_tasks, slug))
-			.filter((ref): ref is string => Boolean(ref));
-
-		if (refs.length === slugs.length && refs.length > 0) {
-			return { type: 'embedded-candidate', embedType: 'task', rawMarkdown, refs };
+			if (refs.length === slugs.length && refs.length > 0) {
+				return { type: 'embedded-candidate', embedType: 'task', rawMarkdown, refs };
+			}
 		}
 
-		if (/derive_from_specs\s*:\s*true/i.test(sectionContext) && plan.derived_tasks.length > 0) {
+		if (deriveFromSpecs && plan.derived_tasks.length > 0) {
 			return {
 				type: 'embedded-candidate',
 				embedType: 'task',

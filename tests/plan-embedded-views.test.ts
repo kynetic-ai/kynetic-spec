@@ -148,7 +148,7 @@ Regular markdown paragraph with **formatting**.
 	});
 
 	// AC: @plan-embedded-views ac-2
-	it("maps Tasks sections with derive_from_specs to embedded task cards", () => {
+	it("maps Tasks sections with derive_from_specs outside the fenced block to embedded task cards", () => {
 		const plan = createPlan({
 			content: `# Demo Plan
 
@@ -159,6 +159,30 @@ derive_from_specs: true
 \`\`\`yaml
 - title: Manual follow-up
   slug: unrelated-manual-task
+\`\`\`
+`
+		});
+
+		const blocks = buildPlanContentBlocks(plan, { batchItems: createBatchItems() });
+		const embedded = blocks.find((block) => block.type === "embedded");
+
+		expect(embedded).toMatchObject({
+			type: "embedded",
+			embedType: "task",
+			state: "ready",
+			refs: ["@task-alpha", "@task-beta"]
+		});
+	});
+
+	// AC: @plan-embedded-views ac-2
+	it("maps fenced derive_from_specs directives to embedded task cards", () => {
+		const plan = createPlan({
+			content: `# Demo Plan
+
+## Tasks
+
+\`\`\`yaml
+derive_from_specs: true
 \`\`\`
 `
 		});
