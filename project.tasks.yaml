@@ -92039,6 +92039,16 @@
 
         - Verification: npm test -- tests/agent-dispatch-engine.test.ts, npm test, kspec validate.
       supersedes: null
+    - _ulid: 01KKHWC9W4C5HRZ7KNF9N7939B
+      created_at: 2026-03-12T20:39:00.228Z
+      author: Jacob Chapel
+      content: Implemented explicit cross-agent scheduling in the dispatch runtime. Candidate selection
+        now ranks globally by band, numeric priority, continuity affinity, and FIFO fairness;
+        unresolved blockers/dependencies are excluded for all candidate types; workspace health
+        gates continuation/handoff work so stale workspace state is pruned before dispatch. Added
+        AC-annotated dispatch scheduler tests and adjusted workspace health semantics so reviewer
+        snapshots can be provisioned on demand while still rejecting truly stale state.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9K4NK8JC0ANF9TS7H769
