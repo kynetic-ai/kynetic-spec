@@ -99,6 +99,19 @@ const DaemonConfigSchema = z
   .optional();
 
 /**
+ * Schema for dispatch workspace configuration.
+ */
+const DispatchConfigSchema = z
+  .object({
+    /** Canonical integration branch for dispatcher-managed task branches */
+    base_branch: z.string().optional(),
+    /** Root directory for dispatcher-managed worktrees */
+    worktree_root: z.string().optional(),
+  })
+  .strict()
+  .optional();
+
+/**
  * Schema for ralph skill name overrides.
  *
  * Ralph prompts reference skills by invocation name. These default to
@@ -143,6 +156,8 @@ export const KspecConfigSchema = z
     validation: ValidationConfigSchema,
     /** Daemon configuration */
     daemon: DaemonConfigSchema,
+    /** Dispatch runtime configuration */
+    dispatch: DispatchConfigSchema,
     /** Ralph automation configuration */
     ralph: RalphConfigSchema,
   })
@@ -239,6 +254,12 @@ export interface ResolvedKspecConfig {
      */
     auto_start: boolean;
   };
+  dispatch: {
+    /** Optional canonical integration branch override */
+    base_branch: string | null;
+    /** Worktree root path from config/default (resolved later against project root) */
+    worktree_root: string;
+  };
   ralph: {
     skills: {
       /** Skill invocation for task-work (default: /kspec:task-work) */
@@ -279,6 +300,10 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     port: 3456,
     host: "localhost",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
+  },
+  dispatch: {
+    base_branch: null,
+    worktree_root: ".kspec-worktrees",
   },
   ralph: {
     skills: {
@@ -475,6 +500,12 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
+    dispatch: {
+      base_branch:
+        file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
+      worktree_root:
+        file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
+    },
     ralph: {
       skills: {
         task_work: file.ralph?.skills?.task_work ?? DEFAULT_CONFIG.ralph.skills.task_work,
@@ -507,6 +538,10 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       port: DEFAULT_CONFIG.daemon.port,
       host: DEFAULT_CONFIG.daemon.host,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,
+    },
+    dispatch: {
+      base_branch: DEFAULT_CONFIG.dispatch.base_branch,
+      worktree_root: DEFAULT_CONFIG.dispatch.worktree_root,
     },
     ralph: {
       skills: { ...DEFAULT_CONFIG.ralph.skills },

@@ -69,6 +69,10 @@ describe("Project Config", () => {
       expect(result.config.shadow.remote).toBe(defaults.shadow.remote);
       expect(result.config.daemon.port).toBe(defaults.daemon.port);
       expect(result.config.daemon.host).toBe(defaults.daemon.host);
+      expect(result.config.dispatch.base_branch).toBe(defaults.dispatch.base_branch);
+      expect(result.config.dispatch.worktree_root).toBe(
+        defaults.dispatch.worktree_root
+      );
       // AC: @config-validation — validation defaults
       expect(result.config.validation.strict_refs).toBe(
         defaults.validation.strict_refs
@@ -81,6 +85,7 @@ describe("Project Config", () => {
     // AC: @project-config ac-2 (partial - config file parsing)
     // AC: @config-validation ac-1 ac-2 — validation config fields
     // AC: @config-daemon ac-5 — host from config file
+    // AC: @dispatch-workspace-configuration ac-3
     it("parses valid config file", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
@@ -92,6 +97,9 @@ shadow:
 daemon:
   port: 4000
   host: 0.0.0.0
+dispatch:
+  base_branch: agent-dev
+  worktree_root: .dispatch-worktrees
 identity:
   author: "@custom-author"
 validation:
@@ -112,6 +120,8 @@ validation:
       });
       expect(result.config.daemon.port).toBe(4000);
       expect(result.config.daemon.host).toBe("0.0.0.0");
+      expect(result.config.dispatch.base_branch).toBe("agent-dev");
+      expect(result.config.dispatch.worktree_root).toBe(".dispatch-worktrees");
       expect(result.config.identity.author).toBe("@custom-author");
       // AC: @config-validation ac-1 ac-2
       expect(result.config.validation.strict_refs).toBe(true);

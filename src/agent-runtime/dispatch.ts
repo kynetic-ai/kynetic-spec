@@ -25,6 +25,10 @@ import { runInvocation } from "./invocation.js";
 import type { InvocationOptions } from "./invocation.js";
 import { interpolateTemplate } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
+import {
+  resolveDispatchWorkspaceConfig,
+  type ResolvedDispatchWorkspaceConfig,
+} from "./workspace-config.js";
 import type {
   AgentDispatchRule,
   AgentDispatchFilter,
@@ -323,6 +327,7 @@ export class DispatchEngine {
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
+  private dispatchWorkspaceConfig: ResolvedDispatchWorkspaceConfig | null = null;
 
   /** Queue of pending dispatch entries, per agent id */
   private queues: Map<string, QueueEntry[]> = new Map();
@@ -369,6 +374,12 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-8
    */
   async start(): Promise<void> {
+    const ctx = await initContext(this.projectDir);
+    this.dispatchWorkspaceConfig = resolveDispatchWorkspaceConfig({
+      projectRoot: ctx.projectRoot,
+      config: ctx.config,
+    });
+
     this.running = true;
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
@@ -533,6 +544,10 @@ export class DispatchEngine {
 
   getCwd(): string {
     return this.cwd;
+  }
+
+  getDispatchWorkspaceConfig(): ResolvedDispatchWorkspaceConfig | null {
+    return this.dispatchWorkspaceConfig;
   }
 
   /**
