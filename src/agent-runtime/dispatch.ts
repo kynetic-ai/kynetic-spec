@@ -999,6 +999,7 @@ export class DispatchEngine {
       workspace = await provisionDispatchWorkspace({
         projectDir: this.projectDir,
         taskRef: entry.change.taskRef,
+        role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
         task: entry.change.task
           ? {
               title: entry.change.task.title,
