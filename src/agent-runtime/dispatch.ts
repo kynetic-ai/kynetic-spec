@@ -25,6 +25,10 @@ import { runInvocation } from "./invocation.js";
 import type { InvocationOptions } from "./invocation.js";
 import { interpolateTemplate } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
+import {
+  provisionDispatchWorkspace,
+  DispatchWorkspaceError,
+} from "./workspace.js";
 import type {
   AgentDispatchRule,
   AgentDispatchFilter,
@@ -925,7 +929,7 @@ export class DispatchEngine {
           break;
         }
         const [entry] = queue.splice(nextReadyIndex, 1);
-        const spawned = this._spawnInvocation(agent, entry);
+        const spawned = await this._spawnInvocation(agent, entry);
         if (spawned) slots--;
       }
 
@@ -988,8 +992,35 @@ export class DispatchEngine {
    * Returns true if an invocation was actually started, false if skipped.
    * AC: @agent-dispatch-engine ac-9, ac-10, ac-11, ac-12
    */
-  private _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): boolean {
+  private async _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): Promise<boolean> {
     const agentId = agent.id;
+    let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
+    try {
+      workspace = await provisionDispatchWorkspace({
+        projectDir: this.projectDir,
+        taskRef: entry.change.taskRef,
+        task: entry.change.task
+          ? {
+              title: entry.change.task.title,
+              slugs: entry.change.task.slugs,
+            }
+          : undefined,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const guidance = err instanceof DispatchWorkspaceError ? err.suggestion : "Inspect dispatch workspace configuration and git worktree state.";
+      console.error(
+        `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
+      );
+      if (this.kspecCliPath) {
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "note", entry.change.taskRef,
+          `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+        ], { cwd: this.cwd });
+      }
+      return false;
+    }
 
     // Increment active count
     this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
@@ -1064,13 +1095,20 @@ export class DispatchEngine {
       agent,
       specDir: this.specDir,
       sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
-      cwd: this.cwd,
+      cwd: workspace.cwd,
       taskRef: entry.change.taskRef,
       prompt: this._buildDispatchPrompt(agent, entry.change),
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
       sessionId: preSessionId,
+      env: {
+        KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
+        KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
+        KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+        KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
+        KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+      },
       onUpdate,
     };
 

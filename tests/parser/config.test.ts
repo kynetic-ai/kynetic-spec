@@ -92,6 +92,9 @@ shadow:
 daemon:
   port: 4000
   host: 0.0.0.0
+dispatch:
+  base_branch: agent-dev
+  worktree_root: custom-worktrees
 identity:
   author: "@custom-author"
 validation:
@@ -112,6 +115,8 @@ validation:
       });
       expect(result.config.daemon.port).toBe(4000);
       expect(result.config.daemon.host).toBe("0.0.0.0");
+      expect(result.config.dispatch.base_branch).toBe("agent-dev");
+      expect(result.config.dispatch.worktree_root).toBe("custom-worktrees");
       expect(result.config.identity.author).toBe("@custom-author");
       // AC: @config-validation ac-1 ac-2
       expect(result.config.validation.strict_refs).toBe(true);
@@ -324,6 +329,8 @@ daemon:
 
       expect(config.daemon.port).toBe(4567);
       expect(config.daemon.host).toBe("localhost"); // default
+      expect(config.dispatch.base_branch).toBeNull();
+      expect(config.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(config.shadow.branch).toBe("kspec-meta"); // default
     });
 
@@ -360,6 +367,10 @@ daemon:
         daemon: {
           port: 3000,
           host: "localhost",
+        },
+        dispatch: {
+          base_branch: "agent-dev",
+          worktree_root: ".kspec-worktrees",
         },
         identity: {
           author: "@me",
@@ -439,6 +450,8 @@ daemon:
 
       expect(ctx.config).toBeDefined();
       expect(ctx.config.daemon.port).toBe(5555);
+      expect(ctx.config.dispatch.base_branch).toBeNull();
+      expect(ctx.config.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(ctx.config.shadow.branch).toBe("kspec-meta"); // default
     });
 
@@ -475,6 +488,8 @@ title: Test Project
       expect(defaults.validation.require_acceptance).toBe(false);
       expect(defaults.daemon.port).toBe(3456);
       expect(defaults.daemon.host).toBe("localhost");
+      expect(defaults.dispatch.base_branch).toBeNull();
+      expect(defaults.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(defaults.ralph.skills.task_work).toBe("/kspec:task-work");
       expect(defaults.ralph.skills.reflect).toBe("/kspec:reflect");
       expect(defaults.ralph.skills.pr_review).toBe("/kspec:review");
@@ -651,6 +666,31 @@ validation:
 
       expect(result.config.validation.strict_refs).toBe(false);
       expect(result.config.validation.require_acceptance).toBe(true);
+    });
+  });
+
+  describe("dispatch config", () => {
+    it("loads dispatch base_branch and worktree_root from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  base_branch: agent-dev
+  worktree_root: /tmp/kspec-worktrees
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.dispatch.base_branch).toBe("agent-dev");
+      expect(result.config.dispatch.worktree_root).toBe("/tmp/kspec-worktrees");
+    });
+
+    it("defaults dispatch config when omitted", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.dispatch.base_branch).toBeNull();
+      expect(result.config.dispatch.worktree_root).toBe(".kspec-worktrees");
     });
   });
 });
