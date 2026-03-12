@@ -91900,12 +91900,29 @@
     - cleanup
     - worktree
   vcs_refs: []
+  session_id: 01KKJ3Y9K20BQ785QARD37S3AS
   created_at: 2026-03-12T02:33:56.069Z
-  notes: []
+  started_at: 2026-03-12T23:02:06.806Z
+  notes:
+    - _ulid: 01KKJ4JE66RF8ERH2F625ZDEMC
+      created_at: 2026-03-12T23:02:09.862Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch now provisions canonical worker and reviewer worktrees, so stale
+        worktrees/branches must be reaped deterministically.
+
+        - Scope: implement cleanup eligibility, scheduled reaping, orphan reconciliation, and branch
+        deletion guards for dispatch workspaces.
+
+        - Files: dispatch workspace registry/reconciler/orchestrator code plus targeted tests.
+
+        - Verification: run focused tests for dispatch workspace lifecycle, then npm test and kspec
+        validate before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T23:02:06.806Z
-  session_id: 01KKJ3Y9K20BQ785QARD37S3AS
 - _ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
   slugs:
     - task-implement-dispatch-bootstrap-contract
