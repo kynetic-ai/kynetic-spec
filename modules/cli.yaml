@@ -8434,6 +8434,9 @@ features:
             traits: []
             notes: []
             created: 2026-03-12T02:33:44.096Z
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y
     slugs:
       - cli-agent-commands
