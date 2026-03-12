@@ -6087,13 +6087,9 @@ features:
               Dependency refs are normalized and stored on created specs.
               When deriving tasks, spec depends_on maps to task depends_on.
           - id: ac-tasks-flag
-            given: |
-              A plan has specs in its content
-            when: |
-              kspec plan derive @plan-ref --module @mod --tasks is run
-            then: |
-              After creating specs, a task is derived from each spec
-              with title "Implement <spec title>"
+            given: A plan has specs in its content and derive_from_specs is true or omitted
+            when: kspec plan derive @plan-ref --module @mod --tasks is run
+            then: After creating specs, a task is derived from each spec with title "Implement <spec title>"
           - id: ac-task-refs
             given: |
               Tasks are derived from plan specs via --tasks
@@ -6245,6 +6241,12 @@ features:
             then: |
               All changes are auto-committed to shadow branch in a
               single commit
+          - id: ac-tasks-manual-only
+            given: "A plan document sets derive_from_specs: false and defines additional_tasks in its ## Tasks
+              section"
+            when: kspec plan derive @plan-ref --module @mod --tasks is run
+            then: No auto per-spec "Implement <spec title>" tasks are created. Only the additional tasks are
+              materialized, with plan_ref, spec_ref, and depends_on mappings preserved.
         depends_on:
           - "@plan-import-content-only"
         implements: []
