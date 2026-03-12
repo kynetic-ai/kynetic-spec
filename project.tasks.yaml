@@ -91846,7 +91846,7 @@
   spec_ref: "@plan-embedded-views"
   meta_ref: null
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@bug-plan-embedded-views-live-loading"
@@ -91862,7 +91862,7 @@
   session_id: 01KKHGK5AGKV303WHXGJEJY85W
   created_at: 2026-03-12T03:17:43.331Z
   started_at: 2026-03-12T17:15:56.012Z
-  submitted_at: 2026-03-12T04:27:04.084Z
+  submitted_at: 2026-03-12T17:16:00.286Z
   notes:
     - _ulid: 01KKG4BC358EYHKY6X48NJP6B2
       created_at: 2026-03-12T04:19:49.477Z
@@ -91906,3 +91906,4 @@
       supersedes: null
   todos: []
   automation: eligible
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/798
