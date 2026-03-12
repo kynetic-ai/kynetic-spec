@@ -91045,7 +91045,7 @@
   spec_ref: "@dispatch-workspace-configuration"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-design-dispatch-workspace-config"
@@ -91055,7 +91055,8 @@
     - dispatch
     - config
   vcs_refs: []
-  session_id: 01KKFZV014WEX0YA9YAFAQPSS7
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/795
+  session_id: null
   created_at: 2026-03-12T02:33:53.006Z
   started_at: 2026-03-12T03:01:31.863Z
   submitted_at: 2026-03-12T03:09:55.312Z
@@ -91094,9 +91095,15 @@
         - Verified with targeted tests, full npm test, and kspec validate (warnings only; existing
         repo-wide warning debt remains).
       supersedes: null
+    - _ulid: 01KKG0NKR1CGJERFJJ8ZSXTEZX
+      created_at: 2026-03-12T03:15:30.689Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: dispatch workspace config is resolved but not
+        applied to actual task workspace provisioning, so spec ac-1 through ac-3 are not implemented
+        end to end."
+      supersedes: null
   todos: []
   automation: eligible
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/795
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
   slugs:
     - task-implement-canonical-task-workspace-contract
