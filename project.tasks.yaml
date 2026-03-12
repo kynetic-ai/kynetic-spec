@@ -91761,7 +91761,7 @@
   spec_ref: "@dispatch-branch-integration-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91874,6 +91874,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T20:21:23.046Z
+  closed_reason: "Merged in PR #803. Implemented explicit dispatch branch integration metadata,
+    publication-mode selection, orientation/env wiring for canonical and integration target context,
+    and legacy registry compatibility/reload behavior. AC coverage verified for ac-1 through ac-6
+    with focused dispatch integration tests; full npm test and kspec validate --warnings-ok passed
+    before merge."
 - _ulid: 01KKFY9FK58T570QTKKYMPTK98
   slugs:
     - task-implement-dispatch-workspace-cleanup
