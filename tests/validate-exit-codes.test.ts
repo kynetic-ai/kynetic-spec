@@ -1,8 +1,6 @@
 /**
  * Tests for validate command exit codes
  *
- * AC: @cli-exit-codes
- *
  * Exit code behavior:
  * - 0 (SUCCESS): No errors, no warnings
  * - 4 (VALIDATION_FAILED): Errors present (schema, refs, trait cycles, etc.)
@@ -17,8 +15,6 @@ import { kspec, setupTempFixtures, cleanupTempDir, testUlid, createTempDir } fro
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-// AC: @validation
-// AC: @spec-completeness
 describe('validate exit codes', () => {
   let tempDir: string;
 

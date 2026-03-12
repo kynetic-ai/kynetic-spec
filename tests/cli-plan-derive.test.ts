@@ -13,8 +13,6 @@
 // AC: @trait-semantic-exit-codes ac-3 — N/A: plan derive has no confirmation prompt.
 // AC: @trait-semantic-exit-codes ac-5 — N/A: plan derive is a mutation command, not an empty-result query.
 // AC: @trait-semantic-exit-codes ac-7 — N/A: partial materialization is warning-based success, not a batch failure mode.
-// AC: @plan-support
-
 import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";

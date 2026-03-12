@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { setupTempFixtures, cleanupTempDir, kspecOutput as kspec, kspecJson } from './helpers/cli';
 
-// AC: @task-add
 describe('Integration: task add --description', () => {
   let tempDir: string;
 
@@ -13,6 +12,7 @@ describe('Integration: task add --description', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @task-add ac-description
   // AC: @spec-task-add-description ac-1
   it('should create task with description when provided', () => {
     const output = kspec(
@@ -117,6 +117,7 @@ describe('Integration: task add --description', () => {
     expect(output.task.description).toBe(desc);
   });
 
+  // AC: @task-add ac-description
   // AC: @spec-task-add-description ac-6
   it('should treat empty description as omitted', () => {
     const output = kspec(
@@ -134,6 +135,7 @@ describe('Integration: task add --description', () => {
     expect(task.description).toBeUndefined();
   });
 
+  // AC: @task-add ac-description
   // AC: @spec-task-add-description ac-6 - whitespace-only also omitted
   it('should treat whitespace-only description as omitted', () => {
     const output = kspec(

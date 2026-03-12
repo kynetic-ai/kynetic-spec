@@ -274,8 +274,6 @@ describe('Integration: task submit (pending_review state)', () => {
 });
 
 describe('Integration: task add', () => {
-  // AC: @task-add
-  // AC: @trait-priority-parameter
   let tempDir: string;
 
   beforeEach(async () => {
@@ -286,15 +284,34 @@ describe('Integration: task add', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @task-add ac-create
+  // AC: @task-add ac-priority-default
+  // AC: @trait-priority-parameter ac-4
   it('should create a new task', () => {
-    const output = kspec('task add --title "New test task" --priority 1', tempDir);
+    const output = kspec('task add --title "New test task"', tempDir);
     expect(output).toContain('Created task');
+
+    const match = output.match(/Created task: ([A-Z0-9]{8})/);
+    expect(match).not.toBeNull();
+
+    const task = kspecJson<{ status: string; priority: number; type: string }>(
+      `task get @${match![1]}`,
+      tempDir
+    );
+    expect(task.status).toBe('pending');
+    expect(task.priority).toBe(3);
+    expect(task.type).toBe('task');
 
     // Verify task exists
     const listOutput = kspec('tasks list', tempDir);
     expect(listOutput).toContain('New test task');
   });
 
+  // AC: @task-add ac-type
+  // AC: @task-add ac-priority-valid
+  // AC: @task-add ac-tags
+  // AC: @task-add ac-slug
+  // AC: @trait-priority-parameter ac-1
   it('should create task with all options', () => {
     kspec(
       'task add --title "Full task" --type bug --priority 1 --tag urgent --tag fix --slug my-bug',
@@ -313,6 +330,8 @@ describe('Integration: task add', () => {
     expect(task.slugs).toContain('my-bug');
   });
 
+  // AC: @task-add ac-priority-valid
+  // AC: @trait-priority-parameter ac-7
   it('should accept P-notation for --priority in task add', () => {
     kspec('task add --title "P notation add" --priority p3 --slug p-notation-add', tempDir);
 
@@ -320,7 +339,6 @@ describe('Integration: task add', () => {
     expect(task.priority).toBe(3);
   });
 
-  // AC: @trait-priority-parameter ac-4
   it('should default task priority to 3 when omitted', () => {
     kspec('task add --title "Default priority add" --slug default-priority-add', tempDir);
 

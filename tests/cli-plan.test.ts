@@ -14,7 +14,6 @@ import {
   kspecJson,
 } from "./helpers/cli";
 
-// AC: @plan-support
 describe("Integration: plan commands", () => {
   let tempDir: string;
 

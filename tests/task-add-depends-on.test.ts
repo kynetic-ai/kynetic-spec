@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { setupTempFixtures, cleanupTempDir, kspecOutput as kspec, kspecJson } from './helpers/cli';
 
-// AC: @task-add
 describe('Integration: task add --depends-on', () => {
   let tempDir: string;
 
@@ -13,6 +12,7 @@ describe('Integration: task add --depends-on', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @task-add ac-depends-on
   // AC: @task-add-depends-on ac-1
   it('should create task with dependencies when --depends-on provided', () => {
     // First create a dependency task
@@ -37,6 +37,7 @@ describe('Integration: task add --depends-on', () => {
     expect(task.depends_on).toEqual(['@dep-task']);
   });
 
+  // AC: @task-add ac-depends-on
   // AC: @task-add-depends-on ac-1 - Multiple dependencies
   it('should create task with multiple dependencies', () => {
     // Create two dependency tasks
@@ -60,6 +61,7 @@ describe('Integration: task add --depends-on', () => {
     expect(task.depends_on).toContain('@dep-2');
   });
 
+  // AC: @task-add ac-depends-on-invalid
   // AC: @task-add-depends-on ac-2
   it('should error when dependency reference is invalid', () => {
     // The command should fail, so we expect an error to be thrown
@@ -71,6 +73,7 @@ describe('Integration: task add --depends-on', () => {
     }).toThrow(/not found/);
   });
 
+  // AC: @task-add ac-depends-on-invalid
   // AC: @task-add-depends-on ac-2 - Dependency must be a task
   it('should error when dependency reference is not a task', () => {
     // Use existing spec item from fixtures (@test-core is a module)

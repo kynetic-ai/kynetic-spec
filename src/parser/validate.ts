@@ -781,7 +781,7 @@ const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
  * Handles single and multiple @ref groups separated by commas or spaces.
  * Examples:
  *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
- *   "// AC: @spec-a ac-1, ac-2"                  → [{specRef:"@spec-a", acIds:["ac-1","ac-2"]}]
+ *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"]}]
  *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
  *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
  */
@@ -804,7 +804,7 @@ export function parseACAnnotationLine(
 
   // Match each @ref followed by its optional ac-N ids
   // This regex captures @ref and then all ac-N tokens until the next @ref or end
-  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-\d+)*)/g;
+  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-[\w-]+)*)/g;
   let match;
 
   while ((match = refGroupPattern.exec(remainder)) !== null) {
@@ -814,7 +814,7 @@ export function parseACAnnotationLine(
 
     if (acPart) {
       // Extract individual ac-N tokens
-      const acMatches = acPart.match(/ac-\d+/g);
+      const acMatches = acPart.match(/ac-[\w-]+/g);
       if (acMatches) {
         acIds.push(...acMatches);
       }

@@ -16,7 +16,6 @@ import {
 } from '../src/schema/index.js';
 
 describe('UlidSchema', () => {
-  // AC: @ulid-system
   // AC: @ulid-format ac-1
   it('should accept valid ULIDs', () => {
     const validUlid = '01HQ3K5XJ8MPVB2XCJZ0KE9YWN';
@@ -31,7 +30,6 @@ describe('UlidSchema', () => {
 });
 
 describe('SlugSchema', () => {
-  // AC: @slug-system
   it('should accept valid slugs', () => {
     expect(SlugSchema.safeParse('auth-login').success).toBe(true);
     expect(SlugSchema.safeParse('impl-user-session').success).toBe(true);
@@ -49,7 +47,6 @@ describe('SlugSchema', () => {
 });
 
 describe('RefSchema', () => {
-  // AC: @reference-system
   // AC: @ref-syntax ac-1
   it('should accept valid references', () => {
     expect(RefSchema.safeParse('@auth-login').success).toBe(true);

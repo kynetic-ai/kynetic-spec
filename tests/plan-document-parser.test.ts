@@ -21,7 +21,6 @@ import {
 } from "../src/parser/plan-document.js";
 import { createSpecItem } from "../src/parser/yaml.js";
 
-// AC: @plan-import
 describe("Plan Document Parser", () => {
   // AC: @plan-import ac-11
   it("should parse specs from ## Specs YAML block", () => {

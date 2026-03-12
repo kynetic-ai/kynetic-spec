@@ -135,6 +135,21 @@ it('should also work', () => {});
       expect(refs).toContain("@spec-b ac-2");
     });
 
+    it("should parse named ac ids on sweep annotations", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+
+      await fs.writeFile(
+        path.join(testsDir, "named-ac.test.ts"),
+        "// AC: @task-add ac-create, ac-priority-valid\nit('test', () => {});",
+      );
+
+      const annotations = await scanACAnnotations(tempDir);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0].specRef).toBe("@task-add");
+      expect(annotations[0].acIds).toEqual(["ac-create", "ac-priority-valid"]);
+    });
+
     it("should handle annotations without specific AC ids", async () => {
       const testsDir = path.join(tempDir, "tests");
       await fs.mkdir(testsDir, { recursive: true });
