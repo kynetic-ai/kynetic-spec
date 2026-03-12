@@ -91945,6 +91945,25 @@
 
         - Verification: targeted and full npm test coverage plus kspec validate before submit.
       supersedes: null
+    - _ulid: 01KKHXE8SDYT99J309YJN3YZAT
+      created_at: 2026-03-12T20:57:33.229Z
+      author: Jacob Chapel
+      content: >-
+        Implemented dispatcher-owned bootstrap preflight.
+
+        - Added explicit dispatch and agent bootstrap step configuration with tracked-mutation
+        opt-in, idempotent/reviewer rerun controls, and persisted bootstrap state.
+
+        - Dispatch now bootstraps workspaces before runInvocation, reuses cached success when
+        config/head are unchanged, records explicit invalidation reasons, and blocks tasks on
+        actionable bootstrap failure.
+
+        - Verification: npm run typecheck; npm test -- --run
+        tests/dispatch-runtime-bootstrap-contract.test.ts tests/dispatch-workspace-config.test.ts
+        tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts
+        tests/parser/config.test.ts; npm test; kspec validate (warnings only: existing repo-wide
+        alignment/completeness debt).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
