@@ -46,6 +46,20 @@ export const DispatchWorkspaceBranchModeSchema = z.enum([
   "detached",
 ]);
 
+export const DispatchWorkspacePublicationModeSchema = z.enum([
+  "pull_request",
+  "manual_merge",
+]);
+
+export const DispatchWorkspaceIntegrationOutcomeSchema = z.enum([
+  "pending",
+  "pull_request",
+  "manual_merge",
+  "merged",
+  "abandoned",
+  "reset",
+]);
+
 export const DispatchWorkspaceIssueSchema = z.object({
   code: z.string().min(1, "Issue code is required"),
   message: z.string().min(1, "Issue message is required"),
@@ -69,6 +83,9 @@ export const DispatchWorkspaceBootstrapStateSchema = z.object({
 export const DispatchWorkspaceIntegrationStateSchema = z.object({
   status: DispatchWorkspaceIntegrationStatusSchema.default("pending"),
   target_branch: z.string().min(1, "Target branch is required"),
+  target_commit: z.string().min(1, "Target commit is required"),
+  publication_mode: DispatchWorkspacePublicationModeSchema,
+  outcome: DispatchWorkspaceIntegrationOutcomeSchema,
   detail: z.string().nullable().optional(),
   updated_at: DateTimeSchema,
 });
@@ -141,6 +158,12 @@ export type DispatchWorkspaceCleanupStatus = z.infer<
 export type DispatchWorkspaceRole = z.infer<typeof DispatchWorkspaceRoleSchema>;
 export type DispatchWorkspaceBranchMode = z.infer<
   typeof DispatchWorkspaceBranchModeSchema
+>;
+export type DispatchWorkspacePublicationMode = z.infer<
+  typeof DispatchWorkspacePublicationModeSchema
+>;
+export type DispatchWorkspaceIntegrationOutcome = z.infer<
+  typeof DispatchWorkspaceIntegrationOutcomeSchema
 >;
 export type DispatchWorkspaceIssue = z.infer<
   typeof DispatchWorkspaceIssueSchema

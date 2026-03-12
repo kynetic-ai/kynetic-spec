@@ -32,6 +32,8 @@ import {
   markDispatchWorkspaceIdle,
   reconcileDispatchWorkspaceRegistry,
   reconcileDispatchWorkspaceLifecycle,
+  type DispatchWorkspaceMetadata,
+  type DispatchWorkspaceRole,
 } from "./workspace.js";
 import type {
   AgentDispatchRule,
@@ -186,6 +188,15 @@ export function buildOrientationContext(
     notes?: Array<{ created_at: string; author?: string; content: string }>;
     review_url?: string;
   },
+  workspace?: Pick<
+    DispatchWorkspaceMetadata,
+    | "canonicalBranch"
+    | "canonicalBranchHead"
+    | "integrationTargetBranch"
+    | "integrationTargetCommit"
+    | "publicationMode"
+  >,
+  role: DispatchWorkspaceRole = trigger === "task.pending_review" ? "reviewer" : "worker",
 ): string {
   const title = task?.title ?? "(unavailable)";
   const lines = [
@@ -206,6 +217,24 @@ export function buildOrientationContext(
   if (trigger === "task.pending_review") {
     const url = task?.review_url ?? "Not provided \u2014 find PR via task notes or git log.";
     lines.push(`Review URL: ${url}`);
+  }
+
+  if (workspace) {
+    const publicationGuidance =
+      workspace.publicationMode === "pull_request"
+        ? `- Publish via PR: create or update a pull request from ${workspace.canonicalBranch} into ${workspace.integrationTargetBranch}.`
+        : `- Publish via manual merge: merge ${workspace.canonicalBranch} back into ${workspace.integrationTargetBranch}; if conflicts occur, stop and escalate with the conflict details instead of improvising.`;
+    lines.push(
+      "",
+      "Dispatch Branch Context:",
+      `- Canonical branch: ${workspace.canonicalBranch}`,
+      `- Integration target: ${workspace.integrationTargetBranch} @ ${workspace.integrationTargetCommit}`,
+      `- Publication mode: ${workspace.publicationMode}`,
+      role === "reviewer"
+        ? `- Snapshot under review: ${workspace.canonicalBranchHead}`
+        : `- Canonical head: ${workspace.canonicalBranchHead}`,
+      publicationGuidance,
+    );
   }
 
   return lines.join("\n");
@@ -1050,8 +1079,6 @@ export class DispatchEngine {
     const basePrompt = interpolateTemplate(rawTemplate, templateVars);
 
     // AC: @agent-dispatch-engine ac-13 - Orientation context
-    const orientation = buildOrientationContext(taskRef, trigger, change.task);
-
     const autonomousPreamble = [
       "AUTONOMOUS DISPATCH MODE (no interactive user is available).",
       "- Do not ask for confirmation, approval, or next-step handoff.",
@@ -1076,7 +1103,7 @@ export class DispatchEngine {
             "- If your workflow includes git or PR steps, execute them directly instead of deferring to a human.",
           ];
 
-    return `${basePrompt}\n\n${orientation}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
+    return `${basePrompt}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
   /**
@@ -1086,10 +1113,11 @@ export class DispatchEngine {
    */
   private async _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): Promise<boolean> {
     const agentId = agent.id;
-    const role = entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     const inFlightKey = `${agentId}:${entry.change.taskRef}`;
     this.inFlightTaskKeys.add(inFlightKey);
     let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
+    const role: DispatchWorkspaceRole =
+      entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     try {
       workspace = await provisionDispatchWorkspace({
         projectDir: this.projectDir,
@@ -1203,7 +1231,13 @@ export class DispatchEngine {
       sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
       cwd: workspace.cwd,
       taskRef: entry.change.taskRef,
-      prompt: this._buildDispatchPrompt(agent, entry.change),
+      prompt: `${this._buildDispatchPrompt(agent, entry.change)}\n\n${buildOrientationContext(
+        entry.change.taskRef,
+        STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready",
+        entry.change.task,
+        workspace.metadata,
+        role,
+      )}`,
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
@@ -1212,6 +1246,12 @@ export class DispatchEngine {
         KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
         KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
         KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: workspace.metadata.canonicalBranchHead,
+        KSPEC_DISPATCH_INTEGRATION_TARGET: workspace.metadata.integrationTargetBranch,
+        KSPEC_DISPATCH_INTEGRATION_COMMIT: workspace.metadata.integrationTargetCommit,
+        KSPEC_DISPATCH_PUBLICATION_MODE: workspace.metadata.publicationMode,
+        KSPEC_DISPATCH_INTEGRATION_STATE: workspace.metadata.integrationState,
+        KSPEC_DISPATCH_INTEGRATION_OUTCOME: workspace.metadata.integrationOutcome,
         KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
         KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
         KSPEC_DISPATCH_WORKSPACE_ID: workspace.metadata.workspaceId,
