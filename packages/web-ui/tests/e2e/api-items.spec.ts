@@ -382,6 +382,7 @@ test.describe('Items API', () => {
       expect(body.items).toHaveLength(2);
 
       expect(body.items[0]).toMatchObject({
+        kind: 'item',
         ulid: '01KF1645CBDJYHWBPYWRN3HYPJ',
         slugs: ['test-feature'],
         title: 'Test Feature',
@@ -393,6 +394,7 @@ test.describe('Items API', () => {
       });
 
       expect(body.items[1]).toMatchObject({
+        kind: 'item',
         ulid: '01KF1645CBKJNPWH1E02WN4MMX',
         slugs: ['test-requirement'],
         title: 'Test Requirement',
@@ -435,21 +437,25 @@ test.describe('Items API', () => {
       expect(body.items).toHaveLength(2);
 
       expect(body.items[0]).toEqual({
+        kind: 'task',
         ulid: '01KG0RR6CA45ZT43W2T6HJMVA1',
         slugs: ['test-task-ready'],
         title: 'Ready task',
         status: 'pending',
         priority: 2,
         spec_ref: '@test-feature',
+        assignee: '@alice',
       });
 
       expect(body.items[1]).toEqual({
+        kind: 'task',
         ulid: '01KG0RR8CB8N4YGP991WD7XS9R',
         slugs: ['test-task-in-progress'],
         title: 'In progress task',
         status: 'in_progress',
         priority: 3,
         spec_ref: '@test-feature',
+        assignee: undefined,
       });
     });
 

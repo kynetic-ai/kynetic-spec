@@ -16,6 +16,7 @@ import type {
 	TaskDetail,
 	ItemSummary,
 	ItemDetail,
+	BatchItemsResponse,
 	InboxItem,
 	SessionContext,
 	Observation,
@@ -43,6 +44,7 @@ import {
 	fetchItemsStatic,
 	fetchItemStatic,
 	fetchItemTasksStatic,
+	fetchBatchItemsStatic,
 	fetchInboxStatic,
 	fetchSessionContextStatic,
 	fetchObservationsStatic,
@@ -328,6 +330,26 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
 
 	const response = await fetch(`${API_BASE}/api/items/${ref}`, {
 		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchBatchItems(refs: string[]): Promise<BatchItemsResponse> {
+	if (isStaticMode()) {
+		return fetchBatchItemsStatic(refs);
+	}
+
+	const response = await fetch(`${API_BASE}/api/items/batch`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ refs })
 	});
 	if (!response.ok) {
 		await handleResponseError(response);
