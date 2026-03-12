@@ -86046,6 +86046,11 @@
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #792 (22a27883afc2a1f5b57ea2534158a8df08687710). Implemented
+    plan-content embedded spec/task views on the web UI using batch item summaries, added
+    loading/error fallback behavior, supported fenced derive_from_specs task embeds, and covered
+    runtime card rendering/navigation plus structured AC display. AC coverage verified for
+    @plan-embedded-views and inherited @trait-markdown-rendering coverage remains satisfied."
   depends_on:
     - "@implement-batch-item-fetch-api"
     - "@implement-streaming-markdown-component"
@@ -86057,6 +86062,7 @@
   created_at: 2026-03-10T06:04:42.957Z
   started_at: 2026-03-12T00:45:57.783Z
   submitted_at: 2026-03-12T01:41:45.596Z
+  completed_at: 2026-03-12T01:58:41.204Z
   notes:
     - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
       created_at: 2026-03-10T06:04:42.957Z
@@ -86217,12 +86223,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T01:58:41.204Z
-  closed_reason: "Merged in PR #792 (22a27883afc2a1f5b57ea2534158a8df08687710). Implemented
-    plan-content embedded spec/task views on the web UI using batch item summaries, added
-    loading/error fallback behavior, supported fenced derive_from_specs task embeds, and covered
-    runtime card rendering/navigation plus structured AC display. AC coverage verified for
-    @plan-embedded-views and inherited @trait-markdown-rendering coverage remains satisfied."
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
   slugs:
     - implement-markdown-adoption-across-ui-surfaces
@@ -87657,6 +87657,13 @@
       author: Jacob Chapel
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: sweep uses bare AC refs that blanket-cover whole
         specs/traits, and the new registry/guard tests do not enforce per-AC annotation mapping."
+      supersedes: null
+    - _ulid: 01KKFWBX82G5RN4M1HQW4EQTZA
+      created_at: 2026-03-12T02:00:18.434Z
+      author: Jacob Chapel
+      content: "Fix-cycle implementation: replacing blanket sweep refs with explicit per-AC annotations on
+        the behavior tests they actually cover, and tightening the sweep guard suites so they fail
+        on bare refs in the targeted files."
       supersedes: null
   todos: []
   automation: eligible
