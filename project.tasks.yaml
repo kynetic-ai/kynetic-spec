@@ -91055,12 +91055,28 @@
     - dispatch
     - config
   vcs_refs: []
+  session_id: 01KKFZV014WEX0YA9YAFAQPSS7
   created_at: 2026-03-12T02:33:53.006Z
-  notes: []
+  started_at: 2026-03-12T03:01:31.863Z
+  notes:
+    - _ulid: 01KKFZW3SZ1V7C6VNRFN9PXM9Z
+      created_at: 2026-03-12T03:01:35.168Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatcher needs repo-configurable base branch selection and worktree
+        placement for isolated task workspaces.
+
+        - Scope: config schema, resolution logic, provisioning integration, and tests for invalid
+        config guidance.
+
+        - Files: dispatch config/schema, workspace provisioning logic, and related tests.
+
+        - Verification: npm test plus targeted dispatch/config tests and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T03:01:31.863Z
-  session_id: 01KKFZV014WEX0YA9YAFAQPSS7
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
   slugs:
     - task-implement-canonical-task-workspace-contract
