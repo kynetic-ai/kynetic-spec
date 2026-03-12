@@ -7676,7 +7676,7 @@ features:
         created: 2026-03-12T02:33:44.269Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKFY947T52DYFSX45MGQNGB3
         slugs:
           - dispatch-role-workflow-entry-contract
