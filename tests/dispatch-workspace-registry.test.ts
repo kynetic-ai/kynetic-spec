@@ -4,6 +4,7 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as dispatchWorkspaceRegistryModule from "../src/parser/dispatch-workspaces.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import { initContext } from "../src/parser/index.js";
 import {
@@ -174,6 +175,37 @@ describe("dispatch workspace registry", () => {
     expect(record.timestamps.created_at).toBeTruthy();
     expect(record.timestamps.updated_at).toBeTruthy();
     expect(record.timestamps.last_reconciled_at).toBeTruthy();
+  });
+
+  // AC: @dispatch-workspace-registry ac-6
+  it("persists a provisioning lifecycle record before the final ready snapshot", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const saveSpy = vi.spyOn(dispatchWorkspaceRegistryModule, "saveDispatchWorkspaceRecord");
+    const taskRef = `@${testUlid("TASK", 26)}`;
+
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Provisioning Lifecycle Capture",
+        slugs: ["task-provisioning-lifecycle-capture"],
+      },
+    });
+
+    expect(saveSpy).toHaveBeenCalled();
+    expect(saveSpy.mock.calls[0]?.[1]).toMatchObject({
+      task_ref: taskRef,
+      lifecycle_state: "provisioning",
+      bootstrap: {
+        status: "not_started",
+      },
+    });
+    expect(saveSpy.mock.calls.at(-1)?.[1]).toMatchObject({
+      task_ref: taskRef,
+      lifecycle_state: "ready",
+    });
   });
 
   // AC: @dispatch-workspace-registry ac-2
@@ -450,12 +482,12 @@ describe("dispatch workspace registry", () => {
       new Map([[taskRef, "in_progress" as const]]),
     );
     record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("ready");
+    expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("reset");
     expect(record.cleanup).toMatchObject({
-      eligible: false,
-      reason: null,
-      status: "not_scheduled",
+      eligible: true,
+      reason: "task-reset",
+      status: "scheduled",
     });
 
     await fs.rm(record.worktrees.worker.path, { recursive: true, force: true });

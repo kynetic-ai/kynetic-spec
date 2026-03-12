@@ -655,7 +655,7 @@ export function resolveDispatchWorkspaceCleanupState(
     return { cleanupEligible: true, cleanupReason: "task-abandoned" };
   }
   if (options.integrationState === "reset") {
-    return { cleanupEligible: false, cleanupReason: null };
+    return { cleanupEligible: true, cleanupReason: "task-reset" };
   }
   if (options.taskStatus === "completed" || options.taskStatus === "cancelled") {
     return { cleanupEligible: true, cleanupReason: "task-closed" };
