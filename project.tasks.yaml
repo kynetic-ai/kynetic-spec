@@ -91647,5 +91647,13 @@
         - Verification: targeted tests for plan-document parsing and plan embedded views, then
         project validation/test commands relevant to this scope.
       supersedes: null
+    - _ulid: 01KKG4KJ4X4FVTHGH9GKEMJ4E4
+      created_at: 2026-03-12T04:24:17.821Z
+      author: Jacob Chapel
+      content: "Patched plan embedded task block precedence to evaluate derive_from_specs against the full
+        ## Tasks section, so directive ordering no longer changes whether manual YAML slugs narrow
+        the rendered embedded task set. Added regression coverage for directive-before-list,
+        list-before-directive, and manual-list-without-derive cases."
+      supersedes: null
   todos: []
   automation: eligible
