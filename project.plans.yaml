@@ -13288,8 +13288,9 @@ plans:
             then: |
               The dispatcher resolves the repository's default integration branch
               deterministically using remote HEAD when available, otherwise the
-              current symbolic branch, otherwise `main`, and records the resolved
-              value on the workspace so later invocations do not drift
+              current symbolic branch of the main repo checkout, otherwise `main`,
+              and records the resolved value on the workspace so later invocations do
+              not drift
           - id: ac-3
             given: |
               kspec.config.yaml sets dispatch.worktree_root to a relative or absolute
@@ -13585,8 +13586,8 @@ plans:
               continuity
           - id: ac-2
             given: |
-              A task reaches completed, cancelled, reset, merged, or explicit
-              abandoned state
+              A task reaches completed or cancelled status, or the workspace
+              integration outcome becomes merged or explicitly abandoned
             when: |
               Cleanup policy runs
             then: |
@@ -14165,6 +14166,10 @@ plans:
       - _ulid: 01KKFQ9YXZN35ZX08C8NZ3VY44
         created_at: 2026-03-12T00:31:51.743Z
         author: Jacob Chapel
+        content: Content updated from file
+      - _ulid: 01KKFQBKPTCFQMRPKNZB9RVPXY
+        created_at: 2026-03-12T00:32:45.786Z
+        author: chapel
         content: Content updated from file
   - _ulid: 01KKFJY4FKCRQH1YPZNMRCTPNR
     slugs:
