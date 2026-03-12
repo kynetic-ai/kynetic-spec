@@ -1442,6 +1442,7 @@ export class DispatchEngine {
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
       sessionId: preSessionId,
+      mutationLockFile: path.join(this.projectDir, ".kspec-dispatch-shadow-mutation"),
       env: {
         KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
         KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
@@ -1470,30 +1471,29 @@ export class DispatchEngine {
       resolveInvocationStarted();
     };
 
-    // AC: @agent-dispatch-engine ac-12 - Wrap invocation in shadow mutex
-    const invocationPromise = this.shadowMutex
-      .runExclusive(async () => {
-        let terminalEvent: InvocationEvent | null = null;
-        const markActivePromise = markDispatchWorkspaceActive({
-          projectDir: this.projectDir,
-          taskRef: entry.change.taskRef,
-          role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
-        }).then((activeWorkspace) => {
-          if (activeWorkspace) {
-            workspace = activeWorkspace;
-            options.env = {
-              ...options.env,
-              KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
-              KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
-            };
-          }
-        }).catch((err) => {
-          console.error(
-            `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
-            err,
-          );
-        });
+    let terminalEvent: InvocationEvent | null = null;
+    const markActivePromise = markDispatchWorkspaceActive({
+      projectDir: this.projectDir,
+      taskRef: entry.change.taskRef,
+      role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+    }).then((activeWorkspace) => {
+      if (activeWorkspace) {
+        workspace = activeWorkspace;
+        options.env = {
+          ...options.env,
+          KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
+          KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
+        };
+      }
+    }).catch((err) => {
+      console.error(
+        `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
+        err,
+      );
+    });
 
+    const invocationPromise = Promise.resolve()
+      .then(async () => {
         // AC: @agent-dispatch-engine ac-9 - Retry on transient errors
         try {
           markInvocationStarted();
@@ -1567,10 +1567,8 @@ export class DispatchEngine {
           );
         }
 
-        // Clean up active tracking immediately while still holding the mutex,
-        // BEFORE _drainQueues can spawn the next invocation. This prevents
-        // completed invocations from appearing active in the fleet status
-        // while the next invocation runs.
+        // Clean up active tracking before queue drain runs so completed
+        // invocations do not linger in the active fleet snapshot.
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         this.activeInvocationDetails.delete(invocationId);

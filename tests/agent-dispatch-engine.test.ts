@@ -1333,10 +1333,12 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
   let testDir: string;
 
   beforeEach(async () => {
+    vi.restoreAllMocks();
     testDir = await createTempDir("kspec-dispatch-ac12-");
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await cleanupTempDir(testDir);
   });
 
@@ -1387,6 +1389,97 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
       (firstPair[0] === 1 && firstPair[1] === 2 && secondPair[0] === 3 && secondPair[1] === 4) ||
       (firstPair[0] === 3 && firstPair[1] === 4 && secondPair[0] === 1 && secondPair[1] === 2);
     expect(validOrdering).toBe(true);
+
+    await engine.stop();
+  });
+
+  it("should allow concurrent invocations to overlap outside mutation windows", async () => {
+    // AC: @scoped-dispatch-shadow-serialization ac-1
+    const agent = makeTestAgent({
+      id: "parallel-worker",
+      dispatch: [{ on: "task.ready" }],
+      concurrency: { max_concurrent: 2 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    let activeInvocations = 0;
+    let maxConcurrentInvocations = 0;
+    let releaseInvocations: (() => void) | null = null;
+    const blocker = new Promise<void>((resolve) => {
+      releaseInvocations = resolve;
+    });
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+      activeInvocations++;
+      maxConcurrentInvocations = Math.max(maxConcurrentInvocations, activeInvocations);
+      await blocker;
+      activeInvocations--;
+      return { session: {} as any, outcome: "success", durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    await engine.start();
+
+    const [taskA, taskB] = testUlids("TASK", 2);
+    await engine.handleStateChange({
+      taskId: taskA,
+      taskRef: `@${taskA}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+    await engine.handleStateChange({
+      taskId: taskB,
+      taskRef: `@${taskB}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now() + 1,
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    for (let i = 0; i < 50 && maxConcurrentInvocations < 2; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    expect(maxConcurrentInvocations).toBe(2);
+
+    releaseInvocations?.();
+    await engine.stop();
+  });
+
+  it("should pass a shared mutation lock file to dispatched invocations", async () => {
+    // AC: @scoped-dispatch-shadow-serialization ac-2
+    const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    await engine.start();
+
+    const taskId = testUlid("TASK");
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+
+    expect(runSpy).toHaveBeenCalled();
+    expect(runSpy.mock.calls[0][0].mutationLockFile).toBe(
+      path.join(testDir, ".kspec-dispatch-shadow-mutation"),
+    );
 
     await engine.stop();
   });

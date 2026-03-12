@@ -84,6 +84,8 @@ export interface InvocationOptions {
   autoApprove?: boolean;
   /** Extra environment variables for the spawned agent */
   env?: Record<string, string>;
+  /** Shared lock file used to serialize shadow mutations across dispatch worktrees */
+  mutationLockFile?: string;
   /** Called for each streaming update from the agent */
   onUpdate?: (update: SessionUpdate) => void;
   /** Path to kspec CLI (defaults to resolved bin/kspec.cjs) */
@@ -128,11 +130,17 @@ interface InvocationState {
 /**
  * Run a kspec CLI command synchronously.
  */
-function runKspecCli(args: string[], cwd: string, kspecCliPath: string): { stdout: string; stderr: string; status: number | null } {
+function runKspecCli(
+  args: string[],
+  cwd: string,
+  kspecCliPath: string,
+  env?: Record<string, string>,
+): { stdout: string; stderr: string; status: number | null } {
   const result = spawnSync(process.execPath, [kspecCliPath, ...args], {
     encoding: "utf-8",
     stdio: "pipe",
     cwd,
+    env: env ? { ...process.env, ...env } : process.env,
   });
   return {
     stdout: result.stdout ?? "",
@@ -144,15 +152,39 @@ function runKspecCli(args: string[], cwd: string, kspecCliPath: string): { stdou
 /**
  * Add a note to a task via kspec CLI.
  */
-function addTaskNote(taskRef: string, note: string, cwd: string, kspecCliPath: string): void {
-  runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath);
+function addTaskNote(
+  taskRef: string,
+  note: string,
+  cwd: string,
+  kspecCliPath: string,
+  env?: Record<string, string>,
+  strict = false,
+): void {
+  const result = runKspecCli(["task", "note", taskRef, note], cwd, kspecCliPath, env);
+  if (strict && result.status !== 0) {
+    throw new DispatchMutationError(
+      `Dispatch mutation failed while writing task note for ${taskRef}: ${result.stderr || result.stdout || "kspec task note exited non-zero"}`,
+    );
+  }
 }
 
 /**
  * Block a task via kspec CLI.
  */
-function blockTask(taskRef: string, reason: string, cwd: string, kspecCliPath: string): void {
-  runKspecCli(["task", "block", taskRef, "--reason", reason], cwd, kspecCliPath);
+function blockTask(
+  taskRef: string,
+  reason: string,
+  cwd: string,
+  kspecCliPath: string,
+  env?: Record<string, string>,
+  strict = false,
+): void {
+  const result = runKspecCli(["task", "block", taskRef, "--reason", reason], cwd, kspecCliPath, env);
+  if (strict && result.status !== 0) {
+    throw new DispatchMutationError(
+      `Dispatch mutation failed while blocking ${taskRef}: ${result.stderr || result.stdout || "kspec task block exited non-zero"}`,
+    );
+  }
 }
 
 function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outcome"] | null {
@@ -245,6 +277,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     trigger,
     autoApprove = agent.auto_approve,
     env = {},
+    mutationLockFile,
     onUpdate,
     kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
     abortSignal,
@@ -353,6 +386,9 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       env: {
         ...env,
         KSPEC_SESSION_ID: sessionId,
+        ...(mutationLockFile
+          ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
+          : {}),
       },
       extraArgs,
       clientOptions: {
@@ -541,6 +577,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
           cwd,
           kspecCliPath,
+          mutationLockFile
+            ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
+            : undefined,
+          Boolean(mutationLockFile),
         );
       }
 
@@ -636,6 +676,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
         cwd,
         kspecCliPath,
+        mutationLockFile
+          ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
+          : undefined,
+        Boolean(mutationLockFile),
       );
 
       // ─── Check retry threshold ────────────────────────────────────────────
@@ -649,6 +693,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
           `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
           cwd,
           kspecCliPath,
+          mutationLockFile
+            ? { KSPEC_SHADOW_MUTATION_LOCK_FILE: mutationLockFile }
+            : undefined,
+          Boolean(mutationLockFile),
         );
       }
     }
@@ -712,5 +760,12 @@ export class InvocationAbortedError extends Error {
   constructor() {
     super("Agent invocation aborted by shutdown signal");
     this.name = "InvocationAbortedError";
+  }
+}
+
+export class DispatchMutationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "DispatchMutationError";
   }
 }
