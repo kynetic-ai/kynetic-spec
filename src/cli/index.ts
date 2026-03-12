@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import { realpathSync } from "node:fs";
+import { realpathSync, rmSync } from "node:fs";
 import { createRequire } from "node:module";
+import path from "node:path";
 import chalk from "chalk";
 import { Command } from "commander";
 
@@ -67,6 +68,7 @@ import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
+import { acquireFileLock } from "../parser/file-lock.js";
 
 const program = new Command();
 
@@ -75,6 +77,47 @@ setVerboseModeGetter(getVerboseMode);
 
 // Track if we've already shown the manifest daemon deprecation warning this session
 let manifestDaemonWarningShown = false;
+let heldMutationLockRelease: (() => Promise<void>) | null = null;
+let heldMutationLockPath: string | null = null;
+
+function releaseHeldMutationLockSync(): void {
+  if (!heldMutationLockPath) return;
+  try {
+    rmSync(`${heldMutationLockPath}.lock`, { recursive: true, force: true });
+  } catch {
+    // Best effort cleanup on process exit
+  }
+}
+
+process.once("exit", releaseHeldMutationLockSync);
+
+async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<void> {
+  if (!isMutating || heldMutationLockRelease) return;
+
+  const lockFile = process.env.KSPEC_SHADOW_MUTATION_LOCK_FILE;
+  if (!lockFile) return;
+
+  const timeoutRaw = process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
+  const timeoutMs =
+    timeoutRaw && Number.isFinite(Number(timeoutRaw))
+      ? Number(timeoutRaw)
+      : undefined;
+
+  try {
+    heldMutationLockRelease = await acquireFileLock(lockFile, timeoutMs);
+    heldMutationLockPath = lockFile;
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    console.error(chalk.red("error: dispatch shadow mutation lock unavailable"));
+    console.error(chalk.gray(`Reason: ${reason}`));
+    console.error(
+      chalk.gray(
+        `Suggested action: wait for the overlapping kspec mutation to finish, or remove ${path.basename(lockFile)}.lock if the lock holder is gone.`,
+      ),
+    );
+    process.exit(EXIT_CODES.ERROR);
+  }
+}
 
 /**
  * Auto-start daemon if configured and not already running
@@ -214,6 +257,8 @@ program
       setSyncMode("drift-check");
     }
 
+    await maybeAcquireDispatchMutationLock(isMutating);
+
     // Auto-start daemon if configured and not running
     // Skip for init, serve, and help commands
     const skipCommands = ['init', 'serve', 'help', 'kspec'];
@@ -222,11 +267,18 @@ program
       await maybeAutoStartDaemon();
     }
   })
-  .hook("postAction", () => {
+  .hook("postAction", async () => {
     // Clear sync mode after command completes so non-Commander callers
     // (daemon, dispatch engine) that call initContext() later in the
     // same process get 'drift-check' default, not stale command state.
     clearSyncMode();
+
+    if (heldMutationLockRelease) {
+      const release = heldMutationLockRelease;
+      heldMutationLockRelease = null;
+      heldMutationLockPath = null;
+      await release();
+    }
   });
 
 // Register command groups

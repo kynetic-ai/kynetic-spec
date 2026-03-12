@@ -388,6 +388,41 @@ describe("Timeout handling", () => {
     expect(noteText).toContain("[AGENT-TIMEOUT]");
   });
 
+  it("should surface timeout note mutation failures as dispatch mutation failures", async () => {
+    // AC: @scoped-dispatch-shadow-serialization ac-3
+    // AC: @trait-error-guidance ac-1
+    // AC: @trait-error-guidance ac-2
+    const agent = makeTestAgent({ adapter: "slow-mock-acp" });
+    const failingCli = path.join(testDir, "failing-kspec.cjs");
+
+    await fs.writeFile(
+      failingCli,
+      [
+        "#!/usr/bin/env node",
+        "console.error('dispatch shadow mutation lock unavailable');",
+        "console.error('Suggested action: wait for the overlapping mutation to finish.');",
+        "process.exit(1);",
+      ].join("\n"),
+      "utf-8",
+    );
+    fsSync.chmodSync(failingCli, 0o755);
+
+    await expect(
+      runInvocation({
+        agent,
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK"),
+        prompt: "Test timeout mutation failure",
+        trigger: "task.ready",
+        timeoutMinutes: 0.001,
+        kspecCliPath: failingCli,
+        mutationLockFile: path.join(testDir, "dispatch-shadow-mutation"),
+      }),
+    ).rejects.toThrow(/Dispatch mutation failed while writing task note/);
+  });
+
   it("should dispatch ACP cancel request on timeout", async () => {
     // AC: @agent-invocation-lifecycle ac-3 — ACP cancel request dispatched on timeout
     // Use a closure to track cancel calls — vi.spyOn prototype mocks don't reliably
