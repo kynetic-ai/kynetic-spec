@@ -91975,6 +91975,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/805
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
   slugs:
     - task-implement-dispatch-orientation-prompt
