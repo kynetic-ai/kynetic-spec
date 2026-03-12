@@ -18,8 +18,87 @@ export function getDispatchWorkspaceRegistryPath(ctx: KspecContext): string {
   return path.join(ctx.specDir, "project.dispatch-workspaces.yaml");
 }
 
+function defaultLegacyIntegrationOutcome(
+  status: unknown,
+  publicationMode: unknown,
+): string {
+  switch (status) {
+    case "merged":
+    case "abandoned":
+    case "reset":
+      return status;
+    default:
+      return publicationMode === "pull_request" ? "pull_request" : "manual_merge";
+  }
+}
+
+function normalizeLegacyRegistryRaw(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") {
+    return raw;
+  }
+
+  const registry = raw as {
+    workspaces?: unknown[];
+  };
+  if (!Array.isArray(registry.workspaces)) {
+    return raw;
+  }
+
+  return {
+    ...registry,
+    workspaces: registry.workspaces.map((workspace) => {
+      if (!workspace || typeof workspace !== "object") {
+        return workspace;
+      }
+
+      const record = workspace as {
+        base_branch_point?: unknown;
+        canonical_branch_head?: unknown;
+        integration?: {
+          status?: unknown;
+          target_branch?: unknown;
+          target_commit?: unknown;
+          publication_mode?: unknown;
+          outcome?: unknown;
+          detail?: unknown;
+          updated_at?: unknown;
+        };
+      };
+      const integration = record.integration;
+      if (!integration || typeof integration !== "object") {
+        return workspace;
+      }
+
+      const publicationMode = integration.publication_mode === "pull_request"
+        || integration.publication_mode === "manual_merge"
+        ? integration.publication_mode
+        : integration.outcome === "pull_request"
+          || integration.outcome === "manual_merge"
+          ? integration.outcome
+          : "manual_merge";
+      const targetCommit = typeof integration.target_commit === "string" && integration.target_commit.trim().length > 0
+        ? integration.target_commit
+        : typeof record.base_branch_point === "string" && record.base_branch_point.trim().length > 0
+          ? record.base_branch_point
+          : record.canonical_branch_head;
+
+      return {
+        ...record,
+        integration: {
+          ...integration,
+          target_commit: targetCommit,
+          publication_mode: publicationMode,
+          outcome: integration.outcome ?? defaultLegacyIntegrationOutcome(integration.status, publicationMode),
+        },
+      };
+    }),
+  };
+}
+
 function formatRegistryValidationError(raw: unknown): string {
-  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(raw);
+  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(
+    normalizeLegacyRegistryRaw(raw),
+  );
   if (parsed.success) {
     return "Unknown dispatch workspace registry validation error";
   }
@@ -35,7 +114,9 @@ function formatRegistryValidationError(raw: unknown): string {
 }
 
 function parseRegistryFromRaw(raw: unknown): DispatchWorkspaceRecord[] {
-  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(raw);
+  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(
+    normalizeLegacyRegistryRaw(raw),
+  );
   if (parsed.success) {
     return parsed.data.workspaces;
   }
