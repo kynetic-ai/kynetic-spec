@@ -91677,7 +91677,7 @@
   spec_ref: "@dispatch-branch-integration-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91689,7 +91689,7 @@
     - branch
     - review
   vcs_refs: []
-  session_id: 01KKHP897HYZZAMTQNWFBFWHM6
+  session_id: null
   created_at: 2026-03-12T02:33:55.483Z
   started_at: 2026-03-12T19:04:16.612Z
   submitted_at: 2026-03-12T19:04:26.556Z
@@ -91743,6 +91743,14 @@
         tests/canonical-task-workspace-contract.test.ts tests/dispatch-workspace-config.test.ts
         tests/agent-dispatch-engine.test.ts and kspec validate --warnings-ok (warnings are
         pre-existing project-wide validation debt, no new errors)."
+      supersedes: null
+    - _ulid: 01KKHQB44JRAATTHEYXGNZ1J12
+      created_at: 2026-03-12T19:10:58.706Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #803 regresses dispatch workspace registry
+        validation. npm test fails in tests/dispatch-workspace-registry.test.ts because older
+        records missing integration target_commit/publication_mode/outcome are rejected before
+        duplicate-record checks run."
       supersedes: null
   todos: []
   automation: eligible
