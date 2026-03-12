@@ -91160,6 +91160,18 @@
         applied to actual task workspace provisioning, so spec ac-1 through ac-3 are not implemented
         end to end."
       supersedes: null
+    - _ulid: 01KKG1993C0RV1AMJXMNYTH5JZ
+      created_at: 2026-03-12T03:26:15.149Z
+      author: Jacob Chapel
+      content: Applied dispatch workspace config to real invocation provisioning:\n- added
+        dispatch.base_branch and dispatch.worktree_root config support with defaults\n- added
+        runtime workspace resolver/provisioner that creates task worktrees from the resolved base
+        branch\n- recorded base branch / merge target metadata in each provisioned workspace to
+        avoid drift across later invocations\n- wired DispatchEngine to spawn agents inside the
+        provisioned worktree cwd with workspace metadata env vars\n- added config, resolver, and
+        dispatch-engine tests covering configured branch/root, remote HEAD fallback, and actual
+        invocation cwd usage
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
@@ -91495,7 +91507,11 @@
   notes: []
   todos: []
   automation: eligible
-- title: Clarify and implement mixed Tasks-section precedence for derive_from_specs
+- _ulid: 01KKG0SN9325ERD0JW6H97SNFE
+  slugs:
+    - task-plan-embedded-views-mixed-task-precedence
+  title: Clarify and implement mixed Tasks-section precedence for derive_from_specs
+  type: task
   description: >-
     Background:
 
@@ -91518,27 +91534,23 @@
 
     - Update the parser and tests to enforce deterministic precedence for mixed task sections after
     the live batch-loading regression is fixed.
-  type: task
   spec_ref: "@plan-embedded-views"
   meta_ref: null
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@bug-plan-embedded-views-live-loading"
+  context: []
   priority: 2
-  slugs:
-    - task-plan-embedded-views-mixed-task-precedence
   tags:
     - web-ui
     - plans
     - markdown
     - parser
     - spec
-  depends_on:
-    - "@bug-plan-embedded-views-live-loading"
-  automation: eligible
-  _ulid: 01KKG0SN9325ERD0JW6H97SNFE
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-12T03:17:43.331Z
   notes: []
   todos: []
+  automation: eligible
