@@ -92013,6 +92013,18 @@
         no reviewer steps apply, and AC-3 coverage now asserts reviewer filesystem state plus
         reviewer-first/worker-later behavior."
       supersedes: null
+    - _ulid: 01KKJ1JNKZJEA4HAD429DR4W7D
+      created_at: 2026-03-12T22:09:51.744Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Fixed reviewer bootstrap reuse by normalizing per-role bootstrap state in
+        dispatch workspace metadata. Worker and reviewer readiness are now tracked separately,
+        invalidation hashes use the full bootstrap config, reviewer reuse only falls back to worker
+        state when no reviewer steps apply, and reviewer success no longer lets first worker
+        bootstrap get skipped. Added AC-3 regressions for worker-only reviewer reuse and
+        reviewer-first/worker-later sequencing. Verification: npm run typecheck; npm test -- --run
+        tests/dispatch-runtime-bootstrap-contract.test.ts; npm test; kspec validate (warnings only:
+        pre-existing repo-wide debt)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
