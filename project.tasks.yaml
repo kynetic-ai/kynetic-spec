@@ -87665,6 +87665,18 @@
         the behavior tests they actually cover, and tightening the sweep guard suites so they fail
         on bare refs in the targeted files."
       supersedes: null
+    - _ulid: 01KKFY1Z07ZZDKZJDDXG484Q4D
+      created_at: 2026-03-12T02:29:49.703Z
+      author: Jacob Chapel
+      content: "Fix-cycle progress: replaced remaining blanket refs in the review-cited sweep targets with
+        explicit ac-* mappings, updated parser support for named ac-* ids, and added/adjusted guard
+        coverage plus additional command/root annotations where existing behavior tests clearly
+        matched. Current honest completeness count with source validator is 181 missing own-coverage
+        items and 0 trait-coverage items. The original 50%-reduction gate is no longer reachable
+        within this fix cycle because the prior sweep count relied on blanket coverage that review
+        correctly rejected; getting back under the threshold now requires a broader repo-wide per-AC
+        sweep across many command/root specs rather than a narrow fix of the review findings."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
