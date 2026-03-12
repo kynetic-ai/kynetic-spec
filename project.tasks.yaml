@@ -91549,7 +91549,7 @@
   spec_ref: "@dispatch-branch-integration-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91596,6 +91596,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-12T17:32:39.202Z
 - _ulid: 01KKFY9FK58T570QTKKYMPTK98
   slugs:
     - task-implement-dispatch-workspace-cleanup
