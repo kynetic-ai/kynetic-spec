@@ -91316,8 +91316,12 @@
   spec_ref: "@dispatch-workspace-registry"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Review complete for PR #800: code/spec/test gates are clean, but merge is blocked because the
+      external 'Claude Code Review' GitHub Action fails on commit
+      9b1d2cb91a3f9ef91f74f8a1f9d7a90ff8f418cc with an anthropics/claude-code-action SDK/process
+      error (all test shards and e2e passed; unresolved-comment check recovered)."
   depends_on:
     - "@task-design-dispatch-workspace-registry"
     - "@task-implement-canonical-task-workspace-contract"
