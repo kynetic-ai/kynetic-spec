@@ -91023,6 +91023,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: Design captured in approved plan @plan-dispatch-worktree-isolation-and-scheduling and
+    spec @dispatch-workspace-registry; implementation remains for
+    @task-implement-dispatch-workspace-registry and downstream dispatch worktree/integration/cleanup
+    tasks.
   depends_on:
     - "@task-design-dispatch-workspace-config"
     - "@task-design-canonical-task-workspace-contract"
@@ -91036,6 +91040,7 @@
   session_id: 01KKG0CBDH54B6D3A7ANDXK4GJ
   created_at: 2026-03-12T02:33:52.409Z
   started_at: 2026-03-12T03:16:16.318Z
+  completed_at: 2026-03-12T03:17:13.130Z
   notes:
     - _ulid: 01KKG0Q3NHVBKW00WCFYTYXRD3
       created_at: 2026-03-12T03:16:19.761Z
@@ -91090,11 +91095,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T03:17:13.130Z
-  closed_reason: Design captured in approved plan @plan-dispatch-worktree-isolation-and-scheduling and
-    spec @dispatch-workspace-registry; implementation remains for
-    @task-implement-dispatch-workspace-registry and downstream dispatch worktree/integration/cleanup
-    tasks.
 - _ulid: 01KKFY9CKEP7X52W1WFV9TF47Q
   slugs:
     - task-implement-dispatch-workspace-config
@@ -91450,5 +91450,95 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-12T02:49:31.460Z
+  notes: []
+  todos: []
+- _ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
+  slugs:
+    - bug-plan-embedded-views-live-loading
+  title: Restore live embedded item loading on plans page
+  type: bug
+  description: >-
+    Repro:
+
+    - Open `/plans` in live daemon mode and expand
+    `@plan-ui-wide-markdown-rendering-plan-embedded-views`, `@plan-session-storage-separation`, or
+    `@plan-skill-system-portability`.
+
+    - Observed: `GET /api/plans/:ref` succeeds, but the page never issues `POST /api/items/batch`;
+    the content falls back to raw YAML code blocks with no embedded loading or error state.
+
+
+    Scope:
+
+    - Fix the plans-page embedded-content load path so expanding a plan with derived specs/tasks
+    actually fetches batch summaries and hands them to the embedded renderer.
+
+    - Preserve existing graceful fallback behavior when the batch request truly fails.
+
+    - Add runtime coverage that exercises the real fetch path instead of only parser-level behavior
+    or fully stubbed batch rendering.
+  spec_ref: "@plan-embedded-views"
+  meta_ref: null
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - web-ui
+    - plans
+    - markdown
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-12T03:17:41.960Z
+  notes: []
+  todos: []
+  automation: eligible
+- title: Clarify and implement mixed Tasks-section precedence for derive_from_specs
+  description: >-
+    Background:
+
+    - The current `## Tasks` parser behavior is ambiguous when a plan contains both
+    `derive_from_specs: true` and an explicit YAML task list under the same heading.
+
+    - The current parser prefers the explicit YAML slugs, which can narrow the embed to a manual
+    subset even when the section is marked to render derived tasks.
+
+
+    Required behavior:
+
+    - Follow `@plan-embedded-views` `ac-9`: when `derive_from_specs: true` is present in the Tasks
+    section, embedded task rendering is driven by `plan.derived_tasks`; any adjacent manual YAML
+    task list is ignored for embedding precedence and must not create duplicate or narrower task
+    embeds.
+
+
+    Scope:
+
+    - Update the parser and tests to enforce deterministic precedence for mixed task sections after
+    the live batch-loading regression is fixed.
+  type: task
+  spec_ref: "@plan-embedded-views"
+  meta_ref: null
+  plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+  priority: 2
+  slugs:
+    - task-plan-embedded-views-mixed-task-precedence
+  tags:
+    - web-ui
+    - plans
+    - markdown
+    - parser
+    - spec
+  depends_on:
+    - "@bug-plan-embedded-views-live-loading"
+  automation: eligible
+  _ulid: 01KKG0SN9325ERD0JW6H97SNFE
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-12T03:17:43.331Z
   notes: []
   todos: []

@@ -2270,6 +2270,12 @@ features:
             then: |
               those sections render as standard formatted markdown with full
               prose typography and code highlighting
+          - id: ac-9
+            given: "a plan's content contains a `## Tasks` section where `derive_from_specs: true` appears
+              alongside an adjacent ```yaml task list"
+            when: the plan content is rendered
+            then: the embedded task cards are sourced from `plan.derived_tasks`, and the manual YAML task list
+              does not narrow, replace, or duplicate the rendered embedded task set
         depends_on: []
         implements: []
         relates_to: []
