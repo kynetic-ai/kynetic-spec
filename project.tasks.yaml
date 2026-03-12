@@ -91924,12 +91924,29 @@
     - runtime
     - bootstrap
   vcs_refs: []
+  session_id: 01KKHWE6FRYZE1FKE3TKQ2ER8R
   created_at: 2026-03-12T02:33:56.654Z
-  notes: []
+  started_at: 2026-03-12T20:46:14.901Z
+  notes:
+    - _ulid: 01KKHWSNS1Y1X6K2FNW5C4HRC6
+      created_at: 2026-03-12T20:46:18.401Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatcher must own workspace bootstrap so agents inherit a prepared runtime
+        instead of redoing setup.
+
+        - Scope: implement bootstrap config/state contract in dispatch preflight, including
+        reuse/invalidation behavior and failure recording.
+
+        - Files: dispatch runtime/workspace modules, related config/schema types, and focused tests
+        around dispatch preflight/bootstrap reuse.
+
+        - Verification: targeted and full npm test coverage plus kspec validate before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T20:46:14.901Z
-  session_id: 01KKHWE6FRYZE1FKE3TKQ2ER8R
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
   slugs:
     - task-implement-dispatch-orientation-prompt
