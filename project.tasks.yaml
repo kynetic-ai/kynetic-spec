@@ -91103,7 +91103,7 @@
   spec_ref: "@dispatch-workspace-configuration"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-design-dispatch-workspace-config"
@@ -91199,6 +91199,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T04:18:23.682Z
+  closed_reason: "Merged in PR #796 via merge commit 28be06a81a3871220a673877307b3214120e55f9.
+    Implemented dispatch.base_branch and dispatch.worktree_root config parsing plus workspace
+    provisioning that creates task worktrees from the resolved base branch, records merge-target
+    metadata, and launches dispatched invocations inside the provisioned worktree. AC coverage
+    verified for @dispatch-workspace-configuration ac-1..ac-4, with @trait-error-guidance ac-1..ac-6
+    marked N/A for this internal runtime; focused local dispatch tests and GitHub Actions run
+    22986140147 passed on commit 569e43a172d18e2db587024eaab7178f6bc5ac5f."
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
   slugs:
     - task-implement-canonical-task-workspace-contract
