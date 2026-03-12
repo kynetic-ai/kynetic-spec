@@ -92005,6 +92005,14 @@
         fresh reviewer worktree that does not contain worker bootstrap artifacts; AC-3 test also
         misses the reviewer filesystem state."
       supersedes: null
+    - _ulid: 01KKJ17262K0M8QAFEQPX9Z8DV
+      created_at: 2026-03-12T22:03:31.395Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Updating bootstrap metadata to track worker/reviewer readiness separately.
+        Reviewer reuse now keys off reviewer-safe worktree state or explicit worker-state reuse when
+        no reviewer steps apply, and AC-3 coverage now asserts reviewer filesystem state plus
+        reviewer-first/worker-later behavior."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
