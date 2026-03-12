@@ -90960,6 +90960,9 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: Design captured in approved plan @plan-dispatch-worktree-isolation-and-scheduling and
+    spec @canonical-task-workspace-contract; implementation remains for
+    @task-implement-canonical-task-workspace-contract and related dispatch worktree tasks.
   depends_on:
     - "@task-design-dispatch-workspace-config"
   context: []
@@ -90972,6 +90975,7 @@
   session_id: 01KKFZR12513W1TM51ABJWE1VF
   created_at: 2026-03-12T02:33:51.819Z
   started_at: 2026-03-12T02:59:45.780Z
+  completed_at: 2026-03-12T03:00:46.691Z
   notes:
     - _ulid: 01KKFZTN7EE60RD4T4D2CHRYF5
       created_at: 2026-03-12T03:00:47.470Z
@@ -90981,12 +90985,34 @@
         @canonical-task-workspace-contract; implementation remains for
         @task-implement-canonical-task-workspace-contract and related dispatch worktree tasks."
       supersedes: null
+    - _ulid: 01KKFZTMG6SX1KBKVB0DZCBRRX
+      created_at: 2026-03-12T03:00:46.726Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: Approved plan @plan-dispatch-worktree-isolation-and-scheduling already
+        captures the canonical task branch/workspace design, including canonical mutable worker
+        lineage, reviewer snapshot isolation, deterministic branch naming, and cleanup eligibility.
+
+        - Scope: Verified @canonical-task-workspace-contract fully specifies the branch/workspace
+        contract and that implementation remains intentionally separate in
+        @task-implement-canonical-task-workspace-contract,
+        @task-implement-dispatch-worktree-provisioning, and related follow-on tasks.
+
+        - Files/artifacts: Plan record @plan-dispatch-worktree-isolation-and-scheduling, spec
+        @canonical-task-workspace-contract, current dispatch runtime in
+        src/agent-runtime/dispatch.ts, and existing git worktree support in
+        src/parser/session-branch.ts plus tests/session-branch-worktree.test.ts.
+
+        - Verification: Ran kspec task get, kspec plan get, kspec item get, git history checks for
+        related task trailers, and source searches over src/tests/packages for canonical dispatch
+        branch/workspace behavior. The design is present in plan/spec, while code currently lacks
+        canonical task branch and reviewer snapshot implementation details, confirming this task is
+        design-complete and implementation remains pending separately.
+      supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T03:00:46.691Z
-  closed_reason: Design captured in approved plan @plan-dispatch-worktree-isolation-and-scheduling and
-    spec @canonical-task-workspace-contract; implementation remains for
-    @task-implement-canonical-task-workspace-contract and related dispatch worktree tasks.
 - _ulid: 01KKFY9C0SFWHB65MV02D65PXN
   slugs:
     - task-design-dispatch-workspace-registry
