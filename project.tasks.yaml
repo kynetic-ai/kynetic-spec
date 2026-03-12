@@ -87593,7 +87593,7 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-core-primitives-ac-backfill"
@@ -87610,7 +87610,7 @@
   session_id: 01KKHGK5AGKV303WHXGJEJY85W
   created_at: 2026-03-10T06:55:47.174Z
   started_at: 2026-03-12T17:32:55.675Z
-  submitted_at: 2026-03-11T23:47:35.767Z
+  submitted_at: 2026-03-12T18:39:18.418Z
   notes:
     - _ulid: 01KKB8FGF6N80GSKNB97A7RXS4
       created_at: 2026-03-10T06:55:47.174Z
