@@ -92380,12 +92380,30 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KKJ59CS6XQJBNEV6QDMC4RQK
   created_at: 2026-03-12T02:49:31.460Z
-  notes: []
+  started_at: 2026-03-12T23:21:06.630Z
+  notes:
+    - _ulid: 01KKJ5N3MPXQQ6PEC0BAJZ52V0
+      created_at: 2026-03-12T23:21:05.942Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: plan derive currently auto-creates per-spec implementation tasks even when a
+        plan explicitly sets derive_from_specs: false.
+
+        - Scope: fix derive behavior so false suppresses auto per-spec tasks while preserving
+        plan-defined additional tasks and task linkage/dependency mapping.
+
+        - Files: expected changes in plan derive command/parser logic and regression tests around
+        plan import/derive.
+
+        - Verification: targeted tests for plan derive false path, then full npm test and kspec
+        validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T23:21:06.630Z
-  session_id: 01KKJ59CS6XQJBNEV6QDMC4RQK
 - _ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
   slugs:
     - bug-plan-embedded-views-live-loading
