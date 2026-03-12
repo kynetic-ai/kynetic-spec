@@ -27,6 +27,9 @@ import type {
   DispatchWorkspaceWorktree,
 } from "../schema/index.js";
 
+const DISPATCH_WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
+const DISPATCH_BRANCH_PREFIX = "dispatch/task/";
+
 interface GitResult {
   stdout: string;
   stderr: string;
@@ -68,6 +71,8 @@ export interface DispatchWorkspaceMetadata {
   bootstrap: DispatchWorkspaceBootstrapState;
   cleanupEligible: boolean;
   cleanupReason: string | null;
+  cleanupScheduledAt: string | null;
+  cleanupBlockedReason: string | null;
   createdAt: string;
   updatedAt: string;
   lastReconciledAt: string | null;
@@ -181,6 +186,12 @@ export interface ProvisionedDispatchWorkspace {
 export interface DispatchWorkspaceCleanupState {
   cleanupEligible: boolean;
   cleanupReason: string | null;
+}
+
+export interface DispatchWorkspaceReapResult {
+  taskRef: string;
+  action: "none" | "reviewer_cleaned" | "reaped" | "cleanup_blocked";
+  blockedReason: string | null;
 }
 
 export interface ResolveDispatchWorkspaceCleanupStateOptions {
@@ -361,6 +372,24 @@ function resolveWorkspacePublicationMode(
       return resolvePublicationMode(projectDir);
     default:
       return existingRecord.integration.publication_mode;
+  }
+}
+
+function isDispatchBranch(branch: string | null | undefined): branch is string {
+  return Boolean(branch && branch.startsWith(DISPATCH_BRANCH_PREFIX));
+}
+
+function isPathInside(parent: string, candidate: string): boolean {
+  const relative = path.relative(path.resolve(parent), path.resolve(candidate));
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+async function readWorkspaceMetadata(worktreeDir: string): Promise<DispatchWorkspaceMetadata | null> {
+  try {
+    const raw = await fs.readFile(metadataPathFor(worktreeDir), "utf-8");
+    return JSON.parse(raw) as DispatchWorkspaceMetadata;
+  } catch {
+    return null;
   }
 }
 
@@ -771,6 +800,27 @@ export async function persistDispatchWorkspaceMetadata(
   });
 }
 
+async function findWorkspaceRegistrationByTaskRef(
+  projectDir: string,
+  taskRef: string,
+  task?: { title?: string; slugs?: string[] },
+): Promise<{ canonicalBranch: string; workerWorktreeDir: string; metadata: DispatchWorkspaceMetadata } | null> {
+  const slug = normalizeTaskSlug(taskRef, task);
+  const shortId = shortTaskId(taskRef);
+  const canonicalBranch = `dispatch/task/${slug}/${shortId}`;
+  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, canonicalBranch);
+  if (!workerWorktreeDir) {
+    return null;
+  }
+
+  const metadata = await readWorkspaceMetadata(workerWorktreeDir);
+  if (!metadata) {
+    return null;
+  }
+
+  return { canonicalBranch, workerWorktreeDir, metadata };
+}
+
 async function ensureUsableWorktreeRoot(
   projectDir: string,
   worktreeRoot: string,
@@ -987,6 +1037,88 @@ export async function reconcileDispatchWorkspaceRegistry(
   }
 }
 
+function nextLifecycleState(
+  role: DispatchWorkspaceRole,
+  cleanupState: DispatchWorkspaceCleanupState,
+  existingMetadata: DispatchWorkspaceMetadata | null,
+): DispatchWorkspaceLifecycleState {
+  if (cleanupState.cleanupEligible) {
+    return "closing";
+  }
+  if (existingMetadata?.lifecycleState === "stale") {
+    return "stale";
+  }
+  return role === "reviewer" || role === "worker" ? "active" : "ready";
+}
+
+async function safelyRemoveDispatchWorktree(
+  projectDir: string,
+  worktreeRoot: string,
+  worktreeDir: string,
+): Promise<void> {
+  const shadowDir = path.join(projectDir, ".kspec");
+  if (!isPathInside(worktreeRoot, worktreeDir)) {
+    throw new DispatchWorkspaceError(
+      `Refusing to remove worktree outside dispatch root: "${worktreeDir}"`,
+      "Inspect dispatch workspace metadata and worktree paths before retrying cleanup.",
+    );
+  }
+  if (
+    path.resolve(worktreeDir) === path.resolve(projectDir) ||
+    path.resolve(worktreeDir) === path.resolve(shadowDir)
+  ) {
+    throw new DispatchWorkspaceError(
+      `Refusing to remove protected worktree path "${worktreeDir}"`,
+      "Only dispatcher-managed worktrees under dispatch.worktree_root may be cleaned up.",
+    );
+  }
+
+  const registration = findWorktreeByPath(projectDir, worktreeDir);
+  if (registration) {
+    runGitOrThrow(
+      projectDir,
+      ["worktree", "remove", "--force", worktreeDir],
+      `Failed to remove dispatch worktree "${worktreeDir}"`,
+      "Inspect git worktree state and remove stale registrations before retrying cleanup.",
+    );
+    return;
+  }
+
+  await fs.rm(worktreeDir, { recursive: true, force: true });
+}
+
+function deleteDispatchBranch(projectDir: string, branch: string): void {
+  if (!isDispatchBranch(branch)) {
+    throw new DispatchWorkspaceError(
+      `Refusing to delete non-dispatch branch "${branch}"`,
+      "Only canonical dispatch/task/* branches are eligible for dispatcher cleanup.",
+    );
+  }
+
+  if (!refExists(projectDir, `refs/heads/${branch}`)) {
+    return;
+  }
+
+  runGitOrThrow(
+    projectDir,
+    ["branch", "-D", branch],
+    `Failed to delete dispatch branch "${branch}"`,
+    "Inspect branch state and active worktree registrations before retrying cleanup.",
+  );
+}
+
+function listDispatchBranches(projectDir: string): string[] {
+  const result = runGit(projectDir, [
+    "for-each-ref",
+    "--format=%(refname:short)",
+    `refs/heads/${DISPATCH_BRANCH_PREFIX}`,
+  ]);
+  if (result.status !== 0 || !result.stdout) {
+    return [];
+  }
+  return result.stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+}
+
 export async function reconcileDispatchWorkspaceLifecycle(
   options: ReconcileDispatchWorkspaceLifecycleOptions,
 ): Promise<ProvisionedDispatchWorkspace | null> {
@@ -1043,6 +1175,171 @@ export async function reconcileDispatchWorkspaceLifecycle(
     metadataPath,
     metadata: toMetadata(record),
   };
+}
+
+export async function cleanupReviewerDispatchWorkspace(
+  projectDir: string,
+  taskRef: string,
+  task?: { title?: string; slugs?: string[] },
+): Promise<DispatchWorkspaceReapResult> {
+  const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, task);
+  if (!existing || !existing.metadata.reviewerWorktreeDir) {
+    return { taskRef, action: "none", blockedReason: null };
+  }
+
+  await safelyRemoveDispatchWorktree(
+    projectDir,
+    existing.metadata.worktreeRoot,
+    existing.metadata.reviewerWorktreeDir,
+  );
+
+  const now = new Date().toISOString();
+  const updatedMetadata: DispatchWorkspaceMetadata = {
+    ...existing.metadata,
+    reviewerWorktreeDir: null,
+    lifecycleState: existing.metadata.cleanupEligible ? "closing" : "ready",
+    cleanupBlockedReason: null,
+    updatedAt: now,
+  };
+  await writeWorkspaceMetadata(existing.workerWorktreeDir, updatedMetadata);
+  return { taskRef, action: "reviewer_cleaned", blockedReason: null };
+}
+
+export async function reapDispatchWorkspace(
+  projectDir: string,
+  taskRef: string,
+  options?: {
+    activeTaskRefs?: Iterable<string>;
+    task?: { title?: string; slugs?: string[] };
+  },
+): Promise<DispatchWorkspaceReapResult> {
+  const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, options?.task);
+  if (!existing) {
+    return { taskRef, action: "none", blockedReason: null };
+  }
+
+  const activeTaskRefs = new Set(options?.activeTaskRefs ?? []);
+  if (activeTaskRefs.has(taskRef)) {
+    const blockedReason =
+      "Cleanup blocked: canonical branch still has an active dispatch invocation.";
+    const metadata: DispatchWorkspaceMetadata = {
+      ...existing.metadata,
+      lifecycleState: "cleanup_blocked",
+      cleanupBlockedReason: blockedReason,
+      cleanupScheduledAt: existing.metadata.cleanupScheduledAt ?? new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await writeWorkspaceMetadata(existing.workerWorktreeDir, metadata);
+    return { taskRef, action: "cleanup_blocked", blockedReason };
+  }
+
+  if (!existing.metadata.cleanupEligible) {
+    const blockedReason =
+      "Cleanup blocked: workspace integration outcome is unresolved, so the canonical branch must be retained.";
+    const metadata: DispatchWorkspaceMetadata = {
+      ...existing.metadata,
+      lifecycleState: "cleanup_blocked",
+      cleanupBlockedReason: blockedReason,
+      cleanupScheduledAt: existing.metadata.cleanupScheduledAt ?? new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await writeWorkspaceMetadata(existing.workerWorktreeDir, metadata);
+    return { taskRef, action: "cleanup_blocked", blockedReason };
+  }
+
+  if (existing.metadata.reviewerWorktreeDir) {
+    await safelyRemoveDispatchWorktree(
+      projectDir,
+      existing.metadata.worktreeRoot,
+      existing.metadata.reviewerWorktreeDir,
+    );
+  }
+  await safelyRemoveDispatchWorktree(
+    projectDir,
+    existing.metadata.worktreeRoot,
+    existing.workerWorktreeDir,
+  );
+  deleteDispatchBranch(projectDir, existing.metadata.canonicalBranch);
+  return { taskRef, action: "reaped", blockedReason: null };
+}
+
+export async function reconcileDispatchWorkspaceArtifacts(
+  projectDir: string,
+  options?: { activeTaskRefs?: Iterable<string> },
+): Promise<void> {
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
+  const activeTaskRefs = new Set(options?.activeTaskRefs ?? []);
+  const worktreeEntries = parseWorktreeList(projectDir);
+  const entriesUnderRoot = worktreeEntries.filter((entry) =>
+    isPathInside(resolvedConfig.worktreeRoot, entry.path)
+  );
+
+  const referencedReviewerDirs = new Set<string>();
+  const trackedBranches = new Set<string>();
+
+  for (const entry of entriesUnderRoot) {
+    if (!isDispatchBranch(entry.branch?.replace(/^refs\/heads\//, ""))) {
+      continue;
+    }
+    const metadata = await readWorkspaceMetadata(entry.path);
+    if (!metadata) {
+      await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
+      const branchName = entry.branch?.replace(/^refs\/heads\//, "");
+      if (branchName && isDispatchBranch(branchName)) {
+        deleteDispatchBranch(projectDir, branchName);
+      }
+      continue;
+    }
+
+    trackedBranches.add(metadata.canonicalBranch);
+    if (metadata.reviewerWorktreeDir) {
+      referencedReviewerDirs.add(path.resolve(metadata.reviewerWorktreeDir));
+      const reviewerRegistration = findWorktreeByPath(projectDir, metadata.reviewerWorktreeDir);
+      if (!reviewerRegistration) {
+        const updatedMetadata: DispatchWorkspaceMetadata = {
+          ...metadata,
+          reviewerWorktreeDir: null,
+          updatedAt: new Date().toISOString(),
+        };
+        await writeWorkspaceMetadata(entry.path, updatedMetadata);
+      }
+    }
+
+    if (metadata.cleanupEligible) {
+      await reapDispatchWorkspace(projectDir, metadata.taskRef, {
+        activeTaskRefs,
+        task: {
+          title: metadata.taskSlug,
+          slugs: [metadata.taskSlug],
+        },
+      });
+    }
+  }
+
+  for (const entry of entriesUnderRoot) {
+    if (entry.branch === null && entry.path.endsWith("-review")) {
+      if (!referencedReviewerDirs.has(path.resolve(entry.path))) {
+        await safelyRemoveDispatchWorktree(projectDir, resolvedConfig.worktreeRoot, entry.path);
+      }
+    }
+  }
+
+  const rootEntries = await fs.readdir(resolvedConfig.worktreeRoot, { withFileTypes: true }).catch(() => []);
+  for (const dirent of rootEntries) {
+    const candidate = path.join(resolvedConfig.worktreeRoot, dirent.name);
+    if (findWorktreeByPath(projectDir, candidate)) {
+      continue;
+    }
+    await fs.rm(candidate, { recursive: true, force: true });
+  }
+
+  for (const branch of listDispatchBranches(projectDir)) {
+    if (trackedBranches.has(branch)) {
+      continue;
+    }
+    deleteDispatchBranch(projectDir, branch);
+  }
 }
 
 async function ensureReviewerWorktree(
