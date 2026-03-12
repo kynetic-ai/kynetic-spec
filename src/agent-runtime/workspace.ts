@@ -308,6 +308,90 @@ function resolveIntegrationRecord(
   };
 }
 
+function resolveRegistryStateForTaskStatus(
+  taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"],
+  existingRecord: LoadedDispatchWorkspaceRecord,
+  now: string,
+): {
+  integration: DispatchWorkspaceIntegrationState;
+  cleanup: RegistryCleanupState;
+} {
+  if (taskStatus === "completed") {
+    const cleanupState = {
+      integrationState: "merged" as const,
+      taskStatus,
+    };
+    return {
+      integration: resolveIntegrationRecord(
+        existingRecord.integration.target_branch,
+        cleanupState,
+        existingRecord,
+        now,
+      ),
+      cleanup: existingRecord.cleanup.status === "blocked"
+        || existingRecord.cleanup.status === "completed"
+        ? {
+            ...existingRecord.cleanup,
+            updated_at: now,
+          }
+        : resolveCleanupRecord(cleanupState, existingRecord, now),
+    };
+  }
+
+  if (taskStatus === "cancelled") {
+    const cleanupState = {
+      integrationState: "abandoned" as const,
+      taskStatus,
+    };
+    return {
+      integration: resolveIntegrationRecord(
+        existingRecord.integration.target_branch,
+        cleanupState,
+        existingRecord,
+        now,
+      ),
+      cleanup: existingRecord.cleanup.status === "blocked"
+        || existingRecord.cleanup.status === "completed"
+        ? {
+            ...existingRecord.cleanup,
+            updated_at: now,
+          }
+        : resolveCleanupRecord(cleanupState, existingRecord, now),
+    };
+  }
+
+  const shouldResetLifecycle = existingRecord.integration.status === "merged"
+    || existingRecord.integration.status === "abandoned"
+    || existingRecord.cleanup.status !== "not_scheduled"
+    || existingRecord.cleanup.eligible;
+  if (taskStatus && shouldResetLifecycle) {
+    const cleanupState = {
+      integrationState: "reset" as const,
+      taskStatus,
+    };
+    return {
+      integration: resolveIntegrationRecord(
+        existingRecord.integration.target_branch,
+        cleanupState,
+        existingRecord,
+        now,
+      ),
+      cleanup: resolveCleanupRecord(cleanupState, existingRecord, now),
+    };
+  }
+
+  return {
+    integration: {
+      ...existingRecord.integration,
+      updated_at: now,
+    },
+    cleanup: {
+      ...existingRecord.cleanup,
+      updated_at: now,
+    },
+  };
+}
+
 function resolveLifecycleState(
   taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"],
   health: DispatchWorkspaceHealthState,
@@ -318,7 +402,7 @@ function resolveLifecycleState(
   if (cleanup.status === "completed") return "closed";
   if (cleanup.status === "blocked") return "cleanup_blocked";
   if (health.status !== "healthy") return "stale";
-  if (cleanup.eligible || integration.status === "merged" || integration.status === "abandoned" || integration.status === "reset") {
+  if (cleanup.eligible || integration.status === "merged" || integration.status === "abandoned") {
     return "closing";
   }
   if (activeRole === "reviewer") return "integrating";
@@ -571,7 +655,7 @@ export function resolveDispatchWorkspaceCleanupState(
     return { cleanupEligible: true, cleanupReason: "task-abandoned" };
   }
   if (options.integrationState === "reset") {
-    return { cleanupEligible: true, cleanupReason: "task-reset" };
+    return { cleanupEligible: false, cleanupReason: null };
   }
   if (options.taskStatus === "completed" || options.taskStatus === "cancelled") {
     return { cleanupEligible: true, cleanupReason: "task-closed" };
@@ -631,14 +715,11 @@ export async function reconcileDispatchWorkspaceRegistry(
     const canonicalBranchHead = refExists(projectDir, `refs/heads/${record.canonical_branch}`)
       ? resolveCommit(projectDir, record.canonical_branch)
       : record.canonical_branch_head;
-    const cleanup = {
-      ...record.cleanup,
-      updated_at: now,
-    };
-    const integration = {
-      ...record.integration,
-      updated_at: now,
-    };
+    const { cleanup, integration } = resolveRegistryStateForTaskStatus(
+      currentTaskStatus,
+      record,
+      now,
+    );
     const lifecycleState = resolveLifecycleState(
       currentTaskStatus,
       health,

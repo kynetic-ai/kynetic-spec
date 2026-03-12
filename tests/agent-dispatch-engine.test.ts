@@ -1149,8 +1149,8 @@ describe("Active fleet cleanup on invocation completion", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    // Wait for the invocation to fail
-    for (let i = 0; i < 50 && events.length === 0; i++) {
+    // Wait for the terminal failure event after the started event
+    for (let i = 0; i < 50 && events.at(-1)?.type !== "failed"; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
@@ -1160,6 +1160,88 @@ describe("Active fleet cleanup on invocation completion", () => {
     expect(status.activeInvocations).toBe(0);
 
     await engine.stop();
+  });
+
+  it("emits started before terminal invocation events even for quiet success and early failure", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+      budget: { max_retries: 0 } as any,
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const quietEvents: string[] = [];
+    let releaseQuietInvocation!: () => void;
+    const quietInvocationGate = new Promise<void>((resolve) => {
+      releaseQuietInvocation = resolve;
+    });
+    const runSpy = vi.spyOn(invocationModule, "runInvocation")
+      .mockImplementationOnce(async () => {
+        await quietInvocationGate;
+        return { session: {} as never, outcome: "success", durationMs: 1 };
+      })
+      .mockRejectedValueOnce(new Error("early failure"));
+
+    const quietEngine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      onInvocationEvent: (event) => quietEvents.push(event.type),
+    });
+
+    await quietEngine.start();
+
+    const quietTaskId = testUlid("TASK", 50);
+    const quietHandle = quietEngine.handleStateChange({
+      taskId: quietTaskId,
+      taskRef: `@${quietTaskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    for (let i = 0; i < 50 && quietEvents.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    expect(quietEvents[0]).toBe("started");
+
+    releaseQuietInvocation();
+    await quietHandle;
+
+    for (let i = 0; i < 50 && quietEvents.at(-1) !== "completed"; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    expect(quietEvents).toEqual(["started", "completed"]);
+    await quietEngine.stop();
+
+    const failureEvents: string[] = [];
+    const failingEngine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      onInvocationEvent: (event) => failureEvents.push(event.type),
+    });
+
+    await failingEngine.start();
+
+    const failingTaskId = testUlid("TASK", 51);
+    await failingEngine.handleStateChange({
+      taskId: failingTaskId,
+      taskRef: `@${failingTaskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    for (let i = 0; i < 50 && failureEvents.at(-1) !== "failed"; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    expect(failureEvents).toEqual(["started", "failed"]);
+    expect(runSpy).toHaveBeenCalledTimes(2);
+
+    await failingEngine.stop();
   });
 });
 
@@ -1274,6 +1356,9 @@ describe("Text chunk boundary signaling", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
+    for (let i = 0; i < 50 && seenChunks.length < 3; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
     expect(seenChunks).toEqual(["before tool", "", "after tool"]);
     await engine.stop();
   });

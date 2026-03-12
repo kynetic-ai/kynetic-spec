@@ -18,33 +18,43 @@ export function getDispatchWorkspaceRegistryPath(ctx: KspecContext): string {
   return path.join(ctx.specDir, "project.dispatch-workspaces.yaml");
 }
 
+function formatRegistryValidationError(raw: unknown): string {
+  const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(raw);
+  if (parsed.success) {
+    return "Unknown dispatch workspace registry validation error";
+  }
+
+  return parsed.error.issues
+    .map((issue) => {
+      const issuePath = issue.path.length > 0
+        ? issue.path.map((segment) => String(segment)).join(".")
+        : "root";
+      return `${issuePath}: ${issue.message}`;
+    })
+    .join("; ");
+}
+
 function parseRegistryFromRaw(raw: unknown): DispatchWorkspaceRecord[] {
   const parsed = DispatchWorkspaceRegistryFileSchema.safeParse(raw);
   if (parsed.success) {
     return parsed.data.workspaces;
   }
 
-  if (raw && typeof raw === "object" && "workspaces" in raw) {
-    const fallbackRecords = (raw as { workspaces?: unknown }).workspaces;
-    if (Array.isArray(fallbackRecords)) {
-      const workspaces: DispatchWorkspaceRecord[] = [];
-      for (const workspace of fallbackRecords) {
-        const result = DispatchWorkspaceRecordSchema.safeParse(workspace);
-        if (result.success) {
-          workspaces.push(result.data);
-        }
-      }
-      return workspaces;
-    }
-  }
-
-  return [];
+  throw new Error(formatRegistryValidationError(raw));
 }
 
 async function loadRegistryFile(
   registryPath: string,
 ): Promise<DispatchWorkspaceRecord[]> {
-  const raw = await readYamlFile<unknown>(registryPath);
+  let raw: unknown;
+  try {
+    raw = await readYamlFile<unknown>(registryPath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
   return parseRegistryFromRaw(raw);
 }
 
@@ -83,16 +93,11 @@ export async function loadDispatchWorkspaceRegistry(
   ctx: KspecContext,
 ): Promise<LoadedDispatchWorkspaceRecord[]> {
   const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-
-  try {
-    const workspaces = await loadRegistryFile(registryPath);
-    return workspaces.map((workspace) => ({
-      ...workspace,
-      _sourceFile: registryPath,
-    }));
-  } catch {
-    return [];
-  }
+  const workspaces = await loadRegistryFile(registryPath);
+  return workspaces.map((workspace) => ({
+    ...workspace,
+    _sourceFile: registryPath,
+  }));
 }
 
 export async function findDispatchWorkspaceByTaskRef(
@@ -127,13 +132,7 @@ export async function saveDispatchWorkspaceRecord(
   await withFileLock(registryPath, async () => {
     const dir = path.dirname(registryPath);
     await fs.mkdir(dir, { recursive: true });
-
-    let workspaces: DispatchWorkspaceRecord[] = [];
-    try {
-      workspaces = await loadRegistryFile(registryPath);
-    } catch {
-      // Start fresh.
-    }
+    const workspaces = await loadRegistryFile(registryPath);
 
     const cleanRecord = stripRuntimeMetadata(record);
     const index = workspaces.findIndex(

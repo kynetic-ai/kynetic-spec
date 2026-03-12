@@ -9,10 +9,12 @@ import { initContext } from "../src/parser/index.js";
 import {
   findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
+  loadDispatchWorkspaceRegistry,
   saveDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
 import {
   provisionDispatchWorkspace,
+  reconcileDispatchWorkspaceRegistry,
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
 import {
@@ -284,7 +286,7 @@ describe("dispatch workspace registry", () => {
 
   // AC: @dispatch-workspace-registry ac-6
   // AC: @dispatch-workspace-registry ac-7
-  it("persists lifecycle transitions for active, integrating, and closing states", async () => {
+  it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", async () => {
     await seedRepo(tempDir);
     await setupProjectWithWorkerAgent(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -385,7 +387,13 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    record = await readWorkspaceRecord(registryPath, taskRef);
+    for (let i = 0; i < 40; i++) {
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      if (record.lifecycle_state === "integrating") {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
 
@@ -414,7 +422,13 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    record = await readWorkspaceRecord(registryPath, taskRef);
+    for (let i = 0; i < 40; i++) {
+      record = await readWorkspaceRecord(registryPath, taskRef);
+      if (record.lifecycle_state === "closing") {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
     expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("merged");
     expect(record.cleanup).toMatchObject({
@@ -430,5 +444,149 @@ describe("dispatch workspace registry", () => {
     expect(reloaded?.lifecycle_state).toBe("closing");
 
     await engine.stop();
+
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([[taskRef, "in_progress" as const]]),
+    );
+    record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.lifecycle_state).toBe("ready");
+    expect(record.integration.status).toBe("reset");
+    expect(record.cleanup).toMatchObject({
+      eligible: false,
+      reason: null,
+      status: "not_scheduled",
+    });
+
+    await fs.rm(record.worktrees.worker.path, { recursive: true, force: true });
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([[taskRef, "in_progress" as const]]),
+    );
+    record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.lifecycle_state).toBe("stale");
+    expect(record.health.status).toBe("stale");
+
+    git(tempDir, "worktree prune");
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Lifecycle Persistence",
+        slugs: ["task-lifecycle-persistence"],
+      },
+    });
+    record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.health.status).toBe("healthy");
+
+    record.cleanup.status = "blocked";
+    record.cleanup.eligible = false;
+    record.cleanup.reason = "cleanup-safety-check";
+    record.cleanup.detail = "cleanup-safety-check";
+    await saveDispatchWorkspaceRecord(await initContext(tempDir), {
+      ...record,
+      _sourceFile: registryPath,
+    });
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([[taskRef, "completed" as const]]),
+    );
+    record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.lifecycle_state).toBe("cleanup_blocked");
+
+    record.cleanup.status = "completed";
+    record.cleanup.eligible = true;
+    record.cleanup.reason = "integrated-into-base-branch";
+    record.cleanup.detail = "integrated-into-base-branch";
+    await saveDispatchWorkspaceRecord(await initContext(tempDir), {
+      ...record,
+      _sourceFile: registryPath,
+    });
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([[taskRef, "completed" as const]]),
+    );
+    record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.lifecycle_state).toBe("closed");
+    expect(record.timestamps.closed_at).toBeTruthy();
+  });
+
+  it("rejects malformed registry content instead of resetting the registry from an empty baseline", async () => {
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+
+    await fs.writeFile(
+      registryPath,
+      [
+        'kynetic_dispatch_workspaces: "1.0"',
+        "workspaces:",
+        "  - workspace_id: broken-registry",
+        "    task_ref: not-a-ref",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    await expect(loadDispatchWorkspaceRegistry(ctx)).rejects.toThrow(
+      /task_ref/i,
+    );
+    await expect(
+      saveDispatchWorkspaceRecord(ctx, {
+        workspace_id: "dispatch-workspace-one",
+        task_ref: `@${testUlid("TASK", 25)}`,
+        task_slug: "task-malformed-registry",
+        worktree_root: path.join(tempDir, ".kspec-worktrees"),
+        resolved_base_branch: "main",
+        base_branch_point: "abc123",
+        canonical_branch: "dispatch/task/task-malformed-registry/registry",
+        canonical_branch_head: "abc123",
+        lifecycle_state: "ready",
+        active_role: null,
+        worktrees: {
+          worker: {
+            path: path.join(tempDir, ".kspec-worktrees", "dispatch-workspace-one"),
+            branch_mode: "branch",
+            branch_ref: "dispatch/task/task-malformed-registry/registry",
+            head: "abc123",
+            last_seen_at: new Date().toISOString(),
+          },
+          reviewer: null,
+        },
+        bootstrap: {
+          status: "not_started",
+          detail: null,
+          updated_at: new Date().toISOString(),
+        },
+        integration: {
+          status: "pending",
+          target_branch: "main",
+          detail: null,
+          updated_at: new Date().toISOString(),
+        },
+        health: {
+          status: "healthy",
+          summary: "healthy",
+          issues: [],
+          updated_at: new Date().toISOString(),
+        },
+        cleanup: {
+          status: "not_scheduled",
+          eligible: false,
+          reason: null,
+          detail: null,
+          updated_at: new Date().toISOString(),
+        },
+        timestamps: {
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          last_reconciled_at: new Date().toISOString(),
+          last_active_at: null,
+          closed_at: null,
+        },
+        _sourceFile: registryPath,
+      }),
+    ).rejects.toThrow(/task_ref/i);
+
+    const raw = await fs.readFile(registryPath, "utf-8");
+    expect(raw).toContain("task_ref: not-a-ref");
   });
 });

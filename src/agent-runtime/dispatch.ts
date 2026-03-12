@@ -1225,10 +1225,10 @@ export class DispatchEngine {
 
         // AC: @agent-dispatch-engine ac-9 - Retry on transient errors
         try {
-          await markActivePromise;
           markInvocationStarted();
-          await runInvocation(options);
           emitStartedEvent();
+          await markActivePromise;
+          await runInvocation(options);
           // Reset retry count on success
           entry.retryCount = 0;
           terminalEvent = {
