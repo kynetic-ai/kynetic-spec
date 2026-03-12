@@ -91227,12 +91227,29 @@
     - branch
     - worktree
   vcs_refs: []
+  session_id: 01KKG4VP057PNS7XJGQNWJJHS7
   created_at: 2026-03-12T02:33:53.662Z
-  notes: []
+  started_at: 2026-03-12T04:33:34.148Z
+  notes:
+    - _ulid: 01KKG54GS6HKZ0F76MW4H4DNHZ
+      created_at: 2026-03-12T04:33:33.478Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: implement canonical task branch lineage/workspace identity for dispatch
+        workers and reviewers.
+
+        - Scope: dispatcher branch naming, persisted workspace lineage state, worker/reviewer
+        workspace preparation, cleanup eligibility.
+
+        - Files: dispatch/worktree provisioning and related tests.
+
+        - Verification: targeted tests for dispatch/worktree behavior, then full npm test and kspec
+        validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T04:33:34.148Z
-  session_id: 01KKG4VP057PNS7XJGQNWJJHS7
 - _ulid: 01KKFY9DTC71FAYKHS3TD7DXV4
   slugs:
     - task-implement-dispatch-workspace-registry
