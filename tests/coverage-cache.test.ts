@@ -60,6 +60,19 @@ it('should do more', () => {});
       expect(coverage.has('@spec-item ac-3')).toBe(true);
     });
 
+    it('should ignore bare spec refs without explicit AC ids', async () => {
+      const testFile = path.join(tempDir, 'tests', 'bare-ref.test.ts');
+      await fs.writeFile(
+        testFile,
+        `// AC: @spec-item
+it('should not count as coverage', () => {});
+`,
+      );
+
+      const coverage = await getCachedTestCoverage(tempDir);
+      expect([...coverage]).toEqual([]);
+    });
+
     it('should return coverage from .spec.ts files in tests/ directory', async () => {
       // .spec.ts files (e.g., Playwright E2E tests) should also be scanned
       const specFile = path.join(tempDir, 'tests', 'example.spec.ts');

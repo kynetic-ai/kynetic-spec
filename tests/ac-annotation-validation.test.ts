@@ -11,6 +11,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as os from "node:os";
 import {
+  computeACCoverage,
   validate,
   scanACAnnotations,
   validateACAnnotations,
@@ -135,6 +136,7 @@ it('should also work', () => {});
       expect(refs).toContain("@spec-b ac-2");
     });
 
+    // AC: @test-annotation-sweep ac-annotation-format
     it("should parse named ac ids on sweep annotations", async () => {
       const testsDir = path.join(tempDir, "tests");
       await fs.mkdir(testsDir, { recursive: true });
@@ -233,6 +235,48 @@ it('should also work', () => {});
         (w) => w.type === "invalid_ac_annotation",
       );
       expect(invalidAnnotations).toHaveLength(0);
+    });
+
+    // AC: @test-annotation-sweep ac-explicit-mapping
+    it("credits completeness coverage only when explicit ac ids are provided", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["real-spec"],
+            title: "Real Spec",
+            type: "requirement",
+            description: "A real spec",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              {
+                id: "ac-1",
+                given: "condition",
+                when: "action",
+                then: "result",
+              },
+            ],
+          },
+        ],
+        testFiles: {
+          "example.test.ts": '// AC: @real-spec ac-1\nit("test", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@real-spec",
+      );
+
+      expect(invalidAnnotations).toHaveLength(0);
+      expect(missingCoverage).toHaveLength(0);
     });
   });
 
@@ -397,7 +441,8 @@ it('invalid trait AC ref', () => {});
   });
 
   describe("validateACAnnotations - edge cases", () => {
-    it("should skip AC existence check for annotations without specific AC ids", async () => {
+    // AC: @test-annotation-sweep ac-no-blanket-credit
+    it("warns and withholds coverage when annotations omit ac ids for items with ACs", async () => {
       const ctx = await setupProject({
         specItems: [
           {
@@ -405,8 +450,16 @@ it('invalid trait AC ref', () => {});
             slugs: ["my-spec"],
             title: "My Spec",
             type: "requirement",
-            description: "A spec with no ACs",
+            description: "A spec with ACs",
             status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [
+              {
+                id: "ac-1",
+                given: "condition",
+                when: "action",
+                then: "result",
+              },
+            ],
           },
         ],
         testFiles: {
@@ -420,8 +473,17 @@ it('invalid trait AC ref', () => {});
       const invalidAnnotations = result.completenessWarnings.filter(
         (w) => w.type === "invalid_ac_annotation",
       );
-      // No specific AC referenced, so no invalid annotation warning
-      expect(invalidAnnotations).toHaveLength(0);
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@my-spec",
+      );
+
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("without explicit ac-* ids");
+      expect(missingCoverage).toHaveLength(1);
+      expect(missingCoverage[0].details).toContain("ac-1");
     });
 
     it("should handle item with no acceptance_criteria array", async () => {
@@ -657,6 +719,28 @@ it('invalid trait AC ref', () => {});
       expect(warnings).toHaveLength(1);
       expect(warnings[0].type).toBe("invalid_ac_annotation");
       expect(warnings[0].message).toContain("not a spec item or trait");
+    });
+  });
+
+  describe("computeACCoverage", () => {
+    // AC: @test-annotation-sweep ac-annotation-format
+    it("uses the declared AC ids when computing coverage status", () => {
+      const coverage = computeACCoverage(
+        {
+          _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+          slugs: ["task-add"],
+          acceptance_criteria: [
+            { id: "ac-create", given: "g", when: "w", then: "t" },
+            { id: "ac-priority-valid", given: "g", when: "w", then: "t" },
+          ],
+        },
+        new Set(["@task-add ac-create"]),
+      );
+
+      expect(coverage).toEqual([
+        expect.objectContaining({ id: "ac-create", covered: true }),
+        expect.objectContaining({ id: "ac-priority-valid", covered: false }),
+      ]);
     });
   });
 
