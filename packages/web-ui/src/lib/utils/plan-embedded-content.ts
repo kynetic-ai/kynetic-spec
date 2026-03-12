@@ -53,6 +53,14 @@ function normalizeRef(ref: string | null | undefined): string | null {
 	return ref.startsWith('@') ? ref.slice(1) : ref;
 }
 
+function slugify(value: string): string {
+	return value
+		.trim()
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-|-$/g, '');
+}
+
 function collectRefAliases(ref: string): string[] {
 	const normalized = normalizeRef(ref);
 	return normalized ? [normalized, ref, normalized.toUpperCase()] : [ref];
@@ -96,9 +104,18 @@ function extractSlugsFromYamlArray(source: string): string[] | null {
 		if (!Array.isArray(parsed)) return null;
 
 		const slugs = parsed
-			.map((entry) =>
-				entry && typeof entry === 'object' ? (entry as { slug?: unknown }).slug : undefined
-			)
+			.map((entry) => {
+				if (!entry || typeof entry !== 'object') return undefined;
+
+				const candidate = entry as { slug?: unknown; title?: unknown };
+				if (typeof candidate.slug === 'string' && candidate.slug.length > 0) {
+					return candidate.slug;
+				}
+				if (typeof candidate.title === 'string' && candidate.title.trim().length > 0) {
+					return slugify(candidate.title);
+				}
+				return undefined;
+			})
 			.filter((slug): slug is string => typeof slug === 'string' && slug.length > 0);
 
 		return slugs.length > 0 ? slugs : null;
@@ -142,6 +159,15 @@ function detectEmbeddedCandidate(
 	if (sectionHeading === 'tasks') {
 		const deriveFromSpecs =
 			hasDeriveFromSpecsDirective(code) || hasDeriveFromSpecsDirective(sectionContext);
+		if (deriveFromSpecs && plan.derived_tasks.length > 0) {
+			return {
+				type: 'embedded-candidate',
+				embedType: 'task',
+				rawMarkdown,
+				refs: [...plan.derived_tasks]
+			};
+		}
+
 		const slugs = extractSlugsFromYamlArray(code);
 		if (slugs) {
 			const refs = slugs
@@ -153,14 +179,6 @@ function detectEmbeddedCandidate(
 			}
 		}
 
-		if (deriveFromSpecs && plan.derived_tasks.length > 0) {
-			return {
-				type: 'embedded-candidate',
-				embedType: 'task',
-				rawMarkdown,
-				refs: [...plan.derived_tasks]
-			};
-		}
 	}
 
 	return null;

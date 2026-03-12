@@ -23,6 +23,31 @@ This plan is actively being implemented.
 Fallback should keep this YAML visible.
 `;
 
+	const LIVE_EMBEDDED_PLAN_CONTENT = `# Active Plan
+This plan is actively being implemented.
+
+## Specs
+
+\`\`\`yaml
+- title: Test Feature
+  type: feature
+\`\`\`
+
+## Tasks
+
+derive_from_specs: true
+
+\`\`\`yaml
+- title: Add markdown rendering trait to existing specs
+  slug: test-task-ready
+  priority: 2
+\`\`\`
+
+## Implementation Notes
+
+Runtime fetch coverage should observe the real batch request.
+`;
+
 	const EMBEDDED_BATCH_ITEMS = [
 		{
 			kind: 'item',
@@ -517,6 +542,47 @@ Fallback should keep this YAML visible.
 		await expect(readyTaskCard).toContainText('Pending');
 		await expect(readyTaskCard).toContainText('P2');
 		await expect(readyTaskCard).toContainText('@alice');
+	});
+
+	// AC: @plan-embedded-views ac-1
+	// AC: @plan-embedded-views ac-2
+	// AC: @plan-embedded-views ac-9
+	test('issues the live batch fetch and renders title-derived specs plus full derive_from_specs tasks', async ({
+		page
+	}) => {
+		await stubActivePlanContent(page, LIVE_EMBEDDED_PLAN_CONTENT);
+
+		const batchRequests: string[][] = [];
+		await page.route('**/api/items/batch', async (route) => {
+			const body = route.request().postDataJSON() as { refs?: string[] };
+			batchRequests.push(body.refs ?? []);
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ items: EMBEDDED_BATCH_ITEMS, unresolved: [] })
+			});
+		});
+
+		const activePlan = await expandActivePlan(page);
+		await page.waitForRequest('**/api/items/batch');
+
+		expect(batchRequests).toHaveLength(1);
+		expect(batchRequests[0]).toEqual(
+			expect.arrayContaining([
+				'@test-feature',
+				'@test-task-in-progress',
+				'@test-task-completed',
+				'@test-task-ready'
+			])
+		);
+
+		const specCard = activePlan
+			.getByTestId('plan-embedded-spec-card')
+			.filter({ hasText: 'Test Feature' });
+		await expect(specCard).toBeVisible({ timeout: 10000 });
+
+		const taskCards = activePlan.getByTestId('plan-embedded-task-card');
+		await expect(taskCards).toHaveCount(3, { timeout: 10000 });
 	});
 
 	// AC: @plan-embedded-views ac-3
