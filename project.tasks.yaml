@@ -91316,7 +91316,7 @@
   spec_ref: "@dispatch-workspace-registry"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-design-dispatch-workspace-registry"
@@ -91328,6 +91328,7 @@
     - worktree
     - schema
   vcs_refs: []
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/800
   session_id: null
   created_at: 2026-03-12T02:33:54.252Z
   started_at: 2026-03-12T16:59:27.492Z
@@ -91461,7 +91462,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/800
+  completed_at: 2026-03-12T17:12:55.669Z
+  closed_reason: "Merged in PR #800. Implemented first-party persistent dispatch workspace registry
+    storage on the shadow branch, added restart/lifecycle/health reconciliation for canonical worker
+    and reviewer workspaces, and covered registry persistence plus lifecycle regressions with
+    dedicated tests. AC coverage for @dispatch-workspace-registry ac-1 through ac-7 was reviewed and
+    trait error-guidance coverage is explicitly marked N/A for this internal runtime surface."
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
   slugs:
     - task-implement-dispatch-worktree-provisioning
