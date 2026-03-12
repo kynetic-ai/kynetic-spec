@@ -91988,6 +91988,16 @@
         reusing worker bootstrap state. Fixing the reviewer guard and adding a regression test for
         reviewer-first bootstrap."
       supersedes: null
+    - _ulid: 01KKHZBYAGVNPK6EK6V8F188BY
+      created_at: 2026-03-12T21:31:14.128Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Fixed reviewer bootstrap success on fresh reviewer workspaces by rejecting
+        reviewer preflight whenever required bootstrap work would be skipped and some steps are not
+        reviewer-safe. Added a regression test for first reviewer invocation without reusable worker
+        bootstrap state. Verification: npm run typecheck; npm test -- --run
+        tests/dispatch-runtime-bootstrap-contract.test.ts; npm test; kspec validate (warnings only:
+        existing repo-wide debt)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
