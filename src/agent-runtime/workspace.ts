@@ -1231,9 +1231,10 @@ export async function getDispatchWorkspaceHealth(
     ...existingRecord.cleanup,
     updated_at: now,
   };
+  const reviewerWorktree = existingRecord.worktrees.reviewer;
   const reviewerMissingRecordedWorktree = role === "reviewer"
-    && existingRecord.worktrees.reviewer !== null
-    && !pathExists(existingRecord.worktrees.reviewer.path);
+    && reviewerWorktree != null
+    && !pathExists(reviewerWorktree.path);
   const healthy = health.status === "healthy"
     && !cleanup.eligible
     && !reviewerMissingRecordedWorktree;
