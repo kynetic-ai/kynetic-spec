@@ -91980,6 +91980,14 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: reviewer bootstrap can report success on a fresh
         reviewer workspace without running any bootstrap steps or reusing valid worker state."
       supersedes: null
+    - _ulid: 01KKHZ6C7JAZV9H27VBX40BK7A
+      created_at: 2026-03-12T21:28:11.762Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Narrowed the reviewer regression to ensureWorkspaceBootstrap: fresh
+        reviewer workspaces with non-idempotent steps can fall through to status=succeeded without
+        reusing worker bootstrap state. Fixing the reviewer guard and adding a regression test for
+        reviewer-first bootstrap."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
@@ -92062,6 +92070,13 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #804. Implemented explicit cross-agent dispatch scheduling with global
+    band and numeric-priority ranking, continuity affinity with starvation fallback, and
+    workspace-health eligibility gating across worker and reviewer candidates. Added AC-annotated
+    scheduler coverage for eligibility, band order, numeric priority, continuity, fairness, and
+    cross-agent ordering. Local npm tests and GitHub CI passed on the merged head; inherited
+    @trait-priority-parameter warnings remain repo baseline and were reviewed as non-applicable to
+    this runtime scheduler change."
   depends_on:
     - "@task-implement-dispatch-workspace-registry"
     - "@task-implement-canonical-task-workspace-contract"
@@ -92076,6 +92091,7 @@
   created_at: 2026-03-12T02:33:59.113Z
   started_at: 2026-03-12T21:15:00.000Z
   submitted_at: 2026-03-12T21:15:03.763Z
+  completed_at: 2026-03-12T21:26:20.424Z
   notes:
     - _ulid: 01KKHVVWQEXYB5J14C2N3FXXAB
       created_at: 2026-03-12T20:30:02.478Z
@@ -92143,14 +92159,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T21:26:20.424Z
-  closed_reason: "Merged in PR #804. Implemented explicit cross-agent dispatch scheduling with global
-    band and numeric-priority ranking, continuity affinity with starvation fallback, and
-    workspace-health eligibility gating across worker and reviewer candidates. Added AC-annotated
-    scheduler coverage for eligibility, band order, numeric priority, continuity, fairness, and
-    cross-agent ordering. Local npm tests and GitHub CI passed on the merged head; inherited
-    @trait-priority-parameter warnings remain repo baseline and were reviewed as non-applicable to
-    this runtime scheduler change."
 - _ulid: 01KKFY9K4NK8JC0ANF9TS7H769
   slugs:
     - task-test-dispatch-workspace-and-scheduler-flow
