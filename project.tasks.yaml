@@ -91181,6 +91181,13 @@
         the regression gate is red (npm test fails in tests/test-annotation-sweep.test.ts and
         tests/integration.test.ts)."
       supersedes: null
+    - _ulid: 01KKG3C5F2CCX65MNAM8KBS6KD
+      created_at: 2026-03-12T04:02:46.882Z
+      author: Jacob Chapel
+      content: "Fix cycle plan: rebuild the task branch from main in a clean sibling checkout so PR #796
+        contains only dispatch workspace changes, then add explicit ac-4 guidance coverage for
+        invalid base_branch/worktree_root provisioning failures and rerun the regression gate."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
