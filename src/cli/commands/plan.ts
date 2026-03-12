@@ -473,6 +473,7 @@ async function materializePlanSpecs(
 function buildTaskPlans(
   planRef: string,
   specItems: MaterializedSpec[],
+  deriveFromSpecs: boolean | undefined,
   additionalTasks: PlanTask[] | undefined,
   refIndex: Awaited<ReturnType<typeof buildIndexes>>["refIndex"],
   allTasks: Awaited<ReturnType<typeof loadAllTasks>>,
@@ -483,15 +484,18 @@ function buildTaskPlans(
   const taskPlans: PendingTaskPlan[] = [];
   const specTaskRefByLocalSlug = new Map<string, string>();
   const taskRefByLocalKey = new Map<string, string>();
+  const shouldDeriveFromSpecs = deriveFromSpecs !== false;
 
-  for (const specItem of specItems) {
-    const taskSlug = nextUniqueSlug(
-      slugify(`implement-${specItem.source.title}`),
-      reservedSlugs,
-    );
-    const taskRef = `@${taskSlug}`;
-    specTaskRefByLocalSlug.set(specItem.localSlug, taskRef);
-    taskRefByLocalKey.set(specItem.localSlug, taskRef);
+  if (shouldDeriveFromSpecs) {
+    for (const specItem of specItems) {
+      const taskSlug = nextUniqueSlug(
+        slugify(`implement-${specItem.source.title}`),
+        reservedSlugs,
+      );
+      const taskRef = `@${taskSlug}`;
+      specTaskRefByLocalSlug.set(specItem.localSlug, taskRef);
+      taskRefByLocalKey.set(specItem.localSlug, taskRef);
+    }
   }
 
   for (const task of additionalTasks || []) {
@@ -500,35 +504,37 @@ function buildTaskPlans(
     taskRefByLocalKey.set(localKey, `@${taskSlug}`);
   }
 
-  for (const specItem of specItems) {
-    const taskRef = specTaskRefByLocalSlug.get(specItem.localSlug)!;
-    const taskSlug = taskRef.slice(1);
-    const dependsOn = (specItem.item.depends_on || []).map((dependencyRef) => {
-      const localDependency = specTaskRefByLocalSlug.get(dependencyRef.slice(1));
-      return localDependency || dependencyRef;
-    });
+  if (shouldDeriveFromSpecs) {
+    for (const specItem of specItems) {
+      const taskRef = specTaskRefByLocalSlug.get(specItem.localSlug)!;
+      const taskSlug = taskRef.slice(1);
+      const dependsOn = (specItem.item.depends_on || []).map((dependencyRef) => {
+        const localDependency = specTaskRefByLocalSlug.get(dependencyRef.slice(1));
+        return localDependency || dependencyRef;
+      });
 
-    const notes = specItem.source.implementation_notes
-      ? [createNote(specItem.source.implementation_notes, author)]
-      : [];
+      const notes = specItem.source.implementation_notes
+        ? [createNote(specItem.source.implementation_notes, author)]
+        : [];
 
-    taskPlans.push({
-      localKey: specItem.localSlug,
-      ref: taskRef,
-      input: {
-        title: `Implement ${specItem.source.title}`,
-        type: "task",
-        slugs: [taskSlug],
-        spec_ref: specItem.ref,
-        plan_ref: planRef,
-        priority: specItem.source.priority ?? 3,
-        tags: [],
-        depends_on: dependsOn,
-        notes,
-        origin: "derived",
-        derivation: "auto",
-      },
-    });
+      taskPlans.push({
+        localKey: specItem.localSlug,
+        ref: taskRef,
+        input: {
+          title: `Implement ${specItem.source.title}`,
+          type: "task",
+          slugs: [taskSlug],
+          spec_ref: specItem.ref,
+          plan_ref: planRef,
+          priority: specItem.source.priority ?? 3,
+          tags: [],
+          depends_on: dependsOn,
+          notes,
+          origin: "derived",
+          derivation: "auto",
+        },
+      });
+    }
   }
 
   for (const task of additionalTasks || []) {
@@ -1208,6 +1214,7 @@ Examples:
           taskPlans = buildTaskPlans(
             planRef,
             materializedSpecs,
+            parsedPlan.tasks.derive_from_specs,
             parsedPlan.tasks.additional_tasks,
             refIndex,
             tasks,

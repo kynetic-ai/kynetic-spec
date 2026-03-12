@@ -456,6 +456,77 @@ Global implementation note for the plan.
     expect(derivedPlan.notes.some((note) => note.content.includes("Global implementation note"))).toBe(true);
   });
 
+  it("honors derive_from_specs false while still creating manual tasks", async () => {
+    // AC: @plan-derive-enhanced ac-tasks-manual-only
+    const planPath = await writePlanFile(
+      tempDir,
+      "manual-only-tasks.md",
+      `# Manual Tasks Only
+
+## Specs
+
+\`\`\`yaml
+- title: Alpha Feature
+  slug: alpha-feature
+
+- title: Beta Feature
+  slug: beta-feature
+\`\`\`
+
+## Tasks
+
+derive_from_specs: false
+
+\`\`\`yaml
+- title: Write migration guide
+  slug: migration-guide
+  priority: 2
+  spec_ref: "@beta-feature"
+  depends_on:
+    - "@alpha-feature"
+\`\`\`
+`,
+    );
+
+    kspec(
+      `plan import "${planPath}" --module @test-core --status approved`,
+      tempDir,
+    );
+
+    const result = kspecJson<{
+      created_specs: string[];
+      created_tasks: string[];
+    }>(
+      "plan derive @plan-manual-tasks-only --module @test-core --tasks",
+      tempDir,
+    );
+
+    expect(result.created_specs).toEqual(["@alpha-feature", "@beta-feature"]);
+    expect(result.created_tasks).toEqual(["@migration-guide"]);
+
+    const guideTask = kspecJson<{
+      plan_ref: string;
+      spec_ref: string | null;
+      priority: number;
+      depends_on: string[];
+    }>("task get @migration-guide", tempDir);
+    expect(guideTask.plan_ref).toBe("@plan-manual-tasks-only");
+    expect(guideTask.spec_ref).toBe("@beta-feature");
+    expect(guideTask.priority).toBe(2);
+    expect(guideTask.depends_on).toEqual(["@alpha-feature"]);
+
+    const missingAutoTask = kspecRun("task get @implement-alpha-feature", tempDir, {
+      expectFail: true,
+    });
+    expect(missingAutoTask.exitCode).toBe(3);
+    expect(missingAutoTask.stderr).toContain("Task not found");
+
+    const derivedPlan = kspecJson<{
+      derived_tasks: string[];
+    }>("plan get @plan-manual-tasks-only", tempDir);
+    expect(derivedPlan.derived_tasks).toEqual(["@migration-guide"]);
+  });
+
   it("supports dry-run and structured JSON output without mutating plan state", async () => {
     // AC: @plan-derive-enhanced ac-dry-run, ac-json-output
     // AC: @trait-dry-run ac-1, ac-2, ac-3, ac-6
