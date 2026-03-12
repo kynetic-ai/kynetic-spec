@@ -1117,6 +1117,11 @@ export class DispatchEngine {
           "task", "note", entry.change.taskRef,
           `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
         ], { cwd: this.cwd });
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "block", entry.change.taskRef,
+          "--reason", `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+        ], { cwd: this.cwd });
       }
       this.inFlightTaskKeys.delete(inFlightKey);
       return false;

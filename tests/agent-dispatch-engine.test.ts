@@ -860,6 +860,49 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       delete process.env.KSPEC_CAPTURE_FILE;
     }
   });
+
+  // AC: @dispatch-invocation-worktree-isolation ac-4
+  it("blocks the task with guidance when dispatch workspace preparation cannot be repaired safely", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.mkdir(path.join(testDir, ".kspec"), { recursive: true });
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .kspec/worktrees\n",
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-workspace-failure-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const taskRef = `@${testUlid("TASK", 33)}`;
+      const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
+      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+
+      expect(noteCall).toBeDefined();
+      expect(noteCall!.args.join(" ")).toContain("DISPATCH-WORKSPACE");
+      expect(blockCall).toBeDefined();
+      expect(blockCall!.args.join(" ")).toContain("Dispatch workspace provisioning failed");
+      expect(blockCall!.args.join(" ")).toContain("Set dispatch.worktree_root to a directory outside .kspec/.");
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────

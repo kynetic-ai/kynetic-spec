@@ -126,6 +126,7 @@ describe("dispatch workspace configuration", () => {
 
   // AC: @dispatch-workspace-configuration ac-1
   // AC: @dispatch-workspace-configuration ac-2
+  // AC: @dispatch-invocation-worktree-isolation ac-5
   it("provisions a task worktree and records the resolved merge target without drift", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -163,6 +164,7 @@ describe("dispatch workspace configuration", () => {
 
   // AC: @dispatch-workspace-configuration ac-1
   // AC: @dispatch-workspace-configuration ac-3
+  // AC: @dispatch-invocation-worktree-isolation ac-1
   it("uses the provisioned worktree cwd for dispatched invocations", async () => {
     await seedRepo(tempDir);
     await setupProjectWithAgent(tempDir);
