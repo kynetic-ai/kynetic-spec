@@ -1,6 +1,7 @@
 // Re-export all schema definitions
 
 export * from "./common.js";
+export * from "./dispatch-workspace.js";
 export * from "./inbox.js";
 export * from "./meta.js";
 export * from "./plan.js";
