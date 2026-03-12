@@ -91378,6 +91378,20 @@
         current task state, registry parse failures can silently drop persisted workspace records,
         and AC-6 lifecycle coverage is incomplete."
       supersedes: null
+    - _ulid: 01KKGBANZFWP2CTD2SACWWNTDX
+      created_at: 2026-03-12T06:21:46.863Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Addressed PR #800 blockers: emit dispatch started before any terminal
+        event, derive restart reconciliation cleanup/integration from current task state (including
+        reopen/reset and preserved blocked/completed cleanup states), and make malformed workspace
+        registry files fail instead of reloading from an empty baseline. Expanded lifecycle coverage
+        for @dispatch-workspace-registry ac-6 and updated dispatch tests for the new started-event
+        timing. Verification: npm run typecheck; SKIP_BUILD=1 npm test --
+        tests/dispatch-workspace-registry.test.ts; SKIP_BUILD=1 npm test --
+        tests/agent-dispatch-engine.test.ts; node dist/cli/index.js validate (existing repo warnings
+        only). Full npm test in this branch still hits an unrelated existing web-ui build failure
+        for @lucide/svelte/icons/triangle-alert in packages/web-ui/src/routes/+page.svelte."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
