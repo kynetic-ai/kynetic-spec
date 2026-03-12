@@ -1501,3 +1501,11 @@ inbox:
       - bug
       - metadata
     added_by: Jacob Chapel
+  - _ulid: 01KKFZD1TGR3YKR1DC8J2GQESR
+    text: plan derive uses an explicit --module value to materialize specs, but the resulting plan
+      record does not persist module_ref. The derive mutation updates status/derived refs/notes but
+      leaves module_ref null, which weakens provenance and forces future derives or audits to
+      rediscover the module context.
+    created_at: 2026-03-12T02:53:21.617Z
+    tags: []
+    added_by: Jacob Chapel
