@@ -91539,6 +91539,16 @@
         exists, so the focus is reproducing why daemon-backed /plans never reaches POST
         /api/items/batch even though fixture-based browser coverage passes.
       supersedes: null
+    - _ulid: 01KKG2KQQS0MED2DHWS64VZV4T
+      created_at: 2026-03-12T03:49:26.394Z
+      author: Jacob Chapel
+      content: "Implemented parser fixes for live plan embeds: title-only spec/task entries now resolve
+        via slugified titles, and derive_from_specs: true now takes precedence over adjacent manual
+        task YAML so all derived tasks render. Verification: targeted unit test passes, direct
+        parser/API checks against the affected live plans confirm embedded candidates. Playwright
+        plans E2E is blocked under dispatch because the fixture starts its own daemon via kspec
+        serve start, which agent sessions are forbidden to run."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKG0SN9325ERD0JW6H97SNFE
