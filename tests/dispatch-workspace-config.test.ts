@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
+import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
@@ -24,6 +25,13 @@ function git(cwd: string, command: string): string {
     stdio: "pipe",
     encoding: "utf-8",
   }).trim();
+}
+
+async function readWorkspaceRecord(registryPath: string, taskRef: string): Promise<Record<string, any>> {
+  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+    workspaces?: Array<Record<string, any>>;
+  };
+  return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
 }
 
 async function seedRepo(dir: string): Promise<void> {
@@ -134,13 +142,11 @@ describe("dispatch workspace configuration", () => {
       task: { title: "Implement Dispatch Config", slugs: ["task-implement-dispatch-workspace-config"] },
     });
 
-    const metadata = JSON.parse(
-      await fs.readFile(first.metadataPath, "utf-8"),
-    ) as { baseBranch: string; mergeTargetBranch: string; worktreeDir: string };
+    const metadata = await readWorkspaceRecord(first.metadataPath, taskRef);
 
     expect(first.cwd).toBe(path.join(tempDir, ".dispatch-root", "task-implement-dispatch-workspace-config-01task00"));
-    expect(metadata.baseBranch).toBe("agent-dev");
-    expect(metadata.mergeTargetBranch).toBe("agent-dev");
+    expect(metadata.resolved_base_branch).toBe("agent-dev");
+    expect(metadata.integration?.target_branch).toBe("agent-dev");
 
     git(tempDir, "checkout main");
     const second = await provisionDispatchWorkspace({
@@ -148,13 +154,11 @@ describe("dispatch workspace configuration", () => {
       taskRef,
       task: { title: "Implement Dispatch Config", slugs: ["task-implement-dispatch-workspace-config"] },
     });
-    const metadataAgain = JSON.parse(
-      await fs.readFile(second.metadataPath, "utf-8"),
-    ) as { baseBranch: string; mergeTargetBranch: string };
+    const metadataAgain = await readWorkspaceRecord(second.metadataPath, taskRef);
 
     expect(second.cwd).toBe(first.cwd);
-    expect(metadataAgain.baseBranch).toBe("agent-dev");
-    expect(metadataAgain.mergeTargetBranch).toBe("agent-dev");
+    expect(metadataAgain.resolved_base_branch).toBe("agent-dev");
+    expect(metadataAgain.integration?.target_branch).toBe("agent-dev");
   });
 
   // AC: @dispatch-workspace-configuration ac-1

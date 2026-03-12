@@ -1,9 +1,26 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
+import { initContext } from "../parser/index.js";
+import {
+  findDispatchWorkspaceByTaskRef,
+  getDispatchWorkspaceRegistryPath,
+  loadDispatchWorkspaceRegistry,
+  saveDispatchWorkspaceRecord,
+  type LoadedDispatchWorkspaceRecord,
+} from "../parser/dispatch-workspaces.js";
 import { loadProjectConfig } from "../parser/config.js";
-
-const DISPATCH_WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
+import type {
+  DispatchWorkspaceBootstrapState,
+  DispatchWorkspaceCleanupState as RegistryCleanupState,
+  DispatchWorkspaceHealthState,
+  DispatchWorkspaceIntegrationState,
+  DispatchWorkspaceIssue,
+  DispatchWorkspaceLifecycleState,
+  DispatchWorkspaceRecord,
+  DispatchWorkspaceRole as RegistryRole,
+  DispatchWorkspaceWorktree,
+} from "../schema/index.js";
 
 interface GitResult {
   stdout: string;
@@ -19,6 +36,7 @@ export interface ResolvedDispatchWorkspaceConfig {
 }
 
 export interface DispatchWorkspaceMetadata {
+  workspaceId: string;
   taskRef: string;
   taskSlug: string;
   baseBranch: string;
@@ -29,10 +47,17 @@ export interface DispatchWorkspaceMetadata {
   worktreeRoot: string;
   workerWorktreeDir: string;
   reviewerWorktreeDir: string | null;
-  cleanupEligible: boolean;
-  cleanupReason: string | null;
+  lifecycleState: DispatchWorkspaceLifecycleState;
+  activeRole: RegistryRole | null;
+  bootstrapState: DispatchWorkspaceBootstrapState;
+  integrationState: DispatchWorkspaceIntegrationState;
+  healthState: DispatchWorkspaceHealthState;
+  cleanupState: RegistryCleanupState;
   createdAt: string;
   updatedAt: string;
+  lastReconciledAt: string | null;
+  lastActiveAt: string | null;
+  closedAt: string | null;
 }
 
 export type DispatchWorkspaceRole = "worker" | "reviewer";
@@ -60,7 +85,7 @@ export interface DispatchWorkspaceCleanupState {
 }
 
 export interface ResolveDispatchWorkspaceCleanupStateOptions {
-  integrationState?: "pending" | "merged" | "abandoned" | "reset" | null;
+  integrationState?: "pending" | "in_progress" | "merged" | "abandoned" | "reset" | null;
   taskStatus?: "pending" | "in_progress" | "needs_work" | "pending_review" | "blocked" | "completed" | "cancelled" | null;
 }
 
@@ -180,6 +205,10 @@ function shortTaskId(taskRef: string): string {
   return taskRef.replace(/^@/, "").slice(0, 8).toLowerCase();
 }
 
+function workspaceIdFor(taskRef: string): string {
+  return `dispatch-workspace-${taskRef.replace(/^@/, "")}`;
+}
+
 function resolveCommit(cwd: string, ref: string): string {
   return runGitOrThrow(
     cwd,
@@ -189,26 +218,326 @@ function resolveCommit(cwd: string, ref: string): string {
   );
 }
 
-function metadataPathFor(worktreeDir: string): string {
-  return path.join(worktreeDir, DISPATCH_WORKSPACE_METADATA_FILE);
-}
-
-async function readWorkspaceMetadata(worktreeDir: string): Promise<DispatchWorkspaceMetadata | null> {
-  try {
-    const raw = await fs.readFile(metadataPathFor(worktreeDir), "utf-8");
-    return JSON.parse(raw) as DispatchWorkspaceMetadata;
-  } catch {
-    return null;
+function parseWorktreeList(projectDir: string): Array<{ path: string; branch: string | null }> {
+  const result = runGit(projectDir, ["worktree", "list", "--porcelain"]);
+  if (result.status !== 0 || !result.stdout) {
+    return [];
   }
+
+  const entries: Array<{ path: string; branch: string | null }> = [];
+  const blocks = result.stdout.split(/\n\s*\n/).filter(Boolean);
+  for (const block of blocks) {
+    const lines = block.split(/\r?\n/);
+    const worktreePath = lines.find((line) => line.startsWith("worktree "))?.slice("worktree ".length);
+    if (!worktreePath) continue;
+    const branchRef = lines.find((line) => line.startsWith("branch "))?.slice("branch ".length) ?? null;
+    entries.push({ path: worktreePath, branch: branchRef });
+  }
+  return entries;
 }
 
-async function writeWorkspaceMetadata(
-  worktreeDir: string,
-  metadata: DispatchWorkspaceMetadata,
+function findExistingWorktreeForBranch(projectDir: string, canonicalBranch: string): string | null {
+  const branchRef = `refs/heads/${canonicalBranch}`;
+  return parseWorktreeList(projectDir).find((entry) => entry.branch === branchRef)?.path ?? null;
+}
+
+function findWorktreeByPath(projectDir: string, worktreeDir: string): { path: string; branch: string | null } | null {
+  const normalized = path.resolve(worktreeDir);
+  return parseWorktreeList(projectDir).find((entry) => path.resolve(entry.path) === normalized) ?? null;
+}
+
+function pathExists(targetPath: string): boolean {
+  return spawnSync("bash", ["-lc", `test -e "${targetPath.replace(/(["\\$`])/g, "\\$1")}"`], {
+    stdio: "ignore",
+  }).status === 0;
+}
+
+function defaultBootstrapState(now: string): DispatchWorkspaceBootstrapState {
+  return {
+    status: "not_started",
+    detail: null,
+    updated_at: now,
+  };
+}
+
+function createCleanupRecord(
+  state: DispatchWorkspaceCleanupState,
+  now: string,
+): RegistryCleanupState {
+  return {
+    status: state.cleanupEligible ? "scheduled" : "not_scheduled",
+    eligible: state.cleanupEligible,
+    reason: state.cleanupReason,
+    detail: state.cleanupReason,
+    updated_at: now,
+  };
+}
+
+function resolveCleanupRecord(
+  cleanupState: ResolveDispatchWorkspaceCleanupStateOptions | undefined,
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+  now: string,
+): RegistryCleanupState {
+  if (cleanupState) {
+    return createCleanupRecord(
+      resolveDispatchWorkspaceCleanupState(cleanupState),
+      now,
+    );
+  }
+  if (existingRecord) {
+    return {
+      ...existingRecord.cleanup,
+      updated_at: now,
+    };
+  }
+  return createCleanupRecord(resolveDispatchWorkspaceCleanupState({}), now);
+}
+
+function resolveIntegrationRecord(
+  targetBranch: string,
+  cleanupState: ResolveDispatchWorkspaceCleanupStateOptions | undefined,
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+  now: string,
+): DispatchWorkspaceIntegrationState {
+  const status = cleanupState?.integrationState ?? existingRecord?.integration.status ?? "pending";
+  return {
+    status,
+    target_branch: targetBranch,
+    detail: cleanupState?.integrationState ? `integration:${cleanupState.integrationState}` : existingRecord?.integration.detail ?? null,
+    updated_at: now,
+  };
+}
+
+function resolveRegistryStateForTaskStatus(
+  taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"],
+  existingRecord: LoadedDispatchWorkspaceRecord,
+  now: string,
+): {
+  integration: DispatchWorkspaceIntegrationState;
+  cleanup: RegistryCleanupState;
+} {
+  if (taskStatus === "completed") {
+    const cleanupState = {
+      integrationState: "merged" as const,
+      taskStatus,
+    };
+    return {
+      integration: resolveIntegrationRecord(
+        existingRecord.integration.target_branch,
+        cleanupState,
+        existingRecord,
+        now,
+      ),
+      cleanup: existingRecord.cleanup.status === "blocked"
+        || existingRecord.cleanup.status === "completed"
+        ? {
+            ...existingRecord.cleanup,
+            updated_at: now,
+          }
+        : resolveCleanupRecord(cleanupState, existingRecord, now),
+    };
+  }
+
+  if (taskStatus === "cancelled") {
+    const cleanupState = {
+      integrationState: "abandoned" as const,
+      taskStatus,
+    };
+    return {
+      integration: resolveIntegrationRecord(
+        existingRecord.integration.target_branch,
+        cleanupState,
+        existingRecord,
+        now,
+      ),
+      cleanup: existingRecord.cleanup.status === "blocked"
+        || existingRecord.cleanup.status === "completed"
+        ? {
+            ...existingRecord.cleanup,
+            updated_at: now,
+          }
+        : resolveCleanupRecord(cleanupState, existingRecord, now),
+    };
+  }
+
+  const shouldResetLifecycle = existingRecord.lifecycle_state === "closing"
+    || existingRecord.integration.status === "merged"
+    || existingRecord.integration.status === "abandoned"
+    || existingRecord.cleanup.status !== "not_scheduled"
+    || existingRecord.cleanup.eligible;
+  if (taskStatus && shouldResetLifecycle) {
+    const cleanupState = {
+      integrationState: "reset" as const,
+      taskStatus,
+    };
+    return {
+      integration: resolveIntegrationRecord(
+        existingRecord.integration.target_branch,
+        cleanupState,
+        existingRecord,
+        now,
+      ),
+      cleanup: resolveCleanupRecord(cleanupState, existingRecord, now),
+    };
+  }
+
+  return {
+    integration: {
+      ...existingRecord.integration,
+      updated_at: now,
+    },
+    cleanup: {
+      ...existingRecord.cleanup,
+      updated_at: now,
+    },
+  };
+}
+
+function resolveLifecycleState(
+  taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"],
+  health: DispatchWorkspaceHealthState,
+  integration: DispatchWorkspaceIntegrationState,
+  cleanup: RegistryCleanupState,
+  activeRole: RegistryRole | null,
+): DispatchWorkspaceLifecycleState {
+  const resetReopenedTask = integration.status === "reset"
+    && taskStatus !== null
+    && taskStatus !== "completed"
+    && taskStatus !== "cancelled";
+  if (cleanup.status === "completed") return "closed";
+  if (cleanup.status === "blocked") return "cleanup_blocked";
+  if (health.status !== "healthy") return "stale";
+  if (!resetReopenedTask && (cleanup.eligible || integration.status === "merged" || integration.status === "abandoned")) {
+    return "closing";
+  }
+  if (activeRole === "reviewer") return "integrating";
+  if (activeRole === "worker") return "active";
+  if (integration.status === "in_progress" || taskStatus === "pending_review") {
+    return "integrating";
+  }
+  return "ready";
+}
+
+function createHealthyState(now: string): DispatchWorkspaceHealthState {
+  return {
+    status: "healthy",
+    summary: "Workspace record matches current git branch and worktree state.",
+    issues: [],
+    updated_at: now,
+  };
+}
+
+function buildIssue(
+  code: string,
+  message: string,
+  suggestion: string,
+): DispatchWorkspaceIssue {
+  return {
+    code,
+    message,
+    suggestion,
+  };
+}
+
+function reconcileWorkspaceHealth(
+  projectDir: string,
+  record: DispatchWorkspaceRecord,
+  now: string,
+): DispatchWorkspaceHealthState {
+  const issues: DispatchWorkspaceIssue[] = [];
+  const branchRef = `refs/heads/${record.canonical_branch}`;
+  const branchExists = refExists(projectDir, branchRef);
+  if (!branchExists) {
+    issues.push(buildIssue(
+      "missing_canonical_branch",
+      `Canonical branch "${record.canonical_branch}" is missing.`,
+      "Re-provision the workspace or restore the branch before dispatch resumes.",
+    ));
+  }
+
+  const workerRegistered = findExistingWorktreeForBranch(projectDir, record.canonical_branch);
+  const workerExists = pathExists(record.worktrees.worker.path);
+  if (!workerExists || (!workerRegistered && record.lifecycle_state !== "closed")) {
+    issues.push(buildIssue(
+      "missing_worker_worktree",
+      `Worker worktree "${record.worktrees.worker.path}" is missing or no longer registered.`,
+      "Re-provision the worker worktree from the recorded canonical branch.",
+    ));
+  }
+
+  if (record.worktrees.reviewer) {
+    const reviewerRegistered = findWorktreeByPath(projectDir, record.worktrees.reviewer.path);
+    const reviewerExists = pathExists(record.worktrees.reviewer.path);
+    if (!reviewerExists || !reviewerRegistered) {
+      issues.push(buildIssue(
+        "missing_reviewer_worktree",
+        `Reviewer worktree "${record.worktrees.reviewer.path}" is missing or no longer registered.`,
+        "Recreate the detached reviewer snapshot before running review again.",
+      ));
+    }
+  }
+
+  if (issues.length === 0) {
+    return createHealthyState(now);
+  }
+
+  const invalid = issues.some((issue) => issue.code === "missing_canonical_branch");
+  return {
+    status: invalid ? "invalid" : "stale",
+    summary: invalid
+      ? "Workspace registry record is invalid because required git state is missing."
+      : "Workspace registry record is stale and needs reconciliation.",
+    issues,
+    updated_at: now,
+  };
+}
+
+function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata {
+  return {
+    workspaceId: record.workspace_id,
+    taskRef: record.task_ref,
+    taskSlug: record.task_slug,
+    baseBranch: record.resolved_base_branch,
+    baseBranchPoint: record.base_branch_point,
+    mergeTargetBranch: record.integration.target_branch,
+    canonicalBranch: record.canonical_branch,
+    canonicalBranchHead: record.canonical_branch_head,
+    worktreeRoot: record.worktree_root,
+    workerWorktreeDir: record.worktrees.worker.path,
+    reviewerWorktreeDir: record.worktrees.reviewer?.path ?? null,
+    lifecycleState: record.lifecycle_state,
+    activeRole: record.active_role ?? null,
+    bootstrapState: record.bootstrap,
+    integrationState: record.integration,
+    healthState: record.health,
+    cleanupState: record.cleanup,
+    createdAt: record.timestamps.created_at,
+    updatedAt: record.timestamps.updated_at,
+    lastReconciledAt: record.timestamps.last_reconciled_at ?? null,
+    lastActiveAt: record.timestamps.last_active_at ?? null,
+    closedAt: record.timestamps.closed_at ?? null,
+  };
+}
+
+async function loadWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+): Promise<LoadedDispatchWorkspaceRecord | undefined> {
+  const ctx = await initContext(projectDir);
+  return findDispatchWorkspaceByTaskRef(ctx, taskRef, { includeClosed: true });
+}
+
+async function persistWorkspaceRecord(
+  projectDir: string,
+  record: DispatchWorkspaceRecord,
 ): Promise<string> {
-  const metadataPath = metadataPathFor(worktreeDir);
-  await fs.writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
-  return metadataPath;
+  const ctx = await initContext(projectDir);
+  const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+  await saveDispatchWorkspaceRecord(ctx, {
+    ...record,
+    _sourceFile: registryPath,
+  });
+  return registryPath;
 }
 
 async function ensureUsableWorktreeRoot(
@@ -242,34 +571,6 @@ async function ensureUsableWorktreeRoot(
       "Choose a directory path for dispatch.worktree_root.",
     );
   }
-}
-
-function parseWorktreeList(projectDir: string): Array<{ path: string; branch: string | null }> {
-  const result = runGit(projectDir, ["worktree", "list", "--porcelain"]);
-  if (result.status !== 0 || !result.stdout) {
-    return [];
-  }
-
-  const entries: Array<{ path: string; branch: string | null }> = [];
-  const blocks = result.stdout.split(/\n\s*\n/).filter(Boolean);
-  for (const block of blocks) {
-    const lines = block.split(/\r?\n/);
-    const worktreePath = lines.find((line) => line.startsWith("worktree "))?.slice("worktree ".length);
-    if (!worktreePath) continue;
-    const branchRef = lines.find((line) => line.startsWith("branch "))?.slice("branch ".length) ?? null;
-    entries.push({ path: worktreePath, branch: branchRef });
-  }
-  return entries;
-}
-
-function findExistingWorktreeForBranch(projectDir: string, canonicalBranch: string): string | null {
-  const branchRef = `refs/heads/${canonicalBranch}`;
-  return parseWorktreeList(projectDir).find((entry) => entry.branch === branchRef)?.path ?? null;
-}
-
-function findWorktreeByPath(projectDir: string, worktreeDir: string): { path: string; branch: string | null } | null {
-  const normalized = path.resolve(worktreeDir);
-  return parseWorktreeList(projectDir).find((entry) => path.resolve(entry.path) === normalized) ?? null;
 }
 
 async function assertPathSafeForWorktree(worktreeDir: string, projectDir: string): Promise<void> {
@@ -371,10 +672,10 @@ function resolveBaseBranchPoint(
   projectDir: string,
   canonicalBranch: string,
   resolvedBaseStartPoint: string,
-  existingMetadata: DispatchWorkspaceMetadata | null,
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
 ): string {
-  if (existingMetadata?.baseBranchPoint) {
-    return existingMetadata.baseBranchPoint;
+  if (existingRecord?.base_branch_point) {
+    return existingRecord.base_branch_point;
   }
 
   if (refExists(projectDir, `refs/heads/${canonicalBranch}`)) {
@@ -387,57 +688,127 @@ function resolveBaseBranchPoint(
   return resolveCommit(projectDir, resolvedBaseStartPoint);
 }
 
-function resolvePersistedCleanupState(
-  cleanupState: ResolveDispatchWorkspaceCleanupStateOptions | undefined,
-  existingMetadata: DispatchWorkspaceMetadata | null,
-): DispatchWorkspaceCleanupState {
-  if (cleanupState) {
-    return resolveDispatchWorkspaceCleanupState(cleanupState);
+function buildWorktreeRecord(
+  worktreePath: string,
+  branchMode: DispatchWorkspaceWorktree["branch_mode"],
+  branchRef: string | null,
+  head: string | null,
+  now: string,
+): DispatchWorkspaceWorktree {
+  return {
+    path: worktreePath,
+    branch_mode: branchMode,
+    branch_ref: branchRef,
+    head,
+    last_seen_at: now,
+  };
+}
+
+export async function reconcileDispatchWorkspaceRegistry(
+  projectDir: string,
+  taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
+  activeRoleByTaskRef?: Map<string, RegistryRole>,
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+
+  for (const record of records) {
+    if (record.lifecycle_state === "closed") continue;
+
+    const now = new Date().toISOString();
+    const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
+    const health = reconcileWorkspaceHealth(projectDir, record, now);
+    const canonicalBranchHead = refExists(projectDir, `refs/heads/${record.canonical_branch}`)
+      ? resolveCommit(projectDir, record.canonical_branch)
+      : record.canonical_branch_head;
+    const { cleanup, integration } = resolveRegistryStateForTaskStatus(
+      currentTaskStatus,
+      record,
+      now,
+    );
+    const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
+    const lifecycleState = resolveLifecycleState(
+      currentTaskStatus,
+      health,
+      integration,
+      cleanup,
+      activeRole,
+    );
+    const closedAt = lifecycleState === "closed"
+      ? (record.timestamps.closed_at ?? now)
+      : null;
+
+    await persistWorkspaceRecord(projectDir, {
+      ...record,
+      canonical_branch_head: canonicalBranchHead,
+      lifecycle_state: lifecycleState,
+      active_role: activeRole,
+      health,
+      cleanup,
+      integration,
+      timestamps: {
+        ...record.timestamps,
+        updated_at: now,
+        last_reconciled_at: now,
+        closed_at: closedAt,
+      },
+    });
   }
-  if (existingMetadata?.cleanupEligible) {
-    return {
-      cleanupEligible: true,
-      cleanupReason: existingMetadata.cleanupReason,
-    };
-  }
-  return resolveDispatchWorkspaceCleanupState({});
 }
 
 export async function reconcileDispatchWorkspaceLifecycle(
   options: ReconcileDispatchWorkspaceLifecycleOptions,
 ): Promise<ProvisionedDispatchWorkspace | null> {
-  const { projectDir, taskRef, task, cleanupState } = options;
-  const slug = normalizeTaskSlug(taskRef, task);
-  const shortId = shortTaskId(taskRef);
-  const canonicalBranch = `dispatch/task/${slug}/${shortId}`;
-  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, canonicalBranch);
-  if (!workerWorktreeDir) {
+  const { projectDir, taskRef, cleanupState, task } = options;
+  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  if (!existingRecord) {
     return null;
   }
 
-  const existingMetadata = await readWorkspaceMetadata(workerWorktreeDir);
-  if (!existingMetadata) {
-    return null;
-  }
-
-  const persistedCleanupState = resolveDispatchWorkspaceCleanupState(cleanupState);
   const now = new Date().toISOString();
-  const canonicalBranchHead = refExists(projectDir, `refs/heads/${canonicalBranch}`)
-    ? resolveCommit(projectDir, canonicalBranch)
-    : existingMetadata.canonicalBranchHead;
-  const metadata: DispatchWorkspaceMetadata = {
-    ...existingMetadata,
-    canonicalBranchHead,
-    cleanupEligible: persistedCleanupState.cleanupEligible,
-    cleanupReason: persistedCleanupState.cleanupReason,
-    updatedAt: now,
+  const health = reconcileWorkspaceHealth(projectDir, existingRecord, now);
+  const cleanup = resolveCleanupRecord(cleanupState, existingRecord, now);
+  const integration = resolveIntegrationRecord(
+    existingRecord.integration.target_branch,
+    cleanupState,
+    existingRecord,
+    now,
+  );
+  const lifecycleState = resolveLifecycleState(
+    cleanupState.taskStatus ?? null,
+    health,
+    integration,
+    cleanup,
+    null,
+  );
+  const canonicalBranchHead = refExists(projectDir, `refs/heads/${existingRecord.canonical_branch}`)
+    ? resolveCommit(projectDir, existingRecord.canonical_branch)
+    : existingRecord.canonical_branch_head;
+  const updatedTaskSlug = normalizeTaskSlug(taskRef, task) || existingRecord.task_slug;
+  const record: DispatchWorkspaceRecord = {
+    ...existingRecord,
+    task_slug: updatedTaskSlug,
+    canonical_branch_head: canonicalBranchHead,
+    lifecycle_state: lifecycleState,
+    active_role: null,
+    health,
+    cleanup,
+    integration,
+    timestamps: {
+      ...existingRecord.timestamps,
+      updated_at: now,
+      last_reconciled_at: now,
+      closed_at: lifecycleState === "closed"
+        ? (existingRecord.timestamps.closed_at ?? now)
+        : null,
+    },
   };
-  const metadataPath = await writeWorkspaceMetadata(workerWorktreeDir, metadata);
+  const metadataPath = await persistWorkspaceRecord(projectDir, record);
 
   return {
-    cwd: workerWorktreeDir,
+    cwd: record.worktrees.worker.path,
     metadataPath,
-    metadata,
+    metadata: toMetadata(record),
   };
 }
 
@@ -476,34 +847,71 @@ export async function provisionDispatchWorkspace(
   options: ProvisionDispatchWorkspaceOptions,
 ): Promise<ProvisionedDispatchWorkspace> {
   const { projectDir, taskRef, task, role = "worker", cleanupState } = options;
-  const slug = normalizeTaskSlug(taskRef, task);
-  const shortId = shortTaskId(taskRef);
-  const canonicalBranch = `dispatch/task/${slug}/${shortId}`;
-
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
 
-  const desiredWorkerWorktreeDir = path.join(resolvedConfig.worktreeRoot, `${slug}-${shortId}`);
-  const desiredReviewerWorktreeDir = path.join(
-    resolvedConfig.worktreeRoot,
-    `${slug}-${shortId}-review`,
-  );
-  await assertPathSafeForWorktree(desiredWorkerWorktreeDir, projectDir);
-
-  const existingWorktreeDir = findExistingWorktreeForBranch(projectDir, canonicalBranch);
-  const workerWorktreeDir = existingWorktreeDir ?? desiredWorkerWorktreeDir;
-  const existingMetadata = await readWorkspaceMetadata(workerWorktreeDir);
-  const baseBranch = existingMetadata?.baseBranch ?? resolvedConfig.baseBranch;
+  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const taskSlug = existingRecord?.task_slug ?? normalizeTaskSlug(taskRef, task);
+  const shortId = shortTaskId(taskRef);
+  const canonicalBranch = existingRecord?.canonical_branch ?? `dispatch/task/${taskSlug}/${shortId}`;
+  const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
+  const workerWorktreeDir = existingRecord?.worktrees.worker.path
+    ?? findExistingWorktreeForBranch(projectDir, canonicalBranch)
+    ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
+  const reviewerWorktreeDir = existingRecord?.worktrees.reviewer?.path
+    ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}-review`);
+  const baseBranch = existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch;
   const baseBranchPoint = resolveBaseBranchPoint(
     projectDir,
     canonicalBranch,
     resolvedConfig.baseBranchStartPoint,
-    existingMetadata,
+    existingRecord,
   );
-  const mergeTargetBranch = existingMetadata?.mergeTargetBranch ?? baseBranch;
-  const persistedCleanupState = resolvePersistedCleanupState(cleanupState, existingMetadata);
+  const mergeTargetBranch = existingRecord?.integration.target_branch ?? baseBranch;
+  const now = new Date().toISOString();
+  const provisioningRecord: DispatchWorkspaceRecord = {
+    workspace_id: workspaceId,
+    task_ref: taskRef,
+    task_slug: taskSlug,
+    worktree_root: resolvedConfig.worktreeRoot,
+    resolved_base_branch: baseBranch,
+    base_branch_point: baseBranchPoint,
+    canonical_branch: canonicalBranch,
+    canonical_branch_head: existingRecord?.canonical_branch_head ?? baseBranchPoint,
+    lifecycle_state: "provisioning",
+    active_role: null,
+    worktrees: {
+      worker: buildWorktreeRecord(
+        workerWorktreeDir,
+        "branch",
+        canonicalBranch,
+        existingRecord?.worktrees.worker.head ?? baseBranchPoint,
+        now,
+      ),
+      reviewer: existingRecord?.worktrees.reviewer ?? null,
+    },
+    bootstrap: existingRecord?.bootstrap ?? defaultBootstrapState(now),
+    integration: resolveIntegrationRecord(
+      mergeTargetBranch,
+      cleanupState,
+      existingRecord,
+      now,
+    ),
+    health: createHealthyState(now),
+    cleanup: resolveCleanupRecord(cleanupState, existingRecord, now),
+    timestamps: {
+      created_at: existingRecord?.timestamps.created_at ?? now,
+      updated_at: now,
+      last_reconciled_at: existingRecord?.timestamps.last_reconciled_at ?? now,
+      last_active_at: existingRecord?.timestamps.last_active_at ?? null,
+      closed_at: null,
+    },
+  };
+  const metadataPath = await persistWorkspaceRecord(projectDir, provisioningRecord);
 
-  if (!existingWorktreeDir) {
+  await assertPathSafeForWorktree(workerWorktreeDir, projectDir);
+  const existingWorkerWorktree = findExistingWorktreeForBranch(projectDir, canonicalBranch);
+  if (!existingWorkerWorktree) {
     const branchExists = refExists(projectDir, `refs/heads/${canonicalBranch}`);
     if (branchExists) {
       runGitOrThrow(
@@ -522,35 +930,174 @@ export async function provisionDispatchWorkspace(
     }
   }
 
-  let reviewerWorktreeDir = existingMetadata?.reviewerWorktreeDir ?? null;
+  let reviewerRecord: DispatchWorkspaceWorktree | null = existingRecord?.worktrees.reviewer ?? null;
   if (role === "reviewer") {
-    reviewerWorktreeDir = reviewerWorktreeDir ?? desiredReviewerWorktreeDir;
     await ensureReviewerWorktree(projectDir, reviewerWorktreeDir, canonicalBranch);
+    reviewerRecord = buildWorktreeRecord(
+      reviewerWorktreeDir,
+      "detached",
+      null,
+      resolveCommit(reviewerWorktreeDir, "HEAD"),
+      now,
+    );
   }
 
-  const now = new Date().toISOString();
   const canonicalBranchHead = resolveCommit(projectDir, canonicalBranch);
-  const metadata: DispatchWorkspaceMetadata = {
-    taskRef,
-    taskSlug: slug,
-    baseBranch,
-    baseBranchPoint,
+  const health = reconcileWorkspaceHealth(projectDir, {
+    ...provisioningRecord,
+    canonical_branch_head: canonicalBranchHead,
+    worktrees: {
+      worker: buildWorktreeRecord(
+        workerWorktreeDir,
+        "branch",
+        canonicalBranch,
+        canonicalBranchHead,
+        now,
+      ),
+      reviewer: reviewerRecord,
+    },
+  }, now);
+  const integration = resolveIntegrationRecord(
     mergeTargetBranch,
-    canonicalBranch,
-    canonicalBranchHead,
-    worktreeRoot: resolvedConfig.worktreeRoot,
-    workerWorktreeDir,
-    reviewerWorktreeDir,
-    cleanupEligible: persistedCleanupState.cleanupEligible,
-    cleanupReason: persistedCleanupState.cleanupReason,
-    createdAt: existingMetadata?.createdAt ?? now,
-    updatedAt: now,
+    cleanupState,
+    existingRecord,
+    now,
+  );
+  const cleanup = resolveCleanupRecord(cleanupState, existingRecord, now);
+  const record: DispatchWorkspaceRecord = {
+    ...provisioningRecord,
+    canonical_branch_head: canonicalBranchHead,
+    lifecycle_state: resolveLifecycleState(
+      cleanupState?.taskStatus ?? null,
+      health,
+      integration,
+      cleanup,
+      null,
+    ),
+    worktrees: {
+      worker: buildWorktreeRecord(
+        workerWorktreeDir,
+        "branch",
+        canonicalBranch,
+        canonicalBranchHead,
+        now,
+      ),
+      reviewer: reviewerRecord,
+    },
+    integration,
+    health,
+    cleanup,
+    timestamps: {
+      ...provisioningRecord.timestamps,
+      updated_at: now,
+      last_reconciled_at: now,
+    },
   };
-  const metadataPath = await writeWorkspaceMetadata(workerWorktreeDir, metadata);
+  await persistWorkspaceRecord(projectDir, record);
 
   return {
-    cwd: role === "reviewer" && reviewerWorktreeDir ? reviewerWorktreeDir : workerWorktreeDir,
+    cwd: role === "reviewer" && reviewerRecord ? reviewerRecord.path : workerWorktreeDir,
     metadataPath,
-    metadata,
+    metadata: toMetadata(record),
+  };
+}
+
+export async function markDispatchWorkspaceActive(options: {
+  projectDir: string;
+  taskRef: string;
+  role: DispatchWorkspaceRole;
+}): Promise<ProvisionedDispatchWorkspace | null> {
+  const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
+  if (!existingRecord) return null;
+
+  const now = new Date().toISOString();
+  const health = reconcileWorkspaceHealth(options.projectDir, existingRecord, now);
+  const lifecycleState = resolveLifecycleState(
+    null,
+    health,
+    {
+      ...existingRecord.integration,
+      updated_at: now,
+    },
+    {
+      ...existingRecord.cleanup,
+      updated_at: now,
+    },
+    options.role,
+  );
+  const canonicalBranchHead = refExists(options.projectDir, `refs/heads/${existingRecord.canonical_branch}`)
+    ? resolveCommit(options.projectDir, existingRecord.canonical_branch)
+    : existingRecord.canonical_branch_head;
+  const record: DispatchWorkspaceRecord = {
+    ...existingRecord,
+    canonical_branch_head: canonicalBranchHead,
+    lifecycle_state: lifecycleState,
+    active_role: options.role,
+    health,
+    timestamps: {
+      ...existingRecord.timestamps,
+      updated_at: now,
+      last_reconciled_at: now,
+      last_active_at: now,
+    },
+  };
+  const metadataPath = await persistWorkspaceRecord(options.projectDir, record);
+
+  return {
+    cwd: options.role === "reviewer" && record.worktrees.reviewer
+      ? record.worktrees.reviewer.path
+      : record.worktrees.worker.path,
+    metadataPath,
+    metadata: toMetadata(record),
+  };
+}
+
+export async function markDispatchWorkspaceIdle(options: {
+  projectDir: string;
+  taskRef: string;
+  taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"] | null;
+}): Promise<ProvisionedDispatchWorkspace | null> {
+  const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
+  if (!existingRecord) return null;
+
+  const now = new Date().toISOString();
+  const health = reconcileWorkspaceHealth(options.projectDir, existingRecord, now);
+  const cleanup = {
+    ...existingRecord.cleanup,
+    updated_at: now,
+  };
+  const integration = {
+    ...existingRecord.integration,
+    updated_at: now,
+  };
+  const lifecycleState = resolveLifecycleState(
+    options.taskStatus,
+    health,
+    integration,
+    cleanup,
+    null,
+  );
+  const record: DispatchWorkspaceRecord = {
+    ...existingRecord,
+    lifecycle_state: lifecycleState,
+    active_role: null,
+    health,
+    cleanup,
+    integration,
+    timestamps: {
+      ...existingRecord.timestamps,
+      updated_at: now,
+      last_reconciled_at: now,
+      closed_at: lifecycleState === "closed"
+        ? (existingRecord.timestamps.closed_at ?? now)
+        : null,
+    },
+  };
+  const metadataPath = await persistWorkspaceRecord(options.projectDir, record);
+
+  return {
+    cwd: record.worktrees.worker.path,
+    metadataPath,
+    metadata: toMetadata(record),
   };
 }

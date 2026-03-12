@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
+import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
@@ -23,6 +24,13 @@ function git(cwd: string, command: string): string {
     stdio: "pipe",
     encoding: "utf-8",
   }).trim();
+}
+
+async function readWorkspaceRecord(registryPath: string, taskRef: string): Promise<Record<string, any>> {
+  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+    workspaces?: Array<Record<string, any>>;
+  };
+  return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
 }
 
 async function seedRepo(dir: string): Promise<void> {
@@ -300,12 +308,15 @@ describe("canonical task workspace contract", () => {
       } as never,
     });
 
-    let completedMetadata = JSON.parse(
-      await fs.readFile(completedWorkspace.metadataPath, "utf-8"),
-    ) as { cleanupEligible: boolean; cleanupReason: string | null };
+    let completedMetadata = await readWorkspaceRecord(
+      completedWorkspace.metadataPath,
+      completedTaskRef,
+    );
     expect(completedMetadata).toMatchObject({
-      cleanupEligible: true,
-      cleanupReason: "integrated-into-base-branch",
+      cleanup: {
+        eligible: true,
+        reason: "integrated-into-base-branch",
+      },
     });
 
     await engine.handleStateChange({
@@ -333,12 +344,15 @@ describe("canonical task workspace contract", () => {
       } as never,
     });
 
-    completedMetadata = JSON.parse(
-      await fs.readFile(completedWorkspace.metadataPath, "utf-8"),
-    ) as { cleanupEligible: boolean; cleanupReason: string | null };
+    completedMetadata = await readWorkspaceRecord(
+      completedWorkspace.metadataPath,
+      completedTaskRef,
+    );
     expect(completedMetadata).toMatchObject({
-      cleanupEligible: true,
-      cleanupReason: "task-reset",
+      cleanup: {
+        eligible: true,
+        reason: "task-reset",
+      },
     });
 
     await engine.handleStateChange({
@@ -366,12 +380,15 @@ describe("canonical task workspace contract", () => {
       } as never,
     });
 
-    const cancelledMetadata = JSON.parse(
-      await fs.readFile(cancelledWorkspace.metadataPath, "utf-8"),
-    ) as { cleanupEligible: boolean; cleanupReason: string | null };
+    const cancelledMetadata = await readWorkspaceRecord(
+      cancelledWorkspace.metadataPath,
+      cancelledTaskRef,
+    );
     expect(cancelledMetadata).toMatchObject({
-      cleanupEligible: true,
-      cleanupReason: "task-abandoned",
+      cleanup: {
+        eligible: true,
+        reason: "task-abandoned",
+      },
     });
 
     await engine.stop();

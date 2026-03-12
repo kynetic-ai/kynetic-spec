@@ -1,0 +1,171 @@
+import { z } from "zod";
+import { DateTimeSchema, RefSchema, SlugSchema } from "./common.js";
+
+export const DispatchWorkspaceLifecycleStateSchema = z.enum([
+  "provisioning",
+  "ready",
+  "active",
+  "stale",
+  "integrating",
+  "closing",
+  "cleanup_blocked",
+  "closed",
+]);
+
+export const DispatchWorkspaceHealthStatusSchema = z.enum([
+  "healthy",
+  "stale",
+  "invalid",
+]);
+
+export const DispatchWorkspaceBootstrapStatusSchema = z.enum([
+  "not_started",
+  "ready",
+  "failed",
+]);
+
+export const DispatchWorkspaceIntegrationStatusSchema = z.enum([
+  "pending",
+  "in_progress",
+  "merged",
+  "abandoned",
+  "reset",
+]);
+
+export const DispatchWorkspaceCleanupStatusSchema = z.enum([
+  "not_scheduled",
+  "scheduled",
+  "blocked",
+  "completed",
+]);
+
+export const DispatchWorkspaceRoleSchema = z.enum(["worker", "reviewer"]);
+
+export const DispatchWorkspaceBranchModeSchema = z.enum([
+  "branch",
+  "detached",
+]);
+
+export const DispatchWorkspaceIssueSchema = z.object({
+  code: z.string().min(1, "Issue code is required"),
+  message: z.string().min(1, "Issue message is required"),
+  suggestion: z.string().nullable().optional(),
+});
+
+export const DispatchWorkspaceWorktreeSchema = z.object({
+  path: z.string().min(1, "Worktree path is required"),
+  branch_mode: DispatchWorkspaceBranchModeSchema,
+  branch_ref: z.string().nullable().optional(),
+  head: z.string().nullable().optional(),
+  last_seen_at: DateTimeSchema.nullable().optional(),
+});
+
+export const DispatchWorkspaceBootstrapStateSchema = z.object({
+  status: DispatchWorkspaceBootstrapStatusSchema.default("not_started"),
+  detail: z.string().nullable().optional(),
+  updated_at: DateTimeSchema,
+});
+
+export const DispatchWorkspaceIntegrationStateSchema = z.object({
+  status: DispatchWorkspaceIntegrationStatusSchema.default("pending"),
+  target_branch: z.string().min(1, "Target branch is required"),
+  detail: z.string().nullable().optional(),
+  updated_at: DateTimeSchema,
+});
+
+export const DispatchWorkspaceHealthStateSchema = z.object({
+  status: DispatchWorkspaceHealthStatusSchema,
+  summary: z.string().min(1, "Health summary is required"),
+  issues: z.array(DispatchWorkspaceIssueSchema).default([]),
+  updated_at: DateTimeSchema,
+});
+
+export const DispatchWorkspaceCleanupStateSchema = z.object({
+  status: DispatchWorkspaceCleanupStatusSchema.default("not_scheduled"),
+  eligible: z.boolean().default(false),
+  reason: z.string().nullable().optional(),
+  detail: z.string().nullable().optional(),
+  updated_at: DateTimeSchema,
+});
+
+export const DispatchWorkspaceTimestampsSchema = z.object({
+  created_at: DateTimeSchema,
+  updated_at: DateTimeSchema,
+  last_reconciled_at: DateTimeSchema.nullable().optional(),
+  last_active_at: DateTimeSchema.nullable().optional(),
+  closed_at: DateTimeSchema.nullable().optional(),
+});
+
+export const DispatchWorkspaceRecordSchema = z.object({
+  workspace_id: z.string().min(1, "Workspace ID is required"),
+  task_ref: RefSchema,
+  task_slug: SlugSchema,
+  worktree_root: z.string().min(1, "Worktree root is required"),
+  resolved_base_branch: z.string().min(1, "Resolved base branch is required"),
+  base_branch_point: z.string().min(1, "Base branch point is required"),
+  canonical_branch: z.string().min(1, "Canonical branch is required"),
+  canonical_branch_head: z.string().min(1, "Canonical branch head is required"),
+  lifecycle_state: DispatchWorkspaceLifecycleStateSchema,
+  active_role: DispatchWorkspaceRoleSchema.nullable().optional(),
+  worktrees: z.object({
+    worker: DispatchWorkspaceWorktreeSchema,
+    reviewer: DispatchWorkspaceWorktreeSchema.nullable().optional(),
+  }),
+  bootstrap: DispatchWorkspaceBootstrapStateSchema,
+  integration: DispatchWorkspaceIntegrationStateSchema,
+  health: DispatchWorkspaceHealthStateSchema,
+  cleanup: DispatchWorkspaceCleanupStateSchema,
+  timestamps: DispatchWorkspaceTimestampsSchema,
+});
+
+export const DispatchWorkspaceRegistryFileSchema = z.object({
+  kynetic_dispatch_workspaces: z.string().default("1.0"),
+  workspaces: z.array(DispatchWorkspaceRecordSchema).default([]),
+});
+
+export type DispatchWorkspaceLifecycleState = z.infer<
+  typeof DispatchWorkspaceLifecycleStateSchema
+>;
+export type DispatchWorkspaceHealthStatus = z.infer<
+  typeof DispatchWorkspaceHealthStatusSchema
+>;
+export type DispatchWorkspaceBootstrapStatus = z.infer<
+  typeof DispatchWorkspaceBootstrapStatusSchema
+>;
+export type DispatchWorkspaceIntegrationStatus = z.infer<
+  typeof DispatchWorkspaceIntegrationStatusSchema
+>;
+export type DispatchWorkspaceCleanupStatus = z.infer<
+  typeof DispatchWorkspaceCleanupStatusSchema
+>;
+export type DispatchWorkspaceRole = z.infer<typeof DispatchWorkspaceRoleSchema>;
+export type DispatchWorkspaceBranchMode = z.infer<
+  typeof DispatchWorkspaceBranchModeSchema
+>;
+export type DispatchWorkspaceIssue = z.infer<
+  typeof DispatchWorkspaceIssueSchema
+>;
+export type DispatchWorkspaceWorktree = z.infer<
+  typeof DispatchWorkspaceWorktreeSchema
+>;
+export type DispatchWorkspaceBootstrapState = z.infer<
+  typeof DispatchWorkspaceBootstrapStateSchema
+>;
+export type DispatchWorkspaceIntegrationState = z.infer<
+  typeof DispatchWorkspaceIntegrationStateSchema
+>;
+export type DispatchWorkspaceHealthState = z.infer<
+  typeof DispatchWorkspaceHealthStateSchema
+>;
+export type DispatchWorkspaceCleanupState = z.infer<
+  typeof DispatchWorkspaceCleanupStateSchema
+>;
+export type DispatchWorkspaceTimestamps = z.infer<
+  typeof DispatchWorkspaceTimestampsSchema
+>;
+export type DispatchWorkspaceRecord = z.infer<
+  typeof DispatchWorkspaceRecordSchema
+>;
+export type DispatchWorkspaceRegistryFile = z.infer<
+  typeof DispatchWorkspaceRegistryFileSchema
+>;

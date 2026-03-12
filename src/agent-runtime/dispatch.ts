@@ -28,6 +28,9 @@ import { getAdapter } from "../agents/adapters.js";
 import {
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
+  markDispatchWorkspaceActive,
+  markDispatchWorkspaceIdle,
+  reconcileDispatchWorkspaceRegistry,
   reconcileDispatchWorkspaceLifecycle,
 } from "./workspace.js";
 import type {
@@ -265,6 +268,7 @@ interface ActiveInvocationRecord {
   agentId: string;
   agentName: string;
   taskRef: string | undefined;
+  role: "worker" | "reviewer";
   startedAtMs: number;
 }
 
@@ -365,6 +369,8 @@ export class DispatchEngine {
   private invocationAbortControllers: Set<AbortController> = new Set();
   /** Per-invocation tracking records for status display */
   private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
+  /** Task refs currently between queue removal and active tracking registration */
+  private inFlightTaskKeys = new Set<string>();
   /** Monotonic enqueue sequence for deterministic queue ordering */
   private nextQueueSequence = 0;
   /** Timer handle for periodic reconciliation. AC: @agent-dispatch-engine ac-20 */
@@ -393,6 +399,19 @@ export class DispatchEngine {
    */
   async start(): Promise<void> {
     this.running = true;
+
+    try {
+      const ctx = await initContext(this.projectDir);
+      const tasks = await loadAllTasks(ctx);
+      const taskStatusByRef = new Map(
+        tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
+      );
+      await this.shadowMutex.runExclusive(async () => {
+        await reconcileDispatchWorkspaceRegistry(this.projectDir, taskStatusByRef);
+      });
+    } catch (err) {
+      console.error("[dispatch] Workspace registry reconciliation error:", err);
+    }
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
     await this._bootstrap();
@@ -427,16 +446,18 @@ export class DispatchEngine {
     const cleanupState = resolveCleanupStateForTaskChange(change);
     if (cleanupState) {
       try {
-        await reconcileDispatchWorkspaceLifecycle({
-          projectDir: this.projectDir,
-          taskRef: change.taskRef,
-          task: change.task
-            ? {
-                title: change.task.title,
-                slugs: change.task.slugs,
-              }
-            : undefined,
-          cleanupState,
+        await this.shadowMutex.runExclusive(async () => {
+          await reconcileDispatchWorkspaceLifecycle({
+            projectDir: this.projectDir,
+            taskRef: change.taskRef,
+            task: change.task
+              ? {
+                  title: change.task.title,
+                  slugs: change.task.slugs,
+                }
+              : undefined,
+            cleanupState,
+          });
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -651,6 +672,23 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-19
    */
   private async _reconcile(): Promise<void> {
+    try {
+      const ctx = await initContext(this.projectDir);
+      const tasks = await loadAllTasks(ctx);
+      const taskStatusByRef = new Map(
+        tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
+      );
+      await this.shadowMutex.runExclusive(async () => {
+        await reconcileDispatchWorkspaceRegistry(
+          this.projectDir,
+          taskStatusByRef,
+          this._activeRoleByTaskRef(),
+        );
+      });
+    } catch (err) {
+      console.error("[dispatch] Workspace registry reconciliation error:", err);
+    }
+
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
     if (enqueued > 0) {
       console.log(`[dispatch] Reconciliation enqueued ${enqueued} task(s)`);
@@ -715,6 +753,9 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-19
    */
   private _hasActiveOrQueuedInvocation(agentId: string, taskId: string): boolean {
+    if (this.inFlightTaskKeys.has(`${agentId}:@${taskId}`)) {
+      return true;
+    }
     // Check active invocations
     for (const record of this.activeInvocationDetails.values()) {
       if (record.agentId === agentId && record.taskRef === `@${taskId}`) {
@@ -724,6 +765,16 @@ export class DispatchEngine {
     // Check queued entries
     const queue = this.queues.get(agentId) ?? [];
     return queue.some((entry) => entry.change.taskId === taskId);
+  }
+
+  private _activeRoleByTaskRef(): Map<string, "worker" | "reviewer"> {
+    const roles = new Map<string, "worker" | "reviewer">();
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.taskRef) {
+        roles.set(record.taskRef, record.role);
+      }
+    }
+    return roles;
   }
 
   /**
@@ -1035,12 +1086,15 @@ export class DispatchEngine {
    */
   private async _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): Promise<boolean> {
     const agentId = agent.id;
+    const role = entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
+    const inFlightKey = `${agentId}:${entry.change.taskRef}`;
+    this.inFlightTaskKeys.add(inFlightKey);
     let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
     try {
       workspace = await provisionDispatchWorkspace({
         projectDir: this.projectDir,
         taskRef: entry.change.taskRef,
-        role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+        role,
         cleanupState: {
           taskStatus: entry.change.task?.status ?? entry.change.toStatus,
         },
@@ -1064,6 +1118,7 @@ export class DispatchEngine {
           `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
         ], { cwd: this.cwd });
       }
+      this.inFlightTaskKeys.delete(inFlightKey);
       return false;
     }
 
@@ -1104,24 +1159,30 @@ export class DispatchEngine {
       agentId,
       agentName: agent.name,
       taskRef: entry.change.taskRef,
+      role,
       startedAtMs: Date.now(),
     };
     this.activeInvocationDetails.set(invocationId, trackingRecord);
 
-    // AC: @daemon-agent-dispatch ac-3, ac-4 - Emit started event
-    this.onInvocationEvent?.({
-      type: "started",
-      session_id: preSessionId,
-      agent_id: agentId,
-      task_id: entry.change.taskRef,
-      status: "started",
-      timestamp: Date.now(),
-    });
+    let startedEventEmitted = false;
+    const emitStartedEvent = (): void => {
+      if (startedEventEmitted) return;
+      startedEventEmitted = true;
+      this.onInvocationEvent?.({
+        type: "started",
+        session_id: preSessionId,
+        agent_id: agentId,
+        task_id: entry.change.taskRef,
+        status: "started",
+        timestamp: Date.now(),
+      });
+    };
 
     // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream text chunks to watchers
     const taskId = entry.change.taskRef ?? null;
     const onUpdate = this.onTextChunk
       ? (update: import("../acp/index.js").SessionUpdate) => {
+          emitStartedEvent();
           if (
             update.sessionUpdate === "agent_message_chunk" &&
             update.content.type === "text"
@@ -1153,28 +1214,64 @@ export class DispatchEngine {
         KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
         KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
         KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+        KSPEC_DISPATCH_WORKSPACE_ID: workspace.metadata.workspaceId,
       },
       onUpdate,
+    };
+
+    let resolveInvocationStarted!: () => void;
+    const invocationStarted = new Promise<void>((resolve) => {
+      resolveInvocationStarted = resolve;
+    });
+    let invocationStartedResolved = false;
+    const markInvocationStarted = (): void => {
+      if (invocationStartedResolved) return;
+      invocationStartedResolved = true;
+      resolveInvocationStarted();
     };
 
     // AC: @agent-dispatch-engine ac-12 - Wrap invocation in shadow mutex
     const invocationPromise = this.shadowMutex
       .runExclusive(async () => {
+        let terminalEvent: InvocationEvent | null = null;
+        const markActivePromise = markDispatchWorkspaceActive({
+          projectDir: this.projectDir,
+          taskRef: entry.change.taskRef,
+          role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+        }).then((activeWorkspace) => {
+          if (activeWorkspace) {
+            workspace = activeWorkspace;
+            options.env = {
+              ...options.env,
+              KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
+              KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
+            };
+          }
+        }).catch((err) => {
+          console.error(
+            `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
+            err,
+          );
+        });
+
         // AC: @agent-dispatch-engine ac-9 - Retry on transient errors
         try {
+          markInvocationStarted();
+          emitStartedEvent();
+          await markActivePromise;
           await runInvocation(options);
           // Reset retry count on success
           entry.retryCount = 0;
-          // AC: @daemon-agent-dispatch ac-3, ac-4 - Emit completed event
-          this.onInvocationEvent?.({
+          terminalEvent = {
             type: "completed",
             session_id: preSessionId,
             agent_id: agentId,
             task_id: entry.change.taskRef,
             status: "completed",
             timestamp: Date.now(),
-          });
+          };
         } catch (err) {
+          markInvocationStarted();
           const retryLimit = agent.budget?.max_retries ?? 3;
           if (entry.retryCount < retryLimit) {
             entry.retryCount++;
@@ -1204,16 +1301,28 @@ export class DispatchEngine {
               `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
               err,
             );
-            // AC: @daemon-agent-dispatch ac-3, ac-4 - Emit failed event when retry limit exceeded
-            this.onInvocationEvent?.({
+            terminalEvent = {
               type: "failed",
               session_id: preSessionId,
               agent_id: agentId,
               task_id: entry.change.taskRef,
               status: "failed",
               timestamp: Date.now(),
-            });
+            };
           }
+        }
+
+        try {
+          await markDispatchWorkspaceIdle({
+            projectDir: this.projectDir,
+            taskRef: entry.change.taskRef,
+            taskStatus: entry.change.toStatus,
+          });
+        } catch (err) {
+          console.error(
+            `[dispatch] Failed to mark workspace idle for ${entry.change.taskRef}:`,
+            err,
+          );
         }
 
         // Clean up active tracking immediately while still holding the mutex,
@@ -1223,6 +1332,9 @@ export class DispatchEngine {
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         this.activeInvocationDetails.delete(invocationId);
+        if (terminalEvent) {
+          this.onInvocationEvent?.(terminalEvent);
+        }
       })
       .then(async () => {
         if (!this.running) return;
@@ -1250,11 +1362,13 @@ export class DispatchEngine {
         }
       })
       .finally(() => {
+        this.inFlightTaskKeys.delete(inFlightKey);
         this.runningInvocations.delete(invocationPromise);
         this.invocationAbortControllers.delete(abortController);
       });
 
     this.runningInvocations.add(invocationPromise);
+    await invocationStarted;
     return true;
   }
 }
