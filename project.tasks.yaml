@@ -91058,6 +91058,7 @@
   session_id: 01KKFZV014WEX0YA9YAFAQPSS7
   created_at: 2026-03-12T02:33:53.006Z
   started_at: 2026-03-12T03:01:31.863Z
+  submitted_at: 2026-03-12T03:09:55.312Z
   notes:
     - _ulid: 01KKFZW3SZ1V7C6VNRFN9PXM9Z
       created_at: 2026-03-12T03:01:35.168Z
@@ -91095,7 +91096,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-12T03:09:55.312Z
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/795
 - _ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
   slugs:
     - task-implement-canonical-task-workspace-contract
