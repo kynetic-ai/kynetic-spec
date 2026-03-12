@@ -14155,17 +14155,6 @@ plans:
       configured base branch
     status: active
     derived_tasks:
-      - "@implement-dispatch-workspace-configuration"
-      - "@implement-canonical-task-workspace-contract"
-      - "@implement-dispatch-workspace-registry"
-      - "@implement-dispatched-invocation-worktree-isolation"
-      - "@implement-dispatch-branch-integration-contract"
-      - "@implement-dispatch-workspace-cleanup-policy"
-      - "@implement-dispatch-runtime-bootstrap-contract"
-      - "@implement-dispatch-workspace-orientation-prompt"
-      - "@implement-dispatch-role-workflow-entry-contract"
-      - "@implement-scoped-dispatch-shadow-serialization"
-      - "@implement-dispatch-scheduling-priority-model"
       - "@task-design-dispatch-workspace-config"
       - "@task-design-canonical-task-workspace-contract"
       - "@task-design-dispatch-workspace-registry"
