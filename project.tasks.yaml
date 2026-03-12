@@ -91693,6 +91693,16 @@
         (cli-serve and dispatch-workspace-registry), so the branch must be stabilized and
         revalidated before merge."
       supersedes: null
+    - _ulid: 01KKHS6YH6Q9X53QMERE4TB56P
+      created_at: 2026-03-12T19:43:39.046Z
+      author: Jacob Chapel
+      content: "Fix cycle investigation: the reported dispatch-workspace-registry flake matches a real
+        YAML persistence race. Registry/state readers can observe a file during in-place rewrite and
+        parse null/partial content, and the cli-serve foreground shutdown assertion is also
+        timing-sensitive. I am hardening parser YAML writes to use atomic temp-file rename semantics
+        and tightening the serve foreground test shutdown wait before re-running repeated regression
+        checks."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9F0VXEG6YWVBA20N7DJ2
