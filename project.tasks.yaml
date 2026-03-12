@@ -91861,6 +91861,17 @@
         manual_merge compatibility fallback. Adding a regression test for legacy registry reload in
         a PR-capable repo."
       supersedes: null
+    - _ulid: 01KKHTPTSXSVBGW23F8F4E0T3C
+      created_at: 2026-03-12T20:09:48.094Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 5] Restored AC-compliant legacy reload behavior by recomputing
+        publication_mode for pending/in-progress workspaces from current repo capabilities during
+        provisioning, instead of preserving the parser's manual_merge compatibility fallback. Added
+        a regression test for a pre-metadata registry record reopening in a GitHub repo.
+        Verification: npm test -- tests/dispatch-branch-integration-contract.test.ts
+        tests/dispatch-workspace-registry.test.ts ; npm test ; kspec validate --warnings-ok
+        (warnings are existing project-wide validation debt only)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9FK58T570QTKKYMPTK98
