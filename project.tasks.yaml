@@ -92126,6 +92126,21 @@
         - Verification after conflict resolution: targeted dispatch tests, full npm test, and kspec
         validate.
       supersedes: null
+    - _ulid: 01KKHYDDXP9S3JWBH4VN20FGFG
+      created_at: 2026-03-12T21:14:34.295Z
+      author: Jacob Chapel
+      content: >-
+        Rebase verification:
+
+        - Resolved dispatch/workspace conflicts by preserving registry-backed lifecycle tracking
+        plus scheduler-side workspace health gating.
+
+        - Added the post-rebase type-safety follow-up for optional reviewer worktree registry
+        entries.
+
+        - Verified with: npm test -- tests/agent-dispatch-engine.test.ts, npm test, kspec validate
+        (warnings-only baseline; exit 6).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9K4NK8JC0ANF9TS7H769
