@@ -187,7 +187,7 @@ export async function writeYamlFile(
     buffer.write(filePath, content);
     return;
   }
-  await fs.writeFile(filePath, content, "utf-8");
+  await writeFileAtomic(filePath, content);
 }
 
 /**
@@ -208,7 +208,15 @@ export async function writeYamlFilePreserveFormat(
     buffer.write(filePath, content);
     return;
   }
-  await fs.writeFile(filePath, content, "utf-8");
+  await writeFileAtomic(filePath, content);
+}
+
+async function writeFileAtomic(filePath: string, content: string): Promise<void> {
+  const dir = path.dirname(filePath);
+  await fs.mkdir(dir, { recursive: true });
+  const tmpPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmpPath, content, "utf-8");
+  await fs.rename(tmpPath, filePath);
 }
 
 /**

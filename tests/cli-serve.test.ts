@@ -14,6 +14,7 @@ import {
   type KspecOptions,
 } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
+import { once } from 'events';
 import { dirname, join } from 'path';
 import { readFileSync, existsSync, mkdirSync } from 'fs';
 import { createServer } from 'net';
@@ -214,13 +215,19 @@ describe('kspec serve commands', () => {
     }
 
     // Wait for shutdown
-    await new Promise<void>((resolve) => {
-      if (child.exitCode !== null) {
-        resolve();
-        return;
-      }
-      child.on('exit', () => resolve());
-    });
+    if (child.exitCode === null) {
+      await Promise.race([
+        once(child, 'exit'),
+        waitForStartup(
+          'foreground daemon child exit',
+          async () => ({
+            ok: child.exitCode !== null,
+            details: `exitCode=${child.exitCode} killed=${child.killed}`,
+          }),
+          { timeoutMs: 10_000, intervalMs: 50 }
+        ),
+      ]);
+    }
 
     expect(child.exitCode).toBe(0);
   });
