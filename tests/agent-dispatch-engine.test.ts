@@ -12,6 +12,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
+import { execSync } from "node:child_process";
 import * as YAML from "yaml";
 import {
   DispatchEngine,
@@ -101,6 +102,8 @@ async function setupProjectWithAgents(
     YAML.stringify({ tasks: [] }),
     "utf-8",
   );
+
+  execSync("git add -A && git commit -m init", { cwd: dir, stdio: "pipe" });
 }
 
 /**
@@ -810,11 +813,11 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
 
     // Manually call _spawnInvocation with the bad agent via type assertion
-    type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => void };
+    type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
     const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress" });
     const entry = { agent: agentBadAdapter, change, retryCount: 0, nextRetryAt: 0 };
 
-    (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
+    await (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
 
     expect(errorSpy).toHaveBeenCalledWith(
       expect.stringContaining("nonexistent-adapter-xyz"),
@@ -838,13 +841,13 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     try {
       const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
 
-      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => void };
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
       const taskRef = `@${testUlid("TASK")}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
       const entry = { agent: agentBadAdapter, change, retryCount: 0, nextRetryAt: 0 };
 
       vi.spyOn(console, "error").mockImplementation(() => {});
-      (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
+      await (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
       vi.restoreAllMocks();
 
       // Verify task note was added
