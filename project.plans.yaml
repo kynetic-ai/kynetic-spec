@@ -13540,13 +13540,22 @@ plans:
               snapshot under review are included explicitly
           - id: ac-3
             given: |
+              Publication guidance must be prepared for a task workspace
+            when: |
+              Repository capabilities and dispatch configuration are evaluated
+            then: |
+              The dispatcher selects one explicit publication mode for that workspace,
+              such as `pull_request` or `manual_merge`, and records that selection
+              before rendering role instructions
+          - id: ac-4
+            given: |
               Hosted PR tooling is available and selected for publication
             when: |
               Publish instructions are rendered
             then: |
               PR creation or update targets the recorded base branch rather than a
               hardcoded branch name
-          - id: ac-4
+          - id: ac-5
             given: |
               Hosted PR tooling is unavailable or disabled
             when: |
@@ -13555,7 +13564,7 @@ plans:
               The dispatcher provides deterministic manual merge-back guidance against
               the recorded base branch, including explicit conflict-handling
               escalation
-          - id: ac-5
+          - id: ac-6
             given: |
               Merge-back or PR integration outcomes become known
             when: |
@@ -13752,7 +13761,7 @@ plans:
             then: |
               The dispatcher renders adapter-appropriate invocation syntax and
               includes the publish path instructions against the recorded base branch,
-              using PR flow when supported and manual merge fallback otherwise
+              using the recorded publication mode for that workspace
           - id: ac-3
             given: |
               Manual merge-back is the selected publication path
@@ -14169,6 +14178,10 @@ plans:
         content: Content updated from file
       - _ulid: 01KKFQBKPTCFQMRPKNZB9RVPXY
         created_at: 2026-03-12T00:32:45.786Z
+        author: chapel
+        content: Content updated from file
+      - _ulid: 01KKFQENQQS7X0KNY49ADVCPAG
+        created_at: 2026-03-12T00:34:26.167Z
         author: chapel
         content: Content updated from file
   - _ulid: 01KKFJY4FKCRQH1YPZNMRCTPNR
