@@ -213,10 +213,24 @@ export function registerInitCommand(program: Command): void {
           info(`Initializing kspec project: ${projectName}`);
           console.log(`  Mode: Shadow branch (${branchName} → ${directoryName}/)`);
 
+          // Check if there's an existing manifest with session config
+          // (e.g., when re-initializing with --force or after remote attach)
+          let sessionsConfig: { storage?: string; branch?: string } | undefined;
+          try {
+            const { initContext } = await import("../../parser/index.js");
+            const ctx = await initContext();
+            if (ctx.manifest?.sessions?.storage === "branch") {
+              sessionsConfig = ctx.manifest.sessions;
+            }
+          } catch {
+            // No existing manifest — session branch setup deferred to kspec setup
+          }
+
           const result = await initializeShadow(gitRoot, {
             projectName,
             force: options.force,
             shadow: shadowOptions,
+            sessions: sessionsConfig,
           });
 
           if (!result.success) {
@@ -248,6 +262,12 @@ export function registerInitCommand(program: Command): void {
             }
             if (result.initialCommit) {
               console.log("  Created initial spec files");
+            }
+            if (result.sessionsDirectoryCreated) {
+              console.log("  Created sessions directory: .kspec-sessions/");
+            }
+            if (result.sessionBranchCreated) {
+              console.log("  Created session branch worktree: .kspec-sessions/");
             }
           }
 

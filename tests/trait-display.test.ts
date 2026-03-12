@@ -100,6 +100,7 @@ features:
   });
 
   // AC: @trait-display ac-1
+  // AC: @spec-traits ac-1
   it('should show own AC followed by inherited AC in text mode', () => {
     const output = kspec('item get @feature-with-trait', tempDir);
 

@@ -16,6 +16,7 @@ import type {
 	TaskDetail,
 	ItemSummary,
 	ItemDetail,
+	BatchItemsResponse,
 	InboxItem,
 	SessionContext,
 	Observation,
@@ -43,12 +44,16 @@ import {
 	fetchItemsStatic,
 	fetchItemStatic,
 	fetchItemTasksStatic,
+	fetchBatchItemsStatic,
 	fetchInboxStatic,
 	fetchSessionContextStatic,
 	fetchObservationsStatic,
 	searchStatic,
 	fetchTriageRecordsStatic,
 	fetchPlansStatic,
+	fetchPlanContentStatic,
+	fetchValidationStatic,
+	fetchAlignmentStatic,
 	fetchWorkflowsStatic
 } from './api-static';
 import { DAEMON_API_BASE } from './constants';
@@ -99,7 +104,7 @@ export async function fetchProjects(): Promise<{ projects: Project[] }> {
  * AC: @gh-pages-export ac-11 - Static mode support
  */
 export async function fetchTasks(params?: {
-	status?: string;
+	status?: string | string[];
 	tag?: string;
 	assignee?: string;
 	automation?: string;
@@ -117,7 +122,11 @@ export async function fetchTasks(params?: {
 	if (params) {
 		Object.entries(params).forEach(([key, value]) => {
 			if (value !== undefined && value !== '') {
-				url.searchParams.set(key, String(value));
+				if (Array.isArray(value)) {
+					value.forEach((v) => url.searchParams.append(key, v));
+				} else {
+					url.searchParams.set(key, String(value));
+				}
 			}
 		});
 	}
@@ -321,6 +330,26 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
 
 	const response = await fetch(`${API_BASE}/api/items/${ref}`, {
 		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchBatchItems(refs: string[]): Promise<BatchItemsResponse> {
+	if (isStaticMode()) {
+		return fetchBatchItemsStatic(refs);
+	}
+
+	const response = await fetch(`${API_BASE}/api/items/batch`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...getProjectHeaders()
+		},
+		body: JSON.stringify({ refs })
 	});
 	if (!response.ok) {
 		await handleResponseError(response);
@@ -786,7 +815,7 @@ export async function fetchPlans(params?: {
  */
 export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
 	if (isStaticMode()) {
-		throw new Error('Plan content not available in static mode');
+		return fetchPlanContentStatic(ref);
 	}
 
 	const response = await fetch(`${API_BASE}/api/plans/${ref}`, {
@@ -833,8 +862,10 @@ export async function fetchWorkflows(): Promise<{ items: Workflow[]; total: numb
  */
 export interface SessionSummary {
 	id: string;
-	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
+	status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed' | 'stalled';
 	agent_type: string;
+	/** Agent definition ID (e.g. worker, pr-reviewer). */
+	agent_id?: string;
 	session_type: 'loop' | 'invocation';
 	/** Dispatch trigger for distinguishing dispatched agent vs manual CLI run. */
 	trigger?: string;
@@ -892,15 +923,190 @@ export interface SessionEvent {
 }
 
 /**
- * Fetch all sessions with summaries.
- * AC: @ui-session-stream ac-1
+ * Pagination and filter parameters for session list.
+ * AC: @session-list-infinite-scroll ac-initial-load
+ * AC: @session-filter-controls ac-status-filter, ac-agent-filter, ac-agent-type-filter, ac-trigger-filter, ac-date-filter
  */
-export async function fetchSessions(): Promise<{ items: SessionSummary[]; total: number }> {
+export interface FetchSessionsParams {
+	offset?: number;
+	limit?: number;
+	status?: string[];
+	agent_id?: string;
+	agent_type?: string;
+	trigger?: string;
+	since?: string;
+	task_id?: string;
+	spec_ref?: string;
+}
+
+export interface SessionSearchMatch {
+	session_id: string;
+	event_seq: number;
+	timestamp: number;
+	event_type: string;
+	content_excerpt: string;
+}
+
+export interface SessionSearchResult {
+	session_id: string;
+	agent_type: string;
+	started_at: string;
+	matches: SessionSearchMatch[];
+}
+
+export interface FetchSessionSearchParams {
+	q: string;
+	status?: string[];
+	agent_id?: string;
+	agent_type?: string;
+	trigger?: string;
+	since?: string;
+	task_id?: string;
+	spec_ref?: string;
+	limit?: number;
+}
+
+export interface SessionSearchResponse {
+	items: SessionSearchResult[];
+	total_sessions: number;
+	total_matches: number;
+	query: string;
+}
+
+/**
+ * Paginated session list response.
+ * AC: @session-list-infinite-scroll ac-initial-load
+ */
+export interface SessionListResponse {
+	items: SessionSummary[];
+	total: number;
+	offset: number;
+	limit: number;
+}
+
+/**
+ * Fetch sessions with pagination and filtering.
+ * AC: @ui-session-stream ac-1
+ * AC: @session-list-infinite-scroll ac-initial-load
+ */
+export async function fetchSessions(params?: FetchSessionsParams): Promise<SessionListResponse> {
 	if (isStaticMode()) {
-		return { items: [], total: 0 };
+		return { items: [], total: 0, offset: 0, limit: 25 };
 	}
 
-	const response = await fetch(`${API_BASE}/api/sessions`, {
+	const url = new URL(`${API_BASE}/api/sessions`);
+	if (params?.offset !== undefined) {
+		url.searchParams.set('offset', String(params.offset));
+	}
+	if (params?.limit !== undefined) {
+		url.searchParams.set('limit', String(params.limit));
+	}
+	// AC: @session-filter-controls ac-status-filter — Multi-value status filter
+	if (params?.status?.length) {
+		for (const s of params.status) {
+			url.searchParams.append('status', s);
+		}
+	}
+	// AC: @session-filter-controls ac-agent-filter
+	if (params?.agent_id) {
+		url.searchParams.set('agent_id', params.agent_id);
+	}
+	// AC: @session-filter-controls ac-agent-type-filter
+	if (params?.agent_type) {
+		url.searchParams.set('agent_type', params.agent_type);
+	}
+	// AC: @session-filter-controls ac-trigger-filter
+	if (params?.trigger) {
+		url.searchParams.set('trigger', params.trigger);
+	}
+	// AC: @session-filter-controls ac-date-filter
+	if (params?.since) {
+		url.searchParams.set('since', params.since);
+	}
+	if (params?.task_id) {
+		url.searchParams.set('task_id', params.task_id);
+	}
+	if (params?.spec_ref) {
+		url.searchParams.set('spec_ref', params.spec_ref);
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchSessionSearch(
+	params: FetchSessionSearchParams
+): Promise<SessionSearchResponse> {
+	if (isStaticMode()) {
+		return { items: [], total_sessions: 0, total_matches: 0, query: params.q };
+	}
+
+	const url = new URL(`${API_BASE}/api/sessions/search`);
+	url.searchParams.set('q', params.q);
+	if (params.limit !== undefined) {
+		url.searchParams.set('limit', String(params.limit));
+	}
+	if (params.status?.length) {
+		for (const s of params.status) {
+			url.searchParams.append('status', s);
+		}
+	}
+	if (params.agent_id) {
+		url.searchParams.set('agent_id', params.agent_id);
+	}
+	if (params.agent_type) {
+		url.searchParams.set('agent_type', params.agent_type);
+	}
+	if (params.trigger) {
+		url.searchParams.set('trigger', params.trigger);
+	}
+	if (params.since) {
+		url.searchParams.set('since', params.since);
+	}
+	if (params.task_id) {
+		url.searchParams.set('task_id', params.task_id);
+	}
+	if (params.spec_ref) {
+		url.searchParams.set('spec_ref', params.spec_ref);
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchTaskSessions(ref: string): Promise<SessionListResponse> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const response = await fetch(`${API_BASE}/api/tasks/${ref}/sessions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+export async function fetchItemSessions(ref: string): Promise<SessionListResponse> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const response = await fetch(`${API_BASE}/api/items/${ref}/sessions`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {
@@ -1056,15 +1262,7 @@ export interface AlignmentResponse {
  */
 export async function fetchValidation(): Promise<ValidationResponse> {
 	if (isStaticMode()) {
-		return {
-			valid: true,
-			schemaErrors: [],
-			refErrors: [],
-			refWarnings: [],
-			orphans: [],
-			completenessWarnings: [],
-			traitCycles: []
-		};
+		return fetchValidationStatic();
 	}
 
 	const response = await fetch(`${API_BASE}/api/validate`, {
@@ -1093,10 +1291,7 @@ export async function fetchValidation(): Promise<ValidationResponse> {
  */
 export async function fetchAlignment(): Promise<AlignmentResponse> {
 	if (isStaticMode()) {
-		return {
-			stats: { totalSpecs: 0, specsWithTasks: 0, alignedSpecs: 0, orphanedSpecs: 0 },
-			warnings: []
-		};
+		return fetchAlignmentStatic();
 	}
 
 	const response = await fetch(`${API_BASE}/api/alignment`, {

@@ -6,16 +6,19 @@
   AC: @gh-pages-export ac-16 — Buttons disabled with tooltip in static mode.
 
   Shared task detail content used by both TaskDetailModal (kanban board)
-  and the task list Sheet panel. Handles all task display, actions, and notes.
+  and the task list Dialog modal. Handles all task display, actions, and notes.
 -->
 <script lang="ts">
 	import type { TaskDetail } from '@kynetic-ai/shared';
+	import { base } from '$app/paths';
 	import {
 		startTask,
 		submitTask,
 		completeTask,
 		blockTask,
-		addTaskNote
+		addTaskNote,
+		fetchTaskSessions,
+		type SessionSummary
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -25,10 +28,12 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import { renderMarkdown } from '$lib/utils/markdown';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getStatusClasses, formatVcsRef } from './board-utils';
 	import GitBranch from '@lucide/svelte/icons/git-branch';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
 
 	interface Props {
 		/** The task detail to display, or null if not yet loaded. */
@@ -45,6 +50,9 @@
 
 	let actionError = $state('');
 	let isSubmitting = $state(false);
+	let relatedSessions = $state<SessionSummary[]>([]);
+	let sessionsLoading = $state(false);
+	let sessionsError = $state('');
 
 	// Note form
 	let noteContent = $state('');
@@ -62,6 +70,37 @@
 			reasonInput = '';
 			showReasonFor = null;
 		}
+	});
+
+	$effect(() => {
+		if (!task) {
+			relatedSessions = [];
+			sessionsLoading = false;
+			sessionsError = '';
+			return;
+		}
+
+		let cancelled = false;
+		sessionsLoading = true;
+		sessionsError = '';
+
+		fetchTaskSessions(task._ulid)
+			.then((response) => {
+				if (cancelled) return;
+				relatedSessions = response.items;
+			})
+			.catch((err) => {
+				if (cancelled) return;
+				sessionsError = err instanceof Error ? err.message : 'Failed to load related sessions';
+				relatedSessions = [];
+			})
+			.finally(() => {
+				if (!cancelled) sessionsLoading = false;
+			});
+
+		return () => {
+			cancelled = true;
+		};
 	});
 
 	async function handleAction(action: () => Promise<void>) {
@@ -166,9 +205,12 @@
 	<div class="flex flex-col gap-4">
 		<!-- Description -->
 		{#if task.description}
-			<p class="text-sm text-muted-foreground" data-testid="task-description">
-				{task.description}
-			</p>
+			<div
+				class="text-sm text-muted-foreground break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+				data-testid="task-description"
+			>
+				{@html renderMarkdown(task.description)}
+			</div>
 		{/if}
 
 		<!-- Status, priority, type -->
@@ -284,6 +326,17 @@
 				<ReferenceLink ref={task.session_ref} type="session" />
 			</div>
 		{/if}
+
+		<!-- AC: @task-spec-session-context ac-task-detail-sessions, ac-session-list-task-filter -->
+		<RelatedSessionsSection
+			title="Sessions"
+			sessions={relatedSessions}
+			loading={sessionsLoading}
+			error={sessionsError}
+			filterHref={`${base}/sessions?task_id=${encodeURIComponent(`@${slug}`)}`}
+			emptyMessage="No sessions have referenced this task yet."
+			dataTestId="task-related-sessions"
+		/>
 
 		<Separator />
 
@@ -521,7 +574,12 @@
 								<span class="text-[10px] text-muted-foreground">{note.author}</span>
 								<span class="text-[10px] text-muted-foreground" data-testid="note-timestamp">{formatDate(note.created_at)}</span>
 							</div>
-							<p class="text-sm whitespace-pre-wrap">{note.content}</p>
+							<div
+								class="text-sm break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+								data-testid="note-content"
+							>
+								{@html renderMarkdown(note.content)}
+							</div>
 						</div>
 					{/each}
 				{/if}

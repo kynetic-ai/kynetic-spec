@@ -91,6 +91,7 @@ items:
       // These should cause exit 6 (warnings) not 4 (errors)
       const result = kspec('validate', tempDir);
       expect(result.exitCode).toBe(6);
+      // AC: @validation-output ac-1
       expect(result.stderr + result.stdout).toContain('Completeness warnings');
       expect(result.stderr + result.stdout).toContain(
         'Validation produced warnings; exiting 6'
@@ -155,6 +156,7 @@ items:
     });
   });
 
+  // AC: @trait-json-output ac-1, ac-2
   describe('JSON output purity', () => {
     it('should emit parseable JSON only for validate --json', () => {
       const result = kspec('validate --json', tempDir);
@@ -162,6 +164,51 @@ items:
       expect(() => JSON.parse(result.stdout)).not.toThrow();
       expect(result.stdout).not.toContain('Alignment warnings:');
       expect(result.stdout).not.toContain('Completeness warnings:');
+    });
+
+    // AC: @trait-json-output ac-1 — no ANSI color codes in JSON output
+    it('should not contain ANSI escape codes in JSON output', () => {
+      const result = kspec('validate --json', tempDir);
+      // eslint-disable-next-line no-control-regex
+      expect(result.stdout).not.toMatch(/\u001b\[/);
+    });
+
+    // AC: @trait-json-output ac-2 — JSON includes all data from human-readable mode
+    // AC: @validation-output ac-2
+    it('should include completeness warnings in JSON output', () => {
+      const result = kspec('validate --json', tempDir);
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toHaveProperty('completenessWarnings');
+      expect(parsed).toHaveProperty('valid');
+      expect(parsed).toHaveProperty('schemaErrors');
+      expect(parsed).toHaveProperty('refErrors');
+      expect(parsed).toHaveProperty('stats');
+    });
+
+    // AC: @trait-json-output ac-2 — JSON includes alignment data when alignment runs
+    it('should include alignment data in JSON output when running all checks', () => {
+      const result = kspec('validate --json', tempDir);
+      const parsed = JSON.parse(result.stdout);
+      // When running all checks (no filter flags), alignment data is included
+      expect(parsed).toHaveProperty('alignmentWarnings');
+      expect(parsed).toHaveProperty('alignmentStats');
+    });
+
+    // AC: @trait-json-output ac-2 — JSON includes skill validation data
+    it('should include skill validation in JSON output', () => {
+      const result = kspec('validate --json', tempDir);
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toHaveProperty('skillValidation');
+      expect(parsed.skillValidation).toHaveProperty('valid');
+      expect(parsed.skillValidation).toHaveProperty('filesChecked');
+    });
+
+    it('should emit parseable JSON for lint --json', () => {
+      const result = kspec('lint --json', tempDir);
+      expect(() => JSON.parse(result.stdout)).not.toThrow();
+      const parsed = JSON.parse(result.stdout);
+      expect(parsed).toHaveProperty('valid');
+      expect(parsed).toHaveProperty('stats');
     });
   });
 

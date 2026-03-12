@@ -27,6 +27,7 @@
 	import List from '@lucide/svelte/icons/list';
 	import { Button } from '$lib/components/ui/button';
 	import { base } from '$app/paths';
+	import { goto } from '$app/navigation';
 
 	let tasks = $state<TaskSummary[]>([]);
 	let columns = $state<BoardColumn[]>([]);
@@ -91,12 +92,25 @@
 		}
 	});
 
+	// AC: @ui-task-board ac-7, @ui-url-panel-state ac-2 — Clear component state and URL param when modal closes
+	$effect(() => {
+		if (!modalOpen) {
+			selectedTaskRef = null;
+			lastProcessedRef = '';
+			const url = new URL($page.url);
+			if (url.searchParams.has('ref')) {
+				url.searchParams.delete('ref');
+				goto(url, { replaceState: true, keepFocus: true, noScroll: true });
+			}
+		}
+	});
+
 	async function loadBoard() {
 		loading = true;
 		error = '';
 		try {
 			const [taskResponse, statusResponse] = await Promise.all([
-				fetchTasks({ limit: 500 }),
+				fetchTasks(),
 				fetchAgentStatus().catch(() => null)
 			]);
 			tasks = taskResponse.items;

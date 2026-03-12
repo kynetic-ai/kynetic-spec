@@ -105,9 +105,11 @@ describe("EventTypeSchema agent.* event types", () => {
 // AC: @session-model-evolution ac-1
 describe("SessionMetadata trigger and agent_id fields", () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-session-model-"));
+    sessionsDir = path.join(testDir, "sessions");
   });
 
   afterEach(async () => {
@@ -116,7 +118,7 @@ describe("SessionMetadata trigger and agent_id fields", () => {
 
   it("should accept trigger and agent_id in session metadata", async () => {
     const sessionId = testUlid("SESS");
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "claude-agent-acp",
       agent_id: "@agent-worker",
@@ -125,7 +127,7 @@ describe("SessionMetadata trigger and agent_id fields", () => {
     });
 
     // Read back to verify persistence
-    const loaded = await getSession(testDir, sessionId);
+    const loaded = await getSession(sessionsDir, sessionId);
     expect(loaded).not.toBeNull();
     expect(loaded!.agent_id).toBe("@agent-worker");
     expect(loaded!.trigger).toBe("task.ready");
@@ -159,9 +161,11 @@ describe("SessionMetadata trigger and agent_id fields", () => {
 // AC: @session-model-evolution ac-2
 describe("Legacy session backward compatibility", () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-legacy-session-"));
+    sessionsDir = path.join(testDir, "sessions");
   });
 
   afterEach(async () => {
@@ -182,7 +186,7 @@ describe("Legacy session backward compatibility", () => {
     }));
 
     // Should parse without error
-    const loaded = await getSession(testDir, sessionId);
+    const loaded = await getSession(sessionsDir, sessionId);
     expect(loaded).not.toBeNull();
     expect(loaded!.agent_type).toBe("ralph");
     // AC: @session-model-evolution ac-2 — legacy defaults are materialized on read
@@ -203,7 +207,7 @@ describe("Legacy session backward compatibility", () => {
     }));
     await fs.writeFile(path.join(sessionDir, "events.jsonl"), "");
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary).not.toBeNull();
     // Legacy session (no trigger) should be classified as "loop"
     expect(summary!.session_type).toBe("loop");
@@ -223,7 +227,7 @@ describe("Legacy session backward compatibility", () => {
     }));
     await fs.writeFile(path.join(sessionDir, "events.jsonl"), "");
 
-    const summary = await getSessionLogSummary(testDir, sessionId);
+    const summary = await getSessionLogSummary(sessionsDir, sessionId);
     expect(summary).not.toBeNull();
     expect(summary!.session_type).toBe("loop");
   });
@@ -234,9 +238,11 @@ describe("Legacy session backward compatibility", () => {
 // AC: @session-model-evolution ac-5
 describe("agent.completed event structure", () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-agent-event-"));
+    sessionsDir = path.join(testDir, "sessions");
   });
 
   afterEach(async () => {
@@ -245,13 +251,13 @@ describe("agent.completed event structure", () => {
 
   it("should append agent.completed event with task_id, outcome, and duration_ms", async () => {
     const sessionId = testUlid("SESS");
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "claude-agent-acp",
     });
 
     // Append structured agent.completed event
-    await appendEvent(testDir, {
+    await appendEvent(sessionsDir, {
       type: "agent.completed",
       session_id: sessionId,
       data: {
@@ -276,13 +282,13 @@ describe("agent.completed event structure", () => {
 
   it("should accept all outcome values for agent.completed", async () => {
     const sessionId = testUlid("SESS", 1);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "claude-agent-acp",
     });
 
     for (const outcome of ["success", "blocked", "failed"]) {
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: "agent.completed",
         session_id: sessionId,
         data: { task_id: "@task", outcome, duration_ms: 1000 },
@@ -305,7 +311,7 @@ describe("kspec session log list session type display (CLI)", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
 
-    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionsDir = path.join(tempDir, ".kspec-sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Legacy session (no trigger = loop type)
@@ -343,11 +349,11 @@ describe("kspec session log list session type display (CLI)", () => {
   });
 
   it("should show session_type field in JSON output", () => {
-    const sessions = kspecJson<SessionLogSummary[]>("session log list", tempDir);
-    expect(sessions).toHaveLength(2);
+    const result = kspecJson<{ items: SessionLogSummary[] }>("session log list", tempDir);
+    expect(result.items).toHaveLength(2);
 
-    const legacy = sessions.find((s) => s.agent_type === "ralph");
-    const invocation = sessions.find((s) => s.agent_type === "claude-agent-acp");
+    const legacy = result.items.find((s) => s.agent_type === "ralph");
+    const invocation = result.items.find((s) => s.agent_type === "claude-agent-acp");
 
     expect(legacy).toBeDefined();
     expect(legacy!.session_type).toBe("loop");
@@ -375,7 +381,7 @@ describe("kspec session log show agent.* event rendering (CLI)", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
 
-    const sessionsDir = path.join(tempDir, "sessions");
+    const sessionsDir = path.join(tempDir, ".kspec-sessions");
     await fs.mkdir(sessionsDir, { recursive: true });
 
     const sDir = path.join(sessionsDir, sessionId);

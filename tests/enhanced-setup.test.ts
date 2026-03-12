@@ -154,6 +154,54 @@ describe('kspec setup (enhanced)', () => {
 
       expect(result.dry_run).toBe(true);
     });
+
+    // AC: @enhanced-setup ac-6 - dry-run previews .gitignore updates for sessions directory
+    // AC: @session-storage-modes ac-gitignore
+    it('should preview .gitignore updates in dry-run mode', async () => {
+      // Initialize kspec so .kspec/ exists with .gitignore
+      kspec('init --name test-project --no-prompt', tempDir);
+
+      // Remove .kspec-sessions/ and its gitignore entries to simulate a pre-sessions state
+      const sessionsDir = path.join(tempDir, '.kspec-sessions');
+      await fs.rm(sessionsDir, { recursive: true }).catch(() => {});
+
+      // Remove .kspec-sessions/ from root .gitignore
+      const rootGitignore = path.join(tempDir, '.gitignore');
+      const rootContent = await fs.readFile(rootGitignore, 'utf-8');
+      await fs.writeFile(
+        rootGitignore,
+        rootContent.split('\n').filter((l) => !l.includes('.kspec-sessions')).join('\n'),
+        'utf-8',
+      );
+
+      // Remove sessions/ from .kspec/.gitignore
+      const shadowGitignore = path.join(tempDir, '.kspec', '.gitignore');
+      const shadowContent = await fs.readFile(shadowGitignore, 'utf-8');
+      await fs.writeFile(
+        shadowGitignore,
+        shadowContent.split('\n').filter((l) => !l.includes('sessions')).join('\n'),
+        'utf-8',
+      );
+
+      const result = kspec('setup --dry-run', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('DRY RUN');
+      // Verify all three session directory actions are previewed
+      expect(result.stdout).toContain('.kspec-sessions/');
+      expect(result.stdout).toContain('.gitignore');
+      expect(result.stdout).toContain('.kspec/.gitignore');
+
+      // Verify no actual changes were made
+      const rootAfter = await fs.readFile(rootGitignore, 'utf-8');
+      expect(rootAfter).not.toContain('.kspec-sessions');
+      const shadowAfter = await fs.readFile(shadowGitignore, 'utf-8');
+      expect(shadowAfter).not.toContain('sessions/');
+      const sessionsDirExists = await fs.access(sessionsDir).then(() => true).catch(() => false);
+      expect(sessionsDirExists).toBe(false);
+    });
   });
 
   describe('--skip-skills flag', () => {
@@ -367,7 +415,7 @@ describe('kspec setup (enhanced)', () => {
     // AC: @new-project-bootstrapping ac-3
     it('should render core skills to codex output when codex is detected', async () => {
       const result = kspec('setup', tempDir, {
-        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', HOME: tempDir },
+        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '', HOME: tempDir },
       });
       expect(result.exitCode).toBe(0);
 

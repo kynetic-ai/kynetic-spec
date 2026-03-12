@@ -17,13 +17,23 @@ import {
   initContext,
   loadAllTasks,
   loadMetaContext,
+  areDependenciesMet,
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
 import { runInvocation } from "./invocation.js";
 import type { InvocationOptions } from "./invocation.js";
+import { interpolateTemplate } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
-import type { AgentDispatchRule } from "../schema/meta.js";
+import {
+  provisionDispatchWorkspace,
+  DispatchWorkspaceError,
+  reconcileDispatchWorkspaceLifecycle,
+} from "./workspace.js";
+import type {
+  AgentDispatchRule,
+  AgentDispatchFilter,
+} from "../schema/meta.js";
 import type { SessionTrigger } from "../sessions/types.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
@@ -109,30 +119,17 @@ const STATUS_TO_EVENT: Record<TaskStatus, string | undefined> = {
 const STATUS_PRECEDENCE: Record<TaskStatus, number> = {
   in_progress: 0,
   needs_work: 1,
-  pending: 2,
-  pending_review: 3,
+  pending_review: 2,
+  pending: 3,
   blocked: 4,
   completed: 5,
   cancelled: 6,
 };
 
-// ─── Prompt Helpers (exported for testing) ───────────────────────────────────
+// ─── Prompt Helpers ──────────────────────────────────────────────────────────
 
-/**
- * Interpolate {{variable}} placeholders in a prompt template.
- * Unresolved variables pass through unchanged.
- *
- * AC: @agent-dispatch-engine ac-16
- */
-export function interpolateTemplate(
-  template: string,
-  vars: Record<string, string>,
-): string {
-  return template.replace(
-    /\{\{(\w+)\}\}/g,
-    (match, key: string) => vars[key] ?? match,
-  );
-}
+// AC: @agent-dispatch-engine ac-16 — re-exported from prompts.ts for backwards compat
+export { interpolateTemplate };
 
 /**
  * Human-readable trigger description for orientation context.
@@ -224,6 +221,24 @@ export interface TaskStateChange {
   timestamp: number;
   /** Optional task data used for filter evaluation (AC-6) */
   task?: LoadedTask;
+}
+
+function resolveCleanupStateForTaskChange(
+  change: TaskStateChange,
+): {
+  integrationState?: "merged" | "abandoned" | "reset";
+  taskStatus: TaskStatus;
+} | null {
+  if (change.toStatus === "completed") {
+    return { integrationState: "merged", taskStatus: "completed" };
+  }
+  if (change.toStatus === "cancelled") {
+    return { integrationState: "abandoned", taskStatus: "cancelled" };
+  }
+  if (change.fromStatus === "completed" || change.fromStatus === "cancelled") {
+    return { integrationState: "reset", taskStatus: change.toStatus };
+  }
+  return null;
 }
 
 /**
@@ -409,20 +424,52 @@ export class DispatchEngine {
     }
     this._recordEvent(change);
 
+    const cleanupState = resolveCleanupStateForTaskChange(change);
+    if (cleanupState) {
+      try {
+        await reconcileDispatchWorkspaceLifecycle({
+          projectDir: this.projectDir,
+          taskRef: change.taskRef,
+          task: change.task
+            ? {
+                title: change.task.title,
+                slugs: change.task.slugs,
+              }
+            : undefined,
+          cleanupState,
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(
+          `[dispatch] Failed to reconcile workspace lifecycle for ${change.taskRef}: ${message}`,
+        );
+      }
+    }
+
     // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
     const agents = await this._loadAgents();
     const eventType = STATUS_TO_EVENT[change.toStatus];
     if (!eventType) return;
 
-    // Load task data for filter evaluation if not provided
+    // Load all tasks for filter evaluation (needed for dependency checks)
+    let allTasks: LoadedTask[] | undefined;
     let taskData = change.task;
     if (!taskData && change.taskId) {
       try {
         const ctx = await initContext(this.projectDir);
-        const tasks = await loadAllTasks(ctx);
-        taskData = tasks.find((t) => t._ulid === change.taskId);
+        allTasks = await loadAllTasks(ctx);
+        taskData = allTasks.find((t) => t._ulid === change.taskId);
       } catch {
-        // Can't load task, filter evaluation will be lenient
+        // Can't load tasks, filter evaluation will be lenient
+      }
+    }
+    // Load allTasks for dependency checking even when task data was provided
+    if (!allTasks && taskData) {
+      try {
+        const ctx = await initContext(this.projectDir);
+        allTasks = await loadAllTasks(ctx);
+      } catch {
+        // Can't load tasks, dependency check will be skipped
       }
     }
     // Make loaded task available for prompt building (AC: @agent-dispatch-engine ac-13)
@@ -435,7 +482,7 @@ export class DispatchEngine {
         if (rule.on !== eventType) continue;
 
         // AC: @agent-dispatch-engine ac-6 - Apply filters
-        if (!this._matchesFilter(change, rule, taskData)) continue;
+        if (!this._matchesFilter(change, rule, taskData, allTasks)) continue;
 
         // AC: @agent-dispatch-engine ac-2 - Each matching agent queued independently
         this._enqueue(agent, change);
@@ -527,6 +574,10 @@ export class DispatchEngine {
    */
   getShadowMutex(): Mutex {
     return this.shadowMutex;
+  }
+
+  getCwd(): string {
+    return this.cwd;
   }
 
   /**
@@ -647,7 +698,7 @@ export class DispatchEngine {
             task,
           };
 
-          if (!this._matchesFilter(change, rule, task)) continue;
+          if (!this._matchesFilter(change, rule, task, tasks)) continue;
           if (opts.skipIfActive && this._hasActiveOrQueuedInvocation(agent.id, task._ulid)) continue;
 
           this._enqueue(agent, change);
@@ -690,24 +741,53 @@ export class DispatchEngine {
 
   /**
    * Check if a state change matches a dispatch rule's filters.
+   * Base readiness (deps, blocked_by) is checked before consumer filters
+   * per @trait-task-readiness ac-composable.
+   *
    * AC: @agent-dispatch-engine ac-6
+   * AC: @agent-dispatch-engine ac-21
+   * AC: @trait-task-readiness ac-deps
+   * AC: @trait-task-readiness ac-not-blocked
+   * AC: @trait-task-readiness ac-composable
    */
   private _matchesFilter(
     change: TaskStateChange,
     rule: AgentDispatchRule,
     task?: LoadedTask,
+    allTasks?: LoadedTask[],
   ): boolean {
-    if (!rule.filter) return true;
+    // AC: @agent-dispatch-engine ac-21 — default to automation: eligible for
+    // task.ready and task.needs_work when no filter is specified
+    const defaultsToEligible =
+      rule.on === "task.ready" || rule.on === "task.needs_work";
+    if (!rule.filter && !defaultsToEligible) return true;
 
     // We need the task to evaluate filters — if not provided, reject to avoid
     // enqueuing non-matching tasks (AC-6: all filters must match)
     if (!task) return false;
 
-    const { filter } = rule;
+    // AC: @trait-task-readiness ac-not-blocked — blocked_by must be empty
+    if (defaultsToEligible && (task.blocked_by ?? []).length > 0) {
+      return false;
+    }
+
+    // AC: @trait-task-readiness ac-deps — all depends_on must be completed
+    if (defaultsToEligible && allTasks && (task.depends_on ?? []).length > 0) {
+      if (!areDependenciesMet(task, allTasks)) {
+        return false;
+      }
+    }
+
+    // AC: @trait-task-readiness ac-composable — consumer filters applied after base readiness
+    const filter: AgentDispatchFilter = rule.filter ?? {};
+
+    // Apply default automation filter for task.ready/task.needs_work
+    const effectiveAutomation =
+      filter.automation ?? (defaultsToEligible ? "eligible" : undefined);
 
     // Automation filter
-    if (filter.automation !== undefined) {
-      if ((task as LoadedTask & { automation?: string }).automation !== filter.automation) {
+    if (effectiveAutomation !== undefined) {
+      if ((task as LoadedTask & { automation?: string }).automation !== effectiveAutomation) {
         return false;
       }
     }
@@ -720,9 +800,11 @@ export class DispatchEngine {
       }
     }
 
-    // Priority filter
+    // Priority filter — threshold semantics: task priority at or above (numerically <=)
+    // AC: @ui-agent-dispatch ac-8
     if (filter.priority !== undefined) {
-      if ((task as LoadedTask & { priority?: number }).priority !== filter.priority) {
+      const taskPriority = (task as LoadedTask & { priority?: number }).priority;
+      if (taskPriority === undefined || taskPriority > filter.priority) {
         return false;
       }
     }
@@ -815,13 +897,14 @@ export class DispatchEngine {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
-    // AC: @agent-dispatch-engine ac-17 - Load current task states once for staleness checks
+    // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
+    let currentTasks: LoadedTask[] | undefined;
     let currentTaskStates: Map<string, TaskStatus> | undefined;
     try {
       const ctx = await initContext(this.projectDir);
-      const tasks = await loadAllTasks(ctx);
+      currentTasks = await loadAllTasks(ctx);
       currentTaskStates = new Map(
-        tasks.map((t) => [t._ulid, t.status as TaskStatus]),
+        currentTasks.map((t) => [t._ulid, t.status as TaskStatus]),
       );
     } catch {
       // If we can't load tasks, skip staleness checks (best effort)
@@ -864,6 +947,21 @@ export class DispatchEngine {
         }
       }
 
+      // AC: @trait-task-readiness ac-deps, ac-not-blocked — discard entries
+      // where deps are no longer met or task became blocked since enqueue
+      if (currentTasks) {
+        for (let i = queue.length - 1; i >= 0; i--) {
+          const entry = queue[i];
+          const eventType = STATUS_TO_EVENT[entry.change.toStatus];
+          if (eventType !== "task.ready" && eventType !== "task.needs_work") continue;
+          const task = currentTasks.find((t) => t._ulid === entry.change.taskId);
+          if (!task) continue; // already handled by staleness check above
+          if (task.blocked_by.length > 0 || !areDependenciesMet(task, currentTasks)) {
+            queue.splice(i, 1);
+          }
+        }
+      }
+
       let slots = maxConcurrent - active;
       while (slots > 0 && queue.length > 0) {
         const now = Date.now();
@@ -872,7 +970,7 @@ export class DispatchEngine {
           break;
         }
         const [entry] = queue.splice(nextReadyIndex, 1);
-        const spawned = this._spawnInvocation(agent, entry);
+        const spawned = await this._spawnInvocation(agent, entry);
         if (spawned) slots--;
       }
 
@@ -935,8 +1033,39 @@ export class DispatchEngine {
    * Returns true if an invocation was actually started, false if skipped.
    * AC: @agent-dispatch-engine ac-9, ac-10, ac-11, ac-12
    */
-  private _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): boolean {
+  private async _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): Promise<boolean> {
     const agentId = agent.id;
+    let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
+    try {
+      workspace = await provisionDispatchWorkspace({
+        projectDir: this.projectDir,
+        taskRef: entry.change.taskRef,
+        role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+        cleanupState: {
+          taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+        },
+        task: entry.change.task
+          ? {
+              title: entry.change.task.title,
+              slugs: entry.change.task.slugs,
+            }
+          : undefined,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const guidance = err instanceof DispatchWorkspaceError ? err.suggestion : "Inspect dispatch workspace configuration and git worktree state.";
+      console.error(
+        `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
+      );
+      if (this.kspecCliPath) {
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "note", entry.change.taskRef,
+          `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+        ], { cwd: this.cwd });
+      }
+      return false;
+    }
 
     // Increment active count
     this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
@@ -1010,13 +1139,21 @@ export class DispatchEngine {
     const options: InvocationOptions = {
       agent,
       specDir: this.specDir,
-      cwd: this.cwd,
+      sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
+      cwd: workspace.cwd,
       taskRef: entry.change.taskRef,
       prompt: this._buildDispatchPrompt(agent, entry.change),
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
       sessionId: preSessionId,
+      env: {
+        KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
+        KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
+        KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+        KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
+        KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+      },
       onUpdate,
     };
 
@@ -1078,26 +1215,43 @@ export class DispatchEngine {
             });
           }
         }
-      })
-      .then(async () => {
-        // Decrement active count and drain again
+
+        // Clean up active tracking immediately while still holding the mutex,
+        // BEFORE _drainQueues can spawn the next invocation. This prevents
+        // completed invocations from appearing active in the fleet status
+        // while the next invocation runs.
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-
+        this.activeInvocationDetails.delete(invocationId);
+      })
+      .then(async () => {
         if (!this.running) return;
 
-        // Try to drain more items
+        // AC: @agent-dispatch-engine ac-23, ac-24
+        // Re-evaluate all tasks from disk so the drain loop sees tasks that
+        // reached a dispatchable state during the prior invocation (e.g.
+        // pending_review tasks submitted by a worker).
+        try {
+          await this._evaluateAllTasks({ skipIfActive: true });
+        } catch (err) {
+          // AC: @agent-dispatch-engine ac-25
+          console.warn(
+            "[dispatch] Post-invocation re-evaluation failed, proceeding with existing queue:",
+            err,
+          );
+        }
+
+        // Drain queues with current state
         try {
           const agents = await this._loadAgents();
           await this._drainQueues(agents);
         } catch {
-          // Best effort
+          // Best effort drain
         }
       })
       .finally(() => {
         this.runningInvocations.delete(invocationPromise);
         this.invocationAbortControllers.delete(abortController);
-        this.activeInvocationDetails.delete(invocationId);
       });
 
     this.runningInvocations.add(invocationPromise);

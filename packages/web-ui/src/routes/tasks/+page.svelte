@@ -1,24 +1,19 @@
 <script lang="ts">
-	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33
+	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33, ac-default-active-filter
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
+	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
-	import TaskFilters from '$lib/components/TaskFilters.svelte';
+	import TaskFilters, { ACTIVE_STATUSES } from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import TaskDetailContent from '$lib/components/board/TaskDetailContent.svelte';
 	import { fetchTasks, fetchTask } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import {
-		Sheet,
-		SheetContent,
-		SheetHeader,
-		SheetTitle,
-		SheetDescription
-	} from '$lib/components/ui/sheet';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import ListIcon from '@lucide/svelte/icons/list';
 
@@ -28,15 +23,22 @@
 	let error = $state('');
 	let updatedTaskIds = $state<Set<string>>(new Set());
 
-	// Sheet panel state
-	let sheetOpen = $state(false);
+	// Dialog panel state
+	let dialogOpen = $state(false);
 	let panelTask = $state<TaskDetail | null>(null);
 	let panelLoading = $state(false);
 	let panelError = $state('');
 
-	// Reactive: re-fetch when URL params change
+	// AC: @web-dashboard ac-default-active-filter - Default to active statuses when no status param
+	// "all" means show everything (no status filter), empty/absent means show active only
+	function getStatusFilter(urlStatus: string | null): string | string[] | undefined {
+		if (urlStatus === 'all') return undefined;
+		if (urlStatus) return urlStatus;
+		return [...ACTIVE_STATUSES];
+	}
+
 	let filterParams = $derived({
-		status: $page.url.searchParams.get('status') || undefined,
+		status: getStatusFilter($page.url.searchParams.get('status')),
 		tag: $page.url.searchParams.get('tag') || undefined,
 		assignee: $page.url.searchParams.get('assignee') || undefined,
 		automation: $page.url.searchParams.get('automation') || undefined,
@@ -88,7 +90,7 @@
 	async function handleSelectTask(taskId: string) {
 		panelLoading = true;
 		panelError = '';
-		sheetOpen = true;
+		dialogOpen = true;
 		try {
 			panelTask = await fetchTask(taskId);
 		} catch (err) {
@@ -117,12 +119,17 @@
 		loadTasks();
 	}
 
-	// Reset panel state when sheet closes
+	// AC: @ui-task-board ac-7, @ui-url-panel-state ac-2 — Reset panel state and clear URL param when dialog closes
 	$effect(() => {
-		if (!sheetOpen) {
+		if (!dialogOpen) {
 			panelTask = null;
 			panelError = '';
 			lastProcessedRef = '';
+			const url = new URL($page.url);
+			if (url.searchParams.has('ref')) {
+				url.searchParams.delete('ref');
+				goto(url, { replaceState: true, keepFocus: true, noScroll: true });
+			}
 		}
 	});
 
@@ -224,16 +231,16 @@
 	{/if}
 </div>
 
-<!-- Task Detail Sheet Panel - AC: @web-dashboard ac-5, ac-6, ac-7, ac-8 -->
-<Sheet bind:open={sheetOpen}>
-	<SheetContent class="sm:max-w-2xl overflow-y-auto" data-testid="task-detail-panel">
+<!-- Task Detail Dialog Modal - AC: @web-dashboard ac-5, ac-6, ac-7, ac-8 -->
+<Dialog.Root bind:open={dialogOpen}>
+	<Dialog.Content class="max-w-2xl max-h-[85vh] overflow-y-auto" data-testid="task-detail-panel">
 		{#if panelTask && !panelLoading && !panelError}
-			<SheetHeader>
-				<SheetTitle data-testid="task-detail-title">{panelTask.title}</SheetTitle>
-				<SheetDescription>
+			<Dialog.Header>
+				<Dialog.Title data-testid="task-detail-title">{panelTask.title}</Dialog.Title>
+				<Dialog.Description>
 					<span class="font-mono text-xs">@{slug}</span>
-				</SheetDescription>
-			</SheetHeader>
+				</Dialog.Description>
+			</Dialog.Header>
 		{/if}
 
 		<TaskDetailContent
@@ -242,5 +249,5 @@
 			error={panelError}
 			onTaskUpdated={handleTaskUpdated}
 		/>
-	</SheetContent>
-</Sheet>
+	</Dialog.Content>
+</Dialog.Root>

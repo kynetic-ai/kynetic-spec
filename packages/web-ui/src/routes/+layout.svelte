@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import favicon from '$lib/assets/favicon.svg';
+
+	import { base } from '$app/paths';
 	import '../app.css';
 	import { SidebarProvider, SidebarInset } from '$lib/components/ui/sidebar';
 	import Sidebar from '$lib/components/Sidebar.svelte';
@@ -8,7 +9,7 @@
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
 	import ReadOnlyBanner from '$lib/components/ReadOnlyBanner.svelte';
 	import { initConnection } from '$lib/stores/connection.svelte';
-	import { loadProjects, getSelectedProjectPath, isInitialized } from '$lib/stores/project.svelte';
+	import { loadProjects, getSelectedProjectPath, isInitialized, initializeForStaticMode } from '$lib/stores/project.svelte';
 	import { initMode, isStaticMode, isLoading as isModeLoading } from '$lib/stores/mode.svelte';
 	import { browser } from '$app/environment';
 
@@ -26,7 +27,9 @@
 
 		// In static mode, skip project loading and WebSocket
 		// AC: @gh-pages-export ac-11 - Static mode uses embedded JSON
+		// AC: @gh-pages-export ac-25 - Initialize project store so page gates pass
 		if (isStaticMode()) {
+			initializeForStaticMode();
 			appReady = true;
 			return;
 		}
@@ -45,7 +48,9 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/x-icon" href="{base}/favicon.ico" />
+	<link rel="icon" type="image/png" sizes="32x32" href="{base}/favicon-32.png" />
+	<link rel="icon" type="image/png" sizes="192x192" href="{base}/favicon-192.png" />
 </svelte:head>
 
 <!-- AC: @web-dashboard ac-23 - Global command palette -->

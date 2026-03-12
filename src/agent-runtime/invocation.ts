@@ -25,6 +25,8 @@ import {
   closeSession,
   appendEvent,
   injectEnvForAdapter,
+  getSession,
+  listSessions,
   removeEnvForAdapter,
 } from "../sessions/store.js";
 import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
@@ -36,6 +38,26 @@ export const DEFAULT_KSPEC_CLI_PATH = path.resolve(
   "../../bin/kspec.cjs",
 );
 
+/**
+ * Default stall detection timeout in seconds.
+ * AC: @invocation-initial-activity-watchdog ac-1, ac-5
+ */
+export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
+
+/**
+ * Session update types that count as meaningful agent activity.
+ * These prove the agent received the prompt and is processing it.
+ * AC: @invocation-initial-activity-watchdog ac-1, ac-3
+ */
+const MEANINGFUL_UPDATE_TYPES = new Set([
+  "agent_message_chunk",
+  "agent_thought_chunk",
+  "tool_call",
+  "tool_call_update",
+  "plan",
+  "usage_update",
+]);
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 /**
@@ -46,6 +68,8 @@ export interface InvocationOptions {
   agent: Agent;
   /** The spec directory (.kspec/) */
   specDir: string;
+  /** The sessions directory (.kspec-sessions/). Derived from specDir if not set. */
+  sessionsDir?: string;
   /** Working directory for spawned agent */
   cwd: string;
   /** Task reference being worked on (e.g., "@01KJP277A"). Optional — omit for unbound invocations. */
@@ -77,7 +101,7 @@ export interface InvocationResult {
   /** Session that was created for this invocation */
   session: SessionMetadata;
   /** How the invocation ended */
-  outcome: "success" | "timed_out" | "failed";
+  outcome: "success" | "timed_out" | "failed" | "stalled";
   /** Stop reason from ACP (e.g., "end_turn") if the invocation completed */
   stopReason?: string;
   /** Error message if the invocation failed */
@@ -131,30 +155,60 @@ function blockTask(taskRef: string, reason: string, cwd: string, kspecCliPath: s
   runKspecCli(["task", "block", taskRef, "--reason", reason], cwd, kspecCliPath);
 }
 
-/**
- * Get the consecutive failure count for a task from its notes.
- * Looks for AGENT-FAIL notes added by previous invocations.
- */
-function getConsecutiveFailureCount(taskRef: string, cwd: string, kspecCliPath: string): number {
-  const result = runKspecCli(["task", "get", taskRef, "--json"], cwd, kspecCliPath);
-  if (result.status !== 0) return 0;
-
-  try {
-    const task = JSON.parse(result.stdout);
-    const notes: Array<{ content: string }> = task.notes ?? [];
-    // Count consecutive AGENT-FAIL notes from the end
-    let count = 0;
-    for (let i = notes.length - 1; i >= 0; i--) {
-      if (notes[i].content?.includes("[AGENT-FAIL]")) {
-        count++;
-      } else {
-        break;
-      }
-    }
-    return count;
-  } catch {
-    return 0;
+function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outcome"] | null {
+  switch (metadata.status) {
+    case "completed":
+      return "success";
+    case "timed_out":
+      return "timed_out";
+    case "failed":
+      return "failed";
+    case "stalled":
+      // AC: @invocation-initial-activity-watchdog ac-4
+      // Stalled sessions are transient infrastructure issues, not agent logic failures.
+      // Excluded from consecutive failure count by returning null.
+      return null;
+    default:
+      return null;
   }
+}
+
+/**
+ * Get the current consecutive failure count for a task/agent from prior
+ * invocation outcomes recorded in session metadata.
+ */
+async function getConsecutiveFailureCount(
+  sessionsDir: string,
+  taskRef: string,
+  agentId: string,
+): Promise<number> {
+  const sessionIds = await listSessions(sessionsDir);
+  const sessions = await Promise.all(sessionIds.map((sessionId) => getSession(sessionsDir, sessionId)));
+
+  const relevantSessions = sessions
+    .filter((session): session is SessionMetadata => session !== null)
+    .filter((session) =>
+      session.task_id === taskRef &&
+      (session.agent_id ?? session.agent_type) === agentId,
+    )
+    .map((session) => ({
+      ...session,
+      invocationOutcome: toInvocationOutcome(session),
+      sortMs: new Date(session.ended_at ?? session.started_at).getTime(),
+    }))
+    .filter((session) => session.invocationOutcome !== null && Number.isFinite(session.sortMs))
+    .sort((a, b) => b.sortMs - a.sortMs);
+
+  let consecutiveFailures = 0;
+  for (const session of relevantSessions) {
+    if (session.invocationOutcome === "failed") {
+      consecutiveFailures++;
+      continue;
+    }
+    break;
+  }
+
+  return consecutiveFailures;
 }
 
 /**
@@ -196,6 +250,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     abortSignal,
   } = options;
 
+  // AC: @session-storage-path-resolution ac-resolver
+  // Sessions live in .kspec-sessions/ at project root, not inside .kspec/
+  const sessionsDir = options.sessionsDir ?? path.join(path.dirname(specDir), ".kspec-sessions");
+
   const startTime = Date.now();
   const sessionId = options.sessionId ?? ulid();
 
@@ -225,10 +283,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     adapterId,
   });
 
-  // Capture the pre-existing KSPEC_SESSION_ID so we can restore it in finally.
-  // AC: @agent-invocation-lifecycle ac-8
-  const previousKspecSessionId = process.env.KSPEC_SESSION_ID;
-
   const state: InvocationState = {
     sessionId,
     specDir,
@@ -257,7 +311,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     input: Omit<SessionEventInput, "session_id" | "seq">,
   ): Promise<void> => {
     const event = await queueEventWrite(() =>
-      appendEvent(specDir, {
+      appendEvent(sessionsDir, {
         ...input,
         session_id: sessionId,
         seq: nextEventSeq,
@@ -268,7 +322,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
-  const session = await createSession(specDir, {
+  const session = await createSession(sessionsDir, {
     id: sessionId,
     agent_type: adapterId,
     agent_id: agent.id,
@@ -292,7 +346,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // AC: @agent-invocation-lifecycle ac-2
     const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
     state.previousEnvValue = injectionResult?.previousValue;
-    process.env.KSPEC_SESSION_ID = sessionId;
 
     // ─── Spawn agent ──────────────────────────────────────────────────────
     state.agent = await spawnAndInitialize(adapter, {
@@ -325,10 +378,22 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       },
     });
 
+    // ─── Stall watchdog state ──────────────────────────────────────────────
+    // AC: @invocation-initial-activity-watchdog ac-1, ac-3
+    let stallResolved = false;
+    let stallHandle: ReturnType<typeof setTimeout> | undefined;
+
     // ─── Register update handler ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-6
     const updateHandler = async (acpSessionId: string, update: SessionUpdate) => {
       if (acpSessionId !== state.acpSessionId) return;
+
+      // AC: @invocation-initial-activity-watchdog ac-3
+      // Cancel stall timer on first meaningful activity
+      if (!stallResolved && MEANINGFUL_UPDATE_TYPES.has(update.sessionUpdate)) {
+        stallResolved = true;
+        clearTimeout(stallHandle);
+      }
 
       // Log event to JSONL (with blob externalization from store.ts)
       await appendSessionEvent({
@@ -382,6 +447,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }, timeoutMs);
     });
 
+    // AC: @invocation-initial-activity-watchdog ac-1, ac-5
+    const stallTimeoutSeconds =
+      agent.budget?.initial_response_timeout_seconds ??
+      DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS;
+    const stallPromise = new Promise<never>((_, reject) => {
+      stallHandle = setTimeout(() => {
+        if (!stallResolved) {
+          reject(new InvocationStallError(stallTimeoutSeconds));
+        }
+      }, stallTimeoutSeconds * 1000);
+    });
+
     // AC: @agent-dispatch-engine ac-11 - Abort signal for graceful cancellation
     const abortPromise = abortSignal
       ? new Promise<never>((_, reject) => {
@@ -400,13 +477,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     let promptResult: Awaited<typeof promptPromise>;
     try {
-      const racers: Array<Promise<typeof promptResult | never>> = [promptPromise, timeoutPromise];
+      const racers: Array<Promise<typeof promptResult | never>> = [promptPromise, timeoutPromise, stallPromise];
       if (abortPromise) racers.push(abortPromise);
       promptResult = await Promise.race(racers);
     } finally {
-      // Clear the timeout handle to prevent timer leaks whether prompt
-      // resolves normally or the timeout fires.
+      // Clear timer handles to prevent leaks whether prompt resolves
+      // normally or one of the race promises fires.
       clearTimeout(timeoutHandle);
+      clearTimeout(stallHandle);
     }
 
     // ─── Log agent.completed event ────────────────────────────────────────
@@ -423,18 +501,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     });
 
     // ─── Close session as completed ───────────────────────────────────────
-    const finalSession = await closeSession(specDir, sessionId, "completed", "Invocation completed normally");
-
-    // Add success note to reset consecutive failure streak (only when a task is bound)
-    // AC: @agent-invocation-lifecycle ac-9
-    if (taskRef) {
-      addTaskNote(
-        taskRef,
-        `[AGENT-SUCCESS] Invocation completed successfully`,
-        cwd,
-        kspecCliPath,
-      );
-    }
+    const finalSession = await closeSession(sessionsDir, sessionId, "completed", "Invocation completed normally");
 
     return {
       session: finalSession ?? session,
@@ -465,7 +532,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         },
       });
 
-      const finalSession = await closeSession(specDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
+      const finalSession = await closeSession(sessionsDir, sessionId, "timed_out", `Timeout after ${timeoutMinutes} minutes`);
 
       // Add timeout note to task (only when a task is bound)
       if (taskRef) {
@@ -496,11 +563,50 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         // Best-effort cancel
       }
 
-      const finalSession = await closeSession(specDir, sessionId, "failed", "Invocation aborted by shutdown");
+      const finalSession = await closeSession(sessionsDir, sessionId, "failed", "Invocation aborted by shutdown");
 
       return {
         session: finalSession ?? session,
         outcome: "failed",
+        error: err.message,
+        durationMs,
+      };
+    }
+
+    if (err instanceof InvocationStallError) {
+      // ─── Handle stall (no initial response) ───────────────────────────
+      // AC: @invocation-initial-activity-watchdog ac-1, ac-2
+      try {
+        if (state.acpSessionId && state.agent) {
+          await state.agent.client.cancel(state.acpSessionId);
+        }
+      } catch {
+        // Best-effort cancel
+      }
+
+      await appendSessionEvent({
+        type: "agent.stalled",
+        data: {
+          task_id: taskRef,
+          stall_timeout_seconds: err.stallTimeoutSeconds,
+          duration_ms: durationMs,
+        },
+      });
+
+      const finalSession = await closeSession(
+        sessionsDir,
+        sessionId,
+        "stalled",
+        `No initial response within ${err.stallTimeoutSeconds}s`,
+      );
+
+      // AC: @invocation-initial-activity-watchdog ac-2
+      // Do NOT add task note — stalls are transient infrastructure issues
+      // Do NOT call getConsecutiveFailureCount — stalls are excluded
+
+      return {
+        session: finalSession ?? session,
+        outcome: "stalled",
         error: err.message,
         durationMs,
       };
@@ -514,12 +620,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       type: "agent.failed",
       data: {
         task_id: taskRef,
+        outcome: "failed",
         error: errorMessage,
+        reason: errorMessage,
         duration_ms: durationMs,
       },
     });
 
-    const finalSession = await closeSession(specDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
+    const finalSession = await closeSession(sessionsDir, sessionId, "failed", `Invocation failed: ${errorMessage}`);
 
     // Add failure note to task and check retry threshold (only when a task is bound)
     if (taskRef) {
@@ -533,7 +641,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       // ─── Check retry threshold ────────────────────────────────────────────
       // AC: @agent-invocation-lifecycle ac-9
       const retryLimit = agent.budget?.max_retries ?? 3;
-      const consecutiveFailures = getConsecutiveFailureCount(taskRef, cwd, kspecCliPath);
+      const consecutiveFailures = await getConsecutiveFailureCount(sessionsDir, taskRef, agent.id);
 
       if (consecutiveFailures >= retryLimit) {
         blockTask(
@@ -569,14 +677,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);
-
-    // Restore process.env.KSPEC_SESSION_ID to its pre-invocation value.
-    // AC: @agent-invocation-lifecycle ac-8
-    if (previousKspecSessionId === undefined) {
-      delete process.env.KSPEC_SESSION_ID;
-    } else {
-      process.env.KSPEC_SESSION_ID = previousKspecSessionId;
-    }
   }
 }
 
@@ -589,6 +689,18 @@ export class InvocationTimeoutError extends Error {
   constructor(public readonly timeoutMinutes: number) {
     super(`Agent invocation timed out after ${timeoutMinutes} minutes`);
     this.name = "InvocationTimeoutError";
+  }
+}
+
+/**
+ * Thrown when an agent accepts a prompt but produces no meaningful output
+ * within the configured stall timeout.
+ * AC: @invocation-initial-activity-watchdog ac-1, ac-2
+ */
+export class InvocationStallError extends Error {
+  constructor(public readonly stallTimeoutSeconds: number) {
+    super(`Agent stalled: no initial response within ${stallTimeoutSeconds}s`);
+    this.name = "InvocationStallError";
   }
 }
 

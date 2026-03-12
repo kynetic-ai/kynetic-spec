@@ -17,10 +17,12 @@ import chalk from "chalk";
 import {
   initContext,
   loadMetaContext,
+  loadAllTasks,
+  findTaskByRef,
 } from "../../parser/index.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
 import type { SessionUpdate } from "../../acp/index.js";
-import { buildPromptWithSkills } from "../../agent-runtime/prompts.js";
+import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
@@ -29,6 +31,17 @@ import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
+import WsDefault from "ws";
+
+// WebSocket constructor that works on Node 18+.
+// Uses the ws package by default. Tests override via _setWebSocketCtor.
+const WsFallback = WsDefault as unknown as typeof WebSocket;
+let _wsCtor: typeof WebSocket = WsFallback;
+
+/** @internal Test-only: override the WebSocket constructor used by dispatch watch. */
+export function _setWebSocketCtor(ctor: typeof WebSocket | null): void {
+  _wsCtor = ctor ?? WsFallback;
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -250,11 +263,34 @@ export function registerAgentCommands(program: Command): void {
         const adapterId = opts.adapter ?? agentDef.adapter ?? "claude-agent-acp";
         const adapter = resolveAdapter(adapterId);
 
-        // Build the prompt
+        // Build the prompt — respect agent prompt_template when --task is used
         const taskRef = opts.task as string | undefined;
-        const basePrompt = prompt ?? (taskRef
-          ? `Work on task ${taskRef} according to your configuration and skills.`
-          : `Run as requested.`);
+        let basePrompt: string;
+        if (prompt) {
+          // Explicit user prompt always wins
+          basePrompt = prompt;
+        } else if (taskRef && agentDef.prompt_template) {
+          // Use agent's prompt_template with variable interpolation.
+          // Best-effort task title resolution — falls back to "(unavailable)".
+          let taskTitle = "(unavailable)";
+          try {
+            const tasks = await loadAllTasks(ctx);
+            const task = findTaskByRef(tasks, taskRef);
+            if (task?.title) taskTitle = task.title;
+          } catch {
+            // Non-fatal — template still works with fallback title
+          }
+          basePrompt = interpolateTemplate(agentDef.prompt_template, {
+            task_ref: taskRef,
+            task_title: taskTitle,
+            trigger: "manual",
+            review_url: "",
+          });
+        } else if (taskRef) {
+          basePrompt = `Work on task ${taskRef} according to your configuration and skills.`;
+        } else {
+          basePrompt = `Run as requested.`;
+        }
 
         // Note: buildPromptWithSkills is called here for the dry-run preview path.
         // runInvocation also calls buildPromptWithSkills internally, so we pass basePrompt
@@ -441,8 +477,8 @@ export function registerAgentCommands(program: Command): void {
         const ctx = await initContext();
 
         const headers: Record<string, string> = {};
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/status`, { headers });
@@ -539,8 +575,11 @@ export function registerAgentCommands(program: Command): void {
         const headers: Record<string, string> = {
           "Content-Type": "application/json",
         };
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
+          if (ctx.rootDir !== ctx.projectRoot) {
+            headers["X-Kspec-Cwd"] = ctx.rootDir;
+          }
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/start`, {
@@ -595,8 +634,8 @@ export function registerAgentCommands(program: Command): void {
         const headers: Record<string, string> = {
           "Content-Type": "application/json",
         };
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
         const response = await fetch(`${daemonConn.url}/api/agent/dispatch/stop`, {
@@ -651,8 +690,8 @@ export function registerAgentCommands(program: Command): void {
         const ctx = await initContext();
 
         const headers: Record<string, string> = {};
-        if (ctx.rootDir) {
-          headers["X-Kspec-Dir"] = ctx.rootDir;
+        if (ctx.projectRoot) {
+          headers["X-Kspec-Dir"] = ctx.projectRoot;
         }
 
         // Get dispatch status
@@ -828,7 +867,7 @@ export function registerAgentCommands(program: Command): void {
       let projectDir: string | undefined;
       try {
         const ctx = await initContext();
-        projectDir = ctx.rootDir;
+        projectDir = ctx.projectRoot;
       } catch {
         // non-fatal: WebSocket will use daemon default
       }
@@ -842,8 +881,9 @@ export function registerAgentCommands(program: Command): void {
           wsUrl.searchParams.set("project", projectDir);
         }
 
-        // AC: @cli-agent-commands ac-15 — Node 22+ has global WebSocket
-        const ws = new WebSocket(wsUrl.toString());
+        // Use _wsCtor (ws package by default; tests override via _setWebSocketCtor).
+        // Always uses ws instead of native globalThis.WebSocket for Node < 22 compat.
+        const ws = new _wsCtor(wsUrl.toString());
 
         ws.onopen = () => {
           retryCount = 0;
@@ -976,7 +1016,7 @@ export function registerAgentCommands(program: Command): void {
 
         // Write end-loop state to session
         const updated = await requestEndLoop(
-          ctx.specDir,
+          ctx.sessionsDir,
           sessionId,
           options.reason,
         );

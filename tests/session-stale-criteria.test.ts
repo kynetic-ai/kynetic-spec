@@ -1,7 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
-import { execSync } from "node:child_process";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   applyAutoAbandonMetadata,
@@ -15,11 +14,13 @@ import {
 
 describe("stale session criteria", () => {
   let specDir: string;
+  let sessionsDir: string;
   const nowIso = "2026-02-28T00:00:00.000Z";
   const nowMs = new Date(nowIso).getTime();
 
   beforeEach(async () => {
     specDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-stale-session-"));
+    sessionsDir = path.join(specDir, "sessions");
   });
 
   afterEach(async () => {
@@ -61,13 +62,13 @@ describe("stale session criteria", () => {
   // AC: @session-stale-criteria ac-1
   it("marks session eligible when age and inactivity thresholds both match", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000001";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-26T00:00:00.000Z",
     });
-    await appendEvent(specDir, {
+    await appendEvent(sessionsDir, {
       session_id: sessionId,
       type: "session.update",
       ts: new Date("2026-02-27T12:00:00.000Z").getTime(),
@@ -75,7 +76,7 @@ describe("stale session criteria", () => {
     });
 
     const result = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
@@ -86,7 +87,7 @@ describe("stale session criteria", () => {
   // AC: @session-stale-criteria ac-2
   it("uses started_at as last-activity fallback when events are missing", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000002";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
@@ -94,7 +95,7 @@ describe("stale session criteria", () => {
     });
 
     const result = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
@@ -106,13 +107,13 @@ describe("stale session criteria", () => {
   // AC: @session-stale-criteria ac-3
   it("applies older-than and inactive-for with AND logic", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000003";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-24T00:00:00.000Z",
     });
-    await appendEvent(specDir, {
+    await appendEvent(sessionsDir, {
       session_id: sessionId,
       type: "session.update",
       ts: new Date("2026-02-27T21:00:00.000Z").getTime(),
@@ -120,7 +121,7 @@ describe("stale session criteria", () => {
     });
 
     const result = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
@@ -133,20 +134,20 @@ describe("stale session criteria", () => {
   // AC: @session-stale-criteria ac-7
   it("skips and reports sessions with corrupt events.jsonl", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000004";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-24T00:00:00.000Z",
     });
     await fs.writeFile(
-      getSessionEventsPath(specDir, sessionId),
+      getSessionEventsPath(sessionsDir, sessionId),
       '{"ts":1700000000000,"seq":0,"type":"session.update","session_id":"x","data":{}}\n{not-json}\n',
       "utf-8",
     );
 
     const result = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
@@ -161,18 +162,18 @@ describe("stale session criteria", () => {
   // AC: @session-stale-criteria ac-7
   it("skips and reports sessions with unreadable events.jsonl", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A000000A";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-24T00:00:00.000Z",
     });
-    await fs.mkdir(getSessionEventsPath(specDir, sessionId), {
+    await fs.mkdir(getSessionEventsPath(sessionsDir, sessionId), {
       recursive: true,
     });
 
     const result = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
@@ -188,13 +189,13 @@ describe("stale session criteria", () => {
   // AC: @session-stale-criteria ac-8
   it("blocks closure when session has recent activity inside liveness guard window", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000005";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-20T00:00:00.000Z",
     });
-    await appendEvent(specDir, {
+    await appendEvent(sessionsDir, {
       session_id: sessionId,
       type: "session.update",
       ts: new Date("2026-02-27T23:58:00.000Z").getTime(),
@@ -202,7 +203,7 @@ describe("stale session criteria", () => {
     });
 
     const result = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "1m" },
       nowMs,
     );
@@ -217,13 +218,13 @@ describe("stale session criteria", () => {
   // AC: @session-stale-close-metadata ac-2
   it("writes abandoned status with canonical auto-abandoned close_reason", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000006";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-20T00:00:00.000Z",
     });
-    await appendEvent(specDir, {
+    await appendEvent(sessionsDir, {
       session_id: sessionId,
       type: "session.update",
       ts: new Date("2026-02-27T12:00:00.000Z").getTime(),
@@ -231,16 +232,16 @@ describe("stale session criteria", () => {
     });
 
     const selection = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
-    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+    const applied = await applyAutoAbandonMetadata(sessionsDir, selection, {
       nowMs,
     });
 
     expect(applied.updatedCount).toBe(1);
-    const updated = await getSession(specDir, sessionId);
+    const updated = await getSession(sessionsDir, sessionId);
     expect(updated?.status).toBe("abandoned");
     expect(updated?.ended_at).toBe(nowIso);
     expect(updated?.close_reason?.startsWith("auto-abandoned:")).toBe(true);
@@ -254,13 +255,13 @@ describe("stale session criteria", () => {
   it("applies batch metadata updates for multiple sessions in one invocation", async () => {
     const sessionA = "01KJHSTAL3CR1T3R1A0000007";
     const sessionB = "01KJHSTAL3CR1T3R1A0000008";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionA,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-20T00:00:00.000Z",
     });
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionB,
       agent_type: "ralph",
       status: "active",
@@ -268,11 +269,11 @@ describe("stale session criteria", () => {
     });
 
     const selection = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
-    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+    const applied = await applyAutoAbandonMetadata(sessionsDir, selection, {
       nowMs,
     });
 
@@ -283,108 +284,72 @@ describe("stale session criteria", () => {
     expect(applied.updates[0].closeReason.startsWith("auto-abandoned:")).toBe(true);
     expect(applied.updates[1].closeReason.startsWith("auto-abandoned:")).toBe(true);
 
-    const updatedA = await getSession(specDir, sessionA);
-    const updatedB = await getSession(specDir, sessionB);
+    const updatedA = await getSession(sessionsDir, sessionA);
+    const updatedB = await getSession(sessionsDir, sessionB);
     expect(updatedA?.status).toBe("abandoned");
     expect(updatedB?.status).toBe("abandoned");
     expect(updatedA?.ended_at).toBe(nowIso);
     expect(updatedB?.ended_at).toBe(nowIso);
   });
 
-  // AC: @session-stale-close-metadata ac-3
-  it("records one shadow commit with command-specific message for multi-session close", async () => {
-    execSync("git init", { cwd: specDir, stdio: "pipe" });
-    execSync('git config user.name "Test User"', { cwd: specDir, stdio: "pipe" });
-    execSync('git config user.email "test@example.com"', {
-      cwd: specDir,
-      stdio: "pipe",
-    });
-
+  // AC: @session-remove-shadow-commits ac-stale-cleanup
+  it("does not commit to kspec-meta when abandoning stale sessions", async () => {
     const sessionA = "01KJHSTAL3CR1T3R1A000000B";
     const sessionB = "01KJHSTAL3CR1T3R1A000000C";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionA,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-20T00:00:00.000Z",
     });
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionB,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-19T00:00:00.000Z",
     });
 
-    execSync("git add -A", { cwd: specDir, stdio: "pipe" });
-    execSync('git commit -m "test: seed sessions"', {
-      cwd: specDir,
-      stdio: "pipe",
-      env: { ...process.env, KSPEC_SHADOW_COMMIT: "1" },
-    });
-    const beforeCount = Number.parseInt(
-      execSync("git rev-list --count HEAD", {
-        cwd: specDir,
-        encoding: "utf-8",
-      }).trim(),
-      10,
-    );
-
     const selection = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
-    const commitMessage = "session stale close auto-abandoned metadata";
-    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+    const applied = await applyAutoAbandonMetadata(sessionsDir, selection, {
       nowMs,
-      shadowCommitMessage: commitMessage,
     });
 
-    const afterCount = Number.parseInt(
-      execSync("git rev-list --count HEAD", {
-        cwd: specDir,
-        encoding: "utf-8",
-      }).trim(),
-      10,
-    );
-    const lastMessage = execSync("git log -1 --pretty=%s", {
-      cwd: specDir,
-      encoding: "utf-8",
-    }).trim();
-
     expect(applied.updatedCount).toBe(2);
-    expect(applied.shadowCommitted).toBe(true);
-    expect(afterCount - beforeCount).toBe(1);
-    expect(lastMessage).toBe(commitMessage);
+    // No shadowCommitted field — sessions no longer commit to kspec-meta
+    expect("shadowCommitted" in applied).toBe(false);
   });
 
   // AC: @session-stale-close-metadata ac-4
   it("returns preview close_reason in dry-run mode without changing files", async () => {
     const sessionId = "01KJHSTAL3CR1T3R1A0000009";
-    await createSession(specDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "ralph",
       status: "active",
       started_at: "2026-02-20T00:00:00.000Z",
     });
-    await appendEvent(specDir, {
+    await appendEvent(sessionsDir, {
       session_id: sessionId,
       type: "session.update",
       ts: new Date("2026-02-27T12:00:00.000Z").getTime(),
       data: { update: "idle" },
     });
 
-    const before = await getSession(specDir, sessionId);
+    const before = await getSession(sessionsDir, sessionId);
     const selection = await selectStaleActiveSessions(
-      specDir,
+      sessionsDir,
       { olderThan: "24h", inactiveFor: "6h" },
       nowMs,
     );
-    const applied = await applyAutoAbandonMetadata(specDir, selection, {
+    const applied = await applyAutoAbandonMetadata(sessionsDir, selection, {
       dryRun: true,
       nowMs,
     });
-    const after = await getSession(specDir, sessionId);
+    const after = await getSession(sessionsDir, sessionId);
 
     expect(applied.dryRun).toBe(true);
     expect(applied.updatedCount).toBe(1);

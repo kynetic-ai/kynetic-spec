@@ -35,6 +35,13 @@ const ShadowConfigSchema = z
      * - Git URL (contains :// or starts with git@)
      */
     remote: z.string().optional(),
+    /**
+     * Interval in seconds for periodic background shadow pull in daemon mode.
+     * Set to 0 to disable periodic sync. Default: 60.
+     *
+     * AC: @config-shadow ac-12 — configurable sync interval for daemon background pull
+     */
+    sync_interval: z.number().int().min(0).optional(),
   })
   .strict()
   .optional();
@@ -92,6 +99,25 @@ const DaemonConfigSchema = z
   .optional();
 
 /**
+ * Schema for dispatch workspace configuration.
+ */
+const DispatchConfigSchema = z
+  .object({
+    /**
+     * Base/integration branch used when provisioning task workspaces.
+     * When omitted, the dispatcher resolves a deterministic fallback.
+     */
+    base_branch: z.string().optional(),
+    /**
+     * Root directory where dispatcher-managed git worktrees live.
+     * Relative paths resolve from the project root.
+     */
+    worktree_root: z.string().optional(),
+  })
+  .strict()
+  .optional();
+
+/**
  * Schema for ralph skill name overrides.
  *
  * Ralph prompts reference skills by invocation name. These default to
@@ -136,6 +162,8 @@ export const KspecConfigSchema = z
     validation: ValidationConfigSchema,
     /** Daemon configuration */
     daemon: DaemonConfigSchema,
+    /** Dispatch workspace configuration */
+    dispatch: DispatchConfigSchema,
     /** Ralph automation configuration */
     ralph: RalphConfigSchema,
   })
@@ -201,6 +229,12 @@ export interface ResolvedKspecConfig {
     directory: string;
     /** Remote configuration, null if not specified */
     remote: ResolvedShadowRemote | null;
+    /**
+     * Interval in seconds for periodic background shadow pull in daemon mode.
+     * 0 disables periodic sync. Default: 60.
+     * AC: @config-shadow ac-12
+     */
+    sync_interval: number;
   };
   identity: {
     author: string | null;
@@ -226,6 +260,18 @@ export interface ResolvedKspecConfig {
      */
     auto_start: boolean;
   };
+  dispatch: {
+    /**
+     * Optional configured base branch for dispatcher-managed workspaces.
+     * Null means "resolve deterministically at provisioning time".
+     */
+    base_branch: string | null;
+    /**
+     * Raw worktree root from config/defaults. Relative paths resolve from the
+     * project root when dispatch workspaces are provisioned.
+     */
+    worktree_root: string;
+  };
   ralph: {
     skills: {
       /** Skill invocation for task-work (default: /kspec:task-work) */
@@ -250,6 +296,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     branch: "kspec-meta",
     directory: ".kspec",
     remote: null,
+    sync_interval: 60, // AC: @config-shadow ac-12 — default 60s
   },
   identity: {
     author: null,
@@ -265,6 +312,10 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     port: 3456,
     host: "localhost",
     auto_start: true, // AC: @config-daemon — default auto-start enabled
+  },
+  dispatch: {
+    base_branch: null,
+    worktree_root: ".kspec-worktrees",
   },
   ralph: {
     skills: {
@@ -305,12 +356,19 @@ export interface LoadConfigResult {
  *
  * AC: @project-config ac-6 — loads from git root, not cwd subdirectory
  */
-export function findProjectRoot(startDir: string): string | null {
+export function findProjectRoot(
+  startDir: string,
+  mainRoot?: string,
+): string | null {
   // In batch mode, the batch executor should set this to the real root
   // before redirecting KSPEC_SPEC_DIR
   const batchRoot = process.env.KSPEC_BATCH_PROJECT_ROOT;
   if (batchRoot) {
     return batchRoot;
+  }
+
+  if (mainRoot) {
+    return mainRoot;
   }
 
   // Normal mode: find git root
@@ -332,8 +390,9 @@ export function findProjectRoot(startDir: string): string | null {
  */
 export async function loadProjectConfig(
   startDir: string = process.cwd(),
+  mainRoot?: string,
 ): Promise<LoadConfigResult> {
-  const gitRoot = findProjectRoot(startDir);
+  const gitRoot = findProjectRoot(startDir, mainRoot);
 
   if (!gitRoot) {
     // Not in a git repo, use defaults
@@ -428,6 +487,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       branch: file.shadow?.branch ?? DEFAULT_CONFIG.shadow.branch,
       directory: file.shadow?.directory ?? DEFAULT_CONFIG.shadow.directory,
       remote: resolvedRemote,
+      sync_interval: file.shadow?.sync_interval ?? DEFAULT_CONFIG.shadow.sync_interval,
     },
     identity: {
       // AC: ac-5 — env var takes precedence
@@ -452,6 +512,10 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       // AC: @config-daemon ac-3 — auto_start from config
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
+    dispatch: {
+      base_branch: file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
+      worktree_root: file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
+    },
     ralph: {
       skills: {
         task_work: file.ralph?.skills?.task_work ?? DEFAULT_CONFIG.ralph.skills.task_work,
@@ -473,6 +537,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       branch: DEFAULT_CONFIG.shadow.branch,
       directory: DEFAULT_CONFIG.shadow.directory,
       remote: DEFAULT_CONFIG.shadow.remote,
+      sync_interval: DEFAULT_CONFIG.shadow.sync_interval,
     },
     identity: { ...DEFAULT_CONFIG.identity },
     validation: {
@@ -483,6 +548,10 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       port: DEFAULT_CONFIG.daemon.port,
       host: DEFAULT_CONFIG.daemon.host,
       auto_start: DEFAULT_CONFIG.daemon.auto_start,
+    },
+    dispatch: {
+      base_branch: DEFAULT_CONFIG.dispatch.base_branch,
+      worktree_root: DEFAULT_CONFIG.dispatch.worktree_root,
     },
     ralph: {
       skills: { ...DEFAULT_CONFIG.ralph.skills },

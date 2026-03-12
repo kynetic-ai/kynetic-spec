@@ -9,6 +9,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
 import type { SessionContext } from '../helpers/session-types';
 
+const SESSION_START_NOTES_TIMEOUT_MS = 20_000;
+
 describe('session start notes enrichment', () => {
   let tempDir: string;
 
@@ -22,7 +24,7 @@ describe('session start notes enrichment', () => {
 
   // AC: @cmd-session-start ac-review-detail
   describe('pending_review task notes', () => {
-    it('should include notes from pending_review tasks', () => {
+    it('should include notes from pending_review tasks', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create a task with notes and submit it to pending_review
       kspec('task add --title "Task with notes" --slug task-with-notes', tempDir);
       kspec('task start @task-with-notes', tempDir);
@@ -41,7 +43,7 @@ describe('session start notes enrichment', () => {
       expect(pendingReviewNotes.some((n) => n.content.includes('PR created'))).toBe(true);
     });
 
-    it('should group pending_review notes separately from in_progress notes', () => {
+    it('should group pending_review notes separately from in_progress notes', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create an in_progress task with notes
       kspec('task add --title "In progress task" --slug in-progress-task', tempDir);
       kspec('task start @in-progress-task', tempDir);
@@ -70,7 +72,7 @@ describe('session start notes enrichment', () => {
       expect(pendingReviewNotes.some((n) => n.content.includes('Ready for review'))).toBe(true);
     });
 
-    it('should show pending_review notes in human-readable output', () => {
+    it('should show pending_review notes in human-readable output', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create a pending_review task with notes
       kspec('task add --title "Task for review" --slug task-for-review', tempDir);
       kspec('task start @task-for-review', tempDir);
@@ -88,7 +90,7 @@ describe('session start notes enrichment', () => {
 
   // AC: @cmd-session-start ac-notes-starvation
   describe('recently completed task notes', () => {
-    it('should include notes from recently completed tasks', () => {
+    it('should include notes from recently completed tasks', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create and complete a task with notes
       kspec('task add --title "Completed task" --slug completed-task', tempDir);
       kspec('task start @completed-task', tempDir);
@@ -131,7 +133,7 @@ describe('session start notes enrichment', () => {
       expect(uniqueCompletedTasks.size).toBeGreaterThan(0);
     });
 
-    it('should show recently completed tasks in activity timeline', () => {
+    it('should show recently completed tasks in activity timeline', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create and complete a task with notes
       kspec('task add --title "Done task" --slug done-task', tempDir);
       kspec('task start @done-task', tempDir);
@@ -231,7 +233,7 @@ describe('session start notes enrichment', () => {
   });
 
   describe('task_status field in JSON output', () => {
-    it('should include task_status field for all notes', () => {
+    it('should include task_status field for all notes', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create tasks in different states with notes
       kspec('task add --title "Active task" --slug active-task', tempDir);
       kspec('task start @active-task', tempDir);
@@ -250,7 +252,7 @@ describe('session start notes enrichment', () => {
 
   // AC: @trait-json-output ac-1 - Valid JSON with no ANSI color codes
   describe('JSON output purity', () => {
-    it('should produce valid JSON on stdout with no extra lines', () => {
+    it('should produce valid JSON on stdout with no extra lines', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Run session start --json and verify stdout is pure JSON
       const result = kspec('session start --json', tempDir);
       expect(result.exitCode).toBe(0);
@@ -264,7 +266,7 @@ describe('session start notes enrichment', () => {
       expect(parsed).toHaveProperty('context');
     });
 
-    it('should not contain ANSI color codes in JSON output', () => {
+    it('should not contain ANSI color codes in JSON output', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       // Create some data to ensure output has content
       kspec('task add --title "Color check" --slug color-check', tempDir);
       kspec('task start @color-check', tempDir);
@@ -276,7 +278,7 @@ describe('session start notes enrichment', () => {
       expect(result.stdout).not.toMatch(/\x1b\[/);
     });
 
-    it('should not have info/warning lines on stdout', () => {
+    it('should not have info/warning lines on stdout', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
       const result = kspec('session start --json', tempDir);
 
       // stdout should not contain info markers

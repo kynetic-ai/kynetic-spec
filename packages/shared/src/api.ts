@@ -108,6 +108,8 @@ export interface ItemSummary {
   tags: string[];
   parent?: string;
   created_at: string;
+  /** Optional summary count used by validation views. */
+  acceptance_criteria_count?: number;
 }
 
 /**
@@ -243,6 +245,36 @@ export interface PlanDetail extends PlanSummary {
   content: string;
 }
 
+export interface BatchSpecItemSummary {
+  kind: 'item';
+  ulid: string;
+  slugs: string[];
+  title: string;
+  type: string;
+  status?: string;
+  maturity?: string;
+  traits: string[];
+  ac_count: number;
+}
+
+export interface BatchTaskSummary {
+  kind: 'task';
+  ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  priority: number;
+  spec_ref?: string;
+  assignee?: string;
+}
+
+export type BatchItemSummary = BatchSpecItemSummary | BatchTaskSummary;
+
+export interface BatchItemsResponse {
+  items: BatchItemSummary[];
+  unresolved: string[];
+}
+
 /**
  * Search result
  * AC: @api-contract ac-19
@@ -267,16 +299,6 @@ export interface SearchResponse {
 }
 
 /**
- * Validation result
- * AC: @api-contract ac-20
- */
-export interface ValidationResult {
-  valid: boolean;
-  errors: ValidationError[];
-  warnings: ValidationWarning[];
-}
-
-/**
  * Validation error
  */
 export interface ValidationError {
@@ -295,16 +317,98 @@ export interface ValidationWarning {
   ref?: string;
 }
 
+export interface SchemaValidationError {
+  file: string;
+  path?: string;
+  message: string;
+  details?: unknown;
+}
+
+export interface RefValidationError {
+  ref: string;
+  sourceFile?: string;
+  sourceUlid?: string;
+  field: string;
+  error: 'not_found' | 'ambiguous' | 'duplicate_slug';
+  message: string;
+}
+
+export interface RefValidationWarning {
+  ref: string;
+  sourceFile?: string;
+  sourceUlid?: string;
+  field: string;
+  warning: 'deprecated_target';
+  message: string;
+}
+
+export interface OrphanItem {
+  ulid: string;
+  title: string;
+  type: string;
+  file?: string;
+}
+
+export type CompletenessWarningType =
+  | 'missing_acceptance_criteria'
+  | 'missing_description'
+  | 'status_inconsistency'
+  | 'missing_test_coverage'
+  | 'automation_eligible_no_spec'
+  | 'ac_schema_field_mismatch';
+
+export interface CompletenessWarning {
+  type: CompletenessWarningType;
+  subtype?: 'own_ac' | 'trait_ac';
+  itemRef: string;
+  itemTitle: string;
+  message: string;
+  details?: string;
+}
+
+export interface TraitCycleError {
+  traitRef: string;
+  traitTitle: string;
+  cycle: string[];
+  message: string;
+}
+
+/**
+ * Validation result
+ * AC: @api-contract ac-20
+ */
+export interface ValidationResult {
+  valid: boolean;
+  schemaErrors: SchemaValidationError[];
+  refErrors: RefValidationError[];
+  refWarnings: RefValidationWarning[];
+  orphans: OrphanItem[];
+  completenessWarnings: CompletenessWarning[];
+  traitCycles: TraitCycleError[];
+}
+
 /**
  * Alignment index stats
  * AC: @api-contract ac-21
  */
 export interface AlignmentStats {
-  total_specs: number;
-  total_tasks: number;
-  specs_without_tasks: number;
-  tasks_without_specs: number;
-  warnings: string[];
+  totalSpecs: number;
+  specsWithTasks: number;
+  alignedSpecs: number;
+  orphanedSpecs: number;
+}
+
+export interface AlignmentWarning {
+  type: 'orphaned_spec' | 'status_mismatch' | 'stale_implementation';
+  specUlid?: string;
+  specTitle?: string;
+  taskUlid?: string;
+  message: string;
+}
+
+export interface AlignmentResponse {
+  stats: AlignmentStats;
+  warnings: AlignmentWarning[];
 }
 
 /**
@@ -399,6 +503,12 @@ export interface ExportedValidation {
   valid: boolean;
   errorCount: number;
   warningCount: number;
+  schemaErrors: SchemaValidationError[];
+  refErrors: RefValidationError[];
+  refWarnings: RefValidationWarning[];
+  orphans: OrphanItem[];
+  completenessWarnings: CompletenessWarning[];
+  traitCycles: TraitCycleError[];
   errors: Array<{
     file: string;
     message: string;
@@ -420,10 +530,13 @@ export interface KspecSnapshot {
   tasks: ExportedTask[];
   items: ExportedItem[];
   inbox: InboxItem[];
+  plans?: PlanDetail[];
+  triage?: TriageRecord[];
   session: SessionContext | null;
   observations: Observation[];
   agents: Agent[];
   workflows: Workflow[];
   conventions: Convention[];
   validation?: ExportedValidation;
+  alignment?: AlignmentResponse;
 }

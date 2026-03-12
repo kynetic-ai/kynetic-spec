@@ -9,8 +9,6 @@ import {
   testUlid,
 } from "./helpers/cli";
 
-// AC: @alignment-warnings ac-1
-
 describe("validate alignment: no-task spec warning policy", () => {
   let tmpDir: string;
 
@@ -73,6 +71,8 @@ tasks:
     await fs.writeFile(path.join(tmpDir, "tasks.yaml"), tasksContent);
   }
 
+  // AC: @alignment-system ac-2
+  // AC: @alignment-warnings ac-1
   it("emits orphaned_spec for no-task spec with not_started status", async () => {
     await writeProject("not_started", false);
     const result = kspecWithStatus("validate --alignment", tmpDir);

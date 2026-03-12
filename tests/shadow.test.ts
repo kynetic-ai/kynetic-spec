@@ -28,12 +28,18 @@ import {
   setVerboseModeGetter,
   shadowAutoCommit,
   checkConfigMismatch,
+  getGitVersion,
+  gitSupportsOrphanWorktree,
+  createOrphanBranchFallback,
+  SESSIONS_WORKTREE_DIR,
+  type ShadowConfig,
   type ShadowOptions,
 } from '../src/parser/shadow.js';
 import { initContext } from '../src/parser/yaml.js';
 import { existsSync } from 'node:fs';
 import { kspec as kspecRun } from './helpers/cli.js';
 import { detectRemoteType } from '../src/parser/config.js';
+import { createSession, appendEvent, getSession } from '../src/sessions/store.js';
 
 // Check if git supports --orphan worktree (requires >= 2.42) and built CLI exists.
 // initializeShadow needs both to work.
@@ -966,6 +972,61 @@ describe('Shadow Branch', () => {
       }
     });
 
+    it('shadowPull succeeds with dirty worktree by stashing and restoring local changes', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Push a remote change via clone
+      const cloneDir = path.join('/tmp', `kspec-sync-dirty-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-file.yaml'),
+          'remote: true\n'
+        );
+        execSync('git add -A && git commit -m "Remote adds file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Create uncommitted local changes (dirty worktree)
+        await fs.writeFile(
+          path.join(worktreeDir, 'dirty-local.yaml'),
+          'dirty: true\n'
+        );
+
+        // Pull should succeed despite dirty worktree
+        const result = await shadowPull(worktreeDir);
+        expect(result.success).toBe(true);
+        expect(result.pulled).toBe(true);
+        expect(result.hadConflict).toBe(false);
+
+        // Remote file should be present
+        const remoteContent = await fs.readFile(
+          path.join(worktreeDir, 'remote-file.yaml'),
+          'utf-8',
+        );
+        expect(remoteContent).toContain('remote: true');
+
+        // Local dirty file should still be present (restored from stash)
+        const localContent = await fs.readFile(
+          path.join(worktreeDir, 'dirty-local.yaml'),
+          'utf-8',
+        );
+        expect(localContent).toContain('dirty: true');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
     // shadowSync does pull then push
     it('shadowSync pulls and pushes', async () => {
       await setupSyncTest();
@@ -1086,6 +1147,516 @@ describe('Shadow Branch', () => {
 
       // Tracking should now be configured
       expect(await hasRemoteTracking(worktreeDir)).toBe(true);
+    });
+
+    // AC: @config-shadow ac-11
+    // AC: @shadow-write-sync ac-write-always-syncs
+    it('shadowPushAsync integrates remote changes via pull-rebase before pushing', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Make a remote change via a clone — add a NEW file to avoid merge conflicts
+      const cloneDir = path.join('/tmp', `kspec-bidir-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone adds a new file (no conflict with local changes)
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-marker.yaml'),
+          'marker: from-clone\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds marker file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Local adds a DIFFERENT new file (no conflict)
+        await fs.writeFile(
+          path.join(worktreeDir, 'local-marker.yaml'),
+          'marker: from-local\n'
+        );
+        await shadowAutoCommit(worktreeDir, 'Local adds marker file');
+
+        // Push — should pull-rebase (integrating clone's file), then push
+        await shadowPushAsync(worktreeDir);
+
+        // Verify clone's file was pulled into local worktree
+        const remoteMarkerContent = await fs.readFile(
+          path.join(worktreeDir, 'remote-marker.yaml'),
+          'utf-8',
+        );
+        expect(remoteMarkerContent).toContain('marker: from-clone');
+
+        // Verify local file still exists
+        const localMarkerContent = await fs.readFile(
+          path.join(worktreeDir, 'local-marker.yaml'),
+          'utf-8',
+        );
+        expect(localMarkerContent).toContain('marker: from-local');
+
+        // Verify remote has both files after push
+        const verifyDir = path.join('/tmp', `kspec-bidir-verify-${Date.now()}`);
+        try {
+          execSync(`git clone ${remoteDir} ${verifyDir}`, { stdio: 'pipe' });
+          execSync(`git -C ${verifyDir} checkout ${SHADOW_BRANCH_NAME}`, { stdio: 'pipe' });
+          const verifyRemote = await fs.readFile(
+            path.join(verifyDir, 'remote-marker.yaml'),
+            'utf-8',
+          );
+          const verifyLocal = await fs.readFile(
+            path.join(verifyDir, 'local-marker.yaml'),
+            'utf-8',
+          );
+          expect(verifyRemote).toContain('marker: from-clone');
+          expect(verifyLocal).toContain('marker: from-local');
+        } finally {
+          await fs.rm(verifyDir, { recursive: true, force: true });
+        }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @shadow-write-sync ac-write-always-syncs
+    it('commitIfShadow triggers full pull-rebase-before-push sync on mutating write', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Make a remote change via a clone — add a NEW file to avoid merge conflicts
+      const cloneDir = path.join('/tmp', `kspec-commitif-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone adds a new file (no conflict with local changes)
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-commitif-marker.yaml'),
+          'marker: from-clone-commitif\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds commitif marker file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Add a local file that commitIfShadow will auto-commit
+        await fs.writeFile(
+          path.join(worktreeDir, 'local-commitif-marker.yaml'),
+          'marker: from-local-commitif\n'
+        );
+
+        // Call commitIfShadow — the actual write entrypoint
+        const shadowConfig: ShadowConfig = {
+          enabled: true,
+          worktreeDir,
+          branchName: SHADOW_BRANCH_NAME,
+          projectRoot: testDir,
+        };
+        const committed = await commitIfShadow(shadowConfig, 'test-write', undefined, 'commitIfShadow sync test');
+        expect(committed).toBe(true);
+
+        // Wait for the fire-and-forget push to complete (pull-rebase runs inside shadowPushAsync)
+        const maxWait = 10_000;
+        const start = Date.now();
+        const remoteMarkerPath = path.join(worktreeDir, 'remote-commitif-marker.yaml');
+        while (Date.now() - start < maxWait) {
+          try {
+            await fs.access(remoteMarkerPath);
+            break; // File exists — pull-rebase integrated the remote change
+          } catch {
+            await new Promise(r => setTimeout(r, 200));
+          }
+        }
+
+        // Verify clone's file was pulled into local worktree (proves pull-rebase ran)
+        const remoteMarkerContent = await fs.readFile(remoteMarkerPath, 'utf-8');
+        expect(remoteMarkerContent).toContain('marker: from-clone-commitif');
+
+        // Verify local file still exists
+        const localMarkerContent = await fs.readFile(
+          path.join(worktreeDir, 'local-commitif-marker.yaml'),
+          'utf-8',
+        );
+        expect(localMarkerContent).toContain('marker: from-local-commitif');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-11
+    it('shadowPushAsync reports failure when pull-rebase has unresolvable conflicts', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      const cloneDir = path.join('/tmp', `kspec-bidir-conflict-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Both sides create a file with the SAME name but different content (binary-like conflict)
+        // Use a non-YAML file (.txt) so the kspec merge driver doesn't apply
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'conflict-file.txt'),
+          'REMOTE CONTENT LINE 1\nREMOTE CONTENT LINE 2\n'
+        );
+        execSync('git add -A && git commit -m "Remote adds conflict file"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Local creates the SAME file with different content
+        await fs.writeFile(
+          path.join(worktreeDir, 'conflict-file.txt'),
+          'LOCAL CONTENT LINE 1\nLOCAL CONTENT LINE 2\n'
+        );
+        await shadowAutoCommit(worktreeDir, 'Local adds conflict file');
+
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+          await shadowPushAsync(worktreeDir);
+
+          // Should see a push failure warning about conflicts
+          expect(consoleErrorSpy).toHaveBeenCalledWith(
+            expect.stringContaining('[WARN] Shadow auto-push failed')
+          );
+        } finally {
+          consoleErrorSpy.mockRestore();
+        }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-11
+    it('initContext pulls remote shadow changes before returning (pre-read sync)', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Push a new file from a clone so the remote is ahead
+      const cloneDir = path.join('/tmp', `kspec-preread-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        // Clone adds a new file and pushes
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'preread-marker.yaml'),
+          'marker: from-remote\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds preread marker"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Verify the file does NOT exist locally before initContext
+        const markerPath = path.join(worktreeDir, 'preread-marker.yaml');
+        expect(existsSync(markerPath)).toBe(false);
+
+        // Call initContext — should trigger pre-read pull
+        const ctx = await initContext(testDir);
+
+        // Verify shadow is enabled
+        expect(ctx.shadow?.enabled).toBe(true);
+
+        // Verify the remote file was pulled down
+        expect(existsSync(markerPath)).toBe(true);
+        const content = await fs.readFile(markerPath, 'utf-8');
+        expect(content).toContain('marker: from-remote');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-11
+    it('initContext skips pre-read pull when KSPEC_NO_SYNC is set', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+
+      // Push a new file from a clone
+      const cloneDir = path.join('/tmp', `kspec-nosync-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'nosync-marker.yaml'),
+          'marker: should-not-pull\n'
+        );
+        execSync('git add -A && git commit -m "Clone adds nosync marker"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Set KSPEC_NO_SYNC to disable pre-read pull
+        process.env.KSPEC_NO_SYNC = '1';
+        try {
+          await initContext(testDir);
+
+          // File should NOT have been pulled
+          const markerPath = path.join(worktreeDir, 'nosync-marker.yaml');
+          expect(existsSync(markerPath)).toBe(false);
+        } finally {
+          delete process.env.KSPEC_NO_SYNC;
+        }
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-3 ac-11
+    it('shadowPull uses configured named remote instead of origin', async () => {
+      // Set up a bare remote with a non-default name
+      const specsRemoteDir = path.join('/tmp', `kspec-specs-remote-${Date.now()}`);
+      try {
+        await fs.mkdir(specsRemoteDir, { recursive: true });
+        execSync('git init --bare', { cwd: specsRemoteDir, stdio: 'pipe' });
+
+        // Create local repo with the non-default remote name
+        execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Add remote as "specs-origin" (NOT "origin")
+        execSync(`git remote add specs-origin ${specsRemoteDir}`, { cwd: testDir, stdio: 'pipe' });
+        execSync('git push -u specs-origin main', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize shadow and configure tracking against specs-origin
+        await initializeShadow(testDir);
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+        execSync(`git push specs-origin ${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.remote specs-origin`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.merge refs/heads/${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+
+        // Clone from specs-origin, push a change to shadow branch
+        const cloneDir = path.join('/tmp', `kspec-specs-clone-${Date.now()}`);
+        try {
+          execSync(`git clone ${specsRemoteDir} ${cloneDir}`, { stdio: 'pipe' });
+          execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+          await fs.writeFile(
+            path.join(cloneDir, '.kspec', 'specs-remote-marker.yaml'),
+            'marker: from-specs-origin\n'
+          );
+          execSync('git add -A && git commit -m "Clone adds marker via specs-origin"', {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+          execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+
+          // Verify marker does not exist locally yet
+          const markerPath = path.join(worktreeDir, 'specs-remote-marker.yaml');
+          expect(existsSync(markerPath)).toBe(false);
+
+          // Pull with configured remote options — should use specs-origin, not origin
+          const result = await shadowPull(worktreeDir, {
+            remote: 'specs-origin',
+            remoteType: 'named',
+          });
+
+          expect(result.success).toBe(true);
+          expect(result.pulled).toBe(true);
+
+          // Verify the marker was pulled from specs-origin
+          expect(existsSync(markerPath)).toBe(true);
+          const content = await fs.readFile(markerPath, 'utf-8');
+          expect(content).toContain('marker: from-specs-origin');
+        } finally {
+          await fs.rm(cloneDir, { recursive: true, force: true });
+        }
+      } finally {
+        await fs.rm(specsRemoteDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @config-shadow ac-3 ac-11
+    it('shadowPushAsync pull-rebase uses configured remote for integration', async () => {
+      // Set up a bare remote with a non-default name
+      const specsRemoteDir = path.join('/tmp', `kspec-push-specs-remote-${Date.now()}`);
+      try {
+        await fs.mkdir(specsRemoteDir, { recursive: true });
+        execSync('git init --bare', { cwd: specsRemoteDir, stdio: 'pipe' });
+
+        // Create local repo with the non-default remote name
+        execSync('git init -b main', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+        await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+        execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+        // Add remote as "specs-origin" (NOT "origin")
+        execSync(`git remote add specs-origin ${specsRemoteDir}`, { cwd: testDir, stdio: 'pipe' });
+        execSync('git push -u specs-origin main', { cwd: testDir, stdio: 'pipe' });
+
+        // Initialize shadow and configure tracking against specs-origin
+        await initializeShadow(testDir);
+        const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+        execSync(`git push specs-origin ${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.remote specs-origin`, { cwd: worktreeDir, stdio: 'pipe' });
+        execSync(`git config branch.${SHADOW_BRANCH_NAME}.merge refs/heads/${SHADOW_BRANCH_NAME}`, { cwd: worktreeDir, stdio: 'pipe' });
+
+        // Clone from specs-origin, push a new file to shadow branch
+        const cloneDir = path.join('/tmp', `kspec-push-specs-clone-${Date.now()}`);
+        try {
+          execSync(`git clone ${specsRemoteDir} ${cloneDir}`, { stdio: 'pipe' });
+          execSync('git config user.email "clone@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync('git config user.name "Clone"', { cwd: cloneDir, stdio: 'pipe' });
+          execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+          await fs.writeFile(
+            path.join(cloneDir, '.kspec', 'push-specs-marker.yaml'),
+            'marker: from-clone-via-specs\n'
+          );
+          execSync('git add -A && git commit -m "Clone adds push marker via specs-origin"', {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+          execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+            cwd: path.join(cloneDir, '.kspec'),
+            stdio: 'pipe',
+          });
+
+          // Local adds a different file
+          await fs.writeFile(
+            path.join(worktreeDir, 'local-push-marker.yaml'),
+            'marker: from-local-push\n'
+          );
+          await shadowAutoCommit(worktreeDir, 'Local adds push marker file');
+
+          // Push — should pull-rebase from specs-origin, integrate clone's file, then push
+          await shadowPushAsync(worktreeDir, undefined, {
+            remote: 'specs-origin',
+            remoteType: 'named',
+          });
+
+          // Verify clone's file was pulled into local worktree
+          const remoteMarkerPath = path.join(worktreeDir, 'push-specs-marker.yaml');
+          expect(existsSync(remoteMarkerPath)).toBe(true);
+          const remoteContent = await fs.readFile(remoteMarkerPath, 'utf-8');
+          expect(remoteContent).toContain('marker: from-clone-via-specs');
+
+          // Verify local file still exists
+          const localMarkerPath = path.join(worktreeDir, 'local-push-marker.yaml');
+          expect(existsSync(localMarkerPath)).toBe(true);
+        } finally {
+          await fs.rm(cloneDir, { recursive: true, force: true });
+        }
+      } finally {
+        await fs.rm(specsRemoteDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @session-remove-shadow-commits ac-no-sync-conflict
+    it('session writes to .kspec-sessions/ do not conflict with shadowPull on .kspec/', async () => {
+      await setupSyncTest();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const sessionsDir = path.join(testDir, SESSIONS_WORKTREE_DIR);
+
+      // Push a remote change to the shadow branch via a clone
+      const cloneDir = path.join('/tmp', `kspec-sync-session-conflict-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync(`git worktree add .kspec ${SHADOW_BRANCH_NAME}`, { cwd: cloneDir, stdio: 'pipe' });
+
+        await fs.writeFile(
+          path.join(cloneDir, '.kspec', 'remote-task-update.yaml'),
+          'task_status: updated_remotely\n'
+        );
+        execSync('git add -A && git commit -m "Remote task update during session"', {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+        execSync(`git push origin ${SHADOW_BRANCH_NAME}`, {
+          cwd: path.join(cloneDir, '.kspec'),
+          stdio: 'pipe',
+        });
+
+        // Create sessions directory (simulates what kspec init/setup does)
+        await fs.mkdir(path.join(sessionsDir, 'sessions'), { recursive: true });
+
+        // Run shadowPull AND session write concurrently — this is the exact
+        // scenario where conflicts would occur if sessions were on kspec-meta
+        const sessionId = '01KJHSYNC0NFLT0000000001';
+        const [pullResult] = await Promise.all([
+          shadowPull(worktreeDir),
+          createSession(sessionsDir, {
+            id: sessionId,
+            agent_type: 'ralph',
+            agent_id: 'task-worker',
+            trigger: 'task.ready',
+            status: 'active',
+            started_at: new Date().toISOString(),
+          }),
+          appendEvent(sessionsDir, {
+            session_id: sessionId,
+            type: 'session.start',
+            data: { task_id: '@test-task' },
+          }),
+        ]);
+
+        // shadowPull should succeed with no conflict
+        expect(pullResult.success).toBe(true);
+        expect(pullResult.pulled).toBe(true);
+        expect(pullResult.hadConflict).toBe(false);
+
+        // Remote change should be present in shadow worktree
+        const remoteContent = await fs.readFile(
+          path.join(worktreeDir, 'remote-task-update.yaml'),
+          'utf-8',
+        );
+        expect(remoteContent).toContain('task_status: updated_remotely');
+
+        // Session should be readable from .kspec-sessions/ (completely separate path)
+        const session = await getSession(sessionsDir, sessionId);
+        expect(session).toBeDefined();
+        expect(session!.id).toBe(sessionId);
+        expect(session!.status).toBe('active');
+        expect(session!.agent_id).toBe('task-worker');
+
+        // Verify session files are NOT in the shadow worktree
+        const shadowSessionsPath = path.join(worktreeDir, 'sessions', sessionId);
+        await expect(fs.access(shadowSessionsPath)).rejects.toThrow();
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
     });
   });
 
@@ -1313,6 +1884,29 @@ describe('Shadow Branch', () => {
 
       // Cleanup
       execSync(`git worktree remove ${otherWorktreeDir}`, { cwd: testDir, stdio: 'pipe' });
+    });
+
+    // AC: @worktree-support ac-false-positive-guard
+    it('does not mistake a code worktree with kspec in the name for the shadow worktree', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@example.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git branch feature-branch', { cwd: testDir, stdio: 'pipe' });
+
+      const kspecNamedWorktreeDir = path.join(testDir, 'kspec-feature');
+      execSync(`git worktree add ${kspecNamedWorktreeDir} feature-branch`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const result = await detectRunningFromShadowWorktree(kspecNamedWorktreeDir);
+      expect(result).toBeNull();
+
+      execSync(`git worktree remove ${kspecNamedWorktreeDir}`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
     });
   });
 
@@ -1874,6 +2468,172 @@ describe('Shadow Branch', () => {
         expect(shadow?.branchName).toBe(customBranch);
         expect(shadow?.worktreeDir).toBe(customDirPath);
       });
+    });
+  });
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Git Version Detection & Orphan Worktree Fallback
+  // AC: @config-shadow ac-10 — fallback for git < 2.42
+  // ══════════════════════════════════════════════════════════════════════════
+
+  describe('Git Version Detection', () => {
+    // AC: @config-shadow ac-10
+    it('getGitVersion returns a valid version tuple', () => {
+      const version = getGitVersion();
+      expect(version).not.toBeNull();
+      expect(version).toHaveLength(3);
+      expect(version![0]).toBeGreaterThanOrEqual(1);
+      expect(version![1]).toBeGreaterThanOrEqual(0);
+      expect(version![2]).toBeGreaterThanOrEqual(0);
+    });
+
+    // AC: @config-shadow ac-10
+    it('gitSupportsOrphanWorktree returns a boolean', () => {
+      const result = gitSupportsOrphanWorktree();
+      expect(typeof result).toBe('boolean');
+    });
+  });
+
+  describe('createOrphanBranchFallback (git < 2.42 compatibility)', () => {
+    // AC: @config-shadow ac-10
+    it('creates orphan branch and worktree without --orphan flag', async () => {
+      // Initialize a git repo
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Use the fallback directly
+      await createOrphanBranchFallback(testDir, 'orphan-test', '.orphan-wt');
+
+      // Verify the branch was created
+      const hasBranch = await branchExists(testDir, 'orphan-test');
+      expect(hasBranch).toBe(true);
+
+      // Verify the worktree was created and is valid
+      const worktreeDir = path.join(testDir, '.orphan-wt');
+      expect(await isValidWorktree(worktreeDir)).toBe(true);
+
+      // Verify the orphan branch has no parent (orphan = first commit has no parents)
+      const parents = execSync('git log --format=%P -1 orphan-test', {
+        cwd: testDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(parents).toBe('');
+
+      // Verify the orphan branch does NOT share history with main
+      try {
+        const mergeBase = execSync('git merge-base main orphan-test', {
+          cwd: testDir,
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        }).trim();
+        // If merge-base succeeds, branches share history — that's wrong
+        expect(mergeBase).toBe('');
+      } catch {
+        // Expected: merge-base fails when branches share no common ancestor
+      }
+    });
+
+    // AC: @config-shadow ac-10
+    it('does not modify the project working tree', async () => {
+      // Initialize a git repo with some content
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      await fs.writeFile(path.join(testDir, 'src.ts'), 'export const x = 1;');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Run the fallback
+      await createOrphanBranchFallback(testDir, 'safe-orphan', '.safe-wt');
+
+      // Working tree should be unchanged — only the worktree dir itself is new/untracked.
+      // No modifications to existing tracked files on the main branch.
+      const statusAfter = execSync('git status --porcelain', {
+        cwd: testDir,
+        encoding: 'utf-8',
+      }).trim();
+      // Filter out the worktree directory itself (expected to be untracked)
+      const changesExcludingWorktree = statusAfter
+        .split('\n')
+        .filter(line => !line.includes('.safe-wt'))
+        .join('\n')
+        .trim();
+      expect(changesExcludingWorktree).toBe('');
+
+      // Original files should still be present and unchanged
+      const readme = await fs.readFile(path.join(testDir, 'README.md'), 'utf-8');
+      expect(readme).toBe('# Test');
+      const src = await fs.readFile(path.join(testDir, 'src.ts'), 'utf-8');
+      expect(src).toBe('export const x = 1;');
+
+      // Current branch should still be whatever it was (not switched)
+      const currentBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+        cwd: testDir,
+        encoding: 'utf-8',
+      }).trim();
+      expect(currentBranch).not.toBe('safe-orphan');
+    });
+
+    // AC: @config-shadow ac-10
+    it('works with custom branch names', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      await createOrphanBranchFallback(testDir, 'my-custom-specs', '.my-specs');
+
+      expect(await branchExists(testDir, 'my-custom-specs')).toBe(true);
+      expect(await isValidWorktree(path.join(testDir, '.my-specs'))).toBe(true);
+    });
+
+    // AC: @config-shadow ac-10
+    it('initializeShadow produces a healthy shadow regardless of git version', async () => {
+      // This test verifies end-to-end: initializeShadow → detect → status
+      // It works on any git version since it exercises whatever path is chosen
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      const result = await initializeShadow(testDir, { projectName: 'Test Project' });
+
+      expect(result.success).toBe(true);
+      expect(result.branchCreated).toBe(true);
+      expect(result.worktreeCreated).toBe(true);
+
+      // Verify the result is fully healthy
+      const status = await getShadowStatus(testDir);
+      expect(status.healthy).toBe(true);
+      expect(status.branchExists).toBe(true);
+      expect(status.worktreeExists).toBe(true);
+      expect(status.worktreeLinked).toBe(true);
+    });
+
+    // AC: @config-shadow ac-10
+    it('cleans up temp directories on success', async () => {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      await fs.writeFile(path.join(testDir, 'README.md'), '# Test');
+      execSync('git add . && git commit -m "initial"', { cwd: testDir, stdio: 'pipe' });
+
+      // Count kspec-orphan temp dirs before
+      const tmpBase = require('node:os').tmpdir();
+      const beforeDirs = (await fs.readdir(tmpBase))
+        .filter(d => d.startsWith('kspec-orphan'));
+
+      await createOrphanBranchFallback(testDir, 'cleanup-test', '.cleanup-wt');
+
+      // Count after — should not increase (temp dirs cleaned up)
+      const afterDirs = (await fs.readdir(tmpBase))
+        .filter(d => d.startsWith('kspec-orphan'));
+      expect(afterDirs.length).toBeLessThanOrEqual(beforeDirs.length);
     });
   });
 });

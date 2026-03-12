@@ -277,6 +277,14 @@ describe("evaluateWorktreeGuard", () => {
       });
       expect(result.decision).toBe("block");
     });
+
+    it("allows deleting branches with kspec-meta prefix", () => {
+      const result = evaluateWorktreeGuard({
+        tool_input: { command: "git branch -D kspec-meta-backup-2026-02-28" },
+        cwd: "/home/user/project",
+      });
+      expect(result.decision).toBe("allow");
+    });
   });
 
   // AC: @native-guard-commands ac-worktree-guard - cd to .kspec detection

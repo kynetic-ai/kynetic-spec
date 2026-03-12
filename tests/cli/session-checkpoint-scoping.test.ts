@@ -20,11 +20,13 @@ import { createSession, updateSessionStatus } from '../../src/sessions/store';
 
 describe('Integration: session-scoped checkpoint filtering', () => {
   let tempDir: string;
+  let sessionsDir: string;
   // Pre-generate unique session IDs for all tests (sequence 0-9)
   const sessionIds = testUlids('SES', 10);
 
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
+    sessionsDir = path.join(tempDir, '.kspec-sessions');
     initGitRepo(tempDir);
     // Commit fixture files so working tree is clean (no uncommitted-changes noise)
     git('add -A', tempDir);
@@ -98,7 +100,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
   describe('ac-session-scope: with KSPEC_SESSION_ID set', () => {
     it('should include tasks with matching session_id', async () => {
       const mySession = sessionIds[0];
-      await createSession(tempDir, { id: mySession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: mySession, agent_type: 'test' });
       startTaskWithSession('@test-task-pending', mySession);
 
       expect(hasTaskIssues(mySession)).toBe(true);
@@ -106,7 +108,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
 
     it('should include tasks with no session_id (unclaimed)', async () => {
       const mySession = sessionIds[0];
-      await createSession(tempDir, { id: mySession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: mySession, agent_type: 'test' });
       startTaskWithoutSession('@test-task-pending');
 
       expect(hasTaskIssues(mySession)).toBe(true);
@@ -115,8 +117,8 @@ describe('Integration: session-scoped checkpoint filtering', () => {
     it('should exclude tasks claimed by another active session', async () => {
       const mySession = sessionIds[0];
       const otherSession = sessionIds[1];
-      await createSession(tempDir, { id: mySession, agent_type: 'test' });
-      await createSession(tempDir, { id: otherSession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: mySession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: otherSession, agent_type: 'test' });
       startTaskWithSession('@test-task-pending', otherSession);
 
       expect(hasTaskIssues(mySession)).toBe(false);
@@ -125,10 +127,10 @@ describe('Integration: session-scoped checkpoint filtering', () => {
     it('should include tasks from a completed session (orphaned)', async () => {
       const mySession = sessionIds[0];
       const closedSession = sessionIds[1];
-      await createSession(tempDir, { id: mySession, agent_type: 'test' });
-      await createSession(tempDir, { id: closedSession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: mySession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: closedSession, agent_type: 'test' });
       startTaskWithSession('@test-task-pending', closedSession);
-      await updateSessionStatus(tempDir, closedSession, 'completed');
+      await updateSessionStatus(sessionsDir, closedSession, 'completed');
 
       expect(hasTaskIssues(mySession)).toBe(true);
     });
@@ -144,7 +146,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
 
     it('should exclude tasks claimed by an active session', async () => {
       const otherSession = sessionIds[0];
-      await createSession(tempDir, { id: otherSession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: otherSession, agent_type: 'test' });
       startTaskWithSession('@test-task-pending', otherSession);
 
       expect(hasTaskIssues()).toBe(false);
@@ -152,9 +154,9 @@ describe('Integration: session-scoped checkpoint filtering', () => {
 
     it('should include tasks from a closed session', async () => {
       const closedSession = sessionIds[0];
-      await createSession(tempDir, { id: closedSession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: closedSession, agent_type: 'test' });
       startTaskWithSession('@test-task-pending', closedSession);
-      await updateSessionStatus(tempDir, closedSession, 'abandoned');
+      await updateSessionStatus(sessionsDir, closedSession, 'abandoned');
 
       expect(hasTaskIssues()).toBe(true);
     });
@@ -173,7 +175,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
     it('should include task when owning session has corrupt metadata', async () => {
       const corruptSession = sessionIds[0];
       // Create session dir with invalid YAML
-      const sessDir = path.join(tempDir, 'sessions', corruptSession);
+      const sessDir = path.join(sessionsDir, corruptSession);
       fs.mkdirSync(sessDir, { recursive: true });
       fs.writeFileSync(path.join(sessDir, 'session.yaml'), '{{invalid yaml:::');
       startTaskWithSession('@test-task-pending', corruptSession);
@@ -184,7 +186,7 @@ describe('Integration: session-scoped checkpoint filtering', () => {
     it('should include task when owning session does not exist (with active session)', async () => {
       const mySession = sessionIds[0];
       const nonexistentSession = sessionIds[1];
-      await createSession(tempDir, { id: mySession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: mySession, agent_type: 'test' });
       // No createSession for nonexistentSession — metadata missing
       startTaskWithSession('@test-task-pending', nonexistentSession);
 
@@ -197,8 +199,8 @@ describe('Integration: session-scoped checkpoint filtering', () => {
     it('should not report todos from tasks excluded by session scoping', async () => {
       const mySession = sessionIds[0];
       const otherSession = sessionIds[1];
-      await createSession(tempDir, { id: mySession, agent_type: 'test' });
-      await createSession(tempDir, { id: otherSession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: mySession, agent_type: 'test' });
+      await createSession(sessionsDir, { id: otherSession, agent_type: 'test' });
       startTaskWithSession('@test-task-pending', otherSession);
       kspec('task todo add @test-task-pending "Some todo item"', tempDir);
 

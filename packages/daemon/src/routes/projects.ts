@@ -20,10 +20,14 @@ import type { ProjectContextManager } from '../project-context';
 
 interface ProjectsRouteOptions {
   projectManager: ProjectContextManager;
+  /** Called after a project is registered (e.g., to start session sync). */
+  onProjectRegistered?: (projectPath: string) => Promise<void>;
+  /** Called before a project is unregistered (e.g., to stop session sync). */
+  onProjectUnregistered?: (projectPath: string) => void;
 }
 
 export function createProjectsRoutes(options: ProjectsRouteOptions) {
-  const { projectManager } = options;
+  const { projectManager, onProjectRegistered, onProjectUnregistered } = options;
 
   return new Elysia({ prefix: '/api/projects' })
     // AC: @multi-directory-daemon ac-28 - List registered projects
@@ -91,6 +95,16 @@ export function createProjectsRoutes(options: ProjectsRouteOptions) {
             throw error;
           }
 
+          // Start session sync for the newly registered project
+          if (onProjectRegistered) {
+            try {
+              await onProjectRegistered(context.path);
+            } catch (error) {
+              // Session sync init failure does not block project registration
+              console.error(`[daemon] Failed to start session sync for ${context.path}:`, error);
+            }
+          }
+
           return {
             success: true,
             project: {
@@ -135,23 +149,31 @@ export function createProjectsRoutes(options: ProjectsRouteOptions) {
       // AC: @multi-directory-daemon ac-30 - Decode path from URL parameter
       const projectPath = decodeURIComponent(params.encodedPath);
 
-      // Validate project exists
-      if (!projectManager.hasProject(projectPath)) {
+      // Validate project exists and get normalized context
+      let context;
+      try {
+        context = projectManager.getProject(projectPath);
+      } catch {
         return errorResponse(404, {
           error: `Project not registered: ${projectPath}`,
         });
       }
 
       try {
+        // Stop session sync before unregistering (use normalized path)
+        if (onProjectUnregistered) {
+          onProjectUnregistered(context.path);
+        }
+
         // AC: @multi-directory-daemon ac-30 - Stop file watcher
-        await projectManager.stopWatcher(projectPath);
+        await projectManager.stopWatcher(context.path);
 
         // AC: @multi-directory-daemon ac-30 - Unregister project
-        projectManager.unregisterProject(projectPath);
+        projectManager.unregisterProject(context.path);
 
         return {
           success: true,
-          message: `Project unregistered: ${projectPath}`,
+          message: `Project unregistered: ${context.path}`,
         };
       } catch (error: unknown) {
         return errorResponse(500, {

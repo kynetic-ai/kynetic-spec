@@ -685,16 +685,15 @@ describe("batch command integration", () => {
     expect(createdItem.tags).toEqual(expect.arrayContaining(["cli", "dx"]));
   });
 
-  // AC: @plan-import ac-34
-  // AC: @plan-import ac-23
-  it("treats warning-only plan import as success in batch mode", async () => {
+  // AC: @plan-import-content-only ac-module-optional
+  // AC: @plan-import-content-only ac-content-only
+  it("treats content-only plan import as success in batch mode", async () => {
     const { writeFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
-    const planPath = join(tempDir, "warning-only-plan.md");
-    kspec('module add --title "Batch Module" --slug batch-module', tempDir);
+    const planPath = join(tempDir, "content-only-plan.md");
     await writeFile(
       planPath,
-      `# Warning Only Plan
+      `# Content Only Plan
 
 ## Specs
 
@@ -705,7 +704,7 @@ No fenced YAML block in this section.
     const commands = JSON.stringify([
       {
         command: "plan import",
-        args: { path: planPath, module: "@batch-module" },
+        args: { path: planPath },
       },
     ]);
 
@@ -717,9 +716,7 @@ No fenced YAML block in this section.
     expect(result.success).toBe(true);
     expect(result.summary.succeeded).toBe(1);
     expect(result.results[0].success).toBe(true);
-    expect(String(result.results[0].output)).toContain(
-      "Specs section found but contains no YAML code block",
-    );
+    expect(String(result.results[0].output)).toContain("Content stored: full document");
   });
 
   // AC: @batch-exec ac-file

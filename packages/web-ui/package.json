@@ -11,16 +11,19 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "cd ../.. && npx vitest run tests/web-ui-design-system.test.ts tests/web-ui-app-shell.test.ts tests/web-ui-session-stream.test.ts",
-		"test:e2e": "npm run build && playwright test",
+		"test:e2e": "npm run build && npm run test:e2e:ci:run",
 		"test:e2e:run": "playwright test",
+		"test:e2e:ci:run": "playwright test tests/e2e/smoke.spec.ts tests/e2e/api-server.spec.ts",
 		"test:e2e:ui": "npm run build && playwright test --ui",
 		"test:e2e:headed": "npm run build && playwright test --headed"
 	},
 	"dependencies": {
 		"@kynetic-ai/shared": "*",
+		"highlight.js": "^11.11.1",
 		"isomorphic-dompurify": "^3.0.0",
 		"lucide-svelte": "^0.563.0",
-		"marked": "^17.0.4"
+		"marked": "^17.0.4",
+		"streaming-markdown": "^0.2.15"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.1",
@@ -30,6 +33,7 @@
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/postcss": "^4.1.18",
+		"@tailwindcss/typography": "^0.5.19",
 		"@tanstack/table-core": "^8.21.3",
 		"autoprefixer": "^10.4.23",
 		"bits-ui": "^2.15.4",

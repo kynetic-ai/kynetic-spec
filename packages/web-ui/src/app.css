@@ -4,6 +4,8 @@
 @import "./lib/ds/tokens.css";
 @import "./lib/ds/animations.css";
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -208,5 +210,75 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .hljs {
+    display: block;
+    overflow-x: auto;
+    background: oklch(0.208 0.042 265.755);
+    color: oklch(0.929 0.013 255.508);
+  }
+
+  .dark .hljs {
+    background: oklch(0.208 0.042 265.755);
+    color: oklch(0.984 0.003 247.858);
+  }
+
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-built_in,
+  .hljs-name,
+  .hljs-tag,
+  .hljs-attr {
+    color: oklch(0.705 0.191 47.6);
+  }
+
+  .hljs-string,
+  .hljs-title,
+  .hljs-section,
+  .hljs-attribute,
+  .hljs-literal,
+  .hljs-template-tag,
+  .hljs-template-variable,
+  .hljs-type,
+  .hljs-addition {
+    color: oklch(0.765 0.177 163.2);
+  }
+
+  .hljs-comment,
+  .hljs-quote,
+  .hljs-deletion,
+  .hljs-meta {
+    color: oklch(0.556 0 0);
+  }
+
+  .hljs-number,
+  .hljs-regexp,
+  .hljs-symbol,
+  .hljs-variable,
+  .hljs-link {
+    color: oklch(0.821 0.148 66.3);
+  }
+
+  .hljs-title.function_,
+  .hljs-title.class_ {
+    color: oklch(0.709 0.147 254.6);
+  }
+
+  .hljs-params,
+  .hljs-property,
+  .hljs-punctuation,
+  .hljs-operator {
+    color: oklch(0.871 0 0);
+  }
+
+  .hljs-emphasis {
+    font-style: italic;
+  }
+
+  .hljs-strong {
+    font-weight: 700;
   }
 }

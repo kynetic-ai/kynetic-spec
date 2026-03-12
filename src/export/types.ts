@@ -13,9 +13,28 @@ import type {
   InboxItem,
   Observation,
   SessionContext,
+  TriageRecord,
   Workflow,
 } from "../schema/index.js";
 import type { LoadedSpecItem, LoadedTask } from "../parser/yaml.js";
+import type { AlignmentWarning } from "../parser/alignment.js";
+import type {
+  CompletenessWarning,
+  OrphanItem,
+  SchemaValidationError,
+  TraitCycleError,
+} from "../parser/validate.js";
+import type { RefValidationError, RefValidationWarning } from "../parser/refs.js";
+
+export interface AlignmentResponse {
+  stats: {
+    totalSpecs: number;
+    specsWithTasks: number;
+    alignedSpecs: number;
+    orphanedSpecs: number;
+  };
+  warnings: AlignmentWarning[];
+}
 
 /**
  * Exported task with resolved spec reference title.
@@ -59,6 +78,32 @@ export interface ExportedProject {
 }
 
 /**
+ * Exported plan with computed progress for static display.
+ * AC: @gh-pages-export ac-23
+ */
+export interface ExportedPlan {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  created_at: string;
+  approved_at?: string;
+  completed_at?: string;
+  derived_specs: string[];
+  derived_tasks: string[];
+  spec_count: number;
+  task_count: number;
+  task_progress: {
+    total: number;
+    completed: number;
+    in_progress: number;
+    pending: number;
+    blocked: number;
+  };
+  content: string;
+}
+
+/**
  * Validation result included in the snapshot.
  * AC: @gh-pages-export ac-5
  */
@@ -66,6 +111,12 @@ export interface ExportedValidation {
   valid: boolean;
   errorCount: number;
   warningCount: number;
+  schemaErrors: SchemaValidationError[];
+  refErrors: RefValidationError[];
+  refWarnings: RefValidationWarning[];
+  orphans: OrphanItem[];
+  completenessWarnings: CompletenessWarning[];
+  traitCycles: TraitCycleError[];
   errors: Array<{
     file: string;
     message: string;
@@ -94,6 +145,10 @@ export interface KspecSnapshot {
   items: ExportedItem[];
   /** Inbox items */
   inbox: InboxItem[];
+  /** Plans for static plans/specs/tasks filtering */
+  plans?: ExportedPlan[];
+  /** Triage records for static triage browsing */
+  triage?: TriageRecord[];
   /** Session context */
   session: SessionContext | null;
   /** Observations */
@@ -106,6 +161,8 @@ export interface KspecSnapshot {
   conventions: Convention[];
   /** Validation results (optional) */
   validation?: ExportedValidation;
+  /** Alignment stats and warnings for static validate view */
+  alignment?: AlignmentResponse;
 }
 
 /**
@@ -130,6 +187,8 @@ export interface ExportStats {
   taskCount: number;
   itemCount: number;
   inboxCount: number;
+  planCount: number;
+  triageCount: number;
   observationCount: number;
   agentCount: number;
   workflowCount: number;

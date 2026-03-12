@@ -4,8 +4,8 @@ test.describe('Smoke Tests', () => {
   test('page loads and shows sidebar', async ({ page, daemon }) => {
     await page.goto('/');
 
-    // Sidebar navigation is visible
-    await expect(page.getByTestId('sidebar-nav')).toBeVisible();
+    // Sidebar navigation renders the dashboard entry in the desktop shell
+    await expect(page.getByTestId('nav-link-dashboard')).toBeVisible();
 
     // Connection status shows connected
     const connectionStatus = page.getByTestId('connection-status');
@@ -46,5 +46,87 @@ test.describe('Smoke Tests', () => {
 
     // Wait for page to load - check for the heading
     await expect(page.getByRole('heading', { name: 'Inbox' })).toBeVisible();
+  });
+
+  // AC: @streaming-markdown-component ac-7
+  test('live session output renders markdown with the blinking streaming cursor', async ({ page, daemon }) => {
+    await page.route('**/api/sessions/test-session-stream', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'test-session-stream',
+          status: 'active',
+          agent_type: 'task-worker',
+          agent_id: 'worker',
+          session_type: 'invocation',
+          trigger: 'task.ready',
+          task_id: null,
+          started_at: '2026-03-11T11:00:00.000Z',
+          duration_ms: 1000,
+          event_count: 0,
+          iteration_count: 1,
+          tasks_completed: 0,
+        }),
+      });
+    });
+
+    await page.route('**/api/sessions/test-session-stream/events*', (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ events: [], total: 0 }),
+      });
+    });
+
+    await page.addInitScript(() => {
+      const instances: WebSocket[] = [];
+      const OriginalWebSocket = window.WebSocket;
+      (window as any).__test_ws_instances = instances;
+      window.WebSocket = new Proxy(OriginalWebSocket, {
+        construct(target, args) {
+          const ws = new target(...(args as [string, ...any[]]));
+          instances.push(ws);
+          return ws;
+        },
+      });
+    });
+
+    await page.goto('/sessions/test-session-stream');
+    await expect(page.getByTestId('session-stream')).toBeVisible();
+
+    const injected = await page.evaluate(() => {
+      const instances = (window as any).__test_ws_instances as WebSocket[];
+      const ws = instances?.find((socket) => socket.readyState === WebSocket.OPEN);
+      if (!ws) return false;
+
+      ws.dispatchEvent(
+        new MessageEvent('message', {
+          data: JSON.stringify({
+            msg_id: 'test-stream-001',
+            seq: 9999,
+            timestamp: new Date().toISOString(),
+            topic: 'agents',
+            event: 'agent_text_chunk',
+            data: {
+              session_id: 'test-session-stream',
+              text: 'Hello **markdown**',
+            },
+          }),
+        }),
+      );
+
+      return true;
+    });
+
+    expect(injected).toBe(true);
+
+    await expect(page.locator('[data-testid="streaming-text"] strong')).toHaveText('markdown');
+
+    const cursor = page.locator('.ds-streaming-cursor');
+    await expect(cursor).toBeVisible();
+    await expect
+      .poll(async () => cursor.evaluate((node) => getComputedStyle(node).animationName))
+      .toContain('cursor-blink');
   });
 });

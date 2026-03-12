@@ -175,9 +175,11 @@ describe('computeSessionLogStats', () => {
 
 describe('computeToolUsageStats', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-stats-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -187,7 +189,7 @@ describe('computeToolUsageStats', () => {
   // AC: @session-log-stats ac-6
   it('should count tool calls and compute percentages', async () => {
     const sessionId = testUlid('SESS');
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'claude-agent-acp',
     });
@@ -202,7 +204,7 @@ describe('computeToolUsageStats', () => {
     ].map((e, i) => JSON.stringify({ ts: Date.now(), seq: i, session_id: sessionId, ...e }));
     await fs.writeFile(eventsPath, events.join('\n') + '\n');
 
-    const toolUsage = await computeToolUsageStats(testDir, [sessionId]);
+    const toolUsage = await computeToolUsageStats(sessionsDir, [sessionId]);
 
     expect(toolUsage).toHaveLength(3);
     expect(toolUsage[0]).toEqual({ tool_name: 'Bash', count: 2, percentage: 50 });
@@ -212,7 +214,7 @@ describe('computeToolUsageStats', () => {
 
   it('should limit to top N tools', async () => {
     const sessionId = testUlid('SESS', 1);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
     });
@@ -232,17 +234,17 @@ describe('computeToolUsageStats', () => {
     await fs.writeFile(eventsPath, events.join('\n') + '\n');
 
     // Default limit is 10
-    const toolUsage = await computeToolUsageStats(testDir, [sessionId]);
+    const toolUsage = await computeToolUsageStats(sessionsDir, [sessionId]);
     expect(toolUsage).toHaveLength(10);
 
     // Custom limit
-    const limited = await computeToolUsageStats(testDir, [sessionId], 5);
+    const limited = await computeToolUsageStats(sessionsDir, [sessionId], 5);
     expect(limited).toHaveLength(5);
   });
 
   it('should deduplicate phased tool_call events by toolCallId', async () => {
     const sessionId = testUlid('SESS', 2);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'claude-agent-acp',
     });
@@ -260,7 +262,7 @@ describe('computeToolUsageStats', () => {
     ].map((e, i) => JSON.stringify({ ts: Date.now(), seq: i, session_id: sessionId, ...e }));
     await fs.writeFile(eventsPath, events.join('\n') + '\n');
 
-    const toolUsage = await computeToolUsageStats(testDir, [sessionId]);
+    const toolUsage = await computeToolUsageStats(sessionsDir, [sessionId]);
 
     // Should count 3 unique tool calls (not 4 with the phased duplicate)
     const totalCount = toolUsage.reduce((sum, t) => sum + t.count, 0);
@@ -432,7 +434,7 @@ describe('kspec session log stats (CLI)', () => {
     tempDir = await setupTempFixtures();
 
     // Create sessions directory
-    const sessionsDir = path.join(tempDir, 'sessions');
+    const sessionsDir = path.join(tempDir, '.kspec-sessions');
     await fs.mkdir(sessionsDir, { recursive: true });
 
     // Session 1: completed, 2026-01-15

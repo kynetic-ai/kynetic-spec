@@ -44,7 +44,7 @@ pending → in_progress → pending_review → completed
 | Command | Transition | When |
 |---------|-----------|------|
 | `kspec task start @ref` | → in_progress | Beginning work |
-| `kspec task submit @ref` | → pending_review | Code done, PR created |
+| `kspec task submit @ref` | → pending_review | Code done, ready for review |
 | `kspec task complete @ref --reason "..."` | → completed | PR merged |
 | `kspec task block @ref --reason "..."` | → blocked | External blocker |
 
@@ -152,7 +152,18 @@ kspec task note @ref "Execution context:
 - Verification: tests/commands that prove completion"
 ```
 
-### 5. Commit
+### 5. Regenerate Derived Files
+
+If your task modified any of these source files, regenerate before committing:
+
+| Modified | Regenerate with |
+|----------|----------------|
+| `templates/skills/` or `.kspec/skills/` | `kspec skill render` |
+| `templates/agents-sections/`, conventions, or workflows | `kspec agents generate` |
+
+Commit the regenerated output alongside your source changes — reviewers and other agents consume the rendered files.
+
+### 6. Commit
 
 Include task and spec trailers:
 
@@ -167,7 +178,7 @@ Spec: @auth-feature
 
 Trailers enable `kspec log @ref` to find related commits.
 
-### 6. Local Review
+### 7. Local Review
 
 Run quality checks before submitting. Verify:
 
@@ -181,15 +192,21 @@ Run quality checks before submitting. Verify:
 kspec validate  # Reports uncovered trait ACs as warnings
 ```
 
-### 7. Submit Task
+### 8. Submit and Create PR
+
+Submit transitions the task to `pending_review`, then create the PR. This is the ownership handoff — the **worker** is done, the **reviewer** takes over.
 
 ```bash
+# 1. Submit (worker signals "ready for review")
 kspec task submit @ref
+
+# 2. Create PR (so the reviewer has something to review)
+gh pr create --title "feat: ..." --body "..."
 ```
 
-Moves task to `pending_review`. Create PR after submitting.
+The sequence matters: `submit` first, then PR. The `pending_review` state is what triggers the pr-reviewer agent in dispatch mode. The PR is the artifact the reviewer acts on.
 
-### 8. Complete Task
+### 9. Complete Task
 
 After PR is merged:
 
@@ -217,7 +234,7 @@ When inheriting a `needs_work` task:
    git push
    ```
 
-4. **Re-submit** — `kspec task submit @ref` (back to pending_review)
+4. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer takes over again)
 
 You do NOT merge in a fix cycle. The reviewer handles merge decisions.
 
@@ -316,7 +333,9 @@ kspec tasks ready --eligible  # Check for other work
 
 ### Turn Completion
 
-After creating a PR, **stop responding**. The agent dispatch engine continues automatically — it checks for remaining eligible tasks and exits when none remain.
+After submitting the task and creating the PR, **stop responding**. The `pending_review` transition triggers the pr-reviewer agent via dispatch — the worker does NOT review or merge its own PR.
+
+The agent dispatch engine continues automatically — it checks for remaining eligible tasks and exits when none remain.
 
 **Do NOT call `end-loop`** after creating a PR. That ends ALL remaining iterations. It's a rare escape hatch for when work is stalling across multiple iterations.
 

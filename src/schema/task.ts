@@ -69,7 +69,7 @@ export const TaskSchema = z.object({
   meta_ref: RefSchema.nullable().optional(),
 
   // Plan relationship (links to the plan this task was derived from)
-  // AC: @plan-derive ac-5, ac-6
+  // AC: @plan-derive-enhanced ac-task-refs, ac-bidirectional-links
   plan_ref: RefSchema.nullable().optional(),
 
   // Origin tracking (where this task came from)

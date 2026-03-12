@@ -37,13 +37,19 @@ import { ReferenceIndex } from "./refs.js";
 import {
   detectRunningFromShadowWorktree,
   detectShadow,
+  hasRemoteTracking,
+  resolveProjectRoots,
+  shadowNeedsSync,
+  shadowPull,
   type ShadowConfig,
+  type ShadowOptions,
   ShadowError,
 } from "./shadow.js";
 import {
   loadProjectConfig,
   type ResolvedKspecConfig,
 } from "./config.js";
+import { consumeSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
 
 /**
@@ -278,19 +284,30 @@ export async function findManifest(startDir: string): Promise<string | null> {
  * Context for working with spec/task files.
  *
  * When shadow branch is enabled:
- * - rootDir points to the project root (where .kspec/ lives)
+ * - rootDir points to the active code checkout root
+ * - projectRoot points to the main repo root (where .kspec/ lives)
  * - specDir points to .kspec/ (where spec files are read/written)
  * - All file operations use specDir for resolution
  *
  * Without shadow branch:
- * - rootDir is the project root
+ * - rootDir is the active checkout root
+ * - projectRoot is the same directory as rootDir
  * - specDir is rootDir/spec/ (traditional layout)
  */
 export interface KspecContext {
-  /** Project root directory */
+  /** Active code checkout root (linked worktree root when applicable) */
   rootDir: string;
+  /** Main repo root used for .kspec and daemon identity */
+  projectRoot: string;
   /** Spec files directory (.kspec/ when shadow enabled, otherwise spec/) */
   specDir: string;
+  /**
+   * Sessions storage directory (.kspec-sessions/ at project root).
+   * Separate from specDir — session data lives outside the shadow branch.
+   *
+   * AC: @session-storage-path-resolution ac-context
+   */
+  sessionsDir: string;
   /** Path to manifest file */
   manifestPath: string | null;
   /** Parsed manifest */
@@ -320,10 +337,11 @@ export interface KspecContext {
  */
 export async function initContext(startDir?: string): Promise<KspecContext> {
   const cwd = startDir || process.cwd();
+  const projectRoots = resolveProjectRoots(cwd);
 
   // AC: @project-config ac-2, ac-6, ac-7 — load config before shadow detection
   // Config is loaded from git root, not cwd or KSPEC_SPEC_DIR temp dir
-  const configResult = await loadProjectConfig(cwd);
+  const configResult = await loadProjectConfig(cwd, projectRoots?.mainRoot);
 
   // AC: @project-config ac-3 — emit warning to stderr if config had issues
   if (configResult.warning) {
@@ -348,9 +366,12 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
       }
     }
 
+    const rootDir = path.dirname(specDir);
     return {
-      rootDir: path.dirname(specDir),
+      rootDir,
+      projectRoot: rootDir,
       specDir,
+      sessionsDir: path.join(rootDir, ".kspec-sessions"),
       manifestPath,
       manifest,
       shadow: null, // No shadow in overridden context
@@ -377,11 +398,65 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   const shadow = await detectShadow(cwd, {
     branchName: config.shadow.branch,
     directory: config.shadow.directory,
-  });
+  }, projectRoots?.mainRoot);
 
   if (shadow?.enabled) {
     // Shadow mode: use .kspec/ for everything
     const specDir = shadow.worktreeDir;
+
+    // AC: @shadow-lazy-read-sync ac-no-sync-env — KSPEC_NO_SYNC disables all sync
+    // AC: @shadow-lazy-read-sync ac-syncmode-consume-once — consume-once prevents double-pull
+    // AC: @shadow-lazy-read-sync ac-drift-check — drift check replaces unconditional pull
+    if (!process.env.KSPEC_NO_SYNC) {
+      const syncMode = consumeSyncMode();
+
+      // AC: @config-shadow ac-3 ac-7 — pass configured shadow options so sync
+      // uses the right branch name and remote instead of hardcoded defaults
+      const shadowOpts: ShadowOptions = {
+        branchName: config.shadow.branch,
+        directory: config.shadow.directory,
+        remote: config.shadow.remote?.value,
+        remoteType: config.shadow.remote?.type,
+      };
+
+      // AC: @shadow-write-sync ac-write-skips-read-check — skip pre-read sync for mutating commands
+      if (syncMode !== "skip") {
+        try {
+          const tracked = await hasRemoteTracking(specDir, shadowOpts);
+          if (tracked) {
+            let shouldPull = false;
+
+            if (syncMode === "always") {
+              // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+              shouldPull = true;
+            } else {
+              // AC: @shadow-lazy-read-sync ac-drift-check — lightweight drift check
+              // AC: @shadow-lazy-read-sync ac-threshold-from-config
+              const remoteName = config.shadow.remote?.value ?? "origin";
+              const thresholdMs = config.shadow.sync_interval * 1000;
+              shouldPull = await shadowNeedsSync(
+                specDir,
+                remoteName,
+                thresholdMs,
+              );
+            }
+
+            if (shouldPull) {
+              const syncResult = await shadowPull(specDir, shadowOpts);
+              if (syncResult.hadConflict) {
+                console.error(
+                  "Warning: Shadow sync conflict detected. Run `kspec shadow resolve` to fix.",
+                );
+                console.error("Continuing with local state...");
+              }
+            }
+          }
+        } catch {
+          // Pre-read sync is best-effort — don't fail the command
+        }
+      }
+    }
+
     const manifestPath = await findManifestInDir(specDir);
 
     let manifest: Manifest | null = null;
@@ -395,8 +470,10 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     }
 
     return {
-      rootDir: shadow.projectRoot,
+      rootDir: projectRoots?.worktreeRoot ?? shadow.projectRoot,
+      projectRoot: shadow.projectRoot,
       specDir,
+      sessionsDir: path.join(shadow.projectRoot, ".kspec-sessions"),
       manifestPath,
       manifest,
       shadow,
@@ -408,8 +485,9 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
   const manifestPath = await findManifest(cwd);
 
   let manifest: Manifest | null = null;
-  let rootDir = cwd;
-  let specDir = cwd;
+  let rootDir = projectRoots?.worktreeRoot ?? cwd;
+  const projectRoot = projectRoots?.mainRoot ?? rootDir;
+  let specDir = rootDir;
 
   if (manifestPath) {
     const manifestDir = path.dirname(manifestPath);
@@ -430,7 +508,16 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
     }
   }
 
-  return { rootDir, specDir, manifestPath, manifest, shadow: null, config };
+  return {
+    rootDir,
+    projectRoot,
+    specDir,
+    sessionsDir: path.join(projectRoot, ".kspec-sessions"),
+    manifestPath,
+    manifest,
+    shadow: null,
+    config,
+  };
 }
 
 /**
@@ -1641,6 +1728,43 @@ export async function addChildItem(
     await writeYamlFilePreserveFormat(parent._sourceFile!, raw);
 
     return { item: cleanChild, path: childPath };
+  });
+}
+
+/**
+ * Add a trait item to the project-level traits array in kynetic.yaml.
+ */
+export async function addProjectLevelTraitItem(
+  ctx: KspecContext,
+  item: SpecItem,
+): Promise<{ item: SpecItem; path: string }> {
+  if (!ctx.manifestPath) {
+    throw new Error("Could not find kynetic.yaml");
+  }
+
+  return withFileLock(ctx.manifestPath, async () => {
+    const manifest = await readYamlFile<Record<string, unknown>>(
+      ctx.manifestPath!,
+    );
+
+    if (!manifest) {
+      throw new Error("Could not load kynetic.yaml");
+    }
+
+    if (!Array.isArray(manifest.traits)) {
+      manifest.traits = [];
+    }
+
+    const cleanItem = stripSpecItemMetadata(item as LoadedSpecItem);
+    (manifest.traits as unknown[]).push(cleanItem);
+
+    await writeYamlFilePreserveFormat(ctx.manifestPath!, manifest);
+
+    const traitIndex = (manifest.traits as unknown[]).length - 1;
+    return {
+      item: cleanItem,
+      path: `traits[${traitIndex}]`,
+    };
   });
 }
 

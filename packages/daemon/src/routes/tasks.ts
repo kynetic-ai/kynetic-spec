@@ -34,6 +34,7 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
+import { getRelatedSessionsForTask } from './session-related.js';
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -214,6 +215,37 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           closed_reason: task.closed_reason,
           automation: task.automation,
           created_at: task.created_at,
+        };
+      },
+      {
+        params: t.Object({
+          ref: t.String(),
+        }),
+      }
+    )
+
+    .get(
+      '/:ref/sessions',
+      async ({ params, error: errorResponse, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const result = await getRelatedSessionsForTask({
+          taskRef: params.ref,
+          tasks,
+          items,
+          sessionsDir: ctx.sessionsDir,
+        });
+
+        if ('error' in result) {
+          return errorResponse(404, result.error);
+        }
+
+        return {
+          items: result.sessions,
+          total: result.sessions.length,
+          offset: 0,
+          limit: result.sessions.length,
         };
       },
       {

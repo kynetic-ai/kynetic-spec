@@ -11,6 +11,7 @@
 import type { Command } from "commander";
 import { EXIT_CODES } from "../exit-codes.js";
 import { isJsonMode, output } from "../output.js";
+import { SHADOW_BRANCH_NAME } from "../../parser/shadow.js";
 
 /**
  * Decision from a guard check
@@ -81,13 +82,12 @@ function isInKspec(command: string, cwd: string | undefined): boolean {
 /**
  * Check if a command attempts to delete the kspec-meta branch.
  */
-function isKspecMetaDeletion(command: string): boolean {
+function isShadowBranchDeletion(command: string): boolean {
   // Remove quote characters to catch split-quote bypasses like git "branch" -D kspec-meta
   const unquoted = command.replace(/["']/g, "");
-  return (
-    unquoted.includes("git branch -d kspec-meta") ||
-    unquoted.includes("git branch -D kspec-meta")
-  );
+  // Escape branch name for regex and use word boundary to avoid matching prefixed branches
+  const escaped = SHADOW_BRANCH_NAME.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`git\\s+branch\\s+-[dD]\\s+(?:.*\\s+)?${escaped}(?:\\s|$)`).test(unquoted);
 }
 
 /**
@@ -135,12 +135,12 @@ export function evaluateWorktreeGuard(input: PreToolUseInput): GuardDecision {
     return { decision: "allow" };
   }
 
-  // Block kspec-meta branch deletion from anywhere
-  if (isKspecMetaDeletion(command)) {
+  // Block shadow branch deletion from anywhere
+  if (isShadowBranchDeletion(command)) {
     return {
       decision: "block",
       reason:
-        "[kspec-worktree-guard] BLOCKED: Cannot delete kspec-meta branch. This is the main branch for the .kspec worktree.",
+        `[kspec-worktree-guard] BLOCKED: Cannot delete ${SHADOW_BRANCH_NAME} branch. This is the main branch for the .kspec worktree.`,
     };
   }
 

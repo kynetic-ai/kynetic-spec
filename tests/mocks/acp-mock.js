@@ -22,6 +22,9 @@
  * - MOCK_ACP_VERIFY_ARGS_FILE: Write process.argv to this file for verifying command-line args
  * - MOCK_ACP_EMIT_RATE_LIMIT_EVENT: If true, emit a simulated non-actionable rate_limit_event stderr line
  * - MOCK_ACP_EMIT_ACTIONABLE_STDERR: Emit this stderr line during prompt handling
+ * - MOCK_ACP_SUPPRESS_UPDATES: If true, send no session updates before response
+ * - MOCK_ACP_SEND_NON_MEANINGFUL_ONLY: If true, send only available_commands_update (not meaningful)
+ * - MOCK_ACP_CUSTOM_UPDATE_TYPE: Send a specific sessionUpdate type (e.g., "tool_call", "plan")
  */
 
 import * as fs from 'node:fs';
@@ -55,6 +58,11 @@ const verifyArgsFile = process.env.MOCK_ACP_VERIFY_ARGS_FILE;
 const sendPermissionRequest = process.env.MOCK_ACP_SEND_PERMISSION_REQUEST === 'true';
 const emitRateLimitEvent = process.env.MOCK_ACP_EMIT_RATE_LIMIT_EVENT === 'true';
 const actionableStderr = process.env.MOCK_ACP_EMIT_ACTIONABLE_STDERR;
+// Stall watchdog testing: suppress meaningful updates or send only non-meaningful ones
+const suppressUpdates = process.env.MOCK_ACP_SUPPRESS_UPDATES === 'true';
+const sendNonMeaningfulOnly = process.env.MOCK_ACP_SEND_NON_MEANINGFUL_ONLY === 'true';
+// Send a specific sessionUpdate type before responding
+const customUpdateType = process.env.MOCK_ACP_CUSTOM_UPDATE_TYPE;
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -203,13 +211,43 @@ async function handlePrompt(id, params) {
 
   // Send streaming update notification (ACP SessionUpdate format)
   // SessionUpdate is a discriminated union with sessionUpdate as the discriminator
-  sendNotification("session/update", {
-    sessionId,
-    update: {
-      sessionUpdate: "agent_message_chunk",
-      content: { type: "text", text: responseText },
-    },
-  });
+  if (sendNonMeaningfulOnly) {
+    // Send only non-meaningful update (for stall watchdog tests)
+    sendNotification("session/update", {
+      sessionId,
+      update: {
+        sessionUpdate: "available_commands_update",
+        commands: [],
+      },
+    });
+  } else if (customUpdateType) {
+    // Send a specific update type (for testing individual meaningful types)
+    sendNotification("session/update", {
+      sessionId,
+      update: {
+        sessionUpdate: customUpdateType,
+        ...(customUpdateType === "agent_message_chunk" || customUpdateType === "agent_thought_chunk"
+          ? { content: { type: "text", text: responseText } }
+          : customUpdateType === "tool_call"
+            ? { toolCallUpdate: "tool_use", toolCallId: "mock-tool-1", toolName: "Read", input: {} }
+            : customUpdateType === "tool_call_update"
+              ? { toolCallUpdate: "progress", toolCallId: "mock-tool-1", progress: "working..." }
+              : customUpdateType === "plan"
+                ? { entries: [{ id: "1", title: "Step 1", status: "in_progress", priority: "high" }] }
+                : customUpdateType === "usage_update"
+                  ? { usage: { inputTokens: 100, outputTokens: 50 }, cost: { inputCostUsd: 0.01, outputCostUsd: 0.005 } }
+                  : {}),
+      },
+    });
+  } else if (!suppressUpdates) {
+    sendNotification("session/update", {
+      sessionId,
+      update: {
+        sessionUpdate: "agent_message_chunk",
+        content: { type: "text", text: responseText },
+      },
+    });
+  }
 
   // Complete task if configured (simulates agent completing work)
   // IMPORTANT: Must complete BEFORE sending response so ralph's verifyTaskCompleted() sees the change

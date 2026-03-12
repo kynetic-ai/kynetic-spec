@@ -177,7 +177,7 @@ export async function sessionStaleCloseAction(
     }
 
     const selection = await selectStaleActiveSessions(
-      ctx.specDir,
+      ctx.sessionsDir,
       {
         olderThan: options.olderThan,
         inactiveFor: options.inactiveFor,
@@ -251,7 +251,7 @@ export async function sessionStaleCloseAction(
 
         for (const rawRef of refs) {
           const normalized = normalizeSessionRef(rawRef);
-          const resolution = await resolveSessionId(ctx.specDir, normalized);
+          const resolution = await resolveSessionId(ctx.sessionsDir, normalized);
 
           if (!resolution.ok) {
             failures += 1;
@@ -288,7 +288,7 @@ export async function sessionStaleCloseAction(
         }
       } else {
         const normalized = normalizeSessionRef(sessionIdOrPrefix!);
-        const resolution = await resolveSessionId(ctx.specDir, normalized);
+        const resolution = await resolveSessionId(ctx.sessionsDir, normalized);
         if (!resolution.ok) {
           if (resolution.error === "not_found") {
             error(
@@ -312,7 +312,7 @@ export async function sessionStaleCloseAction(
       }
 
       for (const target of resolvedTargets) {
-        const metadata = await getSession(ctx.specDir, target.sessionId);
+        const metadata = await getSession(ctx.sessionsDir, target.sessionId);
 
         if (!metadata) {
           failures += 1;
@@ -416,17 +416,13 @@ export async function sessionStaleCloseAction(
     }
 
     const applyResult = await applyAutoAbandonMetadata(
-      ctx.specDir,
+      ctx.sessionsDir,
       {
         criteria: selection.criteria,
         candidates: targetCandidates,
       },
       {
         dryRun,
-        shadowCommitMessage:
-          !dryRun && targetCandidates.length > 0
-            ? `session stale close: ${mode} (${targetCandidates.length} candidate${targetCandidates.length === 1 ? "" : "s"})`
-            : undefined,
       },
     );
 

@@ -53,7 +53,7 @@ export async function performCheckpoint(
   const sessionActiveCache = new Map<string, boolean>();
   async function isSessionActive(sid: string): Promise<boolean> {
     if (sessionActiveCache.has(sid)) return sessionActiveCache.get(sid)!;
-    const session = await getSession(ctx.specDir, sid);
+    const session = await getSession(ctx.sessionsDir, sid);
     // Fail-safe: if lookup fails (null), treat as NOT active → include task
     const active = session?.status === "active";
     sessionActiveCache.set(sid, active);

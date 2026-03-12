@@ -101,6 +101,7 @@ test.describe('Items View', () => {
       await expect(childContainer).not.toBeVisible();
     });
 
+    // AC: @ui-url-panel-state ac-1 — opens detail panel via click, URL updated with goto()
     test('clicking item title opens detail panel (not expand)', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -147,6 +148,23 @@ test.describe('Items View', () => {
       await expect(description).toContainText('A test feature for integration testing');
     });
 
+    // AC: @markdown-ui-adoption ac-5
+    test('renders spec description markdown in the detail panel', async ({ page, daemon }) => {
+      await page.goto('/items');
+
+      const specTree = page.getByTestId('spec-tree').first();
+      const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
+      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
+
+      const childContainer = moduleNode.getByTestId('tree-node-child');
+      const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
+      await featureNode.locator('> div').first().getByTestId('node-title').click();
+
+      const description = page.getByTestId('spec-description');
+      await expect(description.locator('strong')).toContainText('integration testing');
+      await expect(description.locator('code')).toContainText('kspec item get');
+    });
+
     test('displays item type badge', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -189,6 +207,7 @@ test.describe('Items View', () => {
       const firstAcGiven = acItems.first().getByTestId('ac-given');
       await expect(firstAcGiven).toContainText('a user is viewing the feature');
     });
+
   });
 
   test.describe('Linked Tasks (AC-13)', () => {
@@ -296,6 +315,7 @@ test.describe('Items View', () => {
       await expect(traitTitle).toContainText('test-trait');
     });
 
+    // AC: @ui-url-panel-state ac-3 — navigates with ?ref= in URL, detail panel opens correctly
     test('clicking trait chip navigates to trait detail', async ({ page, daemon }) => {
       await page.goto('/items');
 
@@ -352,6 +372,7 @@ test.describe('Items View', () => {
   });
 
   test.describe('Acceptance Criteria Expansion (AC-15)', () => {
+    // AC: @plan-embedded-views ac-7
     test('expands AC to show full Given/When/Then text', async ({ page, daemon }) => {
       await page.goto('/items');
 

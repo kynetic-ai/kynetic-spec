@@ -6,9 +6,12 @@ export default defineConfig({
     environment: 'node',
     testTimeout: 15_000,
     globalSetup: './tests/global-setup.ts',
+    setupFiles: ['./tests/setup.ts'],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/.review/**',
+      '**/.worktrees/**',
       '**/packages/web-ui/tests/e2e/**',
     ],
   },

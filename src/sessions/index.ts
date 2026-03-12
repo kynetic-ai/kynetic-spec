@@ -11,3 +11,5 @@
 export * from "./store.js";
 // Re-export types
 export * from "./types.js";
+// Re-export cache
+export * from "./cache.js";

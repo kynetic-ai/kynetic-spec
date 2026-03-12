@@ -62,6 +62,8 @@ import {
   getAllCommands,
 } from "./suggest.js";
 import { PidFileManager } from "./pid-utils.js";
+import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
+import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
 import { join } from "path";
 import { existsSync } from "fs";
@@ -198,6 +200,20 @@ program
       setVerboseMode(true);
     }
 
+    // AC: @shadow-lazy-read-sync ac-syncmode-propagation
+    // AC: @shadow-write-sync ac-write-skips-read-check — mutating commands skip pre-read sync
+    // Determine sync mode centrally based on command annotations
+    const isAlwaysSync = getAlwaysSyncAnnotation(actionCommand);
+    const isMutating = getMutatingAnnotation(actionCommand);
+
+    if (isAlwaysSync) {
+      setSyncMode("always");
+    } else if (isMutating) {
+      setSyncMode("skip");
+    } else {
+      setSyncMode("drift-check");
+    }
+
     // Auto-start daemon if configured and not running
     // Skip for init, serve, and help commands
     const skipCommands = ['init', 'serve', 'help', 'kspec'];
@@ -205,6 +221,12 @@ program
     if (!skipCommands.includes(executingCommandName)) {
       await maybeAutoStartDaemon();
     }
+  })
+  .hook("postAction", () => {
+    // Clear sync mode after command completes so non-Commander callers
+    // (daemon, dispatch engine) that call initContext() later in the
+    // same process get 'drift-check' default, not stale command state.
+    clearSyncMode();
   });
 
 // Register command groups

@@ -1,5 +1,10 @@
+<script lang="ts" module>
+	// AC: @web-dashboard ac-default-active-filter
+	export const ACTIVE_STATUSES = ['pending', 'in_progress', 'pending_review', 'needs_work', 'blocked'] as const;
+</script>
+
 <script lang="ts">
-	// AC: @web-dashboard ac-9, ac-10
+	// AC: @web-dashboard ac-9, ac-10, ac-default-active-filter
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
@@ -14,7 +19,8 @@
 
 	// Display labels for status values
 	const statusLabels: Record<string, string> = {
-		'': 'All Statuses',
+		'': 'Active',
+		active: 'Active',
 		all: 'All Statuses',
 		pending: 'Pending',
 		in_progress: 'In Progress',
@@ -41,6 +47,8 @@
 	let assignee = $derived($page.url.searchParams.get('assignee') || '');
 	let automation = $derived($page.url.searchParams.get('automation') || '');
 
+	// AC: @web-dashboard ac-default-active-filter — non-default filters are: explicit status, tag, assignee, automation
+	// Empty status means "active" (the default), so only count as filtered if it's a specific single status or "all"
 	let hasFilters = $derived(status || tag || assignee || automation);
 
 	function updateFilter(key: string, value: string | string[] | undefined) {
@@ -55,10 +63,21 @@
 
 		const params = new URLSearchParams($page.url.searchParams);
 
-		if (!actualValue || actualValue === 'all') {
-			params.delete(key);
+		// AC: @web-dashboard ac-default-active-filter
+		// "active" maps to no status param (default behavior shows active statuses)
+		// "all" explicitly requests all statuses including completed/cancelled
+		if (key === 'status') {
+			if (!actualValue || actualValue === 'active') {
+				params.delete(key);
+			} else {
+				params.set(key, actualValue);
+			}
 		} else {
-			params.set(key, actualValue);
+			if (!actualValue || actualValue === 'all') {
+				params.delete(key);
+			} else {
+				params.set(key, actualValue);
+			}
 		}
 
 		// Reset offset when filter changes
@@ -72,8 +91,8 @@
 		goto(`${base}/tasks`, { replaceState: false });
 	}
 
-	// Compute the display value for Select triggers
-	let statusDisplay = $derived(status || 'all');
+	// AC: @web-dashboard ac-default-active-filter — empty status means "active" (default)
+	let statusDisplay = $derived(status || 'active');
 	let automationDisplay = $derived(automation || 'all');
 </script>
 
@@ -85,9 +104,10 @@
 			onValueChange={(v) => updateFilter('status', v)}
 		>
 			<SelectTrigger id="status-filter" data-testid="filter-status">
-				{statusLabels[statusDisplay] || 'All Statuses'}
+				{statusLabels[statusDisplay] || 'Active'}
 			</SelectTrigger>
 			<SelectContent>
+				<SelectItem value="active">Active</SelectItem>
 				<SelectItem value="all">All Statuses</SelectItem>
 				<SelectItem value="pending">Pending</SelectItem>
 				<SelectItem value="in_progress">In Progress</SelectItem>

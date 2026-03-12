@@ -144,6 +144,7 @@ describe("kspec setup built-in agents", () => {
     expect(agentIds).toContain("pr-reviewer");
   });
 
+  // AC: @agent-dispatch-engine ac-22
   it("task-worker has dispatch rules for task.in_progress/task.ready/task.needs_work with eligible filter", async () => {
     await kspec("setup --no-hooks --skip-skills", tempDir);
 

@@ -11,6 +11,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { AcceptanceCriterion, InboxItem } from "../schema/index.js";
 import {
+  AlignmentIndex,
   buildIndexes,
   computeACCoverage,
   initContext,
@@ -18,6 +19,8 @@ import {
   loadAllTasks,
   loadInboxItems,
   loadMetaContext,
+  loadPlans,
+  loadTriageRecords,
   scanTestCoverage,
   type LoadedSpecItem,
   type LoadedTask,
@@ -152,6 +155,12 @@ function convertValidationResult(
     valid: result.valid,
     errorCount: result.schemaErrors.length + result.refErrors.length,
     warningCount: result.orphans.length + result.completenessWarnings.length,
+    schemaErrors: result.schemaErrors,
+    refErrors: result.refErrors,
+    refWarnings: result.refWarnings,
+    orphans: result.orphans,
+    completenessWarnings: result.completenessWarnings,
+    traitCycles: result.traitCycleErrors,
     errors: [
       ...result.schemaErrors.map((e) => ({
         file: e.file,
@@ -176,6 +185,109 @@ function convertValidationResult(
   };
 }
 
+function normalizeRef(ref: string | null | undefined): string | null {
+  if (!ref) return null;
+  return ref.startsWith("@") ? ref.slice(1) : ref;
+}
+
+function matchesTaskPlan(task: LoadedTask, planRef: string): boolean {
+  const normalizedPlanRef = normalizeRef(planRef);
+  const normalizedTaskPlan = normalizeRef(task.plan_ref);
+
+  if (!normalizedPlanRef || !normalizedTaskPlan) return false;
+  return (
+    normalizedTaskPlan === normalizedPlanRef ||
+    normalizedTaskPlan.toUpperCase().startsWith(normalizedPlanRef.toUpperCase())
+  );
+}
+
+function countTaskProgress(tasks: LoadedTask[]) {
+  return tasks.reduce(
+    (counts, task) => {
+      counts.total += 1;
+      switch (task.status) {
+        case "completed":
+          counts.completed += 1;
+          break;
+        case "in_progress":
+        case "pending_review":
+        case "needs_work":
+          counts.in_progress += 1;
+          break;
+        case "blocked":
+          counts.blocked += 1;
+          break;
+        default:
+          counts.pending += 1;
+          break;
+      }
+      return counts;
+    },
+    { total: 0, completed: 0, in_progress: 0, pending: 0, blocked: 0 }
+  );
+}
+
+function expandPlans(
+  plans: Awaited<ReturnType<typeof loadPlans>>,
+  tasks: LoadedTask[]
+) {
+  return plans.map((plan) => {
+    const linkedTasks = tasks.filter((task) =>
+      matchesTaskPlan(task, plan.slugs[0] ? `@${plan.slugs[0]}` : `@${plan._ulid}`)
+    );
+
+    return {
+      _ulid: plan._ulid,
+      slugs: plan.slugs,
+      title: plan.title,
+      status: plan.status,
+      created_at: plan.created_at,
+      approved_at: plan.approved_at ?? undefined,
+      completed_at: plan.completed_at ?? undefined,
+      derived_specs: plan.derived_specs,
+      derived_tasks: plan.derived_tasks,
+      spec_count: plan.derived_specs.length,
+      task_count: linkedTasks.length,
+      task_progress: countTaskProgress(linkedTasks),
+      content: plan.content,
+      module_ref: plan.module_ref ?? null,
+      source_path: plan.source_path ?? null,
+    };
+  });
+}
+
+function buildAlignmentResponse(tasks: LoadedTask[], items: LoadedSpecItem[], refIndex: ReferenceIndex) {
+  const alignmentIndex = new AlignmentIndex(tasks, items);
+  alignmentIndex.buildLinks(refIndex);
+
+  let specsWithTasks = 0;
+  let alignedSpecs = 0;
+  let orphanedSpecs = 0;
+
+  for (const item of items) {
+    const summary = alignmentIndex.getImplementationSummary(item._ulid);
+    if (!summary) continue;
+    if (summary.linkedTasks.length > 0) {
+      specsWithTasks += 1;
+    } else {
+      orphanedSpecs += 1;
+    }
+    if (summary.isAligned) {
+      alignedSpecs += 1;
+    }
+  }
+
+  return {
+    stats: {
+      totalSpecs: items.length,
+      specsWithTasks,
+      alignedSpecs,
+      orphanedSpecs,
+    },
+    warnings: alignmentIndex.findAlignmentWarnings(),
+  };
+}
+
 /**
  * Generate a JSON snapshot of all kspec data.
  * AC: @gh-pages-export ac-1, ac-2, ac-3, ac-4, ac-5
@@ -190,7 +302,9 @@ export async function generateJsonSnapshot(
   const items = await loadAllItems(ctx);
   const inboxItems = await loadInboxItems(ctx);
   const metaContext = await loadMetaContext(ctx);
+  const plans = await loadPlans(ctx);
   const sessionContext = await loadSessionContext(ctx);
+  const triageRecords = await loadTriageRecords(ctx);
 
   // Build indexes
   const { refIndex, traitIndex } = await buildIndexes(ctx);
@@ -215,6 +329,8 @@ export async function generateJsonSnapshot(
     tasks: exportedTasks,
     items: exportedItems,
     inbox: inboxItems,
+    plans: expandPlans(plans, tasks),
+    triage: triageRecords,
     session: sessionContext,
     observations: metaContext.observations,
     agents: metaContext.agents,
@@ -231,6 +347,9 @@ export async function generateJsonSnapshot(
       completeness: true,
     });
     snapshot.validation = convertValidationResult(validationResult);
+    snapshot.alignment = buildAlignmentResponse(tasks, items, refIndex);
+  } else {
+    snapshot.alignment = buildAlignmentResponse(tasks, items, refIndex);
   }
 
   return snapshot;
@@ -247,6 +366,8 @@ export function calculateExportStats(snapshot: KspecSnapshot): ExportStats {
     taskCount: snapshot.tasks.length,
     itemCount: snapshot.items.length,
     inboxCount: snapshot.inbox.length,
+    planCount: snapshot.plans?.length ?? 0,
+    triageCount: snapshot.triage?.length ?? 0,
     observationCount: snapshot.observations.length,
     agentCount: snapshot.agents.length,
     workflowCount: snapshot.workflows.length,

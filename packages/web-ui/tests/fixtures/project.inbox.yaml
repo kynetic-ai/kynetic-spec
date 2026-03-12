@@ -1,6 +1,6 @@
 inbox:
   - _ulid: 01KJNBX0CA45ZT43W2T6HJMVA1
-    text: First inbox item for testing
+    text: "First inbox item for testing with `kspec triage`"
     tags:
       - test
       - e2e

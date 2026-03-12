@@ -208,6 +208,32 @@ export function info(message: string): void {
 }
 
 /**
+ * Format a value for before→after display.
+ * Handles arrays, objects, null/undefined, and scalars.
+ */
+export function formatChangeValue(v: unknown): string {
+  if (v === undefined || v === null) return chalk.gray("(none)");
+  if (Array.isArray(v)) return v.length === 0 ? chalk.gray("[]") : v.join(", ");
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+}
+
+/**
+ * Display before→after diff for changed fields in text mode.
+ * Skips display in JSON/YAML mode (structured output includes changes in data).
+ */
+export function showChangeDiff(
+  changes: Array<{ field: string; before: unknown; after: unknown }>,
+): void {
+  if (isStructuredMode()) return;
+  for (const change of changes) {
+    console.log(
+      `  ${chalk.gray(change.field + ":")} ${chalk.red(formatChangeValue(change.before))} → ${chalk.green(formatChangeValue(change.after))}`,
+    );
+  }
+}
+
+/**
  * Get color for task status
  */
 function statusColor(status: TaskStatus): (text: string) => string {
@@ -577,7 +603,7 @@ export function formatTaskDetails(
     console.log(`${fieldLabels.specRef}  ${task.spec_ref}`);
   }
 
-  // AC: @plan-derive ac-6 - display plan_ref
+  // AC: @plan-derive-enhanced ac-bidirectional-links - display plan_ref
   if (task.plan_ref) {
     console.log(`Plan ref:  ${task.plan_ref}`);
   }

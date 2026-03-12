@@ -7,7 +7,7 @@
  * - Session metadata management
  *
  * Storage structure:
- *   .kspec/sessions/{session-id}/
+ *   .kspec-sessions/{session-id}/
  *     session.yaml      # Metadata
  *     events.jsonl      # Append-only event log
  */
@@ -18,7 +18,6 @@ import * as path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
 import { parse as parseTOML, stringify as stringifyTOML } from "smol-toml";
 import * as YAML from "yaml";
-import { shadowAutoCommit } from "../parser/shadow.js";
 import {
   type SessionEvent,
   type SessionEventInput,
@@ -30,10 +29,12 @@ import {
   type TaskBudget,
   TaskBudgetSchema,
 } from "./types.js";
+import {
+  sessionBranchAutoCommit,
+} from "../parser/session-branch.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const SESSIONS_DIR = "sessions";
 const METADATA_FILE = "session.yaml";
 const EVENTS_FILE = "events.jsonl";
 const BUDGET_FILE = "budget.json";
@@ -46,52 +47,98 @@ const EVENT_FIELD_EXTERNALIZE_BYTES = 16 * 1024;
 const EVENT_PREVIEW_MAX_BYTES = 512;
 const EVENT_SEQ_TAIL_READ_BYTES = EVENT_LINE_MAX_BYTES + 1024;
 
-// ─── Path Helpers ────────────────────────────────────────────────────────────
+// ─── Session Branch Auto-Commit ──────────────────────────────────────────────
+// AC: @session-branch-worktree ac-commit-boundaries
+// When sessionsDir is a git worktree (sessions.storage=branch), auto-commit at
+// lifecycle boundaries (create, close, stale cleanup, compact).
+// Event appends are NOT committed individually.
 
 /**
- * Get the sessions directory path within a spec directory.
+ * Check if sessionsDir is a git worktree (has a .git file, not directory).
+ * Cached per path to avoid repeated filesystem checks.
  */
-export function getSessionsDir(specDir: string): string {
-  return path.join(specDir, SESSIONS_DIR);
+const worktreeCache = new Map<string, boolean>();
+
+async function isSessionWorktree(sessionsDir: string): Promise<boolean> {
+  const cached = worktreeCache.get(sessionsDir);
+  if (cached !== undefined) return cached;
+
+  try {
+    const gitPath = path.join(sessionsDir, ".git");
+    const stat = await fsPromises.stat(gitPath);
+    // Worktrees have a .git FILE pointing to the main repo
+    const isWorktree = stat.isFile();
+    worktreeCache.set(sessionsDir, isWorktree);
+    return isWorktree;
+  } catch {
+    worktreeCache.set(sessionsDir, false);
+    return false;
+  }
+}
+
+/**
+ * Auto-commit to session branch at lifecycle boundaries.
+ * No-op if sessionsDir is not a git worktree.
+ */
+async function commitAtLifecycleBoundary(
+  sessionsDir: string,
+  message: string,
+): Promise<void> {
+  if (await isSessionWorktree(sessionsDir)) {
+    await sessionBranchAutoCommit(sessionsDir, message);
+  }
+}
+
+// ─── Path Helpers ────────────────────────────────────────────────────────────
+// AC: @session-storage-path-resolution ac-resolver ac-path-helpers
+// All path helpers accept sessionsDir (.kspec-sessions/ at project root),
+// not sessionsDir (.kspec/). This decouples session storage from the shadow branch.
+
+/**
+ * Get the sessions root directory.
+ * @deprecated Use ctx.sessionsDir directly. Kept for backward compatibility.
+ */
+export function getSessionsDir(sessionsDir: string): string {
+  return sessionsDir;
 }
 
 /**
  * Get the path to a specific session's directory.
  */
-export function getSessionDir(specDir: string, sessionId: string): string {
-  return path.join(getSessionsDir(specDir), sessionId);
+export function getSessionDir(sessionsDir: string, sessionId: string): string {
+  return path.join(sessionsDir, sessionId);
 }
 
 /**
  * Get the path to a session's metadata file.
  */
 export function getSessionMetadataPath(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): string {
-  return path.join(getSessionDir(specDir, sessionId), METADATA_FILE);
+  return path.join(getSessionDir(sessionsDir, sessionId), METADATA_FILE);
 }
 
 /**
  * Get the path to a session's events file.
  */
 export function getSessionEventsPath(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): string {
-  return path.join(getSessionDir(specDir, sessionId), EVENTS_FILE);
+  return path.join(getSessionDir(sessionsDir, sessionId), EVENTS_FILE);
 }
 
 /**
  * Get the path to a session's context snapshot file for a given iteration.
  */
 export function getSessionContextPath(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   iteration: number,
 ): string {
   return path.join(
-    getSessionDir(specDir, sessionId),
+    getSessionDir(sessionsDir, sessionId),
     `context-iter-${iteration}.json`,
   );
 }
@@ -101,17 +148,17 @@ export function getSessionContextPath(
  * AC: @session-creation-and-env-injection ac-budget-local
  */
 export function getSessionBudgetPath(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): string {
-  return path.join(getSessionDir(specDir, sessionId), BUDGET_FILE);
+  return path.join(getSessionDir(sessionsDir, sessionId), BUDGET_FILE);
 }
 
 /**
  * Get the path to a session's blob directory.
  */
-export function getSessionBlobDir(specDir: string, sessionId: string): string {
-  return path.join(getSessionDir(specDir, sessionId), BLOBS_DIR);
+export function getSessionBlobDir(sessionsDir: string, sessionId: string): string {
+  return path.join(getSessionDir(sessionsDir, sessionId), BLOBS_DIR);
 }
 
 // ─── Session CRUD ────────────────────────────────────────────────────────────
@@ -119,19 +166,19 @@ export function getSessionBlobDir(specDir: string, sessionId: string): string {
 /**
  * Create a new session with metadata.
  *
- * AC-1: Creates .kspec/sessions/{id}/ directory with session.yaml metadata file.
+ * AC-1: Creates .kspec-sessions/{id}/ directory with session.yaml metadata file.
  * AC-5: Metadata includes task_id (optional), agent_type, status, started_at, ended_at.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param input - Session metadata input
  * @returns The created session metadata
  */
 export async function createSession(
-  specDir: string,
+  sessionsDir: string,
   input: SessionMetadataInput,
 ): Promise<SessionMetadata> {
-  const sessionDir = getSessionDir(specDir, input.id);
-  const metadataPath = getSessionMetadataPath(specDir, input.id);
+  const sessionDir = getSessionDir(sessionsDir, input.id);
+  const metadataPath = getSessionMetadataPath(sessionsDir, input.id);
 
   // Create session directory
   await fsPromises.mkdir(sessionDir, { recursive: true });
@@ -158,21 +205,27 @@ export async function createSession(
   });
   await fsPromises.writeFile(metadataPath, content, "utf-8");
 
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on session create
+  await commitAtLifecycleBoundary(
+    sessionsDir,
+    `session: create (${input.id})`,
+  );
+
   return validated;
 }
 
 /**
  * Read session metadata.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Session metadata or null if not found
  */
 export async function getSession(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<SessionMetadata | null> {
-  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
 
   try {
     const content = await fsPromises.readFile(metadataPath, "utf-8");
@@ -194,17 +247,17 @@ export async function getSession(
  *
  * AC-6: Updates metadata with status and ended_at timestamp when session ends.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param status - New status
  * @returns Updated metadata or null if session not found
  */
 export async function updateSessionStatus(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   status: SessionStatus,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) {
     return null;
   }
@@ -217,7 +270,7 @@ export async function updateSessionStatus(
       status !== "active" ? new Date().toISOString() : metadata.ended_at,
   };
 
-  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
   const content = YAML.stringify(updated, {
     indent: 2,
     lineWidth: 100,
@@ -231,12 +284,10 @@ export async function updateSessionStatus(
 /**
  * List all sessions.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @returns Array of session IDs
  */
-export async function listSessions(specDir: string): Promise<string[]> {
-  const sessionsDir = getSessionsDir(specDir);
-
+export async function listSessions(sessionsDir: string): Promise<string[]> {
   try {
     const entries = await fsPromises.readdir(sessionsDir, {
       withFileTypes: true,
@@ -253,18 +304,18 @@ export async function listSessions(specDir: string): Promise<string[]> {
  * Reads only session metadata (not events.jsonl) for performance.
  * A session counts as "completed" if its status is "completed".
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @returns Map of agent_id to completed session count
  */
 export async function getCompletedSessionCountsByAgent(
-  specDir: string,
+  sessionsDir: string,
 ): Promise<Record<string, number>> {
-  const sessionIds = await listSessions(specDir);
+  const sessionIds = await listSessions(sessionsDir);
   const counts: Record<string, number> = {};
 
   // Read metadata in parallel for performance
   const metadataResults = await Promise.all(
-    sessionIds.map((id) => getSession(specDir, id)),
+    sessionIds.map((id) => getSession(sessionsDir, id)),
   );
 
   for (const metadata of metadataResults) {
@@ -281,10 +332,10 @@ export async function getCompletedSessionCountsByAgent(
  * Check if a session exists.
  */
 export async function sessionExists(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<boolean> {
-  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
   try {
     await fsPromises.access(metadataPath);
     return true;
@@ -303,17 +354,17 @@ export async function sessionExists(
  *
  * AC: @session-end-loop-signal ac-signal
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param reason - Optional reason for ending the loop
  * @returns Updated metadata or null if session not found
  */
 export async function requestEndLoop(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   reason?: string,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) {
     return null;
   }
@@ -324,7 +375,7 @@ export async function requestEndLoop(
     end_reason: reason,
   };
 
-  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
   const content = YAML.stringify(updated, {
     indent: 2,
     lineWidth: 100,
@@ -344,15 +395,15 @@ export async function requestEndLoop(
  *
  * AC: @session-end-loop-signal ac-detect
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Object with requested flag and optional reason, or null if session not found
  */
 export async function isEndLoopRequested(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<{ requested: boolean; reason?: string } | null> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) {
     return null;
   }
@@ -372,19 +423,19 @@ export async function isEndLoopRequested(
  * AC: @session-end-loop-signal ac-session-close-signal
  * AC: @session-end-loop-signal ac-session-close-error
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param status - New status (completed or abandoned)
  * @param reason - Reason for closing
  * @returns Updated metadata or null if session not found
  */
 export async function closeSession(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   status: SessionStatus,
   reason: string,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) {
     return null;
   }
@@ -396,13 +447,19 @@ export async function closeSession(
     close_reason: reason,
   };
 
-  const metadataPath = getSessionMetadataPath(specDir, sessionId);
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
   const content = YAML.stringify(updated, {
     indent: 2,
     lineWidth: 100,
     sortMapEntries: false,
   });
   await fsPromises.writeFile(metadataPath, content, "utf-8");
+
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on session close
+  await commitAtLifecycleBoundary(
+    sessionsDir,
+    `session: close ${status} (${sessionId})`,
+  );
 
   return updated;
 }
@@ -524,7 +581,7 @@ function shouldExternalizeField(pathSegments: string[], value: unknown): boolean
 }
 
 async function createBlobPointer(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   seq: number,
   pathSegments: string[],
@@ -546,7 +603,7 @@ async function createBlobPointer(
       await fsPromises.mkdir(context.blobDir, { recursive: true });
       context.ensuredDir = true;
     }
-    const absolutePath = path.join(getSessionDir(specDir, sessionId), relativePath);
+    const absolutePath = path.join(getSessionDir(sessionsDir, sessionId), relativePath);
     await fsPromises.writeFile(absolutePath, content, "utf-8");
   }
   context.createdBlobs = (context.createdBlobs ?? 0) + 1;
@@ -562,7 +619,7 @@ async function createBlobPointer(
 }
 
 async function externalizeOversizedPayloads(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   seq: number,
   value: unknown,
@@ -574,13 +631,13 @@ async function externalizeOversizedPayloads(
   }
 
   if (shouldExternalizeField(pathSegments, value)) {
-    return createBlobPointer(specDir, sessionId, seq, pathSegments, value, context);
+    return createBlobPointer(sessionsDir, sessionId, seq, pathSegments, value, context);
   }
 
   if (Array.isArray(value)) {
     return Promise.all(
       value.map((entry, idx) =>
-        externalizeOversizedPayloads(specDir, sessionId, seq, entry, [
+        externalizeOversizedPayloads(sessionsDir, sessionId, seq, entry, [
           ...pathSegments,
           String(idx),
         ], context),
@@ -592,7 +649,7 @@ async function externalizeOversizedPayloads(
     const next: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value)) {
       next[key] = await externalizeOversizedPayloads(
-        specDir,
+        sessionsDir,
         sessionId,
         seq,
         child,
@@ -607,11 +664,11 @@ async function externalizeOversizedPayloads(
 }
 
 function resolveBlobAbsolutePath(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   relativePath: string,
 ): string | null {
-  const sessionDir = path.resolve(getSessionDir(specDir, sessionId));
+  const sessionDir = path.resolve(getSessionDir(sessionsDir, sessionId));
   const absolutePath = path.resolve(sessionDir, relativePath);
   if (
     absolutePath === sessionDir ||
@@ -623,11 +680,11 @@ function resolveBlobAbsolutePath(
 }
 
 async function resolveBlobPointer(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   pointer: SessionBlobPointer,
 ): Promise<ResolvedSessionBlobPointer> {
-  const absolutePath = resolveBlobAbsolutePath(specDir, sessionId, pointer.path);
+  const absolutePath = resolveBlobAbsolutePath(sessionsDir, sessionId, pointer.path);
   if (!absolutePath) {
     return { ...pointer, content: pointer.preview };
   }
@@ -647,24 +704,24 @@ async function resolveBlobPointer(
  * explicit on-demand blob resolution in session log commands.
  */
 export async function resolveSessionBlobPointers(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   value: unknown,
 ): Promise<unknown> {
   if (isSessionBlobPointer(value)) {
-    return resolveBlobPointer(specDir, sessionId, value);
+    return resolveBlobPointer(sessionsDir, sessionId, value);
   }
 
   if (Array.isArray(value)) {
     return Promise.all(
-      value.map((entry) => resolveSessionBlobPointers(specDir, sessionId, entry)),
+      value.map((entry) => resolveSessionBlobPointers(sessionsDir, sessionId, entry)),
     );
   }
 
   if (isRecord(value)) {
     const next: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value)) {
-      next[key] = await resolveSessionBlobPointers(specDir, sessionId, child);
+      next[key] = await resolveSessionBlobPointers(sessionsDir, sessionId, child);
     }
     return next;
   }
@@ -705,10 +762,10 @@ function extractLastEventSeq(content: string): number | null {
  * if the tail slice cannot be parsed (for example, partial line boundary).
  */
 async function getNextEventSeq(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<number> {
-  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
 
   let fileHandle: fsPromises.FileHandle | null = null;
   try {
@@ -765,22 +822,22 @@ async function getNextEventSeq(
  * (single-process, sequential event logging). If concurrent access is needed
  * in the future, consider file locking or an in-memory counter per session.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param input - Event input (ts and seq are auto-assigned if not provided)
  * @returns The appended event with auto-assigned fields
  */
 export async function appendEvent(
-  specDir: string,
+  sessionsDir: string,
   input: SessionEventInput,
 ): Promise<SessionEvent> {
-  const sessionDir = getSessionDir(specDir, input.session_id);
-  const eventsPath = getSessionEventsPath(specDir, input.session_id);
+  const sessionDir = getSessionDir(sessionsDir, input.session_id);
+  const eventsPath = getSessionEventsPath(sessionsDir, input.session_id);
 
   // Ensure session directory exists (lazy creation)
   await fsPromises.mkdir(sessionDir, { recursive: true });
 
   // Derive next sequence number from the last stored event.
-  const seq = input.seq ?? (await getNextEventSeq(specDir, input.session_id));
+  const seq = input.seq ?? (await getNextEventSeq(sessionsDir, input.session_id));
 
   // Build full event
   const event: SessionEvent = {
@@ -795,13 +852,13 @@ export async function appendEvent(
   // AC: @session-events ac-8, ac-9 - Externalize oversized payload fields
   // before writing to events.jsonl.
   const externalizedData = await externalizeOversizedPayloads(
-    specDir,
+    sessionsDir,
     input.session_id,
     seq,
     event.data,
     [],
     {
-      blobDir: getSessionBlobDir(specDir, input.session_id),
+      blobDir: getSessionBlobDir(sessionsDir, input.session_id),
       ensuredDir: false,
     },
   );
@@ -819,11 +876,11 @@ export async function appendEvent(
   let line = JSON.stringify(validated);
   if (Buffer.byteLength(line, "utf-8") > EVENT_LINE_MAX_BYTES) {
     const blobContext: BlobWriteContext = {
-      blobDir: getSessionBlobDir(specDir, input.session_id),
+      blobDir: getSessionBlobDir(sessionsDir, input.session_id),
       ensuredDir: false,
     };
     const fullDataPointer = await createBlobPointer(
-      specDir,
+      sessionsDir,
       input.session_id,
       seq,
       [],
@@ -881,13 +938,13 @@ export interface CompactSessionEventsResult {
  * are modified and no blob files are written.
  */
 export async function compactSessionEvents(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   options: CompactSessionEventsOptions = {},
 ): Promise<CompactSessionEventsResult> {
   const dryRun = options.dryRun === true;
   const renameFn = options.renameFn ?? fsPromises.rename;
-  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
   let content: string;
 
   try {
@@ -927,7 +984,7 @@ export async function compactSessionEvents(
   }
 
   const blobContext: BlobWriteContext = {
-    blobDir: getSessionBlobDir(specDir, sessionId),
+    blobDir: getSessionBlobDir(sessionsDir, sessionId),
     ensuredDir: false,
     dryRun,
     createdBlobs: 0,
@@ -948,7 +1005,7 @@ export async function compactSessionEvents(
 
     const event = SessionEventSchema.parse(parsed);
     const externalizedData = await externalizeOversizedPayloads(
-      specDir,
+      sessionsDir,
       sessionId,
       event.seq,
       event.data,
@@ -964,7 +1021,7 @@ export async function compactSessionEvents(
     let compactedLine = JSON.stringify(validated);
     if (Buffer.byteLength(compactedLine, "utf-8") > EVENT_LINE_MAX_BYTES) {
       const fullDataPointer = await createBlobPointer(
-        specDir,
+        sessionsDir,
         sessionId,
         event.seq,
         [],
@@ -999,7 +1056,7 @@ export async function compactSessionEvents(
   }
 
   if (!dryRun) {
-    const sessionDir = getSessionDir(specDir, sessionId);
+    const sessionDir = getSessionDir(sessionsDir, sessionId);
     const tmpPath = path.join(
       sessionDir,
       `.${EVENTS_FILE}.${process.pid}.${Date.now()}.tmp`,
@@ -1011,6 +1068,14 @@ export async function compactSessionEvents(
       await fsPromises.unlink(tmpPath).catch(() => undefined);
       throw err;
     }
+  }
+
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on compact
+  if (!dryRun) {
+    await commitAtLifecycleBoundary(
+      sessionsDir,
+      `session: compact (${sessionId})`,
+    );
   }
 
   return {
@@ -1030,15 +1095,15 @@ export async function compactSessionEvents(
  *
  * AC-4: Returns all events in sequence order.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Array of events sorted by sequence number
  */
 export async function readEvents(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<SessionEvent[]> {
-  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
 
   try {
     const content = await fsPromises.readFile(eventsPath, "utf-8");
@@ -1111,19 +1176,19 @@ export function deduplicatePhasedToolCalls(
 /**
  * Read events within a time range.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param since - Start timestamp (inclusive)
  * @param until - End timestamp (inclusive)
  * @returns Array of events within the time range
  */
 export async function readEventsSince(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   since: number,
   until?: number,
 ): Promise<SessionEvent[]> {
-  const events = await readEvents(specDir, sessionId);
+  const events = await readEvents(sessionsDir, sessionId);
   return events.filter((e) => {
     if (e.ts < since) return false;
     if (until !== undefined && e.ts > until) return false;
@@ -1134,15 +1199,15 @@ export async function readEventsSince(
 /**
  * Get the last event in a session.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns The last event or null if no events
  */
 export async function getLastEvent(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<SessionEvent | null> {
-  const events = await readEvents(specDir, sessionId);
+  const events = await readEvents(sessionsDir, sessionId);
   if (events.length === 0) {
     return null;
   }
@@ -1304,10 +1369,10 @@ export type StaleSessionActivityResult =
  * so stale auto-close can skip unsafe sessions.
  */
 export async function getSessionActivityForStaleCheck(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<StaleSessionActivityResult> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) {
     return {
       ok: false,
@@ -1325,7 +1390,7 @@ export async function getSessionActivityForStaleCheck(
     };
   }
 
-  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
   let content: string;
   try {
     content = await fsPromises.readFile(eventsPath, "utf-8");
@@ -1465,7 +1530,7 @@ export function evaluateStaleSession(
 }
 
 export async function selectStaleActiveSessions(
-  specDir: string,
+  sessionsDir: string,
   criteriaInput: StaleSessionCriteriaInput = {},
   nowMs: number = Date.now(),
 ): Promise<StaleSessionCandidateSelection> {
@@ -1477,17 +1542,17 @@ export async function selectStaleActiveSessions(
   }
   const criteria = criteriaResolved.criteria;
 
-  const sessionIds = await listSessions(specDir);
+  const sessionIds = await listSessions(sessionsDir);
   const evaluations: StaleSessionEvaluation[] = [];
   const candidates: StaleSessionEvaluation[] = [];
   const skipped: StaleSessionSkipped[] = [];
 
   for (const sessionId of sessionIds) {
-    const metadata = await getSession(specDir, sessionId);
+    const metadata = await getSession(sessionsDir, sessionId);
     if (!metadata || metadata.status !== "active") continue;
 
     const activityResult = await getSessionActivityForStaleCheck(
-      specDir,
+      sessionsDir,
       sessionId,
     );
     if (!activityResult.ok) {
@@ -1537,7 +1602,6 @@ export interface AutoAbandonMetadataResult {
   dryRun: boolean;
   updatedCount: number;
   updates: AutoAbandonMetadataPreview[];
-  shadowCommitted?: boolean;
 }
 
 /**
@@ -1563,12 +1627,12 @@ export function buildAutoAbandonedCloseReason(
  * Apply abandoned metadata to stale session candidates.
  *
  * All updates in a single invocation share one ended_at timestamp, which lets
- * the caller persist and commit the batch atomically with one shadow commit.
+ * the caller persist and commit the batch atomically.
  */
 export async function applyAutoAbandonMetadata(
-  specDir: string,
+  sessionsDir: string,
   selection: Pick<StaleSessionCandidateSelection, "criteria" | "candidates">,
-  options?: { dryRun?: boolean; nowMs?: number; shadowCommitMessage?: string },
+  options?: { dryRun?: boolean; nowMs?: number },
 ): Promise<AutoAbandonMetadataResult> {
   const dryRun = options?.dryRun === true;
   const endedAt = new Date(options?.nowMs ?? Date.now()).toISOString();
@@ -1588,7 +1652,7 @@ export async function applyAutoAbandonMetadata(
 
     if (dryRun) continue;
 
-    const metadata = await getSession(specDir, candidate.sessionId);
+    const metadata = await getSession(sessionsDir, candidate.sessionId);
     if (!metadata) continue;
 
     const updated: SessionMetadata = {
@@ -1598,7 +1662,7 @@ export async function applyAutoAbandonMetadata(
       close_reason: closeReason,
     };
 
-    const metadataPath = getSessionMetadataPath(specDir, candidate.sessionId);
+    const metadataPath = getSessionMetadataPath(sessionsDir, candidate.sessionId);
     const content = YAML.stringify(updated, {
       indent: 2,
       lineWidth: 100,
@@ -1607,16 +1671,18 @@ export async function applyAutoAbandonMetadata(
     await fsPromises.writeFile(metadataPath, content, "utf-8");
   }
 
-  let shadowCommitted: boolean | undefined;
-  if (!dryRun && updates.length > 0 && options?.shadowCommitMessage) {
-    shadowCommitted = await shadowAutoCommit(specDir, options.shadowCommitMessage);
+  // AC: @session-branch-worktree ac-commit-boundaries — commit on stale cleanup
+  if (!dryRun && updates.length > 0) {
+    await commitAtLifecycleBoundary(
+      sessionsDir,
+      `session: stale cleanup (${updates.length} abandoned)`,
+    );
   }
 
   return {
     dryRun,
     updatedCount: updates.length,
     updates,
-    shadowCommitted,
   };
 }
 
@@ -1646,6 +1712,8 @@ export interface SessionLogSummary {
   status: SessionStatus;
   /** Agent type */
   agent_type: string;
+  /** Agent definition ID (e.g. worker, pr-reviewer). AC: @session-list-pagination-api ac-filter-agent-id */
+  agent_id?: string;
   /**
    * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
    * AC: @session-model-evolution ac-6
@@ -1674,10 +1742,10 @@ export interface SessionLogSummary {
  * Much faster than readEvents() for large files.
  */
 async function countEventLines(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<number> {
-  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
   try {
     const content = await fsPromises.readFile(eventsPath, "utf-8");
     if (!content.trim()) return 0;
@@ -1691,10 +1759,10 @@ async function countEventLines(
  * Count context-iter-*.json files for a session (iteration count).
  */
 async function countIterations(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<number> {
-  const sessionDir = getSessionDir(specDir, sessionId);
+  const sessionDir = getSessionDir(sessionsDir, sessionId);
   try {
     const entries = await fsPromises.readdir(sessionDir);
     return entries.filter(
@@ -1719,10 +1787,10 @@ async function countIterations(
  * We use a fast substring check before JSON parsing for performance.
  */
 async function countTaskCompletions(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<number> {
-  const eventsPath = getSessionEventsPath(specDir, sessionId);
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
   try {
     const content = await fsPromises.readFile(eventsPath, "utf-8");
     if (!content.trim()) return 0;
@@ -1759,21 +1827,21 @@ async function countTaskCompletions(
  *
  * Gathers metadata and computes metrics lazily (only parses what's needed).
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Session summary or null if session doesn't exist
  */
 export async function getSessionLogSummary(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<SessionLogSummary | null> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) return null;
 
   const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
-    countEventLines(specDir, sessionId),
-    countIterationsBoundaryAware(specDir, sessionId),
-    countTaskCompletions(specDir, sessionId),
+    countEventLines(sessionsDir, sessionId),
+    countIterationsBoundaryAware(sessionsDir, sessionId),
+    countTaskCompletions(sessionsDir, sessionId),
   ]);
 
   const startMs = new Date(metadata.started_at).getTime();
@@ -1786,6 +1854,7 @@ export async function getSessionLogSummary(
     id: metadata.id,
     status: metadata.status,
     agent_type: metadata.agent_type,
+    agent_id: metadata.agent_id,
     session_type: resolveSessionType(metadata),
     trigger: metadata.trigger,
     task_id: metadata.task_id,
@@ -1799,17 +1868,55 @@ export async function getSessionLogSummary(
 }
 
 /**
+ * Get session metadata only — reads session.yaml without touching events.jsonl.
+ *
+ * AC: @session-list-pagination-api ac-metadata-only — List endpoint reads only
+ * session.yaml metadata. Summary stats (event_count, iteration_count,
+ * tasks_completed) are set to 0 and computed lazily when a single session
+ * is requested via the detail endpoint.
+ */
+export async function getSessionMetadataOnly(
+  sessionsDir: string,
+  sessionId: string,
+): Promise<SessionLogSummary | null> {
+  const metadata = await getSession(sessionsDir, sessionId);
+  if (!metadata) return null;
+
+  const startMs = new Date(metadata.started_at).getTime();
+  const endMs = metadata.ended_at
+    ? new Date(metadata.ended_at).getTime()
+    : Date.now();
+  const durationMs = endMs - startMs;
+
+  return {
+    id: metadata.id,
+    status: metadata.status,
+    agent_type: metadata.agent_type,
+    agent_id: metadata.agent_id,
+    session_type: resolveSessionType(metadata),
+    trigger: metadata.trigger,
+    task_id: metadata.task_id,
+    started_at: metadata.started_at,
+    ended_at: metadata.ended_at,
+    duration_ms: durationMs,
+    event_count: 0,
+    iteration_count: 0,
+    tasks_completed: 0,
+  };
+}
+
+/**
  * Get summaries for all sessions.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @returns Array of session summaries
  */
 export async function getAllSessionLogSummaries(
-  specDir: string,
+  sessionsDir: string,
 ): Promise<SessionLogSummary[]> {
-  const sessionIds = await listSessions(specDir);
+  const sessionIds = await listSessions(sessionsDir);
   const summaries = await Promise.all(
-    sessionIds.map((id) => getSessionLogSummary(specDir, id)),
+    sessionIds.map((id) => getSessionLogSummary(sessionsDir, id)),
   );
   return summaries.filter((s): s is SessionLogSummary => s !== null);
 }
@@ -1822,19 +1929,19 @@ export async function getAllSessionLogSummaries(
  * This creates an audit trail of what context the agent saw at each iteration,
  * useful for debugging and reviewing agent behavior.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param iteration - Iteration number
  * @param context - The session context data
  */
 export async function saveSessionContext(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   iteration: number,
   context: unknown,
 ): Promise<void> {
-  const sessionDir = getSessionDir(specDir, sessionId);
-  const contextPath = getSessionContextPath(specDir, sessionId, iteration);
+  const sessionDir = getSessionDir(sessionsDir, sessionId);
+  const contextPath = getSessionContextPath(sessionsDir, sessionId, iteration);
 
   // Ensure session directory exists
   await fsPromises.mkdir(sessionDir, { recursive: true });
@@ -1847,17 +1954,17 @@ export async function saveSessionContext(
 /**
  * Read session context snapshot for a given iteration.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param iteration - Iteration number
  * @returns The context snapshot or null if not found
  */
 export async function readSessionContext(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   iteration: number,
 ): Promise<unknown | null> {
-  const contextPath = getSessionContextPath(specDir, sessionId, iteration);
+  const contextPath = getSessionContextPath(sessionsDir, sessionId, iteration);
 
   try {
     const content = await fsPromises.readFile(contextPath, "utf-8");
@@ -1882,15 +1989,15 @@ export type SessionIdResolution =
  *
  * AC: @session-log-show ac-7, ac-8, ac-9
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param idOrPrefix - Full session ID or prefix (e.g., first 8 chars)
  * @returns Resolution result
  */
 export async function resolveSessionId(
-  specDir: string,
+  sessionsDir: string,
   idOrPrefix: string,
 ): Promise<SessionIdResolution> {
-  const sessionIds = await listSessions(specDir);
+  const sessionIds = await listSessions(sessionsDir);
 
   // First, try exact match
   if (sessionIds.includes(idOrPrefix)) {
@@ -1957,10 +2064,10 @@ export interface SessionLogDetail {
  * Get iteration number from a context snapshot file.
  */
 async function getIterationNumbers(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<number[]> {
-  const sessionDir = getSessionDir(specDir, sessionId);
+  const sessionDir = getSessionDir(sessionsDir, sessionId);
   try {
     const entries = await fsPromises.readdir(sessionDir);
     const iterations: number[] = [];
@@ -2202,10 +2309,10 @@ function boundaryIterationGrouping(
  * AC: @session-log-show ac-2, ac-10
  */
 async function computeIterationSummaries(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<IterationSummary[]> {
-  const events = await readEvents(specDir, sessionId);
+  const events = await readEvents(sessionsDir, sessionId);
   const boundaries = findIterationBoundaries(events);
 
   if (boundaries.length > 0) {
@@ -2213,7 +2320,7 @@ async function computeIterationSummaries(
   }
 
   // Legacy fallback: no prompt.sent boundaries with phase "task-work"
-  const snapshotIterations = await getIterationNumbers(specDir, sessionId);
+  const snapshotIterations = await getIterationNumbers(sessionsDir, sessionId);
   return legacyIterationGrouping(events, snapshotIterations);
 }
 
@@ -2226,10 +2333,10 @@ async function computeIterationSummaries(
  * Falls back to counting context-iter-*.json files when no boundaries exist.
  */
 async function countIterationsBoundaryAware(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<number> {
-  const events = await readEvents(specDir, sessionId);
+  const events = await readEvents(sessionsDir, sessionId);
   const boundaries = findIterationBoundaries(events);
 
   if (boundaries.length > 0) {
@@ -2237,7 +2344,7 @@ async function countIterationsBoundaryAware(
   }
 
   // Legacy fallback: count from context snapshots and event data
-  const snapshotIterations = await getIterationNumbers(specDir, sessionId);
+  const snapshotIterations = await getIterationNumbers(sessionsDir, sessionId);
   const allIterations = new Set<number>(snapshotIterations);
   for (const event of events) {
     const data = event.data as { iteration?: number } | null;
@@ -2252,20 +2359,20 @@ async function countIterationsBoundaryAware(
 /**
  * Get full session detail for session log show.
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID (must be resolved first)
  * @returns Session detail or null if not found
  */
 export async function getSessionLogDetail(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<SessionLogDetail | null> {
-  const metadata = await getSession(specDir, sessionId);
+  const metadata = await getSession(sessionsDir, sessionId);
   if (!metadata) return null;
 
   const [eventCount, iterations] = await Promise.all([
-    countEventLines(specDir, sessionId),
-    computeIterationSummaries(specDir, sessionId),
+    countEventLines(sessionsDir, sessionId),
+    computeIterationSummaries(sessionsDir, sessionId),
   ]);
 
   const startMs = new Date(metadata.started_at).getTime();
@@ -2380,6 +2487,7 @@ export function computeSessionLogStats(
     abandoned: 0,
     timed_out: 0,
     failed: 0,
+    stalled: 0,
   };
 
   for (const s of summaries) {
@@ -2394,7 +2502,7 @@ export function computeSessionLogStats(
 
   // Build status breakdown
   const statusBreakdown: { status: SessionStatus; count: number; percentage: number }[] = [];
-  for (const status of ["completed", "active", "abandoned", "timed_out", "failed"] as SessionStatus[]) {
+  for (const status of ["completed", "active", "abandoned", "timed_out", "failed", "stalled"] as SessionStatus[]) {
     const count = statusCounts[status] || 0;
     if (count > 0) {
       statusBreakdown.push({
@@ -2427,7 +2535,7 @@ export function computeSessionLogStats(
  * AC: @session-log-stats ac-6
  */
 export async function computeToolUsageStats(
-  specDir: string,
+  sessionsDir: string,
   sessionIds: string[],
   limit: number = 10,
 ): Promise<ToolUsageStats[]> {
@@ -2435,7 +2543,7 @@ export async function computeToolUsageStats(
   let totalToolCalls = 0;
 
   for (const sessionId of sessionIds) {
-    const eventsPath = getSessionEventsPath(specDir, sessionId);
+    const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
     try {
       const content = await fsPromises.readFile(eventsPath, "utf-8");
       if (!content.trim()) continue;
@@ -2578,6 +2686,8 @@ export function computeTimePeriodStats(
 export interface SearchMatch {
   /** Session ID */
   session_id: string;
+  /** Event sequence number within the session log */
+  event_seq: number;
   /** Event timestamp (Unix ms) */
   timestamp: number;
   /** Event type */
@@ -2610,6 +2720,10 @@ export interface SearchOptions {
   sinceDate?: Date;
   /** Only search sessions with this agent type */
   agentType?: string;
+  /** Pre-filtered session IDs to search (bypasses internal metadata filtering) */
+  sessionIds?: string[];
+  /** Pre-filtered session summaries to search (avoids reloading metadata) */
+  sessionSummaries?: SessionLogSummary[];
   /** Maximum total matches to return (default: 50) */
   limit?: number;
   /** Resolve blob pointers and search full payload content */
@@ -2665,13 +2779,13 @@ function extractContentExcerpt(
  *
  * AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param pattern - Case-insensitive substring to search for
  * @param options - Search filtering options
  * @returns Array of search results grouped by session
  */
 export async function searchSessionEvents(
-  specDir: string,
+  sessionsDir: string,
   pattern: string,
   options: SearchOptions = {},
 ): Promise<SessionSearchResult[]> {
@@ -2681,22 +2795,31 @@ export async function searchSessionEvents(
   const lowerPattern = pattern.toLowerCase();
   const resolveBlobs = options.resolveBlobs ?? false;
 
-  // Get all session summaries for metadata filtering
-  const allSummaries = await getAllSessionLogSummaries(specDir);
+  // Use pre-filtered session IDs if provided, otherwise load and filter
+  let filteredSummaries: SessionLogSummary[];
+  if (options.sessionSummaries) {
+    filteredSummaries = [...options.sessionSummaries];
+  } else if (options.sessionIds) {
+    const idSet = new Set(options.sessionIds);
+    const allSummaries = await getAllSessionLogSummaries(sessionsDir);
+    filteredSummaries = allSummaries.filter((s) => idSet.has(s.id));
+  } else {
+    const allSummaries = await getAllSessionLogSummaries(sessionsDir);
 
-  // AC: @session-log-search ac-3 - Pre-filter by --since
-  let filteredSummaries = allSummaries;
-  if (options.sinceDate) {
-    filteredSummaries = filteredSummaries.filter(
-      (s) => new Date(s.started_at) >= options.sinceDate!,
-    );
-  }
+    // AC: @session-log-search ac-3 - Pre-filter by --since
+    filteredSummaries = allSummaries;
+    if (options.sinceDate) {
+      filteredSummaries = filteredSummaries.filter(
+        (s) => new Date(s.started_at) >= options.sinceDate!,
+      );
+    }
 
-  // AC: @session-log-search ac-7 - Pre-filter by --agent
-  if (options.agentType) {
-    filteredSummaries = filteredSummaries.filter(
-      (s) => s.agent_type === options.agentType,
-    );
+    // AC: @session-log-search ac-7 - Pre-filter by --agent
+    if (options.agentType) {
+      filteredSummaries = filteredSummaries.filter(
+        (s) => s.agent_type === options.agentType,
+      );
+    }
   }
 
   const results: SessionSearchResult[] = [];
@@ -2705,7 +2828,7 @@ export async function searchSessionEvents(
   for (const summary of filteredSummaries) {
     if (totalMatches >= limit) break;
 
-    const eventsPath = getSessionEventsPath(specDir, summary.id);
+    const eventsPath = getSessionEventsPath(sessionsDir, summary.id);
     let content: string;
     try {
       content = await fsPromises.readFile(eventsPath, "utf-8");
@@ -2746,7 +2869,7 @@ export async function searchSessionEvents(
         }
 
         const searchableData = resolveBlobs
-          ? await resolveSessionBlobPointers(specDir, summary.id, event.data)
+          ? await resolveSessionBlobPointers(sessionsDir, summary.id, event.data)
           : event.data;
 
         // Verify match in stringified data (not just line, in case pattern
@@ -2757,6 +2880,7 @@ export async function searchSessionEvents(
         // AC: @session-log-search ac-4 - Create match with excerpt
         matches.push({
           session_id: summary.id,
+          event_seq: typeof event.seq === "number" ? event.seq : -1,
           timestamp: event.ts,
           event_type: event.type,
           content_excerpt: extractContentExcerpt(searchableData, pattern, 200),
@@ -2794,12 +2918,12 @@ export async function searchSessionEvents(
  * AC: @session-creation-and-env-injection ac-budget-local
  * AC: @session-creation-and-env-injection ac-library
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param input - Session creation parameters
  * @returns Session metadata and optional budget (no console output)
  */
 export async function createSessionWithBudget(
-  specDir: string,
+  sessionsDir: string,
   input: {
     id: string;
     agent_type: string;
@@ -2812,7 +2936,7 @@ export async function createSessionWithBudget(
   budget: TaskBudget | null;
 }> {
   // Create session
-  const session = await createSession(specDir, {
+  const session = await createSession(sessionsDir, {
     id: input.id,
     agent_type: input.agent_type,
     task_id: input.task_id,
@@ -2821,7 +2945,7 @@ export async function createSessionWithBudget(
   // Optionally create budget
   let budget: TaskBudget | null = null;
   if (input.budget !== undefined && input.budget > 0) {
-    budget = await createBudget(specDir, input.id, input.budget);
+    budget = await createBudget(sessionsDir, input.id, input.budget);
   }
 
   return {
@@ -3299,12 +3423,12 @@ export async function removeEnvForAdapter(
  *
  * AC: @session-creation-and-env-injection ac-invalid-session
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - The session ID to validate
  * @returns Validation result with error details if invalid
  */
 export async function validateSessionId(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<{
   valid: boolean;
@@ -3313,7 +3437,7 @@ export async function validateSessionId(
   suggestion?: string;
 }> {
   // Check if session directory exists
-  const exists = await sessionExists(specDir, sessionId);
+  const exists = await sessionExists(sessionsDir, sessionId);
   if (!exists) {
     return {
       valid: false,
@@ -3323,7 +3447,7 @@ export async function validateSessionId(
   }
 
   // Try to read and validate session metadata
-  const session = await getSession(specDir, sessionId);
+  const session = await getSession(sessionsDir, sessionId);
   if (!session) {
     return {
       valid: false,
@@ -3357,19 +3481,19 @@ async function writeBudgetAtomic(
 /**
  * Create a budget for a session.
  *
- * Writes budget.json to .kspec/sessions/{id}/ on the local filesystem
+ * Writes budget.json to .kspec-sessions/{id}/ on the local filesystem
  * (NOT committed to shadow branch).
  *
  * AC: @session-creation-and-env-injection ac-budget
  * AC: @session-creation-and-env-injection ac-budget-local
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @param maxPerCycle - Maximum tasks allowed per cycle
  * @returns The created budget
  */
 export async function createBudget(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
   maxPerCycle: number,
 ): Promise<TaskBudget> {
@@ -3378,7 +3502,7 @@ export async function createBudget(
     started_this_cycle: 0,
   };
   const validated = TaskBudgetSchema.parse(budget);
-  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
   await writeBudgetAtomic(budgetPath, validated);
   return validated;
 }
@@ -3388,15 +3512,15 @@ export async function createBudget(
  *
  * AC: @task-budget-enforcement ac-no-budget
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Budget or null if no budget configured (opt-in)
  */
 export async function getBudget(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<TaskBudget | null> {
-  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
   let content: string;
   try {
     content = await fsPromises.readFile(budgetPath, "utf-8");
@@ -3422,12 +3546,12 @@ export async function getBudget(
  * AC: @task-budget-enforcement ac-no-budget
  * AC: @task-budget-enforcement ac-no-session
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID, or undefined if KSPEC_SESSION_ID not set
  * @returns Budget check result
  */
 export async function checkBudget(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string | undefined,
 ): Promise<{
   allowed: boolean;
@@ -3439,7 +3563,16 @@ export async function checkBudget(
     return { allowed: true };
   }
 
-  const budget = await getBudget(specDir, sessionId);
+  // Skip budget enforcement when session exists but is not active (stale KSPEC_SESSION_ID).
+  // A completed, abandoned, timed_out, failed, or stalled session should not block task starts.
+  // If session metadata is missing, proceed with normal budget checks — the budget file
+  // itself is the authority on whether enforcement applies.
+  const session = await getSession(sessionsDir, sessionId);
+  if (session && session.status !== "active") {
+    return { allowed: true };
+  }
+
+  const budget = await getBudget(sessionsDir, sessionId);
 
   // AC: @task-budget-enforcement ac-no-budget — no budget means no check
   if (!budget) {
@@ -3468,15 +3601,15 @@ export async function checkBudget(
  * AC: @task-budget-enforcement ac-increment
  * AC: @task-budget-enforcement ac-atomic-write
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Updated budget, or null if no budget configured
  */
 export async function incrementBudget(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<TaskBudget | null> {
-  const budget = await getBudget(specDir, sessionId);
+  const budget = await getBudget(sessionsDir, sessionId);
   if (!budget) {
     return null;
   }
@@ -3486,7 +3619,7 @@ export async function incrementBudget(
     started_this_cycle: budget.started_this_cycle + 1,
   };
   const validated = TaskBudgetSchema.parse(updated);
-  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
   await writeBudgetAtomic(budgetPath, validated);
   return validated;
 }
@@ -3500,15 +3633,15 @@ export async function incrementBudget(
  * AC: @task-budget-enforcement ac-reset
  * AC: @task-budget-enforcement ac-atomic-write
  *
- * @param specDir - The .kspec directory path
+ * @param sessionsDir - The .kspec directory path
  * @param sessionId - Session ID
  * @returns Updated budget, or null if no budget configured
  */
 export async function resetBudget(
-  specDir: string,
+  sessionsDir: string,
   sessionId: string,
 ): Promise<TaskBudget | null> {
-  const budget = await getBudget(specDir, sessionId);
+  const budget = await getBudget(sessionsDir, sessionId);
   if (!budget) {
     return null;
   }
@@ -3518,7 +3651,7 @@ export async function resetBudget(
     started_this_cycle: 0,
   };
   const validated = TaskBudgetSchema.parse(updated);
-  const budgetPath = getSessionBudgetPath(specDir, sessionId);
+  const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
   await writeBudgetAtomic(budgetPath, validated);
   return validated;
 }

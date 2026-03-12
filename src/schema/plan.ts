@@ -41,13 +41,14 @@ export const PlanSchema = z.object({
   status: PlanStatusSchema.default("draft"),
 
   // Links to derived work
-  // AC: @plan-derive ac-5 - updated when tasks are derived
+  // AC: @plan-derive-enhanced ac-status-transition - updated when plans are derived
   derived_tasks: z.array(RefSchema).default([]),
   derived_specs: z.array(RefSchema).default([]),
 
   // Source tracking (if imported from file)
   // AC: @plan-import ac-24
   source_path: z.string().nullable().optional(),
+  module_ref: RefSchema.nullable().optional(),
 
   // Timestamps (auto-populated if not provided)
   created_at: DateTimeSchema.default(() => new Date().toISOString()),
@@ -81,6 +82,7 @@ export const PlanInputSchema = z.object({
 
   // Source tracking
   source_path: z.string().nullable().optional(),
+  module_ref: RefSchema.nullable().optional(),
 
   // Timestamps
   created_at: DateTimeSchema.optional(),

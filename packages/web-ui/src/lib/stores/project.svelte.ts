@@ -172,6 +172,16 @@ export function isInitialized(): boolean {
 }
 
 /**
+ * Initialize the project store for static mode.
+ * In static mode there are no daemon projects to load, but pages gate
+ * data loading on isInitialized(). This sets the flag so those gates pass.
+ * AC: @gh-pages-export ac-25
+ */
+export function initializeForStaticMode(): void {
+	initialized = true;
+}
+
+/**
  * Clear invalid selection and prompt user to select valid project
  * AC: @multi-directory-daemon ac-36 - Invalid project recovery
  */

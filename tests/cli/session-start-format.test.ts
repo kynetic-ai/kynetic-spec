@@ -36,8 +36,9 @@
  * @trait-semantic-exit-codes ac-8 (documentation — exit codes documented in exit-codes.ts)
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { parse as yamlParse, stringify as yamlStringify } from 'yaml';
 import {
   kspec,
   kspecJson,
@@ -45,8 +46,46 @@ import {
   cleanupTempDir,
   initGitRepo,
   git,
+  testUlids,
 } from '../helpers/cli';
 import type { SessionContext } from '../helpers/session-types';
+
+/**
+ * Seed completed tasks directly into fixture YAML instead of using CLI subprocess loops.
+ * Each task gets a unique ULID and staggered completed_at timestamps so they appear
+ * as distinct items in the activity timeline.
+ *
+ * AC: @test-suite-perf-reliability ac-1
+ */
+function seedCompletedTasks(dir: string, count: number): void {
+  const tasksFile = join(dir, 'project.tasks.yaml');
+  const existing = yamlParse(readFileSync(tasksFile, 'utf8')) as { tasks: unknown[] };
+  const ulids = testUlids('TMLN', count);
+
+  for (let i = 0; i < count; i++) {
+    const hour = (i + 1).toString().padStart(2, '0');
+    existing.tasks.push({
+      _ulid: ulids[i],
+      slugs: [`timeline-task-${i + 1}`],
+      title: `Task ${i + 1}`,
+      type: 'task',
+      status: 'completed',
+      priority: 3,
+      tags: ['test'],
+      description: `Completed task ${i + 1} for timeline`,
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: `2026-01-01T00:00:00Z`,
+      started_at: `2026-01-01T00:${hour}:00Z`,
+      submitted_at: `2026-01-01T00:${hour}:30Z`,
+      completed_at: `2026-01-01T${hour}:00:00Z`,
+      closed_reason: 'Done',
+    });
+  }
+
+  writeFileSync(tasksFile, yamlStringify(existing));
+}
 
 describe('session start format rewrite', () => {
   let tempDir: string;
@@ -75,14 +114,10 @@ describe('session start format rewrite', () => {
       expect(session.ready_tasks.length).toBe(5);
     });
 
-    it('should limit activity timeline to 10 items in primer mode', { timeout: 30000 }, () => {
-      // Create and complete 12 tasks to get 12 activity items
-      for (let i = 1; i <= 12; i++) {
-        kspec(`task add --title "Task ${i}" --slug task-${i}`, tempDir);
-        kspec(`task start @task-${i}`, tempDir);
-        kspec(`task submit @task-${i}`, tempDir);
-        kspec(`task complete @task-${i} --reason "Done"`, tempDir);
-      }
+    // AC: @test-suite-perf-reliability ac-1
+    it('should limit activity timeline to 10 items in primer mode', () => {
+      // Seed 12 completed tasks directly into fixture YAML instead of 48 CLI calls
+      seedCompletedTasks(tempDir, 12);
 
       const session = kspecJson<SessionContext>('session start --json', tempDir);
       expect(session.activity_timeline.length).toBeLessThanOrEqual(10);
@@ -116,14 +151,10 @@ describe('session start format rewrite', () => {
       expect(fullSession.ready_tasks.length).toBeGreaterThan(5);
     });
 
-    it('should show up to 20 activity items in full mode', { timeout: 30000 }, () => {
-      // Create and complete 12 tasks
-      for (let i = 1; i <= 12; i++) {
-        kspec(`task add --title "Task ${i}" --slug task-${i}`, tempDir);
-        kspec(`task start @task-${i}`, tempDir);
-        kspec(`task submit @task-${i}`, tempDir);
-        kspec(`task complete @task-${i} --reason "Done"`, tempDir);
-      }
+    // AC: @test-suite-perf-reliability ac-1
+    it('should show up to 20 activity items in full mode', () => {
+      // Seed 12 completed tasks directly into fixture YAML instead of 48 CLI calls
+      seedCompletedTasks(tempDir, 12);
 
       const session = kspecJson<SessionContext>('session start --full --json', tempDir);
       expect(session.activity_timeline.length).toBeLessThanOrEqual(20);

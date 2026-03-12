@@ -10,10 +10,10 @@
  */
 
 import { watch, type FSWatcher } from 'fs';
-import { readFile } from 'fs/promises';
+import { readFile, lstat } from 'fs/promises';
 import { parse as parseYaml } from 'yaml';
 import chokidar, { type FSWatcher as ChokidarWatcher } from 'chokidar';
-import { join } from 'path';
+import { join, relative } from 'path';
 
 export interface WatcherOptions {
   kspecDir: string;
@@ -68,6 +68,8 @@ export class KspecWatcher {
         if (!filename || !filename.endsWith('.yaml')) return;
 
         const fullPath = join(this.options.kspecDir, filename);
+        // Guard against nested .kspec symlink loops (e.g. .kspec/.kspec -> .kspec)
+        if (this.isNestedKspecPath(fullPath)) return;
         this.handleFileChange(fullPath);
       }
     );
@@ -81,6 +83,8 @@ export class KspecWatcher {
   private async startChokidarWatcher(): Promise<void> {
     this.watcher = chokidar.watch(join(this.options.kspecDir, '**/*.yaml'), {
       ignoreInitial: true,
+      followSymlinks: false,
+      ignored: (filePath: string) => this.isNestedKspecPath(filePath),
       awaitWriteFinish: {
         stabilityThreshold: 100,
         pollInterval: 50
@@ -123,6 +127,12 @@ export class KspecWatcher {
    */
   private async processFileChange(filePath: string): Promise<void> {
     try {
+      if (this.isNestedKspecPath(filePath)) return;
+
+      // Skip symlinks to prevent ELOOP errors
+      const stat = await lstat(filePath);
+      if (stat.isSymbolicLink()) return;
+
       const content = await readFile(filePath, 'utf-8');
 
       // AC-6: Validate YAML before broadcasting
@@ -141,6 +151,18 @@ export class KspecWatcher {
       console.error('[watcher] Error reading file:', error);
       this.handleWatcherError(error as Error);
     }
+  }
+
+  /**
+   * Ignore only recursive ".kspec" entries inside the watched root, not the
+   * root .kspec directory itself.
+   */
+  private isNestedKspecPath(filePath: string): boolean {
+    const relPath = relative(this.options.kspecDir, filePath);
+    if (!relPath || relPath === '' || relPath.startsWith('..')) return false;
+
+    const [firstSegment] = relPath.split(/[\\/]+/);
+    return firstSegment === '.kspec';
   }
 
   /**

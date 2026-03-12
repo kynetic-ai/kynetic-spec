@@ -7,6 +7,7 @@ This guide covers installing and setting up kspec in your own projects. For deve
 - **Node.js** v18 or later
 - **npm** (or pnpm/yarn)
 - **Git** - Your project must be a git repository for shadow branch mode (the default)
+- **Bun** (optional) - Required only for the daemon/web UI (`kspec serve`). Not needed for CLI-only usage. Install from [bun.sh](https://bun.sh/docs/installation)
 
 ## Installation
 
@@ -70,7 +71,7 @@ This creates:
     main.yaml               # Spec items
 ```
 
-The shadow branch (`kspec-meta`) keeps spec/task files separate from your main branch history. If you're not using git or prefer simpler setup, use `kspec init --no-shadow` to create files in `spec/` instead. See [AGENTS.md](AGENTS.md#shadow-branch-worktree-architecture) for architecture details.
+The shadow branch (`kspec-meta`) keeps spec/task files separate from your main branch history. If you're not using git or prefer simpler setup, use `kspec init --no-shadow` to create files in `spec/` instead. See [kspec-agents.md](kspec-agents.md#shadow-branch-architecture) for architecture details.
 
 ### Existing kspec Project (Cloning a Repo)
 
@@ -97,7 +98,7 @@ kspec setup --dry-run    # Preview what would be configured
 kspec setup --no-hooks   # Skip hook installation
 ```
 
-For manual configuration or supported agent list, see [README.md Agent Integration](README.md#agent-integration).
+For broader setup context and the spec-first workflow after install, see [README.md](README.md#how-it-works) and [docs/getting-started.md](docs/getting-started.md).
 
 ## Verification
 
@@ -135,12 +136,13 @@ kspec task note @task-slug "..." # Document what you're doing
 kspec inbox add "..."            # Capture ideas for later
 ```
 
-See [README.md](README.md#task-management) for full command reference.
+See [docs/getting-started.md](docs/getting-started.md) for the full first-task walkthrough.
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
+| "Bun runtime is required" | Install Bun: `curl -fsSL https://bun.sh/install \| bash` (only needed for `kspec serve`) |
 | "kspec: command not found" | Run `npm install -g @kynetic-ai/spec`, or if using source: `npm link` |
 | "Not a git repository" | Run `git init` first, or use `kspec init --no-shadow` |
 | "Cannot find .kspec" | Run `kspec init` (fresh project) or `kspec setup --auto-worktree` (cloned repo) |
@@ -159,5 +161,6 @@ kspec init --force     # Reinitialize completely (use as last resort)
 
 ## Next Steps
 
+- [docs/getting-started.md](docs/getting-started.md) - End-to-end tutorial from install to first completed task
 - [AGENTS.md](AGENTS.md) - Detailed workflows for AI agents
-- [README.md](README.md#task-management) - Full CLI reference
+- [README.md](README.md) - Package overview and workflow summary

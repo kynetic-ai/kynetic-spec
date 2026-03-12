@@ -10,6 +10,7 @@
 	import type { SessionDetail, SessionEvent as SessionEventType } from '$lib/api';
 	import { fetchSession, fetchSessionEvents, fetchTasks } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
+	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import { parseEventsToBlocks, accumulateStreamingText, getLastSeq, type DisplayBlock } from '$lib/components/session/session-utils';
 	import SessionStream from '$lib/components/session/SessionStream.svelte';
@@ -34,6 +35,12 @@
 	let refreshTimer: ReturnType<typeof setInterval> | undefined;
 
 	async function loadSession() {
+		if (isStaticMode()) {
+			loading = false;
+			error = '';
+			return;
+		}
+
 		loading = true;
 		error = '';
 		try {
@@ -117,20 +124,26 @@
 		loadSession();
 
 		// Subscribe to agent events for live streaming
-		subscribe(['agents']);
-		on('agents', handleAgentEvent);
+		if (!isStaticMode()) {
+			subscribe(['agents']);
+			on('agents', handleAgentEvent);
+		}
 
 		// AC: @ui-session-stream ac-2 — Periodic refresh (every 3s for live sessions)
-		refreshTimer = setInterval(() => {
-			if (isLive) {
-				refreshEvents();
-			}
-		}, 3000);
+		if (!isStaticMode()) {
+			refreshTimer = setInterval(() => {
+				if (isLive) {
+					refreshEvents();
+				}
+			}, 3000);
+		}
 	});
 
 	onDestroy(() => {
-		off('agents', handleAgentEvent);
-		unsubscribe(['agents']);
+		if (!isStaticMode()) {
+			off('agents', handleAgentEvent);
+			unsubscribe(['agents']);
+		}
 		if (refreshTimer) clearInterval(refreshTimer);
 	});
 </script>
@@ -174,6 +187,10 @@
 	<!-- Loading skeleton -->
 	{#if loading}
 		<SessionStreamSkeleton />
+	{:else if isStaticMode()}
+		<div class="mx-4 mt-4 rounded-lg border border-dashed p-6 text-sm text-muted-foreground" data-testid="session-static-message">
+			Session history is not included in the static export. Open the live daemon-backed UI to inspect session streams.
+		</div>
 	{:else if session}
 		<!-- Main content: context panel + stream -->
 		<div class="flex flex-1 min-h-0">
