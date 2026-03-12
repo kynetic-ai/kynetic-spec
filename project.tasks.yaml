@@ -91550,7 +91550,7 @@
   spec_ref: "@dispatch-invocation-worktree-isolation"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91562,7 +91562,7 @@
     - worktree
     - runtime
   vcs_refs: []
-  session_id: 01KKHNJYNS5VF0YMX3JXV8SB0S
+  session_id: null
   created_at: 2026-03-12T02:33:54.840Z
   started_at: 2026-03-12T18:51:23.805Z
   submitted_at: 2026-03-12T18:51:27.838Z
@@ -91660,6 +91660,12 @@
         - Verification: npm test -- tests/dispatch-workspace-config.test.ts
         tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts; npm
         test; kspec validate (warnings-only baseline, exit 6).
+      supersedes: null
+    - _ulid: 01KKHPHEBKJN75VG0RJ1PKCBH8
+      created_at: 2026-03-12T18:56:57.203Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #802 is conflicting with main and cannot be
+        merged until the dispatch worktree isolation changes are rebased/resolved and revalidated."
       supersedes: null
   todos: []
   automation: eligible
