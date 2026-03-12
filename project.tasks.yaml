@@ -87698,6 +87698,16 @@
         confirming the task needs scope re-cut or follow-up tasks rather than more synthetic
         coverage."
       supersedes: null
+    - _ulid: 01KKHJK7Y5Q7VQCTKDGQWSSZRJ
+      created_at: 2026-03-12T17:48:01.862Z
+      author: Jacob Chapel
+      content: "Removed the repo-wide own-coverage count assertion from
+        tests/test-annotation-sweep.test.ts. A hardcoded missing-coverage number is too brittle
+        because it changes as specs/ACs evolve. The sweep guard now only enforces stable local
+        invariants for this task: zero trait-coverage regressions, no bare blanket refs in the
+        targeted sweep set, and no filename-registry shortcut test. Honest completeness should be
+        measured for follow-up scoping, not pinned as a unit-test threshold."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
