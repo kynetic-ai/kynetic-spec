@@ -14,9 +14,12 @@ import type {
   DispatchWorkspaceBootstrapState,
   DispatchWorkspaceCleanupState as RegistryCleanupState,
   DispatchWorkspaceHealthState,
-  DispatchWorkspaceIntegrationState,
+  DispatchWorkspaceIntegrationState as RegistryIntegrationRecord,
+  DispatchWorkspaceIntegrationStatus,
+  DispatchWorkspaceIntegrationOutcome as RegistryIntegrationOutcome,
   DispatchWorkspaceIssue,
   DispatchWorkspaceLifecycleState,
+  DispatchWorkspacePublicationMode as RegistryPublicationMode,
   DispatchWorkspaceRecord,
   DispatchWorkspaceRole as RegistryRole,
   DispatchWorkspaceWorktree,
@@ -42,15 +45,20 @@ export interface DispatchWorkspaceMetadata {
   baseBranch: string;
   baseBranchPoint: string;
   mergeTargetBranch: string;
+  integrationTargetBranch: string;
+  integrationTargetCommit: string;
   canonicalBranch: string;
   canonicalBranchHead: string;
+  publicationMode: DispatchWorkspacePublicationMode;
+  integrationState: DispatchWorkspaceIntegrationState;
+  integrationOutcome: DispatchWorkspaceIntegrationOutcome;
+  integrationUpdatedAt: string;
   worktreeRoot: string;
   workerWorktreeDir: string;
   reviewerWorktreeDir: string | null;
   lifecycleState: DispatchWorkspaceLifecycleState;
   activeRole: RegistryRole | null;
   bootstrapState: DispatchWorkspaceBootstrapState;
-  integrationState: DispatchWorkspaceIntegrationState;
   healthState: DispatchWorkspaceHealthState;
   cleanupState: RegistryCleanupState;
   createdAt: string;
@@ -61,6 +69,12 @@ export interface DispatchWorkspaceMetadata {
 }
 
 export type DispatchWorkspaceRole = "worker" | "reviewer";
+
+export type DispatchWorkspacePublicationMode = RegistryPublicationMode;
+
+export type DispatchWorkspaceIntegrationState = DispatchWorkspaceIntegrationStatus;
+
+export type DispatchWorkspaceIntegrationOutcome = RegistryIntegrationOutcome;
 
 export interface ProvisionDispatchWorkspaceOptions {
   projectDir: string;
@@ -218,6 +232,70 @@ function resolveCommit(cwd: string, ref: string): string {
   );
 }
 
+function commandAvailable(command: string): boolean {
+  const result = spawnSync(command, ["--version"], {
+    encoding: "utf-8",
+    stdio: "pipe",
+  });
+  return result.status === 0;
+}
+
+function hasGitHubRemote(projectDir: string): boolean {
+  for (const remote of listGitRemotes(projectDir)) {
+    const result = runGit(projectDir, ["remote", "get-url", remote]);
+    if (result.status !== 0 || !result.stdout) {
+      continue;
+    }
+    if (
+      result.stdout.includes("github.com/") ||
+      result.stdout.includes("github.com:")
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function resolvePublicationMode(projectDir: string): DispatchWorkspacePublicationMode {
+  return commandAvailable("gh") && hasGitHubRemote(projectDir)
+    ? "pull_request"
+    : "manual_merge";
+}
+
+function resolveWorkspacePublicationMode(
+  projectDir: string,
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+): DispatchWorkspacePublicationMode {
+  if (!existingRecord) {
+    return resolvePublicationMode(projectDir);
+  }
+
+  switch (existingRecord.integration.status) {
+    case "pending":
+    case "in_progress":
+      return resolvePublicationMode(projectDir);
+    default:
+      return existingRecord.integration.publication_mode;
+  }
+}
+
+function resolveIntegrationOutcome(
+  publicationMode: DispatchWorkspacePublicationMode,
+  integrationState: DispatchWorkspaceIntegrationState,
+): DispatchWorkspaceIntegrationOutcome {
+  switch (integrationState) {
+    case "merged":
+      return "merged";
+    case "abandoned":
+      return "abandoned";
+    case "reset":
+      return "reset";
+    case "pending":
+    default:
+      return publicationMode === "pull_request" ? "pull_request" : "manual_merge";
+  }
+}
+
 function parseWorktreeList(projectDir: string): Array<{ path: string; branch: string | null }> {
   const result = runGit(projectDir, ["worktree", "list", "--porcelain"]);
   if (result.status !== 0 || !result.stdout) {
@@ -295,14 +373,19 @@ function resolveCleanupRecord(
 
 function resolveIntegrationRecord(
   targetBranch: string,
+  targetCommit: string,
+  publicationMode: DispatchWorkspacePublicationMode,
   cleanupState: ResolveDispatchWorkspaceCleanupStateOptions | undefined,
   existingRecord: LoadedDispatchWorkspaceRecord | undefined,
   now: string,
-): DispatchWorkspaceIntegrationState {
+): RegistryIntegrationRecord {
   const status = cleanupState?.integrationState ?? existingRecord?.integration.status ?? "pending";
   return {
     status,
     target_branch: targetBranch,
+    target_commit: existingRecord?.integration.target_commit ?? targetCommit,
+    publication_mode: publicationMode,
+    outcome: resolveIntegrationOutcome(publicationMode, status),
     detail: cleanupState?.integrationState ? `integration:${cleanupState.integrationState}` : existingRecord?.integration.detail ?? null,
     updated_at: now,
   };
@@ -313,7 +396,7 @@ function resolveRegistryStateForTaskStatus(
   existingRecord: LoadedDispatchWorkspaceRecord,
   now: string,
 ): {
-  integration: DispatchWorkspaceIntegrationState;
+  integration: RegistryIntegrationRecord;
   cleanup: RegistryCleanupState;
 } {
   if (taskStatus === "completed") {
@@ -324,6 +407,8 @@ function resolveRegistryStateForTaskStatus(
     return {
       integration: resolveIntegrationRecord(
         existingRecord.integration.target_branch,
+        existingRecord.integration.target_commit,
+        existingRecord.integration.publication_mode,
         cleanupState,
         existingRecord,
         now,
@@ -346,6 +431,8 @@ function resolveRegistryStateForTaskStatus(
     return {
       integration: resolveIntegrationRecord(
         existingRecord.integration.target_branch,
+        existingRecord.integration.target_commit,
+        existingRecord.integration.publication_mode,
         cleanupState,
         existingRecord,
         now,
@@ -373,6 +460,8 @@ function resolveRegistryStateForTaskStatus(
     return {
       integration: resolveIntegrationRecord(
         existingRecord.integration.target_branch,
+        existingRecord.integration.target_commit,
+        existingRecord.integration.publication_mode,
         cleanupState,
         existingRecord,
         now,
@@ -396,7 +485,7 @@ function resolveRegistryStateForTaskStatus(
 function resolveLifecycleState(
   taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"],
   health: DispatchWorkspaceHealthState,
-  integration: DispatchWorkspaceIntegrationState,
+  integration: RegistryIntegrationRecord,
   cleanup: RegistryCleanupState,
   activeRole: RegistryRole | null,
 ): DispatchWorkspaceLifecycleState {
@@ -500,15 +589,20 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
     baseBranch: record.resolved_base_branch,
     baseBranchPoint: record.base_branch_point,
     mergeTargetBranch: record.integration.target_branch,
+    integrationTargetBranch: record.integration.target_branch,
+    integrationTargetCommit: record.integration.target_commit,
     canonicalBranch: record.canonical_branch,
     canonicalBranchHead: record.canonical_branch_head,
+    publicationMode: record.integration.publication_mode,
+    integrationState: record.integration.status,
+    integrationOutcome: record.integration.outcome,
+    integrationUpdatedAt: record.integration.updated_at,
     worktreeRoot: record.worktree_root,
     workerWorktreeDir: record.worktrees.worker.path,
     reviewerWorktreeDir: record.worktrees.reviewer?.path ?? null,
     lifecycleState: record.lifecycle_state,
     activeRole: record.active_role ?? null,
     bootstrapState: record.bootstrap,
-    integrationState: record.integration,
     healthState: record.health,
     cleanupState: record.cleanup,
     createdAt: record.timestamps.created_at,
@@ -770,6 +864,8 @@ export async function reconcileDispatchWorkspaceLifecycle(
   const cleanup = resolveCleanupRecord(cleanupState, existingRecord, now);
   const integration = resolveIntegrationRecord(
     existingRecord.integration.target_branch,
+    existingRecord.integration.target_commit,
+    existingRecord.integration.publication_mode,
     cleanupState,
     existingRecord,
     now,
@@ -868,6 +964,8 @@ export async function provisionDispatchWorkspace(
     existingRecord,
   );
   const mergeTargetBranch = existingRecord?.integration.target_branch ?? baseBranch;
+  const integrationTargetCommit = existingRecord?.integration.target_commit ?? baseBranchPoint;
+  const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord);
   const now = new Date().toISOString();
   const provisioningRecord: DispatchWorkspaceRecord = {
     workspace_id: workspaceId,
@@ -893,6 +991,8 @@ export async function provisionDispatchWorkspace(
     bootstrap: existingRecord?.bootstrap ?? defaultBootstrapState(now),
     integration: resolveIntegrationRecord(
       mergeTargetBranch,
+      integrationTargetCommit,
+      publicationMode,
       cleanupState,
       existingRecord,
       now,
@@ -959,6 +1059,8 @@ export async function provisionDispatchWorkspace(
   }, now);
   const integration = resolveIntegrationRecord(
     mergeTargetBranch,
+    integrationTargetCommit,
+    publicationMode,
     cleanupState,
     existingRecord,
     now,

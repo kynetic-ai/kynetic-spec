@@ -277,6 +277,85 @@ describe("dispatch workspace registry", () => {
     ).rejects.toThrow(/multiple active dispatch workspace records/i);
   });
 
+  it("hydrates legacy integration metadata when older registry records are reloaded", async () => {
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    const now = new Date().toISOString();
+    const taskRef = `@${testUlid("TASK", 28)}`;
+
+    await fs.writeFile(
+      registryPath,
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [
+          {
+            workspace_id: "dispatch-workspace-legacy",
+            task_ref: taskRef,
+            task_slug: "task-legacy-dispatch-registry",
+            worktree_root: path.join(tempDir, ".kspec-worktrees"),
+            resolved_base_branch: "main",
+            base_branch_point: "abc123",
+            canonical_branch: "dispatch/task/task-legacy-dispatch-registry/legacy",
+            canonical_branch_head: "def456",
+            lifecycle_state: "ready",
+            active_role: null,
+            worktrees: {
+              worker: {
+                path: path.join(tempDir, ".kspec-worktrees", "dispatch-workspace-legacy"),
+                branch_mode: "branch",
+                branch_ref: "dispatch/task/task-legacy-dispatch-registry/legacy",
+                head: "def456",
+                last_seen_at: now,
+              },
+              reviewer: null,
+            },
+            bootstrap: {
+              status: "not_started",
+              detail: null,
+              updated_at: now,
+            },
+            integration: {
+              status: "pending",
+              target_branch: "main",
+              detail: null,
+              updated_at: now,
+            },
+            health: {
+              status: "healthy",
+              summary: "healthy",
+              issues: [],
+              updated_at: now,
+            },
+            cleanup: {
+              status: "not_scheduled",
+              eligible: false,
+              reason: null,
+              detail: null,
+              updated_at: now,
+            },
+            timestamps: {
+              created_at: now,
+              updated_at: now,
+              last_reconciled_at: now,
+              last_active_at: null,
+              closed_at: null,
+            },
+          },
+        ],
+      }),
+      "utf-8",
+    );
+
+    const [record] = await loadDispatchWorkspaceRegistry(ctx);
+    expect(record?.integration).toMatchObject({
+      status: "pending",
+      target_branch: "main",
+      target_commit: "abc123",
+      publication_mode: "manual_merge",
+      outcome: "manual_merge",
+    });
+  });
+
   // AC: @dispatch-workspace-registry ac-4
   // AC: @dispatch-workspace-registry ac-5
   it("reloads registry state on startup and marks missing worktrees stale with recovery data", async () => {
