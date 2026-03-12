@@ -2920,25 +2920,22 @@ requirements:
       criteria, completeness accounting uses explicit AC-level mappings rather than bare spec-level
       references.
     acceptance_criteria:
-      - id: ac-trait-coverage
-        given: |
-          All specs that inherit traits with acceptance criteria
-        when: |
-          kspec validate --completeness runs
-        then: Zero missing trait AC coverage warnings
-      - id: ac-no-blanket-credit
-        given: An annotation references a spec or trait with acceptance criteria but omits ac-* ids
-        when: kspec validate --completeness runs
-        then: The annotation is reported as invalid coverage metadata and does not provide completeness
-          credit
+      - id: ac-explicit-mapping
+        given: A spec item or trait defines one or more acceptance criteria
+        when: A test annotation is used to claim completeness coverage for that behavior
+        then: The annotation references one or more explicit ac-* identifiers rather than only the spec or
+          trait ref
       - id: ac-annotation-format
-        given: |
-          Each added test annotation
-        when: |
-          It is reviewed
-        then: >
-          It uses the format "// AC: @spec-ref ac-N" (or language-appropriate comment prefix) and is
-          machine-parseable
+        given: A machine-parseable coverage annotation appears in a supported test file
+        when: kspec validate scans source files for acceptance-criteria coverage
+        then: 'It accepts the form "// AC: @spec-ref ac-id [ac-id...]" where each ac-id may be numeric or
+          named'
+      - id: ac-no-blanket-credit
+        given: A coverage annotation references a spec item or trait with acceptance criteria but omits
+          explicit ac-* identifiers
+        when: kspec validate evaluates completeness coverage
+        then: The annotation is reported as an invalid AC annotation warning and grants no
+          acceptance-criteria coverage credit
     depends_on: []
     implements: []
     relates_to: []
