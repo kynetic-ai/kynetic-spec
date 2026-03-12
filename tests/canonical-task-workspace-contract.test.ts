@@ -111,6 +111,7 @@ describe("canonical task workspace contract", () => {
 
   // AC: @canonical-task-workspace-contract ac-2
   // AC: @canonical-task-workspace-contract ac-4
+  // AC: @dispatch-invocation-worktree-isolation ac-3
   it("reuses the same canonical worker branch lineage across repeated worker and fix-cycle preparation", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -148,6 +149,7 @@ describe("canonical task workspace contract", () => {
   });
 
   // AC: @canonical-task-workspace-contract ac-3
+  // AC: @dispatch-invocation-worktree-isolation ac-2
   it("creates reviewer snapshots as detached worktrees without checking out the canonical branch twice", async () => {
     await seedRepo(tempDir);
     await setupProjectWithReviewerAgent(tempDir);
@@ -394,3 +396,12 @@ describe("canonical task workspace contract", () => {
     await engine.stop();
   });
 });
+
+// AC: @trait-error-guidance ac-1 — N/A: dispatch worktree isolation is an internal runtime surface,
+// not a user-facing CLI command.
+// AC: @trait-error-guidance ac-2 — N/A: actionable guidance is captured in task notes/block reasons,
+// not CLI stderr/stdout for this library surface.
+// AC: @trait-error-guidance ac-3 — N/A: these tests do not exercise missing ref lookup UX.
+// AC: @trait-error-guidance ac-4 — N/A: invalid state transition messaging belongs to task CLI flows.
+// AC: @trait-error-guidance ac-5 — N/A: no structured field validation errors are surfaced here.
+// AC: @trait-error-guidance ac-6 — N/A: this runtime surface has no --json error mode.
