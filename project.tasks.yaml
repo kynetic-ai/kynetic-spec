@@ -91400,6 +91400,17 @@
         tests; @dispatch-workspace-registry ac-6 coverage still misses the provisioning lifecycle
         state."
       supersedes: null
+    - _ulid: 01KKGC59XRNCB26WXF9589BX8A
+      created_at: 2026-03-12T06:36:19.257Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Restored reset cleanup eligibility for canonical dispatch workspaces and
+        added explicit provisioning lifecycle coverage for @dispatch-workspace-registry ac-6.
+        Updated registry reconciliation expectations so reset persists integration=reset with
+        cleanup scheduled/task-reset instead of clearing cleanup state. Verification: npm run
+        typecheck; SKIP_BUILD=1 npm test -- tests/canonical-task-workspace-contract.test.ts;
+        SKIP_BUILD=1 npm test -- tests/dispatch-workspace-registry.test.ts; node dist/cli/index.js
+        validate (existing repo warnings only)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
