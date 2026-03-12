@@ -5,6 +5,7 @@ import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
+  DispatchWorkspaceError,
   resolveDispatchWorkspaceConfig,
   provisionDispatchWorkspace,
 } from "../src/agent-runtime/workspace.js";
@@ -218,5 +219,57 @@ describe("dispatch workspace configuration", () => {
     expect(invocation.env?.KSPEC_DISPATCH_MERGE_TARGET).toBe("agent-dev");
 
     await engine.stop();
+  });
+
+  // AC: @dispatch-workspace-configuration ac-4
+  it("fails with actionable guidance when dispatch.base_branch is invalid", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: missing-branch\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 3)}`;
+
+    await expect(
+      provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Broken Dispatch Config", slugs: ["broken-dispatch-config"] },
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message:
+        'Configured dispatch.base_branch "missing-branch" does not exist in this repository.',
+      suggestion:
+        "Create or fetch that branch, or update kspec.config.yaml to a valid base branch.",
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
+
+  // AC: @dispatch-workspace-configuration ac-4
+  it("fails with actionable guidance when dispatch.worktree_root resolves inside .kspec", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    await fs.mkdir(path.join(tempDir, ".kspec"), { recursive: true });
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: agent-dev\n  worktree_root: .kspec/worktrees\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 4)}`;
+
+    await expect(
+      provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Broken Dispatch Root", slugs: ["broken-dispatch-root"] },
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message: `Resolved dispatch worktree root "${path.join(tempDir, ".kspec", "worktrees")}" is inside the shadow worktree.`,
+      suggestion: "Set dispatch.worktree_root to a directory outside .kspec/.",
+    } satisfies Partial<DispatchWorkspaceError>);
   });
 });
