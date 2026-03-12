@@ -91625,9 +91625,27 @@
     - parser
     - spec
   vcs_refs: []
+  session_id: 01KKG3Q58YVKYJKE66HCSNP5AC
   created_at: 2026-03-12T03:17:43.331Z
-  notes: []
+  started_at: 2026-03-12T04:19:31.659Z
+  notes:
+    - _ulid: 01KKG4BC358EYHKY6X48NJP6B2
+      created_at: 2026-03-12T04:19:49.477Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: embedded plan Tasks parsing currently prefers adjacent manual YAML task slugs
+        even when derive_from_specs: true is present.
+
+        - Scope: fix mixed Tasks-section precedence so plan.derived_tasks drives embeds, and add
+        regression coverage for parser/rendering behavior.
+
+        - Files: src/parser/plan-document.ts plus plan embedded view tests in packages/web-ui and/or
+        parser tests.
+
+        - Verification: targeted tests for plan-document parsing and plan embedded views, then
+        project validation/test commands relevant to this scope.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T04:19:31.659Z
-  session_id: 01KKG3Q58YVKYJKE66HCSNP5AC
