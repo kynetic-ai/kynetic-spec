@@ -91350,6 +91350,15 @@
         - Verification: targeted dispatch/unit tests, full npm test, and kspec validate before
         submit.
       supersedes: null
+    - _ulid: 01KKG932P9RC99WNFRHXKVJ3N7
+      created_at: 2026-03-12T05:42:40.586Z
+      author: Jacob Chapel
+      content: Implemented a first-party dispatch workspace registry in project.dispatch-workspaces.yaml
+        and switched workspace persistence/reconciliation to use it. Dispatch startup now reloads
+        and reconciles workspace records from the registry, invocation lifecycle updates persist
+        active/integrating/closing states, and focused registry/config/canonical workspace tests are
+        green.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
