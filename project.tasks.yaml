@@ -92032,6 +92032,13 @@
         (mergeable: CONFLICTING, mergeStateStatus: DIRTY). Rebase the branch and resubmit for
         merge."
       supersedes: null
+    - _ulid: 01KKJ35Y3ANSRJVWSTPE7C40WT
+      created_at: 2026-03-12T22:37:51.594Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Resolving PR #805 merge conflict by rebasing
+        dispatch/task/task-implement-dispatch-bootstrap-contract/01kkfy9g onto origin/main, then
+        rerunning verification before resubmitting for review."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
@@ -92091,6 +92098,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #806. Narrowed dispatch shadow serialization from invocation-wide
+    locking to mutation windows, propagated a shared mutation lock into dispatched kspec commands,
+    and re-serialized workspace active/idle registry mutations to preserve lifecycle integrity after
+    the rebase fix. AC coverage verified for @scoped-dispatch-shadow-serialization ac-1..ac-3 and
+    applicable @trait-error-guidance guidance paths; full npm test and GitHub CI passed on commit
+    0ada8ff9d0233b0c1ccce212a1836df6f7611f1d."
   depends_on:
     - "@task-implement-dispatch-worktree-provisioning"
   context: []
@@ -92104,6 +92117,7 @@
   created_at: 2026-03-12T02:33:58.466Z
   started_at: 2026-03-12T22:16:06.183Z
   submitted_at: 2026-03-12T22:26:28.829Z
+  completed_at: 2026-03-12T22:37:12.482Z
   notes:
     - _ulid: 01KKHZXAFHHG20RJ1CHAMY5G6R
       created_at: 2026-03-12T21:40:43.634Z
@@ -92154,13 +92168,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T22:37:12.482Z
-  closed_reason: "Merged in PR #806. Narrowed dispatch shadow serialization from invocation-wide
-    locking to mutation windows, propagated a shared mutation lock into dispatched kspec commands,
-    and re-serialized workspace active/idle registry mutations to preserve lifecycle integrity after
-    the rebase fix. AC coverage verified for @scoped-dispatch-shadow-serialization ac-1..ac-3 and
-    applicable @trait-error-guidance guidance paths; full npm test and GitHub CI passed on commit
-    0ada8ff9d0233b0c1ccce212a1836df6f7611f1d."
 - _ulid: 01KKFY9JJ9SDWB05ZBQSV2VBDW
   slugs:
     - task-implement-priority-aware-dispatch-scheduler
