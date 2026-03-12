@@ -86164,6 +86164,14 @@
         inside the fenced ## Tasks YAML block as well as section text outside the fence, then adding
         a regression test for the block-only format called out in PR review."
       supersedes: null
+    - _ulid: 01KKFNMC6TX08WN5NJECH4NMA7
+      created_at: 2026-03-12T00:02:35.866Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Verification after fenced derive_from_specs support: npm test --
+        tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts (passed, 130 tests).
+        npm test (passed: 216 files, 4600 tests, 3 skipped). kspec validate (warnings only; same
+        pre-existing warning debt, no new errors)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
