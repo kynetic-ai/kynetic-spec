@@ -65,6 +65,19 @@ export const AgentConcurrencySchema = z.object({
   max_concurrent: z.number().int().positive().default(1),
 });
 
+export const AgentBootstrapStepSchema = z.object({
+  run: z.string().min(1, "Bootstrap command is required"),
+  name: z.string().optional(),
+  roles: z.array(z.enum(["worker", "reviewer"])).optional(),
+  idempotent: z.boolean().optional(),
+  allow_tracked_changes: z.boolean().optional(),
+  reviewer_rerun_allowed: z.boolean().optional(),
+});
+
+export const AgentBootstrapSchema = z.object({
+  steps: z.array(AgentBootstrapStepSchema).default([]),
+});
+
 /**
  * Agent definition - describes an agent's role and capabilities
  * AC: @agent-definition-schema ac-1 through ac-8
@@ -84,6 +97,7 @@ export const AgentSchema = z.object({
   skills: z.array(z.string()).default([]),
   budget: AgentBudgetSchema.optional(),
   concurrency: AgentConcurrencySchema.default({ max_concurrent: 1 }),
+  bootstrap: AgentBootstrapSchema.optional(),
   auto_approve: z.boolean().default(false),
   prompt_template: z.string().optional(),
   /** Automation eligibility for agent list filtering (eligible|ineligible) */

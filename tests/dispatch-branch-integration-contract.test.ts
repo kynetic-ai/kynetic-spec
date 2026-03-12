@@ -280,7 +280,7 @@ describe("dispatch branch integration contract", () => {
               reviewer: null,
             },
             bootstrap: {
-              status: "not_started",
+              status: "not_run",
               detail: null,
               updated_at: new Date().toISOString(),
             },

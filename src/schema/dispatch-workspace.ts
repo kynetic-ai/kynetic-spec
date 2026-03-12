@@ -19,8 +19,8 @@ export const DispatchWorkspaceHealthStatusSchema = z.enum([
 ]);
 
 export const DispatchWorkspaceBootstrapStatusSchema = z.enum([
-  "not_started",
-  "ready",
+  "not_run",
+  "succeeded",
   "failed",
 ]);
 
@@ -74,11 +74,57 @@ export const DispatchWorkspaceWorktreeSchema = z.object({
   last_seen_at: DateTimeSchema.nullable().optional(),
 });
 
-export const DispatchWorkspaceBootstrapStateSchema = z.object({
-  status: DispatchWorkspaceBootstrapStatusSchema.default("not_started"),
-  detail: z.string().nullable().optional(),
-  updated_at: DateTimeSchema,
+export const DispatchWorkspaceBootstrapStepResultSchema = z.object({
+  source: z.enum(["dispatch", "agent"]),
+  name: z.string().min(1, "Bootstrap step name is required"),
+  run: z.string().min(1, "Bootstrap step command is required"),
+  idempotent: z.boolean(),
+  allowTrackedChanges: z.boolean(),
+  reviewerRerunAllowed: z.boolean(),
+  status: z.enum(["succeeded", "failed", "skipped"]),
+  role: DispatchWorkspaceRoleSchema,
+  output: z.string().nullable().optional(),
 });
+
+export const DispatchWorkspaceBootstrapRoleStateSchema = z.object({
+  status: DispatchWorkspaceBootstrapStatusSchema.default("not_run"),
+  configHash: z.string().nullable().optional(),
+  canonicalBranchHead: z.string().nullable().optional(),
+  lastRunAt: DateTimeSchema.nullable().optional(),
+  invalidationReasons: z.array(z.string()).default([]),
+  steps: z.array(DispatchWorkspaceBootstrapStepResultSchema).default([]),
+  failureMessage: z.string().nullable().optional(),
+});
+
+export const DispatchWorkspaceBootstrapStateSchema =
+  DispatchWorkspaceBootstrapRoleStateSchema.extend({
+    lastRole: DispatchWorkspaceRoleSchema.nullable().optional(),
+    roleStates: z
+      .object({
+        worker: DispatchWorkspaceBootstrapRoleStateSchema,
+        reviewer: DispatchWorkspaceBootstrapRoleStateSchema,
+      })
+      .default({
+        worker: {
+          status: "not_run",
+          configHash: null,
+          canonicalBranchHead: null,
+          lastRunAt: null,
+          invalidationReasons: [],
+          steps: [],
+          failureMessage: null,
+        },
+        reviewer: {
+          status: "not_run",
+          configHash: null,
+          canonicalBranchHead: null,
+          lastRunAt: null,
+          invalidationReasons: [],
+          steps: [],
+          failureMessage: null,
+        },
+      }),
+  });
 
 export const DispatchWorkspaceIntegrationStateSchema = z.object({
   status: DispatchWorkspaceIntegrationStatusSchema.default("pending"),
@@ -170,6 +216,12 @@ export type DispatchWorkspaceIssue = z.infer<
 >;
 export type DispatchWorkspaceWorktree = z.infer<
   typeof DispatchWorkspaceWorktreeSchema
+>;
+export type DispatchWorkspaceBootstrapStepResult = z.infer<
+  typeof DispatchWorkspaceBootstrapStepResultSchema
+>;
+export type DispatchWorkspaceBootstrapRoleState = z.infer<
+  typeof DispatchWorkspaceBootstrapRoleStateSchema
 >;
 export type DispatchWorkspaceBootstrapState = z.infer<
   typeof DispatchWorkspaceBootstrapStateSchema

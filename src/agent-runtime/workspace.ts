@@ -12,6 +12,8 @@ import {
 import { loadProjectConfig } from "../parser/config.js";
 import type {
   DispatchWorkspaceBootstrapState,
+  DispatchWorkspaceBootstrapRoleState,
+  DispatchWorkspaceBootstrapStepResult,
   DispatchWorkspaceCleanupState as RegistryCleanupState,
   DispatchWorkspaceHealthState,
   DispatchWorkspaceIntegrationState as RegistryIntegrationRecord,
@@ -61,6 +63,11 @@ export interface DispatchWorkspaceMetadata {
   bootstrapState: DispatchWorkspaceBootstrapState;
   healthState: DispatchWorkspaceHealthState;
   cleanupState: RegistryCleanupState;
+  healthStatus: "healthy" | "unhealthy";
+  healthReason: string | null;
+  bootstrap: DispatchWorkspaceBootstrapState;
+  cleanupEligible: boolean;
+  cleanupReason: string | null;
   createdAt: string;
   updatedAt: string;
   lastReconciledAt: string | null;
@@ -82,6 +89,77 @@ export type DispatchWorkspacePublicationMode = RegistryPublicationMode;
 export type DispatchWorkspaceIntegrationState = DispatchWorkspaceIntegrationStatus;
 
 export type DispatchWorkspaceIntegrationOutcome = RegistryIntegrationOutcome;
+
+export type { DispatchWorkspaceBootstrapRoleState, DispatchWorkspaceBootstrapStepResult };
+
+function emptyBootstrapRoleState(): DispatchWorkspaceBootstrapRoleState {
+  return {
+    status: "not_run",
+    configHash: null,
+    canonicalBranchHead: null,
+    lastRunAt: null,
+    invalidationReasons: [],
+    steps: [],
+    failureMessage: null,
+  };
+}
+
+export function normalizeDispatchBootstrapState(
+  bootstrap?: Partial<DispatchWorkspaceBootstrapState> | null,
+): DispatchWorkspaceBootstrapState {
+  const workerState = bootstrap?.roleStates?.worker ?? emptyBootstrapRoleState();
+  const reviewerState = bootstrap?.roleStates?.reviewer ?? emptyBootstrapRoleState();
+  const lastRole = bootstrap?.lastRole ?? null;
+
+  if (!bootstrap?.roleStates && bootstrap) {
+    const migrated: DispatchWorkspaceBootstrapRoleState = {
+      status: bootstrap.status ?? "not_run",
+      configHash: bootstrap.configHash ?? null,
+      canonicalBranchHead: bootstrap.canonicalBranchHead ?? null,
+      lastRunAt: bootstrap.lastRunAt ?? null,
+      invalidationReasons: [...(bootstrap.invalidationReasons ?? [])],
+      steps: [...(bootstrap.steps ?? [])],
+      failureMessage: bootstrap.failureMessage ?? null,
+    };
+    if (lastRole === "reviewer") {
+      return {
+        ...migrated,
+        lastRole,
+        roleStates: {
+          worker: emptyBootstrapRoleState(),
+          reviewer: migrated,
+        },
+      };
+    }
+    return {
+      ...migrated,
+      lastRole: lastRole ?? "worker",
+      roleStates: {
+        worker: migrated,
+        reviewer: emptyBootstrapRoleState(),
+      },
+    };
+  }
+
+  const activeRole = lastRole === "reviewer" ? "reviewer" : "worker";
+  const activeState = activeRole === "reviewer" ? reviewerState : workerState;
+  return {
+    ...activeState,
+    lastRole,
+    roleStates: {
+      worker: {
+        ...workerState,
+        invalidationReasons: [...workerState.invalidationReasons],
+        steps: [...workerState.steps],
+      },
+      reviewer: {
+        ...reviewerState,
+        invalidationReasons: [...reviewerState.invalidationReasons],
+        steps: [...reviewerState.steps],
+      },
+    },
+  };
+}
 
 export interface ProvisionDispatchWorkspaceOptions {
   projectDir: string;
@@ -339,9 +417,12 @@ function pathExists(targetPath: string): boolean {
 
 function defaultBootstrapState(now: string): DispatchWorkspaceBootstrapState {
   return {
-    status: "not_started",
-    detail: null,
-    updated_at: now,
+    ...emptyBootstrapRoleState(),
+    lastRole: null,
+    roleStates: {
+      worker: emptyBootstrapRoleState(),
+      reviewer: emptyBootstrapRoleState(),
+    },
   };
 }
 
@@ -589,6 +670,21 @@ function reconcileWorkspaceHealth(
 }
 
 function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata {
+  const bootstrapState = normalizeDispatchBootstrapState(record.bootstrap);
+  const primaryBootstrapState =
+    bootstrapState.lastRole === "reviewer"
+      ? bootstrapState.roleStates.reviewer
+      : bootstrapState.roleStates.worker;
+  const healthStatus =
+    primaryBootstrapState.status === "failed"
+      ? "unhealthy"
+      : record.health.status === "healthy" && !record.cleanup.eligible
+        ? "healthy"
+        : "unhealthy";
+  const healthReason =
+    primaryBootstrapState.failureMessage
+    ?? (record.cleanup.eligible ? record.cleanup.reason ?? "workspace-marked-for-cleanup" : null)
+    ?? (record.health.issues[0]?.message ?? null);
   return {
     workspaceId: record.workspace_id,
     taskRef: record.task_ref,
@@ -609,9 +705,14 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
     reviewerWorktreeDir: record.worktrees.reviewer?.path ?? null,
     lifecycleState: record.lifecycle_state,
     activeRole: record.active_role ?? null,
-    bootstrapState: record.bootstrap,
+    bootstrapState,
     healthState: record.health,
     cleanupState: record.cleanup,
+    healthStatus,
+    healthReason,
+    bootstrap: bootstrapState,
+    cleanupEligible: record.cleanup.eligible,
+    cleanupReason: record.cleanup.reason ?? null,
     createdAt: record.timestamps.created_at,
     updatedAt: record.timestamps.updated_at,
     lastReconciledAt: record.timestamps.last_reconciled_at ?? null,
@@ -639,6 +740,35 @@ async function persistWorkspaceRecord(
     _sourceFile: registryPath,
   });
   return registryPath;
+}
+
+export async function persistDispatchWorkspaceMetadata(
+  projectDir: string,
+  metadata: DispatchWorkspaceMetadata,
+): Promise<string> {
+  const existingRecord = await loadWorkspaceRecord(projectDir, metadata.taskRef);
+  if (!existingRecord) {
+    throw new DispatchWorkspaceError(
+      `Cannot persist dispatch metadata for ${metadata.taskRef}: workspace registry record is missing.`,
+      "Re-provision the dispatch workspace before retrying bootstrap persistence.",
+    );
+  }
+
+  const now = metadata.updatedAt || new Date().toISOString();
+  return persistWorkspaceRecord(projectDir, {
+    ...existingRecord,
+    task_slug: metadata.taskSlug,
+    base_branch_point: metadata.baseBranchPoint,
+    canonical_branch_head: metadata.canonicalBranchHead,
+    bootstrap: normalizeDispatchBootstrapState(metadata.bootstrap),
+    timestamps: {
+      ...existingRecord.timestamps,
+      updated_at: now,
+      last_reconciled_at: metadata.lastReconciledAt ?? existingRecord.timestamps.last_reconciled_at,
+      last_active_at: metadata.lastActiveAt ?? existingRecord.timestamps.last_active_at,
+      closed_at: metadata.closedAt ?? existingRecord.timestamps.closed_at,
+    },
+  });
 }
 
 async function ensureUsableWorktreeRoot(
@@ -1231,16 +1361,28 @@ export async function getDispatchWorkspaceHealth(
     ...existingRecord.cleanup,
     updated_at: now,
   };
+  const metadata = toMetadata({
+    ...existingRecord,
+    health,
+    cleanup,
+    timestamps: {
+      ...existingRecord.timestamps,
+      updated_at: now,
+    },
+  });
   const reviewerWorktree = existingRecord.worktrees.reviewer;
   const reviewerMissingRecordedWorktree = role === "reviewer"
     && reviewerWorktree != null
     && !pathExists(reviewerWorktree.path);
   const healthy = health.status === "healthy"
     && !cleanup.eligible
+    && metadata.bootstrap.roleStates[role].status !== "failed"
     && !reviewerMissingRecordedWorktree;
   const primaryIssue = health.issues[0];
   const reason = reviewerMissingRecordedWorktree
     ? "missing-reviewer-worktree"
+    : metadata.bootstrap.roleStates[role].status === "failed"
+      ? (metadata.bootstrap.roleStates[role].failureMessage ?? "bootstrap-failed")
     : cleanup.eligible
       ? (cleanup.reason ?? "workspace-marked-for-cleanup")
       : primaryIssue
@@ -1253,14 +1395,6 @@ export async function getDispatchWorkspaceHealth(
     exists: true,
     healthy,
     reason,
-    metadata: toMetadata({
-      ...existingRecord,
-      health,
-      cleanup,
-      timestamps: {
-        ...existingRecord.timestamps,
-        updated_at: now,
-      },
-    }),
+    metadata,
   };
 }

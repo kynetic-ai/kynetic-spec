@@ -95,6 +95,10 @@ daemon:
 dispatch:
   base_branch: agent-dev
   worktree_root: custom-worktrees
+  bootstrap:
+    steps:
+      - run: npm ci
+        idempotent: true
 identity:
   author: "@custom-author"
 validation:
@@ -117,6 +121,14 @@ validation:
       expect(result.config.daemon.host).toBe("0.0.0.0");
       expect(result.config.dispatch.base_branch).toBe("agent-dev");
       expect(result.config.dispatch.worktree_root).toBe("custom-worktrees");
+      expect(result.config.dispatch.bootstrap.steps).toEqual([
+        {
+          run: "npm ci",
+          idempotent: true,
+          allow_tracked_changes: false,
+          reviewer_rerun_allowed: false,
+        },
+      ]);
       expect(result.config.identity.author).toBe("@custom-author");
       // AC: @config-validation ac-1 ac-2
       expect(result.config.validation.strict_refs).toBe(true);
@@ -331,6 +343,7 @@ daemon:
       expect(config.daemon.host).toBe("localhost"); // default
       expect(config.dispatch.base_branch).toBeNull();
       expect(config.dispatch.worktree_root).toBe(".kspec-worktrees");
+      expect(config.dispatch.bootstrap.steps).toEqual([]);
       expect(config.shadow.branch).toBe("kspec-meta"); // default
     });
 
@@ -371,6 +384,14 @@ daemon:
         dispatch: {
           base_branch: "agent-dev",
           worktree_root: ".kspec-worktrees",
+          bootstrap: {
+            steps: [
+              {
+                run: "npm ci",
+                idempotent: true,
+              },
+            ],
+          },
         },
         identity: {
           author: "@me",
@@ -490,6 +511,7 @@ title: Test Project
       expect(defaults.daemon.host).toBe("localhost");
       expect(defaults.dispatch.base_branch).toBeNull();
       expect(defaults.dispatch.worktree_root).toBe(".kspec-worktrees");
+      expect(defaults.dispatch.bootstrap.steps).toEqual([]);
       expect(defaults.ralph.skills.task_work).toBe("/kspec:task-work");
       expect(defaults.ralph.skills.reflect).toBe("/kspec:reflect");
       expect(defaults.ralph.skills.pr_review).toBe("/kspec:review");

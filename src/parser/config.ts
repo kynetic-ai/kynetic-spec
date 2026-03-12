@@ -98,6 +98,24 @@ const DaemonConfigSchema = z
   .strict()
   .optional();
 
+const DispatchBootstrapStepSchema = z
+  .object({
+    run: z.string().min(1),
+    name: z.string().optional(),
+    roles: z.array(z.enum(["worker", "reviewer"])).optional(),
+    idempotent: z.boolean().optional(),
+    allow_tracked_changes: z.boolean().optional(),
+    reviewer_rerun_allowed: z.boolean().optional(),
+  })
+  .strict();
+
+const DispatchBootstrapConfigSchema = z
+  .object({
+    steps: z.array(DispatchBootstrapStepSchema).default([]),
+  })
+  .strict()
+  .optional();
+
 /**
  * Schema for dispatch workspace configuration.
  */
@@ -113,6 +131,11 @@ const DispatchConfigSchema = z
      * Relative paths resolve from the project root.
      */
     worktree_root: z.string().optional(),
+    /**
+     * Dispatcher-owned workspace bootstrap contract.
+     * Steps run before agent prompts are delivered.
+     */
+    bootstrap: DispatchBootstrapConfigSchema,
   })
   .strict()
   .optional();
@@ -271,6 +294,16 @@ export interface ResolvedKspecConfig {
      * project root when dispatch workspaces are provisioned.
      */
     worktree_root: string;
+    bootstrap: {
+      steps: Array<{
+        run: string;
+        name?: string;
+        roles?: Array<"worker" | "reviewer">;
+        idempotent: boolean;
+        allow_tracked_changes: boolean;
+        reviewer_rerun_allowed: boolean;
+      }>;
+    };
   };
   ralph: {
     skills: {
@@ -316,6 +349,9 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   dispatch: {
     base_branch: null,
     worktree_root: ".kspec-worktrees",
+    bootstrap: {
+      steps: [],
+    },
   },
   ralph: {
     skills: {
@@ -515,6 +551,18 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     dispatch: {
       base_branch: file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
       worktree_root: file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
+      bootstrap: {
+        steps: (file.dispatch?.bootstrap?.steps ?? DEFAULT_CONFIG.dispatch.bootstrap.steps).map(
+          (step) => ({
+            run: step.run,
+            ...(step.name ? { name: step.name } : {}),
+            ...(step.roles ? { roles: step.roles } : {}),
+            idempotent: step.idempotent ?? false,
+            allow_tracked_changes: step.allow_tracked_changes ?? false,
+            reviewer_rerun_allowed: step.reviewer_rerun_allowed ?? false,
+          }),
+        ),
+      },
     },
     ralph: {
       skills: {
@@ -552,6 +600,9 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     dispatch: {
       base_branch: DEFAULT_CONFIG.dispatch.base_branch,
       worktree_root: DEFAULT_CONFIG.dispatch.worktree_root,
+      bootstrap: {
+        steps: DEFAULT_CONFIG.dispatch.bootstrap.steps.map((step) => ({ ...step })),
+      },
     },
     ralph: {
       skills: { ...DEFAULT_CONFIG.ralph.skills },
