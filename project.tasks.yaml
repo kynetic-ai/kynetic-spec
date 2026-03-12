@@ -64678,9 +64678,8 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: blocked
-  blocked_by:
-    - "Fix-cycle review invalidated the prior completeness baseline: after replacing blanket refs with honest per-AC mappings, source validate still reports 181 own-coverage warning items (trait coverage 0). Finishing now requires a larger repo-wide annotation sweep or a refreshed acceptance baseline/task split, not a contained PR-794 fix."
+  status: pending
+  blocked_by: []
   depends_on:
     - "@implement-core-primitives-ac-backfill"
     - "@implement-schema-and-structure-ac-backfill"
