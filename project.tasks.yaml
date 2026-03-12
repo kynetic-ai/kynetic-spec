@@ -91947,6 +91947,14 @@
         partially covered in tests (unresolved-integration cleanup_blocked path is untested), and PR
         #807 is currently conflicting with main so it cannot be merged."
       supersedes: null
+    - _ulid: 01KKJ6P5B8KR8FFW30JA1SF8J2
+      created_at: 2026-03-12T23:39:09.032Z
+      author: Jacob Chapel
+      content: Added unresolved-integration cleanup_blocked coverage for
+        @dispatch-workspace-cleanup-policy ac-4. This exercises the existing reapDispatchWorkspace
+        guard when cleanup is attempted before integration becomes cleanup-eligible, so both
+        canonical-branch blocker paths are now covered.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
@@ -92375,6 +92383,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #808. Updated plan derive so derive_from_specs: false suppresses auto
+    per-spec implementation tasks while still materializing manual additional_tasks with preserved
+    plan/spec refs and dependency mappings. Verified targeted plan-derive coverage for
+    ac-tasks-manual-only, reran full npm test successfully, and confirmed green CI on the merged
+    head."
   depends_on: []
   context: []
   priority: 1
@@ -92384,6 +92397,7 @@
   created_at: 2026-03-12T02:49:31.460Z
   started_at: 2026-03-12T23:21:06.630Z
   submitted_at: 2026-03-12T23:26:22.106Z
+  completed_at: 2026-03-12T23:37:57.462Z
   notes:
     - _ulid: 01KKJ5N3MPXQQ6PEC0BAJZ52V0
       created_at: 2026-03-12T23:21:05.942Z
@@ -92413,12 +92427,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T23:37:57.462Z
-  closed_reason: "Merged in PR #808. Updated plan derive so derive_from_specs: false suppresses auto
-    per-spec implementation tasks while still materializing manual additional_tasks with preserved
-    plan/spec refs and dependency mappings. Verified targeted plan-derive coverage for
-    ac-tasks-manual-only, reran full npm test successfully, and confirmed green CI on the merged
-    head."
 - _ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
   slugs:
     - bug-plan-embedded-views-live-loading
