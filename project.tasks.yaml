@@ -91328,12 +91328,30 @@
     - worktree
     - schema
   vcs_refs: []
+  session_id: 01KKG82GNXQWS27B1E984FSBN7
   created_at: 2026-03-12T02:33:54.252Z
-  notes: []
+  started_at: 2026-03-12T05:25:59.358Z
+  notes:
+    - _ulid: 01KKG84X1YJJQQT3CJ4YFQJYBE
+      created_at: 2026-03-12T05:26:11.774Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: persist canonical dispatch workspace identity across daemon restarts so
+        worker/reviewer/fix-cycle flows reuse the same recorded branch/worktree state.
+
+        - Scope: add first-party workspace registry storage, reload/reconciliation on startup, and
+        tests covering lifecycle/health transitions for the registry contract.
+
+        - Files: dispatch runtime/session state, parser/schema storage for registry records, and
+        focused tests around dispatch workspace behavior.
+
+        - Verification: targeted dispatch/unit tests, full npm test, and kspec validate before
+        submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T05:25:59.358Z
-  session_id: 01KKG82GNXQWS27B1E984FSBN7
 - _ulid: 01KKFY9ECRCS3GRXNRV1NNXY8F
   slugs:
     - task-implement-dispatch-worktree-provisioning
