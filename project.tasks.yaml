@@ -91512,12 +91512,28 @@
     - markdown
     - bug
   vcs_refs: []
+  session_id: 01KKG1H7H2W2ZNE1JADGCR882A
   created_at: 2026-03-12T03:17:41.960Z
-  notes: []
+  started_at: 2026-03-12T03:39:45.104Z
+  notes:
+    - _ulid: 01KKG21Z9FWTA06RWXJ45KY5QF
+      created_at: 2026-03-12T03:39:44.303Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: live /plans expansion should fetch batch item summaries for derived
+        specs/tasks and render embedded cards instead of raw YAML.
+
+        - Scope: restore the live fetch path, preserve fallback on true batch failure, add runtime
+        coverage for the real fetch behavior.
+
+        - Files: expected web-ui plans route/component logic plus E2E/runtime tests.
+
+        - Verification: targeted web-ui tests, then kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T03:39:45.104Z
-  session_id: 01KKG1H7H2W2ZNE1JADGCR882A
 - _ulid: 01KKG0SN9325ERD0JW6H97SNFE
   slugs:
     - task-plan-embedded-views-mixed-task-precedence
