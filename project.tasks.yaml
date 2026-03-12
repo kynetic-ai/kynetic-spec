@@ -91778,6 +91778,16 @@
         records missing integration target_commit/publication_mode/outcome are rejected before
         duplicate-record checks run."
       supersedes: null
+    - _ulid: 01KKHRMTZ1JHPXT0EJCSNKMF0T
+      created_at: 2026-03-12T19:33:45.569Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 3] Restored registry compatibility for pre-integration-metadata workspace
+        records by hydrating missing integration.target_commit/publication_mode/outcome during
+        parser load before validation and duplicate-record checks. Added a regression test for
+        legacy reload behavior. Revalidated with: npm test --
+        tests/dispatch-workspace-registry.test.ts ; npm test ; kspec validate --warnings-ok
+        (warnings are pre-existing project validation debt only)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9FK58T570QTKKYMPTK98
