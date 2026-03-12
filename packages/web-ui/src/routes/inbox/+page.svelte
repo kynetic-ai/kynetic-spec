@@ -32,6 +32,7 @@
 		DialogTitle
 	} from '$lib/components/ui/dialog';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { renderMarkdown } from '$lib/utils/markdown';
 	import Inbox from '@lucide/svelte/icons/inbox';
 
 	// ── Data state ──
@@ -462,7 +463,12 @@
 										</span>
 									{/if}
 								</div>
-								<p class="text-sm leading-relaxed" data-testid="inbox-text">{item.inbox.text}</p>
+								<div
+									class="text-sm break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+									data-testid="inbox-text"
+								>
+									{@html renderMarkdown(item.inbox.text)}
+								</div>
 							</div>
 							<div class="flex items-center gap-1 flex-shrink-0">
 								<!-- AC: @ui-inbox-enhanced ac-1 — Quick triage action link -->

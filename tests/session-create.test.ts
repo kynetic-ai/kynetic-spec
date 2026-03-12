@@ -46,11 +46,13 @@ import {
 
 describe("createSessionWithBudget", () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-session-create-");
+    sessionsDir = path.join(testDir, "sessions");
     // Create sessions directory
-    await fs.mkdir(path.join(testDir, "sessions"), { recursive: true });
+    await fs.mkdir(sessionsDir, { recursive: true });
   });
 
   afterEach(async () => {
@@ -60,7 +62,7 @@ describe("createSessionWithBudget", () => {
   // AC: @session-creation-and-env-injection ac-create
   it("should create a session with status active and return metadata", async () => {
     const sessionId = testUlid("SESS", 1);
-    const result = await createSessionWithBudget(testDir, {
+    const result = await createSessionWithBudget(sessionsDir, {
       id: sessionId,
       agent_type: "claude-code",
     });
@@ -76,7 +78,7 @@ describe("createSessionWithBudget", () => {
   // AC: @session-creation-and-env-injection ac-create
   it("should create session directory with session.yaml", async () => {
     const sessionId = testUlid("SESS", 2);
-    await createSessionWithBudget(testDir, {
+    await createSessionWithBudget(sessionsDir, {
       id: sessionId,
       agent_type: "codex-cli",
     });
@@ -94,7 +96,7 @@ describe("createSessionWithBudget", () => {
   // AC: @session-creation-and-env-injection ac-budget
   it("should create budget.json when budget option provided", async () => {
     const sessionId = testUlid("SESS", 3);
-    const result = await createSessionWithBudget(testDir, {
+    const result = await createSessionWithBudget(sessionsDir, {
       id: sessionId,
       agent_type: "claude-code",
       budget: 5,
@@ -108,13 +110,13 @@ describe("createSessionWithBudget", () => {
   // AC: @session-creation-and-env-injection ac-budget-local
   it("should store budget.json on local filesystem in session directory", async () => {
     const sessionId = testUlid("SESS", 4);
-    await createSessionWithBudget(testDir, {
+    await createSessionWithBudget(sessionsDir, {
       id: sessionId,
       agent_type: "claude-code",
       budget: 3,
     });
 
-    const budgetPath = getSessionBudgetPath(testDir, sessionId);
+    const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
     const content = await fs.readFile(budgetPath, "utf-8");
     const budget = JSON.parse(content);
     expect(budget.max_per_cycle).toBe(3);
@@ -132,7 +134,7 @@ describe("createSessionWithBudget", () => {
     console.log = (...args: unknown[]) => consoleLogs.push(args.join(" "));
 
     try {
-      const result = await createSessionWithBudget(testDir, {
+      const result = await createSessionWithBudget(sessionsDir, {
         id: sessionId,
         agent_type: "claude-code",
         budget: 2,
@@ -155,7 +157,7 @@ describe("createSessionWithBudget", () => {
   it("should include task_id when provided", async () => {
     const sessionId = testUlid("SESS", 6);
     const taskId = testUlid("TASK", 1);
-    const result = await createSessionWithBudget(testDir, {
+    const result = await createSessionWithBudget(sessionsDir, {
       id: sessionId,
       agent_type: "claude-code",
       task_id: taskId,
@@ -166,7 +168,7 @@ describe("createSessionWithBudget", () => {
 
   it("should not create budget when budget is undefined", async () => {
     const sessionId = testUlid("SESS", 7);
-    const result = await createSessionWithBudget(testDir, {
+    const result = await createSessionWithBudget(sessionsDir, {
       id: sessionId,
       agent_type: "claude-code",
     });
@@ -174,7 +176,7 @@ describe("createSessionWithBudget", () => {
     expect(result.budget).toBeNull();
 
     // Verify no budget file exists
-    const budgetPath = getSessionBudgetPath(testDir, sessionId);
+    const budgetPath = getSessionBudgetPath(sessionsDir, sessionId);
     await expect(fs.access(budgetPath)).rejects.toThrow();
   });
 });
@@ -183,10 +185,12 @@ describe("createSessionWithBudget", () => {
 
 describe("validateSessionId", () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-session-validate-");
-    await fs.mkdir(path.join(testDir, "sessions"), { recursive: true });
+    sessionsDir = path.join(testDir, "sessions");
+    await fs.mkdir(sessionsDir, { recursive: true });
   });
 
   afterEach(async () => {
@@ -196,12 +200,12 @@ describe("validateSessionId", () => {
   // AC: @session-creation-and-env-injection ac-invalid-session
   it("should return valid for existing session with correct metadata", async () => {
     const sessionId = testUlid("VALID", 1);
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: sessionId,
       agent_type: "claude-code",
     });
 
-    const result = await validateSessionId(testDir, sessionId);
+    const result = await validateSessionId(sessionsDir, sessionId);
     expect(result.valid).toBe(true);
     expect(result.session).toBeDefined();
     expect(result.session!.id).toBe(sessionId);
@@ -209,7 +213,7 @@ describe("validateSessionId", () => {
 
   // AC: @session-creation-and-env-injection ac-invalid-session
   it("should return error for nonexistent session with clear message", async () => {
-    const result = await validateSessionId(testDir, "NONEXISTENT_SESSION");
+    const result = await validateSessionId(sessionsDir, "NONEXISTENT_SESSION");
     expect(result.valid).toBe(false);
     expect(result.error).toContain("Session not found");
     expect(result.error).toContain("NONEXISTENT_SESSION");
@@ -228,7 +232,7 @@ describe("validateSessionId", () => {
       "utf-8",
     );
 
-    const result = await validateSessionId(testDir, sessionId);
+    const result = await validateSessionId(sessionsDir, sessionId);
     expect(result.valid).toBe(false);
     expect(result.error).toContain("corrupt");
     expect(result.suggestion).toContain("kspec session create");

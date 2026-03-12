@@ -28,14 +28,14 @@ const SESSION_ID = "01KJ7CCCHNMBABEHHDVEYSPJFR";
 
 /**
  * Helper to create a session.yaml file in the test fixture directory.
- * Sessions live at {specDir}/sessions/{sessionId}/session.yaml
+ * Sessions live at {projectRoot}/.kspec-sessions/{sessionId}/session.yaml
  */
 async function createTestSession(
   specDir: string,
   sessionId: string,
   overrides: Record<string, unknown> = {},
 ): Promise<void> {
-  const sessionDir = path.join(specDir, "sessions", sessionId);
+  const sessionDir = path.join(specDir, ".kspec-sessions", sessionId);
   await fs.mkdir(sessionDir, { recursive: true });
   const metadata = {
     id: sessionId,
@@ -59,7 +59,7 @@ async function readTestSession(
 ): Promise<Record<string, unknown> | null> {
   const sessionPath = path.join(
     specDir,
-    "sessions",
+    ".kspec-sessions",
     sessionId,
     "session.yaml",
   );

@@ -6,7 +6,7 @@ type: module
 status:
   maturity: draft
   implementation: not_started
-description: Core functionality for E2E testing
+description: Core functionality for **E2E testing**.
 
 features:
   - _ulid: 01KF1645CBTRATXW2T6HJMVA00
@@ -35,18 +35,19 @@ features:
     priority: high
     tags:
       - test
-    description: A test feature for integration testing
+    description: |
+      A test feature for **integration testing** with `kspec item get`.
     traits:
       - "@test-trait"
     acceptance_criteria:
       - id: ac-1
-        given: a user is viewing the feature
+        given: a user is viewing the feature with `kspec item get @test-feature`
         when: they check the status
-        then: the feature shows as in progress
+        then: the feature shows as `in_progress`
       - id: ac-2
         given: a user wants to understand the feature
         when: they read the description
-        then: they see clear documentation of what the feature does
+        then: they see clear documentation of what the feature does in **formatted prose**
     requirements:
       - _ulid: 01KF1645CBKJNPWH1E02WN4MMX
         slugs:

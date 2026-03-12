@@ -99,6 +99,24 @@
   --design-severity-success-muted: oklch(0.96 0.02 156);
   --design-severity-success-muted-fg: oklch(0.45 0.16 156);
   --design-severity-success-border: oklch(0.88 0.06 156);
+
+  /* ── ANSI Terminal Colors (16) ── */
+  --ansi-black: oklch(0.25 0 0);
+  --ansi-red: oklch(0.53 0.2 25);
+  --ansi-green: oklch(0.55 0.18 150);
+  --ansi-yellow: oklch(0.65 0.17 75);
+  --ansi-blue: oklch(0.5 0.18 260);
+  --ansi-magenta: oklch(0.55 0.2 320);
+  --ansi-cyan: oklch(0.6 0.12 200);
+  --ansi-white: oklch(0.75 0 0);
+  --ansi-bright-black: oklch(0.45 0 0);
+  --ansi-bright-red: oklch(0.65 0.24 25);
+  --ansi-bright-green: oklch(0.7 0.22 150);
+  --ansi-bright-yellow: oklch(0.8 0.2 85);
+  --ansi-bright-blue: oklch(0.65 0.22 260);
+  --ansi-bright-magenta: oklch(0.7 0.22 320);
+  --ansi-bright-cyan: oklch(0.75 0.14 200);
+  --ansi-bright-white: oklch(0.9 0 0);
 }
 
 .dark {
@@ -157,4 +175,22 @@
   --design-severity-success-muted: oklch(0.22 0.06 156);
   --design-severity-success-muted-fg: oklch(0.75 0.12 156);
   --design-severity-success-border: oklch(0.4 0.1 156);
+
+  /* ── ANSI Terminal Colors (16) ── */
+  --ansi-black: oklch(0.35 0 0);
+  --ansi-red: oklch(0.65 0.24 25);
+  --ansi-green: oklch(0.7 0.22 150);
+  --ansi-yellow: oklch(0.8 0.2 85);
+  --ansi-blue: oklch(0.65 0.2 260);
+  --ansi-magenta: oklch(0.7 0.2 320);
+  --ansi-cyan: oklch(0.75 0.14 200);
+  --ansi-white: oklch(0.85 0 0);
+  --ansi-bright-black: oklch(0.5 0 0);
+  --ansi-bright-red: oklch(0.75 0.24 25);
+  --ansi-bright-green: oklch(0.8 0.22 150);
+  --ansi-bright-yellow: oklch(0.88 0.2 85);
+  --ansi-bright-blue: oklch(0.75 0.22 260);
+  --ansi-bright-magenta: oklch(0.8 0.22 320);
+  --ansi-bright-cyan: oklch(0.85 0.14 200);
+  --ansi-bright-white: oklch(0.95 0 0);
 }

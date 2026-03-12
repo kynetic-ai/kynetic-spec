@@ -21,7 +21,7 @@ import { z } from "zod";
  *
  * AC: @session-model-evolution ac-3
  */
-export const SessionStatusSchema = z.enum(["active", "completed", "abandoned", "timed_out", "failed"]);
+export const SessionStatusSchema = z.enum(["active", "completed", "abandoned", "timed_out", "failed", "stalled"]);
 export type SessionStatus = z.infer<typeof SessionStatusSchema>;
 
 // ─── Session Metadata ────────────────────────────────────────────────────────
@@ -140,6 +140,7 @@ export const EventTypeSchema = z.enum([
   "agent.completed",
   "agent.failed",
   "agent.timeout",
+  "agent.stalled",
 ]);
 
 export type EventType = z.infer<typeof EventTypeSchema>;
@@ -188,7 +189,7 @@ export type SessionEventInput = z.infer<typeof SessionEventInputSchema>;
 // ─── Task Budget ────────────────────────────────────────────────────────────
 
 /**
- * Task budget state stored in .kspec/sessions/{id}/budget.json.
+ * Task budget state stored in .kspec-sessions/{id}/budget.json.
  *
  * Budget lives on LOCAL filesystem (not shadow branch) to avoid contention
  * between ralph and spawned agents. Single-writer guarantee: ralph resets

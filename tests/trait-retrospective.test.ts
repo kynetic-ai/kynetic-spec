@@ -13,6 +13,9 @@ describe("Trait Retrospective", () => {
   beforeEach(async () => {
     tempDir = await setupTempFixtures();
     await initGitRepo(tempDir);
+
+    // Create the trait-retrospective trait used by tests
+    await kspec('trait add "Retrospective" --slug trait-retrospective', tempDir);
   });
 
   afterEach(async () => {

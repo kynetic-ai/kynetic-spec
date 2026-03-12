@@ -22,6 +22,7 @@ describe('kspec refs', () => {
   const specCUlid = testUlid('SPCC', 1);
   const specDUlid = testUlid('SPCD', 1);
   const specEUlid = testUlid('SPCE', 1);
+  const specFUlid = testUlid('SPCF', 1);
   const oldSpecUlid = testUlid('0KDS', 1);
   const isolatedUlid = testUlid('JS0K', 1);
   const traitUlid = testUlid('TRAT', 1);
@@ -109,6 +110,19 @@ status:
 supersedes: "@old-spec"
 `;
 
+    // Spec F - tests spec-a
+    const specF = `_ulid: ${specFUlid}
+slugs:
+  - spec-f
+title: Spec F (tests A)
+type: feature
+status:
+  maturity: draft
+  implementation: not_started
+tests:
+  - "@spec-a"
+`;
+
     // Isolated item with no references to it
     const isolatedSpec = `_ulid: ${isolatedUlid}
 slugs:
@@ -173,6 +187,7 @@ traits:
     await fs.writeFile(path.join(modulesDir, 'spec-d.yaml'), specD);
     await fs.writeFile(path.join(modulesDir, 'old-spec.yaml'), oldSpec);
     await fs.writeFile(path.join(modulesDir, 'spec-e.yaml'), specE);
+    await fs.writeFile(path.join(modulesDir, 'spec-f.yaml'), specF);
     await fs.writeFile(path.join(modulesDir, 'isolated.yaml'), isolatedSpec);
     await fs.writeFile(path.join(modulesDir, 'trait.yaml'), trait);
     await fs.writeFile(path.join(modulesDir, 'trait-users.yaml'), specsWithTrait);
@@ -325,6 +340,7 @@ observations: []
   });
 
   // AC: @unified-cross-reference-lookup ac-spec-depends-on
+  // AC: @relationship-types ac-1
   it('should show specs with depends_on including target', async () => {
     const result = kspecJson<{ specs_depends_on?: { ref: string; title: string }[]; total: number }>(
       'refs @spec-a',
@@ -337,6 +353,7 @@ observations: []
   });
 
   // AC: @unified-cross-reference-lookup ac-spec-implements
+  // AC: @relationship-types ac-1
   it('should show specs with implements including target', async () => {
     const result = kspecJson<{ specs_implements?: { ref: string; title: string }[]; total: number }>(
       'refs @spec-a',
@@ -349,6 +366,7 @@ observations: []
   });
 
   // AC: @unified-cross-reference-lookup ac-spec-relates-to
+  // AC: @relationship-types ac-1
   it('should show specs with relates_to including target', async () => {
     const result = kspecJson<{ specs_relates_to?: { ref: string; title: string }[]; total: number }>(
       'refs @spec-a',
@@ -388,6 +406,8 @@ observations: []
   });
 
   // AC: @unified-cross-reference-lookup ac-supersedes
+  // AC: @relationship-types ac-1
+  // AC: @rel-supersedes ac-1
   it('should show specs with supersedes including target', async () => {
     const result = kspecJson<{ specs_supersedes?: { ref: string; title: string }[]; total: number }>(
       'refs @old-spec',
@@ -397,6 +417,19 @@ observations: []
     expect(result.specs_supersedes).toBeDefined();
     expect(result.specs_supersedes).toHaveLength(1);
     expect(result.specs_supersedes![0].title).toBe('Spec E (supersedes old)');
+  });
+
+  // AC: @relationship-types ac-1
+  // AC: @rel-tests ac-1
+  it('should show specs with tests including target', async () => {
+    const result = kspecJson<{ specs_tests?: { ref: string; title: string }[]; total: number }>(
+      'refs @spec-a',
+      tempDir
+    );
+
+    expect(result.specs_tests).toBeDefined();
+    expect(result.specs_tests).toHaveLength(1);
+    expect(result.specs_tests![0].title).toBe('Spec F (tests A)');
   });
 
   // AC: @unified-cross-reference-lookup ac-grouped-output
@@ -447,6 +480,7 @@ observations: []
   });
 
   // AC: @unified-cross-reference-lookup ac-ref-resolution
+  // AC: @ulid-shortening ac-1
   it('should support ULID, slug, and short ULID reference formats', async () => {
     // Test with slug
     const bySlug = kspecJson<{ total: number }>('refs @spec-a', tempDir);
@@ -477,7 +511,8 @@ observations: []
       tempDir
     );
 
-    // spec-a is referenced by: spec-b (depends), spec-c (implements), spec-d (relates)
-    expect(result.total).toBe(3);
+    // spec-a is referenced by: spec-b (depends), spec-c (implements),
+    // spec-d (relates), and spec-f (tests)
+    expect(result.total).toBe(4);
   });
 });

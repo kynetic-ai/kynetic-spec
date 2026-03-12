@@ -4,6 +4,7 @@
 -->
 <script lang="ts">
 	import { type DisplayBlock, shouldAutoScroll as computeShouldAutoScroll, shouldShowJumpButton as computeShowJumpButton } from './session-utils';
+	import StreamingMarkdown from '$lib/components/markdown/StreamingMarkdown.svelte';
 	import MessageBlock from './MessageBlock.svelte';
 	import ToolCallView from './ToolCallView.svelte';
 	import ThinkingBlock from './ThinkingBlock.svelte';
@@ -105,9 +106,7 @@
 						<span class="text-xs font-bold text-primary">A</span>
 					</div>
 					<div class="flex-1 min-w-0">
-						<div class="text-sm whitespace-pre-wrap break-words leading-relaxed">
-							{streamingText}<span class="ds-streaming-cursor">{'\u258A'}</span>
-						</div>
+						<StreamingMarkdown content={streamingText} isStreaming={true} />
 					</div>
 				</div>
 			</div>

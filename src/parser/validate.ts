@@ -72,7 +72,8 @@ export type CompletenessWarningType =
   | "status_inconsistency"
   | "missing_test_coverage"
   | "automation_eligible_no_spec"
-  | "ac_schema_field_mismatch";
+  | "ac_schema_field_mismatch"
+  | "invalid_ac_annotation";
 
 /**
  * Trait cycle error
@@ -772,6 +773,59 @@ async function findTestFilesRecursive(dir: string): Promise<string[]> {
   return testFiles;
 }
 
+/** Prefix pattern that identifies an AC annotation line. */
+const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
+
+/**
+ * Parse all @ref groups from an AC annotation line.
+ * Handles single and multiple @ref groups separated by commas or spaces.
+ * Examples:
+ *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
+ *   "// AC: @spec-a ac-1, ac-2"                  → [{specRef:"@spec-a", acIds:["ac-1","ac-2"]}]
+ *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
+ *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
+ */
+export function parseACAnnotationLine(
+  lineText: string,
+): { specRef: string; acIds: string[] }[] {
+  const prefixMatch = AC_LINE_PREFIX.exec(lineText);
+  if (!prefixMatch) return [];
+
+  // Get everything after "// AC: "
+  let remainder = lineText.slice(prefixMatch.index + prefixMatch[0].length);
+
+  // Strip N/A suffix: " — N/A: ..." or " -- N/A: ..."
+  remainder = remainder.replace(/\s*[—–-]{1,3}\s*N\/A\b.*$/, "");
+
+  // Strip parenthetical comments: " (some comment)"
+  remainder = remainder.replace(/\s*\(.*$/, "");
+
+  const groups: { specRef: string; acIds: string[] }[] = [];
+
+  // Match each @ref followed by its optional ac-N ids
+  // This regex captures @ref and then all ac-N tokens until the next @ref or end
+  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-\d+)*)/g;
+  let match;
+
+  while ((match = refGroupPattern.exec(remainder)) !== null) {
+    const specRef = match[1];
+    const acPart = match[2].trim();
+    const acIds: string[] = [];
+
+    if (acPart) {
+      // Extract individual ac-N tokens
+      const acMatches = acPart.match(/ac-\d+/g);
+      if (acMatches) {
+        acIds.push(...acMatches);
+      }
+    }
+
+    groups.push({ specRef, acIds });
+  }
+
+  return groups;
+}
+
 /**
  * Scan a directory of test files for AC annotations and add to the coverage set.
  */
@@ -790,27 +844,20 @@ async function scanDirForACAnnotations(
 
   for (const filePath of testFiles) {
     const content = await fs.readFile(filePath, "utf-8");
+    const lines = content.split("\n");
 
-    // Match AC annotations: // AC: @spec-ref ac-N
-    // Also handle multiple ACs on one line: // AC: @spec-ref ac-1, ac-2
-    const acPattern =
-      /\/\/\s*AC:\s*(@[\w-]+)(?:\s+(ac-\d+(?:\s*,\s*ac-\d+)*))?/g;
-    let match;
+    for (const lineText of lines) {
+      if (!AC_LINE_PREFIX.test(lineText)) continue;
 
-    while ((match = acPattern.exec(content)) !== null) {
-      const specRef = match[1]; // @spec-ref
-      const acList = match[2]; // "ac-1, ac-2" or just "ac-1" or undefined
-
-      if (acList) {
-        // Split by comma and trim
-        const acs = acList.split(",").map((ac) => ac.trim());
-        for (const ac of acs) {
-          coveredACs.add(`${specRef} ${ac}`);
+      const groups = parseACAnnotationLine(lineText);
+      for (const { specRef, acIds } of groups) {
+        if (acIds.length > 0) {
+          for (const ac of acIds) {
+            coveredACs.add(`${specRef} ${ac}`);
+          }
+        } else {
+          coveredACs.add(specRef);
         }
-      } else {
-        // No specific AC mentioned, just the spec ref
-        // We'll consider this as generic coverage
-        coveredACs.add(specRef);
       }
     }
   }
@@ -836,6 +883,147 @@ export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   );
 
   return coveredACs;
+}
+
+/**
+ * Structured AC annotation found in a test file.
+ */
+export interface ACAnnotation {
+  /** The @slug or @ULID reference */
+  specRef: string;
+  /** Specific AC ids like "ac-1", "ac-2", or empty if just the ref */
+  acIds: string[];
+  /** Source file where annotation was found */
+  file: string;
+  /** Line number in the source file (1-based) */
+  line: number;
+}
+
+/**
+ * Scan a directory for structured AC annotation data.
+ * Unlike scanDirForACAnnotations which only returns a Set<string>,
+ * this returns full annotation details including file and line number.
+ */
+async function scanDirForACAnnotationsStructured(
+  dir: string,
+  annotations: ACAnnotation[],
+): Promise<void> {
+  try {
+    await fs.access(dir);
+  } catch {
+    return;
+  }
+
+  const testFiles = await findTestFilesRecursive(dir);
+
+  for (const filePath of testFiles) {
+    const content = await fs.readFile(filePath, "utf-8");
+    const lines = content.split("\n");
+
+    for (let i = 0; i < lines.length; i++) {
+      const lineText = lines[i];
+      if (!AC_LINE_PREFIX.test(lineText)) continue;
+
+      const groups = parseACAnnotationLine(lineText);
+      for (const { specRef, acIds } of groups) {
+        annotations.push({
+          specRef,
+          acIds,
+          file: filePath,
+          line: i + 1,
+        });
+      }
+    }
+  }
+}
+
+/**
+ * Scan all test directories for structured AC annotations.
+ */
+export async function scanACAnnotations(rootDir: string): Promise<ACAnnotation[]> {
+  const annotations: ACAnnotation[] = [];
+
+  await scanDirForACAnnotationsStructured(path.join(rootDir, "tests"), annotations);
+  await scanDirForACAnnotationsStructured(
+    path.join(rootDir, "packages", "web-ui", "tests", "e2e"),
+    annotations,
+  );
+
+  return annotations;
+}
+
+/**
+ * Validate AC annotations in test files.
+ * Checks that:
+ * 1. @slug resolves to a real spec item or trait
+ * 2. ac-N exists on the resolved item's acceptance_criteria
+ *
+ * Returns completeness warnings for invalid annotations.
+ */
+export function validateACAnnotations(
+  annotations: ACAnnotation[],
+  items: LoadedSpecItem[],
+  index: ReferenceIndex,
+): CompletenessWarning[] {
+  const warnings: CompletenessWarning[] = [];
+
+  for (const annotation of annotations) {
+    const { specRef, acIds, file, line } = annotation;
+    const relFile = path.basename(file);
+
+    // Check if the reference resolves
+    const result = index.resolve(specRef);
+    if (!result.ok) {
+      warnings.push({
+        type: "invalid_ac_annotation",
+        itemRef: specRef,
+        itemTitle: `${relFile}:${line}`,
+        message: `AC annotation references '${specRef}' which cannot be resolved`,
+        details: `${file}:${line}`,
+      });
+      continue;
+    }
+
+    // Find the resolved item in our loaded spec items
+    const item = items.find((i) => i._ulid === result.ulid);
+    if (!item) {
+      // Resolved to a non-spec item (task, plan, meta) — AC annotations must target spec items or traits
+      warnings.push({
+        type: "invalid_ac_annotation",
+        itemRef: specRef,
+        itemTitle: `${relFile}:${line}`,
+        message: `AC annotation references '${specRef}' which resolves but is not a spec item or trait`,
+        details: `${file}:${line}`,
+      });
+      continue;
+    }
+
+    // If no specific AC ids, annotation is just a generic spec reference — skip AC existence check
+    if (acIds.length === 0) {
+      continue;
+    }
+
+    const existingACs = new Set(
+      (item.acceptance_criteria || []).map((ac) => ac.id),
+    );
+
+    for (const acId of acIds) {
+      if (!existingACs.has(acId)) {
+        const itemRef = item.slugs?.[0]
+          ? `@${item.slugs[0]}`
+          : `@${index.shortUlid(item._ulid)}`;
+        warnings.push({
+          type: "invalid_ac_annotation",
+          itemRef,
+          itemTitle: `${relFile}:${line}`,
+          message: `AC annotation references '${specRef} ${acId}' but ${itemRef} has no acceptance criterion '${acId}'`,
+          details: `${file}:${line}`,
+        });
+      }
+    }
+  }
+
+  return warnings;
 }
 
 /**
@@ -881,6 +1069,7 @@ export function computeACCoverage<
 /**
  * Check spec items for completeness
  * AC: @spec-completeness ac-1, ac-2, ac-3
+ * AC: @spec-completeness-policy ac-module-exempt, ac-feature-required, ac-description-required, ac-decision-required
  * AC: @trait-validation ac-1, ac-2, ac-3
  */
 async function checkCompleteness(
@@ -899,11 +1088,15 @@ async function checkCompleteness(
       ? `@${item.slugs[0]}`
       : `@${index.shortUlid(item._ulid)}`;
     const isTrait = item.type === "trait";
+    const isModule = item.type === "module";
 
     // AC: @spec-completeness ac-1
+    // AC: @spec-completeness-policy ac-module-exempt
+    // AC: @spec-completeness-policy ac-feature-required
+    // AC: @spec-completeness-policy ac-decision-required
     // AC: @trait-type ac-2 - Traits should have acceptance criteria for completeness
     // Check for missing acceptance criteria
-    if (!item.acceptance_criteria || item.acceptance_criteria.length === 0) {
+    if (!isModule && (!item.acceptance_criteria || item.acceptance_criteria.length === 0)) {
       warnings.push({
         type: "missing_acceptance_criteria",
         itemRef,
@@ -913,9 +1106,10 @@ async function checkCompleteness(
     }
 
     // AC: @spec-completeness ac-2
+    // AC: @spec-completeness-policy ac-description-required
     // AC: @trait-type ac-3 - Traits should have description for completeness
     // Check for missing description
-    if (!item.description || item.description.trim() === "") {
+    if (!isModule && (!item.description || item.description.trim() === "")) {
       warnings.push({
         type: "missing_description",
         itemRef,
@@ -1314,8 +1508,12 @@ function checkAutomationEligibility(
   index: ReferenceIndex,
 ): CompletenessWarning[] {
   const warnings: CompletenessWarning[] = [];
+  const terminalStatuses = new Set(["completed", "cancelled"]);
 
   for (const task of tasks) {
+    // AC: @task-automation-eligibility ac-21 — skip terminal statuses
+    if (terminalStatuses.has(task.status)) continue;
+
     const taskRef = task.slugs?.[0]
       ? `@${task.slugs[0]}`
       : `@${index.shortUlid(task._ulid)}`;
@@ -1643,6 +1841,11 @@ export async function validate(
       // Check automation eligibility warnings for tasks
       const automationWarnings = checkAutomationEligibility(allTasks, index);
       completenessWarnings.push(...automationWarnings);
+
+      // Validate AC annotations in test files
+      const annotations = await scanACAnnotations(ctx.rootDir);
+      const annotationWarnings = validateACAnnotations(annotations, allItems, index);
+      completenessWarnings.push(...annotationWarnings);
 
       // AC: @config-validation ac-1 — require_acceptance promotes missing AC to errors
       if (options.requireAcceptance) {

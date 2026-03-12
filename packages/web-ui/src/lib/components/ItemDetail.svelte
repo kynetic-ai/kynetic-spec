@@ -2,11 +2,11 @@
 	// AC: @web-dashboard ac-12, ac-13, ac-14, ac-15
 	import type { ItemDetail, TaskSummary } from '@kynetic-ai/shared';
 	import { base } from '$app/paths';
+	import type { SessionSummary } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
 		Sheet,
 		SheetContent,
-		SheetDescription,
 		SheetHeader,
 		SheetTitle
 	} from '$lib/components/ui/sheet';
@@ -18,8 +18,10 @@
 	} from '$lib/components/ui/accordion';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { fetchItem, fetchItemTasks } from '$lib/api';
+	import { fetchItem, fetchItemTasks, fetchItemSessions } from '$lib/api';
+	import { renderInlineMarkdown, renderMarkdown } from '$lib/utils/markdown';
 	import { CheckCircle, XCircle, HelpCircle } from 'lucide-svelte';
+	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
 
 	interface Props {
 		ref: string | null;
@@ -30,24 +32,36 @@
 
 	let item = $state<ItemDetail | null>(null);
 	let linkedTasks = $state<TaskSummary[]>([]);
+	let relatedSessions = $state<SessionSummary[]>([]);
+	let sessionsError = $state('');
 	let loading = $state(false);
 	let error = $state<string | null>(null);
 
 	async function loadItem(itemRef: string) {
 		loading = true;
 		error = null;
+		sessionsError = '';
 		try {
-			// Fetch item details
-			item = await fetchItem(itemRef);
-
-			// Fetch linked tasks
-			// AC: @web-dashboard ac-13
-			const tasksResponse = await fetchItemTasks(itemRef);
+			const [itemResponse, tasksResponse] = await Promise.all([
+				fetchItem(itemRef),
+				fetchItemTasks(itemRef)
+			]);
+			item = itemResponse;
 			linkedTasks = tasksResponse.items;
+			try {
+				const sessionsResponse = await fetchItemSessions(itemRef);
+				relatedSessions = sessionsResponse.items;
+			} catch (sessionErr) {
+				sessionsError =
+					sessionErr instanceof Error ? sessionErr.message : 'Failed to load related sessions';
+				relatedSessions = [];
+			}
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load item';
 			item = null;
 			linkedTasks = [];
+			relatedSessions = [];
+			sessionsError = '';
 		} finally {
 			loading = false;
 		}
@@ -111,7 +125,12 @@
 						<SheetTitle data-testid="spec-title">{item.title}</SheetTitle>
 					</div>
 					{#if item.description}
-						<SheetDescription data-testid="spec-description">{item.description}</SheetDescription>
+						<div
+							class="text-muted-foreground text-sm prose prose-sm dark:prose-invert max-w-none"
+							data-testid="spec-description"
+						>
+							{@html renderMarkdown(item.description)}
+						</div>
 					{/if}
 				</SheetHeader>
 
@@ -135,21 +154,32 @@
 							{#each item.acceptance_criteria as ac, i}
 								<AccordionItem value={ac._ulid} data-testid="ac-item">
 									<AccordionTrigger data-testid="ac-expand-toggle">
-										<span class="text-sm" data-testid="ac-given">AC-{i + 1}: {ac.given}</span>
+										<span class="text-sm" data-testid="ac-given">
+											{@html renderInlineMarkdown(`AC-${i + 1}: ${ac.given}`)}
+										</span>
 									</AccordionTrigger>
 									<AccordionContent>
 										<div class="space-y-2 text-sm pl-4">
-											<div data-testid="ac-given-full">
+											<div
+												data-testid="ac-given-full"
+												class="prose prose-sm dark:prose-invert max-w-none"
+											>
 												<span class="font-medium text-muted-foreground">Given:</span>
-												{ac.given}
+												{@html renderInlineMarkdown(` ${ac.given}`)}
 											</div>
-											<div data-testid="ac-when-full">
+											<div
+												data-testid="ac-when-full"
+												class="prose prose-sm dark:prose-invert max-w-none"
+											>
 												<span class="font-medium text-muted-foreground">When:</span>
-												{ac.when}
+												{@html renderInlineMarkdown(` ${ac.when}`)}
 											</div>
-											<div data-testid="ac-then-full">
+											<div
+												data-testid="ac-then-full"
+												class="prose prose-sm dark:prose-invert max-w-none"
+											>
 												<span class="font-medium text-muted-foreground">Then:</span>
-												{ac.then}
+												{@html renderInlineMarkdown(` ${ac.then}`)}
 											</div>
 											<!-- AC: @web-dashboard ac-15 - Test coverage indicator -->
 											<div
@@ -222,6 +252,17 @@
 						<p class="text-sm text-muted-foreground">No tasks linked to this spec item yet.</p>
 					</div>
 				{/if}
+
+				<!-- AC: @task-spec-session-context ac-spec-detail-sessions, ac-session-list-spec-filter -->
+				<RelatedSessionsSection
+					title="Sessions"
+					sessions={relatedSessions}
+					loading={false}
+					error={sessionsError}
+					filterHref={`${base}/sessions?spec_ref=${encodeURIComponent(`@${item.slugs[0] || item._ulid}`)}`}
+					emptyMessage="No sessions are linked to tasks for this spec item yet."
+					dataTestId="item-related-sessions"
+				/>
 			</div>
 		{/if}
 	</SheetContent>

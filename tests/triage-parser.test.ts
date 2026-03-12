@@ -20,17 +20,27 @@ import {
 } from '../src/parser/yaml.js';
 
 function makeContext(specDir: string): KspecContext {
+  const projectRoot = path.dirname(specDir);
   return {
-    rootDir: path.dirname(specDir),
+    rootDir: projectRoot,
+    projectRoot,
     specDir,
+    sessionsDir: path.join(projectRoot, ".kspec-sessions"),
     manifestPath: null,
     manifest: null,
     shadow: null,
     config: {
-      shadow: { branch: 'kspec-meta', directory: '.kspec' },
-      identity: {},
-      daemon: { port: 3456 },
-      plugins: { directory: [] },
+      shadow: { branch: 'kspec-meta', directory: '.kspec', remote: null, sync_interval: 60 },
+      identity: { author: null },
+      validation: { strict_refs: true, require_acceptance: false },
+      daemon: { port: 3456, host: 'localhost', auto_start: true },
+      ralph: {
+        skills: {
+          task_work: '/kspec:task-work',
+          reflect: '/kspec:reflect',
+          pr_review: '/kspec:review',
+        },
+      },
     },
   };
 }

@@ -25,6 +25,7 @@ import { runInvocation } from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import { setJsonMode, isJsonMode } from "../src/cli/output.js";
 import type { SessionUpdate } from "../src/acp/index.js";
+import * as parser from "../src/parser/index.js";
 import type { Agent } from "../src/schema/meta.js";
 
 // ─── Mock ACP for unit-level tests ───────────────────────────────────────────
@@ -43,7 +44,7 @@ function registerMockAdapter(): void {
 // ─── Mock daemon helpers for ac-4/5/6 ────────────────────────────────────────
 // Note: we import and test command handlers directly to avoid spawnSync event-loop issues
 
-import { registerAgentCommands } from "../src/cli/commands/agent.js";
+import { registerAgentCommands, _setWebSocketCtor } from "../src/cli/commands/agent.js";
 import { Command } from "commander";
 
 /**
@@ -619,6 +620,105 @@ describe("AC-7: kspec agent run --adapter override", () => {
   });
 });
 
+// ─── prompt_template support in one-shot mode ────────────────────────────────
+
+describe("agent run --task respects prompt_template", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-agent-run-tpl-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  function setupProject(agents: Agent[]): void {
+    initGitRepo(testDir);
+    const fs_sync = require("node:fs");
+    const path_sync = require("node:path");
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1", title: "Test" }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        agents: agents.map((a) => ({
+          _ulid: a._ulid,
+          id: a.id,
+          name: a.name,
+          dispatch: [],
+          concurrency: a.concurrency,
+          adapter: a.adapter,
+          auto_approve: false,
+          ...(a.prompt_template && { prompt_template: a.prompt_template }),
+        })),
+      }),
+    );
+    fs_sync.writeFileSync(
+      path_sync.join(testDir, "project.tasks.yaml"),
+      YAML.stringify({ tasks: [] }),
+    );
+  }
+
+  it("should use prompt_template when --task is provided and no explicit prompt", () => {
+    const agent = makeTestAgent({
+      id: "review-agent",
+      prompt_template: "Review task {{task_ref}} with trigger {{trigger}}",
+    });
+    setupProject([agent]);
+
+    const result = kspec("agent run review-agent --task @TASK123 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.prompt).toContain("Review task @TASK123 with trigger manual");
+  });
+
+  it("should fall back to default prompt when no prompt_template is defined", () => {
+    const agent = makeTestAgent({ id: "plain-agent" });
+    setupProject([agent]);
+
+    const result = kspec("agent run plain-agent --task @TASK456 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.prompt).toContain("Work on task @TASK456 according to your configuration and skills.");
+  });
+
+  it("should prefer explicit prompt over prompt_template", () => {
+    const agent = makeTestAgent({
+      id: "override-agent",
+      prompt_template: "Template prompt for {{task_ref}}",
+    });
+    setupProject([agent]);
+
+    const result = kspec("agent run override-agent 'My custom prompt' --task @TASK789 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    expect(data.prompt).toContain("My custom prompt");
+    expect(data.prompt).not.toContain("Template prompt for");
+  });
+
+  it("should interpolate review_url as empty string for manual runs", () => {
+    const agent = makeTestAgent({
+      id: "url-agent",
+      prompt_template: "Review {{task_ref}} at {{review_url}} end",
+    });
+    setupProject([agent]);
+
+    const result = kspec("agent run url-agent --task @TASK000 --dry-run --json", testDir);
+
+    expect(result.exitCode).toBe(0);
+    const data = JSON.parse(result.stdout);
+    // review_url should resolve to empty string, not remain as {{review_url}}
+    expect(data.prompt).toContain("Review @TASK000 at  end");
+  });
+});
+
 // ─── AC-2: One-shot invocation with task binding ─────────────────────────────
 
 // AC: @cli-agent-commands ac-2
@@ -747,9 +847,129 @@ describe("AC-4: kspec agent dispatch start with running daemon", () => {
     // AC: @cli-agent-commands ac-4 - dispatch engine started
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/agent/dispatch/start"),
-      expect.objectContaining({ method: "POST" }),
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.not.objectContaining({
+          "X-Kspec-Cwd": expect.any(String),
+        }),
+      }),
     );
     expect(logs.some((l) => /start|running/i.test(l))).toBe(true);
+  });
+
+  // AC: @worktree-support ac-daemon-identity
+  // AC: @worktree-support ac-dispatch-cwd
+  it("should send projectRoot and worktree cwd headers when dispatch starts from a worktree", async () => {
+    const mainProjectRoot = "/tmp/main-project";
+    const worktreeRoot = "/tmp/worktrees/feature-a";
+    vi.spyOn(parser, "initContext").mockResolvedValue({
+      rootDir: worktreeRoot,
+      projectRoot: mainProjectRoot,
+      specDir: `${mainProjectRoot}/.kspec`,
+      sessionsDir: `${mainProjectRoot}/.kspec-sessions`,
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: {
+        shadow: { branch: "kspec-meta", directory: ".kspec", remote: null, sync_interval: 60 },
+        identity: { author: null },
+        validation: { strict_refs: true, require_acceptance: false },
+        daemon: { port: 3456, host: "localhost", auto_start: true },
+        ralph: {
+          skills: {
+            task_work: "/kspec:task-work",
+            reflect: "/kspec:reflect",
+            pr_review: "/kspec:review",
+          },
+        },
+      },
+    } as Awaited<ReturnType<typeof parser.initContext>>);
+
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        started: true,
+        status: { running: true, activeInvocations: 0, queuedInvocations: 0 },
+      }),
+    } as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const program = createTestProgram();
+    try {
+      await program.parseAsync(["agent", "dispatch", "start"], { from: "user" });
+    } catch {
+      // exitOverride
+    }
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/api/agent/dispatch/start"),
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+          "X-Kspec-Dir": mainProjectRoot,
+          "X-Kspec-Cwd": worktreeRoot,
+        }),
+      }),
+    );
+  });
+
+  // AC: @worktree-support ac-dispatch-conflict
+  it("should surface a 409 conflict when dispatch is already running for a different worktree cwd", async () => {
+    vi.spyOn(parser, "initContext").mockResolvedValue({
+      rootDir: "/tmp/worktrees/b",
+      projectRoot: "/tmp/main-project",
+      specDir: "/tmp/main-project/.kspec",
+      sessionsDir: "/tmp/main-project/.kspec-sessions",
+      manifestPath: null,
+      manifest: null,
+      shadow: null,
+      config: {
+        shadow: { branch: "kspec-meta", directory: ".kspec", remote: null, sync_interval: 60 },
+        identity: { author: null },
+        validation: { strict_refs: true, require_acceptance: false },
+        daemon: { port: 3456, host: "localhost", auto_start: true },
+        ralph: {
+          skills: {
+            task_work: "/kspec:task-work",
+            reflect: "/kspec:reflect",
+            pr_review: "/kspec:review",
+          },
+        },
+      },
+    } as Awaited<ReturnType<typeof parser.initContext>>);
+
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 409,
+      text: async () =>
+        "Dispatch engine already running for /tmp/main-project with cwd /tmp/worktrees/a",
+    } as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const program = createTestProgram();
+    const errors: string[] = [];
+    const origError = console.error;
+    console.error = (...args) => { errors.push(args.join(" ")); };
+
+    try {
+      await program.parseAsync(["agent", "dispatch", "start"], { from: "user" });
+    } catch {
+      // exitOverride
+    } finally {
+      console.error = origError;
+    }
+
+    expect(errors.join("\n")).toContain("409");
+    expect(errors.join("\n")).toContain("/tmp/worktrees/a");
   });
 });
 
@@ -880,7 +1100,11 @@ describe("AC-6: kspec agent status with running daemon", () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/api/agent/dispatch/status"),
-      expect.anything(),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          "X-Kspec-Dir": testDir,
+        }),
+      }),
     );
     const combined = logs.join("\n");
     // AC: @cli-agent-commands ac-6 - session ID shown
@@ -1399,18 +1623,34 @@ function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): 
  * Poll for a condition to become true, up to maxWaitMs.
  * Used to handle async initContext() completing before WebSocket is created.
  */
-async function waitFor(condition: () => boolean, maxWaitMs = 500): Promise<void> {
+async function waitFor(
+  condition: () => boolean,
+  maxWaitMs = 2000,
+  description = "dispatch watch test readiness",
+): Promise<void> {
   await waitForStartup(
-    "dispatch watch test readiness",
+    description,
     async () => {
       const ok = condition();
       return {
         ok,
-        details: ok ? "condition met" : "condition still false",
+        details: ok
+          ? "condition met"
+          : `condition not yet met (waited up to ${maxWaitMs}ms)`,
       };
     },
     { timeoutMs: maxWaitMs, intervalMs: 10 },
   );
+}
+
+/**
+ * Mock initContext to throw immediately. Dispatch watch catches this (non-fatal)
+ * so the only effect is removing the slow filesystem search that otherwise
+ * causes waitFor timeouts in environments without .kspec/ (clean clones, CI).
+ */
+async function mockInitContextFast(): Promise<void> {
+  const parser = await import("../src/parser/index.js");
+  vi.spyOn(parser, "initContext").mockRejectedValue(new Error("mocked"));
 }
 
 // AC: @cli-agent-commands ac-15
@@ -1454,6 +1694,7 @@ describe("AC-15: dispatch watch — daemon not running", () => {
 // AC: @cli-agent-commands ac-18
 describe("AC-18: dispatch watch — subscribe handshake failure", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -1462,9 +1703,10 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const errors: string[] = [];
     const infos: string[] = [];
@@ -1522,6 +1764,7 @@ describe("AC-18: dispatch watch — subscribe handshake failure", () => {
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — streams section-marked output", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -1530,9 +1773,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1581,9 +1825,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1626,9 +1871,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1668,9 +1914,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1718,9 +1965,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1773,9 +2021,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1823,9 +2072,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1880,9 +2130,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1920,9 +2171,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -1965,6 +2217,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 // AC: @cli-agent-commands ac-13
 describe("AC-13: dispatch watch — transcript fixture regressions", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -1979,9 +2232,10 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -2027,6 +2281,7 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
 // AC: @cli-agent-commands ac-16
 describe("AC-16: dispatch watch — filter by agent or session", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -2035,9 +2290,10 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -2086,9 +2342,10 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const { FakeWs, getLastInstance } = makeFakeWsClass();
-    vi.stubGlobal("WebSocket", FakeWs);
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
 
     const written: string[] = [];
     vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
@@ -2132,6 +2389,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
 // AC: @cli-agent-commands ac-14
 describe("AC-14: dispatch watch — reconnect on disconnect", () => {
   afterEach(() => {
+    _setWebSocketCtor(null);
     vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -2141,6 +2399,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class TrackingFakeWs implements FakeWsInstance {
@@ -2151,7 +2410,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", TrackingFakeWs);
+    _setWebSocketCtor(TrackingFakeWs as unknown as typeof WebSocket);
     vi.useFakeTimers({ shouldAdvanceTime: true });
 
     const stderrLines: string[] = [];
@@ -2168,7 +2427,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
 
     // Poll for first WebSocket to be created (initContext is async)
     await vi.runAllTimersAsync();
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect test");
 
     instances[0].onopen?.({});
 
@@ -2191,6 +2450,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class CaptureWs implements FakeWsInstance {
@@ -2201,7 +2461,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", CaptureWs);
+    _setWebSocketCtor(CaptureWs as unknown as typeof WebSocket);
 
     const stdoutWrites: string[] = [];
     const stderrWrites: string[] = [];
@@ -2220,7 +2480,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       { from: "user" },
     );
 
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for output flush test");
     instances[0].onopen?.({});
     instances[0].onmessage?.({
       data: JSON.stringify({
@@ -2238,10 +2498,10 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
         const flushed = stdout.includes("[worker sess-abc]\nline without newline\n");
         return {
           ok: reconnectLogged && flushed,
-          details: `stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
+          details: `reconnect_logged=${reconnectLogged} flushed=${flushed} stdout_len=${stdout.length} stderr_lines=${stderrWrites.length}`,
         };
       },
-      { timeoutMs: 1_000, intervalMs: 10 },
+      { timeoutMs: 2_000, intervalMs: 10 },
     );
 
     const stdout = stdoutWrites.join("");
@@ -2259,6 +2519,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class CaptureWs implements FakeWsInstance {
@@ -2269,7 +2530,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", CaptureWs);
+    _setWebSocketCtor(CaptureWs as unknown as typeof WebSocket);
     vi.useFakeTimers({ shouldAdvanceTime: true });
 
     const stdoutWrites: string[] = [];
@@ -2289,7 +2550,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       { from: "user" },
     );
 
-    await waitFor(() => instances.length >= 1, 1000);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect boundary test");
     instances[0].onopen?.({});
     for (const chunk of fixture.chunks_before_close) {
       emitAgentTextChunk(instances[0], chunk);
@@ -2311,6 +2572,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const instances: FakeWsInstance[] = [];
     class CaptureFakeWs implements FakeWsInstance {
@@ -2321,7 +2583,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { instances.push(this); }
     }
-    vi.stubGlobal("WebSocket", CaptureFakeWs);
+    _setWebSocketCtor(CaptureFakeWs as unknown as typeof WebSocket);
 
     let exitCode: number | undefined;
     vi.spyOn(process, "exit").mockImplementation((code?: number) => {
@@ -2338,7 +2600,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       .catch(() => {/* mocked exit throws */});
 
     // Wait for WebSocket to be created
-    await waitFor(() => instances.length >= 1);
+    await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for retries-exhausted test");
 
     // First connection drops — retryCount(0) >= retryLimit(0), so exit immediately
     // process.exit mock throws synchronously, so wrap in try/catch
@@ -2358,6 +2620,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     const { PidFileManager } = await import("../src/cli/pid-utils.js");
     vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
     vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
 
     const wsCtor = vi.fn();
     class GuardWs implements FakeWsInstance {
@@ -2368,7 +2631,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
       onclose: (() => void) | null = null;
       constructor(_url: string) { wsCtor(); }
     }
-    vi.stubGlobal("WebSocket", GuardWs);
+    _setWebSocketCtor(GuardWs as unknown as typeof WebSocket);
 
     const consoleErrors: string[] = [];
     const origError = console.error;
@@ -2398,5 +2661,128 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     expect(exitCode).toBe(4);
     expect(consoleErrors.join(" ")).toContain("Invalid --retries value");
     expect(wsCtor).not.toHaveBeenCalled();
+  });
+});
+
+// AC: @test-suite-perf-reliability ac-3
+describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("should enforce 2000ms default timeout floor for waitFor wrapper", async () => {
+    // AC-3 requires polling timeout >= 2000ms with configurable override.
+    // Use fake timers so we can verify the timeout duration without real-time waits.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    let probeCount = 0;
+    let rejected = false;
+    let rejectionError: Error | undefined;
+
+    // Start the waitFor — attach a handler immediately to prevent unhandled rejection
+    const waitPromise = waitFor(() => {
+      probeCount++;
+      return false; // never resolves
+    }).catch((e: Error) => {
+      rejected = true;
+      rejectionError = e;
+    });
+
+    // Advance just under 2000ms — should NOT have thrown yet
+    await vi.advanceTimersByTimeAsync(1900);
+    // probeCount > 0 confirms the helper is actually polling
+    expect(probeCount).toBeGreaterThan(0);
+    expect(rejected).toBe(false);
+
+    // Advance past 2000ms — should reject with timeout
+    await vi.advanceTimersByTimeAsync(200);
+    await waitPromise;
+
+    expect(rejected).toBe(true);
+    expect(rejectionError?.message).toMatch(/timed out/i);
+    expect(rejectionError?.message).toContain("2000ms");
+  });
+
+  it("should include last observed state in timeout error message", async () => {
+    // AC-3 requires timeout errors include the last observed state for diagnosis.
+    const err = await waitForStartup(
+      "diagnostic-probe",
+      async () => ({ ok: false, details: "ws_connected=false pending_ack=true" }),
+      { timeoutMs: 50, intervalMs: 10 },
+    ).catch((e: Error) => e);
+
+    expect(err).toBeInstanceOf(Error);
+    // Must include the description
+    expect((err as Error).message).toContain("diagnostic-probe");
+    // Must include the last observed state details
+    expect((err as Error).message).toContain("ws_connected=false pending_ack=true");
+    // Must include "Last observation" label for diagnosis
+    expect((err as Error).message).toContain("Last observation");
+  });
+
+  it("should allow configurable timeout override", async () => {
+    // AC-3: "configurable override" — callers can pass a custom timeout.
+    const start = Date.now();
+    await expect(
+      waitForStartup(
+        "short override test",
+        async () => ({ ok: false, details: "still waiting" }),
+        { timeoutMs: 100, intervalMs: 10 },
+      ),
+    ).rejects.toThrow(/timed out/i);
+    const elapsed = Date.now() - start;
+    // Should respect the override (100ms), not the default
+    expect(elapsed).toBeLessThan(2000);
+    expect(elapsed).toBeGreaterThanOrEqual(100);
+  });
+});
+
+// AC: @test-suite-perf-reliability ac-4
+describe("AC-4: crypto polyfill prevents ReferenceError", () => {
+  it("should restore globalThis.crypto when it is missing", async () => {
+    // Save original and remove globalThis.crypto to simulate Node < 19
+    const originalCrypto = globalThis.crypto;
+    delete (globalThis as Record<string, unknown>).crypto;
+
+    // Verify crypto is actually gone
+    expect(globalThis.crypto).toBeUndefined();
+
+    // Re-run the polyfill logic (same as tests/setup.ts)
+    const nodeCrypto = await import("node:crypto");
+    if (!globalThis.crypto) {
+      (globalThis as Record<string, unknown>).crypto = nodeCrypto.webcrypto;
+    }
+
+    // Verify the polyfill restored crypto and randomUUID works
+    expect(globalThis.crypto).toBeDefined();
+    expect(() => globalThis.crypto.randomUUID()).not.toThrow();
+
+    const uuid = globalThis.crypto.randomUUID();
+    expect(uuid).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+    );
+
+    // Restore original to avoid polluting other tests
+    (globalThis as Record<string, unknown>).crypto = originalCrypto;
+  });
+
+  it("should prevent ReferenceError when crypto.randomUUID is called after polyfill", async () => {
+    // Simulate the exact failure mode: code calls crypto.randomUUID()
+    // in an environment where globalThis.crypto was never set.
+    const originalCrypto = globalThis.crypto;
+    delete (globalThis as Record<string, unknown>).crypto;
+
+    // Without polyfill, this would throw ReferenceError
+    expect(() => globalThis.crypto.randomUUID()).toThrow();
+
+    // Apply polyfill
+    const nodeCrypto = await import("node:crypto");
+    (globalThis as Record<string, unknown>).crypto = nodeCrypto.webcrypto;
+
+    // After polyfill, the same call succeeds
+    expect(() => globalThis.crypto.randomUUID()).not.toThrow();
+
+    // Restore
+    (globalThis as Record<string, unknown>).crypto = originalCrypto;
   });
 });

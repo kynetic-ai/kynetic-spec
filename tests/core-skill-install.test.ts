@@ -281,7 +281,14 @@ describe('Core Skill Installation', () => {
       const result = kspecJson<{
         render: { platform: string; source: string };
       }>('skill install-core', tempDir, {
-        env: { CODEX_THREAD_ID: 'test-thread-123', CLAUDECODE: '', HOME: tempDir },
+        env: {
+          CODEX_THREAD_ID: 'test-thread-123',
+          CLAUDECODE: '',
+          CLAUDE_CODE_ENTRYPOINT: '',
+          CLAUDE_PROJECT_DIR: '',
+          CLAUDE_CODE: '',
+          HOME: tempDir,
+        },
       });
 
       expect(result.render.platform).toBe('codex');

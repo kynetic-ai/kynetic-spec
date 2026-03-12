@@ -35,6 +35,6 @@ test-results/
 .claude-research/
 
 # Session context
-.kspec-session
+.kspec-sessions/
 bun.lock
 .claude/plugins/

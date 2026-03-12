@@ -6,19 +6,35 @@ import {
   getShadowStatus,
   hasRemoteTracking,
   repairShadow,
+  resolveProjectRoots,
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
+  SESSIONS_WORKTREE_DIR,
   type ShadowStatus,
   shadowSync,
 } from "../../parser/shadow.js";
+import {
+  getSessionBranchStatus,
+  repairSessionBranch,
+  type SessionBranchStatus,
+} from "../../parser/session-branch.js";
 import { shadowCommands } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn } from "../output.js";
 
+function resolveCliProjectRoot(): string | null {
+  return resolveProjectRoots(process.cwd())?.mainRoot ?? getGitRoot(process.cwd());
+}
+
 /**
  * Format shadow status for display
  */
-function formatShadowStatus(status: ShadowStatus, gitRoot: string): void {
+function formatShadowStatus(
+  status: ShadowStatus,
+  gitRoot: string,
+  sessionStatus?: SessionBranchStatus,
+  sessionBranchName?: string,
+): void {
   console.log(chalk.bold("Shadow Branch Status"));
   console.log(chalk.gray("─".repeat(40)));
   console.log(`Project root: ${gitRoot}`);
@@ -65,6 +81,55 @@ function formatShadowStatus(status: ShadowStatus, gitRoot: string): void {
       console.log(chalk.gray("Run `kspec init --force` to reinitialize"));
     }
   }
+
+  // AC: @session-branch-worktree ac-status — report session branch health
+  if (sessionStatus) {
+    console.log();
+    console.log(chalk.bold("Session Branch Status"));
+    console.log(chalk.gray("─".repeat(40)));
+    console.log(`Branch name:  ${sessionBranchName || "kspec-sessions"}`);
+    console.log(`Worktree:     ${SESSIONS_WORKTREE_DIR}/`);
+    console.log();
+
+    if (sessionStatus.healthy) {
+      console.log(chalk.green.bold("✓ Session branch is healthy"));
+      console.log(chalk.green("  ✓ Branch exists"));
+      console.log(chalk.green("  ✓ Worktree exists"));
+      console.log(chalk.green("  ✓ Worktree linked"));
+    } else if (!sessionStatus.exists) {
+      console.log(chalk.gray("○ Session branch not configured"));
+      console.log(
+        chalk.gray(
+          '  Set sessions.storage: "branch" in manifest and run `kspec setup`',
+        ),
+      );
+    } else {
+      console.log(chalk.red.bold("✗ Session branch has issues"));
+      console.log(
+        sessionStatus.branchExists
+          ? chalk.green("  ✓ Branch exists")
+          : chalk.red("  ✗ Branch missing"),
+      );
+      console.log(
+        sessionStatus.worktreeExists
+          ? chalk.green("  ✓ Worktree exists")
+          : chalk.red("  ✗ Worktree missing"),
+      );
+      console.log(
+        sessionStatus.worktreeLinked
+          ? chalk.green("  ✓ Worktree linked")
+          : chalk.red("  ✗ Worktree not linked"),
+      );
+
+      if (sessionStatus.error) {
+        console.log();
+        console.log(chalk.yellow(`Issue: ${sessionStatus.error}`));
+      }
+
+      console.log();
+      console.log(chalk.gray("Run `kspec shadow repair` to fix"));
+    }
+  }
 }
 
 /**
@@ -80,7 +145,7 @@ export function registerShadowCommands(program: Command): void {
     .description("Show shadow branch status")
     .action(async () => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -89,14 +154,45 @@ export function registerShadowCommands(program: Command): void {
 
         const status = await getShadowStatus(gitRoot);
 
+        // AC: @session-branch-worktree ac-status — check session branch if configured
+        let sessionStatus: SessionBranchStatus | undefined;
+        let sessionBranchName: string | undefined;
+        try {
+          const { initContext } = await import("../../parser/index.js");
+          const ctx = await initContext();
+          if (ctx.manifest?.sessions?.storage === "branch") {
+            sessionBranchName =
+              ctx.manifest.sessions.branch || "kspec-sessions";
+            sessionStatus = await getSessionBranchStatus(
+              gitRoot,
+              sessionBranchName,
+            );
+          }
+        } catch {
+          // Context not available — skip session branch status
+        }
+
         output(
           {
             ...status,
             gitRoot,
             branchName: SHADOW_BRANCH_NAME,
             worktreeDir: SHADOW_WORKTREE_DIR,
+            ...(sessionStatus && {
+              sessionBranch: {
+                ...sessionStatus,
+                branchName: sessionBranchName,
+                worktreeDir: SESSIONS_WORKTREE_DIR,
+              },
+            }),
           },
-          () => formatShadowStatus(status, gitRoot),
+          () =>
+            formatShadowStatus(
+              status,
+              gitRoot,
+              sessionStatus,
+              sessionBranchName,
+            ),
         );
 
         if (!status.healthy && status.exists) {
@@ -113,7 +209,7 @@ export function registerShadowCommands(program: Command): void {
     .description("Repair broken shadow branch worktree")
     .action(async () => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -121,35 +217,74 @@ export function registerShadowCommands(program: Command): void {
         }
 
         const status = await getShadowStatus(gitRoot);
+        let hadError = false;
 
         if (status.healthy) {
           info(shadowCommands.repair.alreadyHealthy);
-          return;
-        }
-
-        if (!status.branchExists) {
+        } else if (!status.branchExists) {
           error(shadowCommands.repair.branchNotExist);
           console.log(shadowCommands.repair.initHint);
-          process.exit(EXIT_CODES.ERROR);
+          hadError = true;
+        } else {
+          info(shadowCommands.repair.repairing);
+
+          const result = await repairShadow(gitRoot);
+
+          if (result.success) {
+            if (result.alreadyExists) {
+              info(shadowCommands.repair.stillHealthy);
+            } else {
+              success(shadowCommands.repair.repaired, {
+                worktreeCreated: result.worktreeCreated,
+              });
+              console.log(
+                shadowCommands.repair.worktreeCreated(SHADOW_WORKTREE_DIR),
+              );
+            }
+          } else {
+            error(shadowCommands.repair.failed(result.error || "Unknown error"));
+            hadError = true;
+          }
         }
 
-        info(shadowCommands.repair.repairing);
-
-        const result = await repairShadow(gitRoot);
-
-        if (result.success) {
-          if (result.alreadyExists) {
-            info(shadowCommands.repair.stillHealthy);
-          } else {
-            success(shadowCommands.repair.repaired, {
-              worktreeCreated: result.worktreeCreated,
-            });
-            console.log(
-              shadowCommands.repair.worktreeCreated(SHADOW_WORKTREE_DIR),
+        // AC: @session-branch-worktree ac-repair — repair session branch independently
+        // Runs regardless of kspec-meta health — session branch is independent
+        try {
+          const { initContext } = await import("../../parser/index.js");
+          const ctx = await initContext();
+          if (ctx.manifest?.sessions?.storage === "branch") {
+            const sessionBranchName =
+              ctx.manifest.sessions.branch || "kspec-sessions";
+            const sessionStatus = await getSessionBranchStatus(
+              gitRoot,
+              sessionBranchName,
             );
+            if (!sessionStatus.healthy && sessionStatus.exists) {
+              info("Repairing session branch worktree...");
+              const sessionResult = await repairSessionBranch(
+                gitRoot,
+                sessionBranchName,
+              );
+              if (sessionResult.success) {
+                if (sessionResult.alreadyExists) {
+                  info("Session branch already healthy");
+                } else {
+                  success("Session branch repaired", {
+                    worktreeCreated: sessionResult.worktreeCreated,
+                  });
+                }
+              } else {
+                warn(
+                  `Session branch repair failed: ${sessionResult.error || "Unknown error"}`,
+                );
+              }
+            }
           }
-        } else {
-          error(shadowCommands.repair.failed(result.error || "Unknown error"));
+        } catch {
+          // Session branch repair is optional
+        }
+
+        if (hadError) {
           process.exit(EXIT_CODES.ERROR);
         }
       } catch (err) {
@@ -164,7 +299,7 @@ export function registerShadowCommands(program: Command): void {
     .option("-n, --count <n>", "Number of commits to show", "10")
     .action(async (options) => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -213,7 +348,7 @@ export function registerShadowCommands(program: Command): void {
     .option("--ours", "Keep all local changes, discard remote")
     .action(async (options) => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);
@@ -326,7 +461,7 @@ export function registerShadowCommands(program: Command): void {
     .description("Manually sync shadow branch with remote (pull then push)")
     .action(async () => {
       try {
-        const gitRoot = getGitRoot(process.cwd());
+        const gitRoot = resolveCliProjectRoot();
 
         if (!gitRoot) {
           error(shadowCommands.notGitRepo);

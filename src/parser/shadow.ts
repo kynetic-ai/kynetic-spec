@@ -11,6 +11,7 @@
 
 import { execFile, spawn, spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
+import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
@@ -72,6 +73,147 @@ function runGitSync(
     ok: !result.error && result.status === 0,
     stdout: (result.stdout || "").toString(),
   };
+}
+
+/**
+ * Parse git version from `git --version` output.
+ * Returns [major, minor, patch] or null if unparseable.
+ */
+export function getGitVersion(
+  cwd?: string,
+): [number, number, number] | null {
+  const result = spawnSync("git", ["--version"], {
+    cwd,
+    stdio: ["ignore", "pipe", "pipe"],
+    encoding: "utf-8",
+  });
+  if (result.error || result.status !== 0) return null;
+  const match = (result.stdout || "").match(/(\d+)\.(\d+)\.(\d+)/);
+  if (!match) return null;
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
+}
+
+/**
+ * Check if the installed git supports `git worktree add --orphan` (requires >= 2.42.0).
+ */
+export function gitSupportsOrphanWorktree(cwd?: string): boolean {
+  const version = getGitVersion(cwd);
+  if (!version) return false;
+  const [major, minor] = version;
+  return major > 2 || (major === 2 && minor >= 42);
+}
+
+/**
+ * Fallback for creating an orphan branch when git < 2.42.
+ *
+ * Strategy:
+ * 1. Create a temp bare repo in the OS temp directory
+ * 2. Create an orphan branch with an empty commit there
+ * 3. Push that branch to the project repo (via file:// protocol)
+ * 4. Clean up the temp repo
+ * 5. Attach using standard `git worktree add <dir> <branch>`
+ *
+ * This approach NEVER modifies the project's working tree.
+ *
+ * AC: @config-shadow ac-10
+ */
+export async function createOrphanBranchFallback(
+  projectRoot: string,
+  branchName: string,
+  directoryName: string,
+): Promise<void> {
+  const tmpDir = await fs.mkdtemp(path.join(tmpdir(), "kspec-orphan-"));
+
+  try {
+    // 1. Init a bare repo in the temp dir
+    await runGitAsync(tmpDir, ["init", "--bare"]);
+
+    // 2. Create the orphan branch using a temporary non-bare clone.
+    //    We need a working tree to make a commit, so clone the bare repo.
+    const workDir = await fs.mkdtemp(path.join(tmpdir(), "kspec-orphan-work-"));
+
+    try {
+      await runGitAsync(workDir, ["clone", tmpDir, "."]);
+      await runGitAsync(workDir, [
+        "config",
+        "user.email",
+        "kspec@localhost",
+      ]);
+      await runGitAsync(workDir, [
+        "config",
+        "user.name",
+        "kspec",
+      ]);
+
+      // Create an orphan branch (checkout --orphan works on all git versions)
+      await runGitAsync(workDir, [
+        "checkout",
+        "--orphan",
+        branchName,
+      ]);
+
+      // Remove any files that might have been staged
+      try {
+        await runGitAsync(workDir, ["rm", "-rf", "."]);
+      } catch {
+        // May fail if nothing to remove (empty repo) - that's fine
+      }
+
+      // Create an empty initial commit
+      await runGitAsync(workDir, [
+        "commit",
+        "--allow-empty",
+        "-m",
+        `Initialize ${branchName}`,
+      ]);
+
+      // Push the orphan branch back to the bare repo
+      await runGitAsync(workDir, [
+        "push",
+        "origin",
+        branchName,
+      ]);
+    } finally {
+      await fs.rm(workDir, { recursive: true, force: true });
+    }
+
+    // 3. Push from the temp bare repo to the project repo
+    //    Use file:// protocol to ensure git treats it as a proper remote
+    await runGitAsync(tmpDir, [
+      "push",
+      `file://${path.resolve(projectRoot)}`,
+      branchName,
+    ]);
+  } finally {
+    // 4. Clean up the temp bare repo
+    await fs.rm(tmpDir, { recursive: true, force: true });
+  }
+
+  // 5. Attach worktree using standard git worktree add (no --orphan flag)
+  await runGitAsync(projectRoot, [
+    "worktree",
+    "add",
+    directoryName,
+    branchName,
+  ]);
+
+  // 6. Remove all tracked files from the worktree since the fallback
+  //    created an empty commit but `git worktree add` may still populate
+  //    the index from the branch. Clear anything that appeared.
+  try {
+    const { stdout } = await runGitAsync(
+      path.join(projectRoot, directoryName),
+      ["ls-files"],
+    );
+    if (stdout.trim()) {
+      await runGitAsync(
+        path.join(projectRoot, directoryName),
+        ["rm", "-rf", "."],
+      );
+    }
+  } catch {
+    // Nothing to remove — expected for an empty commit
+  }
 }
 
 // Import getVerboseMode for checking CLI --debug-shadow flag
@@ -139,6 +281,18 @@ export const SHADOW_BRANCH_NAME = "kspec-meta";
 export const SHADOW_WORKTREE_DIR = ".kspec";
 
 /**
+ * Sessions storage directory name (at project root, separate from shadow worktree).
+ * AC: @session-storage-modes ac-sessions-dir
+ */
+export const SESSIONS_WORKTREE_DIR = ".kspec-sessions";
+
+export interface ProjectRoots {
+  mainRoot: string;
+  worktreeRoot: string;
+  isWorktree: boolean;
+}
+
+/**
  * Options for shadow branch operations.
  *
  * AC: @config-shadow ac-7 — all fields optional for backward compatibility
@@ -175,6 +329,18 @@ function getBranchName(options?: ShadowOptions): string {
  */
 function getDirectoryName(options?: ShadowOptions): string {
   return options?.directory ?? SHADOW_WORKTREE_DIR;
+}
+
+/**
+ * Get effective remote name from options or default.
+ * AC: @config-shadow ac-3 ac-7 — resolves configured remote for fetch/push/pull.
+ * Named remotes use the name directly; path/URL remotes use the auto-created "kspec-specs".
+ */
+export function getRemoteName(options?: ShadowOptions): string {
+  if (!options?.remote) return "origin";
+  const remoteType = options.remoteType ?? "named";
+  if (remoteType === "path" || remoteType === "url") return "kspec-specs";
+  return options.remote;
 }
 
 /**
@@ -215,6 +381,53 @@ export function getGitRoot(dir: string): string | null {
     return null;
   }
   return result.stdout.trim();
+}
+
+function isSubmoduleCommonDir(commonDir: string): boolean {
+  const segments = path.normalize(commonDir).split(path.sep).filter(Boolean);
+  const gitIndex = segments.lastIndexOf(".git");
+  return gitIndex >= 0 && segments[gitIndex + 1] === "modules";
+}
+
+export function resolveProjectRoots(dir: string): ProjectRoots | null {
+  const result = runGitSync(dir, [
+    "rev-parse",
+    "--show-toplevel",
+    "--git-common-dir",
+  ]);
+  if (!result.ok) {
+    return null;
+  }
+
+  const [rawTopLevel, rawCommonDir] = result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!rawTopLevel || !rawCommonDir) {
+    return null;
+  }
+
+  const worktreeRoot = path.resolve(rawTopLevel);
+  const commonDir = path.isAbsolute(rawCommonDir)
+    ? path.resolve(rawCommonDir)
+    : path.resolve(worktreeRoot, rawCommonDir);
+
+  if (
+    isSubmoduleCommonDir(commonDir) ||
+    commonDir === path.join(worktreeRoot, ".git")
+  ) {
+    return {
+      mainRoot: worktreeRoot,
+      worktreeRoot,
+      isWorktree: false,
+    };
+  }
+
+  return {
+    mainRoot: path.dirname(commonDir),
+    worktreeRoot,
+    isWorktree: true,
+  };
 }
 
 /**
@@ -290,24 +503,22 @@ export async function detectRunningFromShadowWorktree(
       return null;
     }
 
-    const gitdir = match[1];
+    const gitdir = path.resolve(cwd, match[1]);
 
     // Check if this is a worktree (pattern: <project>/.git/worktrees/<name>)
     if (gitdir.includes(".git/worktrees/")) {
-      const worktreesMatch = gitdir.match(/^(.+)\/\.git\/worktrees\//);
+      const worktreesMatch = gitdir.match(/^(.*?)[/\\]\.git[/\\]worktrees[/\\]/);
       if (worktreesMatch) {
         const mainProjectRoot = worktreesMatch[1];
         const cwdBase = path.basename(cwd);
-        const worktreeName = path.basename(gitdir);
 
         // AC: ac-8 — check multiple patterns for shadow worktree detection
         const directoryToCheck = configuredDirectory || SHADOW_WORKTREE_DIR;
 
-        // Check if directory name matches default, configured, or worktree contains "kspec"
+        // Exact shadow directory names are always considered shadow worktrees.
         if (
           cwdBase === SHADOW_WORKTREE_DIR ||
-          cwdBase === directoryToCheck ||
-          worktreeName.includes("kspec")
+          cwdBase === directoryToCheck
         ) {
           return mainProjectRoot;
         }
@@ -354,8 +565,9 @@ export async function detectRunningFromShadowWorktree(
 export async function detectShadow(
   startDir: string,
   options?: ShadowOptions,
+  mainRoot?: string,
 ): Promise<ShadowConfig | null> {
-  const gitRoot = getGitRoot(startDir);
+  const gitRoot = mainRoot ?? getGitRoot(startDir);
   if (!gitRoot) {
     return null;
   }
@@ -806,6 +1018,7 @@ export async function commitIfShadow(
   );
 
   // AC: @shadow-sync ac-1 - Fire-and-forget push after each commit
+  // AC: @shadow-write-sync ac-write-always-syncs — writes always sync via push path
   if (committed) {
     shadowPushAsync(shadowConfig.worktreeDir, verbose);
   }
@@ -855,6 +1068,10 @@ export interface ShadowInitResult {
   createdFromRemote: boolean;
   /** Whether new branch was pushed to remote to establish tracking */
   pushedToRemote: boolean;
+  /** Whether .kspec-sessions/ directory was created */
+  sessionsDirectoryCreated?: boolean;
+  /** Whether session branch worktree was created (sessions.storage=branch) */
+  sessionBranchCreated?: boolean;
   error?: string;
 }
 
@@ -870,6 +1087,8 @@ export interface ShadowInitOptions {
   force?: boolean;
   /** Shadow branch/directory/remote configuration */
   shadow?: ShadowOptions;
+  /** Session storage configuration from manifest */
+  sessions?: { storage?: string; branch?: string };
 }
 
 /**
@@ -928,6 +1147,30 @@ export async function fetchRemote(
     await runGitAsync(projectRoot, ["fetch", remoteName]);
     return true;
   } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if the local shadow branch has unpushed commits ahead of upstream.
+ * Returns true if local is ahead, false otherwise (including when upstream
+ * ref doesn't exist or an error occurs).
+ *
+ * @param worktreeDir Path to shadow worktree
+ */
+export async function isAheadOfUpstream(worktreeDir: string): Promise<boolean> {
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, [
+      "rev-list",
+      "--left-right",
+      "--count",
+      "HEAD...@{u}",
+    ]);
+    const [aheadStr] = stdout.trim().split("\t");
+    const ahead = parseInt(aheadStr, 10);
+    return ahead > 0;
+  } catch {
+    // No upstream ref or other error — not ahead
     return false;
   }
 }
@@ -1158,9 +1401,123 @@ function noteShadowPushSuccess(worktreeDir: string): void {
 }
 
 /**
- * Fire-and-forget push to remote.
+ * Pull-rebase from remote before pushing, using the kspec merge driver for
+ * YAML conflict resolution.
+ *
+ * AC: @config-shadow ac-11 — pull-rebase before push prevents divergence
+ *
+ * @returns true if pull succeeded (or was unnecessary), false on conflict
+ */
+async function pullRebaseBeforePush(
+  worktreeDir: string,
+  branchName: string,
+  debug: boolean,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  try {
+    // Fetch latest remote state for the shadow branch specifically.
+    // Using the worktree dir for fetch ensures we use the branch's tracking config.
+    try {
+      await runGitAsync(worktreeDir, ["fetch"]);
+    } catch {
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: fetch failed, skipping pull");
+      }
+      // Fetch failure is non-fatal — push may still succeed if already up to date
+      return true;
+    }
+
+    // AC: @config-shadow ac-3 — resolve the configured remote name from git config
+    // instead of hardcoding "origin", so custom shadow.remote setups work correctly
+    const projectRoot = path.dirname(worktreeDir);
+    let remoteName = "origin";
+    try {
+      const { stdout } = await runGitAsync(worktreeDir, [
+        "config",
+        `branch.${branchName}.remote`,
+      ]);
+      const configured = stdout.trim();
+      if (configured) {
+        remoteName = configured;
+      }
+    } catch {
+      // Fall back to origin if config lookup fails
+    }
+
+    const remoteHasBranch = await remoteBranchExists(projectRoot, branchName, remoteName);
+    if (!remoteHasBranch) {
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: no remote branch yet, skipping pull");
+      }
+      return true;
+    }
+
+    // Check if there are any upstream changes to integrate.
+    // If local is already at or ahead of remote, skip the pull.
+    try {
+      const { stdout } = await runGitAsync(worktreeDir, [
+        "rev-list",
+        "--count",
+        `${branchName}..@{upstream}`,
+      ]);
+      const behindCount = parseInt(stdout.trim(), 10);
+      if (behindCount === 0) {
+        if (debug) {
+          console.error("[DEBUG] Shadow pull-rebase: already up to date with remote");
+        }
+        return true;
+      }
+    } catch {
+      // rev-list may fail if upstream isn't set — proceed with pull attempt
+    }
+
+    // Try fast-forward first (cleanest, no rebase needed)
+    try {
+      await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: fast-forward succeeded");
+      }
+      return true;
+    } catch {
+      // FF failed, need rebase
+    }
+
+    // Fall back to rebase — the kspec merge driver handles YAML conflicts
+    try {
+      await runGitAsync(worktreeDir, ["pull", "--rebase"]);
+      if (debug) {
+        console.error("[DEBUG] Shadow pull-rebase: rebase succeeded");
+      }
+      return true;
+    } catch {
+      // Rebase failed — abort and report
+    }
+
+    // Abort the failed rebase so local state is clean
+    try {
+      await runGitAsync(worktreeDir, ["rebase", "--abort"]);
+    } catch {
+      // May not be in rebase state
+    }
+
+    if (debug) {
+      console.error("[DEBUG] Shadow pull-rebase: conflict detected, push skipped");
+    }
+    return false;
+  } catch (err) {
+    if (debug) {
+      console.error("[DEBUG] Shadow pull-rebase error:", err);
+    }
+    // Pull failure is non-fatal — still attempt push
+    return true;
+  }
+}
+
+/**
+ * Fire-and-forget push to remote with pull-rebase-before-push.
  * AC-1: Called after each auto-commit when tracking is configured.
  * AC-8: Automatically sets up tracking if main branch has remote.
+ * AC: @config-shadow ac-11 — pull-rebase before push for bidirectional sync.
  * Push failures are surfaced as warnings, but local commits still succeed.
  *
  * AC: @config-shadow ac-7 — backward compat when called without config
@@ -1196,6 +1553,18 @@ export async function shadowPushAsync(
       );
     }
     return; // AC: @shadow-sync ac-4 - silently skip if no tracking
+  }
+
+  // AC: @config-shadow ac-11 — pull-rebase before pushing to integrate remote changes
+  // AC: @shadow-write-sync ac-write-always-syncs — writes always perform full sync
+  const branchName = getBranchName(options);
+  const pullOk = await pullRebaseBeforePush(worktreeDir, branchName, debug, options);
+  if (!pullOk) {
+    noteShadowPushFailure(
+      worktreeDir,
+      "Pull-rebase failed due to conflicts. Run `kspec shadow resolve` to fix.",
+    );
+    return;
   }
 
   try {
@@ -1287,7 +1656,27 @@ export async function shadowPushAsync(
  * @param worktreeDir Path to shadow worktree
  * @param options Optional shadow configuration
  */
-export async function shadowPull(
+// In-flight dedup: if a pull is already running for this worktree, piggyback
+// on its result instead of starting a concurrent stash/pull/pop sequence.
+const pullInflight = new Map<string, Promise<ShadowSyncResult>>();
+
+export function shadowPull(
+  worktreeDir: string,
+  options?: ShadowOptions,
+): Promise<ShadowSyncResult> {
+  const key = path.resolve(worktreeDir);
+  const existing = pullInflight.get(key);
+  if (existing) {
+    return existing;
+  }
+  const promise = shadowPullImpl(worktreeDir, options).finally(() => {
+    pullInflight.delete(key);
+  });
+  pullInflight.set(key, promise);
+  return promise;
+}
+
+async function shadowPullImpl(
   worktreeDir: string,
   options?: ShadowOptions,
 ): Promise<ShadowSyncResult> {
@@ -1316,18 +1705,42 @@ export async function shadowPull(
   }
 
   // Check if remote branch exists before attempting pull
+  // AC: @config-shadow ac-3 — use configured remote instead of hardcoded origin
+  const remoteName = getRemoteName(options);
   // Fetch first to ensure refs are up to date
-  await fetchRemote(projectRoot);
-  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName);
+  await fetchRemote(projectRoot, remoteName);
+  const remoteHasBranch = await remoteBranchExists(projectRoot, branchName, remoteName);
   if (!remoteHasBranch) {
     // Remote branch doesn't exist yet - nothing to pull, but success
     result.success = true;
     return result;
   }
 
+  // Stash uncommitted changes before pulling to avoid false conflict reports
+  let stashed = false;
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, ["stash", "push", "-m", "shadow-sync-auto"]);
+    stashed = !stdout.includes("No local changes");
+  } catch {
+    // If stash fails, skip the pull entirely — don't risk reporting a false conflict
+    result.success = true;
+    return result;
+  }
+
+  const unstash = async () => {
+    if (stashed) {
+      try {
+        await runGitAsync(worktreeDir, ["stash", "pop"]);
+      } catch {
+        // Stash pop conflict is unlikely but leave stash intact if it happens
+      }
+    }
+  };
+
   try {
     // Try fast-forward only first (cleanest)
     await runGitAsync(worktreeDir, ["pull", "--ff-only"]);
+    await unstash();
     result.success = true;
     result.pulled = true;
     return result;
@@ -1338,6 +1751,7 @@ export async function shadowPull(
   try {
     // AC: @shadow-sync ac-6 - Fall back to rebase
     await runGitAsync(worktreeDir, ["pull", "--rebase"]);
+    await unstash();
     result.success = true;
     result.pulled = true;
     return result;
@@ -1352,6 +1766,7 @@ export async function shadowPull(
     // May not be in rebase state, ignore
   }
 
+  await unstash();
   result.hadConflict = true;
   result.error = "Sync conflict detected. Run `kspec shadow resolve` to fix.";
   return result;
@@ -1388,6 +1803,150 @@ export async function shadowSync(
   }
 
   return pullResult;
+}
+
+// ─── Lazy Drift Check ────────────────────────────────────────────────────────
+
+const FETCH_TIMEOUT_MS = 5000;
+
+/**
+ * Spawn a git command with a hard timeout. Returns stdout/stderr on success,
+ * throws on non-zero exit or timeout. On timeout, sends SIGTERM then SIGKILL.
+ *
+ * Used for drift check fetch only — other git ops continue using runGitAsync.
+ *
+ * AC: @shadow-lazy-read-sync ac-fetch-timeout
+ */
+export function spawnGitWithTimeout(
+  cwd: string,
+  args: string[],
+  timeoutMs: number,
+): Promise<{ stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const child = spawn("git", args, {
+      cwd,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (d: Buffer) => {
+      stdout += d;
+    });
+    child.stderr.on("data", (d: Buffer) => {
+      stderr += d;
+    });
+
+    let promiseSettled = false;
+    let processExited = false;
+    const timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      setTimeout(() => {
+        if (!processExited) child.kill("SIGKILL");
+      }, 1000);
+      promiseSettled = true;
+      reject(new Error(`git ${args[0]} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    child.on("close", (code) => {
+      processExited = true;
+      clearTimeout(timer);
+      if (promiseSettled) return;
+      promiseSettled = true;
+      if (code === 0) resolve({ stdout, stderr });
+      else reject(new Error(`git ${args[0]} exited ${code}: ${stderr}`));
+    });
+  });
+}
+
+/**
+ * Lightweight drift check: determine whether local shadow branch needs
+ * to pull from remote. Uses FETCH_HEAD mtime to avoid redundant fetches,
+ * and ahead/behind counts to decide if a pull is needed.
+ *
+ * AC: @shadow-lazy-read-sync ac-drift-check
+ * AC: @shadow-lazy-read-sync ac-fetch-head-location
+ * AC: @shadow-lazy-read-sync ac-fetch-head-freshness
+ * AC: @shadow-lazy-read-sync ac-fetch-when-stale
+ * AC: @shadow-lazy-read-sync ac-fetch-timeout-no-error
+ * AC: @shadow-lazy-read-sync ac-fetch-timeout-debug-log
+ * AC: @shadow-lazy-read-sync ac-pull-when-behind
+ * AC: @shadow-lazy-read-sync ac-no-pull-when-ahead
+ * AC: @shadow-lazy-read-sync ac-pull-when-diverged
+ * AC: @shadow-lazy-read-sync ac-upstream-ref-missing
+ * AC: @shadow-lazy-read-sync ac-no-drift-fast-path
+ * AC: @shadow-lazy-read-sync ac-threshold-from-config
+ *
+ * @returns true if shadowPull() should be called, false if local state is current
+ */
+export async function shadowNeedsSync(
+  worktreeDir: string,
+  remoteName: string,
+  thresholdMs: number,
+): Promise<boolean> {
+  // 1. Resolve FETCH_HEAD path for this worktree
+  // AC: ac-fetch-head-location — use rev-parse --git-path from worktree dir
+  const { stdout: fetchHeadRaw } = await runGitAsync(worktreeDir, [
+    "rev-parse",
+    "--git-path",
+    "FETCH_HEAD",
+  ]);
+  const fetchHeadPath = path.resolve(worktreeDir, fetchHeadRaw.trim());
+
+  // 2. Check freshness — if stale or missing, fetch with timeout
+  // AC: ac-fetch-head-freshness, ac-fetch-when-stale
+  let fetchNeeded = true;
+  try {
+    const stat = await fs.stat(fetchHeadPath);
+    fetchNeeded = Date.now() - stat.mtimeMs > thresholdMs;
+  } catch {
+    // No FETCH_HEAD — need to fetch
+  }
+
+  if (fetchNeeded) {
+    try {
+      // AC: ac-fetch-timeout — kill if exceeds FETCH_TIMEOUT_MS
+      await spawnGitWithTimeout(
+        worktreeDir,
+        ["fetch", remoteName],
+        FETCH_TIMEOUT_MS,
+      );
+    } catch (err) {
+      // AC: ac-fetch-timeout-no-error — no error surfaced to user
+      // AC: ac-fetch-timeout-debug-log — debug log if enabled
+      if (isDebugEnabled()) {
+        console.error(
+          `[DEBUG] shadow drift-check: fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+      return false;
+    }
+  }
+
+  // 3. Check ahead/behind — only sync when behind or diverged
+  // AC: ac-pull-when-behind, ac-no-pull-when-ahead, ac-pull-when-diverged
+  try {
+    const { stdout } = await runGitAsync(worktreeDir, [
+      "rev-list",
+      "--left-right",
+      "--count",
+      "HEAD...@{u}",
+    ]);
+    const [, behind] = stdout.trim().split("\t").map(Number);
+    // AC: ac-no-drift-fast-path — behind === 0 means no pull needed
+    return behind > 0;
+  } catch {
+    // AC: ac-upstream-ref-missing — force sync as safer default
+    return true;
+  }
+}
+
+/**
+ * Check if debug logging is enabled (KSPEC_DEBUG=1 or --debug-shadow).
+ */
+function isDebugEnabled(): boolean {
+  if (process.env.KSPEC_DEBUG === "1") return true;
+  if (getVerboseModeFunc?.()) return true;
+  return false;
 }
 
 /**
@@ -1498,6 +2057,150 @@ async function ensureGitignore(
       "GIT_ERROR",
       "Check file permissions for .gitignore",
     );
+  }
+}
+
+/**
+ * Add .kspec-sessions/ to root .gitignore if not already present.
+ * Does NOT commit — caller is responsible for committing if needed.
+ *
+ * AC: @session-storage-modes ac-gitignore
+ *
+ * @param projectRoot Git repository root
+ * @returns true if entry was added, false if already present
+ */
+export async function needsSessionsGitignore(
+  projectRoot: string,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+
+  let content = "";
+  try {
+    content = await fs.readFile(gitignorePath, "utf-8");
+  } catch {
+    // File doesn't exist — entry is needed
+    return true;
+  }
+
+  const lines = content.split("\n");
+  const patterns = [
+    SESSIONS_WORKTREE_DIR,
+    `${SESSIONS_WORKTREE_DIR}/`,
+    `/${SESSIONS_WORKTREE_DIR}`,
+    `/${SESSIONS_WORKTREE_DIR}/`,
+  ];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (patterns.includes(trimmed)) {
+      return false; // Already present
+    }
+  }
+
+  return true;
+}
+
+export async function ensureSessionsGitignore(
+  projectRoot: string,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+  const entry = `${SESSIONS_WORKTREE_DIR}/`;
+
+  try {
+    const needed = await needsSessionsGitignore(projectRoot);
+    if (!needed) {
+      return false;
+    }
+
+    let content = "";
+    try {
+      content = await fs.readFile(gitignorePath, "utf-8");
+    } catch {
+      // File doesn't exist, will create
+    }
+
+    // Add to gitignore
+    const newContent =
+      content.endsWith("\n") || content === ""
+        ? `${content}${entry}\n`
+        : `${content}\n${entry}\n`;
+
+    await fs.writeFile(gitignorePath, newContent, "utf-8");
+    return true;
+  } catch (error) {
+    throw new ShadowError(
+      `Failed to update .gitignore with sessions directory: ${error}`,
+      "GIT_ERROR",
+      "Check file permissions for .gitignore",
+    );
+  }
+}
+
+/**
+ * Add sessions/ to .kspec/.gitignore to prevent legacy session data
+ * from being tracked on kspec-meta shadow branch.
+ *
+ * AC: @session-legacy-migration ac-shadow-gitignore
+ *
+ * @param projectRoot Git repository root
+ * @param options Optional shadow configuration for directory name
+ * @returns true if entry was added, false if already present
+ */
+export async function needsShadowSessionsGitignore(
+  projectRoot: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const directoryName = getDirectoryName(options);
+  const shadowGitignorePath = path.join(projectRoot, directoryName, ".gitignore");
+  const entry = "sessions/";
+
+  try {
+    const content = await fs.readFile(shadowGitignorePath, "utf-8");
+    const lines = content.split("\n");
+    if (lines.some((line) => line.trim() === entry || line.trim() === "sessions")) {
+      return false; // Already present
+    }
+    return true;
+  } catch {
+    // File doesn't exist — can't add to non-existent file
+    return false;
+  }
+}
+
+export async function ensureShadowSessionsGitignore(
+  projectRoot: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const directoryName = getDirectoryName(options);
+  const shadowGitignorePath = path.join(projectRoot, directoryName, ".gitignore");
+  const entry = "sessions/";
+
+  try {
+    const needed = await needsShadowSessionsGitignore(projectRoot, options);
+    if (!needed) {
+      return false;
+    }
+
+    let content = "";
+    try {
+      content = await fs.readFile(shadowGitignorePath, "utf-8");
+    } catch {
+      // File doesn't exist — this shouldn't happen since init creates it,
+      // but handle gracefully
+      return false;
+    }
+
+    // Add to gitignore
+    const newContent =
+      content.endsWith("\n") || content === ""
+        ? `${content}${entry}\n`
+        : `${content}\n${entry}\n`;
+
+    await fs.writeFile(shadowGitignorePath, newContent, "utf-8");
+    return true;
+  } catch (error) {
+    // Non-fatal — shadow gitignore update is best-effort
+    return false;
   }
 }
 
@@ -1816,6 +2519,25 @@ export async function initializeShadow(
     // Step 1: Update .gitignore first (before creating worktree)
     result.gitignoreUpdated = await ensureGitignore(projectRoot, options.shadow);
 
+    // Step 1b: Also add .kspec-sessions/ to .gitignore
+    // AC: @session-storage-modes ac-gitignore
+    const sessionsAdded = await ensureSessionsGitignore(projectRoot);
+    if (sessionsAdded) {
+      // Commit .kspec-sessions/ gitignore entry (may be separate commit if .kspec/ was already present)
+      await runGitAsync(projectRoot, ["add", ".gitignore"]);
+      await runGitAsync(projectRoot, [
+        "commit",
+        "-m",
+        `chore: add ${SESSIONS_WORKTREE_DIR}/ to .gitignore for session storage`,
+      ]);
+    }
+
+    // Step 1c: Create .kspec-sessions/ directory
+    // AC: @session-storage-modes ac-sessions-dir-autocreate
+    const sessionsDir = path.join(projectRoot, SESSIONS_WORKTREE_DIR);
+    await fs.mkdir(sessionsDir, { recursive: true });
+    result.sessionsDirectoryCreated = true;
+
     // Step 2: Create worktree with orphan branch (or attach to existing branch)
     if (!status.worktreeExists || !status.worktreeLinked) {
       // Remove existing directory if present but not linked
@@ -1868,14 +2590,23 @@ export async function initializeShadow(
       } else if (!status.branchExists) {
         // AC: @shadow-init-remote ac-2 ac-3 - No remote branch or no remote - create orphan branch
         // AC: @config-shadow ac-1 — use configured branch name
-        await runGitAsync(projectRoot, [
-          "worktree",
-          "add",
-          "--orphan",
-          "-b",
-          branchName,
-          directoryName,
-        ]);
+        // AC: @config-shadow ac-10 — fallback for git < 2.42
+        if (gitSupportsOrphanWorktree(projectRoot)) {
+          await runGitAsync(projectRoot, [
+            "worktree",
+            "add",
+            "--orphan",
+            "-b",
+            branchName,
+            directoryName,
+          ]);
+        } else {
+          await createOrphanBranchFallback(
+            projectRoot,
+            branchName,
+            directoryName,
+          );
+        }
         result.branchCreated = true;
       } else {
         // Attach to existing local branch
@@ -1931,9 +2662,10 @@ export async function initializeShadow(
       // AC: @artifacts-directory ac-init-creates, ac-gitignore-entry
       const artifactsDir = path.join(worktreeDir, "artifacts");
       await fs.mkdir(artifactsDir, { recursive: true });
+      // AC: @session-legacy-migration ac-shadow-gitignore — sessions/ not tracked on kspec-meta
       await fs.writeFile(
         path.join(worktreeDir, ".gitignore"),
-        "# Ephemeral artifacts - reports, exports, generated files\n# Not tracked in shadow branch\nartifacts/\n",
+        "# Ephemeral artifacts - reports, exports, generated files\n# Not tracked in shadow branch\nartifacts/\n\n# Sessions stored in .kspec-sessions/ at project root, not on shadow branch\nsessions/\n",
         "utf-8",
       );
 
@@ -1959,6 +2691,21 @@ export async function initializeShadow(
     // Step 7: Configure merge driver for semantic YAML merging
     // AC: @yaml-merge-driver ac-12
     await configureMergeDriver(projectRoot, worktreeDir);
+
+    // Step 8: Initialize session branch worktree if sessions.storage is "branch"
+    // AC: @session-branch-worktree ac-init
+    if (options.sessions?.storage === "branch") {
+      const { initializeSessionBranch } = await import("./session-branch.js");
+      const sessionBranchName = options.sessions.branch || "kspec-sessions";
+      const sessionResult = await initializeSessionBranch(
+        projectRoot,
+        sessionBranchName,
+      );
+      if (sessionResult.success) {
+        result.sessionBranchCreated = true;
+      }
+      // Non-fatal: session branch failure doesn't block shadow init
+    }
 
     result.success = true;
     return result;

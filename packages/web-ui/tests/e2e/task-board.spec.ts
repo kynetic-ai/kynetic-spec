@@ -12,6 +12,7 @@ import { test, expect } from '../fixtures/test-base';
  * - AC-4: Active Fleet row shows running agents
  * - AC-5: Real-time updates via WebSocket
  * - AC-6: Action buttons in detail modal execute mutations via API
+ * - AC-7: Closing detail modal removes ?ref= query param from URL
  */
 
 test.describe('Task Board (Kanban)', () => {
@@ -167,6 +168,40 @@ test.describe('Task Board (Kanban)', () => {
 
 		// Notes section
 		await expect(page.getByTestId('task-notes')).toBeVisible();
+	});
+
+	// AC: @markdown-ui-adoption ac-1
+	test('renders task description markdown in the detail modal', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+
+		const backlogColumn = page.locator('[data-column-id="backlog"]');
+		const card = backlogColumn.locator('[data-task-id="01KG0RR6CA45ZT43W2T6HJMVA1"]');
+		await expect(card).toBeVisible();
+		await card.click();
+
+		const description = page.getByTestId('task-description');
+		await expect(description).toBeVisible();
+		await expect(description.locator('strong')).toContainText('pending');
+		await expect(description.locator('code')).toContainText('kspec task start @test-task-ready');
+	});
+
+	// AC: @markdown-ui-adoption ac-2
+	test('renders task note markdown in the detail modal', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+
+		const inProgressColumn = page.locator('[data-column-id="in_progress"]');
+		const card = inProgressColumn.locator('[data-task-id="01KG0RR8CB8N4YGP991WD7XS9R"]');
+		await expect(card).toBeVisible();
+		await card.click();
+
+		const note = page.getByTestId('note-item').first();
+		await expect(note).toBeVisible();
+		await expect(note.getByTestId('note-content').locator('code')).toContainText('npm test');
+		await expect(note.getByTestId('note-content').locator('a')).toHaveAttribute(
+			'href',
+			'https://example.com/task-docs'
+		);
+		await expect(note.getByTestId('note-content').locator('li')).toHaveCount(2);
 	});
 
 	// AC: @ui-task-board ac-1
@@ -528,6 +563,82 @@ test.describe('Task Board (Kanban)', () => {
 
 		// Verify aria-live attribute for accessibility
 		await expect(outputEl).toHaveAttribute('aria-live', 'polite');
+	});
+
+	// AC: @ui-task-board ac-7
+	// AC: @ui-url-panel-state ac-1 — opens modal via click, URL updated with goto()
+	// AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), modal stays closed
+	test('closing detail modal removes ?ref= query param from URL', async ({ page, daemon }) => {
+		await page.goto('/tasks/board');
+		await expect(page.getByTestId('board-columns')).toBeVisible();
+
+		// Click a task card to open the modal
+		const card = page.getByTestId('task-card').first();
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should open
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Close modal by pressing Escape
+		await page.keyboard.press('Escape');
+		await expect(modal).not.toBeVisible();
+
+		// URL should NOT have ?ref= param
+		expect(page.url()).not.toContain('ref=');
+
+		// Modal should stay closed — verify component state was fully cleared
+		// and the reactive effect watching ?ref= does not reopen the modal
+		await page.waitForTimeout(1000);
+		await expect(modal).not.toBeVisible();
+	});
+
+	// AC: @ui-task-board ac-7
+	// AC: @ui-url-panel-state ac-2 — dismiss removes ?ref= via goto(), stays closed
+	// AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works on first attempt
+	test('closing detail modal opened via URL param removes ?ref= and stays closed', async ({ page, daemon }) => {
+		// Navigate directly with ?ref= param to open modal
+		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');
+
+		// Modal should open from URL param
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Close modal by pressing Escape
+		await page.keyboard.press('Escape');
+		await expect(modal).not.toBeVisible();
+
+		// URL should no longer contain ?ref=
+		expect(page.url()).not.toContain('ref=');
+
+		// Modal should stay closed — component state (selectedTaskRef, modalOpen)
+		// must be cleared so the reactive effect doesn't reopen
+		await page.waitForTimeout(1000);
+		await expect(modal).not.toBeVisible();
+	});
+
+	// AC: @ui-task-board ac-7
+	// AC: @ui-url-panel-state ac-3 — deep-link via ?ref=, dismiss works and panel stays closed
+	test('can reopen same task after closing modal opened via URL param', async ({ page, daemon }) => {
+		// Open modal via URL param
+		await page.goto('/tasks/board?ref=01KG0RR8CB8N4YGP991WD7XS9R');
+
+		const modal = page.getByTestId('task-detail-modal');
+		await expect(modal).toBeVisible();
+
+		// Close modal
+		await page.keyboard.press('Escape');
+		await expect(modal).not.toBeVisible();
+
+		// Click the same task card to reopen — verifies lastProcessedRef was reset
+		const card = page.locator('[data-task-id="01KG0RR8CB8N4YGP991WD7XS9R"]');
+		await expect(card).toBeVisible();
+		await card.click();
+
+		// Modal should reopen successfully
+		await expect(modal).toBeVisible();
+		await expect(page.getByTestId('task-detail-title')).toBeVisible();
 	});
 
 	// View toggle navigation

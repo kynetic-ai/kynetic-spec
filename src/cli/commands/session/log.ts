@@ -16,17 +16,20 @@ import {
   type TimePeriodStats,
   type SessionSearchResult,
   getAllSessionLogSummaries,
-  getSessionLogDetail,
   resolveSessionId,
+  searchSessionEvents,
+  computeToolUsageStats,
+  getSessionLogDetail,
   readEvents,
   readSessionContext,
   computeSessionLogStats,
-  computeToolUsageStats,
   computeTimePeriodStats,
-  searchSessionEvents,
   deduplicatePhasedToolCalls,
   resolveSessionBlobPointers,
 } from "../../../sessions/store.js";
+import {
+  warnIfLegacySessions,
+} from "../../../sessions/legacy.js";
 import type { SessionEvent } from "../../../sessions/types.js";
 import { SessionStatusSchema } from "../../../sessions/types.js";
 import {
@@ -94,20 +97,109 @@ function sessionStatusColor(
       return chalk.blue;
     case "abandoned":
       return chalk.yellow;
+    case "stalled":
+      return chalk.magenta;
     default:
       return chalk.gray;
   }
 }
 
+// ─── Shared Session Filters ─────────────────────────────────────────────────
+
+/**
+ * Common filter options shared across session log commands.
+ * Unifies CLI and daemon API filter vocabulary.
+ *
+ * AC: @session-cli-unified-filtering ac-combined
+ */
+export interface SessionFilterOptions {
+  status?: string;
+  /** Filter by agent_type (backward compat: --agent and --agent-type are synonyms) */
+  agent?: string;
+  agentType?: string;
+  /** Filter by agent_id (e.g. worker, pr-reviewer) */
+  agentId?: string;
+  /** Filter by trigger (manual, dispatched, or specific task.* triggers) */
+  trigger?: string;
+  /** Filter by task reference */
+  task?: string;
+  since?: string;
+}
+
+/**
+ * Apply shared session filters to a list of summaries.
+ * All filters are AND'd together.
+ *
+ * AC: @session-cli-unified-filtering ac-agent-id-filter
+ * AC: @session-cli-unified-filtering ac-trigger-filter
+ * AC: @session-cli-unified-filtering ac-task-filter
+ * AC: @session-cli-unified-filtering ac-backward-compat
+ * AC: @session-cli-unified-filtering ac-combined
+ */
+export function filterSessions(
+  sessions: SessionLogSummary[],
+  options: SessionFilterOptions,
+): SessionLogSummary[] {
+  let result = sessions;
+
+  // AC: @session-cli-unified-filtering ac-backward-compat — --agent and --agent-type are synonyms for agent_type
+  const agentTypeFilter = options.agent ?? options.agentType;
+  if (options.status) {
+    const parsed = SessionStatusSchema.safeParse(options.status);
+    if (!parsed.success) {
+      const valid = SessionStatusSchema.options.join(", ");
+      error(`Invalid status: '${options.status}'. Valid values: ${valid}`);
+      process.exit(EXIT_CODES.USAGE_ERROR);
+    }
+    result = result.filter((s) => s.status === parsed.data);
+  }
+
+  if (agentTypeFilter) {
+    result = result.filter((s) => s.agent_type === agentTypeFilter);
+  }
+
+  // AC: @session-cli-unified-filtering ac-agent-id-filter
+  if (options.agentId) {
+    const id = options.agentId;
+    result = result.filter((s) => s.agent_id === id);
+  }
+
+  // AC: @session-cli-unified-filtering ac-trigger-filter
+  // --trigger dispatched matches all task.* triggers
+  if (options.trigger) {
+    const triggerFilter = options.trigger;
+    if (triggerFilter === "dispatched") {
+      result = result.filter((s) => s.trigger?.startsWith("task."));
+    } else {
+      result = result.filter((s) => s.trigger === triggerFilter);
+    }
+  }
+
+  // AC: @session-cli-unified-filtering ac-task-filter
+  if (options.task) {
+    const taskFilter = options.task;
+    result = result.filter((s) => s.task_id === taskFilter);
+  }
+
+  if (options.since) {
+    const sinceDate = parseTimeSpec(options.since);
+    if (sinceDate) {
+      result = result.filter(
+        (s) => new Date(s.started_at) >= sinceDate,
+      );
+    }
+  }
+
+  return result;
+}
+
 // ─── Session Log List ───────────────────────────────────────────────────────
 
-interface SessionLogListOptions {
-  status?: string;
-  agent?: string;
-  since?: string;
+interface SessionLogListOptions extends SessionFilterOptions {
   sort?: string;
   count?: boolean;
   limit?: string;
+  offset?: string;
 }
 
 type SortField =
@@ -157,16 +249,45 @@ function sortSessions(
   });
 }
 
+function getActiveSessionFilterDescriptions(
+  options: SessionFilterOptions,
+): string[] {
+  const agentType = options.agent ?? options.agentType;
+  const descriptions: string[] = [];
+
+  if (options.status) descriptions.push(`status=${options.status}`);
+  if (agentType) descriptions.push(`agent_type=${agentType}`);
+  if (options.agentId) descriptions.push(`agent_id=${options.agentId}`);
+  if (options.trigger) descriptions.push(`trigger=${options.trigger}`);
+  if (options.task) descriptions.push(`task_id=${options.task}`);
+  if (options.since) descriptions.push(`since=${options.since}`);
+
+  return descriptions;
+}
+
 /**
  * Format the session log list as a table.
  *
  * AC: @session-log-list ac-1
  * AC: @session-model-evolution ac-6
  */
-function formatSessionLogList(sessions: SessionLogSummary[]): void {
+function formatSessionLogList(
+  sessions: SessionLogSummary[],
+  total?: number,
+  filterDescriptions: string[] = [],
+): void {
+  const hasFilters = filterDescriptions.length > 0;
+  const filterInfo = hasFilters
+    ? ` (filtered: ${filterDescriptions.join(", ")})`
+    : "";
+
+  // AC: @trait-filterable-list ac-6 — empty list with informative message
   if (sessions.length === 0) {
-    // AC: @session-log-list ac-6
-    console.log("No sessions found.");
+    if (hasFilters) {
+      console.log("No sessions match the specified filters.");
+    } else {
+      console.log("No sessions found.");
+    }
     return;
   }
 
@@ -197,7 +318,13 @@ function formatSessionLogList(sessions: SessionLogSummary[]): void {
     );
   }
 
-  console.log(chalk.gray(`\n${sessions.length} session(s)`));
+  // AC: @trait-filterable-list ac-7 — summary shows total matching items and filter state
+  const totalCount = total ?? sessions.length;
+  if (totalCount !== sessions.length) {
+    console.log(chalk.gray(`\n${sessions.length} of ${totalCount} session(s)${filterInfo}`));
+  } else {
+    console.log(chalk.gray(`\n${totalCount} session(s)${filterInfo}`));
+  }
 }
 
 /**
@@ -208,35 +335,13 @@ export async function sessionLogListAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    let sessions = await getAllSessionLogSummaries(ctx.specDir);
+    // AC: @session-legacy-migration ac-read-fallback ac-list-merge — read only from primary, warn if legacy exists
+    const allSessions = await getAllSessionLogSummaries(ctx.sessionsDir);
+    await warnIfLegacySessions(ctx.specDir);
 
-    // AC: @session-log-list ac-2 - Filter by status
-    if (options.status) {
-      const parsed = SessionStatusSchema.safeParse(options.status);
-      if (!parsed.success) {
-        const valid = SessionStatusSchema.options.join(", ");
-        error(`Invalid status: '${options.status}'. Valid values: ${valid}`);
-        process.exit(EXIT_CODES.USAGE_ERROR);
-      }
-      const statusFilter = parsed.data;
-      sessions = sessions.filter((s) => s.status === statusFilter);
-    }
-
-    // AC: @session-log-list ac-4 - Filter by agent type
-    if (options.agent) {
-      const agentFilter = options.agent;
-      sessions = sessions.filter((s) => s.agent_type === agentFilter);
-    }
-
-    // AC: @session-log-list ac-3 - Filter by since date
-    if (options.since) {
-      const sinceDate = parseTimeSpec(options.since);
-      if (sinceDate) {
-        sessions = sessions.filter(
-          (s) => new Date(s.started_at) >= sinceDate,
-        );
-      }
-    }
+    // AC: @session-cli-unified-filtering ac-combined — apply shared filters (all AND'd)
+    let sessions = filterSessions(allSessions, options);
+    const totalFiltered = sessions.length;
 
     // AC: @session-log-list ac-5 - Sort
     const sortField: SortField =
@@ -245,16 +350,24 @@ export async function sessionLogListAction(
         : "started_at";
     sessions = sortSessions(sessions, sortField);
 
-    // AC: @session-log-list ac-7 - Limit output count
+    // AC: @trait-filterable-list ac-8 — --count returns only the count
     if (options.count) {
-      // AC: @trait-filterable-list ac-8
-      output({ count: sessions.length }, () => {
-        console.log(sessions.length);
+      output({ count: totalFiltered }, () => {
+        console.log(totalFiltered);
       });
       return;
     }
 
-    // Apply --limit (after filtering/sorting, before display)
+    // AC: @trait-filterable-list ac-4 — --offset skips first N items
+    let offset = 0;
+    if (options.offset) {
+      offset = parseInt(options.offset, 10);
+      if (!Number.isNaN(offset) && offset > 0) {
+        sessions = sessions.slice(offset);
+      }
+    }
+
+    // AC: @trait-filterable-list ac-3 — --limit shows at most N items
     if (options.limit) {
       const limit = parseInt(options.limit, 10);
       if (!Number.isNaN(limit) && limit > 0) {
@@ -262,7 +375,28 @@ export async function sessionLogListAction(
       }
     }
 
-    output(sessions, () => formatSessionLogList(sessions));
+    // AC: @session-cli-unified-filtering ac-json-output — structured JSON with filter criteria
+    const activeFilters = getActiveSessionFilterDescriptions(options);
+    const hasFilters = activeFilters.length > 0;
+    const jsonOutput = {
+      items: sessions,
+      total: totalFiltered,
+      offset,
+      limit: options.limit ? parseInt(options.limit, 10) : null,
+      ...(hasFilters ? {
+        filters: {
+          ...(options.status ? { status: options.status } : {}),
+          ...((options.agent ?? options.agentType) ? { agent_type: options.agent ?? options.agentType } : {}),
+          ...(options.agentId ? { agent_id: options.agentId } : {}),
+          ...(options.trigger ? { trigger: options.trigger } : {}),
+          ...(options.task ? { task_id: options.task } : {}),
+          ...(options.since ? { since: options.since } : {}),
+        },
+      } : {}),
+    };
+
+    // AC: @trait-filterable-list ac-7 — summary shows total matching items and filter state
+    output(jsonOutput, () => formatSessionLogList(sessions, totalFiltered, activeFilters));
   } catch (err) {
     error("Failed to list session logs", err);
     process.exit(EXIT_CODES.ERROR);
@@ -417,6 +551,14 @@ function summarizeEventData(event: SessionEvent): string {
     const taskId = data.task_id;
     return typeof taskId === "string" ? `Timeout on ${taskId}` : "Agent timed out";
   }
+  if (event.type === "agent.stalled") {
+    const taskId = data.task_id;
+    const stallTimeout = data.stall_timeout_seconds;
+    if (typeof taskId === "string" && typeof stallTimeout === "number") {
+      return `Stalled on ${taskId} (no response within ${stallTimeout}s)`;
+    }
+    return "Agent stalled (no initial response)";
+  }
 
   // Default: show first key
   const keys = Object.keys(data);
@@ -524,8 +666,11 @@ export async function sessionLogShowAction(
   try {
     const ctx = await initContext();
 
+    // AC: @session-legacy-migration ac-read-fallback — read only from primary, warn if legacy exists
+    await warnIfLegacySessions(ctx.specDir);
+
     // AC: @session-log-show ac-7, ac-8, ac-9 - Resolve session ID
-    const resolution = await resolveSessionId(ctx.specDir, sessionRef);
+    const resolution = await resolveSessionId(ctx.sessionsDir, sessionRef);
 
     if (!resolution.ok) {
       if (resolution.error === "not_found") {
@@ -542,9 +687,10 @@ export async function sessionLogShowAction(
     }
 
     const sessionId = resolution.id;
+    const effectiveDir = ctx.sessionsDir;
 
     // Get session detail
-    const detail = await getSessionLogDetail(ctx.specDir, sessionId);
+    const detail = await getSessionLogDetail(effectiveDir, sessionId);
     if (!detail) {
       error(`Session not found: ${sessionId}`);
       process.exit(EXIT_CODES.NOT_FOUND);
@@ -558,7 +704,7 @@ export async function sessionLogShowAction(
     let events: SessionEvent[] | null = null;
     if (options.events) {
       let allEvents = deduplicatePhasedToolCalls(
-        await readEvents(ctx.specDir, sessionId),
+        await readEvents(effectiveDir, sessionId),
       );
 
       // AC: @session-log-show ac-4 - Filter by type
@@ -580,7 +726,7 @@ export async function sessionLogShowAction(
           allEvents.map(async (event) => ({
             ...event,
             data: await resolveSessionBlobPointers(
-              ctx.specDir,
+              effectiveDir,
               sessionId,
               event.data,
             ),
@@ -594,14 +740,14 @@ export async function sessionLogShowAction(
     // AC: @session-log-show ac-11 - Replay assistant text from session.update content blocks
     let replayText: string | null = null;
     if (options.text) {
-      const allEvents = await readEvents(ctx.specDir, sessionId);
+      const allEvents = await readEvents(effectiveDir, sessionId);
       const chunks: string[] = [];
       for (const event of allEvents) {
         if (event.type !== "session.update") {
           continue;
         }
         const resolvedData = await resolveSessionBlobPointers(
-          ctx.specDir,
+          effectiveDir,
           sessionId,
           event.data,
         );
@@ -619,7 +765,7 @@ export async function sessionLogShowAction(
       const iterNum = parseInt(options.context, 10);
       if (!Number.isNaN(iterNum) && iterNum > 0) {
         contextSnapshot = await readSessionContext(
-          ctx.specDir,
+          effectiveDir,
           sessionId,
           iterNum,
         );
@@ -670,9 +816,7 @@ export async function sessionLogShowAction(
 
 // ─── Session Log Stats ──────────────────────────────────────────────────────
 
-interface SessionLogStatsOptions {
-  since?: string;
-  agent?: string;
+interface SessionLogStatsOptions extends SessionFilterOptions {
   toolUsage?: boolean;
   byDay?: boolean;
   byWeek?: boolean;
@@ -762,23 +906,12 @@ export async function sessionLogStatsAction(
 ): Promise<void> {
   try {
     const ctx = await initContext();
-    let sessions = await getAllSessionLogSummaries(ctx.specDir);
+    // AC: @session-legacy-migration ac-read-fallback ac-list-merge — read only from primary, warn if legacy exists
+    const allSessions = await getAllSessionLogSummaries(ctx.sessionsDir);
+    await warnIfLegacySessions(ctx.specDir);
 
-    // AC: @session-log-stats ac-4 - Filter by since
-    if (options.since) {
-      const sinceDate = parseTimeSpec(options.since);
-      if (sinceDate) {
-        sessions = sessions.filter(
-          (s) => new Date(s.started_at) >= sinceDate,
-        );
-      }
-    }
-
-    // AC: @session-log-stats ac-5 - Filter by agent type
-    if (options.agent) {
-      const agentFilter = options.agent;
-      sessions = sessions.filter((s) => s.agent_type === agentFilter);
-    }
+    // Use shared filter logic
+    const sessions = filterSessions(allSessions, options);
 
     // AC: @session-log-stats ac-8 - No sessions match criteria
     if (sessions.length === 0) {
@@ -795,7 +928,7 @@ export async function sessionLogStatsAction(
     let toolUsage: ToolUsageStats[] | null = null;
     if (options.toolUsage) {
       const sessionIds = sessions.map((s) => s.id);
-      toolUsage = await computeToolUsageStats(ctx.specDir, sessionIds);
+      toolUsage = await computeToolUsageStats(ctx.sessionsDir, sessionIds);
     }
 
     // AC: @session-log-stats ac-7 - Time periods (optional)
@@ -829,10 +962,8 @@ export async function sessionLogStatsAction(
 
 // ─── Session Log Search ─────────────────────────────────────────────────────
 
-interface SessionLogSearchOptions {
+interface SessionLogSearchOptions extends SessionFilterOptions {
   type?: string;
-  since?: string;
-  agent?: string;
   limit?: string;
   resolveBlobs?: boolean;
 }
@@ -894,6 +1025,9 @@ export async function sessionLogSearchAction(
   try {
     const ctx = await initContext();
 
+    // AC: @session-legacy-migration ac-read-fallback — read only from primary, warn if legacy exists
+    await warnIfLegacySessions(ctx.specDir);
+
     // Parse options - validate limit as positive integer
     let limit = 50;
     if (options.limit) {
@@ -904,16 +1038,22 @@ export async function sessionLogSearchAction(
       }
       limit = parsed;
     }
-    const sinceDate = options.since ? parseTimeSpec(options.since) : undefined;
+
+    // AC: @session-text-search ac-scope-narrowing — apply metadata filters before scanning events
+    const allSummaries = await getAllSessionLogSummaries(ctx.sessionsDir);
+    const filteredSummaries = filterSessions(allSummaries, options);
 
     // AC: @session-log-search ac-1, ac-2, ac-3, ac-5, ac-7
-    const results = await searchSessionEvents(ctx.specDir, pattern, {
-      eventType: options.type,
-      sinceDate: sinceDate || undefined,
-      agentType: options.agent,
-      limit,
-      resolveBlobs: options.resolveBlobs,
-    });
+    const results = await searchSessionEvents(
+      ctx.sessionsDir,
+      pattern,
+      {
+        eventType: options.type,
+        sessionSummaries: filteredSummaries,
+        limit,
+        resolveBlobs: options.resolveBlobs,
+      },
+    );
 
     // AC: @session-log-search ac-6 - No matches found message
     // exit code 0 regardless (per @trait-semantic-exit-codes ac-5)

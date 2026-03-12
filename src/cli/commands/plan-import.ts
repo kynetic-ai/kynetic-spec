@@ -1,6 +1,6 @@
 /**
  * Plan import CLI command
- * AC: @plan-import ac-11 through ac-33
+ * AC: @plan-import-content-only ac-draft-default through ac-module-stored
  */
 
 import * as fs from "node:fs/promises";
@@ -8,69 +8,80 @@ import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
-  addChildItem,
   buildIndexes,
   createPlan,
-  createSpecItem,
-  createTask,
+  findPlanByRef,
   getAuthor,
   initContext,
-  loadAllTasks,
+  mutatePlanAtomically,
+  type LoadedPlan,
   loadPlans,
   savePlan,
-  saveTask,
-  updateSpecItem,
   type LoadedSpecItem,
 } from "../../parser/index.js";
-import {
-  parsePlanDocument,
-  topologicalSort,
-  validateParentRefs,
-  type PlanSpec,
-} from "../../parser/plan-document.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import { normalizeRefInput } from "../../schema/index.js";
-import type { PlanInput, SpecItemInput, TaskInput } from "../../schema/index.js";
+import {
+  type Note,
+  type PlanInput,
+  PlanStatusSchema,
+} from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { error, isJsonMode, output, success, warn } from "../output.js";
 import { ulid } from "ulid";
 
+interface ImportOptions {
+  into?: string;
+  module?: string;
+  dryRun?: boolean;
+  update?: boolean;
+  json?: boolean;
+  status?: string;
+  reason?: string;
+}
+
+interface ImportPreview {
+  ref: string;
+  title: string;
+  status: string;
+  content: string;
+  module_ref: string | null;
+  source_path: string;
+  derived_specs: string[];
+  derived_tasks: string[];
+  changes: string[];
+  note_message: string | null;
+}
+
 /**
- * Register plan import command
- * AC: @plan-import ac-11, ac-15, ac-32
+ * Register plan import command.
+ * AC: @plan-import-content-only ac-module-optional, ac-status-override, ac-update-ignored
  */
 export function registerPlanImportCommand(planCommand: Command): void {
   markMutating(planCommand.command("import <path>"))
-    .description("Import plan document and auto-generate specs/tasks")
-    .requiredOption(
-      "--module <ref>",
-      "Module to add specs under (e.g., @core-module)",
-    )
-    .option("--dry-run", "Show what would be created without making changes")
-    .option("--update", "Update existing specs instead of skipping them")
+    .description("Import a plan document as stored content without deriving work")
+    .option("--into <ref>", "Update an existing draft or approved plan with file content")
+    .option("--module <ref>", "Optional module to store on the plan for later derive")
+    .option("--status <status>", "Initial plan status (default: draft)")
+    .option("--dry-run", "Show the plan record that would be created without saving")
+    .option("--update", "Ignored for content-only import; derivation happens separately")
+    .option("--reason <text>", "Reason note when updating an existing plan via --into")
     .option("--json", "Output as JSON")
     .addHelpText(
       "after",
       `
 Format:
-  Plan documents use markdown with a ## Specs section containing a fenced
-  YAML code block. The YAML must be wrapped in triple-backtick yaml markers:
-
-    ## Specs
-    \`\`\`yaml
-    - title: My Feature
-      type: feature
-    \`\`\`
-
-  Without the fenced code block, specs will not be detected.
+  Import stores the markdown document as plan content. Specs and tasks are not
+  created during import; use "kspec plan derive" after approval to materialize
+  the stored document.
 
 Examples:
-  $ kspec plan import ./plan.md --module @core
-  $ kspec plan import ./plan.md --module @api --dry-run
-  $ kspec plan import ./plan.md --module @features --update --json`,
+  $ kspec plan import ./plan.md
+  $ kspec plan import ./plan.md --status approved --json
+  $ kspec plan import ./plan.md --module @core --dry-run
+  $ kspec plan import ./edited.md --into @plan-ref --reason "Addressed review feedback"`,
     )
-    .action(async (planPath: string, options) => {
+    .action(async (planPath: string, options: ImportOptions) => {
       try {
         await importPlan(planPath, options);
       } catch (err) {
@@ -81,54 +92,13 @@ Examples:
 }
 
 /**
- * Import operation result
+ * Import plan document as content-only storage.
+ * AC: @plan-import-content-only ac-draft-default through ac-module-stored
  */
-interface ImportResult {
-  createdSpecs: string[];
-  updatedSpecs: string[];
-  createdTasks: string[];
-  errors: Array<{ message: string; spec?: PlanSpec }>;
-  skipped: Array<{ slug: string; reason: string }>;
-  planRef: string;
-}
-
-function mergeAcceptanceCriteriaById(
-  existingCriteria: SpecItemInput["acceptance_criteria"] | undefined,
-  incomingCriteria: NonNullable<SpecItemInput["acceptance_criteria"]>,
-): NonNullable<SpecItemInput["acceptance_criteria"]> {
-  if (!existingCriteria || existingCriteria.length === 0) {
-    return incomingCriteria;
-  }
-
-  const incomingById = new Map(incomingCriteria.map(ac => [ac.id, ac]));
-  const existingIds = new Set(existingCriteria.map(ac => ac.id));
-  const merged = existingCriteria.map(ac => incomingById.get(ac.id) ?? ac);
-
-  for (const ac of incomingCriteria) {
-    if (!existingIds.has(ac.id)) {
-      merged.push(ac);
-    }
-  }
-
-  return merged;
-}
-
-/**
- * Import plan document and create specs/tasks
- * AC: @plan-import ac-11 through ac-33
- */
-async function importPlan(
-  planPath: string,
-  options: { module: string; dryRun?: boolean; update?: boolean },
-): Promise<void> {
-  // JSON mode is set by global preAction hook
-
+async function importPlan(planPath: string, options: ImportOptions): Promise<void> {
   const ctx = await initContext();
-  const author = getAuthor(ctx.config?.identity?.author);
-
-  // Read plan file
-  // AC: @plan-import ac-21 - Handle file read errors
   const fullPath = path.resolve(process.cwd(), planPath);
+
   let content: string;
   try {
     content = await fs.readFile(fullPath, "utf-8");
@@ -137,584 +107,294 @@ async function importPlan(
     process.exit(EXIT_CODES.USAGE_ERROR);
   }
 
-  // Parse plan document
-  // AC: @plan-import ac-11, ac-12, ac-13, ac-21, ac-22
-  const parsed = parsePlanDocument(content);
-
-  // Report parsing errors
-  if (parsed.errors.length > 0) {
-    for (const err of parsed.errors) {
-      if (err.type === "yaml") {
-        // AC: @plan-import ac-21 - YAML parse errors (fatal)
-        error(err.message);
-        process.exit(EXIT_CODES.USAGE_ERROR);
-      } else if (err.type === "validation") {
-        // AC: @plan-import ac-22 - Validation errors (non-fatal, add to warnings)
-        warn(err.message);
-      }
-    }
+  if (options.into) {
+    await importIntoExistingPlan(ctx, fullPath, content, options);
+    return;
   }
 
-  // Load plans for cross-namespace slug safety
+  if (options.update) {
+    warn("--update is ignored for content-only import. Use `kspec plan derive` to materialize specs and tasks.");
+  }
+
+  const statusResult = PlanStatusSchema.safeParse(options.status || "draft");
+  if (!statusResult.success) {
+    error(
+      `Invalid status: '${options.status}'. Valid values: ${PlanStatusSchema.options.join(", ")}`,
+    );
+    process.exit(EXIT_CODES.USAGE_ERROR);
+  }
+
   const plans = await loadPlans(ctx);
+  const { refIndex } = await buildIndexes(ctx, plans);
 
-  // Build indexes to check existing specs (include plans for cross-namespace slug safety)
-  const { refIndex, items } = await buildIndexes(ctx, plans);
-  const existingSpecRefs = new Set<string>();
-  for (const item of items) {
-    for (const slug of (item as LoadedSpecItem).slugs || []) {
-      existingSpecRefs.add(slug);
+  let storedModuleRef: string | null = null;
+  if (options.module) {
+    const moduleResult = refIndex.resolve(options.module);
+    if (!moduleResult.ok) {
+      error(errors.reference.itemNotFound(options.module));
+      process.exit(EXIT_CODES.NOT_FOUND);
     }
-    existingSpecRefs.add(refIndex.shortUlid(item._ulid));
+
+    const moduleItem = moduleResult.item as LoadedSpecItem;
+    if (moduleItem.type !== "module") {
+      error(`${options.module} is not a module (type: ${moduleItem.type})`);
+      process.exit(EXIT_CODES.USAGE_ERROR);
+    }
+
+    storedModuleRef = options.module.startsWith("@")
+      ? options.module
+      : `@${options.module}`;
   }
 
-  // Resolve module reference
-  const moduleResult = refIndex.resolve(options.module);
-  if (!moduleResult.ok) {
-    error(errors.reference.itemNotFound(options.module));
-    process.exit(EXIT_CODES.NOT_FOUND);
+  const title = extractOptionalPlanTitle(content) ?? "Untitled Plan";
+  const planSlug = nextAvailablePlanSlug(title, refIndex);
+  const preview: ImportPreview = {
+    ref: `@${planSlug}`,
+    title,
+    status: statusResult.data,
+    content,
+    module_ref: storedModuleRef,
+    source_path: fullPath,
+    derived_specs: [],
+    derived_tasks: [],
+    changes: [],
+    note_message: null,
+  };
+
+  if (options.dryRun) {
+    emitImportResult(preview, { dryRun: true });
+    return;
   }
 
-  const moduleItem = moduleResult.item as LoadedSpecItem;
+  const planInput: PlanInput = {
+    title,
+    content,
+    status: statusResult.data,
+    slugs: [planSlug],
+    source_path: fullPath,
+    module_ref: storedModuleRef,
+  };
+  const plan = createPlan(planInput);
 
-  // Verify it's a module
-  if (moduleItem.type !== "module") {
-    error(`${options.module} is not a module (type: ${moduleItem.type})`);
-    process.exit(EXIT_CODES.USAGE_ERROR);
+  await saveImportedPlan(ctx, plan, preview);
+}
+
+async function saveImportedPlan(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  plan: ReturnType<typeof createPlan>,
+  preview: ImportPreview,
+): Promise<void> {
+  await savePlan(ctx, plan);
+  await commitIfShadow(ctx.shadow, "plan-import", plan.slugs[0] || plan._ulid.slice(0, 8), plan.title);
+  emitImportResult(
+    {
+      ...preview,
+      ref: plan.slugs[0] ? `@${plan.slugs[0]}` : `@${plan._ulid}`,
+    },
+    { dryRun: false, createdAt: plan.created_at },
+  );
+}
+
+async function importIntoExistingPlan(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  fullPath: string,
+  content: string,
+  options: ImportOptions,
+): Promise<void> {
+  const foundPlan = await findPlanByRef(ctx, options.into!);
+  if (!foundPlan) {
+    exitImportWithGuidance(
+      errors.reference.planNotFound(options.into!),
+      EXIT_CODES.NOT_FOUND,
+      "Check available plans with: kspec plan list",
+      { ref: options.into, entity: "plan" },
+    );
   }
 
-  // Validate parent references
-  // AC: @plan-import ac-17, ac-33
-  const parentErrors = validateParentRefs(parsed.specs, existingSpecRefs);
-  parsed.errors.push(...parentErrors);
+  const titleFromFile = extractOptionalPlanTitle(content);
+  const nextTitle = titleFromFile ?? foundPlan.title;
+  const noteMessage = options.reason || "Content updated from file";
+  const preview: ImportPreview = {
+    ref: foundPlan.slugs[0] ? `@${foundPlan.slugs[0]}` : `@${foundPlan._ulid}`,
+    title: nextTitle,
+    status: foundPlan.status,
+    content,
+    module_ref: foundPlan.module_ref ?? null,
+    source_path: fullPath,
+    derived_specs: [...foundPlan.derived_specs],
+    derived_tasks: [...foundPlan.derived_tasks],
+    changes: titleFromFile ? ["title", "content"] : ["content"],
+    note_message: noteMessage,
+  };
 
-  // Sort specs topologically
-  // AC: @plan-import ac-16, ac-18
-  const { sorted, error: sortError } = topologicalSort(parsed.specs);
-  if (sortError) {
-    // AC: @plan-import ac-18 - Circular dependency detection
-    error(sortError.message);
-    process.exit(EXIT_CODES.USAGE_ERROR);
+  if (options.module) {
+    warn("--module is ignored with --into. Existing plan module assignment is unchanged.");
+  }
+  if (options.update) {
+    warn("--update is ignored with --into. Existing plan specs are not modified during re-import.");
+  }
+  if (options.status) {
+    warn("--status is ignored with --into. Existing plan status is unchanged.");
   }
 
-  // Create plan record
-  // AC: @plan-import ac-24, ac-28
-  // Auto-namespace plan slugs with "plan-" prefix to prevent collision with spec slugs
-  // Ensure uniqueness across all namespaces (plans + specs + tasks via refIndex)
-  let planSlug = `plan-${generateSlug(parsed.title)}`;
+  assertImportIntoAllowed(foundPlan);
+
+  if (options.dryRun) {
+    emitImportResult(preview, { dryRun: true });
+    return;
+  }
+
+  const author = getAuthor(ctx.config?.identity?.author);
+  const note = createPlanNote(noteMessage, author);
+  const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {
+    assertImportIntoAllowed(latestPlan);
+    return {
+      ...latestPlan,
+      title: nextTitle,
+      content,
+      notes: [...latestPlan.notes, note],
+    };
+  });
+
+  await commitIfShadow(
+    ctx.shadow,
+    "plan-import",
+    updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
+    updatedPlan.title,
+  );
+  emitImportResult(preview, { dryRun: false, createdAt: updatedPlan.created_at });
+}
+
+function assertImportIntoAllowed(plan: LoadedPlan): void {
+  if (plan.status === "active") {
+    exitImportWithGuidance(
+      "Cannot update active plan. Derive is a one-shot operation.",
+      EXIT_CODES.CONFLICT,
+      "Create a new plan iteration instead of re-importing into an active plan.",
+      {
+        current_status: plan.status,
+        valid_statuses: ["draft", "approved"],
+      },
+    );
+  }
+
+  if (plan.status === "completed" || plan.status === "rejected") {
+    exitImportWithGuidance(
+      "Cannot update plan in terminal status",
+      EXIT_CODES.CONFLICT,
+      "Reopen or replace the plan with a new draft/approved plan.",
+      {
+        current_status: plan.status,
+        valid_statuses: ["draft", "approved"],
+      },
+    );
+  }
+}
+
+function createPlanNote(content: string, author?: string): Note {
+  return {
+    _ulid: ulid(),
+    created_at: new Date().toISOString(),
+    author,
+    content,
+  };
+}
+
+function exitImportWithGuidance(
+  message: string,
+  exitCode: number,
+  suggestion?: string,
+  details?: Record<string, unknown>,
+): never {
+  if (suggestion) {
+    if (isJsonMode()) {
+      error(message, {
+        ...details,
+        suggestion,
+        guidance: suggestion,
+      });
+    } else {
+      error(message);
+      console.error(`Suggestion: ${suggestion}`);
+    }
+  } else {
+    error(message, isJsonMode() ? details : undefined);
+  }
+
+  process.exit(exitCode);
+}
+
+function emitImportResult(
+  preview: ImportPreview,
+  options: { dryRun: boolean; createdAt?: string },
+): void {
+  const payload = {
+    dry_run: options.dryRun,
+    plan_ref: preview.ref,
+    title: preview.title,
+    status: preview.status,
+    module_ref: preview.module_ref,
+    source_path: preview.source_path,
+    created_at: options.createdAt ?? null,
+    derived_specs: preview.derived_specs,
+    derived_tasks: preview.derived_tasks,
+    content: preview.content,
+    changes: preview.changes,
+    note_message: preview.note_message,
+  };
+
+  if (isJsonMode()) {
+    output(payload);
+    return;
+  }
+
+  if (options.dryRun) {
+    console.log("Dry run - no changes made\n");
+  }
+
+  console.log(`Plan: ${preview.ref}`);
+  console.log(`Title: ${preview.title}`);
+  console.log(`Status: ${preview.status}`);
+  if (preview.module_ref) {
+    console.log(`Stored module: ${preview.module_ref}`);
+  }
+  console.log(`Source: ${preview.source_path}`);
+  console.log("Content stored: full document");
+  console.log("Derived specs: 0");
+  console.log("Derived tasks: 0");
+  if (preview.changes.length > 0) {
+    console.log(`Changes: ${preview.changes.join(", ")}`);
+  }
+  if (preview.note_message) {
+    console.log(`Note: ${preview.note_message}`);
+  }
+
+  if (!options.dryRun) {
+    success("Imported plan content");
+  }
+}
+
+function extractOptionalPlanTitle(content: string): string | null {
+  const titleMatch = content.match(/^#\s+(.+)$/m);
+  return titleMatch ? titleMatch[1].trim() : null;
+}
+
+function nextAvailablePlanSlug(
+  title: string,
+  refIndex: Awaited<ReturnType<typeof buildIndexes>>["refIndex"],
+): string {
+  let planSlug = `plan-${generateSlug(title)}`;
   let counter = 1;
   const baseSlug = planSlug;
   while (!refIndex.isSlugAvailable(planSlug)) {
     planSlug = `${baseSlug}-${counter}`;
     counter++;
   }
-
-  // Track all slugs created during this import (refIndex is stale after mutations)
-  const importReservedSlugs = new Set<string>([planSlug]);
-
-  const planInput: PlanInput = {
-    title: parsed.title,
-    content: parsed.content,
-    status: "active",
-    slugs: [planSlug],
-    source_path: fullPath,
-  };
-
-  const newPlan = createPlan(planInput);
-  const planRef = `@${planSlug}`;
-
-  // AC: @plan-import ac-13 - Attach global implementation notes to plan record
-  if (parsed.implementationNotes) {
-    newPlan.notes.push({
-      _ulid: ulid(),
-      created_at: new Date().toISOString(),
-      author,
-      content: `Implementation notes:\n\n${parsed.implementationNotes}`,
-    });
-  }
-
-  // Initialize result
-  const result: ImportResult = {
-    createdSpecs: [],
-    updatedSpecs: [],
-    createdTasks: [],
-    errors: [],
-    skipped: [],
-    planRef,
-  };
-
-  // Add parser validation errors to result
-  // AC: @plan-import ac-22, ac-29 - Include parser validation errors in summary
-  for (const err of parsed.errors) {
-    if (err.type === "validation") {
-      result.errors.push({ message: err.message });
-    }
-  }
-
-  // Track newly created specs for parent resolution
-  // AC: @plan-import ac-16 - Resolve local references
-  const createdSpecsMap = new Map<string, LoadedSpecItem>();
-
-  // Process specs
-  // AC: @plan-import ac-14, ac-16, ac-17, ac-22, ac-23, ac-25, ac-26, ac-29
-  for (let i = 0; i < sorted.length; i++) {
-    const spec = sorted[i];
-    try {
-      // Validate required fields first
-      // AC: @plan-import ac-22
-      if (!spec.title) {
-        const errMsg = `Spec at index ${i} missing required field: title`;
-        warn(errMsg);
-        result.errors.push({ message: errMsg, spec });
-        continue;
-      }
-
-      const specSlug = spec.slug || generateSlug(spec.title);
-      const specRef = `@${specSlug}`;
-
-      // Check against slugs reserved during this import (plan slug, earlier specs)
-      if (importReservedSlugs.has(specSlug)) {
-        warn(`Spec slug "${specSlug}" collides with another item in this import, skipping`);
-        result.skipped.push({ slug: specSlug, reason: "Slug collision within import" });
-        continue;
-      }
-
-      // Check if spec already exists in pre-import state
-      const exists = refIndex.resolve(specRef);
-
-      if (exists.ok && !options.update) {
-        // AC: @plan-import ac-14, ac-25 - Skip existing specs
-        warn(`Skipping existing spec: ${specRef}`);
-        result.skipped.push({ slug: specSlug, reason: "Already exists" });
-        continue;
-      }
-
-      if (exists.ok && options.update) {
-        // AC: @plan-import ac-26 - Update existing spec
-        // Updates: description, type, tags, traits, and acceptance_criteria
-        const existingSpec = exists.item as LoadedSpecItem;
-
-        if (options.dryRun) {
-          info(`Would update spec: ${specRef}`);
-          result.updatedSpecs.push(specRef);
-        } else {
-          // Build updates from plan spec
-          const updates: Partial<SpecItemInput> = {};
-
-          if (spec.description !== undefined) {
-            updates.description = spec.description;
-          }
-          if (spec.type !== undefined) {
-            updates.type = spec.type as SpecItemInput["type"];
-          }
-          if (spec.traits !== undefined) {
-            updates.traits = spec.traits.map(normalizeRefInput);
-          }
-          if (spec.depends_on !== undefined) {
-            updates.depends_on = spec.depends_on.map(normalizeRefInput);
-          }
-          if (spec.acceptance_criteria !== undefined) {
-            updates.acceptance_criteria = mergeAcceptanceCriteriaById(
-              existingSpec.acceptance_criteria,
-              spec.acceptance_criteria,
-            );
-          }
-
-          await updateSpecItem(ctx, existingSpec, updates);
-          info(`Updated spec: ${specRef}`);
-          result.updatedSpecs.push(specRef);
-        }
-        continue;
-      }
-
-      // Resolve parent reference
-      // AC: @plan-import ac-16, ac-17
-      let parent: LoadedSpecItem | null = null;
-      if (spec.parent) {
-        const parentRef = normalizeRefInput(spec.parent);
-
-        // Check if parent was just created in this import
-        const parentSlug = parentRef.slice(1);
-        if (createdSpecsMap.has(parentSlug)) {
-          parent = createdSpecsMap.get(parentSlug)!;
-        } else {
-          // Check existing specs
-          const parentResult = refIndex.resolve(parentRef);
-
-          if (!parentResult.ok) {
-            // AC: @plan-import ac-17, ac-33 - Missing parent with hint
-            const errMsg = `Parent ${parentRef} not found. Check parent exists or define it earlier in plan`;
-            warn(errMsg);
-            result.errors.push({ message: errMsg, spec });
-            result.skipped.push({ slug: specSlug, reason: "Missing parent" });
-            continue;
-          }
-
-          parent = parentResult.item as LoadedSpecItem;
-        }
-      }
-
-      // Determine if this is a root-level trait (type: trait with no parent)
-      const isRootTrait = (spec.type === "trait") && !parent;
-
-      if (options.dryRun) {
-        // AC: @plan-import ac-15 - Dry run mode
-        info(
-          `Would create spec: ${specRef} ${spec.parent ? `under ${spec.parent}` : isRootTrait ? "(project-level trait)" : "(root)"}`,
-        );
-        result.createdSpecs.push(specRef);
-        importReservedSlugs.add(specSlug);
-
-        // Track would-be created spec for parent resolution in dry-run
-        // AC: @plan-import ac-35 - Map depends_on in dry-run too
-        const dryRunSpec = createSpecItem({
-          title: spec.title,
-          type: (spec.type as any) || "feature",
-          slugs: [specSlug],
-          description: spec.description,
-          ...(spec.acceptance_criteria ? { acceptance_criteria: spec.acceptance_criteria } : {}),
-          priority: undefined,
-          tags: [],
-          depends_on: (spec.depends_on || []).map(normalizeRefInput),
-          implements: [],
-          relates_to: [],
-          tests: [],
-          traits: (spec.traits || []).map(normalizeRefInput),
-          notes: [],
-        }) as LoadedSpecItem;
-        createdSpecsMap.set(specSlug, dryRunSpec);
-      } else {
-        // Create spec item
-        // AC: @plan-import ac-35 - Map depends_on to spec depends_on
-        const specInput: SpecItemInput = {
-          title: spec.title,
-          type: (spec.type as any) || "feature",
-          slugs: [specSlug],
-          description: spec.description,
-          priority: undefined,
-          tags: [],
-          depends_on: (spec.depends_on || []).map(normalizeRefInput),
-          implements: [],
-          relates_to: [],
-          tests: [],
-          traits: (spec.traits || []).map(normalizeRefInput),
-          notes: [],
-        };
-
-        // Add acceptance criteria if present
-        if (spec.acceptance_criteria) {
-          specInput.acceptance_criteria = spec.acceptance_criteria;
-        }
-
-        const newSpec = createSpecItem(specInput);
-
-        if (isRootTrait) {
-          // Traits without a parent go to kynetic.yaml project-level traits array,
-          // not the module-level traits array (same logic as `kspec trait add`)
-          if (!ctx.manifestPath) {
-            throw new Error("Could not find kynetic.yaml");
-          }
-
-          const { readYamlFile, writeYamlFilePreserveFormat } = await import(
-            "../../parser/yaml.js"
-          );
-          const manifest = await readYamlFile<Record<string, unknown>>(
-            ctx.manifestPath,
-          );
-
-          if (!manifest) {
-            throw new Error("Could not load kynetic.yaml");
-          }
-
-          // Ensure traits array exists at root
-          if (!Array.isArray(manifest.traits)) {
-            manifest.traits = [];
-          }
-
-          // Strip metadata from newSpec (_sourceFile, _path)
-          const { _sourceFile, _path, ...cleanItem } = newSpec as LoadedSpecItem;
-          (manifest.traits as unknown[]).push(cleanItem);
-          await writeYamlFilePreserveFormat(ctx.manifestPath, manifest);
-
-          const traitIndex = (manifest.traits as unknown[]).length - 1;
-          const createdSpec: LoadedSpecItem = {
-            ...newSpec,
-            _sourceFile: ctx.manifestPath,
-            _path: `traits[${traitIndex}]`,
-          } as LoadedSpecItem;
-          createdSpecsMap.set(specSlug, createdSpec);
-        } else {
-          // Add spec to parent (or module if no parent)
-          const actualParent = parent || moduleItem;
-          const addResult = await addChildItem(ctx, actualParent, newSpec);
-
-          // Track the created spec for parent resolution
-          // Need to construct LoadedSpecItem with _sourceFile and _path for nested specs
-          const createdSpec: LoadedSpecItem = {
-            ...(addResult.item as LoadedSpecItem),
-            _sourceFile: actualParent._sourceFile,
-            _path: addResult.path,
-          };
-          createdSpecsMap.set(specSlug, createdSpec);
-        }
-
-        result.createdSpecs.push(specRef);
-        importReservedSlugs.add(specSlug);
-        newPlan.derived_specs.push(specRef);
-
-        info(`Created spec: ${specRef}`);
-      }
-    } catch (err) {
-      const errMsg = `Failed to create spec "${spec.title}": ${err instanceof Error ? err.message : String(err)}`;
-      warn(errMsg);
-      result.errors.push({ message: errMsg, spec });
-    }
-  }
-
-  // Derive tasks from specs
-  // AC: @plan-import ac-12, ac-13, ac-19, ac-20, ac-35
-  if (parsed.tasks.derive_from_specs && result.createdSpecs.length > 0) {
-    const tasks = await loadAllTasks(ctx);
-    // Combine existing task slugs + all slugs reserved during this import (plan + specs)
-    const importSlugs = new Set([
-      ...tasks.flatMap((t) => t.slugs),
-      ...importReservedSlugs,
-    ]);
-
-    // AC: @plan-import ac-35 - Build spec→task slug mapping for depends_on resolution
-    // First pass: generate all task slugs so we can resolve spec depends_on → task depends_on
-    const specToTaskSlug = new Map<string, string>();
-    for (const specRef of result.createdSpecs) {
-      const specSlug = specRef.slice(1);
-      const spec = createdSpecsMap.get(specSlug);
-      if (!spec) continue;
-
-      const taskTitle = `Implement ${spec.title}`;
-      const taskSlug = generateSlug(taskTitle);
-
-      let uniqueSlug = taskSlug;
-      let counter = 1;
-      while (importSlugs.has(uniqueSlug) || !refIndex.isSlugAvailable(uniqueSlug)) {
-        uniqueSlug = `${taskSlug}-${counter}`;
-        counter++;
-      }
-      importSlugs.add(uniqueSlug);
-      importReservedSlugs.add(uniqueSlug);
-      specToTaskSlug.set(specSlug, uniqueSlug);
-    }
-
-    for (const specRef of result.createdSpecs) {
-      // Get spec from createdSpecsMap (works in both dry-run and real mode)
-      const specSlug = specRef.slice(1);
-      const spec = createdSpecsMap.get(specSlug);
-      if (!spec) continue;
-
-      const uniqueSlug = specToTaskSlug.get(specSlug)!;
-
-      if (options.dryRun) {
-        info(`Would derive task: @${uniqueSlug} from ${specRef}`);
-        result.createdTasks.push(`@${uniqueSlug}`);
-      } else {
-        // AC: @plan-import ac-35 - Resolve spec depends_on to task depends_on
-        const planSpec = parsed.specs.find(s =>
-          (s.slug || generateSlug(s.title)) === specSlug
-        );
-        const taskDependsOn: string[] = [];
-        if (planSpec?.depends_on) {
-          for (const depRef of planSpec.depends_on) {
-            const depSlug = depRef.startsWith("@") ? depRef.slice(1) : depRef;
-            const depTaskSlug = specToTaskSlug.get(depSlug);
-            if (depTaskSlug) {
-              // Dependency spec was in this import — link to its derived task
-              taskDependsOn.push(`@${depTaskSlug}`);
-            } else {
-              // Dependency spec already existed — find an existing task with that spec_ref
-              const normalizedDepRef = normalizeRefInput(depRef);
-              const existingTask = tasks.find(t => t.spec_ref === normalizedDepRef);
-              if (existingTask && existingTask.slugs.length > 0) {
-                taskDependsOn.push(`@${existingTask.slugs[0]}`);
-              } else {
-                // No task found for this spec — pass the spec ref as-is
-                taskDependsOn.push(normalizedDepRef);
-              }
-            }
-          }
-        }
-
-        // AC: @plan-import ac-19 - Task has both spec_ref and plan_ref
-        // AC: @plan-import ac-36 - Derived task inherits priority from plan spec
-        const taskInput: TaskInput = {
-          title: `Implement ${spec.title}`,
-          type: "task",
-          spec_ref: specRef,
-          plan_ref: planRef,
-          priority: planSpec?.priority ?? 3,
-          slugs: [uniqueSlug],
-          tags: [],
-          depends_on: taskDependsOn,
-          notes: [],
-        };
-
-        const newTask = createTask(taskInput);
-
-        // AC: @plan-import ac-13 - Scoped implementation notes
-        if (planSpec?.implementation_notes) {
-          // Per-spec notes go directly to this task
-          newTask.notes.push({
-            _ulid: ulid(),
-            created_at: new Date().toISOString(),
-            author,
-            content: `Implementation notes:\n\n${planSpec.implementation_notes}`,
-          });
-        } else if (parsed.implementationNotes) {
-          // No per-spec notes — reference the plan
-          newTask.notes.push({
-            _ulid: ulid(),
-            created_at: new Date().toISOString(),
-            author,
-            content: `See plan ${planRef} for implementation notes`,
-          });
-        }
-
-        await saveTask(ctx, newTask);
-        result.createdTasks.push(`@${uniqueSlug}`);
-        newPlan.derived_tasks.push(`@${uniqueSlug}`);
-
-        info(`Derived task: @${uniqueSlug}`);
-      }
-    }
-  }
-
-  // Create manual tasks
-  // AC: @plan-import ac-27
-  if (parsed.tasks.additional_tasks) {
-    // Reload tasks to catch any created by derive loop above
-    // Combine with all slugs reserved during this import (plan + specs)
-    const manualTasks = await loadAllTasks(ctx);
-    const manualImportSlugs = new Set([
-      ...manualTasks.flatMap((t) => t.slugs),
-      ...importReservedSlugs,
-    ]);
-
-    for (const taskDef of parsed.tasks.additional_tasks) {
-      const taskSlug = taskDef.slug || generateSlug(taskDef.title);
-
-      // Ensure slug uniqueness across all namespaces + this import's slugs
-      let uniqueSlug = taskSlug;
-      let counter = 1;
-      while (manualImportSlugs.has(uniqueSlug) || !refIndex.isSlugAvailable(uniqueSlug)) {
-        uniqueSlug = `${taskSlug}-${counter}`;
-        counter++;
-      }
-      manualImportSlugs.add(uniqueSlug);
-
-      if (options.dryRun) {
-        info(`Would create manual task: @${uniqueSlug}`);
-        result.createdTasks.push(`@${uniqueSlug}`);
-      } else {
-        // AC: @plan-import ac-27, ac-35 - Manual tasks have plan_ref; spec_ref and depends_on honored
-        const taskInput: TaskInput = {
-          title: taskDef.title,
-          type: "task",
-          plan_ref: planRef,
-          priority: taskDef.priority || 3,
-          slugs: [uniqueSlug],
-          tags: taskDef.tags || [],
-          depends_on: (taskDef.depends_on || []).map(normalizeRefInput),
-          notes: [],
-          ...(taskDef.spec_ref ? { spec_ref: normalizeRefInput(taskDef.spec_ref) } : {}),
-        };
-
-        if (taskDef.description) {
-          taskInput.notes = [
-            {
-              _ulid: ulid(),
-              created_at: new Date().toISOString(),
-              author,
-              content: taskDef.description,
-            },
-          ];
-        }
-
-        const newTask = createTask(taskInput);
-        await saveTask(ctx, newTask);
-        result.createdTasks.push(`@${uniqueSlug}`);
-        newPlan.derived_tasks.push(`@${uniqueSlug}`);
-
-        info(`Created manual task: @${uniqueSlug}`);
-      }
-    }
-  }
-
-  // Save plan record
-  // AC: @plan-import ac-24
-  if (!options.dryRun) {
-    await savePlan(ctx, newPlan);
-    await commitIfShadow(ctx.shadow, "plan-import", planSlug, parsed.title);
-  }
-
-  // AC: @plan-import ac-23, ac-29 - Summary output
-  const successCount =
-    result.createdSpecs.length +
-    result.updatedSpecs.length +
-    result.createdTasks.length;
-  const errorCount = result.errors.length + result.skipped.length;
-
-  // AC: @plan-import ac-32 - JSON output
-  if (isJsonMode()) {
-    output({
-      plan: planRef,
-      created_specs: result.createdSpecs,
-      updated_specs: result.updatedSpecs,
-      created_tasks: result.createdTasks,
-      errors: result.errors,
-      skipped: result.skipped,
-    });
-  } else {
-    // Human-readable output
-    if (options.dryRun) {
-      console.log("\nDry run - no changes made\n");
-    }
-
-    console.log(`Plan: ${planRef}`);
-    console.log(`Created ${result.createdSpecs.length} specs`);
-    if (result.updatedSpecs.length > 0) {
-      console.log(`Updated ${result.updatedSpecs.length} specs`);
-    }
-    console.log(`Created ${result.createdTasks.length} tasks`);
-
-    if (result.errors.length > 0) {
-      console.log(`\nErrors (${result.errors.length}):`);
-      for (const err of result.errors) {
-        console.log(`  - ${err.message}`);
-      }
-    }
-
-    if (result.skipped.length > 0) {
-      console.log(`\nSkipped (${result.skipped.length}):`);
-      for (const skip of result.skipped) {
-        console.log(`  - @${skip.slug}: ${skip.reason}`);
-      }
-    }
-
-    // AC: @plan-import ac-15, ac-23 - Exit code 0 on success
-    if (!options.dryRun && successCount > 0) {
-      success(
-        `\nImported plan: ${successCount} items created, ${errorCount} errors`,
-      );
-    }
-  }  // end of else block (non-JSON output)
-
-  // Exit code logic
-  // AC: @plan-import ac-15 - Dry run exits 0
-  // AC: @plan-import ac-23 - Success with some errors still exits 0
-  // Return normally so batch mode treats this as success instead of
-  // intercepting process.exit(0) as an exception path.
-  return;
+  return planSlug;
 }
 
 /**
- * Generate URL-safe slug from title
+ * Generate URL-safe slug from title.
  */
 function generateSlug(title: string): string {
   return title

@@ -14,7 +14,7 @@ import {
   type KspecOptions,
 } from './helpers/cli';
 import { spawn, execSync } from 'child_process';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { readFileSync, existsSync, mkdirSync } from 'fs';
 import { createServer } from 'net';
 
@@ -567,6 +567,154 @@ describe('kspec serve commands', () => {
     // Error and hint should be in stderr
     expect(result.stderr).toContain('Invalid port number');
     expect(result.stderr).toContain('Try: kspec serve --port');
+  });
+
+  // AC: @web-ui ac-1
+  it('should start daemon from npm-installed package with all deps available', async () => {
+    if (!bunAvailable) {
+      console.log('  ⊘ Skipping test - Bun runtime required');
+      return;
+    }
+
+    // Pack the project, install the tarball, then run the installed CLI's
+    // `kspec serve start --daemon` to verify all runtime dependencies
+    // (elysia, @elysiajs/cors, @elysiajs/static) resolve at execution time.
+    const projectRoot = join(__dirname, '..');
+    const installDir = await createTempDir();
+
+    try {
+      // Fresh pack so we test the current build output
+      const packOutput = execSync('npm pack --pack-destination ' + installDir, {
+        cwd: projectRoot,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      }).trim();
+      const tarball = join(installDir, packOutput.split('\n').pop()!.trim());
+
+      // Install the tarball into the temp dir (brings transitive deps)
+      execSync(`npm init -y && npm install --no-save "${tarball}"`, {
+        cwd: installDir,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+        timeout: 60_000,
+      });
+
+      // The installed CLI binary
+      const installedCli = join(installDir, 'node_modules', '.bin', 'kspec');
+      expect(existsSync(installedCli), `installed CLI not found at ${installedCli}`).toBe(true);
+
+      // Create a minimal .kspec/ directory so serve has something to point at
+      const kspecDir = join(installDir, '.kspec');
+      mkdirSync(kspecDir, { recursive: true });
+
+      // Isolated HOME so PID/port files don't collide with real daemon
+      const isolated = await createIsolatedKspecHome(installDir);
+      const port = await getAvailablePort();
+
+      // Strip KSPEC_SESSION_ID to prevent dispatch guard from blocking
+      const { KSPEC_SESSION_ID: _, ...cleanProcessEnv } = process.env;
+
+      // Run the installed CLI's serve start in daemon mode
+      const result = execSync(
+        `"${installedCli}" serve start --daemon --port ${port} --kspec-dir "${kspecDir}"`,
+        {
+          cwd: installDir,
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+          timeout: 30_000,
+          env: { ...cleanProcessEnv, ...isolated.env },
+        }
+      );
+
+      // Daemon should have started — output contains PID and port
+      expect(result).toContain(`port ${port}`);
+
+      await waitForDaemonHealth(port);
+
+      // Verify health endpoint responds (daemon is actually running with Elysia)
+      const healthResponse = await fetch(`http://localhost:${port}/api/health`);
+      expect(healthResponse.ok, 'daemon health endpoint should respond').toBe(true);
+      const healthBody = await healthResponse.json();
+      expect(healthBody).toHaveProperty('status', 'ok');
+
+      // Cleanup: stop the daemon
+      try {
+        execSync(
+          `"${installedCli}" serve stop --kspec-dir "${kspecDir}"`,
+          {
+            cwd: installDir,
+            encoding: 'utf-8',
+            stdio: ['pipe', 'pipe', 'pipe'],
+            timeout: 10_000,
+            env: { ...cleanProcessEnv, ...isolated.env },
+          }
+        );
+      } catch {
+        // Best-effort cleanup; PID file has the PID if we need to kill manually
+        const pidFile = isolated.daemonPidFilePath;
+        if (existsSync(pidFile)) {
+          try {
+            const pid = parseInt(readFileSync(pidFile, 'utf-8').trim(), 10);
+            process.kill(pid, 'SIGTERM');
+          } catch { /* ignore */ }
+        }
+      }
+    } finally {
+      await cleanupTempDir(installDir);
+    }
+  }, 120_000);
+
+  // AC: @web-ui ac-2
+  it('should show clear error with Bun install URL when Bun is not available', () => {
+    // Build PATH that includes node but excludes bun
+    const nodeDir = dirname(execSync('which node', { encoding: 'utf-8' }).trim());
+    const noBunPath = (process.env.PATH || '')
+      .split(':')
+      .filter(p => {
+        try { return !existsSync(join(p, 'bun')); } catch { return true; }
+      })
+      .join(':');
+    // Ensure node's directory is always present
+    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+
+    const result = runKspec(
+      `serve start --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir,
+      { expectFail: true, env: { PATH: pathWithNode } }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('Bun runtime is required');
+    // Install instructions go to stdout via info()
+    expect(result.stdout).toContain('bun.sh');
+  });
+
+  // AC: @web-ui ac-2
+  it('should show Bun install URL in JSON mode when Bun is not available', () => {
+    // Build PATH that includes node but excludes bun
+    const nodeDir = dirname(execSync('which node', { encoding: 'utf-8' }).trim());
+    const noBunPath = (process.env.PATH || '')
+      .split(':')
+      .filter(p => {
+        try { return !existsSync(join(p, 'bun')); } catch { return true; }
+      })
+      .join(':');
+    const pathWithNode = noBunPath.includes(nodeDir) ? noBunPath : `${nodeDir}:${noBunPath}`;
+
+    const result = runKspec(
+      `serve start --json --kspec-dir ${join(tempDir, '.kspec')}`,
+      tempDir,
+      { expectFail: true, env: { PATH: pathWithNode } }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed).toHaveProperty('error');
+    expect(parsed.error).toContain('Bun runtime is required');
+    expect(parsed).toHaveProperty('hint');
+    expect(parsed.hint).toContain('bun.sh');
+    expect(parsed).toHaveProperty('url');
+    expect(parsed.url).toBe('https://bun.sh/docs/installation');
   });
 
   // AC: @cli-serve-commands ac-11

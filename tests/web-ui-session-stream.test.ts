@@ -13,6 +13,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { createServer } from "vite";
 
 const WEB_UI_ROOT = join(process.cwd(), "packages", "web-ui");
 const WEB_UI_SRC = join(WEB_UI_ROOT, "src");
@@ -22,6 +23,7 @@ const SESSION_COMPONENTS = join(WEB_UI_SRC, "lib", "components", "session");
 
 type SessionUtils = typeof import("../packages/web-ui/src/lib/components/session/session-utils");
 type MarkdownUtils = typeof import("../packages/web-ui/src/lib/utils/markdown");
+type WebUiViteServer = Awaited<ReturnType<typeof createServer>>;
 
 let parseEventsToBlocks: SessionUtils["parseEventsToBlocks"];
 let getToolIcon: SessionUtils["getToolIcon"];
@@ -38,8 +40,24 @@ let shouldShowJumpButton: SessionUtils["shouldShowJumpButton"];
 let accumulateStreamingText: SessionUtils["accumulateStreamingText"];
 let getLastSeq: SessionUtils["getLastSeq"];
 let renderMarkdown: MarkdownUtils["renderMarkdown"];
+let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sanitizeHtml"];
+let isLanguageSupported: typeof import("../packages/web-ui/src/lib/utils/highlight")["isLanguageSupported"];
+let INLINE_CODE_CLASS_NAMES: typeof import("../packages/web-ui/src/lib/utils/highlight")["INLINE_CODE_CLASS_NAMES"];
+let createStreamingMarkdownRenderer: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownRenderer"];
+let createStreamingMarkdownController: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["createStreamingMarkdownController"];
+let finalizeStreamingMarkdown: typeof import("../packages/web-ui/src/lib/utils/streaming-markdown")["finalizeStreamingMarkdown"];
+let webUiViteServer: WebUiViteServer;
+const ORIGINAL_CWD = process.cwd();
 
 beforeAll(async () => {
+  process.chdir(WEB_UI_ROOT);
+  webUiViteServer = await createServer({
+    root: process.cwd(),
+    server: { middlewareMode: true },
+    appType: "custom",
+  });
+  process.chdir(ORIGINAL_CWD);
+
   const sessionMod = await import(
     "../packages/web-ui/src/lib/components/session/session-utils"
   );
@@ -62,7 +80,82 @@ beforeAll(async () => {
     "../packages/web-ui/src/lib/utils/markdown"
   );
   renderMarkdown = markdownMod.renderMarkdown;
+
+  const sanitizeMod = await import(
+    "../packages/web-ui/src/lib/utils/sanitize"
+  );
+  sanitizeHtml = sanitizeMod.sanitizeHtml;
+
+  const highlightMod = await import(
+    "../packages/web-ui/src/lib/utils/highlight"
+  );
+  isLanguageSupported = highlightMod.isLanguageSupported;
+  INLINE_CODE_CLASS_NAMES = highlightMod.INLINE_CODE_CLASS_NAMES;
+
+  const streamingMod = await import(
+    "../packages/web-ui/src/lib/utils/streaming-markdown"
+  );
+  createStreamingMarkdownRenderer = streamingMod.createStreamingMarkdownRenderer;
+  createStreamingMarkdownController = streamingMod.createStreamingMarkdownController;
+  finalizeStreamingMarkdown = streamingMod.finalizeStreamingMarkdown;
 });
+
+async function transformWebUiModule(path: string): Promise<string> {
+  const transformed = await webUiViteServer.transformRequest(path);
+  if (!transformed?.code) {
+    throw new Error(`Expected transformed output for ${path}`);
+  }
+  return transformed.code;
+}
+
+async function createDomHarness() {
+  const { JSDOM } = await import("jsdom");
+  const dom = new JSDOM("<div id='root'></div>");
+  const root = dom.window.document.getElementById("root") as HTMLElement;
+
+  globalThis.window = dom.window as unknown as Window & typeof globalThis;
+  globalThis.document = dom.window.document as unknown as Document;
+  globalThis.Element = dom.window.Element as typeof Element;
+  globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+  globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+  globalThis.Node = dom.window.Node as typeof Node;
+
+  return { dom, root };
+}
+
+function createTestScheduler() {
+  let nextFrameId = 1;
+  const callbacks = new Map<number, FrameRequestCallback>();
+  let requestCount = 0;
+  let cancelCount = 0;
+
+  return {
+    get requestCount() {
+      return requestCount;
+    },
+    get cancelCount() {
+      return cancelCount;
+    },
+    request(callback: FrameRequestCallback) {
+      requestCount += 1;
+      const frameId = nextFrameId++;
+      callbacks.set(frameId, callback);
+      return frameId;
+    },
+    cancel(frameId: number) {
+      cancelCount += 1;
+      callbacks.delete(frameId);
+    },
+    flushAll() {
+      for (const frameId of [...callbacks.keys()].sort((left, right) => left - right)) {
+        const callback = callbacks.get(frameId);
+        if (!callback) continue;
+        callbacks.delete(frameId);
+        callback(Date.now());
+      }
+    },
+  };
+}
 
 // ─── AC-1: Structured event blocks ────────────────────────────────────────────
 
@@ -946,15 +1039,16 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     // AC: @ui-session-stream ac-1
     it("renders inline code", () => {
       const html = renderMarkdown("Use `npm install`");
-      expect(html).toContain("<code>npm install</code>");
+      expect(html).toContain('<code class="rounded-sm bg-muted px-1 py-0.5 font-mono text-[0.9em]">npm install</code>');
     });
 
     // AC: @ui-session-stream ac-1
     it("renders fenced code blocks", () => {
       const html = renderMarkdown("```js\nconst x = 1;\n```");
       expect(html).toContain("<pre>");
-      expect(html).toContain("<code");
-      expect(html).toContain("const x = 1;");
+      expect(html).toContain('<code class="hljs language-javascript"');
+      expect(html).toContain("hljs-keyword");
+      expect(html).toContain("hljs-number");
     });
 
     // AC: @ui-session-stream ac-1
@@ -980,6 +1074,8 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
       const html = renderMarkdown("[Click here](https://example.com)");
       expect(html).toContain("<a");
       expect(html).toContain('href="https://example.com"');
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('rel="noopener noreferrer"');
       expect(html).toContain("Click here</a>");
     });
 
@@ -1007,9 +1103,13 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
 
       const imgXss = renderMarkdown('<img onerror="alert(1)" src="x">');
       expect(imgXss).not.toContain("onerror");
+
+      const badLink = renderMarkdown('[xss](javascript:alert("xss"))');
+      expect(badLink).not.toContain("javascript:");
     });
 
     // AC: @ui-session-stream ac-1
+    // AC: @trait-markdown-rendering ac-7
     it("returns empty string for empty input", () => {
       expect(renderMarkdown("")).toBe("");
       expect(renderMarkdown(null as unknown as string)).toBe("");
@@ -1019,6 +1119,259 @@ describe("structured event blocks (@ui-session-stream ac-1)", () => {
     it("handles line breaks (GFM breaks enabled)", () => {
       const html = renderMarkdown("Line 1\nLine 2");
       expect(html).toContain("<br");
+    });
+  });
+
+  describe("shared markdown security and highlighting", () => {
+    // AC: @trait-markdown-rendering ac-2
+    it("supports the required highlight.js language set", () => {
+      for (const language of [
+        "bash",
+        "typescript",
+        "javascript",
+        "python",
+        "rust",
+        "go",
+        "json",
+        "yaml",
+        "sql",
+        "css",
+        "html",
+        "java",
+        "c",
+        "cpp",
+        "diff",
+      ]) {
+        expect(isLanguageSupported(language)).toBe(true);
+      }
+    });
+
+    // AC: @trait-markdown-rendering ac-2
+    it("highlights static code fences with highlight.js markup", () => {
+      const html = renderMarkdown("```python\nprint('hi')\n```");
+      expect(html).toContain("hljs");
+      expect(html).toContain("language-python");
+    });
+
+    // AC: @trait-markdown-rendering ac-4
+    // AC: @trait-markdown-rendering ac-6
+    it("sanitizes unsafe HTML while keeping external link security attributes", () => {
+      const clean = sanitizeHtml(
+        '<p>safe</p><script>alert(1)</script><a href="https://example.com">x</a><a href="/local">y</a>',
+      );
+
+      expect(clean).toContain("<p>safe</p>");
+      expect(clean).not.toContain("<script>");
+      expect(clean).toContain('href="https://example.com"');
+      expect(clean).toContain('target="_blank"');
+      expect(clean).toContain('rel="noopener noreferrer"');
+      expect(clean).toContain('href="/local"');
+    });
+
+    // AC: @trait-markdown-rendering ac-8
+    it("renders malformed markdown without throwing", () => {
+      expect(() => renderMarkdown("```ts\nconst x = 1")).not.toThrow();
+      expect(renderMarkdown("```ts\nconst x = 1")).toContain("language-typescript");
+    });
+  });
+
+  describe("streaming markdown renderer", () => {
+    // AC: @streaming-markdown-component ac-1
+    it("appends new chunks without rewriting earlier rendered nodes", async () => {
+      const { JSDOM } = await import("jsdom");
+      const dom = new JSDOM("<div id='root'></div>");
+      const root = dom.window.document.getElementById("root") as HTMLElement;
+
+      globalThis.document = dom.window.document as unknown as Document;
+      globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+      globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+
+      const renderer = createStreamingMarkdownRenderer(root);
+      const parser = (await import("streaming-markdown")).parser(renderer);
+      const smd = await import("streaming-markdown");
+
+      smd.parser_write(parser, "Hello ");
+      const paragraph = root.querySelector("p");
+      expect(paragraph).toBeTruthy();
+      const initialText = root.textContent ?? "";
+
+      smd.parser_write(parser, "world");
+      expect(root.querySelector("p")).toBe(paragraph);
+      expect(root.textContent).toContain("Hello");
+      expect((root.textContent ?? "").length).toBeGreaterThan(initialText.length);
+    });
+
+    // AC: @streaming-markdown-component ac-2
+    // AC: @streaming-markdown-component ac-3
+    // AC: @streaming-markdown-component ac-4
+    // AC: @trait-markdown-rendering ac-4
+    it("defers code highlighting until finalization and sanitizes the final HTML", async () => {
+      const { JSDOM } = await import("jsdom");
+      const dom = new JSDOM("<div id='root'></div>");
+      const root = dom.window.document.getElementById("root") as HTMLElement;
+
+      globalThis.document = dom.window.document as unknown as Document;
+      globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+      globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+
+      const smd = await import("streaming-markdown");
+      const parser = smd.parser(createStreamingMarkdownRenderer(root));
+
+      smd.parser_write(parser, "```js\nconst value = 1;\n```");
+      expect(root.innerHTML).not.toContain("hljs");
+
+      root.insertAdjacentHTML("beforeend", '<script>alert("xss")</script>');
+      smd.parser_end(parser);
+      finalizeStreamingMarkdown(root);
+
+      expect(root.innerHTML).not.toContain("<script>");
+      expect(root.innerHTML).toContain("hljs");
+      expect(root.innerHTML).toContain("language-javascript");
+    });
+
+    // AC: @trait-markdown-rendering ac-6
+    it("adds safe attributes to external links emitted by the streaming renderer", async () => {
+      const { JSDOM } = await import("jsdom");
+      const dom = new JSDOM("<div id='root'></div>");
+      const root = dom.window.document.getElementById("root") as HTMLElement;
+
+      globalThis.document = dom.window.document as unknown as Document;
+      globalThis.HTMLElement = dom.window.HTMLElement as typeof HTMLElement;
+      globalThis.HTMLAnchorElement = dom.window.HTMLAnchorElement as typeof HTMLAnchorElement;
+
+      const smd = await import("streaming-markdown");
+      const parser = smd.parser(createStreamingMarkdownRenderer(root));
+
+      smd.parser_write(parser, "[docs](https://example.com)");
+      smd.parser_end(parser);
+      finalizeStreamingMarkdown(root);
+
+      const link = root.querySelector("a");
+      expect(link?.getAttribute("target")).toBe("_blank");
+      expect(link?.getAttribute("rel")).toBe("noopener noreferrer");
+    });
+  });
+
+  describe("streaming markdown component integration", () => {
+    // AC: @trait-markdown-rendering ac-1
+    it("renders GFM elements and keeps prose typography styling on the markdown surface", async () => {
+      const html = renderMarkdown(
+        "# Title\n\n- [x] done\n- item\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n> quoted\n\n~~old~~ and *italic* [docs](https://example.com)",
+      );
+      const componentCode = await transformWebUiModule("/src/lib/components/markdown/StreamingMarkdown.svelte");
+
+      expect(html).toContain("<h1>Title</h1>");
+      expect(html).toContain('type="checkbox"');
+      expect(html).toContain("<table>");
+      expect(html).toContain("<blockquote>");
+      expect(html).toContain("<del>old</del>");
+      expect(html).toContain("<em>italic</em>");
+      expect(html).toContain('href="https://example.com"');
+      expect(componentCode).toContain("streaming-markdown prose prose-sm dark:prose-invert");
+    });
+
+    // AC: @trait-markdown-rendering ac-3
+    it("renders inline code with distinct monospace styling", async () => {
+      const html = renderMarkdown("Use `npm install`");
+      const { root } = await createDomHarness();
+      root.innerHTML = html;
+      const inlineCode = root.querySelector("code");
+
+      expect(inlineCode).not.toBeNull();
+      expect(inlineCode?.textContent).toBe("npm install");
+      expect(inlineCode?.closest("pre")).toBeNull();
+      expect(Array.from(INLINE_CODE_CLASS_NAMES).every((className) => inlineCode?.classList.contains(className))).toBe(true);
+      expect(inlineCode?.classList.contains("hljs")).toBe(false);
+    });
+
+    it("decorates finalized streaming inline code spans without treating them as fenced blocks", async () => {
+      const { root } = await createDomHarness();
+      root.innerHTML = "<p>Use <code>npm install</code> before <code>npm test</code>.</p>";
+
+      finalizeStreamingMarkdown(root);
+
+      const inlineCodes = [...root.querySelectorAll("code")];
+      expect(inlineCodes).toHaveLength(2);
+      for (const inlineCode of inlineCodes) {
+        expect(inlineCode.closest("pre")).toBeNull();
+        expect(Array.from(INLINE_CODE_CLASS_NAMES).every((className) => inlineCode.classList.contains(className))).toBe(true);
+        expect(inlineCode.classList.contains("hljs")).toBe(false);
+      }
+    });
+
+    // AC: @trait-markdown-rendering ac-5
+    it("uses dark-mode-compatible prose and highlight theme hooks", async () => {
+      const css = await transformWebUiModule("/src/app.css");
+
+      expect(css).toContain(".dark .hljs");
+      expect(css).toContain(".prose");
+    });
+
+    // AC: @streaming-markdown-component ac-5
+    it("uses an immediate static parse-sanitize-highlight pipeline when not streaming", async () => {
+      const { root } = await createDomHarness();
+      const scheduler = createTestScheduler();
+      const controller = createStreamingMarkdownController(root, { scheduler });
+
+      controller.update('<script>alert(1)</script>\n\n```js\nconst value = 1;\n```', false);
+
+      expect(scheduler.requestCount).toBe(0);
+      expect(root.innerHTML).not.toContain("<script>");
+      expect(root.innerHTML).toContain("hljs");
+      expect(root.innerHTML).toContain("language-javascript");
+
+      controller.destroy();
+    });
+
+    // AC: @streaming-markdown-component ac-6
+    it("queues streaming chunks behind a single requestAnimationFrame gate", async () => {
+      const { root } = await createDomHarness();
+      const flushes: string[] = [];
+      const scheduler = createTestScheduler();
+      const controller = createStreamingMarkdownController(root, {
+        scheduler,
+        onChunkFlush(chunk) {
+          flushes.push(chunk);
+        },
+      });
+
+      controller.update("Hello", true);
+      controller.update("Hello **markdown**", true);
+      controller.update("Hello **markdown**\n\nmore", true);
+
+      expect(scheduler.requestCount).toBe(1);
+      expect(root.textContent ?? "").toBe("");
+
+      scheduler.flushAll();
+
+      expect(flushes).toHaveLength(1);
+      expect(flushes[0]).toContain("markdown");
+      expect(root.textContent).toContain("Hello markdown");
+
+      controller.destroy();
+    });
+
+    // AC: @trait-markdown-rendering ac-9
+    it("keeps large markdown rendering on the frame-batched streaming path", async () => {
+      const { root } = await createDomHarness();
+      const scheduler = createTestScheduler();
+      const controller = createStreamingMarkdownController(root, { scheduler });
+      const largeMarkdown = Array.from({ length: 10_000 }, (_, index) => `- item ${index}`).join("\n");
+      const start = Date.now();
+
+      controller.update(largeMarkdown, true);
+      const elapsedMs = Date.now() - start;
+
+      expect(elapsedMs).toBeLessThan(100);
+      expect(scheduler.requestCount).toBe(1);
+      expect(root.textContent ?? "").not.toContain("item 9999");
+
+      scheduler.flushAll();
+      controller.update(largeMarkdown, false);
+
+      expect(root.textContent).toContain("item 9999");
+
+      controller.destroy();
     });
   });
 

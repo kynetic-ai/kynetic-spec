@@ -30,6 +30,11 @@ import {
   getShadowStatus,
   repairShadow,
   SHADOW_BRANCH_NAME,
+  SESSIONS_WORKTREE_DIR,
+  ensureSessionsGitignore,
+  ensureShadowSessionsGitignore,
+  needsSessionsGitignore,
+  needsShadowSessionsGitignore,
 } from "../../parser/shadow.js";
 import {
   detectAgentFromEnv,
@@ -1515,6 +1520,115 @@ export async function runSetupPipeline(
       });
     }
 
+    // Step 3a-ii: Ensure sessions directory and gitignore entries
+    // AC: @session-storage-modes ac-gitignore, ac-sessions-dir-autocreate
+    // AC: @session-legacy-migration ac-shadow-gitignore
+    {
+      const actions: string[] = [];
+
+      // Create .kspec-sessions/ directory
+      const sessionsDirPath = path.join(projectDir, SESSIONS_WORKTREE_DIR);
+      let sessionsCreated = false;
+      try {
+        await fs.access(sessionsDirPath);
+      } catch (_e) {
+        if (!dryRun) {
+          await fs.mkdir(sessionsDirPath, { recursive: true });
+        }
+        sessionsCreated = true;
+      }
+      if (sessionsCreated) {
+        actions.push(`${dryRun ? "create" : "created"} ${SESSIONS_WORKTREE_DIR}/`);
+      }
+
+      // Add .kspec-sessions/ to root .gitignore
+      if (dryRun) {
+        const rootNeeded = await needsSessionsGitignore(projectDir);
+        if (rootNeeded) {
+          actions.push(`add ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      } else {
+        const rootAdded = await ensureSessionsGitignore(projectDir);
+        if (rootAdded) {
+          actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      }
+
+      // Add sessions/ to .kspec/.gitignore
+      if (dryRun) {
+        const shadowNeeded = await needsShadowSessionsGitignore(projectDir);
+        if (shadowNeeded) {
+          actions.push("add sessions/ to .kspec/.gitignore");
+        }
+      } else {
+        const shadowAdded = await ensureShadowSessionsGitignore(projectDir);
+        if (shadowAdded) {
+          actions.push("added sessions/ to .kspec/.gitignore");
+        }
+      }
+
+      steps.push({
+        name: "Ensure sessions directory",
+        status: actions.length > 0 ? "done" : "skipped",
+        message: actions.length > 0 ? actions.join(", ") : "already configured",
+      });
+    }
+
+    // Step 3a-iii: Initialize session branch worktree if sessions.storage is "branch"
+    // AC: @session-branch-worktree ac-init
+    {
+      try {
+        const { initContext } = await import("../../parser/index.js");
+        const ctx = await initContext();
+        const sessionStorage = ctx.manifest?.sessions?.storage;
+        if (sessionStorage === "branch") {
+          const { initializeSessionBranch, getSessionBranchStatus } = await import(
+            "../../parser/session-branch.js"
+          );
+          const sessionBranchName = ctx.manifest?.sessions?.branch || "kspec-sessions";
+          const sessionStatus = await getSessionBranchStatus(
+            projectDir,
+            sessionBranchName,
+          );
+          if (sessionStatus.healthy) {
+            steps.push({
+              name: "Session branch worktree",
+              status: "skipped",
+              message: "already initialized",
+            });
+          } else if (dryRun) {
+            steps.push({
+              name: "Session branch worktree",
+              status: "done",
+              message: `create orphan branch "${sessionBranchName}" with worktree at ${SESSIONS_WORKTREE_DIR}/`,
+            });
+          } else {
+            const sessionResult = await initializeSessionBranch(
+              projectDir,
+              sessionBranchName,
+            );
+            if (sessionResult.success) {
+              steps.push({
+                name: "Session branch worktree",
+                status: "done",
+                message: sessionResult.alreadyExists
+                  ? "already initialized"
+                  : `created branch "${sessionBranchName}" with worktree at ${SESSIONS_WORKTREE_DIR}/`,
+              });
+            } else {
+              steps.push({
+                name: "Session branch worktree",
+                status: "failed",
+                message: sessionResult.error || "unknown error",
+              });
+            }
+          }
+        }
+      } catch {
+        // Session branch init is optional — don't block setup
+      }
+    }
+
     // Step 3b: Seed permissions (Claude Code only)
     // AC: @new-project-bootstrapping ac-1
     {
@@ -1663,6 +1777,13 @@ export async function runSetupPipeline(
             name: "Configure author",
             status: "done",
             message: `KSPEC_AUTHOR="${author}"`,
+          });
+        } else if (detected.type === "unknown") {
+          // AC: @cmd-setup ac-1 - show manual instructions for unknown agents
+          steps.push({
+            name: "Configure author",
+            status: "skipped",
+            message: `no auto-config for unknown agent — set KSPEC_AUTHOR manually`,
           });
         }
       }
@@ -1867,10 +1988,9 @@ export function registerSetupCommand(program: Command): void {
           : detectAgent();
         const dryRun = options.dryRun || false;
 
+        // AC: @cmd-setup ac-1 - proceed with setup even when no agent is detected
         if (detected.type === "unknown") {
-          warn("Could not auto-detect agent environment");
-          printManualInstructions("unknown");
-          return;
+          warn("Could not auto-detect agent environment — proceeding with core setup steps");
         }
 
         // AC: @setup-pipeline-unification ac-3 - delegate to runSetupPipeline()
@@ -1941,6 +2061,11 @@ export function registerSetupCommand(program: Command): void {
               console.log(
                 chalk.gray("Restart your agent session for changes to take effect."),
               );
+            }
+
+            // AC: @cmd-setup ac-1 - print manual KSPEC_AUTHOR instructions for unknown agents
+            if (detected.type === "unknown") {
+              printManualInstructions("unknown");
             }
           },
         );

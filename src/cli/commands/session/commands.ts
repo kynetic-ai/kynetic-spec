@@ -12,17 +12,15 @@ import {
 } from "../../../parser/index.js";
 import {
   ShadowError,
-  type ShadowSyncResult,
-  shadowPull,
 } from "../../../parser/shadow.js";
 import { isObject } from "../../../acp/types.js";
 import {
   errors,
   sessionPrompt,
 } from "../../../strings/index.js";
-import { markMutating } from "../../command-annotations.js";
+import { markAlwaysSync, markMutating } from "../../command-annotations.js";
 import { EXIT_CODES } from "../../exit-codes.js";
-import { error, info, isJsonMode, output, warn } from "../../output.js";
+import { error, isJsonMode, output } from "../../output.js";
 import { performCheckpoint } from "./checkpoint.js";
 import { sessionCompactAction } from "./compact.js";
 import { gatherSessionContext } from "./context.js";
@@ -34,6 +32,7 @@ import {
   sessionLogShowAction,
   sessionLogStatsAction,
 } from "./log.js";
+import { sessionMigrateAction } from "./migrate.js";
 import { sessionStaleCloseAction } from "./stale-close.js";
 import type { CheckpointOptions, SessionOptions, StopHookInput } from "./types.js";
 
@@ -53,20 +52,8 @@ function debugLog(message: string, detail?: unknown): void {
 
 async function sessionStartAction(options: SessionOptions): Promise<void> {
   try {
+    // AC: @shadow-sync ac-2 — initContext() performs pre-read shadow pull automatically
     const ctx = await initContext();
-
-    // AC: @shadow-sync ac-2 - Pull remote changes before showing session context
-    let syncResult: ShadowSyncResult | null = null;
-    if (ctx.shadow?.enabled) {
-      syncResult = await shadowPull(ctx.shadow.worktreeDir);
-      // AC: @shadow-sync ac-3 - Warn about conflicts but continue with local state
-      if (syncResult.hadConflict) {
-        warn("Shadow sync conflict detected. Run `kspec shadow resolve` to fix.");
-        info("Continuing with local state...");
-      } else if (syncResult.pulled) {
-        info("Synced shadow branch from remote");
-      }
-    }
 
     const sessionCtx = await gatherSessionContext(ctx, options);
 
@@ -231,9 +218,10 @@ export function registerSessionCommands(program: Command): void {
     .option("--task-id <id>", "Optional task ID being worked on")
     .action(sessionCreateAction);
 
-  session
+  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+  markAlwaysSync(session
     .command("start")
-    .alias("resume")
+    .alias("resume"))
     .description("Surface relevant context for starting a new working session")
     .option("--brief", "Compact summary (default)")
     .option("--full", "Comprehensive context dump")
@@ -255,9 +243,13 @@ export function registerSessionCommands(program: Command): void {
     .description("List session logs with summary statistics")
     .option(
       "-s, --status <status>",
-      "Filter by status (active, completed, abandoned)",
+      "Filter by status (active, completed, abandoned, timed_out, failed, stalled)",
     )
-    .option("--agent <type>", "Filter by agent type")
+    .option("--agent <type>", "Filter by agent type (alias for --agent-type)")
+    .option("--agent-type <type>", "Filter by agent type")
+    .option("--agent-id <id>", "Filter by agent definition ID (e.g. worker, pr-reviewer)")
+    .option("--trigger <trigger>", "Filter by trigger (manual, dispatched, task.ready, etc.)")
+    .option("--task <ref>", "Filter by task reference")
     .option(
       "--since <time>",
       "Only show sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
@@ -269,6 +261,7 @@ export function registerSessionCommands(program: Command): void {
     )
     .option("--count", "Show only the count of matching sessions")
     .option("-n, --limit <n>", "Limit number of sessions shown")
+    .option("--offset <n>", "Skip first N sessions")
     .action(sessionLogListAction);
 
   log
@@ -293,6 +286,10 @@ export function registerSessionCommands(program: Command): void {
       "Only include sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
     )
     .option("--agent <type>", "Only include sessions with this agent type")
+    .option("--agent-type <type>", "Only include sessions with this agent type")
+    .option("--agent-id <id>", "Only include sessions with this agent definition ID")
+    .option("--trigger <trigger>", "Only include sessions with this trigger")
+    .option("--task <ref>", "Only include sessions linked to this task")
     .option("--tool-usage", "Display top 10 tool calls by frequency")
     .option("--by-day", "Group stats by day")
     .option("--by-week", "Group stats by week")
@@ -302,14 +299,26 @@ export function registerSessionCommands(program: Command): void {
     .command("search <pattern>")
     .description("Search across session events by content")
     .option("-t, --type <type>", "Only search events of this type (e.g., session.update)")
+    .option("--status <status>", "Only search sessions with this status")
     .option(
       "--since <time>",
       "Only search sessions started after this time (ISO8601 or relative: 1h, 2d, 1w)",
     )
     .option("--agent <type>", "Only search sessions with this agent type")
+    .option("--agent-type <type>", "Only search sessions with this agent type")
+    .option("--agent-id <id>", "Only search sessions with this agent definition ID")
+    .option("--trigger <trigger>", "Only search sessions with this trigger")
+    .option("--task <ref>", "Only search sessions linked to this task")
     .option("-n, --limit <n>", "Maximum matches to return (default: 50)")
     .option("--resolve-blobs", "Resolve externalized payload blobs for full-content search")
     .action(sessionLogSearchAction);
+
+  // AC: @session-legacy-migration ac-migration-copy ac-migration-idempotent
+  markMutating(session.command("migrate"))
+    .description(
+      "Copy sessions from legacy .kspec/sessions/ to .kspec-sessions/",
+    )
+    .action(sessionMigrateAction);
 
   markMutating(session.command("compact [session-id]"))
     .description(
@@ -357,8 +366,9 @@ export function registerSessionCommands(program: Command): void {
     .action(sessionPromptCheckAction);
 
   // Top-level alias: kspec context
-  program
-    .command("context")
+  // AC: @shadow-lazy-read-sync ac-session-start-always-pulls
+  markAlwaysSync(program
+    .command("context"))
     .description("Alias for session start - surface session context")
     .option("--brief", "Compact summary (default)")
     .option("--full", "Comprehensive context dump")

@@ -544,6 +544,28 @@ function formatCompletenessWarnings(
       );
     }
   }
+
+  // Invalid AC annotations in test files
+  const invalidAnnotations = warnings.filter(
+    (w) => w.type === "invalid_ac_annotation",
+  );
+  if (invalidAnnotations.length > 0) {
+    console.log(
+      chalk.yellow(`  Invalid AC annotations: ${invalidAnnotations.length}`),
+    );
+    const shown = verbose ? invalidAnnotations : invalidAnnotations.slice(0, 5);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.message}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+    if (!verbose && invalidAnnotations.length > 5) {
+      console.log(
+        chalk.gray(`    ... and ${invalidAnnotations.length - 5} more`),
+      );
+    }
+  }
 }
 
 /**
@@ -839,7 +861,9 @@ export function registerValidateCommand(program: Command): void {
 
         if (!ctx.manifestPath) {
           error(validationStrings.noManifest);
-          console.log(validationStrings.initHint);
+          if (!structuredOutput) {
+            console.log(validationStrings.initHint);
+          }
           process.exit(EXIT_CODES.ERROR);
         }
 
@@ -884,15 +908,14 @@ export function registerValidateCommand(program: Command): void {
           result.valid = false;
         }
 
-        output(result, () => formatValidationResult(result, options.verbose));
+        // --- Collect all additional validation data before any output ---
+        // AC: @trait-json-output ac-1 — ensure all stdout is valid JSON in --json mode
 
-        // Run auto-fix if requested
+        // Auto-fix if requested
+        let fixResult: FixResult | undefined;
         if (options.fix) {
           const filesToFix = await collectFixableFiles(ctx);
-          const fixResult = await fixFiles(filesToFix);
-          if (!structuredOutput) {
-            formatFixResult(fixResult);
-          }
+          fixResult = await fixFiles(filesToFix);
 
           // Re-run validation after fixes to show updated status
           if (fixResult.fixesApplied.length > 0) {
@@ -915,6 +938,8 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Run alignment check if requested or running all checks
+        let alignmentWarnings: AlignmentWarning[] | undefined;
+        let alignmentStats: { specsWithTasks: number; totalSpecs: number; alignedSpecs: number } | undefined;
         if (selectedChecks.alignment || runAll) {
           const tasks = await loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
@@ -922,82 +947,42 @@ export function registerValidateCommand(program: Command): void {
           const alignmentIndex = new AlignmentIndex(tasks, items);
           alignmentIndex.buildLinks(refIndex);
 
-          const alignmentWarnings = alignmentIndex.findAlignmentWarnings();
-          if (!structuredOutput) {
-            formatAlignmentWarnings(alignmentWarnings, options.verbose);
-          }
+          alignmentWarnings = alignmentIndex.findAlignmentWarnings();
           additionalWarningCount += alignmentWarnings.length;
-
-          // Show alignment stats
-          if (!structuredOutput) {
-            const stats = alignmentIndex.getStats();
-            console.log(
-              validationStrings.alignmentStats(
-                stats.specsWithTasks,
-                stats.totalSpecs,
-                stats.alignedSpecs,
-              ),
-            );
-          }
-        }
-
-        // Show completeness warnings if any
-        // AC: @spec-completeness ac-4
-        if (!structuredOutput && result.completenessWarnings.length > 0) {
-          formatCompletenessWarnings(
-            result.completenessWarnings,
-            options.verbose,
-          );
+          alignmentStats = alignmentIndex.getStats();
         }
 
         // Run convention validation if requested
         // AC: @convention-definitions ac-3, ac-4
+        let conventionResult: ConventionValidationResult | undefined;
         if (selectedChecks.conventions) {
           try {
             const metaCtx = await loadMetaContext(ctx);
             if (metaCtx && metaCtx.conventions.length > 0) {
-              // For now, we just validate that conventions are well-formed
-              // Full validation against actual content (commits, notes, etc.)
-              // would require additional content gathering logic
-              const conventionResult = validateConventions(
+              conventionResult = validateConventions(
                 metaCtx.conventions,
                 {},
               );
-              if (!structuredOutput) {
-                formatConventionValidationResult(conventionResult);
-              }
 
               if (!conventionResult.valid) {
                 result.valid = false;
               }
-            } else if (!structuredOutput) {
-              console.log(
-                chalk.gray("No conventions defined in meta manifest"),
-              );
             }
           } catch (_err) {
-            if (!structuredOutput) {
-              console.log(
-                chalk.yellow(
-                  "Warning: Could not load meta manifest for convention validation",
-                ),
-              );
-            }
+            // Convention loading failure is non-fatal
           }
         }
 
         // Run staleness checks if requested
         // AC: @stale-status-detection ac-4, ac-5
+        let stalenessWarnings: StalenessWarning[] | undefined;
         let stalenessWarningCount = 0;
         if (selectedChecks.staleness) {
           const tasks = await loadAllTasks(ctx);
           const items = await loadAllItems(ctx);
           const refIndex = new ReferenceIndex(tasks, items);
 
-          const stalenessWarnings = checkStaleness(items, tasks, refIndex);
-          if (!structuredOutput) {
-            formatStalenessWarnings(stalenessWarnings, options.verbose);
-          }
+          stalenessWarnings = checkStaleness(items, tasks, refIndex);
           stalenessWarningCount = stalenessWarnings.length;
 
           // AC: @stale-status-detection ac-5 (staleness-exit-code)
@@ -1008,11 +993,9 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Run skill file validation if requested or running all checks
+        let skillResult: SkillValidationResult | undefined;
         if (runAll || selectedChecks.skills) {
-          const skillResult = await validateSkills(ctx.rootDir);
-          if (!structuredOutput) {
-            formatSkillValidationResult(skillResult, options.verbose);
-          }
+          skillResult = await validateSkills(ctx.rootDir);
 
           if (!skillResult.valid) {
             result.valid = false;
@@ -1020,18 +1003,93 @@ export function registerValidateCommand(program: Command): void {
         }
 
         // Run AC schema drift checks if requested
+        let driftWarnings: CompletenessWarning[] | undefined;
         let driftWarningCount = 0;
         if (selectedChecks.drift) {
           const items = await loadAllItems(ctx);
-          const driftWarnings = checkACSchemaReferences(items);
-          if (!structuredOutput) {
-            formatDriftWarnings(driftWarnings, options.verbose);
-          }
+          driftWarnings = checkACSchemaReferences(items);
           driftWarningCount = driftWarnings.length;
 
           // With --strict, drift warnings cause validation failure
           if (options.strict && driftWarnings.length > 0) {
             result.valid = false;
+          }
+        }
+
+        // --- Output: structured mode emits a single JSON object, text mode uses formatters ---
+        if (structuredOutput) {
+          // AC: @trait-json-output ac-1, ac-2 — single valid JSON object with all data
+          const fullResult: Record<string, unknown> = { ...result };
+          if (alignmentWarnings !== undefined) {
+            fullResult.alignmentWarnings = alignmentWarnings;
+            fullResult.alignmentStats = alignmentStats;
+          }
+          if (conventionResult !== undefined) {
+            fullResult.conventionValidation = conventionResult;
+          }
+          if (stalenessWarnings !== undefined) {
+            fullResult.stalenessWarnings = stalenessWarnings;
+          }
+          if (skillResult !== undefined) {
+            fullResult.skillValidation = skillResult;
+          }
+          if (driftWarnings !== undefined) {
+            fullResult.driftWarnings = driftWarnings;
+          }
+          if (fixResult !== undefined) {
+            fullResult.fixResult = fixResult;
+          }
+          output(fullResult);
+        } else {
+          // Human-readable output
+          formatValidationResult(result, options.verbose);
+
+          if (fixResult) {
+            formatFixResult(fixResult);
+          }
+
+          if (alignmentWarnings !== undefined) {
+            formatAlignmentWarnings(alignmentWarnings, options.verbose);
+            if (alignmentStats) {
+              console.log(
+                validationStrings.alignmentStats(
+                  alignmentStats.specsWithTasks,
+                  alignmentStats.totalSpecs,
+                  alignmentStats.alignedSpecs,
+                ),
+              );
+            }
+          }
+
+          // AC: @spec-completeness ac-4
+          if (result.completenessWarnings.length > 0) {
+            formatCompletenessWarnings(
+              result.completenessWarnings,
+              options.verbose,
+            );
+          }
+
+          // AC: @convention-definitions ac-3, ac-4
+          if (selectedChecks.conventions) {
+            if (conventionResult) {
+              formatConventionValidationResult(conventionResult);
+            } else {
+              console.log(
+                chalk.gray("No conventions defined in meta manifest"),
+              );
+            }
+          }
+
+          if (stalenessWarnings !== undefined) {
+            formatStalenessWarnings(stalenessWarnings, options.verbose);
+          }
+
+          if (skillResult !== undefined) {
+            formatSkillValidationResult(skillResult, options.verbose);
+          }
+
+          if (driftWarnings !== undefined) {
+            formatDriftWarnings(driftWarnings, options.verbose);
           }
         }
 
@@ -1126,15 +1184,11 @@ export function registerValidateCommand(program: Command): void {
           result.valid = false;
         }
 
-        output(result, () => formatValidationResult(result, options.verbose));
-
-        // Run auto-fix if requested
+        // AC: @trait-json-output ac-1 — collect all data before output
+        let fixResult: FixResult | undefined;
         if (options.fix) {
           const filesToFix = await collectFixableFiles(ctx);
-          const fixResult = await fixFiles(filesToFix);
-          if (!structuredOutput) {
-            formatFixResult(fixResult);
-          }
+          fixResult = await fixFiles(filesToFix);
 
           // Re-run validation after fixes
           if (fixResult.fixesApplied.length > 0) {
@@ -1150,6 +1204,20 @@ export function registerValidateCommand(program: Command): void {
               }
             }
             result.valid = revalidateResult.valid;
+          }
+        }
+
+        // Output: structured mode emits single JSON, text mode uses formatters
+        if (structuredOutput) {
+          const fullResult: Record<string, unknown> = { ...result };
+          if (fixResult !== undefined) {
+            fullResult.fixResult = fixResult;
+          }
+          output(fullResult);
+        } else {
+          formatValidationResult(result, options.verbose);
+          if (fixResult) {
+            formatFixResult(fixResult);
           }
         }
 

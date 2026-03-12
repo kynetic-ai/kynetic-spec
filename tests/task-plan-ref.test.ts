@@ -1,6 +1,6 @@
 /**
  * Tests for plan_ref field on Task schema
- * AC: @plan-derive ac-5, ac-6
+ * AC: @plan-derive-enhanced ac-bidirectional-links
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -23,7 +23,7 @@ describe("Integration: task plan_ref field", () => {
     await cleanupTempDir(tempDir);
   });
 
-  // AC: @plan-derive ac-6 - task displays plan_ref
+  // AC: @plan-derive-enhanced ac-bidirectional-links
   it("should allow creating task with plan_ref", () => {
     // Create a plan first
     kspec(
@@ -47,7 +47,7 @@ describe("Integration: task plan_ref field", () => {
     expect(task.plan_ref).toBe("@test-plan-1");
   });
 
-  // AC: @plan-derive ac-6 - task get displays plan_ref
+  // AC: @plan-derive-enhanced ac-bidirectional-links
   it("should display plan_ref in task get output", () => {
     // Create plan and task
     kspec(

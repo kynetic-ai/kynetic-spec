@@ -38,6 +38,7 @@ import {
   info,
   isJsonMode,
   output,
+  showChangeDiff,
   success,
   warn,
 } from "../output.js";
@@ -226,7 +227,7 @@ async function setTaskFields(
       }
     }
 
-    const changes: string[] = [];
+    const changes: Array<{ field: string; before: unknown; after: unknown }> = [];
     let noChangesMessage: string | undefined;
 
     if (options.specRef !== undefined) {
@@ -387,71 +388,92 @@ async function setTaskFields(
     let updatedTask = foundTask;
     updatedTask = await mutateTaskAtomically(ctx, foundTask, (latestTask) => {
       const nextTask: Task = { ...latestTask };
-      const mutationChanges: string[] = [];
+      const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
 
-      if (options.title) {
+      if (options.title && options.title !== latestTask.title) {
         nextTask.title = options.title;
-        mutationChanges.push("title");
+        mutationChanges.push({ field: "title", before: latestTask.title, after: options.title });
       }
 
       if (options.description !== undefined) {
         if (options.description === "null" || options.description.trim() === "") {
-          delete nextTask.description;
-          mutationChanges.push("description: cleared");
-        } else {
+          if (latestTask.description !== undefined) {
+            const before = latestTask.description;
+            delete nextTask.description;
+            mutationChanges.push({ field: "description", before, after: null });
+          }
+        } else if (options.description !== latestTask.description) {
+          mutationChanges.push({ field: "description", before: latestTask.description, after: options.description });
           nextTask.description = options.description;
-          mutationChanges.push("description");
         }
       }
 
       if (options.specRef !== undefined) {
         if (options.specRef === "null") {
-          nextTask.spec_ref = null;
-          mutationChanges.push("spec_ref: cleared");
+          if (latestTask.spec_ref != null) {
+            mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: null });
+            nextTask.spec_ref = null;
+          }
         } else {
-          nextTask.spec_ref = normalizeRefInput(options.specRef);
-          mutationChanges.push("spec_ref");
+          const newVal = normalizeRefInput(options.specRef);
+          if (newVal !== latestTask.spec_ref) {
+            mutationChanges.push({ field: "spec_ref", before: latestTask.spec_ref, after: newVal });
+            nextTask.spec_ref = newVal;
+          }
         }
       }
 
       if (options.metaRef !== undefined) {
         if (options.metaRef === "null") {
-          nextTask.meta_ref = null;
-          mutationChanges.push("meta_ref: cleared");
+          if (latestTask.meta_ref != null) {
+            mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: null });
+            nextTask.meta_ref = null;
+          }
         } else {
-          nextTask.meta_ref = normalizeRefInput(options.metaRef);
-          mutationChanges.push("meta_ref");
+          const newVal = normalizeRefInput(options.metaRef);
+          if (newVal !== latestTask.meta_ref) {
+            mutationChanges.push({ field: "meta_ref", before: latestTask.meta_ref, after: newVal });
+            nextTask.meta_ref = newVal;
+          }
         }
       }
 
       if (options.planRef !== undefined) {
         if (options.planRef === "null") {
-          nextTask.plan_ref = null;
-          mutationChanges.push("plan_ref: cleared");
+          if (latestTask.plan_ref != null) {
+            mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: null });
+            nextTask.plan_ref = null;
+          }
         } else {
-          nextTask.plan_ref = normalizeRefInput(options.planRef);
-          mutationChanges.push("plan_ref");
+          const newVal = normalizeRefInput(options.planRef);
+          if (newVal !== latestTask.plan_ref) {
+            mutationChanges.push({ field: "plan_ref", before: latestTask.plan_ref, after: newVal });
+            nextTask.plan_ref = newVal;
+          }
         }
       }
 
       if (options.reviewUrl !== undefined) {
         if (options.reviewUrl === "null") {
-          delete nextTask.review_url;
-          mutationChanges.push("review_url: cleared");
-        } else {
+          if (latestTask.review_url != null) {
+            mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: null });
+            delete nextTask.review_url;
+          }
+        } else if (options.reviewUrl !== latestTask.review_url) {
+          mutationChanges.push({ field: "review_url", before: latestTask.review_url, after: options.reviewUrl });
           nextTask.review_url = options.reviewUrl;
-          mutationChanges.push("review_url");
         }
       }
 
-      if (parsedPriority !== undefined) {
+      if (parsedPriority !== undefined && parsedPriority !== latestTask.priority) {
+        mutationChanges.push({ field: "priority", before: latestTask.priority, after: parsedPriority });
         nextTask.priority = parsedPriority;
-        mutationChanges.push("priority");
       }
 
       if (options.slug && !nextTask.slugs.includes(options.slug)) {
+        const before = [...latestTask.slugs];
         nextTask.slugs = [...nextTask.slugs, options.slug];
-        mutationChanges.push("slug");
+        mutationChanges.push({ field: "slugs", before, after: nextTask.slugs });
       }
 
       if (parsedTags.length > 0) {
@@ -459,14 +481,16 @@ async function setTaskFields(
           (tag: string) => !nextTask.tags.includes(tag),
         );
         if (newTags.length > 0) {
+          const before = [...latestTask.tags];
           nextTask.tags = [...nextTask.tags, ...newTags];
-          mutationChanges.push("tags");
+          mutationChanges.push({ field: "tags", before, after: nextTask.tags });
         }
       }
 
       if (options.dependsOn) {
+        const before = [...latestTask.depends_on];
         nextTask.depends_on = options.dependsOn.map(normalizeRefInput);
-        mutationChanges.push("depends_on");
+        mutationChanges.push({ field: "depends_on", before, after: nextTask.depends_on });
       }
 
       if (options.clearDeps) {
@@ -475,8 +499,9 @@ async function setTaskFields(
           noChangesMessage = "No changes: task has no dependencies to clear";
           return latestTask;
         }
+        const before = [...latestTask.depends_on];
         nextTask.depends_on = [];
-        mutationChanges.push("depends_on");
+        mutationChanges.push({ field: "depends_on", before, after: [] });
 
         // AC: @task-set ac-author
         const note = createNote(
@@ -487,11 +512,13 @@ async function setTaskFields(
       }
 
       if (options.automation === false) {
-        delete nextTask.automation;
-        mutationChanges.push("automation");
-      } else if (validatedAutomation) {
+        if (latestTask.automation != null) {
+          mutationChanges.push({ field: "automation", before: latestTask.automation, after: null });
+          delete nextTask.automation;
+        }
+      } else if (validatedAutomation && validatedAutomation !== latestTask.automation) {
+        mutationChanges.push({ field: "automation", before: latestTask.automation, after: validatedAutomation });
         nextTask.automation = validatedAutomation;
-        mutationChanges.push("automation");
 
         if (options.reason) {
           const note = createNote(
@@ -499,7 +526,6 @@ async function setTaskFields(
             getAuthor(ctx.config?.identity?.author),
           );
           nextTask.notes = [...nextTask.notes, note];
-          mutationChanges.push("note");
         }
       }
 
@@ -524,17 +550,18 @@ async function setTaskFields(
       };
     }
 
+    const changedFields = changes.map((c) => c.field).join(", ");
     await commitIfShadow(
       ctx.shadow,
       "task-set",
       foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
-      changes.join(", "),
+      changedFields,
     );
 
     return {
       success: true,
-      message: `Updated task: ${index.shortUlid(updatedTask._ulid)} (${changes.join(", ")})`,
-      data: { task: updatedTask },
+      message: `Updated task: ${index.shortUlid(updatedTask._ulid)} (${changedFields})`,
+      data: { task: updatedTask, changes },
     };
   } catch (err) {
     return {
@@ -818,7 +845,7 @@ Examples:
           automationValue = automationResult.value;
         }
 
-        // Validate plan_ref if provided (AC: @plan-derive ac-5, ac-6)
+        // Validate plan_ref if provided (AC: @plan-derive-enhanced ac-task-refs, ac-bidirectional-links)
         if (options.planRef) {
           // First check if it's a task or spec item (wrong type)
           const cleanRef = options.planRef.startsWith("@")
@@ -1073,6 +1100,12 @@ Examples:
                 result.message,
                 result.data as Record<string, unknown> | undefined,
               );
+
+              // Show before→after diff in text mode
+              const data = result.data as { changes?: Array<{ field: string; before: unknown; after: unknown }> } | undefined;
+              if (data?.changes) {
+                showChangeDiff(data.changes);
+              }
             }
           }
         }
@@ -1250,7 +1283,7 @@ Examples:
 
         // AC: @session-end-loop-signal ac-block-task - Block if end-loop requested
         if (sessionId) {
-          const endLoopState = await isEndLoopRequested(ctx.specDir, sessionId);
+          const endLoopState = await isEndLoopRequested(ctx.sessionsDir, sessionId);
           if (endLoopState?.requested) {
             error(
               `Cannot start task: loop is ending for session ${sessionId.slice(0, 8)}...` +
@@ -1268,7 +1301,7 @@ Examples:
         // would prevent completing already-assigned work.
         if (foundTask.status !== "needs_work") {
           const budgetCheck = await checkBudget(
-            ctx.specDir,
+            ctx.sessionsDir,
             sessionId || undefined,
           );
           if (!budgetCheck.allowed) {
@@ -1302,7 +1335,7 @@ Examples:
         // above. needs_work→in_progress is a fix cycle (task already consumed
         // a budget slot when originally started) — don't double-count it.
         if (sessionId && transitionFromStatus === "pending") {
-          await incrementBudget(ctx.specDir, sessionId);
+          await incrementBudget(ctx.sessionsDir, sessionId);
         }
 
         // AC: @daemon-agent-dispatch ac-2, ac-7 - Notify daemon of state change (fire-and-forget)
@@ -1311,7 +1344,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(`Started task: ${index.shortUlid(updatedTask._ulid)}`, {
@@ -1535,7 +1568,7 @@ Examples:
                 taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
                 fromStatus: transitionFromStatus,
                 toStatus: updatedTask.status,
-                projectPath: ctx.rootDir,
+                projectPath: ctx.projectRoot,
               });
 
               // Sync spec implementation status (unless --no-sync)
@@ -1691,7 +1724,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(
@@ -1769,7 +1802,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(
@@ -1834,7 +1867,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(`Blocked task: ${index.shortUlid(updatedTask._ulid)}`, {
@@ -1893,7 +1926,7 @@ Examples:
           taskRef: `@${updatedTask.slugs[0] || updatedTask._ulid}`,
           fromStatus: transitionFromStatus,
           toStatus: updatedTask.status,
-          projectPath: ctx.rootDir,
+          projectPath: ctx.projectRoot,
         });
 
         success(`Unblocked task: ${index.shortUlid(updatedTask._ulid)}`, {

@@ -356,7 +356,7 @@ describe('Integration: task set', () => {
     expect(before.description).toBe('Needs clearing');
 
     const output = kspec('task set @test-task-pending --description null', tempDir);
-    expect(output).toContain('description: cleared');
+    expect(output).toContain('description');
 
     const after = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
     expect(after.description).toBeUndefined();
@@ -365,7 +365,7 @@ describe('Integration: task set', () => {
   it('should clear description when whitespace-only value is provided', () => {
     kspec('task set @test-task-pending --description "Needs clearing"', tempDir);
     const output = kspec('task set @test-task-pending --description "   "', tempDir);
-    expect(output).toContain('description: cleared');
+    expect(output).toContain('description');
 
     const task = kspecJson<{ description?: string }>('task get @test-task-pending', tempDir);
     expect(task.description).toBeUndefined();
@@ -404,7 +404,7 @@ describe('Integration: task set', () => {
     // Clear it with 'null'
     const output = kspec('task set @test-task-pending --spec-ref null', tempDir);
     expect(output).toContain('Updated task');
-    expect(output).toContain('spec_ref: cleared');
+    expect(output).toContain('spec_ref');
 
     // Verify it was cleared
     const after = kspecJson<{ spec_ref: string | null }>('task get @test-task-pending', tempDir);
@@ -421,7 +421,7 @@ describe('Integration: task set', () => {
     // Clear it with 'null'
     const output = kspec('task set @test-task-pending --meta-ref null', tempDir);
     expect(output).toContain('Updated task');
-    expect(output).toContain('meta_ref: cleared');
+    expect(output).toContain('meta_ref');
 
     // Verify it was cleared
     const after = kspecJson<{ meta_ref: string | null }>('task get @test-task-pending', tempDir);
@@ -485,14 +485,14 @@ describe('Integration: task set', () => {
   });
 
   it('should update multiple fields at once', () => {
-    const output = kspec('task set @test-task-pending --title "Multi Update" --priority 2 --tag multi', tempDir);
+    const output = kspec('task set @test-task-pending --title "Multi Update" --priority 1 --tag multi', tempDir);
     expect(output).toContain('title');
     expect(output).toContain('priority');
     expect(output).toContain('tags');
 
     const task = kspecJson<{ title: string; priority: number; tags: string[] }>('task get @test-task-pending', tempDir);
     expect(task.title).toBe('Multi Update');
-    expect(task.priority).toBe(2);
+    expect(task.priority).toBe(1);
     expect(task.tags).toContain('multi');
   });
 });
@@ -633,6 +633,56 @@ describe('Integration: items', () => {
     expect(output).toContain('When: they click logout');
     expect(output).toContain('Then: session is terminated');
   });
+  // AC: @trait-json-output ac-1, ac-2, ac-4
+  it('should return clean JSON for item list with no internal fields', () => {
+    const result = kspecJson<{
+      items: Array<Record<string, unknown>>;
+      total: number;
+      showing: number;
+    }>('item list --limit 2', tempDir);
+
+    expect(result).toHaveProperty('items');
+    expect(result).toHaveProperty('total');
+    expect(result).toHaveProperty('showing');
+    expect(result.items.length).toBeGreaterThan(0);
+
+    for (const item of result.items) {
+      // Clean field names
+      expect(item).toHaveProperty('ulid');
+      expect(item).toHaveProperty('ref');
+      expect(item).toHaveProperty('title');
+      expect(item).toHaveProperty('type');
+
+      // No internal fields
+      expect(item).not.toHaveProperty('_ulid');
+      expect(item).not.toHaveProperty('_sourceFile');
+      expect(item).not.toHaveProperty('_path');
+
+      // AC: @trait-json-output ac-4 — ref has @ prefix
+      expect(item.ref).toMatch(/^@/);
+    }
+  });
+
+  // AC: @trait-json-output ac-1, ac-2, ac-4
+  it('should return clean JSON for item get with no internal fields', () => {
+    const result = kspecJson<Record<string, unknown>>(
+      'item get @test-feature',
+      tempDir
+    );
+
+    // Clean field names
+    expect(result).toHaveProperty('ulid');
+    expect(result).toHaveProperty('ref');
+    expect(result).toHaveProperty('title');
+
+    // No internal fields
+    expect(result).not.toHaveProperty('_ulid');
+    expect(result).not.toHaveProperty('_sourceFile');
+    expect(result).not.toHaveProperty('_path');
+
+    // AC: @trait-json-output ac-4 — ref has @ prefix
+    expect(result.ref).toBe('@test-feature');
+  });
 });
 
 describe('Integration: item set', () => {
@@ -644,6 +694,54 @@ describe('Integration: item set', () => {
 
   afterEach(async () => {
     await cleanupTempDir(tempDir);
+  });
+
+  // AC: @item-required-fields ac-1
+  it('should store a new item created with only its required user-provided field', () => {
+    const created = kspecJson<{
+      item: { _ulid: string; title: string; slugs: string[] };
+    }>(
+      'item add --under @test-core --title "Required Fields Only" --type feature',
+      tempDir
+    );
+
+    const stored = kspecJson<{
+      ulid: string;
+      title: string;
+      slugs: string[];
+    }>(`item get @${created.item._ulid}`, tempDir);
+
+    expect(stored.ulid).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+    expect(stored.title).toBe('Required Fields Only');
+    expect(stored.slugs).toEqual([]);
+  });
+
+  // AC: @item-optional-fields ac-1
+  it('should keep items valid when optional metadata is omitted at creation time', () => {
+    const created = kspecJson<{
+      item: { _ulid: string };
+    }>(
+      'item add --under @test-core --title "Optional Metadata Omitted" --type requirement',
+      tempDir
+    );
+
+    const stored = kspecJson<{
+      title: string;
+      slugs: string[];
+      tags: string[];
+      description?: string;
+      depends_on: string[];
+      implements: string[];
+      relates_to: string[];
+    }>(`item get @${created.item._ulid}`, tempDir);
+
+    expect(stored.title).toBe('Optional Metadata Omitted');
+    expect(stored.slugs).toEqual([]);
+    expect(stored.tags).toEqual([]);
+    expect(stored.description).toBeUndefined();
+    expect(stored.depends_on).toEqual([]);
+    expect(stored.implements).toEqual([]);
+    expect(stored.relates_to).toEqual([]);
   });
 
   // AC: @item-set ac-1
@@ -683,6 +781,47 @@ describe('Integration: item set', () => {
     // Try to remove the only slug
     const result = kspecRun('item set @only-slug --remove-slug only-slug', tempDir, { expectFail: true });
     expect(result.exitCode).not.toBe(0);
+  });
+
+  // AC: @ulid-immutability ac-1
+  it('should preserve the original ULID when an item is updated or superseded', () => {
+    kspec('item add --under @test-core --title "Immutable ULID Item" --slug immutable-ulid --type feature', tempDir);
+    kspec(
+      'item add --under @test-core --title "Immutable ULID Replacement" --slug immutable-ulid-replacement --type feature',
+      tempDir
+    );
+
+    const beforeOriginal = kspecJson<{ ulid: string }>('item get @immutable-ulid --json', tempDir);
+    const beforeReplacement = kspecJson<{ ulid: string }>(
+      'item get @immutable-ulid-replacement --json',
+      tempDir
+    );
+
+    kspec(
+      'item set @immutable-ulid --description "Updated without replacing identity" --maturity deprecated',
+      tempDir
+    );
+    kspec(
+      'item patch @immutable-ulid-replacement --data \'{"supersedes":"@immutable-ulid"}\'',
+      tempDir
+    );
+
+    const afterOriginal = kspecJson<{
+      ulid: string;
+      description?: string;
+      status?: { maturity?: string };
+    }>('item get @immutable-ulid --json', tempDir);
+    const afterReplacement = kspecJson<{
+      ulid: string;
+      supersedes?: string;
+    }>('item get @immutable-ulid-replacement --json', tempDir);
+
+    expect(afterOriginal.ulid).toBe(beforeOriginal.ulid);
+    expect(afterOriginal.description).toContain('Updated without replacing identity');
+    expect(afterOriginal.status?.maturity).toBe('deprecated');
+    expect(afterReplacement.ulid).toBe(beforeReplacement.ulid);
+    expect(afterReplacement.ulid).not.toBe(afterOriginal.ulid);
+    expect(afterReplacement.supersedes).toBe('@immutable-ulid');
   });
 });
 
@@ -2156,6 +2295,36 @@ describe('Integration: status cascade', () => {
     expect(result.stdout).not.toContain('child item(s) to');
     expect(result.stdout).not.toContain('[y/n]');
     expect(result.stdout).toContain('Updated item');
+  });
+
+  // AC: @trait-confirmation-prompt ac-4
+  it('should skip cascade prompt when --no-cascade is provided', () => {
+    // test-feature has a child requirement
+    const result = kspecRun('item set @test-feature --status implemented --no-cascade', tempDir);
+
+    // Should not prompt for cascade
+    expect(result.stdout).not.toContain('child item(s) to');
+    expect(result.stdout).not.toContain('[y/n]');
+    expect(result.stdout).toContain('Updated item');
+  });
+
+  it('should not update children when --no-cascade is provided', () => {
+    // Get initial status of child
+    const beforeChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    const beforeImpl = beforeChild.status?.implementation || 'not_started';
+
+    // Update parent with --no-cascade
+    kspecRun('item set @test-feature --status verified --no-cascade', tempDir);
+
+    // Check child status was NOT updated
+    const afterChild = kspecJson<{ status?: { implementation?: string } }>(
+      'item get @test-requirement',
+      tempDir
+    );
+    expect(afterChild.status?.implementation).toBe(beforeImpl);
   });
 });
 

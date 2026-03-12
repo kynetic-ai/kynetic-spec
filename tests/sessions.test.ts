@@ -181,26 +181,26 @@ describe('SessionEventSchema', () => {
 // ─── Path Helper Tests ───────────────────────────────────────────────────────
 
 describe('Path helpers', () => {
-  const specDir = '/test/.kspec';
+  const sessionsDir = '/test/.kspec-sessions';
   const sessionId = '01KF123456789ABCDEFGHJKMNP';
 
   it('should construct sessions directory path', () => {
-    expect(getSessionsDir(specDir)).toBe('/test/.kspec/sessions');
+    expect(getSessionsDir(sessionsDir)).toBe('/test/.kspec-sessions');
   });
 
   it('should construct session directory path', () => {
-    expect(getSessionDir(specDir, sessionId)).toBe(`/test/.kspec/sessions/${sessionId}`);
+    expect(getSessionDir(sessionsDir, sessionId)).toBe(`/test/.kspec-sessions/${sessionId}`);
   });
 
   it('should construct metadata file path', () => {
-    expect(getSessionMetadataPath(specDir, sessionId)).toBe(
-      `/test/.kspec/sessions/${sessionId}/session.yaml`
+    expect(getSessionMetadataPath(sessionsDir, sessionId)).toBe(
+      `/test/.kspec-sessions/${sessionId}/session.yaml`
     );
   });
 
   it('should construct events file path', () => {
-    expect(getSessionEventsPath(specDir, sessionId)).toBe(
-      `/test/.kspec/sessions/${sessionId}/events.jsonl`
+    expect(getSessionEventsPath(sessionsDir, sessionId)).toBe(
+      `/test/.kspec-sessions/${sessionId}/events.jsonl`
     );
   });
 });
@@ -209,9 +209,11 @@ describe('Path helpers', () => {
 
 describe('Session storage', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-test-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -226,7 +228,7 @@ describe('Session storage', () => {
         agent_type: 'claude-code',
       };
 
-      const metadata = await createSession(testDir, input);
+      const metadata = await createSession(sessionsDir, input);
 
       // Check metadata returned
       expect(metadata.id).toBe(input.id);
@@ -235,12 +237,12 @@ describe('Session storage', () => {
       expect(metadata.started_at).toBeDefined();
 
       // Check directory was created
-      const sessionDir = getSessionDir(testDir, input.id);
+      const sessionDir = getSessionDir(sessionsDir, input.id);
       const stat = await fs.stat(sessionDir);
       expect(stat.isDirectory()).toBe(true);
 
       // Check metadata file was created
-      const metadataPath = getSessionMetadataPath(testDir, input.id);
+      const metadataPath = getSessionMetadataPath(sessionsDir, input.id);
       const content = await fs.readFile(metadataPath, 'utf-8');
       expect(content).toContain('id: ' + input.id);
       expect(content).toContain('agent_type: claude-code');
@@ -255,11 +257,11 @@ describe('Session storage', () => {
         task_id: '@my-task',
       };
 
-      const metadata = await createSession(testDir, input);
+      const metadata = await createSession(sessionsDir, input);
 
       expect(metadata.task_id).toBe('@my-task');
 
-      const metadataPath = getSessionMetadataPath(testDir, input.id);
+      const metadataPath = getSessionMetadataPath(sessionsDir, input.id);
       const content = await fs.readFile(metadataPath, 'utf-8');
       // Accept both single and double quotes (yaml library uses double quotes)
       expect(content).toMatch(/task_id: ["']@my-task["']/);
@@ -273,7 +275,7 @@ describe('Session storage', () => {
         started_at: startTime,
       };
 
-      const metadata = await createSession(testDir, input);
+      const metadata = await createSession(sessionsDir, input);
 
       expect(metadata.started_at).toBe(startTime);
     });
@@ -286,8 +288,8 @@ describe('Session storage', () => {
         agent_type: 'claude-code',
       };
 
-      await createSession(testDir, input);
-      const metadata = await getSession(testDir, input.id);
+      await createSession(sessionsDir, input);
+      const metadata = await getSession(sessionsDir, input.id);
 
       expect(metadata).not.toBeNull();
       expect(metadata?.id).toBe(input.id);
@@ -295,7 +297,7 @@ describe('Session storage', () => {
     });
 
     it('should return null if session does not exist', async () => {
-      const metadata = await getSession(testDir, 'nonexistent');
+      const metadata = await getSession(sessionsDir, 'nonexistent');
 
       expect(metadata).toBeNull();
     });
@@ -309,15 +311,15 @@ describe('Session storage', () => {
         agent_type: 'claude-code',
       };
 
-      await createSession(testDir, input);
-      const updated = await updateSessionStatus(testDir, input.id, 'completed');
+      await createSession(sessionsDir, input);
+      const updated = await updateSessionStatus(sessionsDir, input.id, 'completed');
 
       expect(updated).not.toBeNull();
       expect(updated?.status).toBe('completed');
       expect(updated?.ended_at).toBeDefined();
 
       // Verify persisted
-      const reloaded = await getSession(testDir, input.id);
+      const reloaded = await getSession(sessionsDir, input.id);
       expect(reloaded?.status).toBe('completed');
       expect(reloaded?.ended_at).toBeDefined();
     });
@@ -329,15 +331,15 @@ describe('Session storage', () => {
         agent_type: 'claude-code',
       };
 
-      await createSession(testDir, input);
-      const updated = await updateSessionStatus(testDir, input.id, 'abandoned');
+      await createSession(sessionsDir, input);
+      const updated = await updateSessionStatus(sessionsDir, input.id, 'abandoned');
 
       expect(updated?.status).toBe('abandoned');
       expect(updated?.ended_at).toBeDefined();
     });
 
     it('should return null if session does not exist', async () => {
-      const updated = await updateSessionStatus(testDir, 'nonexistent', 'completed');
+      const updated = await updateSessionStatus(sessionsDir, 'nonexistent', 'completed');
 
       expect(updated).toBeNull();
     });
@@ -345,11 +347,11 @@ describe('Session storage', () => {
 
   describe('listSessions', () => {
     it('should list all session IDs', async () => {
-      await createSession(testDir, { id: 'session-a', agent_type: 'claude-code' });
-      await createSession(testDir, { id: 'session-b', agent_type: 'claude-code' });
-      await createSession(testDir, { id: 'session-c', agent_type: 'test-agent' });
+      await createSession(sessionsDir, { id: 'session-a', agent_type: 'claude-code' });
+      await createSession(sessionsDir, { id: 'session-b', agent_type: 'claude-code' });
+      await createSession(sessionsDir, { id: 'session-c', agent_type: 'test-agent' });
 
-      const sessions = await listSessions(testDir);
+      const sessions = await listSessions(sessionsDir);
 
       expect(sessions).toHaveLength(3);
       expect(sessions).toContain('session-a');
@@ -358,7 +360,7 @@ describe('Session storage', () => {
     });
 
     it('should return empty array if no sessions', async () => {
-      const sessions = await listSessions(testDir);
+      const sessions = await listSessions(sessionsDir);
 
       expect(sessions).toHaveLength(0);
     });
@@ -366,15 +368,15 @@ describe('Session storage', () => {
 
   describe('sessionExists', () => {
     it('should return true if session exists', async () => {
-      await createSession(testDir, { id: 'my-session', agent_type: 'claude-code' });
+      await createSession(sessionsDir, { id: 'my-session', agent_type: 'claude-code' });
 
-      const exists = await sessionExists(testDir, 'my-session');
+      const exists = await sessionExists(sessionsDir, 'my-session');
 
       expect(exists).toBe(true);
     });
 
     it('should return false if session does not exist', async () => {
-      const exists = await sessionExists(testDir, 'nonexistent');
+      const exists = await sessionExists(sessionsDir, 'nonexistent');
 
       expect(exists).toBe(false);
     });
@@ -385,10 +387,12 @@ describe('Session storage', () => {
 
 describe('Event storage', () => {
   let testDir: string;
+  let sessionsDir: string;
   const sessionId = '01KF123456789ABCDEFGHJKMNP';
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-event-test-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -404,7 +408,7 @@ describe('Event storage', () => {
         data: { message: 'Starting session' },
       };
 
-      const event = await appendEvent(testDir, input);
+      const event = await appendEvent(sessionsDir, input);
 
       expect(event.ts).toBeDefined();
       expect(event.ts).toBeGreaterThan(0);
@@ -416,19 +420,19 @@ describe('Event storage', () => {
 
     // AC: @session-events ac-2
     it('should auto-increment seq for subsequent events', async () => {
-      const event1 = await appendEvent(testDir, {
+      const event1 = await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         data: null,
       });
 
-      const event2 = await appendEvent(testDir, {
+      const event2 = await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         data: { prompt: 'Hello' },
       });
 
-      const event3 = await appendEvent(testDir, {
+      const event3 = await appendEvent(sessionsDir, {
         type: 'tool.call',
         session_id: sessionId,
         data: { tool: 'Read' },
@@ -441,8 +445,8 @@ describe('Event storage', () => {
 
     // AC: @session-events ac-2
     it('should derive next seq from the last stored event seq', async () => {
-      const sessionDir = getSessionDir(testDir, sessionId);
-      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const sessionDir = getSessionDir(sessionsDir, sessionId);
+      const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
       await fs.mkdir(sessionDir, { recursive: true });
 
       const existing = [
@@ -467,7 +471,7 @@ describe('Event storage', () => {
         'utf-8',
       );
 
-      const next = await appendEvent(testDir, {
+      const next = await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         data: { prompt: 'new event' },
@@ -478,7 +482,7 @@ describe('Event storage', () => {
 
     // AC: @session-events ac-3
     it('should create session directory if it does not exist (lazy creation)', async () => {
-      const event = await appendEvent(testDir, {
+      const event = await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         data: null,
@@ -487,13 +491,13 @@ describe('Event storage', () => {
       expect(event.seq).toBe(0);
 
       // Verify directory was created
-      const sessionDir = getSessionDir(testDir, sessionId);
+      const sessionDir = getSessionDir(sessionsDir, sessionId);
       const stat = await fs.stat(sessionDir);
       expect(stat.isDirectory()).toBe(true);
     });
 
     it('should preserve optional trace_id', async () => {
-      const event = await appendEvent(testDir, {
+      const event = await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         trace_id: 'trace-abc-123',
@@ -505,19 +509,19 @@ describe('Event storage', () => {
 
     // AC: @session-events ac-3
     it('should write event as JSON line to events.jsonl', async () => {
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         data: { key: 'value' },
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         data: { prompt: 'test' },
       });
 
-      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
       const content = await fs.readFile(eventsPath, 'utf-8');
       const lines = content.trim().split('\n');
 
@@ -537,7 +541,7 @@ describe('Event storage', () => {
     it('should externalize oversized rawOutput and store pointer metadata', async () => {
       const rawOutput = 'X'.repeat(20_000);
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.update',
         session_id: sessionId,
         data: {
@@ -549,7 +553,7 @@ describe('Event storage', () => {
         },
       });
 
-      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
       const lines = (await fs.readFile(eventsPath, 'utf-8')).trim().split('\n');
       expect(lines).toHaveLength(1);
 
@@ -570,15 +574,15 @@ describe('Event storage', () => {
       expect(pointer.preview.length).toBeGreaterThan(0);
       expect(pointer.preview.length).toBeLessThan(rawOutput.length);
 
-      const blobPath = path.join(getSessionDir(testDir, sessionId), pointer.path);
+      const blobPath = path.join(getSessionDir(sessionsDir, sessionId), pointer.path);
       const blobContent = await fs.readFile(blobPath, 'utf-8');
       expect(blobContent).toBe(rawOutput);
     });
 
     it('should generate UTF-8 safe previews for externalized payloads', async () => {
-      const rawOutput = '漢'.repeat(7_000);
+      const rawOutput = '\u6F22'.repeat(7_000);
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.update',
         session_id: sessionId,
         data: {
@@ -590,7 +594,7 @@ describe('Event storage', () => {
         },
       });
 
-      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
       const stored = JSON.parse((await fs.readFile(eventsPath, 'utf-8')).trim());
       const pointer = stored.data.update.rawOutput as { preview: string };
 
@@ -601,7 +605,7 @@ describe('Event storage', () => {
     it('should cap oversized event lines by externalizing whole payload', async () => {
       const giantPayload = 'Y'.repeat(320_000);
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         data: {
@@ -609,7 +613,7 @@ describe('Event storage', () => {
         },
       });
 
-      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
       const rawLine = (await fs.readFile(eventsPath, 'utf-8')).trim();
       expect(Buffer.byteLength(rawLine, 'utf-8')).toBeLessThan(256 * 1024);
 
@@ -620,7 +624,7 @@ describe('Event storage', () => {
       };
       expect(pointer.path).toMatch(/^blobs\//);
 
-      const blobPath = path.join(getSessionDir(testDir, sessionId), pointer.path);
+      const blobPath = path.join(getSessionDir(sessionsDir, sessionId), pointer.path);
       const blobContent = await fs.readFile(blobPath, 'utf-8');
       expect(Buffer.byteLength(blobContent, 'utf-8')).toBe(pointer.bytes);
       expect(JSON.parse(blobContent)).toEqual({ prompt: giantPayload });
@@ -630,25 +634,25 @@ describe('Event storage', () => {
   describe('readEvents', () => {
     // AC: @session-events ac-4
     it('should read all events in sequence order', async () => {
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         data: null,
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         data: { prompt: 'Hello' },
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.end',
         session_id: sessionId,
         data: null,
       });
 
-      const events = await readEvents(testDir, sessionId);
+      const events = await readEvents(sessionsDir, sessionId);
 
       expect(events).toHaveLength(3);
       expect(events[0].type).toBe('session.start');
@@ -660,23 +664,23 @@ describe('Event storage', () => {
     });
 
     it('should return empty array if no events', async () => {
-      const events = await readEvents(testDir, sessionId);
+      const events = await readEvents(sessionsDir, sessionId);
 
       expect(events).toHaveLength(0);
     });
 
     it('should return empty array for nonexistent session', async () => {
-      const events = await readEvents(testDir, 'nonexistent');
+      const events = await readEvents(sessionsDir, 'nonexistent');
 
       expect(events).toHaveLength(0);
     });
 
     it('should skip invalid JSON lines', async () => {
       // Create session dir and write some invalid JSON
-      const sessionDir = getSessionDir(testDir, sessionId);
+      const sessionDir = getSessionDir(sessionsDir, sessionId);
       await fs.mkdir(sessionDir, { recursive: true });
 
-      const eventsPath = getSessionEventsPath(testDir, sessionId);
+      const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
       const content = [
         JSON.stringify({ ts: 1000, seq: 0, type: 'session.start', session_id: sessionId, data: null }),
         'invalid json line',
@@ -684,7 +688,7 @@ describe('Event storage', () => {
       ].join('\n');
       await fs.writeFile(eventsPath, content + '\n', 'utf-8');
 
-      const events = await readEvents(testDir, sessionId);
+      const events = await readEvents(sessionsDir, sessionId);
 
       expect(events).toHaveLength(2);
       expect(events[0].seq).toBe(0);
@@ -695,28 +699,28 @@ describe('Event storage', () => {
   describe('readEventsSince', () => {
     it('should filter events by timestamp', async () => {
       // Create events with specific timestamps
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         ts: 1000,
         data: null,
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         ts: 2000,
         data: null,
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.end',
         session_id: sessionId,
         ts: 3000,
         data: null,
       });
 
-      const events = await readEventsSince(testDir, sessionId, 1500);
+      const events = await readEventsSince(sessionsDir, sessionId, 1500);
 
       expect(events).toHaveLength(2);
       expect(events[0].ts).toBe(2000);
@@ -724,28 +728,28 @@ describe('Event storage', () => {
     });
 
     it('should filter events by time range', async () => {
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         ts: 1000,
         data: null,
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         ts: 2000,
         data: null,
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.end',
         session_id: sessionId,
         ts: 3000,
         data: null,
       });
 
-      const events = await readEventsSince(testDir, sessionId, 1500, 2500);
+      const events = await readEventsSince(sessionsDir, sessionId, 1500, 2500);
 
       expect(events).toHaveLength(1);
       expect(events[0].ts).toBe(2000);
@@ -754,25 +758,25 @@ describe('Event storage', () => {
 
   describe('getLastEvent', () => {
     it('should return the last event', async () => {
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.start',
         session_id: sessionId,
         data: null,
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'prompt.sent',
         session_id: sessionId,
         data: { prompt: 'Hello' },
       });
 
-      await appendEvent(testDir, {
+      await appendEvent(sessionsDir, {
         type: 'session.end',
         session_id: sessionId,
         data: { reason: 'completed' },
       });
 
-      const lastEvent = await getLastEvent(testDir, sessionId);
+      const lastEvent = await getLastEvent(sessionsDir, sessionId);
 
       expect(lastEvent).not.toBeNull();
       expect(lastEvent?.type).toBe('session.end');
@@ -781,7 +785,7 @@ describe('Event storage', () => {
     });
 
     it('should return null if no events', async () => {
-      const lastEvent = await getLastEvent(testDir, sessionId);
+      const lastEvent = await getLastEvent(sessionsDir, sessionId);
 
       expect(lastEvent).toBeNull();
     });
@@ -791,6 +795,7 @@ describe('Event storage', () => {
     // AC: @session-events ac-7
     it('should include accumulated events in the next git commit', async () => {
       const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-session-commit-test-'));
+      const repoSessionsDir = path.join(repoDir, 'sessions');
       const boundarySessionId = '01KF123456789ABCDEFGHJKMNQ';
 
       const runGit = (...args: string[]) => {
@@ -813,7 +818,7 @@ describe('Event storage', () => {
         runGit('add', 'README.md');
         runGit('commit', '-m', 'test: initial commit');
 
-        await appendEvent(repoDir, {
+        await appendEvent(repoSessionsDir, {
           type: 'session.update',
           session_id: boundarySessionId,
           data: {
@@ -846,9 +851,9 @@ describe('Event storage', () => {
         stats: { total_tasks: 1 },
       };
 
-      await saveSessionContext(testDir, sessionId, 1, context);
+      await saveSessionContext(sessionsDir, sessionId, 1, context);
 
-      const contextPath = getSessionContextPath(testDir, sessionId, 1);
+      const contextPath = getSessionContextPath(sessionsDir, sessionId, 1);
       const saved = await fs.readFile(contextPath, 'utf-8');
       const parsed = JSON.parse(saved);
 
@@ -859,9 +864,9 @@ describe('Event storage', () => {
       const newSessionId = '01KF999999999999999999999';
       const context = { test: 'data' };
 
-      await saveSessionContext(testDir, newSessionId, 1, context);
+      await saveSessionContext(sessionsDir, newSessionId, 1, context);
 
-      const contextPath = getSessionContextPath(testDir, newSessionId, 1);
+      const contextPath = getSessionContextPath(sessionsDir, newSessionId, 1);
       const exists = await fs.access(contextPath).then(() => true).catch(() => false);
 
       expect(exists).toBe(true);
@@ -871,11 +876,11 @@ describe('Event storage', () => {
       const context1 = { iteration: 1, data: 'first' };
       const context2 = { iteration: 2, data: 'second' };
 
-      await saveSessionContext(testDir, sessionId, 1, context1);
-      await saveSessionContext(testDir, sessionId, 2, context2);
+      await saveSessionContext(sessionsDir, sessionId, 1, context1);
+      await saveSessionContext(sessionsDir, sessionId, 2, context2);
 
-      const saved1 = await readSessionContext(testDir, sessionId, 1);
-      const saved2 = await readSessionContext(testDir, sessionId, 2);
+      const saved1 = await readSessionContext(sessionsDir, sessionId, 1);
+      const saved2 = await readSessionContext(sessionsDir, sessionId, 2);
 
       expect(saved1).toEqual(context1);
       expect(saved2).toEqual(context2);
@@ -890,27 +895,27 @@ describe('Event storage', () => {
         ready_tasks: [],
       };
 
-      await saveSessionContext(testDir, sessionId, 1, context);
+      await saveSessionContext(sessionsDir, sessionId, 1, context);
 
-      const read = await readSessionContext(testDir, sessionId, 1);
+      const read = await readSessionContext(sessionsDir, sessionId, 1);
 
       expect(read).toEqual(context);
     });
 
     it('should return null if context does not exist', async () => {
-      const read = await readSessionContext(testDir, sessionId, 999);
+      const read = await readSessionContext(sessionsDir, sessionId, 999);
 
       expect(read).toBeNull();
     });
 
     it('should return null if context file is invalid JSON', async () => {
-      const contextPath = getSessionContextPath(testDir, sessionId, 1);
-      const sessionDir = getSessionDir(testDir, sessionId);
+      const contextPath = getSessionContextPath(sessionsDir, sessionId, 1);
+      const sessionDir = getSessionDir(sessionsDir, sessionId);
 
       await fs.mkdir(sessionDir, { recursive: true });
       await fs.writeFile(contextPath, 'invalid json', 'utf-8');
 
-      const read = await readSessionContext(testDir, sessionId, 1);
+      const read = await readSessionContext(sessionsDir, sessionId, 1);
 
       expect(read).toBeNull();
     });
@@ -918,7 +923,7 @@ describe('Event storage', () => {
 
   describe('getSessionContextPath', () => {
     it('should return correct path for context snapshot', () => {
-      const contextPath = getSessionContextPath(testDir, sessionId, 3);
+      const contextPath = getSessionContextPath(sessionsDir, sessionId, 3);
 
       expect(contextPath).toContain(sessionId);
       expect(contextPath).toContain('context-iter-3.json');
@@ -931,9 +936,11 @@ describe('Event storage', () => {
 // AC: @ui-agent-dispatch ac-1
 describe('getCompletedSessionCountsByAgent', () => {
   let testDir: string;
+  let sessionsDir: string;
 
   beforeEach(async () => {
     testDir = await fs.mkdtemp(path.join(os.tmpdir(), 'kspec-completed-count-'));
+    sessionsDir = path.join(testDir, 'sessions');
   });
 
   afterEach(async () => {
@@ -941,41 +948,41 @@ describe('getCompletedSessionCountsByAgent', () => {
   });
 
   it('should return empty object when no sessions exist', async () => {
-    const counts = await getCompletedSessionCountsByAgent(testDir);
+    const counts = await getCompletedSessionCountsByAgent(sessionsDir);
     expect(counts).toEqual({});
   });
 
   it('should count completed sessions per agent_id', async () => {
     // Create sessions with different agents and statuses
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM01',
       agent_type: 'claude-code',
       agent_id: 'task-worker',
     });
-    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM01', 'completed');
+    await updateSessionStatus(sessionsDir, '01KF123456789ABCDEFGHJKM01', 'completed');
 
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM02',
       agent_type: 'claude-code',
       agent_id: 'task-worker',
     });
-    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM02', 'completed');
+    await updateSessionStatus(sessionsDir, '01KF123456789ABCDEFGHJKM02', 'completed');
 
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM03',
       agent_type: 'claude-code',
       agent_id: 'pr-reviewer',
     });
-    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM03', 'completed');
+    await updateSessionStatus(sessionsDir, '01KF123456789ABCDEFGHJKM03', 'completed');
 
     // Active session should not be counted
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM04',
       agent_type: 'claude-code',
       agent_id: 'task-worker',
     });
 
-    const counts = await getCompletedSessionCountsByAgent(testDir);
+    const counts = await getCompletedSessionCountsByAgent(sessionsDir);
     expect(counts).toEqual({
       'task-worker': 2,
       'pr-reviewer': 1,
@@ -983,32 +990,32 @@ describe('getCompletedSessionCountsByAgent', () => {
   });
 
   it('should not count abandoned or failed sessions', async () => {
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM05',
       agent_type: 'claude-code',
       agent_id: 'task-worker',
     });
-    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM05', 'abandoned');
+    await updateSessionStatus(sessionsDir, '01KF123456789ABCDEFGHJKM05', 'abandoned');
 
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM06',
       agent_type: 'claude-code',
       agent_id: 'task-worker',
     });
-    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM06', 'failed');
+    await updateSessionStatus(sessionsDir, '01KF123456789ABCDEFGHJKM06', 'failed');
 
-    const counts = await getCompletedSessionCountsByAgent(testDir);
+    const counts = await getCompletedSessionCountsByAgent(sessionsDir);
     expect(counts).toEqual({});
   });
 
   it('should fall back to agent_type when agent_id is not set', async () => {
-    await createSession(testDir, {
+    await createSession(sessionsDir, {
       id: '01KF123456789ABCDEFGHJKM07',
       agent_type: 'claude-code',
     });
-    await updateSessionStatus(testDir, '01KF123456789ABCDEFGHJKM07', 'completed');
+    await updateSessionStatus(sessionsDir, '01KF123456789ABCDEFGHJKM07', 'completed');
 
-    const counts = await getCompletedSessionCountsByAgent(testDir);
+    const counts = await getCompletedSessionCountsByAgent(sessionsDir);
     // getSession() materializes agent_id from agent_type for legacy sessions
     expect(counts).toEqual({
       'claude-code': 1,

@@ -17,8 +17,9 @@
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { renderMarkdown } from '$lib/utils/markdown';
 	import { Button } from '$lib/components/ui/button';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Separator } from '$lib/components/ui/separator';
@@ -467,9 +468,12 @@
 		<Card class="transition-all duration-200" data-testid="triage-card">
 			<CardHeader>
 				<div class="flex items-start justify-between gap-4">
-					<CardTitle class="text-lg leading-relaxed" data-testid="triage-card-text">
-						{currentItem.inbox.text}
-					</CardTitle>
+					<div
+						class="text-lg leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+						data-testid="triage-card-text"
+					>
+						{@html renderMarkdown(currentItem.inbox.text)}
+					</div>
 					<!-- AC: @interactive-triage-ui ac-5 - Show decision state on already-triaged items -->
 					{#if currentItem.record && currentItem.record.status !== 'pending'}
 						<Badge

@@ -129,6 +129,12 @@ export const ManifestSchema = z.object({
   // External references (large projects)
   includes: z.array(z.string()).optional(),
 
+  // Session storage configuration
+  sessions: z.object({
+    storage: z.enum(["local", "branch"]).default("local"),
+    branch: z.string().optional(),
+  }).default({}),
+
   // Hooks configuration
   hooks: z.record(z.string()).optional(),
 

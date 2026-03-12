@@ -52,6 +52,8 @@ function getSkillReferencePlatform(adapterId?: string): "claude-code" | "codex" 
 }
 
 function getProjectRootFromSpecDir(specDir: string): string {
+  // .agents/skills is tracked at the project root, so resolving upward from
+  // .kspec/ stays correct in both the primary checkout and linked worktrees.
   return path.basename(specDir) === ".kspec" ? path.dirname(specDir) : specDir;
 }
 
@@ -94,6 +96,25 @@ async function rewriteSkillReferences(
   }
 
   return resolveSkillReferenceTokensForPlatform(text, platform, skillOrigins);
+}
+
+// ─── Template Interpolation ──────────────────────────────────────────────────
+
+/**
+ * Interpolate {{variable}} placeholders in a template string.
+ *
+ * Used by both dispatch mode and CLI one-shot mode to resolve
+ * agent prompt_template variables (e.g. {{task_ref}}, {{task_title}}).
+ * Unrecognized placeholders are left as-is.
+ */
+export function interpolateTemplate(
+  template: string,
+  vars: Record<string, string>,
+): string {
+  return template.replace(
+    /\{\{(\w+)\}\}/g,
+    (match, key: string) => vars[key] ?? match,
+  );
 }
 
 // ─── Skill Resolution ─────────────────────────────────────────────────────────

@@ -232,10 +232,11 @@ interface AgentStatusResult {
  * AC: @agent-instruction-gen ac-5 - reports stale when meta has changed
  */
 async function checkAgentStatus(
+  outputRoot: string,
   projectRoot: string,
   metaHash: string,
 ): Promise<AgentStatusResult> {
-  const filePath = path.join(projectRoot, GENERATED_FILE_NAME);
+  const filePath = path.join(outputRoot, GENERATED_FILE_NAME);
   const hashPath = path.join(projectRoot, ".kspec", HASH_FILE_NAME);
 
   // Check if file exists
@@ -342,11 +343,11 @@ export function registerAgentsCommands(program: Command): void {
         );
 
         const outputPath = path.join(ctx.rootDir, GENERATED_FILE_NAME);
-        const hashPath = path.join(ctx.rootDir, ".kspec", HASH_FILE_NAME);
+        const hashPath = path.join(ctx.projectRoot, ".kspec", HASH_FILE_NAME);
 
         // AC: @agent-instruction-gen ac-6 - skip regeneration when content unchanged
         if (!dryRun) {
-          const status = await checkAgentStatus(ctx.rootDir, metaHash);
+          const status = await checkAgentStatus(ctx.rootDir, ctx.projectRoot, metaHash);
           if (status.status === "current") {
             output(
               {
@@ -467,7 +468,7 @@ export function registerAgentsCommands(program: Command): void {
           templateSections,
         );
 
-        const status = await checkAgentStatus(ctx.rootDir, metaHash);
+        const status = await checkAgentStatus(ctx.rootDir, ctx.projectRoot, metaHash);
 
         output(status, () => {
           switch (status.status) {

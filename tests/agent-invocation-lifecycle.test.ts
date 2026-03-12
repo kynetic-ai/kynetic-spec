@@ -29,8 +29,10 @@ import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invo
 import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import * as spawnerModule from "../src/agents/spawner.js";
+import { SANITIZED_ENV_VARS } from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
+import * as shadowModule from "../src/parser/shadow.js";
 import {
   testUlid,
   createTempDir,
@@ -77,6 +79,24 @@ function registerMockAdapter(env: Record<string, string> = {}): void {
   });
 }
 
+async function seedInvocationOutcome(
+  sessionsDir: string,
+  sessionId: string,
+  taskRef: string,
+  agentId: string,
+  status: "completed" | "failed" | "timed_out",
+): Promise<void> {
+  await createSession(sessionsDir, {
+    id: sessionId,
+    agent_type: "mock-acp",
+    agent_id: agentId,
+    task_id: taskRef,
+    trigger: "task.ready",
+  });
+  await closeSession(sessionsDir, sessionId, status, `Seeded ${status} outcome`);
+  await new Promise((resolve) => setTimeout(resolve, 2));
+}
+
 // ─── AC-1: Session creation with trigger, agent_id, task_id ──────────────────
 
 // AC: @agent-invocation-lifecycle ac-1
@@ -100,6 +120,7 @@ describe("Session creation on invocation start", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Test session creation",
@@ -120,6 +141,7 @@ describe("Session creation on invocation start", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Check session file creation",
@@ -142,69 +164,126 @@ describe("Session creation on invocation start", () => {
 // AC: @agent-invocation-lifecycle ac-2
 describe("KSPEC_SESSION_ID injection", () => {
   let testDir: string;
-  let capturedSessionId: string | undefined;
+  let originalSessionId: string | undefined;
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-invoc-ac2-");
-    capturedSessionId = undefined;
+    originalSessionId = process.env.KSPEC_SESSION_ID;
 
-    // Register a mock adapter that captures the env var
-    // The mock ACP agent receives KSPEC_SESSION_ID through process env
     registerMockAdapter();
   });
 
   afterEach(async () => {
-    // Restore process.env.KSPEC_SESSION_ID if it was set
-    delete process.env.KSPEC_SESSION_ID;
+    if (originalSessionId === undefined) {
+      delete process.env.KSPEC_SESSION_ID;
+    } else {
+      process.env.KSPEC_SESSION_ID = originalSessionId;
+    }
     await cleanupTempDir(testDir);
   });
 
-  it("should set KSPEC_SESSION_ID in process env during invocation", async () => {
+  it("should inject KSPEC_SESSION_ID into the spawned agent environment", async () => {
+    const captureFile = path.join(testDir, "mock-agent-env.json");
+    registerMockAdapter({
+      MOCK_ACP_VERIFY_ENV_FILE: captureFile,
+      MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_SESSION_ID",
+    });
+
     const agent = makeTestAgent();
-    let envDuringInvocation: string | undefined;
-
-    // We can't easily intercept the spawned process env, but we can verify
-    // that KSPEC_SESSION_ID was set and cleared on the invoking process
-    // by checking that it was cleaned up after
-    const beforeSessionId = process.env.KSPEC_SESSION_ID;
-
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check env injection",
       trigger: "task.ready",
     });
 
-    // After invocation, KSPEC_SESSION_ID should be restored (or deleted)
-    const afterSessionId = process.env.KSPEC_SESSION_ID;
-    expect(afterSessionId).toBe(beforeSessionId);
     expect(result.outcome).toBe("success");
+    const capturedEnv = JSON.parse(await fs.readFile(captureFile, "utf-8")) as {
+      KSPEC_SESSION_ID: string | null;
+    };
+    expect(capturedEnv.KSPEC_SESSION_ID).toBe(result.session.id);
   });
 
-  it("should restore a pre-existing KSPEC_SESSION_ID after invocation completes", async () => {
+  it("should not overwrite a pre-existing parent KSPEC_SESSION_ID during invocation", async () => {
     const agent = makeTestAgent();
     const preExistingId = "01EXISTNG0000000000000000";
-
-    // Simulate a pre-existing KSPEC_SESSION_ID
     process.env.KSPEC_SESSION_ID = preExistingId;
 
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check env cleanup",
       trigger: "task.ready",
     });
 
-    // After invocation, env should be restored to the pre-existing value,
-    // not deleted or overwritten with the invocation session id.
     expect(process.env.KSPEC_SESSION_ID).toBe(preExistingId);
+  });
 
-    // Clean up for subsequent tests
-    delete process.env.KSPEC_SESSION_ID;
+  it("should keep concurrent invocations isolated across parent and child env", async () => {
+    process.env.KSPEC_SESSION_ID = "01PARENT000000000000000000";
+
+    const captureFileA = path.join(testDir, "mock-agent-env-a.json");
+    const captureFileB = path.join(testDir, "mock-agent-env-b.json");
+
+    registerAdapter("mock-acp-concurrent-a", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: captureFileA,
+        MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_SESSION_ID",
+      },
+      description: "Mock ACP agent for concurrent env test A",
+    });
+    registerAdapter("mock-acp-concurrent-b", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: captureFileB,
+        MOCK_ACP_VERIFY_ENV_VARS: "KSPEC_SESSION_ID",
+      },
+      description: "Mock ACP agent for concurrent env test B",
+    });
+
+    const [resultA, resultB] = await Promise.all([
+      runInvocation({
+        agent: makeTestAgent({ adapter: "mock-acp-concurrent-a" }),
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK", 1),
+        prompt: "Concurrent env injection A",
+        trigger: "task.ready",
+      }),
+      runInvocation({
+        agent: makeTestAgent({ adapter: "mock-acp-concurrent-b" }),
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: process.cwd(),
+        taskRef: "@" + testUlid("TASK", 2),
+        prompt: "Concurrent env injection B",
+        trigger: "task.ready",
+      }),
+    ]);
+
+    const capturedEnvA = JSON.parse(await fs.readFile(captureFileA, "utf-8")) as {
+      KSPEC_SESSION_ID: string | null;
+    };
+    const capturedEnvB = JSON.parse(await fs.readFile(captureFileB, "utf-8")) as {
+      KSPEC_SESSION_ID: string | null;
+    };
+
+    expect(capturedEnvA.KSPEC_SESSION_ID).toBe(resultA.session.id);
+    expect(capturedEnvB.KSPEC_SESSION_ID).toBe(resultB.session.id);
+    expect(capturedEnvA.KSPEC_SESSION_ID).not.toBe(capturedEnvB.KSPEC_SESSION_ID);
+    expect(process.env.KSPEC_SESSION_ID).toBe("01PARENT000000000000000000");
   });
 });
 
@@ -238,6 +317,7 @@ describe("Timeout handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test timeout",
@@ -255,6 +335,7 @@ describe("Timeout handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test timeout event logging",
@@ -285,6 +366,7 @@ describe("Timeout handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test timeout note",
@@ -320,6 +402,7 @@ describe("Timeout handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test cancel dispatch",
@@ -366,6 +449,7 @@ describe("Timeout handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test ACP prompt timeout alignment",
@@ -406,6 +490,7 @@ describe("Successful invocation completion", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Successful completion test",
@@ -432,6 +517,7 @@ describe("Successful invocation completion", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check session completion status",
@@ -448,6 +534,7 @@ describe("Successful invocation completion", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check stop reason",
@@ -490,6 +577,7 @@ describe("Failure handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef,
       prompt: "Test failure handling",
@@ -506,7 +594,9 @@ describe("Failure handling", () => {
     expect(failedEvent).toBeDefined();
     // AC: @agent-invocation-lifecycle ac-5 — error details
     expect(failedEvent.data.task_id).toBe(taskRef);
+    expect(failedEvent.data.outcome).toBe("failed");
     expect(failedEvent.data.error).toBeDefined();
+    expect(failedEvent.data.reason).toBe(failedEvent.data.error);
   });
 
   it("should close session with status failed on failure", async () => {
@@ -515,6 +605,7 @@ describe("Failure handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Check failed session status",
@@ -536,6 +627,7 @@ describe("Failure handling", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test failure note",
@@ -581,6 +673,7 @@ describe("Streaming event logging", () => {
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test streaming updates",
@@ -600,6 +693,7 @@ describe("Streaming event logging", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test event logging",
@@ -685,6 +779,7 @@ describe("Streaming event logging", () => {
       const result = await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Concurrent update burst ordering",
@@ -732,6 +827,7 @@ describe("Streaming event logging", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test blob externalization",
@@ -927,6 +1023,7 @@ describe("Cleanup on completion or failure", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test cleanup on success",
@@ -944,14 +1041,13 @@ describe("Cleanup on completion or failure", () => {
     await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test env restoration",
       trigger: "task.ready",
     });
 
-    // After invocation, env should be back to original
-    // (either undefined or the original value)
     expect(process.env.KSPEC_SESSION_ID).toBe(originalValue);
   });
 
@@ -969,6 +1065,7 @@ describe("Cleanup on completion or failure", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test cleanup on failure",
@@ -989,6 +1086,7 @@ describe("Cleanup on completion or failure", () => {
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test adapter env restoration",
@@ -1019,6 +1117,7 @@ describe("Cleanup on completion or failure", () => {
       const result = await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef: "@" + testUlid("TASK"),
         prompt: "Test env restoration on failure",
@@ -1056,48 +1155,18 @@ describe("Consecutive failure threshold and task blocking", () => {
 
   it("should block the task with a failure note when consecutive failures reach retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — consecutive failures → task blocked with note
-    // The agent's retry limit is derived from agent.budget.max_retries (default 3).
-    // We pre-populate the capture file to simulate prior failure notes already recorded
-    // by previous invocations, then trigger the threshold-crossing invocation.
     const captureFile = path.join(testDir, "kspec-calls.json");
     const taskRef = "@" + testUlid("TASK");
+    const sessionsDir = path.join(testDir, "sessions");
+    const agentId = "test-worker";
 
-    // Mock kspec CLI: simulate "task get" returning a task with 3 existing AGENT-FAIL notes.
-    // The implementation calls getConsecutiveFailureCount (kspec task get --json) to read
-    // the note history. With 3 consecutive AGENT-FAIL notes and a retry limit of 3, blocking
-    // must be triggered.
-    const taskGetMockPath = path.join(testDir, "kspec-threshold-mock.cjs");
-    const mockTask = {
-      notes: [
-        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
-        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
-        { content: "[AGENT-FAIL] Invocation failed: Mock failure" },
-      ],
-    };
-    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const captureFile = process.env.KSPEC_CAPTURE_FILE;
-
-if (captureFile) {
-  let calls = [];
-  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
-  calls.push({ args, timestamp: Date.now() });
-  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
-}
-
-// Return task JSON for "task get ... --json" to simulate 3 consecutive prior failures
-if (args.includes('task') && args.includes('get') && args.includes('--json')) {
-  process.stdout.write(JSON.stringify(${JSON.stringify(mockTask)}) + '\\n');
-}
-
-process.exit(0);
-`);
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 1), taskRef, agentId, "failed");
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 2), taskRef, agentId, "failed");
 
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
       const agent = makeTestAgent({
+        id: agentId,
         adapter: "always-fail-acp",
         budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
@@ -1105,11 +1174,12 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir,
         cwd: process.cwd(),
         taskRef,
         prompt: "Test consecutive failure blocking",
         trigger: "task.ready",
-        kspecCliPath: taskGetMockPath,
+        kspecCliPath: MOCK_KSPEC_CLI,
       });
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -1134,29 +1204,6 @@ process.exit(0);
     const captureFile = path.join(testDir, "kspec-calls-below.json");
     const taskRef = "@" + testUlid("TASK");
 
-    // Mock kspec CLI: simulate task with 0 prior AGENT-FAIL notes (first failure)
-    const taskGetMockPath = path.join(testDir, "kspec-below-mock.cjs");
-    const emptyTask = { notes: [] };
-    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const captureFile = process.env.KSPEC_CAPTURE_FILE;
-
-if (captureFile) {
-  let calls = [];
-  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
-  calls.push({ args, timestamp: Date.now() });
-  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
-}
-
-if (args.includes('task') && args.includes('get') && args.includes('--json')) {
-  process.stdout.write(JSON.stringify(${JSON.stringify(emptyTask)}) + '\\n');
-}
-
-process.exit(0);
-`);
-
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
       const agent = makeTestAgent({
@@ -1167,11 +1214,12 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
         cwd: process.cwd(),
         taskRef,
         prompt: "Test below threshold",
         trigger: "task.ready",
-        kspecCliPath: taskGetMockPath,
+        kspecCliPath: MOCK_KSPEC_CLI,
       });
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -1194,44 +1242,19 @@ process.exit(0);
 
   it("should reset consecutive failure count after a successful invocation", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — streak resets after success; fail→success→fail is not consecutive
-    // Simulate: task has 2 prior AGENT-FAIL notes then 1 AGENT-SUCCESS note (streak reset).
-    // With retry limit=3, the next failure is count=1 → should NOT block.
     const captureFile = path.join(testDir, "kspec-calls-reset.json");
     const taskRef = "@" + testUlid("TASK");
+    const sessionsDir = path.join(testDir, "sessions");
+    const agentId = "test-worker";
 
-    // Mock kspec CLI: simulate task with AGENT-FAIL, AGENT-FAIL, AGENT-SUCCESS notes.
-    // The last note is AGENT-SUCCESS, so consecutive count (from end) = 0 before this failure.
-    const taskGetMockPath = path.join(testDir, "kspec-reset-mock.cjs");
-    const taskWithResetNotes = {
-      notes: [
-        { content: "[AGENT-FAIL] Invocation failed: first failure" },
-        { content: "[AGENT-FAIL] Invocation failed: second failure" },
-        { content: "[AGENT-SUCCESS] Invocation completed successfully" },
-      ],
-    };
-    await fs.writeFile(taskGetMockPath, `#!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const args = process.argv.slice(2);
-const captureFile = process.env.KSPEC_CAPTURE_FILE;
-
-if (captureFile) {
-  let calls = [];
-  try { calls = JSON.parse(fs.readFileSync(captureFile, 'utf-8')); } catch {}
-  calls.push({ args, timestamp: Date.now() });
-  fs.writeFileSync(captureFile, JSON.stringify(calls, null, 2));
-}
-
-if (args.includes('task') && args.includes('get') && args.includes('--json')) {
-  process.stdout.write(JSON.stringify(${JSON.stringify(taskWithResetNotes)}) + '\\n');
-}
-
-process.exit(0);
-`);
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 3), taskRef, agentId, "failed");
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 4), taskRef, agentId, "failed");
+    await seedInvocationOutcome(sessionsDir, testUlid("SESS", 5), taskRef, agentId, "completed");
 
     process.env.KSPEC_CAPTURE_FILE = captureFile;
     try {
       const agent = makeTestAgent({
+        id: agentId,
         adapter: "always-fail-acp",
         budget: { max_retries: 3, timeout_minutes: 30 },
       } as Partial<Agent>);
@@ -1239,11 +1262,12 @@ process.exit(0);
       await runInvocation({
         agent,
         specDir: testDir,
+        sessionsDir,
         cwd: process.cwd(),
         taskRef,
         prompt: "Test streak reset after success",
         trigger: "task.ready",
-        kspecCliPath: taskGetMockPath,
+        kspecCliPath: MOCK_KSPEC_CLI,
       });
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
@@ -1257,7 +1281,7 @@ process.exit(0);
     );
     expect(noteCall).toBeDefined();
 
-    // Block should NOT be called — streak was reset by AGENT-SUCCESS, so only 1 consecutive failure now
+    // Block should NOT be called — the completed invocation reset the failure streak
     const blockCall = calls.find((c) =>
       c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef)
     );
@@ -1296,6 +1320,7 @@ describe("ACP permission request handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test permission auto-approval",
@@ -1324,6 +1349,7 @@ describe("ACP permission request handling", () => {
     const result = await runInvocation({
       agent,
       specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
       cwd: process.cwd(),
       taskRef: "@" + testUlid("TASK"),
       prompt: "Test permission denial",
@@ -1333,6 +1359,222 @@ describe("ACP permission request handling", () => {
 
     // Invocation should complete (not hang) — mock proceeds after receiving any response
     expect(result.outcome).toBe("success");
+  });
+});
+
+// ─── AC-12: Sanitize inherited env vars in agent spawner ──────────────────────
+
+// AC: @agent-invocation-lifecycle ac-12
+describe("Host environment variable sanitization", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-ac12-");
+  });
+
+  afterEach(async () => {
+    for (const key of SANITIZED_ENV_VARS) {
+      delete process.env[key];
+    }
+    await cleanupTempDir(testDir);
+  });
+
+  it("should strip CLAUDECODE and CLAUDE_CODE_SESSION from spawned agent environment", async () => {
+    // Simulate running inside a Claude Code environment
+    process.env.CLAUDECODE = "1";
+    process.env.CLAUDE_CODE_SESSION = "parent-session-id";
+
+    // Use the mock ACP's VERIFY_ENV feature to check what the child process sees
+    const envVerifyFile = path.join(testDir, "env-verify.json");
+    registerAdapter("env-verify-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: envVerifyFile,
+        MOCK_ACP_VERIFY_ENV_VARS: "CLAUDECODE,CLAUDE_CODE_SESSION,PATH",
+      },
+      description: "Mock ACP that reports its env vars for sanitization tests",
+    });
+
+    const agent = makeTestAgent({ adapter: "env-verify-acp" });
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test env sanitization",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+
+    // Read the env vars reported by the child process
+    const reportedEnv = JSON.parse(await fs.readFile(envVerifyFile, "utf-8"));
+
+    // CLAUDECODE and CLAUDE_CODE_SESSION must be null (not present in child env)
+    expect(reportedEnv.CLAUDECODE).toBeNull();
+    expect(reportedEnv.CLAUDE_CODE_SESSION).toBeNull();
+
+    // PATH should still be present (not sanitized)
+    expect(reportedEnv.PATH).not.toBeNull();
+  });
+
+  it("should not affect process.env of the parent process", async () => {
+    // Set sanitized vars
+    process.env.CLAUDECODE = "1";
+    process.env.CLAUDE_CODE_SESSION = "parent-session-id";
+
+    const envVerifyFile = path.join(testDir, "env-verify-parent.json");
+    registerAdapter("env-verify-parent-acp", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_PROJECT_DIR: process.cwd(),
+        MOCK_ACP_VERIFY_ENV_FILE: envVerifyFile,
+        MOCK_ACP_VERIFY_ENV_VARS: "CLAUDECODE",
+      },
+      description: "Mock ACP for parent env preservation test",
+    });
+
+    const agent = makeTestAgent({ adapter: "env-verify-parent-acp" });
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "Test parent env preservation",
+      trigger: "task.ready",
+    });
+
+    // Parent process should still have CLAUDECODE — sanitization is per-spawn only
+    expect(process.env.CLAUDECODE).toBe("1");
+    expect(process.env.CLAUDE_CODE_SESSION).toBe("parent-session-id");
+  });
+
+  it("SANITIZED_ENV_VARS should contain the expected variables", () => {
+    // Guard against accidental removal of vars from the sanitization list
+    expect(SANITIZED_ENV_VARS).toContain("CLAUDECODE");
+    expect(SANITIZED_ENV_VARS).toContain("CLAUDE_CODE_SESSION");
+  });
+});
+
+// ─── No shadow commit on session end ──────────────────────────────────────────
+
+// AC: @session-remove-shadow-commits ac-invocation-end
+describe("No shadow commit on session close (session storage separation)", () => {
+  let testDir: string;
+  let commitSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-shadow-");
+    commitSpy = vi.spyOn(shadowModule, "shadowAutoCommit").mockResolvedValue(true);
+  });
+
+  afterEach(async () => {
+    commitSpy.mockRestore();
+    await cleanupTempDir(testDir);
+  });
+
+  it("should NOT call shadowAutoCommit after successful invocation", async () => {
+    registerMockAdapter();
+    const agent = makeTestAgent();
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "No shadow commit on success",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(commitSpy).not.toHaveBeenCalled();
+  });
+
+  it("should NOT call shadowAutoCommit after timed-out invocation", async () => {
+    registerAdapter("slow-mock-acp-shadow", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_DELAY_MS: "5000",
+      },
+      description: "Slow mock for shadow commit timeout test",
+    });
+    const agent = makeTestAgent({ adapter: "slow-mock-acp-shadow" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "No shadow commit on timeout",
+      trigger: "task.ready",
+      timeoutMinutes: 0.001,
+    });
+
+    expect(result.outcome).toBe("timed_out");
+    expect(commitSpy).not.toHaveBeenCalled();
+  });
+
+  it("should NOT call shadowAutoCommit after failed invocation", async () => {
+    registerAdapter("failing-mock-acp-shadow", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_EXIT_CODE: "1",
+      },
+      description: "Failing mock for shadow commit test",
+    });
+    const agent = makeTestAgent({ adapter: "failing-mock-acp-shadow" });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "No shadow commit on failure",
+      trigger: "task.ready",
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(commitSpy).not.toHaveBeenCalled();
+  });
+
+  it("should NOT call shadowAutoCommit after aborted invocation", async () => {
+    registerAdapter("slow-mock-acp-abort", {
+      command: "node",
+      args: [MOCK_ACP],
+      env: {
+        MOCK_ACP_DELAY_MS: "5000",
+      },
+      description: "Slow mock for abort test",
+    });
+    const agent = makeTestAgent({ adapter: "slow-mock-acp-abort" });
+    const controller = new AbortController();
+
+    // Abort shortly after starting
+    setTimeout(() => controller.abort(), 100);
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: "@" + testUlid("TASK"),
+      prompt: "No shadow commit on abort",
+      trigger: "task.ready",
+      abortSignal: controller.signal,
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(commitSpy).not.toHaveBeenCalled();
   });
 });
 

@@ -83,8 +83,8 @@ describe('Item Set Relationship Flags', () => {
       kspec('item add --under @test-core --title "Item B" --type requirement --slug item-b', tempDir);
 
       // Get the ULID of item-b
-      const itemB = kspecJson<{ _ulid: string }>('item get @item-b', tempDir);
-      const itemBUlid = itemB._ulid;
+      const itemB = kspecJson<{ ulid: string }>('item get @item-b', tempDir);
+      const itemBUlid = itemB.ulid;
 
       // Add relationship via slug
       kspec('item set @item-a --relates-to @item-b', tempDir);
@@ -152,8 +152,8 @@ describe('Item Set Relationship Flags', () => {
       kspec('item add --under @test-core --title "Requirement Y" --type requirement --slug req-y', tempDir);
 
       // Get the ULID of feature-x
-      const featureX = kspecJson<{ _ulid: string }>('item get @feature-x', tempDir);
-      const featureXUlid = featureX._ulid;
+      const featureX = kspecJson<{ ulid: string }>('item get @feature-x', tempDir);
+      const featureXUlid = featureX.ulid;
 
       // Add relationship via slug
       kspec('item set @req-y --implements @feature-x', tempDir);
@@ -204,8 +204,8 @@ describe('Item Set Relationship Flags', () => {
       kspec('item add --under @test-core --title "Dependent" --type requirement --slug dependent', tempDir);
 
       // Get the ULID of prereq
-      const prereq = kspecJson<{ _ulid: string }>('item get @prereq', tempDir);
-      const prereqUlid = prereq._ulid;
+      const prereq = kspecJson<{ ulid: string }>('item get @prereq', tempDir);
+      const prereqUlid = prereq.ulid;
 
       // Add relationship via slug
       kspec('item set @dependent --depends-on @prereq', tempDir);

@@ -2,8 +2,9 @@
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import type { Observation } from '@kynetic-ai/shared';
 	import { fetchObservations } from '$lib/api';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { Card, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
+	import { renderMarkdown } from '$lib/utils/markdown';
 	import {
 		Lightbulb,
 		Zap,
@@ -117,11 +118,19 @@
 									<Badge variant="outline" data-testid="observation-type">{typeLabels[obs.type]}</Badge>
 									<span class="text-xs text-muted-foreground">{formatDate(obs.created_at)}</span>
 								</div>
-								<p class="text-sm leading-relaxed" data-testid="observation-content">{obs.content}</p>
+								<div
+									class="text-sm break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+									data-testid="observation-content"
+								>
+									{@html renderMarkdown(obs.content)}
+								</div>
 								{#if obs.context}
-									<p class="mt-2 text-xs text-muted-foreground border-l-2 border-muted pl-3">
-										{obs.context}
-									</p>
+									<div
+										class="mt-2 text-xs text-muted-foreground border-l-2 border-muted pl-3 prose prose-sm dark:prose-invert max-w-none"
+										data-testid="observation-context"
+									>
+										{@html renderMarkdown(obs.context)}
+									</div>
 								{/if}
 							</div>
 						</div>

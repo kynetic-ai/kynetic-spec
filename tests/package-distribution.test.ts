@@ -99,6 +99,19 @@ describe('Package Distribution', () => {
     });
   });
 
+  describe('published root package includes daemon runtime dependencies', () => {
+    it('declares @elysiajs/static for global installs', async () => {
+      // AC: @web-ui ac-1
+      const packageJsonPath = path.join(PACKAGE_ROOT, 'package.json');
+      const content = await fs.readFile(packageJsonPath, 'utf-8');
+      const pkg = JSON.parse(content);
+
+      expect(pkg.dependencies?.['@elysiajs/cors']).toBeTruthy();
+      expect(pkg.dependencies?.['@elysiajs/static']).toBeTruthy();
+      expect(pkg.dependencies?.elysia).toBeTruthy();
+    });
+  });
+
   // AC: @package-distribution ac-5
   describe('plugin/ directory contains valid plugin structure', () => {
     it('plugin/.claude-plugin/plugin.json exists with correct version', async () => {

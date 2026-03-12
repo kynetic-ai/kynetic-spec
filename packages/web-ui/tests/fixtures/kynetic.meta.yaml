@@ -9,15 +9,15 @@ observations:
   - _ulid: 01KF0BS0CA45ZT43W2T6HJMVA1
     created_at: "2026-01-23T09:00:00Z"
     type: friction
-    content: "Test friction observation"
-    context: "During test setup"
+    content: "Test friction observation with `kspec validate`"
+    context: "During **test setup**"
     resolved: false
 
   - _ulid: 01KF0BS1CC9N4YGP991WD7XS8S
     created_at: "2026-01-23T09:30:00Z"
     type: success
-    content: "Test success observation"
-    context: "Pattern that worked"
+    content: "Test success observation with [reference docs](https://example.com/observations)"
+    context: "Pattern that **worked**"
     resolved: false
 
 agents:
@@ -30,6 +30,9 @@ agents:
       - on: task.ready
         filter:
           automation: eligible
+          tags:
+            - mvp
+          priority: 3
       - on: task.in_progress
       - on: task.needs_work
     capabilities: []
@@ -56,9 +59,9 @@ workflows:
     id: spec-first
     trigger: behavior-change
     description: |
-      Check spec coverage before implementing changes.
+      Check **spec coverage** before implementing changes.
       Core principle: If changing behavior and spec doesn't cover it,
-      update the spec first.
+      update the spec first with `kspec item get`.
     steps:
       - type: check
         content: Does the spec cover this change?
@@ -74,7 +77,7 @@ workflows:
   - _ulid: 01KF0WF002CC9N4YGP991WD7XS
     id: session-start
     trigger: session-start
-    description: Get context at the beginning of a work session.
+    description: "Get context at the beginning of a work session with `kspec session start`."
     steps:
       - type: action
         content: Run kspec session start to get context

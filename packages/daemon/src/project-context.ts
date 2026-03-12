@@ -269,6 +269,24 @@ export class ProjectContextManager {
   }
 
   /**
+   * Get a project if already registered, or register it if not.
+   * Returns whether the project was newly registered.
+   *
+   * Used by all auto-registration paths (middleware, projects API, WebSocket)
+   * to unify the try-get-or-register pattern.
+   *
+   * @param projectPath - Absolute path to project
+   * @returns Object with project context and whether it was newly registered
+   */
+  getOrRegisterProject(projectPath: string): { context: ProjectContext; wasRegistered: boolean } {
+    try {
+      return { context: this.getProject(projectPath), wasRegistered: false };
+    } catch {
+      return { context: this.registerProject(projectPath), wasRegistered: true };
+    }
+  }
+
+  /**
    * Set the default project explicitly.
    *
    * AC: @multi-directory-daemon ac-2
