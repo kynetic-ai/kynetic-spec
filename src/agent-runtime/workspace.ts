@@ -328,6 +328,10 @@ function resolveCommit(cwd: string, ref: string): string {
   );
 }
 
+function metadataPathFor(worktreeDir: string): string {
+  return path.join(worktreeDir, DISPATCH_WORKSPACE_METADATA_FILE);
+}
+
 function commandAvailable(command: string): boolean {
   const result = spawnSync(command, ["--version"], {
     encoding: "utf-8",
@@ -391,6 +395,15 @@ async function readWorkspaceMetadata(worktreeDir: string): Promise<DispatchWorks
   } catch {
     return null;
   }
+}
+
+async function writeWorkspaceMetadata(
+  worktreeDir: string,
+  metadata: DispatchWorkspaceMetadata,
+): Promise<string> {
+  const metadataPath = metadataPathFor(worktreeDir);
+  await fs.writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+  return metadataPath;
 }
 
 function resolveIntegrationOutcome(
@@ -742,6 +755,12 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
     bootstrap: bootstrapState,
     cleanupEligible: record.cleanup.eligible,
     cleanupReason: record.cleanup.reason ?? null,
+    cleanupScheduledAt: record.cleanup.eligible
+      ? (record.timestamps.closed_at ?? record.cleanup.updated_at)
+      : null,
+    cleanupBlockedReason: record.cleanup.status === "blocked"
+      ? (record.cleanup.reason ?? record.cleanup.detail ?? null)
+      : null,
     createdAt: record.timestamps.created_at,
     updatedAt: record.timestamps.updated_at,
     lastReconciledAt: record.timestamps.last_reconciled_at ?? null,
@@ -768,6 +787,12 @@ async function persistWorkspaceRecord(
     ...record,
     _sourceFile: registryPath,
   });
+
+  const workerDir = record.worktrees.worker.path;
+  if (workerDir && pathExists(workerDir)) {
+    await writeWorkspaceMetadata(workerDir, toMetadata(record));
+  }
+
   return registryPath;
 }
 
@@ -1183,7 +1208,8 @@ export async function cleanupReviewerDispatchWorkspace(
   task?: { title?: string; slugs?: string[] },
 ): Promise<DispatchWorkspaceReapResult> {
   const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, task);
-  if (!existing || !existing.metadata.reviewerWorktreeDir) {
+  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  if (!existing || !existing.metadata.reviewerWorktreeDir || !existingRecord) {
     return { taskRef, action: "none", blockedReason: null };
   }
 
@@ -1201,7 +1227,27 @@ export async function cleanupReviewerDispatchWorkspace(
     cleanupBlockedReason: null,
     updatedAt: now,
   };
-  await writeWorkspaceMetadata(existing.workerWorktreeDir, updatedMetadata);
+  const updatedRecord: DispatchWorkspaceRecord = {
+    ...existingRecord,
+    lifecycle_state: updatedMetadata.lifecycleState,
+    worktrees: {
+      ...existingRecord.worktrees,
+      reviewer: null,
+    },
+    health: reconcileWorkspaceHealth(projectDir, {
+      ...existingRecord,
+      worktrees: {
+        ...existingRecord.worktrees,
+        reviewer: null,
+      },
+    }, now),
+    timestamps: {
+      ...existingRecord.timestamps,
+      updated_at: now,
+      last_reconciled_at: now,
+    },
+  };
+  await persistWorkspaceRecord(projectDir, updatedRecord);
   return { taskRef, action: "reviewer_cleaned", blockedReason: null };
 }
 

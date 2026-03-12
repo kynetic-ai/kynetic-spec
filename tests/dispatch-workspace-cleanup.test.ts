@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
-import * as invocationModule from "../src/agent-runtime/invocation.js";
-import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
+import * as YAML from "yaml";
 import {
+  cleanupReviewerDispatchWorkspace,
   provisionDispatchWorkspace,
   reconcileDispatchWorkspaceLifecycle,
   reconcileDispatchWorkspaceArtifacts,
@@ -17,7 +17,7 @@ import {
   testUlid,
 } from "./helpers/cli.js";
 
-const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+const WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {
@@ -61,19 +61,39 @@ async function setupProjectWithReviewerAgent(dir: string): Promise<void> {
   await fs.writeFile(path.join(dir, "project.tasks.yaml"), "tasks: []\n", "utf-8");
 }
 
-async function waitFor(assertion: () => Promise<void>, timeoutMs = 1500): Promise<void> {
-  const start = Date.now();
-  while (true) {
-    try {
-      await assertion();
-      return;
-    } catch (error) {
-      if (Date.now() - start > timeoutMs) {
-        throw error;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 25));
-    }
-  }
+async function writeTask(dir: string, task: {
+  id: string;
+  title: string;
+  slugs: string[];
+  status: "pending_review";
+}): Promise<void> {
+  await fs.writeFile(
+    path.join(dir, "project.tasks.yaml"),
+    YAML.stringify({
+      tasks: [{
+        _ulid: task.id,
+        title: task.title,
+        slugs: task.slugs,
+        status: task.status,
+        type: "task",
+        priority: 1,
+        blocked_by: [],
+        depends_on: [],
+        context: [],
+        tags: [],
+        vcs_refs: [],
+        notes: [],
+        todos: [],
+        created_at: new Date().toISOString(),
+        automation: "eligible",
+      }],
+    }),
+    "utf-8",
+  );
+}
+
+function workspaceMetadataPath(workspaceDir: string): string {
+  return path.join(workspaceDir, WORKSPACE_METADATA_FILE);
 }
 
 describe("dispatch workspace cleanup", () => {
@@ -94,8 +114,7 @@ describe("dispatch workspace cleanup", () => {
     await setupProjectWithReviewerAgent(tempDir);
     git(tempDir, "checkout -b agent-dev");
 
-    const taskId = testUlid("TASK", 21);
-    const taskRef = `@${taskId}`;
+    const taskRef = `@${testUlid("TASK", 21)}`;
     const workerWorkspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
@@ -104,59 +123,36 @@ describe("dispatch workspace cleanup", () => {
         slugs: ["task-cleanup-reviewer-snapshot"],
       },
     });
-
-    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
-      session: {} as never,
-      outcome: "success",
-      durationMs: 1,
-    });
-
-    const engine = new DispatchEngine({
+    const reviewerWorkspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
-      specDir: tempDir,
-      kspecCliPath: MOCK_KSPEC_CLI,
-    });
-
-    await engine.start();
-    await engine.handleStateChange({
-      taskId,
       taskRef,
-      fromStatus: "in_progress",
-      toStatus: "pending_review",
-      timestamp: Date.now(),
+      role: "reviewer",
       task: {
-        _ulid: taskId,
         title: "Cleanup Reviewer Snapshot",
         slugs: ["task-cleanup-reviewer-snapshot"],
-        status: "pending_review",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
+      },
+    });
+    expect(reviewerWorkspace.cwd).toBe(
+      path.join(tempDir, ".kspec-worktrees", "task-cleanup-reviewer-snapshot-01task00-review"),
+    );
+
+    const result = await cleanupReviewerDispatchWorkspace(tempDir, taskRef, {
+      title: "Cleanup Reviewer Snapshot",
+      slugs: ["task-cleanup-reviewer-snapshot"],
+    });
+    expect(result).toEqual({
+      taskRef,
+      action: "reviewer_cleaned",
+      blockedReason: null,
     });
 
-    await waitFor(async () => {
-      expect(runSpy).toHaveBeenCalledTimes(1);
-      await expect(
-        fs.access(path.join(tempDir, ".kspec-worktrees", "task-cleanup-reviewer-snapshot-01task00-review")),
-      ).rejects.toThrow();
-    });
+    await expect(fs.access(reviewerWorkspace.cwd)).rejects.toThrow();
 
     await fs.access(workerWorkspace.cwd);
     const metadata = JSON.parse(
-      await fs.readFile(workerWorkspace.metadataPath, "utf-8"),
+      await fs.readFile(workspaceMetadataPath(workerWorkspace.cwd), "utf-8"),
     ) as { reviewerWorktreeDir: string | null };
     expect(metadata.reviewerWorktreeDir).toBeNull();
-
-    await engine.stop();
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-2
@@ -234,7 +230,7 @@ describe("dispatch workspace cleanup", () => {
     });
 
     const metadata = JSON.parse(
-      await fs.readFile(workspace.metadataPath, "utf-8"),
+      await fs.readFile(workspaceMetadataPath(workspace.cwd), "utf-8"),
     ) as { lifecycleState: string; cleanupBlockedReason: string | null };
     expect(metadata.lifecycleState).toBe("cleanup_blocked");
     expect(metadata.cleanupBlockedReason).toContain("active dispatch invocation");
@@ -274,7 +270,7 @@ describe("dispatch workspace cleanup", () => {
     });
 
     const metadata = JSON.parse(
-      await fs.readFile(workspace.metadataPath, "utf-8"),
+      await fs.readFile(workspaceMetadataPath(workspace.cwd), "utf-8"),
     ) as {
       lifecycleState: string;
       cleanupBlockedReason: string | null;
@@ -307,7 +303,7 @@ describe("dispatch workspace cleanup", () => {
       },
     });
 
-    await fs.rm(workspace.metadataPath, { force: true });
+    await fs.rm(workspaceMetadataPath(workspace.cwd), { force: true });
     await fs.mkdir(path.join(tempDir, ".kspec-worktrees", "orphan-dir"), { recursive: true });
     await fs.writeFile(path.join(tempDir, ".kspec-worktrees", "orphan-dir", "leftover.txt"), "orphan\n", "utf-8");
     git(tempDir, "branch dispatch/task/orphaned/no-metadata");
