@@ -91912,7 +91912,7 @@
   spec_ref: "@dispatch-runtime-bootstrap-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-workspace-registry"
@@ -92053,6 +92053,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T23:01:26.866Z
+  closed_reason: "Merged in PR #805 (merge commit 120a71a2a037d304623611ca15afcf9283ce5908).
+    Implemented dispatcher-owned runtime bootstrap preflight with explicit dispatch/agent bootstrap
+    config, role-specific cached bootstrap state and invalidation, reviewer-safe reuse/rerun rules,
+    and actionable bootstrap failure blocking. AC coverage verified for
+    @dispatch-runtime-bootstrap-contract ac-1..ac-6 plus applicable @trait-error-guidance coverage;
+    local npm test and GitHub CI passed on the merged head."
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
   slugs:
     - task-implement-dispatch-orientation-prompt
