@@ -91215,7 +91215,7 @@
   spec_ref: "@canonical-task-workspace-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
@@ -91303,6 +91303,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T05:24:34.588Z
+  closed_reason: "Merged in PR #799. Implemented canonical task branch lineage with deterministic
+    dispatch branch naming, persisted base branch point/head metadata, reviewer snapshot worktrees,
+    worker/fix-cycle branch reuse, and runtime cleanup-eligibility reconciliation. AC coverage
+    verified in tests/canonical-task-workspace-contract.test.ts and CI/local npm test passed."
 - _ulid: 01KKFY9DTC71FAYKHS3TD7DXV4
   slugs:
     - task-implement-dispatch-workspace-registry
