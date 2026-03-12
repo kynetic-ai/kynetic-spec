@@ -91912,7 +91912,7 @@
   spec_ref: "@dispatch-runtime-bootstrap-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-workspace-registry"
@@ -91925,7 +91925,7 @@
     - bootstrap
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/805
-  session_id: 01KKHYES6S7EZDWKMW8KGK6T1J
+  session_id: null
   created_at: 2026-03-12T02:33:56.654Z
   started_at: 2026-03-12T21:31:27.628Z
   submitted_at: 2026-03-12T21:31:47.253Z
@@ -91997,6 +91997,13 @@
         bootstrap state. Verification: npm run typecheck; npm test -- --run
         tests/dispatch-runtime-bootstrap-contract.test.ts; npm test; kspec validate (warnings only:
         existing repo-wide debt)."
+      supersedes: null
+    - _ulid: 01KKHZRVGQPF61VWSVQJVMDEKP
+      created_at: 2026-03-12T21:38:17.240Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: reviewer bootstrap reuse can report success on a
+        fresh reviewer worktree that does not contain worker bootstrap artifacts; AC-3 test also
+        misses the reviewer filesystem state."
       supersedes: null
   todos: []
   automation: eligible
