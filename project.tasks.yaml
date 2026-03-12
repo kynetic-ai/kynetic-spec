@@ -92373,7 +92373,7 @@
   spec_ref: "@plan-derive-enhanced"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -92383,6 +92383,7 @@
   session_id: 01KKJ59CS6XQJBNEV6QDMC4RQK
   created_at: 2026-03-12T02:49:31.460Z
   started_at: 2026-03-12T23:21:06.630Z
+  submitted_at: 2026-03-12T23:26:22.106Z
   notes:
     - _ulid: 01KKJ5N3MPXQQ6PEC0BAJZ52V0
       created_at: 2026-03-12T23:21:05.942Z
@@ -92412,7 +92413,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-12T23:26:22.106Z
+  completed_at: 2026-03-12T23:37:57.462Z
+  closed_reason: "Merged in PR #808. Updated plan derive so derive_from_specs: false suppresses auto
+    per-spec implementation tasks while still materializing manual additional_tasks with preserved
+    plan/spec refs and dependency mappings. Verified targeted plan-derive coverage for
+    ac-tasks-manual-only, reran full npm test successfully, and confirmed green CI on the merged
+    head."
 - _ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
   slugs:
     - bug-plan-embedded-views-live-loading
