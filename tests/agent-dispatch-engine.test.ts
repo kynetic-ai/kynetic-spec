@@ -170,7 +170,10 @@ describe("Dispatch in-progress priority", () => {
 
   // AC: @dispatch-in-progress-priority ac-1
   // AC: @dispatch-in-progress-priority ac-4
-  it("should prioritize in_progress first and pending_review ahead of pending", async () => {
+  // AC: @dispatch-scheduling-priority-model ac-2
+  // AC: @dispatch-scheduling-priority-model ac-3
+  // AC: @dispatch-scheduling-priority-model ac-6
+  it("should order queued entries by band first and numeric priority second", async () => {
     const agent = makeTestAgent({
       id: "priority-worker",
       dispatch: [
@@ -188,6 +191,12 @@ describe("Dispatch in-progress priority", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
     });
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockImplementation(async (options) => ({
+      exists: options.role === "reviewer" || options.taskRef === `@${testUlid("TASK", 13)}`,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    }));
     await engine.start();
 
     const internal = engine as unknown as {
@@ -200,7 +209,7 @@ describe("Dispatch in-progress priority", () => {
 
     // Provide inline task data with automation: eligible so task.ready/task.needs_work
     // default filter passes (AC-21). Tasks are not on disk to avoid staleness discard.
-    const makeEligibleTask = (id: string) => ({ automation: "eligible", tags: [] }) as any;
+    const makeEligibleTask = (priority: number) => ({ automation: "eligible", tags: [], priority }) as any;
 
     await engine.handleStateChange(
       makeStateChange({
@@ -208,7 +217,7 @@ describe("Dispatch in-progress priority", () => {
         taskRef: `@${testUlid("TASK", 10)}`,
         fromStatus: "in_progress",
         toStatus: "pending",
-        task: makeEligibleTask(testUlid("TASK", 10)),
+        task: makeEligibleTask(1),
       }),
     );
     await engine.handleStateChange(
@@ -217,7 +226,7 @@ describe("Dispatch in-progress priority", () => {
         taskRef: `@${testUlid("TASK", 11)}`,
         fromStatus: "pending_review",
         toStatus: "needs_work",
-        task: makeEligibleTask(testUlid("TASK", 11)),
+        task: makeEligibleTask(2),
       }),
     );
     await engine.handleStateChange(
@@ -226,6 +235,7 @@ describe("Dispatch in-progress priority", () => {
         taskRef: `@${testUlid("TASK", 12)}`,
         fromStatus: "in_progress",
         toStatus: "pending_review",
+        task: makeEligibleTask(4),
       }),
     );
     await engine.handleStateChange(
@@ -234,15 +244,31 @@ describe("Dispatch in-progress priority", () => {
         taskRef: `@${testUlid("TASK", 13)}`,
         fromStatus: "pending",
         toStatus: "in_progress",
+        task: makeEligibleTask(5),
+      }),
+    );
+    await engine.handleStateChange(
+      makeStateChange({
+        taskId: testUlid("TASK", 14),
+        taskRef: `@${testUlid("TASK", 14)}`,
+        fromStatus: "in_progress",
+        toStatus: "pending_review",
+        task: makeEligibleTask(1),
       }),
     );
 
     const queue = internal.queues.get(agent.id) ?? [];
-    expect(queue.map((entry) => entry.change.toStatus)).toEqual([
-      "in_progress",
-      "needs_work",
-      "pending_review",
-      "pending",
+    expect(
+      queue.map((entry) => ({
+        status: entry.change.toStatus,
+        priority: (entry.change.task as { priority?: number } | undefined)?.priority,
+      })),
+    ).toEqual([
+      { status: "in_progress", priority: 5 },
+      { status: "needs_work", priority: 2 },
+      { status: "pending_review", priority: 1 },
+      { status: "pending_review", priority: 4 },
+      { status: "pending", priority: 1 },
     ]);
 
     await engine.stop();
@@ -325,6 +351,245 @@ describe("Dispatch in-progress priority", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
     expect(enqueueCount).toBe(1);
+
+    await engine.stop();
+  });
+});
+
+describe("Dispatch scheduling priority model", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-scheduler-model-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  function mockWorkspaceHealth(
+    resolver: (taskRef: string, role: "worker" | "reviewer") => { exists?: boolean; healthy?: boolean } = () => ({
+      exists: false,
+      healthy: true,
+    }),
+  ): void {
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockImplementation(async (options) => {
+      const role = (options.role ?? "worker") as "worker" | "reviewer";
+      const state = resolver(options.taskRef, role);
+      return {
+        exists: state.exists ?? false,
+        healthy: state.healthy ?? true,
+        reason: state.healthy === false ? "mock-unhealthy" : null,
+        metadata: null,
+      };
+    });
+  }
+
+  // AC: @dispatch-scheduling-priority-model ac-1
+  it("excludes blocked, dependency-blocked, and stale continuation candidates before ranking", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [
+        { on: "task.ready", filter: { automation: "eligible" } },
+        { on: "task.needs_work", filter: { automation: "eligible" } },
+        { on: "task.in_progress" },
+        { on: "task.pending_review" },
+      ],
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+
+    const [depId, pendingId, reviewId, blockedId] = testUlids("SCHA", 4);
+    await writeTasks(testDir, [
+      { _ulid: depId, status: "pending", automation: "ineligible" },
+      { _ulid: pendingId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
+      { _ulid: reviewId, status: "pending_review", automation: "eligible", priority: 1 },
+      { _ulid: blockedId, status: "needs_work", automation: "eligible", blocked_by: ["waiting"] },
+    ]);
+
+    mockWorkspaceHealth((taskRef) => ({
+      exists: taskRef === `@${reviewId}`,
+      healthy: false,
+    }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const spawned: string[] = [];
+    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
+      .mockImplementation(async (_agent, entry) => {
+        spawned.push(((entry as { change: TaskStateChange }).change.taskRef));
+        return true;
+      });
+
+    await engine.start();
+    await (engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> })._drainQueues([worker]);
+
+    expect(spawned).toEqual([]);
+    expect(engine.getStatus().queued).toHaveLength(0);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-scheduling-priority-model ac-4
+  it("prefers continuity within the same band and numeric priority before FIFO", async () => {
+    const reviewer = makeTestAgent({
+      id: "reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [reviewer]);
+
+    const [taskA, taskB] = testUlids("SCHB", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending_review", automation: "eligible", priority: 2 },
+      { _ulid: taskB, status: "pending_review", automation: "eligible", priority: 2 },
+    ]);
+
+    mockWorkspaceHealth(() => ({ exists: true, healthy: true }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const internal = engine as unknown as {
+      queues: Map<string, Array<{ change: TaskStateChange; starvationDeferrals: number }>>;
+      recentTaskAffinityRef: string | null;
+      _drainQueues: (agents: Agent[]) => Promise<void>;
+    };
+    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> }, "_drainQueues")
+      .mockResolvedValue();
+
+    await engine.start();
+    drainSpy.mockRestore();
+    internal.recentTaskAffinityRef = `@${taskB}`;
+
+    const spawned: string[] = [];
+    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
+      .mockImplementation(async (_agent, entry) => {
+        spawned.push(((entry as { change: TaskStateChange }).change.taskRef));
+        return true;
+      });
+
+    await internal._drainQueues([reviewer]);
+
+    expect(spawned[0]).toBe(`@${taskB}`);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-scheduling-priority-model ac-5
+  it("lets the oldest equal-band equal-priority candidate win after the starvation threshold", async () => {
+    const reviewer = makeTestAgent({
+      id: "reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [reviewer]);
+
+    const [taskA, taskB] = testUlids("SCHC", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending_review", automation: "eligible", priority: 2 },
+      { _ulid: taskB, status: "pending_review", automation: "eligible", priority: 2 },
+    ]);
+
+    mockWorkspaceHealth(() => ({ exists: true, healthy: true }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const internal = engine as unknown as {
+      queues: Map<string, Array<{ change: TaskStateChange; starvationDeferrals: number }>>;
+      recentTaskAffinityRef: string | null;
+      _drainQueues: (agents: Agent[]) => Promise<void>;
+    };
+    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> }, "_drainQueues")
+      .mockResolvedValue();
+
+    await engine.start();
+    drainSpy.mockRestore();
+    internal.recentTaskAffinityRef = `@${taskB}`;
+
+    const queue = internal.queues.get(reviewer.id) ?? [];
+    const older = queue.find((entry) => entry.change.taskRef === `@${taskA}`);
+    expect(older).toBeDefined();
+    older!.starvationDeferrals = 2;
+
+    const spawned: string[] = [];
+    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
+      .mockImplementation(async (_agent, entry) => {
+        spawned.push(((entry as { change: TaskStateChange }).change.taskRef));
+        return true;
+      });
+
+    await internal._drainQueues([reviewer]);
+
+    expect(spawned[0]).toBe(`@${taskA}`);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-scheduling-priority-model ac-7
+  it("chooses the next invocation by scheduler rank instead of agent definition order", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+    });
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    // Worker intentionally defined first; scheduler should still pick reviewer first.
+    await setupProjectWithAgents(testDir, [worker, reviewer]);
+
+    const [pendingId, reviewId] = testUlids("SCHD", 2);
+    await writeTasks(testDir, [
+      { _ulid: pendingId, status: "pending", automation: "eligible", priority: 1 },
+      { _ulid: reviewId, status: "pending_review", automation: "eligible", priority: 5 },
+    ]);
+
+    mockWorkspaceHealth((taskRef) => ({
+      exists: taskRef === `@${reviewId}`,
+      healthy: true,
+    }));
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    const spawned: Array<{ agentId: string; taskRef: string }> = [];
+    vi.spyOn(engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> }, "_spawnInvocation")
+      .mockImplementation(async (agent, entry) => {
+        spawned.push({
+          agentId: (agent as Agent).id,
+          taskRef: (entry as { change: TaskStateChange }).change.taskRef,
+        });
+        return true;
+      });
+
+    const drainSpy = vi.spyOn(engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> }, "_drainQueues")
+      .mockResolvedValue();
+
+    await engine.start();
+    drainSpy.mockRestore();
+    await (engine as unknown as { _drainQueues: (agents: Agent[]) => Promise<void> })._drainQueues([worker, reviewer]);
+
+    expect(spawned[0]).toEqual({
+      agentId: "pr-reviewer",
+      taskRef: `@${reviewId}`,
+    });
 
     await engine.stop();
   });
@@ -1521,6 +1786,12 @@ describe("Autonomous dispatch prompt guardrails", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
     });
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
 
     await engine.start();
     const taskId = testUlid("TASK");
@@ -1959,6 +2230,12 @@ describe("Stale queue entry discard", () => {
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-dispatch-stale-");
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
   });
 
   afterEach(async () => {
@@ -3205,8 +3482,8 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     await engine.stop();
   });
 
-  // Verify task.in_progress and task.pending_review are NOT affected by dep checks
-  it("should not apply dep/blocked checks to task.in_progress or task.pending_review events", async () => {
+  // AC: @dispatch-scheduling-priority-model ac-1
+  it("should exclude in_progress and pending_review events when dependencies or blockers are unresolved", async () => {
     const [depId, taskId] = testUlids("RNRR", 2);
     const agent = makeTestAgent({
       dispatch: [
@@ -3216,7 +3493,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     });
     await setupProjectWithAgents(testDir, [agent]);
 
-    // Task has unmet dep and blocked_by, but events are in_progress/pending_review
+    // Task has unmet dep and blocked_by.
     await writeTasks(testDir, [
       { _ulid: depId, status: "pending", automation: "eligible" },
       { _ulid: taskId, status: "in_progress", automation: "eligible", depends_on: [`@${depId}`], blocked_by: ["something"] },
@@ -3237,7 +3514,13 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     await engine.start();
     enqueueCount = 0;
 
-    // task.in_progress should dispatch even with unmet deps and blocked_by
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
+
     const change1: TaskStateChange = {
       taskId,
       taskRef: `@${taskId}`,
@@ -3247,7 +3530,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
     };
     await engine.handleStateChange(change1);
 
-    expect(enqueueCount).toBeGreaterThanOrEqual(1);
+    expect(enqueueCount).toBe(0);
 
     await engine.stop();
   });
