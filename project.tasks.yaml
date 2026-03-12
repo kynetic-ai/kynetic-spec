@@ -91703,7 +91703,7 @@
   spec_ref: "@dispatch-branch-integration-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91718,7 +91718,7 @@
   session_id: 01KKHQQX25036Z007SPMGFT6TB
   created_at: 2026-03-12T02:33:55.483Z
   started_at: 2026-03-12T19:34:28.816Z
-  submitted_at: 2026-03-12T19:04:26.556Z
+  submitted_at: 2026-03-12T19:34:32.619Z
   notes:
     - _ulid: 01KKHHEP38FKCEVWXDHJQJ31WB
       created_at: 2026-03-12T17:28:03.944Z
