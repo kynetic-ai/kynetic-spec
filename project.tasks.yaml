@@ -91549,7 +91549,7 @@
   spec_ref: "@dispatch-branch-integration-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-implement-canonical-task-workspace-contract"
@@ -91565,6 +91565,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-12T17:26:58.988Z
+  session_id: 01KKHH2H5M3B3H30ABDGXEKS6X
 - _ulid: 01KKFY9FK58T570QTKKYMPTK98
   slugs:
     - task-implement-dispatch-workspace-cleanup
@@ -91876,6 +91878,10 @@
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #798. Clarified mixed Tasks-section precedence so derive_from_specs
+    uses plan.derived_tasks regardless of directive ordering, while manual YAML remains the fallback
+    when derive_from_specs is absent. AC coverage verified for @plan-embedded-views ac-2 and ac-9,
+    inherited markdown trait coverage remains in place, PR CI passed, and npm test passed locally."
   depends_on:
     - "@bug-plan-embedded-views-live-loading"
   context: []
@@ -91892,6 +91898,7 @@
   created_at: 2026-03-12T03:17:43.331Z
   started_at: 2026-03-12T17:15:56.012Z
   submitted_at: 2026-03-12T17:16:00.286Z
+  completed_at: 2026-03-12T17:26:21.481Z
   notes:
     - _ulid: 01KKG4BC358EYHKY6X48NJP6B2
       created_at: 2026-03-12T04:19:49.477Z
@@ -91935,8 +91942,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-12T17:26:21.481Z
-  closed_reason: "Merged in PR #798. Clarified mixed Tasks-section precedence so derive_from_specs
-    uses plan.derived_tasks regardless of directive ordering, while manual YAML remains the fallback
-    when derive_from_specs is absent. AC coverage verified for @plan-embedded-views ac-2 and ac-9,
-    inherited markdown trait coverage remains in place, PR CI passed, and npm test passed locally."
