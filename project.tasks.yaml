@@ -91021,7 +91021,7 @@
   spec_ref: "@dispatch-workspace-registry"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-design-dispatch-workspace-config"
@@ -91080,8 +91080,21 @@
         workspace registry or reconciliation layer, confirming implementation remains for
         @task-implement-dispatch-workspace-registry and related follow-on tasks.
       supersedes: null
+    - _ulid: 01KKG0RRHX4RG4M15FSPS3M292
+      created_at: 2026-03-12T03:17:13.917Z
+      author: Jacob Chapel
+      content: "Completed with --force from in_progress state. Reason: Design captured in approved plan
+        @plan-dispatch-worktree-isolation-and-scheduling and spec @dispatch-workspace-registry;
+        implementation remains for @task-implement-dispatch-workspace-registry and downstream
+        dispatch worktree/integration/cleanup tasks."
+      supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-12T03:17:13.130Z
+  closed_reason: Design captured in approved plan @plan-dispatch-worktree-isolation-and-scheduling and
+    spec @dispatch-workspace-registry; implementation remains for
+    @task-implement-dispatch-workspace-registry and downstream dispatch worktree/integration/cleanup
+    tasks.
 - _ulid: 01KKFY9CKEP7X52W1WFV9TF47Q
   slugs:
     - task-implement-dispatch-workspace-config
