@@ -91912,7 +91912,7 @@
   spec_ref: "@dispatch-runtime-bootstrap-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-workspace-registry"
@@ -91928,6 +91928,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-12T20:46:14.901Z
+  session_id: 01KKHWE6FRYZE1FKE3TKQ2ER8R
 - _ulid: 01KKFY9GS59BDK2CGJARN0RHNZ
   slugs:
     - task-implement-dispatch-orientation-prompt
