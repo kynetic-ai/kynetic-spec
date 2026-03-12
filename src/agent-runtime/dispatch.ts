@@ -1472,24 +1472,27 @@ export class DispatchEngine {
     };
 
     let terminalEvent: InvocationEvent | null = null;
-    const markActivePromise = markDispatchWorkspaceActive({
-      projectDir: this.projectDir,
-      taskRef: entry.change.taskRef,
-      role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
-    }).then((activeWorkspace) => {
-      if (activeWorkspace) {
-        workspace = activeWorkspace;
-        options.env = {
-          ...options.env,
-          KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
-          KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
-        };
+    const markActivePromise = this.shadowMutex.runExclusive(async () => {
+      try {
+        const activeWorkspace = await markDispatchWorkspaceActive({
+          projectDir: this.projectDir,
+          taskRef: entry.change.taskRef,
+          role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+        });
+        if (activeWorkspace) {
+          workspace = activeWorkspace;
+          options.env = {
+            ...options.env,
+            KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
+            KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
+          };
+        }
+      } catch (err) {
+        console.error(
+          `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
+          err,
+        );
       }
-    }).catch((err) => {
-      console.error(
-        `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
-        err,
-      );
     });
 
     const invocationPromise = Promise.resolve()
@@ -1555,10 +1558,12 @@ export class DispatchEngine {
         }
 
         try {
-          await markDispatchWorkspaceIdle({
-            projectDir: this.projectDir,
-            taskRef: entry.change.taskRef,
-            taskStatus: entry.change.toStatus,
+          await this.shadowMutex.runExclusive(async () => {
+            await markDispatchWorkspaceIdle({
+              projectDir: this.projectDir,
+              taskRef: entry.change.taskRef,
+              taskStatus: entry.change.toStatus,
+            });
           });
         } catch (err) {
           console.error(
