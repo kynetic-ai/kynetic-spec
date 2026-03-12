@@ -245,6 +245,36 @@ export interface PlanDetail extends PlanSummary {
   content: string;
 }
 
+export interface BatchSpecItemSummary {
+  kind: 'item';
+  ulid: string;
+  slugs: string[];
+  title: string;
+  type: string;
+  status?: string;
+  maturity?: string;
+  traits: string[];
+  ac_count: number;
+}
+
+export interface BatchTaskSummary {
+  kind: 'task';
+  ulid: string;
+  slugs: string[];
+  title: string;
+  status: string;
+  priority: number;
+  spec_ref?: string;
+  assignee?: string;
+}
+
+export type BatchItemSummary = BatchSpecItemSummary | BatchTaskSummary;
+
+export interface BatchItemsResponse {
+  items: BatchItemSummary[];
+  unresolved: string[];
+}
+
 /**
  * Search result
  * AC: @api-contract ac-19

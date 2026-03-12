@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { test, expect } from '../fixtures/test-base';
 
 test.describe('Plans View', () => {
@@ -5,6 +6,94 @@ test.describe('Plans View', () => {
 		await page.goto('/plans');
 		await expect(page.getByRole('heading', { name: 'Plans', exact: true })).toBeVisible();
 	});
+
+	const MISMATCHED_EMBEDDED_PLAN_CONTENT = `# Active Plan
+This plan is actively being implemented.
+
+## Specs
+
+\`\`\`yaml
+- title: Unknown Spec
+  slug: not-derived
+  type: feature
+\`\`\`
+
+## Implementation Notes
+
+Fallback should keep this YAML visible.
+`;
+
+	const EMBEDDED_BATCH_ITEMS = [
+		{
+			kind: 'item',
+			ulid: '01KF1645CBDJYHWBPYWRN3HYPJ',
+			slugs: ['test-feature'],
+			title: 'Test Feature',
+			type: 'feature',
+			status: 'in_progress',
+			maturity: 'draft',
+			traits: ['@test-trait'],
+			ac_count: 2
+		},
+		{
+			kind: 'task',
+			ulid: '01KG0RR8CB8N4YGP991WD7XS9R',
+			slugs: ['test-task-in-progress'],
+			title: 'In progress task',
+			status: 'in_progress',
+			priority: 3,
+			spec_ref: '@test-feature'
+		},
+		{
+			kind: 'task',
+			ulid: '01KG0RRFCC9N4YGP991WD7XSCP',
+			slugs: ['test-task-completed'],
+			title: 'Completed task',
+			status: 'completed',
+			priority: 3,
+			spec_ref: '@test-feature'
+		},
+		{
+			kind: 'task',
+			ulid: '01KG0RR6CA45ZT43W2T6HJMVA1',
+			slugs: ['test-task-ready'],
+			title: 'Ready task',
+			status: 'pending',
+			priority: 2,
+			spec_ref: '@test-feature',
+			assignee: '@alice'
+		}
+	];
+
+	async function stubActivePlanContent(page: Page, content: string) {
+		await page.route('**/api/plans/test-plan-active', async (route) => {
+			const response = await route.fetch();
+			const body = await response.json();
+			await route.fulfill({
+				status: response.status(),
+				contentType: 'application/json',
+				body: JSON.stringify({ ...body, content })
+			});
+		});
+	}
+
+	async function expandActivePlan(page: Page) {
+		const activePlan = page.getByTestId('plan-card').filter({ hasText: 'Active Implementation Plan' });
+		await expect(activePlan).toBeVisible();
+		await activePlan.getByTestId('plan-expand-toggle').click();
+		await expect(activePlan.getByTestId('plan-content-section')).toBeVisible({ timeout: 10000 });
+		return activePlan;
+	}
+
+	async function stubEmbeddedBatchItems(page: Page) {
+		await page.route('**/api/items/batch', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ items: EMBEDDED_BATCH_ITEMS, unresolved: [] })
+			});
+		});
+	}
 
 	// ── AC: @ui-plans-view ac-1 — Each plan shows title, status, creation date, linked spec/task counts, and progress ──
 
@@ -274,11 +363,11 @@ test.describe('Plans View', () => {
 		const contentSection = activePlan.getByTestId('plan-content-section');
 		await expect(contentSection).toBeVisible({ timeout: 10000 });
 
-		const rendered = activePlan.getByTestId('plan-content-rendered');
+		const rendered = activePlan.getByTestId('plan-content-rendered').first();
 		await expect(rendered).toBeVisible();
 
-		// Fixture content is "# Active Plan\nThis plan is actively being implemented."
-		// Rendered as markdown, should have an h1 and paragraph text
+		// The first markdown block preserves the intro prose even when later
+		// sections are replaced by embedded spec/task cards.
 		await expect(rendered.locator('h1')).toContainText('Active Plan');
 		await expect(rendered).toContainText('actively being implemented');
 	});
@@ -295,7 +384,9 @@ test.describe('Plans View', () => {
 		await toggle.click();
 
 		// Wait for content to load
-		await expect(activePlan.getByTestId('plan-content-rendered')).toBeVisible({ timeout: 10000 });
+		await expect(activePlan.getByTestId('plan-content-rendered').first()).toBeVisible({
+			timeout: 10000
+		});
 
 		// Button should now say "Hide Content"
 		await expect(toggle).toContainText('Hide Content');
@@ -348,7 +439,9 @@ test.describe('Plans View', () => {
 
 		// First expand — content loads
 		await toggle.click();
-		await expect(activePlan.getByTestId('plan-content-rendered')).toBeVisible({ timeout: 10000 });
+		await expect(activePlan.getByTestId('plan-content-rendered').first()).toBeVisible({
+			timeout: 10000
+		});
 
 		// Collapse
 		await toggle.click();
@@ -356,7 +449,7 @@ test.describe('Plans View', () => {
 
 		// Re-expand — should show content immediately without loading skeleton
 		await toggle.click();
-		await expect(activePlan.getByTestId('plan-content-rendered')).toBeVisible();
+		await expect(activePlan.getByTestId('plan-content-rendered').first()).toBeVisible();
 		// Loading skeleton should not appear for cached content
 		await expect(activePlan.getByTestId('plan-content-loading')).not.toBeVisible();
 	});
@@ -382,6 +475,143 @@ test.describe('Plans View', () => {
 		// Should show error state
 		const errorEl = activePlan.getByTestId('plan-content-error');
 		await expect(errorEl).toBeVisible({ timeout: 10000 });
+	});
+
+	// ── AC: @plan-embedded-views ac-1..ac-8 — Embedded spec/task cards inside rendered plan markdown ──
+
+	// AC: @plan-embedded-views ac-1
+	// AC: @plan-embedded-views ac-8
+	test('renders embedded spec cards alongside surrounding markdown prose', async ({ page }) => {
+		await stubEmbeddedBatchItems(page);
+		const activePlan = await expandActivePlan(page);
+
+		const specCard = activePlan
+			.getByTestId('plan-embedded-spec-card')
+			.filter({ hasText: 'Test Feature' });
+		await expect(specCard).toBeVisible({ timeout: 10000 });
+		await expect(specCard).toContainText('feature');
+		await expect(specCard).toContainText('In Progress');
+		await expect(specCard).toContainText('Draft');
+		await expect(specCard).toContainText('@test-trait');
+		await expect(specCard).toContainText('2 ACs');
+
+		const notesBlock = activePlan
+			.getByTestId('plan-content-rendered')
+			.filter({ hasText: 'Implementation Notes' });
+		await expect(notesBlock.locator('h2')).toContainText('Implementation Notes');
+		await expect(notesBlock.locator('code')).toContainText('npm test');
+	});
+
+	// AC: @plan-embedded-views ac-2
+	test('renders derived task cards from fenced derive_from_specs content with task metadata', async ({
+		page
+	}) => {
+		await stubEmbeddedBatchItems(page);
+		const activePlan = await expandActivePlan(page);
+
+		const taskCards = activePlan.getByTestId('plan-embedded-task-card');
+		await expect(taskCards).toHaveCount(3, { timeout: 10000 });
+
+		const readyTaskCard = taskCards.filter({ hasText: 'Ready task' });
+		await expect(readyTaskCard).toBeVisible();
+		await expect(readyTaskCard).toContainText('Pending');
+		await expect(readyTaskCard).toContainText('P2');
+		await expect(readyTaskCard).toContainText('@alice');
+	});
+
+	// AC: @plan-embedded-views ac-3
+	test('clicking an embedded spec card navigates to the spec detail route', async ({ page }) => {
+		await stubEmbeddedBatchItems(page);
+		const activePlan = await expandActivePlan(page);
+
+		const specCard = activePlan
+			.getByTestId('plan-embedded-spec-card')
+			.filter({ hasText: 'Test Feature' });
+		await Promise.all([
+			page.waitForURL(/\/specs\?ref=test-feature/, { timeout: 10000 }),
+			specCard.click()
+		]);
+		await expect(page.getByRole('heading', { name: 'Spec Items' })).toBeVisible();
+		await expect(page).toHaveURL(/\/specs\?ref=test-feature/);
+		await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
+	});
+
+	// AC: @plan-embedded-views ac-3
+	test('clicking an embedded task card opens the task detail view', async ({ page }) => {
+		await stubEmbeddedBatchItems(page);
+		const activePlan = await expandActivePlan(page);
+
+		const taskCard = activePlan
+			.getByTestId('plan-embedded-task-card')
+			.filter({ hasText: 'Ready task' });
+		await Promise.all([
+			page.waitForURL(/\/tasks\?ref=test-task-ready/, { timeout: 10000 }),
+			taskCard.click()
+		]);
+
+		const detailPanel = page.getByTestId('task-detail-panel');
+		await expect(detailPanel).toBeVisible();
+		await expect(detailPanel.getByTestId('task-detail-title')).toContainText('Ready task');
+	});
+
+	// AC: @plan-embedded-views ac-4
+	test('falls back to rendered yaml code blocks when embedded refs do not match derived refs', async ({
+		page
+	}) => {
+		await stubActivePlanContent(page, MISMATCHED_EMBEDDED_PLAN_CONTENT);
+		const activePlan = await expandActivePlan(page);
+
+		await expect(activePlan.getByTestId('plan-embedded-spec-card')).toHaveCount(0);
+		await expect(activePlan.getByTestId('plan-content-rendered').locator('pre code')).toContainText(
+			'slug: not-derived'
+		);
+	});
+
+	// AC: @plan-embedded-views ac-5
+	test('shows embedded loading skeletons while batch item summaries are still loading', async ({
+		page
+	}) => {
+		let releaseBatch: (() => void) | undefined;
+		const batchGate = new Promise<void>((resolve) => {
+			releaseBatch = resolve;
+		});
+		await page.route('**/api/items/batch', async (route) => {
+			await batchGate;
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ items: EMBEDDED_BATCH_ITEMS, unresolved: [] })
+			});
+		});
+
+		const activePlan = await expandActivePlan(page);
+		await expect(activePlan.getByTestId('plan-embedded-spec-loading')).toBeVisible();
+		await expect(activePlan.getByTestId('plan-embedded-task-loading')).toBeVisible();
+
+		releaseBatch?.();
+		await expect(activePlan.getByTestId('plan-embedded-spec-card').first()).toBeVisible({
+			timeout: 10000
+		});
+	});
+
+	// AC: @plan-embedded-views ac-6
+	test('shows embedded error UI and raw yaml fallback when batch item loading fails', async ({
+		page
+	}) => {
+		await page.route('**/api/items/batch', async (route) => {
+			await route.fulfill({
+				status: 500,
+				contentType: 'application/json',
+				body: JSON.stringify({ error: 'internal_error', message: 'Embedded batch failed' })
+			});
+		});
+
+		const activePlan = await expandActivePlan(page);
+
+		const taskError = activePlan.getByTestId('plan-embedded-task-error');
+		await expect(taskError).toBeVisible({ timeout: 10000 });
+		await expect(taskError).toContainText('Failed to load embedded task details');
+		await expect(taskError.locator('pre code')).toContainText('derive_from_specs: true');
 	});
 
 	// ── AC: @ui-plans-view ac-2 — API endpoint tests ──

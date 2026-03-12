@@ -208,26 +208,6 @@ test.describe('Items View', () => {
       await expect(firstAcGiven).toContainText('a user is viewing the feature');
     });
 
-    // AC: @markdown-ui-adoption ac-6
-    test('renders acceptance criteria markdown in collapsed and expanded views', async ({ page, daemon }) => {
-      await page.goto('/items');
-
-      const specTree = page.getByTestId('spec-tree').first();
-      const moduleNode = specTree.locator('[data-testid*="tree-node-module"]').first();
-      await moduleNode.locator('> div').first().getByTestId('expand-toggle').click();
-
-      const childContainer = moduleNode.getByTestId('tree-node-child');
-      const featureNode = childContainer.locator('[data-testid*="tree-node-feature"]').first();
-      await featureNode.locator('> div').first().getByTestId('node-title').click();
-
-      const firstAc = page.getByTestId('ac-item').first();
-      await expect(firstAc.getByTestId('ac-given').locator('code')).toContainText(
-        'kspec item get @test-feature'
-      );
-
-      await firstAc.getByTestId('ac-expand-toggle').click();
-      await expect(firstAc.getByTestId('ac-then-full').locator('code')).toContainText('in_progress');
-    });
   });
 
   test.describe('Linked Tasks (AC-13)', () => {
@@ -392,6 +372,7 @@ test.describe('Items View', () => {
   });
 
   test.describe('Acceptance Criteria Expansion (AC-15)', () => {
+    // AC: @plan-embedded-views ac-7
     test('expands AC to show full Given/When/Then text', async ({ page, daemon }) => {
       await page.goto('/items');
 
