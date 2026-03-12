@@ -91488,12 +91488,31 @@
     - worktree
     - runtime
   vcs_refs: []
+  session_id: 01KKHGK5AGKV303WHXGJEJY85W
   created_at: 2026-03-12T02:33:54.840Z
-  notes: []
+  started_at: 2026-03-12T17:13:44.133Z
+  notes:
+    - _ulid: 01KKHGMDR4TDNM7QGTH61G0YQB
+      created_at: 2026-03-12T17:13:43.429Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch workers/reviewers need isolated code worktrees rooted under the
+        configured dispatch worktree root, with reviewers attached to detached snapshots instead of
+        a second checkout of the mutable branch.
+
+        - Scope: implement worktree provisioning/reuse/reconciliation for worker, fix-cycle, and
+        reviewer roles against the canonical workspace registry; no fallback to the shared main
+        checkout.
+
+        - Files: expected focus in packages/daemon/src/agent-runtime plus matching tests under
+        tests/ or packages/daemon tests.
+
+        - Verification: targeted runtime tests, then full npm test, then kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T17:13:44.133Z
-  session_id: 01KKHGK5AGKV303WHXGJEJY85W
 - _ulid: 01KKFY9F0VXEG6YWVBA20N7DJ2
   slugs:
     - task-implement-dispatch-branch-integration-contract
