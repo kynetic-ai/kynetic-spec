@@ -92402,6 +92402,14 @@
         - Verification: targeted tests for plan derive false path, then full npm test and kspec
         validate.
       supersedes: null
+    - _ulid: 01KKJ5XWSJ2FD2HZHFZX2RGSBH
+      created_at: 2026-03-12T23:25:53.843Z
+      author: Jacob Chapel
+      content: "Implemented derive_from_specs gating in plan derive. Auto per-spec task creation now
+        defaults on but is skipped when the parsed plan explicitly sets derive_from_specs: false.
+        Added regression coverage proving manual tasks still materialize with preserved plan/spec
+        links and without inventing @implement-* dependencies."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
