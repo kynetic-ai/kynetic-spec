@@ -86186,6 +86186,35 @@
         assertions for rendered spec/task cards, card navigation, loading skeletons, and error
         fallback on the existing PR branch."
       supersedes: null
+    - _ulid: 01KKFV8QGTM6K3Z2TX8DSH4857
+      created_at: 2026-03-12T01:41:05.690Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 7] Replaced parser-only AC coverage with browser/runtime assertions on the plans
+        surface. Added Playwright checks for rendered embedded spec/task cards, card navigation,
+        mismatched-ref fallback, loading skeletons, and batch-error fallback; anchored ac-7 to the
+        existing acceptance-criteria expansion runtime test in items.spec; and removed the old
+        source-string/navigation assertions from tests/plan-embedded-views.test.ts.
+
+
+        Verification:
+
+        - npm test -- tests/plan-embedded-views.test.ts
+
+        - env -u KSPEC_SESSION_ID npm --workspace packages/web-ui run test:e2e:run --
+        tests/e2e/plans.spec.ts --grep 'renders embedded spec cards alongside surrounding markdown
+        prose|renders derived task cards from fenced derive_from_specs content with task
+        metadata|clicking an embedded spec card navigates to the spec detail route|clicking an
+        embedded task card opens the task detail view|falls back to rendered yaml code blocks when
+        embedded refs do not match derived refs|shows embedded loading skeletons while batch item
+        summaries are still loading|shows embedded error UI and raw yaml fallback when batch item
+        loading fails' (passed)
+
+        - kspec validate (warnings only; existing project-wide warning debt)
+
+        - npm test (full suite hit one unrelated/flaky failure in tests/cli-serve.test.ts shutdown
+        handling); npm test -- tests/cli-serve.test.ts passed on immediate rerun
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB5J0NCFNZT8TJF33FSW1N3
