@@ -87731,6 +87731,16 @@
         Task focus is now to make validate ignore blanket refs for coverage, surface them as
         warnings, and then use the honest warning set to decide any follow-up cleanup tasks."
       supersedes: null
+    - _ulid: 01KKHM0VBT9EVX1HB5FS8TF6AS
+      created_at: 2026-03-12T18:12:56.314Z
+      author: chapel
+      content: "Post-rewrite completeness snapshot with blanket refs invalidated: 231 missing own-AC
+        coverage warnings, 0 missing trait-AC coverage warnings, 164 invalid_ac_annotation warnings,
+        1 missing_acceptance_criteria warning, and 1 automation_eligible_no_spec warning. This
+        confirms the new validator rule exposes substantial existing bare-ref debt; follow-up
+        cleanup should be split from the validator-semantics change rather than folded back into
+        this PR."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
