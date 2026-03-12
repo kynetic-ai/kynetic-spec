@@ -86044,7 +86044,7 @@
   type: task
   spec_ref: "@plan-embedded-views"
   plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-batch-item-fetch-api"
@@ -86053,7 +86053,7 @@
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKFMT5H56QP7TFM5JQ4Q72SF
+  session_id: null
   created_at: 2026-03-10T06:04:42.957Z
   started_at: 2026-03-11T23:57:23.001Z
   submitted_at: 2026-03-12T00:03:09.019Z
@@ -86171,6 +86171,13 @@
         tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts (passed, 130 tests).
         npm test (passed: 216 files, 4600 tests, 3 skipped). kspec validate (warnings only; same
         pre-existing warning debt, no new errors)."
+      supersedes: null
+    - _ulid: 01KKFP7E4X2C069NZH2XWQ6RJ3
+      created_at: 2026-03-12T00:13:00.445Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: the new plan embedded view AC annotations
+        over-claim UI coverage. Add runtime coverage for the rendered spec/task cards, navigation,
+        loading placeholders, and error fallback before merge."
       supersedes: null
   todos: []
   automation: eligible
