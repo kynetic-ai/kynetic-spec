@@ -2926,17 +2926,19 @@ requirements:
         when: |
           kspec validate --completeness runs
         then: Zero missing trait AC coverage warnings
-      - id: ac-own-coverage-reduction
-        given: |
-          All specs with own acceptance criteria
-        when: |
-          kspec validate --completeness runs
-        then: Missing own AC coverage warnings reduced by at least 50% from the count at task start time
+      - id: ac-no-blanket-credit
+        given: An annotation references a spec or trait with acceptance criteria but omits ac-* ids
+        when: kspec validate --completeness runs
+        then: The annotation is reported as invalid coverage metadata and does not provide completeness
+          credit
       - id: ac-annotation-format
-        given: A machine-parseable coverage annotation
-        when: kspec validate scans source files
-        then: "It accepts the form // AC: @spec-ref ac-id [ac-id ...], where each ac-id may be numeric or
-          named"
+        given: |
+          Each added test annotation
+        when: |
+          It is reviewed
+        then: >
+          It uses the format "// AC: @spec-ref ac-N" (or language-appropriate comment prefix) and is
+          machine-parseable
     depends_on: []
     implements: []
     relates_to: []
