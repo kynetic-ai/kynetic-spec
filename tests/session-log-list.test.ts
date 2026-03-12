@@ -134,9 +134,11 @@ describe('getSessionLogSummary', () => {
 
   it('should compute duration from now for active sessions', async () => {
     const sessionId = testUlid('SESS', 1);
+    const startedAt = new Date(Date.now() - 1000).toISOString();
     await createSession(sessionsDir, {
       id: sessionId,
       agent_type: 'test-agent',
+      started_at: startedAt,
     });
 
     const summary = await getSessionLogSummary(sessionsDir, sessionId);

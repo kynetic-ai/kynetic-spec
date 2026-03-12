@@ -14,6 +14,7 @@ import {
   saveDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
 import {
+  markDispatchWorkspaceActive,
   provisionDispatchWorkspace,
   reconcileDispatchWorkspaceRegistry,
   type DispatchWorkspaceMetadata,
@@ -317,6 +318,37 @@ describe("dispatch workspace registry", () => {
   });
 
   // AC: @dispatch-workspace-registry ac-6
+  it("preserves a live active workspace role during periodic reconciliation", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 27)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Preserve Active Role",
+        slugs: ["task-preserve-active-role"],
+      },
+    });
+
+    await markDispatchWorkspaceActive({
+      projectDir: tempDir,
+      taskRef,
+      role: "worker",
+    });
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([[taskRef, "in_progress" as const]]),
+      new Map([[taskRef, "worker" as const]]),
+    );
+
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(record.lifecycle_state).toBe("active");
+    expect(record.active_role).toBe("worker");
+  });
+
+  // AC: @dispatch-workspace-registry ac-6
   // AC: @dispatch-workspace-registry ac-7
   it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", async () => {
     await seedRepo(tempDir);
@@ -482,7 +514,7 @@ describe("dispatch workspace registry", () => {
       new Map([[taskRef, "in_progress" as const]]),
     );
     record = await readWorkspaceRecord(registryPath, taskRef);
-    expect(record.lifecycle_state).toBe("closing");
+    expect(record.lifecycle_state).toBe("ready");
     expect(record.integration.status).toBe("reset");
     expect(record.cleanup).toMatchObject({
       eligible: true,

@@ -268,6 +268,7 @@ interface ActiveInvocationRecord {
   agentId: string;
   agentName: string;
   taskRef: string | undefined;
+  role: "worker" | "reviewer";
   startedAtMs: number;
 }
 
@@ -368,6 +369,8 @@ export class DispatchEngine {
   private invocationAbortControllers: Set<AbortController> = new Set();
   /** Per-invocation tracking records for status display */
   private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
+  /** Task refs currently between queue removal and active tracking registration */
+  private inFlightTaskKeys = new Set<string>();
   /** Monotonic enqueue sequence for deterministic queue ordering */
   private nextQueueSequence = 0;
   /** Timer handle for periodic reconciliation. AC: @agent-dispatch-engine ac-20 */
@@ -403,7 +406,9 @@ export class DispatchEngine {
       const taskStatusByRef = new Map(
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
-      await reconcileDispatchWorkspaceRegistry(this.projectDir, taskStatusByRef);
+      await this.shadowMutex.runExclusive(async () => {
+        await reconcileDispatchWorkspaceRegistry(this.projectDir, taskStatusByRef);
+      });
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
@@ -673,7 +678,13 @@ export class DispatchEngine {
       const taskStatusByRef = new Map(
         tasks.map((task) => [`@${task._ulid}`, task.status as TaskStatus]),
       );
-      await reconcileDispatchWorkspaceRegistry(this.projectDir, taskStatusByRef);
+      await this.shadowMutex.runExclusive(async () => {
+        await reconcileDispatchWorkspaceRegistry(
+          this.projectDir,
+          taskStatusByRef,
+          this._activeRoleByTaskRef(),
+        );
+      });
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
@@ -742,6 +753,9 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-19
    */
   private _hasActiveOrQueuedInvocation(agentId: string, taskId: string): boolean {
+    if (this.inFlightTaskKeys.has(`${agentId}:@${taskId}`)) {
+      return true;
+    }
     // Check active invocations
     for (const record of this.activeInvocationDetails.values()) {
       if (record.agentId === agentId && record.taskRef === `@${taskId}`) {
@@ -751,6 +765,16 @@ export class DispatchEngine {
     // Check queued entries
     const queue = this.queues.get(agentId) ?? [];
     return queue.some((entry) => entry.change.taskId === taskId);
+  }
+
+  private _activeRoleByTaskRef(): Map<string, "worker" | "reviewer"> {
+    const roles = new Map<string, "worker" | "reviewer">();
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.taskRef) {
+        roles.set(record.taskRef, record.role);
+      }
+    }
+    return roles;
   }
 
   /**
@@ -1062,12 +1086,15 @@ export class DispatchEngine {
    */
   private async _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): Promise<boolean> {
     const agentId = agent.id;
+    const role = entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
+    const inFlightKey = `${agentId}:${entry.change.taskRef}`;
+    this.inFlightTaskKeys.add(inFlightKey);
     let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
     try {
       workspace = await provisionDispatchWorkspace({
         projectDir: this.projectDir,
         taskRef: entry.change.taskRef,
-        role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+        role,
         cleanupState: {
           taskStatus: entry.change.task?.status ?? entry.change.toStatus,
         },
@@ -1091,6 +1118,7 @@ export class DispatchEngine {
           `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
         ], { cwd: this.cwd });
       }
+      this.inFlightTaskKeys.delete(inFlightKey);
       return false;
     }
 
@@ -1131,6 +1159,7 @@ export class DispatchEngine {
       agentId,
       agentName: agent.name,
       taskRef: entry.change.taskRef,
+      role,
       startedAtMs: Date.now(),
     };
     this.activeInvocationDetails.set(invocationId, trackingRecord);
@@ -1333,6 +1362,7 @@ export class DispatchEngine {
         }
       })
       .finally(() => {
+        this.inFlightTaskKeys.delete(inFlightKey);
         this.runningInvocations.delete(invocationPromise);
         this.invocationAbortControllers.delete(abortController);
       });

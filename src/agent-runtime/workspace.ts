@@ -400,10 +400,14 @@ function resolveLifecycleState(
   cleanup: RegistryCleanupState,
   activeRole: RegistryRole | null,
 ): DispatchWorkspaceLifecycleState {
+  const resetReopenedTask = integration.status === "reset"
+    && taskStatus !== null
+    && taskStatus !== "completed"
+    && taskStatus !== "cancelled";
   if (cleanup.status === "completed") return "closed";
   if (cleanup.status === "blocked") return "cleanup_blocked";
   if (health.status !== "healthy") return "stale";
-  if (cleanup.eligible || integration.status === "merged" || integration.status === "abandoned") {
+  if (!resetReopenedTask && (cleanup.eligible || integration.status === "merged" || integration.status === "abandoned")) {
     return "closing";
   }
   if (activeRole === "reviewer") return "integrating";
@@ -703,6 +707,7 @@ function buildWorktreeRecord(
 export async function reconcileDispatchWorkspaceRegistry(
   projectDir: string,
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
+  activeRoleByTaskRef?: Map<string, RegistryRole>,
 ): Promise<void> {
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
@@ -721,12 +726,13 @@ export async function reconcileDispatchWorkspaceRegistry(
       record,
       now,
     );
+    const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
     const lifecycleState = resolveLifecycleState(
       currentTaskStatus,
       health,
       integration,
       cleanup,
-      null,
+      activeRole,
     );
     const closedAt = lifecycleState === "closed"
       ? (record.timestamps.closed_at ?? now)
@@ -736,7 +742,7 @@ export async function reconcileDispatchWorkspaceRegistry(
       ...record,
       canonical_branch_head: canonicalBranchHead,
       lifecycle_state: lifecycleState,
-      active_role: null,
+      active_role: activeRole,
       health,
       cleanup,
       integration,
