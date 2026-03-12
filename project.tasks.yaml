@@ -91898,5 +91898,11 @@
         plan-embedded-views; npm test; node dist/cli/index.js validate (warnings-only baseline, no
         errors)."
       supersedes: null
+    - _ulid: 01KKHGRA8Q15V1A515W1VGPMEJ
+      created_at: 2026-03-12T17:15:50.935Z
+      author: Jacob Chapel
+      content: "Unblocked after retargeting PR #798 to main and pushing an empty commit to retrigger the
+        full PR checks against the correct base branch."
+      supersedes: null
   todos: []
   automation: eligible
