@@ -8169,6 +8169,16 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKHSN9T3FDQ80FKDR4WC6BCH
+    type: friction
+    content: In-place parser YAML writes let concurrent readers observe partially rewritten files, which
+      surfaced as intermittent full-suite failures in dispatch workspace registry/state tests.
+      Shared YAML persistence paths should prefer atomic temp-file rename semantics when readers may
+      poll live state.
+    created_at: 2026-03-12T19:51:29.348Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
