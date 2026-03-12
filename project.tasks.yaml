@@ -91248,6 +91248,24 @@
         - Verification: targeted tests for dispatch/worktree behavior, then full npm test and kspec
         validate.
       supersedes: null
+    - _ulid: 01KKG5GRZW6HGK1Y9E90FGFPZW
+      created_at: 2026-03-12T04:40:15.101Z
+      author: Jacob Chapel
+      content: >-
+        Implemented canonical task branch lineage:
+
+        - Added role-aware dispatch workspace provisioning with deterministic canonical branch
+        naming and persisted base-branch-point/head metadata.
+
+        - Worker/fix-cycle flows now reuse the same mutable branch lineage; pending_review
+        dispatches use a detached reviewer snapshot worktree.
+
+        - Added cleanup-eligibility reconciliation helper and AC-annotated tests covering canonical
+        naming, branch reuse, reviewer isolation, and cleanup eligibility.
+
+        - Verification: npm test; npm test -- canonical-task-workspace-contract
+        dispatch-workspace-config; node dist/cli/index.js validate (warnings-only baseline, exit 6).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9DTC71FAYKHS3TD7DXV4
