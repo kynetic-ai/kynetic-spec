@@ -91215,7 +91215,7 @@
   spec_ref: "@canonical-task-workspace-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
@@ -91231,6 +91231,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-12T04:33:34.148Z
+  session_id: 01KKG4VP057PNS7XJGQNWJJHS7
 - _ulid: 01KKFY9DTC71FAYKHS3TD7DXV4
   slugs:
     - task-implement-dispatch-workspace-registry
