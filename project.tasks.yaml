@@ -92062,7 +92062,7 @@
   spec_ref: "@scoped-dispatch-shadow-serialization"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-worktree-provisioning"
@@ -92111,6 +92111,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-12T21:54:11.914Z
 - _ulid: 01KKFY9JJ9SDWB05ZBQSV2VBDW
   slugs:
     - task-implement-priority-aware-dispatch-scheduler
