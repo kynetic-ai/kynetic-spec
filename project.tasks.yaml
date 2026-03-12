@@ -92018,12 +92018,29 @@
     - scheduling
     - priority
   vcs_refs: []
+  session_id: 01KKHTRE8SR3QRSGG77G5CG1F3
   created_at: 2026-03-12T02:33:59.113Z
-  notes: []
+  started_at: 2026-03-12T20:22:21.091Z
+  notes:
+    - _ulid: 01KKHVVWQEXYB5J14C2N3FXXAB
+      created_at: 2026-03-12T20:30:02.478Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: replace implicit per-agent drain ordering with one explicit cross-agent
+        scheduler for dispatch candidates.
+
+        - Scope: dispatch runtime candidate ranking, workspace-health eligibility gating, and
+        AC-annotated scheduler tests.
+
+        - Files: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+        tests/agent-dispatch-engine.test.ts.
+
+        - Verification: npm test -- tests/agent-dispatch-engine.test.ts, npm test, kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-12T20:22:21.091Z
-  session_id: 01KKHTRE8SR3QRSGG77G5CG1F3
 - _ulid: 01KKFY9K4NK8JC0ANF9TS7H769
   slugs:
     - task-test-dispatch-workspace-and-scheduler-flow
