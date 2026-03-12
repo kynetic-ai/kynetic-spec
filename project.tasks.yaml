@@ -90892,25 +90892,6 @@
       supersedes: null
   todos: []
   automation: manual_only
-- _ulid: 01KKFY99P2MCBX4RKDJJ2J2836
-  slugs:
-    - implement-scoped-dispatch-shadow-serialization
-  title: Implement Scoped Dispatch Shadow Serialization
-  type: task
-  spec_ref: "@scoped-dispatch-shadow-serialization"
-  derivation: auto
-  plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 3
-  tags: []
-  vcs_refs: []
-  created_at: 2026-03-12T02:33:50.018Z
-  notes: []
-  todos: []
 - _ulid: 01KKFY9A7VMJ5BQDEEWSN7YSJ0
   slugs:
     - implement-dispatch-scheduling-priority-model
