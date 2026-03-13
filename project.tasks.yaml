@@ -93270,9 +93270,27 @@
     - upgrade
     - cleanup
   vcs_refs: []
+  session_id: 01KKJP8BXATYVQQW3SGWYCJBQE
   created_at: 2026-03-13T04:10:10.874Z
-  notes: []
+  started_at: 2026-03-13T04:11:51.457Z
+  notes:
+    - _ulid: 01KKJP9KEQ41DDJ7HKP6XD1M7F
+      created_at: 2026-03-13T04:11:54.712Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: reconcile legacy dispatch workspace state created during rollout so reviewer
+        handoff and reconciliation converge on canonical workspace records.
+
+        - Scope: audit current specs and implementation for orphaned/legacy workspace recovery,
+        branch-layout normalization, and discard diagnostics; update spec first if behavior is
+        underspecified.
+
+        - Files: dispatch runtime/state logic, related specs/tasks metadata via CLI, and dispatch
+        regression tests.
+
+        - Verification: targeted dispatch tests, npm test, and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T04:11:51.457Z
-  session_id: 01KKJP8BXATYVQQW3SGWYCJBQE
