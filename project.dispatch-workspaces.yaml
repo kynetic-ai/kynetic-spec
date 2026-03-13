@@ -2339,7 +2339,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7
         head: f0353f68db19e03f0a372bfc0bee511a3d1db6b6
-        last_seen_at: 2026-03-13T21:50:20.048Z
+        last_seen_at: 2026-03-13T22:03:00.894Z
       reviewer: null
     bootstrap:
       status: succeeded
@@ -2375,22 +2375,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T22:02:58.120Z
+      updated_at: 2026-03-13T22:03:00.894Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T22:02:58.120Z
+      updated_at: 2026-03-13T22:03:00.894Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T22:02:58.120Z
+      updated_at: 2026-03-13T22:03:00.894Z
     timestamps:
       created_at: 2026-03-13T18:39:13.247Z
-      updated_at: 2026-03-13T22:02:58.120Z
-      last_reconciled_at: 2026-03-13T22:02:58.120Z
+      updated_at: 2026-03-13T22:03:00.894Z
+      last_reconciled_at: 2026-03-13T22:03:00.894Z
       last_active_at: 2026-03-13T20:37:32.554Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKM1CAH2KSMH1TWS2E6079A1
