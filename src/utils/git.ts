@@ -250,6 +250,93 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
   }
 }
 
+/**
+ * Get the current HEAD commit hash (full 40-char SHA).
+ * AC: @portable-task-submission-linkage ac-1
+ */
+export function getHeadCommit(cwd?: string): string | null {
+  try {
+    return (
+      execSync("git rev-parse HEAD", {
+        cwd,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+      }).trim() || null
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get the upstream remote name and URL for the current branch.
+ * Returns { remote, url } or null if no upstream is configured.
+ * AC: @portable-task-submission-linkage ac-1
+ */
+export function getBranchRemote(
+  branch: string,
+  cwd?: string,
+): { remote: string; url: string } | null {
+  try {
+    const remote = execSync(
+      `git config --get branch.${branch}.remote`,
+      { cwd, encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] },
+    ).trim();
+    if (!remote) return null;
+
+    const url = execSync(`git remote get-url ${remote}`, {
+      cwd,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    }).trim();
+
+    return { remote, url: url || "" };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Capture submission linkage context from current git state.
+ * Returns structured data for storage in task.submission_linkage.
+ * AC: @portable-task-submission-linkage ac-1, ac-3
+ */
+export function captureSubmissionLinkage(
+  cwd?: string,
+  reviewUrl?: string,
+): {
+  branch: string | null;
+  commit: string;
+  remote: string | null;
+  remote_url: string | null;
+  review_url: string | null;
+  captured_at: string;
+} | null {
+  const commit = getHeadCommit(cwd);
+  if (!commit) return null;
+
+  const branch = getCurrentBranch(cwd);
+
+  let remote: string | null = null;
+  let remoteUrl: string | null = null;
+  if (branch) {
+    const remoteInfo = getBranchRemote(branch, cwd);
+    if (remoteInfo) {
+      remote = remoteInfo.remote;
+      remoteUrl = remoteInfo.url;
+    }
+  }
+
+  return {
+    branch,
+    commit,
+    remote: remote || null,
+    remote_url: remoteUrl || null,
+    review_url: reviewUrl || null,
+    captured_at: new Date().toISOString(),
+  };
+}
+
 function parseStatusCode(
   code: string,
 ): "modified" | "added" | "deleted" | "renamed" | "untracked" {
