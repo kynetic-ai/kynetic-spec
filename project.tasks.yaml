@@ -95060,12 +95060,29 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KKMN7CKC1B9X5BBVE7SV19KF
   created_at: 2026-03-13T09:17:03.324Z
-  notes: []
+  started_at: 2026-03-13T22:32:05.669Z
+  notes:
+    - _ulid: 01KKMN8D4VQNMH3A7SYZRVSX25
+      created_at: 2026-03-13T22:32:15.771Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Queue pruning for pending_review and needs_work currently discards entries
+        without healthy workspaces. Need to add discovery/recovery before discard.
+
+        - Scope: Add workspace discovery layer in queue eligibility evaluation that tries registry
+        state, metadata-backed worktrees, submission linkage, and remote/review locators before
+        discarding. Emit diagnostics on failure. Implement precedence ordering.
+
+        - Files: Dispatch engine queue evaluation, workspace registry, workspace health/recovery
+
+        - Verification: Tests covering all 4 ACs plus trait ACs
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T22:32:05.669Z
-  session_id: 01KKMN7CKC1B9X5BBVE7SV19KF
 - _ulid: 01KKK7RC2WKBDMMXWWM7S0P80M
   slugs:
     - implement-deterministic-task-branch-helper
