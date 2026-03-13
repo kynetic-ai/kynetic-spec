@@ -1924,26 +1924,31 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 48408281d10e9f1d5ec6ba581041cd9477006c46
     canonical_branch: dispatch/task/implement-portable-task-submission-linkage/01kkk7r6
-    canonical_branch_head: 48408281d10e9f1d5ec6ba581041cd9477006c46
-    lifecycle_state: active
-    active_role: worker
+    canonical_branch_head: e27aa01753822dbad58104bb6330ccf78de80822
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6
         branch_mode: branch
         branch_ref: dispatch/task/implement-portable-task-submission-linkage/01kkk7r6
-        head: 48408281d10e9f1d5ec6ba581041cd9477006c46
-        last_seen_at: 2026-03-13T12:23:00.271Z
-      reviewer: null
+        head: e27aa01753822dbad58104bb6330ccf78de80822
+        last_seen_at: 2026-03-13T12:40:09.219Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6-review
+        branch_mode: detached
+        branch_ref: null
+        head: e27aa01753822dbad58104bb6330ccf78de80822
+        last_seen_at: 2026-03-13T12:40:09.219Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: 48408281d10e9f1d5ec6ba581041cd9477006c46
-      lastRunAt: 2026-03-13T12:23:00.393Z
+      canonicalBranchHead: e27aa01753822dbad58104bb6330ccf78de80822
+      lastRunAt: 2026-03-13T12:40:09.353Z
       invalidationReasons: []
       steps: []
       failureMessage: null
-      lastRole: worker
+      lastRole: reviewer
       roleStates:
         worker:
           status: succeeded
@@ -1954,10 +1959,10 @@ workspaces:
           steps: []
           failureMessage: null
         reviewer:
-          status: not_run
-          configHash: null
-          canonicalBranchHead: null
-          lastRunAt: null
+          status: succeeded
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          canonicalBranchHead: e27aa01753822dbad58104bb6330ccf78de80822
+          lastRunAt: 2026-03-13T12:40:09.353Z
           invalidationReasons: []
           steps: []
           failureMessage: null
@@ -1968,21 +1973,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T12:39:58.379Z
+      updated_at: 2026-03-13T12:40:09.219Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T12:39:58.379Z
+      updated_at: 2026-03-13T12:40:09.444Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T12:39:58.379Z
+      updated_at: 2026-03-13T12:40:09.219Z
     timestamps:
       created_at: 2026-03-13T12:23:00.271Z
-      updated_at: 2026-03-13T12:39:58.379Z
-      last_reconciled_at: 2026-03-13T12:39:58.379Z
-      last_active_at: 2026-03-13T12:23:00.484Z
+      updated_at: 2026-03-13T12:40:09.444Z
+      last_reconciled_at: 2026-03-13T12:40:09.444Z
+      last_active_at: 2026-03-13T12:40:09.444Z
       closed_at: null
