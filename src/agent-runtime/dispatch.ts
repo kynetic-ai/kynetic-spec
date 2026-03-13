@@ -431,7 +431,7 @@ export function buildOrientationContext(
     `Selection reason: ${triggerDescription(trigger)}`,
     `Role: ${role}`,
     `Focus: ${focusDescription(trigger, role)}`,
-    `Workspace: ${workspacePath}`,
+    `Workspace (your working directory): ${workspacePath}`,
     `Workspace mode: ${workspaceMode}`,
     `Canonical branch: ${metadata?.canonicalBranch ?? "(unavailable)"}`,
     `Integration target: ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}`,
@@ -1553,6 +1553,7 @@ export class DispatchEngine {
       "- Do not end your turn with a recommendations-only summary. Perform the next required action yourself.",
       "- Do not end your turn until the expected task transition is complete, or you have explicitly blocked the task with `kspec task block <task> --reason \"...\"`.",
       "- If you find an open PR/branch from a different task, create or switch to a dedicated branch for this task before committing to avoid PR conflation.",
+      `- CRITICAL: Your working directory is your assigned workspace (${workspace.cwd}). Run ALL commands (tests, builds, git, kspec, etc.) from this directory. Do NOT cd to the project root or any other directory. The workspace is a full git worktree with the correct branch and project configuration.`,
     ];
 
     const triggerSpecific =

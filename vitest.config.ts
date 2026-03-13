@@ -12,6 +12,7 @@ export default defineConfig({
       '**/dist/**',
       '**/.review/**',
       '**/.worktrees/**',
+      '**/.kspec-worktrees/**',
       '**/packages/web-ui/tests/e2e/**',
     ],
   },
