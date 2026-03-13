@@ -181,7 +181,13 @@ export async function getDoctorReport(
   const [setupStatus, daemonStatus] = await Promise.all([
     getSetupStatus(projectRoot).catch((err): SetupStatus => ({
       agent: { detected: "unknown", confidence: "low" },
-      hooks: { promptCheck: false, stop: false, preToolUse: false, guardsPresent: [] },
+      hooks: {
+        supported: false,
+        promptCheck: false,
+        stop: false,
+        preToolUse: false,
+        guardsPresent: [],
+      },
       skills: { total: 0, rendered: 0, drifted: 0 },
       plugin: { marketplaceRegistered: false, marketplaceHealthy: false, pluginEnabled: false },
       agentsMd: { exists: false, status: "missing" },
@@ -302,15 +308,33 @@ function buildSetupSection(section: SetupSection, status: SetupStatus): void {
     status.hooks.guardsPresent.length > 0;
   section.hooksInstalled = hooksInstalled;
 
+  const hooksCheck: {
+    severity: Severity;
+    message: string;
+    guidance?: string;
+  } = status.hooks.supported
+    ? {
+        severity: hooksInstalled ? "ok" : "error",
+        message: hooksInstalled
+          ? `Hooks installed (prompt-check: ${status.hooks.promptCheck}, stop: ${status.hooks.stop}, guards: ${status.hooks.guardsPresent.length})`
+          : "No hooks installed",
+        guidance: hooksInstalled
+          ? undefined
+          : "Run `kspec setup` to install hooks",
+      }
+    : {
+        severity: "ok" as const,
+        message: status.agent.detected === "droid"
+          ? "Hooks not installed: droid hooks are not yet supported"
+          : `Hooks not applicable for ${status.agent.detected}`,
+        guidance: undefined,
+      };
+
   section.checks.push({
     name: "hooks",
-    severity: hooksInstalled ? "ok" : "error",
-    message: hooksInstalled
-      ? `Hooks installed (prompt-check: ${status.hooks.promptCheck}, stop: ${status.hooks.stop}, guards: ${status.hooks.guardsPresent.length})`
-      : "No hooks installed",
-    guidance: hooksInstalled
-      ? undefined
-      : "Run `kspec setup` to install hooks",
+    severity: hooksCheck.severity,
+    message: hooksCheck.message,
+    guidance: hooksCheck.guidance,
   });
 
   // Skills check
