@@ -93948,7 +93948,7 @@
   spec_ref: "@dispatch-workspace-registry"
   meta_ref: null
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -93959,7 +93959,7 @@
     - shadow
     - durability
   vcs_refs: []
-  session_id: 01KKKKEB4F0E2HFQG1SDBNTAP4
+  session_id: null
   created_at: 2026-03-13T05:18:07.958Z
   started_at: 2026-03-13T12:41:34.724Z
   submitted_at: 2026-03-13T13:05:28.029Z
@@ -94116,6 +94116,14 @@
         cleanupReviewerDispatchWorkspace complete before the completed handler runs. The ENOENT
         error was a secondary symptom of the same timing issue. Full npm test passes (226/227, only
         pre-existing droid detection failure)."
+      supersedes: null
+    - _ulid: 01KKKN4MCM53DRJ0KYX3JQ6E0T
+      created_at: 2026-03-13T13:10:57.685Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: full npm test still fails on snapshot
+        032d3a5f07423eac565f545ef2b76c5d662f5ce9. tests/dispatch-workspace-registry.test.ts still
+        leaves integration.status='pending' instead of 'reset' at line 706 under the full suite, so
+        the branch is not regression-clean."
       supersedes: null
   todos: []
   automation: eligible
