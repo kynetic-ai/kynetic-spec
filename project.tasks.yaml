@@ -92150,12 +92150,30 @@
     - dispatch
     - prompts
   vcs_refs: []
+  session_id: 01KKJ7RCHSCD7CKF8S2BB1JAK0
   created_at: 2026-03-12T02:33:57.285Z
-  notes: []
+  started_at: 2026-03-13T00:08:31.173Z
+  notes:
+    - _ulid: 01KKJ8CSB04PZ9FACW5Y2YTH9K
+      created_at: 2026-03-13T00:08:58.977Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch now provisions canonical task workspaces and bootstrap state, but
+        prompts still need an explicit orientation block so worker/reviewer invocations start with
+        the correct branch, workspace, and cycle context.
+
+        - Scope: implement the workspace-aware orientation section for dispatch prompts and
+        add/adjust tests for worker, reviewer, and cycle-specific rendering.
+
+        - Files: likely dispatch prompt/runtime files under src plus targeted tests under tests/.
+
+        - Verification: run focused tests for dispatch prompt rendering, then kspec validate, then
+        full npm test before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T00:08:31.173Z
-  session_id: 01KKJ7RCHSCD7CKF8S2BB1JAK0
 - _ulid: 01KKFY9HBMSAW4DD924SYTEJ0P
   slugs:
     - task-implement-dispatch-role-entrypoints
