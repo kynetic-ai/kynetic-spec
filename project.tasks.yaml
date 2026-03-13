@@ -93707,12 +93707,30 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKKQ2MYRQVCNZMG8S6QBDQ3D
   created_at: 2026-03-13T03:25:20.775Z
-  notes: []
+  started_at: 2026-03-13T13:45:07.921Z
+  notes:
+    - _ulid: 01KKKQAZN48RZ1Z35WWJJ0KS14
+      created_at: 2026-03-13T13:49:22.981Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Droid setup status reporting was largely implemented in the
+        droid-setup-integration task. This task covers the dedicated @droid-setup-status spec with
+        test coverage annotated to the correct spec ref.
+
+        - Scope: Add AC-annotated tests for @droid-setup-status ac-1 (factory skills scanning), ac-2
+        (filesystem fallback), ac-3 (session agent-type). Add AC annotations to implementation code.
+
+        - Files: tests/droid-setup-status.test.ts (new), src/parser/setup-status.ts (annotations),
+        src/cli/commands/session/commands.ts (annotations)
+
+        - Verification: npm test passes, kspec validate shows coverage
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T13:45:07.921Z
-  session_id: 01KKKQ2MYRQVCNZMG8S6QBDQ3D
 - _ulid: 01KKJKMBM006GT41HWHR5DXCW6
   slugs:
     - implement-droid-skill-import-support
