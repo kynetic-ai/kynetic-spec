@@ -92324,6 +92324,15 @@
         PR only carries the helper surface still exercised by the current workspace lifecycle and
         role-entry behavior."
       supersedes: null
+    - _ulid: 01KKJEVM9NX1MF1A422HGPNP1S
+      created_at: 2026-03-13T02:01:56.790Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Verification after removing the unused workspace helpers: npm test --
+        tests/dispatch-workspace-registry.test.ts tests/agent-dispatch-engine.test.ts
+        tests/dispatch-branch-integration-contract.test.ts passed (105 tests); npm test passed on
+        the current branch (225 files, 4663 tests, 3 skipped, 0 failed); kspec validate remains at
+        the warnings-only project baseline (exit 6)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
