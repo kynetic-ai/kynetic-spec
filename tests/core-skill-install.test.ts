@@ -329,6 +329,46 @@ describe('Core Skill Installation', () => {
       await expect(fs.access(claudePath)).rejects.toThrow();
     });
   });
+
+  describe('droid render path', () => {
+    // AC: @droid-core-skill-install ac-1
+    // AC: @droid-core-skill-install ac-2
+    it('should accept --platform droid and render core skills into .factory/skills/kspec-*/', async () => {
+      const result = kspecJson<{
+        render: { platform: string; source: string };
+      }>('skill install-core --platform droid', tempDir, {
+        env: { CLAUDECODE: '1', CODEX_THREAD_ID: '', FACTORY_PROJECT_DIR: '', HOME: tempDir },
+      });
+
+      expect(result.render.platform).toBe('droid');
+      expect(result.render.source).toBe('override');
+
+      const droidPath = path.join(tempDir, '.factory', 'skills', 'kspec-help', 'SKILL.md');
+      const droidContent = await fs.readFile(droidPath, 'utf-8');
+      expect(droidContent).toContain('<!-- kspec-managed -->');
+      expect(droidContent).toContain('name: kspec-help');
+    });
+
+    // AC: @droid-core-skill-install ac-3
+    it('should keep claude-code as the default render target when --platform is omitted', async () => {
+      const result = kspecJson<{
+        render: { platform: string; source: string };
+      }>('skill install-core', tempDir, {
+        env: {
+          CLAUDECODE: '1',
+          CODEX_THREAD_ID: '',
+          CLAUDE_CODE_ENTRYPOINT: '',
+          CLAUDE_PROJECT_DIR: '',
+          CLAUDE_CODE: '',
+          FACTORY_PROJECT_DIR: '',
+          HOME: tempDir,
+        },
+      });
+
+      expect(result.render.platform).toBe('claude-code');
+      expect(result.render.source).toBe('auto-detect');
+    });
+  });
 });
 
 describe('Core Skills Manifest Loading', () => {
