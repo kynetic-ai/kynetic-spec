@@ -4704,6 +4704,9 @@ modules:
         traits: []
         notes: []
         created: 2026-03-13T03:25:15.256Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKJKM5NC5GZ4EWBCV2VJKAFD
         slugs:
           - droid-acp-adapter
