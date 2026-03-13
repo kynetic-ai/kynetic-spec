@@ -92217,7 +92217,7 @@
   spec_ref: "@dispatch-role-workflow-entry-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-orientation-prompt"
@@ -92232,7 +92232,7 @@
   session_id: 01KKJFFN5ACTJWBFFHRFDBXEJY
   created_at: 2026-03-12T02:33:57.875Z
   started_at: 2026-03-13T02:13:25.794Z
-  submitted_at: 2026-03-13T02:03:13.663Z
+  submitted_at: 2026-03-13T02:22:06.779Z
   notes:
     - _ulid: 01KKJBBBY6WHTQS1Q38J1GGBC6
       created_at: 2026-03-13T01:00:38.214Z
