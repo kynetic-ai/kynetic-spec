@@ -94725,6 +94725,14 @@
   priority: 1
   tags: []
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 7b81d75214dbeee843301e93d7297bf5c72623c7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-13T20:01:39.442Z
   session_id: 01KKMCMA0CEZ7PCC57XGC960DD
   created_at: 2026-03-13T09:17:00.162Z
   started_at: 2026-03-13T20:01:35.796Z
@@ -94787,16 +94795,15 @@
         dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7 needs to be pushed
         to origin and a PR created.
       supersedes: null
+    - _ulid: 01KKMCMX42ZWJ5270XD6VSRDDG
+      created_at: 2026-03-13T20:01:48.162Z
+      author: "@claude"
+      content: "Branch pushed to origin and PR #834 created
+        (https://github.com/kynetic-ai/kynetic-spec/pull/834). Task moved to pending_review.
+        Original agent was blocked by sandbox network restrictions on git push."
+      supersedes: null
   todos: []
   automation: eligible
-  submission_linkage:
-    branch: main
-    commit: 7b81d75214dbeee843301e93d7297bf5c72623c7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-13T20:01:39.442Z
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
   slugs:
     - implement-branch-provenance-in-dispatch-workspace-
