@@ -94823,6 +94823,17 @@
         adopted workspaces back to dispatch/task/* when branch_provenance is missing, so AC-2 is not
         satisfied."
       supersedes: null
+    - _ulid: 01KKM4WB7REZBNECAQYS3GV34K
+      created_at: 2026-03-13T17:46:03.384Z
+      author: "@claude"
+      content: "Fix cycle 2 addressed. The issue was that recoverWorkspaceRecordFromMetadata normalized
+        legacy adopted workspaces (missing branch_provenance, non-dispatch canonical branch) back to
+        dispatch/task/* namespace. Added inferredAdopted check: when branchProvenance is missing AND
+        canonicalBranch is not a dispatch branch, the recovery preserves the adopted branch identity
+        and skips the git checkout -B normalization. Added test that exercises the full
+        metadata-backed recovery path with a legacy adopted workspace (no branchProvenance in
+        metadata, registry record removed)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R9XYTYS5JTNBFDNQ5YNS
