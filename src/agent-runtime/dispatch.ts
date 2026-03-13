@@ -43,6 +43,7 @@ import {
   type ProvisionedDispatchWorkspace,
   cleanupReviewerDispatchWorkspace,
   reconcileDispatchWorkspaceArtifacts,
+  discoverWorkspaceForReviewOrFixCycle,
 } from "./workspace.js";
 import {
   ensureWorkspaceBootstrap,
@@ -1338,27 +1339,77 @@ export class DispatchEngine {
     selected.entry.starvationDeferrals = 0;
   }
 
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-2, ac-3, ac-4
   private async _workspaceCandidateHealth(entry: QueueEntry): Promise<{
     eligible: boolean;
     exists: boolean;
     reason: string | null;
   }> {
     const role = entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
+    const taskInfo = entry.change.task
+      ? {
+          title: entry.change.task.title,
+          slugs: entry.change.task.slugs,
+        }
+      : undefined;
     const health = await getDispatchWorkspaceHealth({
       projectDir: this.projectDir,
       taskRef: entry.change.taskRef,
-      task: entry.change.task
-        ? {
-            title: entry.change.task.title,
-            slugs: entry.change.task.slugs,
-          }
-        : undefined,
+      task: taskInfo,
       role,
     });
 
     const eligible = !health.exists
       ? entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review"
       : health.healthy;
+
+    // For pending_review and needs_work tasks, attempt workspace discovery
+    // before discarding the queue entry as missing or ineligible.
+    if (
+      !eligible &&
+      (entry.change.toStatus === "pending_review" || entry.change.toStatus === "needs_work")
+    ) {
+      const discoveryResult = await discoverWorkspaceForReviewOrFixCycle({
+        projectDir: this.projectDir,
+        taskRef: entry.change.taskRef,
+        role,
+        task: entry.change.task
+          ? {
+              title: entry.change.task.title,
+              slugs: entry.change.task.slugs,
+              submission_linkage: entry.change.task.submission_linkage ?? undefined,
+              review_url: entry.change.task.review_url,
+            }
+          : undefined,
+      });
+
+      // Emit diagnostics for failed discovery (AC-3) or conflicting signals (AC-4).
+      for (const diagnostic of discoveryResult.diagnostics) {
+        console.log(
+          `[dispatch] Workspace discovery diagnostic for ${diagnostic.taskRef}: [${diagnostic.code}] ${diagnostic.message}`,
+        );
+        console.log(`[dispatch]   Suggestion: ${diagnostic.suggestion}`);
+      }
+
+      if (discoveryResult.recovered) {
+        // AC-2: Recovery succeeded — re-evaluate eligibility with recovered workspace.
+        return {
+          eligible: true,
+          exists: discoveryResult.health.exists,
+          reason: discoveryResult.health.reason,
+        };
+      }
+
+      // Discovery failed — return ineligible with diagnostic-enriched reason.
+      const diagnosticReason = discoveryResult.diagnostics[0]?.code
+        ?? (health.exists ? health.reason : "workspace-missing-no-recovery");
+      return {
+        eligible: false,
+        exists: health.exists || discoveryResult.health.exists,
+        reason: diagnosticReason,
+      };
+    }
+
     return {
       eligible,
       exists: health.exists,
