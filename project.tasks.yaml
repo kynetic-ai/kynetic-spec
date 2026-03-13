@@ -92333,6 +92333,12 @@
         the current branch (225 files, 4663 tests, 3 skipped, 0 failed); kspec validate remains at
         the warnings-only project baseline (exit 6)."
       supersedes: null
+    - _ulid: 01KKJEXKHE21172RCRN6KJC9NZ
+      created_at: 2026-03-13T02:03:01.550Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Re-entering in_progress solely to transition the verified fix back through
+        the standard submit gate after pushing commit 2e14ad2bf to PR #810."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
