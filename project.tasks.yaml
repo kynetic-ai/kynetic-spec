@@ -93175,12 +93175,28 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKJRN1ZS9A8YYBPF2KZW36G4
   created_at: 2026-03-13T03:25:17.637Z
-  notes: []
+  started_at: 2026-03-13T04:53:35.259Z
+  notes:
+    - _ulid: 01KKJRQWVQHMCEGVC63RQGZN2G
+      created_at: 2026-03-13T04:54:40.248Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: add first-class Droid skill rendering alongside Claude Code and Codex.
+
+        - Scope: renderer implementation, shared helper updates, registry wiring, and AC-tagged test
+        coverage for droid output/frontmatter/reference resolution/hash behavior.
+
+        - Files: src/parser/skill-render.ts plus renderer-related tests.
+
+        - Verification: npm test -- tests/platform-renderer.test.ts
+        tests/core-skill-namespace.test.ts tests/skill-rendering.test.ts and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T04:53:35.259Z
-  session_id: 01KKJRN1ZS9A8YYBPF2KZW36G4
 - _ulid: 01KKJKM8H7XWFRNJH8ME1RMZKD
   slugs:
     - implement-droid-setup-integration
