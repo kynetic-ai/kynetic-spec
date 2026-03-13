@@ -22,6 +22,7 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { loadProjectConfig } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
 import { interpolateTemplate } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
@@ -199,6 +200,124 @@ function formatRecentNotes(
     return `- [${date}] ${author}: ${content}`;
   });
   return lines.join("\n");
+}
+
+class DispatchPromptError extends Error {
+  suggestion: string;
+
+  constructor(message: string, suggestion: string) {
+    super(message);
+    this.name = "DispatchPromptError";
+    this.suggestion = suggestion;
+  }
+}
+
+function resolveDispatchRole(trigger: SessionTrigger): "worker" | "reviewer" {
+  return trigger === "task.pending_review" ? "reviewer" : "worker";
+}
+
+function renderEntrypointForAdapter(entrypoint: string, adapterId: string): string {
+  const trimmed = entrypoint.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  switch (adapterId) {
+    case "codex-acp":
+      return trimmed
+        .replace(/^\/kspec:([a-z0-9][a-z0-9-]*)$/i, "$kspec-$1")
+        .replace(/^\/([a-z0-9][a-z0-9-]*)$/i, "$$$1");
+    case "claude-agent-acp":
+    case "claude-code-acp":
+      return trimmed
+        .replace(/^\$kspec-([a-z0-9][a-z0-9-]*)$/i, "/kspec:$1")
+        .replace(/^\$([a-z0-9][a-z0-9-]*)$/i, "/$1");
+    default:
+      return trimmed;
+  }
+}
+
+function resolveRoleEntrypoint(
+  role: "worker" | "reviewer",
+  adapterId: string,
+  config: Awaited<ReturnType<typeof loadProjectConfig>>["config"],
+): string {
+  const rawEntrypoint = role === "reviewer"
+    ? config.ralph.skills.pr_review
+    : config.ralph.skills.task_work;
+  const rendered = renderEntrypointForAdapter(rawEntrypoint, adapterId);
+  if (!rendered) {
+    throw new DispatchPromptError(
+      `No valid ${role} entrypoint is configured for adapter "${adapterId}".`,
+      `Set ralph.skills.${role === "reviewer" ? "pr_review" : "task_work"} in kspec.config.yaml to a non-empty workflow or skill entrypoint.`,
+    );
+  }
+  return rendered;
+}
+
+function buildPublicationInstructions(
+  role: "worker" | "reviewer",
+  metadata: DispatchWorkspaceMetadata,
+): string[] {
+  const lines = [
+    `Publication mode: \`${metadata.publicationMode}\``,
+    `Publish target: \`${metadata.mergeTargetBranch}\``,
+    `Canonical branch: \`${metadata.canonicalBranch}\``,
+  ];
+
+  if (metadata.publicationMode === "pull_request") {
+    if (role === "reviewer") {
+      lines.push(
+        `Review and merge the PR that targets \`${metadata.mergeTargetBranch}\`; do not retarget it to a different base branch.`,
+        "If you push fixes during review, re-run the required verification on the new HEAD before merging.",
+      );
+    } else {
+      lines.push(
+        `After submitting the task, create or update a PR from \`${metadata.canonicalBranch}\` into \`${metadata.mergeTargetBranch}\` using the recorded base branch as the PR target.`,
+      );
+    }
+    return lines;
+  }
+
+  if (metadata.publicationMode === "manual_merge") {
+    if (role === "reviewer") {
+      lines.push(
+        `If review is clean, merge \`${metadata.canonicalBranch}\` back into \`${metadata.mergeTargetBranch}\` manually against the recorded base branch.`,
+        `If conflicts appear, stop, run \`git merge --abort\`, and move the task to \`needs_work\` or \`blocked\` with a note describing the conflict. Do not guess at conflict resolution.`,
+      );
+    } else {
+      lines.push(
+        `Manual merge-back is recorded for this workspace. Submit the task for review; do not open a PR against \`${metadata.mergeTargetBranch}\`.`,
+        `If you must prepare the merge path, keep the work on \`${metadata.canonicalBranch}\` and hand review a clean branch lineage back to \`${metadata.mergeTargetBranch}\`.`,
+      );
+    }
+    return lines;
+  }
+
+  throw new DispatchPromptError(
+    `Workspace publication mode "${metadata.publicationMode}" is invalid.`,
+    "Re-provision the dispatch workspace or repair its metadata so publicationMode is pull_request or manual_merge.",
+  );
+}
+
+async function buildRoleEntryContext(
+  projectDir: string,
+  adapterId: string,
+  trigger: SessionTrigger,
+  metadata: DispatchWorkspaceMetadata,
+): Promise<string> {
+  const role = resolveDispatchRole(trigger);
+  const { config } = await loadProjectConfig(projectDir, projectDir);
+  const entrypoint = resolveRoleEntrypoint(role, adapterId, config);
+  const publication = buildPublicationInstructions(role, metadata);
+
+  return [
+    "## Role Entry",
+    `Role: ${role}`,
+    `Workflow entrypoint: \`${entrypoint}\``,
+    `Start by executing the ${role === "reviewer" ? "review" : "work"} flow defined by \`${entrypoint}\`.`,
+    ...publication,
+  ].join("\n");
 }
 
 /**
@@ -1341,11 +1460,11 @@ export class DispatchEngine {
    *
    * AC: @agent-dispatch-engine ac-13, ac-14, ac-15, ac-16
    */
-  private _buildDispatchPrompt(
+  private async _buildDispatchPrompt(
     agent: LoadedAgent,
     change: TaskStateChange,
     workspace: ProvisionedDispatchWorkspace,
-  ): string {
+  ): Promise<string> {
     const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
     const taskRef = change.taskRef;
 
@@ -1360,6 +1479,12 @@ export class DispatchEngine {
     const basePrompt = interpolateTemplate(rawTemplate, templateVars);
 
     const orientation = buildOrientationContext(taskRef, trigger, workspace, change.task);
+    const roleEntry = await buildRoleEntryContext(
+      this.projectDir,
+      agent.adapter ?? "claude-agent-acp",
+      trigger,
+      workspace.metadata,
+    );
     const autonomousPreamble = [
       "AUTONOMOUS DISPATCH MODE (no interactive user is available).",
       "- Do not ask for confirmation, approval, or next-step handoff.",
@@ -1384,7 +1509,7 @@ export class DispatchEngine {
             "- If your workflow includes git or PR steps, execute them directly instead of deferring to a human.",
           ];
 
-    return `${basePrompt}\n\n${orientation}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
+    return `${basePrompt}\n\n${orientation}\n\n${roleEntry}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
   private _runKspecCommand(args: string[]): KspecCommandResult {
@@ -1522,6 +1647,27 @@ export class DispatchEngine {
       return false;
     }
 
+    let prompt: string;
+    try {
+      prompt = await this._buildDispatchPrompt(agent, entry.change, workspace);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const guidance = err instanceof DispatchPromptError
+        ? err.suggestion
+        : "Inspect dispatch role-entry configuration and workspace metadata.";
+      console.error(
+        `[dispatch] Failed to build prompt for ${entry.change.taskRef}: ${message}`,
+      );
+      if (this.kspecCliPath) {
+        spawnSync(process.execPath, [
+          this.kspecCliPath,
+          "task", "note", entry.change.taskRef,
+          `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
+        ], { cwd: this.cwd });
+      }
+      return false;
+    }
+
     // Increment active count
     this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
 
@@ -1604,7 +1750,7 @@ export class DispatchEngine {
       sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
       cwd: workspace.cwd,
       taskRef: entry.change.taskRef,
-      prompt: this._buildDispatchPrompt(agent, entry.change, workspace),
+      prompt,
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
