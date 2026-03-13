@@ -93529,12 +93529,29 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKK453XX2VX1JKH3H9G8B7NA
   created_at: 2026-03-13T03:25:20.154Z
-  notes: []
+  started_at: 2026-03-13T08:14:31.705Z
+  notes:
+    - _ulid: 01KKK46AMAQ1ES5P5AN4GNT71W
+      created_at: 2026-03-13T08:14:47.434Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: droid renderer and platform registration are already in place, but
+        install-core still rejects --platform droid.
+
+        - Scope: update install-core platform validation and add spec-linked coverage for droid
+        install behavior and default-platform regression.
+
+        - Files: src/cli/commands/skill-install.ts and tests/core-skill-install.test.ts unless
+        inspection shows a shared helper needs adjustment.
+
+        - Verification: npm test plus kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T08:14:31.705Z
-  session_id: 01KKK453XX2VX1JKH3H9G8B7NA
 - _ulid: 01KKJKMB07ACRP29S80J2PB1RK
   slugs:
     - implement-droid-setup-status-reporting
