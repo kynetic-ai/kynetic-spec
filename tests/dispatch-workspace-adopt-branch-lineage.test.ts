@@ -133,7 +133,7 @@ describe("dispatch workspace adopt existing task branch lineage", () => {
     // Create an "upstream" bare repo
     const upstreamDir = path.join(tempDir, "upstream.git");
     await fs.mkdir(upstreamDir);
-    execSync("git init --bare", { cwd: upstreamDir, stdio: "pipe" });
+    execSync("git init --bare --initial-branch=main", { cwd: upstreamDir, stdio: "pipe" });
 
     // Create a working clone with a feature branch
     const cloneDir = path.join(tempDir, "clone");
@@ -179,7 +179,7 @@ describe("dispatch workspace adopt existing task branch lineage", () => {
     // Create a bare "fork" repo that has the branch
     const forkDir = path.join(tempDir, "fork.git");
     await fs.mkdir(forkDir);
-    execSync("git init --bare", { cwd: forkDir, stdio: "pipe" });
+    execSync("git init --bare --initial-branch=main", { cwd: forkDir, stdio: "pipe" });
 
     // Populate the fork with a feature branch
     const forkWork = path.join(tempDir, "fork-work");
@@ -199,9 +199,9 @@ describe("dispatch workspace adopt existing task branch lineage", () => {
     // Create a fresh repo that only has "origin" pointing to a DIFFERENT bare repo (no branch)
     const mainBare = path.join(tempDir, "main-bare.git");
     await fs.mkdir(mainBare);
-    execSync("git init --bare", { cwd: mainBare, stdio: "pipe" });
+    execSync("git init --bare --initial-branch=main", { cwd: mainBare, stdio: "pipe" });
     // Push main to main-bare so fresh clone has something
-    execSync(`git push ${mainBare} main`, { cwd: forkWork, stdio: "pipe" });
+    execSync(`git push ${mainBare} HEAD:main`, { cwd: forkWork, stdio: "pipe" });
 
     const freshDir = path.join(tempDir, "fresh-url");
     execSync(`git clone ${mainBare} fresh-url`, { cwd: tempDir, stdio: "pipe" });
