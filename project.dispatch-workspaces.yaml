@@ -2433,8 +2433,8 @@ workspaces:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopt-existing-task-branch-lineage-for-r-01kkk7r7
         branch_mode: branch
         branch_ref: dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7
-        head: 48408281d10e9f1d5ec6ba581041cd9477006c46
-        last_seen_at: 2026-03-13T18:39:13.247Z
+        head: fcfe78ed15232616f823b50684ba1cc1a74f340c
+        last_seen_at: 2026-03-13T20:01:26.915Z
       reviewer: null
     bootstrap:
       status: succeeded
@@ -2469,22 +2469,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T20:01:27.196Z
+      updated_at: 2026-03-13T20:01:26.915Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T20:01:27.196Z
+      updated_at: 2026-03-13T20:01:26.915Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T20:01:27.196Z
+      updated_at: 2026-03-13T20:01:26.915Z
     timestamps:
       created_at: 2026-03-13T18:39:13.247Z
-      updated_at: 2026-03-13T20:01:27.196Z
-      last_reconciled_at: 2026-03-13T20:01:27.196Z
+      updated_at: 2026-03-13T20:01:26.915Z
+      last_reconciled_at: 2026-03-13T20:01:26.915Z
       last_active_at: 2026-03-13T18:39:13.553Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKM1CAH2KSMH1TWS2E6079A1
