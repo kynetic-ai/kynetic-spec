@@ -269,14 +269,16 @@ export function getHeadCommit(cwd?: string): string | null {
 }
 
 /**
- * Get the upstream remote name and URL for the current branch.
- * Returns { remote, url } or null if no upstream is configured.
+ * Get the upstream remote name, URL, and upstream ref for the current branch.
+ * Returns { remote, url, upstream_ref } or null if no upstream is configured.
+ * upstream_ref is the merge ref (e.g. "refs/heads/main") from branch.<name>.merge,
+ * which may differ from the local branch name when tracking a differently named remote branch.
  * AC: @portable-task-submission-linkage ac-1
  */
 export function getBranchRemote(
   branch: string,
   cwd?: string,
-): { remote: string; url: string } | null {
+): { remote: string; url: string; upstream_ref: string | null } | null {
   try {
     const remote = execSync(
       `git config --get branch.${branch}.remote`,
@@ -290,7 +292,20 @@ export function getBranchRemote(
       stdio: ["pipe", "pipe", "ignore"],
     }).trim();
 
-    return { remote, url: url || "" };
+    // Capture the upstream merge ref (e.g. refs/heads/some-branch)
+    let upstreamRef: string | null = null;
+    try {
+      upstreamRef =
+        execSync(`git config --get branch.${branch}.merge`, {
+          cwd,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "ignore"],
+        }).trim() || null;
+    } catch {
+      // No merge ref configured — tracking remote but no specific branch
+    }
+
+    return { remote, url: url || "", upstream_ref: upstreamRef };
   } catch {
     return null;
   }
@@ -309,6 +324,7 @@ export function captureSubmissionLinkage(
   commit: string;
   remote: string | null;
   remote_url: string | null;
+  upstream_ref: string | null;
   review_url: string | null;
   captured_at: string;
 } | null {
@@ -319,11 +335,13 @@ export function captureSubmissionLinkage(
 
   let remote: string | null = null;
   let remoteUrl: string | null = null;
+  let upstreamRef: string | null = null;
   if (branch) {
     const remoteInfo = getBranchRemote(branch, cwd);
     if (remoteInfo) {
       remote = remoteInfo.remote;
       remoteUrl = remoteInfo.url;
+      upstreamRef = remoteInfo.upstream_ref;
     }
   }
 
@@ -332,6 +350,7 @@ export function captureSubmissionLinkage(
     commit,
     remote: remote || null,
     remote_url: remoteUrl || null,
+    upstream_ref: upstreamRef || null,
     review_url: reviewUrl || null,
     captured_at: new Date().toISOString(),
   };

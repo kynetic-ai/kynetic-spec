@@ -94,6 +94,7 @@ export const SubmissionLinkageSchema = z.object({
   commit: z.string(),
   remote: z.string().nullable().optional(),
   remote_url: z.string().nullable().optional(),
+  upstream_ref: z.string().nullable().optional(),
   review_url: z.string().url().nullable().optional(),
   captured_at: DateTimeSchema,
 });

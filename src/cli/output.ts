@@ -622,6 +622,9 @@ export function formatTaskDetails(
     if (sl.remote) {
       console.log(`  Remote:  ${sl.remote}${sl.remote_url ? ` (${sl.remote_url})` : ""}`);
     }
+    if (sl.upstream_ref) {
+      console.log(`  Upstream: ${chalk.cyan(sl.upstream_ref)}`);
+    }
     if (sl.review_url) {
       console.log(`  Review:  ${chalk.blue(sl.review_url)}`);
     }

@@ -20,6 +20,7 @@ interface SubmissionLinkage {
   commit: string;
   remote: string | null;
   remote_url: string | null;
+  upstream_ref: string | null;
   review_url: string | null;
   captured_at: string;
 }
@@ -87,7 +88,7 @@ describe("Integration: task submission linkage", () => {
   });
 
   // AC: @portable-task-submission-linkage ac-1
-  it("should capture remote and remote_url when upstream is configured", () => {
+  it("should capture remote, remote_url, and upstream_ref when upstream is configured", () => {
     // Create a bare remote to track
     const bareDir = tempDir + "-bare";
     execSync(`git init --bare "${bareDir}"`, { stdio: "pipe" });
@@ -106,6 +107,46 @@ describe("Integration: task submission linkage", () => {
     expect(task.submission_linkage).toBeDefined();
     expect(task.submission_linkage!.remote).toBe("origin");
     expect(task.submission_linkage!.remote_url).toContain(bareDir);
+    expect(task.submission_linkage!.upstream_ref).toBe(
+      "refs/heads/feat/remote-test",
+    );
+
+    // Cleanup bare repo
+    execSync(`rm -rf "${bareDir}"`, { stdio: "pipe" });
+  });
+
+  // AC: @portable-task-submission-linkage ac-1
+  it("should capture upstream_ref when local branch tracks a differently named remote branch", () => {
+    // Create a bare remote and push a branch under a different name
+    const bareDir = tempDir + "-bare-diverge";
+    execSync(`git init --bare "${bareDir}"`, { stdio: "pipe" });
+    git(`remote add origin "${bareDir}"`, tempDir);
+
+    // Push local main as "release/v1" on the remote, then create a local
+    // branch that tracks the differently named remote branch
+    git("push origin main:release/v1", tempDir);
+    git("checkout -b my-local-branch", tempDir);
+    git("branch --set-upstream-to=origin/release/v1", tempDir);
+    git("commit --allow-empty -m 'diverge work'", tempDir);
+
+    kspec(
+      'task add --title "Diverge upstream" --slug diverge-upstream',
+      tempDir,
+    );
+    kspec("task start @diverge-upstream", tempDir);
+    kspec("task submit @diverge-upstream", tempDir);
+
+    const task = kspecJson<TaskWithLinkage>(
+      "task get @diverge-upstream --json",
+      tempDir,
+    );
+    expect(task.submission_linkage).toBeDefined();
+    expect(task.submission_linkage!.branch).toBe("my-local-branch");
+    expect(task.submission_linkage!.remote).toBe("origin");
+    // The upstream ref should be the REMOTE branch name, not the local branch name
+    expect(task.submission_linkage!.upstream_ref).toBe(
+      "refs/heads/release/v1",
+    );
 
     // Cleanup bare repo
     execSync(`rm -rf "${bareDir}"`, { stdio: "pipe" });
