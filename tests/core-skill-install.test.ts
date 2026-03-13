@@ -348,6 +348,20 @@ describe('Core Skills Manifest Loading', () => {
     expect(kspecHelp?.platforms).toContain('codex');
   });
 
+  // AC: @core-skills-droid-platform ac-1
+  it('should register droid alongside claude-code and codex for every core skill', async () => {
+    const { loadCoreSkillsManifest } = await import('../src/cli/commands/skill.js');
+
+    const skills = await loadCoreSkillsManifest();
+
+    expect(skills.length).toBeGreaterThan(0);
+    for (const skill of skills) {
+      expect(skill.platforms).toEqual(
+        expect.arrayContaining(['claude-code', 'codex', 'droid'])
+      );
+    }
+  });
+
   it('should load SKILL.md content for core skills', async () => {
     const { loadCoreSkillContent } = await import('../src/cli/commands/skill.js');
 
