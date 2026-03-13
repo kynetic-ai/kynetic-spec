@@ -13607,7 +13607,7 @@ runs:
     initiated_by: Jacob Chapel
   - _ulid: 01KKJSEV38E34DNQC320EC360T
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
-    status: active
+    status: completed
     current_step: 5
     total_steps: 6
     started_at: 2026-03-13T05:07:12.105Z
@@ -13658,5 +13658,9 @@ runs:
       - step_index: 5
         status: completed
         started_at: 2026-03-13T05:09:19.611Z
-        completed_at: 2026-03-13T05:09:19.611Z
+        completed_at: 2026-03-13T05:09:29.726Z
+        notes: "Capture outcome: no new items added during reflection. The session's main friction is
+          already tracked by @01KKJP6E1TN5ZFMHASTHSGG2MH, and no additional observation or inbox
+          item met the bar for separate capture."
     initiated_by: Jacob Chapel
+    completed_at: 2026-03-13T05:09:29.726Z
