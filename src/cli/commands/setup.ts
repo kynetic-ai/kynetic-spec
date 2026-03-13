@@ -504,6 +504,8 @@ function getDefaultAuthor(agentType: AgentType): string {
       return "@gemini";
     case "codex-cli":
       return "@codex";
+    case "droid":
+      return "@droid";
     case "aider":
       return "@aider";
     case "opencode":
@@ -645,6 +647,16 @@ function printManualInstructions(agentType: AgentType): void {
       console.log("```");
       break;
 
+    case "droid":
+      console.log("Add to .factory/settings.json:");
+      console.log("```json");
+      console.log(JSON.stringify({ env: { KSPEC_AUTHOR: author } }, null, 2));
+      console.log("```");
+      console.log(
+        "\nDroid reads project environment variables from the env section of .factory/settings.json.",
+      );
+      break;
+
     case "opencode":
       console.log("Add to ~/.config/opencode/opencode.json:");
       console.log("```json");
@@ -766,7 +778,10 @@ async function getSetupStatus(
   const hooksDir = path.join(projectDir, ".claude", "hooks");
   const agentsMdPath = path.join(projectDir, "kspec-agents.md");
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
-  const skillsDir = path.join(projectDir, ".claude", "skills");
+  const skillDirs = new Set<string>([path.join(projectDir, ".claude", "skills")]);
+  if (detected.type === "droid") {
+    skillDirs.add(path.join(projectDir, ".factory", "skills"));
+  }
 
   // Check hooks
   const hooks = {
@@ -867,8 +882,9 @@ async function getSetupStatus(
     }
   }
 
-  // Scan .claude/skills/ (project/local skills)
-  await scanForSkills(skillsDir);
+  for (const skillsDir of skillDirs) {
+    await scanForSkills(skillsDir);
+  }
 
   // Check plugin marketplace health
   // AC: @enhanced-setup ac-7, ac-8
@@ -1071,6 +1087,14 @@ async function renderSkillsForSetup(
     debugLog("renderSkillsForSetup failed", err);
     return { rendered: 0, skipped: 0, pluginProvided: 0, skillIds: [] };
   }
+}
+
+function getHookInstallSkipMessage(agentType: AgentType): string {
+  if (agentType === "droid") {
+    return "droid hooks are not yet supported; skipping .factory/settings.json hook installation";
+  }
+
+  return `not applicable for ${agentType}`;
 }
 
 /**
@@ -1515,7 +1539,7 @@ export async function runSetupPipeline(
       steps.push({
         name: "Install hooks",
         status: "skipped",
-        message: `not applicable for ${detected.type}`,
+        message: getHookInstallSkipMessage(detected.type),
       });
     }
 
@@ -1780,6 +1804,9 @@ export async function runSetupPipeline(
               authorInstalled = true;
             }
             break;
+          case "droid":
+            authorInstalled = false;
+            break;
           case "aider":
             if (!dryRun) {
               authorInstalled = await installAiderConfig(author);
@@ -1796,6 +1823,12 @@ export async function runSetupPipeline(
             name: "Configure author",
             status: "done",
             message: `KSPEC_AUTHOR="${author}"`,
+          });
+        } else if (detected.type === "droid") {
+          steps.push({
+            name: "Configure author",
+            status: "skipped",
+            message: "add KSPEC_AUTHOR to the .factory/settings.json env section",
           });
         } else if (detected.type === "unknown") {
           // AC: @cmd-setup ac-1 - show manual instructions for unknown agents
@@ -2085,9 +2118,16 @@ export function registerSetupCommand(program: Command): void {
               );
             }
 
-            // AC: @cmd-setup ac-1 - print manual KSPEC_AUTHOR instructions for unknown agents
-            if (detected.type === "unknown") {
-              printManualInstructions("unknown");
+            const configureAuthorStep = result.steps.find(
+              (step) => step.name === "Configure author",
+            );
+            const needsManualInstructions =
+              configureAuthorStep?.status === "skipped" &&
+              !configureAuthorStep.message?.includes("already set") &&
+              (detected.type === "unknown" || detected.type === "droid");
+
+            if (needsManualInstructions) {
+              printManualInstructions(detected.type);
             }
           },
         );
