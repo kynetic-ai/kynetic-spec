@@ -93767,14 +93767,14 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKKVH355JBCGSTNNWX2HFTX2
+  session_id: null
   created_at: 2026-03-13T03:25:21.408Z
   started_at: 2026-03-13T15:08:21.234Z
   submitted_at: 2026-03-13T15:08:46.821Z
@@ -93816,6 +93816,14 @@
         actual .claude/skills/ path within the fixture project instead of a generic temp dir. This
         ensures detectImportPlatform is exercised with a realistic .claude/skills/ path, genuinely
         verifying existing Claude Code import behavior is preserved."
+      supersedes: null
+    - _ulid: 01KKKWG0ZES0JFBR960G6M73VD
+      created_at: 2026-03-13T15:19:31.054Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #828 required CI is red on the current head.
+        GitHub test shard 3/3 failed in tests/agent-dispatch-engine.test.ts (AC-20 reconciliation
+        interval cleanup ENOTEMPTY temp-dir error), so the branch is not mergeable even though the
+        droid skill import diff and AC coverage review cleanly."
       supersedes: null
   todos: []
   automation: eligible
