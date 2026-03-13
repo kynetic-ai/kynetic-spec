@@ -13608,8 +13608,20 @@ runs:
   - _ulid: 01KKJSEV38E34DNQC320EC360T
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 0
+    current_step: 1
     total_steps: 6
     started_at: 2026-03-13T05:07:12.105Z
-    step_results: []
+    step_results:
+      - step_index: 0
+        status: completed
+        started_at: 2026-03-13T05:07:12.105Z
+        completed_at: 2026-03-13T05:08:00.882Z
+        notes: "What worked well: tracing the issue across source code, spec state, and the live dispatch
+          checkout quickly separated queue scheduling from workspace eligibility. Checking the
+          actual daemon worktree under /home/chapel/Projects/kynetic-spec-dispatch was especially
+          effective."
+      - step_index: 1
+        status: completed
+        started_at: 2026-03-13T05:08:00.882Z
+        completed_at: 2026-03-13T05:08:00.882Z
     initiated_by: Jacob Chapel
