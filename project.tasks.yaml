@@ -93700,14 +93700,14 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKKT17F5CS125PTNZ4SQHGZR
+  session_id: null
   created_at: 2026-03-13T03:25:20.775Z
   started_at: 2026-03-13T14:53:30.358Z
   submitted_at: 2026-03-13T14:53:37.190Z
@@ -93747,6 +93747,14 @@
         ENOTEMPTY failure under full-suite load, confirmed fix with 2 consecutive clean full-suite
         runs (4736 tests). The cli-serve foreground shutdown assertion was not reproducible in
         isolation or under load — likely a transient CI-only race."
+      supersedes: null
+    - _ulid: 01KKKVC55W5MJ3AR2T0K4TBXS1
+      created_at: 2026-03-13T14:59:55.708Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: regression gate still fails on PR #827. Fresh
+        npm test on 38d2bcaf72fcde7d5c22b18de98a6a2431843c61 timed out in
+        tests/cli/session-start-format.test.ts (notes starvation prevention JSON case), so the PR is
+        not mergeable yet."
       supersedes: null
   todos: []
   automation: eligible
