@@ -680,13 +680,6 @@ features:
         notes: []
         created: 2026-03-13T06:58:40.964Z
         acceptance_criteria:
-          - id: ac-fail-fast
-            given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
-              disconnected
-            when: any kspec read or write path initializes project context for CLI, daemon, or dispatch work
-            then: initialization fails with actionable shadow guidance and does not fall back to repo-root
-              manifest or registry paths or write kspec-managed files outside the configured shadow
-              directory
           - id: ac-preserve-on-failure
             given: shadow repair or automatic shadow recovery is rebuilding a broken shadow worktree
             when: the replacement worktree cannot be created successfully
