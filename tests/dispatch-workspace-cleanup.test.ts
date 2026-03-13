@@ -96,6 +96,14 @@ function workspaceMetadataPath(workspaceDir: string): string {
   return path.join(workspaceDir, WORKSPACE_METADATA_FILE);
 }
 
+async function readRegistryWorkspaces(dir: string): Promise<Array<Record<string, unknown>>> {
+  const registryPath = path.join(dir, "project.dispatch-workspaces.yaml");
+  const raw = YAML.parse(await fs.readFile(registryPath, "utf-8")) as {
+    workspaces?: Array<Record<string, unknown>>;
+  };
+  return raw.workspaces ?? [];
+}
+
 describe("dispatch workspace cleanup", () => {
   let tempDir: string;
 
@@ -314,6 +322,66 @@ describe("dispatch workspace cleanup", () => {
     await expect(fs.access(path.join(tempDir, ".kspec-worktrees", "orphan-dir"))).rejects.toThrow();
     expect(git(tempDir, "branch --list dispatch/task/task-orphan-cleanup-workspace/01task00")).toBe("");
     expect(git(tempDir, "branch --list dispatch/task/orphaned/no-metadata")).toBe("");
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-6
+  // AC: @dispatch-workspace-cleanup-policy ac-7
+  it("reconstructs a missing registry record and normalizes legacy branch layouts from metadata-backed worktrees", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 26)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Legacy Dispatch Upgrade Workspace",
+        slugs: ["task-legacy-dispatch-upgrade-workspace"],
+      },
+    });
+
+    const legacyBranch = "feat/legacy-dispatch-upgrade";
+    git(workspace.cwd, `checkout -b ${legacyBranch}`);
+    git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+
+    const metadataFile = workspaceMetadataPath(workspace.cwd);
+    const metadata = JSON.parse(
+      await fs.readFile(metadataFile, "utf-8"),
+    ) as {
+      canonicalBranch: string;
+      canonicalBranchHead: string;
+    };
+    metadata.canonicalBranch = legacyBranch;
+    metadata.canonicalBranchHead = git(workspace.cwd, "rev-parse HEAD");
+    await fs.writeFile(metadataFile, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+
+    await fs.writeFile(
+      path.join(tempDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    const [record] = await readRegistryWorkspaces(tempDir);
+    expect(record).toMatchObject({
+      task_ref: taskRef,
+      canonical_branch: workspace.metadata.canonicalBranch,
+      task_slug: "task-legacy-dispatch-upgrade-workspace",
+      worktrees: {
+        worker: {
+          path: workspace.cwd,
+          branch_ref: workspace.metadata.canonicalBranch,
+        },
+      },
+    });
+    expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
+    expect(git(tempDir, `rev-parse ${workspace.metadata.canonicalBranch}`)).toBe(
+      git(workspace.cwd, "rev-parse HEAD"),
+    );
   });
 });
 
