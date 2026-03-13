@@ -92172,6 +92172,17 @@
         - Verification: run focused tests for dispatch prompt rendering, then kspec validate, then
         full npm test before submit.
       supersedes: null
+    - _ulid: 01KKJ8V1X8SKT02T3480NW77GX
+      created_at: 2026-03-13T00:16:46.504Z
+      author: Jacob Chapel
+      content: "Implemented workspace-aware dispatch orientation so prompts are built from provisioned
+        workspace metadata instead of task status alone. The orientation block now includes
+        workspace path, canonical branch, integration target, role/focus, canonical head, prepared
+        state, and explicit fix-cycle or review-cycle guidance. Verification: focused dispatch
+        prompt tests passed; full npm test had one unrelated flaky failure in cli-serve/daemon
+        watcher interactions, and isolated reruns of tests/cli-serve.test.ts and
+        tests/daemon-agent-dispatch-routes.test.ts both passed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HBMSAW4DD924SYTEJ0P
