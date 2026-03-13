@@ -92217,7 +92217,7 @@
   spec_ref: "@dispatch-role-workflow-entry-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-orientation-prompt"
@@ -92229,7 +92229,7 @@
     - prompts
     - skills
   vcs_refs: []
-  session_id: 01KKJFFN5ACTJWBFFHRFDBXEJY
+  session_id: null
   created_at: 2026-03-12T02:33:57.875Z
   started_at: 2026-03-13T02:13:25.794Z
   submitted_at: 2026-03-13T02:22:06.779Z
@@ -92373,6 +92373,12 @@
         tests/dispatch-branch-integration-contract.test.ts; npm test --
         tests/dispatch-workspace-registry.test.ts (5 consecutive passes); npm run test:shard1 all
         passed."
+      supersedes: null
+    - _ulid: 01KKJGC1PTY9F9HSC6CS1FTBM1
+      created_at: 2026-03-13T02:28:23.386Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 15] Review findings: MUST-FIX: _spawnInvocation leaks inFlightTaskKeys on
+        bootstrap/prompt failure, which can strand the task after role-entry configuration errors."
       supersedes: null
   todos: []
   automation: eligible
