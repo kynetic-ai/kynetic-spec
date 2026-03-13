@@ -33,6 +33,7 @@ import {
 } from "./helpers/cli.js";
 import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
+import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -2421,7 +2422,7 @@ describe("Dispatch role workflow entrypoints", () => {
       ].join("\n"),
       "utf-8",
     );
-    execSync("git remote add origin https://example.com/repo.git", { cwd: testDir, stdio: "pipe" });
+    execSync("git remote add origin https://github.com/example/repo.git", { cwd: testDir, stdio: "pipe" });
     const fakeGh = await installFakeGh(testDir);
 
     try {
@@ -2501,6 +2502,11 @@ describe("Dispatch role workflow entrypoints", () => {
 
     await engine.start();
     const taskId = testUlid("TASK");
+    await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef: `@${taskId}`,
+      task: { title: "Reviewer role task", slugs: ["reviewer-role-task"] },
+    });
     await engine.handleStateChange({
       taskId,
       taskRef: `@${taskId}`,
