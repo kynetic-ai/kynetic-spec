@@ -93783,3 +93783,58 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: "Implement: Remote Branch Fallback in Workspace Health Reconciliation"
+  type: task
+  spec_ref: "@dispatch-workspace-remote-branch-fallback"
+  derivation: auto
+  priority: 3
+  slugs:
+    - task-remote-branch-fallback-in-workspace-health-reconci
+  tags: []
+  depends_on:
+    - "@task-design-canonical-task-workspace-contract"
+  notes:
+    - _ulid: 01KKJYEETXAGGKACG58Q6ZE0ZW
+      created_at: 2026-03-13T06:34:22.429Z
+      author: Jacob Chapel
+      content: >-
+        Implementation notes (auto-generated from spec):
+
+
+        reconcileWorkspaceHealth() in workspace.ts checks for the canonical branch using refExists()
+        which only checks local refs (git show-ref --verify refs/heads/<branch>). When a canonical
+        branch exists on a remote (e.g. origin) but not locally, the workspace is incorrectly marked
+        unhealthy with missing_canonical_branch. The health check should attempt to fetch or verify
+        the remote ref before declaring the branch missing. This enables dispatch to self-heal
+        workspaces whose local branches were pruned or never fetched, without requiring manual
+        intervention.
+
+
+
+        Acceptance Criteria:
+
+        - ac-1: Given A workspace record references a canonical branch that does not exist as a
+        local ref, when reconcileWorkspaceHealth() runs and the branch exists on a configured remote
+        (e.g. refs/remotes/origin/<branch>), then The health check fetches or creates the local
+        branch from the remote ref and does not emit a missing_canonical_branch issue
+
+        - ac-2: Given A workspace record references a canonical branch that does not exist locally
+        or on any remote, when reconcileWorkspaceHealth() runs, then The missing_canonical_branch
+        issue is still emitted (existing behavior preserved)
+
+        - ac-3: Given The remote branch fetch fails (network error, permissions, etc.), when
+        reconcileWorkspaceHealth() attempts the remote fallback, then The failure is logged at debug
+        level and the missing_canonical_branch issue is emitted as if no remote existed (graceful
+        degradation)
+
+        - ac-4: Given reconcileWorkspaceHealth() restores a branch from remote, when The workspace
+        health state is computed, then The canonical_branch_head is updated to the resolved commit
+        from the restored branch
+      supersedes: null
+  _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-13T06:34:22.430Z
+  todos: []
