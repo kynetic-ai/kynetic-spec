@@ -95075,6 +95075,13 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-13T18:56:45.194Z
-  notes: []
-  todos: []
   started_at: 2026-03-13T18:57:24.833Z
+  notes:
+    - _ulid: 01KKM91CM6F38J20DXXJZSZQ5Q
+      created_at: 2026-03-13T18:58:42.951Z
+      author: "@claude"
+      content: "Implemented fix: added CRITICAL working directory instruction to autonomous dispatch
+        preamble in _buildDispatchPrompt(). Also added .kspec-worktrees/ to vitest exclude list.
+        Added ac-4 test for the new instruction. All 97 dispatch engine tests pass."
+      supersedes: null
+  todos: []
