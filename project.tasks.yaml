@@ -92217,7 +92217,7 @@
   spec_ref: "@dispatch-role-workflow-entry-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-orientation-prompt"
@@ -92229,7 +92229,7 @@
     - prompts
     - skills
   vcs_refs: []
-  session_id: 01KKJE0ZMVGEW7W8F4AMCHKYVE
+  session_id: null
   created_at: 2026-03-12T02:33:57.875Z
   started_at: 2026-03-13T01:48:13.292Z
   submitted_at: 2026-03-13T01:52:58.228Z
@@ -92308,6 +92308,13 @@
         rebased head (225 files, 4663 tests, 3 skipped, 0 failed), and kspec validate remains at the
         warnings-only project baseline (exit 6). No additional code change was required beyond the
         already-pushed reviewer-entry/runtime fixes on this branch."
+      supersedes: null
+    - _ulid: 01KKJEHK72N00Y9H2MQ2BDFT2D
+      created_at: 2026-03-13T01:56:28.002Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Review findings: SHOULD-FIX: remove the unused workspace helpers added in
+        src/agent-runtime/workspace.ts so the role-entry PR only carries code required for the
+        merged behavior."
       supersedes: null
   todos: []
   automation: eligible
