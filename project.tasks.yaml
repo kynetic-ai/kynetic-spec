@@ -93195,6 +93195,26 @@
         - Verification: npm test -- tests/platform-renderer.test.ts
         tests/core-skill-namespace.test.ts tests/skill-rendering.test.ts and kspec validate.
       supersedes: null
+    - _ulid: 01KKJS1JF9CKZXNQ8J63BN3YDM
+      created_at: 2026-03-13T04:59:57.290Z
+      author: Jacob Chapel
+      content: >-
+        Implemented droid renderer support in src/parser/skill-render.ts.
+
+        - Added generateDroidFrontmatter() with Claude-style fields sourced from
+        platform_config.droid.
+
+        - Added droidRenderer to the registry, exported getPlatformDefaultOutputDir(), and
+        namespaced core Droid skill paths as kspec-<id>.
+
+        - Extended portable skill-token resolution for Droid slash invocations and added focused
+        renderer tests for output path, frontmatter, marker, token rewriting, hash storage,
+        registry, and helper behavior.
+
+        - Verification: npm test -- tests/platform-renderer.test.ts
+        tests/core-skill-namespace.test.ts tests/skill-rendering.test.ts ; kspec validate (warnings
+        only, existing repo-wide debt).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM8H7XWFRNJH8ME1RMZKD
