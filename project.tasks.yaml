@@ -92217,7 +92217,7 @@
   spec_ref: "@dispatch-role-workflow-entry-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-orientation-prompt"
@@ -92229,7 +92229,7 @@
     - prompts
     - skills
   vcs_refs: []
-  session_id: 01KKJHJGHPMXBWAPQS58AX04C9
+  session_id: null
   created_at: 2026-03-12T02:33:57.875Z
   started_at: 2026-03-13T02:57:47.753Z
   submitted_at: 2026-03-13T03:03:55.233Z
@@ -92415,6 +92415,13 @@
         so the closing-state assertion tracks the async transition reliably under full-suite load.
         Verification: npm test -- tests/dispatch-workspace-registry.test.ts tests/file-lock.test.ts;
         npm test; kspec validate (warnings-only baseline, exit 6)."
+      supersedes: null
+    - _ulid: 01KKJJQSTAKY8AR6KBPESPG3HC
+      created_at: 2026-03-13T03:09:45.674Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 20] Review findings: MUST-FIX: @dispatch-role-workflow-entry-contract ac-4 is
+        not fully covered on PR #810; add a regression for invalid publicationMode fail-fast
+        behavior before merge."
       supersedes: null
   todos: []
   automation: eligible
