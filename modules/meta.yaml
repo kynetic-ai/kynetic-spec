@@ -4911,6 +4911,9 @@ modules:
         traits: []
         notes: []
         created: 2026-03-13T03:25:15.406Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKJKM5SZ2NVS9G617GH05X10
         slugs:
           - core-skills-droid-platform
