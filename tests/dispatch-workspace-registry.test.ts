@@ -482,6 +482,7 @@ describe("dispatch workspace registry", () => {
       projectDir: tempDir,
       specDir: specDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
     await engine.start();
 
@@ -553,6 +554,9 @@ describe("dispatch workspace registry", () => {
       projectDir: tempDir,
       specDir: specDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      // Disable periodic reconciliation to prevent timer-driven registry
+      // writes from racing with the explicit lifecycle transitions below.
+      reconcileIntervalMs: 0,
     });
     await engine.start();
 
@@ -643,13 +647,16 @@ describe("dispatch workspace registry", () => {
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
 
-    // Wait for the pending_review invocation to complete before
-    // sending the completed transition, so its background
-    // markDispatchWorkspaceIdle / cleanupReviewerDispatchWorkspace
-    // writes finish and don't race with the completed handler.
-    for (let i = 0; i < 200 && engine.getStatus().activeInvocations > 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+    // Wait for the pending_review invocation's FULL post-completion chain
+    // to finish.  The chain decrements activeInvocations before running
+    // cleanupReviewerDispatchWorkspace, so checking activeInvocations alone
+    // is not sufficient.  Instead, stop the engine to drain all running
+    // invocation promises (including their .then() cleanup chains), then
+    // restart it so the completed transition can be dispatched.
+    await engine.stop();
+
+    // Restart the engine so handleStateChange(completed) can run.
+    await engine.start();
 
     await engine.handleStateChange({
       taskId,
@@ -676,11 +683,6 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    // Stop the engine to drain all running invocations and their background
-    // cleanup chains (markDispatchWorkspaceIdle, cleanupReviewerDispatchWorkspace)
-    // before asserting the final lifecycle state.  Without this, the reviewer
-    // invocation's cleanupReviewerDispatchWorkspace can race and overwrite the
-    // "closing" lifecycle state that handleStateChange(completed) just persisted.
     await engine.stop();
 
     record = await readWorkspaceRecord(registryPath, taskRef);

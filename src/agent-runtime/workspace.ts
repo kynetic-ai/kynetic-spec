@@ -315,6 +315,27 @@ function resolveBranchStartPoint(
   return null;
 }
 
+/**
+ * Attempt to restore a missing local branch from a remote ref.
+ * Iterates configured remotes (origin first) and creates the local branch
+ * from the first matching remote ref. Returns true if the branch was restored.
+ * On failure, logs at debug level and returns false (graceful degradation).
+ */
+function tryRestoreBranchFromRemote(projectDir: string, branch: string): boolean {
+  for (const remote of listGitRemotes(projectDir)) {
+    const remoteRef = `refs/remotes/${remote}/${branch}`;
+    if (!refExists(projectDir, remoteRef)) continue;
+    const result = runGit(projectDir, ["branch", branch, `${remote}/${branch}`]);
+    if (result.status === 0) {
+      return true;
+    }
+    console.debug(
+      `[dispatch] Failed to restore branch "${branch}" from ${remote}: ${result.stderr || result.stdout}`,
+    );
+  }
+  return false;
+}
+
 function resolveRemoteHeadBranch(projectDir: string): string | null {
   for (const remote of listGitRemotes(projectDir)) {
     const result = runGit(projectDir, ["symbolic-ref", "--quiet", `refs/remotes/${remote}/HEAD`]);
@@ -434,6 +455,16 @@ function rehydrateAdoptedBranch(
       "fetch", remoteName, `refs/heads/${branchName}:refs/heads/${branchName}`,
     ]);
     if (fetchAlt.status === 0) {
+      return true;
+    }
+  }
+  // Fall back to fetching directly from the remote URL when named remotes
+  // don't have the branch (e.g. fork URL not configured as a named remote)
+  if (remoteUrl) {
+    const fetchUrl = runGit(projectDir, [
+      "fetch", remoteUrl, `${branchName}:${branchName}`,
+    ]);
+    if (fetchUrl.status === 0) {
       return true;
     }
   }
@@ -754,7 +785,10 @@ function reconcileWorkspaceHealth(
 ): DispatchWorkspaceHealthState {
   const issues: DispatchWorkspaceIssue[] = [];
   const branchRef = `refs/heads/${record.canonical_branch}`;
-  const branchExists = refExists(projectDir, branchRef);
+  let branchExists = refExists(projectDir, branchRef);
+  if (!branchExists) {
+    branchExists = tryRestoreBranchFromRemote(projectDir, record.canonical_branch);
+  }
   if (!branchExists) {
     issues.push(buildIssue(
       "missing_canonical_branch",
@@ -2067,6 +2101,30 @@ export async function markDispatchWorkspaceIdle(options: {
 }): Promise<ProvisionedDispatchWorkspace | null> {
   const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
   if (!existingRecord) return null;
+
+  // If a lifecycle reconciliation (e.g. task completed/cancelled) has already
+  // moved the record into a terminal state, don't regress it.  The taskStatus
+  // passed here is from the invocation's original dispatch event and may be
+  // stale relative to the current record.
+  const terminalStates = new Set(["closing", "cleanup_blocked", "closed"]);
+  if (terminalStates.has(existingRecord.lifecycle_state)) {
+    const now = new Date().toISOString();
+    const record: DispatchWorkspaceRecord = {
+      ...existingRecord,
+      active_role: null,
+      timestamps: {
+        ...existingRecord.timestamps,
+        updated_at: now,
+        last_reconciled_at: now,
+      },
+    };
+    const metadataPath = await persistWorkspaceRecord(options.projectDir, record);
+    return {
+      cwd: record.worktrees.worker.path,
+      metadataPath,
+      metadata: toMetadata(record),
+    };
+  }
 
   const now = new Date().toISOString();
   const health = reconcileWorkspaceHealth(options.projectDir, existingRecord, now);

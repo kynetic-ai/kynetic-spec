@@ -174,6 +174,64 @@ describe("dispatch workspace adopt existing task branch lineage", () => {
     expect(workspace.metadata.branchProvenance.remote_ref).toBe("origin/feat/remote-feature");
   });
 
+  // AC: @adopt-existing-task-branch-lineage ac-2 — remote URL fallback
+  it("rehydrates a branch via remote_url when named remotes do not have the branch", async () => {
+    // Create a bare "fork" repo that has the branch
+    const forkDir = path.join(tempDir, "fork.git");
+    await fs.mkdir(forkDir);
+    execSync("git init --bare", { cwd: forkDir, stdio: "pipe" });
+
+    // Populate the fork with a feature branch
+    const forkWork = path.join(tempDir, "fork-work");
+    execSync(`git clone ${forkDir} fork-work`, { cwd: tempDir, stdio: "pipe" });
+    initGitRepo(forkWork);
+    await fs.writeFile(path.join(forkWork, "README.md"), "init\n", "utf-8");
+    git(forkWork, "add README.md");
+    git(forkWork, 'commit -m "init"');
+    git(forkWork, "push origin HEAD:main");
+    git(forkWork, "checkout -b feat/url-only");
+    await fs.writeFile(path.join(forkWork, "url-feature.ts"), "export const u = 5;\n", "utf-8");
+    git(forkWork, "add url-feature.ts");
+    git(forkWork, 'commit -m "feat: url-only feature"');
+    const urlCommit = git(forkWork, "rev-parse HEAD");
+    git(forkWork, "push origin feat/url-only");
+
+    // Create a fresh repo that only has "origin" pointing to a DIFFERENT bare repo (no branch)
+    const mainBare = path.join(tempDir, "main-bare.git");
+    await fs.mkdir(mainBare);
+    execSync("git init --bare", { cwd: mainBare, stdio: "pipe" });
+    // Push main to main-bare so fresh clone has something
+    execSync(`git push ${mainBare} main`, { cwd: forkWork, stdio: "pipe" });
+
+    const freshDir = path.join(tempDir, "fresh-url");
+    execSync(`git clone ${mainBare} fresh-url`, { cwd: tempDir, stdio: "pipe" });
+    initGitRepo(freshDir);
+
+    const freshSpecDir = await setupShadowSpecDir(freshDir);
+    process.env.KSPEC_SPEC_DIR = freshSpecDir;
+
+    const taskRef = `@${testUlid("ADPT", 10)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: freshDir,
+      taskRef,
+      role: "reviewer",
+      task: { title: "URL Fallback Test", slugs: ["url-fallback-test"] },
+      taskStatus: "pending_review",
+      submissionLinkage: {
+        branch: "feat/url-only",
+        commit: urlCommit,
+        remote: null,
+        remote_url: forkDir,
+        upstream_ref: null,
+        review_url: null,
+        captured_at: new Date().toISOString(),
+      },
+    });
+
+    expect(workspace.metadata.canonicalBranch).toBe("feat/url-only");
+    expect(workspace.metadata.branchProvenance.ownership).toBe("adopted");
+  });
+
   // AC: @adopt-existing-task-branch-lineage ac-3
   it("resumes the same adopted canonical branch for a fix cycle (needs_work after review)", async () => {
     await seedRepo(tempDir);

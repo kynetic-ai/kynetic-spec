@@ -206,11 +206,12 @@ export function registerSessionCommands(program: Command): void {
     .description("Session management and context");
 
   // Session create subcommand
+  // AC: @droid-setup-status ac-3 — "droid" accepted as --agent-type value
   markMutating(session.command("create"))
     .description("Create a new kspec session with optional budget")
     .option(
       "--agent-type <type>",
-      "Agent type (e.g., claude-code, codex-cli)",
+      "Agent type (e.g., claude-code, codex-cli, droid)",
       "claude-code",
     )
     .option("--budget <n>", "Maximum tasks per cycle (positive integer)")

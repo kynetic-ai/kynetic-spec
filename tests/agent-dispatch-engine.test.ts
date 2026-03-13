@@ -41,6 +41,54 @@ import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
 /**
+ * Build a lightweight mock workspace metadata object for tests that need to
+ * mock provisionDispatchWorkspace/ensureWorkspaceBootstrap without caring
+ * about workspace setup details.
+ */
+function buildMockWorkspaceMetadata(worktreeDir: string, overrides: Record<string, unknown> = {}) {
+  const emptyBootstrapRoleState = { status: "not_run" as const, configHash: null, canonicalBranchHead: null, lastRunAt: null, invalidationReasons: [] as string[], steps: [] as any[], failureMessage: null };
+  const mockBootstrap = { ...emptyBootstrapRoleState, lastRole: null, roleStates: { worker: { ...emptyBootstrapRoleState }, reviewer: { ...emptyBootstrapRoleState } } };
+  return {
+    workspaceId: "mock-workspace",
+    taskRef: "@mock",
+    taskSlug: "mock",
+    baseBranch: "main",
+    baseBranchPoint: "abc123",
+    mergeTargetBranch: "main",
+    integrationTargetBranch: "main",
+    integrationTargetCommit: "abc123",
+    canonicalBranch: "dispatch/task/mock/abc12345",
+    canonicalBranchHead: "abc123",
+    branchProvenance: { ownership: "dispatcher-managed" as const, source: "provisioned", remote_ref: null, adopted_from: null, adopted_at: null },
+    publicationMode: "pull_request" as const,
+    integrationState: "pending" as const,
+    integrationOutcome: "pending" as const,
+    integrationUpdatedAt: new Date().toISOString(),
+    worktreeRoot: worktreeDir,
+    workerWorktreeDir: worktreeDir,
+    reviewerWorktreeDir: null,
+    lifecycleState: "ready" as const,
+    activeRole: null,
+    bootstrapState: mockBootstrap,
+    healthState: { status: "healthy" as const, summary: "Healthy", issues: [] as any[], updated_at: new Date().toISOString() },
+    cleanupState: { status: "not_scheduled" as const, eligible: false, reason: null, detail: null, updated_at: new Date().toISOString() },
+    healthStatus: "healthy" as const,
+    healthReason: null,
+    bootstrap: mockBootstrap,
+    cleanupEligible: false,
+    cleanupReason: null,
+    cleanupScheduledAt: null,
+    cleanupBlockedReason: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    lastReconciledAt: null,
+    lastActiveAt: null,
+    closedAt: null,
+    ...overrides,
+  };
+}
+
+/**
  * Create a minimal Agent definition for testing.
  */
 function makeTestAgent(overrides: Partial<Agent> = {}): Agent {
@@ -2138,45 +2186,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
     // Mock workspace provisioning and bootstrap — this test validates prompt content,
     // not workspace setup. Without provisioning mock, pending_review tasks without
     // submission linkage would fail adoption checks (AC: @adopt-existing-task-branch-lineage ac-4).
-    const emptyBootstrapRoleState = { status: "not_run" as const, configHash: null, canonicalBranchHead: null, lastRunAt: null, invalidationReasons: [] as string[], steps: [] as any[], failureMessage: null };
-    const mockBootstrap = { ...emptyBootstrapRoleState, lastRole: null, roleStates: { worker: { ...emptyBootstrapRoleState }, reviewer: { ...emptyBootstrapRoleState } } };
-    const mockMetadata = {
-      workspaceId: "mock-workspace",
-      taskRef: "@mock",
-      taskSlug: "mock",
-      baseBranch: "main",
-      baseBranchPoint: "abc123",
-      mergeTargetBranch: "main",
-      integrationTargetBranch: "main",
-      integrationTargetCommit: "abc123",
-      canonicalBranch: "dispatch/task/mock/abc12345",
-      canonicalBranchHead: "abc123",
-      branchProvenance: { ownership: "dispatcher-managed" as const, source: "provisioned", remote_ref: null, adopted_from: null, adopted_at: null },
-      publicationMode: "pull_request" as const,
-      integrationState: "pending" as const,
-      integrationOutcome: "pending" as const,
-      integrationUpdatedAt: new Date().toISOString(),
-      worktreeRoot: testDir,
-      workerWorktreeDir: testDir,
-      reviewerWorktreeDir: null,
-      lifecycleState: "ready" as const,
-      activeRole: null,
-      bootstrapState: mockBootstrap,
-      healthState: { status: "healthy" as const, summary: "Healthy", issues: [] as any[], updated_at: new Date().toISOString() },
-      cleanupState: { status: "not_scheduled" as const, eligible: false, reason: null, detail: null, updated_at: new Date().toISOString() },
-      healthStatus: "healthy" as const,
-      healthReason: null,
-      bootstrap: mockBootstrap,
-      cleanupEligible: false,
-      cleanupReason: null,
-      cleanupScheduledAt: null,
-      cleanupBlockedReason: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      lastReconciledAt: null,
-      lastActiveAt: null,
-      closedAt: null,
-    };
+    const mockMetadata = buildMockWorkspaceMetadata(testDir);
     vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
       cwd: testDir,
       metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
@@ -2277,7 +2287,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(result).toContain("New task assignment");
       expect(result).toContain("Role: worker");
       expect(result).toContain("Focus:");
-      expect(result).toContain("Workspace: /tmp/my-task-worker");
+      expect(result).toContain("Workspace (your working directory): /tmp/my-task-worker");
       expect(result).toContain("Workspace mode: mutable worker branch");
       expect(result).toContain("Canonical branch: dispatch/task/my-task/01task00");
       expect(result).toContain("Integration target: main");
@@ -2459,10 +2469,52 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(prompt).toContain("## Task Context");
       expect(prompt).toContain("Test task title");
       expect(prompt).toContain("New task assignment");
-      expect(prompt).toContain(`Workspace: ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`);
+      expect(prompt).toContain(`Workspace (your working directory): ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`);
       expect(prompt).toContain("Canonical branch: dispatch/task/test-task-title/");
       expect(prompt).toContain("Integration target: main");
       expect(prompt).toContain("Workspace mode: mutable worker branch");
+
+      await engine.stop();
+    });
+
+    // AC: @dispatch-workspace-orientation-prompt ac-4
+    it("should include explicit working directory instruction in autonomous preamble", async () => {
+      const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+      await setupProjectWithAgents(testDir, [agent]);
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      await engine.start();
+      const taskId = testUlid("WDIR");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "Workspace dir test", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+      });
+
+      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+
+      expect(runSpy).toHaveBeenCalled();
+      const prompt = runSpy.mock.calls[0][0].prompt;
+      const worktreePath = path.join(testDir, ".kspec-worktrees", `workspace-dir-test-${taskId.slice(0, 8).toLowerCase()}`);
+      expect(prompt).toContain("CRITICAL: Your working directory is your assigned workspace");
+      expect(prompt).toContain(worktreePath);
+      expect(prompt).toContain("Do NOT cd to the project root");
 
       await engine.stop();
     });
@@ -3004,45 +3056,7 @@ describe("Stale queue entry discard", () => {
     vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(undefined);
     // Mock workspace provisioning and bootstrap to prevent real I/O during
     // _spawnInvocation — these tests validate queue staleness, not workspace setup.
-    const emptyBootstrapRoleState = { status: "not_run" as const, configHash: null, canonicalBranchHead: null, lastRunAt: null, invalidationReasons: [] as string[], steps: [] as any[], failureMessage: null };
-    const mockBootstrap = { ...emptyBootstrapRoleState, lastRole: null, roleStates: { worker: { ...emptyBootstrapRoleState }, reviewer: { ...emptyBootstrapRoleState } } };
-    const mockMetadata = {
-      workspaceId: "mock-stale-test",
-      taskRef: "@mock",
-      taskSlug: "mock",
-      baseBranch: "main",
-      baseBranchPoint: "abc123",
-      mergeTargetBranch: "main",
-      integrationTargetBranch: "main",
-      integrationTargetCommit: "abc123",
-      canonicalBranch: "dispatch/task/mock/abc12345",
-      canonicalBranchHead: "abc123",
-      branchProvenance: { ownership: "dispatcher-managed" as const, source: "provisioned", remote_ref: null, adopted_from: null, adopted_at: null },
-      publicationMode: "pull_request" as const,
-      integrationState: "pending" as const,
-      integrationOutcome: "pending" as const,
-      integrationUpdatedAt: new Date().toISOString(),
-      worktreeRoot: testDir,
-      workerWorktreeDir: testDir,
-      reviewerWorktreeDir: null,
-      lifecycleState: "ready" as const,
-      activeRole: null,
-      bootstrapState: mockBootstrap,
-      healthState: { status: "healthy" as const, summary: "Healthy", issues: [] as any[], updated_at: new Date().toISOString() },
-      cleanupState: { status: "not_scheduled" as const, eligible: false, reason: null, detail: null, updated_at: new Date().toISOString() },
-      healthStatus: "healthy" as const,
-      healthReason: null,
-      bootstrap: mockBootstrap,
-      cleanupEligible: false,
-      cleanupReason: null,
-      cleanupScheduledAt: null,
-      cleanupBlockedReason: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      lastReconciledAt: null,
-      lastActiveAt: null,
-      closedAt: null,
-    };
+    const mockMetadata = buildMockWorkspaceMetadata(testDir, { workspaceId: "mock-stale-test" });
     vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
       cwd: testDir,
       metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
@@ -3071,34 +3085,49 @@ describe("Stale queue entry discard", () => {
     // Task starts as in_progress
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    // Block runInvocation so the first invocation holds the slot
-    let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
-        await firstBlock;
-        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
-      })
-      .mockResolvedValue({
-        session: {} as any,
-        outcome: "success" as const,
-        durationMs: 1,
-      });
-
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
+
+    // Mock _spawnInvocation to avoid real workspace provisioning I/O.
+    // Mirrors the real implementation: returns immediately (fire-and-forget),
+    // increments activeCount, then completes asynchronously.
+    const spawned: string[] = [];
+    let completeFirst!: () => void;
+    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    type EngineInternal = {
+      _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      activeCount: Map<string, number>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+      _loadAgents: () => Promise<unknown[]>;
+    };
+    const internal = engine as unknown as EngineInternal;
+    vi.spyOn(internal, "_spawnInvocation")
+      .mockImplementationOnce(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        internal.activeCount.set("worker", (internal.activeCount.get("worker") ?? 0) + 1);
+        // Fire-and-forget: simulate post-completion cleanup in background
+        firstCompletion.then(async () => {
+          const current = internal.activeCount.get("worker") ?? 1;
+          internal.activeCount.set("worker", Math.max(0, current - 1));
+          const agents = await internal._loadAgents();
+          await internal._drainQueues(agents);
+        });
+        return true;
+      })
+      .mockImplementation(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        return true;
+      });
 
     await engine.start();
 
-    // First invocation is running (bootstrap picked up in_progress task)
-    // Wait for first invocation to start
-    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((r) => setTimeout(r, 5));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     // Enqueue another event for the same task while first is running
     await engine.handleStateChange({
@@ -3115,14 +3144,16 @@ describe("Stale queue entry discard", () => {
     // Now update the task to completed (simulating the task finishing)
     await writeTasks(testDir, [{ _ulid: taskId, status: "completed" }]);
 
-    // Release the first invocation
-    resolveFirst();
+    // Complete the first invocation — post-completion drain should discard stale entry
+    completeFirst();
 
     // Wait for drain to process
-    await new Promise((r) => setTimeout(r, 200));
+    for (let i = 0; i < 100 && engine.getStatus().queuedInvocations > 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
 
     // The stale entry should have been discarded — only 1 invocation total
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     await engine.stop();
   });
@@ -3143,47 +3174,64 @@ describe("Stale queue entry discard", () => {
       { _ulid: taskId2, status: "in_progress" },
     ]);
 
-    // Block first invocation
-    let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
-        await firstBlock;
-        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
-      })
-      .mockResolvedValue({
-        session: {} as any,
-        outcome: "success" as const,
-        durationMs: 1,
-      });
-
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
+
+    // Mock _spawnInvocation to avoid real workspace provisioning I/O.
+    // Mirrors the real implementation: returns immediately (fire-and-forget),
+    // increments activeCount, then completes asynchronously.
+    const spawned: string[] = [];
+    let completeFirst!: () => void;
+    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    type EngineInternal = {
+      _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      activeCount: Map<string, number>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+      _loadAgents: () => Promise<unknown[]>;
+    };
+    const internal = engine as unknown as EngineInternal;
+    vi.spyOn(internal, "_spawnInvocation")
+      .mockImplementationOnce(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        internal.activeCount.set("worker", (internal.activeCount.get("worker") ?? 0) + 1);
+        // Fire-and-forget: simulate post-completion cleanup in background
+        firstCompletion.then(async () => {
+          const current = internal.activeCount.get("worker") ?? 1;
+          internal.activeCount.set("worker", Math.max(0, current - 1));
+          const agents = await internal._loadAgents();
+          await internal._drainQueues(agents);
+        });
+        return true;
+      })
+      .mockImplementation(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        return true;
+      });
 
     await engine.start();
 
-    // Wait for bootstrap to fire first invocation
-    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((r) => setTimeout(r, 5));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    // Bootstrap spawned first invocation and queued second (max_concurrent=1)
+    expect(spawned).toHaveLength(1);
 
     // task2 is still in_progress — its queue entry should survive
     expect(engine.getStatus().queuedInvocations).toBeGreaterThanOrEqual(1);
 
-    // Release first invocation
-    resolveFirst();
+    // Complete first invocation — triggers post-completion drain
+    completeFirst();
 
-    // Wait for second invocation to start
-    for (let i = 0; i < 50 && runSpy.mock.calls.length < 2; i++) {
+    // Wait for second invocation to spawn
+    for (let i = 0; i < 100 && spawned.length < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
 
     // Second invocation should have been spawned (task2 still in_progress)
-    expect(runSpy).toHaveBeenCalledTimes(2);
+    expect(spawned).toHaveLength(2);
 
     await engine.stop();
   });
@@ -3200,32 +3248,49 @@ describe("Stale queue entry discard", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    // Block first invocation
-    let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
-        await firstBlock;
-        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
-      })
-      .mockResolvedValue({
-        session: {} as any,
-        outcome: "success" as const,
-        durationMs: 1,
-      });
-
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
+
+    // Mock _spawnInvocation to avoid real workspace provisioning I/O.
+    // Mirrors the real implementation: returns immediately (fire-and-forget),
+    // increments activeCount, then completes asynchronously.
+    const spawned: string[] = [];
+    let completeFirst!: () => void;
+    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    type EngineInternal = {
+      _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      activeCount: Map<string, number>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+      _loadAgents: () => Promise<unknown[]>;
+    };
+    const internal = engine as unknown as EngineInternal;
+    vi.spyOn(internal, "_spawnInvocation")
+      .mockImplementationOnce(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        internal.activeCount.set("worker", (internal.activeCount.get("worker") ?? 0) + 1);
+        // Fire-and-forget: simulate post-completion cleanup in background
+        firstCompletion.then(async () => {
+          const current = internal.activeCount.get("worker") ?? 1;
+          internal.activeCount.set("worker", Math.max(0, current - 1));
+          const agents = await internal._loadAgents();
+          await internal._drainQueues(agents);
+        });
+        return true;
+      })
+      .mockImplementation(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        return true;
+      });
 
     await engine.start();
 
-    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((r) => setTimeout(r, 5));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     // Enqueue another event while first is running
     await engine.handleStateChange({
@@ -3241,12 +3306,15 @@ describe("Stale queue entry discard", () => {
     // Delete the task (write empty tasks list)
     await writeTasks(testDir, []);
 
-    // Release first invocation
-    resolveFirst();
-    await new Promise((r) => setTimeout(r, 200));
+    // Complete the first invocation — post-completion drain should discard stale entry
+    completeFirst();
+
+    for (let i = 0; i < 100 && engine.getStatus().queuedInvocations > 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
 
     // Entry for deleted task should have been discarded
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     await engine.stop();
   });
