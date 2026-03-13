@@ -92648,6 +92648,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #814. Added integration-style dispatch coverage for base-branch
+    sourcing, isolated worker/reviewer worktrees, reviewer cleanup, fix-cycle canonical workspace
+    reuse, and scheduler ordering; plus the reviewer-cleanup lifecycle serialization fix that closed
+    the registry race. AC/task intent reviewed with targeted dispatch regression coverage passing
+    locally and current-head CI green."
   depends_on:
     - "@task-implement-dispatch-workspace-config"
     - "@task-implement-dispatch-worktree-provisioning"
@@ -92669,6 +92674,7 @@
   created_at: 2026-03-12T02:33:59.701Z
   started_at: 2026-03-13T04:28:34.199Z
   submitted_at: 2026-03-13T04:33:07.686Z
+  completed_at: 2026-03-13T04:44:24.265Z
   notes:
     - _ulid: 01KKJMZ41VW1D8DJJ8SA5FKVX4
       created_at: 2026-03-13T03:48:42.683Z
@@ -92734,12 +92740,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T04:44:24.265Z
-  closed_reason: "Merged in PR #814. Added integration-style dispatch coverage for base-branch
-    sourcing, isolated worker/reviewer worktrees, reviewer cleanup, fix-cycle canonical workspace
-    reuse, and scheduler ordering; plus the reviewer-cleanup lifecycle serialization fix that closed
-    the registry race. AC/task intent reviewed with targeted dispatch regression coverage passing
-    locally and current-head CI green."
 - _ulid: 01KKFZ61246P1HQKMP9HSM7D1F
   slugs:
     - task-honor-derive-from-specs-false-in-plan-derive
@@ -93412,6 +93412,29 @@
         missing worker registrations still bypass reconstruction/retirement and keep pending_review
         handoff ineligible; full npm test is also red locally (29 files / 47 tests failed, dominated
         by dispatch shadow mutation lock contention)."
+      supersedes: null
+    - _ulid: 01KKJRK11KWTGAMXRRDFE70VHY
+      created_at: 2026-03-13T04:52:00.691Z
+      author: Jacob Chapel
+      content: >-
+        [FIX_CYCLE: 1] Addressed reviewer-snapshot recovery when worker registration is stale or
+        missing.
+
+        - Metadata-backed reviewer snapshots now reconstruct a stale registry record even when the
+        worker worktree registration is gone, so pending_review pruning reports an unhealthy
+        workspace instead of a missing one.
+
+        - Added a regression that seeds reviewer-local metadata, removes the worker worktree, and
+        verifies reconciliation persists a stale record with reason missing-worker-worktree.
+
+        Verification:
+
+        - Passed: npm test -- tests/agent-dispatch-engine.test.ts
+
+        - kspec validate returned only the repository's existing warning backlog (exit 6).
+
+        - Full npm test still fails on existing dispatch shadow mutation lock contention outside
+        this task's scope (first failure in tests/triage-actions.test.ts).
       supersedes: null
   todos: []
   automation: eligible
