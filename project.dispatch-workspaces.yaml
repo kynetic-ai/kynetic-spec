@@ -2567,3 +2567,78 @@ workspaces:
       last_reconciled_at: 2026-03-13T19:45:29.697Z
       last_active_at: 2026-03-13T19:45:05.396Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKJYEETYYQABWJ2QWJGPEMRT
+    task_ref: "@01KKJYEETYYQABWJ2QWJGPEMRT"
+    task_slug: task-remote-branch-fallback-in-workspace-health-reconci
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+    canonical_branch: dispatch/task/task-remote-branch-fallback-in-workspace-health-reconci/01kkjyee
+    canonical_branch_head: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remote-branch-fallback-in-workspace-health-reconci-01kkjyee
+        branch_mode: branch
+        branch_ref: dispatch/task/task-remote-branch-fallback-in-workspace-health-reconci/01kkjyee
+        head: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+        last_seen_at: 2026-03-13T19:45:31.226Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-13T19:45:31.226Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-13T19:45:31.226Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-13T19:45:31.226Z
+    timestamps:
+      created_at: 2026-03-13T19:45:31.226Z
+      updated_at: 2026-03-13T19:45:31.226Z
+      last_reconciled_at: 2026-03-13T19:45:31.226Z
+      last_active_at: null
+      closed_at: null
