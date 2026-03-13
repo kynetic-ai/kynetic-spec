@@ -12,6 +12,9 @@ import {
 } from "../src/parser/dispatch-workspaces.js";
 import {
   provisionDispatchWorkspace,
+  reapDispatchWorkspace,
+  reconcileDispatchWorkspaceLifecycle,
+  reconcileDispatchWorkspaceArtifacts,
   reconcileDispatchWorkspaceRegistry,
 } from "../src/agent-runtime/workspace.js";
 import {
@@ -424,6 +427,162 @@ describe("dispatch workspace branch provenance", () => {
     expect(record.branch_provenance.remote_ref).toBe("origin/feat/my-feature");
     expect(record.branch_provenance.adopted_from).toBe("feat/my-feature");
     expect(record.branch_provenance.source).toBe("task-submission-linkage");
+  });
+
+  // AC: @branch-provenance-in-dispatch-workspace-registry ac-2
+  it("reaps adopted workspace via registry fallback when synthetic dispatch/task/* branch does not exist", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+
+    const taskRef = `@${testUlid("PROV", 9)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Reap Adopted Workspace",
+        slugs: ["task-reap-adopted-workspace"],
+      },
+    });
+
+    // Simulate adoption: rename the branch to a non-dispatch name and update the registry
+    const adoptedBranch = "feat/adopted-work";
+    git(workspace.cwd, `checkout -b ${adoptedBranch}`);
+    git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const now = new Date().toISOString();
+
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...existingRecord!,
+      canonical_branch: adoptedBranch,
+      canonical_branch_head: git(workspace.cwd, "rev-parse HEAD"),
+      branch_provenance: {
+        ownership: "adopted",
+        source: "task-submission-linkage",
+        remote_ref: null,
+        adopted_from: adoptedBranch,
+        adopted_at: now,
+      },
+      _sourceFile: registryPath,
+    });
+
+    // Write adopted branch metadata into the worktree
+    const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
+    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    metadata.canonicalBranch = adoptedBranch;
+    metadata.branchProvenance = {
+      ownership: "adopted",
+      source: "task-submission-linkage",
+      remote_ref: null,
+      adopted_from: adoptedBranch,
+      adopted_at: now,
+    };
+    await fs.writeFile(metadataFile, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+
+    // Make the workspace cleanup-eligible
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir: tempDir,
+      taskRef,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+      task: {
+        title: "Reap Adopted Workspace",
+        slugs: ["task-reap-adopted-workspace"],
+      },
+    });
+
+    // Reap — should discover the workspace via registry fallback
+    const result = await reapDispatchWorkspace(tempDir, taskRef, {
+      task: {
+        title: "Reap Adopted Workspace",
+        slugs: ["task-reap-adopted-workspace"],
+      },
+    });
+
+    expect(result).toEqual({
+      taskRef,
+      action: "reaped",
+      blockedReason: null,
+    });
+
+    // Worktree should be removed
+    await expect(fs.access(workspace.cwd)).rejects.toThrow();
+
+    // Adopted branch should NOT be deleted (cleanup preserves adopted branches)
+    expect(git(tempDir, `branch --list ${adoptedBranch}`)).toContain(adoptedBranch);
+  });
+
+  // AC: @branch-provenance-in-dispatch-workspace-registry ac-2
+  it("reaps adopted workspace via artifact reconciliation", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+
+    const taskRef = `@${testUlid("PROV", 10)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Reap Adopted Via Reconcile",
+        slugs: ["task-reap-adopted-via-reconcile"],
+      },
+    });
+
+    // Simulate adoption: rename branch and update registry + metadata
+    const adoptedBranch = "feat/adopted-reconcile";
+    git(workspace.cwd, `checkout -b ${adoptedBranch}`);
+    git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const now = new Date().toISOString();
+
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...existingRecord!,
+      canonical_branch: adoptedBranch,
+      canonical_branch_head: git(workspace.cwd, "rev-parse HEAD"),
+      branch_provenance: {
+        ownership: "adopted",
+        source: "task-submission-linkage",
+        remote_ref: null,
+        adopted_from: adoptedBranch,
+        adopted_at: now,
+      },
+      _sourceFile: registryPath,
+    });
+
+    const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
+    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    metadata.canonicalBranch = adoptedBranch;
+    metadata.branchProvenance = {
+      ownership: "adopted",
+      source: "task-submission-linkage",
+      remote_ref: null,
+      adopted_from: adoptedBranch,
+      adopted_at: now,
+    };
+    await fs.writeFile(metadataFile, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+
+    // Make cleanup-eligible
+    await reconcileDispatchWorkspaceLifecycle({
+      projectDir: tempDir,
+      taskRef,
+      cleanupState: { integrationState: "merged", taskStatus: "completed" },
+      task: {
+        title: "Reap Adopted Via Reconcile",
+        slugs: ["task-reap-adopted-via-reconcile"],
+      },
+    });
+
+    // Run artifact reconciliation (the path that triggered the bug)
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    // Worktree should be removed
+    await expect(fs.access(workspace.cwd)).rejects.toThrow();
+
+    // Adopted branch preserved
+    expect(git(tempDir, `branch --list ${adoptedBranch}`)).toContain(adoptedBranch);
   });
 
   // AC: @branch-provenance-in-dispatch-workspace-registry ac-2

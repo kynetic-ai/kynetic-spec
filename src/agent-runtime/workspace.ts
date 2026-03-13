@@ -861,20 +861,34 @@ async function findWorkspaceRegistrationByTaskRef(
   taskRef: string,
   task?: { title?: string; slugs?: string[] },
 ): Promise<{ canonicalBranch: string; workerWorktreeDir: string; metadata: DispatchWorkspaceMetadata } | null> {
+  // Try the deterministic dispatch/task/* branch first (most common path).
   const slug = normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
-  const canonicalBranch = `dispatch/task/${slug}/${shortId}`;
-  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, canonicalBranch);
-  if (!workerWorktreeDir) {
-    return null;
+  const syntheticBranch = `dispatch/task/${slug}/${shortId}`;
+  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, syntheticBranch);
+  if (workerWorktreeDir) {
+    const metadata = await readWorkspaceMetadata(workerWorktreeDir);
+    if (metadata) {
+      return { canonicalBranch: syntheticBranch, workerWorktreeDir, metadata };
+    }
   }
 
-  const metadata = await readWorkspaceMetadata(workerWorktreeDir);
+  // Fall back to registry lookup — adopted branches use a non-dispatch canonical
+  // branch name, so the synthetic prefix won't match.
+  const record = await loadWorkspaceRecord(projectDir, taskRef);
+  if (!record) {
+    return null;
+  }
+  const registryBranch = record.canonical_branch;
+  const registryWorktreeDir = findExistingWorktreeForBranch(projectDir, registryBranch);
+  if (!registryWorktreeDir) {
+    return null;
+  }
+  const metadata = await readWorkspaceMetadata(registryWorktreeDir);
   if (!metadata) {
     return null;
   }
-
-  return { canonicalBranch, workerWorktreeDir, metadata };
+  return { canonicalBranch: registryBranch, workerWorktreeDir: registryWorktreeDir, metadata };
 }
 
 async function recoverWorkspaceRecordFromMetadata(
