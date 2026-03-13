@@ -96,7 +96,7 @@ describe('kspec setup (enhanced)', () => {
     // AC: @enhanced-setup ac-8 - JSON output includes all status info
     it('should return structured status in JSON mode', async () => {
       const result = kspecJson<{
-        agent: { detected: string; confidence: string };
+        agent: { detected: string; confidence: string; configPath?: string };
         hooks: { promptCheck: boolean; stop: boolean; preToolUse: boolean };
         skills: { rendered: number };
         agentsMd: { exists: boolean; status: string };
@@ -111,6 +111,26 @@ describe('kspec setup (enhanced)', () => {
       expect(result.agentsMd).toBeDefined();
     });
 
+    // AC: @droid-agent-detection ac-3
+    it('should report droid status with factory config path in JSON mode', async () => {
+      const result = kspecJson<{
+        agent: { detected: string; confidence: string; configPath?: string };
+      }>('setup --status', tempDir, {
+        env: {
+          FACTORY_PROJECT_DIR: tempDir,
+          HOME: tempDir,
+          CODEX_THREAD_ID: '',
+          CODEX_SANDBOX: '',
+          CODEX_CI: '',
+          CODEX_MANAGED_BY_NPM: '',
+        },
+      });
+
+      expect(result.agent.detected).toBe('droid');
+      expect(result.agent.confidence).toBe('high');
+      expect(result.agent.configPath).toBe(path.join(tempDir, '.factory', 'settings.json'));
+    });
+
     it('should use --agent override for status without env detection vars', async () => {
       const result = kspec('setup --status --agent claude-code', tempDir, {
         env: { CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '' },
@@ -118,6 +138,19 @@ describe('kspec setup (enhanced)', () => {
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('Detected: claude-code');
+    });
+
+    // AC: @droid-agent-detection ac-6
+    it('should accept droid as a valid setup --agent override', async () => {
+      const result = kspecJson<{
+        agent: { detected: string; confidence: string; configPath?: string };
+      }>('setup --status --agent droid', tempDir, {
+        env: { CLAUDECODE: '', CLAUDE_CODE_ENTRYPOINT: '', CLAUDE_PROJECT_DIR: '', CLAUDE_CODE: '', FACTORY_PROJECT_DIR: '', HOME: tempDir },
+      });
+
+      expect(result.agent.detected).toBe('droid');
+      expect(result.agent.confidence).toBe('high');
+      expect(result.agent.configPath).toBe(path.join(tempDir, '.factory', 'settings.json'));
     });
   });
 
