@@ -95052,7 +95052,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-adopt-existing-task-branch-lineage-for-r"
@@ -95060,9 +95060,18 @@
   priority: 1
   tags: []
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 39ee4d27a5e06c775adfdc2b4c2e9028fc09d4e3
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-13T22:54:51.600Z
   session_id: 01KKMN7CKC1B9X5BBVE7SV19KF
   created_at: 2026-03-13T09:17:03.324Z
   started_at: 2026-03-13T22:32:05.669Z
+  submitted_at: 2026-03-13T22:54:52.346Z
   notes:
     - _ulid: 01KKMN8D4VQNMH3A7SYZRVSX25
       created_at: 2026-03-13T22:32:15.771Z
@@ -95108,15 +95117,14 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T22:54:52.346Z
-  submission_linkage:
-    branch: main
-    commit: 39ee4d27a5e06c775adfdc2b4c2e9028fc09d4e3
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-13T22:54:51.600Z
+  completed_at: 2026-03-13T23:51:35.257Z
+  closed_reason: "Merged in PR #835. Added discoverWorkspaceForReviewOrFixCycle() implementing 4-phase
+    workspace recovery for pending_review and needs_work dispatch entries: (1) registry state, (2)
+    metadata-backed worktrees, (3) task submission linkage, (4) remote/review-derived locators.
+    Emits structured diagnostics with recovery guidance when no path exists, blocks with conflict
+    details when branch signals disagree. All 4 spec ACs covered with 9 tests. Trait AC coverage for
+    @trait-error-guidance verified. Only SUGGESTION-level findings: record construction duplication
+    and @adopt-existing-task-branch-lineage traceability gap (superseded by this implementation)."
 - _ulid: 01KKK7RC2WKBDMMXWWM7S0P80M
   slugs:
     - implement-deterministic-task-branch-helper
