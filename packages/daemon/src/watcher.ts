@@ -9,7 +9,7 @@
  * - ac-8: Fallback to Chokidar if Bun fs.watch fails
  */
 
-import { watch, type FSWatcher } from 'fs';
+import { existsSync, watch, type FSWatcher } from 'fs';
 import { readFile, lstat } from 'fs/promises';
 import { parse as parseYaml } from 'yaml';
 import chokidar, { type FSWatcher as ChokidarWatcher } from 'chokidar';
@@ -39,6 +39,8 @@ export class KspecWatcher {
   private retryCount = 0;
   private maxRetries = 5;
   private baseBackoffMs = 1000;
+  private stopped = false;
+  private recoveryTimer: NodeJS.Timeout | null = null;
 
   constructor(private options: WatcherOptions) {}
 
@@ -46,6 +48,7 @@ export class KspecWatcher {
    * AC-4, AC-8: Start watching .kspec directory (with Chokidar fallback)
    */
   async start(): Promise<void> {
+    this.stopped = false;
     try {
       // Try Bun's native fs.watch first
       await this.startBunWatcher();
@@ -73,6 +76,9 @@ export class KspecWatcher {
         this.handleFileChange(fullPath);
       }
     );
+    (this.watcher as FSWatcher).on('error', (error) => {
+      void this.handleWatcherError(error);
+    });
 
     console.log('[watcher] Watching .kspec directory with Bun fs.watch');
   }
@@ -169,7 +175,18 @@ export class KspecWatcher {
    * AC-7: Handle watcher errors with exponential backoff
    */
   private async handleWatcherError(error: Error): Promise<void> {
+    if (this.stopped) {
+      return;
+    }
+
     this.options.onError(error);
+
+    const nodeError = error as NodeJS.ErrnoException;
+    if (nodeError.code === 'ENOENT' && !existsSync(this.options.kspecDir)) {
+      console.warn('[watcher] Watched .kspec directory no longer exists; stopping watcher');
+      await this.stop();
+      return;
+    }
 
     if (this.retryCount >= this.maxRetries) {
       console.error('[watcher] Max retries reached, giving up');
@@ -181,28 +198,41 @@ export class KspecWatcher {
 
     console.log(`[watcher] Attempting recovery in ${backoffMs}ms (attempt ${this.retryCount}/${this.maxRetries})`);
 
-    setTimeout(async () => {
+    this.recoveryTimer = setTimeout(async () => {
+      this.recoveryTimer = null;
       try {
+        if (this.stopped) return;
         await this.stop();
+        this.stopped = false;
         await this.start();
         console.log('[watcher] Recovery successful');
       } catch (retryError) {
         console.error('[watcher] Recovery failed:', retryError);
         // Will retry again if under max retries
-        this.handleWatcherError(retryError as Error);
+        await this.handleWatcherError(retryError as Error);
       }
     }, backoffMs);
+    if (typeof this.recoveryTimer === 'object' && 'unref' in this.recoveryTimer) {
+      this.recoveryTimer.unref();
+    }
   }
 
   /**
    * Stop watching
    */
   async stop(): Promise<void> {
+    this.stopped = true;
+
     // Clear all debounce timers
     for (const timer of this.debounceTimers.values()) {
       clearTimeout(timer);
     }
     this.debounceTimers.clear();
+
+    if (this.recoveryTimer) {
+      clearTimeout(this.recoveryTimer);
+      this.recoveryTimer = null;
+    }
 
     // Close watcher
     if (this.watcher) {
