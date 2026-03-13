@@ -28,6 +28,7 @@ export interface SetupStatus {
   agent: {
     detected: AgentType;
     confidence: AgentConfidence;
+    configPath?: string;
   };
   hooks: {
     supported: boolean;
@@ -62,6 +63,10 @@ export interface SetupStatus {
   error?: string;
 }
 
+export interface GetSetupStatusOptions {
+  agentOverride?: AgentType;
+}
+
 /**
  * Guard scripts that can be installed
  */
@@ -70,6 +75,12 @@ const GUARD_SCRIPTS: Record<string, boolean> = {
   "write-guard.mjs": true,
   "edit-guard.mjs": true,
 };
+
+const NATIVE_GUARD_COMMAND = "kspec guard worktree";
+const LEGACY_GUARD_SCRIPTS = [
+  "kspec-worktree-guard.sh",
+  "ralph-task-limit-guard.sh",
+];
 
 /**
  * Detect the agent type in use.
@@ -81,10 +92,16 @@ export async function detectAgent(): Promise<{
 }> {
   const detected = detectAgentFromEnv();
   if (detected.type !== "unknown") {
+    const configPath = detected.configPath ??
+      (detected.type === "claude-code"
+        ? path.join(process.env.HOME ?? "", ".claude", "settings.json")
+        : detected.type === "droid"
+          ? path.join(process.env.HOME ?? "", ".factory", "settings.json")
+          : undefined);
     return {
       type: detected.type,
       confidence: detected.confidence,
-      configPath: detected.configPath,
+      configPath,
     };
   }
 
@@ -143,8 +160,22 @@ function debugLog(message: string, _error?: unknown): void {
  *
  * @param projectDir Project root directory
  */
-export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
-  const detected = await detectAgent();
+export async function getSetupStatus(
+  projectDir: string,
+  options: GetSetupStatusOptions = {},
+): Promise<SetupStatus> {
+  const detected = options.agentOverride
+    ? {
+        type: options.agentOverride,
+        confidence: "high" as const,
+        configPath:
+          options.agentOverride === "claude-code"
+            ? path.join(process.env.HOME ?? "", ".claude", "settings.json")
+            : options.agentOverride === "droid"
+              ? path.join(process.env.HOME ?? "", ".factory", "settings.json")
+              : undefined,
+      }
+    : await detectAgent();
   const agentsMdPath = path.join(projectDir, "kspec-agents.md");
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
   const claudeConfigPath = path.join(projectDir, ".claude", "settings.json");
@@ -193,8 +224,24 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
         | undefined;
       hooks.preToolUse =
         preToolUseHooks?.some((entry) =>
-          entry.hooks?.some((h) => h.command?.includes(".claude/hooks/"))
+          entry.hooks?.some((h) =>
+            h.command === NATIVE_GUARD_COMMAND ||
+            h.command?.includes(".claude/hooks/")
+          )
         ) ?? false;
+
+      if (preToolUseHooks?.some((entry) =>
+        entry.hooks?.some((h) => h.command === NATIVE_GUARD_COMMAND)
+      )) {
+        hooks.guardsPresent.push(NATIVE_GUARD_COMMAND);
+      }
+      if (preToolUseHooks?.some((entry) =>
+        entry.hooks?.some((h) =>
+          LEGACY_GUARD_SCRIPTS.some((name) => h.command?.includes(name))
+        )
+      )) {
+        hooks.guardsPresent.push("legacy:bash-scripts");
+      }
     } catch (err) {
       debugLog("Failed to read hooks config for status", err);
     }
@@ -205,6 +252,11 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
       for (const name of Object.keys(GUARD_SCRIPTS)) {
         if (guardFiles.includes(name)) {
           hooks.guardsPresent.push(name);
+        }
+      }
+      for (const name of LEGACY_GUARD_SCRIPTS) {
+        if (guardFiles.includes(name)) {
+          hooks.guardsPresent.push(`legacy-file:${name}`);
         }
       }
     } catch (err) {
@@ -376,6 +428,7 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     agent: {
       detected: detected.type,
       confidence: detected.confidence,
+      configPath: detected.configPath,
     },
     hooks,
     skills,

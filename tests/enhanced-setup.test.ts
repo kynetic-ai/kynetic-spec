@@ -555,13 +555,56 @@ describe('kspec setup (enhanced)', () => {
 
       const status = kspecJson<{
         agent: { detected: string };
+        hooks: { supported: boolean; promptCheck: boolean; stop: boolean; preToolUse: boolean };
         skills: { rendered: number };
       }>('setup --status --agent droid', tempDir, {
         env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
       });
 
       expect(status.agent.detected).toBe('droid');
+      expect(status.hooks.supported).toBe(false);
+      expect(status.hooks.promptCheck).toBe(false);
+      expect(status.hooks.stop).toBe(false);
+      expect(status.hooks.preToolUse).toBe(false);
       expect(status.skills.rendered).toBe(1);
+    });
+
+    it('reports droid hooks as unsupported in human-readable setup status output', async () => {
+      const setupResult = kspec('setup --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+      expect(setupResult.exitCode).toBe(0);
+
+      const statusResult = kspec('setup --status --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(statusResult.exitCode).toBe(0);
+      expect(statusResult.stdout).toContain('UserPromptSubmit: unsupported');
+      expect(statusResult.stdout).toContain('Stop:             unsupported');
+      expect(statusResult.stdout).toContain('PreToolUse:       unsupported');
+      expect(statusResult.stdout).toContain('droid hooks are not yet supported');
+      expect(statusResult.stdout).not.toContain('UserPromptSubmit: ✗');
+      expect(statusResult.stdout).not.toContain('Stop:             ✗');
+      expect(statusResult.stdout).not.toContain('PreToolUse:       ✗');
+    });
+
+    it('detects native guard hooks in setup status for claude-code', async () => {
+      const setupResult = kspec('setup --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '1', HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+      expect(setupResult.exitCode).toBe(0);
+
+      const status = kspecJson<{
+        hooks: { promptCheck: boolean; stop: boolean; preToolUse: boolean; guardsPresent: string[] };
+      }>('setup --status --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '1', HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(status.hooks.promptCheck).toBe(true);
+      expect(status.hooks.stop).toBe(true);
+      expect(status.hooks.preToolUse).toBe(true);
+      expect(status.hooks.guardsPresent).toContain('kspec guard worktree');
     });
 
     // AC: @droid-setup-integration ac-3

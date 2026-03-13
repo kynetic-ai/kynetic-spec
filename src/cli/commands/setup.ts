@@ -40,6 +40,9 @@ import {
   detectAgentFromEnv,
   type AgentConfidence,
 } from "../../parser/agent-detection.js";
+import {
+  getSetupStatus as getSharedSetupStatus,
+} from "../../parser/setup-status.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
@@ -720,300 +723,6 @@ export interface SetupPipelineOptions {
   author?: string;
   /** Whether to configure author (only in command handler, not init) */
   configureAuthor?: boolean;
-}
-
-/**
- * Status of the setup state
- * AC: @enhanced-setup ac-7, ac-8 - status reporting
- */
-interface SetupStatus {
-  agent: {
-    detected: AgentType;
-    confidence: "high" | "medium" | "low";
-    configPath?: string;
-  };
-  hooks: {
-    promptCheck: boolean;
-    stop: boolean;
-    preToolUse: boolean;
-    guardsPresent: string[];
-  };
-  skills: {
-    total: number;
-    rendered: number;
-    drifted: number;
-  };
-  plugin: {
-    marketplaceRegistered: boolean;
-    marketplaceHealthy: boolean;
-    pluginEnabled: boolean;
-    registeredPath?: string;
-    healthMessage?: string;
-  };
-  agentsMd: {
-    exists: boolean;
-    // AC: @doctor-command ac-staleness-unknown — includes "unknown" for indeterminate cases
-    status: "current" | "stale" | "missing" | "unknown";
-    generatedAt?: string;
-  };
-  seeding: {
-    permissionsSeeded: boolean;
-    memorySeeded: boolean;
-    memoryPath?: string;
-  };
-}
-
-/**
- * Check the current setup status
- * AC: @enhanced-setup ac-7, ac-8
- */
-async function getSetupStatus(
-  projectDir: string,
-  agentOverride?: SetupAgentOverride,
-): Promise<SetupStatus> {
-  const detected = agentOverride
-    ? buildDetectedAgent(agentOverride)
-    : detectAgent();
-  const configPath = path.join(projectDir, ".claude", "settings.json");
-  const hooksDir = path.join(projectDir, ".claude", "hooks");
-  const agentsMdPath = path.join(projectDir, "kspec-agents.md");
-  const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
-  const skillDirs = new Set<string>([path.join(projectDir, ".claude", "skills")]);
-  if (detected.type === "droid") {
-    skillDirs.add(path.join(projectDir, ".factory", "skills"));
-  }
-
-  // Check hooks
-  const hooks = {
-    promptCheck: false,
-    stop: false,
-    preToolUse: false,
-    guardsPresent: [] as string[],
-  };
-
-  try {
-    const configContent = await fs.readFile(configPath, "utf-8");
-    const config = JSON.parse(configContent);
-    const hooksConfig = config.hooks || {};
-
-    // Check UserPromptSubmit
-    const promptHooks = hooksConfig.UserPromptSubmit as Array<{
-      hooks?: Array<{ command?: string }>;
-    }> | undefined;
-    hooks.promptCheck = promptHooks?.some((entry) =>
-      entry.hooks?.some((h) => h.command?.includes("prompt-check")),
-    ) ?? false;
-
-    // Check Stop
-    const stopHooks = hooksConfig.Stop as Array<{
-      hooks?: Array<{ command?: string }>;
-    }> | undefined;
-    hooks.stop = stopHooks?.some((entry) =>
-      entry.hooks?.some((h) => h.command?.includes("checkpoint")),
-    ) ?? false;
-
-    // Check PreToolUse — look for native kspec guard worktree command
-    const preToolUseHooks = hooksConfig.PreToolUse as Array<{
-      hooks?: Array<{ command?: string }>;
-    }> | undefined;
-    hooks.preToolUse = preToolUseHooks?.some((entry) =>
-      entry.hooks?.some((h) =>
-        h.command === NATIVE_GUARD_COMMAND || h.command?.includes(".claude/hooks/"),
-      ),
-    ) ?? false;
-
-    // Check for native guard command
-    if (preToolUseHooks?.some((entry) =>
-      entry.hooks?.some((h) => h.command === NATIVE_GUARD_COMMAND),
-    )) {
-      hooks.guardsPresent.push("kspec guard worktree");
-    }
-    // Check for legacy bash scripts still present
-    if (preToolUseHooks?.some((entry) =>
-      entry.hooks?.some((h) =>
-        OLD_GUARD_SCRIPTS.some((name) => h.command?.includes(name)),
-      ),
-    )) {
-      hooks.guardsPresent.push("legacy:bash-scripts");
-    }
-  } catch (err) {
-    debugLog("Failed to read hooks config for status", err);
-  }
-
-  // Check for legacy guard script files on disk
-  try {
-    const guardFiles = await fs.readdir(hooksDir);
-    for (const name of OLD_GUARD_SCRIPTS) {
-      if (guardFiles.includes(name)) {
-        hooks.guardsPresent.push(`legacy-file:${name}`);
-      }
-    }
-  } catch (err) {
-    debugLog("Hooks dir doesn't exist", err);
-  }
-
-  // Check skills
-  const skills = {
-    total: 0,
-    rendered: 0,
-    drifted: 0,
-  };
-
-  // Helper to scan a directory for skill subdirs with kspec-managed SKILL.md
-  async function scanForSkills(baseDir: string): Promise<void> {
-    try {
-      const dirs = await fs.readdir(baseDir, { withFileTypes: true });
-      for (const dir of dirs) {
-        if (dir.isDirectory()) {
-          const skillMdPath = path.join(baseDir, dir.name, "SKILL.md");
-          try {
-            const content = await fs.readFile(skillMdPath, "utf-8");
-            if (content.includes("<!-- kspec-managed -->")) {
-              skills.total++;
-              skills.rendered++;
-            }
-          } catch (_noSkillMd) {
-            // No SKILL.md
-          }
-        }
-      }
-    } catch (_notReadable) {
-      // Directory doesn't exist
-    }
-  }
-
-  for (const skillsDir of skillDirs) {
-    await scanForSkills(skillsDir);
-  }
-
-  // Check plugin marketplace health
-  // AC: @enhanced-setup ac-7, ac-8
-  const plugin: SetupStatus["plugin"] = {
-    marketplaceRegistered: false,
-    marketplaceHealthy: false,
-    pluginEnabled: false,
-  };
-
-  try {
-    const { checkMarketplaceHealth } = await import(
-      "../../lib/claude-plugin-registry.js"
-    );
-    const health = await checkMarketplaceHealth();
-    plugin.marketplaceRegistered = health.status !== "missing";
-    plugin.marketplaceHealthy = health.status === "healthy";
-    plugin.registeredPath = health.registeredPath;
-    plugin.healthMessage = health.message;
-  } catch (err) {
-    debugLog("Could not check marketplace health", err);
-    plugin.healthMessage = "Health check unavailable";
-  }
-
-  // Check if plugin is enabled in project settings
-  try {
-    const configContent = await fs.readFile(configPath, "utf-8");
-    const config = JSON.parse(configContent);
-    plugin.pluginEnabled = config.enabledPlugins?.["kspec@kspec-plugins"] === true;
-  } catch (err) {
-    debugLog("Could not check plugin enablement", err);
-  }
-
-  // Check agents.md
-  const agentsMd: SetupStatus["agentsMd"] = {
-    exists: false,
-    status: "missing",
-  };
-
-  try {
-    await fs.access(agentsMdPath);
-    agentsMd.exists = true;
-
-    try {
-      const hashContent = await fs.readFile(hashPath, "utf-8");
-      const hashData = JSON.parse(hashContent);
-      agentsMd.generatedAt = hashData.generatedAt;
-
-      // AC: @cross-platform-and-version-robustness ac-4
-      // Compare stored hash against current meta to detect staleness
-      try {
-        const { initContext, loadMetaContext } = await import(
-          "../../parser/index.js"
-        );
-        const { computeMetaHash, loadTemplateSections, getPackageRoot } = await import("./agents.js");
-        const ctx = await initContext();
-        if (ctx.manifestPath) {
-          const metaCtx = await loadMetaContext(ctx);
-          let templateSections: string[] = [];
-          try {
-            templateSections = await loadTemplateSections(getPackageRoot());
-          } catch (err) {
-            debugLog("Templates not available for staleness check", err);
-          }
-          const currentHash = computeMetaHash(
-            metaCtx.skills,
-            metaCtx.conventions,
-            metaCtx.workflows,
-            templateSections,
-          );
-          agentsMd.status = hashData.metaHash === currentHash ? "current" : "stale";
-        } else {
-          // AC: @doctor-command ac-staleness-unknown — no manifest means we can't determine staleness
-          agentsMd.status = "unknown";
-        }
-      } catch (err) {
-        // AC: @doctor-command ac-staleness-unknown — hash computation failed
-        debugLog("Could not compute meta hash for staleness check", err);
-        agentsMd.status = "unknown";
-      }
-    } catch (err) {
-      debugLog("Hash file missing or invalid, marking stale", err);
-      agentsMd.status = "stale";
-    }
-  } catch (err) {
-    debugLog("kspec-agents.md doesn't exist", err);
-  }
-
-  // Check seeding state
-  const seeding: SetupStatus["seeding"] = {
-    permissionsSeeded: false,
-    memorySeeded: false,
-  };
-
-  try {
-    const configContent = await fs.readFile(
-      path.join(projectDir, ".claude", "settings.json"),
-      "utf-8",
-    );
-    const config = JSON.parse(configContent);
-    seeding.permissionsSeeded = !!config.permissions;
-  } catch (err) {
-    debugLog("Could not check permissions seeding state", err);
-  }
-
-  if (detected.type === "claude-code") {
-    try {
-      const { claudeCodeMemoryWriter } = await import("./setup-seeding.js");
-      const memoryExists = await claudeCodeMemoryWriter.exists(projectDir);
-      seeding.memorySeeded = memoryExists;
-      if (memoryExists) {
-        seeding.memoryPath = claudeCodeMemoryWriter.getMemoryPath(projectDir);
-      }
-    } catch (err) {
-      debugLog("Could not check memory seeding state", err);
-    }
-  }
-
-  return {
-    agent: {
-      detected: detected.type,
-      confidence: detected.confidence,
-      configPath: detected.configPath,
-    },
-    hooks,
-    skills,
-    plugin,
-    agentsMd,
-    seeding,
-  };
 }
 
 /**
@@ -1927,7 +1636,9 @@ export function registerSetupCommand(program: Command): void {
 
         // AC: @enhanced-setup ac-7, ac-8 - --status mode
         if (options.status) {
-          const status = await getSetupStatus(projectDir, agentOverride);
+          const status = await getSharedSetupStatus(projectDir, {
+            agentOverride,
+          });
 
           output(status, () => {
             console.log(chalk.bold("kspec Setup Status\n"));
@@ -1944,15 +1655,27 @@ export function registerSetupCommand(program: Command): void {
 
             // Hooks status
             console.log(chalk.gray("Hooks:"));
-            console.log(
-              `  UserPromptSubmit: ${status.hooks.promptCheck ? chalk.green("✓") : chalk.red("✗")}`,
-            );
-            console.log(
-              `  Stop:             ${status.hooks.stop ? chalk.green("✓") : chalk.red("✗")}`,
-            );
-            console.log(
-              `  PreToolUse:       ${status.hooks.preToolUse ? chalk.green("✓") : chalk.red("✗")}`,
-            );
+            if (status.hooks.supported) {
+              console.log(
+                `  UserPromptSubmit: ${status.hooks.promptCheck ? chalk.green("✓") : chalk.red("✗")}`,
+              );
+              console.log(
+                `  Stop:             ${status.hooks.stop ? chalk.green("✓") : chalk.red("✗")}`,
+              );
+              console.log(
+                `  PreToolUse:       ${status.hooks.preToolUse ? chalk.green("✓") : chalk.red("✗")}`,
+              );
+            } else {
+              const unsupported = chalk.yellow("unsupported");
+              console.log(`  UserPromptSubmit: ${unsupported}`);
+              console.log(`  Stop:             ${unsupported}`);
+              console.log(`  PreToolUse:       ${unsupported}`);
+              if (status.agent.detected === "droid") {
+                console.log(
+                  "  Note:             droid hooks are not yet supported",
+                );
+              }
+            }
             if (status.hooks.guardsPresent.length > 0) {
               console.log(
                 `  Guards:           ${status.hooks.guardsPresent.join(", ")}`,
