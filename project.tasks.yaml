@@ -91888,7 +91888,7 @@
   spec_ref: "@dispatch-workspace-cleanup-policy"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-worktree-provisioning"
@@ -91968,6 +91968,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T00:07:34.239Z
+  closed_reason: "Merged in PR #807. Implemented deterministic dispatch workspace cleanup and orphan
+    reaping for worker/reviewer worktrees, including closing/scheduled cleanup metadata,
+    cleanup_blocked branch-deletion guards, reviewer snapshot cleanup, and orphan worktree/branch
+    reconciliation. AC coverage verified for @dispatch-workspace-cleanup-policy ac-1..ac-5 with
+    trait-error-guidance marked N/A for this internal runtime surface; local focused tests and full
+    npm test passed, and remote CI completed green on the merged head."
 - _ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
   slugs:
     - task-implement-dispatch-bootstrap-contract
