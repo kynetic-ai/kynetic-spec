@@ -88093,7 +88093,7 @@
     backup/restore mechanism, (4) at minimum print recovery instructions if recreation fails. Manual
     task because it touches data safety and needs human review of the repair strategy.
   spec_ref: "@session-branch-worktree"
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   context: []
@@ -88104,6 +88104,9 @@
   notes: []
   todos: []
   automation: manual_only
+  closed_reason: Superseded by @fix-broken-shadow-safety under @broken-shadow-safety. The older task
+    covered only the repair-deletes-.kspec failure mode and was linked to the wrong spec family
+    (@session-branch-worktree).
 - _ulid: 01KKBBSDWJ9VTVY1HTHDYC69KP
   slugs: []
   title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
