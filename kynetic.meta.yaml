@@ -8196,6 +8196,15 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKK42VAD1W7W88RPBMNPB62C
+    type: friction
+    content: "scripts/test.cjs auto-build remediation is not parallel-safe; running two test commands
+      that both trigger build repair can fail with cp: dest is not a directory even though each
+      command succeeds sequentially."
+    created_at: 2026-03-13T08:12:53.453Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
