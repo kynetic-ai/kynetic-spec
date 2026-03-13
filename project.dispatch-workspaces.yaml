@@ -2016,21 +2016,26 @@ workspaces:
     base_branch_point: 48408281d10e9f1d5ec6ba581041cd9477006c46
     canonical_branch: dispatch/task/implement-droid-setup-status-reporting/01kkjkmb
     canonical_branch_head: f390cc3b1f73740e385069e0426ebaa2c5bbe3ff
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-status-reporting-01kkjkmb
         branch_mode: branch
         branch_ref: dispatch/task/implement-droid-setup-status-reporting/01kkjkmb
-        head: b43328698d836142483101bc0f6618e4a8560643
-        last_seen_at: 2026-03-13T15:34:34.143Z
-      reviewer: null
+        head: f390cc3b1f73740e385069e0426ebaa2c5bbe3ff
+        last_seen_at: 2026-03-13T16:24:06.499Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-status-reporting-01kkjkmb-review
+        branch_mode: detached
+        branch_ref: null
+        head: f390cc3b1f73740e385069e0426ebaa2c5bbe3ff
+        last_seen_at: 2026-03-13T16:24:06.499Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: b43328698d836142483101bc0f6618e4a8560643
-      lastRunAt: 2026-03-13T15:34:34.376Z
+      canonicalBranchHead: f390cc3b1f73740e385069e0426ebaa2c5bbe3ff
+      lastRunAt: 2026-03-13T16:24:06.648Z
       invalidationReasons:
         - canonical-branch-head-changed
       steps: []
@@ -2049,8 +2054,8 @@ workspaces:
         reviewer:
           status: succeeded
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          canonicalBranchHead: b43328698d836142483101bc0f6618e4a8560643
-          lastRunAt: 2026-03-13T15:34:34.376Z
+          canonicalBranchHead: f390cc3b1f73740e385069e0426ebaa2c5bbe3ff
+          lastRunAt: 2026-03-13T16:24:06.648Z
           invalidationReasons:
             - canonical-branch-head-changed
           steps: []
@@ -2062,23 +2067,23 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T16:24:03.500Z
+      updated_at: 2026-03-13T16:24:06.499Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T16:24:03.500Z
+      updated_at: 2026-03-13T16:24:06.740Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T16:24:03.500Z
+      updated_at: 2026-03-13T16:24:06.499Z
     timestamps:
       created_at: 2026-03-13T13:44:49.687Z
-      updated_at: 2026-03-13T16:24:03.500Z
-      last_reconciled_at: 2026-03-13T16:24:03.500Z
-      last_active_at: 2026-03-13T16:04:02.589Z
+      updated_at: 2026-03-13T16:24:06.740Z
+      last_reconciled_at: 2026-03-13T16:24:06.740Z
+      last_active_at: 2026-03-13T16:24:06.740Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKMBM006GT41HWHR5DXCW6
     task_ref: "@01KKJKMBM006GT41HWHR5DXCW6"
