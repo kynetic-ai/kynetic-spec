@@ -93262,6 +93262,26 @@
 
         - Verification: targeted setup tests, then full npm test and kspec validate before submit.
       supersedes: null
+    - _ulid: 01KKJSRDBA89GE1FPXVER2ENK1
+      created_at: 2026-03-13T05:12:25.706Z
+      author: Jacob Chapel
+      content: >-
+        Implemented Droid setup integration.
+
+        - Stacked prerequisite Droid schema, agent-detection, and renderer commits onto this task
+        branch because setup integration depends on those codepaths.
+
+        - Updated setup to use Droid author defaults/guidance, scan .factory/skills during setup
+        status, and skip hook installation with an explicit Droid-not-supported message.
+
+        - Added direct AC-tagged CLI coverage for all @droid-setup-integration acceptance criteria
+        in tests/enhanced-setup.test.ts.
+
+        - Verification: targeted npm test pass for enhanced-setup, agent-detection,
+        platform-renderer, and skill-schema tests. kspec validate returned repository-wide warning
+        debt only. Full npm test in this dispatch workspace hit unrelated dispatch shadow mutation
+        lock timeouts on .kspec-dispatch-shadow-mutation.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
