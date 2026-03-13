@@ -59,22 +59,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T04:40:35.018Z
+      updated_at: 2026-03-13T04:43:35.223Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T04:40:35.018Z
+      updated_at: 2026-03-13T04:43:35.223Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T04:40:35.018Z
+      updated_at: 2026-03-13T04:43:35.223Z
     timestamps:
       created_at: 2026-03-13T03:46:33.670Z
-      updated_at: 2026-03-13T04:40:35.018Z
-      last_reconciled_at: 2026-03-13T04:40:35.018Z
+      updated_at: 2026-03-13T04:43:35.223Z
+      last_reconciled_at: 2026-03-13T04:43:35.223Z
       last_active_at: 2026-03-13T04:35:30.347Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM6NQ8M1W9MSAKGXDXW97
@@ -128,7 +128,7 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T04:40:35.064Z
+      updated_at: 2026-03-13T04:43:35.267Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -141,17 +141,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T04:40:35.064Z
+      updated_at: 2026-03-13T04:43:35.267Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T04:40:35.064Z
+      updated_at: 2026-03-13T04:43:35.267Z
     timestamps:
       created_at: 2026-03-13T04:01:50.333Z
-      updated_at: 2026-03-13T04:40:35.064Z
-      last_reconciled_at: 2026-03-13T04:40:35.064Z
+      updated_at: 2026-03-13T04:43:35.267Z
+      last_reconciled_at: 2026-03-13T04:43:35.267Z
       last_active_at: 2026-03-13T04:01:50.431Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJP6E1TN5ZFMHASTHSGG2MH
@@ -162,32 +162,34 @@ workspaces:
     base_branch_point: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
     canonical_branch: dispatch/task/reconcile-legacy-dispatch-workspaces-and-spec-gaps/01kkjp6e
     canonical_branch_head: 04b37f6c85c25356ae3069016f6c290b6300f7e4
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e
         branch_mode: branch
         branch_ref: dispatch/task/reconcile-legacy-dispatch-workspaces-and-spec-gaps/01kkjp6e
         head: 04b37f6c85c25356ae3069016f6c290b6300f7e4
-        last_seen_at: 2026-03-13T04:27:06.693Z
+        last_seen_at: 2026-03-13T04:42:11.880Z
       reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       canonicalBranchHead: 04b37f6c85c25356ae3069016f6c290b6300f7e4
-      lastRunAt: 2026-03-13T04:27:06.809Z
-      invalidationReasons: []
+      lastRunAt: 2026-03-13T04:42:11.943Z
+      invalidationReasons:
+        - canonical-branch-head-changed
       steps: []
       failureMessage: null
-      lastRole: reviewer
+      lastRole: worker
       roleStates:
         worker:
           status: succeeded
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          canonicalBranchHead: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-          lastRunAt: 2026-03-13T04:11:14.182Z
-          invalidationReasons: []
+          canonicalBranchHead: 04b37f6c85c25356ae3069016f6c290b6300f7e4
+          lastRunAt: 2026-03-13T04:42:11.943Z
+          invalidationReasons:
+            - canonical-branch-head-changed
           steps: []
           failureMessage: null
         reviewer:
@@ -205,23 +207,23 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T04:40:35.103Z
+      updated_at: 2026-03-13T04:43:35.297Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T04:40:35.103Z
+      updated_at: 2026-03-13T04:43:35.297Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T04:40:35.103Z
+      updated_at: 2026-03-13T04:43:35.297Z
     timestamps:
       created_at: 2026-03-13T04:11:14.073Z
-      updated_at: 2026-03-13T04:40:35.103Z
-      last_reconciled_at: 2026-03-13T04:40:35.103Z
-      last_active_at: 2026-03-13T04:27:06.854Z
+      updated_at: 2026-03-13T04:43:35.297Z
+      last_reconciled_at: 2026-03-13T04:43:35.297Z
+      last_active_at: 2026-03-13T04:42:11.994Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM79JZR25WY03DTZETJN7
     task_ref: "@01KKJKM79JZR25WY03DTZETJN7"
@@ -230,9 +232,9 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
     canonical_branch: dispatch/task/implement-droid-acp-adapter/01kkjkm7
-    canonical_branch_head: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
-    lifecycle_state: active
-    active_role: worker
+    canonical_branch_head: e8e48cd0d4c2abffea7647eb7c4111f1ea1038e5
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-acp-adapter-01kkjkm7
@@ -274,21 +276,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T04:40:35.146Z
+      updated_at: 2026-03-13T04:43:35.332Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T04:40:35.146Z
+      updated_at: 2026-03-13T04:43:35.332Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T04:40:35.146Z
+      updated_at: 2026-03-13T04:43:35.332Z
     timestamps:
       created_at: 2026-03-13T04:33:22.590Z
-      updated_at: 2026-03-13T04:40:35.146Z
-      last_reconciled_at: 2026-03-13T04:40:35.146Z
+      updated_at: 2026-03-13T04:43:35.332Z
+      last_reconciled_at: 2026-03-13T04:43:35.332Z
       last_active_at: 2026-03-13T04:33:22.733Z
       closed_at: null

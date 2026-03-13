@@ -92646,7 +92646,7 @@
   spec_ref: null
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-workspace-config"
@@ -92734,6 +92734,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T04:44:24.265Z
+  closed_reason: "Merged in PR #814. Added integration-style dispatch coverage for base-branch
+    sourcing, isolated worker/reviewer worktrees, reviewer cleanup, fix-cycle canonical workspace
+    reuse, and scheduler ordering; plus the reviewer-cleanup lifecycle serialization fix that closed
+    the registry race. AC/task intent reviewed with targeted dispatch regression coverage passing
+    locally and current-head CI green."
 - _ulid: 01KKFZ61246P1HQKMP9HSM7D1F
   slugs:
     - task-honor-derive-from-specs-false-in-plan-derive
@@ -93102,6 +93108,7 @@
   session_id: 01KKJQGX92S7SXGHG9Z0HC2XF2
   created_at: 2026-03-13T03:25:16.978Z
   started_at: 2026-03-13T04:33:57.618Z
+  submitted_at: 2026-03-13T04:41:33.076Z
   notes:
     - _ulid: 01KKJQJ2DM828NHMP4XCXD223N
       created_at: 2026-03-13T04:34:00.756Z
@@ -93146,7 +93153,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T04:41:33.076Z
 - _ulid: 01KKJKM7Y5M5366F6XWC0KMHV5
   slugs:
     - implement-droid-skill-renderer
