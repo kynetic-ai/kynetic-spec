@@ -94125,6 +94125,19 @@
         leaves integration.status='pending' instead of 'reset' at line 706 under the full suite, so
         the branch is not regression-clean."
       supersedes: null
+    - _ulid: 01KKKQ0BVNHEZ1FMR8CEXV3TMQ
+      created_at: 2026-03-13T13:43:35.030Z
+      author: "@claude"
+      content: "Fix cycle 7 resolution: Root cause was a TOCTOU race in cleanupReviewerDispatchWorkspace.
+        The function read the registry record outside the shadow mutation lock then wrote a stale
+        snapshot inside the lock, overwriting concurrent handleStateChange(completed) writes. When
+        the invocation completion chain decremented activeCount before
+        cleanupReviewerDispatchWorkspace ran, the test's handleStateChange(completed) could
+        interleave and write integration.status='merged' which was then overwritten back to
+        'pending'. Fix: moved the registry read inside withDispatchShadowMutationLock so the
+        read-modify-write is atomic. Verified with 3 consecutive full-suite runs (0 failures in
+        dispatch-workspace-registry)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
