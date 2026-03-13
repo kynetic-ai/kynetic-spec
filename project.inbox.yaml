@@ -1526,3 +1526,16 @@ inbox:
     created_at: 2026-03-12T21:53:32.636Z
     tags: []
     added_by: Jacob Chapel
+  - _ulid: 01KKK1TYYFP3S6R2GRD59B4N8T
+    text: "Tests/fixtures should stop relying on broken-shadow fallback behavior. Several suites use
+      setupTempFixtures()+initGitRepo(), which leaves copied .kspec directories without a real
+      shadow branch/worktree and only worked because initContext() used to fail open into repo-root
+      mode. Follow-up: make test fixtures explicit about shadow mode vs non-shadow mode, add helper
+      support for initializing real shadow repos when needed, and update affected tests to stop
+      depending on disconnected .kspec directories."
+    created_at: 2026-03-13T07:33:37.871Z
+    tags:
+      - tests
+      - shadow
+      - fixtures
+    added_by: Jacob Chapel
