@@ -5039,7 +5039,7 @@ modules:
         created: 2026-03-13T03:25:15.548Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKJKM5YCWEX3HPBV59V36TW9
         slugs:
           - droid-setup-status
