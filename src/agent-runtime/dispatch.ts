@@ -1918,16 +1918,18 @@ export class DispatchEngine {
 
           if (entry.change.toStatus === "pending_review") {
             try {
-              await cleanupReviewerDispatchWorkspace(
-                this.projectDir,
-                entry.change.taskRef,
-                entry.change.task
-                  ? {
-                      title: entry.change.task.title,
-                      slugs: entry.change.task.slugs,
-                    }
-                  : undefined,
-              );
+              await this.shadowMutex.runExclusive(async () => {
+                await cleanupReviewerDispatchWorkspace(
+                  this.projectDir,
+                  entry.change.taskRef,
+                  entry.change.task
+                    ? {
+                        title: entry.change.task.title,
+                        slugs: entry.change.task.slugs,
+                      }
+                    : undefined,
+                );
+              });
             } catch (cleanupErr) {
               const cleanupMessage = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
               console.warn(
